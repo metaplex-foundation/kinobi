@@ -176,11 +176,11 @@ export type TransferTokensCheckedInput<
 
 export async function transferTokensChecked<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountMint extends string = string,
-  TAccountDestination extends string = string,
-  TAccountAuthority extends string = string
+  TAccountSource extends string,
+  TAccountMint extends string,
+  TAccountDestination extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -201,11 +201,11 @@ export async function transferTokensChecked<
   >
 ): Promise<TReturn>;
 export async function transferTokensChecked<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountMint extends string = string,
-  TAccountDestination extends string = string,
-  TAccountAuthority extends string = string
+  TAccountSource extends string,
+  TAccountMint extends string,
+  TAccountDestination extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: TransferTokensCheckedInput<
@@ -226,11 +226,11 @@ export async function transferTokensChecked<
   >
 >;
 export async function transferTokensChecked<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountMint extends string = string,
-  TAccountDestination extends string = string,
-  TAccountAuthority extends string = string
+  TAccountSource extends string,
+  TAccountMint extends string,
+  TAccountDestination extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   input: TransferTokensCheckedInput<
     TAccountSource,
@@ -251,11 +251,11 @@ export async function transferTokensChecked<
 >;
 export async function transferTokensChecked<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountMint extends string = string,
-  TAccountDestination extends string = string,
-  TAccountAuthority extends string = string
+  TAccountSource extends string,
+  TAccountMint extends string,
+  TAccountDestination extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

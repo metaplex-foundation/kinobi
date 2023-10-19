@@ -349,20 +349,20 @@ export type DeprecatedCreateMasterEditionInput<
 
 export async function deprecatedCreateMasterEdition<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountEdition extends string = string,
-  TAccountMint extends string = string,
-  TAccountPrintingMint extends string = string,
-  TAccountOneTimePrintingAuthorizationMint extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountPrintingMintAuthority extends string = string,
-  TAccountMintAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountPayer extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111',
-  TAccountOneTimePrintingAuthorizationMintAuthority extends string = string
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountPrintingMint extends string,
+  TAccountOneTimePrintingAuthorizationMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountPrintingMintAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountPayer extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TAccountOneTimePrintingAuthorizationMintAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -401,20 +401,20 @@ export async function deprecatedCreateMasterEdition<
   >
 ): Promise<TReturn>;
 export async function deprecatedCreateMasterEdition<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountEdition extends string = string,
-  TAccountMint extends string = string,
-  TAccountPrintingMint extends string = string,
-  TAccountOneTimePrintingAuthorizationMint extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountPrintingMintAuthority extends string = string,
-  TAccountMintAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountPayer extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111',
-  TAccountOneTimePrintingAuthorizationMintAuthority extends string = string
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountPrintingMint extends string,
+  TAccountOneTimePrintingAuthorizationMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountPrintingMintAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountPayer extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TAccountOneTimePrintingAuthorizationMintAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: DeprecatedCreateMasterEditionInput<
@@ -453,20 +453,20 @@ export async function deprecatedCreateMasterEdition<
   >
 >;
 export async function deprecatedCreateMasterEdition<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountEdition extends string = string,
-  TAccountMint extends string = string,
-  TAccountPrintingMint extends string = string,
-  TAccountOneTimePrintingAuthorizationMint extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountPrintingMintAuthority extends string = string,
-  TAccountMintAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountPayer extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111',
-  TAccountOneTimePrintingAuthorizationMintAuthority extends string = string
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountPrintingMint extends string,
+  TAccountOneTimePrintingAuthorizationMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountPrintingMintAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountPayer extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TAccountOneTimePrintingAuthorizationMintAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: DeprecatedCreateMasterEditionInput<
     TAccountEdition,
@@ -505,20 +505,20 @@ export async function deprecatedCreateMasterEdition<
 >;
 export async function deprecatedCreateMasterEdition<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountEdition extends string = string,
-  TAccountMint extends string = string,
-  TAccountPrintingMint extends string = string,
-  TAccountOneTimePrintingAuthorizationMint extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountPrintingMintAuthority extends string = string,
-  TAccountMintAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountPayer extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111',
-  TAccountOneTimePrintingAuthorizationMintAuthority extends string = string
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountPrintingMint extends string,
+  TAccountOneTimePrintingAuthorizationMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountPrintingMintAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountPayer extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TAccountOneTimePrintingAuthorizationMintAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

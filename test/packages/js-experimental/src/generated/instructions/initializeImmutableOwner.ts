@@ -110,8 +110,8 @@ export type InitializeImmutableOwnerInput<TAccountAccount extends string> = {
 
 export async function initializeImmutableOwner<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string
+  TAccountAccount extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -121,8 +121,8 @@ export async function initializeImmutableOwner<
   input: InitializeImmutableOwnerInput<TAccountAccount>
 ): Promise<TReturn>;
 export async function initializeImmutableOwner<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string
+  TAccountAccount extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: InitializeImmutableOwnerInput<TAccountAccount>
@@ -132,8 +132,8 @@ export async function initializeImmutableOwner<
   >
 >;
 export async function initializeImmutableOwner<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string
+  TAccountAccount extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   input: InitializeImmutableOwnerInput<TAccountAccount>
 ): Promise<
@@ -143,8 +143,8 @@ export async function initializeImmutableOwner<
 >;
 export async function initializeImmutableOwner<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string
+  TAccountAccount extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

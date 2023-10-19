@@ -244,15 +244,15 @@ export type ApproveCollectionAuthorityInput<
 
 export async function approveCollectionAuthority<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionAuthorityRecord extends string = string,
-  TAccountNewCollectionAuthority extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountMint extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountRent extends string = string
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountNewCollectionAuthority extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -281,15 +281,15 @@ export async function approveCollectionAuthority<
   >
 ): Promise<TReturn>;
 export async function approveCollectionAuthority<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionAuthorityRecord extends string = string,
-  TAccountNewCollectionAuthority extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountMint extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountRent extends string = string
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountNewCollectionAuthority extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: ApproveCollectionAuthorityInput<
@@ -318,15 +318,15 @@ export async function approveCollectionAuthority<
   >
 >;
 export async function approveCollectionAuthority<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionAuthorityRecord extends string = string,
-  TAccountNewCollectionAuthority extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountMint extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountRent extends string = string
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountNewCollectionAuthority extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: ApproveCollectionAuthorityInput<
     TAccountCollectionAuthorityRecord,
@@ -355,15 +355,15 @@ export async function approveCollectionAuthority<
 >;
 export async function approveCollectionAuthority<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionAuthorityRecord extends string = string,
-  TAccountNewCollectionAuthority extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountMint extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountRent extends string = string
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountNewCollectionAuthority extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

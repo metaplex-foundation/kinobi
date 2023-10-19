@@ -158,10 +158,10 @@ export type MintTokensToInput<
 
 export async function mintTokensTo<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string,
-  TAccountToken extends string = string,
-  TAccountMintAuthority extends string = string
+  TAccountMint extends string,
+  TAccountToken extends string,
+  TAccountMintAuthority extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -176,10 +176,10 @@ export async function mintTokensTo<
   input: MintTokensToInput<TAccountMint, TAccountToken, TAccountMintAuthority>
 ): Promise<TReturn>;
 export async function mintTokensTo<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string,
-  TAccountToken extends string = string,
-  TAccountMintAuthority extends string = string
+  TAccountMint extends string,
+  TAccountToken extends string,
+  TAccountMintAuthority extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: MintTokensToInput<TAccountMint, TAccountToken, TAccountMintAuthority>
@@ -194,10 +194,10 @@ export async function mintTokensTo<
   >
 >;
 export async function mintTokensTo<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string,
-  TAccountToken extends string = string,
-  TAccountMintAuthority extends string = string
+  TAccountMint extends string,
+  TAccountToken extends string,
+  TAccountMintAuthority extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   input: MintTokensToInput<TAccountMint, TAccountToken, TAccountMintAuthority>
 ): Promise<
@@ -212,10 +212,10 @@ export async function mintTokensTo<
 >;
 export async function mintTokensTo<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string,
-  TAccountToken extends string = string,
-  TAccountMintAuthority extends string = string
+  TAccountMint extends string,
+  TAccountToken extends string,
+  TAccountMintAuthority extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

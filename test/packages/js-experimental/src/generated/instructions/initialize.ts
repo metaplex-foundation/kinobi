@@ -304,18 +304,18 @@ export type InitializeInput<
 
 export async function initialize<
   TReturn,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string = string,
-  TAccountAuthorityPda extends string = string,
-  TAccountAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountCollectionMetadata extends string = string,
-  TAccountCollectionMint extends string = string,
-  TAccountCollectionMasterEdition extends string = string,
-  TAccountCollectionUpdateAuthority extends string = string,
-  TAccountCollectionAuthorityRecord extends string = string,
-  TAccountTokenMetadataProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+  TAccountCandyMachine extends string,
+  TAccountAuthorityPda extends string,
+  TAccountAuthority extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionMasterEdition extends string,
+  TAccountCollectionUpdateAuthority extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountTokenMetadataProgram extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -350,18 +350,18 @@ export async function initialize<
   >
 ): Promise<TReturn>;
 export async function initialize<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string = string,
-  TAccountAuthorityPda extends string = string,
-  TAccountAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountCollectionMetadata extends string = string,
-  TAccountCollectionMint extends string = string,
-  TAccountCollectionMasterEdition extends string = string,
-  TAccountCollectionUpdateAuthority extends string = string,
-  TAccountCollectionAuthorityRecord extends string = string,
-  TAccountTokenMetadataProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+  TAccountCandyMachine extends string,
+  TAccountAuthorityPda extends string,
+  TAccountAuthority extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionMasterEdition extends string,
+  TAccountCollectionUpdateAuthority extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountTokenMetadataProgram extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: InitializeInput<
@@ -396,18 +396,18 @@ export async function initialize<
   >
 >;
 export async function initialize<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string = string,
-  TAccountAuthorityPda extends string = string,
-  TAccountAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountCollectionMetadata extends string = string,
-  TAccountCollectionMint extends string = string,
-  TAccountCollectionMasterEdition extends string = string,
-  TAccountCollectionUpdateAuthority extends string = string,
-  TAccountCollectionAuthorityRecord extends string = string,
-  TAccountTokenMetadataProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+  TAccountCandyMachine extends string,
+  TAccountAuthorityPda extends string,
+  TAccountAuthority extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionMasterEdition extends string,
+  TAccountCollectionUpdateAuthority extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountTokenMetadataProgram extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   input: InitializeInput<
     TAccountCandyMachine,
@@ -442,18 +442,18 @@ export async function initialize<
 >;
 export async function initialize<
   TReturn,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string = string,
-  TAccountAuthorityPda extends string = string,
-  TAccountAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountCollectionMetadata extends string = string,
-  TAccountCollectionMint extends string = string,
-  TAccountCollectionMasterEdition extends string = string,
-  TAccountCollectionUpdateAuthority extends string = string,
-  TAccountCollectionAuthorityRecord extends string = string,
-  TAccountTokenMetadataProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+  TAccountCandyMachine extends string,
+  TAccountAuthorityPda extends string,
+  TAccountAuthority extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionMasterEdition extends string,
+  TAccountCollectionUpdateAuthority extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountTokenMetadataProgram extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

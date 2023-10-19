@@ -159,9 +159,9 @@ export type SetTokenAuthorityInput<
 
 export async function setTokenAuthority<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountOwned extends string = string,
-  TAccountOwner extends string = string
+  TAccountOwned extends string,
+  TAccountOwner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -177,9 +177,9 @@ export async function setTokenAuthority<
   input: SetTokenAuthorityInput<TAccountOwned, TAccountOwner>
 ): Promise<TReturn>;
 export async function setTokenAuthority<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountOwned extends string = string,
-  TAccountOwner extends string = string
+  TAccountOwned extends string,
+  TAccountOwner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: SetTokenAuthorityInput<TAccountOwned, TAccountOwner>
@@ -195,9 +195,9 @@ export async function setTokenAuthority<
   >
 >;
 export async function setTokenAuthority<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountOwned extends string = string,
-  TAccountOwner extends string = string
+  TAccountOwned extends string,
+  TAccountOwner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   input: SetTokenAuthorityInput<TAccountOwned, TAccountOwner>
 ): Promise<
@@ -213,9 +213,9 @@ export async function setTokenAuthority<
 >;
 export async function setTokenAuthority<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountOwned extends string = string,
-  TAccountOwner extends string = string
+  TAccountOwned extends string,
+  TAccountOwner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

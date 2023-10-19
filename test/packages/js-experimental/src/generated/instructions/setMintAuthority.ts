@@ -148,10 +148,10 @@ export type SetMintAuthorityInput<
 
 export async function setMintAuthority<
   TReturn,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string = string,
-  TAccountAuthority extends string = string,
-  TAccountMintAuthority extends string = string
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TAccountMintAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -170,10 +170,10 @@ export async function setMintAuthority<
   >
 ): Promise<TReturn>;
 export async function setMintAuthority<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string = string,
-  TAccountAuthority extends string = string,
-  TAccountMintAuthority extends string = string
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TAccountMintAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: SetMintAuthorityInput<
@@ -192,10 +192,10 @@ export async function setMintAuthority<
   >
 >;
 export async function setMintAuthority<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string = string,
-  TAccountAuthority extends string = string,
-  TAccountMintAuthority extends string = string
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TAccountMintAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   input: SetMintAuthorityInput<
     TAccountCandyMachine,
@@ -214,10 +214,10 @@ export async function setMintAuthority<
 >;
 export async function setMintAuthority<
   TReturn,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string = string,
-  TAccountAuthority extends string = string,
-  TAccountMintAuthority extends string = string
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TAccountMintAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

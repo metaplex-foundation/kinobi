@@ -124,9 +124,9 @@ export type RevokeTokenDelegateInput<
 
 export async function revokeTokenDelegate<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountOwner extends string = string
+  TAccountSource extends string,
+  TAccountOwner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -136,9 +136,9 @@ export async function revokeTokenDelegate<
   input: RevokeTokenDelegateInput<TAccountSource, TAccountOwner>
 ): Promise<TReturn>;
 export async function revokeTokenDelegate<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountOwner extends string = string
+  TAccountSource extends string,
+  TAccountOwner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: RevokeTokenDelegateInput<TAccountSource, TAccountOwner>
@@ -148,9 +148,9 @@ export async function revokeTokenDelegate<
   >
 >;
 export async function revokeTokenDelegate<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountOwner extends string = string
+  TAccountSource extends string,
+  TAccountOwner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   input: RevokeTokenDelegateInput<TAccountSource, TAccountOwner>
 ): Promise<
@@ -160,9 +160,9 @@ export async function revokeTokenDelegate<
 >;
 export async function revokeTokenDelegate<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountOwner extends string = string
+  TAccountSource extends string,
+  TAccountOwner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

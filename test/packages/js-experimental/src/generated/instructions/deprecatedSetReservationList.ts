@@ -193,10 +193,10 @@ export type DeprecatedSetReservationListInput<
 
 export async function deprecatedSetReservationList<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMasterEdition extends string = string,
-  TAccountReservationList extends string = string,
-  TAccountResource extends string = string
+  TAccountMasterEdition extends string,
+  TAccountReservationList extends string,
+  TAccountResource extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -215,10 +215,10 @@ export async function deprecatedSetReservationList<
   >
 ): Promise<TReturn>;
 export async function deprecatedSetReservationList<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMasterEdition extends string = string,
-  TAccountReservationList extends string = string,
-  TAccountResource extends string = string
+  TAccountMasterEdition extends string,
+  TAccountReservationList extends string,
+  TAccountResource extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: DeprecatedSetReservationListInput<
@@ -237,10 +237,10 @@ export async function deprecatedSetReservationList<
   >
 >;
 export async function deprecatedSetReservationList<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMasterEdition extends string = string,
-  TAccountReservationList extends string = string,
-  TAccountResource extends string = string
+  TAccountMasterEdition extends string,
+  TAccountReservationList extends string,
+  TAccountResource extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: DeprecatedSetReservationListInput<
     TAccountMasterEdition,
@@ -259,10 +259,10 @@ export async function deprecatedSetReservationList<
 >;
 export async function deprecatedSetReservationList<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMasterEdition extends string = string,
-  TAccountReservationList extends string = string,
-  TAccountResource extends string = string
+  TAccountMasterEdition extends string,
+  TAccountReservationList extends string,
+  TAccountResource extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

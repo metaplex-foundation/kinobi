@@ -210,12 +210,12 @@ export type BubblegumSetCollectionSizeInput<
 
 export async function bubblegumSetCollectionSize<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionMetadata extends string = string,
-  TAccountCollectionAuthority extends string = string,
-  TAccountCollectionMint extends string = string,
-  TAccountBubblegumSigner extends string = string,
-  TAccountCollectionAuthorityRecord extends string = string
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountBubblegumSigner extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -238,12 +238,12 @@ export async function bubblegumSetCollectionSize<
   >
 ): Promise<TReturn>;
 export async function bubblegumSetCollectionSize<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionMetadata extends string = string,
-  TAccountCollectionAuthority extends string = string,
-  TAccountCollectionMint extends string = string,
-  TAccountBubblegumSigner extends string = string,
-  TAccountCollectionAuthorityRecord extends string = string
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountBubblegumSigner extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: BubblegumSetCollectionSizeInput<
@@ -266,12 +266,12 @@ export async function bubblegumSetCollectionSize<
   >
 >;
 export async function bubblegumSetCollectionSize<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionMetadata extends string = string,
-  TAccountCollectionAuthority extends string = string,
-  TAccountCollectionMint extends string = string,
-  TAccountBubblegumSigner extends string = string,
-  TAccountCollectionAuthorityRecord extends string = string
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountBubblegumSigner extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: BubblegumSetCollectionSizeInput<
     TAccountCollectionMetadata,
@@ -294,12 +294,12 @@ export async function bubblegumSetCollectionSize<
 >;
 export async function bubblegumSetCollectionSize<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionMetadata extends string = string,
-  TAccountCollectionAuthority extends string = string,
-  TAccountCollectionMint extends string = string,
-  TAccountBubblegumSigner extends string = string,
-  TAccountCollectionAuthorityRecord extends string = string
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountBubblegumSigner extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

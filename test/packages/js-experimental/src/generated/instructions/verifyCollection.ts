@@ -193,13 +193,13 @@ export type VerifyCollectionInput<
 
 export async function verifyCollection<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountCollectionAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountCollectionMint extends string = string,
-  TAccountCollection extends string = string,
-  TAccountCollectionMasterEditionAccount extends string = string
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollection extends string,
+  TAccountCollectionMasterEditionAccount extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -224,13 +224,13 @@ export async function verifyCollection<
   >
 ): Promise<TReturn>;
 export async function verifyCollection<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountCollectionAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountCollectionMint extends string = string,
-  TAccountCollection extends string = string,
-  TAccountCollectionMasterEditionAccount extends string = string
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollection extends string,
+  TAccountCollectionMasterEditionAccount extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: VerifyCollectionInput<
@@ -255,13 +255,13 @@ export async function verifyCollection<
   >
 >;
 export async function verifyCollection<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountCollectionAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountCollectionMint extends string = string,
-  TAccountCollection extends string = string,
-  TAccountCollectionMasterEditionAccount extends string = string
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollection extends string,
+  TAccountCollectionMasterEditionAccount extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: VerifyCollectionInput<
     TAccountMetadata,
@@ -286,13 +286,13 @@ export async function verifyCollection<
 >;
 export async function verifyCollection<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountCollectionAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountCollectionMint extends string = string,
-  TAccountCollection extends string = string,
-  TAccountCollectionMasterEditionAccount extends string = string
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollection extends string,
+  TAccountCollectionMasterEditionAccount extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

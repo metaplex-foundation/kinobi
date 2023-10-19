@@ -146,10 +146,10 @@ export type ConvertMasterEditionV1ToV2Input<
 
 export async function convertMasterEditionV1ToV2<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMasterEdition extends string = string,
-  TAccountOneTimeAuth extends string = string,
-  TAccountPrintingMint extends string = string
+  TAccountMasterEdition extends string,
+  TAccountOneTimeAuth extends string,
+  TAccountPrintingMint extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -168,10 +168,10 @@ export async function convertMasterEditionV1ToV2<
   >
 ): Promise<TReturn>;
 export async function convertMasterEditionV1ToV2<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMasterEdition extends string = string,
-  TAccountOneTimeAuth extends string = string,
-  TAccountPrintingMint extends string = string
+  TAccountMasterEdition extends string,
+  TAccountOneTimeAuth extends string,
+  TAccountPrintingMint extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: ConvertMasterEditionV1ToV2Input<
@@ -190,10 +190,10 @@ export async function convertMasterEditionV1ToV2<
   >
 >;
 export async function convertMasterEditionV1ToV2<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMasterEdition extends string = string,
-  TAccountOneTimeAuth extends string = string,
-  TAccountPrintingMint extends string = string
+  TAccountMasterEdition extends string,
+  TAccountOneTimeAuth extends string,
+  TAccountPrintingMint extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: ConvertMasterEditionV1ToV2Input<
     TAccountMasterEdition,
@@ -212,10 +212,10 @@ export async function convertMasterEditionV1ToV2<
 >;
 export async function convertMasterEditionV1ToV2<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMasterEdition extends string = string,
-  TAccountOneTimeAuth extends string = string,
-  TAccountPrintingMint extends string = string
+  TAccountMasterEdition extends string,
+  TAccountOneTimeAuth extends string,
+  TAccountPrintingMint extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

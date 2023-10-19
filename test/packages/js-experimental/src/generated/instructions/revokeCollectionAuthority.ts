@@ -183,12 +183,12 @@ export type RevokeCollectionAuthorityInput<
 
 export async function revokeCollectionAuthority<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionAuthorityRecord extends string = string,
-  TAccountDelegateAuthority extends string = string,
-  TAccountRevokeAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountMint extends string = string
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountDelegateAuthority extends string,
+  TAccountRevokeAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -211,12 +211,12 @@ export async function revokeCollectionAuthority<
   >
 ): Promise<TReturn>;
 export async function revokeCollectionAuthority<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionAuthorityRecord extends string = string,
-  TAccountDelegateAuthority extends string = string,
-  TAccountRevokeAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountMint extends string = string
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountDelegateAuthority extends string,
+  TAccountRevokeAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: RevokeCollectionAuthorityInput<
@@ -239,12 +239,12 @@ export async function revokeCollectionAuthority<
   >
 >;
 export async function revokeCollectionAuthority<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionAuthorityRecord extends string = string,
-  TAccountDelegateAuthority extends string = string,
-  TAccountRevokeAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountMint extends string = string
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountDelegateAuthority extends string,
+  TAccountRevokeAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: RevokeCollectionAuthorityInput<
     TAccountCollectionAuthorityRecord,
@@ -267,12 +267,12 @@ export async function revokeCollectionAuthority<
 >;
 export async function revokeCollectionAuthority<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionAuthorityRecord extends string = string,
-  TAccountDelegateAuthority extends string = string,
-  TAccountRevokeAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountMint extends string = string
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountDelegateAuthority extends string,
+  TAccountRevokeAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

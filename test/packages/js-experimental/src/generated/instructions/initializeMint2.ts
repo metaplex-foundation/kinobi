@@ -136,8 +136,8 @@ export type InitializeMint2Input<TAccountMint extends string> = {
 
 export async function initializeMint2<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string
+  TAccountMint extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -147,8 +147,8 @@ export async function initializeMint2<
   input: InitializeMint2Input<TAccountMint>
 ): Promise<TReturn>;
 export async function initializeMint2<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string
+  TAccountMint extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: InitializeMint2Input<TAccountMint>
@@ -156,8 +156,8 @@ export async function initializeMint2<
   WrappedInstruction<InitializeMint2Instruction<TProgram, TAccountMint>>
 >;
 export async function initializeMint2<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string
+  TAccountMint extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   input: InitializeMint2Input<TAccountMint>
 ): Promise<
@@ -165,8 +165,8 @@ export async function initializeMint2<
 >;
 export async function initializeMint2<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string
+  TAccountMint extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

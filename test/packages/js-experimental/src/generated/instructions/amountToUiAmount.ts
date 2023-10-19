@@ -119,8 +119,8 @@ export type AmountToUiAmountInput<TAccountMint extends string> = {
 
 export async function amountToUiAmount<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string
+  TAccountMint extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -130,8 +130,8 @@ export async function amountToUiAmount<
   input: AmountToUiAmountInput<TAccountMint>
 ): Promise<TReturn>;
 export async function amountToUiAmount<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string
+  TAccountMint extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: AmountToUiAmountInput<TAccountMint>
@@ -139,8 +139,8 @@ export async function amountToUiAmount<
   WrappedInstruction<AmountToUiAmountInstruction<TProgram, TAccountMint>>
 >;
 export async function amountToUiAmount<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string
+  TAccountMint extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   input: AmountToUiAmountInput<TAccountMint>
 ): Promise<
@@ -148,8 +148,8 @@ export async function amountToUiAmount<
 >;
 export async function amountToUiAmount<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string
+  TAccountMint extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

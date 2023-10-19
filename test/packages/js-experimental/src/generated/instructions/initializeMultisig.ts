@@ -139,9 +139,9 @@ export type InitializeMultisigInput<
 
 export async function initializeMultisig<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMultisig extends string = string,
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountMultisig extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -151,9 +151,9 @@ export async function initializeMultisig<
   input: InitializeMultisigInput<TAccountMultisig, TAccountRent>
 ): Promise<TReturn>;
 export async function initializeMultisig<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMultisig extends string = string,
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountMultisig extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: InitializeMultisigInput<TAccountMultisig, TAccountRent>
@@ -163,9 +163,9 @@ export async function initializeMultisig<
   >
 >;
 export async function initializeMultisig<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMultisig extends string = string,
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountMultisig extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   input: InitializeMultisigInput<TAccountMultisig, TAccountRent>
 ): Promise<
@@ -175,9 +175,9 @@ export async function initializeMultisig<
 >;
 export async function initializeMultisig<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMultisig extends string = string,
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountMultisig extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

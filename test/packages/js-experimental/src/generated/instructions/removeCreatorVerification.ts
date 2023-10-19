@@ -135,9 +135,9 @@ export type RemoveCreatorVerificationInput<
 
 export async function removeCreatorVerification<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountCreator extends string = string
+  TAccountMetadata extends string,
+  TAccountCreator extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -151,9 +151,9 @@ export async function removeCreatorVerification<
   input: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
 ): Promise<TReturn>;
 export async function removeCreatorVerification<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountCreator extends string = string
+  TAccountMetadata extends string,
+  TAccountCreator extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
@@ -167,9 +167,9 @@ export async function removeCreatorVerification<
   >
 >;
 export async function removeCreatorVerification<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountCreator extends string = string
+  TAccountMetadata extends string,
+  TAccountCreator extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
 ): Promise<
@@ -183,9 +183,9 @@ export async function removeCreatorVerification<
 >;
 export async function removeCreatorVerification<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountCreator extends string = string
+  TAccountMetadata extends string,
+  TAccountCreator extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

@@ -161,10 +161,10 @@ export type InitializeToken2Input<
 
 export async function initializeToken2<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountAccount extends string,
+  TAccountMint extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -179,10 +179,10 @@ export async function initializeToken2<
   input: InitializeToken2Input<TAccountAccount, TAccountMint, TAccountRent>
 ): Promise<TReturn>;
 export async function initializeToken2<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountAccount extends string,
+  TAccountMint extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: InitializeToken2Input<TAccountAccount, TAccountMint, TAccountRent>
@@ -197,10 +197,10 @@ export async function initializeToken2<
   >
 >;
 export async function initializeToken2<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountAccount extends string,
+  TAccountMint extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   input: InitializeToken2Input<TAccountAccount, TAccountMint, TAccountRent>
 ): Promise<
@@ -215,10 +215,10 @@ export async function initializeToken2<
 >;
 export async function initializeToken2<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountAccount extends string,
+  TAccountMint extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

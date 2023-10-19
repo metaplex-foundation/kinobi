@@ -106,8 +106,8 @@ export type SyncNativeInput<TAccountAccount extends string> = {
 
 export async function syncNative<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string
+  TAccountAccount extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -117,8 +117,8 @@ export async function syncNative<
   input: SyncNativeInput<TAccountAccount>
 ): Promise<TReturn>;
 export async function syncNative<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string
+  TAccountAccount extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: SyncNativeInput<TAccountAccount>
@@ -126,8 +126,8 @@ export async function syncNative<
   WrappedInstruction<SyncNativeInstruction<TProgram, TAccountAccount>>
 >;
 export async function syncNative<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string
+  TAccountAccount extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   input: SyncNativeInput<TAccountAccount>
 ): Promise<
@@ -135,8 +135,8 @@ export async function syncNative<
 >;
 export async function syncNative<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string
+  TAccountAccount extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

@@ -138,9 +138,9 @@ export type InitializeMultisig2Input<
 
 export async function initializeMultisig2<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMultisig extends string = string,
-  TAccountSigner extends string = string
+  TAccountMultisig extends string,
+  TAccountSigner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -154,9 +154,9 @@ export async function initializeMultisig2<
   input: InitializeMultisig2Input<TAccountMultisig, TAccountSigner>
 ): Promise<TReturn>;
 export async function initializeMultisig2<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMultisig extends string = string,
-  TAccountSigner extends string = string
+  TAccountMultisig extends string,
+  TAccountSigner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: InitializeMultisig2Input<TAccountMultisig, TAccountSigner>
@@ -166,9 +166,9 @@ export async function initializeMultisig2<
   >
 >;
 export async function initializeMultisig2<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMultisig extends string = string,
-  TAccountSigner extends string = string
+  TAccountMultisig extends string,
+  TAccountSigner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   input: InitializeMultisig2Input<TAccountMultisig, TAccountSigner>
 ): Promise<
@@ -178,9 +178,9 @@ export async function initializeMultisig2<
 >;
 export async function initializeMultisig2<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMultisig extends string = string,
-  TAccountSigner extends string = string
+  TAccountMultisig extends string,
+  TAccountSigner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

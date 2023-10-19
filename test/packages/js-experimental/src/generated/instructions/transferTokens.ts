@@ -156,10 +156,10 @@ export type TransferTokensInput<
 
 export async function transferTokens<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountDestination extends string = string,
-  TAccountAuthority extends string = string
+  TAccountSource extends string,
+  TAccountDestination extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -178,10 +178,10 @@ export async function transferTokens<
   >
 ): Promise<TReturn>;
 export async function transferTokens<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountDestination extends string = string,
-  TAccountAuthority extends string = string
+  TAccountSource extends string,
+  TAccountDestination extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: TransferTokensInput<
@@ -200,10 +200,10 @@ export async function transferTokens<
   >
 >;
 export async function transferTokens<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountDestination extends string = string,
-  TAccountAuthority extends string = string
+  TAccountSource extends string,
+  TAccountDestination extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   input: TransferTokensInput<
     TAccountSource,
@@ -222,10 +222,10 @@ export async function transferTokens<
 >;
 export async function transferTokens<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountDestination extends string = string,
-  TAccountAuthority extends string = string
+  TAccountSource extends string,
+  TAccountDestination extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

@@ -179,11 +179,11 @@ export type ApproveTokenDelegateCheckedInput<
 
 export async function approveTokenDelegateChecked<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountMint extends string = string,
-  TAccountDelegate extends string = string,
-  TAccountOwner extends string = string
+  TAccountSource extends string,
+  TAccountMint extends string,
+  TAccountDelegate extends string,
+  TAccountOwner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -204,11 +204,11 @@ export async function approveTokenDelegateChecked<
   >
 ): Promise<TReturn>;
 export async function approveTokenDelegateChecked<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountMint extends string = string,
-  TAccountDelegate extends string = string,
-  TAccountOwner extends string = string
+  TAccountSource extends string,
+  TAccountMint extends string,
+  TAccountDelegate extends string,
+  TAccountOwner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: ApproveTokenDelegateCheckedInput<
@@ -229,11 +229,11 @@ export async function approveTokenDelegateChecked<
   >
 >;
 export async function approveTokenDelegateChecked<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountMint extends string = string,
-  TAccountDelegate extends string = string,
-  TAccountOwner extends string = string
+  TAccountSource extends string,
+  TAccountMint extends string,
+  TAccountDelegate extends string,
+  TAccountOwner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   input: ApproveTokenDelegateCheckedInput<
     TAccountSource,
@@ -254,11 +254,11 @@ export async function approveTokenDelegateChecked<
 >;
 export async function approveTokenDelegateChecked<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountMint extends string = string,
-  TAccountDelegate extends string = string,
-  TAccountOwner extends string = string
+  TAccountSource extends string,
+  TAccountMint extends string,
+  TAccountDelegate extends string,
+  TAccountOwner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

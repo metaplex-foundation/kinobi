@@ -190,11 +190,11 @@ export type SetCollectionSizeInput<
 
 export async function setCollectionSize<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionMetadata extends string = string,
-  TAccountCollectionAuthority extends string = string,
-  TAccountCollectionMint extends string = string,
-  TAccountCollectionAuthorityRecord extends string = string
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -215,11 +215,11 @@ export async function setCollectionSize<
   >
 ): Promise<TReturn>;
 export async function setCollectionSize<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionMetadata extends string = string,
-  TAccountCollectionAuthority extends string = string,
-  TAccountCollectionMint extends string = string,
-  TAccountCollectionAuthorityRecord extends string = string
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: SetCollectionSizeInput<
@@ -240,11 +240,11 @@ export async function setCollectionSize<
   >
 >;
 export async function setCollectionSize<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionMetadata extends string = string,
-  TAccountCollectionAuthority extends string = string,
-  TAccountCollectionMint extends string = string,
-  TAccountCollectionAuthorityRecord extends string = string
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: SetCollectionSizeInput<
     TAccountCollectionMetadata,
@@ -265,11 +265,11 @@ export async function setCollectionSize<
 >;
 export async function setCollectionSize<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionMetadata extends string = string,
-  TAccountCollectionAuthority extends string = string,
-  TAccountCollectionMint extends string = string,
-  TAccountCollectionAuthorityRecord extends string = string
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

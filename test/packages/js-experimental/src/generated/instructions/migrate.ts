@@ -292,17 +292,17 @@ export type MigrateInput<
 
 export async function migrate<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountTokenAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountCollectionMetadata extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountAuthorizationRules extends string = string
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -335,17 +335,17 @@ export async function migrate<
   >
 ): Promise<TReturn>;
 export async function migrate<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountTokenAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountCollectionMetadata extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountAuthorizationRules extends string = string
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: MigrateInput<
@@ -378,17 +378,17 @@ export async function migrate<
   >
 >;
 export async function migrate<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountTokenAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountCollectionMetadata extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountAuthorizationRules extends string = string
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: MigrateInput<
     TAccountMetadata,
@@ -421,17 +421,17 @@ export async function migrate<
 >;
 export async function migrate<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountTokenAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountCollectionMetadata extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountAuthorizationRules extends string = string
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

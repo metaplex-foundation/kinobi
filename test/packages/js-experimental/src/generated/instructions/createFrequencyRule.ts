@@ -190,10 +190,10 @@ export type CreateFrequencyRuleInput<
 
 export async function createFrequencyRule<
   TReturn,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountPayer extends string = string,
-  TAccountFrequencyPda extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+  TAccountPayer extends string,
+  TAccountFrequencyPda extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -212,10 +212,10 @@ export async function createFrequencyRule<
   >
 ): Promise<TReturn>;
 export async function createFrequencyRule<
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountPayer extends string = string,
-  TAccountFrequencyPda extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+  TAccountPayer extends string,
+  TAccountFrequencyPda extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: CreateFrequencyRuleInput<
@@ -234,10 +234,10 @@ export async function createFrequencyRule<
   >
 >;
 export async function createFrequencyRule<
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountPayer extends string = string,
-  TAccountFrequencyPda extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+  TAccountPayer extends string,
+  TAccountFrequencyPda extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
 >(
   input: CreateFrequencyRuleInput<
     TAccountPayer,
@@ -256,10 +256,10 @@ export async function createFrequencyRule<
 >;
 export async function createFrequencyRule<
   TReturn,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountPayer extends string = string,
-  TAccountFrequencyPda extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+  TAccountPayer extends string,
+  TAccountFrequencyPda extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

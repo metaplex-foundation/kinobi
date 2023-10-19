@@ -222,9 +222,9 @@ export type UpdateMetadataAccountInput<
 
 export async function updateMetadataAccount<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountUpdateAuthority extends string = string
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -238,9 +238,9 @@ export async function updateMetadataAccount<
   input: UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>
 ): Promise<TReturn>;
 export async function updateMetadataAccount<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountUpdateAuthority extends string = string
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>
@@ -254,9 +254,9 @@ export async function updateMetadataAccount<
   >
 >;
 export async function updateMetadataAccount<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountUpdateAuthority extends string = string
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>
 ): Promise<
@@ -270,9 +270,9 @@ export async function updateMetadataAccount<
 >;
 export async function updateMetadataAccount<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string,
-  TAccountUpdateAuthority extends string = string
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

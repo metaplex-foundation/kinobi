@@ -180,10 +180,10 @@ export type CreateRuleSetInput<
 
 export async function createRuleSet<
   TReturn,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountPayer extends string = string,
-  TAccountRuleSetPda extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+  TAccountPayer extends string,
+  TAccountRuleSetPda extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -202,10 +202,10 @@ export async function createRuleSet<
   >
 ): Promise<TReturn>;
 export async function createRuleSet<
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountPayer extends string = string,
-  TAccountRuleSetPda extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+  TAccountPayer extends string,
+  TAccountRuleSetPda extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: CreateRuleSetInput<
@@ -224,10 +224,10 @@ export async function createRuleSet<
   >
 >;
 export async function createRuleSet<
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountPayer extends string = string,
-  TAccountRuleSetPda extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+  TAccountPayer extends string,
+  TAccountRuleSetPda extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
 >(
   input: CreateRuleSetInput<
     TAccountPayer,
@@ -246,10 +246,10 @@ export async function createRuleSet<
 >;
 export async function createRuleSet<
   TReturn,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountPayer extends string = string,
-  TAccountRuleSetPda extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111'
+  TAccountPayer extends string,
+  TAccountRuleSetPda extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

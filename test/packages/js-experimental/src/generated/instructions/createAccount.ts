@@ -154,9 +154,9 @@ export type CreateAccountInput<
 
 export async function createAccount<
   TReturn,
-  TProgram extends string = '11111111111111111111111111111111',
-  TAccountPayer extends string = string,
-  TAccountNewAccount extends string = string
+  TAccountPayer extends string,
+  TAccountNewAccount extends string,
+  TProgram extends string = '11111111111111111111111111111111'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -166,9 +166,9 @@ export async function createAccount<
   input: CreateAccountInput<TAccountPayer, TAccountNewAccount>
 ): Promise<TReturn>;
 export async function createAccount<
-  TProgram extends string = '11111111111111111111111111111111',
-  TAccountPayer extends string = string,
-  TAccountNewAccount extends string = string
+  TAccountPayer extends string,
+  TAccountNewAccount extends string,
+  TProgram extends string = '11111111111111111111111111111111'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: CreateAccountInput<TAccountPayer, TAccountNewAccount>
@@ -178,9 +178,9 @@ export async function createAccount<
   >
 >;
 export async function createAccount<
-  TProgram extends string = '11111111111111111111111111111111',
-  TAccountPayer extends string = string,
-  TAccountNewAccount extends string = string
+  TAccountPayer extends string,
+  TAccountNewAccount extends string,
+  TProgram extends string = '11111111111111111111111111111111'
 >(
   input: CreateAccountInput<TAccountPayer, TAccountNewAccount>
 ): Promise<
@@ -190,9 +190,9 @@ export async function createAccount<
 >;
 export async function createAccount<
   TReturn,
-  TProgram extends string = '11111111111111111111111111111111',
-  TAccountPayer extends string = string,
-  TAccountNewAccount extends string = string
+  TAccountPayer extends string,
+  TAccountNewAccount extends string,
+  TProgram extends string = '11111111111111111111111111111111'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

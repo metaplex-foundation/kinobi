@@ -244,14 +244,14 @@ export type DeprecatedMintPrintingTokensInput<
 
 export async function deprecatedMintPrintingTokens<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountDestination extends string = string,
-  TAccountPrintingMint extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountDestination extends string,
+  TAccountPrintingMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -278,14 +278,14 @@ export async function deprecatedMintPrintingTokens<
   >
 ): Promise<TReturn>;
 export async function deprecatedMintPrintingTokens<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountDestination extends string = string,
-  TAccountPrintingMint extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountDestination extends string,
+  TAccountPrintingMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: DeprecatedMintPrintingTokensInput<
@@ -312,14 +312,14 @@ export async function deprecatedMintPrintingTokens<
   >
 >;
 export async function deprecatedMintPrintingTokens<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountDestination extends string = string,
-  TAccountPrintingMint extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountDestination extends string,
+  TAccountPrintingMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: DeprecatedMintPrintingTokensInput<
     TAccountDestination,
@@ -346,14 +346,14 @@ export async function deprecatedMintPrintingTokens<
 >;
 export async function deprecatedMintPrintingTokens<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountDestination extends string = string,
-  TAccountPrintingMint extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountDestination extends string,
+  TAccountPrintingMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

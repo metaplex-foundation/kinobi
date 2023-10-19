@@ -140,10 +140,10 @@ export type ThawTokenInput<
 
 export async function thawToken<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountOwner extends string = string
+  TAccountAccount extends string,
+  TAccountMint extends string,
+  TAccountOwner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -158,10 +158,10 @@ export async function thawToken<
   input: ThawTokenInput<TAccountAccount, TAccountMint, TAccountOwner>
 ): Promise<TReturn>;
 export async function thawToken<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountOwner extends string = string
+  TAccountAccount extends string,
+  TAccountMint extends string,
+  TAccountOwner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: ThawTokenInput<TAccountAccount, TAccountMint, TAccountOwner>
@@ -171,10 +171,10 @@ export async function thawToken<
   >
 >;
 export async function thawToken<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountOwner extends string = string
+  TAccountAccount extends string,
+  TAccountMint extends string,
+  TAccountOwner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   input: ThawTokenInput<TAccountAccount, TAccountMint, TAccountOwner>
 ): Promise<
@@ -184,10 +184,10 @@ export async function thawToken<
 >;
 export async function thawToken<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountOwner extends string = string
+  TAccountAccount extends string,
+  TAccountMint extends string,
+  TAccountOwner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

@@ -139,9 +139,9 @@ export type TransferSolInput<
 
 export async function transferSol<
   TReturn,
-  TProgram extends string = '11111111111111111111111111111111',
-  TAccountSource extends string = string,
-  TAccountDestination extends string = string
+  TAccountSource extends string,
+  TAccountDestination extends string,
+  TProgram extends string = '11111111111111111111111111111111'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -151,9 +151,9 @@ export async function transferSol<
   input: TransferSolInput<TAccountSource, TAccountDestination>
 ): Promise<TReturn>;
 export async function transferSol<
-  TProgram extends string = '11111111111111111111111111111111',
-  TAccountSource extends string = string,
-  TAccountDestination extends string = string
+  TAccountSource extends string,
+  TAccountDestination extends string,
+  TProgram extends string = '11111111111111111111111111111111'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: TransferSolInput<TAccountSource, TAccountDestination>
@@ -163,9 +163,9 @@ export async function transferSol<
   >
 >;
 export async function transferSol<
-  TProgram extends string = '11111111111111111111111111111111',
-  TAccountSource extends string = string,
-  TAccountDestination extends string = string
+  TAccountSource extends string,
+  TAccountDestination extends string,
+  TProgram extends string = '11111111111111111111111111111111'
 >(
   input: TransferSolInput<TAccountSource, TAccountDestination>
 ): Promise<
@@ -175,9 +175,9 @@ export async function transferSol<
 >;
 export async function transferSol<
   TReturn,
-  TProgram extends string = '11111111111111111111111111111111',
-  TAccountSource extends string = string,
-  TAccountDestination extends string = string
+  TAccountSource extends string,
+  TAccountDestination extends string,
+  TProgram extends string = '11111111111111111111111111111111'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

@@ -187,15 +187,15 @@ export type CreateReservationListInput<
 
 export async function createReservationList<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountReservationList extends string = string,
-  TAccountPayer extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountResource extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountReservationList extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMasterEdition extends string,
+  TAccountResource extends string,
+  TAccountMetadata extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -224,15 +224,15 @@ export async function createReservationList<
   >
 ): Promise<TReturn>;
 export async function createReservationList<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountReservationList extends string = string,
-  TAccountPayer extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountResource extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountReservationList extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMasterEdition extends string,
+  TAccountResource extends string,
+  TAccountMetadata extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: CreateReservationListInput<
@@ -261,15 +261,15 @@ export async function createReservationList<
   >
 >;
 export async function createReservationList<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountReservationList extends string = string,
-  TAccountPayer extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountResource extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountReservationList extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMasterEdition extends string,
+  TAccountResource extends string,
+  TAccountMetadata extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: CreateReservationListInput<
     TAccountReservationList,
@@ -298,15 +298,15 @@ export async function createReservationList<
 >;
 export async function createReservationList<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountReservationList extends string = string,
-  TAccountPayer extends string = string,
-  TAccountUpdateAuthority extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountResource extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountRent extends string = 'SysvarRent111111111111111111111111111111111'
+  TAccountReservationList extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMasterEdition extends string,
+  TAccountResource extends string,
+  TAccountMetadata extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

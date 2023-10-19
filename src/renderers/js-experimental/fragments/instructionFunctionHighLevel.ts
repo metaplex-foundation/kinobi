@@ -8,7 +8,6 @@ import {
   fragmentFromTemplate,
   mergeFragments,
 } from './common';
-import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
 import { getInstructionInputDefaultFragment } from './instructionInputDefault';
 
 export function getInstructionFunctionHighLevelFragment(
@@ -108,21 +107,13 @@ function getTypeParams(
   instructionNode: nodes.InstructionNode,
   programNode: nodes.ProgramNode
 ): Fragment {
-  const accountTypeParamsFragment = mergeFragments(
-    instructionNode.accounts.map((account) =>
-      getInstructionAccountTypeParamFragment(
-        instructionNode,
-        account,
-        programNode,
-        false
-      )
+  const typeParams = [
+    ...instructionNode.accounts.map(
+      (account) => `TAccount${pascalCase(account.name)} extends string`
     ),
-    (renders) => renders.join(', ')
-  );
-  const programTypeParam = `TProgram extends string = "${programNode.publicKey}"`;
-  return accountTypeParamsFragment.mapRender((r) =>
-    [programTypeParam, r].filter((x) => !!x).join(', ')
-  );
+    `TProgram extends string = "${programNode.publicKey}"`,
+  ];
+  return fragment(typeParams.filter((x) => !!x).join(', '));
 }
 
 function getInstructionType(instructionNode: nodes.InstructionNode): Fragment {
@@ -131,17 +122,11 @@ function getInstructionType(instructionNode: nodes.InstructionNode): Fragment {
     const typeParam = `TAccount${pascalCase(account.name)}`;
     const camelName = camelCase(account.name);
     if (account.isSigner === 'either') {
-      const isLegacyOptional =
-        account.isOptional &&
-        instructionNode.optionalAccountStrategy === 'omitted';
       const role = account.isWritable
         ? 'WritableSignerAccount'
         : 'ReadonlySignerAccount';
-      const definedTypeParam = isLegacyOptional
-        ? `${typeParam} extends undefined ? never : ${typeParam}`
-        : typeParam;
       return fragment(
-        `typeof input["${camelName}"] extends Signer<${definedTypeParam}> ? ${role}<${definedTypeParam}> : ${typeParam}`
+        `typeof input["${camelName}"] extends Signer<${typeParam}> ? ${role}<${typeParam}> : ${typeParam}`
       ).addImports('solanaInstructions', [role]);
     }
 

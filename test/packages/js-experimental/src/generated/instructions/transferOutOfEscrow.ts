@@ -342,20 +342,20 @@ export type TransferOutOfEscrowInput<
 
 export async function transferOutOfEscrow<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountEscrow extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountPayer extends string = string,
-  TAccountAttributeMint extends string = string,
-  TAccountAttributeSrc extends string = string,
-  TAccountAttributeDst extends string = string,
-  TAccountEscrowMint extends string = string,
-  TAccountEscrowAccount extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountAuthority extends string = string
+  TAccountEscrow extends string,
+  TAccountMetadata extends string,
+  TAccountPayer extends string,
+  TAccountAttributeMint extends string,
+  TAccountAttributeSrc extends string,
+  TAccountAttributeDst extends string,
+  TAccountEscrowMint extends string,
+  TAccountEscrowAccount extends string,
+  TAccountSystemProgram extends string,
+  TAccountAtaProgram extends string,
+  TAccountTokenProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -394,20 +394,20 @@ export async function transferOutOfEscrow<
   >
 ): Promise<TReturn>;
 export async function transferOutOfEscrow<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountEscrow extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountPayer extends string = string,
-  TAccountAttributeMint extends string = string,
-  TAccountAttributeSrc extends string = string,
-  TAccountAttributeDst extends string = string,
-  TAccountEscrowMint extends string = string,
-  TAccountEscrowAccount extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountAuthority extends string = string
+  TAccountEscrow extends string,
+  TAccountMetadata extends string,
+  TAccountPayer extends string,
+  TAccountAttributeMint extends string,
+  TAccountAttributeSrc extends string,
+  TAccountAttributeDst extends string,
+  TAccountEscrowMint extends string,
+  TAccountEscrowAccount extends string,
+  TAccountSystemProgram extends string,
+  TAccountAtaProgram extends string,
+  TAccountTokenProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: TransferOutOfEscrowInput<
@@ -446,20 +446,20 @@ export async function transferOutOfEscrow<
   >
 >;
 export async function transferOutOfEscrow<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountEscrow extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountPayer extends string = string,
-  TAccountAttributeMint extends string = string,
-  TAccountAttributeSrc extends string = string,
-  TAccountAttributeDst extends string = string,
-  TAccountEscrowMint extends string = string,
-  TAccountEscrowAccount extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountAuthority extends string = string
+  TAccountEscrow extends string,
+  TAccountMetadata extends string,
+  TAccountPayer extends string,
+  TAccountAttributeMint extends string,
+  TAccountAttributeSrc extends string,
+  TAccountAttributeDst extends string,
+  TAccountEscrowMint extends string,
+  TAccountEscrowAccount extends string,
+  TAccountSystemProgram extends string,
+  TAccountAtaProgram extends string,
+  TAccountTokenProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: TransferOutOfEscrowInput<
     TAccountEscrow,
@@ -498,20 +498,20 @@ export async function transferOutOfEscrow<
 >;
 export async function transferOutOfEscrow<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountEscrow extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountPayer extends string = string,
-  TAccountAttributeMint extends string = string,
-  TAccountAttributeSrc extends string = string,
-  TAccountAttributeDst extends string = string,
-  TAccountEscrowMint extends string = string,
-  TAccountEscrowAccount extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountAtaProgram extends string = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSysvarInstructions extends string = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountAuthority extends string = string
+  TAccountEscrow extends string,
+  TAccountMetadata extends string,
+  TAccountPayer extends string,
+  TAccountAttributeMint extends string,
+  TAccountAttributeSrc extends string,
+  TAccountAttributeDst extends string,
+  TAccountEscrowMint extends string,
+  TAccountEscrowAccount extends string,
+  TAccountSystemProgram extends string,
+  TAccountAtaProgram extends string,
+  TAccountTokenProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

@@ -433,20 +433,20 @@ export type ValidateInput<
 
 export async function validate<
   TReturn,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountPayer extends string = string,
-  TAccountRuleSet extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountOptRuleSigner1 extends string | undefined = undefined,
-  TAccountOptRuleSigner2 extends string | undefined = undefined,
-  TAccountOptRuleSigner3 extends string | undefined = undefined,
-  TAccountOptRuleSigner4 extends string | undefined = undefined,
-  TAccountOptRuleSigner5 extends string | undefined = undefined,
-  TAccountOptRuleNonsigner1 extends string | undefined = undefined,
-  TAccountOptRuleNonsigner2 extends string | undefined = undefined,
-  TAccountOptRuleNonsigner3 extends string | undefined = undefined,
-  TAccountOptRuleNonsigner4 extends string | undefined = undefined,
-  TAccountOptRuleNonsigner5 extends string | undefined = undefined
+  TAccountPayer extends string,
+  TAccountRuleSet extends string,
+  TAccountSystemProgram extends string,
+  TAccountOptRuleSigner1 extends string,
+  TAccountOptRuleSigner2 extends string,
+  TAccountOptRuleSigner3 extends string,
+  TAccountOptRuleSigner4 extends string,
+  TAccountOptRuleSigner5 extends string,
+  TAccountOptRuleNonsigner1 extends string,
+  TAccountOptRuleNonsigner2 extends string,
+  TAccountOptRuleNonsigner3 extends string,
+  TAccountOptRuleNonsigner4 extends string,
+  TAccountOptRuleNonsigner5 extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -455,16 +455,8 @@ export async function validate<
         TAccountPayer,
         TAccountRuleSet,
         TAccountSystemProgram,
-        typeof input['optRuleSigner1'] extends Signer<
-          TAccountOptRuleSigner1 extends undefined
-            ? never
-            : TAccountOptRuleSigner1
-        >
-          ? ReadonlySignerAccount<
-              TAccountOptRuleSigner1 extends undefined
-                ? never
-                : TAccountOptRuleSigner1
-            >
+        typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
+          ? ReadonlySignerAccount<TAccountOptRuleSigner1>
           : TAccountOptRuleSigner1,
         TAccountOptRuleSigner2,
         TAccountOptRuleSigner3,
@@ -495,20 +487,20 @@ export async function validate<
   >
 ): Promise<TReturn>;
 export async function validate<
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountPayer extends string = string,
-  TAccountRuleSet extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountOptRuleSigner1 extends string | undefined = undefined,
-  TAccountOptRuleSigner2 extends string | undefined = undefined,
-  TAccountOptRuleSigner3 extends string | undefined = undefined,
-  TAccountOptRuleSigner4 extends string | undefined = undefined,
-  TAccountOptRuleSigner5 extends string | undefined = undefined,
-  TAccountOptRuleNonsigner1 extends string | undefined = undefined,
-  TAccountOptRuleNonsigner2 extends string | undefined = undefined,
-  TAccountOptRuleNonsigner3 extends string | undefined = undefined,
-  TAccountOptRuleNonsigner4 extends string | undefined = undefined,
-  TAccountOptRuleNonsigner5 extends string | undefined = undefined
+  TAccountPayer extends string,
+  TAccountRuleSet extends string,
+  TAccountSystemProgram extends string,
+  TAccountOptRuleSigner1 extends string,
+  TAccountOptRuleSigner2 extends string,
+  TAccountOptRuleSigner3 extends string,
+  TAccountOptRuleSigner4 extends string,
+  TAccountOptRuleSigner5 extends string,
+  TAccountOptRuleNonsigner1 extends string,
+  TAccountOptRuleNonsigner2 extends string,
+  TAccountOptRuleNonsigner3 extends string,
+  TAccountOptRuleNonsigner4 extends string,
+  TAccountOptRuleNonsigner5 extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: ValidateInput<
@@ -533,16 +525,8 @@ export async function validate<
       TAccountPayer,
       TAccountRuleSet,
       TAccountSystemProgram,
-      typeof input['optRuleSigner1'] extends Signer<
-        TAccountOptRuleSigner1 extends undefined
-          ? never
-          : TAccountOptRuleSigner1
-      >
-        ? ReadonlySignerAccount<
-            TAccountOptRuleSigner1 extends undefined
-              ? never
-              : TAccountOptRuleSigner1
-          >
+      typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
+        ? ReadonlySignerAccount<TAccountOptRuleSigner1>
         : TAccountOptRuleSigner1,
       TAccountOptRuleSigner2,
       TAccountOptRuleSigner3,
@@ -557,20 +541,20 @@ export async function validate<
   >
 >;
 export async function validate<
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountPayer extends string = string,
-  TAccountRuleSet extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountOptRuleSigner1 extends string | undefined = undefined,
-  TAccountOptRuleSigner2 extends string | undefined = undefined,
-  TAccountOptRuleSigner3 extends string | undefined = undefined,
-  TAccountOptRuleSigner4 extends string | undefined = undefined,
-  TAccountOptRuleSigner5 extends string | undefined = undefined,
-  TAccountOptRuleNonsigner1 extends string | undefined = undefined,
-  TAccountOptRuleNonsigner2 extends string | undefined = undefined,
-  TAccountOptRuleNonsigner3 extends string | undefined = undefined,
-  TAccountOptRuleNonsigner4 extends string | undefined = undefined,
-  TAccountOptRuleNonsigner5 extends string | undefined = undefined
+  TAccountPayer extends string,
+  TAccountRuleSet extends string,
+  TAccountSystemProgram extends string,
+  TAccountOptRuleSigner1 extends string,
+  TAccountOptRuleSigner2 extends string,
+  TAccountOptRuleSigner3 extends string,
+  TAccountOptRuleSigner4 extends string,
+  TAccountOptRuleSigner5 extends string,
+  TAccountOptRuleNonsigner1 extends string,
+  TAccountOptRuleNonsigner2 extends string,
+  TAccountOptRuleNonsigner3 extends string,
+  TAccountOptRuleNonsigner4 extends string,
+  TAccountOptRuleNonsigner5 extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
 >(
   input: ValidateInput<
     TAccountPayer,
@@ -594,16 +578,8 @@ export async function validate<
       TAccountPayer,
       TAccountRuleSet,
       TAccountSystemProgram,
-      typeof input['optRuleSigner1'] extends Signer<
-        TAccountOptRuleSigner1 extends undefined
-          ? never
-          : TAccountOptRuleSigner1
-      >
-        ? ReadonlySignerAccount<
-            TAccountOptRuleSigner1 extends undefined
-              ? never
-              : TAccountOptRuleSigner1
-          >
+      typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
+        ? ReadonlySignerAccount<TAccountOptRuleSigner1>
         : TAccountOptRuleSigner1,
       TAccountOptRuleSigner2,
       TAccountOptRuleSigner3,
@@ -619,20 +595,20 @@ export async function validate<
 >;
 export async function validate<
   TReturn,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountPayer extends string = string,
-  TAccountRuleSet extends string = string,
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountOptRuleSigner1 extends string | undefined = undefined,
-  TAccountOptRuleSigner2 extends string | undefined = undefined,
-  TAccountOptRuleSigner3 extends string | undefined = undefined,
-  TAccountOptRuleSigner4 extends string | undefined = undefined,
-  TAccountOptRuleSigner5 extends string | undefined = undefined,
-  TAccountOptRuleNonsigner1 extends string | undefined = undefined,
-  TAccountOptRuleNonsigner2 extends string | undefined = undefined,
-  TAccountOptRuleNonsigner3 extends string | undefined = undefined,
-  TAccountOptRuleNonsigner4 extends string | undefined = undefined,
-  TAccountOptRuleNonsigner5 extends string | undefined = undefined
+  TAccountPayer extends string,
+  TAccountRuleSet extends string,
+  TAccountSystemProgram extends string,
+  TAccountOptRuleSigner1 extends string,
+  TAccountOptRuleSigner2 extends string,
+  TAccountOptRuleSigner3 extends string,
+  TAccountOptRuleSigner4 extends string,
+  TAccountOptRuleSigner5 extends string,
+  TAccountOptRuleNonsigner1 extends string,
+  TAccountOptRuleNonsigner2 extends string,
+  TAccountOptRuleNonsigner3 extends string,
+  TAccountOptRuleNonsigner4 extends string,
+  TAccountOptRuleNonsigner5 extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
@@ -643,16 +619,8 @@ export async function validate<
             TAccountPayer,
             TAccountRuleSet,
             TAccountSystemProgram,
-            typeof input['optRuleSigner1'] extends Signer<
-              TAccountOptRuleSigner1 extends undefined
-                ? never
-                : TAccountOptRuleSigner1
-            >
-              ? ReadonlySignerAccount<
-                  TAccountOptRuleSigner1 extends undefined
-                    ? never
-                    : TAccountOptRuleSigner1
-                >
+            typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
+              ? ReadonlySignerAccount<TAccountOptRuleSigner1>
               : TAccountOptRuleSigner1,
             TAccountOptRuleSigner2,
             TAccountOptRuleSigner3,
@@ -704,16 +672,8 @@ export async function validate<
         TAccountPayer,
         TAccountRuleSet,
         TAccountSystemProgram,
-        typeof input['optRuleSigner1'] extends Signer<
-          TAccountOptRuleSigner1 extends undefined
-            ? never
-            : TAccountOptRuleSigner1
-        >
-          ? ReadonlySignerAccount<
-              TAccountOptRuleSigner1 extends undefined
-                ? never
-                : TAccountOptRuleSigner1
-            >
+        typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
+          ? ReadonlySignerAccount<TAccountOptRuleSigner1>
           : TAccountOptRuleSigner1,
         TAccountOptRuleSigner2,
         TAccountOptRuleSigner3,
@@ -737,16 +697,8 @@ export async function validate<
             TAccountPayer,
             TAccountRuleSet,
             TAccountSystemProgram,
-            typeof input['optRuleSigner1'] extends Signer<
-              TAccountOptRuleSigner1 extends undefined
-                ? never
-                : TAccountOptRuleSigner1
-            >
-              ? ReadonlySignerAccount<
-                  TAccountOptRuleSigner1 extends undefined
-                    ? never
-                    : TAccountOptRuleSigner1
-                >
+            typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
+              ? ReadonlySignerAccount<TAccountOptRuleSigner1>
               : TAccountOptRuleSigner1,
             TAccountOptRuleSigner2,
             TAccountOptRuleSigner3,
@@ -859,16 +811,8 @@ export async function validate<
       TAccountPayer,
       TAccountRuleSet,
       TAccountSystemProgram,
-      typeof input['optRuleSigner1'] extends Signer<
-        TAccountOptRuleSigner1 extends undefined
-          ? never
-          : TAccountOptRuleSigner1
-      >
-        ? ReadonlySignerAccount<
-            TAccountOptRuleSigner1 extends undefined
-              ? never
-              : TAccountOptRuleSigner1
-          >
+      typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
+        ? ReadonlySignerAccount<TAccountOptRuleSigner1>
         : TAccountOptRuleSigner1,
       TAccountOptRuleSigner2,
       TAccountOptRuleSigner3,

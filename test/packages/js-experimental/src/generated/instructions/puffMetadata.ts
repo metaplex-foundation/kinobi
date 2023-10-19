@@ -107,8 +107,8 @@ export type PuffMetadataInput<TAccountMetadata extends string> = {
 
 export async function puffMetadata<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string
+  TAccountMetadata extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -118,8 +118,8 @@ export async function puffMetadata<
   input: PuffMetadataInput<TAccountMetadata>
 ): Promise<TReturn>;
 export async function puffMetadata<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string
+  TAccountMetadata extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: PuffMetadataInput<TAccountMetadata>
@@ -127,8 +127,8 @@ export async function puffMetadata<
   WrappedInstruction<PuffMetadataInstruction<TProgram, TAccountMetadata>>
 >;
 export async function puffMetadata<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string
+  TAccountMetadata extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: PuffMetadataInput<TAccountMetadata>
 ): Promise<
@@ -136,8 +136,8 @@ export async function puffMetadata<
 >;
 export async function puffMetadata<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string = string
+  TAccountMetadata extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

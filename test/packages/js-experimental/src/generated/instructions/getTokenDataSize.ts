@@ -103,8 +103,8 @@ export type GetTokenDataSizeInput<TAccountMint extends string> = {
 
 export async function getTokenDataSize<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string
+  TAccountMint extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -114,8 +114,8 @@ export async function getTokenDataSize<
   input: GetTokenDataSizeInput<TAccountMint>
 ): Promise<TReturn>;
 export async function getTokenDataSize<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string
+  TAccountMint extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: GetTokenDataSizeInput<TAccountMint>
@@ -123,8 +123,8 @@ export async function getTokenDataSize<
   WrappedInstruction<GetTokenDataSizeInstruction<TProgram, TAccountMint>>
 >;
 export async function getTokenDataSize<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string
+  TAccountMint extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   input: GetTokenDataSizeInput<TAccountMint>
 ): Promise<
@@ -132,8 +132,8 @@ export async function getTokenDataSize<
 >;
 export async function getTokenDataSize<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string = string
+  TAccountMint extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

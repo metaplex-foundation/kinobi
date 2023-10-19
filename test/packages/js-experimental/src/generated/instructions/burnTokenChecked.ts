@@ -163,10 +163,10 @@ export type BurnTokenCheckedInput<
 
 export async function burnTokenChecked<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountAuthority extends string = string
+  TAccountAccount extends string,
+  TAccountMint extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -181,10 +181,10 @@ export async function burnTokenChecked<
   input: BurnTokenCheckedInput<TAccountAccount, TAccountMint, TAccountAuthority>
 ): Promise<TReturn>;
 export async function burnTokenChecked<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountAuthority extends string = string
+  TAccountAccount extends string,
+  TAccountMint extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: BurnTokenCheckedInput<TAccountAccount, TAccountMint, TAccountAuthority>
@@ -199,10 +199,10 @@ export async function burnTokenChecked<
   >
 >;
 export async function burnTokenChecked<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountAuthority extends string = string
+  TAccountAccount extends string,
+  TAccountMint extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   input: BurnTokenCheckedInput<TAccountAccount, TAccountMint, TAccountAuthority>
 ): Promise<
@@ -217,10 +217,10 @@ export async function burnTokenChecked<
 >;
 export async function burnTokenChecked<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountAuthority extends string = string
+  TAccountAccount extends string,
+  TAccountMint extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

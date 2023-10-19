@@ -140,10 +140,10 @@ export type FreezeTokenInput<
 
 export async function freezeToken<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountOwner extends string = string
+  TAccountAccount extends string,
+  TAccountMint extends string,
+  TAccountOwner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -158,10 +158,10 @@ export async function freezeToken<
   input: FreezeTokenInput<TAccountAccount, TAccountMint, TAccountOwner>
 ): Promise<TReturn>;
 export async function freezeToken<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountOwner extends string = string
+  TAccountAccount extends string,
+  TAccountMint extends string,
+  TAccountOwner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: FreezeTokenInput<TAccountAccount, TAccountMint, TAccountOwner>
@@ -176,10 +176,10 @@ export async function freezeToken<
   >
 >;
 export async function freezeToken<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountOwner extends string = string
+  TAccountAccount extends string,
+  TAccountMint extends string,
+  TAccountOwner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   input: FreezeTokenInput<TAccountAccount, TAccountMint, TAccountOwner>
 ): Promise<
@@ -194,10 +194,10 @@ export async function freezeToken<
 >;
 export async function freezeToken<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string = string,
-  TAccountMint extends string = string,
-  TAccountOwner extends string = string
+  TAccountAccount extends string,
+  TAccountMint extends string,
+  TAccountOwner extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>

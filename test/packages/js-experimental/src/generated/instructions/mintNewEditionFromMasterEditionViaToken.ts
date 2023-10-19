@@ -359,21 +359,21 @@ export type MintNewEditionFromMasterEditionViaTokenInput<
 
 export async function mintNewEditionFromMasterEditionViaToken<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountNewMetadata extends string = string,
-  TAccountNewEdition extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountNewMint extends string = string,
-  TAccountEditionMarkPda extends string = string,
-  TAccountNewMintAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountTokenAccountOwner extends string = string,
-  TAccountTokenAccount extends string = string,
-  TAccountNewMetadataUpdateAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountRent extends string = string
+  TAccountNewMetadata extends string,
+  TAccountNewEdition extends string,
+  TAccountMasterEdition extends string,
+  TAccountNewMint extends string,
+  TAccountEditionMarkPda extends string,
+  TAccountNewMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountTokenAccountOwner extends string,
+  TAccountTokenAccount extends string,
+  TAccountNewMetadataUpdateAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -414,21 +414,21 @@ export async function mintNewEditionFromMasterEditionViaToken<
   >
 ): Promise<TReturn>;
 export async function mintNewEditionFromMasterEditionViaToken<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountNewMetadata extends string = string,
-  TAccountNewEdition extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountNewMint extends string = string,
-  TAccountEditionMarkPda extends string = string,
-  TAccountNewMintAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountTokenAccountOwner extends string = string,
-  TAccountTokenAccount extends string = string,
-  TAccountNewMetadataUpdateAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountRent extends string = string
+  TAccountNewMetadata extends string,
+  TAccountNewEdition extends string,
+  TAccountMasterEdition extends string,
+  TAccountNewMint extends string,
+  TAccountEditionMarkPda extends string,
+  TAccountNewMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountTokenAccountOwner extends string,
+  TAccountTokenAccount extends string,
+  TAccountNewMetadataUpdateAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: MintNewEditionFromMasterEditionViaTokenInput<
@@ -469,21 +469,21 @@ export async function mintNewEditionFromMasterEditionViaToken<
   >
 >;
 export async function mintNewEditionFromMasterEditionViaToken<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountNewMetadata extends string = string,
-  TAccountNewEdition extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountNewMint extends string = string,
-  TAccountEditionMarkPda extends string = string,
-  TAccountNewMintAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountTokenAccountOwner extends string = string,
-  TAccountTokenAccount extends string = string,
-  TAccountNewMetadataUpdateAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountRent extends string = string
+  TAccountNewMetadata extends string,
+  TAccountNewEdition extends string,
+  TAccountMasterEdition extends string,
+  TAccountNewMint extends string,
+  TAccountEditionMarkPda extends string,
+  TAccountNewMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountTokenAccountOwner extends string,
+  TAccountTokenAccount extends string,
+  TAccountNewMetadataUpdateAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: MintNewEditionFromMasterEditionViaTokenInput<
     TAccountNewMetadata,
@@ -524,21 +524,21 @@ export async function mintNewEditionFromMasterEditionViaToken<
 >;
 export async function mintNewEditionFromMasterEditionViaToken<
   TReturn,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountNewMetadata extends string = string,
-  TAccountNewEdition extends string = string,
-  TAccountMasterEdition extends string = string,
-  TAccountNewMint extends string = string,
-  TAccountEditionMarkPda extends string = string,
-  TAccountNewMintAuthority extends string = string,
-  TAccountPayer extends string = string,
-  TAccountTokenAccountOwner extends string = string,
-  TAccountTokenAccount extends string = string,
-  TAccountNewMetadataUpdateAuthority extends string = string,
-  TAccountMetadata extends string = string,
-  TAccountTokenProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends string = '11111111111111111111111111111111',
-  TAccountRent extends string = string
+  TAccountNewMetadata extends string,
+  TAccountNewEdition extends string,
+  TAccountMasterEdition extends string,
+  TAccountNewMint extends string,
+  TAccountEditionMarkPda extends string,
+  TAccountNewMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountTokenAccountOwner extends string,
+  TAccountTokenAccount extends string,
+  TAccountNewMetadataUpdateAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
