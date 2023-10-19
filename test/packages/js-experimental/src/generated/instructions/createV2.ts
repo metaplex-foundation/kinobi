@@ -49,6 +49,7 @@ import {
   WrappedInstruction,
   accountMetaWithDefault,
   getAccountMetasAndSigners,
+  getProgramAddress,
 } from '../shared';
 import {
   AssetData,
@@ -578,13 +579,11 @@ export async function createV2<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = context.getProgramAddress
-      ? await context.getProgramAddress({
-          name: 'splSystem',
-          address:
-            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
-        })
-      : ('11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>);
+    accounts.systemProgram.value = await getProgramAddress(
+      context,
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
     accounts.systemProgram.isWritable = false;
   }
   if (!accounts.sysvarInstructions.value) {
@@ -592,13 +591,11 @@ export async function createV2<
       'Sysvar1nstructions1111111111111111111111111' as Base58EncodedAddress<'Sysvar1nstructions1111111111111111111111111'>;
   }
   if (!accounts.splTokenProgram.value) {
-    accounts.splTokenProgram.value = context.getProgramAddress
-      ? await context.getProgramAddress({
-          name: 'splToken',
-          address:
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
-        })
-      : ('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>);
+    accounts.splTokenProgram.value = await getProgramAddress(
+      context,
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    );
     accounts.splTokenProgram.isWritable = false;
   }
 

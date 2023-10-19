@@ -9,6 +9,7 @@
 import {
   Base58EncodedAddress,
   isProgramDerivedAddress,
+  getProgramDerivedAddress as web3JsGetProgramDerivedAddress,
   ProgramDerivedAddress,
 } from '@solana/addresses';
 import {
@@ -225,3 +226,32 @@ export type Context = {
     seeds: Uint8Array[]
   ) => Promise<ProgramDerivedAddress>;
 };
+
+export async function getProgramAddress<TAddress extends string = string>(
+  context: Pick<Context, 'getProgramAddress'>,
+  name: string,
+  address: TAddress
+): Promise<Base58EncodedAddress<TAddress>> {
+  return context.getProgramAddress
+    ? await context.getProgramAddress({
+        name,
+        address: address as Base58EncodedAddress<TAddress>,
+      })
+    : (address as Base58EncodedAddress<TAddress>);
+}
+
+export async function getProgramDerivedAddress(
+  context: Pick<Context, 'getProgramDerivedAddress'>,
+  programAddress: string,
+  seeds: Uint8Array[]
+): Promise<ProgramDerivedAddress> {
+  return context.getProgramDerivedAddress
+    ? await context.getProgramDerivedAddress(
+        programAddress as Base58EncodedAddress,
+        seeds
+      )
+    : await web3JsGetProgramDerivedAddress({
+        programAddress: programAddress as Base58EncodedAddress,
+        seeds,
+      });
+}

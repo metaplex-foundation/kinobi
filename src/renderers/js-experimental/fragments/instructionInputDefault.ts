@@ -123,11 +123,9 @@ export function getInstructionInputDefaultFragment(
 
     case 'program':
       const programFragment = defaultFragment(
-        `context.getProgramAddress ` +
-          `? await context.getProgramAddress({ name: '${defaultsTo.program.name}', address: '${defaultsTo.program.publicKey}' as Base58EncodedAddress<'${defaultsTo.program.publicKey}'> })` +
-          `: '${defaultsTo.program.publicKey}' as Base58EncodedAddress<'${defaultsTo.program.publicKey}'>`,
+        `await getProgramAddress(context, '${defaultsTo.program.name}', '${defaultsTo.program.publicKey}')`,
         false
-      ).addImports('solanaAddresses', ['Base58EncodedAddress']);
+      ).addImports('shared', ['getProgramAddress']);
       programFragment.interfaces.add('getProgramAddress');
       return programFragment;
 

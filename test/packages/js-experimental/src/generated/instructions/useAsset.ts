@@ -37,6 +37,7 @@ import {
   WrappedInstruction,
   accountMetaWithDefault,
   getAccountMetasAndSigners,
+  getProgramAddress,
 } from '../shared';
 import {
   UseAssetArgs,
@@ -623,33 +624,27 @@ export async function useAsset<
 
   // Resolve default values.
   if (!accounts.splTokenProgram.value) {
-    accounts.splTokenProgram.value = context.getProgramAddress
-      ? await context.getProgramAddress({
-          name: 'splToken',
-          address:
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
-        })
-      : ('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>);
+    accounts.splTokenProgram.value = await getProgramAddress(
+      context,
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    );
     accounts.splTokenProgram.isWritable = false;
   }
   if (!accounts.ataProgram.value) {
-    accounts.ataProgram.value = context.getProgramAddress
-      ? await context.getProgramAddress({
-          name: 'splAssociatedToken',
-          address:
-            'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Base58EncodedAddress<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>,
-        })
-      : ('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Base58EncodedAddress<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>);
+    accounts.ataProgram.value = await getProgramAddress(
+      context,
+      'splAssociatedToken',
+      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+    );
     accounts.ataProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = context.getProgramAddress
-      ? await context.getProgramAddress({
-          name: 'splSystem',
-          address:
-            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
-        })
-      : ('11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>);
+    accounts.systemProgram.value = await getProgramAddress(
+      context,
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
     accounts.systemProgram.isWritable = false;
   }
 

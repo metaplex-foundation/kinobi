@@ -37,6 +37,7 @@ import {
   WrappedInstruction,
   accountMetaWithDefault,
   getAccountMetasAndSigners,
+  getProgramAddress,
 } from '../shared';
 
 // Output.
@@ -440,13 +441,11 @@ export async function burnNft<
 
   // Resolve default values.
   if (!accounts.splTokenProgram.value) {
-    accounts.splTokenProgram.value = context.getProgramAddress
-      ? await context.getProgramAddress({
-          name: 'splToken',
-          address:
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
-        })
-      : ('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>);
+    accounts.splTokenProgram.value = await getProgramAddress(
+      context,
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    );
     accounts.splTokenProgram.isWritable = false;
   }
 

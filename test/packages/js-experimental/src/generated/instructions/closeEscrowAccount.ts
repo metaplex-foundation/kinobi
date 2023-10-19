@@ -37,6 +37,7 @@ import {
   WrappedInstruction,
   accountMetaWithDefault,
   getAccountMetasAndSigners,
+  getProgramAddress,
 } from '../shared';
 
 // Output.
@@ -463,13 +464,11 @@ export async function closeEscrowAccount<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = context.getProgramAddress
-      ? await context.getProgramAddress({
-          name: 'splSystem',
-          address:
-            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
-        })
-      : ('11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>);
+    accounts.systemProgram.value = await getProgramAddress(
+      context,
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
     accounts.systemProgram.isWritable = false;
   }
   if (!accounts.sysvarInstructions.value) {
