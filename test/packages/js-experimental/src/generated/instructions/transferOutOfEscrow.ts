@@ -670,7 +670,7 @@ export async function transferOutOfEscrow<
   return {
     instruction: transferOutOfEscrowInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as TransferOutOfEscrowInstructionDataArgs,
       programAddress
     ),
     signers,

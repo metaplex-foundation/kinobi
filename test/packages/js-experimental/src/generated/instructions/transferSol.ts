@@ -235,7 +235,7 @@ export async function transferSol<
   return {
     instruction: transferSolInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as TransferSolInstructionDataArgs,
       programAddress
     ),
     signers,

@@ -745,7 +745,7 @@ export async function updateV1<
   return {
     instruction: updateV1Instruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as UpdateV1InstructionDataArgs,
       programAddress
     ),
     signers,

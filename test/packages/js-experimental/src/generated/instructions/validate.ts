@@ -759,7 +759,7 @@ export async function validate<
   return {
     instruction: validateInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as ValidateInstructionDataArgs,
       programAddress
     ),
     signers,

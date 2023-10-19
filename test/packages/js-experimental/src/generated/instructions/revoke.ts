@@ -669,7 +669,7 @@ export async function revoke<
   return {
     instruction: revokeInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as RevokeInstructionDataArgs,
       programAddress
     ),
     signers,

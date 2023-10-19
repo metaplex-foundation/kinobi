@@ -671,7 +671,7 @@ export async function delegate<
   return {
     instruction: delegateInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as DelegateInstructionDataArgs,
       programAddress
     ),
     signers,

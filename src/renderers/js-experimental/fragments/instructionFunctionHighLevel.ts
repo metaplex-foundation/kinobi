@@ -28,6 +28,17 @@ export function getInstructionFunctionHighLevelFragment(
       (field) => field.defaultsTo?.strategy !== 'omitted'
     ).length > 0;
   const hasAnyArgs = hasDataArgs || hasExtraArgs;
+  const dataType = instructionNode.dataArgs.link
+    ? pascalCase(instructionNode.dataArgs.link.name)
+    : pascalCase(instructionNode.dataArgs.name);
+  const argsTypeFragment = fragment(`${dataType}Args`);
+  if (instructionNode.dataArgs.link) {
+    const dataLinkImportFrom =
+      instructionNode.dataArgs.link.importFrom === 'generated'
+        ? 'generatedTypes'
+        : instructionNode.dataArgs.link.importFrom;
+    argsTypeFragment.addImports(dataLinkImportFrom, [`${dataType}Args`]);
+  }
   const functionName = camelCase(instructionNode.name);
   const lowLevelFunctionName = `${functionName}Instruction`;
   const typeParamsFragment = getTypeParams(instructionNode, programNode);
@@ -72,6 +83,7 @@ export function getInstructionFunctionHighLevelFragment(
       hasDataArgs,
       hasExtraArgs,
       hasAnyArgs,
+      argsType: argsTypeFragment.render,
       functionName,
       lowLevelFunctionName,
       typeParams: typeParamsFragment.render,
@@ -88,7 +100,8 @@ export function getInstructionFunctionHighLevelFragment(
       instructionTypeFragment,
       inputTypeFragment,
       contextFragment,
-      resolvedInputsFragment
+      resolvedInputsFragment,
+      argsTypeFragment
     )
     .addImports('solanaAddresses', ['Base58EncodedAddress'])
     .addImports('shared', ['CustomGeneratedInstruction', 'WrappedInstruction']);

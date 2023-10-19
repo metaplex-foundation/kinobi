@@ -56,7 +56,7 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
         accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       {% endif %}
       {%- if hasDataArgs -%}
-        args, 
+        args as {{ argsType }},
       {% endif %}
       programAddress),
     {{ 'signers' if hasAccounts else 'signers: []'}},

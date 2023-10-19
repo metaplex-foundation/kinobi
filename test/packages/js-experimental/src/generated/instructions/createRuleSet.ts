@@ -340,7 +340,7 @@ export async function createRuleSet<
   return {
     instruction: createRuleSetInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as CreateRuleSetInstructionDataArgs,
       programAddress
     ),
     signers,

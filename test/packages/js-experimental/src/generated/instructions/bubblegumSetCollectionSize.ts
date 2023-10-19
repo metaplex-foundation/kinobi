@@ -397,7 +397,7 @@ export async function bubblegumSetCollectionSize<
   return {
     instruction: bubblegumSetCollectionSizeInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as BubblegumSetCollectionSizeInstructionDataArgs,
       programAddress
     ),
     signers,

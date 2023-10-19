@@ -619,7 +619,7 @@ export async function utilize<
   return {
     instruction: utilizeInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as UtilizeInstructionDataArgs,
       programAddress
     ),
     signers,

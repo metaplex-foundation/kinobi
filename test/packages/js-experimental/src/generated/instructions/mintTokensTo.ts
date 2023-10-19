@@ -283,7 +283,7 @@ export async function mintTokensTo<
   return {
     instruction: mintTokensToInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as MintTokensToInstructionDataArgs,
       programAddress
     ),
     signers,

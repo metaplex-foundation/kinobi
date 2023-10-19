@@ -533,7 +533,7 @@ export async function burn<
   return {
     instruction: burnInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as BurnInstructionDataArgs,
       programAddress
     ),
     signers,

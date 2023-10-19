@@ -696,7 +696,7 @@ export async function mintNewEditionFromMasterEditionViaToken<
   return {
     instruction: mintNewEditionFromMasterEditionViaTokenInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as MintNewEditionFromMasterEditionViaTokenInstructionDataArgs,
       programAddress
     ),
     signers,

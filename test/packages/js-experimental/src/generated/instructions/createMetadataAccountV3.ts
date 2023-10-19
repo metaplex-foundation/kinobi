@@ -486,7 +486,7 @@ export async function createMetadataAccountV3<
   return {
     instruction: createMetadataAccountV3Instruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as CreateMetadataAccountV3InstructionDataArgs,
       programAddress
     ),
     signers,

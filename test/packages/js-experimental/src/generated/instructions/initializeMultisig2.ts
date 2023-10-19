@@ -242,7 +242,7 @@ export async function initializeMultisig2<
   return {
     instruction: initializeMultisig2Instruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as InitializeMultisig2InstructionDataArgs,
       programAddress
     ),
     signers,

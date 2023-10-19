@@ -266,7 +266,7 @@ export async function addConfigLines<
   return {
     instruction: addConfigLinesInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as AddConfigLinesInstructionDataArgs,
       programAddress
     ),
     signers,

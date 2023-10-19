@@ -264,7 +264,7 @@ export async function updateCandyMachine<
   return {
     instruction: updateCandyMachineInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as UpdateCandyMachineInstructionDataArgs,
       programAddress
     ),
     signers,

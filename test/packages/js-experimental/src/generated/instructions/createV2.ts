@@ -578,7 +578,7 @@ export async function createV2<
   return {
     instruction: createV2Instruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as CreateV2InstructionDataArgs,
       programAddress
     ),
     signers,

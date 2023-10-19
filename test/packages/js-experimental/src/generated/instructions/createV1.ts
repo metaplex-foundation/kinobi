@@ -583,7 +583,7 @@ export async function createV1<
   return {
     instruction: createV1Instruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as CreateV1InstructionDataArgs,
       programAddress
     ),
     signers,

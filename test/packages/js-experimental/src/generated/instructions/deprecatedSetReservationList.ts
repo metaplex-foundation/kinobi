@@ -338,7 +338,7 @@ export async function deprecatedSetReservationList<
   return {
     instruction: deprecatedSetReservationListInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as DeprecatedSetReservationListInstructionDataArgs,
       programAddress
     ),
     signers,

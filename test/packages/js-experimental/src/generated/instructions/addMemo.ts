@@ -131,7 +131,10 @@ export async function addMemo<
   // TODO
 
   return {
-    instruction: addMemoInstruction(args, programAddress),
+    instruction: addMemoInstruction(
+      args as AddMemoInstructionDataArgs,
+      programAddress
+    ),
     signers: [],
     bytesCreatedOnChain: 0,
   };

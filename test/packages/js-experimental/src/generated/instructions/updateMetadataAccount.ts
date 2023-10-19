@@ -340,7 +340,7 @@ export async function updateMetadataAccount<
   return {
     instruction: updateMetadataAccountInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as UpdateMetadataAccountInstructionDataArgs,
       programAddress
     ),
     signers,

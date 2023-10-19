@@ -165,7 +165,10 @@ export async function requestUnits<
   // TODO
 
   return {
-    instruction: requestUnitsInstruction(args, programAddress),
+    instruction: requestUnitsInstruction(
+      args as RequestUnitsInstructionDataArgs,
+      programAddress
+    ),
     signers: [],
     bytesCreatedOnChain: 0,
   };

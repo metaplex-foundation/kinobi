@@ -223,7 +223,7 @@ export async function initializeMint2<
   return {
     instruction: initializeMint2Instruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as InitializeMint2InstructionDataArgs,
       programAddress
     ),
     signers,

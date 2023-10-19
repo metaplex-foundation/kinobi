@@ -532,7 +532,7 @@ export async function createMasterEditionV3<
   return {
     instruction: createMasterEditionV3Instruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as CreateMasterEditionV3InstructionDataArgs,
       programAddress
     ),
     signers,

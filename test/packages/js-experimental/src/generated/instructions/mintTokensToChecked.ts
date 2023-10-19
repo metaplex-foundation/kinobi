@@ -311,7 +311,7 @@ export async function mintTokensToChecked<
   return {
     instruction: mintTokensToCheckedInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as MintTokensToCheckedInstructionDataArgs,
       programAddress
     ),
     signers,

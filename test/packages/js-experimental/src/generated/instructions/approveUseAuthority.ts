@@ -583,7 +583,7 @@ export async function approveUseAuthority<
   return {
     instruction: approveUseAuthorityInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as ApproveUseAuthorityInstructionDataArgs,
       programAddress
     ),
     signers,

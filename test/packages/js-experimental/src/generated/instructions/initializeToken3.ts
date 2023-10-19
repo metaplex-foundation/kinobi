@@ -234,7 +234,7 @@ export async function initializeToken3<
   return {
     instruction: initializeToken3Instruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as InitializeToken3InstructionDataArgs,
       programAddress
     ),
     signers,

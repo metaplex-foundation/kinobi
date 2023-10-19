@@ -206,7 +206,7 @@ export async function amountToUiAmount<
   return {
     instruction: amountToUiAmountInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as AmountToUiAmountInstructionDataArgs,
       programAddress
     ),
     signers,

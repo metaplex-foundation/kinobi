@@ -250,7 +250,7 @@ export async function createAccount<
   return {
     instruction: createAccountInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as CreateAccountInstructionDataArgs,
       programAddress
     ),
     signers,

@@ -424,7 +424,7 @@ export async function createReservationList<
   return {
     instruction: createReservationListInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as CreateReservationListInstructionDataArgs,
       programAddress
     ),
     signers,

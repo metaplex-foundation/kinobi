@@ -339,7 +339,7 @@ export async function approveTokenDelegateChecked<
   return {
     instruction: approveTokenDelegateCheckedInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as ApproveTokenDelegateCheckedInstructionDataArgs,
       programAddress
     ),
     signers,

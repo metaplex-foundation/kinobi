@@ -276,7 +276,7 @@ export async function burnToken<
   return {
     instruction: burnTokenInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as BurnTokenInstructionDataArgs,
       programAddress
     ),
     signers,

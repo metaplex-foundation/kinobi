@@ -781,7 +781,7 @@ export async function transfer<
   return {
     instruction: transferInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as TransferInstructionDataArgs,
       programAddress
     ),
     signers,

@@ -336,7 +336,7 @@ export async function transferTokensChecked<
   return {
     instruction: transferTokensCheckedInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as TransferTokensCheckedInstructionDataArgs,
       programAddress
     ),
     signers,

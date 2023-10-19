@@ -466,7 +466,7 @@ export async function deprecatedMintPrintingTokens<
   return {
     instruction: deprecatedMintPrintingTokensInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as DeprecatedMintPrintingTokensInstructionDataArgs,
       programAddress
     ),
     signers,

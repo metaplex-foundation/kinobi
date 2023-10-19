@@ -273,7 +273,7 @@ export async function setTokenAuthority<
   return {
     instruction: setTokenAuthorityInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as SetTokenAuthorityInstructionDataArgs,
       programAddress
     ),
     signers,

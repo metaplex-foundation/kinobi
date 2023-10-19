@@ -345,7 +345,7 @@ export async function createFrequencyRule<
   return {
     instruction: createFrequencyRuleInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as CreateFrequencyRuleInstructionDataArgs,
       programAddress
     ),
     signers,

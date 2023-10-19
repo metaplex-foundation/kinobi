@@ -288,7 +288,7 @@ export async function burnTokenChecked<
   return {
     instruction: burnTokenCheckedInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as BurnTokenCheckedInstructionDataArgs,
       programAddress
     ),
     signers,

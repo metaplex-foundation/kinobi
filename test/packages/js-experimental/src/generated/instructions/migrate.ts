@@ -576,7 +576,7 @@ export async function migrate<
   return {
     instruction: migrateInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as MigrateInstructionDataArgs,
       programAddress
     ),
     signers,

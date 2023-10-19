@@ -165,7 +165,10 @@ export async function requestHeapFrame<
   // TODO
 
   return {
-    instruction: requestHeapFrameInstruction(args, programAddress),
+    instruction: requestHeapFrameInstruction(
+      args as RequestHeapFrameInstructionDataArgs,
+      programAddress
+    ),
     signers: [],
     bytesCreatedOnChain: 0,
   };

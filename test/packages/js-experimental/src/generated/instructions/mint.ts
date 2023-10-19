@@ -662,7 +662,7 @@ export async function mint<
   return {
     instruction: mintInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as MintInstructionDataArgs,
       programAddress
     ),
     signers,

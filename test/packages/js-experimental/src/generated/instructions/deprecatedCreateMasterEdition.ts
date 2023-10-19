@@ -678,7 +678,7 @@ export async function deprecatedCreateMasterEdition<
   return {
     instruction: deprecatedCreateMasterEditionInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as DeprecatedCreateMasterEditionInstructionDataArgs,
       programAddress
     ),
     signers,

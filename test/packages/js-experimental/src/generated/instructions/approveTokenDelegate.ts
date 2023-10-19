@@ -304,7 +304,7 @@ export async function approveTokenDelegate<
   return {
     instruction: approveTokenDelegateInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as ApproveTokenDelegateInstructionDataArgs,
       programAddress
     ),
     signers,

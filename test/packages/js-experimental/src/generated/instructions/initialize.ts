@@ -602,7 +602,7 @@ export async function initialize<
   return {
     instruction: initializeInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as InitializeInstructionDataArgs,
       programAddress
     ),
     signers,

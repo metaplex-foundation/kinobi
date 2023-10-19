@@ -528,7 +528,7 @@ export async function createMetadataAccount<
   return {
     instruction: createMetadataAccountInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as CreateMetadataAccountInstructionDataArgs,
       programAddress
     ),
     signers,

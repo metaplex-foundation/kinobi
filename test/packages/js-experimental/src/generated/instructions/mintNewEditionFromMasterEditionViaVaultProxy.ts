@@ -792,7 +792,7 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
   return {
     instruction: mintNewEditionFromMasterEditionViaVaultProxyInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs,
       programAddress
     ),
     signers,

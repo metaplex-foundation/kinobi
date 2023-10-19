@@ -389,7 +389,7 @@ export async function verify<
   return {
     instruction: verifyInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as VerifyInstructionDataArgs,
       programAddress
     ),
     signers,

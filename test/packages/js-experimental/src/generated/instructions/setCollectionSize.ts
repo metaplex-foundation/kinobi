@@ -359,7 +359,7 @@ export async function setCollectionSize<
   return {
     instruction: setCollectionSizeInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as SetCollectionSizeInstructionDataArgs,
       programAddress
     ),
     signers,

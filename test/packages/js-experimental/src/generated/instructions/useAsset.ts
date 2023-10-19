@@ -629,7 +629,7 @@ export async function useAsset<
   return {
     instruction: useAssetInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args,
+      args as UseAssetInstructionDataArgs,
       programAddress
     ),
     signers,
