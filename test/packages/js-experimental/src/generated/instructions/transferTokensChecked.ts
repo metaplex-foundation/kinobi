@@ -83,7 +83,11 @@ export type TransferTokensCheckedInstructionDataArgs = {
 
 export function getTransferTokensCheckedInstructionDataEncoder(): Encoder<TransferTokensCheckedInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<TransferTokensCheckedInstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      amount: number | bigint;
+      decimals: number;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         ['amount', getU64Encoder()],
@@ -91,8 +95,7 @@ export function getTransferTokensCheckedInstructionDataEncoder(): Encoder<Transf
       ],
       { description: 'TransferTokensCheckedInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 12 } as TransferTokensCheckedInstructionData)
+    (value) => ({ ...value, discriminator: 12 })
   ) as Encoder<TransferTokensCheckedInstructionDataArgs>;
 }
 

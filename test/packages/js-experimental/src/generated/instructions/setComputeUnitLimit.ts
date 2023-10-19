@@ -49,15 +49,18 @@ export type SetComputeUnitLimitInstructionDataArgs = {
 
 export function getSetComputeUnitLimitInstructionDataEncoder(): Encoder<SetComputeUnitLimitInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<SetComputeUnitLimitInstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      /** Transaction-wide compute unit limit. */
+      units: number;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         ['units', getU32Encoder()],
       ],
       { description: 'SetComputeUnitLimitInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 2 } as SetComputeUnitLimitInstructionData)
+    (value) => ({ ...value, discriminator: 2 })
   ) as Encoder<SetComputeUnitLimitInstructionDataArgs>;
 }
 

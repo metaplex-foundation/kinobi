@@ -133,7 +133,18 @@ export type CreateMetadataAccountInstructionDataArgs = {
 
 export function getCreateMetadataAccountInstructionDataEncoder(): Encoder<CreateMetadataAccountInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<CreateMetadataAccountInstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      data: {
+        name: string;
+        symbol: string;
+        uri: string;
+        sellerFeeBasisPoints: number;
+        creators: OptionOrNullable<Array<CreatorArgs>>;
+      };
+      isMutable: boolean;
+      metadataBump: number;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         [
@@ -154,8 +165,7 @@ export function getCreateMetadataAccountInstructionDataEncoder(): Encoder<Create
       ],
       { description: 'CreateMetadataAccountInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 0 } as CreateMetadataAccountInstructionData)
+    (value) => ({ ...value, discriminator: 0 })
   ) as Encoder<CreateMetadataAccountInstructionDataArgs>;
 }
 

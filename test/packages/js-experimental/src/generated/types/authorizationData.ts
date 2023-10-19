@@ -18,7 +18,7 @@ export type AuthorizationData = { payload: Payload };
 export type AuthorizationDataArgs = { payload: PayloadArgs };
 
 export function getAuthorizationDataEncoder(): Encoder<AuthorizationDataArgs> {
-  return getStructEncoder<AuthorizationData>(
+  return getStructEncoder<AuthorizationDataArgs>(
     [['payload', getPayloadEncoder()]],
     { description: 'AuthorizationData' }
   ) as Encoder<AuthorizationDataArgs>;

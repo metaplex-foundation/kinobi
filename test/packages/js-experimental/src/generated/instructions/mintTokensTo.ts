@@ -74,14 +74,14 @@ export type MintTokensToInstructionDataArgs = { amount: number | bigint };
 
 export function getMintTokensToInstructionDataEncoder(): Encoder<MintTokensToInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<MintTokensToInstructionData>(
+    getStructEncoder<{ discriminator: number; amount: number | bigint }>(
       [
         ['discriminator', getU8Encoder()],
         ['amount', getU64Encoder()],
       ],
       { description: 'MintTokensToInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 7 } as MintTokensToInstructionData)
+    (value) => ({ ...value, discriminator: 7 })
   ) as Encoder<MintTokensToInstructionDataArgs>;
 }
 

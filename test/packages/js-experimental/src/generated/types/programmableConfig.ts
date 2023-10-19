@@ -22,7 +22,7 @@ export type ProgrammableConfig = { ruleSet: Base58EncodedAddress };
 export type ProgrammableConfigArgs = ProgrammableConfig;
 
 export function getProgrammableConfigEncoder(): Encoder<ProgrammableConfigArgs> {
-  return getStructEncoder<ProgrammableConfig>(
+  return getStructEncoder<ProgrammableConfigArgs>(
     [['ruleSet', getAddressEncoder()]],
     { description: 'ProgrammableConfig' }
   ) as Encoder<ProgrammableConfigArgs>;

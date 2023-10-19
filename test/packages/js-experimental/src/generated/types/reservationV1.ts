@@ -27,7 +27,7 @@ export type ReservationV1 = {
 export type ReservationV1Args = ReservationV1;
 
 export function getReservationV1Encoder(): Encoder<ReservationV1Args> {
-  return getStructEncoder<ReservationV1>(
+  return getStructEncoder<ReservationV1Args>(
     [
       ['address', getAddressEncoder()],
       ['spotsRemaining', getU8Encoder()],

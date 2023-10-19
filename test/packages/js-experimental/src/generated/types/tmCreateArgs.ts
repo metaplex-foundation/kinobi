@@ -61,7 +61,7 @@ export function getTmCreateArgsEncoder(): Encoder<TmCreateArgsArgs> {
     [
       [
         'V1',
-        getStructEncoder<GetDataEnumKindContent<TmCreateArgs, 'V1'>>([
+        getStructEncoder<GetDataEnumKindContent<TmCreateArgsArgs, 'V1'>>([
           ['assetData', getAssetDataEncoder()],
           ['decimals', getOptionEncoder(getU8Encoder())],
           ['maxSupply', getOptionEncoder(getU64Encoder())],
@@ -69,7 +69,7 @@ export function getTmCreateArgsEncoder(): Encoder<TmCreateArgsArgs> {
       ],
       [
         'V2',
-        getStructEncoder<GetDataEnumKindContent<TmCreateArgs, 'V2'>>([
+        getStructEncoder<GetDataEnumKindContent<TmCreateArgsArgs, 'V2'>>([
           ['assetData', getAssetDataEncoder()],
           ['maxSupply', getOptionEncoder(getU64Encoder())],
         ]),

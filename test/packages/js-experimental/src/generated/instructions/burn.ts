@@ -102,14 +102,14 @@ export type BurnInstructionDataArgs = { burnArgs: BurnArgsArgs };
 
 export function getBurnInstructionDataEncoder(): Encoder<BurnInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<BurnInstructionData>(
+    getStructEncoder<{ discriminator: number; burnArgs: BurnArgsArgs }>(
       [
         ['discriminator', getU8Encoder()],
         ['burnArgs', getBurnArgsEncoder()],
       ],
       { description: 'BurnInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 44 } as BurnInstructionData)
+    (value) => ({ ...value, discriminator: 44 })
   ) as Encoder<BurnInstructionDataArgs>;
 }
 

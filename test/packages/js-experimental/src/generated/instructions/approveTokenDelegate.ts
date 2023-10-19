@@ -77,15 +77,14 @@ export type ApproveTokenDelegateInstructionDataArgs = {
 
 export function getApproveTokenDelegateInstructionDataEncoder(): Encoder<ApproveTokenDelegateInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<ApproveTokenDelegateInstructionData>(
+    getStructEncoder<{ discriminator: number; amount: number | bigint }>(
       [
         ['discriminator', getU8Encoder()],
         ['amount', getU64Encoder()],
       ],
       { description: 'ApproveTokenDelegateInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 4 } as ApproveTokenDelegateInstructionData)
+    (value) => ({ ...value, discriminator: 4 })
   ) as Encoder<ApproveTokenDelegateInstructionDataArgs>;
 }
 

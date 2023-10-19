@@ -66,11 +66,11 @@ export type CloseTokenInstructionDataArgs = {};
 
 export function getCloseTokenInstructionDataEncoder(): Encoder<CloseTokenInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<CloseTokenInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'CloseTokenInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 9 } as CloseTokenInstructionData)
+    (value) => ({ ...value, discriminator: 9 })
   ) as Encoder<CloseTokenInstructionDataArgs>;
 }
 

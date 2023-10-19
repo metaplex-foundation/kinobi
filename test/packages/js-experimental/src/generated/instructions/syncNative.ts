@@ -56,11 +56,11 @@ export type SyncNativeInstructionDataArgs = {};
 
 export function getSyncNativeInstructionDataEncoder(): Encoder<SyncNativeInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<SyncNativeInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'SyncNativeInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 17 } as SyncNativeInstructionData)
+    (value) => ({ ...value, discriminator: 17 })
   ) as Encoder<SyncNativeInstructionDataArgs>;
 }
 

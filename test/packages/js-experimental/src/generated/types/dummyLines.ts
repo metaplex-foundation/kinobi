@@ -32,7 +32,7 @@ export type DummyLinesArgs = {
 };
 
 export function getDummyLinesEncoder(): Encoder<DummyLinesArgs> {
-  return getStructEncoder<DummyLines>(
+  return getStructEncoder<DummyLinesArgs>(
     [['lines', getArrayEncoder(getConfigLineEncoder(), { size: 'remainder' })]],
     { description: 'DummyLines' }
   ) as Encoder<DummyLinesArgs>;

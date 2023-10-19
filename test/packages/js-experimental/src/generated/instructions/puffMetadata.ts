@@ -56,11 +56,11 @@ export type PuffMetadataInstructionDataArgs = {};
 
 export function getPuffMetadataInstructionDataEncoder(): Encoder<PuffMetadataInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<PuffMetadataInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'PuffMetadataInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 14 } as PuffMetadataInstructionData)
+    (value) => ({ ...value, discriminator: 14 })
   ) as Encoder<PuffMetadataInstructionDataArgs>;
 }
 

@@ -71,7 +71,12 @@ export type InitializeMint2InstructionDataArgs = {
 
 export function getInitializeMint2InstructionDataEncoder(): Encoder<InitializeMint2InstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<InitializeMint2InstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      decimals: number;
+      mintAuthority: Base58EncodedAddress;
+      freezeAuthority: OptionOrNullable<Base58EncodedAddress>;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         ['decimals', getU8Encoder()],
@@ -80,8 +85,7 @@ export function getInitializeMint2InstructionDataEncoder(): Encoder<InitializeMi
       ],
       { description: 'InitializeMint2InstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 20 } as InitializeMint2InstructionData)
+    (value) => ({ ...value, discriminator: 20 })
   ) as Encoder<InitializeMint2InstructionDataArgs>;
 }
 

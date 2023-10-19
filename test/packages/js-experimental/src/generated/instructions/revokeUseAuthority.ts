@@ -94,12 +94,11 @@ export type RevokeUseAuthorityInstructionDataArgs = {};
 
 export function getRevokeUseAuthorityInstructionDataEncoder(): Encoder<RevokeUseAuthorityInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<RevokeUseAuthorityInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'RevokeUseAuthorityInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 21 } as RevokeUseAuthorityInstructionData)
+    (value) => ({ ...value, discriminator: 21 })
   ) as Encoder<RevokeUseAuthorityInstructionDataArgs>;
 }
 

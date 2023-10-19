@@ -68,15 +68,14 @@ export type InitializeToken3InstructionDataArgs = {
 
 export function getInitializeToken3InstructionDataEncoder(): Encoder<InitializeToken3InstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<InitializeToken3InstructionData>(
+    getStructEncoder<{ discriminator: number; owner: Base58EncodedAddress }>(
       [
         ['discriminator', getU8Encoder()],
         ['owner', getAddressEncoder()],
       ],
       { description: 'InitializeToken3InstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 18 } as InitializeToken3InstructionData)
+    (value) => ({ ...value, discriminator: 18 })
   ) as Encoder<InitializeToken3InstructionDataArgs>;
 }
 

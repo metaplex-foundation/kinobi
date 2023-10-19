@@ -124,7 +124,12 @@ export type CreateV2InstructionDataArgs = {
 
 export function getCreateV2InstructionDataEncoder(): Encoder<CreateV2InstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<CreateV2InstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      createV2Discriminator: number;
+      assetData: AssetDataArgs;
+      maxSupply: OptionOrNullable<number | bigint>;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         ['createV2Discriminator', getU8Encoder()],
@@ -133,12 +138,7 @@ export function getCreateV2InstructionDataEncoder(): Encoder<CreateV2Instruction
       ],
       { description: 'CreateV2InstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: 41,
-        createV2Discriminator: 1,
-      } as CreateV2InstructionData)
+    (value) => ({ ...value, discriminator: 41, createV2Discriminator: 1 })
   ) as Encoder<CreateV2InstructionDataArgs>;
 }
 

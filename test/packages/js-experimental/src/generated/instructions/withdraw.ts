@@ -64,15 +64,14 @@ export type WithdrawInstructionDataArgs = {};
 
 export function getWithdrawInstructionDataEncoder(): Encoder<WithdrawInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<WithdrawInstructionData>(
+    getStructEncoder<{ discriminator: Array<number> }>(
       [['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })]],
       { description: 'WithdrawInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: [183, 18, 70, 156, 148, 109, 161, 34],
-      } as WithdrawInstructionData)
+    (value) => ({
+      ...value,
+      discriminator: [183, 18, 70, 156, 148, 109, 161, 34],
+    })
   ) as Encoder<WithdrawInstructionDataArgs>;
 }
 

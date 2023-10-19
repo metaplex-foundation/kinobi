@@ -67,11 +67,11 @@ export type FreezeTokenInstructionDataArgs = {};
 
 export function getFreezeTokenInstructionDataEncoder(): Encoder<FreezeTokenInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<FreezeTokenInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'FreezeTokenInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 10 } as FreezeTokenInstructionData)
+    (value) => ({ ...value, discriminator: 10 })
   ) as Encoder<FreezeTokenInstructionDataArgs>;
 }
 

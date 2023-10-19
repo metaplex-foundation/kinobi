@@ -201,7 +201,28 @@ export type UpdateV1InstructionDataArgs = {
 
 export function getUpdateV1InstructionDataEncoder(): Encoder<UpdateV1InstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<UpdateV1InstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      updateV1Discriminator: number;
+      authorizationData: OptionOrNullable<AuthorizationDataArgs>;
+      newUpdateAuthority: OptionOrNullable<Base58EncodedAddress>;
+      data: OptionOrNullable<{
+        name: string;
+        symbol: string;
+        uri: string;
+        sellerFeeBasisPoints: number;
+        creators: OptionOrNullable<Array<CreatorArgs>>;
+      }>;
+      primarySaleHappened: OptionOrNullable<boolean>;
+      isMutable: OptionOrNullable<boolean>;
+      tokenStandard: OptionOrNullable<TokenStandardArgs>;
+      collection: OptionOrNullable<CollectionArgs>;
+      uses: OptionOrNullable<UsesArgs>;
+      collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
+      programmableConfig: OptionOrNullable<ProgrammableConfigArgs>;
+      delegateState: OptionOrNullable<DelegateStateArgs>;
+      authorityType: AuthorityTypeArgs;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         ['updateV1Discriminator', getU8Encoder()],
@@ -237,13 +258,12 @@ export function getUpdateV1InstructionDataEncoder(): Encoder<UpdateV1Instruction
       ],
       { description: 'UpdateV1InstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: 43,
-        updateV1Discriminator: 0,
-        tokenStandard: value.tokenStandard ?? some(TokenStandard.NonFungible),
-      } as UpdateV1InstructionData)
+    (value) => ({
+      ...value,
+      discriminator: 43,
+      updateV1Discriminator: 0,
+      tokenStandard: value.tokenStandard ?? some(TokenStandard.NonFungible),
+    })
   ) as Encoder<UpdateV1InstructionDataArgs>;
 }
 

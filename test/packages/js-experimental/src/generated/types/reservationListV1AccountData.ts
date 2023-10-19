@@ -35,6 +35,7 @@ import {
   ReservationV1,
   ReservationV1Args,
   TmKey,
+  TmKeyArgs,
   getReservationV1Decoder,
   getReservationV1Encoder,
   getTmKeyDecoder,
@@ -56,7 +57,12 @@ export type ReservationListV1AccountDataArgs = {
 
 export function getReservationListV1AccountDataEncoder(): Encoder<ReservationListV1AccountDataArgs> {
   return mapEncoder(
-    getStructEncoder<ReservationListV1AccountData>(
+    getStructEncoder<{
+      key: TmKeyArgs;
+      masterEdition: Base58EncodedAddress;
+      supplySnapshot: OptionOrNullable<number | bigint>;
+      reservations: Array<ReservationV1Args>;
+    }>(
       [
         ['key', getTmKeyEncoder()],
         ['masterEdition', getAddressEncoder()],
@@ -65,11 +71,7 @@ export function getReservationListV1AccountDataEncoder(): Encoder<ReservationLis
       ],
       { description: 'ReservationListV1AccountData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        key: TmKey.ReservationListV1,
-      } as ReservationListV1AccountData)
+    (value) => ({ ...value, key: TmKey.ReservationListV1 })
   ) as Encoder<ReservationListV1AccountDataArgs>;
 }
 

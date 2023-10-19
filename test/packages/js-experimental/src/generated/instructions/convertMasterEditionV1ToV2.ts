@@ -66,15 +66,11 @@ export type ConvertMasterEditionV1ToV2InstructionDataArgs = {};
 
 export function getConvertMasterEditionV1ToV2InstructionDataEncoder(): Encoder<ConvertMasterEditionV1ToV2InstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<ConvertMasterEditionV1ToV2InstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'ConvertMasterEditionV1ToV2InstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: 12,
-      } as ConvertMasterEditionV1ToV2InstructionData)
+    (value) => ({ ...value, discriminator: 12 })
   ) as Encoder<ConvertMasterEditionV1ToV2InstructionDataArgs>;
 }
 

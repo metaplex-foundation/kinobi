@@ -97,7 +97,10 @@ export type DeprecatedMintPrintingTokensInstructionDataArgs = {
 
 export function getDeprecatedMintPrintingTokensInstructionDataEncoder(): Encoder<DeprecatedMintPrintingTokensInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<DeprecatedMintPrintingTokensInstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      mintPrintingTokensViaTokenArgs: MintPrintingTokensViaTokenArgsArgs;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         [
@@ -107,11 +110,7 @@ export function getDeprecatedMintPrintingTokensInstructionDataEncoder(): Encoder
       ],
       { description: 'DeprecatedMintPrintingTokensInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: 9,
-      } as DeprecatedMintPrintingTokensInstructionData)
+    (value) => ({ ...value, discriminator: 9 })
   ) as Encoder<DeprecatedMintPrintingTokensInstructionDataArgs>;
 }
 

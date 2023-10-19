@@ -92,15 +92,11 @@ export type ApproveCollectionAuthorityInstructionDataArgs = {};
 
 export function getApproveCollectionAuthorityInstructionDataEncoder(): Encoder<ApproveCollectionAuthorityInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<ApproveCollectionAuthorityInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'ApproveCollectionAuthorityInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: 23,
-      } as ApproveCollectionAuthorityInstructionData)
+    (value) => ({ ...value, discriminator: 23 })
   ) as Encoder<ApproveCollectionAuthorityInstructionDataArgs>;
 }
 

@@ -52,12 +52,11 @@ export type GetTokenDataSizeInstructionDataArgs = {};
 
 export function getGetTokenDataSizeInstructionDataEncoder(): Encoder<GetTokenDataSizeInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<GetTokenDataSizeInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'GetTokenDataSizeInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 21 } as GetTokenDataSizeInstructionData)
+    (value) => ({ ...value, discriminator: 21 })
   ) as Encoder<GetTokenDataSizeInstructionDataArgs>;
 }
 

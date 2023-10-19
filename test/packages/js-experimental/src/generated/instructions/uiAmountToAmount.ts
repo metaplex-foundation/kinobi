@@ -60,15 +60,14 @@ export type UiAmountToAmountInstructionDataArgs = { uiAmount: number | bigint };
 
 export function getUiAmountToAmountInstructionDataEncoder(): Encoder<UiAmountToAmountInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<UiAmountToAmountInstructionData>(
+    getStructEncoder<{ discriminator: number; uiAmount: number | bigint }>(
       [
         ['discriminator', getU8Encoder()],
         ['uiAmount', getU64Encoder()],
       ],
       { description: 'UiAmountToAmountInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 24 } as UiAmountToAmountInstructionData)
+    (value) => ({ ...value, discriminator: 24 })
   ) as Encoder<UiAmountToAmountInstructionDataArgs>;
 }
 

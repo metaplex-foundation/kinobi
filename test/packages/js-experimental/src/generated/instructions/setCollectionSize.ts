@@ -84,15 +84,17 @@ export type SetCollectionSizeInstructionDataArgs = {
 
 export function getSetCollectionSizeInstructionDataEncoder(): Encoder<SetCollectionSizeInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<SetCollectionSizeInstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      setCollectionSizeArgs: SetCollectionSizeArgsArgs;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         ['setCollectionSizeArgs', getSetCollectionSizeArgsEncoder()],
       ],
       { description: 'SetCollectionSizeInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 34 } as SetCollectionSizeInstructionData)
+    (value) => ({ ...value, discriminator: 34 })
   ) as Encoder<SetCollectionSizeInstructionDataArgs>;
 }
 

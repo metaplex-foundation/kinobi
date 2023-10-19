@@ -121,14 +121,14 @@ export type MintInstructionDataArgs = { mintArgs: MintArgsArgs };
 
 export function getMintInstructionDataEncoder(): Encoder<MintInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<MintInstructionData>(
+    getStructEncoder<{ discriminator: number; mintArgs: MintArgsArgs }>(
       [
         ['discriminator', getU8Encoder()],
         ['mintArgs', getMintArgsEncoder()],
       ],
       { description: 'MintInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 42 } as MintInstructionData)
+    (value) => ({ ...value, discriminator: 42 })
   ) as Encoder<MintInstructionDataArgs>;
 }
 

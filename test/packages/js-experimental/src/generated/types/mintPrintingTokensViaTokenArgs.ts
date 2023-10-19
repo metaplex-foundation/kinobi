@@ -18,7 +18,7 @@ export type MintPrintingTokensViaTokenArgs = { supply: bigint };
 export type MintPrintingTokensViaTokenArgsArgs = { supply: number | bigint };
 
 export function getMintPrintingTokensViaTokenArgsEncoder(): Encoder<MintPrintingTokensViaTokenArgsArgs> {
-  return getStructEncoder<MintPrintingTokensViaTokenArgs>(
+  return getStructEncoder<MintPrintingTokensViaTokenArgsArgs>(
     [['supply', getU64Encoder()]],
     { description: 'MintPrintingTokensViaTokenArgs' }
   ) as Encoder<MintPrintingTokensViaTokenArgsArgs>;

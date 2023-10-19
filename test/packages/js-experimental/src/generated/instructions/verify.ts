@@ -86,14 +86,14 @@ export type VerifyInstructionDataArgs = { verifyArgs: VerifyArgsArgs };
 
 export function getVerifyInstructionDataEncoder(): Encoder<VerifyInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<VerifyInstructionData>(
+    getStructEncoder<{ discriminator: number; verifyArgs: VerifyArgsArgs }>(
       [
         ['discriminator', getU8Encoder()],
         ['verifyArgs', getVerifyArgsEncoder()],
       ],
       { description: 'VerifyInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 47 } as VerifyInstructionData)
+    (value) => ({ ...value, discriminator: 47 })
   ) as Encoder<VerifyInstructionDataArgs>;
 }
 

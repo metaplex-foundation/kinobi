@@ -64,15 +64,11 @@ export type RemoveCreatorVerificationInstructionDataArgs = {};
 
 export function getRemoveCreatorVerificationInstructionDataEncoder(): Encoder<RemoveCreatorVerificationInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<RemoveCreatorVerificationInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'RemoveCreatorVerificationInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: 28,
-      } as RemoveCreatorVerificationInstructionData)
+    (value) => ({ ...value, discriminator: 28 })
   ) as Encoder<RemoveCreatorVerificationInstructionDataArgs>;
 }
 

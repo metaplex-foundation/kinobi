@@ -74,14 +74,14 @@ export type BurnTokenInstructionDataArgs = { amount: number | bigint };
 
 export function getBurnTokenInstructionDataEncoder(): Encoder<BurnTokenInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<BurnTokenInstructionData>(
+    getStructEncoder<{ discriminator: number; amount: number | bigint }>(
       [
         ['discriminator', getU8Encoder()],
         ['amount', getU64Encoder()],
       ],
       { description: 'BurnTokenInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 8 } as BurnTokenInstructionData)
+    (value) => ({ ...value, discriminator: 8 })
   ) as Encoder<BurnTokenInstructionDataArgs>;
 }
 

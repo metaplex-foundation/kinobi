@@ -78,7 +78,11 @@ export type MintTokensToCheckedInstructionDataArgs = {
 
 export function getMintTokensToCheckedInstructionDataEncoder(): Encoder<MintTokensToCheckedInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<MintTokensToCheckedInstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      amount: number | bigint;
+      decimals: number;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         ['amount', getU64Encoder()],
@@ -86,8 +90,7 @@ export function getMintTokensToCheckedInstructionDataEncoder(): Encoder<MintToke
       ],
       { description: 'MintTokensToCheckedInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 14 } as MintTokensToCheckedInstructionData)
+    (value) => ({ ...value, discriminator: 14 })
   ) as Encoder<MintTokensToCheckedInstructionDataArgs>;
 }
 

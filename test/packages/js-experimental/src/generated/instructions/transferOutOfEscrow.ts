@@ -127,15 +127,14 @@ export type TransferOutOfEscrowInstructionDataArgs = {
 
 export function getTransferOutOfEscrowInstructionDataEncoder(): Encoder<TransferOutOfEscrowInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<TransferOutOfEscrowInstructionData>(
+    getStructEncoder<{ discriminator: number; amount: number | bigint }>(
       [
         ['discriminator', getU8Encoder()],
         ['amount', getU64Encoder()],
       ],
       { description: 'TransferOutOfEscrowInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 40 } as TransferOutOfEscrowInstructionData)
+    (value) => ({ ...value, discriminator: 40 })
   ) as Encoder<TransferOutOfEscrowInstructionDataArgs>;
 }
 

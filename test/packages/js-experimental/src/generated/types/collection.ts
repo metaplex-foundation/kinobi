@@ -31,14 +31,14 @@ export type CollectionArgs = { verified?: boolean; key: Base58EncodedAddress };
 
 export function getCollectionEncoder(): Encoder<CollectionArgs> {
   return mapEncoder(
-    getStructEncoder<Collection>(
+    getStructEncoder<{ verified: boolean; key: Base58EncodedAddress }>(
       [
         ['verified', getBooleanEncoder()],
         ['key', getAddressEncoder()],
       ],
       { description: 'Collection' }
     ),
-    (value) => ({ ...value, verified: value.verified ?? false } as Collection)
+    (value) => ({ ...value, verified: value.verified ?? false })
   ) as Encoder<CollectionArgs>;
 }
 

@@ -56,15 +56,11 @@ export type InitializeImmutableOwnerInstructionDataArgs = {};
 
 export function getInitializeImmutableOwnerInstructionDataEncoder(): Encoder<InitializeImmutableOwnerInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<InitializeImmutableOwnerInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'InitializeImmutableOwnerInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: 22,
-      } as InitializeImmutableOwnerInstructionData)
+    (value) => ({ ...value, discriminator: 22 })
   ) as Encoder<InitializeImmutableOwnerInstructionDataArgs>;
 }
 

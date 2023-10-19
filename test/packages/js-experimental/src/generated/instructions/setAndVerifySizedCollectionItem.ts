@@ -94,15 +94,11 @@ export type SetAndVerifySizedCollectionItemInstructionDataArgs = {};
 
 export function getSetAndVerifySizedCollectionItemInstructionDataEncoder(): Encoder<SetAndVerifySizedCollectionItemInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<SetAndVerifySizedCollectionItemInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'SetAndVerifySizedCollectionItemInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: 32,
-      } as SetAndVerifySizedCollectionItemInstructionData)
+    (value) => ({ ...value, discriminator: 32 })
   ) as Encoder<SetAndVerifySizedCollectionItemInstructionDataArgs>;
 }
 

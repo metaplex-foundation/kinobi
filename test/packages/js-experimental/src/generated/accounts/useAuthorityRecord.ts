@@ -33,7 +33,7 @@ import {
   assertAccountExists,
   decodeAccount,
 } from '../shared';
-import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
+import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type UseAuthorityRecord<TAddress extends string = string> = Account<
   UseAuthorityRecordAccountData,
@@ -53,7 +53,11 @@ export type UseAuthorityRecordAccountDataArgs = {
 
 export function getUseAuthorityRecordAccountDataEncoder(): Encoder<UseAuthorityRecordAccountDataArgs> {
   return mapEncoder(
-    getStructEncoder<UseAuthorityRecordAccountData>(
+    getStructEncoder<{
+      key: TmKeyArgs;
+      allowedUses: number | bigint;
+      bump: number;
+    }>(
       [
         ['key', getTmKeyEncoder()],
         ['allowedUses', getU64Encoder()],
@@ -61,11 +65,7 @@ export function getUseAuthorityRecordAccountDataEncoder(): Encoder<UseAuthorityR
       ],
       { description: 'UseAuthorityRecordAccountData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        key: TmKey.UseAuthorityRecord,
-      } as UseAuthorityRecordAccountData)
+    (value) => ({ ...value, key: TmKey.UseAuthorityRecord })
   ) as Encoder<UseAuthorityRecordAccountDataArgs>;
 }
 

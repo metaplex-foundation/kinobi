@@ -70,14 +70,14 @@ export type TransferSolInstructionDataArgs = { amount: number | bigint };
 
 export function getTransferSolInstructionDataEncoder(): Encoder<TransferSolInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<TransferSolInstructionData>(
+    getStructEncoder<{ discriminator: number; amount: number | bigint }>(
       [
         ['discriminator', getU32Encoder()],
         ['amount', getU64Encoder()],
       ],
       { description: 'TransferSolInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 2 } as TransferSolInstructionData)
+    (value) => ({ ...value, discriminator: 2 })
   ) as Encoder<TransferSolInstructionDataArgs>;
 }
 

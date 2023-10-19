@@ -78,12 +78,11 @@ export type FreezeDelegatedAccountInstructionDataArgs = {};
 
 export function getFreezeDelegatedAccountInstructionDataEncoder(): Encoder<FreezeDelegatedAccountInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<FreezeDelegatedAccountInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'FreezeDelegatedAccountInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 26 } as FreezeDelegatedAccountInstructionData)
+    (value) => ({ ...value, discriminator: 26 })
   ) as Encoder<FreezeDelegatedAccountInstructionDataArgs>;
 }
 

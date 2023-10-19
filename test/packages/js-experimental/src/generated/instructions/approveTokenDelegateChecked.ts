@@ -83,7 +83,11 @@ export type ApproveTokenDelegateCheckedInstructionDataArgs = {
 
 export function getApproveTokenDelegateCheckedInstructionDataEncoder(): Encoder<ApproveTokenDelegateCheckedInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<ApproveTokenDelegateCheckedInstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      amount: number | bigint;
+      decimals: number;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         ['amount', getU64Encoder()],
@@ -91,11 +95,7 @@ export function getApproveTokenDelegateCheckedInstructionDataEncoder(): Encoder<
       ],
       { description: 'ApproveTokenDelegateCheckedInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: 13,
-      } as ApproveTokenDelegateCheckedInstructionData)
+    (value) => ({ ...value, discriminator: 13 })
   ) as Encoder<ApproveTokenDelegateCheckedInstructionDataArgs>;
 }
 

@@ -41,7 +41,7 @@ import {
   getProgramAddress,
   getProgramDerivedAddress,
 } from '../shared';
-import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
+import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type MasterEditionV2<TAddress extends string = string> = Account<
   MasterEditionV2AccountData,
@@ -61,7 +61,11 @@ export type MasterEditionV2AccountDataArgs = {
 
 export function getMasterEditionV2AccountDataEncoder(): Encoder<MasterEditionV2AccountDataArgs> {
   return mapEncoder(
-    getStructEncoder<MasterEditionV2AccountData>(
+    getStructEncoder<{
+      key: TmKeyArgs;
+      supply: number | bigint;
+      maxSupply: OptionOrNullable<number | bigint>;
+    }>(
       [
         ['key', getTmKeyEncoder()],
         ['supply', getU64Encoder()],
@@ -69,8 +73,7 @@ export function getMasterEditionV2AccountDataEncoder(): Encoder<MasterEditionV2A
       ],
       { description: 'MasterEditionV2AccountData' }
     ),
-    (value) =>
-      ({ ...value, key: TmKey.MasterEditionV2 } as MasterEditionV2AccountData)
+    (value) => ({ ...value, key: TmKey.MasterEditionV2 })
   ) as Encoder<MasterEditionV2AccountDataArgs>;
 }
 

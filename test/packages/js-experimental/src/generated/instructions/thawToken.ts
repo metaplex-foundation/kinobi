@@ -67,11 +67,11 @@ export type ThawTokenInstructionDataArgs = {};
 
 export function getThawTokenInstructionDataEncoder(): Encoder<ThawTokenInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<ThawTokenInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'ThawTokenInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 11 } as ThawTokenInstructionData)
+    (value) => ({ ...value, discriminator: 11 })
   ) as Encoder<ThawTokenInstructionDataArgs>;
 }
 

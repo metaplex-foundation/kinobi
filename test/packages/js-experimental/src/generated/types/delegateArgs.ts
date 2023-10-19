@@ -35,15 +35,15 @@ export function getDelegateArgsEncoder(): Encoder<DelegateArgsArgs> {
       ['CollectionV1', getUnitEncoder()],
       [
         'SaleV1',
-        getStructEncoder<GetDataEnumKindContent<DelegateArgs, 'SaleV1'>>([
+        getStructEncoder<GetDataEnumKindContent<DelegateArgsArgs, 'SaleV1'>>([
           ['amount', getU64Encoder()],
         ]),
       ],
       [
         'TransferV1',
-        getStructEncoder<GetDataEnumKindContent<DelegateArgs, 'TransferV1'>>([
-          ['amount', getU64Encoder()],
-        ]),
+        getStructEncoder<
+          GetDataEnumKindContent<DelegateArgsArgs, 'TransferV1'>
+        >([['amount', getU64Encoder()]]),
       ],
     ],
     { description: 'DelegateArgs' }

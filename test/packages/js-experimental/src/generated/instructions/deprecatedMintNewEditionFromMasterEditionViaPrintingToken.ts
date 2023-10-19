@@ -128,18 +128,14 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction
 
 export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataEncoder(): Encoder<DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       {
         description:
           'DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData',
       }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: 3,
-      } as DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData)
+    (value) => ({ ...value, discriminator: 3 })
   ) as Encoder<DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataArgs>;
 }
 

@@ -51,13 +51,13 @@ export function getPayloadTypeEncoder(): Encoder<PayloadTypeArgs> {
     [
       [
         'Pubkey',
-        getStructEncoder<GetDataEnumKindContent<PayloadType, 'Pubkey'>>([
+        getStructEncoder<GetDataEnumKindContent<PayloadTypeArgs, 'Pubkey'>>([
           ['fields', getTupleEncoder([getAddressEncoder()])],
         ]),
       ],
       [
         'Seeds',
-        getStructEncoder<GetDataEnumKindContent<PayloadType, 'Seeds'>>([
+        getStructEncoder<GetDataEnumKindContent<PayloadTypeArgs, 'Seeds'>>([
           [
             'seeds',
             getArrayEncoder(getBytesEncoder({ size: getU32Encoder() })),
@@ -66,14 +66,16 @@ export function getPayloadTypeEncoder(): Encoder<PayloadTypeArgs> {
       ],
       [
         'MerkleProof',
-        getStructEncoder<GetDataEnumKindContent<PayloadType, 'MerkleProof'>>([
+        getStructEncoder<
+          GetDataEnumKindContent<PayloadTypeArgs, 'MerkleProof'>
+        >([
           ['leaf', getBytesEncoder({ size: 32 })],
           ['proof', getArrayEncoder(getBytesEncoder({ size: 32 }))],
         ]),
       ],
       [
         'Number',
-        getStructEncoder<GetDataEnumKindContent<PayloadType, 'Number'>>([
+        getStructEncoder<GetDataEnumKindContent<PayloadTypeArgs, 'Number'>>([
           ['fields', getTupleEncoder([getU64Encoder()])],
         ]),
       ],

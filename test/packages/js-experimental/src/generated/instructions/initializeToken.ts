@@ -69,12 +69,11 @@ export type InitializeTokenInstructionDataArgs = {};
 
 export function getInitializeTokenInstructionDataEncoder(): Encoder<InitializeTokenInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<InitializeTokenInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'InitializeTokenInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 1 } as InitializeTokenInstructionData)
+    (value) => ({ ...value, discriminator: 1 })
   ) as Encoder<InitializeTokenInstructionDataArgs>;
 }
 

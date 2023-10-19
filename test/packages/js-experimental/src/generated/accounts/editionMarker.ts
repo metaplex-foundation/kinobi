@@ -30,7 +30,7 @@ import {
   assertAccountExists,
   decodeAccount,
 } from '../shared';
-import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
+import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type EditionMarker<TAddress extends string = string> = Account<
   EditionMarkerAccountData,
@@ -43,15 +43,14 @@ export type EditionMarkerAccountDataArgs = { ledger: Array<number> };
 
 export function getEditionMarkerAccountDataEncoder(): Encoder<EditionMarkerAccountDataArgs> {
   return mapEncoder(
-    getStructEncoder<EditionMarkerAccountData>(
+    getStructEncoder<{ key: TmKeyArgs; ledger: Array<number> }>(
       [
         ['key', getTmKeyEncoder()],
         ['ledger', getArrayEncoder(getU8Encoder(), { size: 31 })],
       ],
       { description: 'EditionMarkerAccountData' }
     ),
-    (value) =>
-      ({ ...value, key: TmKey.EditionMarker } as EditionMarkerAccountData)
+    (value) => ({ ...value, key: TmKey.EditionMarker })
   ) as Encoder<EditionMarkerAccountDataArgs>;
 }
 

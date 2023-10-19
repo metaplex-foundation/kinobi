@@ -57,7 +57,7 @@ export type DataV2Args = {
 };
 
 export function getDataV2Encoder(): Encoder<DataV2Args> {
-  return getStructEncoder<DataV2>(
+  return getStructEncoder<DataV2Args>(
     [
       ['name', getStringEncoder()],
       ['symbol', getStringEncoder()],

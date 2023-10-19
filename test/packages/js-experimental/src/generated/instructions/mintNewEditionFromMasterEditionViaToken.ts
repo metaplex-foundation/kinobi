@@ -128,7 +128,10 @@ export type MintNewEditionFromMasterEditionViaTokenInstructionDataArgs = {
 
 export function getMintNewEditionFromMasterEditionViaTokenInstructionDataEncoder(): Encoder<MintNewEditionFromMasterEditionViaTokenInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<MintNewEditionFromMasterEditionViaTokenInstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgsArgs;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         [
@@ -138,11 +141,7 @@ export function getMintNewEditionFromMasterEditionViaTokenInstructionDataEncoder
       ],
       { description: 'MintNewEditionFromMasterEditionViaTokenInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: 11,
-      } as MintNewEditionFromMasterEditionViaTokenInstructionData)
+    (value) => ({ ...value, discriminator: 11 })
   ) as Encoder<MintNewEditionFromMasterEditionViaTokenInstructionDataArgs>;
 }
 

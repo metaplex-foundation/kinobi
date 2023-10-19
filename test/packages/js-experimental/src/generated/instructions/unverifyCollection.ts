@@ -83,12 +83,11 @@ export type UnverifyCollectionInstructionDataArgs = {};
 
 export function getUnverifyCollectionInstructionDataEncoder(): Encoder<UnverifyCollectionInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<UnverifyCollectionInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'UnverifyCollectionInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 22 } as UnverifyCollectionInstructionData)
+    (value) => ({ ...value, discriminator: 22 })
   ) as Encoder<UnverifyCollectionInstructionDataArgs>;
 }
 

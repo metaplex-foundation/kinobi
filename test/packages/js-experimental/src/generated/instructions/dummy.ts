@@ -104,15 +104,14 @@ export type DummyInstructionDataArgs = {};
 
 export function getDummyInstructionDataEncoder(): Encoder<DummyInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<DummyInstructionData>(
+    getStructEncoder<{ discriminator: Array<number> }>(
       [['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })]],
       { description: 'DummyInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: [167, 117, 211, 79, 251, 254, 47, 135],
-      } as DummyInstructionData)
+    (value) => ({
+      ...value,
+      discriminator: [167, 117, 211, 79, 251, 254, 47, 135],
+    })
   ) as Encoder<DummyInstructionDataArgs>;
 }
 

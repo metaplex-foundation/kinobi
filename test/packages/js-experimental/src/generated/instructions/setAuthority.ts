@@ -73,18 +73,20 @@ export type SetAuthorityInstructionDataArgs = {
 
 export function getSetAuthorityInstructionDataEncoder(): Encoder<SetAuthorityInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<SetAuthorityInstructionData>(
+    getStructEncoder<{
+      discriminator: Array<number>;
+      newAuthority: Base58EncodedAddress;
+    }>(
       [
         ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
         ['newAuthority', getAddressEncoder()],
       ],
       { description: 'SetAuthorityInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: [133, 250, 37, 21, 110, 163, 26, 121],
-      } as SetAuthorityInstructionData)
+    (value) => ({
+      ...value,
+      discriminator: [133, 250, 37, 21, 110, 163, 26, 121],
+    })
   ) as Encoder<SetAuthorityInstructionDataArgs>;
 }
 

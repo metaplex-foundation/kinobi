@@ -96,7 +96,13 @@ export type DeprecatedSetReservationListInstructionDataArgs = {
 
 export function getDeprecatedSetReservationListInstructionDataEncoder(): Encoder<DeprecatedSetReservationListInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<DeprecatedSetReservationListInstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      reservations: Array<ReservationArgs>;
+      totalReservationSpots: OptionOrNullable<number | bigint>;
+      offset: number | bigint;
+      totalSpotOffset: number | bigint;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         ['reservations', getArrayEncoder(getReservationEncoder())],
@@ -106,11 +112,7 @@ export function getDeprecatedSetReservationListInstructionDataEncoder(): Encoder
       ],
       { description: 'DeprecatedSetReservationListInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: 5,
-      } as DeprecatedSetReservationListInstructionData)
+    (value) => ({ ...value, discriminator: 5 })
   ) as Encoder<DeprecatedSetReservationListInstructionDataArgs>;
 }
 

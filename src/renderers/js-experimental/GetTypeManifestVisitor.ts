@@ -400,29 +400,45 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
   visitStructType(structType: nodes.StructTypeNode): TypeManifest {
     const { parentName } = this;
     this.parentName = null;
-    const serializerTypeParams = parentName ? parentName.strict : 'any';
     const structDescription =
       parentName?.strict && !parentName.strict.match(/['"<>]/)
         ? `, { description: '${pascalCase(parentName.strict)}' }`
         : '';
-
-    const fields = structType.fields.map((field) => visit(field, this));
-    const mergedManifest = mergeManifests(
-      fields,
-      (renders) => `{ ${renders.join('')} }`,
-      (renders) =>
-        `<${serializerTypeParams}>([${renders.join(', ')}]${structDescription})`
-    );
-    mergedManifest.encoder
-      .mapRender((r) => `getStructEncoder${r}`)
-      .addImports('solanaCodecsDataStructures', 'getStructEncoder');
-    mergedManifest.decoder
-      .mapRender((r) => `getStructDecoder${r}`)
-      .addImports('solanaCodecsDataStructures', 'getStructDecoder');
-
     const optionalFields = structType.fields.filter(
       (f) => f.defaultsTo !== null
     );
+
+    const fieldManifests = structType.fields.map((field) => visit(field, this));
+    const mergedManifest = mergeManifests(
+      fieldManifests,
+      (renders) => `{ ${renders.join('')} }`,
+      (renders) => `([${renders.join(', ')}]${structDescription})`
+    );
+
+    const decoderType = parentName ? parentName.strict : 'any';
+    let encoderType = parentName ? parentName.loose : 'any';
+    if (optionalFields.length > 0) {
+      const noDefaultsFieldManifests = structType.fields.map((field) =>
+        visit({ ...field, defaultsTo: null }, this)
+      );
+      const noDefaultsMergedManifest = mergeManifests(
+        noDefaultsFieldManifests,
+        (renders) => `{ ${renders.join('')} }`,
+        (renders) => `([${renders.join(', ')}])`
+      );
+      encoderType = noDefaultsMergedManifest.looseType.render;
+      mergedManifest.encoder.mergeImportsWith(
+        noDefaultsMergedManifest.looseType
+      );
+    }
+
+    mergedManifest.encoder
+      .mapRender((r) => `getStructEncoder<${encoderType}>${r}`)
+      .addImports('solanaCodecsDataStructures', 'getStructEncoder');
+    mergedManifest.decoder
+      .mapRender((r) => `getStructDecoder<${decoderType}>${r}`)
+      .addImports('solanaCodecsDataStructures', 'getStructDecoder');
+
     if (optionalFields.length === 0) {
       return mergedManifest;
     }
@@ -440,11 +456,9 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
           : `${key}: value.${key} ?? ${renderedValue}`;
       })
       .join(', ');
-    const typeCast = parentName ? ` as ${parentName.strict}` : '';
     mergedManifest.encoder
       .mapRender(
-        (r) =>
-          `mapEncoder(${r}, (value) => ({ ...value, ${defaultValues} }${typeCast}))`
+        (r) => `mapEncoder(${r}, (value) => ({ ...value, ${defaultValues} }))`
       )
       .addImports('solanaCodecsCore', 'mapEncoder');
     return mergedManifest;

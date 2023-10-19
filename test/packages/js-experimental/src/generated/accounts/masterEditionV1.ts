@@ -45,6 +45,7 @@ import {
 import {
   DelegateRoleArgs,
   TmKey,
+  TmKeyArgs,
   getDelegateRoleEncoder,
   getTmKeyDecoder,
   getTmKeyEncoder,
@@ -72,7 +73,13 @@ export type MasterEditionV1AccountDataArgs = {
 
 export function getMasterEditionV1AccountDataEncoder(): Encoder<MasterEditionV1AccountDataArgs> {
   return mapEncoder(
-    getStructEncoder<MasterEditionV1AccountData>(
+    getStructEncoder<{
+      key: TmKeyArgs;
+      supply: number | bigint;
+      maxSupply: OptionOrNullable<number | bigint>;
+      printingMint: Base58EncodedAddress;
+      oneTimePrintingAuthorizationMint: Base58EncodedAddress;
+    }>(
       [
         ['key', getTmKeyEncoder()],
         ['supply', getU64Encoder()],
@@ -82,8 +89,7 @@ export function getMasterEditionV1AccountDataEncoder(): Encoder<MasterEditionV1A
       ],
       { description: 'MasterEditionV1AccountData' }
     ),
-    (value) =>
-      ({ ...value, key: TmKey.MasterEditionV1 } as MasterEditionV1AccountData)
+    (value) => ({ ...value, key: TmKey.MasterEditionV1 })
   ) as Encoder<MasterEditionV1AccountDataArgs>;
 }
 

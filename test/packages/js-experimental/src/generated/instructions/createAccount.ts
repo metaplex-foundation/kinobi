@@ -79,7 +79,12 @@ export type CreateAccountInstructionDataArgs = {
 
 export function getCreateAccountInstructionDataEncoder(): Encoder<CreateAccountInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<CreateAccountInstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      lamports: number | bigint;
+      space: number | bigint;
+      programId: Base58EncodedAddress;
+    }>(
       [
         ['discriminator', getU32Encoder()],
         ['lamports', getU64Encoder()],
@@ -88,7 +93,7 @@ export function getCreateAccountInstructionDataEncoder(): Encoder<CreateAccountI
       ],
       { description: 'CreateAccountInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 0 } as CreateAccountInstructionData)
+    (value) => ({ ...value, discriminator: 0 })
   ) as Encoder<CreateAccountInstructionDataArgs>;
 }
 

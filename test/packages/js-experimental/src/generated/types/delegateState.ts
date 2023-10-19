@@ -38,7 +38,7 @@ export type DelegateStateArgs = {
 };
 
 export function getDelegateStateEncoder(): Encoder<DelegateStateArgs> {
-  return getStructEncoder<DelegateState>(
+  return getStructEncoder<DelegateStateArgs>(
     [
       ['role', getDelegateRoleEncoder()],
       ['delegate', getAddressEncoder()],

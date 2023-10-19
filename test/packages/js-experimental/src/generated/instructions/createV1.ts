@@ -126,7 +126,13 @@ export type CreateV1InstructionDataArgs = {
 
 export function getCreateV1InstructionDataEncoder(): Encoder<CreateV1InstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<CreateV1InstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      createV1Discriminator: number;
+      assetData: AssetDataArgs;
+      decimals: OptionOrNullable<number>;
+      maxSupply: OptionOrNullable<number | bigint>;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         ['createV1Discriminator', getU8Encoder()],
@@ -136,12 +142,7 @@ export function getCreateV1InstructionDataEncoder(): Encoder<CreateV1Instruction
       ],
       { description: 'CreateV1InstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: 41,
-        createV1Discriminator: 0,
-      } as CreateV1InstructionData)
+    (value) => ({ ...value, discriminator: 41, createV1Discriminator: 0 })
   ) as Encoder<CreateV1InstructionDataArgs>;
 }
 

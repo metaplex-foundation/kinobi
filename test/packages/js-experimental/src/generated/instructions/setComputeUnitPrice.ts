@@ -49,15 +49,18 @@ export type SetComputeUnitPriceInstructionDataArgs = {
 
 export function getSetComputeUnitPriceInstructionDataEncoder(): Encoder<SetComputeUnitPriceInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<SetComputeUnitPriceInstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      /** Transaction compute unit price used for prioritization fees. */
+      microLamports: number | bigint;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         ['microLamports', getU64Encoder()],
       ],
       { description: 'SetComputeUnitPriceInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 3 } as SetComputeUnitPriceInstructionData)
+    (value) => ({ ...value, discriminator: 3 })
   ) as Encoder<SetComputeUnitPriceInstructionDataArgs>;
 }
 

@@ -86,11 +86,11 @@ export type BurnNftInstructionDataArgs = {};
 
 export function getBurnNftInstructionDataEncoder(): Encoder<BurnNftInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<BurnNftInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'BurnNftInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 29 } as BurnNftInstructionData)
+    (value) => ({ ...value, discriminator: 29 })
   ) as Encoder<BurnNftInstructionDataArgs>;
 }
 

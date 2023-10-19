@@ -32,7 +32,7 @@ import {
   assertAccountExists,
   decodeAccount,
 } from '../shared';
-import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
+import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type Edition<TAddress extends string = string> = Account<
   EditionAccountData,
@@ -52,7 +52,11 @@ export type EditionAccountDataArgs = {
 
 export function getEditionAccountDataEncoder(): Encoder<EditionAccountDataArgs> {
   return mapEncoder(
-    getStructEncoder<EditionAccountData>(
+    getStructEncoder<{
+      key: TmKeyArgs;
+      parent: Base58EncodedAddress;
+      edition: number | bigint;
+    }>(
       [
         ['key', getTmKeyEncoder()],
         ['parent', getAddressEncoder()],
@@ -60,7 +64,7 @@ export function getEditionAccountDataEncoder(): Encoder<EditionAccountDataArgs> 
       ],
       { description: 'EditionAccountData' }
     ),
-    (value) => ({ ...value, key: TmKey.EditionV1 } as EditionAccountData)
+    (value) => ({ ...value, key: TmKey.EditionV1 })
   ) as Encoder<EditionAccountDataArgs>;
 }
 

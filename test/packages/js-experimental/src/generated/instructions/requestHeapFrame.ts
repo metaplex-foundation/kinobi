@@ -55,15 +55,21 @@ export type RequestHeapFrameInstructionDataArgs = {
 
 export function getRequestHeapFrameInstructionDataEncoder(): Encoder<RequestHeapFrameInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<RequestHeapFrameInstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      /**
+       * Requested transaction-wide program heap size in bytes.
+       * Must be multiple of 1024. Applies to each program, including CPIs.
+       */
+      bytes: number;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         ['bytes', getU32Encoder()],
       ],
       { description: 'RequestHeapFrameInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 1 } as RequestHeapFrameInstructionData)
+    (value) => ({ ...value, discriminator: 1 })
   ) as Encoder<RequestHeapFrameInstructionDataArgs>;
 }
 

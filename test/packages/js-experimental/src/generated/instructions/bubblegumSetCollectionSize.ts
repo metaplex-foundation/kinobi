@@ -89,18 +89,17 @@ export type BubblegumSetCollectionSizeInstructionDataArgs = {
 
 export function getBubblegumSetCollectionSizeInstructionDataEncoder(): Encoder<BubblegumSetCollectionSizeInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<BubblegumSetCollectionSizeInstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      setCollectionSizeArgs: SetCollectionSizeArgsArgs;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         ['setCollectionSizeArgs', getSetCollectionSizeArgsEncoder()],
       ],
       { description: 'BubblegumSetCollectionSizeInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: 36,
-      } as BubblegumSetCollectionSizeInstructionData)
+    (value) => ({ ...value, discriminator: 36 })
   ) as Encoder<BubblegumSetCollectionSizeInstructionDataArgs>;
 }
 

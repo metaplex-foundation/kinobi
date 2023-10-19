@@ -68,15 +68,14 @@ export type SetMintAuthorityInstructionDataArgs = {};
 
 export function getSetMintAuthorityInstructionDataEncoder(): Encoder<SetMintAuthorityInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<SetMintAuthorityInstructionData>(
+    getStructEncoder<{ discriminator: Array<number> }>(
       [['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })]],
       { description: 'SetMintAuthorityInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: [67, 127, 155, 187, 100, 174, 103, 121],
-      } as SetMintAuthorityInstructionData)
+    (value) => ({
+      ...value,
+      discriminator: [67, 127, 155, 187, 100, 174, 103, 121],
+    })
   ) as Encoder<SetMintAuthorityInstructionDataArgs>;
 }
 

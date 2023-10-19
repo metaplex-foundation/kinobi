@@ -46,7 +46,7 @@ export type MultisigAccountData = {
 export type MultisigAccountDataArgs = MultisigAccountData;
 
 export function getMultisigAccountDataEncoder(): Encoder<MultisigAccountDataArgs> {
-  return getStructEncoder<MultisigAccountData>(
+  return getStructEncoder<MultisigAccountDataArgs>(
     [
       ['m', getU8Encoder()],
       ['n', getU8Encoder()],

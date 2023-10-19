@@ -128,7 +128,26 @@ export function getUpdateArgsEncoder(): Encoder<UpdateArgsArgs> {
       [
         'V1',
         mapEncoder(
-          getStructEncoder<GetDataEnumKindContent<UpdateArgs, 'V1'>>([
+          getStructEncoder<{
+            authorizationData: OptionOrNullable<AuthorizationDataArgs>;
+            newUpdateAuthority: OptionOrNullable<Base58EncodedAddress>;
+            data: OptionOrNullable<{
+              name: string;
+              symbol: string;
+              uri: string;
+              sellerFeeBasisPoints: number;
+              creators: OptionOrNullable<Array<CreatorArgs>>;
+            }>;
+            primarySaleHappened: OptionOrNullable<boolean>;
+            isMutable: OptionOrNullable<boolean>;
+            tokenStandard: OptionOrNullable<TokenStandardArgs>;
+            collection: OptionOrNullable<CollectionArgs>;
+            uses: OptionOrNullable<UsesArgs>;
+            collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
+            programmableConfig: OptionOrNullable<ProgrammableConfigArgs>;
+            delegateState: OptionOrNullable<DelegateStateArgs>;
+            authorityType: AuthorityTypeArgs;
+          }>([
             [
               'authorizationData',
               getOptionEncoder(getAuthorizationDataEncoder()),
@@ -165,12 +184,11 @@ export function getUpdateArgsEncoder(): Encoder<UpdateArgsArgs> {
             ['delegateState', getOptionEncoder(getDelegateStateEncoder())],
             ['authorityType', getAuthorityTypeEncoder()],
           ]),
-          (value) =>
-            ({
-              ...value,
-              tokenStandard:
-                value.tokenStandard ?? some(TokenStandard.NonFungible),
-            } as GetDataEnumKindContent<UpdateArgs, 'V1'>)
+          (value) => ({
+            ...value,
+            tokenStandard:
+              value.tokenStandard ?? some(TokenStandard.NonFungible),
+          })
         ),
       ],
     ],

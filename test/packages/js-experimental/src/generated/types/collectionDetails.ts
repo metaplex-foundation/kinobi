@@ -26,7 +26,7 @@ export function getCollectionDetailsEncoder(): Encoder<CollectionDetailsArgs> {
     [
       [
         'V1',
-        getStructEncoder<GetDataEnumKindContent<CollectionDetails, 'V1'>>([
+        getStructEncoder<GetDataEnumKindContent<CollectionDetailsArgs, 'V1'>>([
           ['size', getU64Encoder()],
         ]),
       ],

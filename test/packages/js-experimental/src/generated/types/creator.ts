@@ -40,7 +40,11 @@ export type CreatorArgs = {
 
 export function getCreatorEncoder(): Encoder<CreatorArgs> {
   return mapEncoder(
-    getStructEncoder<Creator>(
+    getStructEncoder<{
+      address: Base58EncodedAddress;
+      verified: boolean;
+      share: number;
+    }>(
       [
         ['address', getAddressEncoder()],
         ['verified', getBooleanEncoder()],
@@ -48,12 +52,11 @@ export function getCreatorEncoder(): Encoder<CreatorArgs> {
       ],
       { description: 'Creator' }
     ),
-    (value) =>
-      ({
-        ...value,
-        verified: value.verified ?? false,
-        share: value.share ?? 42,
-      } as Creator)
+    (value) => ({
+      ...value,
+      verified: value.verified ?? false,
+      share: value.share ?? 42,
+    })
   ) as Encoder<CreatorArgs>;
 }
 

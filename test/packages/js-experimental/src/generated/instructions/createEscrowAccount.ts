@@ -97,12 +97,11 @@ export type CreateEscrowAccountInstructionDataArgs = {};
 
 export function getCreateEscrowAccountInstructionDataEncoder(): Encoder<CreateEscrowAccountInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<CreateEscrowAccountInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'CreateEscrowAccountInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 38 } as CreateEscrowAccountInstructionData)
+    (value) => ({ ...value, discriminator: 38 })
   ) as Encoder<CreateEscrowAccountInstructionDataArgs>;
 }
 

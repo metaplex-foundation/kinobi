@@ -101,7 +101,7 @@ export type AssetDataArgs = {
 };
 
 export function getAssetDataEncoder(): Encoder<AssetDataArgs> {
-  return getStructEncoder<AssetData>(
+  return getStructEncoder<AssetDataArgs>(
     [
       ['updateAuthority', getAddressEncoder()],
       ['name', getStringEncoder()],

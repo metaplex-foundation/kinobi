@@ -24,7 +24,7 @@ export type ConfigLine = {
 export type ConfigLineArgs = ConfigLine;
 
 export function getConfigLineEncoder(): Encoder<ConfigLineArgs> {
-  return getStructEncoder<ConfigLine>(
+  return getStructEncoder<ConfigLineArgs>(
     [
       ['name', getStringEncoder()],
       ['uri', getStringEncoder()],

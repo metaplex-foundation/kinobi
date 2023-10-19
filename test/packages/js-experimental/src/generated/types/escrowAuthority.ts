@@ -37,9 +37,9 @@ export function getEscrowAuthorityEncoder(): Encoder<EscrowAuthorityArgs> {
       ['TokenOwner', getUnitEncoder()],
       [
         'Creator',
-        getStructEncoder<GetDataEnumKindContent<EscrowAuthority, 'Creator'>>([
-          ['fields', getTupleEncoder([getAddressEncoder()])],
-        ]),
+        getStructEncoder<
+          GetDataEnumKindContent<EscrowAuthorityArgs, 'Creator'>
+        >([['fields', getTupleEncoder([getAddressEncoder()])]]),
       ],
     ],
     { description: 'EscrowAuthority' }

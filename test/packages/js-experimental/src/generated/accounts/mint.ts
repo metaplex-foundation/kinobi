@@ -64,7 +64,7 @@ export type MintAccountDataArgs = {
 };
 
 export function getMintAccountDataEncoder(): Encoder<MintAccountDataArgs> {
-  return getStructEncoder<MintAccountData>(
+  return getStructEncoder<MintAccountDataArgs>(
     [
       [
         'mintAuthority',

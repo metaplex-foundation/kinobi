@@ -90,15 +90,11 @@ export type VerifySizedCollectionItemInstructionDataArgs = {};
 
 export function getVerifySizedCollectionItemInstructionDataEncoder(): Encoder<VerifySizedCollectionItemInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<VerifySizedCollectionItemInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'VerifySizedCollectionItemInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: 30,
-      } as VerifySizedCollectionItemInstructionData)
+    (value) => ({ ...value, discriminator: 30 })
   ) as Encoder<VerifySizedCollectionItemInstructionDataArgs>;
 }
 

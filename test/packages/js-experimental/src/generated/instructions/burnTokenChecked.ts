@@ -78,7 +78,11 @@ export type BurnTokenCheckedInstructionDataArgs = {
 
 export function getBurnTokenCheckedInstructionDataEncoder(): Encoder<BurnTokenCheckedInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<BurnTokenCheckedInstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      amount: number | bigint;
+      decimals: number;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         ['amount', getU64Encoder()],
@@ -86,8 +90,7 @@ export function getBurnTokenCheckedInstructionDataEncoder(): Encoder<BurnTokenCh
       ],
       { description: 'BurnTokenCheckedInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 15 } as BurnTokenCheckedInstructionData)
+    (value) => ({ ...value, discriminator: 15 })
   ) as Encoder<BurnTokenCheckedInstructionDataArgs>;
 }
 

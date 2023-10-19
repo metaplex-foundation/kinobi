@@ -46,7 +46,7 @@ export function getMintArgsEncoder(): Encoder<MintArgsArgs> {
     [
       [
         'V1',
-        getStructEncoder<GetDataEnumKindContent<MintArgs, 'V1'>>([
+        getStructEncoder<GetDataEnumKindContent<MintArgsArgs, 'V1'>>([
           ['amount', getU64Encoder()],
           [
             'authorizationData',

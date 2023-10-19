@@ -26,7 +26,7 @@ export type CreateMasterEditionArgsArgs = {
 };
 
 export function getCreateMasterEditionArgsEncoder(): Encoder<CreateMasterEditionArgsArgs> {
-  return getStructEncoder<CreateMasterEditionArgs>(
+  return getStructEncoder<CreateMasterEditionArgsArgs>(
     [['maxSupply', getOptionEncoder(getU64Encoder())]],
     { description: 'CreateMasterEditionArgs' }
   ) as Encoder<CreateMasterEditionArgsArgs>;

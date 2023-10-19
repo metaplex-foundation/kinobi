@@ -111,14 +111,14 @@ export type MigrateInstructionDataArgs = { migrateArgs: MigrateArgsArgs };
 
 export function getMigrateInstructionDataEncoder(): Encoder<MigrateInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<MigrateInstructionData>(
+    getStructEncoder<{ discriminator: number; migrateArgs: MigrateArgsArgs }>(
       [
         ['discriminator', getU8Encoder()],
         ['migrateArgs', getMigrateArgsEncoder()],
       ],
       { description: 'MigrateInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 50 } as MigrateInstructionData)
+    (value) => ({ ...value, discriminator: 50 })
   ) as Encoder<MigrateInstructionDataArgs>;
 }
 

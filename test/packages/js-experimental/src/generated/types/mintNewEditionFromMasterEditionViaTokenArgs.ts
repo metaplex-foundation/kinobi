@@ -20,7 +20,7 @@ export type MintNewEditionFromMasterEditionViaTokenArgsArgs = {
 };
 
 export function getMintNewEditionFromMasterEditionViaTokenArgsEncoder(): Encoder<MintNewEditionFromMasterEditionViaTokenArgsArgs> {
-  return getStructEncoder<MintNewEditionFromMasterEditionViaTokenArgs>(
+  return getStructEncoder<MintNewEditionFromMasterEditionViaTokenArgsArgs>(
     [['edition', getU64Encoder()]],
     { description: 'MintNewEditionFromMasterEditionViaTokenArgs' }
   ) as Encoder<MintNewEditionFromMasterEditionViaTokenArgsArgs>;

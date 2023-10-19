@@ -86,7 +86,11 @@ export type SetTokenAuthorityInstructionDataArgs = {
 
 export function getSetTokenAuthorityInstructionDataEncoder(): Encoder<SetTokenAuthorityInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<SetTokenAuthorityInstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      authorityType: TokenAuthorityTypeArgs;
+      newAuthority: OptionOrNullable<Base58EncodedAddress>;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         ['authorityType', getTokenAuthorityTypeEncoder()],
@@ -94,8 +98,7 @@ export function getSetTokenAuthorityInstructionDataEncoder(): Encoder<SetTokenAu
       ],
       { description: 'SetTokenAuthorityInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 6 } as SetTokenAuthorityInstructionData)
+    (value) => ({ ...value, discriminator: 6 })
   ) as Encoder<SetTokenAuthorityInstructionDataArgs>;
 }
 

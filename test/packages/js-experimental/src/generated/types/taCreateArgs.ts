@@ -24,7 +24,7 @@ export type TaCreateArgs = {
 export type TaCreateArgsArgs = TaCreateArgs;
 
 export function getTaCreateArgsEncoder(): Encoder<TaCreateArgsArgs> {
-  return getStructEncoder<TaCreateArgs>(
+  return getStructEncoder<TaCreateArgsArgs>(
     [
       ['ruleSetName', getStringEncoder()],
       ['serializedRuleSet', getBytesEncoder({ size: getU32Encoder() })],

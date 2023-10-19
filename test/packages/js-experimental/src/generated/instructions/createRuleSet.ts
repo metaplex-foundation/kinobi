@@ -84,7 +84,11 @@ export type CreateRuleSetInstructionDataArgs = {
 
 export function getCreateRuleSetInstructionDataEncoder(): Encoder<CreateRuleSetInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<CreateRuleSetInstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      createArgs: TaCreateArgsArgs;
+      ruleSetBump: number;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         ['createArgs', getTaCreateArgsEncoder()],
@@ -92,7 +96,7 @@ export function getCreateRuleSetInstructionDataEncoder(): Encoder<CreateRuleSetI
       ],
       { description: 'CreateRuleSetInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 0 } as CreateRuleSetInstructionData)
+    (value) => ({ ...value, discriminator: 0 })
   ) as Encoder<CreateRuleSetInstructionDataArgs>;
 }
 

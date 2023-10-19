@@ -28,7 +28,7 @@ export type HiddenSettings = {
 export type HiddenSettingsArgs = HiddenSettings;
 
 export function getHiddenSettingsEncoder(): Encoder<HiddenSettingsArgs> {
-  return getStructEncoder<HiddenSettings>(
+  return getStructEncoder<HiddenSettingsArgs>(
     [
       ['name', getStringEncoder()],
       ['uri', getStringEncoder()],

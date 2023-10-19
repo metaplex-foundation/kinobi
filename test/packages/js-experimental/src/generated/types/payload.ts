@@ -29,7 +29,7 @@ export type Payload = { map: Map<PayloadKey, PayloadType> };
 export type PayloadArgs = { map: Map<PayloadKeyArgs, PayloadTypeArgs> };
 
 export function getPayloadEncoder(): Encoder<PayloadArgs> {
-  return getStructEncoder<Payload>(
+  return getStructEncoder<PayloadArgs>(
     [['map', getMapEncoder(getPayloadKeyEncoder(), getPayloadTypeEncoder())]],
     { description: 'Payload' }
   ) as Encoder<PayloadArgs>;

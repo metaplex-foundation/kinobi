@@ -81,12 +81,11 @@ export type VerifyCollectionInstructionDataArgs = {};
 
 export function getVerifyCollectionInstructionDataEncoder(): Encoder<VerifyCollectionInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<VerifyCollectionInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'VerifyCollectionInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 18 } as VerifyCollectionInstructionData)
+    (value) => ({ ...value, discriminator: 18 })
   ) as Encoder<VerifyCollectionInstructionDataArgs>;
 }
 

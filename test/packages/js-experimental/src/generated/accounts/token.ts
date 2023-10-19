@@ -72,7 +72,7 @@ export type TokenAccountDataArgs = {
 };
 
 export function getTokenAccountDataEncoder(): Encoder<TokenAccountDataArgs> {
-  return getStructEncoder<TokenAccountData>(
+  return getStructEncoder<TokenAccountDataArgs>(
     [
       ['mint', getAddressEncoder()],
       ['owner', getAddressEncoder()],

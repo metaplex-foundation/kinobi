@@ -78,12 +78,11 @@ export type ThawDelegatedAccountInstructionDataArgs = {};
 
 export function getThawDelegatedAccountInstructionDataEncoder(): Encoder<ThawDelegatedAccountInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<ThawDelegatedAccountInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'ThawDelegatedAccountInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 27 } as ThawDelegatedAccountInstructionData)
+    (value) => ({ ...value, discriminator: 27 })
   ) as Encoder<ThawDelegatedAccountInstructionDataArgs>;
 }
 

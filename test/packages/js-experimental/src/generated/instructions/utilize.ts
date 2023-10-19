@@ -116,14 +116,14 @@ export type UtilizeInstructionDataArgs = { numberOfUses: number | bigint };
 
 export function getUtilizeInstructionDataEncoder(): Encoder<UtilizeInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<UtilizeInstructionData>(
+    getStructEncoder<{ discriminator: number; numberOfUses: number | bigint }>(
       [
         ['discriminator', getU8Encoder()],
         ['numberOfUses', getU64Encoder()],
       ],
       { description: 'UtilizeInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 19 } as UtilizeInstructionData)
+    (value) => ({ ...value, discriminator: 19 })
   ) as Encoder<UtilizeInstructionDataArgs>;
 }
 

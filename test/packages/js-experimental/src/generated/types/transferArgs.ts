@@ -46,7 +46,7 @@ export function getTransferArgsEncoder(): Encoder<TransferArgsArgs> {
     [
       [
         'V1',
-        getStructEncoder<GetDataEnumKindContent<TransferArgs, 'V1'>>([
+        getStructEncoder<GetDataEnumKindContent<TransferArgsArgs, 'V1'>>([
           [
             'authorizationData',
             getOptionEncoder(getAuthorizationDataEncoder()),

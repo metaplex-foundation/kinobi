@@ -141,15 +141,14 @@ export type MintFromCandyMachineInstructionDataArgs = {};
 
 export function getMintFromCandyMachineInstructionDataEncoder(): Encoder<MintFromCandyMachineInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<MintFromCandyMachineInstructionData>(
+    getStructEncoder<{ discriminator: Array<number> }>(
       [['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })]],
       { description: 'MintFromCandyMachineInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: [51, 57, 225, 47, 182, 146, 137, 166],
-      } as MintFromCandyMachineInstructionData)
+    (value) => ({
+      ...value,
+      discriminator: [51, 57, 225, 47, 182, 146, 137, 166],
+    })
   ) as Encoder<MintFromCandyMachineInstructionDataArgs>;
 }
 

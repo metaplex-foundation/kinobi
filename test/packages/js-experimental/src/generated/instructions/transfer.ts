@@ -138,14 +138,14 @@ export type TransferInstructionDataArgs = { transferArgs: TransferArgsArgs };
 
 export function getTransferInstructionDataEncoder(): Encoder<TransferInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<TransferInstructionData>(
+    getStructEncoder<{ discriminator: number; transferArgs: TransferArgsArgs }>(
       [
         ['discriminator', getU8Encoder()],
         ['transferArgs', getTransferArgsEncoder()],
       ],
       { description: 'TransferInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 46 } as TransferInstructionData)
+    (value) => ({ ...value, discriminator: 46 })
   ) as Encoder<TransferInstructionDataArgs>;
 }
 

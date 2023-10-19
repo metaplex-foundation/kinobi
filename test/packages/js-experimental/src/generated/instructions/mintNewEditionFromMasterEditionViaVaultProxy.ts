@@ -140,7 +140,10 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs = {
 
 export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataEncoder(): Encoder<MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<MintNewEditionFromMasterEditionViaVaultProxyInstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgsArgs;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         [
@@ -153,11 +156,7 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataEn
           'MintNewEditionFromMasterEditionViaVaultProxyInstructionData',
       }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: 13,
-      } as MintNewEditionFromMasterEditionViaVaultProxyInstructionData)
+    (value) => ({ ...value, discriminator: 13 })
   ) as Encoder<MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs>;
 }
 

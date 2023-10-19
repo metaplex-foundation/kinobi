@@ -62,12 +62,11 @@ export type RevokeTokenDelegateInstructionDataArgs = {};
 
 export function getRevokeTokenDelegateInstructionDataEncoder(): Encoder<RevokeTokenDelegateInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<RevokeTokenDelegateInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'RevokeTokenDelegateInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 5 } as RevokeTokenDelegateInstructionData)
+    (value) => ({ ...value, discriminator: 5 })
   ) as Encoder<RevokeTokenDelegateInstructionDataArgs>;
 }
 

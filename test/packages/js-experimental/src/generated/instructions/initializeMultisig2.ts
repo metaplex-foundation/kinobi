@@ -64,15 +64,14 @@ export type InitializeMultisig2InstructionDataArgs = { m: number };
 
 export function getInitializeMultisig2InstructionDataEncoder(): Encoder<InitializeMultisig2InstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<InitializeMultisig2InstructionData>(
+    getStructEncoder<{ discriminator: number; m: number }>(
       [
         ['discriminator', getU8Encoder()],
         ['m', getU8Encoder()],
       ],
       { description: 'InitializeMultisig2InstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 19 } as InitializeMultisig2InstructionData)
+    (value) => ({ ...value, discriminator: 19 })
   ) as Encoder<InitializeMultisig2InstructionDataArgs>;
 }
 

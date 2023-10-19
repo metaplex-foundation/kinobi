@@ -53,7 +53,13 @@ export type RequestUnitsInstructionDataArgs = {
 
 export function getRequestUnitsInstructionDataEncoder(): Encoder<RequestUnitsInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<RequestUnitsInstructionData>(
+    getStructEncoder<{
+      discriminator: number;
+      /** Units to request for transaction-wide compute. */
+      units: number;
+      /** Prioritization fee lamports. */
+      additionalFee: number;
+    }>(
       [
         ['discriminator', getU8Encoder()],
         ['units', getU32Encoder()],
@@ -61,7 +67,7 @@ export function getRequestUnitsInstructionDataEncoder(): Encoder<RequestUnitsIns
       ],
       { description: 'RequestUnitsInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 0 } as RequestUnitsInstructionData)
+    (value) => ({ ...value, discriminator: 0 })
   ) as Encoder<RequestUnitsInstructionDataArgs>;
 }
 

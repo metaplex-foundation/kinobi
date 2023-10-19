@@ -75,14 +75,14 @@ export type TransferTokensInstructionDataArgs = { amount: number | bigint };
 
 export function getTransferTokensInstructionDataEncoder(): Encoder<TransferTokensInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<TransferTokensInstructionData>(
+    getStructEncoder<{ discriminator: number; amount: number | bigint }>(
       [
         ['discriminator', getU8Encoder()],
         ['amount', getU64Encoder()],
       ],
       { description: 'TransferTokensInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 3 } as TransferTokensInstructionData)
+    (value) => ({ ...value, discriminator: 3 })
   ) as Encoder<TransferTokensInstructionDataArgs>;
 }
 

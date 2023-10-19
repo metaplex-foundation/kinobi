@@ -71,12 +71,11 @@ export type SetTokenStandardInstructionDataArgs = {};
 
 export function getSetTokenStandardInstructionDataEncoder(): Encoder<SetTokenStandardInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<SetTokenStandardInstructionData>(
+    getStructEncoder<{ discriminator: number }>(
       [['discriminator', getU8Encoder()]],
       { description: 'SetTokenStandardInstructionData' }
     ),
-    (value) =>
-      ({ ...value, discriminator: 35 } as SetTokenStandardInstructionData)
+    (value) => ({ ...value, discriminator: 35 })
   ) as Encoder<SetTokenStandardInstructionDataArgs>;
 }
 

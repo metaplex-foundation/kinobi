@@ -26,7 +26,7 @@ export function getUseAssetArgsEncoder(): Encoder<UseAssetArgsArgs> {
     [
       [
         'V1',
-        getStructEncoder<GetDataEnumKindContent<UseAssetArgs, 'V1'>>([
+        getStructEncoder<GetDataEnumKindContent<UseAssetArgsArgs, 'V1'>>([
           ['useCount', getU64Encoder()],
         ]),
       ],

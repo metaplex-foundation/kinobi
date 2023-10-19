@@ -127,15 +127,14 @@ export type SetCollectionInstructionDataArgs = {};
 
 export function getSetCollectionInstructionDataEncoder(): Encoder<SetCollectionInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<SetCollectionInstructionData>(
+    getStructEncoder<{ discriminator: Array<number> }>(
       [['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })]],
       { description: 'SetCollectionInstructionData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        discriminator: [192, 254, 206, 76, 168, 182, 59, 223],
-      } as SetCollectionInstructionData)
+    (value) => ({
+      ...value,
+      discriminator: [192, 254, 206, 76, 168, 182, 59, 223],
+    })
   ) as Encoder<SetCollectionInstructionDataArgs>;
 }
 

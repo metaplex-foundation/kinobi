@@ -38,7 +38,7 @@ import {
   assertAccountExists,
   decodeAccount,
 } from '../shared';
-import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
+import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type CollectionAuthorityRecord<TAddress extends string = string> =
   Account<CollectionAuthorityRecordAccountData, TAddress>;
@@ -56,7 +56,11 @@ export type CollectionAuthorityRecordAccountDataArgs = {
 
 export function getCollectionAuthorityRecordAccountDataEncoder(): Encoder<CollectionAuthorityRecordAccountDataArgs> {
   return mapEncoder(
-    getStructEncoder<CollectionAuthorityRecordAccountData>(
+    getStructEncoder<{
+      key: TmKeyArgs;
+      bump: number;
+      updateAuthority: OptionOrNullable<Base58EncodedAddress>;
+    }>(
       [
         ['key', getTmKeyEncoder()],
         ['bump', getU8Encoder()],
@@ -64,11 +68,7 @@ export function getCollectionAuthorityRecordAccountDataEncoder(): Encoder<Collec
       ],
       { description: 'CollectionAuthorityRecordAccountData' }
     ),
-    (value) =>
-      ({
-        ...value,
-        key: TmKey.CollectionAuthorityRecord,
-      } as CollectionAuthorityRecordAccountData)
+    (value) => ({ ...value, key: TmKey.CollectionAuthorityRecord })
   ) as Encoder<CollectionAuthorityRecordAccountDataArgs>;
 }
 

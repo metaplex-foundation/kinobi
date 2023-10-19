@@ -30,7 +30,7 @@ export type AddMemoInstructionData = { memo: string };
 export type AddMemoInstructionDataArgs = AddMemoInstructionData;
 
 export function getAddMemoInstructionDataEncoder(): Encoder<AddMemoInstructionDataArgs> {
-  return getStructEncoder<AddMemoInstructionData>(
+  return getStructEncoder<AddMemoInstructionDataArgs>(
     [['memo', getStringEncoder()]],
     { description: 'AddMemoInstructionData' }
   ) as Encoder<AddMemoInstructionDataArgs>;
