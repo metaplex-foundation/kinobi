@@ -1,24 +1,27 @@
 import * as nodes from '../../../nodes';
 import { pascalCase } from '../../../shared';
-import { Fragment, fragmentFromTemplate } from './common';
+import { TypeManifest } from '../TypeManifest';
+import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getAccountFetchHelpersFragment(
-  accountNode: nodes.AccountNode
+  accountNode: nodes.AccountNode,
+  manifest: TypeManifest
 ): Fragment {
-  const accountDataName = accountNode.data.link
-    ? accountNode.data.link.name
-    : accountNode.data.name;
+  const decoderFunctionFragment = accountNode.data.link
+    ? manifest.decoder.clone()
+    : fragment(`get${pascalCase(accountNode.data.name)}Decoder()`);
 
   return fragmentFromTemplate('accountFetchHelpers.njk', {
     pascalCaseName: pascalCase(accountNode.name),
-    encoderFunction: `get${pascalCase(accountDataName)}Encoder`,
+    decoderFunction: decoderFunctionFragment.render,
   })
+    .mergeImportsWith(decoderFunctionFragment)
     .addImports('solanaAddresses', ['Base58EncodedAddress'])
-    .addImports('some-magical-place', [
+    .addImports('shared', [
       'assertAccountExists',
       'Context',
-      'deserializeAccount',
-      'RpcAccount',
+      'decodeAccount',
+      'EncodedAccount',
       'RpcGetAccountOptions',
       'RpcGetAccountsOptions',
     ]);

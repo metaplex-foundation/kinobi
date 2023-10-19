@@ -26,15 +26,18 @@ import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
 import {
   Account,
   Context,
-  RpcAccount,
+  EncodedAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
-  deserializeAccount,
-} from 'some-magical-place';
+  decodeAccount,
+} from '../shared';
 import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
-export type Edition = Account<EditionAccountData>;
+export type Edition<TAddress extends string = string> = Account<
+  EditionAccountData,
+  TAddress
+>;
 
 export type EditionAccountData = {
   key: TmKey;
@@ -82,27 +85,29 @@ export function getEditionAccountDataCodec(): Codec<
   );
 }
 
-export function deserializeEdition(rawAccount: RpcAccount): Edition {
-  return deserializeAccount(rawAccount, getEditionAccountDataEncoder());
+export function decodeEdition<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress>
+): Edition<TAddress> {
+  return decodeAccount(encodedAccount, getEditionAccountDataDecoder());
 }
 
-export async function fetchEdition(
+export async function fetchEdition<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<Edition> {
+): Promise<Edition<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  assertAccountExists(maybeAccount, 'Edition');
-  return deserializeEdition(maybeAccount);
+  assertAccountExists(maybeAccount);
+  return decodeEdition(maybeAccount);
 }
 
-export async function safeFetchEdition(
+export async function safeFetchEdition<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<Edition | null> {
+): Promise<Edition<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  return maybeAccount.exists ? deserializeEdition(maybeAccount) : null;
+  return maybeAccount.exists ? decodeEdition(maybeAccount) : null;
 }
 
 export async function fetchAllEdition(
@@ -112,8 +117,8 @@ export async function fetchAllEdition(
 ): Promise<Edition[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, 'Edition');
-    return deserializeEdition(maybeAccount);
+    assertAccountExists(maybeAccount);
+    return decodeEdition(maybeAccount);
   });
 }
 
@@ -125,7 +130,7 @@ export async function safeFetchAllEdition(
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) => deserializeEdition(maybeAccount as RpcAccount));
+    .map((maybeAccount) => decodeEdition(maybeAccount as EncodedAccount));
 }
 
 export function getEditionSize(): number {

@@ -32,15 +32,18 @@ import { getStringEncoder } from '@solana/codecs-strings';
 import {
   Account,
   Context,
-  RpcAccount,
+  EncodedAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
-  deserializeAccount,
-} from 'some-magical-place';
+  decodeAccount,
+} from '../shared';
 import { TaKey } from '../types';
 
-export type FrequencyAccount = Account<FrequencyAccountAccountData>;
+export type FrequencyAccount<TAddress extends string = string> = Account<
+  FrequencyAccountAccountData,
+  TAddress
+>;
 
 export type FrequencyAccountAccountData = {
   /** Test with only one line. */
@@ -98,32 +101,31 @@ export function getFrequencyAccountAccountDataCodec(): Codec<
   );
 }
 
-export function deserializeFrequencyAccount(
-  rawAccount: RpcAccount
-): FrequencyAccount {
-  return deserializeAccount(
-    rawAccount,
-    getFrequencyAccountAccountDataEncoder()
-  );
+export function decodeFrequencyAccount<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress>
+): FrequencyAccount<TAddress> {
+  return decodeAccount(encodedAccount, getFrequencyAccountAccountDataDecoder());
 }
 
-export async function fetchFrequencyAccount(
+export async function fetchFrequencyAccount<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<FrequencyAccount> {
+): Promise<FrequencyAccount<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  assertAccountExists(maybeAccount, 'FrequencyAccount');
-  return deserializeFrequencyAccount(maybeAccount);
+  assertAccountExists(maybeAccount);
+  return decodeFrequencyAccount(maybeAccount);
 }
 
-export async function safeFetchFrequencyAccount(
+export async function safeFetchFrequencyAccount<
+  TAddress extends string = string
+>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<FrequencyAccount | null> {
+): Promise<FrequencyAccount<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  return maybeAccount.exists ? deserializeFrequencyAccount(maybeAccount) : null;
+  return maybeAccount.exists ? decodeFrequencyAccount(maybeAccount) : null;
 }
 
 export async function fetchAllFrequencyAccount(
@@ -133,8 +135,8 @@ export async function fetchAllFrequencyAccount(
 ): Promise<FrequencyAccount[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, 'FrequencyAccount');
-    return deserializeFrequencyAccount(maybeAccount);
+    assertAccountExists(maybeAccount);
+    return decodeFrequencyAccount(maybeAccount);
   });
 }
 
@@ -147,7 +149,7 @@ export async function safeFetchAllFrequencyAccount(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
-      deserializeFrequencyAccount(maybeAccount as RpcAccount)
+      decodeFrequencyAccount(maybeAccount as EncodedAccount)
     );
 }
 
@@ -174,7 +176,7 @@ export async function fetchFrequencyAccountFromSeeds(
 ): Promise<FrequencyAccount> {
   return fetchFrequencyAccount(
     context,
-    findFrequencyAccountPda(context),
+    findFrequencyAccountPda(context)[0],
     options
   );
 }
@@ -185,7 +187,7 @@ export async function safeFetchFrequencyAccountFromSeeds(
 ): Promise<FrequencyAccount | null> {
   return safeFetchFrequencyAccount(
     context,
-    findFrequencyAccountPda(context),
+    findFrequencyAccountPda(context)[0],
     options
   );
 }

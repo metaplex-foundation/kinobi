@@ -88,6 +88,10 @@ export class Fragment {
     return this;
   }
 
+  clone(): Fragment {
+    return new Fragment(this.render).mergeImportsWith(this.imports);
+  }
+
   toString(): string {
     return this.render;
   }

@@ -7,46 +7,50 @@
  */
 
 import { Base58EncodedAddress } from '@solana/addresses';
+import { getReservationListV1AccountDataDecoder } from '../../hooked';
 import {
   Account,
   Context,
-  RpcAccount,
+  EncodedAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
-  deserializeAccount,
-} from 'some-magical-place';
+  decodeAccount,
+} from '../shared';
 
-export type ReservationListV1 = Account<ReservationListV1AccountData>;
+export type ReservationListV1<TAddress extends string = string> = Account<
+  ReservationListV1AccountData,
+  TAddress
+>;
 
-export function deserializeReservationListV1(
-  rawAccount: RpcAccount
-): ReservationListV1 {
-  return deserializeAccount(
-    rawAccount,
-    getReservationListV1AccountDataEncoder()
+export function decodeReservationListV1<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress>
+): ReservationListV1<TAddress> {
+  return decodeAccount(
+    encodedAccount,
+    getReservationListV1AccountDataDecoder()
   );
 }
 
-export async function fetchReservationListV1(
+export async function fetchReservationListV1<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<ReservationListV1> {
+): Promise<ReservationListV1<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  assertAccountExists(maybeAccount, 'ReservationListV1');
-  return deserializeReservationListV1(maybeAccount);
+  assertAccountExists(maybeAccount);
+  return decodeReservationListV1(maybeAccount);
 }
 
-export async function safeFetchReservationListV1(
+export async function safeFetchReservationListV1<
+  TAddress extends string = string
+>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<ReservationListV1 | null> {
+): Promise<ReservationListV1<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  return maybeAccount.exists
-    ? deserializeReservationListV1(maybeAccount)
-    : null;
+  return maybeAccount.exists ? decodeReservationListV1(maybeAccount) : null;
 }
 
 export async function fetchAllReservationListV1(
@@ -56,8 +60,8 @@ export async function fetchAllReservationListV1(
 ): Promise<ReservationListV1[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, 'ReservationListV1');
-    return deserializeReservationListV1(maybeAccount);
+    assertAccountExists(maybeAccount);
+    return decodeReservationListV1(maybeAccount);
   });
 }
 
@@ -70,6 +74,6 @@ export async function safeFetchAllReservationListV1(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
-      deserializeReservationListV1(maybeAccount as RpcAccount)
+      decodeReservationListV1(maybeAccount as EncodedAccount)
     );
 }

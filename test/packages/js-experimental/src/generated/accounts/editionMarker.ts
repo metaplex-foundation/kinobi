@@ -24,15 +24,18 @@ import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   Account,
   Context,
-  RpcAccount,
+  EncodedAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
-  deserializeAccount,
-} from 'some-magical-place';
+  decodeAccount,
+} from '../shared';
 import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
-export type EditionMarker = Account<EditionMarkerAccountData>;
+export type EditionMarker<TAddress extends string = string> = Account<
+  EditionMarkerAccountData,
+  TAddress
+>;
 
 export type EditionMarkerAccountData = { key: TmKey; ledger: Array<number> };
 
@@ -72,29 +75,29 @@ export function getEditionMarkerAccountDataCodec(): Codec<
   );
 }
 
-export function deserializeEditionMarker(
-  rawAccount: RpcAccount
-): EditionMarker {
-  return deserializeAccount(rawAccount, getEditionMarkerAccountDataEncoder());
+export function decodeEditionMarker<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress>
+): EditionMarker<TAddress> {
+  return decodeAccount(encodedAccount, getEditionMarkerAccountDataDecoder());
 }
 
-export async function fetchEditionMarker(
+export async function fetchEditionMarker<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<EditionMarker> {
+): Promise<EditionMarker<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  assertAccountExists(maybeAccount, 'EditionMarker');
-  return deserializeEditionMarker(maybeAccount);
+  assertAccountExists(maybeAccount);
+  return decodeEditionMarker(maybeAccount);
 }
 
-export async function safeFetchEditionMarker(
+export async function safeFetchEditionMarker<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<EditionMarker | null> {
+): Promise<EditionMarker<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  return maybeAccount.exists ? deserializeEditionMarker(maybeAccount) : null;
+  return maybeAccount.exists ? decodeEditionMarker(maybeAccount) : null;
 }
 
 export async function fetchAllEditionMarker(
@@ -104,8 +107,8 @@ export async function fetchAllEditionMarker(
 ): Promise<EditionMarker[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, 'EditionMarker');
-    return deserializeEditionMarker(maybeAccount);
+    assertAccountExists(maybeAccount);
+    return decodeEditionMarker(maybeAccount);
   });
 }
 
@@ -117,9 +120,7 @@ export async function safeFetchAllEditionMarker(
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) =>
-      deserializeEditionMarker(maybeAccount as RpcAccount)
-    );
+    .map((maybeAccount) => decodeEditionMarker(maybeAccount as EncodedAccount));
 }
 
 export function getEditionMarkerSize(): number {

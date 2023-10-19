@@ -32,16 +32,16 @@ import {
 import {
   Account,
   Context,
-  RpcAccount,
+  EncodedAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
-  deserializeAccount,
-} from 'some-magical-place';
+  decodeAccount,
+} from '../shared';
 import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
-export type CollectionAuthorityRecord =
-  Account<CollectionAuthorityRecordAccountData>;
+export type CollectionAuthorityRecord<TAddress extends string = string> =
+  Account<CollectionAuthorityRecordAccountData, TAddress>;
 
 export type CollectionAuthorityRecordAccountData = {
   key: TmKey;
@@ -93,33 +93,39 @@ export function getCollectionAuthorityRecordAccountDataCodec(): Codec<
   );
 }
 
-export function deserializeCollectionAuthorityRecord(
-  rawAccount: RpcAccount
-): CollectionAuthorityRecord {
-  return deserializeAccount(
-    rawAccount,
-    getCollectionAuthorityRecordAccountDataEncoder()
+export function decodeCollectionAuthorityRecord<
+  TAddress extends string = string
+>(
+  encodedAccount: EncodedAccount<TAddress>
+): CollectionAuthorityRecord<TAddress> {
+  return decodeAccount(
+    encodedAccount,
+    getCollectionAuthorityRecordAccountDataDecoder()
   );
 }
 
-export async function fetchCollectionAuthorityRecord(
+export async function fetchCollectionAuthorityRecord<
+  TAddress extends string = string
+>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<CollectionAuthorityRecord> {
+): Promise<CollectionAuthorityRecord<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  assertAccountExists(maybeAccount, 'CollectionAuthorityRecord');
-  return deserializeCollectionAuthorityRecord(maybeAccount);
+  assertAccountExists(maybeAccount);
+  return decodeCollectionAuthorityRecord(maybeAccount);
 }
 
-export async function safeFetchCollectionAuthorityRecord(
+export async function safeFetchCollectionAuthorityRecord<
+  TAddress extends string = string
+>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<CollectionAuthorityRecord | null> {
+): Promise<CollectionAuthorityRecord<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
   return maybeAccount.exists
-    ? deserializeCollectionAuthorityRecord(maybeAccount)
+    ? decodeCollectionAuthorityRecord(maybeAccount)
     : null;
 }
 
@@ -130,8 +136,8 @@ export async function fetchAllCollectionAuthorityRecord(
 ): Promise<CollectionAuthorityRecord[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, 'CollectionAuthorityRecord');
-    return deserializeCollectionAuthorityRecord(maybeAccount);
+    assertAccountExists(maybeAccount);
+    return decodeCollectionAuthorityRecord(maybeAccount);
   });
 }
 
@@ -144,6 +150,6 @@ export async function safeFetchAllCollectionAuthorityRecord(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
-      deserializeCollectionAuthorityRecord(maybeAccount as RpcAccount)
+      decodeCollectionAuthorityRecord(maybeAccount as EncodedAccount)
     );
 }

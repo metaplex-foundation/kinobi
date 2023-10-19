@@ -35,14 +35,17 @@ import {
 import {
   Account,
   Context,
-  RpcAccount,
+  EncodedAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
-  deserializeAccount,
-} from 'some-magical-place';
+  decodeAccount,
+} from '../shared';
 
-export type Mint = Account<MintAccountData>;
+export type Mint<TAddress extends string = string> = Account<
+  MintAccountData,
+  TAddress
+>;
 
 export type MintAccountData = {
   mintAuthority: Option<Base58EncodedAddress>;
@@ -117,27 +120,29 @@ export function getMintAccountDataCodec(): Codec<
   return combineCodec(getMintAccountDataEncoder(), getMintAccountDataDecoder());
 }
 
-export function deserializeMint(rawAccount: RpcAccount): Mint {
-  return deserializeAccount(rawAccount, getMintAccountDataEncoder());
+export function decodeMint<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress>
+): Mint<TAddress> {
+  return decodeAccount(encodedAccount, getMintAccountDataDecoder());
 }
 
-export async function fetchMint(
+export async function fetchMint<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<Mint> {
+): Promise<Mint<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  assertAccountExists(maybeAccount, 'Mint');
-  return deserializeMint(maybeAccount);
+  assertAccountExists(maybeAccount);
+  return decodeMint(maybeAccount);
 }
 
-export async function safeFetchMint(
+export async function safeFetchMint<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<Mint | null> {
+): Promise<Mint<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  return maybeAccount.exists ? deserializeMint(maybeAccount) : null;
+  return maybeAccount.exists ? decodeMint(maybeAccount) : null;
 }
 
 export async function fetchAllMint(
@@ -147,8 +152,8 @@ export async function fetchAllMint(
 ): Promise<Mint[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, 'Mint');
-    return deserializeMint(maybeAccount);
+    assertAccountExists(maybeAccount);
+    return decodeMint(maybeAccount);
   });
 }
 
@@ -160,7 +165,7 @@ export async function safeFetchAllMint(
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) => deserializeMint(maybeAccount as RpcAccount));
+    .map((maybeAccount) => decodeMint(maybeAccount as EncodedAccount));
 }
 
 export function getMintSize(): number {

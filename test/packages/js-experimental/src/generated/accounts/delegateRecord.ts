@@ -27,12 +27,12 @@ import { getStringEncoder } from '@solana/codecs-strings';
 import {
   Account,
   Context,
-  RpcAccount,
+  EncodedAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
-  deserializeAccount,
-} from 'some-magical-place';
+  decodeAccount,
+} from '../shared';
 import {
   DelegateRole,
   DelegateRoleArgs,
@@ -43,7 +43,10 @@ import {
   getTmKeyEncoder,
 } from '../types';
 
-export type DelegateRecord = Account<DelegateRecordAccountData>;
+export type DelegateRecord<TAddress extends string = string> = Account<
+  DelegateRecordAccountData,
+  TAddress
+>;
 
 export type DelegateRecordAccountData = {
   key: TmKey;
@@ -91,29 +94,29 @@ export function getDelegateRecordAccountDataCodec(): Codec<
   );
 }
 
-export function deserializeDelegateRecord(
-  rawAccount: RpcAccount
-): DelegateRecord {
-  return deserializeAccount(rawAccount, getDelegateRecordAccountDataEncoder());
+export function decodeDelegateRecord<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress>
+): DelegateRecord<TAddress> {
+  return decodeAccount(encodedAccount, getDelegateRecordAccountDataDecoder());
 }
 
-export async function fetchDelegateRecord(
+export async function fetchDelegateRecord<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<DelegateRecord> {
+): Promise<DelegateRecord<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  assertAccountExists(maybeAccount, 'DelegateRecord');
-  return deserializeDelegateRecord(maybeAccount);
+  assertAccountExists(maybeAccount);
+  return decodeDelegateRecord(maybeAccount);
 }
 
-export async function safeFetchDelegateRecord(
+export async function safeFetchDelegateRecord<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<DelegateRecord | null> {
+): Promise<DelegateRecord<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  return maybeAccount.exists ? deserializeDelegateRecord(maybeAccount) : null;
+  return maybeAccount.exists ? decodeDelegateRecord(maybeAccount) : null;
 }
 
 export async function fetchAllDelegateRecord(
@@ -123,8 +126,8 @@ export async function fetchAllDelegateRecord(
 ): Promise<DelegateRecord[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, 'DelegateRecord');
-    return deserializeDelegateRecord(maybeAccount);
+    assertAccountExists(maybeAccount);
+    return decodeDelegateRecord(maybeAccount);
   });
 }
 
@@ -137,7 +140,7 @@ export async function safeFetchAllDelegateRecord(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
-      deserializeDelegateRecord(maybeAccount as RpcAccount)
+      decodeDelegateRecord(maybeAccount as EncodedAccount)
     );
 }
 
@@ -170,7 +173,7 @@ export async function fetchDelegateRecordFromSeeds(
 ): Promise<DelegateRecord> {
   return fetchDelegateRecord(
     context,
-    findDelegateRecordPda(context, seeds),
+    findDelegateRecordPda(context, seeds)[0],
     options
   );
 }
@@ -182,7 +185,7 @@ export async function safeFetchDelegateRecordFromSeeds(
 ): Promise<DelegateRecord | null> {
   return safeFetchDelegateRecord(
     context,
-    findDelegateRecordPda(context, seeds),
+    findDelegateRecordPda(context, seeds)[0],
     options
   );
 }

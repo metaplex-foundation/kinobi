@@ -24,14 +24,17 @@ import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   Account,
   Context,
-  RpcAccount,
+  EncodedAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
-  deserializeAccount,
-} from 'some-magical-place';
+  decodeAccount,
+} from '../shared';
 
-export type Multisig = Account<MultisigAccountData>;
+export type Multisig<TAddress extends string = string> = Account<
+  MultisigAccountData,
+  TAddress
+>;
 
 export type MultisigAccountData = {
   m: number;
@@ -76,27 +79,29 @@ export function getMultisigAccountDataCodec(): Codec<
   );
 }
 
-export function deserializeMultisig(rawAccount: RpcAccount): Multisig {
-  return deserializeAccount(rawAccount, getMultisigAccountDataEncoder());
+export function decodeMultisig<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress>
+): Multisig<TAddress> {
+  return decodeAccount(encodedAccount, getMultisigAccountDataDecoder());
 }
 
-export async function fetchMultisig(
+export async function fetchMultisig<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<Multisig> {
+): Promise<Multisig<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  assertAccountExists(maybeAccount, 'Multisig');
-  return deserializeMultisig(maybeAccount);
+  assertAccountExists(maybeAccount);
+  return decodeMultisig(maybeAccount);
 }
 
-export async function safeFetchMultisig(
+export async function safeFetchMultisig<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<Multisig | null> {
+): Promise<Multisig<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  return maybeAccount.exists ? deserializeMultisig(maybeAccount) : null;
+  return maybeAccount.exists ? decodeMultisig(maybeAccount) : null;
 }
 
 export async function fetchAllMultisig(
@@ -106,8 +111,8 @@ export async function fetchAllMultisig(
 ): Promise<Multisig[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, 'Multisig');
-    return deserializeMultisig(maybeAccount);
+    assertAccountExists(maybeAccount);
+    return decodeMultisig(maybeAccount);
   });
 }
 
@@ -119,7 +124,7 @@ export async function safeFetchAllMultisig(
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) => deserializeMultisig(maybeAccount as RpcAccount));
+    .map((maybeAccount) => decodeMultisig(maybeAccount as EncodedAccount));
 }
 
 export function getMultisigSize(): number {

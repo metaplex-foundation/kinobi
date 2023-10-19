@@ -27,15 +27,18 @@ import {
 import {
   Account,
   Context,
-  RpcAccount,
+  EncodedAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
-  deserializeAccount,
-} from 'some-magical-place';
+  decodeAccount,
+} from '../shared';
 import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
-export type UseAuthorityRecord = Account<UseAuthorityRecordAccountData>;
+export type UseAuthorityRecord<TAddress extends string = string> = Account<
+  UseAuthorityRecordAccountData,
+  TAddress
+>;
 
 export type UseAuthorityRecordAccountData = {
   key: TmKey;
@@ -87,34 +90,34 @@ export function getUseAuthorityRecordAccountDataCodec(): Codec<
   );
 }
 
-export function deserializeUseAuthorityRecord(
-  rawAccount: RpcAccount
-): UseAuthorityRecord {
-  return deserializeAccount(
-    rawAccount,
-    getUseAuthorityRecordAccountDataEncoder()
+export function decodeUseAuthorityRecord<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress>
+): UseAuthorityRecord<TAddress> {
+  return decodeAccount(
+    encodedAccount,
+    getUseAuthorityRecordAccountDataDecoder()
   );
 }
 
-export async function fetchUseAuthorityRecord(
+export async function fetchUseAuthorityRecord<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<UseAuthorityRecord> {
+): Promise<UseAuthorityRecord<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  assertAccountExists(maybeAccount, 'UseAuthorityRecord');
-  return deserializeUseAuthorityRecord(maybeAccount);
+  assertAccountExists(maybeAccount);
+  return decodeUseAuthorityRecord(maybeAccount);
 }
 
-export async function safeFetchUseAuthorityRecord(
+export async function safeFetchUseAuthorityRecord<
+  TAddress extends string = string
+>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<UseAuthorityRecord | null> {
+): Promise<UseAuthorityRecord<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  return maybeAccount.exists
-    ? deserializeUseAuthorityRecord(maybeAccount)
-    : null;
+  return maybeAccount.exists ? decodeUseAuthorityRecord(maybeAccount) : null;
 }
 
 export async function fetchAllUseAuthorityRecord(
@@ -124,8 +127,8 @@ export async function fetchAllUseAuthorityRecord(
 ): Promise<UseAuthorityRecord[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, 'UseAuthorityRecord');
-    return deserializeUseAuthorityRecord(maybeAccount);
+    assertAccountExists(maybeAccount);
+    return decodeUseAuthorityRecord(maybeAccount);
   });
 }
 
@@ -138,7 +141,7 @@ export async function safeFetchAllUseAuthorityRecord(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
-      deserializeUseAuthorityRecord(maybeAccount as RpcAccount)
+      decodeUseAuthorityRecord(maybeAccount as EncodedAccount)
     );
 }
 

@@ -33,12 +33,12 @@ import {
 import {
   Account,
   Context,
-  RpcAccount,
+  EncodedAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
-  deserializeAccount,
-} from 'some-magical-place';
+  decodeAccount,
+} from '../shared';
 import {
   CandyMachineData,
   CandyMachineDataArgs,
@@ -46,7 +46,10 @@ import {
   getCandyMachineDataEncoder,
 } from '../types';
 
-export type CandyMachine = Account<CandyMachineAccountData>;
+export type CandyMachine<TAddress extends string = string> = Account<
+  CandyMachineAccountData,
+  TAddress
+>;
 
 export type CandyMachineAccountData = {
   discriminator: Array<number>;
@@ -126,27 +129,29 @@ export function getCandyMachineAccountDataCodec(): Codec<
   );
 }
 
-export function deserializeCandyMachine(rawAccount: RpcAccount): CandyMachine {
-  return deserializeAccount(rawAccount, getCandyMachineAccountDataEncoder());
+export function decodeCandyMachine<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress>
+): CandyMachine<TAddress> {
+  return decodeAccount(encodedAccount, getCandyMachineAccountDataDecoder());
 }
 
-export async function fetchCandyMachine(
+export async function fetchCandyMachine<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<CandyMachine> {
+): Promise<CandyMachine<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  assertAccountExists(maybeAccount, 'CandyMachine');
-  return deserializeCandyMachine(maybeAccount);
+  assertAccountExists(maybeAccount);
+  return decodeCandyMachine(maybeAccount);
 }
 
-export async function safeFetchCandyMachine(
+export async function safeFetchCandyMachine<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<CandyMachine | null> {
+): Promise<CandyMachine<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  return maybeAccount.exists ? deserializeCandyMachine(maybeAccount) : null;
+  return maybeAccount.exists ? decodeCandyMachine(maybeAccount) : null;
 }
 
 export async function fetchAllCandyMachine(
@@ -156,8 +161,8 @@ export async function fetchAllCandyMachine(
 ): Promise<CandyMachine[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, 'CandyMachine');
-    return deserializeCandyMachine(maybeAccount);
+    assertAccountExists(maybeAccount);
+    return decodeCandyMachine(maybeAccount);
   });
 }
 
@@ -169,5 +174,5 @@ export async function safeFetchAllCandyMachine(
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) => deserializeCandyMachine(maybeAccount as RpcAccount));
+    .map((maybeAccount) => decodeCandyMachine(maybeAccount as EncodedAccount));
 }

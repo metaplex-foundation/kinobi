@@ -1,25 +1,25 @@
-export function deserialize{{ pascalCaseName }}(rawAccount: RpcAccount): {{ pascalCaseName }} {
-  return deserializeAccount(rawAccount, {{ encoderFunction }}());
+export function decode{{ pascalCaseName }}<TAddress extends string = string>(encodedAccount: EncodedAccount<TAddress>): {{ pascalCaseName }}<TAddress> {
+  return decodeAccount(encodedAccount, {{ decoderFunction }});
 }
 
-export async function fetch{{ pascalCaseName }}(
+export async function fetch{{ pascalCaseName }}<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions,
-): Promise<{{ pascalCaseName }}> {
+): Promise<{{ pascalCaseName }}<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  assertAccountExists(maybeAccount, '{{ pascalCaseName }}');
-  return deserialize{{ pascalCaseName }}(maybeAccount);
+  assertAccountExists(maybeAccount);
+  return decode{{ pascalCaseName }}(maybeAccount);
 }
 
-export async function safeFetch{{ pascalCaseName }}(
+export async function safeFetch{{ pascalCaseName }}<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions,
-): Promise<{{ pascalCaseName }} | null> {
+): Promise<{{ pascalCaseName }}<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
   return maybeAccount.exists
-    ? deserialize{{ pascalCaseName }}(maybeAccount)
+    ? decode{{ pascalCaseName }}(maybeAccount)
     : null;
 }
 
@@ -30,8 +30,8 @@ export async function fetchAll{{ pascalCaseName }}(
 ): Promise<{{ pascalCaseName }}[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, '{{ pascalCaseName }}');
-    return deserialize{{ pascalCaseName }}(maybeAccount);
+    assertAccountExists(maybeAccount);
+    return decode{{ pascalCaseName }}(maybeAccount);
   });
 }
 
@@ -43,5 +43,5 @@ export async function safeFetchAll{{ pascalCaseName }}(
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) => deserialize{{ pascalCaseName }}(maybeAccount as RpcAccount));
+    .map((maybeAccount) => decode{{ pascalCaseName }}(maybeAccount as EncodedAccount));
 }

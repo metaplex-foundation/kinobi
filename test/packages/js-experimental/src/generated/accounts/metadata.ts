@@ -43,12 +43,12 @@ import {
 import {
   Account,
   Context,
-  RpcAccount,
+  EncodedAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
-  deserializeAccount,
-} from 'some-magical-place';
+  decodeAccount,
+} from '../shared';
 import {
   Collection,
   CollectionArgs,
@@ -83,7 +83,10 @@ import {
   getUsesEncoder,
 } from '../types';
 
-export type Metadata = Account<MetadataAccountData>;
+export type Metadata<TAddress extends string = string> = Account<
+  MetadataAccountData,
+  TAddress
+>;
 
 export type MetadataAccountData = {
   key: TmKey;
@@ -190,27 +193,29 @@ export function getMetadataAccountDataCodec(): Codec<
   );
 }
 
-export function deserializeMetadata(rawAccount: RpcAccount): Metadata {
-  return deserializeAccount(rawAccount, getMetadataAccountDataEncoder());
+export function decodeMetadata<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress>
+): Metadata<TAddress> {
+  return decodeAccount(encodedAccount, getMetadataAccountDataDecoder());
 }
 
-export async function fetchMetadata(
+export async function fetchMetadata<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<Metadata> {
+): Promise<Metadata<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  assertAccountExists(maybeAccount, 'Metadata');
-  return deserializeMetadata(maybeAccount);
+  assertAccountExists(maybeAccount);
+  return decodeMetadata(maybeAccount);
 }
 
-export async function safeFetchMetadata(
+export async function safeFetchMetadata<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<Metadata | null> {
+): Promise<Metadata<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  return maybeAccount.exists ? deserializeMetadata(maybeAccount) : null;
+  return maybeAccount.exists ? decodeMetadata(maybeAccount) : null;
 }
 
 export async function fetchAllMetadata(
@@ -220,8 +225,8 @@ export async function fetchAllMetadata(
 ): Promise<Metadata[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, 'Metadata');
-    return deserializeMetadata(maybeAccount);
+    assertAccountExists(maybeAccount);
+    return decodeMetadata(maybeAccount);
   });
 }
 
@@ -233,7 +238,7 @@ export async function safeFetchAllMetadata(
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) => deserializeMetadata(maybeAccount as RpcAccount));
+    .map((maybeAccount) => decodeMetadata(maybeAccount as EncodedAccount));
 }
 
 export function getMetadataSize(): number {
@@ -263,7 +268,7 @@ export async function fetchMetadataFromSeeds(
   seeds: Parameters<typeof findMetadataPda>[1],
   options?: RpcGetAccountOptions
 ): Promise<Metadata> {
-  return fetchMetadata(context, findMetadataPda(context, seeds), options);
+  return fetchMetadata(context, findMetadataPda(context, seeds)[0], options);
 }
 
 export async function safeFetchMetadataFromSeeds(
@@ -271,5 +276,9 @@ export async function safeFetchMetadataFromSeeds(
   seeds: Parameters<typeof findMetadataPda>[1],
   options?: RpcGetAccountOptions
 ): Promise<Metadata | null> {
-  return safeFetchMetadata(context, findMetadataPda(context, seeds), options);
+  return safeFetchMetadata(
+    context,
+    findMetadataPda(context, seeds)[0],
+    options
+  );
 }

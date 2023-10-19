@@ -34,12 +34,12 @@ import {
 import {
   Account,
   Context,
-  RpcAccount,
+  EncodedAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
-  deserializeAccount,
-} from 'some-magical-place';
+  decodeAccount,
+} from '../shared';
 import {
   DelegateRoleArgs,
   TmKey,
@@ -48,7 +48,10 @@ import {
   getTmKeyEncoder,
 } from '../types';
 
-export type MasterEditionV1 = Account<MasterEditionV1AccountData>;
+export type MasterEditionV1<TAddress extends string = string> = Account<
+  MasterEditionV1AccountData,
+  TAddress
+>;
 
 export type MasterEditionV1AccountData = {
   key: TmKey;
@@ -105,29 +108,31 @@ export function getMasterEditionV1AccountDataCodec(): Codec<
   );
 }
 
-export function deserializeMasterEditionV1(
-  rawAccount: RpcAccount
-): MasterEditionV1 {
-  return deserializeAccount(rawAccount, getMasterEditionV1AccountDataEncoder());
+export function decodeMasterEditionV1<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress>
+): MasterEditionV1<TAddress> {
+  return decodeAccount(encodedAccount, getMasterEditionV1AccountDataDecoder());
 }
 
-export async function fetchMasterEditionV1(
+export async function fetchMasterEditionV1<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<MasterEditionV1> {
+): Promise<MasterEditionV1<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  assertAccountExists(maybeAccount, 'MasterEditionV1');
-  return deserializeMasterEditionV1(maybeAccount);
+  assertAccountExists(maybeAccount);
+  return decodeMasterEditionV1(maybeAccount);
 }
 
-export async function safeFetchMasterEditionV1(
+export async function safeFetchMasterEditionV1<
+  TAddress extends string = string
+>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<MasterEditionV1 | null> {
+): Promise<MasterEditionV1<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  return maybeAccount.exists ? deserializeMasterEditionV1(maybeAccount) : null;
+  return maybeAccount.exists ? decodeMasterEditionV1(maybeAccount) : null;
 }
 
 export async function fetchAllMasterEditionV1(
@@ -137,8 +142,8 @@ export async function fetchAllMasterEditionV1(
 ): Promise<MasterEditionV1[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, 'MasterEditionV1');
-    return deserializeMasterEditionV1(maybeAccount);
+    assertAccountExists(maybeAccount);
+    return decodeMasterEditionV1(maybeAccount);
   });
 }
 
@@ -151,7 +156,7 @@ export async function safeFetchAllMasterEditionV1(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
-      deserializeMasterEditionV1(maybeAccount as RpcAccount)
+      decodeMasterEditionV1(maybeAccount as EncodedAccount)
     );
 }
 
@@ -180,7 +185,7 @@ export async function fetchMasterEditionV1FromSeeds(
 ): Promise<MasterEditionV1> {
   return fetchMasterEditionV1(
     context,
-    findMasterEditionV1Pda(context, seeds),
+    findMasterEditionV1Pda(context, seeds)[0],
     options
   );
 }
@@ -192,7 +197,7 @@ export async function safeFetchMasterEditionV1FromSeeds(
 ): Promise<MasterEditionV1 | null> {
   return safeFetchMasterEditionV1(
     context,
-    findMasterEditionV1Pda(context, seeds),
+    findMasterEditionV1Pda(context, seeds)[0],
     options
   );
 }

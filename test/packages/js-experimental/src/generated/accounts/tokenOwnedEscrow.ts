@@ -26,12 +26,12 @@ import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   Account,
   Context,
-  RpcAccount,
+  EncodedAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
-  deserializeAccount,
-} from 'some-magical-place';
+  decodeAccount,
+} from '../shared';
 import {
   EscrowAuthority,
   EscrowAuthorityArgs,
@@ -42,7 +42,10 @@ import {
   getTmKeyEncoder,
 } from '../types';
 
-export type TokenOwnedEscrow = Account<TokenOwnedEscrowAccountData>;
+export type TokenOwnedEscrow<TAddress extends string = string> = Account<
+  TokenOwnedEscrowAccountData,
+  TAddress
+>;
 
 export type TokenOwnedEscrowAccountData = {
   key: TmKey;
@@ -95,32 +98,31 @@ export function getTokenOwnedEscrowAccountDataCodec(): Codec<
   );
 }
 
-export function deserializeTokenOwnedEscrow(
-  rawAccount: RpcAccount
-): TokenOwnedEscrow {
-  return deserializeAccount(
-    rawAccount,
-    getTokenOwnedEscrowAccountDataEncoder()
-  );
+export function decodeTokenOwnedEscrow<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress>
+): TokenOwnedEscrow<TAddress> {
+  return decodeAccount(encodedAccount, getTokenOwnedEscrowAccountDataDecoder());
 }
 
-export async function fetchTokenOwnedEscrow(
+export async function fetchTokenOwnedEscrow<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<TokenOwnedEscrow> {
+): Promise<TokenOwnedEscrow<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  assertAccountExists(maybeAccount, 'TokenOwnedEscrow');
-  return deserializeTokenOwnedEscrow(maybeAccount);
+  assertAccountExists(maybeAccount);
+  return decodeTokenOwnedEscrow(maybeAccount);
 }
 
-export async function safeFetchTokenOwnedEscrow(
+export async function safeFetchTokenOwnedEscrow<
+  TAddress extends string = string
+>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<TokenOwnedEscrow | null> {
+): Promise<TokenOwnedEscrow<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  return maybeAccount.exists ? deserializeTokenOwnedEscrow(maybeAccount) : null;
+  return maybeAccount.exists ? decodeTokenOwnedEscrow(maybeAccount) : null;
 }
 
 export async function fetchAllTokenOwnedEscrow(
@@ -130,8 +132,8 @@ export async function fetchAllTokenOwnedEscrow(
 ): Promise<TokenOwnedEscrow[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, 'TokenOwnedEscrow');
-    return deserializeTokenOwnedEscrow(maybeAccount);
+    assertAccountExists(maybeAccount);
+    return decodeTokenOwnedEscrow(maybeAccount);
   });
 }
 
@@ -144,6 +146,6 @@ export async function safeFetchAllTokenOwnedEscrow(
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
-      deserializeTokenOwnedEscrow(maybeAccount as RpcAccount)
+      decodeTokenOwnedEscrow(maybeAccount as EncodedAccount)
     );
 }

@@ -46,5 +46,5 @@ export function getAccountPdaHelpersFragment(
   })
     .mergeImportsWith(imports)
     .addImports('solanaAddresses', ['ProgramDerivedAddress'])
-    .addImports('some-magical-place', ['Context', 'RpcGetAccountOptions']);
+    .addImports('shared', ['Context', 'RpcGetAccountOptions']);
 }

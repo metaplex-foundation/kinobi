@@ -194,7 +194,10 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     const typeManifest = visit(account, this.typeManifestVisitor);
     const program = this.program as nodes.ProgramNode;
     const accountTypeFragment = getAccountTypeFragment(account, typeManifest);
-    const accountFetchHelpersFragment = getAccountFetchHelpersFragment(account);
+    const accountFetchHelpersFragment = getAccountFetchHelpersFragment(
+      account,
+      typeManifest
+    );
     // const accountGpaHelpersFragment = getAccountGpaHelpersFragment(
     //   account,
     //   program,

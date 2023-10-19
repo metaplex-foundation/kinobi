@@ -34,7 +34,7 @@ export async function fetch{{ pascalCaseName }}FromSeeds(
   {% endif %}
   options?: RpcGetAccountOptions,
 ): Promise<{{ pascalCaseName }}> {
-  return fetch{{ pascalCaseName }}(context, find{{ pascalCaseName }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %}), options);
+  return fetch{{ pascalCaseName }}(context, find{{ pascalCaseName }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %})[0], options);
 }
 
 export async function safeFetch{{ pascalCaseName }}FromSeeds(
@@ -44,5 +44,5 @@ export async function safeFetch{{ pascalCaseName }}FromSeeds(
   {% endif %}
   options?: RpcGetAccountOptions,
 ): Promise<{{ pascalCaseName }} | null> {
-  return safeFetch{{ pascalCaseName }}(context, find{{ pascalCaseName }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %}), options);
+  return safeFetch{{ pascalCaseName }}(context, find{{ pascalCaseName }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %})[0], options);
 }

@@ -18,7 +18,7 @@ export function getAccountTypeFragment(
     dataName: pascalCase(accountNode.data.name),
     link: accountNode.data.link,
     typeWithCodecFragment,
-  }).addImports('some-magical-place', 'Account');
+  }).addImports('shared', 'Account');
 
   if (!accountNode.data.link) {
     accountTypeFragment.mergeImportsWith(typeWithCodecFragment);

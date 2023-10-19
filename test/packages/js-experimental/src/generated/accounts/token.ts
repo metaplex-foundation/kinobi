@@ -31,12 +31,12 @@ import {
 import {
   Account,
   Context,
-  RpcAccount,
+  EncodedAccount,
   RpcGetAccountOptions,
   RpcGetAccountsOptions,
   assertAccountExists,
-  deserializeAccount,
-} from 'some-magical-place';
+  decodeAccount,
+} from '../shared';
 import {
   TokenState,
   TokenStateArgs,
@@ -44,7 +44,10 @@ import {
   getTokenStateEncoder,
 } from '../types';
 
-export type Token = Account<TokenAccountData>;
+export type Token<TAddress extends string = string> = Account<
+  TokenAccountData,
+  TAddress
+>;
 
 export type TokenAccountData = {
   mint: Base58EncodedAddress;
@@ -146,27 +149,29 @@ export function getTokenAccountDataCodec(): Codec<
   );
 }
 
-export function deserializeToken(rawAccount: RpcAccount): Token {
-  return deserializeAccount(rawAccount, getTokenAccountDataEncoder());
+export function decodeToken<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress>
+): Token<TAddress> {
+  return decodeAccount(encodedAccount, getTokenAccountDataDecoder());
 }
 
-export async function fetchToken(
+export async function fetchToken<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<Token> {
+): Promise<Token<TAddress>> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  assertAccountExists(maybeAccount, 'Token');
-  return deserializeToken(maybeAccount);
+  assertAccountExists(maybeAccount);
+  return decodeToken(maybeAccount);
 }
 
-export async function safeFetchToken(
+export async function safeFetchToken<TAddress extends string = string>(
   context: Pick<Context, 'rpc'>,
-  address: Base58EncodedAddress,
+  address: Base58EncodedAddress<TAddress>,
   options?: RpcGetAccountOptions
-): Promise<Token | null> {
+): Promise<Token<TAddress> | null> {
   const maybeAccount = await context.rpc.getAccount(address, options);
-  return maybeAccount.exists ? deserializeToken(maybeAccount) : null;
+  return maybeAccount.exists ? decodeToken(maybeAccount) : null;
 }
 
 export async function fetchAllToken(
@@ -176,8 +181,8 @@ export async function fetchAllToken(
 ): Promise<Token[]> {
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount, 'Token');
-    return deserializeToken(maybeAccount);
+    assertAccountExists(maybeAccount);
+    return decodeToken(maybeAccount);
   });
 }
 
@@ -189,7 +194,7 @@ export async function safeFetchAllToken(
   const maybeAccounts = await context.rpc.getAccounts(addresses, options);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) => deserializeToken(maybeAccount as RpcAccount));
+    .map((maybeAccount) => decodeToken(maybeAccount as EncodedAccount));
 }
 
 export function getTokenSize(): number {

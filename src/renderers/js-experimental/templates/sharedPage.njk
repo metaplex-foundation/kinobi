@@ -3,6 +3,7 @@
 
 {% block main %}
 import { Base58EncodedAddress, isProgramDerivedAddress, getProgramDerivedAddress as web3JsGetProgramDerivedAddress, ProgramDerivedAddress } from '@solana/addresses';
+import { Decoder } from '@solana/codecs-core';
 import { AccountRole, IAccountMeta, IInstruction, upgradeRoleToSigner } from '@solana/instructions';
 import { Ed25519Signature } from '@solana/keys';
 import { Transaction } from '@solana/transactions';
@@ -167,4 +168,50 @@ export async function getProgramAddress<TAddress extends string = string>(contex
 export async function getProgramDerivedAddress(context: Pick<Context, 'getProgramDerivedAddress'>, programAddress: string, seeds: Uint8Array[]): Promise<ProgramDerivedAddress> {
   return context.getProgramDerivedAddress ? await context.getProgramDerivedAddress(programAddress as Base58EncodedAddress, seeds) : await web3JsGetProgramDerivedAddress({ programAddress: programAddress as Base58EncodedAddress, seeds });
 }
+
+export const ACCOUNT_HEADER_SIZE = 128;
+
+export type AccountHeader = {
+  programAddress: Base58EncodedAddress;
+  executable: boolean;
+  lamports: bigint;
+  rentEpoch?: number;
+};
+
+export type Account<TData extends object | Uint8Array, TAddress extends string = string> = AccountHeader & {
+  address: Base58EncodedAddress<TAddress>;
+  data: TData;
+};
+
+export type MaybeAccount<TData extends object | Uint8Array, TAddress extends string = string> =
+  | ({ exists: true } & Account<TData, TAddress>)
+  | { exists: false; address: Base58EncodedAddress<TAddress> };
+
+export type EncodedAccount<TAddress extends string = string> = Account<Uint8Array, TAddress>;
+export type MaybeEncodedAccount<TAddress extends string = string> = Account<Uint8Array, TAddress>;
+
+export function decodeAccount<TData extends object, TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress>,
+  decoder: Decoder<TData>
+): Account<TData, TAddress> {
+  try {
+    return { ...encodedAccount, data: decoder.decode(encodedAccount.data)[0] };
+  } catch (error: any) {
+    // TODO: Coded error.
+    throw new Error(`Failed to decode account [${encodedAccount.address}] using decoder [${decoder.description}].`);
+  }
+}
+
+export function assertAccountExists<TData extends object | Uint8Array, TAddress extends string = string>(
+  account: MaybeAccount<TData, TAddress>,
+): asserts account is Account<TData, TAddress> & { exists: true } {
+  if (!account.exists) {
+    // TODO: Coded error.
+    throw new Error(`Expected account [${account.address}] to exist.`);
+  }
+}
+
+// TODO: implement.
+export type RpcGetAccountOptions = {};
+export type RpcGetAccountsOptions = {};
 {% endblock %}

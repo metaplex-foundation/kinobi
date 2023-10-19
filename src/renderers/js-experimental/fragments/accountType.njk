@@ -2,9 +2,9 @@
 
 {{ macros.docblock(docs) }}
 {% if link %}
-  export type {{ name }} = Account<{{ link.name | pascalCase }}>;
+  export type {{ name }}<TAddress extends string = string> = Account<{{ link.name | pascalCase }}, TAddress>;
 {% else %}
-  export type {{ name }} = Account<{{ dataName }}>;
+  export type {{ name }}<TAddress extends string = string> = Account<{{ dataName }}, TAddress>;
 
-  {{ typeWithCodecFragment.render }}
+  {{ typeWithCodecFragment }}
 {% endif %}
