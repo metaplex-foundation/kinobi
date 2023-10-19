@@ -17,7 +17,10 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { CreateReservationListInstructionDataArgs } from '../../hooked';
+import {
+  CreateReservationListInstructionDataArgs,
+  getCreateReservationListInstructionDataEncoder,
+} from '../../hooked';
 import {
   Context,
   CustomGeneratedInstruction,

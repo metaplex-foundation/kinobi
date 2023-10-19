@@ -29,9 +29,9 @@ export function {{ instruction.name | camelCase }}Instruction<
       ,
     {% endif %}
     {% if hasData and hasArgs %}
-      data: {{ encoderFunction }}().encode(args),
+      data: {{ encoderFunction }}.encode(args),
     {% elif hasData %}
-      data: {{ encoderFunction }}().encode({}),
+      data: {{ encoderFunction }}.encode({}),
     {% endif %}
     programAddress,
   } as {{ instruction.name | pascalCase }}Instruction<

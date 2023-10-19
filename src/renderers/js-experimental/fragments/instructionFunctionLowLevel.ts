@@ -1,12 +1,16 @@
 import * as nodes from '../../../nodes';
 import { pascalCase } from '../../../shared';
+import { ImportMap } from '../ImportMap';
+import { TypeManifest } from '../TypeManifest';
 import { Fragment, fragmentFromTemplate, mergeFragments } from './common';
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
 
 export function getInstructionFunctionLowLevelFragment(
   instructionNode: nodes.InstructionNode,
-  programNode: nodes.ProgramNode
+  programNode: nodes.ProgramNode,
+  dataArgsManifest: TypeManifest
 ): Fragment {
+  const imports = new ImportMap();
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasLegacyOptionalAccounts =
     instructionNode.optionalAccountStrategy === 'omitted' &&
@@ -19,11 +23,16 @@ export function getInstructionFunctionLowLevelFragment(
     instructionNode.dataArgs.struct.fields.filter(
       (field) => field.defaultsTo?.strategy !== 'omitted'
     ).length > 0;
-  const dataType = instructionNode.dataArgs.link
-    ? pascalCase(instructionNode.dataArgs.link.name)
-    : pascalCase(instructionNode.dataArgs.name);
-  const argsType = `${dataType}Args`;
-  const encoderFunction = `get${dataType}Encoder`;
+  const argsType = instructionNode.dataArgs.link
+    ? dataArgsManifest.looseType.render
+    : `${pascalCase(instructionNode.dataArgs.name)}Args`;
+  const encoderFunction = instructionNode.dataArgs.link
+    ? dataArgsManifest.encoder.render
+    : `get${pascalCase(instructionNode.dataArgs.name)}Encoder()`;
+  if (instructionNode.dataArgs.link) {
+    imports.mergeWith(dataArgsManifest.looseType, dataArgsManifest.encoder);
+  }
+
   const accountTypeParamsFragment = mergeFragments(
     instructionNode.accounts.map((account) =>
       getInstructionAccountTypeParamFragment(
@@ -67,7 +76,7 @@ export function getInstructionFunctionLowLevelFragment(
     encoderFunction,
     accountTypeParams: accountTypeParamsFragment.render,
   })
-    .mergeImportsWith(accountTypeParamsFragment)
+    .mergeImportsWith(imports, accountTypeParamsFragment)
     .addImports('solanaAddresses', ['Base58EncodedAddress']);
 
   if (hasAccounts) {

@@ -2,6 +2,7 @@ import * as nodes from '../../../nodes';
 import { camelCase, pascalCase } from '../../../shared';
 import { ResolvedInstructionInput, Visitor, visit } from '../../../visitors';
 import { ContextMap } from '../ContextMap';
+import { TypeManifest } from '../TypeManifest';
 import {
   Fragment,
   fragment,
@@ -14,6 +15,7 @@ export function getInstructionFunctionHighLevelFragment(
   instructionNode: nodes.InstructionNode,
   programNode: nodes.ProgramNode,
   renamedArgs: Map<string, string>,
+  dataArgsManifest: TypeManifest,
   resolvedInstructionInputVisitor: Visitor<ResolvedInstructionInput[]>
 ): Fragment {
   const hasAccounts = instructionNode.accounts.length > 0;
@@ -28,17 +30,15 @@ export function getInstructionFunctionHighLevelFragment(
       (field) => field.defaultsTo?.strategy !== 'omitted'
     ).length > 0;
   const hasAnyArgs = hasDataArgs || hasExtraArgs;
-  const dataType = instructionNode.dataArgs.link
-    ? pascalCase(instructionNode.dataArgs.link.name)
-    : pascalCase(instructionNode.dataArgs.name);
-  const argsTypeFragment = fragment(`${dataType}Args`);
+  const argsTypeFragment = fragment(
+    instructionNode.dataArgs.link
+      ? dataArgsManifest.looseType.render
+      : `${pascalCase(instructionNode.dataArgs.name)}Args`
+  );
   if (instructionNode.dataArgs.link) {
-    const dataLinkImportFrom =
-      instructionNode.dataArgs.link.importFrom === 'generated'
-        ? 'generatedTypes'
-        : instructionNode.dataArgs.link.importFrom;
-    argsTypeFragment.addImports(dataLinkImportFrom, [`${dataType}Args`]);
+    argsTypeFragment.mergeImportsWith(dataArgsManifest.looseType);
   }
+
   const functionName = camelCase(instructionNode.name);
   const lowLevelFunctionName = `${functionName}Instruction`;
   const typeParamsFragment = getTypeParams(instructionNode, programNode);

@@ -87,4 +87,8 @@ export class Fragment {
     this.imports.addAlias(module, name, alias);
     return this;
   }
+
+  toString(): string {
+    return this.render;
+  }
 }
