@@ -231,7 +231,13 @@ export function getUpdateV1InstructionDataEncoder(): Encoder<UpdateV1Instruction
         [
           'data',
           getOptionEncoder(
-            getStructEncoder<any>([
+            getStructEncoder<{
+              name: string;
+              symbol: string;
+              uri: string;
+              sellerFeeBasisPoints: number;
+              creators: OptionOrNullable<Array<CreatorArgs>>;
+            }>([
               ['name', getStringEncoder()],
               ['symbol', getStringEncoder()],
               ['uri', getStringEncoder()],
@@ -277,7 +283,13 @@ export function getUpdateV1InstructionDataDecoder(): Decoder<UpdateV1Instruction
       [
         'data',
         getOptionDecoder(
-          getStructDecoder<any>([
+          getStructDecoder<{
+            name: string;
+            symbol: string;
+            uri: string;
+            sellerFeeBasisPoints: number;
+            creators: Option<Array<Creator>>;
+          }>([
             ['name', getStringDecoder()],
             ['symbol', getStringDecoder()],
             ['uri', getStringDecoder()],

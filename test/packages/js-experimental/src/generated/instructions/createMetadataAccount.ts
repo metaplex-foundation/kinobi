@@ -149,7 +149,13 @@ export function getCreateMetadataAccountInstructionDataEncoder(): Encoder<Create
         ['discriminator', getU8Encoder()],
         [
           'data',
-          getStructEncoder<any>([
+          getStructEncoder<{
+            name: string;
+            symbol: string;
+            uri: string;
+            sellerFeeBasisPoints: number;
+            creators: OptionOrNullable<Array<CreatorArgs>>;
+          }>([
             ['name', getStringEncoder()],
             ['symbol', getStringEncoder()],
             ['uri', getStringEncoder()],
@@ -175,7 +181,13 @@ export function getCreateMetadataAccountInstructionDataDecoder(): Decoder<Create
       ['discriminator', getU8Decoder()],
       [
         'data',
-        getStructDecoder<any>([
+        getStructDecoder<{
+          name: string;
+          symbol: string;
+          uri: string;
+          sellerFeeBasisPoints: number;
+          creators: Option<Array<Creator>>;
+        }>([
           ['name', getStringDecoder()],
           ['symbol', getStringDecoder()],
           ['uri', getStringDecoder()],

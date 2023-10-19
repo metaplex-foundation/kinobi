@@ -408,27 +408,30 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
       (f) => f.defaultsTo !== null
     );
 
-    const fieldManifests = structType.fields.map((field) => visit(field, this));
     const mergedManifest = mergeManifests(
-      fieldManifests,
+      structType.fields.map((field) => visit(field, this)),
       (renders) => `{ ${renders.join('')} }`,
       (renders) => `([${renders.join(', ')}]${structDescription})`
     );
 
-    const decoderType = parentName ? parentName.strict : 'any';
-    let encoderType = parentName ? parentName.loose : 'any';
-    if (optionalFields.length > 0) {
-      const noDefaultsFieldManifests = structType.fields.map((field) =>
-        visit({ ...field, defaultsTo: null }, this)
-      );
-      const noDefaultsMergedManifest = mergeManifests(
-        noDefaultsFieldManifests,
+    let decoderType = parentName?.strict;
+    if (!decoderType) {
+      decoderType = mergedManifest.strictType.render;
+      mergedManifest.decoder.mergeImportsWith(mergedManifest.strictType);
+    }
+
+    let encoderType = parentName?.loose;
+    if (!encoderType || optionalFields.length > 0) {
+      const nonDefaultsMergedManifest = mergeManifests(
+        structType.fields.map((field) =>
+          visit({ ...field, defaultsTo: null }, this)
+        ),
         (renders) => `{ ${renders.join('')} }`,
-        (renders) => `([${renders.join(', ')}])`
+        (renders) => `([${renders.join(', ')}]${structDescription})`
       );
-      encoderType = noDefaultsMergedManifest.looseType.render;
+      encoderType = nonDefaultsMergedManifest.looseType.render;
       mergedManifest.encoder.mergeImportsWith(
-        noDefaultsMergedManifest.looseType
+        nonDefaultsMergedManifest.looseType
       );
     }
 
