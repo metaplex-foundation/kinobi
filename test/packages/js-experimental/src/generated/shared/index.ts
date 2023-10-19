@@ -231,7 +231,11 @@ export async function getProgramAddress<TAddress extends string = string>(
   context: Pick<Context, 'getProgramAddress'>,
   name: string,
   address: TAddress
-): Promise<Base58EncodedAddress<TAddress>> {
+): Promise<
+  typeof context['getProgramAddress'] extends undefined
+    ? Base58EncodedAddress<TAddress>
+    : Base58EncodedAddress
+> {
   return context.getProgramAddress
     ? await context.getProgramAddress({
         name,
