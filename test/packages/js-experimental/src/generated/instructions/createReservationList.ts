@@ -364,7 +364,19 @@ export async function createReservationList<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof createReservationListInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof createReservationListInstruction<
+      TProgram,
+      TAccountReservationList,
+      TAccountPayer,
+      TAccountUpdateAuthority,
+      TAccountMasterEdition,
+      TAccountResource,
+      TAccountMetadata,
+      TAccountSystemProgram,
+      TAccountRent
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     reservationList: { value: input.reservationList ?? null, isWritable: true },
     payer: { value: input.payer ?? null, isWritable: false },
@@ -411,20 +423,10 @@ export async function createReservationList<
 
   return {
     instruction: createReservationListInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as CreateReservationListInstruction<
-      TProgram,
-      TAccountReservationList,
-      TAccountPayer,
-      TAccountUpdateAuthority,
-      TAccountMasterEdition,
-      TAccountResource,
-      TAccountMetadata,
-      TAccountSystemProgram,
-      TAccountRent
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

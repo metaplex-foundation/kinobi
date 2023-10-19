@@ -406,7 +406,19 @@ export async function closeEscrowAccount<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof closeEscrowAccountInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof closeEscrowAccountInstruction<
+      TProgram,
+      TAccountEscrow,
+      TAccountMetadata,
+      TAccountMint,
+      TAccountTokenAccount,
+      TAccountEdition,
+      TAccountPayer,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     escrow: { value: input.escrow ?? null, isWritable: true },
     metadata: { value: input.metadata ?? null, isWritable: true },
@@ -450,19 +462,9 @@ export async function closeEscrowAccount<
 
   return {
     instruction: closeEscrowAccountInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as CloseEscrowAccountInstruction<
-      TProgram,
-      TAccountEscrow,
-      TAccountMetadata,
-      TAccountMint,
-      TAccountTokenAccount,
-      TAccountEdition,
-      TAccountPayer,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

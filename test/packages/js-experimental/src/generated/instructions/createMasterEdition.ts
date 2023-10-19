@@ -466,7 +466,20 @@ export async function createMasterEdition<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof createMasterEditionInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof createMasterEditionInstruction<
+      TProgram,
+      TAccountEdition,
+      TAccountMint,
+      TAccountUpdateAuthority,
+      TAccountMintAuthority,
+      TAccountPayer,
+      TAccountMetadata,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRent
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     edition: { value: input.edition ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: true },
@@ -522,21 +535,10 @@ export async function createMasterEdition<
 
   return {
     instruction: createMasterEditionInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as CreateMasterEditionInstruction<
-      TProgram,
-      TAccountEdition,
-      TAccountMint,
-      TAccountUpdateAuthority,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountMetadata,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

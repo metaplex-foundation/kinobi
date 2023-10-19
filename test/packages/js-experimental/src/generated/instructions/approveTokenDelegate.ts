@@ -271,7 +271,14 @@ export async function approveTokenDelegate<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof approveTokenDelegateInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof approveTokenDelegateInstruction<
+      TProgram,
+      TAccountSource,
+      TAccountDelegate,
+      TAccountOwner
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     source: { value: input.source ?? null, isWritable: true },
     delegate: { value: input.delegate ?? null, isWritable: false },
@@ -296,15 +303,10 @@ export async function approveTokenDelegate<
 
   return {
     instruction: approveTokenDelegateInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as ApproveTokenDelegateInstruction<
-      TProgram,
-      TAccountSource,
-      TAccountDelegate,
-      TAccountOwner
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

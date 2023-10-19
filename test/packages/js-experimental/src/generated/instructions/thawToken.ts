@@ -218,7 +218,14 @@ export async function thawToken<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof thawTokenInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof thawTokenInstruction<
+      TProgram,
+      TAccountAccount,
+      TAccountMint,
+      TAccountOwner
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     account: { value: input.account ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: false },
@@ -240,14 +247,9 @@ export async function thawToken<
 
   return {
     instruction: thawTokenInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as ThawTokenInstruction<
-      TProgram,
-      TAccountAccount,
-      TAccountMint,
-      TAccountOwner
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

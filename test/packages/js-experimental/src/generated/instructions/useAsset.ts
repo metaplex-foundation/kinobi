@@ -542,7 +542,22 @@ export async function useAsset<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof useAssetInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof useAssetInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountTokenAccount,
+      TAccountMint,
+      TAccountUseAuthority,
+      TAccountOwner,
+      TAccountSplTokenProgram,
+      TAccountAtaProgram,
+      TAccountSystemProgram,
+      TAccountUseAuthorityRecord,
+      TAccountAuthorizationRules,
+      TAccountAuthorizationRulesProgram
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     tokenAccount: { value: input.tokenAccount ?? null, isWritable: true },
@@ -613,23 +628,10 @@ export async function useAsset<
 
   return {
     instruction: useAssetInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as UseAssetInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountTokenAccount,
-      TAccountMint,
-      TAccountUseAuthority,
-      TAccountOwner,
-      TAccountSplTokenProgram,
-      TAccountAtaProgram,
-      TAccountSystemProgram,
-      TAccountUseAuthorityRecord,
-      TAccountAuthorizationRules,
-      TAccountAuthorizationRulesProgram
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

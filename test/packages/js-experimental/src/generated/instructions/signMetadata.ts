@@ -194,7 +194,9 @@ export async function signMetadata<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof signMetadataInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof signMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     creator: { value: input.creator ?? null, isWritable: false },
@@ -215,9 +217,9 @@ export async function signMetadata<
 
   return {
     instruction: signMetadataInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

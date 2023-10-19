@@ -502,7 +502,20 @@ export async function createV2<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof createV2Instruction>[0];
+  type AccountMetas = Parameters<
+    typeof createV2Instruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      TAccountMint,
+      TAccountMintAuthority,
+      TAccountPayer,
+      TAccountUpdateAuthority,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountSplTokenProgram
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     masterEdition: { value: input.masterEdition ?? null, isWritable: true },
@@ -564,23 +577,10 @@ export async function createV2<
 
   return {
     instruction: createV2Instruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as CreateV2Instruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      typeof input['mint'] extends Signer<TAccountMint>
-        ? WritableSignerAccount<TAccountMint>
-        : TAccountMint,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountUpdateAuthority,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions,
-      TAccountSplTokenProgram
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

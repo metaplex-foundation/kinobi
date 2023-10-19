@@ -132,16 +132,16 @@ export function accountMetaWithDefault<
  * Get account metas and signers from resolved accounts.
  * @internal
  */
-export function getAccountMetasAndSigners(
-  accounts: Record<string, ResolvedAccount>,
+export function getAccountMetasAndSigners<TKey extends string = string>(
+  accounts: Record<TKey, ResolvedAccount>,
   optionalAccountStrategy: 'omitted' | 'programId',
   programAddress: Base58EncodedAddress
-): [Record<string, IAccountMeta>, Signer[]] {
+): [Record<TKey, IAccountMeta>, Signer[]] {
   const accountMetas: Record<string, IAccountMeta> = {};
   const signers: Signer[] = [];
 
   Object.keys(accounts).forEach((key) => {
-    const account = accounts[key] as ResolvedAccount;
+    const account = accounts[key as TKey] as ResolvedAccount;
     if (!account.value) {
       if (optionalAccountStrategy === 'omitted') return;
       accountMetas[key] = {

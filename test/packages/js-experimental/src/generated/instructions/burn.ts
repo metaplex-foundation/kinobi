@@ -463,7 +463,20 @@ export async function burn<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof burnInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof burnInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountOwner,
+      TAccountMint,
+      TAccountTokenAccount,
+      TAccountMasterEditionAccount,
+      TAccountSplTokenProgram,
+      TAccountCollectionMetadata,
+      TAccountAuthorizationRules,
+      TAccountAuthorizationRulesProgram
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     owner: { value: input.owner ?? null, isWritable: true },
@@ -519,21 +532,10 @@ export async function burn<
 
   return {
     instruction: burnInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as BurnInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountOwner,
-      TAccountMint,
-      TAccountTokenAccount,
-      TAccountMasterEditionAccount,
-      TAccountSplTokenProgram,
-      TAccountCollectionMetadata,
-      TAccountAuthorizationRules,
-      TAccountAuthorizationRulesProgram
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

@@ -231,7 +231,14 @@ export async function closeToken<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof closeTokenInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof closeTokenInstruction<
+      TProgram,
+      TAccountAccount,
+      TAccountDestination,
+      TAccountOwner
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     account: { value: input.account ?? null, isWritable: true },
     destination: { value: input.destination ?? null, isWritable: true },
@@ -253,14 +260,9 @@ export async function closeToken<
 
   return {
     instruction: closeTokenInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as CloseTokenInstruction<
-      TProgram,
-      TAccountAccount,
-      TAccountDestination,
-      TAccountOwner
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

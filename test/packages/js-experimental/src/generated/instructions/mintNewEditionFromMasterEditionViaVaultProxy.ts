@@ -699,7 +699,26 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof mintNewEditionFromMasterEditionViaVaultProxyInstruction
+    typeof mintNewEditionFromMasterEditionViaVaultProxyInstruction<
+      TProgram,
+      TAccountNewMetadata,
+      TAccountNewEdition,
+      TAccountMasterEdition,
+      TAccountNewMint,
+      TAccountEditionMarkPda,
+      TAccountNewMintAuthority,
+      TAccountPayer,
+      TAccountVaultAuthority,
+      TAccountSafetyDepositStore,
+      TAccountSafetyDepositBox,
+      TAccountVault,
+      TAccountNewMetadataUpdateAuthority,
+      TAccountMetadata,
+      TAccountTokenProgram,
+      TAccountTokenVaultProgram,
+      TAccountSystemProgram,
+      TAccountRent
+    >
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     newMetadata: { value: input.newMetadata ?? null, isWritable: true },
@@ -772,29 +791,10 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
 
   return {
     instruction: mintNewEditionFromMasterEditionViaVaultProxyInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as MintNewEditionFromMasterEditionViaVaultProxyInstruction<
-      TProgram,
-      TAccountNewMetadata,
-      TAccountNewEdition,
-      TAccountMasterEdition,
-      TAccountNewMint,
-      TAccountEditionMarkPda,
-      TAccountNewMintAuthority,
-      TAccountPayer,
-      TAccountVaultAuthority,
-      TAccountSafetyDepositStore,
-      TAccountSafetyDepositBox,
-      TAccountVault,
-      TAccountNewMetadataUpdateAuthority,
-      TAccountMetadata,
-      TAccountTokenProgram,
-      TAccountTokenVaultProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

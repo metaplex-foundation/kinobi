@@ -16,7 +16,12 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
 
   {% if hasAccounts %}
     // Original accounts.
-    type AccountMetas = Parameters<typeof {{ lowLevelFunctionName }}>[0];
+    type AccountMetas = Parameters<typeof {{ lowLevelFunctionName }}<
+      TProgram,
+      {% for account in instruction.accounts %}
+        TAccount{{ account.name | pascalCase }},
+      {% endfor %}
+    >>[0];
     const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
       {% for account in instruction.accounts %}
         {{ account.name | camelCase }}: { value: input.{{ account.name | camelCase }} ?? null, isWritable: {{ "true" if account.isWritable else "false" }} },
@@ -48,12 +53,12 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
   return {
     instruction: {{ lowLevelFunctionName }}(
       {%- if hasAccounts -%}
-        accountMetas as AccountMetas,
+        accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       {% endif %}
       {%- if hasDataArgs -%}
         args, 
       {% endif %}
-      programAddress) as {{ instructionType }},
+      programAddress),
     {{ 'signers' if hasAccounts else 'signers: []'}},
     bytesCreatedOnChain: 0,
   };

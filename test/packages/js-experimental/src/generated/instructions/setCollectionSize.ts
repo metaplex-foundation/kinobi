@@ -315,7 +315,15 @@ export async function setCollectionSize<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof setCollectionSizeInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof setCollectionSizeInstruction<
+      TProgram,
+      TAccountCollectionMetadata,
+      TAccountCollectionAuthority,
+      TAccountCollectionMint,
+      TAccountCollectionAuthorityRecord
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     collectionMetadata: {
       value: input.collectionMetadata ?? null,
@@ -350,16 +358,10 @@ export async function setCollectionSize<
 
   return {
     instruction: setCollectionSizeInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as SetCollectionSizeInstruction<
-      TProgram,
-      TAccountCollectionMetadata,
-      TAccountCollectionAuthority,
-      TAccountCollectionMint,
-      TAccountCollectionAuthorityRecord
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

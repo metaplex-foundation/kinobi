@@ -588,7 +588,25 @@ export async function setCollection<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof setCollectionInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof setCollectionInstruction<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority,
+      TAccountAuthorityPda,
+      TAccountPayer,
+      TAccountCollectionMint,
+      TAccountCollectionMetadata,
+      TAccountCollectionAuthorityRecord,
+      TAccountNewCollectionUpdateAuthority,
+      TAccountNewCollectionMetadata,
+      TAccountNewCollectionMint,
+      TAccountNewCollectionMasterEdition,
+      TAccountNewCollectionAuthorityRecord,
+      TAccountTokenMetadataProgram,
+      TAccountSystemProgram
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     candyMachine: { value: input.candyMachine ?? null, isWritable: true },
     authority: { value: input.authority ?? null, isWritable: false },
@@ -663,25 +681,9 @@ export async function setCollection<
 
   return {
     instruction: setCollectionInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as SetCollectionInstruction<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthority,
-      TAccountAuthorityPda,
-      TAccountPayer,
-      TAccountCollectionMint,
-      TAccountCollectionMetadata,
-      TAccountCollectionAuthorityRecord,
-      TAccountNewCollectionUpdateAuthority,
-      TAccountNewCollectionMetadata,
-      TAccountNewCollectionMint,
-      TAccountNewCollectionMasterEdition,
-      TAccountNewCollectionAuthorityRecord,
-      TAccountTokenMetadataProgram,
-      TAccountSystemProgram
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

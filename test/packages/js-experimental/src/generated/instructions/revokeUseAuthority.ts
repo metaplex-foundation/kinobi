@@ -440,7 +440,20 @@ export async function revokeUseAuthority<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof revokeUseAuthorityInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof revokeUseAuthorityInstruction<
+      TProgram,
+      TAccountUseAuthorityRecord,
+      TAccountOwner,
+      TAccountUser,
+      TAccountOwnerTokenAccount,
+      TAccountMint,
+      TAccountMetadata,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRent
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     useAuthorityRecord: {
       value: input.useAuthorityRecord ?? null,
@@ -492,20 +505,9 @@ export async function revokeUseAuthority<
 
   return {
     instruction: revokeUseAuthorityInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as RevokeUseAuthorityInstruction<
-      TProgram,
-      TAccountUseAuthorityRecord,
-      TAccountOwner,
-      TAccountUser,
-      TAccountOwnerTokenAccount,
-      TAccountMint,
-      TAccountMetadata,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

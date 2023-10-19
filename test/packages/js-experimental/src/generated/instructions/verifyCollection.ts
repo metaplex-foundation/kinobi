@@ -344,7 +344,17 @@ export async function verifyCollection<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof verifyCollectionInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof verifyCollectionInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountCollectionAuthority,
+      TAccountPayer,
+      TAccountCollectionMint,
+      TAccountCollection,
+      TAccountCollectionMasterEditionAccount
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     collectionAuthority: {
@@ -375,17 +385,9 @@ export async function verifyCollection<
 
   return {
     instruction: verifyCollectionInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as VerifyCollectionInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountCollectionAuthority,
-      TAccountPayer,
-      TAccountCollectionMint,
-      TAccountCollection,
-      TAccountCollectionMasterEditionAccount
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

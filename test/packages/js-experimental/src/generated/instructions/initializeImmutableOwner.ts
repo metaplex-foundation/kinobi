@@ -175,7 +175,9 @@ export async function initializeImmutableOwner<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof initializeImmutableOwnerInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof initializeImmutableOwnerInstruction<TProgram, TAccountAccount>
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     account: { value: input.account ?? null, isWritable: true },
   };
@@ -195,9 +197,9 @@ export async function initializeImmutableOwner<
 
   return {
     instruction: initializeImmutableOwnerInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as InitializeImmutableOwnerInstruction<TProgram, TAccountAccount>,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

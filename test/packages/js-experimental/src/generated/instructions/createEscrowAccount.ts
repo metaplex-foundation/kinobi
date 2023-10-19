@@ -440,7 +440,20 @@ export async function createEscrowAccount<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof createEscrowAccountInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof createEscrowAccountInstruction<
+      TProgram,
+      TAccountEscrow,
+      TAccountMetadata,
+      TAccountMint,
+      TAccountTokenAccount,
+      TAccountEdition,
+      TAccountPayer,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountAuthority
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     escrow: { value: input.escrow ?? null, isWritable: true },
     metadata: { value: input.metadata ?? null, isWritable: true },
@@ -485,20 +498,9 @@ export async function createEscrowAccount<
 
   return {
     instruction: createEscrowAccountInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as CreateEscrowAccountInstruction<
-      TProgram,
-      TAccountEscrow,
-      TAccountMetadata,
-      TAccountMint,
-      TAccountTokenAccount,
-      TAccountEdition,
-      TAccountPayer,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions,
-      TAccountAuthority
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

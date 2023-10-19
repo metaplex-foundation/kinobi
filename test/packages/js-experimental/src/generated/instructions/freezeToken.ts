@@ -228,7 +228,14 @@ export async function freezeToken<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof freezeTokenInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof freezeTokenInstruction<
+      TProgram,
+      TAccountAccount,
+      TAccountMint,
+      TAccountOwner
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     account: { value: input.account ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: false },
@@ -250,14 +257,9 @@ export async function freezeToken<
 
   return {
     instruction: freezeTokenInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as FreezeTokenInstruction<
-      TProgram,
-      TAccountAccount,
-      TAccountMint,
-      TAccountOwner
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

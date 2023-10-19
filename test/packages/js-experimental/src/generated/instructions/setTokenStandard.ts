@@ -292,7 +292,15 @@ export async function setTokenStandard<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof setTokenStandardInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof setTokenStandardInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountUpdateAuthority,
+      TAccountMint,
+      TAccountEdition
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     updateAuthority: { value: input.updateAuthority ?? null, isWritable: true },
@@ -315,15 +323,9 @@ export async function setTokenStandard<
 
   return {
     instruction: setTokenStandardInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as SetTokenStandardInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountUpdateAuthority,
-      TAccountMint,
-      TAccountEdition
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

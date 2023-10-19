@@ -164,7 +164,9 @@ export async function getTokenDataSize<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof getTokenDataSizeInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof getTokenDataSizeInstruction<TProgram, TAccountMint>
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     mint: { value: input.mint ?? null, isWritable: false },
   };
@@ -184,9 +186,9 @@ export async function getTokenDataSize<
 
   return {
     instruction: getTokenDataSizeInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as GetTokenDataSizeInstruction<TProgram, TAccountMint>,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

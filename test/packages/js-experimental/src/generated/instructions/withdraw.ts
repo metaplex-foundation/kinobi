@@ -198,7 +198,13 @@ export async function withdraw<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof withdrawInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof withdrawInstruction<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     candyMachine: { value: input.candyMachine ?? null, isWritable: true },
     authority: { value: input.authority ?? null, isWritable: true },
@@ -219,9 +225,9 @@ export async function withdraw<
 
   return {
     instruction: withdrawInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

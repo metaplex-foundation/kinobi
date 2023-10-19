@@ -162,10 +162,7 @@ export async function setComputeUnitPrice<
   // TODO
 
   return {
-    instruction: setComputeUnitPriceInstruction(
-      args,
-      programAddress
-    ) as SetComputeUnitPriceInstruction<TProgram>,
+    instruction: setComputeUnitPriceInstruction(args, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

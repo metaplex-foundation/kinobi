@@ -246,7 +246,9 @@ export async function setTokenAuthority<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof setTokenAuthorityInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof setTokenAuthorityInstruction<TProgram, TAccountOwned, TAccountOwner>
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     owned: { value: input.owned ?? null, isWritable: true },
     owner: { value: input.owner ?? null, isWritable: false },
@@ -270,16 +272,10 @@ export async function setTokenAuthority<
 
   return {
     instruction: setTokenAuthorityInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as SetTokenAuthorityInstruction<
-      TProgram,
-      TAccountOwned,
-      typeof input['owner'] extends Signer<TAccountOwner>
-        ? ReadonlySignerAccount<TAccountOwner>
-        : TAccountOwner
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

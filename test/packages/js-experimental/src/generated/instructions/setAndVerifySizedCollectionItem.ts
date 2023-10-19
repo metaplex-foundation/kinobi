@@ -414,7 +414,17 @@ export async function setAndVerifySizedCollectionItem<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof setAndVerifySizedCollectionItemInstruction
+    typeof setAndVerifySizedCollectionItemInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountCollectionAuthority,
+      TAccountPayer,
+      TAccountUpdateAuthority,
+      TAccountCollectionMint,
+      TAccountCollection,
+      TAccountCollectionMasterEditionAccount,
+      TAccountCollectionAuthorityRecord
+    >
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
@@ -454,19 +464,9 @@ export async function setAndVerifySizedCollectionItem<
 
   return {
     instruction: setAndVerifySizedCollectionItemInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as SetAndVerifySizedCollectionItemInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountCollectionAuthority,
-      TAccountPayer,
-      TAccountUpdateAuthority,
-      TAccountCollectionMint,
-      TAccountCollection,
-      TAccountCollectionMasterEditionAccount,
-      TAccountCollectionAuthorityRecord
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

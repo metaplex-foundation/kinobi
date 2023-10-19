@@ -217,7 +217,11 @@ export async function removeCreatorVerification<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof removeCreatorVerificationInstruction
+    typeof removeCreatorVerificationInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountCreator
+    >
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
@@ -239,13 +243,9 @@ export async function removeCreatorVerification<
 
   return {
     instruction: removeCreatorVerificationInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as RemoveCreatorVerificationInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountCreator
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

@@ -162,10 +162,7 @@ export async function setComputeUnitLimit<
   // TODO
 
   return {
-    instruction: setComputeUnitLimitInstruction(
-      args,
-      programAddress
-    ) as SetComputeUnitLimitInstruction<TProgram>,
+    instruction: setComputeUnitLimitInstruction(args, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

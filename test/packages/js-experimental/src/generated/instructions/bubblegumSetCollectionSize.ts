@@ -349,7 +349,14 @@ export async function bubblegumSetCollectionSize<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof bubblegumSetCollectionSizeInstruction
+    typeof bubblegumSetCollectionSizeInstruction<
+      TProgram,
+      TAccountCollectionMetadata,
+      TAccountCollectionAuthority,
+      TAccountCollectionMint,
+      TAccountBubblegumSigner,
+      TAccountCollectionAuthorityRecord
+    >
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     collectionMetadata: {
@@ -389,17 +396,10 @@ export async function bubblegumSetCollectionSize<
 
   return {
     instruction: bubblegumSetCollectionSizeInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as BubblegumSetCollectionSizeInstruction<
-      TProgram,
-      TAccountCollectionMetadata,
-      TAccountCollectionAuthority,
-      TAccountCollectionMint,
-      TAccountBubblegumSigner,
-      TAccountCollectionAuthorityRecord
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

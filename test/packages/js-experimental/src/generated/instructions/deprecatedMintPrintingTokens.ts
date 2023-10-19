@@ -409,7 +409,16 @@ export async function deprecatedMintPrintingTokens<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof deprecatedMintPrintingTokensInstruction
+    typeof deprecatedMintPrintingTokensInstruction<
+      TProgram,
+      TAccountDestination,
+      TAccountPrintingMint,
+      TAccountUpdateAuthority,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      TAccountTokenProgram,
+      TAccountRent
+    >
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     destination: { value: input.destination ?? null, isWritable: true },
@@ -456,19 +465,10 @@ export async function deprecatedMintPrintingTokens<
 
   return {
     instruction: deprecatedMintPrintingTokensInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as DeprecatedMintPrintingTokensInstruction<
-      TProgram,
-      TAccountDestination,
-      TAccountPrintingMint,
-      TAccountUpdateAuthority,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountTokenProgram,
-      TAccountRent
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

@@ -94,10 +94,9 @@ export function getInstructionFunctionHighLevelFragment(
     .addImports('shared', ['CustomGeneratedInstruction', 'WrappedInstruction']);
 
   if (hasAccounts) {
-    functionFragment.addImports('shared', [
-      'getAccountMetasAndSigners',
-      'ResolvedAccount',
-    ]);
+    functionFragment
+      .addImports('solanaInstructions', ['IAccountMeta'])
+      .addImports('shared', ['getAccountMetasAndSigners', 'ResolvedAccount']);
   }
 
   return functionFragment;

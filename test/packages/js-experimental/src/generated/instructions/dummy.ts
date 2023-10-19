@@ -481,7 +481,21 @@ export async function dummy<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof dummyInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof dummyInstruction<
+      TProgram,
+      TAccountEdition,
+      TAccountMint,
+      TAccountUpdateAuthority,
+      TAccountMintAuthority,
+      TAccountPayer,
+      TAccountFoo,
+      TAccountBar,
+      TAccountDelegate,
+      TAccountDelegateRecord,
+      TAccountTokenOrAtaProgram
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     edition: { value: input.edition ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: true },
@@ -559,21 +573,9 @@ export async function dummy<
 
   return {
     instruction: dummyInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as DummyInstruction<
-      TProgram,
-      TAccountEdition,
-      TAccountMint,
-      TAccountUpdateAuthority,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountFoo,
-      TAccountBar,
-      TAccountDelegate,
-      TAccountDelegateRecord,
-      TAccountTokenOrAtaProgram
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

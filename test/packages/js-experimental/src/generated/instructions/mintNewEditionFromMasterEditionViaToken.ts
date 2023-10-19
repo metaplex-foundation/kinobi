@@ -615,7 +615,23 @@ export async function mintNewEditionFromMasterEditionViaToken<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof mintNewEditionFromMasterEditionViaTokenInstruction
+    typeof mintNewEditionFromMasterEditionViaTokenInstruction<
+      TProgram,
+      TAccountNewMetadata,
+      TAccountNewEdition,
+      TAccountMasterEdition,
+      TAccountNewMint,
+      TAccountEditionMarkPda,
+      TAccountNewMintAuthority,
+      TAccountPayer,
+      TAccountTokenAccountOwner,
+      TAccountTokenAccount,
+      TAccountNewMetadataUpdateAuthority,
+      TAccountMetadata,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRent
+    >
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     newMetadata: { value: input.newMetadata ?? null, isWritable: true },
@@ -679,26 +695,10 @@ export async function mintNewEditionFromMasterEditionViaToken<
 
   return {
     instruction: mintNewEditionFromMasterEditionViaTokenInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as MintNewEditionFromMasterEditionViaTokenInstruction<
-      TProgram,
-      TAccountNewMetadata,
-      TAccountNewEdition,
-      TAccountMasterEdition,
-      TAccountNewMint,
-      TAccountEditionMarkPda,
-      TAccountNewMintAuthority,
-      TAccountPayer,
-      TAccountTokenAccountOwner,
-      TAccountTokenAccount,
-      TAccountNewMetadataUpdateAuthority,
-      TAccountMetadata,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

@@ -131,10 +131,7 @@ export async function addMemo<
   // TODO
 
   return {
-    instruction: addMemoInstruction(
-      args,
-      programAddress
-    ) as AddMemoInstruction<TProgram>,
+    instruction: addMemoInstruction(args, programAddress),
     signers: [],
     bytesCreatedOnChain: 0,
   };

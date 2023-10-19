@@ -320,7 +320,16 @@ export async function freezeDelegatedAccount<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof freezeDelegatedAccountInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof freezeDelegatedAccountInstruction<
+      TProgram,
+      TAccountDelegate,
+      TAccountTokenAccount,
+      TAccountEdition,
+      TAccountMint,
+      TAccountTokenProgram
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     delegate: { value: input.delegate ?? null, isWritable: true },
     tokenAccount: { value: input.tokenAccount ?? null, isWritable: true },
@@ -354,16 +363,9 @@ export async function freezeDelegatedAccount<
 
   return {
     instruction: freezeDelegatedAccountInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as FreezeDelegatedAccountInstruction<
-      TProgram,
-      TAccountDelegate,
-      TAccountTokenAccount,
-      TAccountEdition,
-      TAccountMint,
-      TAccountTokenProgram
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

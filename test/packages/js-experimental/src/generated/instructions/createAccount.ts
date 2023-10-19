@@ -223,7 +223,9 @@ export async function createAccount<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof createAccountInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof createAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     payer: { value: input.payer ?? null, isWritable: true },
     newAccount: { value: input.newAccount ?? null, isWritable: true },
@@ -247,10 +249,10 @@ export async function createAccount<
 
   return {
     instruction: createAccountInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

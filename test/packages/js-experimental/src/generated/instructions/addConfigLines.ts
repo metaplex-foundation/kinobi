@@ -235,7 +235,13 @@ export async function addConfigLines<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof addConfigLinesInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof addConfigLinesInstruction<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     candyMachine: { value: input.candyMachine ?? null, isWritable: true },
     authority: { value: input.authority ?? null, isWritable: false },
@@ -259,14 +265,10 @@ export async function addConfigLines<
 
   return {
     instruction: addConfigLinesInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as AddConfigLinesInstruction<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthority
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

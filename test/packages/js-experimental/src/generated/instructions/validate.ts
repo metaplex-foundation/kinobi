@@ -681,7 +681,24 @@ export async function validate<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof validateInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof validateInstruction<
+      TProgram,
+      TAccountPayer,
+      TAccountRuleSet,
+      TAccountSystemProgram,
+      TAccountOptRuleSigner1,
+      TAccountOptRuleSigner2,
+      TAccountOptRuleSigner3,
+      TAccountOptRuleSigner4,
+      TAccountOptRuleSigner5,
+      TAccountOptRuleNonsigner1,
+      TAccountOptRuleNonsigner2,
+      TAccountOptRuleNonsigner3,
+      TAccountOptRuleNonsigner4,
+      TAccountOptRuleNonsigner5
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     payer: { value: input.payer ?? null, isWritable: true },
     ruleSet: { value: input.ruleSet ?? null, isWritable: true },
@@ -741,27 +758,10 @@ export async function validate<
 
   return {
     instruction: validateInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as ValidateInstruction<
-      TProgram,
-      TAccountPayer,
-      TAccountRuleSet,
-      TAccountSystemProgram,
-      typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
-        ? ReadonlySignerAccount<TAccountOptRuleSigner1>
-        : TAccountOptRuleSigner1,
-      TAccountOptRuleSigner2,
-      TAccountOptRuleSigner3,
-      TAccountOptRuleSigner4,
-      TAccountOptRuleSigner5,
-      TAccountOptRuleNonsigner1,
-      TAccountOptRuleNonsigner2,
-      TAccountOptRuleNonsigner3,
-      TAccountOptRuleNonsigner4,
-      TAccountOptRuleNonsigner5
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

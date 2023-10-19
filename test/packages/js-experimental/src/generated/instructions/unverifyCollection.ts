@@ -355,7 +355,17 @@ export async function unverifyCollection<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof unverifyCollectionInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof unverifyCollectionInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountCollectionAuthority,
+      TAccountCollectionMint,
+      TAccountCollection,
+      TAccountCollectionMasterEditionAccount,
+      TAccountCollectionAuthorityRecord
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     collectionAuthority: {
@@ -389,17 +399,9 @@ export async function unverifyCollection<
 
   return {
     instruction: unverifyCollectionInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as UnverifyCollectionInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountCollectionAuthority,
-      TAccountCollectionMint,
-      TAccountCollection,
-      TAccountCollectionMasterEditionAccount,
-      TAccountCollectionAuthorityRecord
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

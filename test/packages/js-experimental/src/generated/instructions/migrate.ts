@@ -495,7 +495,21 @@ export async function migrate<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof migrateInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof migrateInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      TAccountTokenAccount,
+      TAccountMint,
+      TAccountUpdateAuthority,
+      TAccountCollectionMetadata,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountAuthorizationRules
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     masterEdition: { value: input.masterEdition ?? null, isWritable: false },
@@ -561,22 +575,10 @@ export async function migrate<
 
   return {
     instruction: migrateInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as MigrateInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountTokenAccount,
-      TAccountMint,
-      TAccountUpdateAuthority,
-      TAccountCollectionMetadata,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions,
-      TAccountAuthorizationRules
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

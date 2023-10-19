@@ -167,7 +167,9 @@ export async function syncNative<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof syncNativeInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof syncNativeInstruction<TProgram, TAccountAccount>
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     account: { value: input.account ?? null, isWritable: true },
   };
@@ -187,9 +189,9 @@ export async function syncNative<
 
   return {
     instruction: syncNativeInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as SyncNativeInstruction<TProgram, TAccountAccount>,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

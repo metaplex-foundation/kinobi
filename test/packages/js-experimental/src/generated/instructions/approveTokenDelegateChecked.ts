@@ -305,7 +305,13 @@ export async function approveTokenDelegateChecked<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof approveTokenDelegateCheckedInstruction
+    typeof approveTokenDelegateCheckedInstruction<
+      TProgram,
+      TAccountSource,
+      TAccountMint,
+      TAccountDelegate,
+      TAccountOwner
+    >
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     source: { value: input.source ?? null, isWritable: true },
@@ -332,16 +338,10 @@ export async function approveTokenDelegateChecked<
 
   return {
     instruction: approveTokenDelegateCheckedInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as ApproveTokenDelegateCheckedInstruction<
-      TProgram,
-      TAccountSource,
-      TAccountMint,
-      TAccountDelegate,
-      TAccountOwner
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

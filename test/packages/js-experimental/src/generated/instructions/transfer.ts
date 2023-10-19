@@ -664,7 +664,26 @@ export async function transfer<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof transferInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof transferInstruction<
+      TProgram,
+      TAccountAuthority,
+      TAccountDelegateRecord,
+      TAccountToken,
+      TAccountTokenOwner,
+      TAccountDestination,
+      TAccountDestinationOwner,
+      TAccountMint,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      TAccountSplTokenProgram,
+      TAccountSplAtaProgram,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountAuthorizationRulesProgram,
+      TAccountAuthorizationRules
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     authority: { value: input.authority ?? null, isWritable: true },
     delegateRecord: { value: input.delegateRecord ?? null, isWritable: true },
@@ -761,27 +780,10 @@ export async function transfer<
 
   return {
     instruction: transferInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as TransferInstruction<
-      TProgram,
-      TAccountAuthority,
-      TAccountDelegateRecord,
-      TAccountToken,
-      TAccountTokenOwner,
-      TAccountDestination,
-      TAccountDestinationOwner,
-      TAccountMint,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountSplTokenProgram,
-      TAccountSplAtaProgram,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions,
-      TAccountAuthorizationRulesProgram,
-      TAccountAuthorizationRules
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

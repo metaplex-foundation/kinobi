@@ -208,7 +208,13 @@ export async function initializeMultisig<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof initializeMultisigInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof initializeMultisigInstruction<
+      TProgram,
+      TAccountMultisig,
+      TAccountRent
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     multisig: { value: input.multisig ?? null, isWritable: true },
     rent: { value: input.rent ?? null, isWritable: false },
@@ -238,14 +244,10 @@ export async function initializeMultisig<
 
   return {
     instruction: initializeMultisigInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as InitializeMultisigInstruction<
-      TProgram,
-      TAccountMultisig,
-      TAccountRent
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

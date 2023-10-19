@@ -193,7 +193,13 @@ export async function revokeTokenDelegate<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof revokeTokenDelegateInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof revokeTokenDelegateInstruction<
+      TProgram,
+      TAccountSource,
+      TAccountOwner
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     source: { value: input.source ?? null, isWritable: true },
     owner: { value: input.owner ?? null, isWritable: false },
@@ -214,13 +220,9 @@ export async function revokeTokenDelegate<
 
   return {
     instruction: revokeTokenDelegateInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as RevokeTokenDelegateInstruction<
-      TProgram,
-      TAccountSource,
-      TAccountOwner
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

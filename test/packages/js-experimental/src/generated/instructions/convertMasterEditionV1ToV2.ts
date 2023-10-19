@@ -259,7 +259,12 @@ export async function convertMasterEditionV1ToV2<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof convertMasterEditionV1ToV2Instruction
+    typeof convertMasterEditionV1ToV2Instruction<
+      TProgram,
+      TAccountMasterEdition,
+      TAccountOneTimeAuth,
+      TAccountPrintingMint
+    >
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     masterEdition: { value: input.masterEdition ?? null, isWritable: true },
@@ -282,14 +287,9 @@ export async function convertMasterEditionV1ToV2<
 
   return {
     instruction: convertMasterEditionV1ToV2Instruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as ConvertMasterEditionV1ToV2Instruction<
-      TProgram,
-      TAccountMasterEdition,
-      TAccountOneTimeAuth,
-      TAccountPrintingMint
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

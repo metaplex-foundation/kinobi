@@ -249,7 +249,14 @@ export async function initializeToken2<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof initializeToken2Instruction>[0];
+  type AccountMetas = Parameters<
+    typeof initializeToken2Instruction<
+      TProgram,
+      TAccountAccount,
+      TAccountMint,
+      TAccountRent
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     account: { value: input.account ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: false },
@@ -280,15 +287,10 @@ export async function initializeToken2<
 
   return {
     instruction: initializeToken2Instruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as InitializeToken2Instruction<
-      TProgram,
-      TAccountAccount,
-      TAccountMint,
-      TAccountRent
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

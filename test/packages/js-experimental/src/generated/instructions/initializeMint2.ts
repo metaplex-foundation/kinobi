@@ -197,7 +197,9 @@ export async function initializeMint2<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof initializeMint2Instruction>[0];
+  type AccountMetas = Parameters<
+    typeof initializeMint2Instruction<TProgram, TAccountMint>
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     mint: { value: input.mint ?? null, isWritable: true },
   };
@@ -220,10 +222,10 @@ export async function initializeMint2<
 
   return {
     instruction: initializeMint2Instruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as InitializeMint2Instruction<TProgram, TAccountMint>,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

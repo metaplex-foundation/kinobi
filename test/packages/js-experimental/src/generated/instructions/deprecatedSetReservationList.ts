@@ -306,7 +306,12 @@ export async function deprecatedSetReservationList<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof deprecatedSetReservationListInstruction
+    typeof deprecatedSetReservationListInstruction<
+      TProgram,
+      TAccountMasterEdition,
+      TAccountReservationList,
+      TAccountResource
+    >
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     masterEdition: { value: input.masterEdition ?? null, isWritable: true },
@@ -332,15 +337,10 @@ export async function deprecatedSetReservationList<
 
   return {
     instruction: deprecatedSetReservationListInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as DeprecatedSetReservationListInstruction<
-      TProgram,
-      TAccountMasterEdition,
-      TAccountReservationList,
-      TAccountResource
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

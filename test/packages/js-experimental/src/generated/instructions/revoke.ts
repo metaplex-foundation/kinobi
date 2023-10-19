@@ -590,7 +590,24 @@ export async function revoke<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof revokeInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof revokeInstruction<
+      TProgram,
+      TAccountDelegateRecord,
+      TAccountDelegate,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      TAccountMint,
+      TAccountToken,
+      TAccountAuthority,
+      TAccountPayer,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountSplTokenProgram,
+      TAccountAuthorizationRulesProgram,
+      TAccountAuthorizationRules
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     delegateRecord: { value: input.delegateRecord ?? null, isWritable: true },
     delegate: { value: input.delegate ?? null, isWritable: false },
@@ -651,25 +668,10 @@ export async function revoke<
 
   return {
     instruction: revokeInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as RevokeInstruction<
-      TProgram,
-      TAccountDelegateRecord,
-      TAccountDelegate,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountMint,
-      TAccountToken,
-      TAccountAuthority,
-      TAccountPayer,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions,
-      TAccountSplTokenProgram,
-      TAccountAuthorizationRulesProgram,
-      TAccountAuthorizationRules
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

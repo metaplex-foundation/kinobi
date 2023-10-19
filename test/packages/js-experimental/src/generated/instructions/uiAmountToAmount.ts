@@ -180,7 +180,9 @@ export async function uiAmountToAmount<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof uiAmountToAmountInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof uiAmountToAmountInstruction<TProgram, TAccountMint>
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     mint: { value: input.mint ?? null, isWritable: false },
   };
@@ -203,10 +205,10 @@ export async function uiAmountToAmount<
 
   return {
     instruction: uiAmountToAmountInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as UiAmountToAmountInstruction<TProgram, TAccountMint>,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

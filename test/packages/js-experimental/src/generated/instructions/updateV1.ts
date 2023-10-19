@@ -675,7 +675,21 @@ export async function updateV1<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof updateV1Instruction>[0];
+  type AccountMetas = Parameters<
+    typeof updateV1Instruction<
+      TProgram,
+      TAccountAuthority,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      TAccountMint,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountToken,
+      TAccountDelegateRecord,
+      TAccountAuthorizationRulesProgram,
+      TAccountAuthorizationRules
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     authority: { value: input.authority ?? null, isWritable: false },
     metadata: { value: input.metadata ?? null, isWritable: true },
@@ -730,22 +744,10 @@ export async function updateV1<
 
   return {
     instruction: updateV1Instruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as UpdateV1Instruction<
-      TProgram,
-      TAccountAuthority,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountMint,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions,
-      TAccountToken,
-      TAccountDelegateRecord,
-      TAccountAuthorizationRulesProgram,
-      TAccountAuthorizationRules
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

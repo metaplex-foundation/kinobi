@@ -255,7 +255,14 @@ export async function burnTokenChecked<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof burnTokenCheckedInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof burnTokenCheckedInstruction<
+      TProgram,
+      TAccountAccount,
+      TAccountMint,
+      TAccountAuthority
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     account: { value: input.account ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: true },
@@ -280,15 +287,10 @@ export async function burnTokenChecked<
 
   return {
     instruction: burnTokenCheckedInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as BurnTokenCheckedInstruction<
-      TProgram,
-      TAccountAccount,
-      TAccountMint,
-      TAccountAuthority
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

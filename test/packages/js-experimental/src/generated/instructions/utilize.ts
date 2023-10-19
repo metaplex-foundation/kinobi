@@ -537,7 +537,22 @@ export async function utilize<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof utilizeInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof utilizeInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountTokenAccount,
+      TAccountMint,
+      TAccountUseAuthority,
+      TAccountOwner,
+      TAccountTokenProgram,
+      TAccountAtaProgram,
+      TAccountSystemProgram,
+      TAccountRent,
+      TAccountUseAuthorityRecord,
+      TAccountBurner
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     tokenAccount: { value: input.tokenAccount ?? null, isWritable: true },
@@ -603,23 +618,10 @@ export async function utilize<
 
   return {
     instruction: utilizeInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as UtilizeInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountTokenAccount,
-      TAccountMint,
-      TAccountUseAuthority,
-      TAccountOwner,
-      TAccountTokenProgram,
-      TAccountAtaProgram,
-      TAccountSystemProgram,
-      TAccountRent,
-      TAccountUseAuthorityRecord,
-      TAccountBurner
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

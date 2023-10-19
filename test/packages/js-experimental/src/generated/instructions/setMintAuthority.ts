@@ -260,7 +260,14 @@ export async function setMintAuthority<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof setMintAuthorityInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof setMintAuthorityInstruction<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority,
+      TAccountMintAuthority
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     candyMachine: { value: input.candyMachine ?? null, isWritable: true },
     authority: { value: input.authority ?? null, isWritable: false },
@@ -282,14 +289,9 @@ export async function setMintAuthority<
 
   return {
     instruction: setMintAuthorityInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as SetMintAuthorityInstruction<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthority,
-      TAccountMintAuthority
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

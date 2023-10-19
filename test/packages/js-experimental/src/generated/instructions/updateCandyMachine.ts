@@ -233,7 +233,13 @@ export async function updateCandyMachine<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof updateCandyMachineInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof updateCandyMachineInstruction<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     candyMachine: { value: input.candyMachine ?? null, isWritable: true },
     authority: { value: input.authority ?? null, isWritable: false },
@@ -257,14 +263,10 @@ export async function updateCandyMachine<
 
   return {
     instruction: updateCandyMachineInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as UpdateCandyMachineInstruction<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthority
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

@@ -520,7 +520,22 @@ export async function initialize<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof initializeInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof initializeInstruction<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthorityPda,
+      TAccountAuthority,
+      TAccountPayer,
+      TAccountCollectionMetadata,
+      TAccountCollectionMint,
+      TAccountCollectionMasterEdition,
+      TAccountCollectionUpdateAuthority,
+      TAccountCollectionAuthorityRecord,
+      TAccountTokenMetadataProgram,
+      TAccountSystemProgram
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     candyMachine: { value: input.candyMachine ?? null, isWritable: true },
     authorityPda: { value: input.authorityPda ?? null, isWritable: true },
@@ -586,23 +601,10 @@ export async function initialize<
 
   return {
     instruction: initializeInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as InitializeInstruction<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthorityPda,
-      TAccountAuthority,
-      TAccountPayer,
-      TAccountCollectionMetadata,
-      TAccountCollectionMint,
-      TAccountCollectionMasterEdition,
-      TAccountCollectionUpdateAuthority,
-      TAccountCollectionAuthorityRecord,
-      TAccountTokenMetadataProgram,
-      TAccountSystemProgram
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

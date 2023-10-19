@@ -584,7 +584,24 @@ export async function transferOutOfEscrow<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof transferOutOfEscrowInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof transferOutOfEscrowInstruction<
+      TProgram,
+      TAccountEscrow,
+      TAccountMetadata,
+      TAccountPayer,
+      TAccountAttributeMint,
+      TAccountAttributeSrc,
+      TAccountAttributeDst,
+      TAccountEscrowMint,
+      TAccountEscrowAccount,
+      TAccountSystemProgram,
+      TAccountAtaProgram,
+      TAccountTokenProgram,
+      TAccountSysvarInstructions,
+      TAccountAuthority
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     escrow: { value: input.escrow ?? null, isWritable: false },
     metadata: { value: input.metadata ?? null, isWritable: true },
@@ -652,25 +669,10 @@ export async function transferOutOfEscrow<
 
   return {
     instruction: transferOutOfEscrowInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as TransferOutOfEscrowInstruction<
-      TProgram,
-      TAccountEscrow,
-      TAccountMetadata,
-      TAccountPayer,
-      TAccountAttributeMint,
-      TAccountAttributeSrc,
-      TAccountAttributeDst,
-      TAccountEscrowMint,
-      TAccountEscrowAccount,
-      TAccountSystemProgram,
-      TAccountAtaProgram,
-      TAccountTokenProgram,
-      TAccountSysvarInstructions,
-      TAccountAuthority
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

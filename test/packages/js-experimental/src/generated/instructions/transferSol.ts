@@ -208,7 +208,9 @@ export async function transferSol<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof transferSolInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof transferSolInstruction<TProgram, TAccountSource, TAccountDestination>
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     source: { value: input.source ?? null, isWritable: true },
     destination: { value: input.destination ?? null, isWritable: true },
@@ -232,10 +234,10 @@ export async function transferSol<
 
   return {
     instruction: transferSolInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

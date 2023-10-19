@@ -672,7 +672,28 @@ export async function mintFromCandyMachine<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof mintFromCandyMachineInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof mintFromCandyMachineInstruction<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthorityPda,
+      TAccountMintAuthority,
+      TAccountPayer,
+      TAccountNftMint,
+      TAccountNftMintAuthority,
+      TAccountNftMetadata,
+      TAccountNftMasterEdition,
+      TAccountCollectionAuthorityRecord,
+      TAccountCollectionMint,
+      TAccountCollectionMetadata,
+      TAccountCollectionMasterEdition,
+      TAccountCollectionUpdateAuthority,
+      TAccountTokenMetadataProgram,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRecentSlothashes
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     candyMachine: { value: input.candyMachine ?? null, isWritable: true },
     authorityPda: { value: input.authorityPda ?? null, isWritable: true },
@@ -758,28 +779,9 @@ export async function mintFromCandyMachine<
 
   return {
     instruction: mintFromCandyMachineInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as MintFromCandyMachineInstruction<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthorityPda,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountNftMint,
-      TAccountNftMintAuthority,
-      TAccountNftMetadata,
-      TAccountNftMasterEdition,
-      TAccountCollectionAuthorityRecord,
-      TAccountCollectionMint,
-      TAccountCollectionMetadata,
-      TAccountCollectionMasterEdition,
-      TAccountCollectionUpdateAuthority,
-      TAccountTokenMetadataProgram,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRecentSlothashes
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

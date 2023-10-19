@@ -302,7 +302,14 @@ export async function createFrequencyRule<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof createFrequencyRuleInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof createFrequencyRuleInstruction<
+      TProgram,
+      TAccountPayer,
+      TAccountFrequencyPda,
+      TAccountSystemProgram
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     payer: { value: input.payer ?? null, isWritable: true },
     frequencyPda: { value: input.frequencyPda ?? null, isWritable: true },
@@ -337,15 +344,10 @@ export async function createFrequencyRule<
 
   return {
     instruction: createFrequencyRuleInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as CreateFrequencyRuleInstruction<
-      TProgram,
-      TAccountPayer,
-      TAccountFrequencyPda,
-      TAccountSystemProgram
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

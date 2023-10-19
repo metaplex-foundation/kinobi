@@ -592,7 +592,22 @@ export async function deprecatedCreateMasterEdition<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof deprecatedCreateMasterEditionInstruction
+    typeof deprecatedCreateMasterEditionInstruction<
+      TProgram,
+      TAccountEdition,
+      TAccountMint,
+      TAccountPrintingMint,
+      TAccountOneTimePrintingAuthorizationMint,
+      TAccountUpdateAuthority,
+      TAccountPrintingMintAuthority,
+      TAccountMintAuthority,
+      TAccountMetadata,
+      TAccountPayer,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRent,
+      TAccountOneTimePrintingAuthorizationMintAuthority
+    >
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     edition: { value: input.edition ?? null, isWritable: true },
@@ -662,25 +677,10 @@ export async function deprecatedCreateMasterEdition<
 
   return {
     instruction: deprecatedCreateMasterEditionInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as DeprecatedCreateMasterEditionInstruction<
-      TProgram,
-      TAccountEdition,
-      TAccountMint,
-      TAccountPrintingMint,
-      TAccountOneTimePrintingAuthorizationMint,
-      TAccountUpdateAuthority,
-      TAccountPrintingMintAuthority,
-      TAccountMintAuthority,
-      TAccountMetadata,
-      TAccountPayer,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent,
-      TAccountOneTimePrintingAuthorizationMintAuthority
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

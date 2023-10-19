@@ -510,7 +510,22 @@ export async function approveUseAuthority<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof approveUseAuthorityInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof approveUseAuthorityInstruction<
+      TProgram,
+      TAccountUseAuthorityRecord,
+      TAccountOwner,
+      TAccountPayer,
+      TAccountUser,
+      TAccountOwnerTokenAccount,
+      TAccountMetadata,
+      TAccountMint,
+      TAccountBurner,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRent
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     useAuthorityRecord: {
       value: input.useAuthorityRecord ?? null,
@@ -567,23 +582,10 @@ export async function approveUseAuthority<
 
   return {
     instruction: approveUseAuthorityInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as ApproveUseAuthorityInstruction<
-      TProgram,
-      TAccountUseAuthorityRecord,
-      TAccountOwner,
-      TAccountPayer,
-      TAccountUser,
-      TAccountOwnerTokenAccount,
-      TAccountMetadata,
-      TAccountMint,
-      TAccountBurner,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

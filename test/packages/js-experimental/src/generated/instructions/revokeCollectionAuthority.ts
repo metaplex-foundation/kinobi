@@ -322,7 +322,14 @@ export async function revokeCollectionAuthority<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof revokeCollectionAuthorityInstruction
+    typeof revokeCollectionAuthorityInstruction<
+      TProgram,
+      TAccountCollectionAuthorityRecord,
+      TAccountDelegateAuthority,
+      TAccountRevokeAuthority,
+      TAccountMetadata,
+      TAccountMint
+    >
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     collectionAuthorityRecord: {
@@ -353,16 +360,9 @@ export async function revokeCollectionAuthority<
 
   return {
     instruction: revokeCollectionAuthorityInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as RevokeCollectionAuthorityInstruction<
-      TProgram,
-      TAccountCollectionAuthorityRecord,
-      TAccountDelegateAuthority,
-      TAccountRevokeAuthority,
-      TAccountMetadata,
-      TAccountMint
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

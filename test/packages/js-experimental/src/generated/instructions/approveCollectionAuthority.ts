@@ -422,7 +422,17 @@ export async function approveCollectionAuthority<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof approveCollectionAuthorityInstruction
+    typeof approveCollectionAuthorityInstruction<
+      TProgram,
+      TAccountCollectionAuthorityRecord,
+      TAccountNewCollectionAuthority,
+      TAccountUpdateAuthority,
+      TAccountPayer,
+      TAccountMetadata,
+      TAccountMint,
+      TAccountSystemProgram,
+      TAccountRent
+    >
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     collectionAuthorityRecord: {
@@ -466,19 +476,9 @@ export async function approveCollectionAuthority<
 
   return {
     instruction: approveCollectionAuthorityInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as ApproveCollectionAuthorityInstruction<
-      TProgram,
-      TAccountCollectionAuthorityRecord,
-      TAccountNewCollectionAuthority,
-      TAccountUpdateAuthority,
-      TAccountPayer,
-      TAccountMetadata,
-      TAccountMint,
-      TAccountSystemProgram,
-      TAccountRent
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

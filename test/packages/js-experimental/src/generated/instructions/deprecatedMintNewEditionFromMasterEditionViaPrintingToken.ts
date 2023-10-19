@@ -654,7 +654,25 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof deprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction
+    typeof deprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountEdition,
+      TAccountMasterEdition,
+      TAccountMint,
+      TAccountMintAuthority,
+      TAccountPrintingMint,
+      TAccountMasterTokenAccount,
+      TAccountEditionMarker,
+      TAccountBurnAuthority,
+      TAccountPayer,
+      TAccountMasterUpdateAuthority,
+      TAccountMasterMetadata,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRent,
+      TAccountReservationList
+    >
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
@@ -719,27 +737,9 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
   return {
     instruction:
       deprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction(
-        accountMetas as AccountMetas,
+        accountMetas as Record<keyof AccountMetas, IAccountMeta>,
         programAddress
-      ) as DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountEdition,
-        TAccountMasterEdition,
-        TAccountMint,
-        TAccountMintAuthority,
-        TAccountPrintingMint,
-        TAccountMasterTokenAccount,
-        TAccountEditionMarker,
-        TAccountBurnAuthority,
-        TAccountPayer,
-        TAccountMasterUpdateAuthority,
-        TAccountMasterMetadata,
-        TAccountTokenProgram,
-        TAccountSystemProgram,
-        TAccountRent,
-        TAccountReservationList
-      >,
+      ),
     signers,
     bytesCreatedOnChain: 0,
   };

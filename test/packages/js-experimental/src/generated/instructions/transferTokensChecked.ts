@@ -301,7 +301,15 @@ export async function transferTokensChecked<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof transferTokensCheckedInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof transferTokensCheckedInstruction<
+      TProgram,
+      TAccountSource,
+      TAccountMint,
+      TAccountDestination,
+      TAccountAuthority
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     source: { value: input.source ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: false },
@@ -327,16 +335,10 @@ export async function transferTokensChecked<
 
   return {
     instruction: transferTokensCheckedInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as TransferTokensCheckedInstruction<
-      TProgram,
-      TAccountSource,
-      TAccountMint,
-      TAccountDestination,
-      TAccountAuthority
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

@@ -266,7 +266,13 @@ export async function updateMetadataAccountV2<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof updateMetadataAccountV2Instruction>[0];
+  type AccountMetas = Parameters<
+    typeof updateMetadataAccountV2Instruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountUpdateAuthority
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     updateAuthority: {
@@ -293,14 +299,10 @@ export async function updateMetadataAccountV2<
 
   return {
     instruction: updateMetadataAccountV2Instruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as UpdateMetadataAccountV2Instruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountUpdateAuthority
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

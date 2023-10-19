@@ -264,7 +264,12 @@ export async function updatePrimarySaleHappenedViaToken<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof updatePrimarySaleHappenedViaTokenInstruction
+    typeof updatePrimarySaleHappenedViaTokenInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountOwner,
+      TAccountToken
+    >
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
@@ -287,14 +292,9 @@ export async function updatePrimarySaleHappenedViaToken<
 
   return {
     instruction: updatePrimarySaleHappenedViaTokenInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as UpdatePrimarySaleHappenedViaTokenInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountOwner,
-      TAccountToken
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

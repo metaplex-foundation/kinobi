@@ -292,7 +292,14 @@ export async function createRuleSet<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof createRuleSetInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof createRuleSetInstruction<
+      TProgram,
+      TAccountPayer,
+      TAccountRuleSetPda,
+      TAccountSystemProgram
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     payer: { value: input.payer ?? null, isWritable: true },
     ruleSetPda: { value: input.ruleSetPda ?? null, isWritable: true },
@@ -332,15 +339,10 @@ export async function createRuleSet<
 
   return {
     instruction: createRuleSetInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as CreateRuleSetInstruction<
-      TProgram,
-      TAccountPayer,
-      TAccountRuleSetPda,
-      TAccountSystemProgram
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

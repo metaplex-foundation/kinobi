@@ -473,7 +473,21 @@ export async function burnEditionNft<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof burnEditionNftInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof burnEditionNftInstruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountOwner,
+      TAccountPrintEditionMint,
+      TAccountMasterEditionMint,
+      TAccountPrintEditionTokenAccount,
+      TAccountMasterEditionTokenAccount,
+      TAccountMasterEditionAccount,
+      TAccountPrintEditionAccount,
+      TAccountEditionMarkerAccount,
+      TAccountSplTokenProgram
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     owner: { value: input.owner ?? null, isWritable: true },
@@ -536,21 +550,9 @@ export async function burnEditionNft<
 
   return {
     instruction: burnEditionNftInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as BurnEditionNftInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountOwner,
-      TAccountPrintEditionMint,
-      TAccountMasterEditionMint,
-      TAccountPrintEditionTokenAccount,
-      TAccountMasterEditionTokenAccount,
-      TAccountMasterEditionAccount,
-      TAccountPrintEditionAccount,
-      TAccountEditionMarkerAccount,
-      TAccountSplTokenProgram
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

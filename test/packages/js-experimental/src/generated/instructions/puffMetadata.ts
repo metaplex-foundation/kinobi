@@ -168,7 +168,9 @@ export async function puffMetadata<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof puffMetadataInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof puffMetadataInstruction<TProgram, TAccountMetadata>
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
   };
@@ -188,9 +190,9 @@ export async function puffMetadata<
 
   return {
     instruction: puffMetadataInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress
-    ) as PuffMetadataInstruction<TProgram, TAccountMetadata>,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

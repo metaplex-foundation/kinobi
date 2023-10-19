@@ -278,7 +278,14 @@ export async function mintTokensToChecked<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof mintTokensToCheckedInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof mintTokensToCheckedInstruction<
+      TProgram,
+      TAccountMint,
+      TAccountToken,
+      TAccountMintAuthority
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     mint: { value: input.mint ?? null, isWritable: true },
     token: { value: input.token ?? null, isWritable: true },
@@ -303,15 +310,10 @@ export async function mintTokensToChecked<
 
   return {
     instruction: mintTokensToCheckedInstruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as MintTokensToCheckedInstruction<
-      TProgram,
-      TAccountMint,
-      TAccountToken,
-      TAccountMintAuthority
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };

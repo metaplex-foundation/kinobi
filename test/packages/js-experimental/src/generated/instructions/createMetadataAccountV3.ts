@@ -427,7 +427,18 @@ export async function createMetadataAccountV3<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof createMetadataAccountV3Instruction>[0];
+  type AccountMetas = Parameters<
+    typeof createMetadataAccountV3Instruction<
+      TProgram,
+      TAccountMetadata,
+      TAccountMint,
+      TAccountMintAuthority,
+      TAccountPayer,
+      TAccountUpdateAuthority,
+      TAccountSystemProgram,
+      TAccountRent
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: false },
@@ -474,19 +485,10 @@ export async function createMetadataAccountV3<
 
   return {
     instruction: createMetadataAccountV3Instruction(
-      accountMetas as AccountMetas,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args,
       programAddress
-    ) as CreateMetadataAccountV3Instruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountMint,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountUpdateAuthority,
-      TAccountSystemProgram,
-      TAccountRent
-    >,
+    ),
     signers,
     bytesCreatedOnChain: 0,
   };
