@@ -253,7 +253,7 @@ export async function findMetadataPda(
     /** The address of the mint account */
     mint: Base58EncodedAddress;
   }
-): ProgramDerivedAddress {
+): Promise<ProgramDerivedAddress> {
   const programAddress = await getProgramAddress(
     context,
     'mplTokenMetadata',
@@ -274,11 +274,8 @@ export async function fetchMetadataFromSeeds(
   seeds: Parameters<typeof findMetadataPda>[1],
   options?: FetchEncodedAccountOptions
 ): Promise<Metadata> {
-  return fetchMetadata(
-    context,
-    await findMetadataPda(context, seeds)[0],
-    options
-  );
+  const [address] = await findMetadataPda(context, seeds);
+  return fetchMetadata(context, address, options);
 }
 
 export async function safeFetchMetadataFromSeeds(
@@ -289,9 +286,6 @@ export async function safeFetchMetadataFromSeeds(
   seeds: Parameters<typeof findMetadataPda>[1],
   options?: FetchEncodedAccountOptions
 ): Promise<Metadata | null> {
-  return safeFetchMetadata(
-    context,
-    await findMetadataPda(context, seeds)[0],
-    options
-  );
+  const [address] = await findMetadataPda(context, seeds);
+  return safeFetchMetadata(context, address, options);
 }

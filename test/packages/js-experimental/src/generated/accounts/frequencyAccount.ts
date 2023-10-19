@@ -161,7 +161,7 @@ export function getFrequencyAccountSize(): number {
 
 export async function findFrequencyAccountPda(
   context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
-): ProgramDerivedAddress {
+): Promise<ProgramDerivedAddress> {
   const programAddress = await getProgramAddress(
     context,
     'mplTokenAuthRules',
@@ -180,11 +180,8 @@ export async function fetchFrequencyAccountFromSeeds(
   >,
   options?: FetchEncodedAccountOptions
 ): Promise<FrequencyAccount> {
-  return fetchFrequencyAccount(
-    context,
-    await findFrequencyAccountPda(context)[0],
-    options
-  );
+  const [address] = await findFrequencyAccountPda(context);
+  return fetchFrequencyAccount(context, address, options);
 }
 
 export async function safeFetchFrequencyAccountFromSeeds(
@@ -194,9 +191,6 @@ export async function safeFetchFrequencyAccountFromSeeds(
   >,
   options?: FetchEncodedAccountOptions
 ): Promise<FrequencyAccount | null> {
-  return safeFetchFrequencyAccount(
-    context,
-    await findFrequencyAccountPda(context)[0],
-    options
-  );
+  const [address] = await findFrequencyAccountPda(context);
+  return safeFetchFrequencyAccount(context, address, options);
 }

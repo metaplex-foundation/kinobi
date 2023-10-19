@@ -156,7 +156,7 @@ export async function findDelegateRecordPda(
     /** The delegate role */
     role: DelegateRoleArgs;
   }
-): ProgramDerivedAddress {
+): Promise<ProgramDerivedAddress> {
   const programAddress = await getProgramAddress(
     context,
     'mplTokenMetadata',
@@ -177,11 +177,8 @@ export async function fetchDelegateRecordFromSeeds(
   seeds: Parameters<typeof findDelegateRecordPda>[1],
   options?: FetchEncodedAccountOptions
 ): Promise<DelegateRecord> {
-  return fetchDelegateRecord(
-    context,
-    await findDelegateRecordPda(context, seeds)[0],
-    options
-  );
+  const [address] = await findDelegateRecordPda(context, seeds);
+  return fetchDelegateRecord(context, address, options);
 }
 
 export async function safeFetchDelegateRecordFromSeeds(
@@ -192,9 +189,6 @@ export async function safeFetchDelegateRecordFromSeeds(
   seeds: Parameters<typeof findDelegateRecordPda>[1],
   options?: FetchEncodedAccountOptions
 ): Promise<DelegateRecord | null> {
-  return safeFetchDelegateRecord(
-    context,
-    await findDelegateRecordPda(context, seeds)[0],
-    options
-  );
+  const [address] = await findDelegateRecordPda(context, seeds);
+  return safeFetchDelegateRecord(context, address, options);
 }

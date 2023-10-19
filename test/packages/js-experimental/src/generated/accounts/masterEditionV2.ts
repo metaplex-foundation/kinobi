@@ -157,7 +157,7 @@ export async function findMasterEditionV2Pda(
     /** The address of the mint account */
     mint: Base58EncodedAddress;
   }
-): ProgramDerivedAddress {
+): Promise<ProgramDerivedAddress> {
   const programAddress = await getProgramAddress(
     context,
     'mplTokenMetadata',
@@ -179,11 +179,8 @@ export async function fetchMasterEditionV2FromSeeds(
   seeds: Parameters<typeof findMasterEditionV2Pda>[1],
   options?: FetchEncodedAccountOptions
 ): Promise<MasterEditionV2> {
-  return fetchMasterEditionV2(
-    context,
-    await findMasterEditionV2Pda(context, seeds)[0],
-    options
-  );
+  const [address] = await findMasterEditionV2Pda(context, seeds);
+  return fetchMasterEditionV2(context, address, options);
 }
 
 export async function safeFetchMasterEditionV2FromSeeds(
@@ -194,9 +191,6 @@ export async function safeFetchMasterEditionV2FromSeeds(
   seeds: Parameters<typeof findMasterEditionV2Pda>[1],
   options?: FetchEncodedAccountOptions
 ): Promise<MasterEditionV2 | null> {
-  return safeFetchMasterEditionV2(
-    context,
-    await findMasterEditionV2Pda(context, seeds)[0],
-    options
-  );
+  const [address] = await findMasterEditionV2Pda(context, seeds);
+  return safeFetchMasterEditionV2(context, address, options);
 }

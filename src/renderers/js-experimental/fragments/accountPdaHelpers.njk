@@ -12,7 +12,7 @@ export async function find{{ pascalCaseName }}Pda(
       {% endfor %}
     }
   {% endif %}
-): ProgramDerivedAddress {
+): Promise<ProgramDerivedAddress> {
   const programAddress = await getProgramAddress(context, '{{ program.name | camelCase }}', '{{ program.publicKey }}');
   return getProgramDerivedAddress(context, programAddress, [
     {% for seed in seeds %}
@@ -34,7 +34,8 @@ export async function fetch{{ pascalCaseName }}FromSeeds(
   {% endif %}
   options?: FetchEncodedAccountOptions,
 ): Promise<{{ pascalCaseName }}> {
-  return fetch{{ pascalCaseName }}(context, await find{{ pascalCaseName }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %})[0], options);
+  const [address] = await find{{ pascalCaseName }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %});
+  return fetch{{ pascalCaseName }}(context, address, options);
 }
 
 export async function safeFetch{{ pascalCaseName }}FromSeeds(
@@ -44,5 +45,6 @@ export async function safeFetch{{ pascalCaseName }}FromSeeds(
   {% endif %}
   options?: FetchEncodedAccountOptions,
 ): Promise<{{ pascalCaseName }} | null> {
-  return safeFetch{{ pascalCaseName }}(context, await find{{ pascalCaseName }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %})[0], options);
+  const [address] = await find{{ pascalCaseName }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %});
+  return safeFetch{{ pascalCaseName }}(context, address, options);
 }

@@ -168,7 +168,7 @@ export async function findMasterEditionV1Pda(
     /** The role of the delegate */
     delegateRole: DelegateRoleArgs;
   }
-): ProgramDerivedAddress {
+): Promise<ProgramDerivedAddress> {
   const programAddress = await getProgramAddress(
     context,
     'mplTokenMetadata',
@@ -189,11 +189,8 @@ export async function fetchMasterEditionV1FromSeeds(
   seeds: Parameters<typeof findMasterEditionV1Pda>[1],
   options?: FetchEncodedAccountOptions
 ): Promise<MasterEditionV1> {
-  return fetchMasterEditionV1(
-    context,
-    await findMasterEditionV1Pda(context, seeds)[0],
-    options
-  );
+  const [address] = await findMasterEditionV1Pda(context, seeds);
+  return fetchMasterEditionV1(context, address, options);
 }
 
 export async function safeFetchMasterEditionV1FromSeeds(
@@ -204,9 +201,6 @@ export async function safeFetchMasterEditionV1FromSeeds(
   seeds: Parameters<typeof findMasterEditionV1Pda>[1],
   options?: FetchEncodedAccountOptions
 ): Promise<MasterEditionV1 | null> {
-  return safeFetchMasterEditionV1(
-    context,
-    await findMasterEditionV1Pda(context, seeds)[0],
-    options
-  );
+  const [address] = await findMasterEditionV1Pda(context, seeds);
+  return safeFetchMasterEditionV1(context, address, options);
 }
