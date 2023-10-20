@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-export enum MplTokenAuthRulesProgramErrorCode {
+export const enum MplTokenAuthRulesProgramErrorCode {
   /** NumericalOverflow: Numerical Overflow */
   NUMERICAL_OVERFLOW = 0x0, // 0
   /** DataTypeMismatch: Data type mismatch */

@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-export enum SplTokenProgramErrorCode {
+export const enum SplTokenProgramErrorCode {
   /** NotRentExempt: Lamport balance below rent-exempt threshold */
   NOT_RENT_EXEMPT = 0x0, // 0
   /** InsufficientFunds: Insufficient funds */

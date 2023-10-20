@@ -1,6 +1,6 @@
 {% import "templates/macros.njk" as macros %}
 
-export enum {{ programErrorName }}Code {
+export const enum {{ programErrorName }}Code {
   {% for error in errors | sort(false, false, 'code') %}
     {{ macros.docblock(error.docs) }}
     {{ error.name | snakeCase | upper }} = 0x{{ error.code.toString(16) }}, // {{ error.code }}

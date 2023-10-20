@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-export enum MplTokenMetadataProgramErrorCode {
+export const enum MplTokenMetadataProgramErrorCode {
   /** InstructionUnpackError: Failed to unpack instruction data */
   INSTRUCTION_UNPACK_ERROR = 0x0, // 0
   /** InstructionPackError: Failed to pack instruction data */

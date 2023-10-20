@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-export enum MplCandyMachineCoreProgramErrorCode {
+export const enum MplCandyMachineCoreProgramErrorCode {
   /** IncorrectOwner: Account does not have correct owner */
   INCORRECT_OWNER = 0x1770, // 6000
   /** Uninitialized: Account is not initialized */
