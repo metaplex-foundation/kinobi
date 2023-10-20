@@ -12,6 +12,7 @@ export * from './instructionExtraArgs';
 export * from './instructionFunctionHighLevel';
 export * from './instructionFunctionLowLevel';
 export * from './instructionInputDefault';
+export * from './instructionInputResolved';
 export * from './instructionInputType';
 export * from './instructionType';
 export * from './type';

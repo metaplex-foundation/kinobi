@@ -1,6 +1,6 @@
 import * as nodes from '../../../nodes';
 import { camelCase, pascalCase } from '../../../shared';
-import { ResolvedInstructionInput, Visitor, visit } from '../../../visitors';
+import { ResolvedInstructionInput, Visitor } from '../../../visitors';
 import { ContextMap } from '../ContextMap';
 import { TypeManifest } from '../TypeManifest';
 import {
@@ -10,7 +10,7 @@ import {
   mergeFragments,
 } from './common';
 import { getInstructionBytesCreatedOnChainFragment } from './instructionBytesCreatedOnChain';
-import { getInstructionInputDefaultFragment } from './instructionInputDefault';
+import { getInstructionInputResolvedFragment } from './instructionInputResolved';
 
 export function getInstructionFunctionHighLevelFragment(
   instructionNode: nodes.InstructionNode,
@@ -45,39 +45,24 @@ export function getInstructionFunctionHighLevelFragment(
   const typeParamsFragment = getTypeParams(instructionNode, programNode);
   const instructionTypeFragment = getInstructionType(instructionNode);
   const inputTypeFragment = getInputType(instructionNode);
-  const bytesCreatedOnChainFragment =
-    getInstructionBytesCreatedOnChainFragment(instructionNode);
   const customGeneratedInstruction = `CustomGeneratedInstruction<${instructionTypeFragment.render}, TReturn>`;
-  const context = new ContextMap()
-    .add('getProgramAddress')
-    .mergeWith(bytesCreatedOnChainFragment.interfaces);
   const renamedArgsText = [...renamedArgs.entries()]
     .map(([k, v]) => `${k}: input.${v}`)
     .join(', ');
 
-  const resolvedInputs = visit(
+  const resolvedInputsFragment = getInstructionInputResolvedFragment(
     instructionNode,
     resolvedInstructionInputVisitor
-  ).flatMap((input: ResolvedInstructionInput): Fragment[] => {
-    const inputFragment = getInstructionInputDefaultFragment(
-      input,
-      instructionNode.optionalAccountStrategy
-    );
-    if (!inputFragment.render) return [];
-    context.mergeWith(inputFragment.interfaces);
-    const camelName = camelCase(input.name);
-    return [
-      inputFragment.mapRender((r) =>
-        input.kind === 'arg'
-          ? `if (!args.${camelName}) {\n${r}\n}`
-          : `if (!accounts.${camelName}.value) {\n${r}\n}`
-      ),
-    ];
-  });
-  const resolvedInputsFragment = mergeFragments(resolvedInputs, (renders) =>
-    renders.join('\n')
   );
+  const bytesCreatedOnChainFragment =
+    getInstructionBytesCreatedOnChainFragment(instructionNode);
 
+  const context = new ContextMap()
+    .add('getProgramAddress')
+    .mergeWith(
+      resolvedInputsFragment.interfaces,
+      bytesCreatedOnChainFragment.interfaces
+    );
   const contextFragment = context.toFragment();
   const functionFragment = fragmentFromTemplate(
     'instructionFunctionHighLevel.njk',
