@@ -48,7 +48,9 @@ export function getInstructionFunctionHighLevelFragment(
   const bytesCreatedOnChainFragment =
     getInstructionBytesCreatedOnChainFragment(instructionNode);
   const customGeneratedInstruction = `CustomGeneratedInstruction<${instructionTypeFragment.render}, TReturn>`;
-  const context = new ContextMap().add('getProgramAddress');
+  const context = new ContextMap()
+    .add('getProgramAddress')
+    .mergeWith(bytesCreatedOnChainFragment.interfaces);
   const renamedArgsText = [...renamedArgs.entries()]
     .map(([k, v]) => `${k}: input.${v}`)
     .join(', ');
