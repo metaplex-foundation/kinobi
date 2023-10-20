@@ -281,7 +281,7 @@ export async function mintTokensTo<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -290,7 +290,8 @@ export async function mintTokensTo<
     instruction: mintTokensToInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as MintTokensToInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

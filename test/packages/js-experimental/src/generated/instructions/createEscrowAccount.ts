@@ -496,7 +496,7 @@ export async function createEscrowAccount<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -504,7 +504,8 @@ export async function createEscrowAccount<
   return {
     instruction: createEscrowAccountInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

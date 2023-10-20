@@ -282,7 +282,7 @@ export async function convertMasterEditionV1ToV2<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -290,7 +290,8 @@ export async function convertMasterEditionV1ToV2<
   return {
     instruction: convertMasterEditionV1ToV2Instruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

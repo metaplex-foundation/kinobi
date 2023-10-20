@@ -348,7 +348,7 @@ export async function createFrequencyRule<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -357,7 +357,8 @@ export async function createFrequencyRule<
     instruction: createFrequencyRuleInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as CreateFrequencyRuleInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

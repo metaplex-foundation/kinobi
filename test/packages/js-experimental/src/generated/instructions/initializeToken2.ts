@@ -287,7 +287,7 @@ export async function initializeToken2<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -296,7 +296,8 @@ export async function initializeToken2<
     instruction: initializeToken2Instruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as InitializeToken2InstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

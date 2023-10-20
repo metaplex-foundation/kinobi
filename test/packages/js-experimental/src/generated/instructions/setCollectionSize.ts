@@ -359,7 +359,7 @@ export async function setCollectionSize<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -368,7 +368,8 @@ export async function setCollectionSize<
     instruction: setCollectionSizeInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as SetCollectionSizeInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

@@ -41,9 +41,7 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
     const [accountMetas, signers] = getAccountMetasAndSigners(accounts, 'programId', programAddress);
   {% endif %}
 
-  // Remaining accounts.
-  // TODO
-
+  {{ remainingAccounts }}
   {{ bytesCreatedOnChain }}
 
   return {
@@ -54,7 +52,8 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
       {%- if hasDataArgs -%}
         args as {{ argsType }},
       {% endif %}
-      programAddress),
+      programAddress,
+      remainingAccounts),
     {{ 'signers' if hasAccounts else 'signers: []'}},
     bytesCreatedOnChain,
   };

@@ -536,7 +536,7 @@ export async function createMasterEditionV3<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = getMasterEditionV2Size() + ACCOUNT_HEADER_SIZE;
@@ -545,7 +545,8 @@ export async function createMasterEditionV3<
     instruction: createMasterEditionV3Instruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as CreateMasterEditionV3InstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

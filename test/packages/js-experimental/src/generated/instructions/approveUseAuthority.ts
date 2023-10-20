@@ -582,7 +582,7 @@ export async function approveUseAuthority<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -591,7 +591,8 @@ export async function approveUseAuthority<
     instruction: approveUseAuthorityInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as ApproveUseAuthorityInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

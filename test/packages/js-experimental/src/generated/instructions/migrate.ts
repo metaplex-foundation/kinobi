@@ -574,7 +574,7 @@ export async function migrate<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -583,7 +583,8 @@ export async function migrate<
     instruction: migrateInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as MigrateInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

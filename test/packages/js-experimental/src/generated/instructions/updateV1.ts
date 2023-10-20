@@ -775,7 +775,7 @@ export async function updateV1<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -784,7 +784,8 @@ export async function updateV1<
     instruction: updateV1Instruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as UpdateV1InstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

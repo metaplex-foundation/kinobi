@@ -222,7 +222,7 @@ export async function revokeTokenDelegate<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -230,7 +230,8 @@ export async function revokeTokenDelegate<
   return {
     instruction: revokeTokenDelegateInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

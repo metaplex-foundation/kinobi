@@ -208,7 +208,7 @@ export async function amountToUiAmount<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -217,7 +217,8 @@ export async function amountToUiAmount<
     instruction: amountToUiAmountInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as AmountToUiAmountInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

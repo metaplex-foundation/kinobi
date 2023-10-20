@@ -11,6 +11,7 @@ import {
 } from './common';
 import { getInstructionBytesCreatedOnChainFragment } from './instructionBytesCreatedOnChain';
 import { getInstructionInputResolvedFragment } from './instructionInputResolved';
+import { getInstructionRemainingAccountsFragment } from './instructionRemainingAccounts';
 
 export function getInstructionFunctionHighLevelFragment(
   instructionNode: nodes.InstructionNode,
@@ -54,6 +55,8 @@ export function getInstructionFunctionHighLevelFragment(
     instructionNode,
     resolvedInstructionInputVisitor
   );
+  const remainingAccountsFragment =
+    getInstructionRemainingAccountsFragment(instructionNode);
   const bytesCreatedOnChainFragment =
     getInstructionBytesCreatedOnChainFragment(instructionNode);
 
@@ -61,6 +64,7 @@ export function getInstructionFunctionHighLevelFragment(
     .add('getProgramAddress')
     .mergeWith(
       resolvedInputsFragment.interfaces,
+      remainingAccountsFragment.interfaces,
       bytesCreatedOnChainFragment.interfaces
     );
   const contextFragment = context.toFragment();
@@ -82,6 +86,7 @@ export function getInstructionFunctionHighLevelFragment(
       context: contextFragment,
       renamedArgs: renamedArgsText,
       resolvedInputs: resolvedInputsFragment,
+      remainingAccounts: remainingAccountsFragment,
       bytesCreatedOnChain: bytesCreatedOnChainFragment,
       customGeneratedInstruction,
     }
@@ -92,6 +97,7 @@ export function getInstructionFunctionHighLevelFragment(
       inputTypeFragment,
       contextFragment,
       resolvedInputsFragment,
+      remainingAccountsFragment,
       bytesCreatedOnChainFragment,
       argsTypeFragment
     )

@@ -505,7 +505,7 @@ export async function revokeUseAuthority<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -513,7 +513,8 @@ export async function revokeUseAuthority<
   return {
     instruction: revokeUseAuthorityInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

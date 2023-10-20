@@ -238,7 +238,7 @@ export async function removeCreatorVerification<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -246,7 +246,8 @@ export async function removeCreatorVerification<
   return {
     instruction: removeCreatorVerificationInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

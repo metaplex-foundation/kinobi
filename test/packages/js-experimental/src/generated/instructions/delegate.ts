@@ -669,7 +669,7 @@ export async function delegate<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -678,7 +678,8 @@ export async function delegate<
     instruction: delegateInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as DelegateInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

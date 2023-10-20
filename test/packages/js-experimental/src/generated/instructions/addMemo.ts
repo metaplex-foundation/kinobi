@@ -136,7 +136,7 @@ export async function addMemo<
   const args = { ...input };
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -144,7 +144,8 @@ export async function addMemo<
   return {
     instruction: addMemoInstruction(
       args as AddMemoInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers: [],
     bytesCreatedOnChain,

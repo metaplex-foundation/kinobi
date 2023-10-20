@@ -237,7 +237,7 @@ export async function transferSol<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -246,7 +246,8 @@ export async function transferSol<
     instruction: transferSolInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as TransferSolInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

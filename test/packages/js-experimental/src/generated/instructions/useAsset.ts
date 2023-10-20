@@ -627,7 +627,7 @@ export async function useAsset<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -636,7 +636,8 @@ export async function useAsset<
     instruction: useAssetInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as UseAssetInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

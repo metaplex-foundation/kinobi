@@ -278,7 +278,7 @@ export async function setTokenAuthority<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -287,7 +287,8 @@ export async function setTokenAuthority<
     instruction: setTokenAuthorityInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as SetTokenAuthorityInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

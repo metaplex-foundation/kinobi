@@ -427,7 +427,7 @@ export async function createReservationList<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -436,7 +436,8 @@ export async function createReservationList<
     instruction: createReservationListInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as CreateReservationListInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

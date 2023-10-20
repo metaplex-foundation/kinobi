@@ -762,7 +762,7 @@ export async function validate<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -771,7 +771,8 @@ export async function validate<
     instruction: validateInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as ValidateInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

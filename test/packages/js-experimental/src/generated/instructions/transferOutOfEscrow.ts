@@ -667,7 +667,7 @@ export async function transferOutOfEscrow<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -676,7 +676,8 @@ export async function transferOutOfEscrow<
     instruction: transferOutOfEscrowInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as TransferOutOfEscrowInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

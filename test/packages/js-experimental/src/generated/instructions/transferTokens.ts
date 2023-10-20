@@ -304,7 +304,7 @@ export async function transferTokens<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -313,7 +313,8 @@ export async function transferTokens<
     instruction: transferTokensInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as TransferTokensInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

@@ -267,7 +267,7 @@ export async function addConfigLines<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -276,7 +276,8 @@ export async function addConfigLines<
     instruction: addConfigLinesInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as AddConfigLinesInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

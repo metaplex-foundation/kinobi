@@ -342,7 +342,7 @@ export async function createRuleSet<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -351,7 +351,8 @@ export async function createRuleSet<
     instruction: createRuleSetInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as CreateRuleSetInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

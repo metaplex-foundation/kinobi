@@ -731,7 +731,7 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -740,7 +740,8 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
     instruction:
       deprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction(
         accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-        programAddress
+        programAddress,
+        remainingAccounts
       ),
     signers,
     bytesCreatedOnChain,

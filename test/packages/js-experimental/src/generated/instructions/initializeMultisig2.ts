@@ -239,7 +239,7 @@ export async function initializeMultisig2<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -248,7 +248,8 @@ export async function initializeMultisig2<
     instruction: initializeMultisig2Instruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as InitializeMultisig2InstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

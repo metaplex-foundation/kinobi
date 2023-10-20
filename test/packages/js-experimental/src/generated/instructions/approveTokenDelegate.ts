@@ -301,7 +301,7 @@ export async function approveTokenDelegate<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -310,7 +310,8 @@ export async function approveTokenDelegate<
     instruction: approveTokenDelegateInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as ApproveTokenDelegateInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

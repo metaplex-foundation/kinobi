@@ -271,7 +271,7 @@ export async function initializeMint<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -280,7 +280,8 @@ export async function initializeMint<
     instruction: initializeMintInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as InitializeMintInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

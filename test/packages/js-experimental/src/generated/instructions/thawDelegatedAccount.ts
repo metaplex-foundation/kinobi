@@ -361,7 +361,7 @@ export async function thawDelegatedAccount<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -369,7 +369,8 @@ export async function thawDelegatedAccount<
   return {
     instruction: thawDelegatedAccountInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

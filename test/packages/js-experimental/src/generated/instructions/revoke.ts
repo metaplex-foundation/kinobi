@@ -667,7 +667,7 @@ export async function revoke<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -676,7 +676,8 @@ export async function revoke<
     instruction: revokeInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as RevokeInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

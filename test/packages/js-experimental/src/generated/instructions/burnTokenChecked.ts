@@ -289,7 +289,7 @@ export async function burnTokenChecked<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -298,7 +298,8 @@ export async function burnTokenChecked<
     instruction: burnTokenCheckedInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as BurnTokenCheckedInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

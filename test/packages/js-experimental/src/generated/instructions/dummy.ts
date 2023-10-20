@@ -571,7 +571,10 @@ export async function dummy<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = args.proof.map((address) => ({
+    address,
+    role: AccountRole.READONLY,
+  }));
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -579,7 +582,8 @@ export async function dummy<
   return {
     instruction: dummyInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

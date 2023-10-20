@@ -176,7 +176,7 @@ export async function requestHeapFrame<
   const args = { ...input };
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -184,7 +184,8 @@ export async function requestHeapFrame<
   return {
     instruction: requestHeapFrameInstruction(
       args as RequestHeapFrameInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers: [],
     bytesCreatedOnChain,

@@ -777,7 +777,7 @@ export async function mintFromCandyMachine<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -785,7 +785,8 @@ export async function mintFromCandyMachine<
   return {
     instruction: mintFromCandyMachineInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,

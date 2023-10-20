@@ -170,7 +170,7 @@ export async function setComputeUnitLimit<
   const args = { ...input };
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -178,7 +178,8 @@ export async function setComputeUnitLimit<
   return {
     instruction: setComputeUnitLimitInstruction(
       args as SetComputeUnitLimitInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers: [],
     bytesCreatedOnChain,

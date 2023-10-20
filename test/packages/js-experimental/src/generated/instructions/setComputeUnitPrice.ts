@@ -170,7 +170,7 @@ export async function setComputeUnitPrice<
   const args = { ...input };
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -178,7 +178,8 @@ export async function setComputeUnitPrice<
   return {
     instruction: setComputeUnitPriceInstruction(
       args as SetComputeUnitPriceInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers: [],
     bytesCreatedOnChain,

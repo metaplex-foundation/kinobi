@@ -602,7 +602,7 @@ export async function initialize<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -611,7 +611,8 @@ export async function initialize<
     instruction: initializeInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as InitializeInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,
