@@ -481,8 +481,8 @@ export async function createMetadataAccountV3<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: createMetadataAccountV3Instruction(
@@ -491,6 +491,6 @@ export async function createMetadataAccountV3<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

@@ -188,8 +188,8 @@ export async function initializeImmutableOwner<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: initializeImmutableOwnerInstruction(
@@ -197,6 +197,6 @@ export async function initializeImmutableOwner<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

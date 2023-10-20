@@ -623,8 +623,8 @@ export async function useAsset<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: useAssetInstruction(
@@ -633,6 +633,6 @@ export async function useAsset<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

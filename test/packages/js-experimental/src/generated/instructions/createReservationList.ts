@@ -421,8 +421,8 @@ export async function createReservationList<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: createReservationListInstruction(
@@ -431,6 +431,6 @@ export async function createReservationList<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

@@ -390,8 +390,8 @@ export async function bubblegumSetCollectionSize<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: bubblegumSetCollectionSizeInstruction(
@@ -400,6 +400,6 @@ export async function bubblegumSetCollectionSize<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

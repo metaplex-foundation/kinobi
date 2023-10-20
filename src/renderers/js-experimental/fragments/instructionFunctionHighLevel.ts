@@ -9,6 +9,7 @@ import {
   fragmentFromTemplate,
   mergeFragments,
 } from './common';
+import { getInstructionBytesCreatedOnChainFragment } from './instructionBytesCreatedOnChain';
 import { getInstructionInputDefaultFragment } from './instructionInputDefault';
 
 export function getInstructionFunctionHighLevelFragment(
@@ -44,6 +45,8 @@ export function getInstructionFunctionHighLevelFragment(
   const typeParamsFragment = getTypeParams(instructionNode, programNode);
   const instructionTypeFragment = getInstructionType(instructionNode);
   const inputTypeFragment = getInputType(instructionNode);
+  const bytesCreatedOnChainFragment =
+    getInstructionBytesCreatedOnChainFragment(instructionNode);
   const customGeneratedInstruction = `CustomGeneratedInstruction<${instructionTypeFragment.render}, TReturn>`;
   const context = new ContextMap().add('getProgramAddress');
   const renamedArgsText = [...renamedArgs.entries()]
@@ -83,15 +86,16 @@ export function getInstructionFunctionHighLevelFragment(
       hasDataArgs,
       hasExtraArgs,
       hasAnyArgs,
-      argsType: argsTypeFragment.render,
+      argsType: argsTypeFragment,
       functionName,
       lowLevelFunctionName,
-      typeParams: typeParamsFragment.render,
-      instructionType: instructionTypeFragment.render,
-      inputType: inputTypeFragment.render,
-      context: contextFragment.render,
+      typeParams: typeParamsFragment,
+      instructionType: instructionTypeFragment,
+      inputType: inputTypeFragment,
+      context: contextFragment,
       renamedArgs: renamedArgsText,
-      resolvedInputs: resolvedInputsFragment.render,
+      resolvedInputs: resolvedInputsFragment,
+      bytesCreatedOnChain: bytesCreatedOnChainFragment,
       customGeneratedInstruction,
     }
   )
@@ -101,6 +105,7 @@ export function getInstructionFunctionHighLevelFragment(
       inputTypeFragment,
       contextFragment,
       resolvedInputsFragment,
+      bytesCreatedOnChainFragment,
       argsTypeFragment
     )
     .addImports('solanaAddresses', ['Base58EncodedAddress'])

@@ -235,8 +235,8 @@ export async function initializeMultisig2<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: initializeMultisig2Instruction(
@@ -245,6 +245,6 @@ export async function initializeMultisig2<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

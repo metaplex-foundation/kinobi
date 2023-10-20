@@ -263,8 +263,8 @@ export async function addConfigLines<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: addConfigLinesInstruction(
@@ -273,6 +273,6 @@ export async function addConfigLines<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

@@ -127,8 +127,8 @@ export async function addMemo<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: addMemoInstruction(
@@ -136,6 +136,6 @@ export async function addMemo<
       programAddress
     ),
     signers: [],
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

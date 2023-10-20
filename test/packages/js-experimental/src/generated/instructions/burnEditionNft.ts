@@ -544,8 +544,8 @@ export async function burnEditionNft<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: burnEditionNftInstruction(
@@ -553,6 +553,6 @@ export async function burnEditionNft<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

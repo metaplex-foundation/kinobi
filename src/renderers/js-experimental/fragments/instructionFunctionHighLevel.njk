@@ -34,7 +34,7 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
     const args = { ...input, {{ renamedArgs }} };
   {% endif %}
 
-  {% if resolvedInputs %}
+  {% if resolvedInputs.render %}
     // Resolve default values.
     {{ resolvedInputs }}
   {% endif %}
@@ -47,8 +47,7 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  {{ bytesCreatedOnChain }}
 
   return {
     instruction: {{ lowLevelFunctionName }}(
@@ -60,6 +59,6 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
       {% endif %}
       programAddress),
     {{ 'signers' if hasAccounts else 'signers: []'}},
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

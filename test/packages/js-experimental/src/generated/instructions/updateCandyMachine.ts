@@ -260,8 +260,8 @@ export async function updateCandyMachine<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: updateCandyMachineInstruction(
@@ -270,6 +270,6 @@ export async function updateCandyMachine<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

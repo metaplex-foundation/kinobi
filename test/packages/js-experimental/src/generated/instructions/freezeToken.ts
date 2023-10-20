@@ -252,8 +252,8 @@ export async function freezeToken<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: freezeTokenInstruction(
@@ -261,6 +261,6 @@ export async function freezeToken<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

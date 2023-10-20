@@ -576,8 +576,8 @@ export async function approveUseAuthority<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: approveUseAuthorityInstruction(
@@ -586,6 +586,6 @@ export async function approveUseAuthority<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

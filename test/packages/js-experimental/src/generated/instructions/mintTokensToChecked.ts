@@ -308,8 +308,8 @@ export async function mintTokensToChecked<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: mintTokensToCheckedInstruction(
@@ -318,6 +318,6 @@ export async function mintTokensToChecked<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

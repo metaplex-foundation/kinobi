@@ -234,8 +234,8 @@ export async function removeCreatorVerification<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: removeCreatorVerificationInstruction(
@@ -243,6 +243,6 @@ export async function removeCreatorVerification<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

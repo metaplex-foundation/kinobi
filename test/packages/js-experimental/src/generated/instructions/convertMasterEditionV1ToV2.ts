@@ -278,8 +278,8 @@ export async function convertMasterEditionV1ToV2<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: convertMasterEditionV1ToV2Instruction(
@@ -287,6 +287,6 @@ export async function convertMasterEditionV1ToV2<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

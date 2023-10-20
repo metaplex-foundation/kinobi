@@ -689,8 +689,8 @@ export async function mintNewEditionFromMasterEditionViaToken<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: mintNewEditionFromMasterEditionViaTokenInstruction(
@@ -699,6 +699,6 @@ export async function mintNewEditionFromMasterEditionViaToken<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

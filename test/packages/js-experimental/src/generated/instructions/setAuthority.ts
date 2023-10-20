@@ -250,8 +250,8 @@ export async function setAuthority<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: setAuthorityInstruction(
@@ -260,6 +260,6 @@ export async function setAuthority<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

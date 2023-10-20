@@ -773,8 +773,8 @@ export async function mintFromCandyMachine<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: mintFromCandyMachineInstruction(
@@ -782,6 +782,6 @@ export async function mintFromCandyMachine<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

@@ -161,8 +161,8 @@ export async function setComputeUnitPrice<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: setComputeUnitPriceInstruction(
@@ -170,6 +170,6 @@ export async function setComputeUnitPrice<
       programAddress
     ),
     signers: [],
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

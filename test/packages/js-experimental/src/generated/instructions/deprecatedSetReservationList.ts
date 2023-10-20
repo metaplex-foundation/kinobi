@@ -334,8 +334,8 @@ export async function deprecatedSetReservationList<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: deprecatedSetReservationListInstruction(
@@ -344,6 +344,6 @@ export async function deprecatedSetReservationList<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

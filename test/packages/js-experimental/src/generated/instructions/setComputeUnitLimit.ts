@@ -161,8 +161,8 @@ export async function setComputeUnitLimit<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: setComputeUnitLimitInstruction(
@@ -170,6 +170,6 @@ export async function setComputeUnitLimit<
       programAddress
     ),
     signers: [],
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

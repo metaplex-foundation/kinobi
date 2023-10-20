@@ -46,8 +46,9 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { findMetadataPda } from '../accounts';
+import { findMetadataPda, getMetadataSize } from '../accounts';
 import {
+  ACCOUNT_HEADER_SIZE,
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
@@ -544,8 +545,8 @@ export async function createMetadataAccount<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = getMetadataSize() + ACCOUNT_HEADER_SIZE;
 
   return {
     instruction: createMetadataAccountInstruction(
@@ -554,6 +555,6 @@ export async function createMetadataAccount<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

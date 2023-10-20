@@ -379,8 +379,8 @@ export async function verifyCollection<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: verifyCollectionInstruction(
@@ -388,6 +388,6 @@ export async function verifyCollection<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

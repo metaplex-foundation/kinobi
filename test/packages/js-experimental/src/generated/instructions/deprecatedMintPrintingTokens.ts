@@ -459,8 +459,8 @@ export async function deprecatedMintPrintingTokens<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: deprecatedMintPrintingTokensInstruction(
@@ -469,6 +469,6 @@ export async function deprecatedMintPrintingTokens<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

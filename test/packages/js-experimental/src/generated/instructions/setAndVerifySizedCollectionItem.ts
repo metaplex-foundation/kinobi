@@ -455,8 +455,8 @@ export async function setAndVerifySizedCollectionItem<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: setAndVerifySizedCollectionItemInstruction(
@@ -464,6 +464,6 @@ export async function setAndVerifySizedCollectionItem<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

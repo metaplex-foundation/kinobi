@@ -355,8 +355,8 @@ export async function setCollectionSize<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: setCollectionSizeInstruction(
@@ -365,6 +365,6 @@ export async function setCollectionSize<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

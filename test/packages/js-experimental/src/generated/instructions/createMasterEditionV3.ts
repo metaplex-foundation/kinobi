@@ -30,7 +30,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { getMasterEditionV2Size } from '../accounts';
 import {
+  ACCOUNT_HEADER_SIZE,
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
@@ -528,8 +530,8 @@ export async function createMasterEditionV3<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = getMasterEditionV2Size() + ACCOUNT_HEADER_SIZE;
 
   return {
     instruction: createMasterEditionV3Instruction(
@@ -538,6 +540,6 @@ export async function createMasterEditionV3<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

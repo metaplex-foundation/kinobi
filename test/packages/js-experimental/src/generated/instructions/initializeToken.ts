@@ -312,8 +312,8 @@ export async function initializeToken<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: initializeTokenInstruction(
@@ -321,6 +321,6 @@ export async function initializeToken<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

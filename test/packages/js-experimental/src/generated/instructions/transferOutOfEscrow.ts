@@ -663,8 +663,8 @@ export async function transferOutOfEscrow<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: transferOutOfEscrowInstruction(
@@ -673,6 +673,6 @@ export async function transferOutOfEscrow<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

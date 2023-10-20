@@ -180,8 +180,8 @@ export async function getTokenDataSize<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: getTokenDataSizeInstruction(
@@ -189,6 +189,6 @@ export async function getTokenDataSize<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

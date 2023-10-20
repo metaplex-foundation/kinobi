@@ -167,8 +167,8 @@ export async function requestHeapFrame<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: requestHeapFrameInstruction(
@@ -176,6 +176,6 @@ export async function requestHeapFrame<
       programAddress
     ),
     signers: [],
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

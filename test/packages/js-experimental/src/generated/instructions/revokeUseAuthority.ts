@@ -499,8 +499,8 @@ export async function revokeUseAuthority<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: revokeUseAuthorityInstruction(
@@ -508,6 +508,6 @@ export async function revokeUseAuthority<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

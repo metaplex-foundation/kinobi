@@ -344,8 +344,8 @@ export async function createFrequencyRule<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: createFrequencyRuleInstruction(
@@ -354,6 +354,6 @@ export async function createFrequencyRule<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

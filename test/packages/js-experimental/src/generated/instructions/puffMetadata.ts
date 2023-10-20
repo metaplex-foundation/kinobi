@@ -185,8 +185,8 @@ export async function puffMetadata<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: puffMetadataInstruction(
@@ -194,6 +194,6 @@ export async function puffMetadata<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

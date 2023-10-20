@@ -6,6 +6,7 @@ export * from './accountType';
 export * from './common';
 export * from './instructionAccountMeta';
 export * from './instructionAccountTypeParam';
+export * from './instructionBytesCreatedOnChain';
 export * from './instructionData';
 export * from './instructionExtraArgs';
 export * from './instructionFunctionHighLevel';

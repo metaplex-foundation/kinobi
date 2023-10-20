@@ -424,8 +424,8 @@ export async function unverifySizedCollectionItem<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: unverifySizedCollectionItemInstruction(
@@ -433,6 +433,6 @@ export async function unverifySizedCollectionItem<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

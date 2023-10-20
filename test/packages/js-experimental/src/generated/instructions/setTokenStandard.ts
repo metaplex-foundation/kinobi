@@ -317,8 +317,8 @@ export async function setTokenStandard<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: setTokenStandardInstruction(
@@ -326,6 +326,6 @@ export async function setTokenStandard<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

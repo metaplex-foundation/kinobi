@@ -296,8 +296,8 @@ export async function updateMetadataAccountV2<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: updateMetadataAccountV2Instruction(
@@ -306,6 +306,6 @@ export async function updateMetadataAccountV2<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }

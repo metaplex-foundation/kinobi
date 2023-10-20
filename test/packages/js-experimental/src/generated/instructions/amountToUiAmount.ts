@@ -199,8 +199,8 @@ export async function amountToUiAmount<
   // Remaining accounts.
   // TODO
 
-  // Bytes created on chain.
-  // TODO
+  // Bytes Created On Chain.
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: amountToUiAmountInstruction(
@@ -209,6 +209,6 @@ export async function amountToUiAmount<
       programAddress
     ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }
