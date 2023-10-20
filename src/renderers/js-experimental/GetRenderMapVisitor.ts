@@ -26,6 +26,7 @@ import {
   getInstructionInputTypeFragment,
   getInstructionTypeFragment,
   getProgramErrorsFragment,
+  getProgramFragment,
   getTypeDataEnumHelpersFragment,
   getTypeWithCodecFragment,
 } from './fragments';
@@ -117,7 +118,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       map.add('shared/index.ts', this.render('sharedPage.njk', ctx));
     }
     if (programsToExport.length > 0) {
-      // map.add('programs/index.ts', this.render('programsIndex.njk', ctx));
+      map.add('programs/index.ts', this.render('programsIndex.njk', ctx));
     }
     if (programsWithErrorsToExport.length > 0) {
       map.add('errors/index.ts', this.render('errorsIndex.njk', ctx));
@@ -169,6 +170,17 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       );
     }
 
+    const programFragment = getProgramFragment(program);
+    renderMap.add(
+      `programs/${camelCase(name)}.ts`,
+      this.render('programsPage.njk', {
+        imports: new ImportMap()
+          .mergeWith(programFragment)
+          .toString(this.options.dependencyMap),
+        programFragment,
+      })
+    );
+
     renderMap.mergeWith(
       ...nodes
         .getAllInstructionsWithSubs(
@@ -177,19 +189,6 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         )
         .map((ix) => visit(ix, this))
     );
-    // .add(
-    //   `programs/${camelCase(name)}.ts`,
-    //   this.render('programsPage.njk', {
-    //     imports: new ImportMap()
-    //       .add('umi', ['ClusterFilter', 'Context', 'Program', 'PublicKey'])
-    //       .add('errors', [
-    //         `get${pascalCaseName}ErrorFromCode`,
-    //         `get${pascalCaseName}ErrorFromName`,
-    //       ])
-    //       .toString(this.options.dependencyMap),
-    //     program,
-    //   })
-    // );
     this.program = null;
     return renderMap;
   }

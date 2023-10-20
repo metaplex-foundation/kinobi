@@ -1,0 +1,20 @@
+{% import "templates/macros.njk" as macros %}
+
+export const {{ programAddressConstant }} = '{{ program.publicKey }}' as Base58EncodedAddress<'{{ program.publicKey }}'>;
+
+{{ macros.docblock(program.docs) }}
+export type {{ program.name | pascalCase }}Program = Program<'{{ program.publicKey }}', {{ programErrorName }}Code, {{ programErrorName }}>;
+
+export function create{{ program.name | pascalCase }}Program(): {{ program.name | pascalCase }}Program {
+  return {
+    name: '{{ program.name | camelCase }}',
+    address: {{ programAddressConstant }},
+    getErrorFromCode(code: {{ programErrorName }}Code, cause?: Error) {
+      return get{{ programErrorName }}FromCode(code, cause);
+    },
+  };
+}
+
+export function get{{ program.name | pascalCase }}ProgramAddress(context: Pick<Context, 'getProgramAddress'> = {}): Base58EncodedAddress {
+  return getProgramAddress(context, "{{ program.name | camelCase }}", {{ programAddressConstant }});
+}

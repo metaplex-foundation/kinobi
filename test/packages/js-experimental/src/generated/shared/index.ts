@@ -340,3 +340,13 @@ export type FetchEncodedAccountsOptions = {
   commitment?: Commitment;
   abortSignal?: AbortSignal;
 };
+
+export type Program<
+  TAddress extends string = string,
+  TErrorCode extends number = number,
+  TError extends Error = Error
+> = {
+  name: string;
+  address: Base58EncodedAddress<TAddress>;
+  getErrorFromCode: (code: TErrorCode, cause?: Error) => TError;
+};

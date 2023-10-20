@@ -126,16 +126,28 @@ const splTokenProgramErrorCodeMap: Record<
 export class SplTokenProgramError extends Error {
   override readonly name = 'SplTokenProgramError';
   readonly code: SplTokenProgramErrorCode;
+  readonly cause: Error | undefined;
 
-  constructor(code: SplTokenProgramErrorCode, name: string, message: string) {
+  constructor(
+    code: SplTokenProgramErrorCode,
+    name: string,
+    message: string,
+    cause?: Error
+  ) {
     super(`${name} (${code}): ${message}`);
     Error.captureStackTrace(this, this.constructor);
     this.code = code;
+    this.cause = cause;
   }
 }
 
 export function getSplTokenProgramErrorFromCode(
-  code: SplTokenProgramErrorCode
+  code: SplTokenProgramErrorCode,
+  cause?: Error
 ): SplTokenProgramError {
-  return new SplTokenProgramError(code, ...splTokenProgramErrorCodeMap[code]);
+  return new SplTokenProgramError(
+    code,
+    ...splTokenProgramErrorCodeMap[code],
+    cause
+  );
 }

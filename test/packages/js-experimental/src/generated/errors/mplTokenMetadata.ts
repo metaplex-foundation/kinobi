@@ -939,23 +939,28 @@ const mplTokenMetadataProgramErrorCodeMap: Record<
 export class MplTokenMetadataProgramError extends Error {
   override readonly name = 'MplTokenMetadataProgramError';
   readonly code: MplTokenMetadataProgramErrorCode;
+  readonly cause: Error | undefined;
 
   constructor(
     code: MplTokenMetadataProgramErrorCode,
     name: string,
-    message: string
+    message: string,
+    cause?: Error
   ) {
     super(`${name} (${code}): ${message}`);
     Error.captureStackTrace(this, this.constructor);
     this.code = code;
+    this.cause = cause;
   }
 }
 
 export function getMplTokenMetadataProgramErrorFromCode(
-  code: MplTokenMetadataProgramErrorCode
+  code: MplTokenMetadataProgramErrorCode,
+  cause?: Error
 ): MplTokenMetadataProgramError {
   return new MplTokenMetadataProgramError(
     code,
-    ...mplTokenMetadataProgramErrorCodeMap[code]
+    ...mplTokenMetadataProgramErrorCodeMap[code],
+    cause
   );
 }

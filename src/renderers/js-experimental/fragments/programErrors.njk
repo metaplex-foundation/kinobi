@@ -3,27 +3,29 @@
 export enum {{ programErrorName }}Code {
   {% for error in errors | sort(false, false, 'code') %}
     {{ macros.docblock(error.docs) }}
-    {{ error.name | screamingSnakeCase }} = 0x{{ error.code.toString(16) }}, // {{ error.code }}
+    {{ error.name | snakeCase | upper }} = 0x{{ error.code.toString(16) }}, // {{ error.code }}
   {% endfor %}
 }
 
 const {{ programErrorName | camelCase }}CodeMap: Record<{{ programErrorName }}Code, [string, string]> = {
   {% for error in errors | sort(false, false, 'code') %}
-    [{{ programErrorName }}Code.{{ error.name | screamingSnakeCase }}]: ['{{ error.name | pascalCase }}', `{{ error.message }}`],
+    [{{ programErrorName }}Code.{{ error.name | snakeCase | upper }}]: ['{{ error.name | pascalCase }}', `{{ error.message }}`],
   {% endfor %}
 };
 
 export class {{ programErrorName }} extends Error {
   override readonly name = '{{ programErrorName }}';
   readonly code: {{ programErrorName }}Code;
+  readonly cause: Error | undefined;
 
-  constructor(code: {{ programErrorName }}Code, name: string, message: string) {
+  constructor(code: {{ programErrorName }}Code, name: string, message: string, cause?: Error) {
     super(`${name} (${code}): ${message}`);
     Error.captureStackTrace(this, this.constructor);
     this.code = code;
+    this.cause = cause;
   }
 }
 
-export function get{{ programErrorName }}FromCode(code: {{ programErrorName }}Code): {{ programErrorName }} {
-  return new {{ programErrorName }}(code, ...{{ programErrorName | camelCase }}CodeMap[code]);
+export function get{{ programErrorName }}FromCode(code: {{ programErrorName }}Code, cause?: Error): {{ programErrorName }} {
+  return new {{ programErrorName }}(code, ...{{ programErrorName | camelCase }}CodeMap[code], cause);
 }

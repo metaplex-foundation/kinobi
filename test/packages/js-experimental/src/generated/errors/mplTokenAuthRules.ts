@@ -105,23 +105,28 @@ const mplTokenAuthRulesProgramErrorCodeMap: Record<
 export class MplTokenAuthRulesProgramError extends Error {
   override readonly name = 'MplTokenAuthRulesProgramError';
   readonly code: MplTokenAuthRulesProgramErrorCode;
+  readonly cause: Error | undefined;
 
   constructor(
     code: MplTokenAuthRulesProgramErrorCode,
     name: string,
-    message: string
+    message: string,
+    cause?: Error
   ) {
     super(`${name} (${code}): ${message}`);
     Error.captureStackTrace(this, this.constructor);
     this.code = code;
+    this.cause = cause;
   }
 }
 
 export function getMplTokenAuthRulesProgramErrorFromCode(
-  code: MplTokenAuthRulesProgramErrorCode
+  code: MplTokenAuthRulesProgramErrorCode,
+  cause?: Error
 ): MplTokenAuthRulesProgramError {
   return new MplTokenAuthRulesProgramError(
     code,
-    ...mplTokenAuthRulesProgramErrorCodeMap[code]
+    ...mplTokenAuthRulesProgramErrorCodeMap[code],
+    cause
   );
 }

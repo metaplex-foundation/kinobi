@@ -146,23 +146,28 @@ const mplCandyMachineCoreProgramErrorCodeMap: Record<
 export class MplCandyMachineCoreProgramError extends Error {
   override readonly name = 'MplCandyMachineCoreProgramError';
   readonly code: MplCandyMachineCoreProgramErrorCode;
+  readonly cause: Error | undefined;
 
   constructor(
     code: MplCandyMachineCoreProgramErrorCode,
     name: string,
-    message: string
+    message: string,
+    cause?: Error
   ) {
     super(`${name} (${code}): ${message}`);
     Error.captureStackTrace(this, this.constructor);
     this.code = code;
+    this.cause = cause;
   }
 }
 
 export function getMplCandyMachineCoreProgramErrorFromCode(
-  code: MplCandyMachineCoreProgramErrorCode
+  code: MplCandyMachineCoreProgramErrorCode,
+  cause?: Error
 ): MplCandyMachineCoreProgramError {
   return new MplCandyMachineCoreProgramError(
     code,
-    ...mplCandyMachineCoreProgramErrorCodeMap[code]
+    ...mplCandyMachineCoreProgramErrorCodeMap[code],
+    cause
   );
 }
