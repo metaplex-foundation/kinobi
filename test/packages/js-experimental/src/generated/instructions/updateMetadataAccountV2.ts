@@ -60,7 +60,8 @@ import {
 export type UpdateMetadataAccountV2Instruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string
+  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -70,7 +71,8 @@ export type UpdateMetadataAccountV2Instruction<
         : TAccountMetadata,
       TAccountUpdateAuthority extends string
         ? ReadonlySignerAccount<TAccountUpdateAuthority>
-        : TAccountUpdateAuthority
+        : TAccountUpdateAuthority,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -137,7 +139,8 @@ export function getUpdateMetadataAccountV2InstructionDataCodec(): Codec<
 export function updateMetadataAccountV2Instruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string
+  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -148,7 +151,8 @@ export function updateMetadataAccountV2Instruction<
       : TAccountUpdateAuthority;
   },
   args: UpdateMetadataAccountV2InstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -157,13 +161,15 @@ export function updateMetadataAccountV2Instruction<
         accounts.updateAuthority,
         AccountRole.READONLY_SIGNER
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getUpdateMetadataAccountV2InstructionDataEncoder().encode(args),
     programAddress,
   } as UpdateMetadataAccountV2Instruction<
     TProgram,
     TAccountMetadata,
-    TAccountUpdateAuthority
+    TAccountUpdateAuthority,
+    TRemainingAccounts
   >;
 }
 

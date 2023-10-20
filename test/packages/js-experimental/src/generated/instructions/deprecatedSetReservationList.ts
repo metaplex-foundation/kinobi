@@ -62,7 +62,8 @@ export type DeprecatedSetReservationListInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
   TAccountReservationList extends string | IAccountMeta<string> = string,
-  TAccountResource extends string | IAccountMeta<string> = string
+  TAccountResource extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -75,7 +76,8 @@ export type DeprecatedSetReservationListInstruction<
         : TAccountReservationList,
       TAccountResource extends string
         ? ReadonlySignerAccount<TAccountResource>
-        : TAccountResource
+        : TAccountResource,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -143,7 +145,8 @@ export function deprecatedSetReservationListInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
   TAccountReservationList extends string | IAccountMeta<string> = string,
-  TAccountResource extends string | IAccountMeta<string> = string
+  TAccountResource extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     masterEdition: TAccountMasterEdition extends string
@@ -157,13 +160,15 @@ export function deprecatedSetReservationListInstruction<
       : TAccountResource;
   },
   args: DeprecatedSetReservationListInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.masterEdition, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.reservationList, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.resource, AccountRole.READONLY_SIGNER),
+      ...(remainingAccounts ?? []),
     ],
     data: getDeprecatedSetReservationListInstructionDataEncoder().encode(args),
     programAddress,
@@ -171,7 +176,8 @@ export function deprecatedSetReservationListInstruction<
     TProgram,
     TAccountMasterEdition,
     TAccountReservationList,
-    TAccountResource
+    TAccountResource,
+    TRemainingAccounts
   >;
 }
 

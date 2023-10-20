@@ -24,7 +24,12 @@ import {
   getU8Decoder,
   getU8Encoder,
 } from '@solana/codecs-numbers';
-import { IInstruction, IInstructionWithData } from '@solana/instructions';
+import {
+  IAccountMeta,
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+} from '@solana/instructions';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -33,8 +38,11 @@ import {
 
 // Output.
 export type RequestUnitsInstruction<
-  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
-> = IInstruction<TProgram> & IInstructionWithData<Uint8Array>;
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<TRemainingAccounts>;
 
 export type RequestUnitsInstructionData = {
   discriminator: number;
@@ -93,15 +101,18 @@ export function getRequestUnitsInstructionDataCodec(): Codec<
 }
 
 export function requestUnitsInstruction<
-  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   args: RequestUnitsInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'ComputeBudget111111111111111111111111111111' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'ComputeBudget111111111111111111111111111111' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
+    accounts: remainingAccounts ?? [],
     data: getRequestUnitsInstructionDataEncoder().encode(args),
     programAddress,
-  } as RequestUnitsInstruction<TProgram>;
+  } as RequestUnitsInstruction<TProgram, TRemainingAccounts>;
 }
 
 // Input.

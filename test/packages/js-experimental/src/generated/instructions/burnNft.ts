@@ -51,7 +51,8 @@ export type BurnNftInstruction<
   TAccountSplTokenProgram extends
     | string
     | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountCollectionMetadata extends string | IAccountMeta<string> = string
+  TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -76,7 +77,8 @@ export type BurnNftInstruction<
         : TAccountSplTokenProgram,
       TAccountCollectionMetadata extends string
         ? WritableAccount<TAccountCollectionMetadata>
-        : TAccountCollectionMetadata
+        : TAccountCollectionMetadata,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -121,7 +123,8 @@ export function burnNftInstruction<
   TAccountSplTokenProgram extends
     | string
     | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountCollectionMetadata extends string | IAccountMeta<string> = string
+  TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -146,7 +149,8 @@ export function burnNftInstruction<
       ? Base58EncodedAddress<TAccountCollectionMetadata>
       : TAccountCollectionMetadata;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -174,6 +178,7 @@ export function burnNftInstruction<
         },
         AccountRole.WRITABLE
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getBurnNftInstructionDataEncoder().encode({}),
     programAddress,
@@ -185,7 +190,8 @@ export function burnNftInstruction<
     TAccountTokenAccount,
     TAccountMasterEditionAccount,
     TAccountSplTokenProgram,
-    TAccountCollectionMetadata
+    TAccountCollectionMetadata,
+    TRemainingAccounts
   >;
 }
 

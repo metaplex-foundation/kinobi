@@ -74,7 +74,8 @@ export type MintFromCandyMachineInstruction<
   TAccountSystemProgram extends
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountRecentSlothashes extends string | IAccountMeta<string> = string
+  TAccountRecentSlothashes extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -129,7 +130,8 @@ export type MintFromCandyMachineInstruction<
         : TAccountSystemProgram,
       TAccountRecentSlothashes extends string
         ? ReadonlyAccount<TAccountRecentSlothashes>
-        : TAccountRecentSlothashes
+        : TAccountRecentSlothashes,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -199,7 +201,8 @@ export function mintFromCandyMachineInstruction<
   TAccountSystemProgram extends
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountRecentSlothashes extends string | IAccountMeta<string> = string
+  TAccountRecentSlothashes extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     candyMachine: TAccountCandyMachine extends string
@@ -254,7 +257,8 @@ export function mintFromCandyMachineInstruction<
       ? Base58EncodedAddress<TAccountRecentSlothashes>
       : TAccountRecentSlothashes;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -311,6 +315,7 @@ export function mintFromCandyMachineInstruction<
         AccountRole.READONLY
       ),
       accountMetaWithDefault(accounts.recentSlothashes, AccountRole.READONLY),
+      ...(remainingAccounts ?? []),
     ],
     data: getMintFromCandyMachineInstructionDataEncoder().encode({}),
     programAddress,
@@ -332,7 +337,8 @@ export function mintFromCandyMachineInstruction<
     TAccountTokenMetadataProgram,
     TAccountTokenProgram,
     TAccountSystemProgram,
-    TAccountRecentSlothashes
+    TAccountRecentSlothashes,
+    TRemainingAccounts
   >;
 }
 

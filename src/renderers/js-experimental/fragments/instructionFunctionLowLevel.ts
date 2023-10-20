@@ -77,7 +77,8 @@ export function getInstructionFunctionLowLevelFragment(
     accountTypeParams: accountTypeParamsFragment.render,
   })
     .mergeImportsWith(imports, accountTypeParamsFragment)
-    .addImports('solanaAddresses', ['Base58EncodedAddress']);
+    .addImports('solanaAddresses', ['Base58EncodedAddress'])
+    .addImports('solanaInstructions', ['IAccountMeta']);
 
   if (hasAccounts) {
     fragment

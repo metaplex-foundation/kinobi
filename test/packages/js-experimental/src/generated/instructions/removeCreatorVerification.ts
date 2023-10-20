@@ -42,7 +42,8 @@ import {
 export type RemoveCreatorVerificationInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountCreator extends string | IAccountMeta<string> = string
+  TAccountCreator extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -52,7 +53,8 @@ export type RemoveCreatorVerificationInstruction<
         : TAccountMetadata,
       TAccountCreator extends string
         ? ReadonlySignerAccount<TAccountCreator>
-        : TAccountCreator
+        : TAccountCreator,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -92,7 +94,8 @@ export function getRemoveCreatorVerificationInstructionDataCodec(): Codec<
 export function removeCreatorVerificationInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountCreator extends string | IAccountMeta<string> = string
+  TAccountCreator extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -102,19 +105,22 @@ export function removeCreatorVerificationInstruction<
       ? Base58EncodedAddress<TAccountCreator>
       : TAccountCreator;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.creator, AccountRole.READONLY_SIGNER),
+      ...(remainingAccounts ?? []),
     ],
     data: getRemoveCreatorVerificationInstructionDataEncoder().encode({}),
     programAddress,
   } as RemoveCreatorVerificationInstruction<
     TProgram,
     TAccountMetadata,
-    TAccountCreator
+    TAccountCreator,
+    TRemainingAccounts
   >;
 }
 

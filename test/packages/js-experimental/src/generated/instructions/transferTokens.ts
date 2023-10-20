@@ -49,7 +49,8 @@ export type TransferTokensInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountSource extends string | IAccountMeta<string> = string,
   TAccountDestination extends string | IAccountMeta<string> = string,
-  TAccountAuthority extends string | IAccountMeta<string> = string
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -62,7 +63,8 @@ export type TransferTokensInstruction<
         : TAccountDestination,
       TAccountAuthority extends string
         ? ReadonlySignerAccount<TAccountAuthority>
-        : TAccountAuthority
+        : TAccountAuthority,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -110,7 +112,8 @@ export function transferTokensInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountSource extends string | IAccountMeta<string> = string,
   TAccountDestination extends string | IAccountMeta<string> = string,
-  TAccountAuthority extends string | IAccountMeta<string> = string
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     source: TAccountSource extends string
@@ -124,13 +127,15 @@ export function transferTokensInstruction<
       : TAccountAuthority;
   },
   args: TransferTokensInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.source, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
+      ...(remainingAccounts ?? []),
     ],
     data: getTransferTokensInstructionDataEncoder().encode(args),
     programAddress,
@@ -138,7 +143,8 @@ export function transferTokensInstruction<
     TProgram,
     TAccountSource,
     TAccountDestination,
-    TAccountAuthority
+    TAccountAuthority,
+    TRemainingAccounts
   >;
 }
 

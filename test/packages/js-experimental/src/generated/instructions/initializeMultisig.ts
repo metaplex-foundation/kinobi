@@ -43,7 +43,8 @@ export type InitializeMultisigInstruction<
   TAccountMultisig extends string | IAccountMeta<string> = string,
   TAccountRent extends
     | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111'
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -51,7 +52,10 @@ export type InitializeMultisigInstruction<
       TAccountMultisig extends string
         ? WritableAccount<TAccountMultisig>
         : TAccountMultisig,
-      TAccountRent extends string ? ReadonlyAccount<TAccountRent> : TAccountRent
+      TAccountRent extends string
+        ? ReadonlyAccount<TAccountRent>
+        : TAccountRent,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -100,7 +104,8 @@ export function initializeMultisigInstruction<
   TAccountMultisig extends string | IAccountMeta<string> = string,
   TAccountRent extends
     | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111'
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     multisig: TAccountMultisig extends string
@@ -111,7 +116,8 @@ export function initializeMultisigInstruction<
       : TAccountRent;
   },
   args: InitializeMultisigInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -120,10 +126,16 @@ export function initializeMultisigInstruction<
         accounts.rent ?? 'SysvarRent111111111111111111111111111111111',
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getInitializeMultisigInstructionDataEncoder().encode(args),
     programAddress,
-  } as InitializeMultisigInstruction<TProgram, TAccountMultisig, TAccountRent>;
+  } as InitializeMultisigInstruction<
+    TProgram,
+    TAccountMultisig,
+    TAccountRent,
+    TRemainingAccounts
+  >;
 }
 
 // Input.

@@ -54,7 +54,8 @@ export type CloseEscrowAccountInstruction<
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountSysvarInstructions extends
     | string
-    | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111'
+    | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -82,7 +83,8 @@ export type CloseEscrowAccountInstruction<
         : TAccountSystemProgram,
       TAccountSysvarInstructions extends string
         ? ReadonlyAccount<TAccountSysvarInstructions>
-        : TAccountSysvarInstructions
+        : TAccountSysvarInstructions,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -130,7 +132,8 @@ export function closeEscrowAccountInstruction<
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountSysvarInstructions extends
     | string
-    | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111'
+    | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     escrow: TAccountEscrow extends string
@@ -158,7 +161,8 @@ export function closeEscrowAccountInstruction<
       ? Base58EncodedAddress<TAccountSysvarInstructions>
       : TAccountSysvarInstructions;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -181,6 +185,7 @@ export function closeEscrowAccountInstruction<
           'Sysvar1nstructions1111111111111111111111111',
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getCloseEscrowAccountInstructionDataEncoder().encode({}),
     programAddress,
@@ -193,7 +198,8 @@ export function closeEscrowAccountInstruction<
     TAccountEdition,
     TAccountPayer,
     TAccountSystemProgram,
-    TAccountSysvarInstructions
+    TAccountSysvarInstructions,
+    TRemainingAccounts
   >;
 }
 

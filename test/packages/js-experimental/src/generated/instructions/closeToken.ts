@@ -43,7 +43,8 @@ export type CloseTokenInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountAccount extends string | IAccountMeta<string> = string,
   TAccountDestination extends string | IAccountMeta<string> = string,
-  TAccountOwner extends string | IAccountMeta<string> = string
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -56,7 +57,8 @@ export type CloseTokenInstruction<
         : TAccountDestination,
       TAccountOwner extends string
         ? ReadonlySignerAccount<TAccountOwner>
-        : TAccountOwner
+        : TAccountOwner,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -95,7 +97,8 @@ export function closeTokenInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountAccount extends string | IAccountMeta<string> = string,
   TAccountDestination extends string | IAccountMeta<string> = string,
-  TAccountOwner extends string | IAccountMeta<string> = string
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     account: TAccountAccount extends string
@@ -108,13 +111,15 @@ export function closeTokenInstruction<
       ? Base58EncodedAddress<TAccountOwner>
       : TAccountOwner;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.owner, AccountRole.READONLY_SIGNER),
+      ...(remainingAccounts ?? []),
     ],
     data: getCloseTokenInstructionDataEncoder().encode({}),
     programAddress,
@@ -122,7 +127,8 @@ export function closeTokenInstruction<
     TProgram,
     TAccountAccount,
     TAccountDestination,
-    TAccountOwner
+    TAccountOwner,
+    TRemainingAccounts
   >;
 }
 

@@ -64,7 +64,8 @@ export type CreateMasterEditionInstruction<
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountRent extends
     | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111'
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -93,7 +94,10 @@ export type CreateMasterEditionInstruction<
       TAccountSystemProgram extends string
         ? ReadonlyAccount<TAccountSystemProgram>
         : TAccountSystemProgram,
-      TAccountRent extends string ? ReadonlyAccount<TAccountRent> : TAccountRent
+      TAccountRent extends string
+        ? ReadonlyAccount<TAccountRent>
+        : TAccountRent,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -158,7 +162,8 @@ export function createMasterEditionInstruction<
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountRent extends
     | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111'
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     edition: TAccountEdition extends string
@@ -190,7 +195,8 @@ export function createMasterEditionInstruction<
       : TAccountRent;
   },
   args: CreateMasterEditionInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -226,6 +232,7 @@ export function createMasterEditionInstruction<
         accounts.rent ?? 'SysvarRent111111111111111111111111111111111',
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getCreateMasterEditionInstructionDataEncoder().encode(args),
     programAddress,
@@ -239,7 +246,8 @@ export function createMasterEditionInstruction<
     TAccountMetadata,
     TAccountTokenProgram,
     TAccountSystemProgram,
-    TAccountRent
+    TAccountRent,
+    TRemainingAccounts
   >;
 }
 

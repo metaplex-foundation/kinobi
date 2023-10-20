@@ -66,7 +66,8 @@ export type UtilizeInstruction<
     | string
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
   TAccountUseAuthorityRecord extends string | IAccountMeta<string> = string,
-  TAccountBurner extends string | IAccountMeta<string> = string
+  TAccountBurner extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -103,7 +104,8 @@ export type UtilizeInstruction<
         : TAccountUseAuthorityRecord,
       TAccountBurner extends string
         ? ReadonlyAccount<TAccountBurner>
-        : TAccountBurner
+        : TAccountBurner,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -167,7 +169,8 @@ export function utilizeInstruction<
     | string
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
   TAccountUseAuthorityRecord extends string | IAccountMeta<string> = string,
-  TAccountBurner extends string | IAccountMeta<string> = string
+  TAccountBurner extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -205,7 +208,8 @@ export function utilizeInstruction<
       : TAccountBurner;
   },
   args: UtilizeInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -261,6 +265,7 @@ export function utilizeInstruction<
         },
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getUtilizeInstructionDataEncoder().encode(args),
     programAddress,
@@ -276,7 +281,8 @@ export function utilizeInstruction<
     TAccountSystemProgram,
     TAccountRent,
     TAccountUseAuthorityRecord,
-    TAccountBurner
+    TAccountBurner,
+    TRemainingAccounts
   >;
 }
 

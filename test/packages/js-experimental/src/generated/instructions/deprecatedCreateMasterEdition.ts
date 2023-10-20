@@ -71,7 +71,8 @@ export type DeprecatedCreateMasterEditionInstruction<
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
   TAccountOneTimePrintingAuthorizationMintAuthority extends
     | string
-    | IAccountMeta<string> = string
+    | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -114,7 +115,8 @@ export type DeprecatedCreateMasterEditionInstruction<
         : TAccountRent,
       TAccountOneTimePrintingAuthorizationMintAuthority extends string
         ? ReadonlySignerAccount<TAccountOneTimePrintingAuthorizationMintAuthority>
-        : TAccountOneTimePrintingAuthorizationMintAuthority
+        : TAccountOneTimePrintingAuthorizationMintAuthority,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -187,7 +189,8 @@ export function deprecatedCreateMasterEditionInstruction<
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
   TAccountOneTimePrintingAuthorizationMintAuthority extends
     | string
-    | IAccountMeta<string> = string
+    | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     edition: TAccountEdition extends string
@@ -231,7 +234,8 @@ export function deprecatedCreateMasterEditionInstruction<
       : TAccountOneTimePrintingAuthorizationMintAuthority;
   },
   args: DeprecatedCreateMasterEditionInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -280,6 +284,7 @@ export function deprecatedCreateMasterEditionInstruction<
         accounts.oneTimePrintingAuthorizationMintAuthority,
         AccountRole.READONLY_SIGNER
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getDeprecatedCreateMasterEditionInstructionDataEncoder().encode(args),
     programAddress,
@@ -297,7 +302,8 @@ export function deprecatedCreateMasterEditionInstruction<
     TAccountTokenProgram,
     TAccountSystemProgram,
     TAccountRent,
-    TAccountOneTimePrintingAuthorizationMintAuthority
+    TAccountOneTimePrintingAuthorizationMintAuthority,
+    TRemainingAccounts
   >;
 }
 

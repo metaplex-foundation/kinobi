@@ -48,7 +48,8 @@ export type BurnTokenCheckedInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountAccount extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountAuthority extends string | IAccountMeta<string> = string
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -61,7 +62,8 @@ export type BurnTokenCheckedInstruction<
         : TAccountMint,
       TAccountAuthority extends string
         ? ReadonlySignerAccount<TAccountAuthority>
-        : TAccountAuthority
+        : TAccountAuthority,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -119,7 +121,8 @@ export function burnTokenCheckedInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountAccount extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountAuthority extends string | IAccountMeta<string> = string
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     account: TAccountAccount extends string
@@ -133,13 +136,15 @@ export function burnTokenCheckedInstruction<
       : TAccountAuthority;
   },
   args: BurnTokenCheckedInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
+      ...(remainingAccounts ?? []),
     ],
     data: getBurnTokenCheckedInstructionDataEncoder().encode(args),
     programAddress,
@@ -147,7 +152,8 @@ export function burnTokenCheckedInstruction<
     TProgram,
     TAccountAccount,
     TAccountMint,
-    TAccountAuthority
+    TAccountAuthority,
+    TRemainingAccounts
   >;
 }
 

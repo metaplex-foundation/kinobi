@@ -49,11 +49,17 @@ import {
 // Output.
 export type InitializeMint2Instruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string | IAccountMeta<string> = string
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
-    [TAccountMint extends string ? WritableAccount<TAccountMint> : TAccountMint]
+    [
+      TAccountMint extends string
+        ? WritableAccount<TAccountMint>
+        : TAccountMint,
+      ...TRemainingAccounts
+    ]
   >;
 
 export type InitializeMint2InstructionData = {
@@ -113,7 +119,8 @@ export function getInitializeMint2InstructionDataCodec(): Codec<
 
 export function initializeMint2Instruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string | IAccountMeta<string> = string
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     mint: TAccountMint extends string
@@ -121,13 +128,17 @@ export function initializeMint2Instruction<
       : TAccountMint;
   },
   args: InitializeMint2InstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
-    accounts: [accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE)],
+    accounts: [
+      accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
+      ...(remainingAccounts ?? []),
+    ],
     data: getInitializeMint2InstructionDataEncoder().encode(args),
     programAddress,
-  } as InitializeMint2Instruction<TProgram, TAccountMint>;
+  } as InitializeMint2Instruction<TProgram, TAccountMint, TRemainingAccounts>;
 }
 
 // Input.

@@ -53,9 +53,10 @@ export function getInstructionTypeFragment(
   })
     .mergeImportsWith(accountTypeParamsFragment, accountMetasFragment)
     .addImports('solanaInstructions', [
+      'IAccountMeta',
       'IInstruction',
+      'IInstructionWithAccounts',
       ...(hasData ? ['IInstructionWithData'] : []),
-      ...(hasAccounts ? ['IInstructionWithAccounts', 'IAccountMeta'] : []),
     ]);
 
   // TODO: if link, add import for data type. Unless we don't need to inject the data type in IInstructionWithData.

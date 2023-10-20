@@ -59,7 +59,8 @@ export type DeprecatedMintPrintingTokensInstruction<
     | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountRent extends
     | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111'
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -82,7 +83,10 @@ export type DeprecatedMintPrintingTokensInstruction<
       TAccountTokenProgram extends string
         ? ReadonlyAccount<TAccountTokenProgram>
         : TAccountTokenProgram,
-      TAccountRent extends string ? ReadonlyAccount<TAccountRent> : TAccountRent
+      TAccountRent extends string
+        ? ReadonlyAccount<TAccountRent>
+        : TAccountRent,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -149,7 +153,8 @@ export function deprecatedMintPrintingTokensInstruction<
     | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountRent extends
     | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111'
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     destination: TAccountDestination extends string
@@ -175,7 +180,8 @@ export function deprecatedMintPrintingTokensInstruction<
       : TAccountRent;
   },
   args: DeprecatedMintPrintingTokensInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -199,6 +205,7 @@ export function deprecatedMintPrintingTokensInstruction<
         accounts.rent ?? 'SysvarRent111111111111111111111111111111111',
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getDeprecatedMintPrintingTokensInstructionDataEncoder().encode(args),
     programAddress,
@@ -210,7 +217,8 @@ export function deprecatedMintPrintingTokensInstruction<
     TAccountMetadata,
     TAccountMasterEdition,
     TAccountTokenProgram,
-    TAccountRent
+    TAccountRent,
+    TRemainingAccounts
   >;
 }
 

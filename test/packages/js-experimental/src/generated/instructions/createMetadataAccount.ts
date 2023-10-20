@@ -80,7 +80,8 @@ export type CreateMetadataAccountInstruction<
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountRent extends
     | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111'
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -103,7 +104,10 @@ export type CreateMetadataAccountInstruction<
       TAccountSystemProgram extends string
         ? ReadonlyAccount<TAccountSystemProgram>
         : TAccountSystemProgram,
-      TAccountRent extends string ? ReadonlyAccount<TAccountRent> : TAccountRent
+      TAccountRent extends string
+        ? ReadonlyAccount<TAccountRent>
+        : TAccountRent,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -225,7 +229,8 @@ export function createMetadataAccountInstruction<
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountRent extends
     | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111'
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -251,7 +256,8 @@ export function createMetadataAccountInstruction<
       : TAccountRent;
   },
   args: CreateMetadataAccountInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -275,6 +281,7 @@ export function createMetadataAccountInstruction<
         accounts.rent ?? 'SysvarRent111111111111111111111111111111111',
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getCreateMetadataAccountInstructionDataEncoder().encode(args),
     programAddress,
@@ -286,7 +293,8 @@ export function createMetadataAccountInstruction<
     TAccountPayer,
     TAccountUpdateAuthority,
     TAccountSystemProgram,
-    TAccountRent
+    TAccountRent,
+    TRemainingAccounts
   >;
 }
 

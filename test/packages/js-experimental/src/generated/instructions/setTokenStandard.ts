@@ -45,7 +45,8 @@ export type SetTokenStandardInstruction<
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountEdition extends string | IAccountMeta<string> = string
+  TAccountEdition extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -61,7 +62,8 @@ export type SetTokenStandardInstruction<
         : TAccountMint,
       TAccountEdition extends string
         ? ReadonlyAccount<TAccountEdition>
-        : TAccountEdition
+        : TAccountEdition,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -101,7 +103,8 @@ export function setTokenStandardInstruction<
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountEdition extends string | IAccountMeta<string> = string
+  TAccountEdition extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -117,7 +120,8 @@ export function setTokenStandardInstruction<
       ? Base58EncodedAddress<TAccountEdition>
       : TAccountEdition;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -135,6 +139,7 @@ export function setTokenStandardInstruction<
         },
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getSetTokenStandardInstructionDataEncoder().encode({}),
     programAddress,
@@ -143,7 +148,8 @@ export function setTokenStandardInstruction<
     TAccountMetadata,
     TAccountUpdateAuthority,
     TAccountMint,
-    TAccountEdition
+    TAccountEdition,
+    TRemainingAccounts
   >;
 }
 

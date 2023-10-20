@@ -13,7 +13,12 @@ import {
   getStructEncoder,
 } from '@solana/codecs-data-structures';
 import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
-import { IInstruction, IInstructionWithData } from '@solana/instructions';
+import {
+  IAccountMeta,
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+} from '@solana/instructions';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -22,8 +27,11 @@ import {
 
 // Output.
 export type AddMemoInstruction<
-  TProgram extends string = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo'
-> = IInstruction<TProgram> & IInstructionWithData<Uint8Array>;
+  TProgram extends string = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<TRemainingAccounts>;
 
 export type AddMemoInstructionData = { memo: string };
 
@@ -54,15 +62,18 @@ export function getAddMemoInstructionDataCodec(): Codec<
 }
 
 export function addMemoInstruction<
-  TProgram extends string = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo'
+  TProgram extends string = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   args: AddMemoInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
+    accounts: remainingAccounts ?? [],
     data: getAddMemoInstructionDataEncoder().encode(args),
     programAddress,
-  } as AddMemoInstruction<TProgram>;
+  } as AddMemoInstruction<TProgram, TRemainingAccounts>;
 }
 
 // Input.

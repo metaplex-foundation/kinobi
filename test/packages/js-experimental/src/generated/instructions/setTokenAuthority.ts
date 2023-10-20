@@ -59,7 +59,8 @@ import {
 export type SetTokenAuthorityInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountOwned extends string | IAccountMeta<string> = string,
-  TAccountOwner extends string | IAccountMeta<string> = string
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -69,7 +70,8 @@ export type SetTokenAuthorityInstruction<
         : TAccountOwned,
       TAccountOwner extends string
         ? ReadonlyAccount<TAccountOwner>
-        : TAccountOwner
+        : TAccountOwner,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -126,7 +128,8 @@ export function getSetTokenAuthorityInstructionDataCodec(): Codec<
 export function setTokenAuthorityInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountOwned extends string | IAccountMeta<string> = string,
-  TAccountOwner extends string | IAccountMeta<string> = string
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     owned: TAccountOwned extends string
@@ -137,16 +140,23 @@ export function setTokenAuthorityInstruction<
       : TAccountOwner;
   },
   args: SetTokenAuthorityInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.owned, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.owner, AccountRole.READONLY),
+      ...(remainingAccounts ?? []),
     ],
     data: getSetTokenAuthorityInstructionDataEncoder().encode(args),
     programAddress,
-  } as SetTokenAuthorityInstruction<TProgram, TAccountOwned, TAccountOwner>;
+  } as SetTokenAuthorityInstruction<
+    TProgram,
+    TAccountOwned,
+    TAccountOwner,
+    TRemainingAccounts
+  >;
 }
 
 // Input.

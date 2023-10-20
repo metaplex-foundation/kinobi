@@ -99,7 +99,8 @@ export type ValidateInstruction<
   TAccountOptRuleNonsigner5 extends
     | string
     | IAccountMeta<string>
-    | undefined = undefined
+    | undefined = undefined,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -182,7 +183,8 @@ export type ValidateInstruction<
             TAccountOptRuleNonsigner5 extends string
               ? ReadonlyAccount<TAccountOptRuleNonsigner5>
               : TAccountOptRuleNonsigner5
-          ])
+          ]),
+      ...TRemainingAccounts
     ]
   >;
 
@@ -287,7 +289,8 @@ export function validateInstruction<
   TAccountOptRuleNonsigner5 extends
     | string
     | IAccountMeta<string>
-    | undefined = undefined
+    | undefined = undefined,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     payer: TAccountPayer extends string
@@ -331,7 +334,8 @@ export function validateInstruction<
       : TAccountOptRuleNonsigner5;
   },
   args: ValidateInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -367,6 +371,7 @@ export function validateInstruction<
       accountMetaWithDefault(accounts.optRuleNonsigner3, AccountRole.READONLY),
       accountMetaWithDefault(accounts.optRuleNonsigner4, AccountRole.READONLY),
       accountMetaWithDefault(accounts.optRuleNonsigner5, AccountRole.READONLY),
+      ...(remainingAccounts ?? []),
     ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     data: getValidateInstructionDataEncoder().encode(args),
     programAddress,
@@ -384,7 +389,8 @@ export function validateInstruction<
     TAccountOptRuleNonsigner2,
     TAccountOptRuleNonsigner3,
     TAccountOptRuleNonsigner4,
-    TAccountOptRuleNonsigner5
+    TAccountOptRuleNonsigner5,
+    TRemainingAccounts
   >;
 }
 

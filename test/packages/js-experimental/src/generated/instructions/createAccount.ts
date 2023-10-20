@@ -50,7 +50,8 @@ import {
 export type CreateAccountInstruction<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountNewAccount extends string | IAccountMeta<string> = string
+  TAccountNewAccount extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -60,7 +61,8 @@ export type CreateAccountInstruction<
         : TAccountPayer,
       TAccountNewAccount extends string
         ? WritableSignerAccount<TAccountNewAccount>
-        : TAccountNewAccount
+        : TAccountNewAccount,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -122,7 +124,8 @@ export function getCreateAccountInstructionDataCodec(): Codec<
 export function createAccountInstruction<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountNewAccount extends string | IAccountMeta<string> = string
+  TAccountNewAccount extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     payer: TAccountPayer extends string
@@ -133,16 +136,23 @@ export function createAccountInstruction<
       : TAccountNewAccount;
   },
   args: CreateAccountInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = '11111111111111111111111111111111' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = '11111111111111111111111111111111' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
       accountMetaWithDefault(accounts.newAccount, AccountRole.WRITABLE_SIGNER),
+      ...(remainingAccounts ?? []),
     ],
     data: getCreateAccountInstructionDataEncoder().encode(args),
     programAddress,
-  } as CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>;
+  } as CreateAccountInstruction<
+    TProgram,
+    TAccountPayer,
+    TAccountNewAccount,
+    TRemainingAccounts
+  >;
 }
 
 // Input.

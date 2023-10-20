@@ -54,7 +54,8 @@ export type CreateRuleSetInstruction<
   TAccountRuleSetPda extends string | IAccountMeta<string> = string,
   TAccountSystemProgram extends
     | string
-    | IAccountMeta<string> = '11111111111111111111111111111111'
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -67,7 +68,8 @@ export type CreateRuleSetInstruction<
         : TAccountRuleSetPda,
       TAccountSystemProgram extends string
         ? ReadonlyAccount<TAccountSystemProgram>
-        : TAccountSystemProgram
+        : TAccountSystemProgram,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -127,7 +129,8 @@ export function createRuleSetInstruction<
   TAccountRuleSetPda extends string | IAccountMeta<string> = string,
   TAccountSystemProgram extends
     | string
-    | IAccountMeta<string> = '11111111111111111111111111111111'
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     payer: TAccountPayer extends string
@@ -141,7 +144,8 @@ export function createRuleSetInstruction<
       : TAccountSystemProgram;
   },
   args: CreateRuleSetInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -155,6 +159,7 @@ export function createRuleSetInstruction<
         },
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getCreateRuleSetInstructionDataEncoder().encode(args),
     programAddress,
@@ -162,7 +167,8 @@ export function createRuleSetInstruction<
     TProgram,
     TAccountPayer,
     TAccountRuleSetPda,
-    TAccountSystemProgram
+    TAccountSystemProgram,
+    TRemainingAccounts
   >;
 }
 

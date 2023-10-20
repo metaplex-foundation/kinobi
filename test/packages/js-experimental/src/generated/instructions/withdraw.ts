@@ -44,7 +44,8 @@ import {
 export type WithdrawInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
-  TAccountAuthority extends string | IAccountMeta<string> = string
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -54,7 +55,8 @@ export type WithdrawInstruction<
         : TAccountCandyMachine,
       TAccountAuthority extends string
         ? WritableSignerAccount<TAccountAuthority>
-        : TAccountAuthority
+        : TAccountAuthority,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -95,7 +97,8 @@ export function getWithdrawInstructionDataCodec(): Codec<
 export function withdrawInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
-  TAccountAuthority extends string | IAccountMeta<string> = string
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     candyMachine: TAccountCandyMachine extends string
@@ -105,16 +108,23 @@ export function withdrawInstruction<
       ? Base58EncodedAddress<TAccountAuthority>
       : TAccountAuthority;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.authority, AccountRole.WRITABLE_SIGNER),
+      ...(remainingAccounts ?? []),
     ],
     data: getWithdrawInstructionDataEncoder().encode({}),
     programAddress,
-  } as WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>;
+  } as WithdrawInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TRemainingAccounts
+  >;
 }
 
 // Input.

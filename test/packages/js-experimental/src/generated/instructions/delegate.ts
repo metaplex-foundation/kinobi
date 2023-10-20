@@ -68,7 +68,8 @@ export type DelegateInstruction<
   TAccountAuthorizationRulesProgram extends
     | string
     | IAccountMeta<string> = string,
-  TAccountAuthorizationRules extends string | IAccountMeta<string> = string
+  TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -111,7 +112,8 @@ export type DelegateInstruction<
         : TAccountAuthorizationRulesProgram,
       TAccountAuthorizationRules extends string
         ? ReadonlyAccount<TAccountAuthorizationRules>
-        : TAccountAuthorizationRules
+        : TAccountAuthorizationRules,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -175,7 +177,8 @@ export function delegateInstruction<
   TAccountAuthorizationRulesProgram extends
     | string
     | IAccountMeta<string> = string,
-  TAccountAuthorizationRules extends string | IAccountMeta<string> = string
+  TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     delegateRecord: TAccountDelegateRecord extends string
@@ -219,7 +222,8 @@ export function delegateInstruction<
       : TAccountAuthorizationRules;
   },
   args: DelegateInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -282,6 +286,7 @@ export function delegateInstruction<
         },
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getDelegateInstructionDataEncoder().encode(args),
     programAddress,
@@ -299,7 +304,8 @@ export function delegateInstruction<
     TAccountSysvarInstructions,
     TAccountSplTokenProgram,
     TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
+    TAccountAuthorizationRules,
+    TRemainingAccounts
   >;
 }
 

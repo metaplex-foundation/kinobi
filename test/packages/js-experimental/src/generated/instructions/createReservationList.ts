@@ -46,7 +46,8 @@ export type CreateReservationListInstruction<
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountRent extends
     | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111'
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -72,7 +73,10 @@ export type CreateReservationListInstruction<
       TAccountSystemProgram extends string
         ? ReadonlyAccount<TAccountSystemProgram>
         : TAccountSystemProgram,
-      TAccountRent extends string ? ReadonlyAccount<TAccountRent> : TAccountRent
+      TAccountRent extends string
+        ? ReadonlyAccount<TAccountRent>
+        : TAccountRent,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -89,7 +93,8 @@ export function createReservationListInstruction<
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountRent extends
     | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111'
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     reservationList: TAccountReservationList extends string
@@ -118,7 +123,8 @@ export function createReservationListInstruction<
       : TAccountRent;
   },
   args: CreateReservationListInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -143,6 +149,7 @@ export function createReservationListInstruction<
         accounts.rent ?? 'SysvarRent111111111111111111111111111111111',
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getCreateReservationListInstructionDataEncoder().encode(args),
     programAddress,
@@ -155,7 +162,8 @@ export function createReservationListInstruction<
     TAccountResource,
     TAccountMetadata,
     TAccountSystemProgram,
-    TAccountRent
+    TAccountRent,
+    TRemainingAccounts
   >;
 }
 

@@ -64,7 +64,8 @@ export type MigrateInstruction<
   TAccountSysvarInstructions extends
     | string
     | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountAuthorizationRules extends string | IAccountMeta<string> = string
+  TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -98,7 +99,8 @@ export type MigrateInstruction<
         : TAccountSysvarInstructions,
       TAccountAuthorizationRules extends string
         ? ReadonlyAccount<TAccountAuthorizationRules>
-        : TAccountAuthorizationRules
+        : TAccountAuthorizationRules,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -159,7 +161,8 @@ export function migrateInstruction<
   TAccountSysvarInstructions extends
     | string
     | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountAuthorizationRules extends string | IAccountMeta<string> = string
+  TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -194,7 +197,8 @@ export function migrateInstruction<
       : TAccountAuthorizationRules;
   },
   args: MigrateInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -236,6 +240,7 @@ export function migrateInstruction<
         },
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getMigrateInstructionDataEncoder().encode(args),
     programAddress,
@@ -250,7 +255,8 @@ export function migrateInstruction<
     TAccountTokenProgram,
     TAccountSystemProgram,
     TAccountSysvarInstructions,
-    TAccountAuthorizationRules
+    TAccountAuthorizationRules,
+    TRemainingAccounts
   >;
 }
 

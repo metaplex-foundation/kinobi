@@ -48,7 +48,8 @@ export type MintTokensToInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountMint extends string | IAccountMeta<string> = string,
   TAccountToken extends string | IAccountMeta<string> = string,
-  TAccountMintAuthority extends string | IAccountMeta<string> = string
+  TAccountMintAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -61,7 +62,8 @@ export type MintTokensToInstruction<
         : TAccountToken,
       TAccountMintAuthority extends string
         ? ReadonlySignerAccount<TAccountMintAuthority>
-        : TAccountMintAuthority
+        : TAccountMintAuthority,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -109,7 +111,8 @@ export function mintTokensToInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountMint extends string | IAccountMeta<string> = string,
   TAccountToken extends string | IAccountMeta<string> = string,
-  TAccountMintAuthority extends string | IAccountMeta<string> = string
+  TAccountMintAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     mint: TAccountMint extends string
@@ -123,7 +126,8 @@ export function mintTokensToInstruction<
       : TAccountMintAuthority;
   },
   args: MintTokensToInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -133,6 +137,7 @@ export function mintTokensToInstruction<
         accounts.mintAuthority,
         AccountRole.READONLY_SIGNER
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getMintTokensToInstructionDataEncoder().encode(args),
     programAddress,
@@ -140,7 +145,8 @@ export function mintTokensToInstruction<
     TProgram,
     TAccountMint,
     TAccountToken,
-    TAccountMintAuthority
+    TAccountMintAuthority,
+    TRemainingAccounts
   >;
 }
 

@@ -53,7 +53,8 @@ export type CreateFrequencyRuleInstruction<
   TAccountFrequencyPda extends string | IAccountMeta<string> = string,
   TAccountSystemProgram extends
     | string
-    | IAccountMeta<string> = '11111111111111111111111111111111'
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -66,7 +67,8 @@ export type CreateFrequencyRuleInstruction<
         : TAccountFrequencyPda,
       TAccountSystemProgram extends string
         ? ReadonlyAccount<TAccountSystemProgram>
-        : TAccountSystemProgram
+        : TAccountSystemProgram,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -136,7 +138,8 @@ export function createFrequencyRuleInstruction<
   TAccountFrequencyPda extends string | IAccountMeta<string> = string,
   TAccountSystemProgram extends
     | string
-    | IAccountMeta<string> = '11111111111111111111111111111111'
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     payer: TAccountPayer extends string
@@ -150,7 +153,8 @@ export function createFrequencyRuleInstruction<
       : TAccountSystemProgram;
   },
   args: CreateFrequencyRuleInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -164,6 +168,7 @@ export function createFrequencyRuleInstruction<
         },
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getCreateFrequencyRuleInstructionDataEncoder().encode(args),
     programAddress,
@@ -171,7 +176,8 @@ export function createFrequencyRuleInstruction<
     TProgram,
     TAccountPayer,
     TAccountFrequencyPda,
-    TAccountSystemProgram
+    TAccountSystemProgram,
+    TRemainingAccounts
   >;
 }
 

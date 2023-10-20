@@ -44,11 +44,17 @@ import {
 // Output.
 export type UiAmountToAmountInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string | IAccountMeta<string> = string
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
-    [TAccountMint extends string ? ReadonlyAccount<TAccountMint> : TAccountMint]
+    [
+      TAccountMint extends string
+        ? ReadonlyAccount<TAccountMint>
+        : TAccountMint,
+      ...TRemainingAccounts
+    ]
   >;
 
 export type UiAmountToAmountInstructionData = {
@@ -93,7 +99,8 @@ export function getUiAmountToAmountInstructionDataCodec(): Codec<
 
 export function uiAmountToAmountInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string | IAccountMeta<string> = string
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     mint: TAccountMint extends string
@@ -101,13 +108,17 @@ export function uiAmountToAmountInstruction<
       : TAccountMint;
   },
   args: UiAmountToAmountInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
-    accounts: [accountMetaWithDefault(accounts.mint, AccountRole.READONLY)],
+    accounts: [
+      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
+      ...(remainingAccounts ?? []),
+    ],
     data: getUiAmountToAmountInstructionDataEncoder().encode(args),
     programAddress,
-  } as UiAmountToAmountInstruction<TProgram, TAccountMint>;
+  } as UiAmountToAmountInstruction<TProgram, TAccountMint, TRemainingAccounts>;
 }
 
 // Input.

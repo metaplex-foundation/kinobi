@@ -4,14 +4,17 @@
 export type {{ instruction.name | pascalCase }}Instruction<
   TProgram extends string = "{{ program.publicKey }}",
   {% if hasAccounts %}
-    {{ accountTypeParams }}
+    {{ accountTypeParams }},
   {% endif %}
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram>
   {% if hasData %}
     & IInstructionWithData<Uint8Array>
     {# & IInstructionWithData<{{ dataType }}> #}
   {% endif %}
   {% if hasAccounts %}
-    & IInstructionWithAccounts<[{{ accountMetas }}]>
+    & IInstructionWithAccounts<[{{ accountMetas }}, ...TRemainingAccounts]>
+  {% else %}
+    & IInstructionWithAccounts<TRemainingAccounts>
   {% endif %}
 ;

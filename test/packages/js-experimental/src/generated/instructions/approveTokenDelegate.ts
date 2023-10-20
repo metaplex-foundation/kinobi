@@ -49,7 +49,8 @@ export type ApproveTokenDelegateInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountSource extends string | IAccountMeta<string> = string,
   TAccountDelegate extends string | IAccountMeta<string> = string,
-  TAccountOwner extends string | IAccountMeta<string> = string
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -62,7 +63,8 @@ export type ApproveTokenDelegateInstruction<
         : TAccountDelegate,
       TAccountOwner extends string
         ? ReadonlySignerAccount<TAccountOwner>
-        : TAccountOwner
+        : TAccountOwner,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -112,7 +114,8 @@ export function approveTokenDelegateInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountSource extends string | IAccountMeta<string> = string,
   TAccountDelegate extends string | IAccountMeta<string> = string,
-  TAccountOwner extends string | IAccountMeta<string> = string
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     source: TAccountSource extends string
@@ -126,13 +129,15 @@ export function approveTokenDelegateInstruction<
       : TAccountOwner;
   },
   args: ApproveTokenDelegateInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.source, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.delegate, AccountRole.READONLY),
       accountMetaWithDefault(accounts.owner, AccountRole.READONLY_SIGNER),
+      ...(remainingAccounts ?? []),
     ],
     data: getApproveTokenDelegateInstructionDataEncoder().encode(args),
     programAddress,
@@ -140,7 +145,8 @@ export function approveTokenDelegateInstruction<
     TProgram,
     TAccountSource,
     TAccountDelegate,
-    TAccountOwner
+    TAccountOwner,
+    TRemainingAccounts
   >;
 }
 

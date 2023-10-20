@@ -44,7 +44,8 @@ export type UpdatePrimarySaleHappenedViaTokenInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountOwner extends string | IAccountMeta<string> = string,
-  TAccountToken extends string | IAccountMeta<string> = string
+  TAccountToken extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -57,7 +58,8 @@ export type UpdatePrimarySaleHappenedViaTokenInstruction<
         : TAccountOwner,
       TAccountToken extends string
         ? ReadonlyAccount<TAccountToken>
-        : TAccountToken
+        : TAccountToken,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -98,7 +100,8 @@ export function updatePrimarySaleHappenedViaTokenInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountOwner extends string | IAccountMeta<string> = string,
-  TAccountToken extends string | IAccountMeta<string> = string
+  TAccountToken extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -111,13 +114,15 @@ export function updatePrimarySaleHappenedViaTokenInstruction<
       ? Base58EncodedAddress<TAccountToken>
       : TAccountToken;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.owner, AccountRole.READONLY_SIGNER),
       accountMetaWithDefault(accounts.token, AccountRole.READONLY),
+      ...(remainingAccounts ?? []),
     ],
     data: getUpdatePrimarySaleHappenedViaTokenInstructionDataEncoder().encode(
       {}
@@ -127,7 +132,8 @@ export function updatePrimarySaleHappenedViaTokenInstruction<
     TProgram,
     TAccountMetadata,
     TAccountOwner,
-    TAccountToken
+    TAccountToken,
+    TRemainingAccounts
   >;
 }
 

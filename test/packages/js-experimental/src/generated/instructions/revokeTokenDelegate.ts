@@ -42,7 +42,8 @@ import {
 export type RevokeTokenDelegateInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountSource extends string | IAccountMeta<string> = string,
-  TAccountOwner extends string | IAccountMeta<string> = string
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -52,7 +53,8 @@ export type RevokeTokenDelegateInstruction<
         : TAccountSource,
       TAccountOwner extends string
         ? ReadonlySignerAccount<TAccountOwner>
-        : TAccountOwner
+        : TAccountOwner,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -90,7 +92,8 @@ export function getRevokeTokenDelegateInstructionDataCodec(): Codec<
 export function revokeTokenDelegateInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountSource extends string | IAccountMeta<string> = string,
-  TAccountOwner extends string | IAccountMeta<string> = string
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     source: TAccountSource extends string
@@ -100,16 +103,23 @@ export function revokeTokenDelegateInstruction<
       ? Base58EncodedAddress<TAccountOwner>
       : TAccountOwner;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.source, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.owner, AccountRole.READONLY_SIGNER),
+      ...(remainingAccounts ?? []),
     ],
     data: getRevokeTokenDelegateInstructionDataEncoder().encode({}),
     programAddress,
-  } as RevokeTokenDelegateInstruction<TProgram, TAccountSource, TAccountOwner>;
+  } as RevokeTokenDelegateInstruction<
+    TProgram,
+    TAccountSource,
+    TAccountOwner,
+    TRemainingAccounts
+  >;
 }
 
 // Input.

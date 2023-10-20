@@ -53,7 +53,8 @@ export type VerifySizedCollectionItemInstruction<
     | IAccountMeta<string> = string,
   TAccountCollectionAuthorityRecord extends
     | string
-    | IAccountMeta<string> = string
+    | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -78,7 +79,8 @@ export type VerifySizedCollectionItemInstruction<
         : TAccountCollectionMasterEditionAccount,
       TAccountCollectionAuthorityRecord extends string
         ? ReadonlyAccount<TAccountCollectionAuthorityRecord>
-        : TAccountCollectionAuthorityRecord
+        : TAccountCollectionAuthorityRecord,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -127,7 +129,8 @@ export function verifySizedCollectionItemInstruction<
     | IAccountMeta<string> = string,
   TAccountCollectionAuthorityRecord extends
     | string
-    | IAccountMeta<string> = string
+    | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -152,7 +155,8 @@ export function verifySizedCollectionItemInstruction<
       ? Base58EncodedAddress<TAccountCollectionAuthorityRecord>
       : TAccountCollectionAuthorityRecord;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -176,6 +180,7 @@ export function verifySizedCollectionItemInstruction<
         },
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getVerifySizedCollectionItemInstructionDataEncoder().encode({}),
     programAddress,
@@ -187,7 +192,8 @@ export function verifySizedCollectionItemInstruction<
     TAccountCollectionMint,
     TAccountCollection,
     TAccountCollectionMasterEditionAccount,
-    TAccountCollectionAuthorityRecord
+    TAccountCollectionAuthorityRecord,
+    TRemainingAccounts
   >;
 }
 

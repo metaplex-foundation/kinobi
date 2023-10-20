@@ -69,7 +69,8 @@ export type TransferOutOfEscrowInstruction<
   TAccountSysvarInstructions extends
     | string
     | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountAuthority extends string | IAccountMeta<string> = string
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -112,7 +113,8 @@ export type TransferOutOfEscrowInstruction<
         : TAccountSysvarInstructions,
       TAccountAuthority extends string
         ? ReadonlySignerAccount<TAccountAuthority>
-        : TAccountAuthority
+        : TAccountAuthority,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -180,7 +182,8 @@ export function transferOutOfEscrowInstruction<
   TAccountSysvarInstructions extends
     | string
     | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountAuthority extends string | IAccountMeta<string> = string
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     escrow: TAccountEscrow extends string
@@ -224,7 +227,8 @@ export function transferOutOfEscrowInstruction<
       : TAccountAuthority;
   },
   args: TransferOutOfEscrowInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -273,6 +277,7 @@ export function transferOutOfEscrowInstruction<
         },
         AccountRole.READONLY_SIGNER
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getTransferOutOfEscrowInstructionDataEncoder().encode(args),
     programAddress,
@@ -290,7 +295,8 @@ export function transferOutOfEscrowInstruction<
     TAccountAtaProgram,
     TAccountTokenProgram,
     TAccountSysvarInstructions,
-    TAccountAuthority
+    TAccountAuthority,
+    TRemainingAccounts
   >;
 }
 

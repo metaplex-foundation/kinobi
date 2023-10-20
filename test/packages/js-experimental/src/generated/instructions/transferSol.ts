@@ -47,7 +47,8 @@ import {
 export type TransferSolInstruction<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountSource extends string | IAccountMeta<string> = string,
-  TAccountDestination extends string | IAccountMeta<string> = string
+  TAccountDestination extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -57,7 +58,8 @@ export type TransferSolInstruction<
         : TAccountSource,
       TAccountDestination extends string
         ? WritableAccount<TAccountDestination>
-        : TAccountDestination
+        : TAccountDestination,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -104,7 +106,8 @@ export function getTransferSolInstructionDataCodec(): Codec<
 export function transferSolInstruction<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountSource extends string | IAccountMeta<string> = string,
-  TAccountDestination extends string | IAccountMeta<string> = string
+  TAccountDestination extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     source: TAccountSource extends string
@@ -115,16 +118,23 @@ export function transferSolInstruction<
       : TAccountDestination;
   },
   args: TransferSolInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = '11111111111111111111111111111111' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = '11111111111111111111111111111111' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.source, AccountRole.WRITABLE_SIGNER),
       accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
+      ...(remainingAccounts ?? []),
     ],
     data: getTransferSolInstructionDataEncoder().encode(args),
     programAddress,
-  } as TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>;
+  } as TransferSolInstruction<
+    TProgram,
+    TAccountSource,
+    TAccountDestination,
+    TRemainingAccounts
+  >;
 }
 
 // Input.

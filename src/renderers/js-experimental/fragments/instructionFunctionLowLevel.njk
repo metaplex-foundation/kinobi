@@ -1,8 +1,9 @@
 export function {{ instruction.name | camelCase }}Instruction<
   TProgram extends string = "{{ program.publicKey }}",
   {% if hasAccounts %}
-    {{ accountTypeParams }}
+    {{ accountTypeParams }},
   {% endif %}
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   {% if hasAccounts %}
     accounts: {
@@ -15,6 +16,7 @@ export function {{ instruction.name | camelCase }}Instruction<
     args: {{ argsType }},
   {% endif %}
   programAddress: Base58EncodedAddress<TProgram> = "{{ program.publicKey }}" as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     {% if hasAccounts %}
@@ -22,11 +24,14 @@ export function {{ instruction.name | camelCase }}Instruction<
         {% for account in accounts %}
           accountMetaWithDefault(accounts.{{ account.name | camelCase }}{{ " ?? " + account.defaultValue if account.defaultValue }}, {{ account.defaultRole }}),
         {% endfor %}
+        ...(remainingAccounts ?? []),
       ]
       {%- if hasLegacyOptionalAccounts -%}
         .filter(<T>(x: T | undefined): x is T => x !== undefined)
       {% endif %}
       ,
+    {% else %}
+      accounts: remainingAccounts ?? [],
     {% endif %}
     {% if hasData and hasArgs %}
       data: {{ encoderFunction }}.encode(args),
@@ -39,5 +44,6 @@ export function {{ instruction.name | camelCase }}Instruction<
     {% for account in accounts %}
       {{ account.typeParam }},
     {% endfor %}
+    TRemainingAccounts,
   >;
 }

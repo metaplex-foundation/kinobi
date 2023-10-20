@@ -53,7 +53,8 @@ export type InitializeMintInstruction<
   TAccountMint extends string | IAccountMeta<string> = string,
   TAccountRent extends
     | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111'
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -61,7 +62,10 @@ export type InitializeMintInstruction<
       TAccountMint extends string
         ? WritableAccount<TAccountMint>
         : TAccountMint,
-      TAccountRent extends string ? ReadonlyAccount<TAccountRent> : TAccountRent
+      TAccountRent extends string
+        ? ReadonlyAccount<TAccountRent>
+        : TAccountRent,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -125,7 +129,8 @@ export function initializeMintInstruction<
   TAccountMint extends string | IAccountMeta<string> = string,
   TAccountRent extends
     | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111'
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     mint: TAccountMint extends string
@@ -136,7 +141,8 @@ export function initializeMintInstruction<
       : TAccountRent;
   },
   args: InitializeMintInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -145,10 +151,16 @@ export function initializeMintInstruction<
         accounts.rent ?? 'SysvarRent111111111111111111111111111111111',
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getInitializeMintInstructionDataEncoder().encode(args),
     programAddress,
-  } as InitializeMintInstruction<TProgram, TAccountMint, TAccountRent>;
+  } as InitializeMintInstruction<
+    TProgram,
+    TAccountMint,
+    TAccountRent,
+    TRemainingAccounts
+  >;
 }
 
 // Input.

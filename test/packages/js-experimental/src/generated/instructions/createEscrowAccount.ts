@@ -56,7 +56,8 @@ export type CreateEscrowAccountInstruction<
   TAccountSysvarInstructions extends
     | string
     | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountAuthority extends string | IAccountMeta<string> = string
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -87,7 +88,8 @@ export type CreateEscrowAccountInstruction<
         : TAccountSysvarInstructions,
       TAccountAuthority extends string
         ? ReadonlySignerAccount<TAccountAuthority>
-        : TAccountAuthority
+        : TAccountAuthority,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -136,7 +138,8 @@ export function createEscrowAccountInstruction<
   TAccountSysvarInstructions extends
     | string
     | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountAuthority extends string | IAccountMeta<string> = string
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     escrow: TAccountEscrow extends string
@@ -167,7 +170,8 @@ export function createEscrowAccountInstruction<
       ? Base58EncodedAddress<TAccountAuthority>
       : TAccountAuthority;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -198,6 +202,7 @@ export function createEscrowAccountInstruction<
         },
         AccountRole.READONLY_SIGNER
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getCreateEscrowAccountInstructionDataEncoder().encode({}),
     programAddress,
@@ -211,7 +216,8 @@ export function createEscrowAccountInstruction<
     TAccountPayer,
     TAccountSystemProgram,
     TAccountSysvarInstructions,
-    TAccountAuthority
+    TAccountAuthority,
+    TRemainingAccounts
   >;
 }
 

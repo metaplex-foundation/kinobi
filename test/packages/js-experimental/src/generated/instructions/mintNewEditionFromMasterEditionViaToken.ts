@@ -69,7 +69,8 @@ export type MintNewEditionFromMasterEditionViaTokenInstruction<
   TAccountSystemProgram extends
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountRent extends string | IAccountMeta<string> = string
+  TAccountRent extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -113,7 +114,10 @@ export type MintNewEditionFromMasterEditionViaTokenInstruction<
       TAccountSystemProgram extends string
         ? ReadonlyAccount<TAccountSystemProgram>
         : TAccountSystemProgram,
-      TAccountRent extends string ? ReadonlyAccount<TAccountRent> : TAccountRent
+      TAccountRent extends string
+        ? ReadonlyAccount<TAccountRent>
+        : TAccountRent,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -189,7 +193,8 @@ export function mintNewEditionFromMasterEditionViaTokenInstruction<
   TAccountSystemProgram extends
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountRent extends string | IAccountMeta<string> = string
+  TAccountRent extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     newMetadata: TAccountNewMetadata extends string
@@ -236,7 +241,8 @@ export function mintNewEditionFromMasterEditionViaTokenInstruction<
       : TAccountRent;
   },
   args: MintNewEditionFromMasterEditionViaTokenInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -284,6 +290,7 @@ export function mintNewEditionFromMasterEditionViaTokenInstruction<
         },
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getMintNewEditionFromMasterEditionViaTokenInstructionDataEncoder().encode(
       args
@@ -304,7 +311,8 @@ export function mintNewEditionFromMasterEditionViaTokenInstruction<
     TAccountMetadata,
     TAccountTokenProgram,
     TAccountSystemProgram,
-    TAccountRent
+    TAccountRent,
+    TRemainingAccounts
   >;
 }
 

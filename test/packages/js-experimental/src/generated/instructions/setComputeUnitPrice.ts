@@ -24,7 +24,12 @@ import {
   getU8Decoder,
   getU8Encoder,
 } from '@solana/codecs-numbers';
-import { IInstruction, IInstructionWithData } from '@solana/instructions';
+import {
+  IAccountMeta,
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
+} from '@solana/instructions';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -33,8 +38,11 @@ import {
 
 // Output.
 export type SetComputeUnitPriceInstruction<
-  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
-> = IInstruction<TProgram> & IInstructionWithData<Uint8Array>;
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<TRemainingAccounts>;
 
 export type SetComputeUnitPriceInstructionData = {
   discriminator: number;
@@ -85,15 +93,18 @@ export function getSetComputeUnitPriceInstructionDataCodec(): Codec<
 }
 
 export function setComputeUnitPriceInstruction<
-  TProgram extends string = 'ComputeBudget111111111111111111111111111111'
+  TProgram extends string = 'ComputeBudget111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   args: SetComputeUnitPriceInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'ComputeBudget111111111111111111111111111111' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'ComputeBudget111111111111111111111111111111' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
+    accounts: remainingAccounts ?? [],
     data: getSetComputeUnitPriceInstructionDataEncoder().encode(args),
     programAddress,
-  } as SetComputeUnitPriceInstruction<TProgram>;
+  } as SetComputeUnitPriceInstruction<TProgram, TRemainingAccounts>;
 }
 
 // Input.

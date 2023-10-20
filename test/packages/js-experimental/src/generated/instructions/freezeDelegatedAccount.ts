@@ -49,7 +49,8 @@ export type FreezeDelegatedAccountInstruction<
   TAccountMint extends string | IAccountMeta<string> = string,
   TAccountTokenProgram extends
     | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -68,7 +69,8 @@ export type FreezeDelegatedAccountInstruction<
         : TAccountMint,
       TAccountTokenProgram extends string
         ? ReadonlyAccount<TAccountTokenProgram>
-        : TAccountTokenProgram
+        : TAccountTokenProgram,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -111,7 +113,8 @@ export function freezeDelegatedAccountInstruction<
   TAccountMint extends string | IAccountMeta<string> = string,
   TAccountTokenProgram extends
     | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     delegate: TAccountDelegate extends string
@@ -130,7 +133,8 @@ export function freezeDelegatedAccountInstruction<
       ? Base58EncodedAddress<TAccountTokenProgram>
       : TAccountTokenProgram;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -146,6 +150,7 @@ export function freezeDelegatedAccountInstruction<
         },
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getFreezeDelegatedAccountInstructionDataEncoder().encode({}),
     programAddress,
@@ -155,7 +160,8 @@ export function freezeDelegatedAccountInstruction<
     TAccountTokenAccount,
     TAccountEdition,
     TAccountMint,
-    TAccountTokenProgram
+    TAccountTokenProgram,
+    TRemainingAccounts
   >;
 }
 

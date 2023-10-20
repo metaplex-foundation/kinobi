@@ -45,7 +45,8 @@ export type InitializeTokenInstruction<
   TAccountOwner extends string | IAccountMeta<string> = string,
   TAccountRent extends
     | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111'
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -59,7 +60,10 @@ export type InitializeTokenInstruction<
       TAccountOwner extends string
         ? ReadonlyAccount<TAccountOwner>
         : TAccountOwner,
-      TAccountRent extends string ? ReadonlyAccount<TAccountRent> : TAccountRent
+      TAccountRent extends string
+        ? ReadonlyAccount<TAccountRent>
+        : TAccountRent,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -101,7 +105,8 @@ export function initializeTokenInstruction<
   TAccountOwner extends string | IAccountMeta<string> = string,
   TAccountRent extends
     | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111'
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     account: TAccountAccount extends string
@@ -117,7 +122,8 @@ export function initializeTokenInstruction<
       ? Base58EncodedAddress<TAccountRent>
       : TAccountRent;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -128,6 +134,7 @@ export function initializeTokenInstruction<
         accounts.rent ?? 'SysvarRent111111111111111111111111111111111',
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getInitializeTokenInstructionDataEncoder().encode({}),
     programAddress,
@@ -136,7 +143,8 @@ export function initializeTokenInstruction<
     TAccountAccount,
     TAccountMint,
     TAccountOwner,
-    TAccountRent
+    TAccountRent,
+    TRemainingAccounts
   >;
 }
 

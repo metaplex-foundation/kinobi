@@ -39,14 +39,16 @@ import {
 // Output.
 export type SyncNativeInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string | IAccountMeta<string> = string
+  TAccountAccount extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
       TAccountAccount extends string
         ? WritableAccount<TAccountAccount>
-        : TAccountAccount
+        : TAccountAccount,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -83,20 +85,25 @@ export function getSyncNativeInstructionDataCodec(): Codec<
 
 export function syncNativeInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAccount extends string | IAccountMeta<string> = string
+  TAccountAccount extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     account: TAccountAccount extends string
       ? Base58EncodedAddress<TAccountAccount>
       : TAccountAccount;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
-    accounts: [accountMetaWithDefault(accounts.account, AccountRole.WRITABLE)],
+    accounts: [
+      accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
+      ...(remainingAccounts ?? []),
+    ],
     data: getSyncNativeInstructionDataEncoder().encode({}),
     programAddress,
-  } as SyncNativeInstruction<TProgram, TAccountAccount>;
+  } as SyncNativeInstruction<TProgram, TAccountAccount, TRemainingAccounts>;
 }
 
 // Input.

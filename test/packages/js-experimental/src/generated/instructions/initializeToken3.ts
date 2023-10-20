@@ -45,7 +45,8 @@ import {
 export type InitializeToken3Instruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountAccount extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -53,7 +54,10 @@ export type InitializeToken3Instruction<
       TAccountAccount extends string
         ? WritableAccount<TAccountAccount>
         : TAccountAccount,
-      TAccountMint extends string ? ReadonlyAccount<TAccountMint> : TAccountMint
+      TAccountMint extends string
+        ? ReadonlyAccount<TAccountMint>
+        : TAccountMint,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -102,7 +106,8 @@ export function getInitializeToken3InstructionDataCodec(): Codec<
 export function initializeToken3Instruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountAccount extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     account: TAccountAccount extends string
@@ -113,16 +118,23 @@ export function initializeToken3Instruction<
       : TAccountMint;
   },
   args: InitializeToken3InstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.account, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
+      ...(remainingAccounts ?? []),
     ],
     data: getInitializeToken3InstructionDataEncoder().encode(args),
     programAddress,
-  } as InitializeToken3Instruction<TProgram, TAccountAccount, TAccountMint>;
+  } as InitializeToken3Instruction<
+    TProgram,
+    TAccountAccount,
+    TAccountMint,
+    TRemainingAccounts
+  >;
 }
 
 // Input.

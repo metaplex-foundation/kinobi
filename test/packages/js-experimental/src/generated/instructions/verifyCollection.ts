@@ -49,7 +49,8 @@ export type VerifyCollectionInstruction<
   TAccountCollection extends string | IAccountMeta<string> = string,
   TAccountCollectionMasterEditionAccount extends
     | string
-    | IAccountMeta<string> = string
+    | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -71,7 +72,8 @@ export type VerifyCollectionInstruction<
         : TAccountCollection,
       TAccountCollectionMasterEditionAccount extends string
         ? ReadonlyAccount<TAccountCollectionMasterEditionAccount>
-        : TAccountCollectionMasterEditionAccount
+        : TAccountCollectionMasterEditionAccount,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -115,7 +117,8 @@ export function verifyCollectionInstruction<
   TAccountCollection extends string | IAccountMeta<string> = string,
   TAccountCollectionMasterEditionAccount extends
     | string
-    | IAccountMeta<string> = string
+    | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -137,7 +140,8 @@ export function verifyCollectionInstruction<
       ? Base58EncodedAddress<TAccountCollectionMasterEditionAccount>
       : TAccountCollectionMasterEditionAccount;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -153,6 +157,7 @@ export function verifyCollectionInstruction<
         accounts.collectionMasterEditionAccount,
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getVerifyCollectionInstructionDataEncoder().encode({}),
     programAddress,
@@ -163,7 +168,8 @@ export function verifyCollectionInstruction<
     TAccountPayer,
     TAccountCollectionMint,
     TAccountCollection,
-    TAccountCollectionMasterEditionAccount
+    TAccountCollectionMasterEditionAccount,
+    TRemainingAccounts
   >;
 }
 

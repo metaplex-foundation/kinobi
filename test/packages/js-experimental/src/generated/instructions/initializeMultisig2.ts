@@ -41,7 +41,8 @@ import {
 export type InitializeMultisig2Instruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountMultisig extends string | IAccountMeta<string> = string,
-  TAccountSigner extends string | IAccountMeta<string> = string
+  TAccountSigner extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -51,7 +52,8 @@ export type InitializeMultisig2Instruction<
         : TAccountMultisig,
       TAccountSigner extends string
         ? ReadonlyAccount<TAccountSigner>
-        : TAccountSigner
+        : TAccountSigner,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -98,7 +100,8 @@ export function getInitializeMultisig2InstructionDataCodec(): Codec<
 export function initializeMultisig2Instruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountMultisig extends string | IAccountMeta<string> = string,
-  TAccountSigner extends string | IAccountMeta<string> = string
+  TAccountSigner extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     multisig: TAccountMultisig extends string
@@ -109,19 +112,22 @@ export function initializeMultisig2Instruction<
       : TAccountSigner;
   },
   args: InitializeMultisig2InstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.multisig, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.signer, AccountRole.READONLY),
+      ...(remainingAccounts ?? []),
     ],
     data: getInitializeMultisig2InstructionDataEncoder().encode(args),
     programAddress,
   } as InitializeMultisig2Instruction<
     TProgram,
     TAccountMultisig,
-    TAccountSigner
+    TAccountSigner,
+    TRemainingAccounts
   >;
 }
 

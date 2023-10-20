@@ -72,7 +72,8 @@ export type InitializeInstruction<
     | IAccountMeta<string> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountSystemProgram extends
     | string
-    | IAccountMeta<string> = '11111111111111111111111111111111'
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -109,7 +110,8 @@ export type InitializeInstruction<
         : TAccountTokenMetadataProgram,
       TAccountSystemProgram extends string
         ? ReadonlyAccount<TAccountSystemProgram>
-        : TAccountSystemProgram
+        : TAccountSystemProgram,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -181,7 +183,8 @@ export function initializeInstruction<
     | IAccountMeta<string> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountSystemProgram extends
     | string
-    | IAccountMeta<string> = '11111111111111111111111111111111'
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     candyMachine: TAccountCandyMachine extends string
@@ -219,7 +222,8 @@ export function initializeInstruction<
       : TAccountSystemProgram;
   },
   args: InitializeInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -257,6 +261,7 @@ export function initializeInstruction<
         },
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getInitializeInstructionDataEncoder().encode(args),
     programAddress,
@@ -272,7 +277,8 @@ export function initializeInstruction<
     TAccountCollectionUpdateAuthority,
     TAccountCollectionAuthorityRecord,
     TAccountTokenMetadataProgram,
-    TAccountSystemProgram
+    TAccountSystemProgram,
+    TRemainingAccounts
   >;
 }
 

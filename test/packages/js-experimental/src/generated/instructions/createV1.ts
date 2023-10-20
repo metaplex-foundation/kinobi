@@ -75,7 +75,8 @@ export type CreateV1Instruction<
     | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
   TAccountSplTokenProgram extends
     | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -106,7 +107,8 @@ export type CreateV1Instruction<
         : TAccountSysvarInstructions,
       TAccountSplTokenProgram extends string
         ? ReadonlyAccount<TAccountSplTokenProgram>
-        : TAccountSplTokenProgram
+        : TAccountSplTokenProgram,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -185,7 +187,8 @@ export function createV1Instruction<
     | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
   TAccountSplTokenProgram extends
     | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -217,7 +220,8 @@ export function createV1Instruction<
       : TAccountSplTokenProgram;
   },
   args: CreateV1InstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -258,6 +262,7 @@ export function createV1Instruction<
         },
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getCreateV1InstructionDataEncoder().encode(args),
     programAddress,
@@ -271,7 +276,8 @@ export function createV1Instruction<
     TAccountUpdateAuthority,
     TAccountSystemProgram,
     TAccountSysvarInstructions,
-    TAccountSplTokenProgram
+    TAccountSplTokenProgram,
+    TRemainingAccounts
   >;
 }
 

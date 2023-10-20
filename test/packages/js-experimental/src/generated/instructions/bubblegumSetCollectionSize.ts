@@ -55,7 +55,8 @@ export type BubblegumSetCollectionSizeInstruction<
   TAccountBubblegumSigner extends string | IAccountMeta<string> = string,
   TAccountCollectionAuthorityRecord extends
     | string
-    | IAccountMeta<string> = string
+    | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -74,7 +75,8 @@ export type BubblegumSetCollectionSizeInstruction<
         : TAccountBubblegumSigner,
       TAccountCollectionAuthorityRecord extends string
         ? ReadonlyAccount<TAccountCollectionAuthorityRecord>
-        : TAccountCollectionAuthorityRecord
+        : TAccountCollectionAuthorityRecord,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -131,7 +133,8 @@ export function bubblegumSetCollectionSizeInstruction<
   TAccountBubblegumSigner extends string | IAccountMeta<string> = string,
   TAccountCollectionAuthorityRecord extends
     | string
-    | IAccountMeta<string> = string
+    | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     collectionMetadata: TAccountCollectionMetadata extends string
@@ -151,7 +154,8 @@ export function bubblegumSetCollectionSizeInstruction<
       : TAccountCollectionAuthorityRecord;
   },
   args: BubblegumSetCollectionSizeInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -173,6 +177,7 @@ export function bubblegumSetCollectionSizeInstruction<
         },
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getBubblegumSetCollectionSizeInstructionDataEncoder().encode(args),
     programAddress,
@@ -182,7 +187,8 @@ export function bubblegumSetCollectionSizeInstruction<
     TAccountCollectionAuthority,
     TAccountCollectionMint,
     TAccountBubblegumSigner,
-    TAccountCollectionAuthorityRecord
+    TAccountCollectionAuthorityRecord,
+    TRemainingAccounts
   >;
 }
 

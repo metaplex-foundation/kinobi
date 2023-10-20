@@ -41,7 +41,8 @@ export type ConvertMasterEditionV1ToV2Instruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
   TAccountOneTimeAuth extends string | IAccountMeta<string> = string,
-  TAccountPrintingMint extends string | IAccountMeta<string> = string
+  TAccountPrintingMint extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -54,7 +55,8 @@ export type ConvertMasterEditionV1ToV2Instruction<
         : TAccountOneTimeAuth,
       TAccountPrintingMint extends string
         ? WritableAccount<TAccountPrintingMint>
-        : TAccountPrintingMint
+        : TAccountPrintingMint,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -95,7 +97,8 @@ export function convertMasterEditionV1ToV2Instruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
   TAccountOneTimeAuth extends string | IAccountMeta<string> = string,
-  TAccountPrintingMint extends string | IAccountMeta<string> = string
+  TAccountPrintingMint extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     masterEdition: TAccountMasterEdition extends string
@@ -108,13 +111,15 @@ export function convertMasterEditionV1ToV2Instruction<
       ? Base58EncodedAddress<TAccountPrintingMint>
       : TAccountPrintingMint;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.masterEdition, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.oneTimeAuth, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.printingMint, AccountRole.WRITABLE),
+      ...(remainingAccounts ?? []),
     ],
     data: getConvertMasterEditionV1ToV2InstructionDataEncoder().encode({}),
     programAddress,
@@ -122,7 +127,8 @@ export function convertMasterEditionV1ToV2Instruction<
     TProgram,
     TAccountMasterEdition,
     TAccountOneTimeAuth,
-    TAccountPrintingMint
+    TAccountPrintingMint,
+    TRemainingAccounts
   >;
 }
 

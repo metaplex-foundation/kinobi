@@ -48,7 +48,8 @@ export type RevokeCollectionAuthorityInstruction<
   TAccountDelegateAuthority extends string | IAccountMeta<string> = string,
   TAccountRevokeAuthority extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -65,7 +66,10 @@ export type RevokeCollectionAuthorityInstruction<
       TAccountMetadata extends string
         ? ReadonlyAccount<TAccountMetadata>
         : TAccountMetadata,
-      TAccountMint extends string ? ReadonlyAccount<TAccountMint> : TAccountMint
+      TAccountMint extends string
+        ? ReadonlyAccount<TAccountMint>
+        : TAccountMint,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -110,7 +114,8 @@ export function revokeCollectionAuthorityInstruction<
   TAccountDelegateAuthority extends string | IAccountMeta<string> = string,
   TAccountRevokeAuthority extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     collectionAuthorityRecord: TAccountCollectionAuthorityRecord extends string
@@ -129,7 +134,8 @@ export function revokeCollectionAuthorityInstruction<
       ? Base58EncodedAddress<TAccountMint>
       : TAccountMint;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -144,6 +150,7 @@ export function revokeCollectionAuthorityInstruction<
       ),
       accountMetaWithDefault(accounts.metadata, AccountRole.READONLY),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
+      ...(remainingAccounts ?? []),
     ],
     data: getRevokeCollectionAuthorityInstructionDataEncoder().encode({}),
     programAddress,
@@ -153,7 +160,8 @@ export function revokeCollectionAuthorityInstruction<
     TAccountDelegateAuthority,
     TAccountRevokeAuthority,
     TAccountMetadata,
-    TAccountMint
+    TAccountMint,
+    TRemainingAccounts
   >;
 }
 

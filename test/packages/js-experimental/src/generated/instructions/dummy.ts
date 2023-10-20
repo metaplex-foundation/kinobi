@@ -62,7 +62,8 @@ export type DummyInstruction<
     | IAccountMeta<string> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountDelegate extends string | IAccountMeta<string> = string,
   TAccountDelegateRecord extends string | IAccountMeta<string> = string,
-  TAccountTokenOrAtaProgram extends string | IAccountMeta<string> = string
+  TAccountTokenOrAtaProgram extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -94,7 +95,8 @@ export type DummyInstruction<
         : TAccountDelegateRecord,
       TAccountTokenOrAtaProgram extends string
         ? ReadonlyAccount<TAccountTokenOrAtaProgram>
-        : TAccountTokenOrAtaProgram
+        : TAccountTokenOrAtaProgram,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -150,7 +152,8 @@ export function dummyInstruction<
     | IAccountMeta<string> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountDelegate extends string | IAccountMeta<string> = string,
   TAccountDelegateRecord extends string | IAccountMeta<string> = string,
-  TAccountTokenOrAtaProgram extends string | IAccountMeta<string> = string
+  TAccountTokenOrAtaProgram extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     edition: TAccountEdition extends string
@@ -184,7 +187,8 @@ export function dummyInstruction<
       ? Base58EncodedAddress<TAccountTokenOrAtaProgram>
       : TAccountTokenOrAtaProgram;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -232,6 +236,7 @@ export function dummyInstruction<
         AccountRole.WRITABLE
       ),
       accountMetaWithDefault(accounts.tokenOrAtaProgram, AccountRole.READONLY),
+      ...(remainingAccounts ?? []),
     ],
     data: getDummyInstructionDataEncoder().encode({}),
     programAddress,
@@ -246,7 +251,8 @@ export function dummyInstruction<
     TAccountBar,
     TAccountDelegate,
     TAccountDelegateRecord,
-    TAccountTokenOrAtaProgram
+    TAccountTokenOrAtaProgram,
+    TRemainingAccounts
   >;
 }
 

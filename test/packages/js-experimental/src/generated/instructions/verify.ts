@@ -54,7 +54,8 @@ export type VerifyInstruction<
   TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
   TAccountAuthorizationRulesProgram extends
     | string
-    | IAccountMeta<string> = string
+    | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -73,7 +74,8 @@ export type VerifyInstruction<
         : TAccountAuthorizationRules,
       TAccountAuthorizationRulesProgram extends string
         ? ReadonlyAccount<TAccountAuthorizationRulesProgram>
-        : TAccountAuthorizationRulesProgram
+        : TAccountAuthorizationRulesProgram,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -125,7 +127,8 @@ export function verifyInstruction<
   TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
   TAccountAuthorizationRulesProgram extends
     | string
-    | IAccountMeta<string> = string
+    | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -145,7 +148,8 @@ export function verifyInstruction<
       : TAccountAuthorizationRulesProgram;
   },
   args: VerifyInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
@@ -171,6 +175,7 @@ export function verifyInstruction<
         },
         AccountRole.READONLY
       ),
+      ...(remainingAccounts ?? []),
     ],
     data: getVerifyInstructionDataEncoder().encode(args),
     programAddress,
@@ -180,7 +185,8 @@ export function verifyInstruction<
     TAccountCollectionAuthority,
     TAccountPayer,
     TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
+    TAccountAuthorizationRulesProgram,
+    TRemainingAccounts
   >;
 }
 

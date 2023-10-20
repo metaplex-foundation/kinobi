@@ -39,11 +39,17 @@ import {
 // Output.
 export type GetTokenDataSizeInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string | IAccountMeta<string> = string
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
-    [TAccountMint extends string ? ReadonlyAccount<TAccountMint> : TAccountMint]
+    [
+      TAccountMint extends string
+        ? ReadonlyAccount<TAccountMint>
+        : TAccountMint,
+      ...TRemainingAccounts
+    ]
   >;
 
 export type GetTokenDataSizeInstructionData = { discriminator: number };
@@ -79,20 +85,25 @@ export function getGetTokenDataSizeInstructionDataCodec(): Codec<
 
 export function getTokenDataSizeInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountMint extends string | IAccountMeta<string> = string
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     mint: TAccountMint extends string
       ? Base58EncodedAddress<TAccountMint>
       : TAccountMint;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
-    accounts: [accountMetaWithDefault(accounts.mint, AccountRole.READONLY)],
+    accounts: [
+      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
+      ...(remainingAccounts ?? []),
+    ],
     data: getGetTokenDataSizeInstructionDataEncoder().encode({}),
     programAddress,
-  } as GetTokenDataSizeInstruction<TProgram, TAccountMint>;
+  } as GetTokenDataSizeInstruction<TProgram, TAccountMint, TRemainingAccounts>;
 }
 
 // Input.
