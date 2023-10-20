@@ -16,6 +16,7 @@ export * from './instructionInputResolved';
 export * from './instructionInputType';
 export * from './instructionRemainingAccounts';
 export * from './instructionType';
+export * from './programErrors';
 export * from './type';
 export * from './typeCodec';
 export * from './typeDataEnumHelpers';

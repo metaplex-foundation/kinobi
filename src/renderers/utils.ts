@@ -4,6 +4,7 @@ import {
   camelCase,
   kebabCase,
   pascalCase,
+  screamingSnakeCase,
   snakeCase,
   titleCase,
 } from '../shared';
@@ -34,6 +35,7 @@ export const resolveTemplate = (
   env.addFilter('pascalCase', pascalCase);
   env.addFilter('camelCase', camelCase);
   env.addFilter('snakeCase', snakeCase);
+  env.addFilter('screamingSnakeCase', screamingSnakeCase);
   env.addFilter('kebabCase', kebabCase);
   env.addFilter('titleCase', titleCase);
   return env.render(file, context);

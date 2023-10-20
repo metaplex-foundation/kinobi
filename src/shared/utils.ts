@@ -42,6 +42,10 @@ export function snakeCase(str: string): string {
   return titleCase(str).split(' ').join('_').toLowerCase();
 }
 
+export function screamingSnakeCase(str: string): string {
+  return snakeCase(str).toUpperCase();
+}
+
 export function mainCase(str: string): string {
   return camelCase(str);
 }
