@@ -1,7 +1,8 @@
 // Remaining accounts.
 {% if remainingAccounts.kind === 'arg' %}
-  const remainingAccounts = resolvedArgs.{{ remainingAccounts.name | camelCase }}.map((value) => ({ value, isWritable: {{ "true" if remainingAccounts.isWritable else "false" }} }));
+  const remainingAccounts: IAccountMeta[] = resolvedArgs.{{ remainingAccounts.name | camelCase }}.map((address) => ({ address, role: {{ "AccountRole.WRITABLE" if remainingAccounts.isWritable else "AccountRole.READONLY" }} }));
 {% elif remainingAccounts.kind === 'resolver' %}
-  const remainingAccounts = {{ remainingAccounts.name | camelCase }}(context, resolvedAccounts, resolvedArgs, programId);
+  const remainingAccounts: IAccountMeta[] = await {{ remainingAccounts.name | camelCase }}(context, accounts, args, programAddress);
+{% else %}
+  const remainingAccounts: IAccountMeta[] = [];
 {% endif %}
-keys.push(...remainingAccounts);

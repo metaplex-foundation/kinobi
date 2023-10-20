@@ -11,12 +11,14 @@ export function getInstructionRemainingAccountsFragment(
   instructionNode: nodes.InstructionNode
 ): Fragment & { interfaces: ContextMap } {
   const { remainingAccounts } = instructionNode;
-  const remainingAccountsFragment = fragmentWithContextMap('');
-  if (!remainingAccounts) {
-    return remainingAccountsFragment;
-  }
+  const remainingAccountsFragment = fragmentWithContextMap('').addImports(
+    'solanaInstructions',
+    ['IAccountMeta']
+  );
 
-  if (remainingAccounts?.kind === 'resolver') {
+  if (remainingAccounts?.kind === 'arg') {
+    remainingAccountsFragment.addImports('solanaInstructions', ['AccountRole']);
+  } else if (remainingAccounts?.kind === 'resolver') {
     remainingAccountsFragment.addImports(
       remainingAccounts.importFrom,
       camelCase(remainingAccounts.name)
