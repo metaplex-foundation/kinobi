@@ -7,16 +7,27 @@
  */
 
 import { Base58EncodedAddress } from '@solana/addresses';
-import { Program, getProgramAddress } from '../shared';
+import {
+  MplTokenAuthRulesProgramError,
+  MplTokenAuthRulesProgramErrorCode,
+  getMplTokenAuthRulesProgramErrorFromCode,
+} from '../errors';
+import {
+  Context,
+  Program,
+  ProgramWithErrors,
+  getProgramAddress,
+} from '../shared';
 
 export const MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS =
   'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
 
-export type MplTokenAuthRulesProgram = Program<
-  'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  MplTokenAuthRulesProgramErrorCode,
-  MplTokenAuthRulesProgramError
->;
+export type MplTokenAuthRulesProgram =
+  Program<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'> &
+    ProgramWithErrors<
+      MplTokenAuthRulesProgramErrorCode,
+      MplTokenAuthRulesProgramError
+    >;
 
 export function createMplTokenAuthRulesProgram(): MplTokenAuthRulesProgram {
   return {
@@ -28,9 +39,9 @@ export function createMplTokenAuthRulesProgram(): MplTokenAuthRulesProgram {
   };
 }
 
-export function getMplTokenAuthRulesProgramAddress(
+export async function getMplTokenAuthRulesProgramAddress(
   context: Pick<Context, 'getProgramAddress'> = {}
-): Base58EncodedAddress {
+): Promise<Base58EncodedAddress> {
   return getProgramAddress(
     context,
     'mplTokenAuthRules',

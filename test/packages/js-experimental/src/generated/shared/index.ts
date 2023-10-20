@@ -341,12 +341,15 @@ export type FetchEncodedAccountsOptions = {
   abortSignal?: AbortSignal;
 };
 
-export type Program<
-  TAddress extends string = string,
+export type Program<TAddress extends string = string> = {
+  name: string;
+  address: Base58EncodedAddress<TAddress>;
+  getErrorFromCode?: (code: number, cause?: Error) => Error;
+};
+
+export type ProgramWithErrors<
   TErrorCode extends number = number,
   TError extends Error = Error
 > = {
-  name: string;
-  address: Base58EncodedAddress<TAddress>;
   getErrorFromCode: (code: TErrorCode, cause?: Error) => TError;
 };

@@ -7,16 +7,24 @@
  */
 
 import { Base58EncodedAddress } from '@solana/addresses';
-import { Program, getProgramAddress } from '../shared';
+import {
+  SplTokenProgramError,
+  SplTokenProgramErrorCode,
+  getSplTokenProgramErrorFromCode,
+} from '../errors';
+import {
+  Context,
+  Program,
+  ProgramWithErrors,
+  getProgramAddress,
+} from '../shared';
 
 export const SPL_TOKEN_PROGRAM_ADDRESS =
   'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
 
-export type SplTokenProgram = Program<
-  'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  SplTokenProgramErrorCode,
-  SplTokenProgramError
->;
+export type SplTokenProgram =
+  Program<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'> &
+    ProgramWithErrors<SplTokenProgramErrorCode, SplTokenProgramError>;
 
 export function createSplTokenProgram(): SplTokenProgram {
   return {
@@ -28,8 +36,8 @@ export function createSplTokenProgram(): SplTokenProgram {
   };
 }
 
-export function getSplTokenProgramAddress(
+export async function getSplTokenProgramAddress(
   context: Pick<Context, 'getProgramAddress'> = {}
-): Base58EncodedAddress {
+): Promise<Base58EncodedAddress> {
   return getProgramAddress(context, 'splToken', SPL_TOKEN_PROGRAM_ADDRESS);
 }

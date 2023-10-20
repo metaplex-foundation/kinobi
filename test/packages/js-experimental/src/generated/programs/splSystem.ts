@@ -7,29 +7,22 @@
  */
 
 import { Base58EncodedAddress } from '@solana/addresses';
-import { Program, getProgramAddress } from '../shared';
+import { Context, Program, getProgramAddress } from '../shared';
 
 export const SPL_SYSTEM_PROGRAM_ADDRESS =
   '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>;
 
-export type SplSystemProgram = Program<
-  '11111111111111111111111111111111',
-  SplSystemProgramErrorCode,
-  SplSystemProgramError
->;
+export type SplSystemProgram = Program<'11111111111111111111111111111111'>;
 
 export function createSplSystemProgram(): SplSystemProgram {
   return {
     name: 'splSystem',
     address: SPL_SYSTEM_PROGRAM_ADDRESS,
-    getErrorFromCode(code: SplSystemProgramErrorCode, cause?: Error) {
-      return getSplSystemProgramErrorFromCode(code, cause);
-    },
   };
 }
 
-export function getSplSystemProgramAddress(
+export async function getSplSystemProgramAddress(
   context: Pick<Context, 'getProgramAddress'> = {}
-): Base58EncodedAddress {
+): Promise<Base58EncodedAddress> {
   return getProgramAddress(context, 'splSystem', SPL_SYSTEM_PROGRAM_ADDRESS);
 }

@@ -8,13 +8,23 @@ export function getProgramFragment(programNode: nodes.ProgramNode): Fragment {
   ).toUpperCase()}_PROGRAM_ADDRESS`;
   const programErrorName = `${pascalCase(programNode.name)}ProgramError`;
 
-  return fragmentFromTemplate('program.njk', {
+  const programFragment = fragmentFromTemplate('program.njk', {
     program: programNode,
     programAddressConstant,
     programErrorName,
   })
     .addImports('solanaAddresses', ['Base58EncodedAddress'])
-    .addImports('shared', ['Program', 'getProgramAddress']);
+    .addImports('shared', ['Program', 'getProgramAddress', 'Context']);
 
-  // TODO: import {{ programErrorName }}Code and {{ programErrorName }} when program has errors.
+  if (programNode.errors.length > 0) {
+    programFragment
+      .addImports('shared', ['ProgramWithErrors'])
+      .addImports('generatedErrors', [
+        programErrorName,
+        `${programErrorName}Code`,
+        `get${programErrorName}FromCode`,
+      ]);
+  }
+
+  return programFragment;
 }

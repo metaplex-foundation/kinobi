@@ -7,16 +7,27 @@
  */
 
 import { Base58EncodedAddress } from '@solana/addresses';
-import { Program, getProgramAddress } from '../shared';
+import {
+  MplCandyMachineCoreProgramError,
+  MplCandyMachineCoreProgramErrorCode,
+  getMplCandyMachineCoreProgramErrorFromCode,
+} from '../errors';
+import {
+  Context,
+  Program,
+  ProgramWithErrors,
+  getProgramAddress,
+} from '../shared';
 
 export const MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS =
   'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
 
-export type MplCandyMachineCoreProgram = Program<
-  'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  MplCandyMachineCoreProgramErrorCode,
-  MplCandyMachineCoreProgramError
->;
+export type MplCandyMachineCoreProgram =
+  Program<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'> &
+    ProgramWithErrors<
+      MplCandyMachineCoreProgramErrorCode,
+      MplCandyMachineCoreProgramError
+    >;
 
 export function createMplCandyMachineCoreProgram(): MplCandyMachineCoreProgram {
   return {
@@ -28,9 +39,9 @@ export function createMplCandyMachineCoreProgram(): MplCandyMachineCoreProgram {
   };
 }
 
-export function getMplCandyMachineCoreProgramAddress(
+export async function getMplCandyMachineCoreProgramAddress(
   context: Pick<Context, 'getProgramAddress'> = {}
-): Base58EncodedAddress {
+): Promise<Base58EncodedAddress> {
   return getProgramAddress(
     context,
     'mplCandyMachineCore',

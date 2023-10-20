@@ -7,16 +7,27 @@
  */
 
 import { Base58EncodedAddress } from '@solana/addresses';
-import { Program, getProgramAddress } from '../shared';
+import {
+  MplTokenMetadataProgramError,
+  MplTokenMetadataProgramErrorCode,
+  getMplTokenMetadataProgramErrorFromCode,
+} from '../errors';
+import {
+  Context,
+  Program,
+  ProgramWithErrors,
+  getProgramAddress,
+} from '../shared';
 
 export const MPL_TOKEN_METADATA_PROGRAM_ADDRESS =
   'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
-export type MplTokenMetadataProgram = Program<
-  'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  MplTokenMetadataProgramErrorCode,
-  MplTokenMetadataProgramError
->;
+export type MplTokenMetadataProgram =
+  Program<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'> &
+    ProgramWithErrors<
+      MplTokenMetadataProgramErrorCode,
+      MplTokenMetadataProgramError
+    >;
 
 export function createMplTokenMetadataProgram(): MplTokenMetadataProgram {
   return {
@@ -28,9 +39,9 @@ export function createMplTokenMetadataProgram(): MplTokenMetadataProgram {
   };
 }
 
-export function getMplTokenMetadataProgramAddress(
+export async function getMplTokenMetadataProgramAddress(
   context: Pick<Context, 'getProgramAddress'> = {}
-): Base58EncodedAddress {
+): Promise<Base58EncodedAddress> {
   return getProgramAddress(
     context,
     'mplTokenMetadata',

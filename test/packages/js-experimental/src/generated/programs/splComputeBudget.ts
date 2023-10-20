@@ -7,30 +7,24 @@
  */
 
 import { Base58EncodedAddress } from '@solana/addresses';
-import { Program, getProgramAddress } from '../shared';
+import { Context, Program, getProgramAddress } from '../shared';
 
 export const SPL_COMPUTE_BUDGET_PROGRAM_ADDRESS =
   'ComputeBudget111111111111111111111111111111' as Base58EncodedAddress<'ComputeBudget111111111111111111111111111111'>;
 
-export type SplComputeBudgetProgram = Program<
-  'ComputeBudget111111111111111111111111111111',
-  SplComputeBudgetProgramErrorCode,
-  SplComputeBudgetProgramError
->;
+export type SplComputeBudgetProgram =
+  Program<'ComputeBudget111111111111111111111111111111'>;
 
 export function createSplComputeBudgetProgram(): SplComputeBudgetProgram {
   return {
     name: 'splComputeBudget',
     address: SPL_COMPUTE_BUDGET_PROGRAM_ADDRESS,
-    getErrorFromCode(code: SplComputeBudgetProgramErrorCode, cause?: Error) {
-      return getSplComputeBudgetProgramErrorFromCode(code, cause);
-    },
   };
 }
 
-export function getSplComputeBudgetProgramAddress(
+export async function getSplComputeBudgetProgramAddress(
   context: Pick<Context, 'getProgramAddress'> = {}
-): Base58EncodedAddress {
+): Promise<Base58EncodedAddress> {
   return getProgramAddress(
     context,
     'splComputeBudget',
