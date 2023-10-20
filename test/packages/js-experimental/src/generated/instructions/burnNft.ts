@@ -432,7 +432,7 @@ export async function burnNft<
   // Remaining accounts.
   // TODO
 
-  // Bytes Created On Chain.
+  // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
   return {

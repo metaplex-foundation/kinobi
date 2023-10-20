@@ -530,7 +530,7 @@ export async function createMasterEditionV3<
   // Remaining accounts.
   // TODO
 
-  // Bytes Created On Chain.
+  // Bytes created on chain.
   const bytesCreatedOnChain = getMasterEditionV2Size() + ACCOUNT_HEADER_SIZE;
 
   return {

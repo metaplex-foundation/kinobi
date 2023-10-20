@@ -1,0 +1,7 @@
+// Remaining accounts.
+{% if remainingAccounts.kind === 'arg' %}
+  const remainingAccounts = resolvedArgs.{{ remainingAccounts.name | camelCase }}.map((value) => ({ value, isWritable: {{ "true" if remainingAccounts.isWritable else "false" }} }));
+{% elif remainingAccounts.kind === 'resolver' %}
+  const remainingAccounts = {{ remainingAccounts.name | camelCase }}(context, resolvedAccounts, resolvedArgs, programId);
+{% endif %}
+keys.push(...remainingAccounts);

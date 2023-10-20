@@ -2,7 +2,12 @@ import * as nodes from '../../../nodes';
 import { camelCase } from '../../../shared';
 import { ResolvedInstructionInput, Visitor, visit } from '../../../visitors';
 import { ContextMap } from '../ContextMap';
-import { Fragment, mergeFragments } from './common';
+import {
+  Fragment,
+  fragment,
+  fragmentWithContextMap,
+  mergeFragments,
+} from './common';
 import { getInstructionInputDefaultFragment } from './instructionInputDefault';
 
 export function getInstructionInputResolvedFragment(
@@ -31,8 +36,13 @@ export function getInstructionInputResolvedFragment(
     ];
   });
 
-  const resolvedInputsFragment = mergeFragments(resolvedInputs, (renders) =>
-    renders.join('\n')
+  if (resolvedInputs.length === 0) {
+    return fragmentWithContextMap('');
+  }
+
+  const resolvedInputsFragment = mergeFragments(
+    [fragment('// Resolve default values.'), ...resolvedInputs],
+    (renders) => renders.join('\n')
   ) as Fragment & { interfaces: ContextMap };
   resolvedInputsFragment.interfaces = interfaces;
   return resolvedInputsFragment;

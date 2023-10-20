@@ -14,6 +14,7 @@ export * from './instructionFunctionLowLevel';
 export * from './instructionInputDefault';
 export * from './instructionInputResolved';
 export * from './instructionInputType';
+export * from './instructionRemainingAccounts';
 export * from './instructionType';
 export * from './type';
 export * from './typeCodec';

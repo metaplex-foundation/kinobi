@@ -545,7 +545,7 @@ export async function createMetadataAccount<
   // Remaining accounts.
   // TODO
 
-  // Bytes Created On Chain.
+  // Bytes created on chain.
   const bytesCreatedOnChain = getMetadataSize() + ACCOUNT_HEADER_SIZE;
 
   return {

@@ -1,4 +1,4 @@
-// Bytes Created On Chain.
+// Bytes created on chain.
 {% if bytes.kind === 'number' %}
   const bytesCreatedOnChain = {{ bytes.value }}{% if bytes.includeHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
 {% elif bytes.kind === 'arg' %}

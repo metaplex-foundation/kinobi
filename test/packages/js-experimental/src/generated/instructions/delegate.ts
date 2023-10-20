@@ -665,7 +665,7 @@ export async function delegate<
   // Remaining accounts.
   // TODO
 
-  // Bytes Created On Chain.
+  // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
   return {
