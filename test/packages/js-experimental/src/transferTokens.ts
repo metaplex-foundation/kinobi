@@ -49,7 +49,8 @@ export type TransferTokensInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountSource extends string | IAccountMeta<string> = string,
   TAccountDestination extends string | IAccountMeta<string> = string,
-  TAccountAuthority extends string | IAccountMeta<string> = string
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -62,7 +63,8 @@ export type TransferTokensInstruction<
         : TAccountDestination,
       TAccountAuthority extends string
         ? ReadonlySignerAccount<TAccountAuthority>
-        : TAccountAuthority
+        : TAccountAuthority,
+      ...TRemainingAccounts
     ]
   >;
 
@@ -75,14 +77,14 @@ export type TransferTokensInstructionDataArgs = { amount: number | bigint };
 
 export function getTransferTokensInstructionDataEncoder(): Encoder<TransferTokensInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<TransferTokensInstructionData>(
+    getStructEncoder<{ discriminator: number; amount: number | bigint }>(
       [
         ['discriminator', getU8Encoder()],
         ['amount', getU64Encoder()],
       ],
       { description: 'TransferTokensInstructionData' }
     ),
-    (value) => ({ ...value, discriminator: 3 } as TransferTokensInstructionData)
+    (value) => ({ ...value, discriminator: 3 })
   ) as Encoder<TransferTokensInstructionDataArgs>;
 }
 
@@ -110,7 +112,8 @@ export function transferTokensInstruction<
   TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountSource extends string | IAccountMeta<string> = string,
   TAccountDestination extends string | IAccountMeta<string> = string,
-  TAccountAuthority extends string | IAccountMeta<string> = string
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
 >(
   accounts: {
     source: TAccountSource extends string
@@ -124,13 +127,15 @@ export function transferTokensInstruction<
       : TAccountAuthority;
   },
   args: TransferTokensInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>
+  programAddress: Base58EncodedAddress<TProgram> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
 ) {
   return {
     accounts: [
       accountMetaWithDefault(accounts.source, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
+      ...(remainingAccounts ?? []),
     ],
     data: getTransferTokensInstructionDataEncoder().encode(args),
     programAddress,
@@ -138,7 +143,8 @@ export function transferTokensInstruction<
     TProgram,
     TAccountSource,
     TAccountDestination,
-    TAccountAuthority
+    TAccountAuthority,
+    TRemainingAccounts
   >;
 }
 
@@ -156,10 +162,10 @@ export type TransferTokensInput<
 
 export async function transferTokens<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountDestination extends string = string,
-  TAccountAuthority extends string = string
+  TAccountSource extends string,
+  TAccountDestination extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
@@ -178,10 +184,10 @@ export async function transferTokens<
   >
 ): Promise<TReturn>;
 export async function transferTokens<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountDestination extends string = string,
-  TAccountAuthority extends string = string
+  TAccountSource extends string,
+  TAccountDestination extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: TransferTokensInput<
@@ -200,10 +206,10 @@ export async function transferTokens<
   >
 >;
 export async function transferTokens<
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountDestination extends string = string,
-  TAccountAuthority extends string = string
+  TAccountSource extends string,
+  TAccountDestination extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   input: TransferTokensInput<
     TAccountSource,
@@ -222,23 +228,15 @@ export async function transferTokens<
 >;
 export async function transferTokens<
   TReturn,
-  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSource extends string = string,
-  TAccountDestination extends string = string,
-  TAccountAuthority extends string = string
+  TAccountSource extends string,
+  TAccountDestination extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          TransferTokensInstruction<
-            TProgram,
-            TAccountSource,
-            TAccountDestination,
-            TAccountAuthority
-          >,
-          TReturn
-        >)
+        CustomGeneratedInstruction<IInstruction, TReturn>)
     | TransferTokensInput<
         TAccountSource,
         TAccountDestination,
@@ -249,30 +247,12 @@ export async function transferTokens<
     TAccountDestination,
     TAccountAuthority
   >
-): Promise<
-  | TReturn
-  | WrappedInstruction<
-      TransferTokensInstruction<
-        TProgram,
-        TAccountSource,
-        TAccountDestination,
-        TAccountAuthority
-      >
-    >
-> {
+): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawInput) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<
-          TransferTokensInstruction<
-            TProgram,
-            TAccountSource,
-            TAccountDestination,
-            TAccountAuthority
-          >,
-          TReturn
-        >);
+        CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as TransferTokensInput<
@@ -294,7 +274,14 @@ export async function transferTokens<
   ) as Base58EncodedAddress<TProgram>;
 
   // Original accounts.
-  type AccountMetas = Parameters<typeof transferTokensInstruction>[0];
+  type AccountMetas = Parameters<
+    typeof transferTokensInstruction<
+      TProgram,
+      TAccountSource,
+      TAccountDestination,
+      TAccountAuthority
+    >
+  >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     source: { value: input.source ?? null, isWritable: true },
     destination: { value: input.destination ?? null, isWritable: true },
@@ -302,9 +289,7 @@ export async function transferTokens<
   };
 
   // Original args.
-  const args: TransferTokensInstructionDataArgs = {
-    amount: input.amount,
-  };
+  const args = { ...input };
 
   // Resolve default values.
   if (!accounts.source.value) {
@@ -319,23 +304,23 @@ export async function transferTokens<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
-  // TODO
+  const bytesCreatedOnChain = 0;
 
   return {
     instruction: transferTokensInstruction(
-      accountMetas as AccountMetas,
-      args,
-      programAddress
-    ) as TransferTokensInstruction<
-      TProgram,
-      TAccountSource,
-      TAccountDestination,
-      TAccountAuthority
-    >,
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as TransferTokensInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     signers,
-    bytesCreatedOnChain: 0,
+    bytesCreatedOnChain,
   };
 }
+
+// ====================================
+// ============   MANUAL   ============
+// ====================================

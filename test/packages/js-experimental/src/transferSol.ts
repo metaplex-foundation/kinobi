@@ -237,7 +237,7 @@ export async function transferSol<
   );
 
   // Remaining accounts.
-  // TODO
+  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
@@ -246,12 +246,17 @@ export async function transferSol<
     instruction: transferSolInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as TransferSolInstructionDataArgs,
-      programAddress
+      programAddress,
+      remainingAccounts
     ),
     signers,
     bytesCreatedOnChain,
   };
 }
+
+// ====================================
+// ============   MANUAL   ============
+// ====================================
 
 const sourceAddress = 'source' as Base58EncodedAddress<'source'>;
 const destinationAddress = 'destination' as Base58EncodedAddress<'destination'>;
@@ -268,9 +273,9 @@ export const foo = transferSolInstruction(
   { amount: 100 }
 );
 
-export const getGeneratedInstruction = async <T extends IInstruction>(
+export const getGeneratedInstruction = <T extends IInstruction>(
   ix: WrappedInstruction<T>
-): Promise<{ potato: T; banana: number }> => ({
+): { potato: T; banana: number } => ({
   potato: ix.instruction,
   banana: ix.bytesCreatedOnChain,
 });
