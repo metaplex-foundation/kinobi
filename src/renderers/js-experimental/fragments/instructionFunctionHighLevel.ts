@@ -1,6 +1,6 @@
 import * as nodes from '../../../nodes';
 import { camelCase, pascalCase } from '../../../shared';
-import { ResolvedInstructionInput, Visitor } from '../../../visitors';
+import { ResolvedInstructionInput } from '../../../visitors';
 import { ContextMap } from '../ContextMap';
 import { TypeManifest } from '../TypeManifest';
 import {
@@ -18,7 +18,7 @@ export function getInstructionFunctionHighLevelFragment(
   programNode: nodes.ProgramNode,
   renamedArgs: Map<string, string>,
   dataArgsManifest: TypeManifest,
-  resolvedInstructionInputVisitor: Visitor<ResolvedInstructionInput[]>
+  resolvedInputs: ResolvedInstructionInput[]
 ): Fragment {
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasDataArgs =
@@ -53,7 +53,7 @@ export function getInstructionFunctionHighLevelFragment(
 
   const resolvedInputsFragment = getInstructionInputResolvedFragment(
     instructionNode,
-    resolvedInstructionInputVisitor
+    resolvedInputs
   );
   const remainingAccountsFragment =
     getInstructionRemainingAccountsFragment(instructionNode);

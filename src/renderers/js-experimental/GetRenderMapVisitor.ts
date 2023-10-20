@@ -14,7 +14,6 @@ import {
 } from '../../visitors';
 import { RenderMap } from '../RenderMap';
 import { resolveTemplate } from '../utils';
-import { ContextMap } from './ContextMap';
 import {
   getAccountFetchHelpersFragment,
   getAccountPdaHelpersFragment,
@@ -24,7 +23,6 @@ import {
   getInstructionExtraArgsFragment,
   getInstructionFunctionHighLevelFragment,
   getInstructionFunctionLowLevelFragment,
-  getInstructionInputDefaultFragment,
   getInstructionInputTypeFragment,
   getInstructionTypeFragment,
   getTypeDataEnumHelpersFragment,
@@ -284,7 +282,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         this.program,
         renamedArgs,
         dataArgsManifest,
-        this.resolvedInstructionInputVisitor
+        resolvedInputs
       );
 
     // Imports and interfaces.
@@ -297,173 +295,6 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       instructionFunctionHighLevelFragment
     );
 
-    // TODO: Remove once these are imported in the fragments.
-    const oldImports = new ImportMap()
-      .add('umi', ['Context', 'TransactionBuilder', 'transactionBuilder'])
-      .add('shared', [
-        'ResolvedAccount',
-        'ResolvedAccountsWithIndices',
-        'getAccountMetasAndSigners',
-      ]);
-    const interfaces = new ContextMap().add(['getProgramAddress']);
-
-    // Instruction helpers.
-    const hasAccounts = instruction.accounts.length > 0;
-    const hasData =
-      !!instruction.dataArgs.link ||
-      instruction.dataArgs.struct.fields.length > 0;
-    const hasDataArgs =
-      !!instruction.dataArgs.link ||
-      instruction.dataArgs.struct.fields.filter(
-        (field) => field.defaultsTo?.strategy !== 'omitted'
-      ).length > 0;
-    const hasExtraArgs =
-      !!instruction.extraArgs.link ||
-      instruction.extraArgs.struct.fields.filter(
-        (field) => field.defaultsTo?.strategy !== 'omitted'
-      ).length > 0;
-    const hasAnyArgs = hasDataArgs || hasExtraArgs;
-    const hasArgDefaults = Object.keys(instruction.argDefaults).length > 0;
-    const hasArgResolvers = Object.values(instruction.argDefaults).some(
-      ({ kind }) => kind === 'resolver'
-    );
-    const hasAccountResolvers = instruction.accounts.some(
-      ({ defaultsTo }) => defaultsTo?.kind === 'resolver'
-    );
-    const hasByteResolver =
-      instruction.bytesCreatedOnChain?.kind === 'resolver';
-    const hasRemainingAccountsResolver =
-      instruction.remainingAccounts?.kind === 'resolver';
-    const hasResolvers =
-      hasArgResolvers ||
-      hasAccountResolvers ||
-      hasByteResolver ||
-      hasRemainingAccountsResolver;
-    const hasResolvedArgs = hasDataArgs || hasArgDefaults || hasResolvers;
-    if (hasResolvers) {
-      interfaces.add(['getProgramAddress', 'getProgramDerivedAddress']);
-    }
-
-    // canMergeAccountsAndArgs
-    const linkedDataArgs = !!instruction.dataArgs.link;
-    const linkedExtraArgs = !!instruction.extraArgs.link;
-    let canMergeAccountsAndArgs = false;
-    if (!linkedDataArgs && !linkedExtraArgs) {
-      const accountsAndArgsConflicts =
-        this.getMergeConflictsForInstructionAccountsAndArgs(instruction);
-      if (accountsAndArgsConflicts.length > 0) {
-        logWarn(
-          `[JavaScriptExperimental] Accounts and args of instruction [${instruction.name}] have the following ` +
-            `conflicting attributes [${accountsAndArgsConflicts.join(
-              ', '
-            )}]. ` +
-            `Thus, they could not be merged into a single input object. ` +
-            'You may want to rename the conflicting attributes.'
-        );
-      }
-      canMergeAccountsAndArgs = accountsAndArgsConflicts.length === 0;
-    }
-
-    // Resolved inputs.
-    let argObject = canMergeAccountsAndArgs ? 'input' : 'args';
-    argObject = hasResolvedArgs ? 'resolvedArgs' : argObject;
-    const oldResolvedInputs = visit(
-      instruction,
-      this.resolvedInstructionInputVisitor
-    ).map((input: ResolvedInstructionInput) => {
-      const renderedInput = getInstructionInputDefaultFragment(
-        input,
-        instruction.optionalAccountStrategy,
-        'resolvedAccounts',
-        argObject
-      );
-      oldImports.mergeWith(renderedInput.imports);
-      interfaces.mergeWith(renderedInput.interfaces);
-      return { ...input, render: renderedInput.render };
-    });
-    const resolvedInputsWithDefaults = oldResolvedInputs.filter(
-      (input) => input.defaultsTo !== undefined && input.render !== ''
-    );
-    const argsWithDefaults = resolvedInputsWithDefaults
-      .filter((input) => input.kind === 'arg')
-      .map((input) => input.name);
-
-    // Accounts.
-    const accounts = instruction.accounts.map((account) => {
-      const hasDefaultValue = !!account.defaultsTo;
-      const resolvedAccount = oldResolvedInputs.find(
-        (input) => input.kind === 'account' && input.name === account.name
-      ) as ResolvedInstructionAccount;
-      return {
-        ...resolvedAccount,
-        type: this.getInstructionAccountType(resolvedAccount),
-        optionalSign: hasDefaultValue || account.isOptional ? '?' : '',
-        hasDefaultValue,
-      };
-    });
-    oldImports.mergeWith(this.getInstructionAccountImports(accounts));
-
-    // Data Args.
-    const dataArgManifest = visit(
-      instruction.dataArgs,
-      this.typeManifestVisitor
-    );
-    if (linkedDataArgs || hasData) {
-      oldImports.mergeWith(
-        dataArgManifest.looseType,
-        dataArgManifest.encoder,
-        dataArgManifest.decoder
-      );
-    }
-    if (!linkedDataArgs) {
-      oldImports.mergeWith(dataArgManifest.strictType);
-    }
-    if (!linkedDataArgs && hasData) {
-      oldImports.add('umiSerializers', ['Serializer']);
-    }
-
-    // Extra args.
-    const extraArgManifest = visit(
-      instruction.extraArgs,
-      this.typeManifestVisitor
-    );
-    oldImports.mergeWith(extraArgManifest.looseType);
-
-    // Arg defaults.
-    Object.values(instruction.argDefaults).forEach((argDefault) => {
-      if (argDefault.kind === 'resolver') {
-        oldImports.add(argDefault.importFrom, camelCase(argDefault.name));
-      }
-    });
-    if (argsWithDefaults.length > 0) {
-      oldImports.add('shared', ['PickPartial']);
-    }
-
-    // Bytes created on chain.
-    const bytes = instruction.bytesCreatedOnChain;
-    if (bytes && 'includeHeader' in bytes && bytes.includeHeader) {
-      oldImports.add('umi', 'ACCOUNT_HEADER_SIZE');
-    }
-    if (bytes?.kind === 'account') {
-      const accountName = pascalCase(bytes.name);
-      const importFrom =
-        bytes.importFrom === 'generated'
-          ? 'generatedAccounts'
-          : bytes.importFrom;
-      oldImports.add(importFrom, `get${accountName}Size`);
-    } else if (bytes?.kind === 'resolver') {
-      oldImports.add(bytes.importFrom, camelCase(bytes.name));
-    }
-
-    // Remaining accounts.
-    const { remainingAccounts } = instruction;
-    if (remainingAccounts?.kind === 'resolver') {
-      oldImports.add(
-        remainingAccounts.importFrom,
-        camelCase(remainingAccounts.name)
-      );
-    }
-
     return new RenderMap().add(
       `instructions/${camelCase(instruction.name)}.ts`,
       this.render('instructionsPage.njk', {
@@ -475,28 +306,6 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         instructionFunctionLowLevelFragment,
         instructionInputTypeFragment,
         instructionFunctionHighLevelFragment,
-
-        interfaces: interfaces.toString(),
-        program: this.program,
-        resolvedInputs: oldResolvedInputs,
-        resolvedInputsWithDefaults,
-        argsWithDefaults,
-        accounts,
-        dataArgManifest,
-        extraArgManifest,
-        canMergeAccountsAndArgs,
-        hasAccounts,
-        hasData,
-        hasDataArgs,
-        hasExtraArgs,
-        hasAnyArgs,
-        hasArgDefaults,
-        hasArgResolvers,
-        hasAccountResolvers,
-        hasByteResolver,
-        hasRemainingAccountsResolver,
-        hasResolvers,
-        hasResolvedArgs,
       })
     );
   }
