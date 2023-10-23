@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.16.2
+
+### Patch Changes
+
+- [#90](https://github.com/metaplex-foundation/kinobi/pull/90) [`0e1d0cb`](https://github.com/metaplex-foundation/kinobi/commit/0e1d0cbb303d6f55219609e952611bec4cd90115) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add JavaScriptExperimental renderer
+
 ## 0.16.1
 
 ### Patch Changes
