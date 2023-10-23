@@ -20,7 +20,13 @@ import {
   upgradeRoleToSigner,
 } from '@solana/instructions';
 import { Ed25519Signature } from '@solana/keys';
-import { Transaction } from '@solana/transactions';
+import {
+  BaseTransaction,
+  IDurableNonceTransaction,
+  ITransactionWithBlockhashLifetime,
+  ITransactionWithFeePayer,
+  ITransactionWithSignatures,
+} from '@solana/transactions';
 
 /**
  * Asserts that the given value is not null or undefined.
@@ -48,7 +54,7 @@ export function expectAddress<T extends string = string>(
   if (!value) {
     throw new Error('Expected a Base58EncodedAddress.');
   }
-  if ('address' in value) {
+  if (typeof value === 'object' && 'address' in value) {
     return value.address;
   }
   if (Array.isArray(value)) {
@@ -175,21 +181,25 @@ export type WrappedInstruction<TInstruction extends IInstruction> = {
   bytesCreatedOnChain: number;
 };
 
+type CompilableTransaction = BaseTransaction &
+  ITransactionWithFeePayer &
+  (ITransactionWithBlockhashLifetime | IDurableNonceTransaction);
+
 export type Signer<TAddress extends string = string> =
   | TransactionSigner<TAddress>
   | TransactionSenderSigner<TAddress>;
 
 export type TransactionSigner<TAddress extends string = string> = {
   address: Base58EncodedAddress<TAddress>;
-  signTransaction: <T extends Transaction = Transaction>(
+  signTransaction: <T extends CompilableTransaction>(
     transactions: T[]
-  ) => Promise<T[]>;
+  ) => Promise<(T & ITransactionWithSignatures)[]>;
 };
 
 export type TransactionSenderSigner<TAddress extends string = string> = {
   address: Base58EncodedAddress<TAddress>;
   signAndSendTransaction: (
-    transactions: Transaction[]
+    transactions: CompilableTransaction[]
   ) => Promise<Ed25519Signature[]>;
 };
 
@@ -246,7 +256,7 @@ export async function getProgramAddress<TAddress extends string = string>(
     : Base58EncodedAddress
 > {
   return context.getProgramAddress
-    ? await context.getProgramAddress({
+    ? context.getProgramAddress({
         name,
         address: address as Base58EncodedAddress<TAddress>,
       })
@@ -259,11 +269,11 @@ export async function getProgramDerivedAddress(
   seeds: Uint8Array[]
 ): Promise<ProgramDerivedAddress> {
   return context.getProgramDerivedAddress
-    ? await context.getProgramDerivedAddress(
+    ? context.getProgramDerivedAddress(
         programAddress as Base58EncodedAddress,
         seeds
       )
-    : await web3JsGetProgramDerivedAddress({
+    : web3JsGetProgramDerivedAddress({
         programAddress: programAddress as Base58EncodedAddress,
         seeds,
       });
@@ -275,7 +285,7 @@ export type AccountHeader = {
   programAddress: Base58EncodedAddress;
   executable: boolean;
   lamports: bigint;
-  rentEpoch?: number;
+  rentEpoch?: bigint;
 };
 
 export type Account<

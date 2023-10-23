@@ -109,9 +109,11 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
       : '';
     childManifest.encoder
       .mapRender((r) => `getArrayEncoder(${r + encoderOptions})`)
+      .mergeImportsWith(sizeManifest.encoder)
       .addImports('solanaCodecsDataStructures', 'getArrayEncoder');
     childManifest.decoder
       .mapRender((r) => `getArrayDecoder(${r + decoderOptions})`)
+      .mergeImportsWith(sizeManifest.decoder)
       .addImports('solanaCodecsDataStructures', 'getArrayDecoder');
     return childManifest;
   }
