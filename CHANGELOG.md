@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.16.3
+
+### Patch Changes
+
+- [`525a983`](https://github.com/metaplex-foundation/kinobi/commit/525a9838d5a1646656010ee58e2fe0d4fe0ab3cb) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix JavaScriptExperimental renderer bugs
+
 ## 0.16.2
 
 ### Patch Changes
