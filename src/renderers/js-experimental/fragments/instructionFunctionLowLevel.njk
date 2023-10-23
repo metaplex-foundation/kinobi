@@ -1,0 +1,49 @@
+export function {{ instruction.name | camelCase }}Instruction<
+  TProgram extends string = "{{ program.publicKey }}",
+  {% if hasAccounts %}
+    {{ accountTypeParams }},
+  {% endif %}
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+>(
+  {% if hasAccounts %}
+    accounts: {
+    {% for account in accounts %}
+      {{ account.name | camelCase }}{{ "?" if account.isOptionalOrHasLowLevelDefaultValues }}: {{ account.typeParam }} extends string ? Base58EncodedAddress<{{ account.typeParam }}> : {{ account.typeParam }};
+    {% endfor %}
+    },
+  {% endif %}
+  {% if hasArgs %}
+    args: {{ argsType }},
+  {% endif %}
+  programAddress: Base58EncodedAddress<TProgram> = "{{ program.publicKey }}" as Base58EncodedAddress<TProgram>,
+  remainingAccounts?: TRemainingAccounts
+) {
+  return {
+    {% if hasAccounts %}
+      accounts: [
+        {% for account in accounts %}
+          accountMetaWithDefault(accounts.{{ account.name | camelCase }}{{ " ?? " + account.defaultValue if account.defaultValue }}, {{ account.defaultRole }}),
+        {% endfor %}
+        ...(remainingAccounts ?? []),
+      ]
+      {%- if hasLegacyOptionalAccounts -%}
+        .filter(<T>(x: T | undefined): x is T => x !== undefined)
+      {% endif %}
+      ,
+    {% else %}
+      accounts: remainingAccounts ?? [],
+    {% endif %}
+    {% if hasData and hasArgs %}
+      data: {{ encoderFunction }}.encode(args),
+    {% elif hasData %}
+      data: {{ encoderFunction }}.encode({}),
+    {% endif %}
+    programAddress,
+  } as {{ instruction.name | pascalCase }}Instruction<
+    TProgram,
+    {% for account in accounts %}
+      {{ account.typeParam }},
+    {% endfor %}
+    TRemainingAccounts,
+  >;
+}

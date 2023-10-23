@@ -250,6 +250,12 @@ kinobiReconstructed.accept(
 );
 
 kinobiReconstructed.accept(
+  new k.RenderJavaScriptExperimentalVisitor(
+    './test/packages/js-experimental/src/generated'
+  )
+);
+
+kinobiReconstructed.accept(
   new k.RenderRustVisitor('./test/packages/rust/src/generated', {
     crateFolder: './test/packages/rust',
     formatCode: true,

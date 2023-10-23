@@ -1,0 +1,25 @@
+{% import "templates/macros.njk" as macros %}
+
+// Input.
+export type {{ instruction.name | pascalCase }}Input
+{%- if accounts.length > 0 -%}
+<
+  {%- for account in accounts -%}
+    {{ account.typeParam }} extends string,
+  {% endfor %}
+>
+{% endif %}
+= {
+  {% for account in accounts %}
+    {% if account.docs.length > 0 %}
+      {{ macros.docblock(account.docs) }}
+    {% endif %}
+    {{ account.name | camelCase }}{{ account.optionalSign }}: {{ account.type }},
+  {% endfor %}
+  {% for dataArg in dataArgs %}
+    {{ dataArg.renamedName | camelCase }}{{ dataArg.optionalSign }}: {{ dataArgsType }}["{{ dataArg.name | camelCase }}"],
+  {% endfor %}
+  {% for extraArg in extraArgs %}
+    {{ extraArg.renamedName | camelCase }}{{ extraArg.optionalSign }}: {{ extraArgsType }}["{{ extraArg.name | camelCase }}"],
+  {% endfor %}
+}

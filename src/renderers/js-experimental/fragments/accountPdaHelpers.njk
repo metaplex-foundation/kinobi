@@ -1,0 +1,50 @@
+{% import "templates/macros.njk" as macros %}
+
+export async function find{{ pascalCaseName }}Pda(
+  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
+  {% if hasVariableSeeds %}
+    seeds: {
+      {% for seed in seeds %}
+        {% if seed.kind === 'variable' %}
+          {{ macros.docblock(seed.docs) }}
+          {{ seed.name | camelCase }}: {{ seed.typeManifest.looseType.render }};
+        {% endif %}
+      {% endfor %}
+    }
+  {% endif %}
+): Promise<ProgramDerivedAddress> {
+  const programAddress = await getProgramAddress(context, '{{ program.name | camelCase }}', '{{ program.publicKey }}');
+  return getProgramDerivedAddress(context, programAddress, [
+    {% for seed in seeds %}
+      {% if seed.kind === 'programId' %}
+        getAddressEncoder().encode(programAddress),
+      {% elif seed.kind === 'constant' %}
+        {{ seed.typeManifest.encoder.render }}.encode({{ seed.value.render }}),
+      {% else %}
+        {{ seed.typeManifest.encoder.render }}.encode(seeds.{{ seed.name | camelCase }}),
+      {% endif %}
+    {% endfor %}
+  ]);
+}
+
+export async function fetch{{ pascalCaseName }}FromSeeds(
+  context: Pick<Context, 'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'>,
+  {% if hasVariableSeeds %}
+    seeds: Parameters<typeof find{{ pascalCaseName }}Pda>[1],
+  {% endif %}
+  options?: FetchEncodedAccountOptions,
+): Promise<{{ pascalCaseName }}> {
+  const [address] = await find{{ pascalCaseName }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %});
+  return fetch{{ pascalCaseName }}(context, address, options);
+}
+
+export async function safeFetch{{ pascalCaseName }}FromSeeds(
+  context: Pick<Context, 'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'>,
+  {% if hasVariableSeeds %}
+    seeds: Parameters<typeof find{{ pascalCaseName }}Pda>[1],
+  {% endif %}
+  options?: FetchEncodedAccountOptions,
+): Promise<{{ pascalCaseName }} | null> {
+  const [address] = await find{{ pascalCaseName }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %});
+  return safeFetch{{ pascalCaseName }}(context, address, options);
+}

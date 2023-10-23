@@ -1,0 +1,60 @@
+export async function {{ functionName }}<TReturn, {{ typeParams }}>(context: {{ context }} & {{ customGeneratedInstruction }}, input: {{ inputType }}): Promise<TReturn>;
+export async function {{ functionName }}<{{ typeParams }}>(context: {{ context }}, input: {{ inputType }}): Promise<WrappedInstruction<{{ instructionType }}>>;
+export async function {{ functionName }}<{{ typeParams }}>(input: {{ inputType }}): Promise<WrappedInstruction<{{ instructionType }}>>;
+export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: {{ context }} | {{ context }} & CustomGeneratedInstruction<IInstruction, TReturn> | {{ inputType }}, rawInput?: {{ inputType }}): Promise<TReturn | WrappedInstruction<IInstruction>> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawInput) as {{ context }} | {{ context }} & CustomGeneratedInstruction<IInstruction, TReturn>;
+  const input = (rawInput === undefined ? rawContext : rawInput) as {{ inputType }};
+
+  // Program address.
+  const defaultProgramAddress = "{{ program.publicKey }}" as Base58EncodedAddress<"{{ program.publicKey }}">;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({ name: "{{ program.name }}", address: defaultProgramAddress })
+      : defaultProgramAddress
+  ) as Base58EncodedAddress<TProgram>;
+
+  {% if hasAccounts %}
+    // Original accounts.
+    type AccountMetas = Parameters<typeof {{ lowLevelFunctionName }}<
+      TProgram,
+      {% for account in instruction.accounts %}
+        TAccount{{ account.name | pascalCase }},
+      {% endfor %}
+    >>[0];
+    const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+      {% for account in instruction.accounts %}
+        {{ account.name | camelCase }}: { value: input.{{ account.name | camelCase }} ?? null, isWritable: {{ "true" if account.isWritable else "false" }} },
+      {% endfor %}
+    };
+  {% endif %}
+
+  {% if hasAnyArgs %}
+    // Original args.
+    const args = { ...input, {{ renamedArgs }} };
+  {% endif %}
+
+  {{ resolvedInputs }}
+
+  {% if hasAccounts %}
+    // Get account metas and signers.
+    const [accountMetas, signers] = getAccountMetasAndSigners(accounts, 'programId', programAddress);
+  {% endif %}
+
+  {{ remainingAccounts }}
+  {{ bytesCreatedOnChain }}
+
+  return {
+    instruction: {{ lowLevelFunctionName }}(
+      {%- if hasAccounts -%}
+        accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      {% endif %}
+      {%- if hasDataArgs -%}
+        args as {{ argsType }},
+      {% endif %}
+      programAddress,
+      remainingAccounts),
+    {{ 'signers' if hasAccounts else 'signers: []'}},
+    bytesCreatedOnChain,
+  };
+}

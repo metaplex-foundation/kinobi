@@ -1,0 +1,8 @@
+// Remaining accounts.
+{% if remainingAccounts.kind === 'arg' %}
+  const remainingAccounts: IAccountMeta[] = args.{{ remainingAccounts.name | camelCase }}.map((address) => ({ address, role: {{ "AccountRole.WRITABLE" if remainingAccounts.isWritable else "AccountRole.READONLY" }} }));
+{% elif remainingAccounts.kind === 'resolver' %}
+  const remainingAccounts: IAccountMeta[] = await {{ remainingAccounts.name | camelCase }}(context, accounts, args, programAddress);
+{% else %}
+  const remainingAccounts: IAccountMeta[] = [];
+{% endif %}

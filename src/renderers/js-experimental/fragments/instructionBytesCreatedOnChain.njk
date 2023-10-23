@@ -1,0 +1,12 @@
+// Bytes created on chain.
+{% if bytes.kind === 'number' %}
+  const bytesCreatedOnChain = {{ bytes.value }}{% if bytes.includeHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
+{% elif bytes.kind === 'arg' %}
+  const bytesCreatedOnChain = Number({{ argsObj }}.{{ bytes.name }}){% if bytes.includeHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
+{% elif bytes.kind === 'account' %}
+  const bytesCreatedOnChain = get{{ bytes.name | pascalCase }}Size(){% if bytes.includeHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
+{% elif bytes.kind === 'resolver' %}
+  const bytesCreatedOnChain = await {{ bytes.name | camelCase }}(context, resolvedAccounts, resolvedArgs, programId);
+{% else %}
+  const bytesCreatedOnChain = 0;
+{% endif %}
