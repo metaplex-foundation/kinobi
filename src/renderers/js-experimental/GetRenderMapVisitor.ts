@@ -138,6 +138,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
     return map
       .add('index.ts', this.render('rootIndex.njk', ctx))
+      .add('global.d.ts', this.render('globalTypesPage.njk', ctx))
       .mergeWith(...root.programs.map((program) => visit(program, this)));
   }
 

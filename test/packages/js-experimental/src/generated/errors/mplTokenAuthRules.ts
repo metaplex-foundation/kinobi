@@ -39,69 +39,6 @@ export const enum MplTokenAuthRulesProgramErrorCode {
   BORSH_SERIALIZATION_ERROR = 0xe, // 14
 }
 
-const mplTokenAuthRulesProgramErrorCodeMap: Record<
-  MplTokenAuthRulesProgramErrorCode,
-  [string, string]
-> = {
-  [MplTokenAuthRulesProgramErrorCode.NUMERICAL_OVERFLOW]: [
-    'NumericalOverflow',
-    `Numerical Overflow`,
-  ],
-  [MplTokenAuthRulesProgramErrorCode.DATA_TYPE_MISMATCH]: [
-    'DataTypeMismatch',
-    `Data type mismatch`,
-  ],
-  [MplTokenAuthRulesProgramErrorCode.INCORRECT_OWNER]: [
-    'IncorrectOwner',
-    `Incorrect account owner`,
-  ],
-  [MplTokenAuthRulesProgramErrorCode.PAYLOAD_VEC_INDEX_ERROR]: [
-    'PayloadVecIndexError',
-    `Could not index into PayloadVec`,
-  ],
-  [MplTokenAuthRulesProgramErrorCode.DERIVED_KEY_INVALID]: [
-    'DerivedKeyInvalid',
-    `Derived key invalid`,
-  ],
-  [MplTokenAuthRulesProgramErrorCode.ADDITIONAL_SIGNER_CHECK_FAILED]: [
-    'AdditionalSignerCheckFailed',
-    `Additional Signer check failed`,
-  ],
-  [MplTokenAuthRulesProgramErrorCode.PUBKEY_MATCH_CHECK_FAILED]: [
-    'PubkeyMatchCheckFailed',
-    `Pubkey Match check failed`,
-  ],
-  [MplTokenAuthRulesProgramErrorCode.DERIVED_KEY_MATCH_CHECK_FAILED]: [
-    'DerivedKeyMatchCheckFailed',
-    `Derived Key Match check failed`,
-  ],
-  [MplTokenAuthRulesProgramErrorCode.PROGRAM_OWNED_CHECK_FAILED]: [
-    'ProgramOwnedCheckFailed',
-    `Program Owned check failed`,
-  ],
-  [MplTokenAuthRulesProgramErrorCode.AMOUNT_CHECK_FAILED]: [
-    'AmountCheckFailed',
-    `Amount checked failed`,
-  ],
-  [MplTokenAuthRulesProgramErrorCode.FREQUENCY_CHECK_FAILED]: [
-    'FrequencyCheckFailed',
-    `Frequency check failed`,
-  ],
-  [MplTokenAuthRulesProgramErrorCode.PUBKEY_TREE_MATCH_CHECK_FAILED]: [
-    'PubkeyTreeMatchCheckFailed',
-    `Pubkey Tree Match check failed`,
-  ],
-  [MplTokenAuthRulesProgramErrorCode.PAYER_IS_NOT_SIGNER]: [
-    'PayerIsNotSigner',
-    `Payer is not a signer`,
-  ],
-  [MplTokenAuthRulesProgramErrorCode.NOT_IMPLEMENTED]: ['NotImplemented', ``],
-  [MplTokenAuthRulesProgramErrorCode.BORSH_SERIALIZATION_ERROR]: [
-    'BorshSerializationError',
-    `Borsh Serialization Error`,
-  ],
-};
-
 export class MplTokenAuthRulesProgramError extends Error {
   override readonly name = 'MplTokenAuthRulesProgramError';
   readonly code: MplTokenAuthRulesProgramErrorCode;
@@ -120,13 +57,92 @@ export class MplTokenAuthRulesProgramError extends Error {
   }
 }
 
+let mplTokenAuthRulesProgramErrorCodeMap:
+  | Record<MplTokenAuthRulesProgramErrorCode, [string, string]>
+  | undefined;
+if (__DEV__) {
+  mplTokenAuthRulesProgramErrorCodeMap = {
+    [MplTokenAuthRulesProgramErrorCode.NUMERICAL_OVERFLOW]: [
+      'NumericalOverflow',
+      `Numerical Overflow`,
+    ],
+    [MplTokenAuthRulesProgramErrorCode.DATA_TYPE_MISMATCH]: [
+      'DataTypeMismatch',
+      `Data type mismatch`,
+    ],
+    [MplTokenAuthRulesProgramErrorCode.INCORRECT_OWNER]: [
+      'IncorrectOwner',
+      `Incorrect account owner`,
+    ],
+    [MplTokenAuthRulesProgramErrorCode.PAYLOAD_VEC_INDEX_ERROR]: [
+      'PayloadVecIndexError',
+      `Could not index into PayloadVec`,
+    ],
+    [MplTokenAuthRulesProgramErrorCode.DERIVED_KEY_INVALID]: [
+      'DerivedKeyInvalid',
+      `Derived key invalid`,
+    ],
+    [MplTokenAuthRulesProgramErrorCode.ADDITIONAL_SIGNER_CHECK_FAILED]: [
+      'AdditionalSignerCheckFailed',
+      `Additional Signer check failed`,
+    ],
+    [MplTokenAuthRulesProgramErrorCode.PUBKEY_MATCH_CHECK_FAILED]: [
+      'PubkeyMatchCheckFailed',
+      `Pubkey Match check failed`,
+    ],
+    [MplTokenAuthRulesProgramErrorCode.DERIVED_KEY_MATCH_CHECK_FAILED]: [
+      'DerivedKeyMatchCheckFailed',
+      `Derived Key Match check failed`,
+    ],
+    [MplTokenAuthRulesProgramErrorCode.PROGRAM_OWNED_CHECK_FAILED]: [
+      'ProgramOwnedCheckFailed',
+      `Program Owned check failed`,
+    ],
+    [MplTokenAuthRulesProgramErrorCode.AMOUNT_CHECK_FAILED]: [
+      'AmountCheckFailed',
+      `Amount checked failed`,
+    ],
+    [MplTokenAuthRulesProgramErrorCode.FREQUENCY_CHECK_FAILED]: [
+      'FrequencyCheckFailed',
+      `Frequency check failed`,
+    ],
+    [MplTokenAuthRulesProgramErrorCode.PUBKEY_TREE_MATCH_CHECK_FAILED]: [
+      'PubkeyTreeMatchCheckFailed',
+      `Pubkey Tree Match check failed`,
+    ],
+    [MplTokenAuthRulesProgramErrorCode.PAYER_IS_NOT_SIGNER]: [
+      'PayerIsNotSigner',
+      `Payer is not a signer`,
+    ],
+    [MplTokenAuthRulesProgramErrorCode.NOT_IMPLEMENTED]: ['NotImplemented', ``],
+    [MplTokenAuthRulesProgramErrorCode.BORSH_SERIALIZATION_ERROR]: [
+      'BorshSerializationError',
+      `Borsh Serialization Error`,
+    ],
+  };
+}
+
 export function getMplTokenAuthRulesProgramErrorFromCode(
   code: MplTokenAuthRulesProgramErrorCode,
   cause?: Error
 ): MplTokenAuthRulesProgramError {
-  return new MplTokenAuthRulesProgramError(
-    code,
-    ...mplTokenAuthRulesProgramErrorCodeMap[code],
-    cause
-  );
+  if (__DEV__) {
+    return new MplTokenAuthRulesProgramError(
+      code,
+      ...(
+        mplTokenAuthRulesProgramErrorCodeMap as Record<
+          MplTokenAuthRulesProgramErrorCode,
+          [string, string]
+        >
+      )[code],
+      cause
+    );
+  } else {
+    return new MplTokenAuthRulesProgramError(
+      code,
+      'Unknown',
+      'Error message not available in production bundles. Compile with __DEV__ set to true to see more information.',
+      cause
+    );
+  }
 }

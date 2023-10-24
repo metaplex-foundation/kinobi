@@ -7,12 +7,6 @@ export const enum {{ programErrorName }}Code {
   {% endfor %}
 }
 
-const {{ programErrorName | camelCase }}CodeMap: Record<{{ programErrorName }}Code, [string, string]> = {
-  {% for error in errors | sort(false, false, 'code') %}
-    [{{ programErrorName }}Code.{{ error.name | snakeCase | upper }}]: ['{{ error.name | pascalCase }}', `{{ error.message }}`],
-  {% endfor %}
-};
-
 export class {{ programErrorName }} extends Error {
   override readonly name = '{{ programErrorName }}';
   readonly code: {{ programErrorName }}Code;
@@ -26,6 +20,19 @@ export class {{ programErrorName }} extends Error {
   }
 }
 
+let {{ programErrorName | camelCase }}CodeMap: Record<{{ programErrorName }}Code, [string, string]> | undefined;
+if (__DEV__) {
+  {{ programErrorName | camelCase }}CodeMap = {
+    {% for error in errors | sort(false, false, 'code') %}
+      [{{ programErrorName }}Code.{{ error.name | snakeCase | upper }}]: ['{{ error.name | pascalCase }}', `{{ error.message }}`],
+    {% endfor %}
+  };
+}
+
 export function get{{ programErrorName }}FromCode(code: {{ programErrorName }}Code, cause?: Error): {{ programErrorName }} {
-  return new {{ programErrorName }}(code, ...{{ programErrorName | camelCase }}CodeMap[code], cause);
+  if (__DEV__) {
+    return new {{ programErrorName }}(code, ...({{ programErrorName | camelCase }}CodeMap as Record<{{ programErrorName }}Code, [string, string]>)[code], cause);
+  } else {
+    return new {{ programErrorName }}(code, 'Unknown', 'Error message not available in production bundles. Compile with __DEV__ set to true to see more information.', cause);
+  }
 }

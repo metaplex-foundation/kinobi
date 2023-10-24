@@ -51,98 +51,6 @@ export const enum MplCandyMachineCoreProgramErrorCode {
   NOT_FULLY_LOADED = 0x1784, // 6020
 }
 
-const mplCandyMachineCoreProgramErrorCodeMap: Record<
-  MplCandyMachineCoreProgramErrorCode,
-  [string, string]
-> = {
-  [MplCandyMachineCoreProgramErrorCode.INCORRECT_OWNER]: [
-    'IncorrectOwner',
-    `Account does not have correct owner`,
-  ],
-  [MplCandyMachineCoreProgramErrorCode.UNINITIALIZED]: [
-    'Uninitialized',
-    `Account is not initialized`,
-  ],
-  [MplCandyMachineCoreProgramErrorCode.MINT_MISMATCH]: [
-    'MintMismatch',
-    `Mint Mismatch`,
-  ],
-  [MplCandyMachineCoreProgramErrorCode.INDEX_GREATER_THAN_LENGTH]: [
-    'IndexGreaterThanLength',
-    `Index greater than length`,
-  ],
-  [MplCandyMachineCoreProgramErrorCode.NUMERICAL_OVERFLOW_ERROR]: [
-    'NumericalOverflowError',
-    `Numerical overflow error`,
-  ],
-  [MplCandyMachineCoreProgramErrorCode.TOO_MANY_CREATORS]: [
-    'TooManyCreators',
-    `Can only provide up to 4 creators to candy machine (because candy machine is one)`,
-  ],
-  [MplCandyMachineCoreProgramErrorCode.CANDY_MACHINE_EMPTY]: [
-    'CandyMachineEmpty',
-    `Candy machine is empty`,
-  ],
-  [MplCandyMachineCoreProgramErrorCode.HIDDEN_SETTINGS_DO_NOT_HAVE_CONFIG_LINES]:
-    [
-      'HiddenSettingsDoNotHaveConfigLines',
-      `Candy machines using hidden uris do not have config lines, they have a single hash representing hashed order`,
-    ],
-  [MplCandyMachineCoreProgramErrorCode.CANNOT_CHANGE_NUMBER_OF_LINES]: [
-    'CannotChangeNumberOfLines',
-    `Cannot change number of lines unless is a hidden config`,
-  ],
-  [MplCandyMachineCoreProgramErrorCode.CANNOT_SWITCH_TO_HIDDEN_SETTINGS]: [
-    'CannotSwitchToHiddenSettings',
-    `Cannot switch to hidden settings after items available is greater than 0`,
-  ],
-  [MplCandyMachineCoreProgramErrorCode.INCORRECT_COLLECTION_AUTHORITY]: [
-    'IncorrectCollectionAuthority',
-    `Incorrect collection NFT authority`,
-  ],
-  [MplCandyMachineCoreProgramErrorCode.METADATA_ACCOUNT_MUST_BE_EMPTY]: [
-    'MetadataAccountMustBeEmpty',
-    `The metadata account has data in it, and this must be empty to mint a new NFT`,
-  ],
-  [MplCandyMachineCoreProgramErrorCode.NO_CHANGING_COLLECTION_DURING_MINT]: [
-    'NoChangingCollectionDuringMint',
-    `Can't change collection settings after items have begun to be minted`,
-  ],
-  [MplCandyMachineCoreProgramErrorCode.EXCEEDED_LENGTH_ERROR]: [
-    'ExceededLengthError',
-    `Value longer than expected maximum value`,
-  ],
-  [MplCandyMachineCoreProgramErrorCode.MISSING_CONFIG_LINES_SETTINGS]: [
-    'MissingConfigLinesSettings',
-    `Missing config lines settings`,
-  ],
-  [MplCandyMachineCoreProgramErrorCode.CANNOT_INCREASE_LENGTH]: [
-    'CannotIncreaseLength',
-    `Cannot increase the length in config lines settings`,
-  ],
-  [MplCandyMachineCoreProgramErrorCode.CANNOT_SWITCH_FROM_HIDDEN_SETTINGS]: [
-    'CannotSwitchFromHiddenSettings',
-    `Cannot switch from hidden settings`,
-  ],
-  [MplCandyMachineCoreProgramErrorCode.CANNOT_CHANGE_SEQUENTIAL_INDEX_GENERATION]:
-    [
-      'CannotChangeSequentialIndexGeneration',
-      `Cannot change sequential index generation after items have begun to be minted`,
-    ],
-  [MplCandyMachineCoreProgramErrorCode.COLLECTION_KEY_MISMATCH]: [
-    'CollectionKeyMismatch',
-    `Collection public key mismatch`,
-  ],
-  [MplCandyMachineCoreProgramErrorCode.COULD_NOT_RETRIEVE_CONFIG_LINE_DATA]: [
-    'CouldNotRetrieveConfigLineData',
-    `Could not retrive config line data`,
-  ],
-  [MplCandyMachineCoreProgramErrorCode.NOT_FULLY_LOADED]: [
-    'NotFullyLoaded',
-    `Not all config lines were added to the candy machine`,
-  ],
-};
-
 export class MplCandyMachineCoreProgramError extends Error {
   override readonly name = 'MplCandyMachineCoreProgramError';
   readonly code: MplCandyMachineCoreProgramErrorCode;
@@ -161,13 +69,121 @@ export class MplCandyMachineCoreProgramError extends Error {
   }
 }
 
+let mplCandyMachineCoreProgramErrorCodeMap:
+  | Record<MplCandyMachineCoreProgramErrorCode, [string, string]>
+  | undefined;
+if (__DEV__) {
+  mplCandyMachineCoreProgramErrorCodeMap = {
+    [MplCandyMachineCoreProgramErrorCode.INCORRECT_OWNER]: [
+      'IncorrectOwner',
+      `Account does not have correct owner`,
+    ],
+    [MplCandyMachineCoreProgramErrorCode.UNINITIALIZED]: [
+      'Uninitialized',
+      `Account is not initialized`,
+    ],
+    [MplCandyMachineCoreProgramErrorCode.MINT_MISMATCH]: [
+      'MintMismatch',
+      `Mint Mismatch`,
+    ],
+    [MplCandyMachineCoreProgramErrorCode.INDEX_GREATER_THAN_LENGTH]: [
+      'IndexGreaterThanLength',
+      `Index greater than length`,
+    ],
+    [MplCandyMachineCoreProgramErrorCode.NUMERICAL_OVERFLOW_ERROR]: [
+      'NumericalOverflowError',
+      `Numerical overflow error`,
+    ],
+    [MplCandyMachineCoreProgramErrorCode.TOO_MANY_CREATORS]: [
+      'TooManyCreators',
+      `Can only provide up to 4 creators to candy machine (because candy machine is one)`,
+    ],
+    [MplCandyMachineCoreProgramErrorCode.CANDY_MACHINE_EMPTY]: [
+      'CandyMachineEmpty',
+      `Candy machine is empty`,
+    ],
+    [MplCandyMachineCoreProgramErrorCode.HIDDEN_SETTINGS_DO_NOT_HAVE_CONFIG_LINES]:
+      [
+        'HiddenSettingsDoNotHaveConfigLines',
+        `Candy machines using hidden uris do not have config lines, they have a single hash representing hashed order`,
+      ],
+    [MplCandyMachineCoreProgramErrorCode.CANNOT_CHANGE_NUMBER_OF_LINES]: [
+      'CannotChangeNumberOfLines',
+      `Cannot change number of lines unless is a hidden config`,
+    ],
+    [MplCandyMachineCoreProgramErrorCode.CANNOT_SWITCH_TO_HIDDEN_SETTINGS]: [
+      'CannotSwitchToHiddenSettings',
+      `Cannot switch to hidden settings after items available is greater than 0`,
+    ],
+    [MplCandyMachineCoreProgramErrorCode.INCORRECT_COLLECTION_AUTHORITY]: [
+      'IncorrectCollectionAuthority',
+      `Incorrect collection NFT authority`,
+    ],
+    [MplCandyMachineCoreProgramErrorCode.METADATA_ACCOUNT_MUST_BE_EMPTY]: [
+      'MetadataAccountMustBeEmpty',
+      `The metadata account has data in it, and this must be empty to mint a new NFT`,
+    ],
+    [MplCandyMachineCoreProgramErrorCode.NO_CHANGING_COLLECTION_DURING_MINT]: [
+      'NoChangingCollectionDuringMint',
+      `Can't change collection settings after items have begun to be minted`,
+    ],
+    [MplCandyMachineCoreProgramErrorCode.EXCEEDED_LENGTH_ERROR]: [
+      'ExceededLengthError',
+      `Value longer than expected maximum value`,
+    ],
+    [MplCandyMachineCoreProgramErrorCode.MISSING_CONFIG_LINES_SETTINGS]: [
+      'MissingConfigLinesSettings',
+      `Missing config lines settings`,
+    ],
+    [MplCandyMachineCoreProgramErrorCode.CANNOT_INCREASE_LENGTH]: [
+      'CannotIncreaseLength',
+      `Cannot increase the length in config lines settings`,
+    ],
+    [MplCandyMachineCoreProgramErrorCode.CANNOT_SWITCH_FROM_HIDDEN_SETTINGS]: [
+      'CannotSwitchFromHiddenSettings',
+      `Cannot switch from hidden settings`,
+    ],
+    [MplCandyMachineCoreProgramErrorCode.CANNOT_CHANGE_SEQUENTIAL_INDEX_GENERATION]:
+      [
+        'CannotChangeSequentialIndexGeneration',
+        `Cannot change sequential index generation after items have begun to be minted`,
+      ],
+    [MplCandyMachineCoreProgramErrorCode.COLLECTION_KEY_MISMATCH]: [
+      'CollectionKeyMismatch',
+      `Collection public key mismatch`,
+    ],
+    [MplCandyMachineCoreProgramErrorCode.COULD_NOT_RETRIEVE_CONFIG_LINE_DATA]: [
+      'CouldNotRetrieveConfigLineData',
+      `Could not retrive config line data`,
+    ],
+    [MplCandyMachineCoreProgramErrorCode.NOT_FULLY_LOADED]: [
+      'NotFullyLoaded',
+      `Not all config lines were added to the candy machine`,
+    ],
+  };
+}
+
 export function getMplCandyMachineCoreProgramErrorFromCode(
   code: MplCandyMachineCoreProgramErrorCode,
   cause?: Error
 ): MplCandyMachineCoreProgramError {
-  return new MplCandyMachineCoreProgramError(
-    code,
-    ...mplCandyMachineCoreProgramErrorCodeMap[code],
-    cause
-  );
+  if (__DEV__) {
+    return new MplCandyMachineCoreProgramError(
+      code,
+      ...(
+        mplCandyMachineCoreProgramErrorCodeMap as Record<
+          MplCandyMachineCoreProgramErrorCode,
+          [string, string]
+        >
+      )[code],
+      cause
+    );
+  } else {
+    return new MplCandyMachineCoreProgramError(
+      code,
+      'Unknown',
+      'Error message not available in production bundles. Compile with __DEV__ set to true to see more information.',
+      cause
+    );
+  }
 }
