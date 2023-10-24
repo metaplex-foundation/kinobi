@@ -407,7 +407,7 @@ export async function createMetadataAccountV3<
   >
 ): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawInput) as
+  const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
     | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>);

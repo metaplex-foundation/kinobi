@@ -681,7 +681,7 @@ export async function updateV1<
   >
 ): Promise<TReturn | WrappedInstruction<IInstruction>> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawInput) as
+  const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>);
