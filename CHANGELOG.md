@@ -1,5 +1,13 @@
 # @metaplex-foundation/kinobi
 
+## 0.16.4
+
+### Patch Changes
+
+- [`ff1cf1f`](https://github.com/metaplex-foundation/kinobi/commit/ff1cf1f058398dbcaab0bdffa0ac3a948e2927b2) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Exclude error messages in JS experimental production builds
+
+- [`80d1fe5`](https://github.com/metaplex-foundation/kinobi/commit/80d1fe54cb556b4e9247f4c68f71db23c11a2327) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix return value of high-level instruction function in JS Experimental
+
 ## 0.16.3
 
 ### Patch Changes
