@@ -674,7 +674,8 @@ export async function delegate<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return {
+  // Wrapped instruction.
+  const wrappedInstruction = {
     instruction: delegateInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as DelegateInstructionDataArgs,
@@ -684,4 +685,8 @@ export async function delegate<
     signers,
     bytesCreatedOnChain,
   };
+
+  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
+    ? context.getGeneratedInstruction(wrappedInstruction)
+    : wrappedInstruction;
 }

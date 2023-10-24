@@ -402,7 +402,8 @@ export async function unverifyCollection<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return {
+  // Wrapped instruction.
+  const wrappedInstruction = {
     instruction: unverifyCollectionInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
@@ -411,4 +412,8 @@ export async function unverifyCollection<
     signers,
     bytesCreatedOnChain,
   };
+
+  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
+    ? context.getGeneratedInstruction(wrappedInstruction)
+    : wrappedInstruction;
 }

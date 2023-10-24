@@ -364,7 +364,8 @@ export async function setCollectionSize<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return {
+  // Wrapped instruction.
+  const wrappedInstruction = {
     instruction: setCollectionSizeInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as SetCollectionSizeInstructionDataArgs,
@@ -374,4 +375,8 @@ export async function setCollectionSize<
     signers,
     bytesCreatedOnChain,
   };
+
+  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
+    ? context.getGeneratedInstruction(wrappedInstruction)
+    : wrappedInstruction;
 }

@@ -672,7 +672,8 @@ export async function transferOutOfEscrow<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return {
+  // Wrapped instruction.
+  const wrappedInstruction = {
     instruction: transferOutOfEscrowInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as TransferOutOfEscrowInstructionDataArgs,
@@ -682,4 +683,8 @@ export async function transferOutOfEscrow<
     signers,
     bytesCreatedOnChain,
   };
+
+  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
+    ? context.getGeneratedInstruction(wrappedInstruction)
+    : wrappedInstruction;
 }

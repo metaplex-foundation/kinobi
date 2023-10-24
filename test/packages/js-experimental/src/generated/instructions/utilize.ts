@@ -622,7 +622,8 @@ export async function utilize<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return {
+  // Wrapped instruction.
+  const wrappedInstruction = {
     instruction: utilizeInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as UtilizeInstructionDataArgs,
@@ -632,4 +633,8 @@ export async function utilize<
     signers,
     bytesCreatedOnChain,
   };
+
+  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
+    ? context.getGeneratedInstruction(wrappedInstruction)
+    : wrappedInstruction;
 }

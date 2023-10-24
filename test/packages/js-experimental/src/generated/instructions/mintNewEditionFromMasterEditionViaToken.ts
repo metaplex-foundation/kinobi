@@ -700,7 +700,8 @@ export async function mintNewEditionFromMasterEditionViaToken<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return {
+  // Wrapped instruction.
+  const wrappedInstruction = {
     instruction: mintNewEditionFromMasterEditionViaTokenInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as MintNewEditionFromMasterEditionViaTokenInstructionDataArgs,
@@ -710,4 +711,8 @@ export async function mintNewEditionFromMasterEditionViaToken<
     signers,
     bytesCreatedOnChain,
   };
+
+  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
+    ? context.getGeneratedInstruction(wrappedInstruction)
+    : wrappedInstruction;
 }

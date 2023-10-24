@@ -362,7 +362,8 @@ export async function revokeCollectionAuthority<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return {
+  // Wrapped instruction.
+  const wrappedInstruction = {
     instruction: revokeCollectionAuthorityInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
@@ -371,4 +372,8 @@ export async function revokeCollectionAuthority<
     signers,
     bytesCreatedOnChain,
   };
+
+  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
+    ? context.getGeneratedInstruction(wrappedInstruction)
+    : wrappedInstruction;
 }

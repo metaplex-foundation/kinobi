@@ -366,7 +366,8 @@ export async function thawDelegatedAccount<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return {
+  // Wrapped instruction.
+  const wrappedInstruction = {
     instruction: thawDelegatedAccountInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
@@ -375,4 +376,8 @@ export async function thawDelegatedAccount<
     signers,
     bytesCreatedOnChain,
   };
+
+  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
+    ? context.getGeneratedInstruction(wrappedInstruction)
+    : wrappedInstruction;
 }

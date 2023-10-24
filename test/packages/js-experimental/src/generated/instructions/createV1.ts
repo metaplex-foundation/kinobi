@@ -587,7 +587,8 @@ export async function createV1<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return {
+  // Wrapped instruction.
+  const wrappedInstruction = {
     instruction: createV1Instruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as CreateV1InstructionDataArgs,
@@ -597,4 +598,8 @@ export async function createV1<
     signers,
     bytesCreatedOnChain,
   };
+
+  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
+    ? context.getGeneratedInstruction(wrappedInstruction)
+    : wrappedInstruction;
 }

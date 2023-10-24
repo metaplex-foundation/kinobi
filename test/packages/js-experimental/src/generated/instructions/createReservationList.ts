@@ -432,7 +432,8 @@ export async function createReservationList<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return {
+  // Wrapped instruction.
+  const wrappedInstruction = {
     instruction: createReservationListInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as CreateReservationListInstructionDataArgs,
@@ -442,4 +443,8 @@ export async function createReservationList<
     signers,
     bytesCreatedOnChain,
   };
+
+  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
+    ? context.getGeneratedInstruction(wrappedInstruction)
+    : wrappedInstruction;
 }

@@ -680,7 +680,8 @@ export async function deprecatedCreateMasterEdition<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return {
+  // Wrapped instruction.
+  const wrappedInstruction = {
     instruction: deprecatedCreateMasterEditionInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as DeprecatedCreateMasterEditionInstructionDataArgs,
@@ -690,4 +691,8 @@ export async function deprecatedCreateMasterEdition<
     signers,
     bytesCreatedOnChain,
   };
+
+  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
+    ? context.getGeneratedInstruction(wrappedInstruction)
+    : wrappedInstruction;
 }

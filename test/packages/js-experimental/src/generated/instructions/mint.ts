@@ -665,7 +665,8 @@ export async function mint<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return {
+  // Wrapped instruction.
+  const wrappedInstruction = {
     instruction: mintInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as MintInstructionDataArgs,
@@ -675,4 +676,8 @@ export async function mint<
     signers,
     bytesCreatedOnChain,
   };
+
+  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
+    ? context.getGeneratedInstruction(wrappedInstruction)
+    : wrappedInstruction;
 }

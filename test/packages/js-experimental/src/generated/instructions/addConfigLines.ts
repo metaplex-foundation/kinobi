@@ -272,7 +272,8 @@ export async function addConfigLines<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return {
+  // Wrapped instruction.
+  const wrappedInstruction = {
     instruction: addConfigLinesInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as AddConfigLinesInstructionDataArgs,
@@ -282,4 +283,8 @@ export async function addConfigLines<
     signers,
     bytesCreatedOnChain,
   };
+
+  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
+    ? context.getGeneratedInstruction(wrappedInstruction)
+    : wrappedInstruction;
 }

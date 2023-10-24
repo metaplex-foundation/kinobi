@@ -353,7 +353,8 @@ export async function createFrequencyRule<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return {
+  // Wrapped instruction.
+  const wrappedInstruction = {
     instruction: createFrequencyRuleInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as CreateFrequencyRuleInstructionDataArgs,
@@ -363,4 +364,8 @@ export async function createFrequencyRule<
     signers,
     bytesCreatedOnChain,
   };
+
+  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
+    ? context.getGeneratedInstruction(wrappedInstruction)
+    : wrappedInstruction;
 }

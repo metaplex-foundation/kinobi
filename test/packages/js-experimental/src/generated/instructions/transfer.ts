@@ -784,7 +784,8 @@ export async function transfer<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return {
+  // Wrapped instruction.
+  const wrappedInstruction = {
     instruction: transferInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as TransferInstructionDataArgs,
@@ -794,4 +795,8 @@ export async function transfer<
     signers,
     bytesCreatedOnChain,
   };
+
+  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
+    ? context.getGeneratedInstruction(wrappedInstruction)
+    : wrappedInstruction;
 }

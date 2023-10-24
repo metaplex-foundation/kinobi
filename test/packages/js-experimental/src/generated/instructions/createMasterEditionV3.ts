@@ -541,7 +541,8 @@ export async function createMasterEditionV3<
   // Bytes created on chain.
   const bytesCreatedOnChain = getMasterEditionV2Size() + ACCOUNT_HEADER_SIZE;
 
-  return {
+  // Wrapped instruction.
+  const wrappedInstruction = {
     instruction: createMasterEditionV3Instruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as CreateMasterEditionV3InstructionDataArgs,
@@ -551,4 +552,8 @@ export async function createMasterEditionV3<
     signers,
     bytesCreatedOnChain,
   };
+
+  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
+    ? context.getGeneratedInstruction(wrappedInstruction)
+    : wrappedInstruction;
 }

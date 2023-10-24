@@ -470,7 +470,8 @@ export async function deprecatedMintPrintingTokens<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return {
+  // Wrapped instruction.
+  const wrappedInstruction = {
     instruction: deprecatedMintPrintingTokensInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as DeprecatedMintPrintingTokensInstructionDataArgs,
@@ -480,4 +481,8 @@ export async function deprecatedMintPrintingTokens<
     signers,
     bytesCreatedOnChain,
   };
+
+  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
+    ? context.getGeneratedInstruction(wrappedInstruction)
+    : wrappedInstruction;
 }

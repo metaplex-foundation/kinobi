@@ -556,7 +556,8 @@ export async function createMetadataAccount<
   // Bytes created on chain.
   const bytesCreatedOnChain = getMetadataSize() + ACCOUNT_HEADER_SIZE;
 
-  return {
+  // Wrapped instruction.
+  const wrappedInstruction = {
     instruction: createMetadataAccountInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as CreateMetadataAccountInstructionDataArgs,
@@ -566,4 +567,8 @@ export async function createMetadataAccount<
     signers,
     bytesCreatedOnChain,
   };
+
+  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
+    ? context.getGeneratedInstruction(wrappedInstruction)
+    : wrappedInstruction;
 }
