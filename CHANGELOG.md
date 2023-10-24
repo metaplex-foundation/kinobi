@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.16.5
+
+### Patch Changes
+
+- [`f4b39a3`](https://github.com/metaplex-foundation/kinobi/commit/f4b39a3f2d4b761f3a5b31b55b441b0c6548b2b9) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix instruction context bug in JS experimental
+
 ## 0.16.4
 
 ### Patch Changes
