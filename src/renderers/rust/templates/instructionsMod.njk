@@ -3,11 +3,11 @@
 {% block main %}
 
 {% for instruction in instructionsToExport | sort(false, false, 'name') %}
-  pub(crate) mod {{ instruction.name | snakeCase }};
+  pub(crate) mod r#{{ instruction.name | snakeCase }};
 {% endfor %}
 
 {% for instruction in instructionsToExport | sort(false, false, 'name') %}
-  pub use self::{{ instruction.name | snakeCase }}::*;
+  pub use self::r#{{ instruction.name | snakeCase }}::*;
 {% endfor %}
 
 {% endblock %}
