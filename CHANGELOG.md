@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.16.6
+
+### Patch Changes
+
+- [#95](https://github.com/metaplex-foundation/kinobi/pull/95) [`cd4ee72`](https://github.com/metaplex-foundation/kinobi/commit/cd4ee72446b87f12676908a66e59d8bc84dc996d) Thanks [@febo](https://github.com/febo)! - Add escape to instruction module names in Rust client
+
 ## 0.16.5
 
 ### Patch Changes
