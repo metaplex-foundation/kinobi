@@ -89,6 +89,18 @@
               "defined": "ConfigLine"
             }
           }
+        },
+        {
+          "name": "moreLines",
+          "docs": [
+            "More dummy lines."
+          ],
+          "type": {
+            "vec": {
+              "defined": "ConfigLine"
+            },
+            "size": "u64"
+          }
         }
       ]
     },

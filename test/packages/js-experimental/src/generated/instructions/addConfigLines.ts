@@ -23,6 +23,8 @@ import {
 import {
   getU32Decoder,
   getU32Encoder,
+  getU64Decoder,
+  getU64Encoder,
   getU8Decoder,
   getU8Encoder,
 } from '@solana/codecs-numbers';
@@ -75,11 +77,15 @@ export type AddConfigLinesInstructionData = {
   discriminator: Array<number>;
   index: number;
   configLines: Array<ConfigLine>;
+  /** More dummy lines. */
+  moreLines: Array<ConfigLine>;
 };
 
 export type AddConfigLinesInstructionDataArgs = {
   index: number;
   configLines: Array<ConfigLineArgs>;
+  /** More dummy lines. */
+  moreLines: Array<ConfigLineArgs>;
 };
 
 export function getAddConfigLinesInstructionDataEncoder(): Encoder<AddConfigLinesInstructionDataArgs> {
@@ -88,11 +94,17 @@ export function getAddConfigLinesInstructionDataEncoder(): Encoder<AddConfigLine
       discriminator: Array<number>;
       index: number;
       configLines: Array<ConfigLineArgs>;
+      /** More dummy lines. */
+      moreLines: Array<ConfigLineArgs>;
     }>(
       [
         ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
         ['index', getU32Encoder()],
         ['configLines', getArrayEncoder(getConfigLineEncoder())],
+        [
+          'moreLines',
+          getArrayEncoder(getConfigLineEncoder(), { size: getU64Encoder() }),
+        ],
       ],
       { description: 'AddConfigLinesInstructionData' }
     ),
@@ -109,6 +121,10 @@ export function getAddConfigLinesInstructionDataDecoder(): Decoder<AddConfigLine
       ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
       ['index', getU32Decoder()],
       ['configLines', getArrayDecoder(getConfigLineDecoder())],
+      [
+        'moreLines',
+        getArrayDecoder(getConfigLineDecoder(), { size: getU64Decoder() }),
+      ],
     ],
     { description: 'AddConfigLinesInstructionData' }
   ) as Decoder<AddConfigLinesInstructionData>;
@@ -167,6 +183,7 @@ export type AddConfigLinesInput<
   authority?: Signer<TAccountAuthority>;
   index: AddConfigLinesInstructionDataArgs['index'];
   configLines: AddConfigLinesInstructionDataArgs['configLines'];
+  moreLines: AddConfigLinesInstructionDataArgs['moreLines'];
 };
 
 export async function addConfigLines<

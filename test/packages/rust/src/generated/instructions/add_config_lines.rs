@@ -8,6 +8,7 @@
 use crate::generated::types::ConfigLine;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
+use kaigan::types::U64PrefixVec;
 
 /// Accounts.
 pub struct AddConfigLines {
@@ -69,6 +70,7 @@ impl AddConfigLinesInstructionData {
 pub struct AddConfigLinesInstructionArgs {
     pub index: u32,
     pub config_lines: Vec<ConfigLine>,
+    pub more_lines: U64PrefixVec<ConfigLine>,
 }
 
 /// Instruction builder.
@@ -78,6 +80,7 @@ pub struct AddConfigLinesBuilder {
     authority: Option<solana_program::pubkey::Pubkey>,
     index: Option<u32>,
     config_lines: Option<Vec<ConfigLine>>,
+    more_lines: Option<U64PrefixVec<ConfigLine>>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
 }
 
@@ -103,6 +106,11 @@ impl AddConfigLinesBuilder {
     #[inline(always)]
     pub fn config_lines(&mut self, config_lines: Vec<ConfigLine>) -> &mut Self {
         self.config_lines = Some(config_lines);
+        self
+    }
+    #[inline(always)]
+    pub fn more_lines(&mut self, more_lines: U64PrefixVec<ConfigLine>) -> &mut Self {
+        self.more_lines = Some(more_lines);
         self
     }
     /// Add an aditional account to the instruction.
@@ -132,6 +140,7 @@ impl AddConfigLinesBuilder {
         let args = AddConfigLinesInstructionArgs {
             index: self.index.clone().expect("index is not set"),
             config_lines: self.config_lines.clone().expect("config_lines is not set"),
+            more_lines: self.more_lines.clone().expect("more_lines is not set"),
         };
 
         accounts.instruction_with_remaining_accounts(args, &self.__remaining_accounts)
@@ -257,6 +266,7 @@ impl<'a, 'b> AddConfigLinesCpiBuilder<'a, 'b> {
             authority: None,
             index: None,
             config_lines: None,
+            more_lines: None,
             __remaining_accounts: Vec::new(),
         });
         Self { instruction }
@@ -285,6 +295,11 @@ impl<'a, 'b> AddConfigLinesCpiBuilder<'a, 'b> {
     #[inline(always)]
     pub fn config_lines(&mut self, config_lines: Vec<ConfigLine>) -> &mut Self {
         self.instruction.config_lines = Some(config_lines);
+        self
+    }
+    #[inline(always)]
+    pub fn more_lines(&mut self, more_lines: U64PrefixVec<ConfigLine>) -> &mut Self {
+        self.instruction.more_lines = Some(more_lines);
         self
     }
     /// Add an additional account to the instruction.
@@ -335,6 +350,11 @@ impl<'a, 'b> AddConfigLinesCpiBuilder<'a, 'b> {
                 .config_lines
                 .clone()
                 .expect("config_lines is not set"),
+            more_lines: self
+                .instruction
+                .more_lines
+                .clone()
+                .expect("more_lines is not set"),
         };
         let instruction = AddConfigLinesCpi {
             __program: self.instruction.__program,
@@ -360,6 +380,7 @@ struct AddConfigLinesCpiBuilderInstruction<'a, 'b> {
     authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     index: Option<u32>,
     config_lines: Option<Vec<ConfigLine>>,
+    more_lines: Option<U64PrefixVec<ConfigLine>>,
     /// Additional instruction accounts `(AccountInfo, is_writable, is_signer)`.
     __remaining_accounts: Vec<(
         &'b solana_program::account_info::AccountInfo<'a>,

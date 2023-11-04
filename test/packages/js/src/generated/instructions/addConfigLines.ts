@@ -20,6 +20,7 @@ import {
   mapSerializer,
   struct,
   u32,
+  u64,
   u8,
 } from '@metaplex-foundation/umi/serializers';
 import {
@@ -40,11 +41,15 @@ export type AddConfigLinesInstructionData = {
   discriminator: Array<number>;
   index: number;
   configLines: Array<ConfigLine>;
+  /** More dummy lines. */
+  moreLines: Array<ConfigLine>;
 };
 
 export type AddConfigLinesInstructionDataArgs = {
   index: number;
   configLines: Array<ConfigLineArgs>;
+  /** More dummy lines. */
+  moreLines: Array<ConfigLineArgs>;
 };
 
 export function getAddConfigLinesInstructionDataSerializer(): Serializer<
@@ -61,6 +66,7 @@ export function getAddConfigLinesInstructionDataSerializer(): Serializer<
         ['discriminator', array(u8(), { size: 8 })],
         ['index', u32()],
         ['configLines', array(getConfigLineSerializer())],
+        ['moreLines', array(getConfigLineSerializer(), { size: u64() })],
       ],
       { description: 'AddConfigLinesInstructionData' }
     ),
