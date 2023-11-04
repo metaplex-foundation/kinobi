@@ -143,6 +143,10 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
             type: `${prefix}PrefixVec<${childManifest.type}>`,
           };
         }
+        default:
+          throw new Error(
+            `Array prefix not supported: ${arrayType.size.prefix.format}`
+          );
       }
     }
 
