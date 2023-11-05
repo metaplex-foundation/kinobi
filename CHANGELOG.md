@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.16.7
+
+### Patch Changes
+
+- [#97](https://github.com/metaplex-foundation/kinobi/pull/97) [`cbc35b7`](https://github.com/metaplex-foundation/kinobi/commit/cbc35b7f3ec62f03efea01cff7e2c35fd7d14fe7) Thanks [@febo](https://github.com/febo)! - Add prefix vec support in Rust client
+
 ## 0.16.6
 
 ### Patch Changes
