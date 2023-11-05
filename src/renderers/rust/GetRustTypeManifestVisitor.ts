@@ -125,13 +125,29 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
 
     if (
       arrayType.size.kind === 'prefixed' &&
-      arrayType.size.prefix.format === 'u32' &&
       arrayType.size.prefix.endian === 'le'
     ) {
-      return {
-        ...childManifest,
-        type: `Vec<${childManifest.type}>`,
-      };
+      switch (arrayType.size.prefix.format) {
+        case 'u32':
+          return {
+            ...childManifest,
+            type: `Vec<${childManifest.type}>`,
+          };
+        case 'u8':
+        case 'u16':
+        case 'u64': {
+          const prefix = arrayType.size.prefix.format.toUpperCase();
+          childManifest.imports.add(`kaigan::types::${prefix}PrefixVec`);
+          return {
+            ...childManifest,
+            type: `${prefix}PrefixVec<${childManifest.type}>`,
+          };
+        }
+        default:
+          throw new Error(
+            `Array prefix not supported: ${arrayType.size.prefix.format}`
+          );
+      }
     }
 
     if (arrayType.size.kind === 'remainder') {
