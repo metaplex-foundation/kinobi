@@ -96,46 +96,50 @@ export function migrate(
 
   // Accounts.
   const resolvedAccounts = {
-    metadata: { index: 0, isWritable: true, value: input.metadata ?? null },
+    metadata: {
+      index: 0,
+      isWritable: true as boolean,
+      value: input.metadata ?? null,
+    },
     masterEdition: {
       index: 1,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.masterEdition ?? null,
     },
     tokenAccount: {
       index: 2,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.tokenAccount ?? null,
     },
-    mint: { index: 3, isWritable: false, value: input.mint ?? null },
+    mint: { index: 3, isWritable: false as boolean, value: input.mint ?? null },
     updateAuthority: {
       index: 4,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.updateAuthority ?? null,
     },
     collectionMetadata: {
       index: 5,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.collectionMetadata ?? null,
     },
     tokenProgram: {
       index: 6,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.tokenProgram ?? null,
     },
     systemProgram: {
       index: 7,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.systemProgram ?? null,
     },
     sysvarInstructions: {
       index: 8,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.sysvarInstructions ?? null,
     },
     authorizationRules: {
       index: 9,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.authorizationRules ?? null,
     },
   } satisfies ResolvedAccountsWithIndices;

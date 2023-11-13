@@ -88,64 +88,72 @@ export function setCollection(
   const resolvedAccounts = {
     candyMachine: {
       index: 0,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.candyMachine ?? null,
     },
-    authority: { index: 1, isWritable: false, value: input.authority ?? null },
+    authority: {
+      index: 1,
+      isWritable: false as boolean,
+      value: input.authority ?? null,
+    },
     authorityPda: {
       index: 2,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.authorityPda ?? null,
     },
-    payer: { index: 3, isWritable: false, value: input.payer ?? null },
+    payer: {
+      index: 3,
+      isWritable: false as boolean,
+      value: input.payer ?? null,
+    },
     collectionMint: {
       index: 4,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.collectionMint ?? null,
     },
     collectionMetadata: {
       index: 5,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.collectionMetadata ?? null,
     },
     collectionAuthorityRecord: {
       index: 6,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.collectionAuthorityRecord ?? null,
     },
     newCollectionUpdateAuthority: {
       index: 7,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.newCollectionUpdateAuthority ?? null,
     },
     newCollectionMetadata: {
       index: 8,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.newCollectionMetadata ?? null,
     },
     newCollectionMint: {
       index: 9,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.newCollectionMint ?? null,
     },
     newCollectionMasterEdition: {
       index: 10,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.newCollectionMasterEdition ?? null,
     },
     newCollectionAuthorityRecord: {
       index: 11,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.newCollectionAuthorityRecord ?? null,
     },
     tokenMetadataProgram: {
       index: 12,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.tokenMetadataProgram ?? null,
     },
     systemProgram: {
       index: 13,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.systemProgram ?? null,
     },
   } satisfies ResolvedAccountsWithIndices;

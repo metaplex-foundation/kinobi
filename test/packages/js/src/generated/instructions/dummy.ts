@@ -92,30 +92,42 @@ export function dummy(
 
   // Accounts.
   const resolvedAccounts = {
-    edition: { index: 0, isWritable: true, value: input.edition ?? null },
-    mint: { index: 1, isWritable: true, value: input.mint ?? null },
+    edition: {
+      index: 0,
+      isWritable: true as boolean,
+      value: input.edition ?? null,
+    },
+    mint: { index: 1, isWritable: true as boolean, value: input.mint ?? null },
     updateAuthority: {
       index: 2,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.updateAuthority ?? null,
     },
     mintAuthority: {
       index: 3,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.mintAuthority ?? null,
     },
-    payer: { index: 4, isWritable: true, value: input.payer ?? null },
-    foo: { index: 5, isWritable: true, value: input.foo ?? null },
-    bar: { index: 6, isWritable: false, value: input.bar ?? null },
-    delegate: { index: 7, isWritable: false, value: input.delegate ?? null },
+    payer: {
+      index: 4,
+      isWritable: true as boolean,
+      value: input.payer ?? null,
+    },
+    foo: { index: 5, isWritable: true as boolean, value: input.foo ?? null },
+    bar: { index: 6, isWritable: false as boolean, value: input.bar ?? null },
+    delegate: {
+      index: 7,
+      isWritable: false as boolean,
+      value: input.delegate ?? null,
+    },
     delegateRecord: {
       index: 8,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.delegateRecord ?? null,
     },
     tokenOrAtaProgram: {
       index: 9,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.tokenOrAtaProgram ?? null,
     },
   } satisfies ResolvedAccountsWithIndices;

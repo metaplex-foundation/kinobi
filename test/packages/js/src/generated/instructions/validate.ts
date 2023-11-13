@@ -116,61 +116,69 @@ export function validate(
 
   // Accounts.
   const resolvedAccounts = {
-    payer: { index: 0, isWritable: true, value: input.payer ?? null },
-    ruleSet: { index: 1, isWritable: true, value: input.ruleSet ?? null },
+    payer: {
+      index: 0,
+      isWritable: true as boolean,
+      value: input.payer ?? null,
+    },
+    ruleSet: {
+      index: 1,
+      isWritable: true as boolean,
+      value: input.ruleSet ?? null,
+    },
     systemProgram: {
       index: 2,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.systemProgram ?? null,
     },
     optRuleSigner1: {
       index: 3,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.optRuleSigner1 ?? null,
     },
     optRuleSigner2: {
       index: 4,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.optRuleSigner2 ?? null,
     },
     optRuleSigner3: {
       index: 5,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.optRuleSigner3 ?? null,
     },
     optRuleSigner4: {
       index: 6,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.optRuleSigner4 ?? null,
     },
     optRuleSigner5: {
       index: 7,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.optRuleSigner5 ?? null,
     },
     optRuleNonsigner1: {
       index: 8,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.optRuleNonsigner1 ?? null,
     },
     optRuleNonsigner2: {
       index: 9,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.optRuleNonsigner2 ?? null,
     },
     optRuleNonsigner3: {
       index: 10,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.optRuleNonsigner3 ?? null,
     },
     optRuleNonsigner4: {
       index: 11,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.optRuleNonsigner4 ?? null,
     },
     optRuleNonsigner5: {
       index: 12,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.optRuleNonsigner5 ?? null,
     },
   } satisfies ResolvedAccountsWithIndices;

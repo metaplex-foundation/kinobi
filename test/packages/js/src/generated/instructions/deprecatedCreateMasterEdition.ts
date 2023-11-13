@@ -113,49 +113,65 @@ export function deprecatedCreateMasterEdition(
 
   // Accounts.
   const resolvedAccounts = {
-    edition: { index: 0, isWritable: true, value: input.edition ?? null },
-    mint: { index: 1, isWritable: true, value: input.mint ?? null },
+    edition: {
+      index: 0,
+      isWritable: true as boolean,
+      value: input.edition ?? null,
+    },
+    mint: { index: 1, isWritable: true as boolean, value: input.mint ?? null },
     printingMint: {
       index: 2,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.printingMint ?? null,
     },
     oneTimePrintingAuthorizationMint: {
       index: 3,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.oneTimePrintingAuthorizationMint ?? null,
     },
     updateAuthority: {
       index: 4,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.updateAuthority ?? null,
     },
     printingMintAuthority: {
       index: 5,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.printingMintAuthority ?? null,
     },
     mintAuthority: {
       index: 6,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.mintAuthority ?? null,
     },
-    metadata: { index: 7, isWritable: false, value: input.metadata ?? null },
-    payer: { index: 8, isWritable: false, value: input.payer ?? null },
+    metadata: {
+      index: 7,
+      isWritable: false as boolean,
+      value: input.metadata ?? null,
+    },
+    payer: {
+      index: 8,
+      isWritable: false as boolean,
+      value: input.payer ?? null,
+    },
     tokenProgram: {
       index: 9,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.tokenProgram ?? null,
     },
     systemProgram: {
       index: 10,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.systemProgram ?? null,
     },
-    rent: { index: 11, isWritable: false, value: input.rent ?? null },
+    rent: {
+      index: 11,
+      isWritable: false as boolean,
+      value: input.rent ?? null,
+    },
     oneTimePrintingAuthorizationMintAuthority: {
       index: 12,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.oneTimePrintingAuthorizationMintAuthority ?? null,
     },
   } satisfies ResolvedAccountsWithIndices;

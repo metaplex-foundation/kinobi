@@ -65,28 +65,44 @@ export function createReservationList(
   const resolvedAccounts = {
     reservationList: {
       index: 0,
-      isWritable: true,
+      isWritable: true as boolean,
       value: accounts.reservationList ?? null,
     },
-    payer: { index: 1, isWritable: false, value: accounts.payer ?? null },
+    payer: {
+      index: 1,
+      isWritable: false as boolean,
+      value: accounts.payer ?? null,
+    },
     updateAuthority: {
       index: 2,
-      isWritable: false,
+      isWritable: false as boolean,
       value: accounts.updateAuthority ?? null,
     },
     masterEdition: {
       index: 3,
-      isWritable: false,
+      isWritable: false as boolean,
       value: accounts.masterEdition ?? null,
     },
-    resource: { index: 4, isWritable: false, value: accounts.resource ?? null },
-    metadata: { index: 5, isWritable: false, value: accounts.metadata ?? null },
+    resource: {
+      index: 4,
+      isWritable: false as boolean,
+      value: accounts.resource ?? null,
+    },
+    metadata: {
+      index: 5,
+      isWritable: false as boolean,
+      value: accounts.metadata ?? null,
+    },
     systemProgram: {
       index: 6,
-      isWritable: false,
+      isWritable: false as boolean,
       value: accounts.systemProgram ?? null,
     },
-    rent: { index: 7, isWritable: false, value: accounts.rent ?? null },
+    rent: {
+      index: 7,
+      isWritable: false as boolean,
+      value: accounts.rent ?? null,
+    },
   } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.
