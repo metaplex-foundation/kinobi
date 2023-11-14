@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.16.8
+
+### Patch Changes
+
+- [#99](https://github.com/metaplex-foundation/kinobi/pull/99) [`507dd17`](https://github.com/metaplex-foundation/kinobi/commit/507dd175f660405ab39453462e6083758935b2da) Thanks [@febo](https://github.com/febo)! - Add cast to boolean in JS client
+
 ## 0.16.7
 
 ### Patch Changes
