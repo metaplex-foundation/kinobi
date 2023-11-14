@@ -86,37 +86,45 @@ export function burn(
 
   // Accounts.
   const resolvedAccounts = {
-    metadata: { index: 0, isWritable: true, value: input.metadata ?? null },
-    owner: { index: 1, isWritable: true, value: input.owner ?? null },
-    mint: { index: 2, isWritable: true, value: input.mint ?? null },
+    metadata: {
+      index: 0,
+      isWritable: true as boolean,
+      value: input.metadata ?? null,
+    },
+    owner: {
+      index: 1,
+      isWritable: true as boolean,
+      value: input.owner ?? null,
+    },
+    mint: { index: 2, isWritable: true as boolean, value: input.mint ?? null },
     tokenAccount: {
       index: 3,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.tokenAccount ?? null,
     },
     masterEditionAccount: {
       index: 4,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.masterEditionAccount ?? null,
     },
     splTokenProgram: {
       index: 5,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.splTokenProgram ?? null,
     },
     collectionMetadata: {
       index: 6,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.collectionMetadata ?? null,
     },
     authorizationRules: {
       index: 7,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.authorizationRules ?? null,
     },
     authorizationRulesProgram: {
       index: 8,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.authorizationRulesProgram ?? null,
     },
   } satisfies ResolvedAccountsWithIndices;

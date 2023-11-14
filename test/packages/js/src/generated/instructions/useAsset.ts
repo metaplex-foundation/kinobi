@@ -101,47 +101,55 @@ export function useAsset(
 
   // Accounts.
   const resolvedAccounts = {
-    metadata: { index: 0, isWritable: true, value: input.metadata ?? null },
+    metadata: {
+      index: 0,
+      isWritable: true as boolean,
+      value: input.metadata ?? null,
+    },
     tokenAccount: {
       index: 1,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.tokenAccount ?? null,
     },
-    mint: { index: 2, isWritable: true, value: input.mint ?? null },
+    mint: { index: 2, isWritable: true as boolean, value: input.mint ?? null },
     useAuthority: {
       index: 3,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.useAuthority ?? null,
     },
-    owner: { index: 4, isWritable: false, value: input.owner ?? null },
+    owner: {
+      index: 4,
+      isWritable: false as boolean,
+      value: input.owner ?? null,
+    },
     splTokenProgram: {
       index: 5,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.splTokenProgram ?? null,
     },
     ataProgram: {
       index: 6,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.ataProgram ?? null,
     },
     systemProgram: {
       index: 7,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.systemProgram ?? null,
     },
     useAuthorityRecord: {
       index: 8,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.useAuthorityRecord ?? null,
     },
     authorizationRules: {
       index: 9,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.authorizationRules ?? null,
     },
     authorizationRulesProgram: {
       index: 10,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.authorizationRulesProgram ?? null,
     },
   } satisfies ResolvedAccountsWithIndices;

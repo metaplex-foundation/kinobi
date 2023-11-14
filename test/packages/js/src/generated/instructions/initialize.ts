@@ -96,49 +96,57 @@ export function initialize(
   const resolvedAccounts = {
     candyMachine: {
       index: 0,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.candyMachine ?? null,
     },
     authorityPda: {
       index: 1,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.authorityPda ?? null,
     },
-    authority: { index: 2, isWritable: false, value: input.authority ?? null },
-    payer: { index: 3, isWritable: false, value: input.payer ?? null },
+    authority: {
+      index: 2,
+      isWritable: false as boolean,
+      value: input.authority ?? null,
+    },
+    payer: {
+      index: 3,
+      isWritable: false as boolean,
+      value: input.payer ?? null,
+    },
     collectionMetadata: {
       index: 4,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.collectionMetadata ?? null,
     },
     collectionMint: {
       index: 5,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.collectionMint ?? null,
     },
     collectionMasterEdition: {
       index: 6,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.collectionMasterEdition ?? null,
     },
     collectionUpdateAuthority: {
       index: 7,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.collectionUpdateAuthority ?? null,
     },
     collectionAuthorityRecord: {
       index: 8,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.collectionAuthorityRecord ?? null,
     },
     tokenMetadataProgram: {
       index: 9,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.tokenMetadataProgram ?? null,
     },
     systemProgram: {
       index: 10,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.systemProgram ?? null,
     },
   } satisfies ResolvedAccountsWithIndices;

@@ -198,38 +198,50 @@ export function updateV1(
 
   // Accounts.
   const resolvedAccounts = {
-    authority: { index: 0, isWritable: false, value: input.authority ?? null },
-    metadata: { index: 1, isWritable: true, value: input.metadata ?? null },
+    authority: {
+      index: 0,
+      isWritable: false as boolean,
+      value: input.authority ?? null,
+    },
+    metadata: {
+      index: 1,
+      isWritable: true as boolean,
+      value: input.metadata ?? null,
+    },
     masterEdition: {
       index: 2,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.masterEdition ?? null,
     },
-    mint: { index: 3, isWritable: false, value: input.mint ?? null },
+    mint: { index: 3, isWritable: false as boolean, value: input.mint ?? null },
     systemProgram: {
       index: 4,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.systemProgram ?? null,
     },
     sysvarInstructions: {
       index: 5,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.sysvarInstructions ?? null,
     },
-    token: { index: 6, isWritable: false, value: input.token ?? null },
+    token: {
+      index: 6,
+      isWritable: false as boolean,
+      value: input.token ?? null,
+    },
     delegateRecord: {
       index: 7,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.delegateRecord ?? null,
     },
     authorizationRulesProgram: {
       index: 8,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.authorizationRulesProgram ?? null,
     },
     authorizationRules: {
       index: 9,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.authorizationRules ?? null,
     },
   } satisfies ResolvedAccountsWithIndices;

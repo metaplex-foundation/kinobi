@@ -93,44 +93,60 @@ export function mint(
 
   // Accounts.
   const resolvedAccounts = {
-    token: { index: 0, isWritable: true, value: input.token ?? null },
-    metadata: { index: 1, isWritable: false, value: input.metadata ?? null },
+    token: {
+      index: 0,
+      isWritable: true as boolean,
+      value: input.token ?? null,
+    },
+    metadata: {
+      index: 1,
+      isWritable: false as boolean,
+      value: input.metadata ?? null,
+    },
     masterEdition: {
       index: 2,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.masterEdition ?? null,
     },
-    mint: { index: 3, isWritable: true, value: input.mint ?? null },
-    payer: { index: 4, isWritable: true, value: input.payer ?? null },
-    authority: { index: 5, isWritable: false, value: input.authority ?? null },
+    mint: { index: 3, isWritable: true as boolean, value: input.mint ?? null },
+    payer: {
+      index: 4,
+      isWritable: true as boolean,
+      value: input.payer ?? null,
+    },
+    authority: {
+      index: 5,
+      isWritable: false as boolean,
+      value: input.authority ?? null,
+    },
     systemProgram: {
       index: 6,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.systemProgram ?? null,
     },
     sysvarInstructions: {
       index: 7,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.sysvarInstructions ?? null,
     },
     splTokenProgram: {
       index: 8,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.splTokenProgram ?? null,
     },
     splAtaProgram: {
       index: 9,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.splAtaProgram ?? null,
     },
     authorizationRulesProgram: {
       index: 10,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.authorizationRulesProgram ?? null,
     },
     authorizationRules: {
       index: 11,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.authorizationRules ?? null,
     },
   } satisfies ResolvedAccountsWithIndices;

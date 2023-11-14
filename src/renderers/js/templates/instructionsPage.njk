@@ -39,7 +39,7 @@ export function {{ instruction.name | camelCase }}(
   // Accounts.
   const resolvedAccounts = {
     {% for account in accounts %}
-      {{ account.name | camelCase }}: { index: {{ loop.index0 }}, isWritable: {{ 'true' if account.isWritable else 'false' }}, value: {{ accountsObj }}.{{ account.name | camelCase }} ?? null },
+      {{ account.name | camelCase }}: { index: {{ loop.index0 }}, isWritable: {{ 'true' if account.isWritable else 'false' }} as boolean, value: {{ accountsObj }}.{{ account.name | camelCase }} ?? null },
     {% endfor %}
   } satisfies ResolvedAccountsWithIndices;
 

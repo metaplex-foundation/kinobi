@@ -110,37 +110,45 @@ export function deprecatedMintPrintingTokensViaToken(
   const resolvedAccounts = {
     destination: {
       index: 0,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.destination ?? null,
     },
-    token: { index: 1, isWritable: true, value: input.token ?? null },
+    token: {
+      index: 1,
+      isWritable: true as boolean,
+      value: input.token ?? null,
+    },
     oneTimePrintingAuthorizationMint: {
       index: 2,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.oneTimePrintingAuthorizationMint ?? null,
     },
     printingMint: {
       index: 3,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.printingMint ?? null,
     },
     burnAuthority: {
       index: 4,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.burnAuthority ?? null,
     },
-    metadata: { index: 5, isWritable: false, value: input.metadata ?? null },
+    metadata: {
+      index: 5,
+      isWritable: false as boolean,
+      value: input.metadata ?? null,
+    },
     masterEdition: {
       index: 6,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.masterEdition ?? null,
     },
     tokenProgram: {
       index: 7,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.tokenProgram ?? null,
     },
-    rent: { index: 8, isWritable: false, value: input.rent ?? null },
+    rent: { index: 8, isWritable: false as boolean, value: input.rent ?? null },
   } satisfies ResolvedAccountsWithIndices;
 
   // Arguments.

@@ -81,21 +81,29 @@ export function verify(
 
   // Accounts.
   const resolvedAccounts = {
-    metadata: { index: 0, isWritable: true, value: input.metadata ?? null },
+    metadata: {
+      index: 0,
+      isWritable: true as boolean,
+      value: input.metadata ?? null,
+    },
     collectionAuthority: {
       index: 1,
-      isWritable: true,
+      isWritable: true as boolean,
       value: input.collectionAuthority ?? null,
     },
-    payer: { index: 2, isWritable: true, value: input.payer ?? null },
+    payer: {
+      index: 2,
+      isWritable: true as boolean,
+      value: input.payer ?? null,
+    },
     authorizationRules: {
       index: 3,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.authorizationRules ?? null,
     },
     authorizationRulesProgram: {
       index: 4,
-      isWritable: false,
+      isWritable: false as boolean,
       value: input.authorizationRulesProgram ?? null,
     },
   } satisfies ResolvedAccountsWithIndices;
