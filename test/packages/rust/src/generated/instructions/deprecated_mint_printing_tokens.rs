@@ -395,8 +395,8 @@ impl<'a, 'b> DeprecatedMintPrintingTokensCpi<'a, 'b> {
 ///   2. `[signer]` update_authority
 ///   3. `[]` metadata
 ///   4. `[]` master_edition
-///   5. `[optional]` token_program
-///   6. `[optional]` rent
+///   5. `[]` token_program
+///   6. `[]` rent
 pub struct DeprecatedMintPrintingTokensCpiBuilder<'a, 'b> {
     instruction: Box<DeprecatedMintPrintingTokensCpiBuilderInstruction<'a, 'b>>,
 }

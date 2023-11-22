@@ -644,9 +644,9 @@ impl<'a, 'b> MintFromCandyMachineCpi<'a, 'b> {
 ///   10. `[writable]` collection_metadata
 ///   11. `[]` collection_master_edition
 ///   12. `[]` collection_update_authority
-///   13. `[optional]` token_metadata_program
-///   14. `[optional]` token_program
-///   15. `[optional]` system_program
+///   13. `[]` token_metadata_program
+///   14. `[]` token_program
+///   15. `[]` system_program
 ///   16. `[]` recent_slothashes
 pub struct MintFromCandyMachineCpiBuilder<'a, 'b> {
     instruction: Box<MintFromCandyMachineCpiBuilderInstruction<'a, 'b>>,

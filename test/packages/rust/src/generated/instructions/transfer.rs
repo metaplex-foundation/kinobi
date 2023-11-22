@@ -688,10 +688,10 @@ impl<'a, 'b> TransferCpi<'a, 'b> {
 ///   6. `[]` mint
 ///   7. `[writable]` metadata
 ///   8. `[optional]` master_edition
-///   9. `[optional]` spl_token_program
-///   10. `[optional]` spl_ata_program
-///   11. `[optional]` system_program
-///   12. `[optional]` sysvar_instructions
+///   9. `[]` spl_token_program
+///   10. `[]` spl_ata_program
+///   11. `[]` system_program
+///   12. `[]` sysvar_instructions
 ///   13. `[optional]` authorization_rules_program
 ///   14. `[optional]` authorization_rules
 pub struct TransferCpiBuilder<'a, 'b> {

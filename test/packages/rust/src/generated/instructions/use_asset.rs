@@ -550,9 +550,9 @@ impl<'a, 'b> UseAssetCpi<'a, 'b> {
 ///   2. `[writable]` mint
 ///   3. `[writable, signer]` use_authority
 ///   4. `[]` owner
-///   5. `[optional]` spl_token_program
-///   6. `[optional]` ata_program
-///   7. `[optional]` system_program
+///   5. `[]` spl_token_program
+///   6. `[]` ata_program
+///   7. `[]` system_program
 ///   8. `[writable, optional]` use_authority_record
 ///   9. `[optional]` authorization_rules
 ///   10. `[optional]` authorization_rules_program

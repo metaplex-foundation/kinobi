@@ -304,7 +304,7 @@ impl<'a, 'b> FreezeDelegatedAccountCpi<'a, 'b> {
 ///   1. `[writable]` token_account
 ///   2. `[]` edition
 ///   3. `[]` mint
-///   4. `[optional]` token_program
+///   4. `[]` token_program
 pub struct FreezeDelegatedAccountCpiBuilder<'a, 'b> {
     instruction: Box<FreezeDelegatedAccountCpiBuilderInstruction<'a, 'b>>,
 }

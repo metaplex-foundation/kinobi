@@ -698,9 +698,9 @@ impl<'a, 'b> MintNewEditionFromMasterEditionViaVaultProxyCpi<'a, 'b> {
 ///   10. `[]` vault
 ///   11. `[]` new_metadata_update_authority
 ///   12. `[]` metadata
-///   13. `[optional]` token_program
+///   13. `[]` token_program
 ///   14. `[]` token_vault_program
-///   15. `[optional]` system_program
+///   15. `[]` system_program
 ///   16. `[optional]` rent
 pub struct MintNewEditionFromMasterEditionViaVaultProxyCpiBuilder<'a, 'b> {
     instruction: Box<MintNewEditionFromMasterEditionViaVaultProxyCpiBuilderInstruction<'a, 'b>>,

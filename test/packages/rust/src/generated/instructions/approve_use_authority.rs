@@ -513,8 +513,8 @@ impl<'a, 'b> ApproveUseAuthorityCpi<'a, 'b> {
 ///   5. `[]` metadata
 ///   6. `[]` mint
 ///   7. `[]` burner
-///   8. `[optional]` token_program
-///   9. `[optional]` system_program
+///   8. `[]` token_program
+///   9. `[]` system_program
 ///   10. `[optional]` rent
 pub struct ApproveUseAuthorityCpiBuilder<'a, 'b> {
     instruction: Box<ApproveUseAuthorityCpiBuilderInstruction<'a, 'b>>,

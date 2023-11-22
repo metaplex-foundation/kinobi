@@ -304,7 +304,7 @@ impl<'a, 'b> ThawDelegatedAccountCpi<'a, 'b> {
 ///   1. `[writable]` token_account
 ///   2. `[]` edition
 ///   3. `[]` mint
-///   4. `[optional]` token_program
+///   4. `[]` token_program
 pub struct ThawDelegatedAccountCpiBuilder<'a, 'b> {
     instruction: Box<ThawDelegatedAccountCpiBuilderInstruction<'a, 'b>>,
 }

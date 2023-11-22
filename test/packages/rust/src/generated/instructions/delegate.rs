@@ -636,8 +636,8 @@ impl<'a, 'b> DelegateCpi<'a, 'b> {
 ///   5. `[writable, optional]` token
 ///   6. `[signer]` authority
 ///   7. `[writable, signer]` payer
-///   8. `[optional]` system_program
-///   9. `[optional]` sysvar_instructions
+///   8. `[]` system_program
+///   9. `[]` sysvar_instructions
 ///   10. `[optional]` spl_token_program
 ///   11. `[optional]` authorization_rules_program
 ///   12. `[optional]` authorization_rules

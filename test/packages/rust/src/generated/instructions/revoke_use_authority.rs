@@ -432,8 +432,8 @@ impl<'a, 'b> RevokeUseAuthorityCpi<'a, 'b> {
 ///   3. `[writable]` owner_token_account
 ///   4. `[]` mint
 ///   5. `[]` metadata
-///   6. `[optional]` token_program
-///   7. `[optional]` system_program
+///   6. `[]` token_program
+///   7. `[]` system_program
 ///   8. `[optional]` rent
 pub struct RevokeUseAuthorityCpiBuilder<'a, 'b> {
     instruction: Box<RevokeUseAuthorityCpiBuilderInstruction<'a, 'b>>,

@@ -609,8 +609,8 @@ impl<'a, 'b> MintNewEditionFromMasterEditionViaTokenCpi<'a, 'b> {
 ///   8. `[]` token_account
 ///   9. `[]` new_metadata_update_authority
 ///   10. `[]` metadata
-///   11. `[optional]` token_program
-///   12. `[optional]` system_program
+///   11. `[]` token_program
+///   12. `[]` system_program
 ///   13. `[optional]` rent
 pub struct MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a, 'b> {
     instruction: Box<MintNewEditionFromMasterEditionViaTokenCpiBuilderInstruction<'a, 'b>>,

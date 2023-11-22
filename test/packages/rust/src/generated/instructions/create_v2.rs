@@ -478,9 +478,9 @@ impl<'a, 'b> CreateV2Cpi<'a, 'b> {
 ///   3. `[signer]` mint_authority
 ///   4. `[writable, signer]` payer
 ///   5. `[]` update_authority
-///   6. `[optional]` system_program
-///   7. `[optional]` sysvar_instructions
-///   8. `[optional]` spl_token_program
+///   6. `[]` system_program
+///   7. `[]` sysvar_instructions
+///   8. `[]` spl_token_program
 pub struct CreateV2CpiBuilder<'a, 'b> {
     instruction: Box<CreateV2CpiBuilderInstruction<'a, 'b>>,
 }

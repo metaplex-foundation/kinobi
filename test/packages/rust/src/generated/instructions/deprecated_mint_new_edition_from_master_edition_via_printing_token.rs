@@ -624,9 +624,9 @@ impl<'a, 'b> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a, 'b
 ///   9. `[signer]` payer
 ///   10. `[]` master_update_authority
 ///   11. `[]` master_metadata
-///   12. `[optional]` token_program
-///   13. `[optional]` system_program
-///   14. `[optional]` rent
+///   12. `[]` token_program
+///   13. `[]` system_program
+///   14. `[]` rent
 ///   15. `[writable, optional]` reservation_list
 pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpiBuilder<'a, 'b> {
     instruction:

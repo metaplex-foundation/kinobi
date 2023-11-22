@@ -287,7 +287,7 @@ impl<'a, 'b> CreateRuleSetCpi<'a, 'b> {
 ///
 ///   0. `[writable, signer]` payer
 ///   1. `[writable]` rule_set_pda
-///   2. `[optional]` system_program
+///   2. `[]` system_program
 pub struct CreateRuleSetCpiBuilder<'a, 'b> {
     instruction: Box<CreateRuleSetCpiBuilderInstruction<'a, 'b>>,
 }

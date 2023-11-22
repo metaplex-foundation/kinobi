@@ -460,8 +460,8 @@ impl<'a, 'b> CreateMasterEditionV3Cpi<'a, 'b> {
 ///   3. `[signer]` mint_authority
 ///   4. `[writable, signer]` payer
 ///   5. `[writable]` metadata
-///   6. `[optional]` token_program
-///   7. `[optional]` system_program
+///   6. `[]` token_program
+///   7. `[]` system_program
 ///   8. `[optional]` rent
 pub struct CreateMasterEditionV3CpiBuilder<'a, 'b> {
     instruction: Box<CreateMasterEditionV3CpiBuilderInstruction<'a, 'b>>,

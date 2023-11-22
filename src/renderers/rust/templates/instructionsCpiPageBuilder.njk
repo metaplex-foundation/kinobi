@@ -10,7 +10,7 @@
   {% if account.isSigner %}
     {% set modifiers = modifiers + ', signer' if modifiers.length > 0 else 'signer' %}
   {% endif %}
-  {% if account.isOptional or account.defaultsTo.kind === 'program' or account.defaultsTo.kind === 'publicKey' %}
+  {% if account.isOptional %}
     {% set modifiers = modifiers + ', optional' if modifiers.length > 0 else 'optional' %}
   {% endif %}
   {{ '///   ' + loop.index0 + '. `[' + modifiers + ']` ' + account.name | snakeCase }}

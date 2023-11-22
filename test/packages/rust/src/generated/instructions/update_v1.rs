@@ -679,8 +679,8 @@ impl<'a, 'b> UpdateV1Cpi<'a, 'b> {
 ///   1. `[writable]` metadata
 ///   2. `[writable, optional]` master_edition
 ///   3. `[]` mint
-///   4. `[optional]` system_program
-///   5. `[optional]` sysvar_instructions
+///   4. `[]` system_program
+///   5. `[]` sysvar_instructions
 ///   6. `[optional]` token
 ///   7. `[optional]` delegate_record
 ///   8. `[optional]` authorization_rules_program

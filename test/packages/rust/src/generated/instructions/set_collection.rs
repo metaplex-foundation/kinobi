@@ -564,8 +564,8 @@ impl<'a, 'b> SetCollectionCpi<'a, 'b> {
 ///   9. `[]` new_collection_mint
 ///   10. `[]` new_collection_master_edition
 ///   11. `[writable]` new_collection_authority_record
-///   12. `[optional]` token_metadata_program
-///   13. `[optional]` system_program
+///   12. `[]` token_metadata_program
+///   13. `[]` system_program
 pub struct SetCollectionCpiBuilder<'a, 'b> {
     instruction: Box<SetCollectionCpiBuilderInstruction<'a, 'b>>,
 }

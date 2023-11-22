@@ -389,8 +389,8 @@ impl<'a, 'b> CreateReservationListCpi<'a, 'b> {
 ///   3. `[]` master_edition
 ///   4. `[]` resource
 ///   5. `[]` metadata
-///   6. `[optional]` system_program
-///   7. `[optional]` rent
+///   6. `[]` system_program
+///   7. `[]` rent
 pub struct CreateReservationListCpiBuilder<'a, 'b> {
     instruction: Box<CreateReservationListCpiBuilderInstruction<'a, 'b>>,
 }

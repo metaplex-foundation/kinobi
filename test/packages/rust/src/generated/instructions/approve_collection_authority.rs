@@ -408,7 +408,7 @@ impl<'a, 'b> ApproveCollectionAuthorityCpi<'a, 'b> {
 ///   3. `[writable, signer]` payer
 ///   4. `[]` metadata
 ///   5. `[]` mint
-///   6. `[optional]` system_program
+///   6. `[]` system_program
 ///   7. `[optional]` rent
 pub struct ApproveCollectionAuthorityCpiBuilder<'a, 'b> {
     instruction: Box<ApproveCollectionAuthorityCpiBuilderInstruction<'a, 'b>>,

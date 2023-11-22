@@ -378,7 +378,7 @@ impl<'a, 'b> BurnNftCpi<'a, 'b> {
 ///   2. `[writable]` mint
 ///   3. `[writable]` token_account
 ///   4. `[writable]` master_edition_account
-///   5. `[optional]` spl_token_program
+///   5. `[]` spl_token_program
 ///   6. `[writable, optional]` collection_metadata
 pub struct BurnNftCpiBuilder<'a, 'b> {
     instruction: Box<BurnNftCpiBuilderInstruction<'a, 'b>>,

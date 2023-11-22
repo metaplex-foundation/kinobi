@@ -492,9 +492,9 @@ impl<'a, 'b> MigrateCpi<'a, 'b> {
 ///   3. `[]` mint
 ///   4. `[signer]` update_authority
 ///   5. `[]` collection_metadata
-///   6. `[optional]` token_program
-///   7. `[optional]` system_program
-///   8. `[optional]` sysvar_instructions
+///   6. `[]` token_program
+///   7. `[]` system_program
+///   8. `[]` sysvar_instructions
 ///   9. `[optional]` authorization_rules
 pub struct MigrateCpiBuilder<'a, 'b> {
     instruction: Box<MigrateCpiBuilderInstruction<'a, 'b>>,

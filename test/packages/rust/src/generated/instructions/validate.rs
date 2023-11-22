@@ -650,7 +650,7 @@ impl<'a, 'b> ValidateCpi<'a, 'b> {
 ///
 ///   0. `[writable, signer]` payer
 ///   1. `[writable]` rule_set
-///   2. `[optional]` system_program
+///   2. `[]` system_program
 ///   3. `[signer, optional]` opt_rule_signer1
 ///   4. `[signer, optional]` opt_rule_signer2
 ///   5. `[signer, optional]` opt_rule_signer3

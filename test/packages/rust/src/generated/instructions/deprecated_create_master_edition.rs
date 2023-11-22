@@ -569,9 +569,9 @@ impl<'a, 'b> DeprecatedCreateMasterEditionCpi<'a, 'b> {
 ///   6. `[signer]` mint_authority
 ///   7. `[]` metadata
 ///   8. `[signer]` payer
-///   9. `[optional]` token_program
-///   10. `[optional]` system_program
-///   11. `[optional]` rent
+///   9. `[]` token_program
+///   10. `[]` system_program
+///   11. `[]` rent
 ///   12. `[signer]` one_time_printing_authorization_mint_authority
 pub struct DeprecatedCreateMasterEditionCpiBuilder<'a, 'b> {
     instruction: Box<DeprecatedCreateMasterEditionCpiBuilderInstruction<'a, 'b>>,

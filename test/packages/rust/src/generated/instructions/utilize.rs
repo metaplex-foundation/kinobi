@@ -524,10 +524,10 @@ impl<'a, 'b> UtilizeCpi<'a, 'b> {
 ///   2. `[writable]` mint
 ///   3. `[writable, signer]` use_authority
 ///   4. `[]` owner
-///   5. `[optional]` token_program
-///   6. `[optional]` ata_program
-///   7. `[optional]` system_program
-///   8. `[optional]` rent
+///   5. `[]` token_program
+///   6. `[]` ata_program
+///   7. `[]` system_program
+///   8. `[]` rent
 ///   9. `[writable, optional]` use_authority_record
 ///   10. `[optional]` burner
 pub struct UtilizeCpiBuilder<'a, 'b> {

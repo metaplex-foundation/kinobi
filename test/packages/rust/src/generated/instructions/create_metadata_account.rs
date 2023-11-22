@@ -416,8 +416,8 @@ impl<'a, 'b> CreateMetadataAccountCpi<'a, 'b> {
 ///   2. `[signer]` mint_authority
 ///   3. `[writable, signer]` payer
 ///   4. `[]` update_authority
-///   5. `[optional]` system_program
-///   6. `[optional]` rent
+///   5. `[]` system_program
+///   6. `[]` rent
 pub struct CreateMetadataAccountCpiBuilder<'a, 'b> {
     instruction: Box<CreateMetadataAccountCpiBuilderInstruction<'a, 'b>>,
 }

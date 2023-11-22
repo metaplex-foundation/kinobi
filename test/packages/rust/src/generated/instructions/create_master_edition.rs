@@ -447,9 +447,9 @@ impl<'a, 'b> CreateMasterEditionCpi<'a, 'b> {
 ///   3. `[signer]` mint_authority
 ///   4. `[writable, signer]` payer
 ///   5. `[]` metadata
-///   6. `[optional]` token_program
-///   7. `[optional]` system_program
-///   8. `[optional]` rent
+///   6. `[]` token_program
+///   7. `[]` system_program
+///   8. `[]` rent
 pub struct CreateMasterEditionCpiBuilder<'a, 'b> {
     instruction: Box<CreateMasterEditionCpiBuilderInstruction<'a, 'b>>,
 }

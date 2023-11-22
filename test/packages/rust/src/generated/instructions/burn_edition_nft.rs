@@ -468,7 +468,7 @@ impl<'a, 'b> BurnEditionNftCpi<'a, 'b> {
 ///   6. `[writable]` master_edition_account
 ///   7. `[writable]` print_edition_account
 ///   8. `[writable]` edition_marker_account
-///   9. `[optional]` spl_token_program
+///   9. `[]` spl_token_program
 pub struct BurnEditionNftCpiBuilder<'a, 'b> {
     instruction: Box<BurnEditionNftCpiBuilderInstruction<'a, 'b>>,
 }

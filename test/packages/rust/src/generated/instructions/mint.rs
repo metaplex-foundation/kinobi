@@ -581,10 +581,10 @@ impl<'a, 'b> MintCpi<'a, 'b> {
 ///   3. `[writable]` mint
 ///   4. `[writable, signer]` payer
 ///   5. `[signer]` authority
-///   6. `[optional]` system_program
-///   7. `[optional]` sysvar_instructions
-///   8. `[optional]` spl_token_program
-///   9. `[optional]` spl_ata_program
+///   6. `[]` system_program
+///   7. `[]` sysvar_instructions
+///   8. `[]` spl_token_program
+///   9. `[]` spl_ata_program
 ///   10. `[optional]` authorization_rules_program
 ///   11. `[optional]` authorization_rules
 pub struct MintCpiBuilder<'a, 'b> {

@@ -418,7 +418,7 @@ impl<'a, 'b> CreateMetadataAccountV3Cpi<'a, 'b> {
 ///   2. `[signer]` mint_authority
 ///   3. `[writable, signer]` payer
 ///   4. `[]` update_authority
-///   5. `[optional]` system_program
+///   5. `[]` system_program
 ///   6. `[optional]` rent
 pub struct CreateMetadataAccountV3CpiBuilder<'a, 'b> {
     instruction: Box<CreateMetadataAccountV3CpiBuilderInstruction<'a, 'b>>,

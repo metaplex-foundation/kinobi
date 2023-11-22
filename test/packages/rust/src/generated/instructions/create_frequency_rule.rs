@@ -309,7 +309,7 @@ impl<'a, 'b> CreateFrequencyRuleCpi<'a, 'b> {
 ///
 ///   0. `[writable, signer]` payer
 ///   1. `[writable]` frequency_pda
-///   2. `[optional]` system_program
+///   2. `[]` system_program
 pub struct CreateFrequencyRuleCpiBuilder<'a, 'b> {
     instruction: Box<CreateFrequencyRuleCpiBuilderInstruction<'a, 'b>>,
 }

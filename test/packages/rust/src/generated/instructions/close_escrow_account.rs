@@ -386,8 +386,8 @@ impl<'a, 'b> CloseEscrowAccountCpi<'a, 'b> {
 ///   3. `[]` token_account
 ///   4. `[]` edition
 ///   5. `[writable, signer]` payer
-///   6. `[optional]` system_program
-///   7. `[optional]` sysvar_instructions
+///   6. `[]` system_program
+///   7. `[]` sysvar_instructions
 pub struct CloseEscrowAccountCpiBuilder<'a, 'b> {
     instruction: Box<CloseEscrowAccountCpiBuilderInstruction<'a, 'b>>,
 }

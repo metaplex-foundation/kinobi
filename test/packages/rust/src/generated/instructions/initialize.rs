@@ -502,8 +502,8 @@ impl<'a, 'b> InitializeCpi<'a, 'b> {
 ///   6. `[]` collection_master_edition
 ///   7. `[writable, signer]` collection_update_authority
 ///   8. `[writable]` collection_authority_record
-///   9. `[optional]` token_metadata_program
-///   10. `[optional]` system_program
+///   9. `[]` token_metadata_program
+///   10. `[]` system_program
 pub struct InitializeCpiBuilder<'a, 'b> {
     instruction: Box<InitializeCpiBuilderInstruction<'a, 'b>>,
 }

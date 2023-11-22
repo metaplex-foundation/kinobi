@@ -563,10 +563,10 @@ impl<'a, 'b> TransferOutOfEscrowCpi<'a, 'b> {
 ///   5. `[writable]` attribute_dst
 ///   6. `[]` escrow_mint
 ///   7. `[]` escrow_account
-///   8. `[optional]` system_program
-///   9. `[optional]` ata_program
-///   10. `[optional]` token_program
-///   11. `[optional]` sysvar_instructions
+///   8. `[]` system_program
+///   9. `[]` ata_program
+///   10. `[]` token_program
+///   11. `[]` sysvar_instructions
 ///   12. `[signer, optional]` authority
 pub struct TransferOutOfEscrowCpiBuilder<'a, 'b> {
     instruction: Box<TransferOutOfEscrowCpiBuilderInstruction<'a, 'b>>,
