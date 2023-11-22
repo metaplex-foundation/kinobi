@@ -73,7 +73,12 @@ pub struct AddConfigLinesInstructionArgs {
     pub more_lines: U64PrefixVec<ConfigLine>,
 }
 
-/// Instruction builder.
+/// Instruction builder for `AddConfigLines`.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` candy_machine
+///   1. `[signer]` authority
 #[derive(Default)]
 pub struct AddConfigLinesBuilder {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
@@ -253,7 +258,12 @@ impl<'a, 'b> AddConfigLinesCpi<'a, 'b> {
     }
 }
 
-/// `add_config_lines` CPI instruction builder.
+/// Instruction builder for `AddConfigLines` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` candy_machine
+///   1. `[signer]` authority
 pub struct AddConfigLinesCpiBuilder<'a, 'b> {
     instruction: Box<AddConfigLinesCpiBuilderInstruction<'a, 'b>>,
 }

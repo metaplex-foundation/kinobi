@@ -63,7 +63,13 @@ impl SetMintAuthorityInstructionData {
     }
 }
 
-/// Instruction builder.
+/// Instruction builder for `SetMintAuthority`.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` candy_machine
+///   1. `[signer]` authority
+///   2. `[signer]` mint_authority
 #[derive(Default)]
 pub struct SetMintAuthorityBuilder {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
@@ -231,7 +237,13 @@ impl<'a, 'b> SetMintAuthorityCpi<'a, 'b> {
     }
 }
 
-/// `set_mint_authority` CPI instruction builder.
+/// Instruction builder for `SetMintAuthority` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` candy_machine
+///   1. `[signer]` authority
+///   2. `[signer]` mint_authority
 pub struct SetMintAuthorityCpiBuilder<'a, 'b> {
     instruction: Box<SetMintAuthorityCpiBuilderInstruction<'a, 'b>>,
 }

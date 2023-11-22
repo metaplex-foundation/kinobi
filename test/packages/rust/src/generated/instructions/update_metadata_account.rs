@@ -84,7 +84,12 @@ pub struct UpdateMetadataAccountInstructionDataData {
     pub creators: Option<Vec<Creator>>,
 }
 
-/// Instruction builder.
+/// Instruction builder for `UpdateMetadataAccount`.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` metadata
+///   1. `[signer]` update_authority
 #[derive(Default)]
 pub struct UpdateMetadataAccountBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
@@ -275,7 +280,12 @@ impl<'a, 'b> UpdateMetadataAccountCpi<'a, 'b> {
     }
 }
 
-/// `update_metadata_account` CPI instruction builder.
+/// Instruction builder for `UpdateMetadataAccount` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` metadata
+///   1. `[signer]` update_authority
 pub struct UpdateMetadataAccountCpiBuilder<'a, 'b> {
     instruction: Box<UpdateMetadataAccountCpiBuilderInstruction<'a, 'b>>,
 }

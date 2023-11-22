@@ -123,7 +123,21 @@ pub struct InitializeInstructionArgs {
     pub data: CandyMachineData,
 }
 
-/// Instruction builder.
+/// Instruction builder for `Initialize`.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` candy_machine
+///   1. `[writable]` authority_pda
+///   2. `[]` authority
+///   3. `[signer]` payer
+///   4. `[]` collection_metadata
+///   5. `[]` collection_mint
+///   6. `[]` collection_master_edition
+///   7. `[writable, signer]` collection_update_authority
+///   8. `[writable]` collection_authority_record
+///   9. `[optional]` token_metadata_program (default to `metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s`)
+///   10. `[optional]` system_program (default to `11111111111111111111111111111111`)
 #[derive(Default)]
 pub struct InitializeBuilder {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
@@ -475,7 +489,21 @@ impl<'a, 'b> InitializeCpi<'a, 'b> {
     }
 }
 
-/// `initialize` CPI instruction builder.
+/// Instruction builder for `Initialize` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` candy_machine
+///   1. `[writable]` authority_pda
+///   2. `[]` authority
+///   3. `[signer]` payer
+///   4. `[]` collection_metadata
+///   5. `[]` collection_mint
+///   6. `[]` collection_master_edition
+///   7. `[writable, signer]` collection_update_authority
+///   8. `[writable]` collection_authority_record
+///   9. `[]` token_metadata_program
+///   10. `[]` system_program
 pub struct InitializeCpiBuilder<'a, 'b> {
     instruction: Box<InitializeCpiBuilderInstruction<'a, 'b>>,
 }

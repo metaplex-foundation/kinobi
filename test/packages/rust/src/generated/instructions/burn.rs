@@ -130,7 +130,19 @@ pub struct BurnInstructionArgs {
     pub burn_args: BurnArgs,
 }
 
-/// Instruction builder.
+/// Instruction builder for `Burn`.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` metadata
+///   1. `[writable, signer]` owner
+///   2. `[writable]` mint
+///   3. `[writable]` token_account
+///   4. `[writable]` master_edition_account
+///   5. `[optional]` spl_token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
+///   6. `[writable, optional]` collection_metadata
+///   7. `[optional]` authorization_rules
+///   8. `[optional]` authorization_rules_program
 #[derive(Default)]
 pub struct BurnBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
@@ -475,7 +487,19 @@ impl<'a, 'b> BurnCpi<'a, 'b> {
     }
 }
 
-/// `burn` CPI instruction builder.
+/// Instruction builder for `Burn` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` metadata
+///   1. `[writable, signer]` owner
+///   2. `[writable]` mint
+///   3. `[writable]` token_account
+///   4. `[writable]` master_edition_account
+///   5. `[]` spl_token_program
+///   6. `[writable, optional]` collection_metadata
+///   7. `[optional]` authorization_rules
+///   8. `[optional]` authorization_rules_program
 pub struct BurnCpiBuilder<'a, 'b> {
     instruction: Box<BurnCpiBuilderInstruction<'a, 'b>>,
 }

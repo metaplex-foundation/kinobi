@@ -75,7 +75,13 @@ pub struct CreateRuleSetInstructionArgs {
     pub rule_set_bump: u8,
 }
 
-/// Instruction builder.
+/// Instruction builder for `CreateRuleSet`.
+///
+/// ### Accounts:
+///
+///   0. `[writable, signer]` payer
+///   1. `[writable]` rule_set_pda
+///   2. `[optional]` system_program (default to `11111111111111111111111111111111`)
 #[derive(Default)]
 pub struct CreateRuleSetBuilder {
     payer: Option<solana_program::pubkey::Pubkey>,
@@ -275,7 +281,13 @@ impl<'a, 'b> CreateRuleSetCpi<'a, 'b> {
     }
 }
 
-/// `create_rule_set` CPI instruction builder.
+/// Instruction builder for `CreateRuleSet` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable, signer]` payer
+///   1. `[writable]` rule_set_pda
+///   2. `[]` system_program
 pub struct CreateRuleSetCpiBuilder<'a, 'b> {
     instruction: Box<CreateRuleSetCpiBuilderInstruction<'a, 'b>>,
 }

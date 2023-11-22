@@ -134,7 +134,23 @@ pub struct DeprecatedCreateMasterEditionInstructionArgs {
     pub create_master_edition_args: CreateMasterEditionArgs,
 }
 
-/// Instruction builder.
+/// Instruction builder for `DeprecatedCreateMasterEdition`.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` edition
+///   1. `[writable]` mint
+///   2. `[writable]` printing_mint
+///   3. `[writable]` one_time_printing_authorization_mint
+///   4. `[signer]` update_authority
+///   5. `[signer]` printing_mint_authority
+///   6. `[signer]` mint_authority
+///   7. `[]` metadata
+///   8. `[signer]` payer
+///   9. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
+///   10. `[optional]` system_program (default to `11111111111111111111111111111111`)
+///   11. `[optional]` rent (default to `SysvarRent111111111111111111111111111111111`)
+///   12. `[signer]` one_time_printing_authorization_mint_authority
 #[derive(Default)]
 pub struct DeprecatedCreateMasterEditionBuilder {
     edition: Option<solana_program::pubkey::Pubkey>,
@@ -540,7 +556,23 @@ impl<'a, 'b> DeprecatedCreateMasterEditionCpi<'a, 'b> {
     }
 }
 
-/// `deprecated_create_master_edition` CPI instruction builder.
+/// Instruction builder for `DeprecatedCreateMasterEdition` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` edition
+///   1. `[writable]` mint
+///   2. `[writable]` printing_mint
+///   3. `[writable]` one_time_printing_authorization_mint
+///   4. `[signer]` update_authority
+///   5. `[signer]` printing_mint_authority
+///   6. `[signer]` mint_authority
+///   7. `[]` metadata
+///   8. `[signer]` payer
+///   9. `[]` token_program
+///   10. `[]` system_program
+///   11. `[]` rent
+///   12. `[signer]` one_time_printing_authorization_mint_authority
 pub struct DeprecatedCreateMasterEditionCpiBuilder<'a, 'b> {
     instruction: Box<DeprecatedCreateMasterEditionCpiBuilderInstruction<'a, 'b>>,
 }

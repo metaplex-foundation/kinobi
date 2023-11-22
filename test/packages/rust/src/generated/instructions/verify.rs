@@ -100,7 +100,15 @@ pub struct VerifyInstructionArgs {
     pub verify_args: VerifyArgs,
 }
 
-/// Instruction builder.
+/// Instruction builder for `Verify`.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` metadata
+///   1. `[writable, signer]` collection_authority
+///   2. `[writable, signer]` payer
+///   3. `[optional]` authorization_rules
+///   4. `[optional]` authorization_rules_program
 #[derive(Default)]
 pub struct VerifyBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
@@ -354,7 +362,15 @@ impl<'a, 'b> VerifyCpi<'a, 'b> {
     }
 }
 
-/// `verify` CPI instruction builder.
+/// Instruction builder for `Verify` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` metadata
+///   1. `[writable, signer]` collection_authority
+///   2. `[writable, signer]` payer
+///   3. `[optional]` authorization_rules
+///   4. `[optional]` authorization_rules_program
 pub struct VerifyCpiBuilder<'a, 'b> {
     instruction: Box<VerifyCpiBuilderInstruction<'a, 'b>>,
 }
