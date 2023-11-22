@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -173,29 +173,25 @@ export function createMetadataAccountV3Instruction<
 >(
   accounts: {
     metadata: TAccountMetadata extends string
-      ? Base58EncodedAddress<TAccountMetadata>
+      ? Address<TAccountMetadata>
       : TAccountMetadata;
-    mint: TAccountMint extends string
-      ? Base58EncodedAddress<TAccountMint>
-      : TAccountMint;
+    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
     mintAuthority: TAccountMintAuthority extends string
-      ? Base58EncodedAddress<TAccountMintAuthority>
+      ? Address<TAccountMintAuthority>
       : TAccountMintAuthority;
     payer: TAccountPayer extends string
-      ? Base58EncodedAddress<TAccountPayer>
+      ? Address<TAccountPayer>
       : TAccountPayer;
     updateAuthority: TAccountUpdateAuthority extends string
-      ? Base58EncodedAddress<TAccountUpdateAuthority>
+      ? Address<TAccountUpdateAuthority>
       : TAccountUpdateAuthority;
     systemProgram?: TAccountSystemProgram extends string
-      ? Base58EncodedAddress<TAccountSystemProgram>
+      ? Address<TAccountSystemProgram>
       : TAccountSystemProgram;
-    rent?: TAccountRent extends string
-      ? Base58EncodedAddress<TAccountRent>
-      : TAccountRent;
+    rent?: TAccountRent extends string ? Address<TAccountRent> : TAccountRent;
   },
   args: CreateMetadataAccountV3InstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -211,7 +207,7 @@ export function createMetadataAccountV3Instruction<
       accountMetaWithDefault(
         accounts.systemProgram ?? {
           address:
-            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+            '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -219,7 +215,7 @@ export function createMetadataAccountV3Instruction<
       accountMetaWithDefault(
         accounts.rent ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -252,19 +248,19 @@ export type CreateMetadataAccountV3Input<
   TAccountRent extends string
 > = {
   /** Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata?: Base58EncodedAddress<TAccountMetadata>;
+  metadata?: Address<TAccountMetadata>;
   /** Mint of token asset */
-  mint: Base58EncodedAddress<TAccountMint>;
+  mint: Address<TAccountMint>;
   /** Mint authority */
   mintAuthority: Signer<TAccountMintAuthority>;
   /** payer */
   payer?: Signer<TAccountPayer>;
   /** update authority info */
-  updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
+  updateAuthority: Address<TAccountUpdateAuthority>;
   /** System program */
-  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
   /** Rent info */
-  rent?: Base58EncodedAddress<TAccountRent>;
+  rent?: Address<TAccountRent>;
   data: CreateMetadataAccountV3InstructionDataArgs['data'];
   isMutable: CreateMetadataAccountV3InstructionDataArgs['isMutable'];
   collectionDetails: CreateMetadataAccountV3InstructionDataArgs['collectionDetails'];
@@ -425,7 +421,7 @@ export async function createMetadataAccountV3<
 
   // Program address.
   const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -433,7 +429,7 @@ export async function createMetadataAccountV3<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<

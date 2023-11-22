@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -66,19 +66,14 @@ export type SetAuthorityInstruction<
 
 export type SetAuthorityInstructionData = {
   discriminator: Array<number>;
-  newAuthority: Base58EncodedAddress;
+  newAuthority: Address;
 };
 
-export type SetAuthorityInstructionDataArgs = {
-  newAuthority: Base58EncodedAddress;
-};
+export type SetAuthorityInstructionDataArgs = { newAuthority: Address };
 
 export function getSetAuthorityInstructionDataEncoder(): Encoder<SetAuthorityInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{
-      discriminator: Array<number>;
-      newAuthority: Base58EncodedAddress;
-    }>(
+    getStructEncoder<{ discriminator: Array<number>; newAuthority: Address }>(
       [
         ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
         ['newAuthority', getAddressEncoder()],
@@ -120,14 +115,14 @@ export function setAuthorityInstruction<
 >(
   accounts: {
     candyMachine: TAccountCandyMachine extends string
-      ? Base58EncodedAddress<TAccountCandyMachine>
+      ? Address<TAccountCandyMachine>
       : TAccountCandyMachine;
     authority: TAccountAuthority extends string
-      ? Base58EncodedAddress<TAccountAuthority>
+      ? Address<TAccountAuthority>
       : TAccountAuthority;
   },
   args: SetAuthorityInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -151,7 +146,7 @@ export type SetAuthorityInput<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string
 > = {
-  candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
+  candyMachine: Address<TAccountCandyMachine>;
   authority?: Signer<TAccountAuthority>;
   newAuthority: SetAuthorityInstructionDataArgs['newAuthority'];
 };
@@ -220,7 +215,7 @@ export async function setAuthority<
 
   // Program address.
   const defaultProgramAddress =
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -228,7 +223,7 @@ export async function setAuthority<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<

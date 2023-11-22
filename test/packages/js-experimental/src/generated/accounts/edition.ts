@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -41,12 +41,12 @@ export type Edition<TAddress extends string = string> = Account<
 
 export type EditionAccountData = {
   key: TmKey;
-  parent: Base58EncodedAddress;
+  parent: Address;
   edition: bigint;
 };
 
 export type EditionAccountDataArgs = {
-  parent: Base58EncodedAddress;
+  parent: Address;
   edition: number | bigint;
 };
 
@@ -54,7 +54,7 @@ export function getEditionAccountDataEncoder(): Encoder<EditionAccountDataArgs> 
   return mapEncoder(
     getStructEncoder<{
       key: TmKeyArgs;
-      parent: Base58EncodedAddress;
+      parent: Address;
       edition: number | bigint;
     }>(
       [
@@ -97,7 +97,7 @@ export function decodeEdition<TAddress extends string = string>(
 
 export async function fetchEdition<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<Edition<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -107,7 +107,7 @@ export async function fetchEdition<TAddress extends string = string>(
 
 export async function safeFetchEdition<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<Edition<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -116,7 +116,7 @@ export async function safeFetchEdition<TAddress extends string = string>(
 
 export async function fetchAllEdition(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<Edition[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
@@ -128,7 +128,7 @@ export async function fetchAllEdition(
 
 export async function safeFetchAllEdition(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<Edition[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);

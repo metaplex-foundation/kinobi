@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -35,13 +35,13 @@ import {
 
 /** This is a union of all the possible payload types. */
 export type PayloadType =
-  | { __kind: 'Pubkey'; fields: [Base58EncodedAddress] }
+  | { __kind: 'Pubkey'; fields: [Address] }
   | { __kind: 'Seeds'; seeds: Array<Uint8Array> }
   | { __kind: 'MerkleProof'; leaf: Uint8Array; proof: Array<Uint8Array> }
   | { __kind: 'Number'; fields: [bigint] };
 
 export type PayloadTypeArgs =
-  | { __kind: 'Pubkey'; fields: [Base58EncodedAddress] }
+  | { __kind: 'Pubkey'; fields: [Address] }
   | { __kind: 'Seeds'; seeds: Array<Uint8Array> }
   | { __kind: 'MerkleProof'; leaf: Uint8Array; proof: Array<Uint8Array> }
   | { __kind: 'Number'; fields: [number | bigint] };

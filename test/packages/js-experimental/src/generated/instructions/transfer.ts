@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -204,53 +204,51 @@ export function transferInstruction<
 >(
   accounts: {
     authority: TAccountAuthority extends string
-      ? Base58EncodedAddress<TAccountAuthority>
+      ? Address<TAccountAuthority>
       : TAccountAuthority;
     delegateRecord?: TAccountDelegateRecord extends string
-      ? Base58EncodedAddress<TAccountDelegateRecord>
+      ? Address<TAccountDelegateRecord>
       : TAccountDelegateRecord;
     token: TAccountToken extends string
-      ? Base58EncodedAddress<TAccountToken>
+      ? Address<TAccountToken>
       : TAccountToken;
     tokenOwner: TAccountTokenOwner extends string
-      ? Base58EncodedAddress<TAccountTokenOwner>
+      ? Address<TAccountTokenOwner>
       : TAccountTokenOwner;
     destination: TAccountDestination extends string
-      ? Base58EncodedAddress<TAccountDestination>
+      ? Address<TAccountDestination>
       : TAccountDestination;
     destinationOwner: TAccountDestinationOwner extends string
-      ? Base58EncodedAddress<TAccountDestinationOwner>
+      ? Address<TAccountDestinationOwner>
       : TAccountDestinationOwner;
-    mint: TAccountMint extends string
-      ? Base58EncodedAddress<TAccountMint>
-      : TAccountMint;
+    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
     metadata: TAccountMetadata extends string
-      ? Base58EncodedAddress<TAccountMetadata>
+      ? Address<TAccountMetadata>
       : TAccountMetadata;
     masterEdition?: TAccountMasterEdition extends string
-      ? Base58EncodedAddress<TAccountMasterEdition>
+      ? Address<TAccountMasterEdition>
       : TAccountMasterEdition;
     splTokenProgram?: TAccountSplTokenProgram extends string
-      ? Base58EncodedAddress<TAccountSplTokenProgram>
+      ? Address<TAccountSplTokenProgram>
       : TAccountSplTokenProgram;
     splAtaProgram?: TAccountSplAtaProgram extends string
-      ? Base58EncodedAddress<TAccountSplAtaProgram>
+      ? Address<TAccountSplAtaProgram>
       : TAccountSplAtaProgram;
     systemProgram?: TAccountSystemProgram extends string
-      ? Base58EncodedAddress<TAccountSystemProgram>
+      ? Address<TAccountSystemProgram>
       : TAccountSystemProgram;
     sysvarInstructions?: TAccountSysvarInstructions extends string
-      ? Base58EncodedAddress<TAccountSysvarInstructions>
+      ? Address<TAccountSysvarInstructions>
       : TAccountSysvarInstructions;
     authorizationRulesProgram?: TAccountAuthorizationRulesProgram extends string
-      ? Base58EncodedAddress<TAccountAuthorizationRulesProgram>
+      ? Address<TAccountAuthorizationRulesProgram>
       : TAccountAuthorizationRulesProgram;
     authorizationRules?: TAccountAuthorizationRules extends string
-      ? Base58EncodedAddress<TAccountAuthorizationRules>
+      ? Address<TAccountAuthorizationRules>
       : TAccountAuthorizationRules;
   },
   args: TransferInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -259,7 +257,7 @@ export function transferInstruction<
       accountMetaWithDefault(
         accounts.delegateRecord ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.WRITABLE
@@ -273,7 +271,7 @@ export function transferInstruction<
       accountMetaWithDefault(
         accounts.masterEdition ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -281,7 +279,7 @@ export function transferInstruction<
       accountMetaWithDefault(
         accounts.splTokenProgram ?? {
           address:
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -289,7 +287,7 @@ export function transferInstruction<
       accountMetaWithDefault(
         accounts.splAtaProgram ?? {
           address:
-            'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Base58EncodedAddress<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>,
+            'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -297,7 +295,7 @@ export function transferInstruction<
       accountMetaWithDefault(
         accounts.systemProgram ?? {
           address:
-            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+            '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -310,7 +308,7 @@ export function transferInstruction<
       accountMetaWithDefault(
         accounts.authorizationRulesProgram ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -318,7 +316,7 @@ export function transferInstruction<
       accountMetaWithDefault(
         accounts.authorizationRules ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -369,33 +367,33 @@ export type TransferInput<
   /** Transfer authority (token or delegate owner) */
   authority?: Signer<TAccountAuthority>;
   /** Delegate record PDA */
-  delegateRecord?: Base58EncodedAddress<TAccountDelegateRecord>;
+  delegateRecord?: Address<TAccountDelegateRecord>;
   /** Token account */
-  token: Base58EncodedAddress<TAccountToken>;
+  token: Address<TAccountToken>;
   /** Token account owner */
-  tokenOwner: Base58EncodedAddress<TAccountTokenOwner>;
+  tokenOwner: Address<TAccountTokenOwner>;
   /** Destination token account */
-  destination: Base58EncodedAddress<TAccountDestination>;
+  destination: Address<TAccountDestination>;
   /** Destination token account owner */
-  destinationOwner: Base58EncodedAddress<TAccountDestinationOwner>;
+  destinationOwner: Address<TAccountDestinationOwner>;
   /** Mint of token asset */
-  mint: Base58EncodedAddress<TAccountMint>;
+  mint: Address<TAccountMint>;
   /** Metadata (pda of ['metadata', program id, mint id]) */
-  metadata: Base58EncodedAddress<TAccountMetadata>;
+  metadata: Address<TAccountMetadata>;
   /** Master Edition of token asset */
-  masterEdition?: Base58EncodedAddress<TAccountMasterEdition>;
+  masterEdition?: Address<TAccountMasterEdition>;
   /** SPL Token Program */
-  splTokenProgram?: Base58EncodedAddress<TAccountSplTokenProgram>;
+  splTokenProgram?: Address<TAccountSplTokenProgram>;
   /** SPL Associated Token Account program */
-  splAtaProgram?: Base58EncodedAddress<TAccountSplAtaProgram>;
+  splAtaProgram?: Address<TAccountSplAtaProgram>;
   /** System Program */
-  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
   /** Instructions sysvar account */
-  sysvarInstructions?: Base58EncodedAddress<TAccountSysvarInstructions>;
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
   /** Token Authorization Rules Program */
-  authorizationRulesProgram?: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
   /** Token Authorization Rules account */
-  authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
+  authorizationRules?: Address<TAccountAuthorizationRules>;
   transferArgs: TransferInstructionDataArgs['transferArgs'];
   tokenStandard?: TransferInstructionExtraArgs['tokenStandard'];
 };
@@ -659,7 +657,7 @@ export async function transfer<
 
   // Program address.
   const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -667,7 +665,7 @@ export async function transfer<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -768,7 +766,7 @@ export async function transfer<
   }
   if (!accounts.sysvarInstructions.value) {
     accounts.sysvarInstructions.value =
-      'Sysvar1nstructions1111111111111111111111111' as Base58EncodedAddress<'Sysvar1nstructions1111111111111111111111111'>;
+      'Sysvar1nstructions1111111111111111111111111' as Address<'Sysvar1nstructions1111111111111111111111111'>;
   }
 
   // Get account metas and signers.

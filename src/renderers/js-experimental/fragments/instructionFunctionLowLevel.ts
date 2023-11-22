@@ -77,7 +77,7 @@ export function getInstructionFunctionLowLevelFragment(
     accountTypeParams: accountTypeParamsFragment.render,
   })
     .mergeImportsWith(imports, accountTypeParamsFragment)
-    .addImports('solanaAddresses', ['Base58EncodedAddress'])
+    .addImports('solanaAddresses', ['Address'])
     .addImports('solanaInstructions', ['IAccountMeta']);
 
   if (hasAccounts) {
@@ -111,10 +111,10 @@ function getDefaultValue(
     return null;
   }
   if (account.isOptional || account.defaultsTo?.kind === 'programId') {
-    return `{ address: "${program.publicKey}" as Base58EncodedAddress<"${program.publicKey}">, role: AccountRole.READONLY }`;
+    return `{ address: "${program.publicKey}" as Address<"${program.publicKey}">, role: AccountRole.READONLY }`;
   }
   if (account.defaultsTo?.kind === 'program') {
-    return `{ address: "${account.defaultsTo.program.publicKey}" as Base58EncodedAddress<"${account.defaultsTo.program.publicKey}">, role: AccountRole.READONLY }`;
+    return `{ address: "${account.defaultsTo.program.publicKey}" as Address<"${account.defaultsTo.program.publicKey}">, role: AccountRole.READONLY }`;
   }
   if (account.defaultsTo?.kind === 'publicKey') {
     return `"${account.defaultsTo.publicKey}"`;

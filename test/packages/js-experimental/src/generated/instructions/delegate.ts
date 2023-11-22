@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -182,47 +182,45 @@ export function delegateInstruction<
 >(
   accounts: {
     delegateRecord: TAccountDelegateRecord extends string
-      ? Base58EncodedAddress<TAccountDelegateRecord>
+      ? Address<TAccountDelegateRecord>
       : TAccountDelegateRecord;
     delegate: TAccountDelegate extends string
-      ? Base58EncodedAddress<TAccountDelegate>
+      ? Address<TAccountDelegate>
       : TAccountDelegate;
     metadata: TAccountMetadata extends string
-      ? Base58EncodedAddress<TAccountMetadata>
+      ? Address<TAccountMetadata>
       : TAccountMetadata;
     masterEdition?: TAccountMasterEdition extends string
-      ? Base58EncodedAddress<TAccountMasterEdition>
+      ? Address<TAccountMasterEdition>
       : TAccountMasterEdition;
-    mint: TAccountMint extends string
-      ? Base58EncodedAddress<TAccountMint>
-      : TAccountMint;
+    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
     token?: TAccountToken extends string
-      ? Base58EncodedAddress<TAccountToken>
+      ? Address<TAccountToken>
       : TAccountToken;
     authority: TAccountAuthority extends string
-      ? Base58EncodedAddress<TAccountAuthority>
+      ? Address<TAccountAuthority>
       : TAccountAuthority;
     payer: TAccountPayer extends string
-      ? Base58EncodedAddress<TAccountPayer>
+      ? Address<TAccountPayer>
       : TAccountPayer;
     systemProgram?: TAccountSystemProgram extends string
-      ? Base58EncodedAddress<TAccountSystemProgram>
+      ? Address<TAccountSystemProgram>
       : TAccountSystemProgram;
     sysvarInstructions?: TAccountSysvarInstructions extends string
-      ? Base58EncodedAddress<TAccountSysvarInstructions>
+      ? Address<TAccountSysvarInstructions>
       : TAccountSysvarInstructions;
     splTokenProgram?: TAccountSplTokenProgram extends string
-      ? Base58EncodedAddress<TAccountSplTokenProgram>
+      ? Address<TAccountSplTokenProgram>
       : TAccountSplTokenProgram;
     authorizationRulesProgram?: TAccountAuthorizationRulesProgram extends string
-      ? Base58EncodedAddress<TAccountAuthorizationRulesProgram>
+      ? Address<TAccountAuthorizationRulesProgram>
       : TAccountAuthorizationRulesProgram;
     authorizationRules?: TAccountAuthorizationRules extends string
-      ? Base58EncodedAddress<TAccountAuthorizationRules>
+      ? Address<TAccountAuthorizationRules>
       : TAccountAuthorizationRules;
   },
   args: DelegateInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -233,7 +231,7 @@ export function delegateInstruction<
       accountMetaWithDefault(
         accounts.masterEdition ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -242,7 +240,7 @@ export function delegateInstruction<
       accountMetaWithDefault(
         accounts.token ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.WRITABLE
@@ -252,7 +250,7 @@ export function delegateInstruction<
       accountMetaWithDefault(
         accounts.systemProgram ?? {
           address:
-            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+            '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -265,7 +263,7 @@ export function delegateInstruction<
       accountMetaWithDefault(
         accounts.splTokenProgram ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -273,7 +271,7 @@ export function delegateInstruction<
       accountMetaWithDefault(
         accounts.authorizationRulesProgram ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -281,7 +279,7 @@ export function delegateInstruction<
       accountMetaWithDefault(
         accounts.authorizationRules ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -326,31 +324,31 @@ export type DelegateInput<
   TAccountAuthorizationRules extends string
 > = {
   /** Delegate account key (pda of [mint id, delegate role, user id, authority id]) */
-  delegateRecord: Base58EncodedAddress<TAccountDelegateRecord>;
+  delegateRecord: Address<TAccountDelegateRecord>;
   /** Owner of the delegated account */
-  delegate: Base58EncodedAddress<TAccountDelegate>;
+  delegate: Address<TAccountDelegate>;
   /** Metadata account */
-  metadata: Base58EncodedAddress<TAccountMetadata>;
+  metadata: Address<TAccountMetadata>;
   /** Master Edition account */
-  masterEdition?: Base58EncodedAddress<TAccountMasterEdition>;
+  masterEdition?: Address<TAccountMasterEdition>;
   /** Mint of metadata */
-  mint: Base58EncodedAddress<TAccountMint>;
+  mint: Address<TAccountMint>;
   /** Owned Token Account of mint */
-  token?: Base58EncodedAddress<TAccountToken>;
+  token?: Address<TAccountToken>;
   /** Authority to approve the delegation */
   authority?: Signer<TAccountAuthority>;
   /** Payer */
   payer?: Signer<TAccountPayer>;
   /** System Program */
-  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
   /** Instructions sysvar account */
-  sysvarInstructions?: Base58EncodedAddress<TAccountSysvarInstructions>;
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
   /** SPL Token Program */
-  splTokenProgram?: Base58EncodedAddress<TAccountSplTokenProgram>;
+  splTokenProgram?: Address<TAccountSplTokenProgram>;
   /** Token Authorization Rules Program */
-  authorizationRulesProgram?: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
   /** Token Authorization Rules account */
-  authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
+  authorizationRules?: Address<TAccountAuthorizationRules>;
   delegateArgs: DelegateInstructionDataArgs['delegateArgs'];
 };
 
@@ -587,7 +585,7 @@ export async function delegate<
 
   // Program address.
   const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -595,7 +593,7 @@ export async function delegate<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -658,7 +656,7 @@ export async function delegate<
   }
   if (!accounts.sysvarInstructions.value) {
     accounts.sysvarInstructions.value =
-      'Sysvar1nstructions1111111111111111111111111' as Base58EncodedAddress<'Sysvar1nstructions1111111111111111111111111'>;
+      'Sysvar1nstructions1111111111111111111111111' as Address<'Sysvar1nstructions1111111111111111111111111'>;
   }
 
   // Get account metas and signers.

@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -58,7 +58,7 @@ export type ReservationListV2<TAddress extends string = string> = Account<
 
 export type ReservationListV2AccountData = {
   key: TmKey;
-  masterEdition: Base58EncodedAddress;
+  masterEdition: Address;
   supplySnapshot: Option<bigint>;
   reservations: Array<Reservation>;
   totalReservationSpots: bigint;
@@ -66,7 +66,7 @@ export type ReservationListV2AccountData = {
 };
 
 export type ReservationListV2AccountDataArgs = {
-  masterEdition: Base58EncodedAddress;
+  masterEdition: Address;
   supplySnapshot: OptionOrNullable<number | bigint>;
   reservations: Array<ReservationArgs>;
   totalReservationSpots: number | bigint;
@@ -77,7 +77,7 @@ export function getReservationListV2AccountDataEncoder(): Encoder<ReservationLis
   return mapEncoder(
     getStructEncoder<{
       key: TmKeyArgs;
-      masterEdition: Base58EncodedAddress;
+      masterEdition: Address;
       supplySnapshot: OptionOrNullable<number | bigint>;
       reservations: Array<ReservationArgs>;
       totalReservationSpots: number | bigint;
@@ -132,7 +132,7 @@ export function decodeReservationListV2<TAddress extends string = string>(
 
 export async function fetchReservationListV2<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<ReservationListV2<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -144,7 +144,7 @@ export async function safeFetchReservationListV2<
   TAddress extends string = string
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<ReservationListV2<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -153,7 +153,7 @@ export async function safeFetchReservationListV2<
 
 export async function fetchAllReservationListV2(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<ReservationListV2[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
@@ -165,7 +165,7 @@ export async function fetchAllReservationListV2(
 
 export async function safeFetchAllReservationListV2(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<ReservationListV2[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);

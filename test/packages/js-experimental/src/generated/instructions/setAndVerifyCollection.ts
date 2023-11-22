@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -136,31 +136,31 @@ export function setAndVerifyCollectionInstruction<
 >(
   accounts: {
     metadata: TAccountMetadata extends string
-      ? Base58EncodedAddress<TAccountMetadata>
+      ? Address<TAccountMetadata>
       : TAccountMetadata;
     collectionAuthority: TAccountCollectionAuthority extends string
-      ? Base58EncodedAddress<TAccountCollectionAuthority>
+      ? Address<TAccountCollectionAuthority>
       : TAccountCollectionAuthority;
     payer: TAccountPayer extends string
-      ? Base58EncodedAddress<TAccountPayer>
+      ? Address<TAccountPayer>
       : TAccountPayer;
     updateAuthority: TAccountUpdateAuthority extends string
-      ? Base58EncodedAddress<TAccountUpdateAuthority>
+      ? Address<TAccountUpdateAuthority>
       : TAccountUpdateAuthority;
     collectionMint: TAccountCollectionMint extends string
-      ? Base58EncodedAddress<TAccountCollectionMint>
+      ? Address<TAccountCollectionMint>
       : TAccountCollectionMint;
     collection: TAccountCollection extends string
-      ? Base58EncodedAddress<TAccountCollection>
+      ? Address<TAccountCollection>
       : TAccountCollection;
     collectionMasterEditionAccount: TAccountCollectionMasterEditionAccount extends string
-      ? Base58EncodedAddress<TAccountCollectionMasterEditionAccount>
+      ? Address<TAccountCollectionMasterEditionAccount>
       : TAccountCollectionMasterEditionAccount;
     collectionAuthorityRecord?: TAccountCollectionAuthorityRecord extends string
-      ? Base58EncodedAddress<TAccountCollectionAuthorityRecord>
+      ? Address<TAccountCollectionAuthorityRecord>
       : TAccountCollectionAuthorityRecord;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -181,7 +181,7 @@ export function setAndVerifyCollectionInstruction<
       accountMetaWithDefault(
         accounts.collectionAuthorityRecord ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -216,21 +216,21 @@ export type SetAndVerifyCollectionInput<
   TAccountCollectionAuthorityRecord extends string
 > = {
   /** Metadata account */
-  metadata: Base58EncodedAddress<TAccountMetadata>;
+  metadata: Address<TAccountMetadata>;
   /** Collection Update authority */
   collectionAuthority: Signer<TAccountCollectionAuthority>;
   /** Payer */
   payer?: Signer<TAccountPayer>;
   /** Update Authority of Collection NFT and NFT */
-  updateAuthority: Base58EncodedAddress<TAccountUpdateAuthority>;
+  updateAuthority: Address<TAccountUpdateAuthority>;
   /** Mint of the Collection */
-  collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
+  collectionMint: Address<TAccountCollectionMint>;
   /** Metadata Account of the Collection */
-  collection: Base58EncodedAddress<TAccountCollection>;
+  collection: Address<TAccountCollection>;
   /** MasterEdition2 Account of the Collection Token */
-  collectionMasterEditionAccount: Base58EncodedAddress<TAccountCollectionMasterEditionAccount>;
+  collectionMasterEditionAccount: Address<TAccountCollectionMasterEditionAccount>;
   /** Collection Authority Record PDA */
-  collectionAuthorityRecord?: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+  collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
 };
 
 export async function setAndVerifyCollection<
@@ -401,7 +401,7 @@ export async function setAndVerifyCollection<
 
   // Program address.
   const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -409,7 +409,7 @@ export async function setAndVerifyCollection<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<

@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -154,35 +154,33 @@ export function burnInstruction<
 >(
   accounts: {
     metadata: TAccountMetadata extends string
-      ? Base58EncodedAddress<TAccountMetadata>
+      ? Address<TAccountMetadata>
       : TAccountMetadata;
     owner: TAccountOwner extends string
-      ? Base58EncodedAddress<TAccountOwner>
+      ? Address<TAccountOwner>
       : TAccountOwner;
-    mint: TAccountMint extends string
-      ? Base58EncodedAddress<TAccountMint>
-      : TAccountMint;
+    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
     tokenAccount: TAccountTokenAccount extends string
-      ? Base58EncodedAddress<TAccountTokenAccount>
+      ? Address<TAccountTokenAccount>
       : TAccountTokenAccount;
     masterEditionAccount: TAccountMasterEditionAccount extends string
-      ? Base58EncodedAddress<TAccountMasterEditionAccount>
+      ? Address<TAccountMasterEditionAccount>
       : TAccountMasterEditionAccount;
     splTokenProgram?: TAccountSplTokenProgram extends string
-      ? Base58EncodedAddress<TAccountSplTokenProgram>
+      ? Address<TAccountSplTokenProgram>
       : TAccountSplTokenProgram;
     collectionMetadata?: TAccountCollectionMetadata extends string
-      ? Base58EncodedAddress<TAccountCollectionMetadata>
+      ? Address<TAccountCollectionMetadata>
       : TAccountCollectionMetadata;
     authorizationRules?: TAccountAuthorizationRules extends string
-      ? Base58EncodedAddress<TAccountAuthorizationRules>
+      ? Address<TAccountAuthorizationRules>
       : TAccountAuthorizationRules;
     authorizationRulesProgram?: TAccountAuthorizationRulesProgram extends string
-      ? Base58EncodedAddress<TAccountAuthorizationRulesProgram>
+      ? Address<TAccountAuthorizationRulesProgram>
       : TAccountAuthorizationRulesProgram;
   },
   args: BurnInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -198,7 +196,7 @@ export function burnInstruction<
       accountMetaWithDefault(
         accounts.splTokenProgram ?? {
           address:
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -206,7 +204,7 @@ export function burnInstruction<
       accountMetaWithDefault(
         accounts.collectionMetadata ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.WRITABLE
@@ -214,7 +212,7 @@ export function burnInstruction<
       accountMetaWithDefault(
         accounts.authorizationRules ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -222,7 +220,7 @@ export function burnInstruction<
       accountMetaWithDefault(
         accounts.authorizationRulesProgram ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -259,23 +257,23 @@ export type BurnInput<
   TAccountAuthorizationRulesProgram extends string
 > = {
   /** Metadata (pda of ['metadata', program id, mint id]) */
-  metadata: Base58EncodedAddress<TAccountMetadata>;
+  metadata: Address<TAccountMetadata>;
   /** Asset owner */
   owner: Signer<TAccountOwner>;
   /** Mint of token asset */
-  mint: Base58EncodedAddress<TAccountMint>;
+  mint: Address<TAccountMint>;
   /** Token account to close */
-  tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+  tokenAccount: Address<TAccountTokenAccount>;
   /** MasterEdition of the asset */
-  masterEditionAccount: Base58EncodedAddress<TAccountMasterEditionAccount>;
+  masterEditionAccount: Address<TAccountMasterEditionAccount>;
   /** SPL Token Program */
-  splTokenProgram?: Base58EncodedAddress<TAccountSplTokenProgram>;
+  splTokenProgram?: Address<TAccountSplTokenProgram>;
   /** Metadata of the Collection */
-  collectionMetadata?: Base58EncodedAddress<TAccountCollectionMetadata>;
+  collectionMetadata?: Address<TAccountCollectionMetadata>;
   /** Token Authorization Rules account */
-  authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
+  authorizationRules?: Address<TAccountAuthorizationRules>;
   /** Token Authorization Rules Program */
-  authorizationRulesProgram?: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
   burnArgs: BurnInstructionDataArgs['burnArgs'];
 };
 
@@ -458,7 +456,7 @@ export async function burn<
 
   // Program address.
   const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -466,7 +464,7 @@ export async function burn<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<

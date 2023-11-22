@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -17,7 +17,7 @@ import {
   getStructEncoder,
 } from '@solana/codecs-data-structures';
 
-export type ProgrammableConfig = { ruleSet: Base58EncodedAddress };
+export type ProgrammableConfig = { ruleSet: Address };
 
 export type ProgrammableConfigArgs = ProgrammableConfig;
 

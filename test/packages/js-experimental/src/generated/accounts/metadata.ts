@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   ProgramDerivedAddress,
   getAddressDecoder,
   getAddressEncoder,
@@ -93,8 +93,8 @@ export type Metadata<TAddress extends string = string> = Account<
 
 export type MetadataAccountData = {
   key: TmKey;
-  updateAuthority: Base58EncodedAddress;
-  mint: Base58EncodedAddress;
+  updateAuthority: Address;
+  mint: Address;
   name: string;
   symbol: string;
   uri: string;
@@ -112,8 +112,8 @@ export type MetadataAccountData = {
 };
 
 export type MetadataAccountDataArgs = {
-  updateAuthority: Base58EncodedAddress;
-  mint: Base58EncodedAddress;
+  updateAuthority: Address;
+  mint: Address;
   name: string;
   symbol: string;
   uri: string;
@@ -134,8 +134,8 @@ export function getMetadataAccountDataEncoder(): Encoder<MetadataAccountDataArgs
   return mapEncoder(
     getStructEncoder<{
       key: TmKeyArgs;
-      updateAuthority: Base58EncodedAddress;
-      mint: Base58EncodedAddress;
+      updateAuthority: Address;
+      mint: Address;
       name: string;
       symbol: string;
       uri: string;
@@ -222,7 +222,7 @@ export function decodeMetadata<TAddress extends string = string>(
 
 export async function fetchMetadata<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<Metadata<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -232,7 +232,7 @@ export async function fetchMetadata<TAddress extends string = string>(
 
 export async function safeFetchMetadata<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<Metadata<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -241,7 +241,7 @@ export async function safeFetchMetadata<TAddress extends string = string>(
 
 export async function fetchAllMetadata(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<Metadata[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
@@ -253,7 +253,7 @@ export async function fetchAllMetadata(
 
 export async function safeFetchAllMetadata(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<Metadata[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
@@ -270,7 +270,7 @@ export async function findMetadataPda(
   context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
   seeds: {
     /** The address of the mint account */
-    mint: Base58EncodedAddress;
+    mint: Address;
   }
 ): Promise<ProgramDerivedAddress> {
   const programAddress = await getProgramAddress(

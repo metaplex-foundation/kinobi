@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   AccountRole,
   IAccountMeta,
@@ -98,32 +98,30 @@ export function createReservationListInstruction<
 >(
   accounts: {
     reservationList: TAccountReservationList extends string
-      ? Base58EncodedAddress<TAccountReservationList>
+      ? Address<TAccountReservationList>
       : TAccountReservationList;
     payer: TAccountPayer extends string
-      ? Base58EncodedAddress<TAccountPayer>
+      ? Address<TAccountPayer>
       : TAccountPayer;
     updateAuthority: TAccountUpdateAuthority extends string
-      ? Base58EncodedAddress<TAccountUpdateAuthority>
+      ? Address<TAccountUpdateAuthority>
       : TAccountUpdateAuthority;
     masterEdition: TAccountMasterEdition extends string
-      ? Base58EncodedAddress<TAccountMasterEdition>
+      ? Address<TAccountMasterEdition>
       : TAccountMasterEdition;
     resource: TAccountResource extends string
-      ? Base58EncodedAddress<TAccountResource>
+      ? Address<TAccountResource>
       : TAccountResource;
     metadata: TAccountMetadata extends string
-      ? Base58EncodedAddress<TAccountMetadata>
+      ? Address<TAccountMetadata>
       : TAccountMetadata;
     systemProgram?: TAccountSystemProgram extends string
-      ? Base58EncodedAddress<TAccountSystemProgram>
+      ? Address<TAccountSystemProgram>
       : TAccountSystemProgram;
-    rent?: TAccountRent extends string
-      ? Base58EncodedAddress<TAccountRent>
-      : TAccountRent;
+    rent?: TAccountRent extends string ? Address<TAccountRent> : TAccountRent;
   },
   args: CreateReservationListInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -140,7 +138,7 @@ export function createReservationListInstruction<
       accountMetaWithDefault(
         accounts.systemProgram ?? {
           address:
-            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+            '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -179,21 +177,21 @@ export type CreateReservationListInput<
   TAccountRent extends string
 > = {
   /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
-  reservationList: Base58EncodedAddress<TAccountReservationList>;
+  reservationList: Address<TAccountReservationList>;
   /** Payer */
   payer?: Signer<TAccountPayer>;
   /** Update authority */
   updateAuthority: Signer<TAccountUpdateAuthority>;
   /**  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
-  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  masterEdition: Address<TAccountMasterEdition>;
   /** A resource you wish to tie the reservation list to. This is so your later visitors who come to redeem can derive your reservation list PDA with something they can easily get at. You choose what this should be. */
-  resource: Base58EncodedAddress<TAccountResource>;
+  resource: Address<TAccountResource>;
   /** Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata: Base58EncodedAddress<TAccountMetadata>;
+  metadata: Address<TAccountMetadata>;
   /** System program */
-  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
   /** Rent info */
-  rent?: Base58EncodedAddress<TAccountRent>;
+  rent?: Address<TAccountRent>;
 };
 
 export async function createReservationList<
@@ -364,7 +362,7 @@ export async function createReservationList<
 
   // Program address.
   const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -372,7 +370,7 @@ export async function createReservationList<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -416,7 +414,7 @@ export async function createReservationList<
   }
   if (!accounts.rent.value) {
     accounts.rent.value =
-      'SysvarRent111111111111111111111111111111111' as Base58EncodedAddress<'SysvarRent111111111111111111111111111111111'>;
+      'SysvarRent111111111111111111111111111111111' as Address<'SysvarRent111111111111111111111111111111111'>;
   }
 
   // Get account metas and signers.

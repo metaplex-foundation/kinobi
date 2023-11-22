@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   ProgramDerivedAddress,
   getAddressDecoder,
   getAddressEncoder,
@@ -60,15 +60,15 @@ export type MasterEditionV1AccountData = {
   key: TmKey;
   supply: bigint;
   maxSupply: Option<bigint>;
-  printingMint: Base58EncodedAddress;
-  oneTimePrintingAuthorizationMint: Base58EncodedAddress;
+  printingMint: Address;
+  oneTimePrintingAuthorizationMint: Address;
 };
 
 export type MasterEditionV1AccountDataArgs = {
   supply: number | bigint;
   maxSupply: OptionOrNullable<number | bigint>;
-  printingMint: Base58EncodedAddress;
-  oneTimePrintingAuthorizationMint: Base58EncodedAddress;
+  printingMint: Address;
+  oneTimePrintingAuthorizationMint: Address;
 };
 
 export function getMasterEditionV1AccountDataEncoder(): Encoder<MasterEditionV1AccountDataArgs> {
@@ -77,8 +77,8 @@ export function getMasterEditionV1AccountDataEncoder(): Encoder<MasterEditionV1A
       key: TmKeyArgs;
       supply: number | bigint;
       maxSupply: OptionOrNullable<number | bigint>;
-      printingMint: Base58EncodedAddress;
-      oneTimePrintingAuthorizationMint: Base58EncodedAddress;
+      printingMint: Address;
+      oneTimePrintingAuthorizationMint: Address;
     }>(
       [
         ['key', getTmKeyEncoder()],
@@ -124,7 +124,7 @@ export function decodeMasterEditionV1<TAddress extends string = string>(
 
 export async function fetchMasterEditionV1<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<MasterEditionV1<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -136,7 +136,7 @@ export async function safeFetchMasterEditionV1<
   TAddress extends string = string
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<MasterEditionV1<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -145,7 +145,7 @@ export async function safeFetchMasterEditionV1<
 
 export async function fetchAllMasterEditionV1(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<MasterEditionV1[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
@@ -157,7 +157,7 @@ export async function fetchAllMasterEditionV1(
 
 export async function safeFetchAllMasterEditionV1(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<MasterEditionV1[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);

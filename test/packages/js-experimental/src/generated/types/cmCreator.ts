@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -22,7 +22,7 @@ import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 
 export type CmCreator = {
   /** Pubkey address */
-  address: Base58EncodedAddress;
+  address: Address;
   /** Whether the creator is verified or not */
   verified: boolean;
   percentageShare: number;

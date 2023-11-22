@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -50,13 +50,13 @@ export type TokenOwnedEscrow<TAddress extends string = string> = Account<
 
 export type TokenOwnedEscrowAccountData = {
   key: TmKey;
-  baseToken: Base58EncodedAddress;
+  baseToken: Address;
   authority: EscrowAuthority;
   bump: number;
 };
 
 export type TokenOwnedEscrowAccountDataArgs = {
-  baseToken: Base58EncodedAddress;
+  baseToken: Address;
   authority: EscrowAuthorityArgs;
   bump: number;
 };
@@ -65,7 +65,7 @@ export function getTokenOwnedEscrowAccountDataEncoder(): Encoder<TokenOwnedEscro
   return mapEncoder(
     getStructEncoder<{
       key: TmKeyArgs;
-      baseToken: Base58EncodedAddress;
+      baseToken: Address;
       authority: EscrowAuthorityArgs;
       bump: number;
     }>(
@@ -111,7 +111,7 @@ export function decodeTokenOwnedEscrow<TAddress extends string = string>(
 
 export async function fetchTokenOwnedEscrow<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<TokenOwnedEscrow<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -123,7 +123,7 @@ export async function safeFetchTokenOwnedEscrow<
   TAddress extends string = string
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<TokenOwnedEscrow<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -132,7 +132,7 @@ export async function safeFetchTokenOwnedEscrow<
 
 export async function fetchAllTokenOwnedEscrow(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<TokenOwnedEscrow[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
@@ -144,7 +144,7 @@ export async function fetchAllTokenOwnedEscrow(
 
 export async function safeFetchAllTokenOwnedEscrow(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<TokenOwnedEscrow[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);

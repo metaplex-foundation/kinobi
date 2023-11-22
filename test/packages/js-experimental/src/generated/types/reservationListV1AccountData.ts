@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -44,13 +44,13 @@ import {
 
 export type ReservationListV1AccountData = {
   key: TmKey;
-  masterEdition: Base58EncodedAddress;
+  masterEdition: Address;
   supplySnapshot: Option<bigint>;
   reservations: Array<ReservationV1>;
 };
 
 export type ReservationListV1AccountDataArgs = {
-  masterEdition: Base58EncodedAddress;
+  masterEdition: Address;
   supplySnapshot: OptionOrNullable<number | bigint>;
   reservations: Array<ReservationV1Args>;
 };
@@ -59,7 +59,7 @@ export function getReservationListV1AccountDataEncoder(): Encoder<ReservationLis
   return mapEncoder(
     getStructEncoder<{
       key: TmKeyArgs;
-      masterEdition: Base58EncodedAddress;
+      masterEdition: Address;
       supplySnapshot: OptionOrNullable<number | bigint>;
       reservations: Array<ReservationV1Args>;
     }>(

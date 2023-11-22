@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -187,47 +187,47 @@ export function transferOutOfEscrowInstruction<
 >(
   accounts: {
     escrow: TAccountEscrow extends string
-      ? Base58EncodedAddress<TAccountEscrow>
+      ? Address<TAccountEscrow>
       : TAccountEscrow;
     metadata: TAccountMetadata extends string
-      ? Base58EncodedAddress<TAccountMetadata>
+      ? Address<TAccountMetadata>
       : TAccountMetadata;
     payer: TAccountPayer extends string
-      ? Base58EncodedAddress<TAccountPayer>
+      ? Address<TAccountPayer>
       : TAccountPayer;
     attributeMint: TAccountAttributeMint extends string
-      ? Base58EncodedAddress<TAccountAttributeMint>
+      ? Address<TAccountAttributeMint>
       : TAccountAttributeMint;
     attributeSrc: TAccountAttributeSrc extends string
-      ? Base58EncodedAddress<TAccountAttributeSrc>
+      ? Address<TAccountAttributeSrc>
       : TAccountAttributeSrc;
     attributeDst: TAccountAttributeDst extends string
-      ? Base58EncodedAddress<TAccountAttributeDst>
+      ? Address<TAccountAttributeDst>
       : TAccountAttributeDst;
     escrowMint: TAccountEscrowMint extends string
-      ? Base58EncodedAddress<TAccountEscrowMint>
+      ? Address<TAccountEscrowMint>
       : TAccountEscrowMint;
     escrowAccount: TAccountEscrowAccount extends string
-      ? Base58EncodedAddress<TAccountEscrowAccount>
+      ? Address<TAccountEscrowAccount>
       : TAccountEscrowAccount;
     systemProgram?: TAccountSystemProgram extends string
-      ? Base58EncodedAddress<TAccountSystemProgram>
+      ? Address<TAccountSystemProgram>
       : TAccountSystemProgram;
     ataProgram?: TAccountAtaProgram extends string
-      ? Base58EncodedAddress<TAccountAtaProgram>
+      ? Address<TAccountAtaProgram>
       : TAccountAtaProgram;
     tokenProgram?: TAccountTokenProgram extends string
-      ? Base58EncodedAddress<TAccountTokenProgram>
+      ? Address<TAccountTokenProgram>
       : TAccountTokenProgram;
     sysvarInstructions?: TAccountSysvarInstructions extends string
-      ? Base58EncodedAddress<TAccountSysvarInstructions>
+      ? Address<TAccountSysvarInstructions>
       : TAccountSysvarInstructions;
     authority?: TAccountAuthority extends string
-      ? Base58EncodedAddress<TAccountAuthority>
+      ? Address<TAccountAuthority>
       : TAccountAuthority;
   },
   args: TransferOutOfEscrowInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -243,7 +243,7 @@ export function transferOutOfEscrowInstruction<
       accountMetaWithDefault(
         accounts.systemProgram ?? {
           address:
-            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+            '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -251,7 +251,7 @@ export function transferOutOfEscrowInstruction<
       accountMetaWithDefault(
         accounts.ataProgram ?? {
           address:
-            'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Base58EncodedAddress<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>,
+            'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -259,7 +259,7 @@ export function transferOutOfEscrowInstruction<
       accountMetaWithDefault(
         accounts.tokenProgram ?? {
           address:
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -272,7 +272,7 @@ export function transferOutOfEscrowInstruction<
       accountMetaWithDefault(
         accounts.authority ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY_SIGNER
@@ -317,29 +317,29 @@ export type TransferOutOfEscrowInput<
   TAccountAuthority extends string
 > = {
   /** Escrow account */
-  escrow: Base58EncodedAddress<TAccountEscrow>;
+  escrow: Address<TAccountEscrow>;
   /** Metadata account */
-  metadata: Base58EncodedAddress<TAccountMetadata>;
+  metadata: Address<TAccountMetadata>;
   /** Wallet paying for the transaction and new account */
   payer?: Signer<TAccountPayer>;
   /** Mint account for the new attribute */
-  attributeMint: Base58EncodedAddress<TAccountAttributeMint>;
+  attributeMint: Address<TAccountAttributeMint>;
   /** Token account source for the new attribute */
-  attributeSrc: Base58EncodedAddress<TAccountAttributeSrc>;
+  attributeSrc: Address<TAccountAttributeSrc>;
   /** Token account, owned by TM, destination for the new attribute */
-  attributeDst: Base58EncodedAddress<TAccountAttributeDst>;
+  attributeDst: Address<TAccountAttributeDst>;
   /** Mint account that the escrow is attached */
-  escrowMint: Base58EncodedAddress<TAccountEscrowMint>;
+  escrowMint: Address<TAccountEscrowMint>;
   /** Token account that holds the token the escrow is attached to */
-  escrowAccount: Base58EncodedAddress<TAccountEscrowAccount>;
+  escrowAccount: Address<TAccountEscrowAccount>;
   /** System program */
-  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
   /** Associated Token program */
-  ataProgram?: Base58EncodedAddress<TAccountAtaProgram>;
+  ataProgram?: Address<TAccountAtaProgram>;
   /** Token program */
-  tokenProgram?: Base58EncodedAddress<TAccountTokenProgram>;
+  tokenProgram?: Address<TAccountTokenProgram>;
   /** Instructions sysvar account */
-  sysvarInstructions?: Base58EncodedAddress<TAccountSysvarInstructions>;
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
   /** Authority/creator of the escrow account */
   authority?: Signer<TAccountAuthority>;
   amount: TransferOutOfEscrowInstructionDataArgs['amount'];
@@ -578,7 +578,7 @@ export async function transferOutOfEscrow<
 
   // Program address.
   const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -586,7 +586,7 @@ export async function transferOutOfEscrow<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -656,7 +656,7 @@ export async function transferOutOfEscrow<
   }
   if (!accounts.sysvarInstructions.value) {
     accounts.sysvarInstructions.value =
-      'Sysvar1nstructions1111111111111111111111111' as Base58EncodedAddress<'Sysvar1nstructions1111111111111111111111111'>;
+      'Sysvar1nstructions1111111111111111111111111' as Address<'Sysvar1nstructions1111111111111111111111111'>;
   }
 
   // Get account metas and signers.

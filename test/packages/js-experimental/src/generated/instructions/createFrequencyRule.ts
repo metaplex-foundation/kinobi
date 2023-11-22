@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -143,17 +143,17 @@ export function createFrequencyRuleInstruction<
 >(
   accounts: {
     payer: TAccountPayer extends string
-      ? Base58EncodedAddress<TAccountPayer>
+      ? Address<TAccountPayer>
       : TAccountPayer;
     frequencyPda: TAccountFrequencyPda extends string
-      ? Base58EncodedAddress<TAccountFrequencyPda>
+      ? Address<TAccountFrequencyPda>
       : TAccountFrequencyPda;
     systemProgram?: TAccountSystemProgram extends string
-      ? Base58EncodedAddress<TAccountSystemProgram>
+      ? Address<TAccountSystemProgram>
       : TAccountSystemProgram;
   },
   args: CreateFrequencyRuleInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -163,7 +163,7 @@ export function createFrequencyRuleInstruction<
       accountMetaWithDefault(
         accounts.systemProgram ?? {
           address:
-            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+            '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -190,9 +190,9 @@ export type CreateFrequencyRuleInput<
   /** Payer and creator of the Frequency Rule */
   payer?: Signer<TAccountPayer>;
   /** The PDA account where the Frequency Rule is stored */
-  frequencyPda: Base58EncodedAddress<TAccountFrequencyPda>;
+  frequencyPda: Address<TAccountFrequencyPda>;
   /** System program */
-  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
   ruleSetName: CreateFrequencyRuleInstructionDataArgs['ruleSetName'];
   freqRuleName: CreateFrequencyRuleInstructionDataArgs['freqRuleName'];
   lastUpdate: CreateFrequencyRuleInstructionDataArgs['lastUpdate'];
@@ -302,7 +302,7 @@ export async function createFrequencyRule<
 
   // Program address.
   const defaultProgramAddress =
-    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
+    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -310,7 +310,7 @@ export async function createFrequencyRule<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<

@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -26,25 +26,17 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 
-export type Creator = {
-  address: Base58EncodedAddress;
-  verified: boolean;
-  share: number;
-};
+export type Creator = { address: Address; verified: boolean; share: number };
 
 export type CreatorArgs = {
-  address: Base58EncodedAddress;
+  address: Address;
   verified?: boolean;
   share?: number;
 };
 
 export function getCreatorEncoder(): Encoder<CreatorArgs> {
   return mapEncoder(
-    getStructEncoder<{
-      address: Base58EncodedAddress;
-      verified: boolean;
-      share: number;
-    }>(
+    getStructEncoder<{ address: Address; verified: boolean; share: number }>(
       [
         ['address', getAddressEncoder()],
         ['verified', getBooleanEncoder()],

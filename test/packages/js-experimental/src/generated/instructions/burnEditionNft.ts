@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -151,37 +151,37 @@ export function burnEditionNftInstruction<
 >(
   accounts: {
     metadata: TAccountMetadata extends string
-      ? Base58EncodedAddress<TAccountMetadata>
+      ? Address<TAccountMetadata>
       : TAccountMetadata;
     owner: TAccountOwner extends string
-      ? Base58EncodedAddress<TAccountOwner>
+      ? Address<TAccountOwner>
       : TAccountOwner;
     printEditionMint: TAccountPrintEditionMint extends string
-      ? Base58EncodedAddress<TAccountPrintEditionMint>
+      ? Address<TAccountPrintEditionMint>
       : TAccountPrintEditionMint;
     masterEditionMint: TAccountMasterEditionMint extends string
-      ? Base58EncodedAddress<TAccountMasterEditionMint>
+      ? Address<TAccountMasterEditionMint>
       : TAccountMasterEditionMint;
     printEditionTokenAccount: TAccountPrintEditionTokenAccount extends string
-      ? Base58EncodedAddress<TAccountPrintEditionTokenAccount>
+      ? Address<TAccountPrintEditionTokenAccount>
       : TAccountPrintEditionTokenAccount;
     masterEditionTokenAccount: TAccountMasterEditionTokenAccount extends string
-      ? Base58EncodedAddress<TAccountMasterEditionTokenAccount>
+      ? Address<TAccountMasterEditionTokenAccount>
       : TAccountMasterEditionTokenAccount;
     masterEditionAccount: TAccountMasterEditionAccount extends string
-      ? Base58EncodedAddress<TAccountMasterEditionAccount>
+      ? Address<TAccountMasterEditionAccount>
       : TAccountMasterEditionAccount;
     printEditionAccount: TAccountPrintEditionAccount extends string
-      ? Base58EncodedAddress<TAccountPrintEditionAccount>
+      ? Address<TAccountPrintEditionAccount>
       : TAccountPrintEditionAccount;
     editionMarkerAccount: TAccountEditionMarkerAccount extends string
-      ? Base58EncodedAddress<TAccountEditionMarkerAccount>
+      ? Address<TAccountEditionMarkerAccount>
       : TAccountEditionMarkerAccount;
     splTokenProgram?: TAccountSplTokenProgram extends string
-      ? Base58EncodedAddress<TAccountSplTokenProgram>
+      ? Address<TAccountSplTokenProgram>
       : TAccountSplTokenProgram;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -213,7 +213,7 @@ export function burnEditionNftInstruction<
       accountMetaWithDefault(
         accounts.splTokenProgram ?? {
           address:
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -252,25 +252,25 @@ export type BurnEditionNftInput<
   TAccountSplTokenProgram extends string
 > = {
   /** Metadata (pda of ['metadata', program id, mint id]) */
-  metadata: Base58EncodedAddress<TAccountMetadata>;
+  metadata: Address<TAccountMetadata>;
   /** NFT owner */
   owner: Signer<TAccountOwner>;
   /** Mint of the print edition NFT */
-  printEditionMint: Base58EncodedAddress<TAccountPrintEditionMint>;
+  printEditionMint: Address<TAccountPrintEditionMint>;
   /** Mint of the original/master NFT */
-  masterEditionMint: Base58EncodedAddress<TAccountMasterEditionMint>;
+  masterEditionMint: Address<TAccountMasterEditionMint>;
   /** Token account the print edition NFT is in */
-  printEditionTokenAccount: Base58EncodedAddress<TAccountPrintEditionTokenAccount>;
+  printEditionTokenAccount: Address<TAccountPrintEditionTokenAccount>;
   /** Token account the Master Edition NFT is in */
-  masterEditionTokenAccount: Base58EncodedAddress<TAccountMasterEditionTokenAccount>;
+  masterEditionTokenAccount: Address<TAccountMasterEditionTokenAccount>;
   /** MasterEdition2 of the original NFT */
-  masterEditionAccount: Base58EncodedAddress<TAccountMasterEditionAccount>;
+  masterEditionAccount: Address<TAccountMasterEditionAccount>;
   /** Print Edition account of the NFT */
-  printEditionAccount: Base58EncodedAddress<TAccountPrintEditionAccount>;
+  printEditionAccount: Address<TAccountPrintEditionAccount>;
   /** Edition Marker PDA of the NFT */
-  editionMarkerAccount: Base58EncodedAddress<TAccountEditionMarkerAccount>;
+  editionMarkerAccount: Address<TAccountEditionMarkerAccount>;
   /** SPL Token Program */
-  splTokenProgram?: Base58EncodedAddress<TAccountSplTokenProgram>;
+  splTokenProgram?: Address<TAccountSplTokenProgram>;
 };
 
 export async function burnEditionNft<
@@ -467,7 +467,7 @@ export async function burnEditionNft<
 
   // Program address.
   const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -475,7 +475,7 @@ export async function burnEditionNft<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<

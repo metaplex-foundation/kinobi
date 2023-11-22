@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -46,12 +46,12 @@ export type CollectionAuthorityRecord<TAddress extends string = string> =
 export type CollectionAuthorityRecordAccountData = {
   key: TmKey;
   bump: number;
-  updateAuthority: Option<Base58EncodedAddress>;
+  updateAuthority: Option<Address>;
 };
 
 export type CollectionAuthorityRecordAccountDataArgs = {
   bump: number;
-  updateAuthority: OptionOrNullable<Base58EncodedAddress>;
+  updateAuthority: OptionOrNullable<Address>;
 };
 
 export function getCollectionAuthorityRecordAccountDataEncoder(): Encoder<CollectionAuthorityRecordAccountDataArgs> {
@@ -59,7 +59,7 @@ export function getCollectionAuthorityRecordAccountDataEncoder(): Encoder<Collec
     getStructEncoder<{
       key: TmKeyArgs;
       bump: number;
-      updateAuthority: OptionOrNullable<Base58EncodedAddress>;
+      updateAuthority: OptionOrNullable<Address>;
     }>(
       [
         ['key', getTmKeyEncoder()],
@@ -108,7 +108,7 @@ export async function fetchCollectionAuthorityRecord<
   TAddress extends string = string
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<CollectionAuthorityRecord<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -120,7 +120,7 @@ export async function safeFetchCollectionAuthorityRecord<
   TAddress extends string = string
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<CollectionAuthorityRecord<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -131,7 +131,7 @@ export async function safeFetchCollectionAuthorityRecord<
 
 export async function fetchAllCollectionAuthorityRecord(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<CollectionAuthorityRecord[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
@@ -143,7 +143,7 @@ export async function fetchAllCollectionAuthorityRecord(
 
 export async function safeFetchAllCollectionAuthorityRecord(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<CollectionAuthorityRecord[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);

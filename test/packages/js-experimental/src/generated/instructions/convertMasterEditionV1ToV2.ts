@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -102,16 +102,16 @@ export function convertMasterEditionV1ToV2Instruction<
 >(
   accounts: {
     masterEdition: TAccountMasterEdition extends string
-      ? Base58EncodedAddress<TAccountMasterEdition>
+      ? Address<TAccountMasterEdition>
       : TAccountMasterEdition;
     oneTimeAuth: TAccountOneTimeAuth extends string
-      ? Base58EncodedAddress<TAccountOneTimeAuth>
+      ? Address<TAccountOneTimeAuth>
       : TAccountOneTimeAuth;
     printingMint: TAccountPrintingMint extends string
-      ? Base58EncodedAddress<TAccountPrintingMint>
+      ? Address<TAccountPrintingMint>
       : TAccountPrintingMint;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -139,11 +139,11 @@ export type ConvertMasterEditionV1ToV2Input<
   TAccountPrintingMint extends string
 > = {
   /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
-  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  masterEdition: Address<TAccountMasterEdition>;
   /** One time authorization mint */
-  oneTimeAuth: Base58EncodedAddress<TAccountOneTimeAuth>;
+  oneTimeAuth: Address<TAccountOneTimeAuth>;
   /** Printing mint */
-  printingMint: Base58EncodedAddress<TAccountPrintingMint>;
+  printingMint: Address<TAccountPrintingMint>;
 };
 
 export async function convertMasterEditionV1ToV2<
@@ -249,7 +249,7 @@ export async function convertMasterEditionV1ToV2<
 
   // Program address.
   const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -257,7 +257,7 @@ export async function convertMasterEditionV1ToV2<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<

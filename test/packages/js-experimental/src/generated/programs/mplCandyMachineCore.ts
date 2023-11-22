@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   MplCandyMachineCoreProgramError,
   MplCandyMachineCoreProgramErrorCode,
@@ -20,7 +20,7 @@ import {
 } from '../shared';
 
 export const MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS =
-  'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
 
 export type MplCandyMachineCoreProgram =
   Program<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'> &
@@ -41,7 +41,7 @@ export function createMplCandyMachineCoreProgram(): MplCandyMachineCoreProgram {
 
 export async function getMplCandyMachineCoreProgramAddress(
   context: Pick<Context, 'getProgramAddress'> = {}
-): Promise<Base58EncodedAddress> {
+): Promise<Address> {
   return getProgramAddress(
     context,
     'mplCandyMachineCore',

@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -81,7 +81,7 @@ import {
 export type UpdateArgs = {
   __kind: 'V1';
   authorizationData: Option<AuthorizationData>;
-  newUpdateAuthority: Option<Base58EncodedAddress>;
+  newUpdateAuthority: Option<Address>;
   data: Option<{
     name: string;
     symbol: string;
@@ -103,7 +103,7 @@ export type UpdateArgs = {
 export type UpdateArgsArgs = {
   __kind: 'V1';
   authorizationData: OptionOrNullable<AuthorizationDataArgs>;
-  newUpdateAuthority: OptionOrNullable<Base58EncodedAddress>;
+  newUpdateAuthority: OptionOrNullable<Address>;
   data: OptionOrNullable<{
     name: string;
     symbol: string;
@@ -130,7 +130,7 @@ export function getUpdateArgsEncoder(): Encoder<UpdateArgsArgs> {
         mapEncoder(
           getStructEncoder<{
             authorizationData: OptionOrNullable<AuthorizationDataArgs>;
-            newUpdateAuthority: OptionOrNullable<Base58EncodedAddress>;
+            newUpdateAuthority: OptionOrNullable<Address>;
             data: OptionOrNullable<{
               name: string;
               symbol: string;

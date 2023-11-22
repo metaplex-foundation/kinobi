@@ -118,8 +118,8 @@ export function getInstructionInputDefaultFragment(
 
     case 'publicKey':
       return defaultFragment(
-        `'${defaultsTo.publicKey}' as Base58EncodedAddress<'${defaultsTo.publicKey}'>`
-      ).addImports('solanaAddresses', 'Base58EncodedAddress');
+        `'${defaultsTo.publicKey}' as Address<'${defaultsTo.publicKey}'>`
+      ).addImports('solanaAddresses', 'Address');
 
     case 'program':
       const programFragment = defaultFragment(

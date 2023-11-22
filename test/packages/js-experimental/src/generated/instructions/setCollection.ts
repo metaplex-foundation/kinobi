@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -189,49 +189,49 @@ export function setCollectionInstruction<
 >(
   accounts: {
     candyMachine: TAccountCandyMachine extends string
-      ? Base58EncodedAddress<TAccountCandyMachine>
+      ? Address<TAccountCandyMachine>
       : TAccountCandyMachine;
     authority: TAccountAuthority extends string
-      ? Base58EncodedAddress<TAccountAuthority>
+      ? Address<TAccountAuthority>
       : TAccountAuthority;
     authorityPda: TAccountAuthorityPda extends string
-      ? Base58EncodedAddress<TAccountAuthorityPda>
+      ? Address<TAccountAuthorityPda>
       : TAccountAuthorityPda;
     payer: TAccountPayer extends string
-      ? Base58EncodedAddress<TAccountPayer>
+      ? Address<TAccountPayer>
       : TAccountPayer;
     collectionMint: TAccountCollectionMint extends string
-      ? Base58EncodedAddress<TAccountCollectionMint>
+      ? Address<TAccountCollectionMint>
       : TAccountCollectionMint;
     collectionMetadata: TAccountCollectionMetadata extends string
-      ? Base58EncodedAddress<TAccountCollectionMetadata>
+      ? Address<TAccountCollectionMetadata>
       : TAccountCollectionMetadata;
     collectionAuthorityRecord: TAccountCollectionAuthorityRecord extends string
-      ? Base58EncodedAddress<TAccountCollectionAuthorityRecord>
+      ? Address<TAccountCollectionAuthorityRecord>
       : TAccountCollectionAuthorityRecord;
     newCollectionUpdateAuthority: TAccountNewCollectionUpdateAuthority extends string
-      ? Base58EncodedAddress<TAccountNewCollectionUpdateAuthority>
+      ? Address<TAccountNewCollectionUpdateAuthority>
       : TAccountNewCollectionUpdateAuthority;
     newCollectionMetadata: TAccountNewCollectionMetadata extends string
-      ? Base58EncodedAddress<TAccountNewCollectionMetadata>
+      ? Address<TAccountNewCollectionMetadata>
       : TAccountNewCollectionMetadata;
     newCollectionMint: TAccountNewCollectionMint extends string
-      ? Base58EncodedAddress<TAccountNewCollectionMint>
+      ? Address<TAccountNewCollectionMint>
       : TAccountNewCollectionMint;
     newCollectionMasterEdition: TAccountNewCollectionMasterEdition extends string
-      ? Base58EncodedAddress<TAccountNewCollectionMasterEdition>
+      ? Address<TAccountNewCollectionMasterEdition>
       : TAccountNewCollectionMasterEdition;
     newCollectionAuthorityRecord: TAccountNewCollectionAuthorityRecord extends string
-      ? Base58EncodedAddress<TAccountNewCollectionAuthorityRecord>
+      ? Address<TAccountNewCollectionAuthorityRecord>
       : TAccountNewCollectionAuthorityRecord;
     tokenMetadataProgram?: TAccountTokenMetadataProgram extends string
-      ? Base58EncodedAddress<TAccountTokenMetadataProgram>
+      ? Address<TAccountTokenMetadataProgram>
       : TAccountTokenMetadataProgram;
     systemProgram?: TAccountSystemProgram extends string
-      ? Base58EncodedAddress<TAccountSystemProgram>
+      ? Address<TAccountSystemProgram>
       : TAccountSystemProgram;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -266,7 +266,7 @@ export function setCollectionInstruction<
       accountMetaWithDefault(
         accounts.tokenMetadataProgram ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -274,7 +274,7 @@ export function setCollectionInstruction<
       accountMetaWithDefault(
         accounts.systemProgram ?? {
           address:
-            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+            '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -320,20 +320,20 @@ export type SetCollectionInput<
   TAccountTokenMetadataProgram extends string,
   TAccountSystemProgram extends string
 > = {
-  candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
+  candyMachine: Address<TAccountCandyMachine>;
   authority?: Signer<TAccountAuthority>;
-  authorityPda: Base58EncodedAddress<TAccountAuthorityPda>;
+  authorityPda: Address<TAccountAuthorityPda>;
   payer?: Signer<TAccountPayer>;
-  collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
-  collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
-  collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+  collectionMint: Address<TAccountCollectionMint>;
+  collectionMetadata: Address<TAccountCollectionMetadata>;
+  collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
   newCollectionUpdateAuthority: Signer<TAccountNewCollectionUpdateAuthority>;
-  newCollectionMetadata: Base58EncodedAddress<TAccountNewCollectionMetadata>;
-  newCollectionMint: Base58EncodedAddress<TAccountNewCollectionMint>;
-  newCollectionMasterEdition: Base58EncodedAddress<TAccountNewCollectionMasterEdition>;
-  newCollectionAuthorityRecord: Base58EncodedAddress<TAccountNewCollectionAuthorityRecord>;
-  tokenMetadataProgram?: Base58EncodedAddress<TAccountTokenMetadataProgram>;
-  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
+  newCollectionMetadata: Address<TAccountNewCollectionMetadata>;
+  newCollectionMint: Address<TAccountNewCollectionMint>;
+  newCollectionMasterEdition: Address<TAccountNewCollectionMasterEdition>;
+  newCollectionAuthorityRecord: Address<TAccountNewCollectionAuthorityRecord>;
+  tokenMetadataProgram?: Address<TAccountTokenMetadataProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
 };
 
 export async function setCollection<
@@ -582,7 +582,7 @@ export async function setCollection<
 
   // Program address.
   const defaultProgramAddress =
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -590,7 +590,7 @@ export async function setCollection<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<

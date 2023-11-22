@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -172,35 +172,33 @@ export function deprecatedMintPrintingTokensViaTokenInstruction<
 >(
   accounts: {
     destination: TAccountDestination extends string
-      ? Base58EncodedAddress<TAccountDestination>
+      ? Address<TAccountDestination>
       : TAccountDestination;
     token: TAccountToken extends string
-      ? Base58EncodedAddress<TAccountToken>
+      ? Address<TAccountToken>
       : TAccountToken;
     oneTimePrintingAuthorizationMint: TAccountOneTimePrintingAuthorizationMint extends string
-      ? Base58EncodedAddress<TAccountOneTimePrintingAuthorizationMint>
+      ? Address<TAccountOneTimePrintingAuthorizationMint>
       : TAccountOneTimePrintingAuthorizationMint;
     printingMint: TAccountPrintingMint extends string
-      ? Base58EncodedAddress<TAccountPrintingMint>
+      ? Address<TAccountPrintingMint>
       : TAccountPrintingMint;
     burnAuthority: TAccountBurnAuthority extends string
-      ? Base58EncodedAddress<TAccountBurnAuthority>
+      ? Address<TAccountBurnAuthority>
       : TAccountBurnAuthority;
     metadata: TAccountMetadata extends string
-      ? Base58EncodedAddress<TAccountMetadata>
+      ? Address<TAccountMetadata>
       : TAccountMetadata;
     masterEdition: TAccountMasterEdition extends string
-      ? Base58EncodedAddress<TAccountMasterEdition>
+      ? Address<TAccountMasterEdition>
       : TAccountMasterEdition;
     tokenProgram?: TAccountTokenProgram extends string
-      ? Base58EncodedAddress<TAccountTokenProgram>
+      ? Address<TAccountTokenProgram>
       : TAccountTokenProgram;
-    rent?: TAccountRent extends string
-      ? Base58EncodedAddress<TAccountRent>
-      : TAccountRent;
+    rent?: TAccountRent extends string ? Address<TAccountRent> : TAccountRent;
   },
   args: DeprecatedMintPrintingTokensViaTokenInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -221,7 +219,7 @@ export function deprecatedMintPrintingTokensViaTokenInstruction<
       accountMetaWithDefault(
         accounts.tokenProgram ?? {
           address:
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -264,23 +262,23 @@ export type DeprecatedMintPrintingTokensViaTokenInput<
   TAccountRent extends string
 > = {
   /** Destination account */
-  destination: Base58EncodedAddress<TAccountDestination>;
+  destination: Address<TAccountDestination>;
   /** Token account containing one time authorization token */
-  token: Base58EncodedAddress<TAccountToken>;
+  token: Address<TAccountToken>;
   /** One time authorization mint */
-  oneTimePrintingAuthorizationMint: Base58EncodedAddress<TAccountOneTimePrintingAuthorizationMint>;
+  oneTimePrintingAuthorizationMint: Address<TAccountOneTimePrintingAuthorizationMint>;
   /** Printing mint */
-  printingMint: Base58EncodedAddress<TAccountPrintingMint>;
+  printingMint: Address<TAccountPrintingMint>;
   /** Burn authority */
   burnAuthority: Signer<TAccountBurnAuthority>;
   /** Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata: Base58EncodedAddress<TAccountMetadata>;
+  metadata: Address<TAccountMetadata>;
   /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
-  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  masterEdition: Address<TAccountMasterEdition>;
   /** Token program */
-  tokenProgram?: Base58EncodedAddress<TAccountTokenProgram>;
+  tokenProgram?: Address<TAccountTokenProgram>;
   /** Rent */
-  rent?: Base58EncodedAddress<TAccountRent>;
+  rent?: Address<TAccountRent>;
   mintPrintingTokensViaTokenArgs: DeprecatedMintPrintingTokensViaTokenInstructionDataArgs['mintPrintingTokensViaTokenArgs'];
 };
 
@@ -465,7 +463,7 @@ export async function deprecatedMintPrintingTokensViaToken<
 
   // Program address.
   const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -473,7 +471,7 @@ export async function deprecatedMintPrintingTokensViaToken<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -519,7 +517,7 @@ export async function deprecatedMintPrintingTokensViaToken<
   }
   if (!accounts.rent.value) {
     accounts.rent.value =
-      'SysvarRent111111111111111111111111111111111' as Base58EncodedAddress<'SysvarRent111111111111111111111111111111111'>;
+      'SysvarRent111111111111111111111111111111111' as Address<'SysvarRent111111111111111111111111111111111'>;
   }
 
   // Get account metas and signers.

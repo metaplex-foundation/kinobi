@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -135,8 +135,8 @@ export function getDummyInstructionDataCodec(): Codec<
 }
 
 export type DummyInstructionExtraArgs = {
-  identityArg: Base58EncodedAddress;
-  proof: Array<Base58EncodedAddress>;
+  identityArg: Address;
+  proof: Array<Address>;
 };
 
 export function dummyInstruction<
@@ -157,37 +157,31 @@ export function dummyInstruction<
 >(
   accounts: {
     edition: TAccountEdition extends string
-      ? Base58EncodedAddress<TAccountEdition>
+      ? Address<TAccountEdition>
       : TAccountEdition;
-    mint?: TAccountMint extends string
-      ? Base58EncodedAddress<TAccountMint>
-      : TAccountMint;
+    mint?: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
     updateAuthority: TAccountUpdateAuthority extends string
-      ? Base58EncodedAddress<TAccountUpdateAuthority>
+      ? Address<TAccountUpdateAuthority>
       : TAccountUpdateAuthority;
     mintAuthority: TAccountMintAuthority extends string
-      ? Base58EncodedAddress<TAccountMintAuthority>
+      ? Address<TAccountMintAuthority>
       : TAccountMintAuthority;
     payer: TAccountPayer extends string
-      ? Base58EncodedAddress<TAccountPayer>
+      ? Address<TAccountPayer>
       : TAccountPayer;
-    foo: TAccountFoo extends string
-      ? Base58EncodedAddress<TAccountFoo>
-      : TAccountFoo;
-    bar?: TAccountBar extends string
-      ? Base58EncodedAddress<TAccountBar>
-      : TAccountBar;
+    foo: TAccountFoo extends string ? Address<TAccountFoo> : TAccountFoo;
+    bar?: TAccountBar extends string ? Address<TAccountBar> : TAccountBar;
     delegate?: TAccountDelegate extends string
-      ? Base58EncodedAddress<TAccountDelegate>
+      ? Address<TAccountDelegate>
       : TAccountDelegate;
     delegateRecord?: TAccountDelegateRecord extends string
-      ? Base58EncodedAddress<TAccountDelegateRecord>
+      ? Address<TAccountDelegateRecord>
       : TAccountDelegateRecord;
     tokenOrAtaProgram: TAccountTokenOrAtaProgram extends string
-      ? Base58EncodedAddress<TAccountTokenOrAtaProgram>
+      ? Address<TAccountTokenOrAtaProgram>
       : TAccountTokenOrAtaProgram;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -196,7 +190,7 @@ export function dummyInstruction<
       accountMetaWithDefault(
         accounts.mint ?? {
           address:
-            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
+            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
           role: AccountRole.READONLY,
         },
         AccountRole.WRITABLE
@@ -214,7 +208,7 @@ export function dummyInstruction<
       accountMetaWithDefault(
         accounts.bar ?? {
           address:
-            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
+            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY_SIGNER
@@ -222,7 +216,7 @@ export function dummyInstruction<
       accountMetaWithDefault(
         accounts.delegate ?? {
           address:
-            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
+            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY_SIGNER
@@ -230,7 +224,7 @@ export function dummyInstruction<
       accountMetaWithDefault(
         accounts.delegateRecord ?? {
           address:
-            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
+            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
           role: AccountRole.READONLY,
         },
         AccountRole.WRITABLE
@@ -270,15 +264,15 @@ export type DummyInput<
   TAccountTokenOrAtaProgram extends string
 > = {
   edition?: Signer<TAccountEdition>;
-  mint?: Base58EncodedAddress<TAccountMint>;
+  mint?: Address<TAccountMint>;
   updateAuthority: Signer<TAccountUpdateAuthority>;
   mintAuthority?: Signer<TAccountMintAuthority>;
   payer?: Signer<TAccountPayer>;
-  foo?: Base58EncodedAddress<TAccountFoo>;
+  foo?: Address<TAccountFoo>;
   bar?: Signer<TAccountBar>;
   delegate?: Signer<TAccountDelegate>;
-  delegateRecord?: Base58EncodedAddress<TAccountDelegateRecord>;
-  tokenOrAtaProgram?: Base58EncodedAddress<TAccountTokenOrAtaProgram>;
+  delegateRecord?: Address<TAccountDelegateRecord>;
+  tokenOrAtaProgram?: Address<TAccountTokenOrAtaProgram>;
   identityArg?: DummyInstructionExtraArgs['identityArg'];
   proof?: DummyInstructionExtraArgs['proof'];
 };
@@ -475,7 +469,7 @@ export async function dummy<
 
   // Program address.
   const defaultProgramAddress =
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -483,7 +477,7 @@ export async function dummy<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<

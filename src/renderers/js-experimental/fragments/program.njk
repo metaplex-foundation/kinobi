@@ -1,6 +1,6 @@
 {% import "templates/macros.njk" as macros %}
 
-export const {{ programAddressConstant }} = '{{ program.publicKey }}' as Base58EncodedAddress<'{{ program.publicKey }}'>;
+export const {{ programAddressConstant }} = '{{ program.publicKey }}' as Address<'{{ program.publicKey }}'>;
 
 {{ macros.docblock(program.docs) }}
 export type {{ program.name | pascalCase }}Program = Program<'{{ program.publicKey }}'>
@@ -21,6 +21,6 @@ export function create{{ program.name | pascalCase }}Program(): {{ program.name 
   };
 }
 
-export async function get{{ program.name | pascalCase }}ProgramAddress(context: Pick<Context, 'getProgramAddress'> = {}): Promise<Base58EncodedAddress> {
+export async function get{{ program.name | pascalCase }}ProgramAddress(context: Pick<Context, 'getProgramAddress'> = {}): Promise<Address> {
   return getProgramAddress(context, "{{ program.name | camelCase }}", {{ programAddressConstant }});
 }

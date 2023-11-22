@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -79,14 +79,14 @@ export type UpdateMetadataAccountV2Instruction<
 export type UpdateMetadataAccountV2InstructionData = {
   discriminator: number;
   data: Option<DataV2>;
-  updateAuthority: Option<Base58EncodedAddress>;
+  updateAuthority: Option<Address>;
   primarySaleHappened: Option<boolean>;
   isMutable: Option<boolean>;
 };
 
 export type UpdateMetadataAccountV2InstructionDataArgs = {
   data: OptionOrNullable<DataV2Args>;
-  updateAuthority: OptionOrNullable<Base58EncodedAddress>;
+  updateAuthority: OptionOrNullable<Address>;
   primarySaleHappened: OptionOrNullable<boolean>;
   isMutable: OptionOrNullable<boolean>;
 };
@@ -96,7 +96,7 @@ export function getUpdateMetadataAccountV2InstructionDataEncoder(): Encoder<Upda
     getStructEncoder<{
       discriminator: number;
       data: OptionOrNullable<DataV2Args>;
-      updateAuthority: OptionOrNullable<Base58EncodedAddress>;
+      updateAuthority: OptionOrNullable<Address>;
       primarySaleHappened: OptionOrNullable<boolean>;
       isMutable: OptionOrNullable<boolean>;
     }>(
@@ -144,14 +144,14 @@ export function updateMetadataAccountV2Instruction<
 >(
   accounts: {
     metadata: TAccountMetadata extends string
-      ? Base58EncodedAddress<TAccountMetadata>
+      ? Address<TAccountMetadata>
       : TAccountMetadata;
     updateAuthority: TAccountUpdateAuthority extends string
-      ? Base58EncodedAddress<TAccountUpdateAuthority>
+      ? Address<TAccountUpdateAuthority>
       : TAccountUpdateAuthority;
   },
   args: UpdateMetadataAccountV2InstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -179,7 +179,7 @@ export type UpdateMetadataAccountV2Input<
   TAccountUpdateAuthority extends string
 > = {
   /** Metadata account */
-  metadata: Base58EncodedAddress<TAccountMetadata>;
+  metadata: Address<TAccountMetadata>;
   /** Update authority key */
   updateAuthority: Signer<TAccountUpdateAuthority>;
   data: UpdateMetadataAccountV2InstructionDataArgs['data'];
@@ -263,7 +263,7 @@ export async function updateMetadataAccountV2<
 
   // Program address.
   const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -271,7 +271,7 @@ export async function updateMetadataAccountV2<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<

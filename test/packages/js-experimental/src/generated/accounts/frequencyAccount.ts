@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   ProgramDerivedAddress,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -119,7 +119,7 @@ export function decodeFrequencyAccount<TAddress extends string = string>(
 
 export async function fetchFrequencyAccount<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<FrequencyAccount<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -131,7 +131,7 @@ export async function safeFetchFrequencyAccount<
   TAddress extends string = string
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<FrequencyAccount<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -140,7 +140,7 @@ export async function safeFetchFrequencyAccount<
 
 export async function fetchAllFrequencyAccount(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<FrequencyAccount[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
@@ -152,7 +152,7 @@ export async function fetchAllFrequencyAccount(
 
 export async function safeFetchAllFrequencyAccount(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<FrequencyAccount[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);

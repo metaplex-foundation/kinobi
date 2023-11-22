@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -82,7 +82,7 @@ export function decodeEditionMarker<TAddress extends string = string>(
 
 export async function fetchEditionMarker<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<EditionMarker<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -92,7 +92,7 @@ export async function fetchEditionMarker<TAddress extends string = string>(
 
 export async function safeFetchEditionMarker<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<EditionMarker<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -101,7 +101,7 @@ export async function safeFetchEditionMarker<TAddress extends string = string>(
 
 export async function fetchAllEditionMarker(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<EditionMarker[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
@@ -113,7 +113,7 @@ export async function fetchAllEditionMarker(
 
 export async function safeFetchAllEditionMarker(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<EditionMarker[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);

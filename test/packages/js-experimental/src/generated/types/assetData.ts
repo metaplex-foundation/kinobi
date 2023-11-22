@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -65,7 +65,7 @@ import {
 } from '.';
 
 export type AssetData = {
-  updateAuthority: Base58EncodedAddress;
+  updateAuthority: Address;
   name: string;
   symbol: string;
   uri: string;
@@ -83,7 +83,7 @@ export type AssetData = {
 };
 
 export type AssetDataArgs = {
-  updateAuthority: Base58EncodedAddress;
+  updateAuthority: Address;
   name: string;
   symbol: string;
   uri: string;

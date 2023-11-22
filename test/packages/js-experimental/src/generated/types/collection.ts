@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -25,13 +25,13 @@ import {
   getStructEncoder,
 } from '@solana/codecs-data-structures';
 
-export type Collection = { verified: boolean; key: Base58EncodedAddress };
+export type Collection = { verified: boolean; key: Address };
 
-export type CollectionArgs = { verified?: boolean; key: Base58EncodedAddress };
+export type CollectionArgs = { verified?: boolean; key: Address };
 
 export function getCollectionEncoder(): Encoder<CollectionArgs> {
   return mapEncoder(
-    getStructEncoder<{ verified: boolean; key: Base58EncodedAddress }>(
+    getStructEncoder<{ verified: boolean; key: Address }>(
       [
         ['verified', getBooleanEncoder()],
         ['key', getAddressEncoder()],

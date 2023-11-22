@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -161,7 +161,7 @@ export type UpdateV1InstructionData = {
   discriminator: number;
   updateV1Discriminator: number;
   authorizationData: Option<AuthorizationData>;
-  newUpdateAuthority: Option<Base58EncodedAddress>;
+  newUpdateAuthority: Option<Address>;
   data: Option<{
     name: string;
     symbol: string;
@@ -182,7 +182,7 @@ export type UpdateV1InstructionData = {
 
 export type UpdateV1InstructionDataArgs = {
   authorizationData: OptionOrNullable<AuthorizationDataArgs>;
-  newUpdateAuthority: OptionOrNullable<Base58EncodedAddress>;
+  newUpdateAuthority: OptionOrNullable<Address>;
   data: OptionOrNullable<{
     name: string;
     symbol: string;
@@ -207,7 +207,7 @@ export function getUpdateV1InstructionDataEncoder(): Encoder<UpdateV1Instruction
       discriminator: number;
       updateV1Discriminator: number;
       authorizationData: OptionOrNullable<AuthorizationDataArgs>;
-      newUpdateAuthority: OptionOrNullable<Base58EncodedAddress>;
+      newUpdateAuthority: OptionOrNullable<Address>;
       data: OptionOrNullable<{
         name: string;
         symbol: string;
@@ -349,38 +349,36 @@ export function updateV1Instruction<
 >(
   accounts: {
     authority: TAccountAuthority extends string
-      ? Base58EncodedAddress<TAccountAuthority>
+      ? Address<TAccountAuthority>
       : TAccountAuthority;
     metadata: TAccountMetadata extends string
-      ? Base58EncodedAddress<TAccountMetadata>
+      ? Address<TAccountMetadata>
       : TAccountMetadata;
     masterEdition?: TAccountMasterEdition extends string
-      ? Base58EncodedAddress<TAccountMasterEdition>
+      ? Address<TAccountMasterEdition>
       : TAccountMasterEdition;
-    mint: TAccountMint extends string
-      ? Base58EncodedAddress<TAccountMint>
-      : TAccountMint;
+    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
     systemProgram?: TAccountSystemProgram extends string
-      ? Base58EncodedAddress<TAccountSystemProgram>
+      ? Address<TAccountSystemProgram>
       : TAccountSystemProgram;
     sysvarInstructions?: TAccountSysvarInstructions extends string
-      ? Base58EncodedAddress<TAccountSysvarInstructions>
+      ? Address<TAccountSysvarInstructions>
       : TAccountSysvarInstructions;
     token?: TAccountToken extends string
-      ? Base58EncodedAddress<TAccountToken>
+      ? Address<TAccountToken>
       : TAccountToken;
     delegateRecord?: TAccountDelegateRecord extends string
-      ? Base58EncodedAddress<TAccountDelegateRecord>
+      ? Address<TAccountDelegateRecord>
       : TAccountDelegateRecord;
     authorizationRulesProgram?: TAccountAuthorizationRulesProgram extends string
-      ? Base58EncodedAddress<TAccountAuthorizationRulesProgram>
+      ? Address<TAccountAuthorizationRulesProgram>
       : TAccountAuthorizationRulesProgram;
     authorizationRules?: TAccountAuthorizationRules extends string
-      ? Base58EncodedAddress<TAccountAuthorizationRules>
+      ? Address<TAccountAuthorizationRules>
       : TAccountAuthorizationRules;
   },
   args: UpdateV1InstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -390,7 +388,7 @@ export function updateV1Instruction<
       accountMetaWithDefault(
         accounts.masterEdition ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.WRITABLE
@@ -399,7 +397,7 @@ export function updateV1Instruction<
       accountMetaWithDefault(
         accounts.systemProgram ?? {
           address:
-            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+            '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -412,7 +410,7 @@ export function updateV1Instruction<
       accountMetaWithDefault(
         accounts.token ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -420,7 +418,7 @@ export function updateV1Instruction<
       accountMetaWithDefault(
         accounts.delegateRecord ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -428,7 +426,7 @@ export function updateV1Instruction<
       accountMetaWithDefault(
         accounts.authorizationRulesProgram ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -436,7 +434,7 @@ export function updateV1Instruction<
       accountMetaWithDefault(
         accounts.authorizationRules ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -477,23 +475,23 @@ export type UpdateV1Input<
   /** Update authority or delegate */
   authority?: Signer<TAccountAuthority>;
   /** Metadata account */
-  metadata: Base58EncodedAddress<TAccountMetadata>;
+  metadata: Address<TAccountMetadata>;
   /** Master Edition account */
-  masterEdition?: Base58EncodedAddress<TAccountMasterEdition>;
+  masterEdition?: Address<TAccountMasterEdition>;
   /** Mint account */
-  mint: Base58EncodedAddress<TAccountMint>;
+  mint: Address<TAccountMint>;
   /** System program */
-  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
   /** System program */
-  sysvarInstructions?: Base58EncodedAddress<TAccountSysvarInstructions>;
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
   /** Token account */
-  token?: Base58EncodedAddress<TAccountToken>;
+  token?: Address<TAccountToken>;
   /** Delegate record PDA */
-  delegateRecord?: Base58EncodedAddress<TAccountDelegateRecord>;
+  delegateRecord?: Address<TAccountDelegateRecord>;
   /** Token Authorization Rules Program */
-  authorizationRulesProgram?: Base58EncodedAddress<TAccountAuthorizationRulesProgram>;
+  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
   /** Token Authorization Rules account */
-  authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
+  authorizationRules?: Address<TAccountAuthorizationRules>;
   authorizationData: UpdateV1InstructionDataArgs['authorizationData'];
   newUpdateAuthority: UpdateV1InstructionDataArgs['newUpdateAuthority'];
   data: UpdateV1InstructionDataArgs['data'];
@@ -702,7 +700,7 @@ export async function updateV1<
 
   // Program address.
   const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -710,7 +708,7 @@ export async function updateV1<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -764,7 +762,7 @@ export async function updateV1<
   }
   if (!accounts.sysvarInstructions.value) {
     accounts.sysvarInstructions.value =
-      'Sysvar1nstructions1111111111111111111111111' as Base58EncodedAddress<'Sysvar1nstructions1111111111111111111111111'>;
+      'Sysvar1nstructions1111111111111111111111111' as Address<'Sysvar1nstructions1111111111111111111111111'>;
   }
 
   // Get account metas and signers.

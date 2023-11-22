@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -119,22 +119,20 @@ export function revokeCollectionAuthorityInstruction<
 >(
   accounts: {
     collectionAuthorityRecord: TAccountCollectionAuthorityRecord extends string
-      ? Base58EncodedAddress<TAccountCollectionAuthorityRecord>
+      ? Address<TAccountCollectionAuthorityRecord>
       : TAccountCollectionAuthorityRecord;
     delegateAuthority: TAccountDelegateAuthority extends string
-      ? Base58EncodedAddress<TAccountDelegateAuthority>
+      ? Address<TAccountDelegateAuthority>
       : TAccountDelegateAuthority;
     revokeAuthority: TAccountRevokeAuthority extends string
-      ? Base58EncodedAddress<TAccountRevokeAuthority>
+      ? Address<TAccountRevokeAuthority>
       : TAccountRevokeAuthority;
     metadata: TAccountMetadata extends string
-      ? Base58EncodedAddress<TAccountMetadata>
+      ? Address<TAccountMetadata>
       : TAccountMetadata;
-    mint: TAccountMint extends string
-      ? Base58EncodedAddress<TAccountMint>
-      : TAccountMint;
+    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -174,15 +172,15 @@ export type RevokeCollectionAuthorityInput<
   TAccountMint extends string
 > = {
   /** Collection Authority Record PDA */
-  collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+  collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
   /** Delegated Collection Authority */
-  delegateAuthority: Base58EncodedAddress<TAccountDelegateAuthority>;
+  delegateAuthority: Address<TAccountDelegateAuthority>;
   /** Update Authority, or Delegated Authority, of Collection NFT */
   revokeAuthority: Signer<TAccountRevokeAuthority>;
   /** Metadata account */
-  metadata: Base58EncodedAddress<TAccountMetadata>;
+  metadata: Address<TAccountMetadata>;
   /** Mint of Metadata */
-  mint: Base58EncodedAddress<TAccountMint>;
+  mint: Address<TAccountMint>;
 };
 
 export async function revokeCollectionAuthority<
@@ -314,7 +312,7 @@ export async function revokeCollectionAuthority<
 
   // Program address.
   const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -322,7 +320,7 @@ export async function revokeCollectionAuthority<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<

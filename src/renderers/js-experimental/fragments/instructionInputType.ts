@@ -85,7 +85,7 @@ export function getInstructionInputTypeFragment(
     extraArgsType,
   })
     .mergeImportsWith(accountImports, argLinkImports)
-    .addImports('solanaAddresses', ['Base58EncodedAddress']);
+    .addImports('solanaAddresses', ['Address']);
 }
 
 function getAccountType(account: ResolvedInstructionAccount): Fragment {
@@ -106,8 +106,8 @@ function getAccountType(account: ResolvedInstructionAccount): Fragment {
   }
 
   if (account.isSigner === 'either') {
-    return fragment(`Base58EncodedAddress<${typeParam}> | Signer<${typeParam}>`)
-      .addImports('solanaAddresses', ['Base58EncodedAddress'])
+    return fragment(`Address<${typeParam}> | Signer<${typeParam}>`)
+      .addImports('solanaAddresses', ['Address'])
       .addImports('shared', ['Signer']);
   }
 
@@ -115,8 +115,7 @@ function getAccountType(account: ResolvedInstructionAccount): Fragment {
     return fragment(`Signer<${typeParam}>`).addImports('shared', ['Signer']);
   }
 
-  return fragment(`Base58EncodedAddress<${typeParam}>`).addImports(
-    'solanaAddresses',
-    ['Base58EncodedAddress']
-  );
+  return fragment(`Address<${typeParam}>`).addImports('solanaAddresses', [
+    'Address',
+  ]);
 }

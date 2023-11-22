@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   ReservationListV1AccountData,
   getReservationListV1AccountDataDecoder,
@@ -37,7 +37,7 @@ export function decodeReservationListV1<TAddress extends string = string>(
 
 export async function fetchReservationListV1<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<ReservationListV1<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -49,7 +49,7 @@ export async function safeFetchReservationListV1<
   TAddress extends string = string
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<ReservationListV1<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -58,7 +58,7 @@ export async function safeFetchReservationListV1<
 
 export async function fetchAllReservationListV1(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<ReservationListV1[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
@@ -70,7 +70,7 @@ export async function fetchAllReservationListV1(
 
 export async function safeFetchAllReservationListV1(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<ReservationListV1[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);

@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -150,17 +150,17 @@ export function deprecatedSetReservationListInstruction<
 >(
   accounts: {
     masterEdition: TAccountMasterEdition extends string
-      ? Base58EncodedAddress<TAccountMasterEdition>
+      ? Address<TAccountMasterEdition>
       : TAccountMasterEdition;
     reservationList: TAccountReservationList extends string
-      ? Base58EncodedAddress<TAccountReservationList>
+      ? Address<TAccountReservationList>
       : TAccountReservationList;
     resource: TAccountResource extends string
-      ? Base58EncodedAddress<TAccountResource>
+      ? Address<TAccountResource>
       : TAccountResource;
   },
   args: DeprecatedSetReservationListInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -188,9 +188,9 @@ export type DeprecatedSetReservationListInput<
   TAccountResource extends string
 > = {
   /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
-  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  masterEdition: Address<TAccountMasterEdition>;
   /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
-  reservationList: Base58EncodedAddress<TAccountReservationList>;
+  reservationList: Address<TAccountReservationList>;
   /** The resource you tied the reservation list too */
   resource: Signer<TAccountResource>;
   reservations: DeprecatedSetReservationListInstructionDataArgs['reservations'];
@@ -302,7 +302,7 @@ export async function deprecatedSetReservationList<
 
   // Program address.
   const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -310,7 +310,7 @@ export async function deprecatedSetReservationList<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<

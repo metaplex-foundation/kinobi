@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   ProgramDerivedAddress,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -106,7 +106,7 @@ export function decodeMasterEditionV2<TAddress extends string = string>(
 
 export async function fetchMasterEditionV2<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<MasterEditionV2<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -118,7 +118,7 @@ export async function safeFetchMasterEditionV2<
   TAddress extends string = string
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<MasterEditionV2<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -127,7 +127,7 @@ export async function safeFetchMasterEditionV2<
 
 export async function fetchAllMasterEditionV2(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<MasterEditionV2[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
@@ -139,7 +139,7 @@ export async function fetchAllMasterEditionV2(
 
 export async function safeFetchAllMasterEditionV2(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<MasterEditionV2[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
@@ -158,7 +158,7 @@ export async function findMasterEditionV2Pda(
   context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
   seeds: {
     /** The address of the mint account */
-    mint: Base58EncodedAddress;
+    mint: Address;
   }
 ): Promise<ProgramDerivedAddress> {
   const programAddress = await getProgramAddress(

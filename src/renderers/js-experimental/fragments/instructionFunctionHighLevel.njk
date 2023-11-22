@@ -7,12 +7,12 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
   const input = (rawInput === undefined ? rawContext : rawInput) as {{ inputType }};
 
   // Program address.
-  const defaultProgramAddress = "{{ program.publicKey }}" as Base58EncodedAddress<"{{ program.publicKey }}">;
+  const defaultProgramAddress = "{{ program.publicKey }}" as Address<"{{ program.publicKey }}">;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({ name: "{{ program.name }}", address: defaultProgramAddress })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   {% if hasAccounts %}
     // Original accounts.

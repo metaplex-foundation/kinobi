@@ -626,14 +626,11 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
   }
 
   visitPublicKeyType(): TypeManifest {
-    const imports = new ImportMap().add(
-      'solanaAddresses',
-      'Base58EncodedAddress'
-    );
+    const imports = new ImportMap().add('solanaAddresses', 'Address');
     return {
       isEnum: false,
-      strictType: fragment('Base58EncodedAddress', imports),
-      looseType: fragment('Base58EncodedAddress', imports),
+      strictType: fragment('Address', imports),
+      looseType: fragment('Address', imports),
       encoder: fragment('getAddressEncoder()').addImports(
         'solanaAddresses',
         'getAddressEncoder'

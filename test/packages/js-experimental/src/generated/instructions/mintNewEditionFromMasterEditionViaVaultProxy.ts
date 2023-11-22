@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -219,59 +219,57 @@ export function mintNewEditionFromMasterEditionViaVaultProxyInstruction<
 >(
   accounts: {
     newMetadata: TAccountNewMetadata extends string
-      ? Base58EncodedAddress<TAccountNewMetadata>
+      ? Address<TAccountNewMetadata>
       : TAccountNewMetadata;
     newEdition: TAccountNewEdition extends string
-      ? Base58EncodedAddress<TAccountNewEdition>
+      ? Address<TAccountNewEdition>
       : TAccountNewEdition;
     masterEdition: TAccountMasterEdition extends string
-      ? Base58EncodedAddress<TAccountMasterEdition>
+      ? Address<TAccountMasterEdition>
       : TAccountMasterEdition;
     newMint: TAccountNewMint extends string
-      ? Base58EncodedAddress<TAccountNewMint>
+      ? Address<TAccountNewMint>
       : TAccountNewMint;
     editionMarkPda: TAccountEditionMarkPda extends string
-      ? Base58EncodedAddress<TAccountEditionMarkPda>
+      ? Address<TAccountEditionMarkPda>
       : TAccountEditionMarkPda;
     newMintAuthority: TAccountNewMintAuthority extends string
-      ? Base58EncodedAddress<TAccountNewMintAuthority>
+      ? Address<TAccountNewMintAuthority>
       : TAccountNewMintAuthority;
     payer: TAccountPayer extends string
-      ? Base58EncodedAddress<TAccountPayer>
+      ? Address<TAccountPayer>
       : TAccountPayer;
     vaultAuthority: TAccountVaultAuthority extends string
-      ? Base58EncodedAddress<TAccountVaultAuthority>
+      ? Address<TAccountVaultAuthority>
       : TAccountVaultAuthority;
     safetyDepositStore: TAccountSafetyDepositStore extends string
-      ? Base58EncodedAddress<TAccountSafetyDepositStore>
+      ? Address<TAccountSafetyDepositStore>
       : TAccountSafetyDepositStore;
     safetyDepositBox: TAccountSafetyDepositBox extends string
-      ? Base58EncodedAddress<TAccountSafetyDepositBox>
+      ? Address<TAccountSafetyDepositBox>
       : TAccountSafetyDepositBox;
     vault: TAccountVault extends string
-      ? Base58EncodedAddress<TAccountVault>
+      ? Address<TAccountVault>
       : TAccountVault;
     newMetadataUpdateAuthority: TAccountNewMetadataUpdateAuthority extends string
-      ? Base58EncodedAddress<TAccountNewMetadataUpdateAuthority>
+      ? Address<TAccountNewMetadataUpdateAuthority>
       : TAccountNewMetadataUpdateAuthority;
     metadata: TAccountMetadata extends string
-      ? Base58EncodedAddress<TAccountMetadata>
+      ? Address<TAccountMetadata>
       : TAccountMetadata;
     tokenProgram?: TAccountTokenProgram extends string
-      ? Base58EncodedAddress<TAccountTokenProgram>
+      ? Address<TAccountTokenProgram>
       : TAccountTokenProgram;
     tokenVaultProgram: TAccountTokenVaultProgram extends string
-      ? Base58EncodedAddress<TAccountTokenVaultProgram>
+      ? Address<TAccountTokenVaultProgram>
       : TAccountTokenVaultProgram;
     systemProgram?: TAccountSystemProgram extends string
-      ? Base58EncodedAddress<TAccountSystemProgram>
+      ? Address<TAccountSystemProgram>
       : TAccountSystemProgram;
-    rent?: TAccountRent extends string
-      ? Base58EncodedAddress<TAccountRent>
-      : TAccountRent;
+    rent?: TAccountRent extends string ? Address<TAccountRent> : TAccountRent;
   },
   args: MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -301,7 +299,7 @@ export function mintNewEditionFromMasterEditionViaVaultProxyInstruction<
       accountMetaWithDefault(
         accounts.tokenProgram ?? {
           address:
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -310,7 +308,7 @@ export function mintNewEditionFromMasterEditionViaVaultProxyInstruction<
       accountMetaWithDefault(
         accounts.systemProgram ?? {
           address:
-            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+            '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -318,7 +316,7 @@ export function mintNewEditionFromMasterEditionViaVaultProxyInstruction<
       accountMetaWithDefault(
         accounts.rent ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -373,15 +371,15 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInput<
   TAccountRent extends string
 > = {
   /** New Metadata key (pda of ['metadata', program id, mint id]) */
-  newMetadata: Base58EncodedAddress<TAccountNewMetadata>;
+  newMetadata: Address<TAccountNewMetadata>;
   /** New Edition (pda of ['metadata', program id, mint id, 'edition']) */
-  newEdition: Base58EncodedAddress<TAccountNewEdition>;
+  newEdition: Address<TAccountNewEdition>;
   /** Master Record Edition V2 (pda of ['metadata', program id, master metadata mint id, 'edition'] */
-  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  masterEdition: Address<TAccountMasterEdition>;
   /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
-  newMint: Base58EncodedAddress<TAccountNewMint>;
+  newMint: Address<TAccountNewMint>;
   /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE). */
-  editionMarkPda: Base58EncodedAddress<TAccountEditionMarkPda>;
+  editionMarkPda: Address<TAccountEditionMarkPda>;
   /** Mint authority of new mint */
   newMintAuthority: Signer<TAccountNewMintAuthority>;
   /** payer */
@@ -389,23 +387,23 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInput<
   /** Vault authority */
   vaultAuthority: Signer<TAccountVaultAuthority>;
   /** Safety deposit token store account */
-  safetyDepositStore: Base58EncodedAddress<TAccountSafetyDepositStore>;
+  safetyDepositStore: Address<TAccountSafetyDepositStore>;
   /** Safety deposit box */
-  safetyDepositBox: Base58EncodedAddress<TAccountSafetyDepositBox>;
+  safetyDepositBox: Address<TAccountSafetyDepositBox>;
   /** Vault */
-  vault: Base58EncodedAddress<TAccountVault>;
+  vault: Address<TAccountVault>;
   /** Update authority info for new metadata */
-  newMetadataUpdateAuthority: Base58EncodedAddress<TAccountNewMetadataUpdateAuthority>;
+  newMetadataUpdateAuthority: Address<TAccountNewMetadataUpdateAuthority>;
   /** Master record metadata account */
-  metadata: Base58EncodedAddress<TAccountMetadata>;
+  metadata: Address<TAccountMetadata>;
   /** Token program */
-  tokenProgram?: Base58EncodedAddress<TAccountTokenProgram>;
+  tokenProgram?: Address<TAccountTokenProgram>;
   /** Token vault program */
-  tokenVaultProgram: Base58EncodedAddress<TAccountTokenVaultProgram>;
+  tokenVaultProgram: Address<TAccountTokenVaultProgram>;
   /** System program */
-  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
   /** Rent info */
-  rent?: Base58EncodedAddress<TAccountRent>;
+  rent?: Address<TAccountRent>;
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs['mintNewEditionFromMasterEditionViaTokenArgs'];
 };
 
@@ -694,7 +692,7 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
 
   // Program address.
   const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -702,7 +700,7 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<

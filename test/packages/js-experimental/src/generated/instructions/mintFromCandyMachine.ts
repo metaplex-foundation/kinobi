@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -206,58 +206,58 @@ export function mintFromCandyMachineInstruction<
 >(
   accounts: {
     candyMachine: TAccountCandyMachine extends string
-      ? Base58EncodedAddress<TAccountCandyMachine>
+      ? Address<TAccountCandyMachine>
       : TAccountCandyMachine;
     authorityPda: TAccountAuthorityPda extends string
-      ? Base58EncodedAddress<TAccountAuthorityPda>
+      ? Address<TAccountAuthorityPda>
       : TAccountAuthorityPda;
     mintAuthority: TAccountMintAuthority extends string
-      ? Base58EncodedAddress<TAccountMintAuthority>
+      ? Address<TAccountMintAuthority>
       : TAccountMintAuthority;
     payer: TAccountPayer extends string
-      ? Base58EncodedAddress<TAccountPayer>
+      ? Address<TAccountPayer>
       : TAccountPayer;
     nftMint: TAccountNftMint extends string
-      ? Base58EncodedAddress<TAccountNftMint>
+      ? Address<TAccountNftMint>
       : TAccountNftMint;
     nftMintAuthority: TAccountNftMintAuthority extends string
-      ? Base58EncodedAddress<TAccountNftMintAuthority>
+      ? Address<TAccountNftMintAuthority>
       : TAccountNftMintAuthority;
     nftMetadata: TAccountNftMetadata extends string
-      ? Base58EncodedAddress<TAccountNftMetadata>
+      ? Address<TAccountNftMetadata>
       : TAccountNftMetadata;
     nftMasterEdition: TAccountNftMasterEdition extends string
-      ? Base58EncodedAddress<TAccountNftMasterEdition>
+      ? Address<TAccountNftMasterEdition>
       : TAccountNftMasterEdition;
     collectionAuthorityRecord: TAccountCollectionAuthorityRecord extends string
-      ? Base58EncodedAddress<TAccountCollectionAuthorityRecord>
+      ? Address<TAccountCollectionAuthorityRecord>
       : TAccountCollectionAuthorityRecord;
     collectionMint: TAccountCollectionMint extends string
-      ? Base58EncodedAddress<TAccountCollectionMint>
+      ? Address<TAccountCollectionMint>
       : TAccountCollectionMint;
     collectionMetadata: TAccountCollectionMetadata extends string
-      ? Base58EncodedAddress<TAccountCollectionMetadata>
+      ? Address<TAccountCollectionMetadata>
       : TAccountCollectionMetadata;
     collectionMasterEdition: TAccountCollectionMasterEdition extends string
-      ? Base58EncodedAddress<TAccountCollectionMasterEdition>
+      ? Address<TAccountCollectionMasterEdition>
       : TAccountCollectionMasterEdition;
     collectionUpdateAuthority: TAccountCollectionUpdateAuthority extends string
-      ? Base58EncodedAddress<TAccountCollectionUpdateAuthority>
+      ? Address<TAccountCollectionUpdateAuthority>
       : TAccountCollectionUpdateAuthority;
     tokenMetadataProgram?: TAccountTokenMetadataProgram extends string
-      ? Base58EncodedAddress<TAccountTokenMetadataProgram>
+      ? Address<TAccountTokenMetadataProgram>
       : TAccountTokenMetadataProgram;
     tokenProgram?: TAccountTokenProgram extends string
-      ? Base58EncodedAddress<TAccountTokenProgram>
+      ? Address<TAccountTokenProgram>
       : TAccountTokenProgram;
     systemProgram?: TAccountSystemProgram extends string
-      ? Base58EncodedAddress<TAccountSystemProgram>
+      ? Address<TAccountSystemProgram>
       : TAccountSystemProgram;
     recentSlothashes: TAccountRecentSlothashes extends string
-      ? Base58EncodedAddress<TAccountRecentSlothashes>
+      ? Address<TAccountRecentSlothashes>
       : TAccountRecentSlothashes;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -293,7 +293,7 @@ export function mintFromCandyMachineInstruction<
       accountMetaWithDefault(
         accounts.tokenMetadataProgram ?? {
           address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -301,7 +301,7 @@ export function mintFromCandyMachineInstruction<
       accountMetaWithDefault(
         accounts.tokenProgram ?? {
           address:
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -309,7 +309,7 @@ export function mintFromCandyMachineInstruction<
       accountMetaWithDefault(
         accounts.systemProgram ?? {
           address:
-            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+            '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -362,23 +362,23 @@ export type MintFromCandyMachineInput<
   TAccountSystemProgram extends string,
   TAccountRecentSlothashes extends string
 > = {
-  candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
-  authorityPda: Base58EncodedAddress<TAccountAuthorityPda>;
+  candyMachine: Address<TAccountCandyMachine>;
+  authorityPda: Address<TAccountAuthorityPda>;
   mintAuthority: Signer<TAccountMintAuthority>;
   payer?: Signer<TAccountPayer>;
-  nftMint: Base58EncodedAddress<TAccountNftMint>;
+  nftMint: Address<TAccountNftMint>;
   nftMintAuthority?: Signer<TAccountNftMintAuthority>;
-  nftMetadata: Base58EncodedAddress<TAccountNftMetadata>;
-  nftMasterEdition: Base58EncodedAddress<TAccountNftMasterEdition>;
-  collectionAuthorityRecord: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
-  collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
-  collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
-  collectionMasterEdition: Base58EncodedAddress<TAccountCollectionMasterEdition>;
-  collectionUpdateAuthority: Base58EncodedAddress<TAccountCollectionUpdateAuthority>;
-  tokenMetadataProgram?: Base58EncodedAddress<TAccountTokenMetadataProgram>;
-  tokenProgram?: Base58EncodedAddress<TAccountTokenProgram>;
-  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
-  recentSlothashes: Base58EncodedAddress<TAccountRecentSlothashes>;
+  nftMetadata: Address<TAccountNftMetadata>;
+  nftMasterEdition: Address<TAccountNftMasterEdition>;
+  collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
+  collectionMint: Address<TAccountCollectionMint>;
+  collectionMetadata: Address<TAccountCollectionMetadata>;
+  collectionMasterEdition: Address<TAccountCollectionMasterEdition>;
+  collectionUpdateAuthority: Address<TAccountCollectionUpdateAuthority>;
+  tokenMetadataProgram?: Address<TAccountTokenMetadataProgram>;
+  tokenProgram?: Address<TAccountTokenProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
+  recentSlothashes: Address<TAccountRecentSlothashes>;
 };
 
 export async function mintFromCandyMachine<
@@ -666,7 +666,7 @@ export async function mintFromCandyMachine<
 
   // Program address.
   const defaultProgramAddress =
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -674,7 +674,7 @@ export async function mintFromCandyMachine<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<

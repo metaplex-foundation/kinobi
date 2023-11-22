@@ -101,7 +101,7 @@ export function getInstructionFunctionHighLevelFragment(
       bytesCreatedOnChainFragment,
       argsTypeFragment
     )
-    .addImports('solanaAddresses', ['Base58EncodedAddress'])
+    .addImports('solanaAddresses', ['Address'])
     .addImports('shared', ['CustomGeneratedInstruction', 'WrappedInstruction']);
 
   if (hasAccounts) {

@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   ProgramDerivedAddress,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -105,7 +105,7 @@ export function decodeDelegateRecord<TAddress extends string = string>(
 
 export async function fetchDelegateRecord<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<DelegateRecord<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -115,7 +115,7 @@ export async function fetchDelegateRecord<TAddress extends string = string>(
 
 export async function safeFetchDelegateRecord<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions
 ): Promise<DelegateRecord<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -124,7 +124,7 @@ export async function safeFetchDelegateRecord<TAddress extends string = string>(
 
 export async function fetchAllDelegateRecord(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<DelegateRecord[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
@@ -136,7 +136,7 @@ export async function fetchAllDelegateRecord(
 
 export async function safeFetchAllDelegateRecord(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions
 ): Promise<DelegateRecord[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);

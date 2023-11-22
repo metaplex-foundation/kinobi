@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -27,7 +27,7 @@ import {
 
 export type EscrowAuthority =
   | { __kind: 'TokenOwner' }
-  | { __kind: 'Creator'; fields: [Base58EncodedAddress] };
+  | { __kind: 'Creator'; fields: [Address] };
 
 export type EscrowAuthorityArgs = EscrowAuthority;
 

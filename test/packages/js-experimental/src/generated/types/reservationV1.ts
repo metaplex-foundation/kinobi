@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -19,7 +19,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 
 export type ReservationV1 = {
-  address: Base58EncodedAddress;
+  address: Address;
   spotsRemaining: number;
   totalSpots: number;
 };

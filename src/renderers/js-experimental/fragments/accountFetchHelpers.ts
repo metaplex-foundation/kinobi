@@ -16,7 +16,7 @@ export function getAccountFetchHelpersFragment(
     decoderFunction: decoderFunctionFragment.render,
   })
     .mergeImportsWith(decoderFunctionFragment)
-    .addImports('solanaAddresses', ['Base58EncodedAddress'])
+    .addImports('solanaAddresses', ['Address'])
     .addImports('shared', [
       'assertAccountExists',
       'Context',

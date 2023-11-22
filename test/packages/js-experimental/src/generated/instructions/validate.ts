@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -294,47 +294,47 @@ export function validateInstruction<
 >(
   accounts: {
     payer: TAccountPayer extends string
-      ? Base58EncodedAddress<TAccountPayer>
+      ? Address<TAccountPayer>
       : TAccountPayer;
     ruleSet: TAccountRuleSet extends string
-      ? Base58EncodedAddress<TAccountRuleSet>
+      ? Address<TAccountRuleSet>
       : TAccountRuleSet;
     systemProgram?: TAccountSystemProgram extends string
-      ? Base58EncodedAddress<TAccountSystemProgram>
+      ? Address<TAccountSystemProgram>
       : TAccountSystemProgram;
     optRuleSigner1?: TAccountOptRuleSigner1 extends string
-      ? Base58EncodedAddress<TAccountOptRuleSigner1>
+      ? Address<TAccountOptRuleSigner1>
       : TAccountOptRuleSigner1;
     optRuleSigner2?: TAccountOptRuleSigner2 extends string
-      ? Base58EncodedAddress<TAccountOptRuleSigner2>
+      ? Address<TAccountOptRuleSigner2>
       : TAccountOptRuleSigner2;
     optRuleSigner3?: TAccountOptRuleSigner3 extends string
-      ? Base58EncodedAddress<TAccountOptRuleSigner3>
+      ? Address<TAccountOptRuleSigner3>
       : TAccountOptRuleSigner3;
     optRuleSigner4?: TAccountOptRuleSigner4 extends string
-      ? Base58EncodedAddress<TAccountOptRuleSigner4>
+      ? Address<TAccountOptRuleSigner4>
       : TAccountOptRuleSigner4;
     optRuleSigner5?: TAccountOptRuleSigner5 extends string
-      ? Base58EncodedAddress<TAccountOptRuleSigner5>
+      ? Address<TAccountOptRuleSigner5>
       : TAccountOptRuleSigner5;
     optRuleNonsigner1?: TAccountOptRuleNonsigner1 extends string
-      ? Base58EncodedAddress<TAccountOptRuleNonsigner1>
+      ? Address<TAccountOptRuleNonsigner1>
       : TAccountOptRuleNonsigner1;
     optRuleNonsigner2?: TAccountOptRuleNonsigner2 extends string
-      ? Base58EncodedAddress<TAccountOptRuleNonsigner2>
+      ? Address<TAccountOptRuleNonsigner2>
       : TAccountOptRuleNonsigner2;
     optRuleNonsigner3?: TAccountOptRuleNonsigner3 extends string
-      ? Base58EncodedAddress<TAccountOptRuleNonsigner3>
+      ? Address<TAccountOptRuleNonsigner3>
       : TAccountOptRuleNonsigner3;
     optRuleNonsigner4?: TAccountOptRuleNonsigner4 extends string
-      ? Base58EncodedAddress<TAccountOptRuleNonsigner4>
+      ? Address<TAccountOptRuleNonsigner4>
       : TAccountOptRuleNonsigner4;
     optRuleNonsigner5?: TAccountOptRuleNonsigner5 extends string
-      ? Base58EncodedAddress<TAccountOptRuleNonsigner5>
+      ? Address<TAccountOptRuleNonsigner5>
       : TAccountOptRuleNonsigner5;
   },
   args: ValidateInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -344,7 +344,7 @@ export function validateInstruction<
       accountMetaWithDefault(
         accounts.systemProgram ?? {
           address:
-            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
+            '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>,
           role: AccountRole.READONLY,
         },
         AccountRole.READONLY
@@ -413,11 +413,11 @@ export type ValidateInput<
   /** Payer and creator of the RuleSet */
   payer?: Signer<TAccountPayer>;
   /** The PDA account where the RuleSet is stored */
-  ruleSet: Base58EncodedAddress<TAccountRuleSet>;
+  ruleSet: Address<TAccountRuleSet>;
   /** System program */
-  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
   optRuleSigner1?:
-    | Base58EncodedAddress<TAccountOptRuleSigner1>
+    | Address<TAccountOptRuleSigner1>
     | Signer<TAccountOptRuleSigner1>;
   /** Optional rule validation signer 2 */
   optRuleSigner2?: Signer<TAccountOptRuleSigner2>;
@@ -428,15 +428,15 @@ export type ValidateInput<
   /** Optional rule validation signer 5 */
   optRuleSigner5?: Signer<TAccountOptRuleSigner5>;
   /** Optional rule validation non-signer 1 */
-  optRuleNonsigner1?: Base58EncodedAddress<TAccountOptRuleNonsigner1>;
+  optRuleNonsigner1?: Address<TAccountOptRuleNonsigner1>;
   /** Optional rule validation non-signer 2 */
-  optRuleNonsigner2?: Base58EncodedAddress<TAccountOptRuleNonsigner2>;
+  optRuleNonsigner2?: Address<TAccountOptRuleNonsigner2>;
   /** Optional rule validation non-signer 3 */
-  optRuleNonsigner3?: Base58EncodedAddress<TAccountOptRuleNonsigner3>;
+  optRuleNonsigner3?: Address<TAccountOptRuleNonsigner3>;
   /** Optional rule validation non-signer 4 */
-  optRuleNonsigner4?: Base58EncodedAddress<TAccountOptRuleNonsigner4>;
+  optRuleNonsigner4?: Address<TAccountOptRuleNonsigner4>;
   /** Optional rule validation non-signer 5 */
-  optRuleNonsigner5?: Base58EncodedAddress<TAccountOptRuleNonsigner5>;
+  optRuleNonsigner5?: Address<TAccountOptRuleNonsigner5>;
   ruleSetName: ValidateInstructionDataArgs['ruleSetName'];
   operation: ValidateInstructionDataArgs['operation'];
   payload: ValidateInstructionDataArgs['payload'];
@@ -681,7 +681,7 @@ export async function validate<
 
   // Program address.
   const defaultProgramAddress =
-    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
+    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
   const programAddress = (
     context.getProgramAddress
       ? await context.getProgramAddress({
@@ -689,7 +689,7 @@ export async function validate<
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<

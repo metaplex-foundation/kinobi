@@ -4,7 +4,7 @@ export function decode{{ pascalCaseName }}<TAddress extends string = string>(enc
 
 export async function fetch{{ pascalCaseName }}<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions,
 ): Promise<{{ pascalCaseName }}<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -14,7 +14,7 @@ export async function fetch{{ pascalCaseName }}<TAddress extends string = string
 
 export async function safeFetch{{ pascalCaseName }}<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
+  address: Address<TAddress>,
   options?: FetchEncodedAccountOptions,
 ): Promise<{{ pascalCaseName }}<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
@@ -25,7 +25,7 @@ export async function safeFetch{{ pascalCaseName }}<TAddress extends string = st
 
 export async function fetchAll{{ pascalCaseName }}(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions,
 ): Promise<{{ pascalCaseName }}[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
@@ -37,7 +37,7 @@ export async function fetchAll{{ pascalCaseName }}(
 
 export async function safeFetchAll{{ pascalCaseName }}(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
+  addresses: Array<Address>,
   options?: FetchEncodedAccountsOptions,
 ): Promise<{{ pascalCaseName }}[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);

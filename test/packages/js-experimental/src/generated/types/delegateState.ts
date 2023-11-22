@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -27,13 +27,13 @@ import {
 
 export type DelegateState = {
   role: DelegateRole;
-  delegate: Base58EncodedAddress;
+  delegate: Address;
   hasData: boolean;
 };
 
 export type DelegateStateArgs = {
   role: DelegateRoleArgs;
-  delegate: Base58EncodedAddress;
+  delegate: Address;
   hasData: boolean;
 };
 
