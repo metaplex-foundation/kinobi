@@ -29,7 +29,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -251,7 +255,8 @@ export async function closeEscrowAccount<
         TAccountMint,
         TAccountTokenAccount,
         TAccountEdition,
-        TAccountPayer,
+        WritableSignerAccount<TAccountPayer> &
+          IAccountSignerMeta<TAccountPayer>,
         TAccountSystemProgram,
         TAccountSysvarInstructions
       >,
@@ -298,7 +303,7 @@ export async function closeEscrowAccount<
     TAccountMint,
     TAccountTokenAccount,
     TAccountEdition,
-    TAccountPayer,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountSystemProgram,
     TAccountSysvarInstructions
   > &
@@ -334,7 +339,7 @@ export async function closeEscrowAccount<
     TAccountMint,
     TAccountTokenAccount,
     TAccountEdition,
-    TAccountPayer,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountSystemProgram,
     TAccountSysvarInstructions
   > &

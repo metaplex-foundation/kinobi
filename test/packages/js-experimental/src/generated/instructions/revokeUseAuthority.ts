@@ -29,7 +29,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -267,7 +271,8 @@ export async function revokeUseAuthority<
       RevokeUseAuthorityInstruction<
         TProgram,
         TAccountUseAuthorityRecord,
-        TAccountOwner,
+        WritableSignerAccount<TAccountOwner> &
+          IAccountSignerMeta<TAccountOwner>,
         TAccountUser,
         TAccountOwnerTokenAccount,
         TAccountMint,
@@ -318,7 +323,7 @@ export async function revokeUseAuthority<
   RevokeUseAuthorityInstruction<
     TProgram,
     TAccountUseAuthorityRecord,
-    TAccountOwner,
+    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
     TAccountUser,
     TAccountOwnerTokenAccount,
     TAccountMint,
@@ -357,7 +362,7 @@ export async function revokeUseAuthority<
   RevokeUseAuthorityInstruction<
     TProgram,
     TAccountUseAuthorityRecord,
-    TAccountOwner,
+    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
     TAccountUser,
     TAccountOwnerTokenAccount,
     TAccountMint,

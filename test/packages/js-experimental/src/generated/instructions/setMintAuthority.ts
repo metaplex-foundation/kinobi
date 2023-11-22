@@ -30,7 +30,11 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -163,8 +167,10 @@ export async function setMintAuthority<
       SetMintAuthorityInstruction<
         TProgram,
         TAccountCandyMachine,
-        TAccountAuthority,
-        TAccountMintAuthority
+        ReadonlySignerAccount<TAccountAuthority> &
+          IAccountSignerMeta<TAccountAuthority>,
+        ReadonlySignerAccount<TAccountMintAuthority> &
+          IAccountSignerMeta<TAccountMintAuthority>
       >,
       TReturn
     >,
@@ -190,8 +196,10 @@ export async function setMintAuthority<
   SetMintAuthorityInstruction<
     TProgram,
     TAccountCandyMachine,
-    TAccountAuthority,
-    TAccountMintAuthority
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>
   > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain
@@ -211,8 +219,10 @@ export async function setMintAuthority<
   SetMintAuthorityInstruction<
     TProgram,
     TAccountCandyMachine,
-    TAccountAuthority,
-    TAccountMintAuthority
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>
   > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain

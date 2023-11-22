@@ -29,7 +29,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -260,8 +264,10 @@ export async function approveCollectionAuthority<
         TProgram,
         TAccountCollectionAuthorityRecord,
         TAccountNewCollectionAuthority,
-        TAccountUpdateAuthority,
-        TAccountPayer,
+        WritableSignerAccount<TAccountUpdateAuthority> &
+          IAccountSignerMeta<TAccountUpdateAuthority>,
+        WritableSignerAccount<TAccountPayer> &
+          IAccountSignerMeta<TAccountPayer>,
         TAccountMetadata,
         TAccountMint,
         TAccountSystemProgram,
@@ -307,8 +313,9 @@ export async function approveCollectionAuthority<
     TProgram,
     TAccountCollectionAuthorityRecord,
     TAccountNewCollectionAuthority,
-    TAccountUpdateAuthority,
-    TAccountPayer,
+    WritableSignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountMetadata,
     TAccountMint,
     TAccountSystemProgram,
@@ -343,8 +350,9 @@ export async function approveCollectionAuthority<
     TProgram,
     TAccountCollectionAuthorityRecord,
     TAccountNewCollectionAuthority,
-    TAccountUpdateAuthority,
-    TAccountPayer,
+    WritableSignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountMetadata,
     TAccountMint,
     TAccountSystemProgram,

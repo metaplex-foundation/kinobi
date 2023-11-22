@@ -30,7 +30,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -437,9 +441,12 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
         TAccountMasterEdition,
         TAccountNewMint,
         TAccountEditionMarkPda,
-        TAccountNewMintAuthority,
-        TAccountPayer,
-        TAccountVaultAuthority,
+        ReadonlySignerAccount<TAccountNewMintAuthority> &
+          IAccountSignerMeta<TAccountNewMintAuthority>,
+        WritableSignerAccount<TAccountPayer> &
+          IAccountSignerMeta<TAccountPayer>,
+        ReadonlySignerAccount<TAccountVaultAuthority> &
+          IAccountSignerMeta<TAccountVaultAuthority>,
         TAccountSafetyDepositStore,
         TAccountSafetyDepositBox,
         TAccountVault,
@@ -520,9 +527,11 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
     TAccountMasterEdition,
     TAccountNewMint,
     TAccountEditionMarkPda,
-    TAccountNewMintAuthority,
-    TAccountPayer,
-    TAccountVaultAuthority,
+    ReadonlySignerAccount<TAccountNewMintAuthority> &
+      IAccountSignerMeta<TAccountNewMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    ReadonlySignerAccount<TAccountVaultAuthority> &
+      IAccountSignerMeta<TAccountVaultAuthority>,
     TAccountSafetyDepositStore,
     TAccountSafetyDepositBox,
     TAccountVault,
@@ -583,9 +592,11 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
     TAccountMasterEdition,
     TAccountNewMint,
     TAccountEditionMarkPda,
-    TAccountNewMintAuthority,
-    TAccountPayer,
-    TAccountVaultAuthority,
+    ReadonlySignerAccount<TAccountNewMintAuthority> &
+      IAccountSignerMeta<TAccountNewMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    ReadonlySignerAccount<TAccountVaultAuthority> &
+      IAccountSignerMeta<TAccountVaultAuthority>,
     TAccountSafetyDepositStore,
     TAccountSafetyDepositBox,
     TAccountVault,

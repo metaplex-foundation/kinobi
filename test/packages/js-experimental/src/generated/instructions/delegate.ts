@@ -30,7 +30,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -379,8 +383,10 @@ export async function delegate<
         TAccountMasterEdition,
         TAccountMint,
         TAccountToken,
-        TAccountAuthority,
-        TAccountPayer,
+        ReadonlySignerAccount<TAccountAuthority> &
+          IAccountSignerMeta<TAccountAuthority>,
+        WritableSignerAccount<TAccountPayer> &
+          IAccountSignerMeta<TAccountPayer>,
         TAccountSystemProgram,
         TAccountSysvarInstructions,
         TAccountSplTokenProgram,
@@ -446,8 +452,9 @@ export async function delegate<
     TAccountMasterEdition,
     TAccountMint,
     TAccountToken,
-    TAccountAuthority,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountSystemProgram,
     TAccountSysvarInstructions,
     TAccountSplTokenProgram,
@@ -497,8 +504,9 @@ export async function delegate<
     TAccountMasterEdition,
     TAccountMint,
     TAccountToken,
-    TAccountAuthority,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountSystemProgram,
     TAccountSysvarInstructions,
     TAccountSplTokenProgram,

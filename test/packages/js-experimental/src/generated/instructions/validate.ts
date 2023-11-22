@@ -31,7 +31,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -463,16 +467,22 @@ export async function validate<
     CustomGeneratedInstruction<
       ValidateInstruction<
         TProgram,
-        TAccountPayer,
+        WritableSignerAccount<TAccountPayer> &
+          IAccountSignerMeta<TAccountPayer>,
         TAccountRuleSet,
         TAccountSystemProgram,
         typeof input['optRuleSigner1'] extends TransactionSigner<TAccountOptRuleSigner1>
-          ? ReadonlySignerAccount<TAccountOptRuleSigner1>
+          ? ReadonlySignerAccount<TAccountOptRuleSigner1> &
+              IAccountSignerMeta<TAccountOptRuleSigner1>
           : TAccountOptRuleSigner1,
-        TAccountOptRuleSigner2,
-        TAccountOptRuleSigner3,
-        TAccountOptRuleSigner4,
-        TAccountOptRuleSigner5,
+        ReadonlySignerAccount<TAccountOptRuleSigner2> &
+          IAccountSignerMeta<TAccountOptRuleSigner2>,
+        ReadonlySignerAccount<TAccountOptRuleSigner3> &
+          IAccountSignerMeta<TAccountOptRuleSigner3>,
+        ReadonlySignerAccount<TAccountOptRuleSigner4> &
+          IAccountSignerMeta<TAccountOptRuleSigner4>,
+        ReadonlySignerAccount<TAccountOptRuleSigner5> &
+          IAccountSignerMeta<TAccountOptRuleSigner5>,
         TAccountOptRuleNonsigner1,
         TAccountOptRuleNonsigner2,
         TAccountOptRuleNonsigner3,
@@ -532,16 +542,21 @@ export async function validate<
 ): Promise<
   ValidateInstruction<
     TProgram,
-    TAccountPayer,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountRuleSet,
     TAccountSystemProgram,
     typeof input['optRuleSigner1'] extends TransactionSigner<TAccountOptRuleSigner1>
-      ? ReadonlySignerAccount<TAccountOptRuleSigner1>
+      ? ReadonlySignerAccount<TAccountOptRuleSigner1> &
+          IAccountSignerMeta<TAccountOptRuleSigner1>
       : TAccountOptRuleSigner1,
-    TAccountOptRuleSigner2,
-    TAccountOptRuleSigner3,
-    TAccountOptRuleSigner4,
-    TAccountOptRuleSigner5,
+    ReadonlySignerAccount<TAccountOptRuleSigner2> &
+      IAccountSignerMeta<TAccountOptRuleSigner2>,
+    ReadonlySignerAccount<TAccountOptRuleSigner3> &
+      IAccountSignerMeta<TAccountOptRuleSigner3>,
+    ReadonlySignerAccount<TAccountOptRuleSigner4> &
+      IAccountSignerMeta<TAccountOptRuleSigner4>,
+    ReadonlySignerAccount<TAccountOptRuleSigner5> &
+      IAccountSignerMeta<TAccountOptRuleSigner5>,
     TAccountOptRuleNonsigner1,
     TAccountOptRuleNonsigner2,
     TAccountOptRuleNonsigner3,
@@ -585,16 +600,21 @@ export async function validate<
 ): Promise<
   ValidateInstruction<
     TProgram,
-    TAccountPayer,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountRuleSet,
     TAccountSystemProgram,
     typeof input['optRuleSigner1'] extends TransactionSigner<TAccountOptRuleSigner1>
-      ? ReadonlySignerAccount<TAccountOptRuleSigner1>
+      ? ReadonlySignerAccount<TAccountOptRuleSigner1> &
+          IAccountSignerMeta<TAccountOptRuleSigner1>
       : TAccountOptRuleSigner1,
-    TAccountOptRuleSigner2,
-    TAccountOptRuleSigner3,
-    TAccountOptRuleSigner4,
-    TAccountOptRuleSigner5,
+    ReadonlySignerAccount<TAccountOptRuleSigner2> &
+      IAccountSignerMeta<TAccountOptRuleSigner2>,
+    ReadonlySignerAccount<TAccountOptRuleSigner3> &
+      IAccountSignerMeta<TAccountOptRuleSigner3>,
+    ReadonlySignerAccount<TAccountOptRuleSigner4> &
+      IAccountSignerMeta<TAccountOptRuleSigner4>,
+    ReadonlySignerAccount<TAccountOptRuleSigner5> &
+      IAccountSignerMeta<TAccountOptRuleSigner5>,
     TAccountOptRuleNonsigner1,
     TAccountOptRuleNonsigner2,
     TAccountOptRuleNonsigner3,

@@ -30,7 +30,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -273,10 +277,12 @@ export async function createEscrowAccount<
         TAccountMint,
         TAccountTokenAccount,
         TAccountEdition,
-        TAccountPayer,
+        WritableSignerAccount<TAccountPayer> &
+          IAccountSignerMeta<TAccountPayer>,
         TAccountSystemProgram,
         TAccountSysvarInstructions,
-        TAccountAuthority
+        ReadonlySignerAccount<TAccountAuthority> &
+          IAccountSignerMeta<TAccountAuthority>
       >,
       TReturn
     >,
@@ -324,10 +330,11 @@ export async function createEscrowAccount<
     TAccountMint,
     TAccountTokenAccount,
     TAccountEdition,
-    TAccountPayer,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountSystemProgram,
     TAccountSysvarInstructions,
-    TAccountAuthority
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
   > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain
@@ -363,10 +370,11 @@ export async function createEscrowAccount<
     TAccountMint,
     TAccountTokenAccount,
     TAccountEdition,
-    TAccountPayer,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountSystemProgram,
     TAccountSysvarInstructions,
-    TAccountAuthority
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
   > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain

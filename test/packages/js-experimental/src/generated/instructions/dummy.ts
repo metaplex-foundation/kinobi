@@ -32,7 +32,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import { resolveTokenOrAta } from '../../hooked';
 import { findDelegateRecordPda } from '../accounts';
 import {
@@ -295,14 +299,19 @@ export async function dummy<
     CustomGeneratedInstruction<
       DummyInstruction<
         TProgram,
-        TAccountEdition,
+        WritableSignerAccount<TAccountEdition> &
+          IAccountSignerMeta<TAccountEdition>,
         TAccountMint,
-        TAccountUpdateAuthority,
-        TAccountMintAuthority,
-        TAccountPayer,
+        ReadonlySignerAccount<TAccountUpdateAuthority> &
+          IAccountSignerMeta<TAccountUpdateAuthority>,
+        WritableSignerAccount<TAccountMintAuthority> &
+          IAccountSignerMeta<TAccountMintAuthority>,
+        WritableSignerAccount<TAccountPayer> &
+          IAccountSignerMeta<TAccountPayer>,
         TAccountFoo,
-        TAccountBar,
-        TAccountDelegate,
+        ReadonlySignerAccount<TAccountBar> & IAccountSignerMeta<TAccountBar>,
+        ReadonlySignerAccount<TAccountDelegate> &
+          IAccountSignerMeta<TAccountDelegate>,
         TAccountDelegateRecord,
         TAccountTokenOrAtaProgram
       >,
@@ -350,14 +359,18 @@ export async function dummy<
 ): Promise<
   DummyInstruction<
     TProgram,
-    TAccountEdition,
+    WritableSignerAccount<TAccountEdition> &
+      IAccountSignerMeta<TAccountEdition>,
     TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    WritableSignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountFoo,
-    TAccountBar,
-    TAccountDelegate,
+    ReadonlySignerAccount<TAccountBar> & IAccountSignerMeta<TAccountBar>,
+    ReadonlySignerAccount<TAccountDelegate> &
+      IAccountSignerMeta<TAccountDelegate>,
     TAccountDelegateRecord,
     TAccountTokenOrAtaProgram
   > &
@@ -392,14 +405,18 @@ export async function dummy<
 ): Promise<
   DummyInstruction<
     TProgram,
-    TAccountEdition,
+    WritableSignerAccount<TAccountEdition> &
+      IAccountSignerMeta<TAccountEdition>,
     TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    WritableSignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountFoo,
-    TAccountBar,
-    TAccountDelegate,
+    ReadonlySignerAccount<TAccountBar> & IAccountSignerMeta<TAccountBar>,
+    ReadonlySignerAccount<TAccountDelegate> &
+      IAccountSignerMeta<TAccountDelegate>,
     TAccountDelegateRecord,
     TAccountTokenOrAtaProgram
   > &

@@ -32,7 +32,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -332,11 +336,13 @@ export async function initialize<
         TAccountCandyMachine,
         TAccountAuthorityPda,
         TAccountAuthority,
-        TAccountPayer,
+        ReadonlySignerAccount<TAccountPayer> &
+          IAccountSignerMeta<TAccountPayer>,
         TAccountCollectionMetadata,
         TAccountCollectionMint,
         TAccountCollectionMasterEdition,
-        TAccountCollectionUpdateAuthority,
+        WritableSignerAccount<TAccountCollectionUpdateAuthority> &
+          IAccountSignerMeta<TAccountCollectionUpdateAuthority>,
         TAccountCollectionAuthorityRecord,
         TAccountTokenMetadataProgram,
         TAccountSystemProgram
@@ -391,11 +397,12 @@ export async function initialize<
     TAccountCandyMachine,
     TAccountAuthorityPda,
     TAccountAuthority,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountCollectionMetadata,
     TAccountCollectionMint,
     TAccountCollectionMasterEdition,
-    TAccountCollectionUpdateAuthority,
+    WritableSignerAccount<TAccountCollectionUpdateAuthority> &
+      IAccountSignerMeta<TAccountCollectionUpdateAuthority>,
     TAccountCollectionAuthorityRecord,
     TAccountTokenMetadataProgram,
     TAccountSystemProgram
@@ -436,11 +443,12 @@ export async function initialize<
     TAccountCandyMachine,
     TAccountAuthorityPda,
     TAccountAuthority,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountCollectionMetadata,
     TAccountCollectionMint,
     TAccountCollectionMasterEdition,
-    TAccountCollectionUpdateAuthority,
+    WritableSignerAccount<TAccountCollectionUpdateAuthority> &
+      IAccountSignerMeta<TAccountCollectionUpdateAuthority>,
     TAccountCollectionAuthorityRecord,
     TAccountTokenMetadataProgram,
     TAccountSystemProgram

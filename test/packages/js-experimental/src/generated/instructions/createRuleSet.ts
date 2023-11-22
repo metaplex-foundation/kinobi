@@ -29,7 +29,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -199,7 +203,8 @@ export async function createRuleSet<
     CustomGeneratedInstruction<
       CreateRuleSetInstruction<
         TProgram,
-        TAccountPayer,
+        WritableSignerAccount<TAccountPayer> &
+          IAccountSignerMeta<TAccountPayer>,
         TAccountRuleSetPda,
         TAccountSystemProgram
       >,
@@ -226,7 +231,7 @@ export async function createRuleSet<
 ): Promise<
   CreateRuleSetInstruction<
     TProgram,
-    TAccountPayer,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountRuleSetPda,
     TAccountSystemProgram
   > &
@@ -247,7 +252,7 @@ export async function createRuleSet<
 ): Promise<
   CreateRuleSetInstruction<
     TProgram,
-    TAccountPayer,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountRuleSetPda,
     TAccountSystemProgram
   > &

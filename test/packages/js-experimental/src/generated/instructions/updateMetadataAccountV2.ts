@@ -40,7 +40,11 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -199,7 +203,8 @@ export async function updateMetadataAccountV2<
       UpdateMetadataAccountV2Instruction<
         TProgram,
         TAccountMetadata,
-        TAccountUpdateAuthority
+        ReadonlySignerAccount<TAccountUpdateAuthority> &
+          IAccountSignerMeta<TAccountUpdateAuthority>
       >,
       TReturn
     >,
@@ -216,7 +221,8 @@ export async function updateMetadataAccountV2<
   UpdateMetadataAccountV2Instruction<
     TProgram,
     TAccountMetadata,
-    TAccountUpdateAuthority
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>
   > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain
@@ -231,7 +237,8 @@ export async function updateMetadataAccountV2<
   UpdateMetadataAccountV2Instruction<
     TProgram,
     TAccountMetadata,
-    TAccountUpdateAuthority
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>
   > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain

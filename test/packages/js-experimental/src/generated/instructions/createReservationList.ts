@@ -17,7 +17,11 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   CreateReservationListInstructionDataArgs,
   getCreateReservationListInstructionDataEncoder,
@@ -211,8 +215,10 @@ export async function createReservationList<
       CreateReservationListInstruction<
         TProgram,
         TAccountReservationList,
-        TAccountPayer,
-        TAccountUpdateAuthority,
+        ReadonlySignerAccount<TAccountPayer> &
+          IAccountSignerMeta<TAccountPayer>,
+        ReadonlySignerAccount<TAccountUpdateAuthority> &
+          IAccountSignerMeta<TAccountUpdateAuthority>,
         TAccountMasterEdition,
         TAccountResource,
         TAccountMetadata,
@@ -258,8 +264,9 @@ export async function createReservationList<
   CreateReservationListInstruction<
     TProgram,
     TAccountReservationList,
-    TAccountPayer,
-    TAccountUpdateAuthority,
+    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
     TAccountMasterEdition,
     TAccountResource,
     TAccountMetadata,
@@ -294,8 +301,9 @@ export async function createReservationList<
   CreateReservationListInstruction<
     TProgram,
     TAccountReservationList,
-    TAccountPayer,
-    TAccountUpdateAuthority,
+    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
     TAccountMasterEdition,
     TAccountResource,
     TAccountMetadata,

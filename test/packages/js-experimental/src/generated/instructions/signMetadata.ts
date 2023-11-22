@@ -28,7 +28,11 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -141,7 +145,12 @@ export async function signMetadata<
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
-      SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>,
+      SignMetadataInstruction<
+        TProgram,
+        TAccountMetadata,
+        ReadonlySignerAccount<TAccountCreator> &
+          IAccountSignerMeta<TAccountCreator>
+      >,
       TReturn
     >,
   input: SignMetadataInput<TAccountMetadata, TAccountCreator>
@@ -154,7 +163,11 @@ export async function signMetadata<
   context: Pick<Context, 'getProgramAddress'>,
   input: SignMetadataInput<TAccountMetadata, TAccountCreator>
 ): Promise<
-  SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator> &
+  SignMetadataInstruction<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
+  > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain
 >;
@@ -165,7 +178,11 @@ export async function signMetadata<
 >(
   input: SignMetadataInput<TAccountMetadata, TAccountCreator>
 ): Promise<
-  SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator> &
+  SignMetadataInstruction<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
+  > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain
 >;

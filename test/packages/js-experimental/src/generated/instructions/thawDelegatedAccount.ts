@@ -29,7 +29,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -196,7 +200,8 @@ export async function thawDelegatedAccount<
     CustomGeneratedInstruction<
       ThawDelegatedAccountInstruction<
         TProgram,
-        TAccountDelegate,
+        WritableSignerAccount<TAccountDelegate> &
+          IAccountSignerMeta<TAccountDelegate>,
         TAccountTokenAccount,
         TAccountEdition,
         TAccountMint,
@@ -231,7 +236,8 @@ export async function thawDelegatedAccount<
 ): Promise<
   ThawDelegatedAccountInstruction<
     TProgram,
-    TAccountDelegate,
+    WritableSignerAccount<TAccountDelegate> &
+      IAccountSignerMeta<TAccountDelegate>,
     TAccountTokenAccount,
     TAccountEdition,
     TAccountMint,
@@ -258,7 +264,8 @@ export async function thawDelegatedAccount<
 ): Promise<
   ThawDelegatedAccountInstruction<
     TProgram,
-    TAccountDelegate,
+    WritableSignerAccount<TAccountDelegate> &
+      IAccountSignerMeta<TAccountDelegate>,
     TAccountTokenAccount,
     TAccountEdition,
     TAccountMint,

@@ -29,7 +29,11 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -163,7 +167,8 @@ export async function updatePrimarySaleHappenedViaToken<
       UpdatePrimarySaleHappenedViaTokenInstruction<
         TProgram,
         TAccountMetadata,
-        TAccountOwner,
+        ReadonlySignerAccount<TAccountOwner> &
+          IAccountSignerMeta<TAccountOwner>,
         TAccountToken
       >,
       TReturn
@@ -190,7 +195,7 @@ export async function updatePrimarySaleHappenedViaToken<
   UpdatePrimarySaleHappenedViaTokenInstruction<
     TProgram,
     TAccountMetadata,
-    TAccountOwner,
+    ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
     TAccountToken
   > &
     IInstructionWithSigners &
@@ -211,7 +216,7 @@ export async function updatePrimarySaleHappenedViaToken<
   UpdatePrimarySaleHappenedViaTokenInstruction<
     TProgram,
     TAccountMetadata,
-    TAccountOwner,
+    ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
     TAccountToken
   > &
     IInstructionWithSigners &

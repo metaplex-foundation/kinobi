@@ -29,7 +29,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -222,7 +226,8 @@ export async function unverifyCollection<
       UnverifyCollectionInstruction<
         TProgram,
         TAccountMetadata,
-        TAccountCollectionAuthority,
+        WritableSignerAccount<TAccountCollectionAuthority> &
+          IAccountSignerMeta<TAccountCollectionAuthority>,
         TAccountCollectionMint,
         TAccountCollection,
         TAccountCollectionMasterEditionAccount,
@@ -261,7 +266,8 @@ export async function unverifyCollection<
   UnverifyCollectionInstruction<
     TProgram,
     TAccountMetadata,
-    TAccountCollectionAuthority,
+    WritableSignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
     TAccountCollectionMint,
     TAccountCollection,
     TAccountCollectionMasterEditionAccount,
@@ -291,7 +297,8 @@ export async function unverifyCollection<
   UnverifyCollectionInstruction<
     TProgram,
     TAccountMetadata,
-    TAccountCollectionAuthority,
+    WritableSignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
     TAccountCollectionMint,
     TAccountCollection,
     TAccountCollectionMasterEditionAccount,

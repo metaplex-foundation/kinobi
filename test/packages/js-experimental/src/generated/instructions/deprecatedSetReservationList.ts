@@ -41,7 +41,11 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -212,7 +216,8 @@ export async function deprecatedSetReservationList<
         TProgram,
         TAccountMasterEdition,
         TAccountReservationList,
-        TAccountResource
+        ReadonlySignerAccount<TAccountResource> &
+          IAccountSignerMeta<TAccountResource>
       >,
       TReturn
     >,
@@ -239,7 +244,8 @@ export async function deprecatedSetReservationList<
     TProgram,
     TAccountMasterEdition,
     TAccountReservationList,
-    TAccountResource
+    ReadonlySignerAccount<TAccountResource> &
+      IAccountSignerMeta<TAccountResource>
   > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain
@@ -260,7 +266,8 @@ export async function deprecatedSetReservationList<
     TProgram,
     TAccountMasterEdition,
     TAccountReservationList,
-    TAccountResource
+    ReadonlySignerAccount<TAccountResource> &
+      IAccountSignerMeta<TAccountResource>
   > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain

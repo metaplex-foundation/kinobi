@@ -29,7 +29,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -350,7 +354,8 @@ export async function useAsset<
         TAccountMetadata,
         TAccountTokenAccount,
         TAccountMint,
-        TAccountUseAuthority,
+        WritableSignerAccount<TAccountUseAuthority> &
+          IAccountSignerMeta<TAccountUseAuthority>,
         TAccountOwner,
         TAccountSplTokenProgram,
         TAccountAtaProgram,
@@ -409,7 +414,8 @@ export async function useAsset<
     TAccountMetadata,
     TAccountTokenAccount,
     TAccountMint,
-    TAccountUseAuthority,
+    WritableSignerAccount<TAccountUseAuthority> &
+      IAccountSignerMeta<TAccountUseAuthority>,
     TAccountOwner,
     TAccountSplTokenProgram,
     TAccountAtaProgram,
@@ -454,7 +460,8 @@ export async function useAsset<
     TAccountMetadata,
     TAccountTokenAccount,
     TAccountMint,
-    TAccountUseAuthority,
+    WritableSignerAccount<TAccountUseAuthority> &
+      IAccountSignerMeta<TAccountUseAuthority>,
     TAccountOwner,
     TAccountSplTokenProgram,
     TAccountAtaProgram,

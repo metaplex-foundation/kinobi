@@ -29,7 +29,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -209,7 +213,8 @@ export async function setCollectionSize<
       SetCollectionSizeInstruction<
         TProgram,
         TAccountCollectionMetadata,
-        TAccountCollectionAuthority,
+        WritableSignerAccount<TAccountCollectionAuthority> &
+          IAccountSignerMeta<TAccountCollectionAuthority>,
         TAccountCollectionMint,
         TAccountCollectionAuthorityRecord
       >,
@@ -240,7 +245,8 @@ export async function setCollectionSize<
   SetCollectionSizeInstruction<
     TProgram,
     TAccountCollectionMetadata,
-    TAccountCollectionAuthority,
+    WritableSignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
   > &
@@ -264,7 +270,8 @@ export async function setCollectionSize<
   SetCollectionSizeInstruction<
     TProgram,
     TAccountCollectionMetadata,
-    TAccountCollectionAuthority,
+    WritableSignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
   > &

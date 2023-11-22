@@ -29,7 +29,11 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -264,7 +268,8 @@ export async function deprecatedMintPrintingTokens<
         TProgram,
         TAccountDestination,
         TAccountPrintingMint,
-        TAccountUpdateAuthority,
+        ReadonlySignerAccount<TAccountUpdateAuthority> &
+          IAccountSignerMeta<TAccountUpdateAuthority>,
         TAccountMetadata,
         TAccountMasterEdition,
         TAccountTokenProgram,
@@ -307,7 +312,8 @@ export async function deprecatedMintPrintingTokens<
     TProgram,
     TAccountDestination,
     TAccountPrintingMint,
-    TAccountUpdateAuthority,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
     TAccountMetadata,
     TAccountMasterEdition,
     TAccountTokenProgram,
@@ -340,7 +346,8 @@ export async function deprecatedMintPrintingTokens<
     TProgram,
     TAccountDestination,
     TAccountPrintingMint,
-    TAccountUpdateAuthority,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
     TAccountMetadata,
     TAccountMasterEdition,
     TAccountTokenProgram,

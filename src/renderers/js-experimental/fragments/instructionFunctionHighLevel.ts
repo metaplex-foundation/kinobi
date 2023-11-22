@@ -135,16 +135,28 @@ function getInstructionType(instructionNode: nodes.InstructionNode): Fragment {
   const accountTypeParamsFragments = instructionNode.accounts.map((account) => {
     const typeParam = `TAccount${pascalCase(account.name)}`;
     const camelName = camelCase(account.name);
-    if (account.isSigner === 'either') {
-      const role = account.isWritable
-        ? 'WritableSignerAccount'
-        : 'ReadonlySignerAccount';
-      return fragment(
-        `typeof input["${camelName}"] extends TransactionSigner<${typeParam}> ? ${role}<${typeParam}> : ${typeParam}`
-      ).addImports('solanaInstructions', [role]);
+
+    if (account.isSigner === false) {
+      return fragment(typeParam);
     }
 
-    return fragment(typeParam);
+    const signerRole = account.isWritable
+      ? 'WritableSignerAccount'
+      : 'ReadonlySignerAccount';
+    const signerTypeFragment = fragment(
+      `${signerRole}<${typeParam}> & IAccountSignerMeta<${typeParam}>`
+    )
+      .addImports('solanaInstructions', [signerRole])
+      .addImports('solanaSigners', ['IAccountSignerMeta']);
+
+    if (account.isSigner === 'either') {
+      return signerTypeFragment.mapRender(
+        (r) =>
+          `typeof input["${camelName}"] extends TransactionSigner<${typeParam}> ? ${r} : ${typeParam}`
+      );
+    }
+
+    return signerTypeFragment;
   });
 
   return mergeFragments(

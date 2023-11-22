@@ -32,7 +32,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -408,10 +412,13 @@ export async function mintFromCandyMachine<
         TProgram,
         TAccountCandyMachine,
         TAccountAuthorityPda,
-        TAccountMintAuthority,
-        TAccountPayer,
+        ReadonlySignerAccount<TAccountMintAuthority> &
+          IAccountSignerMeta<TAccountMintAuthority>,
+        WritableSignerAccount<TAccountPayer> &
+          IAccountSignerMeta<TAccountPayer>,
         TAccountNftMint,
-        TAccountNftMintAuthority,
+        ReadonlySignerAccount<TAccountNftMintAuthority> &
+          IAccountSignerMeta<TAccountNftMintAuthority>,
         TAccountNftMetadata,
         TAccountNftMasterEdition,
         TAccountCollectionAuthorityRecord,
@@ -491,10 +498,12 @@ export async function mintFromCandyMachine<
     TProgram,
     TAccountCandyMachine,
     TAccountAuthorityPda,
-    TAccountMintAuthority,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountNftMint,
-    TAccountNftMintAuthority,
+    ReadonlySignerAccount<TAccountNftMintAuthority> &
+      IAccountSignerMeta<TAccountNftMintAuthority>,
     TAccountNftMetadata,
     TAccountNftMasterEdition,
     TAccountCollectionAuthorityRecord,
@@ -554,10 +563,12 @@ export async function mintFromCandyMachine<
     TProgram,
     TAccountCandyMachine,
     TAccountAuthorityPda,
-    TAccountMintAuthority,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountNftMint,
-    TAccountNftMintAuthority,
+    ReadonlySignerAccount<TAccountNftMintAuthority> &
+      IAccountSignerMeta<TAccountNftMintAuthority>,
     TAccountNftMetadata,
     TAccountNftMasterEdition,
     TAccountCollectionAuthorityRecord,

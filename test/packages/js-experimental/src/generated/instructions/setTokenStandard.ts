@@ -29,7 +29,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -181,7 +185,8 @@ export async function setTokenStandard<
       SetTokenStandardInstruction<
         TProgram,
         TAccountMetadata,
-        TAccountUpdateAuthority,
+        WritableSignerAccount<TAccountUpdateAuthority> &
+          IAccountSignerMeta<TAccountUpdateAuthority>,
         TAccountMint,
         TAccountEdition
       >,
@@ -212,7 +217,8 @@ export async function setTokenStandard<
   SetTokenStandardInstruction<
     TProgram,
     TAccountMetadata,
-    TAccountUpdateAuthority,
+    WritableSignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
     TAccountMint,
     TAccountEdition
   > &
@@ -236,7 +242,8 @@ export async function setTokenStandard<
   SetTokenStandardInstruction<
     TProgram,
     TAccountMetadata,
-    TAccountUpdateAuthority,
+    WritableSignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
     TAccountMint,
     TAccountEdition
   > &

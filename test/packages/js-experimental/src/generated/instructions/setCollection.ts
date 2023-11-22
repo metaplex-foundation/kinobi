@@ -32,7 +32,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -359,13 +363,16 @@ export async function setCollection<
       SetCollectionInstruction<
         TProgram,
         TAccountCandyMachine,
-        TAccountAuthority,
+        ReadonlySignerAccount<TAccountAuthority> &
+          IAccountSignerMeta<TAccountAuthority>,
         TAccountAuthorityPda,
-        TAccountPayer,
+        ReadonlySignerAccount<TAccountPayer> &
+          IAccountSignerMeta<TAccountPayer>,
         TAccountCollectionMint,
         TAccountCollectionMetadata,
         TAccountCollectionAuthorityRecord,
-        TAccountNewCollectionUpdateAuthority,
+        WritableSignerAccount<TAccountNewCollectionUpdateAuthority> &
+          IAccountSignerMeta<TAccountNewCollectionUpdateAuthority>,
         TAccountNewCollectionMetadata,
         TAccountNewCollectionMint,
         TAccountNewCollectionMasterEdition,
@@ -430,13 +437,15 @@ export async function setCollection<
   SetCollectionInstruction<
     TProgram,
     TAccountCandyMachine,
-    TAccountAuthority,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
     TAccountAuthorityPda,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountCollectionMint,
     TAccountCollectionMetadata,
     TAccountCollectionAuthorityRecord,
-    TAccountNewCollectionUpdateAuthority,
+    WritableSignerAccount<TAccountNewCollectionUpdateAuthority> &
+      IAccountSignerMeta<TAccountNewCollectionUpdateAuthority>,
     TAccountNewCollectionMetadata,
     TAccountNewCollectionMint,
     TAccountNewCollectionMasterEdition,
@@ -484,13 +493,15 @@ export async function setCollection<
   SetCollectionInstruction<
     TProgram,
     TAccountCandyMachine,
-    TAccountAuthority,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
     TAccountAuthorityPda,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountCollectionMint,
     TAccountCollectionMetadata,
     TAccountCollectionAuthorityRecord,
-    TAccountNewCollectionUpdateAuthority,
+    WritableSignerAccount<TAccountNewCollectionUpdateAuthority> &
+      IAccountSignerMeta<TAccountNewCollectionUpdateAuthority>,
     TAccountNewCollectionMetadata,
     TAccountNewCollectionMint,
     TAccountNewCollectionMasterEdition,

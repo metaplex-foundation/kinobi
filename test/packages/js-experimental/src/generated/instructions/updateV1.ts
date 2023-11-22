@@ -50,7 +50,11 @@ import {
   getOptionEncoder,
   some,
 } from '@solana/options';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -524,7 +528,8 @@ export async function updateV1<
     CustomGeneratedInstruction<
       UpdateV1Instruction<
         TProgram,
-        TAccountAuthority,
+        ReadonlySignerAccount<TAccountAuthority> &
+          IAccountSignerMeta<TAccountAuthority>,
         TAccountMetadata,
         TAccountMasterEdition,
         TAccountMint,
@@ -579,7 +584,8 @@ export async function updateV1<
 ): Promise<
   UpdateV1Instruction<
     TProgram,
-    TAccountAuthority,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
     TAccountMetadata,
     TAccountMasterEdition,
     TAccountMint,
@@ -621,7 +627,8 @@ export async function updateV1<
 ): Promise<
   UpdateV1Instruction<
     TProgram,
-    TAccountAuthority,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
     TAccountMetadata,
     TAccountMasterEdition,
     TAccountMint,

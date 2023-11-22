@@ -30,7 +30,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -299,9 +303,12 @@ export async function createMasterEdition<
         TProgram,
         TAccountEdition,
         TAccountMint,
-        TAccountUpdateAuthority,
-        TAccountMintAuthority,
-        TAccountPayer,
+        ReadonlySignerAccount<TAccountUpdateAuthority> &
+          IAccountSignerMeta<TAccountUpdateAuthority>,
+        ReadonlySignerAccount<TAccountMintAuthority> &
+          IAccountSignerMeta<TAccountMintAuthority>,
+        WritableSignerAccount<TAccountPayer> &
+          IAccountSignerMeta<TAccountPayer>,
         TAccountMetadata,
         TAccountTokenProgram,
         TAccountSystemProgram,
@@ -350,9 +357,11 @@ export async function createMasterEdition<
     TProgram,
     TAccountEdition,
     TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountMetadata,
     TAccountTokenProgram,
     TAccountSystemProgram,
@@ -389,9 +398,11 @@ export async function createMasterEdition<
     TProgram,
     TAccountEdition,
     TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountMetadata,
     TAccountTokenProgram,
     TAccountSystemProgram,

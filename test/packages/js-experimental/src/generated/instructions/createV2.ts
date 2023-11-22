@@ -41,7 +41,11 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -328,10 +332,13 @@ export async function createV2<
         TAccountMetadata,
         TAccountMasterEdition,
         typeof input['mint'] extends TransactionSigner<TAccountMint>
-          ? WritableSignerAccount<TAccountMint>
+          ? WritableSignerAccount<TAccountMint> &
+              IAccountSignerMeta<TAccountMint>
           : TAccountMint,
-        TAccountMintAuthority,
-        TAccountPayer,
+        ReadonlySignerAccount<TAccountMintAuthority> &
+          IAccountSignerMeta<TAccountMintAuthority>,
+        WritableSignerAccount<TAccountPayer> &
+          IAccountSignerMeta<TAccountPayer>,
         TAccountUpdateAuthority,
         TAccountSystemProgram,
         TAccountSysvarInstructions,
@@ -381,10 +388,11 @@ export async function createV2<
     TAccountMetadata,
     TAccountMasterEdition,
     typeof input['mint'] extends TransactionSigner<TAccountMint>
-      ? WritableSignerAccount<TAccountMint>
+      ? WritableSignerAccount<TAccountMint> & IAccountSignerMeta<TAccountMint>
       : TAccountMint,
-    TAccountMintAuthority,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountUpdateAuthority,
     TAccountSystemProgram,
     TAccountSysvarInstructions,
@@ -422,10 +430,11 @@ export async function createV2<
     TAccountMetadata,
     TAccountMasterEdition,
     typeof input['mint'] extends TransactionSigner<TAccountMint>
-      ? WritableSignerAccount<TAccountMint>
+      ? WritableSignerAccount<TAccountMint> & IAccountSignerMeta<TAccountMint>
       : TAccountMint,
-    TAccountMintAuthority,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountUpdateAuthority,
     TAccountSystemProgram,
     TAccountSysvarInstructions,

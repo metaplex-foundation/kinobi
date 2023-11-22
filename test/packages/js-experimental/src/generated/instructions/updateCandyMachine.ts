@@ -30,7 +30,11 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -169,7 +173,8 @@ export async function updateCandyMachine<
       UpdateCandyMachineInstruction<
         TProgram,
         TAccountCandyMachine,
-        TAccountAuthority
+        ReadonlySignerAccount<TAccountAuthority> &
+          IAccountSignerMeta<TAccountAuthority>
       >,
       TReturn
     >,
@@ -186,7 +191,8 @@ export async function updateCandyMachine<
   UpdateCandyMachineInstruction<
     TProgram,
     TAccountCandyMachine,
-    TAccountAuthority
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
   > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain
@@ -201,7 +207,8 @@ export async function updateCandyMachine<
   UpdateCandyMachineInstruction<
     TProgram,
     TAccountCandyMachine,
-    TAccountAuthority
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
   > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain

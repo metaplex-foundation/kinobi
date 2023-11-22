@@ -29,7 +29,11 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -373,15 +377,20 @@ export async function deprecatedCreateMasterEdition<
         TAccountMint,
         TAccountPrintingMint,
         TAccountOneTimePrintingAuthorizationMint,
-        TAccountUpdateAuthority,
-        TAccountPrintingMintAuthority,
-        TAccountMintAuthority,
+        ReadonlySignerAccount<TAccountUpdateAuthority> &
+          IAccountSignerMeta<TAccountUpdateAuthority>,
+        ReadonlySignerAccount<TAccountPrintingMintAuthority> &
+          IAccountSignerMeta<TAccountPrintingMintAuthority>,
+        ReadonlySignerAccount<TAccountMintAuthority> &
+          IAccountSignerMeta<TAccountMintAuthority>,
         TAccountMetadata,
-        TAccountPayer,
+        ReadonlySignerAccount<TAccountPayer> &
+          IAccountSignerMeta<TAccountPayer>,
         TAccountTokenProgram,
         TAccountSystemProgram,
         TAccountRent,
-        TAccountOneTimePrintingAuthorizationMintAuthority
+        ReadonlySignerAccount<TAccountOneTimePrintingAuthorizationMintAuthority> &
+          IAccountSignerMeta<TAccountOneTimePrintingAuthorizationMintAuthority>
       >,
       TReturn
     >,
@@ -440,15 +449,19 @@ export async function deprecatedCreateMasterEdition<
     TAccountMint,
     TAccountPrintingMint,
     TAccountOneTimePrintingAuthorizationMint,
-    TAccountUpdateAuthority,
-    TAccountPrintingMintAuthority,
-    TAccountMintAuthority,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    ReadonlySignerAccount<TAccountPrintingMintAuthority> &
+      IAccountSignerMeta<TAccountPrintingMintAuthority>,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
     TAccountMetadata,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountTokenProgram,
     TAccountSystemProgram,
     TAccountRent,
-    TAccountOneTimePrintingAuthorizationMintAuthority
+    ReadonlySignerAccount<TAccountOneTimePrintingAuthorizationMintAuthority> &
+      IAccountSignerMeta<TAccountOneTimePrintingAuthorizationMintAuthority>
   > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain
@@ -491,15 +504,19 @@ export async function deprecatedCreateMasterEdition<
     TAccountMint,
     TAccountPrintingMint,
     TAccountOneTimePrintingAuthorizationMint,
-    TAccountUpdateAuthority,
-    TAccountPrintingMintAuthority,
-    TAccountMintAuthority,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    ReadonlySignerAccount<TAccountPrintingMintAuthority> &
+      IAccountSignerMeta<TAccountPrintingMintAuthority>,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
     TAccountMetadata,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountTokenProgram,
     TAccountSystemProgram,
     TAccountRent,
-    TAccountOneTimePrintingAuthorizationMintAuthority
+    ReadonlySignerAccount<TAccountOneTimePrintingAuthorizationMintAuthority> &
+      IAccountSignerMeta<TAccountOneTimePrintingAuthorizationMintAuthority>
   > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain

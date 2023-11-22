@@ -35,7 +35,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -368,7 +372,8 @@ export async function transferOutOfEscrow<
         TProgram,
         TAccountEscrow,
         TAccountMetadata,
-        TAccountPayer,
+        WritableSignerAccount<TAccountPayer> &
+          IAccountSignerMeta<TAccountPayer>,
         TAccountAttributeMint,
         TAccountAttributeSrc,
         TAccountAttributeDst,
@@ -378,7 +383,8 @@ export async function transferOutOfEscrow<
         TAccountAtaProgram,
         TAccountTokenProgram,
         TAccountSysvarInstructions,
-        TAccountAuthority
+        ReadonlySignerAccount<TAccountAuthority> &
+          IAccountSignerMeta<TAccountAuthority>
       >,
       TReturn
     >,
@@ -435,7 +441,7 @@ export async function transferOutOfEscrow<
     TProgram,
     TAccountEscrow,
     TAccountMetadata,
-    TAccountPayer,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountAttributeMint,
     TAccountAttributeSrc,
     TAccountAttributeDst,
@@ -445,7 +451,8 @@ export async function transferOutOfEscrow<
     TAccountAtaProgram,
     TAccountTokenProgram,
     TAccountSysvarInstructions,
-    TAccountAuthority
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
   > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain
@@ -486,7 +493,7 @@ export async function transferOutOfEscrow<
     TProgram,
     TAccountEscrow,
     TAccountMetadata,
-    TAccountPayer,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountAttributeMint,
     TAccountAttributeSrc,
     TAccountAttributeDst,
@@ -496,7 +503,8 @@ export async function transferOutOfEscrow<
     TAccountAtaProgram,
     TAccountTokenProgram,
     TAccountSysvarInstructions,
-    TAccountAuthority
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
   > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain

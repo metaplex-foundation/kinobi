@@ -29,7 +29,11 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -316,7 +320,8 @@ export async function migrate<
         TAccountMasterEdition,
         TAccountTokenAccount,
         TAccountMint,
-        TAccountUpdateAuthority,
+        ReadonlySignerAccount<TAccountUpdateAuthority> &
+          IAccountSignerMeta<TAccountUpdateAuthority>,
         TAccountCollectionMetadata,
         TAccountTokenProgram,
         TAccountSystemProgram,
@@ -371,7 +376,8 @@ export async function migrate<
     TAccountMasterEdition,
     TAccountTokenAccount,
     TAccountMint,
-    TAccountUpdateAuthority,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
     TAccountCollectionMetadata,
     TAccountTokenProgram,
     TAccountSystemProgram,
@@ -413,7 +419,8 @@ export async function migrate<
     TAccountMasterEdition,
     TAccountTokenAccount,
     TAccountMint,
-    TAccountUpdateAuthority,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
     TAccountCollectionMetadata,
     TAccountTokenProgram,
     TAccountSystemProgram,

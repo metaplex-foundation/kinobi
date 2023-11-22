@@ -46,7 +46,11 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import { findMetadataPda, getMetadataSize } from '../accounts';
 import {
   ACCOUNT_HEADER_SIZE,
@@ -340,8 +344,10 @@ export async function createMetadataAccount<
         TProgram,
         TAccountMetadata,
         TAccountMint,
-        TAccountMintAuthority,
-        TAccountPayer,
+        ReadonlySignerAccount<TAccountMintAuthority> &
+          IAccountSignerMeta<TAccountMintAuthority>,
+        WritableSignerAccount<TAccountPayer> &
+          IAccountSignerMeta<TAccountPayer>,
         TAccountUpdateAuthority,
         TAccountSystemProgram,
         TAccountRent
@@ -383,8 +389,9 @@ export async function createMetadataAccount<
     TProgram,
     TAccountMetadata,
     TAccountMint,
-    TAccountMintAuthority,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountUpdateAuthority,
     TAccountSystemProgram,
     TAccountRent
@@ -416,8 +423,9 @@ export async function createMetadataAccount<
     TProgram,
     TAccountMetadata,
     TAccountMint,
-    TAccountMintAuthority,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountUpdateAuthority,
     TAccountSystemProgram,
     TAccountRent

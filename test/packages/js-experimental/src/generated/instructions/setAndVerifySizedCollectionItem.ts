@@ -30,7 +30,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -253,8 +257,10 @@ export async function setAndVerifySizedCollectionItem<
       SetAndVerifySizedCollectionItemInstruction<
         TProgram,
         TAccountMetadata,
-        TAccountCollectionAuthority,
-        TAccountPayer,
+        ReadonlySignerAccount<TAccountCollectionAuthority> &
+          IAccountSignerMeta<TAccountCollectionAuthority>,
+        WritableSignerAccount<TAccountPayer> &
+          IAccountSignerMeta<TAccountPayer>,
         TAccountUpdateAuthority,
         TAccountCollectionMint,
         TAccountCollection,
@@ -300,8 +306,9 @@ export async function setAndVerifySizedCollectionItem<
   SetAndVerifySizedCollectionItemInstruction<
     TProgram,
     TAccountMetadata,
-    TAccountCollectionAuthority,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountUpdateAuthority,
     TAccountCollectionMint,
     TAccountCollection,
@@ -336,8 +343,9 @@ export async function setAndVerifySizedCollectionItem<
   SetAndVerifySizedCollectionItemInstruction<
     TProgram,
     TAccountMetadata,
-    TAccountCollectionAuthority,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountUpdateAuthority,
     TAccountCollectionMint,
     TAccountCollection,

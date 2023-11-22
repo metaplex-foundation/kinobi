@@ -29,7 +29,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import { resolveMasterEditionFromTokenStandard } from '../../hooked';
 import {
   Context,
@@ -421,7 +425,8 @@ export async function transfer<
     CustomGeneratedInstruction<
       TransferInstruction<
         TProgram,
-        TAccountAuthority,
+        WritableSignerAccount<TAccountAuthority> &
+          IAccountSignerMeta<TAccountAuthority>,
         TAccountDelegateRecord,
         TAccountToken,
         TAccountTokenOwner,
@@ -496,7 +501,8 @@ export async function transfer<
 ): Promise<
   TransferInstruction<
     TProgram,
-    TAccountAuthority,
+    WritableSignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
     TAccountDelegateRecord,
     TAccountToken,
     TAccountTokenOwner,
@@ -553,7 +559,8 @@ export async function transfer<
 ): Promise<
   TransferInstruction<
     TProgram,
-    TAccountAuthority,
+    WritableSignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
     TAccountDelegateRecord,
     TAccountToken,
     TAccountTokenOwner,

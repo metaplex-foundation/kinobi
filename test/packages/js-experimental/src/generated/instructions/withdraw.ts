@@ -30,7 +30,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -144,7 +148,12 @@ export async function withdraw<
 >(
   context: Pick<Context, 'getProgramAddress'> &
     CustomGeneratedInstruction<
-      WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>,
+      WithdrawInstruction<
+        TProgram,
+        TAccountCandyMachine,
+        WritableSignerAccount<TAccountAuthority> &
+          IAccountSignerMeta<TAccountAuthority>
+      >,
       TReturn
     >,
   input: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
@@ -157,7 +166,12 @@ export async function withdraw<
   context: Pick<Context, 'getProgramAddress'>,
   input: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<
-  WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority> &
+  WithdrawInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    WritableSignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain
 >;
@@ -168,7 +182,12 @@ export async function withdraw<
 >(
   input: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<
-  WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority> &
+  WithdrawInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    WritableSignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain
 >;

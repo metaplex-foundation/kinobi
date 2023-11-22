@@ -28,7 +28,11 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -146,7 +150,8 @@ export async function removeCreatorVerification<
       RemoveCreatorVerificationInstruction<
         TProgram,
         TAccountMetadata,
-        TAccountCreator
+        ReadonlySignerAccount<TAccountCreator> &
+          IAccountSignerMeta<TAccountCreator>
       >,
       TReturn
     >,
@@ -163,7 +168,7 @@ export async function removeCreatorVerification<
   RemoveCreatorVerificationInstruction<
     TProgram,
     TAccountMetadata,
-    TAccountCreator
+    ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
   > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain
@@ -178,7 +183,7 @@ export async function removeCreatorVerification<
   RemoveCreatorVerificationInstruction<
     TProgram,
     TAccountMetadata,
-    TAccountCreator
+    ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
   > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain

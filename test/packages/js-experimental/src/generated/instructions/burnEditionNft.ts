@@ -29,7 +29,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -292,7 +296,8 @@ export async function burnEditionNft<
       BurnEditionNftInstruction<
         TProgram,
         TAccountMetadata,
-        TAccountOwner,
+        WritableSignerAccount<TAccountOwner> &
+          IAccountSignerMeta<TAccountOwner>,
         TAccountPrintEditionMint,
         TAccountMasterEditionMint,
         TAccountPrintEditionTokenAccount,
@@ -347,7 +352,7 @@ export async function burnEditionNft<
   BurnEditionNftInstruction<
     TProgram,
     TAccountMetadata,
-    TAccountOwner,
+    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
     TAccountPrintEditionMint,
     TAccountMasterEditionMint,
     TAccountPrintEditionTokenAccount,
@@ -389,7 +394,7 @@ export async function burnEditionNft<
   BurnEditionNftInstruction<
     TProgram,
     TAccountMetadata,
-    TAccountOwner,
+    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
     TAccountPrintEditionMint,
     TAccountMasterEditionMint,
     TAccountPrintEditionTokenAccount,

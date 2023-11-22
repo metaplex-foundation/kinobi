@@ -29,7 +29,11 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -396,12 +400,15 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
         TAccountEdition,
         TAccountMasterEdition,
         TAccountMint,
-        TAccountMintAuthority,
+        ReadonlySignerAccount<TAccountMintAuthority> &
+          IAccountSignerMeta<TAccountMintAuthority>,
         TAccountPrintingMint,
         TAccountMasterTokenAccount,
         TAccountEditionMarker,
-        TAccountBurnAuthority,
-        TAccountPayer,
+        ReadonlySignerAccount<TAccountBurnAuthority> &
+          IAccountSignerMeta<TAccountBurnAuthority>,
+        ReadonlySignerAccount<TAccountPayer> &
+          IAccountSignerMeta<TAccountPayer>,
         TAccountMasterUpdateAuthority,
         TAccountMasterMetadata,
         TAccountTokenProgram,
@@ -475,12 +482,14 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
     TAccountEdition,
     TAccountMasterEdition,
     TAccountMint,
-    TAccountMintAuthority,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
     TAccountPrintingMint,
     TAccountMasterTokenAccount,
     TAccountEditionMarker,
-    TAccountBurnAuthority,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountBurnAuthority> &
+      IAccountSignerMeta<TAccountBurnAuthority>,
+    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountMasterUpdateAuthority,
     TAccountMasterMetadata,
     TAccountTokenProgram,
@@ -535,12 +544,14 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
     TAccountEdition,
     TAccountMasterEdition,
     TAccountMint,
-    TAccountMintAuthority,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
     TAccountPrintingMint,
     TAccountMasterTokenAccount,
     TAccountEditionMarker,
-    TAccountBurnAuthority,
-    TAccountPayer,
+    ReadonlySignerAccount<TAccountBurnAuthority> &
+      IAccountSignerMeta<TAccountBurnAuthority>,
+    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountMasterUpdateAuthority,
     TAccountMasterMetadata,
     TAccountTokenProgram,

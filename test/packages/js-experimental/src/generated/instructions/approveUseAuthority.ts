@@ -34,7 +34,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -313,8 +317,10 @@ export async function approveUseAuthority<
       ApproveUseAuthorityInstruction<
         TProgram,
         TAccountUseAuthorityRecord,
-        TAccountOwner,
-        TAccountPayer,
+        WritableSignerAccount<TAccountOwner> &
+          IAccountSignerMeta<TAccountOwner>,
+        WritableSignerAccount<TAccountPayer> &
+          IAccountSignerMeta<TAccountPayer>,
         TAccountUser,
         TAccountOwnerTokenAccount,
         TAccountMetadata,
@@ -372,8 +378,8 @@ export async function approveUseAuthority<
   ApproveUseAuthorityInstruction<
     TProgram,
     TAccountUseAuthorityRecord,
-    TAccountOwner,
-    TAccountPayer,
+    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountUser,
     TAccountOwnerTokenAccount,
     TAccountMetadata,
@@ -417,8 +423,8 @@ export async function approveUseAuthority<
   ApproveUseAuthorityInstruction<
     TProgram,
     TAccountUseAuthorityRecord,
-    TAccountOwner,
-    TAccountPayer,
+    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountUser,
     TAccountOwnerTokenAccount,
     TAccountMetadata,

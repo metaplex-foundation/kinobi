@@ -34,7 +34,11 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
+import {
+  IAccountSignerMeta,
+  IInstructionWithSigners,
+  TransactionSigner,
+} from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
@@ -162,7 +166,8 @@ export async function setAuthority<
       SetAuthorityInstruction<
         TProgram,
         TAccountCandyMachine,
-        TAccountAuthority
+        ReadonlySignerAccount<TAccountAuthority> &
+          IAccountSignerMeta<TAccountAuthority>
       >,
       TReturn
     >,
@@ -176,7 +181,12 @@ export async function setAuthority<
   context: Pick<Context, 'getProgramAddress'>,
   input: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<
-  SetAuthorityInstruction<TProgram, TAccountCandyMachine, TAccountAuthority> &
+  SetAuthorityInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain
 >;
@@ -187,7 +197,12 @@ export async function setAuthority<
 >(
   input: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<
-  SetAuthorityInstruction<TProgram, TAccountCandyMachine, TAccountAuthority> &
+  SetAuthorityInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  > &
     IInstructionWithSigners &
     IInstructionWithBytesCreatedOnChain
 >;
