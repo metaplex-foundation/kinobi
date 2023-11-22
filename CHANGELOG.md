@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.16.9
+
+### Patch Changes
+
+- [#101](https://github.com/metaplex-foundation/kinobi/pull/101) [`aa397bc`](https://github.com/metaplex-foundation/kinobi/commit/aa397bc97aa4a9867774e02e326a2250a676492c) Thanks [@febo](https://github.com/febo)! - Add account list output to builder docs in Rust client
+
 ## 0.16.8
 
 ### Patch Changes
