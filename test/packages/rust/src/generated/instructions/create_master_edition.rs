@@ -110,7 +110,19 @@ pub struct CreateMasterEditionInstructionArgs {
     pub create_master_edition_args: CreateMasterEditionArgs,
 }
 
-/// Instruction builder.
+/// Instruction builder for `CreateMasterEdition`.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` edition
+///   1. `[writable]` mint
+///   2. `[signer]` update_authority
+///   3. `[signer]` mint_authority
+///   4. `[writable, signer]` payer
+///   5. `[]` metadata
+///   6. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
+///   7. `[optional]` system_program (default to `11111111111111111111111111111111`)
+///   8. `[optional]` rent (default to `SysvarRent111111111111111111111111111111111`)
 #[derive(Default)]
 pub struct CreateMasterEditionBuilder {
     edition: Option<solana_program::pubkey::Pubkey>,
@@ -425,7 +437,19 @@ impl<'a, 'b> CreateMasterEditionCpi<'a, 'b> {
     }
 }
 
-/// `create_master_edition` CPI instruction builder.
+/// Instruction builder for `CreateMasterEdition` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` edition
+///   1. `[writable]` mint
+///   2. `[signer]` update_authority
+///   3. `[signer]` mint_authority
+///   4. `[writable, signer]` payer
+///   5. `[]` metadata
+///   6. `[optional]` token_program
+///   7. `[optional]` system_program
+///   8. `[optional]` rent
 pub struct CreateMasterEditionCpiBuilder<'a, 'b> {
     instruction: Box<CreateMasterEditionCpiBuilderInstruction<'a, 'b>>,
 }

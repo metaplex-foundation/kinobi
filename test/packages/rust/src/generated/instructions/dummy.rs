@@ -126,7 +126,20 @@ impl DummyInstructionData {
     }
 }
 
-/// Instruction builder.
+/// Instruction builder for `Dummy`.
+///
+/// ### Accounts:
+///
+///   0. `[writable, signer]` edition
+///   1. `[writable, optional]` mint
+///   2. `[signer]` update_authority
+///   3. `[writable, signer]` mint_authority
+///   4. `[writable, signer]` payer
+///   5. `[writable]` foo
+///   6. `[signer, optional]` bar
+///   7. `[signer, optional]` delegate
+///   8. `[writable, optional]` delegate_record
+///   9. `[]` token_or_ata_program
 #[derive(Default)]
 pub struct DummyBuilder {
     edition: Option<solana_program::pubkey::Pubkey>,
@@ -462,7 +475,20 @@ impl<'a, 'b> DummyCpi<'a, 'b> {
     }
 }
 
-/// `dummy` CPI instruction builder.
+/// Instruction builder for `Dummy` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable, signer]` edition
+///   1. `[writable, optional]` mint
+///   2. `[signer]` update_authority
+///   3. `[writable, signer]` mint_authority
+///   4. `[writable, signer]` payer
+///   5. `[writable]` foo
+///   6. `[signer, optional]` bar
+///   7. `[signer, optional]` delegate
+///   8. `[writable, optional]` delegate_record
+///   9. `[]` token_or_ata_program
 pub struct DummyCpiBuilder<'a, 'b> {
     instruction: Box<DummyCpiBuilderInstruction<'a, 'b>>,
 }

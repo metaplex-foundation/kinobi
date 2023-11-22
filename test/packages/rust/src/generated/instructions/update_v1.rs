@@ -184,7 +184,20 @@ pub struct UpdateV1InstructionDataData {
     pub creators: Option<Vec<Creator>>,
 }
 
-/// Instruction builder.
+/// Instruction builder for `UpdateV1`.
+///
+/// ### Accounts:
+///
+///   0. `[signer]` authority
+///   1. `[writable]` metadata
+///   2. `[writable, optional]` master_edition
+///   3. `[]` mint
+///   4. `[optional]` system_program (default to `11111111111111111111111111111111`)
+///   5. `[optional]` sysvar_instructions (default to `Sysvar1nstructions1111111111111111111111111`)
+///   6. `[optional]` token
+///   7. `[optional]` delegate_record
+///   8. `[optional]` authorization_rules_program
+///   9. `[optional]` authorization_rules
 #[derive(Default)]
 pub struct UpdateV1Builder {
     authority: Option<solana_program::pubkey::Pubkey>,
@@ -658,7 +671,20 @@ impl<'a, 'b> UpdateV1Cpi<'a, 'b> {
     }
 }
 
-/// `update_v1` CPI instruction builder.
+/// Instruction builder for `UpdateV1` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[signer]` authority
+///   1. `[writable]` metadata
+///   2. `[writable, optional]` master_edition
+///   3. `[]` mint
+///   4. `[optional]` system_program
+///   5. `[optional]` sysvar_instructions
+///   6. `[optional]` token
+///   7. `[optional]` delegate_record
+///   8. `[optional]` authorization_rules_program
+///   9. `[optional]` authorization_rules
 pub struct UpdateV1CpiBuilder<'a, 'b> {
     instruction: Box<UpdateV1CpiBuilderInstruction<'a, 'b>>,
 }

@@ -142,7 +142,21 @@ pub struct UseAssetInstructionArgs {
     pub use_asset_args: UseAssetArgs,
 }
 
-/// Instruction builder.
+/// Instruction builder for `UseAsset`.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` metadata
+///   1. `[writable]` token_account
+///   2. `[writable]` mint
+///   3. `[writable, signer]` use_authority
+///   4. `[]` owner
+///   5. `[optional]` spl_token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
+///   6. `[optional]` ata_program (default to `ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL`)
+///   7. `[optional]` system_program (default to `11111111111111111111111111111111`)
+///   8. `[writable, optional]` use_authority_record
+///   9. `[optional]` authorization_rules
+///   10. `[optional]` authorization_rules_program
 #[derive(Default)]
 pub struct UseAssetBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
@@ -527,7 +541,21 @@ impl<'a, 'b> UseAssetCpi<'a, 'b> {
     }
 }
 
-/// `use_asset` CPI instruction builder.
+/// Instruction builder for `UseAsset` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` metadata
+///   1. `[writable]` token_account
+///   2. `[writable]` mint
+///   3. `[writable, signer]` use_authority
+///   4. `[]` owner
+///   5. `[optional]` spl_token_program
+///   6. `[optional]` ata_program
+///   7. `[optional]` system_program
+///   8. `[writable, optional]` use_authority_record
+///   9. `[optional]` authorization_rules
+///   10. `[optional]` authorization_rules_program
 pub struct UseAssetCpiBuilder<'a, 'b> {
     instruction: Box<UseAssetCpiBuilderInstruction<'a, 'b>>,
 }

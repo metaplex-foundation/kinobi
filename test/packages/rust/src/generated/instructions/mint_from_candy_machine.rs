@@ -148,7 +148,27 @@ impl MintFromCandyMachineInstructionData {
     }
 }
 
-/// Instruction builder.
+/// Instruction builder for `MintFromCandyMachine`.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` candy_machine
+///   1. `[writable]` authority_pda
+///   2. `[signer]` mint_authority
+///   3. `[writable, signer]` payer
+///   4. `[writable]` nft_mint
+///   5. `[signer]` nft_mint_authority
+///   6. `[writable]` nft_metadata
+///   7. `[writable]` nft_master_edition
+///   8. `[]` collection_authority_record
+///   9. `[]` collection_mint
+///   10. `[writable]` collection_metadata
+///   11. `[]` collection_master_edition
+///   12. `[]` collection_update_authority
+///   13. `[optional]` token_metadata_program (default to `metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s`)
+///   14. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
+///   15. `[optional]` system_program (default to `11111111111111111111111111111111`)
+///   16. `[]` recent_slothashes
 #[derive(Default)]
 pub struct MintFromCandyMachineBuilder {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
@@ -607,7 +627,27 @@ impl<'a, 'b> MintFromCandyMachineCpi<'a, 'b> {
     }
 }
 
-/// `mint_from_candy_machine` CPI instruction builder.
+/// Instruction builder for `MintFromCandyMachine` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` candy_machine
+///   1. `[writable]` authority_pda
+///   2. `[signer]` mint_authority
+///   3. `[writable, signer]` payer
+///   4. `[writable]` nft_mint
+///   5. `[signer]` nft_mint_authority
+///   6. `[writable]` nft_metadata
+///   7. `[writable]` nft_master_edition
+///   8. `[]` collection_authority_record
+///   9. `[]` collection_mint
+///   10. `[writable]` collection_metadata
+///   11. `[]` collection_master_edition
+///   12. `[]` collection_update_authority
+///   13. `[optional]` token_metadata_program
+///   14. `[optional]` token_program
+///   15. `[optional]` system_program
+///   16. `[]` recent_slothashes
 pub struct MintFromCandyMachineCpiBuilder<'a, 'b> {
     instruction: Box<MintFromCandyMachineCpiBuilderInstruction<'a, 'b>>,
 }

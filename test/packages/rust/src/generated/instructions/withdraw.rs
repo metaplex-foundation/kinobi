@@ -57,7 +57,12 @@ impl WithdrawInstructionData {
     }
 }
 
-/// Instruction builder.
+/// Instruction builder for `Withdraw`.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` candy_machine
+///   1. `[writable, signer]` authority
 #[derive(Default)]
 pub struct WithdrawBuilder {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
@@ -208,7 +213,12 @@ impl<'a, 'b> WithdrawCpi<'a, 'b> {
     }
 }
 
-/// `withdraw` CPI instruction builder.
+/// Instruction builder for `Withdraw` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` candy_machine
+///   1. `[writable, signer]` authority
 pub struct WithdrawCpiBuilder<'a, 'b> {
     instruction: Box<WithdrawCpiBuilderInstruction<'a, 'b>>,
 }

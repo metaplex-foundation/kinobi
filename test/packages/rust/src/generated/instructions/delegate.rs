@@ -165,7 +165,23 @@ pub struct DelegateInstructionArgs {
     pub delegate_args: DelegateArgs,
 }
 
-/// Instruction builder.
+/// Instruction builder for `Delegate`.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` delegate_record
+///   1. `[]` delegate
+///   2. `[writable]` metadata
+///   3. `[optional]` master_edition
+///   4. `[]` mint
+///   5. `[writable, optional]` token
+///   6. `[signer]` authority
+///   7. `[writable, signer]` payer
+///   8. `[optional]` system_program (default to `11111111111111111111111111111111`)
+///   9. `[optional]` sysvar_instructions (default to `Sysvar1nstructions1111111111111111111111111`)
+///   10. `[optional]` spl_token_program
+///   11. `[optional]` authorization_rules_program
+///   12. `[optional]` authorization_rules
 #[derive(Default)]
 pub struct DelegateBuilder {
     delegate_record: Option<solana_program::pubkey::Pubkey>,
@@ -608,7 +624,23 @@ impl<'a, 'b> DelegateCpi<'a, 'b> {
     }
 }
 
-/// `delegate` CPI instruction builder.
+/// Instruction builder for `Delegate` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` delegate_record
+///   1. `[]` delegate
+///   2. `[writable]` metadata
+///   3. `[optional]` master_edition
+///   4. `[]` mint
+///   5. `[writable, optional]` token
+///   6. `[signer]` authority
+///   7. `[writable, signer]` payer
+///   8. `[optional]` system_program
+///   9. `[optional]` sysvar_instructions
+///   10. `[optional]` spl_token_program
+///   11. `[optional]` authorization_rules_program
+///   12. `[optional]` authorization_rules
 pub struct DelegateCpiBuilder<'a, 'b> {
     instruction: Box<DelegateCpiBuilderInstruction<'a, 'b>>,
 }

@@ -128,7 +128,24 @@ impl SetCollectionInstructionData {
     }
 }
 
-/// Instruction builder.
+/// Instruction builder for `SetCollection`.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` candy_machine
+///   1. `[signer]` authority
+///   2. `[writable]` authority_pda
+///   3. `[signer]` payer
+///   4. `[]` collection_mint
+///   5. `[]` collection_metadata
+///   6. `[writable]` collection_authority_record
+///   7. `[writable, signer]` new_collection_update_authority
+///   8. `[]` new_collection_metadata
+///   9. `[]` new_collection_mint
+///   10. `[]` new_collection_master_edition
+///   11. `[writable]` new_collection_authority_record
+///   12. `[optional]` token_metadata_program (default to `metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s`)
+///   13. `[optional]` system_program (default to `11111111111111111111111111111111`)
 #[derive(Default)]
 pub struct SetCollectionBuilder {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
@@ -531,7 +548,24 @@ impl<'a, 'b> SetCollectionCpi<'a, 'b> {
     }
 }
 
-/// `set_collection` CPI instruction builder.
+/// Instruction builder for `SetCollection` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` candy_machine
+///   1. `[signer]` authority
+///   2. `[writable]` authority_pda
+///   3. `[signer]` payer
+///   4. `[]` collection_mint
+///   5. `[]` collection_metadata
+///   6. `[writable]` collection_authority_record
+///   7. `[writable, signer]` new_collection_update_authority
+///   8. `[]` new_collection_metadata
+///   9. `[]` new_collection_mint
+///   10. `[]` new_collection_master_edition
+///   11. `[writable]` new_collection_authority_record
+///   12. `[optional]` token_metadata_program
+///   13. `[optional]` system_program
 pub struct SetCollectionCpiBuilder<'a, 'b> {
     instruction: Box<SetCollectionCpiBuilderInstruction<'a, 'b>>,
 }

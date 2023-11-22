@@ -123,7 +123,19 @@ pub struct CreateV1InstructionArgs {
     pub max_supply: Option<u64>,
 }
 
-/// Instruction builder.
+/// Instruction builder for `CreateV1`.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` metadata
+///   1. `[writable, optional]` master_edition
+///   2. `[writable, signer]` mint
+///   3. `[signer]` mint_authority
+///   4. `[writable, signer]` payer
+///   5. `[]` update_authority
+///   6. `[optional]` system_program (default to `11111111111111111111111111111111`)
+///   7. `[optional]` sysvar_instructions (default to `Sysvar1nstructions1111111111111111111111111`)
+///   8. `[optional]` spl_token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
 #[derive(Default)]
 pub struct CreateV1Builder {
     metadata: Option<solana_program::pubkey::Pubkey>,
@@ -465,7 +477,19 @@ impl<'a, 'b> CreateV1Cpi<'a, 'b> {
     }
 }
 
-/// `create_v1` CPI instruction builder.
+/// Instruction builder for `CreateV1` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` metadata
+///   1. `[writable, optional]` master_edition
+///   2. `[writable, signer]` mint
+///   3. `[signer]` mint_authority
+///   4. `[writable, signer]` payer
+///   5. `[]` update_authority
+///   6. `[optional]` system_program
+///   7. `[optional]` sysvar_instructions
+///   8. `[optional]` spl_token_program
 pub struct CreateV1CpiBuilder<'a, 'b> {
     instruction: Box<CreateV1CpiBuilderInstruction<'a, 'b>>,
 }

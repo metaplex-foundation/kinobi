@@ -111,7 +111,19 @@ pub struct DeprecatedMintPrintingTokensViaTokenInstructionArgs {
     pub mint_printing_tokens_via_token_args: MintPrintingTokensViaTokenArgs,
 }
 
-/// Instruction builder.
+/// Instruction builder for `DeprecatedMintPrintingTokensViaToken`.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` destination
+///   1. `[writable]` token
+///   2. `[writable]` one_time_printing_authorization_mint
+///   3. `[writable]` printing_mint
+///   4. `[signer]` burn_authority
+///   5. `[]` metadata
+///   6. `[]` master_edition
+///   7. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
+///   8. `[optional]` rent (default to `SysvarRent111111111111111111111111111111111`)
 #[derive(Default)]
 pub struct DeprecatedMintPrintingTokensViaTokenBuilder {
     destination: Option<solana_program::pubkey::Pubkey>,
@@ -425,7 +437,19 @@ impl<'a, 'b> DeprecatedMintPrintingTokensViaTokenCpi<'a, 'b> {
     }
 }
 
-/// `deprecated_mint_printing_tokens_via_token` CPI instruction builder.
+/// Instruction builder for `DeprecatedMintPrintingTokensViaToken` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` destination
+///   1. `[writable]` token
+///   2. `[writable]` one_time_printing_authorization_mint
+///   3. `[writable]` printing_mint
+///   4. `[signer]` burn_authority
+///   5. `[]` metadata
+///   6. `[]` master_edition
+///   7. `[optional]` token_program
+///   8. `[optional]` rent
 pub struct DeprecatedMintPrintingTokensViaTokenCpiBuilder<'a, 'b> {
     instruction: Box<DeprecatedMintPrintingTokensViaTokenCpiBuilderInstruction<'a, 'b>>,
 }
