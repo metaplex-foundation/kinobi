@@ -29,14 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 
@@ -254,7 +253,7 @@ export type BurnEditionNftInput<
   /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
   /** NFT owner */
-  owner: Signer<TAccountOwner>;
+  owner: TransactionSigner<TAccountOwner>;
   /** Mint of the print edition NFT */
   printEditionMint: Address<TAccountPrintEditionMint>;
   /** Mint of the original/master NFT */
@@ -344,21 +343,20 @@ export async function burnEditionNft<
     TAccountSplTokenProgram
   >
 ): Promise<
-  WrappedInstruction<
-    BurnEditionNftInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountOwner,
-      TAccountPrintEditionMint,
-      TAccountMasterEditionMint,
-      TAccountPrintEditionTokenAccount,
-      TAccountMasterEditionTokenAccount,
-      TAccountMasterEditionAccount,
-      TAccountPrintEditionAccount,
-      TAccountEditionMarkerAccount,
-      TAccountSplTokenProgram
-    >
-  >
+  BurnEditionNftInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountPrintEditionMint,
+    TAccountMasterEditionMint,
+    TAccountPrintEditionTokenAccount,
+    TAccountMasterEditionTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountPrintEditionAccount,
+    TAccountEditionMarkerAccount,
+    TAccountSplTokenProgram
+  > &
+    IInstructionWithSigners
 >;
 export async function burnEditionNft<
   TAccountMetadata extends string,
@@ -386,21 +384,20 @@ export async function burnEditionNft<
     TAccountSplTokenProgram
   >
 ): Promise<
-  WrappedInstruction<
-    BurnEditionNftInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountOwner,
-      TAccountPrintEditionMint,
-      TAccountMasterEditionMint,
-      TAccountPrintEditionTokenAccount,
-      TAccountMasterEditionTokenAccount,
-      TAccountMasterEditionAccount,
-      TAccountPrintEditionAccount,
-      TAccountEditionMarkerAccount,
-      TAccountSplTokenProgram
-    >
-  >
+  BurnEditionNftInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountPrintEditionMint,
+    TAccountMasterEditionMint,
+    TAccountPrintEditionTokenAccount,
+    TAccountMasterEditionTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountPrintEditionAccount,
+    TAccountEditionMarkerAccount,
+    TAccountSplTokenProgram
+  > &
+    IInstructionWithSigners
 >;
 export async function burnEditionNft<
   TReturn,
@@ -444,7 +441,7 @@ export async function burnEditionNft<
     TAccountEditionMarkerAccount,
     TAccountSplTokenProgram
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -541,7 +538,7 @@ export async function burnEditionNft<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -553,18 +550,17 @@ export async function burnEditionNft<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: burnEditionNftInstruction(
+  // Instruction.
+  const instruction = {
+    ...burnEditionNftInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

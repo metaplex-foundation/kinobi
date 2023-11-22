@@ -29,15 +29,14 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import { resolveMasterEditionFromTokenStandard } from '../../hooked';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 import {
@@ -365,7 +364,7 @@ export type TransferInput<
   TAccountAuthorizationRules extends string
 > = {
   /** Transfer authority (token or delegate owner) */
-  authority?: Signer<TAccountAuthority>;
+  authority?: TransactionSigner<TAccountAuthority>;
   /** Delegate record PDA */
   delegateRecord?: Address<TAccountDelegateRecord>;
   /** Token account */
@@ -494,26 +493,25 @@ export async function transfer<
     TAccountAuthorizationRules
   >
 ): Promise<
-  WrappedInstruction<
-    TransferInstruction<
-      TProgram,
-      TAccountAuthority,
-      TAccountDelegateRecord,
-      TAccountToken,
-      TAccountTokenOwner,
-      TAccountDestination,
-      TAccountDestinationOwner,
-      TAccountMint,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountSplTokenProgram,
-      TAccountSplAtaProgram,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions,
-      TAccountAuthorizationRulesProgram,
-      TAccountAuthorizationRules
-    >
-  >
+  TransferInstruction<
+    TProgram,
+    TAccountAuthority,
+    TAccountDelegateRecord,
+    TAccountToken,
+    TAccountTokenOwner,
+    TAccountDestination,
+    TAccountDestinationOwner,
+    TAccountMint,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountSplTokenProgram,
+    TAccountSplAtaProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  > &
+    IInstructionWithSigners
 >;
 export async function transfer<
   TAccountAuthority extends string,
@@ -551,26 +549,25 @@ export async function transfer<
     TAccountAuthorizationRules
   >
 ): Promise<
-  WrappedInstruction<
-    TransferInstruction<
-      TProgram,
-      TAccountAuthority,
-      TAccountDelegateRecord,
-      TAccountToken,
-      TAccountTokenOwner,
-      TAccountDestination,
-      TAccountDestinationOwner,
-      TAccountMint,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountSplTokenProgram,
-      TAccountSplAtaProgram,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions,
-      TAccountAuthorizationRulesProgram,
-      TAccountAuthorizationRules
-    >
-  >
+  TransferInstruction<
+    TProgram,
+    TAccountAuthority,
+    TAccountDelegateRecord,
+    TAccountToken,
+    TAccountTokenOwner,
+    TAccountDestination,
+    TAccountDestinationOwner,
+    TAccountMint,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountSplTokenProgram,
+    TAccountSplAtaProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  > &
+    IInstructionWithSigners
 >;
 export async function transfer<
   TReturn,
@@ -629,7 +626,7 @@ export async function transfer<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
@@ -770,7 +767,7 @@ export async function transfer<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -782,19 +779,18 @@ export async function transfer<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: transferInstruction(
+  // Instruction.
+  const instruction = {
+    ...transferInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as TransferInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

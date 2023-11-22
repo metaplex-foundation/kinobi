@@ -30,14 +30,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 
 // Output.
@@ -133,7 +132,7 @@ export type WithdrawInput<
   TAccountAuthority extends string
 > = {
   candyMachine: Address<TAccountCandyMachine>;
-  authority?: Signer<TAccountAuthority>;
+  authority?: TransactionSigner<TAccountAuthority>;
 };
 
 export async function withdraw<
@@ -157,9 +156,8 @@ export async function withdraw<
   context: Pick<Context, 'getProgramAddress'>,
   input: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<
-  WrappedInstruction<
-    WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
-  >
+  WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority> &
+    IInstructionWithSigners
 >;
 export async function withdraw<
   TAccountCandyMachine extends string,
@@ -168,9 +166,8 @@ export async function withdraw<
 >(
   input: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<
-  WrappedInstruction<
-    WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
-  >
+  WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority> &
+    IInstructionWithSigners
 >;
 export async function withdraw<
   TReturn,
@@ -184,7 +181,7 @@ export async function withdraw<
         CustomGeneratedInstruction<IInstruction, TReturn>)
     | WithdrawInput<TAccountCandyMachine, TAccountAuthority>,
   rawInput?: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -220,7 +217,7 @@ export async function withdraw<
   };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -232,18 +229,17 @@ export async function withdraw<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: withdrawInstruction(
+  // Instruction.
+  const instruction = {
+    ...withdrawInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

@@ -102,12 +102,13 @@ export function getInstructionFunctionHighLevelFragment(
       argsTypeFragment
     )
     .addImports('solanaAddresses', ['Address'])
-    .addImports('shared', ['CustomGeneratedInstruction', 'WrappedInstruction']);
+    .addImports('solanaSigners', ['IInstructionWithSigners'])
+    .addImports('shared', ['CustomGeneratedInstruction']);
 
   if (hasAccounts) {
     functionFragment
       .addImports('solanaInstructions', ['IAccountMeta'])
-      .addImports('shared', ['getAccountMetasAndSigners', 'ResolvedAccount']);
+      .addImports('shared', ['getAccountMetasWithSigners', 'ResolvedAccount']);
   }
 
   return functionFragment;
@@ -136,7 +137,7 @@ function getInstructionType(instructionNode: nodes.InstructionNode): Fragment {
         ? 'WritableSignerAccount'
         : 'ReadonlySignerAccount';
       return fragment(
-        `typeof input["${camelName}"] extends Signer<${typeParam}> ? ${role}<${typeParam}> : ${typeParam}`
+        `typeof input["${camelName}"] extends TransactionSigner<${typeParam}> ? ${role}<${typeParam}> : ${typeParam}`
       ).addImports('solanaInstructions', [role]);
     }
 

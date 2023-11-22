@@ -34,14 +34,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 
@@ -303,7 +302,7 @@ export type UtilizeInput<
   /** Mint of the Metadata */
   mint: Address<TAccountMint>;
   /** A Use Authority / Can be the current Owner of the NFT */
-  useAuthority: Signer<TAccountUseAuthority>;
+  useAuthority: TransactionSigner<TAccountUseAuthority>;
   /** Owner */
   owner: Address<TAccountOwner>;
   /** Token program */
@@ -397,22 +396,21 @@ export async function utilize<
     TAccountBurner
   >
 ): Promise<
-  WrappedInstruction<
-    UtilizeInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountTokenAccount,
-      TAccountMint,
-      TAccountUseAuthority,
-      TAccountOwner,
-      TAccountTokenProgram,
-      TAccountAtaProgram,
-      TAccountSystemProgram,
-      TAccountRent,
-      TAccountUseAuthorityRecord,
-      TAccountBurner
-    >
-  >
+  UtilizeInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUseAuthority,
+    TAccountOwner,
+    TAccountTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountUseAuthorityRecord,
+    TAccountBurner
+  > &
+    IInstructionWithSigners
 >;
 export async function utilize<
   TAccountMetadata extends string,
@@ -442,22 +440,21 @@ export async function utilize<
     TAccountBurner
   >
 ): Promise<
-  WrappedInstruction<
-    UtilizeInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountTokenAccount,
-      TAccountMint,
-      TAccountUseAuthority,
-      TAccountOwner,
-      TAccountTokenProgram,
-      TAccountAtaProgram,
-      TAccountSystemProgram,
-      TAccountRent,
-      TAccountUseAuthorityRecord,
-      TAccountBurner
-    >
-  >
+  UtilizeInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUseAuthority,
+    TAccountOwner,
+    TAccountTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountUseAuthorityRecord,
+    TAccountBurner
+  > &
+    IInstructionWithSigners
 >;
 export async function utilize<
   TReturn,
@@ -504,7 +501,7 @@ export async function utilize<
     TAccountUseAuthorityRecord,
     TAccountBurner
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -606,7 +603,7 @@ export async function utilize<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -618,19 +615,18 @@ export async function utilize<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: utilizeInstruction(
+  // Instruction.
+  const instruction = {
+    ...utilizeInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as UtilizeInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

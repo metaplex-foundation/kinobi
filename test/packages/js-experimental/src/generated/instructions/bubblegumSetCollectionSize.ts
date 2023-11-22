@@ -30,14 +30,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 import {
   SetCollectionSizeArgs,
@@ -203,11 +202,11 @@ export type BubblegumSetCollectionSizeInput<
   /** Collection Metadata account */
   collectionMetadata: Address<TAccountCollectionMetadata>;
   /** Collection Update authority */
-  collectionAuthority: Signer<TAccountCollectionAuthority>;
+  collectionAuthority: TransactionSigner<TAccountCollectionAuthority>;
   /** Mint of the Collection */
   collectionMint: Address<TAccountCollectionMint>;
   /** Signing PDA of Bubblegum program */
-  bubblegumSigner: Signer<TAccountBubblegumSigner>;
+  bubblegumSigner: TransactionSigner<TAccountBubblegumSigner>;
   /** Collection Authority Record PDA */
   collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
   setCollectionSizeArgs: BubblegumSetCollectionSizeInstructionDataArgs['setCollectionSizeArgs'];
@@ -259,16 +258,15 @@ export async function bubblegumSetCollectionSize<
     TAccountCollectionAuthorityRecord
   >
 ): Promise<
-  WrappedInstruction<
-    BubblegumSetCollectionSizeInstruction<
-      TProgram,
-      TAccountCollectionMetadata,
-      TAccountCollectionAuthority,
-      TAccountCollectionMint,
-      TAccountBubblegumSigner,
-      TAccountCollectionAuthorityRecord
-    >
-  >
+  BubblegumSetCollectionSizeInstruction<
+    TProgram,
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountBubblegumSigner,
+    TAccountCollectionAuthorityRecord
+  > &
+    IInstructionWithSigners
 >;
 export async function bubblegumSetCollectionSize<
   TAccountCollectionMetadata extends string,
@@ -286,16 +284,15 @@ export async function bubblegumSetCollectionSize<
     TAccountCollectionAuthorityRecord
   >
 ): Promise<
-  WrappedInstruction<
-    BubblegumSetCollectionSizeInstruction<
-      TProgram,
-      TAccountCollectionMetadata,
-      TAccountCollectionAuthority,
-      TAccountCollectionMint,
-      TAccountBubblegumSigner,
-      TAccountCollectionAuthorityRecord
-    >
-  >
+  BubblegumSetCollectionSizeInstruction<
+    TProgram,
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountBubblegumSigner,
+    TAccountCollectionAuthorityRecord
+  > &
+    IInstructionWithSigners
 >;
 export async function bubblegumSetCollectionSize<
   TReturn,
@@ -324,7 +321,7 @@ export async function bubblegumSetCollectionSize<
     TAccountBubblegumSigner,
     TAccountCollectionAuthorityRecord
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -387,7 +384,7 @@ export async function bubblegumSetCollectionSize<
   const args = { ...input };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -399,19 +396,18 @@ export async function bubblegumSetCollectionSize<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: bubblegumSetCollectionSizeInstruction(
+  // Instruction.
+  const instruction = {
+    ...bubblegumSetCollectionSizeInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as BubblegumSetCollectionSizeInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

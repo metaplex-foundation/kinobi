@@ -29,14 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 
@@ -172,7 +171,7 @@ export type ThawDelegatedAccountInput<
   TAccountTokenProgram extends string
 > = {
   /** Delegate */
-  delegate: Signer<TAccountDelegate>;
+  delegate: TransactionSigner<TAccountDelegate>;
   /** Token account to thaw */
   tokenAccount: Address<TAccountTokenAccount>;
   /** Edition */
@@ -229,16 +228,15 @@ export async function thawDelegatedAccount<
     TAccountTokenProgram
   >
 ): Promise<
-  WrappedInstruction<
-    ThawDelegatedAccountInstruction<
-      TProgram,
-      TAccountDelegate,
-      TAccountTokenAccount,
-      TAccountEdition,
-      TAccountMint,
-      TAccountTokenProgram
-    >
-  >
+  ThawDelegatedAccountInstruction<
+    TProgram,
+    TAccountDelegate,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  > &
+    IInstructionWithSigners
 >;
 export async function thawDelegatedAccount<
   TAccountDelegate extends string,
@@ -256,16 +254,15 @@ export async function thawDelegatedAccount<
     TAccountTokenProgram
   >
 ): Promise<
-  WrappedInstruction<
-    ThawDelegatedAccountInstruction<
-      TProgram,
-      TAccountDelegate,
-      TAccountTokenAccount,
-      TAccountEdition,
-      TAccountMint,
-      TAccountTokenProgram
-    >
-  >
+  ThawDelegatedAccountInstruction<
+    TProgram,
+    TAccountDelegate,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  > &
+    IInstructionWithSigners
 >;
 export async function thawDelegatedAccount<
   TReturn,
@@ -294,7 +291,7 @@ export async function thawDelegatedAccount<
     TAccountMint,
     TAccountTokenProgram
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -352,7 +349,7 @@ export async function thawDelegatedAccount<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -364,18 +361,17 @@ export async function thawDelegatedAccount<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: thawDelegatedAccountInstruction(
+  // Instruction.
+  const instruction = {
+    ...thawDelegatedAccountInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

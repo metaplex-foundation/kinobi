@@ -29,14 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 
@@ -232,7 +231,7 @@ export type RevokeUseAuthorityInput<
   /** Use Authority Record PDA */
   useAuthorityRecord: Address<TAccountUseAuthorityRecord>;
   /** Owner */
-  owner: Signer<TAccountOwner>;
+  owner: TransactionSigner<TAccountOwner>;
   /** A Use Authority */
   user: Address<TAccountUser>;
   /** Owned Token Account Of Mint */
@@ -315,20 +314,19 @@ export async function revokeUseAuthority<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    RevokeUseAuthorityInstruction<
-      TProgram,
-      TAccountUseAuthorityRecord,
-      TAccountOwner,
-      TAccountUser,
-      TAccountOwnerTokenAccount,
-      TAccountMint,
-      TAccountMetadata,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >
+  RevokeUseAuthorityInstruction<
+    TProgram,
+    TAccountUseAuthorityRecord,
+    TAccountOwner,
+    TAccountUser,
+    TAccountOwnerTokenAccount,
+    TAccountMint,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function revokeUseAuthority<
   TAccountUseAuthorityRecord extends string,
@@ -354,20 +352,19 @@ export async function revokeUseAuthority<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    RevokeUseAuthorityInstruction<
-      TProgram,
-      TAccountUseAuthorityRecord,
-      TAccountOwner,
-      TAccountUser,
-      TAccountOwnerTokenAccount,
-      TAccountMint,
-      TAccountMetadata,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >
+  RevokeUseAuthorityInstruction<
+    TProgram,
+    TAccountUseAuthorityRecord,
+    TAccountOwner,
+    TAccountUser,
+    TAccountOwnerTokenAccount,
+    TAccountMint,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function revokeUseAuthority<
   TReturn,
@@ -408,7 +405,7 @@ export async function revokeUseAuthority<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -492,7 +489,7 @@ export async function revokeUseAuthority<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -504,18 +501,17 @@ export async function revokeUseAuthority<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: revokeUseAuthorityInstruction(
+  // Instruction.
+  const instruction = {
+    ...revokeUseAuthorityInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

@@ -48,14 +48,13 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 import {
   Creator,
@@ -242,7 +241,7 @@ export type UpdateMetadataAccountInput<
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Update authority key */
-  updateAuthority: Signer<TAccountUpdateAuthority>;
+  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   data: UpdateMetadataAccountInstructionDataArgs['data'];
   updateAuthorityArg: UpdateMetadataAccountInstructionDataArgs['updateAuthority'];
   primarySaleHappened: UpdateMetadataAccountInstructionDataArgs['primarySaleHappened'];
@@ -273,13 +272,12 @@ export async function updateMetadataAccount<
   context: Pick<Context, 'getProgramAddress'>,
   input: UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>
 ): Promise<
-  WrappedInstruction<
-    UpdateMetadataAccountInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountUpdateAuthority
-    >
-  >
+  UpdateMetadataAccountInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountUpdateAuthority
+  > &
+    IInstructionWithSigners
 >;
 export async function updateMetadataAccount<
   TAccountMetadata extends string,
@@ -288,13 +286,12 @@ export async function updateMetadataAccount<
 >(
   input: UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>
 ): Promise<
-  WrappedInstruction<
-    UpdateMetadataAccountInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountUpdateAuthority
-    >
-  >
+  UpdateMetadataAccountInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountUpdateAuthority
+  > &
+    IInstructionWithSigners
 >;
 export async function updateMetadataAccount<
   TReturn,
@@ -311,7 +308,7 @@ export async function updateMetadataAccount<
     TAccountMetadata,
     TAccountUpdateAuthority
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -353,7 +350,7 @@ export async function updateMetadataAccount<
   const args = { ...input, updateAuthority: input.updateAuthorityArg };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -365,19 +362,18 @@ export async function updateMetadataAccount<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: updateMetadataAccountInstruction(
+  // Instruction.
+  const instruction = {
+    ...updateMetadataAccountInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as UpdateMetadataAccountInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

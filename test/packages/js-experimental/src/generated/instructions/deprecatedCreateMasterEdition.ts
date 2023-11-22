@@ -29,14 +29,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 import {
@@ -328,15 +327,15 @@ export type DeprecatedCreateMasterEditionInput<
   /** One time authorization printing mint - A mint you control that prints tokens that gives the bearer permission to mint any number of tokens from the printing mint one time via an endpoint with the token-metadata program for your metadata. Also burns the token. */
   oneTimePrintingAuthorizationMint: Address<TAccountOneTimePrintingAuthorizationMint>;
   /** Current Update authority key */
-  updateAuthority: Signer<TAccountUpdateAuthority>;
+  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   /** Printing mint authority - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY. */
-  printingMintAuthority: Signer<TAccountPrintingMintAuthority>;
+  printingMintAuthority: TransactionSigner<TAccountPrintingMintAuthority>;
   /** Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
-  mintAuthority: Signer<TAccountMintAuthority>;
+  mintAuthority: TransactionSigner<TAccountMintAuthority>;
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** payer */
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   /** Token program */
   tokenProgram?: Address<TAccountTokenProgram>;
   /** System program */
@@ -344,7 +343,7 @@ export type DeprecatedCreateMasterEditionInput<
   /** Rent info */
   rent?: Address<TAccountRent>;
   /** One time authorization printing mint authority - must be provided if using max supply. THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY. */
-  oneTimePrintingAuthorizationMintAuthority: Signer<TAccountOneTimePrintingAuthorizationMintAuthority>;
+  oneTimePrintingAuthorizationMintAuthority: TransactionSigner<TAccountOneTimePrintingAuthorizationMintAuthority>;
   createMasterEditionArgs: DeprecatedCreateMasterEditionInstructionDataArgs['createMasterEditionArgs'];
 };
 
@@ -434,24 +433,23 @@ export async function deprecatedCreateMasterEdition<
     TAccountOneTimePrintingAuthorizationMintAuthority
   >
 ): Promise<
-  WrappedInstruction<
-    DeprecatedCreateMasterEditionInstruction<
-      TProgram,
-      TAccountEdition,
-      TAccountMint,
-      TAccountPrintingMint,
-      TAccountOneTimePrintingAuthorizationMint,
-      TAccountUpdateAuthority,
-      TAccountPrintingMintAuthority,
-      TAccountMintAuthority,
-      TAccountMetadata,
-      TAccountPayer,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent,
-      TAccountOneTimePrintingAuthorizationMintAuthority
-    >
-  >
+  DeprecatedCreateMasterEditionInstruction<
+    TProgram,
+    TAccountEdition,
+    TAccountMint,
+    TAccountPrintingMint,
+    TAccountOneTimePrintingAuthorizationMint,
+    TAccountUpdateAuthority,
+    TAccountPrintingMintAuthority,
+    TAccountMintAuthority,
+    TAccountMetadata,
+    TAccountPayer,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountOneTimePrintingAuthorizationMintAuthority
+  > &
+    IInstructionWithSigners
 >;
 export async function deprecatedCreateMasterEdition<
   TAccountEdition extends string,
@@ -485,24 +483,23 @@ export async function deprecatedCreateMasterEdition<
     TAccountOneTimePrintingAuthorizationMintAuthority
   >
 ): Promise<
-  WrappedInstruction<
-    DeprecatedCreateMasterEditionInstruction<
-      TProgram,
-      TAccountEdition,
-      TAccountMint,
-      TAccountPrintingMint,
-      TAccountOneTimePrintingAuthorizationMint,
-      TAccountUpdateAuthority,
-      TAccountPrintingMintAuthority,
-      TAccountMintAuthority,
-      TAccountMetadata,
-      TAccountPayer,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent,
-      TAccountOneTimePrintingAuthorizationMintAuthority
-    >
-  >
+  DeprecatedCreateMasterEditionInstruction<
+    TProgram,
+    TAccountEdition,
+    TAccountMint,
+    TAccountPrintingMint,
+    TAccountOneTimePrintingAuthorizationMint,
+    TAccountUpdateAuthority,
+    TAccountPrintingMintAuthority,
+    TAccountMintAuthority,
+    TAccountMetadata,
+    TAccountPayer,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountOneTimePrintingAuthorizationMintAuthority
+  > &
+    IInstructionWithSigners
 >;
 export async function deprecatedCreateMasterEdition<
   TReturn,
@@ -555,7 +552,7 @@ export async function deprecatedCreateMasterEdition<
     TAccountRent,
     TAccountOneTimePrintingAuthorizationMintAuthority
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -664,7 +661,7 @@ export async function deprecatedCreateMasterEdition<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -676,19 +673,18 @@ export async function deprecatedCreateMasterEdition<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: deprecatedCreateMasterEditionInstruction(
+  // Instruction.
+  const instruction = {
+    ...deprecatedCreateMasterEditionInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as DeprecatedCreateMasterEditionInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

@@ -41,14 +41,13 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 import {
@@ -291,11 +290,11 @@ export type CreateV2Input<
   /** Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition'] */
   masterEdition?: Address<TAccountMasterEdition>;
   /** Mint of token asset */
-  mint: Address<TAccountMint> | Signer<TAccountMint>;
+  mint: Address<TAccountMint> | TransactionSigner<TAccountMint>;
   /** Mint authority */
-  mintAuthority: Signer<TAccountMintAuthority>;
+  mintAuthority: TransactionSigner<TAccountMintAuthority>;
   /** Payer */
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   /** update authority info */
   updateAuthority: Address<TAccountUpdateAuthority>;
   /** System program */
@@ -327,7 +326,7 @@ export async function createV2<
         TProgram,
         TAccountMetadata,
         TAccountMasterEdition,
-        typeof input['mint'] extends Signer<TAccountMint>
+        typeof input['mint'] extends TransactionSigner<TAccountMint>
           ? WritableSignerAccount<TAccountMint>
           : TAccountMint,
         TAccountMintAuthority,
@@ -376,22 +375,21 @@ export async function createV2<
     TAccountSplTokenProgram
   >
 ): Promise<
-  WrappedInstruction<
-    CreateV2Instruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      typeof input['mint'] extends Signer<TAccountMint>
-        ? WritableSignerAccount<TAccountMint>
-        : TAccountMint,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountUpdateAuthority,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions,
-      TAccountSplTokenProgram
-    >
-  >
+  CreateV2Instruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    typeof input['mint'] extends TransactionSigner<TAccountMint>
+      ? WritableSignerAccount<TAccountMint>
+      : TAccountMint,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram
+  > &
+    IInstructionWithSigners
 >;
 export async function createV2<
   TAccountMetadata extends string,
@@ -417,22 +415,21 @@ export async function createV2<
     TAccountSplTokenProgram
   >
 ): Promise<
-  WrappedInstruction<
-    CreateV2Instruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      typeof input['mint'] extends Signer<TAccountMint>
-        ? WritableSignerAccount<TAccountMint>
-        : TAccountMint,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountUpdateAuthority,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions,
-      TAccountSplTokenProgram
-    >
-  >
+  CreateV2Instruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    typeof input['mint'] extends TransactionSigner<TAccountMint>
+      ? WritableSignerAccount<TAccountMint>
+      : TAccountMint,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram
+  > &
+    IInstructionWithSigners
 >;
 export async function createV2<
   TReturn,
@@ -473,7 +470,7 @@ export async function createV2<
     TAccountSysvarInstructions,
     TAccountSplTokenProgram
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -567,7 +564,7 @@ export async function createV2<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -579,19 +576,18 @@ export async function createV2<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: createV2Instruction(
+  // Instruction.
+  const instruction = {
+    ...createV2Instruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as CreateV2InstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

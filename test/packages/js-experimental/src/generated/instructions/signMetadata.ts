@@ -28,14 +28,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 
 // Output.
@@ -130,7 +129,7 @@ export type SignMetadataInput<
   /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
   /** Creator */
-  creator: Signer<TAccountCreator>;
+  creator: TransactionSigner<TAccountCreator>;
 };
 
 export async function signMetadata<
@@ -154,9 +153,8 @@ export async function signMetadata<
   context: Pick<Context, 'getProgramAddress'>,
   input: SignMetadataInput<TAccountMetadata, TAccountCreator>
 ): Promise<
-  WrappedInstruction<
-    SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>
-  >
+  SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator> &
+    IInstructionWithSigners
 >;
 export async function signMetadata<
   TAccountMetadata extends string,
@@ -165,9 +163,8 @@ export async function signMetadata<
 >(
   input: SignMetadataInput<TAccountMetadata, TAccountCreator>
 ): Promise<
-  WrappedInstruction<
-    SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>
-  >
+  SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator> &
+    IInstructionWithSigners
 >;
 export async function signMetadata<
   TReturn,
@@ -181,7 +178,7 @@ export async function signMetadata<
         CustomGeneratedInstruction<IInstruction, TReturn>)
     | SignMetadataInput<TAccountMetadata, TAccountCreator>,
   rawInput?: SignMetadataInput<TAccountMetadata, TAccountCreator>
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -213,7 +210,7 @@ export async function signMetadata<
   };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -225,18 +222,17 @@ export async function signMetadata<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: signMetadataInstruction(
+  // Instruction.
+  const instruction = {
+    ...signMetadataInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

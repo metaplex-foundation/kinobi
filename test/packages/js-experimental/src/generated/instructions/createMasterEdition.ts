@@ -30,14 +30,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 import {
@@ -264,11 +263,11 @@ export type CreateMasterEditionInput<
   /** Metadata mint */
   mint: Address<TAccountMint>;
   /** Update authority */
-  updateAuthority: Signer<TAccountUpdateAuthority>;
+  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   /** Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
-  mintAuthority: Signer<TAccountMintAuthority>;
+  mintAuthority: TransactionSigner<TAccountMintAuthority>;
   /** payer */
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Token program */
@@ -346,20 +345,19 @@ export async function createMasterEdition<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    CreateMasterEditionInstruction<
-      TProgram,
-      TAccountEdition,
-      TAccountMint,
-      TAccountUpdateAuthority,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountMetadata,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >
+  CreateMasterEditionInstruction<
+    TProgram,
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function createMasterEdition<
   TAccountEdition extends string,
@@ -385,20 +383,19 @@ export async function createMasterEdition<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    CreateMasterEditionInstruction<
-      TProgram,
-      TAccountEdition,
-      TAccountMint,
-      TAccountUpdateAuthority,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountMetadata,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >
+  CreateMasterEditionInstruction<
+    TProgram,
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function createMasterEdition<
   TReturn,
@@ -439,7 +436,7 @@ export async function createMasterEdition<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -527,7 +524,7 @@ export async function createMasterEdition<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -539,19 +536,18 @@ export async function createMasterEdition<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: createMasterEditionInstruction(
+  // Instruction.
+  const instruction = {
+    ...createMasterEditionInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as CreateMasterEditionInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

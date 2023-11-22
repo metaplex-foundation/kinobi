@@ -17,6 +17,7 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   CreateReservationListInstructionDataArgs,
   getCreateReservationListInstructionDataEncoder,
@@ -25,10 +26,8 @@ import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 
@@ -179,9 +178,9 @@ export type CreateReservationListInput<
   /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
   reservationList: Address<TAccountReservationList>;
   /** Payer */
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   /** Update authority */
-  updateAuthority: Signer<TAccountUpdateAuthority>;
+  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   /**  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
   masterEdition: Address<TAccountMasterEdition>;
   /** A resource you wish to tie the reservation list to. This is so your later visitors who come to redeem can derive your reservation list PDA with something they can easily get at. You choose what this should be. */
@@ -255,19 +254,18 @@ export async function createReservationList<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    CreateReservationListInstruction<
-      TProgram,
-      TAccountReservationList,
-      TAccountPayer,
-      TAccountUpdateAuthority,
-      TAccountMasterEdition,
-      TAccountResource,
-      TAccountMetadata,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >
+  CreateReservationListInstruction<
+    TProgram,
+    TAccountReservationList,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountMasterEdition,
+    TAccountResource,
+    TAccountMetadata,
+    TAccountSystemProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function createReservationList<
   TAccountReservationList extends string,
@@ -291,19 +289,18 @@ export async function createReservationList<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    CreateReservationListInstruction<
-      TProgram,
-      TAccountReservationList,
-      TAccountPayer,
-      TAccountUpdateAuthority,
-      TAccountMasterEdition,
-      TAccountResource,
-      TAccountMetadata,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >
+  CreateReservationListInstruction<
+    TProgram,
+    TAccountReservationList,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountMasterEdition,
+    TAccountResource,
+    TAccountMetadata,
+    TAccountSystemProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function createReservationList<
   TReturn,
@@ -341,7 +338,7 @@ export async function createReservationList<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -418,7 +415,7 @@ export async function createReservationList<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -430,19 +427,18 @@ export async function createReservationList<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: createReservationListInstruction(
+  // Instruction.
+  const instruction = {
+    ...createReservationListInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as CreateReservationListInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

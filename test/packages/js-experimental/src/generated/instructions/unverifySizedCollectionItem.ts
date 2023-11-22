@@ -30,14 +30,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 
 // Output.
@@ -210,9 +209,9 @@ export type UnverifySizedCollectionItemInput<
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Collection Authority */
-  collectionAuthority: Signer<TAccountCollectionAuthority>;
+  collectionAuthority: TransactionSigner<TAccountCollectionAuthority>;
   /** payer */
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   /** Mint of the Collection */
   collectionMint: Address<TAccountCollectionMint>;
   /** Metadata Account of the Collection */
@@ -279,18 +278,17 @@ export async function unverifySizedCollectionItem<
     TAccountCollectionAuthorityRecord
   >
 ): Promise<
-  WrappedInstruction<
-    UnverifySizedCollectionItemInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountCollectionAuthority,
-      TAccountPayer,
-      TAccountCollectionMint,
-      TAccountCollection,
-      TAccountCollectionMasterEditionAccount,
-      TAccountCollectionAuthorityRecord
-    >
-  >
+  UnverifySizedCollectionItemInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  > &
+    IInstructionWithSigners
 >;
 export async function unverifySizedCollectionItem<
   TAccountMetadata extends string,
@@ -312,18 +310,17 @@ export async function unverifySizedCollectionItem<
     TAccountCollectionAuthorityRecord
   >
 ): Promise<
-  WrappedInstruction<
-    UnverifySizedCollectionItemInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountCollectionAuthority,
-      TAccountPayer,
-      TAccountCollectionMint,
-      TAccountCollection,
-      TAccountCollectionMasterEditionAccount,
-      TAccountCollectionAuthorityRecord
-    >
-  >
+  UnverifySizedCollectionItemInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  > &
+    IInstructionWithSigners
 >;
 export async function unverifySizedCollectionItem<
   TReturn,
@@ -358,7 +355,7 @@ export async function unverifySizedCollectionItem<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -421,7 +418,7 @@ export async function unverifySizedCollectionItem<
   };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -433,18 +430,17 @@ export async function unverifySizedCollectionItem<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: unverifySizedCollectionItemInstruction(
+  // Instruction.
+  const instruction = {
+    ...unverifySizedCollectionItemInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

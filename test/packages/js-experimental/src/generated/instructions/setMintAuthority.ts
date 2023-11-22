@@ -30,14 +30,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 
 // Output.
@@ -147,8 +146,8 @@ export type SetMintAuthorityInput<
   TAccountMintAuthority extends string
 > = {
   candyMachine: Address<TAccountCandyMachine>;
-  authority?: Signer<TAccountAuthority>;
-  mintAuthority: Signer<TAccountMintAuthority>;
+  authority?: TransactionSigner<TAccountAuthority>;
+  mintAuthority: TransactionSigner<TAccountMintAuthority>;
 };
 
 export async function setMintAuthority<
@@ -187,14 +186,13 @@ export async function setMintAuthority<
     TAccountMintAuthority
   >
 ): Promise<
-  WrappedInstruction<
-    SetMintAuthorityInstruction<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthority,
-      TAccountMintAuthority
-    >
-  >
+  SetMintAuthorityInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountMintAuthority
+  > &
+    IInstructionWithSigners
 >;
 export async function setMintAuthority<
   TAccountCandyMachine extends string,
@@ -208,14 +206,13 @@ export async function setMintAuthority<
     TAccountMintAuthority
   >
 ): Promise<
-  WrappedInstruction<
-    SetMintAuthorityInstruction<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthority,
-      TAccountMintAuthority
-    >
-  >
+  SetMintAuthorityInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountMintAuthority
+  > &
+    IInstructionWithSigners
 >;
 export async function setMintAuthority<
   TReturn,
@@ -238,7 +235,7 @@ export async function setMintAuthority<
     TAccountAuthority,
     TAccountMintAuthority
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -280,7 +277,7 @@ export async function setMintAuthority<
   };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -292,18 +289,17 @@ export async function setMintAuthority<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: setMintAuthorityInstruction(
+  // Instruction.
+  const instruction = {
+    ...setMintAuthorityInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

@@ -29,14 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 
 // Output.
@@ -176,7 +175,7 @@ export type RevokeCollectionAuthorityInput<
   /** Delegated Collection Authority */
   delegateAuthority: Address<TAccountDelegateAuthority>;
   /** Update Authority, or Delegated Authority, of Collection NFT */
-  revokeAuthority: Signer<TAccountRevokeAuthority>;
+  revokeAuthority: TransactionSigner<TAccountRevokeAuthority>;
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Mint of Metadata */
@@ -229,16 +228,15 @@ export async function revokeCollectionAuthority<
     TAccountMint
   >
 ): Promise<
-  WrappedInstruction<
-    RevokeCollectionAuthorityInstruction<
-      TProgram,
-      TAccountCollectionAuthorityRecord,
-      TAccountDelegateAuthority,
-      TAccountRevokeAuthority,
-      TAccountMetadata,
-      TAccountMint
-    >
-  >
+  RevokeCollectionAuthorityInstruction<
+    TProgram,
+    TAccountCollectionAuthorityRecord,
+    TAccountDelegateAuthority,
+    TAccountRevokeAuthority,
+    TAccountMetadata,
+    TAccountMint
+  > &
+    IInstructionWithSigners
 >;
 export async function revokeCollectionAuthority<
   TAccountCollectionAuthorityRecord extends string,
@@ -256,16 +254,15 @@ export async function revokeCollectionAuthority<
     TAccountMint
   >
 ): Promise<
-  WrappedInstruction<
-    RevokeCollectionAuthorityInstruction<
-      TProgram,
-      TAccountCollectionAuthorityRecord,
-      TAccountDelegateAuthority,
-      TAccountRevokeAuthority,
-      TAccountMetadata,
-      TAccountMint
-    >
-  >
+  RevokeCollectionAuthorityInstruction<
+    TProgram,
+    TAccountCollectionAuthorityRecord,
+    TAccountDelegateAuthority,
+    TAccountRevokeAuthority,
+    TAccountMetadata,
+    TAccountMint
+  > &
+    IInstructionWithSigners
 >;
 export async function revokeCollectionAuthority<
   TReturn,
@@ -294,7 +291,7 @@ export async function revokeCollectionAuthority<
     TAccountMetadata,
     TAccountMint
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -348,7 +345,7 @@ export async function revokeCollectionAuthority<
   };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -360,18 +357,17 @@ export async function revokeCollectionAuthority<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: revokeCollectionAuthorityInstruction(
+  // Instruction.
+  const instruction = {
+    ...revokeCollectionAuthorityInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

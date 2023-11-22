@@ -32,14 +32,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 import {
@@ -299,11 +298,11 @@ export type InitializeInput<
   candyMachine: Address<TAccountCandyMachine>;
   authorityPda: Address<TAccountAuthorityPda>;
   authority?: Address<TAccountAuthority>;
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   collectionMetadata: Address<TAccountCollectionMetadata>;
   collectionMint: Address<TAccountCollectionMint>;
   collectionMasterEdition: Address<TAccountCollectionMasterEdition>;
-  collectionUpdateAuthority: Signer<TAccountCollectionUpdateAuthority>;
+  collectionUpdateAuthority: TransactionSigner<TAccountCollectionUpdateAuthority>;
   collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
   tokenMetadataProgram?: Address<TAccountTokenMetadataProgram>;
   systemProgram?: Address<TAccountSystemProgram>;
@@ -386,22 +385,21 @@ export async function initialize<
     TAccountSystemProgram
   >
 ): Promise<
-  WrappedInstruction<
-    InitializeInstruction<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthorityPda,
-      TAccountAuthority,
-      TAccountPayer,
-      TAccountCollectionMetadata,
-      TAccountCollectionMint,
-      TAccountCollectionMasterEdition,
-      TAccountCollectionUpdateAuthority,
-      TAccountCollectionAuthorityRecord,
-      TAccountTokenMetadataProgram,
-      TAccountSystemProgram
-    >
-  >
+  InitializeInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthorityPda,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountCollectionMetadata,
+    TAccountCollectionMint,
+    TAccountCollectionMasterEdition,
+    TAccountCollectionUpdateAuthority,
+    TAccountCollectionAuthorityRecord,
+    TAccountTokenMetadataProgram,
+    TAccountSystemProgram
+  > &
+    IInstructionWithSigners
 >;
 export async function initialize<
   TAccountCandyMachine extends string,
@@ -431,22 +429,21 @@ export async function initialize<
     TAccountSystemProgram
   >
 ): Promise<
-  WrappedInstruction<
-    InitializeInstruction<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthorityPda,
-      TAccountAuthority,
-      TAccountPayer,
-      TAccountCollectionMetadata,
-      TAccountCollectionMint,
-      TAccountCollectionMasterEdition,
-      TAccountCollectionUpdateAuthority,
-      TAccountCollectionAuthorityRecord,
-      TAccountTokenMetadataProgram,
-      TAccountSystemProgram
-    >
-  >
+  InitializeInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthorityPda,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountCollectionMetadata,
+    TAccountCollectionMint,
+    TAccountCollectionMasterEdition,
+    TAccountCollectionUpdateAuthority,
+    TAccountCollectionAuthorityRecord,
+    TAccountTokenMetadataProgram,
+    TAccountSystemProgram
+  > &
+    IInstructionWithSigners
 >;
 export async function initialize<
   TReturn,
@@ -493,7 +490,7 @@ export async function initialize<
     TAccountTokenMetadataProgram,
     TAccountSystemProgram
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -595,7 +592,7 @@ export async function initialize<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -607,19 +604,18 @@ export async function initialize<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: initializeInstruction(
+  // Instruction.
+  const instruction = {
+    ...initializeInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as InitializeInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

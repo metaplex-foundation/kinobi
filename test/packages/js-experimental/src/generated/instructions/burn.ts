@@ -29,14 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 import {
@@ -259,7 +258,7 @@ export type BurnInput<
   /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
   /** Asset owner */
-  owner: Signer<TAccountOwner>;
+  owner: TransactionSigner<TAccountOwner>;
   /** Mint of token asset */
   mint: Address<TAccountMint>;
   /** Token account to close */
@@ -343,20 +342,19 @@ export async function burn<
     TAccountAuthorizationRulesProgram
   >
 ): Promise<
-  WrappedInstruction<
-    BurnInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountOwner,
-      TAccountMint,
-      TAccountTokenAccount,
-      TAccountMasterEditionAccount,
-      TAccountSplTokenProgram,
-      TAccountCollectionMetadata,
-      TAccountAuthorizationRules,
-      TAccountAuthorizationRulesProgram
-    >
-  >
+  BurnInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  > &
+    IInstructionWithSigners
 >;
 export async function burn<
   TAccountMetadata extends string,
@@ -382,20 +380,19 @@ export async function burn<
     TAccountAuthorizationRulesProgram
   >
 ): Promise<
-  WrappedInstruction<
-    BurnInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountOwner,
-      TAccountMint,
-      TAccountTokenAccount,
-      TAccountMasterEditionAccount,
-      TAccountSplTokenProgram,
-      TAccountCollectionMetadata,
-      TAccountAuthorizationRules,
-      TAccountAuthorizationRulesProgram
-    >
-  >
+  BurnInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  > &
+    IInstructionWithSigners
 >;
 export async function burn<
   TReturn,
@@ -436,7 +433,7 @@ export async function burn<
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -522,7 +519,7 @@ export async function burn<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -534,19 +531,18 @@ export async function burn<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: burnInstruction(
+  // Instruction.
+  const instruction = {
+    ...burnInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as BurnInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

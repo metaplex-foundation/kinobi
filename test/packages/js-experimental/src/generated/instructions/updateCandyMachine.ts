@@ -30,14 +30,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 import {
   CandyMachineData,
@@ -154,7 +153,7 @@ export type UpdateCandyMachineInput<
   TAccountAuthority extends string
 > = {
   candyMachine: Address<TAccountCandyMachine>;
-  authority?: Signer<TAccountAuthority>;
+  authority?: TransactionSigner<TAccountAuthority>;
   data: UpdateCandyMachineInstructionDataArgs['data'];
 };
 
@@ -183,13 +182,12 @@ export async function updateCandyMachine<
   context: Pick<Context, 'getProgramAddress'>,
   input: UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<
-  WrappedInstruction<
-    UpdateCandyMachineInstruction<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthority
-    >
-  >
+  UpdateCandyMachineInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthority
+  > &
+    IInstructionWithSigners
 >;
 export async function updateCandyMachine<
   TAccountCandyMachine extends string,
@@ -198,13 +196,12 @@ export async function updateCandyMachine<
 >(
   input: UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<
-  WrappedInstruction<
-    UpdateCandyMachineInstruction<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthority
-    >
-  >
+  UpdateCandyMachineInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthority
+  > &
+    IInstructionWithSigners
 >;
 export async function updateCandyMachine<
   TReturn,
@@ -218,7 +215,7 @@ export async function updateCandyMachine<
         CustomGeneratedInstruction<IInstruction, TReturn>)
     | UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>,
   rawInput?: UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -257,7 +254,7 @@ export async function updateCandyMachine<
   const args = { ...input };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -269,19 +266,18 @@ export async function updateCandyMachine<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: updateCandyMachineInstruction(
+  // Instruction.
+  const instruction = {
+    ...updateCandyMachineInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as UpdateCandyMachineInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

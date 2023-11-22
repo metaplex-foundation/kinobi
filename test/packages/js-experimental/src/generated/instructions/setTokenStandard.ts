@@ -29,14 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 
 // Output.
@@ -161,7 +160,7 @@ export type SetTokenStandardInput<
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Metadata update authority */
-  updateAuthority: Signer<TAccountUpdateAuthority>;
+  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   /** Mint account */
   mint: Address<TAccountMint>;
   /** Edition account */
@@ -209,15 +208,14 @@ export async function setTokenStandard<
     TAccountEdition
   >
 ): Promise<
-  WrappedInstruction<
-    SetTokenStandardInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountUpdateAuthority,
-      TAccountMint,
-      TAccountEdition
-    >
-  >
+  SetTokenStandardInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountUpdateAuthority,
+    TAccountMint,
+    TAccountEdition
+  > &
+    IInstructionWithSigners
 >;
 export async function setTokenStandard<
   TAccountMetadata extends string,
@@ -233,15 +231,14 @@ export async function setTokenStandard<
     TAccountEdition
   >
 ): Promise<
-  WrappedInstruction<
-    SetTokenStandardInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountUpdateAuthority,
-      TAccountMint,
-      TAccountEdition
-    >
-  >
+  SetTokenStandardInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountUpdateAuthority,
+    TAccountMint,
+    TAccountEdition
+  > &
+    IInstructionWithSigners
 >;
 export async function setTokenStandard<
   TReturn,
@@ -267,7 +264,7 @@ export async function setTokenStandard<
     TAccountMint,
     TAccountEdition
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -312,7 +309,7 @@ export async function setTokenStandard<
   };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -324,18 +321,17 @@ export async function setTokenStandard<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: setTokenStandardInstruction(
+  // Instruction.
+  const instruction = {
+    ...setTokenStandardInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

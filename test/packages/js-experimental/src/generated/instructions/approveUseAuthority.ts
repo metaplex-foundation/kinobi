@@ -34,14 +34,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 
@@ -271,9 +270,9 @@ export type ApproveUseAuthorityInput<
   /** Use Authority Record PDA */
   useAuthorityRecord: Address<TAccountUseAuthorityRecord>;
   /** Owner */
-  owner: Signer<TAccountOwner>;
+  owner: TransactionSigner<TAccountOwner>;
   /** Payer */
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   /** A Use Authority */
   user: Address<TAccountUser>;
   /** Owned Token Account Of Mint */
@@ -369,22 +368,21 @@ export async function approveUseAuthority<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    ApproveUseAuthorityInstruction<
-      TProgram,
-      TAccountUseAuthorityRecord,
-      TAccountOwner,
-      TAccountPayer,
-      TAccountUser,
-      TAccountOwnerTokenAccount,
-      TAccountMetadata,
-      TAccountMint,
-      TAccountBurner,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >
+  ApproveUseAuthorityInstruction<
+    TProgram,
+    TAccountUseAuthorityRecord,
+    TAccountOwner,
+    TAccountPayer,
+    TAccountUser,
+    TAccountOwnerTokenAccount,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountBurner,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function approveUseAuthority<
   TAccountUseAuthorityRecord extends string,
@@ -414,22 +412,21 @@ export async function approveUseAuthority<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    ApproveUseAuthorityInstruction<
-      TProgram,
-      TAccountUseAuthorityRecord,
-      TAccountOwner,
-      TAccountPayer,
-      TAccountUser,
-      TAccountOwnerTokenAccount,
-      TAccountMetadata,
-      TAccountMint,
-      TAccountBurner,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >
+  ApproveUseAuthorityInstruction<
+    TProgram,
+    TAccountUseAuthorityRecord,
+    TAccountOwner,
+    TAccountPayer,
+    TAccountUser,
+    TAccountOwnerTokenAccount,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountBurner,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function approveUseAuthority<
   TReturn,
@@ -476,7 +473,7 @@ export async function approveUseAuthority<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -569,7 +566,7 @@ export async function approveUseAuthority<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -581,19 +578,18 @@ export async function approveUseAuthority<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: approveUseAuthorityInstruction(
+  // Instruction.
+  const instruction = {
+    ...approveUseAuthorityInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as ApproveUseAuthorityInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

@@ -7,7 +7,6 @@ import {
   BaseThrowVisitor,
   GetByteSizeVisitor,
   GetResolvedInstructionInputsVisitor,
-  ResolvedInstructionAccount,
   ResolvedInstructionInput,
   visit,
   Visitor,
@@ -359,39 +358,6 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   get resolvedInstructionInputVisitor() {
     return this.options.resolvedInstructionInputVisitor;
-  }
-
-  protected getInstructionAccountType(
-    account: ResolvedInstructionAccount
-  ): string {
-    if (account.isPda && account.isSigner === false) return 'Pda';
-    if (account.isSigner === 'either') return 'PublicKey | Pda | Signer';
-    return account.isSigner ? 'Signer' : 'PublicKey | Pda';
-  }
-
-  protected getInstructionAccountImports(
-    accounts: ResolvedInstructionAccount[]
-  ): ImportMap {
-    const imports = new ImportMap();
-    accounts.forEach((account) => {
-      if (account.isSigner !== true && !account.isPda)
-        imports.add('umi', 'PublicKey');
-      if (account.isSigner !== true) imports.add('umi', 'Pda');
-      if (account.isSigner !== false) imports.add('umi', 'Signer');
-    });
-    return imports;
-  }
-
-  protected getMergeConflictsForInstructionAccountsAndArgs(
-    instruction: nodes.InstructionNode
-  ): string[] {
-    const allNames = [
-      ...instruction.accounts.map((account) => account.name),
-      ...instruction.dataArgs.struct.fields.map((field) => field.name),
-      ...instruction.extraArgs.struct.fields.map((field) => field.name),
-    ];
-    const duplicates = allNames.filter((e, i, a) => a.indexOf(e) !== i);
-    return [...new Set(duplicates)];
   }
 
   protected getRenamedArgsMap(

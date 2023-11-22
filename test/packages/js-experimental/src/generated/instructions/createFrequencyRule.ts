@@ -35,14 +35,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 
@@ -188,7 +187,7 @@ export type CreateFrequencyRuleInput<
   TAccountSystemProgram extends string
 > = {
   /** Payer and creator of the Frequency Rule */
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   /** The PDA account where the Frequency Rule is stored */
   frequencyPda: Address<TAccountFrequencyPda>;
   /** System program */
@@ -235,14 +234,13 @@ export async function createFrequencyRule<
     TAccountSystemProgram
   >
 ): Promise<
-  WrappedInstruction<
-    CreateFrequencyRuleInstruction<
-      TProgram,
-      TAccountPayer,
-      TAccountFrequencyPda,
-      TAccountSystemProgram
-    >
-  >
+  CreateFrequencyRuleInstruction<
+    TProgram,
+    TAccountPayer,
+    TAccountFrequencyPda,
+    TAccountSystemProgram
+  > &
+    IInstructionWithSigners
 >;
 export async function createFrequencyRule<
   TAccountPayer extends string,
@@ -256,14 +254,13 @@ export async function createFrequencyRule<
     TAccountSystemProgram
   >
 ): Promise<
-  WrappedInstruction<
-    CreateFrequencyRuleInstruction<
-      TProgram,
-      TAccountPayer,
-      TAccountFrequencyPda,
-      TAccountSystemProgram
-    >
-  >
+  CreateFrequencyRuleInstruction<
+    TProgram,
+    TAccountPayer,
+    TAccountFrequencyPda,
+    TAccountSystemProgram
+  > &
+    IInstructionWithSigners
 >;
 export async function createFrequencyRule<
   TReturn,
@@ -286,7 +283,7 @@ export async function createFrequencyRule<
     TAccountFrequencyPda,
     TAccountSystemProgram
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -341,7 +338,7 @@ export async function createFrequencyRule<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -353,19 +350,18 @@ export async function createFrequencyRule<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: createFrequencyRuleInstruction(
+  // Instruction.
+  const instruction = {
+    ...createFrequencyRuleInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as CreateFrequencyRuleInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

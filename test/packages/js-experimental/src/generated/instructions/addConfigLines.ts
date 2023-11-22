@@ -37,14 +37,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 import {
   ConfigLine,
@@ -180,7 +179,7 @@ export type AddConfigLinesInput<
   TAccountAuthority extends string
 > = {
   candyMachine: Address<TAccountCandyMachine>;
-  authority?: Signer<TAccountAuthority>;
+  authority?: TransactionSigner<TAccountAuthority>;
   index: AddConfigLinesInstructionDataArgs['index'];
   configLines: AddConfigLinesInstructionDataArgs['configLines'];
   moreLines: AddConfigLinesInstructionDataArgs['moreLines'];
@@ -211,9 +210,8 @@ export async function addConfigLines<
   context: Pick<Context, 'getProgramAddress'>,
   input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<
-  WrappedInstruction<
-    AddConfigLinesInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
-  >
+  AddConfigLinesInstruction<TProgram, TAccountCandyMachine, TAccountAuthority> &
+    IInstructionWithSigners
 >;
 export async function addConfigLines<
   TAccountCandyMachine extends string,
@@ -222,9 +220,8 @@ export async function addConfigLines<
 >(
   input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<
-  WrappedInstruction<
-    AddConfigLinesInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
-  >
+  AddConfigLinesInstruction<TProgram, TAccountCandyMachine, TAccountAuthority> &
+    IInstructionWithSigners
 >;
 export async function addConfigLines<
   TReturn,
@@ -238,7 +235,7 @@ export async function addConfigLines<
         CustomGeneratedInstruction<IInstruction, TReturn>)
     | AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>,
   rawInput?: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -277,7 +274,7 @@ export async function addConfigLines<
   const args = { ...input };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -289,19 +286,18 @@ export async function addConfigLines<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: addConfigLinesInstruction(
+  // Instruction.
+  const instruction = {
+    ...addConfigLinesInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as AddConfigLinesInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

@@ -32,14 +32,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 
@@ -321,13 +320,13 @@ export type SetCollectionInput<
   TAccountSystemProgram extends string
 > = {
   candyMachine: Address<TAccountCandyMachine>;
-  authority?: Signer<TAccountAuthority>;
+  authority?: TransactionSigner<TAccountAuthority>;
   authorityPda: Address<TAccountAuthorityPda>;
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   collectionMint: Address<TAccountCollectionMint>;
   collectionMetadata: Address<TAccountCollectionMetadata>;
   collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
-  newCollectionUpdateAuthority: Signer<TAccountNewCollectionUpdateAuthority>;
+  newCollectionUpdateAuthority: TransactionSigner<TAccountNewCollectionUpdateAuthority>;
   newCollectionMetadata: Address<TAccountNewCollectionMetadata>;
   newCollectionMint: Address<TAccountNewCollectionMint>;
   newCollectionMasterEdition: Address<TAccountNewCollectionMasterEdition>;
@@ -427,25 +426,24 @@ export async function setCollection<
     TAccountSystemProgram
   >
 ): Promise<
-  WrappedInstruction<
-    SetCollectionInstruction<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthority,
-      TAccountAuthorityPda,
-      TAccountPayer,
-      TAccountCollectionMint,
-      TAccountCollectionMetadata,
-      TAccountCollectionAuthorityRecord,
-      TAccountNewCollectionUpdateAuthority,
-      TAccountNewCollectionMetadata,
-      TAccountNewCollectionMint,
-      TAccountNewCollectionMasterEdition,
-      TAccountNewCollectionAuthorityRecord,
-      TAccountTokenMetadataProgram,
-      TAccountSystemProgram
-    >
-  >
+  SetCollectionInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountAuthorityPda,
+    TAccountPayer,
+    TAccountCollectionMint,
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionUpdateAuthority,
+    TAccountNewCollectionMetadata,
+    TAccountNewCollectionMint,
+    TAccountNewCollectionMasterEdition,
+    TAccountNewCollectionAuthorityRecord,
+    TAccountTokenMetadataProgram,
+    TAccountSystemProgram
+  > &
+    IInstructionWithSigners
 >;
 export async function setCollection<
   TAccountCandyMachine extends string,
@@ -481,25 +479,24 @@ export async function setCollection<
     TAccountSystemProgram
   >
 ): Promise<
-  WrappedInstruction<
-    SetCollectionInstruction<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthority,
-      TAccountAuthorityPda,
-      TAccountPayer,
-      TAccountCollectionMint,
-      TAccountCollectionMetadata,
-      TAccountCollectionAuthorityRecord,
-      TAccountNewCollectionUpdateAuthority,
-      TAccountNewCollectionMetadata,
-      TAccountNewCollectionMint,
-      TAccountNewCollectionMasterEdition,
-      TAccountNewCollectionAuthorityRecord,
-      TAccountTokenMetadataProgram,
-      TAccountSystemProgram
-    >
-  >
+  SetCollectionInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountAuthorityPda,
+    TAccountPayer,
+    TAccountCollectionMint,
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionUpdateAuthority,
+    TAccountNewCollectionMetadata,
+    TAccountNewCollectionMint,
+    TAccountNewCollectionMasterEdition,
+    TAccountNewCollectionAuthorityRecord,
+    TAccountTokenMetadataProgram,
+    TAccountSystemProgram
+  > &
+    IInstructionWithSigners
 >;
 export async function setCollection<
   TReturn,
@@ -555,7 +552,7 @@ export async function setCollection<
     TAccountTokenMetadataProgram,
     TAccountSystemProgram
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -672,7 +669,7 @@ export async function setCollection<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -684,18 +681,17 @@ export async function setCollection<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: setCollectionInstruction(
+  // Instruction.
+  const instruction = {
+    ...setCollectionInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

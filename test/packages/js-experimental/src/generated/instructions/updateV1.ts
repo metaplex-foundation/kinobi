@@ -50,14 +50,13 @@ import {
   getOptionEncoder,
   some,
 } from '@solana/options';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 import {
@@ -473,7 +472,7 @@ export type UpdateV1Input<
   TAccountAuthorizationRules extends string
 > = {
   /** Update authority or delegate */
-  authority?: Signer<TAccountAuthority>;
+  authority?: TransactionSigner<TAccountAuthority>;
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Master Edition account */
@@ -577,21 +576,20 @@ export async function updateV1<
     TAccountAuthorizationRules
   >
 ): Promise<
-  WrappedInstruction<
-    UpdateV1Instruction<
-      TProgram,
-      TAccountAuthority,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountMint,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions,
-      TAccountToken,
-      TAccountDelegateRecord,
-      TAccountAuthorizationRulesProgram,
-      TAccountAuthorizationRules
-    >
-  >
+  UpdateV1Instruction<
+    TProgram,
+    TAccountAuthority,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountToken,
+    TAccountDelegateRecord,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  > &
+    IInstructionWithSigners
 >;
 export async function updateV1<
   TAccountAuthority extends string,
@@ -619,21 +617,20 @@ export async function updateV1<
     TAccountAuthorizationRules
   >
 ): Promise<
-  WrappedInstruction<
-    UpdateV1Instruction<
-      TProgram,
-      TAccountAuthority,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountMint,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions,
-      TAccountToken,
-      TAccountDelegateRecord,
-      TAccountAuthorizationRulesProgram,
-      TAccountAuthorizationRules
-    >
-  >
+  UpdateV1Instruction<
+    TProgram,
+    TAccountAuthority,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountToken,
+    TAccountDelegateRecord,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  > &
+    IInstructionWithSigners
 >;
 export async function updateV1<
   TReturn,
@@ -677,7 +674,7 @@ export async function updateV1<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -766,7 +763,7 @@ export async function updateV1<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -778,19 +775,18 @@ export async function updateV1<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: updateV1Instruction(
+  // Instruction.
+  const instruction = {
+    ...updateV1Instruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as UpdateV1InstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

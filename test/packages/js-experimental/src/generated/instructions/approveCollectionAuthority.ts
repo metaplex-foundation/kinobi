@@ -29,14 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 
@@ -229,9 +228,9 @@ export type ApproveCollectionAuthorityInput<
   /** A Collection Authority */
   newCollectionAuthority: Address<TAccountNewCollectionAuthority>;
   /** Update Authority of Collection NFT */
-  updateAuthority: Signer<TAccountUpdateAuthority>;
+  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   /** Payer */
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   /** Collection Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Mint of Collection Metadata */
@@ -303,19 +302,18 @@ export async function approveCollectionAuthority<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    ApproveCollectionAuthorityInstruction<
-      TProgram,
-      TAccountCollectionAuthorityRecord,
-      TAccountNewCollectionAuthority,
-      TAccountUpdateAuthority,
-      TAccountPayer,
-      TAccountMetadata,
-      TAccountMint,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >
+  ApproveCollectionAuthorityInstruction<
+    TProgram,
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    TAccountUpdateAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function approveCollectionAuthority<
   TAccountCollectionAuthorityRecord extends string,
@@ -339,19 +337,18 @@ export async function approveCollectionAuthority<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    ApproveCollectionAuthorityInstruction<
-      TProgram,
-      TAccountCollectionAuthorityRecord,
-      TAccountNewCollectionAuthority,
-      TAccountUpdateAuthority,
-      TAccountPayer,
-      TAccountMetadata,
-      TAccountMint,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >
+  ApproveCollectionAuthorityInstruction<
+    TProgram,
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    TAccountUpdateAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function approveCollectionAuthority<
   TReturn,
@@ -389,7 +386,7 @@ export async function approveCollectionAuthority<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -462,7 +459,7 @@ export async function approveCollectionAuthority<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -474,18 +471,17 @@ export async function approveCollectionAuthority<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: approveCollectionAuthorityInstruction(
+  // Instruction.
+  const instruction = {
+    ...approveCollectionAuthorityInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

@@ -27,13 +27,13 @@ import {
   IInstructionWithData,
   WritableAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 
 // Output.
@@ -131,7 +131,7 @@ export async function puffMetadata<
   context: Pick<Context, 'getProgramAddress'>,
   input: PuffMetadataInput<TAccountMetadata>
 ): Promise<
-  WrappedInstruction<PuffMetadataInstruction<TProgram, TAccountMetadata>>
+  PuffMetadataInstruction<TProgram, TAccountMetadata> & IInstructionWithSigners
 >;
 export async function puffMetadata<
   TAccountMetadata extends string,
@@ -139,7 +139,7 @@ export async function puffMetadata<
 >(
   input: PuffMetadataInput<TAccountMetadata>
 ): Promise<
-  WrappedInstruction<PuffMetadataInstruction<TProgram, TAccountMetadata>>
+  PuffMetadataInstruction<TProgram, TAccountMetadata> & IInstructionWithSigners
 >;
 export async function puffMetadata<
   TReturn,
@@ -152,7 +152,7 @@ export async function puffMetadata<
         CustomGeneratedInstruction<IInstruction, TReturn>)
     | PuffMetadataInput<TAccountMetadata>,
   rawInput?: PuffMetadataInput<TAccountMetadata>
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -183,7 +183,7 @@ export async function puffMetadata<
   };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -195,18 +195,17 @@ export async function puffMetadata<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: puffMetadataInstruction(
+  // Instruction.
+  const instruction = {
+    ...puffMetadataInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

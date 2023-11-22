@@ -29,14 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 
@@ -223,7 +222,7 @@ export type CloseEscrowAccountInput<
   /** Edition account */
   edition: Address<TAccountEdition>;
   /** Wallet paying for the transaction and new account */
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   /** System program */
   systemProgram?: Address<TAccountSystemProgram>;
   /** Instructions sysvar account */
@@ -291,19 +290,18 @@ export async function closeEscrowAccount<
     TAccountSysvarInstructions
   >
 ): Promise<
-  WrappedInstruction<
-    CloseEscrowAccountInstruction<
-      TProgram,
-      TAccountEscrow,
-      TAccountMetadata,
-      TAccountMint,
-      TAccountTokenAccount,
-      TAccountEdition,
-      TAccountPayer,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions
-    >
-  >
+  CloseEscrowAccountInstruction<
+    TProgram,
+    TAccountEscrow,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions
+  > &
+    IInstructionWithSigners
 >;
 export async function closeEscrowAccount<
   TAccountEscrow extends string,
@@ -327,19 +325,18 @@ export async function closeEscrowAccount<
     TAccountSysvarInstructions
   >
 ): Promise<
-  WrappedInstruction<
-    CloseEscrowAccountInstruction<
-      TProgram,
-      TAccountEscrow,
-      TAccountMetadata,
-      TAccountMint,
-      TAccountTokenAccount,
-      TAccountEdition,
-      TAccountPayer,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions
-    >
-  >
+  CloseEscrowAccountInstruction<
+    TProgram,
+    TAccountEscrow,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions
+  > &
+    IInstructionWithSigners
 >;
 export async function closeEscrowAccount<
   TReturn,
@@ -377,7 +374,7 @@ export async function closeEscrowAccount<
     TAccountSystemProgram,
     TAccountSysvarInstructions
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -451,7 +448,7 @@ export async function closeEscrowAccount<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -463,18 +460,17 @@ export async function closeEscrowAccount<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: closeEscrowAccountInstruction(
+  // Instruction.
+  const instruction = {
+    ...closeEscrowAccountInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

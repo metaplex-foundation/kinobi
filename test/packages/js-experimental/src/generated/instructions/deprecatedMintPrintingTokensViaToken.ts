@@ -29,14 +29,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 import {
@@ -270,7 +269,7 @@ export type DeprecatedMintPrintingTokensViaTokenInput<
   /** Printing mint */
   printingMint: Address<TAccountPrintingMint>;
   /** Burn authority */
-  burnAuthority: Signer<TAccountBurnAuthority>;
+  burnAuthority: TransactionSigner<TAccountBurnAuthority>;
   /** Metadata key (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
   /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
@@ -348,20 +347,19 @@ export async function deprecatedMintPrintingTokensViaToken<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    DeprecatedMintPrintingTokensViaTokenInstruction<
-      TProgram,
-      TAccountDestination,
-      TAccountToken,
-      TAccountOneTimePrintingAuthorizationMint,
-      TAccountPrintingMint,
-      TAccountBurnAuthority,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountTokenProgram,
-      TAccountRent
-    >
-  >
+  DeprecatedMintPrintingTokensViaTokenInstruction<
+    TProgram,
+    TAccountDestination,
+    TAccountToken,
+    TAccountOneTimePrintingAuthorizationMint,
+    TAccountPrintingMint,
+    TAccountBurnAuthority,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function deprecatedMintPrintingTokensViaToken<
   TAccountDestination extends string,
@@ -387,20 +385,19 @@ export async function deprecatedMintPrintingTokensViaToken<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    DeprecatedMintPrintingTokensViaTokenInstruction<
-      TProgram,
-      TAccountDestination,
-      TAccountToken,
-      TAccountOneTimePrintingAuthorizationMint,
-      TAccountPrintingMint,
-      TAccountBurnAuthority,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountTokenProgram,
-      TAccountRent
-    >
-  >
+  DeprecatedMintPrintingTokensViaTokenInstruction<
+    TProgram,
+    TAccountDestination,
+    TAccountToken,
+    TAccountOneTimePrintingAuthorizationMint,
+    TAccountPrintingMint,
+    TAccountBurnAuthority,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function deprecatedMintPrintingTokensViaToken<
   TReturn,
@@ -441,7 +438,7 @@ export async function deprecatedMintPrintingTokensViaToken<
     TAccountTokenProgram,
     TAccountRent
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -521,7 +518,7 @@ export async function deprecatedMintPrintingTokensViaToken<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -533,19 +530,18 @@ export async function deprecatedMintPrintingTokensViaToken<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: deprecatedMintPrintingTokensViaTokenInstruction(
+  // Instruction.
+  const instruction = {
+    ...deprecatedMintPrintingTokensViaTokenInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as DeprecatedMintPrintingTokensViaTokenInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

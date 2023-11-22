@@ -30,14 +30,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 import {
@@ -342,11 +341,11 @@ export type MintNewEditionFromMasterEditionViaTokenInput<
   /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE). */
   editionMarkPda: Address<TAccountEditionMarkPda>;
   /** Mint authority of new mint */
-  newMintAuthority: Signer<TAccountNewMintAuthority>;
+  newMintAuthority: TransactionSigner<TAccountNewMintAuthority>;
   /** payer */
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   /** owner of token account containing master token (#8) */
-  tokenAccountOwner: Signer<TAccountTokenAccountOwner>;
+  tokenAccountOwner: TransactionSigner<TAccountTokenAccountOwner>;
   /** token account containing token from master metadata mint */
   tokenAccount: Address<TAccountTokenAccount>;
   /** Update authority info for new metadata */
@@ -453,25 +452,24 @@ export async function mintNewEditionFromMasterEditionViaToken<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    MintNewEditionFromMasterEditionViaTokenInstruction<
-      TProgram,
-      TAccountNewMetadata,
-      TAccountNewEdition,
-      TAccountMasterEdition,
-      TAccountNewMint,
-      TAccountEditionMarkPda,
-      TAccountNewMintAuthority,
-      TAccountPayer,
-      TAccountTokenAccountOwner,
-      TAccountTokenAccount,
-      TAccountNewMetadataUpdateAuthority,
-      TAccountMetadata,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >
+  MintNewEditionFromMasterEditionViaTokenInstruction<
+    TProgram,
+    TAccountNewMetadata,
+    TAccountNewEdition,
+    TAccountMasterEdition,
+    TAccountNewMint,
+    TAccountEditionMarkPda,
+    TAccountNewMintAuthority,
+    TAccountPayer,
+    TAccountTokenAccountOwner,
+    TAccountTokenAccount,
+    TAccountNewMetadataUpdateAuthority,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function mintNewEditionFromMasterEditionViaToken<
   TAccountNewMetadata extends string,
@@ -507,25 +505,24 @@ export async function mintNewEditionFromMasterEditionViaToken<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    MintNewEditionFromMasterEditionViaTokenInstruction<
-      TProgram,
-      TAccountNewMetadata,
-      TAccountNewEdition,
-      TAccountMasterEdition,
-      TAccountNewMint,
-      TAccountEditionMarkPda,
-      TAccountNewMintAuthority,
-      TAccountPayer,
-      TAccountTokenAccountOwner,
-      TAccountTokenAccount,
-      TAccountNewMetadataUpdateAuthority,
-      TAccountMetadata,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >
+  MintNewEditionFromMasterEditionViaTokenInstruction<
+    TProgram,
+    TAccountNewMetadata,
+    TAccountNewEdition,
+    TAccountMasterEdition,
+    TAccountNewMint,
+    TAccountEditionMarkPda,
+    TAccountNewMintAuthority,
+    TAccountPayer,
+    TAccountTokenAccountOwner,
+    TAccountTokenAccount,
+    TAccountNewMetadataUpdateAuthority,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function mintNewEditionFromMasterEditionViaToken<
   TReturn,
@@ -581,7 +578,7 @@ export async function mintNewEditionFromMasterEditionViaToken<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -686,7 +683,7 @@ export async function mintNewEditionFromMasterEditionViaToken<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -698,19 +695,18 @@ export async function mintNewEditionFromMasterEditionViaToken<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: mintNewEditionFromMasterEditionViaTokenInstruction(
+  // Instruction.
+  const instruction = {
+    ...mintNewEditionFromMasterEditionViaTokenInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as MintNewEditionFromMasterEditionViaTokenInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

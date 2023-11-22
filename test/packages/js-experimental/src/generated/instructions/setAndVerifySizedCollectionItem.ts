@@ -30,14 +30,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 
 // Output.
@@ -221,9 +220,9 @@ export type SetAndVerifySizedCollectionItemInput<
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Collection Update authority */
-  collectionAuthority: Signer<TAccountCollectionAuthority>;
+  collectionAuthority: TransactionSigner<TAccountCollectionAuthority>;
   /** payer */
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   /** Update Authority of Collection NFT and NFT */
   updateAuthority: Address<TAccountUpdateAuthority>;
   /** Mint of the Collection */
@@ -297,19 +296,18 @@ export async function setAndVerifySizedCollectionItem<
     TAccountCollectionAuthorityRecord
   >
 ): Promise<
-  WrappedInstruction<
-    SetAndVerifySizedCollectionItemInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountCollectionAuthority,
-      TAccountPayer,
-      TAccountUpdateAuthority,
-      TAccountCollectionMint,
-      TAccountCollection,
-      TAccountCollectionMasterEditionAccount,
-      TAccountCollectionAuthorityRecord
-    >
-  >
+  SetAndVerifySizedCollectionItemInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  > &
+    IInstructionWithSigners
 >;
 export async function setAndVerifySizedCollectionItem<
   TAccountMetadata extends string,
@@ -333,19 +331,18 @@ export async function setAndVerifySizedCollectionItem<
     TAccountCollectionAuthorityRecord
   >
 ): Promise<
-  WrappedInstruction<
-    SetAndVerifySizedCollectionItemInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountCollectionAuthority,
-      TAccountPayer,
-      TAccountUpdateAuthority,
-      TAccountCollectionMint,
-      TAccountCollection,
-      TAccountCollectionMasterEditionAccount,
-      TAccountCollectionAuthorityRecord
-    >
-  >
+  SetAndVerifySizedCollectionItemInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  > &
+    IInstructionWithSigners
 >;
 export async function setAndVerifySizedCollectionItem<
   TReturn,
@@ -383,7 +380,7 @@ export async function setAndVerifySizedCollectionItem<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -452,7 +449,7 @@ export async function setAndVerifySizedCollectionItem<
   };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -464,18 +461,17 @@ export async function setAndVerifySizedCollectionItem<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: setAndVerifySizedCollectionItemInstruction(
+  // Instruction.
+  const instruction = {
+    ...setAndVerifySizedCollectionItemInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

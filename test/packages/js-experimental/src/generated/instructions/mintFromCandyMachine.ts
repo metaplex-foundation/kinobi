@@ -32,14 +32,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 
@@ -364,10 +363,10 @@ export type MintFromCandyMachineInput<
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authorityPda: Address<TAccountAuthorityPda>;
-  mintAuthority: Signer<TAccountMintAuthority>;
-  payer?: Signer<TAccountPayer>;
+  mintAuthority: TransactionSigner<TAccountMintAuthority>;
+  payer?: TransactionSigner<TAccountPayer>;
   nftMint: Address<TAccountNftMint>;
-  nftMintAuthority?: Signer<TAccountNftMintAuthority>;
+  nftMintAuthority?: TransactionSigner<TAccountNftMintAuthority>;
   nftMetadata: Address<TAccountNftMetadata>;
   nftMasterEdition: Address<TAccountNftMasterEdition>;
   collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
@@ -487,28 +486,27 @@ export async function mintFromCandyMachine<
     TAccountRecentSlothashes
   >
 ): Promise<
-  WrappedInstruction<
-    MintFromCandyMachineInstruction<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthorityPda,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountNftMint,
-      TAccountNftMintAuthority,
-      TAccountNftMetadata,
-      TAccountNftMasterEdition,
-      TAccountCollectionAuthorityRecord,
-      TAccountCollectionMint,
-      TAccountCollectionMetadata,
-      TAccountCollectionMasterEdition,
-      TAccountCollectionUpdateAuthority,
-      TAccountTokenMetadataProgram,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRecentSlothashes
-    >
-  >
+  MintFromCandyMachineInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthorityPda,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountNftMint,
+    TAccountNftMintAuthority,
+    TAccountNftMetadata,
+    TAccountNftMasterEdition,
+    TAccountCollectionAuthorityRecord,
+    TAccountCollectionMint,
+    TAccountCollectionMetadata,
+    TAccountCollectionMasterEdition,
+    TAccountCollectionUpdateAuthority,
+    TAccountTokenMetadataProgram,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRecentSlothashes
+  > &
+    IInstructionWithSigners
 >;
 export async function mintFromCandyMachine<
   TAccountCandyMachine extends string,
@@ -550,28 +548,27 @@ export async function mintFromCandyMachine<
     TAccountRecentSlothashes
   >
 ): Promise<
-  WrappedInstruction<
-    MintFromCandyMachineInstruction<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthorityPda,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountNftMint,
-      TAccountNftMintAuthority,
-      TAccountNftMetadata,
-      TAccountNftMasterEdition,
-      TAccountCollectionAuthorityRecord,
-      TAccountCollectionMint,
-      TAccountCollectionMetadata,
-      TAccountCollectionMasterEdition,
-      TAccountCollectionUpdateAuthority,
-      TAccountTokenMetadataProgram,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRecentSlothashes
-    >
-  >
+  MintFromCandyMachineInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthorityPda,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountNftMint,
+    TAccountNftMintAuthority,
+    TAccountNftMetadata,
+    TAccountNftMasterEdition,
+    TAccountCollectionAuthorityRecord,
+    TAccountCollectionMint,
+    TAccountCollectionMetadata,
+    TAccountCollectionMasterEdition,
+    TAccountCollectionUpdateAuthority,
+    TAccountTokenMetadataProgram,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRecentSlothashes
+  > &
+    IInstructionWithSigners
 >;
 export async function mintFromCandyMachine<
   TReturn,
@@ -636,7 +633,7 @@ export async function mintFromCandyMachine<
     TAccountSystemProgram,
     TAccountRecentSlothashes
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -770,7 +767,7 @@ export async function mintFromCandyMachine<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -782,18 +779,17 @@ export async function mintFromCandyMachine<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: mintFromCandyMachineInstruction(
+  // Instruction.
+  const instruction = {
+    ...mintFromCandyMachineInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

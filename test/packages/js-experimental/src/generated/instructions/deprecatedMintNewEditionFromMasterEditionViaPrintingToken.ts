@@ -29,14 +29,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 
@@ -343,7 +342,7 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
   /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
   mint: Address<TAccountMint>;
   /** Mint authority of new mint */
-  mintAuthority: Signer<TAccountMintAuthority>;
+  mintAuthority: TransactionSigner<TAccountMintAuthority>;
   /** Printing Mint of master record edition */
   printingMint: Address<TAccountPrintingMint>;
   /** Token account containing Printing mint token to be transferred */
@@ -351,9 +350,9 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
   /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master mint id, edition_number]) */
   editionMarker: Address<TAccountEditionMarker>;
   /** Burn authority for this token */
-  burnAuthority: Signer<TAccountBurnAuthority>;
+  burnAuthority: TransactionSigner<TAccountBurnAuthority>;
   /** payer */
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   /** update authority info for new metadata account */
   masterUpdateAuthority: Address<TAccountMasterUpdateAuthority>;
   /** Master record metadata account */
@@ -469,27 +468,26 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
     TAccountReservationList
   >
 ): Promise<
-  WrappedInstruction<
-    DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountEdition,
-      TAccountMasterEdition,
-      TAccountMint,
-      TAccountMintAuthority,
-      TAccountPrintingMint,
-      TAccountMasterTokenAccount,
-      TAccountEditionMarker,
-      TAccountBurnAuthority,
-      TAccountPayer,
-      TAccountMasterUpdateAuthority,
-      TAccountMasterMetadata,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent,
-      TAccountReservationList
-    >
-  >
+  DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountEdition,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPrintingMint,
+    TAccountMasterTokenAccount,
+    TAccountEditionMarker,
+    TAccountBurnAuthority,
+    TAccountPayer,
+    TAccountMasterUpdateAuthority,
+    TAccountMasterMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountReservationList
+  > &
+    IInstructionWithSigners
 >;
 export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
   TAccountMetadata extends string,
@@ -529,27 +527,26 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
     TAccountReservationList
   >
 ): Promise<
-  WrappedInstruction<
-    DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountEdition,
-      TAccountMasterEdition,
-      TAccountMint,
-      TAccountMintAuthority,
-      TAccountPrintingMint,
-      TAccountMasterTokenAccount,
-      TAccountEditionMarker,
-      TAccountBurnAuthority,
-      TAccountPayer,
-      TAccountMasterUpdateAuthority,
-      TAccountMasterMetadata,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent,
-      TAccountReservationList
-    >
-  >
+  DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountEdition,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPrintingMint,
+    TAccountMasterTokenAccount,
+    TAccountEditionMarker,
+    TAccountBurnAuthority,
+    TAccountPayer,
+    TAccountMasterUpdateAuthority,
+    TAccountMasterMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountReservationList
+  > &
+    IInstructionWithSigners
 >;
 export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
   TReturn,
@@ -611,7 +608,7 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
     TAccountRent,
     TAccountReservationList
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -720,7 +717,7 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -732,19 +729,17 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction:
-      deprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction(
-        accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-        programAddress,
-        remainingAccounts
-      ),
-    signers,
+  // Instruction.
+  const instruction = {
+    ...deprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

@@ -46,18 +46,17 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import { findMetadataPda, getMetadataSize } from '../accounts';
 import {
   ACCOUNT_HEADER_SIZE,
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
   expectAddress,
   expectProgramDerivedAddress,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 import {
@@ -309,9 +308,9 @@ export type CreateMetadataAccountInput<
   /** Mint of token asset */
   mint: Address<TAccountMint>;
   /** Mint authority */
-  mintAuthority: Signer<TAccountMintAuthority>;
+  mintAuthority: TransactionSigner<TAccountMintAuthority>;
   /** payer */
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   /** update authority info */
   updateAuthority: Address<TAccountUpdateAuthority>;
   /** System program */
@@ -379,18 +378,17 @@ export async function createMetadataAccount<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    CreateMetadataAccountInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountMint,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountUpdateAuthority,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >
+  CreateMetadataAccountInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function createMetadataAccount<
   TAccountMetadata extends string,
@@ -412,18 +410,17 @@ export async function createMetadataAccount<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    CreateMetadataAccountInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountMint,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountUpdateAuthority,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >
+  CreateMetadataAccountInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function createMetadataAccount<
   TReturn,
@@ -458,7 +455,7 @@ export async function createMetadataAccount<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
@@ -540,7 +537,7 @@ export async function createMetadataAccount<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -552,19 +549,18 @@ export async function createMetadataAccount<
   // Bytes created on chain.
   const bytesCreatedOnChain = getMetadataSize() + ACCOUNT_HEADER_SIZE;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: createMetadataAccountInstruction(
+  // Instruction.
+  const instruction = {
+    ...createMetadataAccountInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as CreateMetadataAccountInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

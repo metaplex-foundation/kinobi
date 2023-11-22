@@ -29,14 +29,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 import {
@@ -235,7 +234,7 @@ export type DeprecatedMintPrintingTokensInput<
   /** Printing mint */
   printingMint: Address<TAccountPrintingMint>;
   /** Update authority */
-  updateAuthority: Signer<TAccountUpdateAuthority>;
+  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   /** Metadata key (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
   /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
@@ -303,18 +302,17 @@ export async function deprecatedMintPrintingTokens<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    DeprecatedMintPrintingTokensInstruction<
-      TProgram,
-      TAccountDestination,
-      TAccountPrintingMint,
-      TAccountUpdateAuthority,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountTokenProgram,
-      TAccountRent
-    >
-  >
+  DeprecatedMintPrintingTokensInstruction<
+    TProgram,
+    TAccountDestination,
+    TAccountPrintingMint,
+    TAccountUpdateAuthority,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function deprecatedMintPrintingTokens<
   TAccountDestination extends string,
@@ -336,18 +334,17 @@ export async function deprecatedMintPrintingTokens<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    DeprecatedMintPrintingTokensInstruction<
-      TProgram,
-      TAccountDestination,
-      TAccountPrintingMint,
-      TAccountUpdateAuthority,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountTokenProgram,
-      TAccountRent
-    >
-  >
+  DeprecatedMintPrintingTokensInstruction<
+    TProgram,
+    TAccountDestination,
+    TAccountPrintingMint,
+    TAccountUpdateAuthority,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function deprecatedMintPrintingTokens<
   TReturn,
@@ -382,7 +379,7 @@ export async function deprecatedMintPrintingTokens<
     TAccountTokenProgram,
     TAccountRent
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -456,7 +453,7 @@ export async function deprecatedMintPrintingTokens<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -468,19 +465,18 @@ export async function deprecatedMintPrintingTokens<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: deprecatedMintPrintingTokensInstruction(
+  // Instruction.
+  const instruction = {
+    ...deprecatedMintPrintingTokensInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as DeprecatedMintPrintingTokensInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

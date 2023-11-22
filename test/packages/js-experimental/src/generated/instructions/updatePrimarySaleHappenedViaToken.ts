@@ -29,14 +29,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 
 // Output.
@@ -146,7 +145,7 @@ export type UpdatePrimarySaleHappenedViaTokenInput<
   /** Metadata key (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
   /** Owner on the token account */
-  owner: Signer<TAccountOwner>;
+  owner: TransactionSigner<TAccountOwner>;
   /** Account containing tokens from the metadata's mint */
   token: Address<TAccountToken>;
 };
@@ -187,14 +186,13 @@ export async function updatePrimarySaleHappenedViaToken<
     TAccountToken
   >
 ): Promise<
-  WrappedInstruction<
-    UpdatePrimarySaleHappenedViaTokenInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountOwner,
-      TAccountToken
-    >
-  >
+  UpdatePrimarySaleHappenedViaTokenInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  > &
+    IInstructionWithSigners
 >;
 export async function updatePrimarySaleHappenedViaToken<
   TAccountMetadata extends string,
@@ -208,14 +206,13 @@ export async function updatePrimarySaleHappenedViaToken<
     TAccountToken
   >
 ): Promise<
-  WrappedInstruction<
-    UpdatePrimarySaleHappenedViaTokenInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountOwner,
-      TAccountToken
-    >
-  >
+  UpdatePrimarySaleHappenedViaTokenInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  > &
+    IInstructionWithSigners
 >;
 export async function updatePrimarySaleHappenedViaToken<
   TReturn,
@@ -238,7 +235,7 @@ export async function updatePrimarySaleHappenedViaToken<
     TAccountOwner,
     TAccountToken
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -280,7 +277,7 @@ export async function updatePrimarySaleHappenedViaToken<
   };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -292,18 +289,17 @@ export async function updatePrimarySaleHappenedViaToken<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: updatePrimarySaleHappenedViaTokenInstruction(
+  // Instruction.
+  const instruction = {
+    ...updatePrimarySaleHappenedViaTokenInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

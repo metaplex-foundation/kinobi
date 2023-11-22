@@ -28,14 +28,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 
 // Output.
@@ -132,7 +131,7 @@ export type RemoveCreatorVerificationInput<
   /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
   /** Creator */
-  creator: Signer<TAccountCreator>;
+  creator: TransactionSigner<TAccountCreator>;
 };
 
 export async function removeCreatorVerification<
@@ -160,13 +159,12 @@ export async function removeCreatorVerification<
   context: Pick<Context, 'getProgramAddress'>,
   input: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
 ): Promise<
-  WrappedInstruction<
-    RemoveCreatorVerificationInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountCreator
-    >
-  >
+  RemoveCreatorVerificationInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountCreator
+  > &
+    IInstructionWithSigners
 >;
 export async function removeCreatorVerification<
   TAccountMetadata extends string,
@@ -175,13 +173,12 @@ export async function removeCreatorVerification<
 >(
   input: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
 ): Promise<
-  WrappedInstruction<
-    RemoveCreatorVerificationInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountCreator
-    >
-  >
+  RemoveCreatorVerificationInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountCreator
+  > &
+    IInstructionWithSigners
 >;
 export async function removeCreatorVerification<
   TReturn,
@@ -195,7 +192,7 @@ export async function removeCreatorVerification<
         CustomGeneratedInstruction<IInstruction, TReturn>)
     | RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>,
   rawInput?: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -231,7 +228,7 @@ export async function removeCreatorVerification<
   };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -243,18 +240,17 @@ export async function removeCreatorVerification<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: removeCreatorVerificationInstruction(
+  // Instruction.
+  const instruction = {
+    ...removeCreatorVerificationInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

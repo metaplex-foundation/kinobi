@@ -29,14 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 
 // Output.
@@ -196,7 +195,7 @@ export type UnverifyCollectionInput<
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Collection Authority */
-  collectionAuthority: Signer<TAccountCollectionAuthority>;
+  collectionAuthority: TransactionSigner<TAccountCollectionAuthority>;
   /** Mint of the Collection */
   collectionMint: Address<TAccountCollectionMint>;
   /** Metadata Account of the Collection */
@@ -258,17 +257,16 @@ export async function unverifyCollection<
     TAccountCollectionAuthorityRecord
   >
 ): Promise<
-  WrappedInstruction<
-    UnverifyCollectionInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountCollectionAuthority,
-      TAccountCollectionMint,
-      TAccountCollection,
-      TAccountCollectionMasterEditionAccount,
-      TAccountCollectionAuthorityRecord
-    >
-  >
+  UnverifyCollectionInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  > &
+    IInstructionWithSigners
 >;
 export async function unverifyCollection<
   TAccountMetadata extends string,
@@ -288,17 +286,16 @@ export async function unverifyCollection<
     TAccountCollectionAuthorityRecord
   >
 ): Promise<
-  WrappedInstruction<
-    UnverifyCollectionInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountCollectionAuthority,
-      TAccountCollectionMint,
-      TAccountCollection,
-      TAccountCollectionMasterEditionAccount,
-      TAccountCollectionAuthorityRecord
-    >
-  >
+  UnverifyCollectionInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  > &
+    IInstructionWithSigners
 >;
 export async function unverifyCollection<
   TReturn,
@@ -330,7 +327,7 @@ export async function unverifyCollection<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -390,7 +387,7 @@ export async function unverifyCollection<
   };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -402,18 +399,17 @@ export async function unverifyCollection<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: unverifyCollectionInstruction(
+  // Instruction.
+  const instruction = {
+    ...unverifyCollectionInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

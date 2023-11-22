@@ -30,14 +30,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 import {
@@ -336,9 +335,9 @@ export type RevokeInput<
   /** Owned Token Account of mint */
   token?: Address<TAccountToken>;
   /** Authority to approve the delegation */
-  authority?: Signer<TAccountAuthority>;
+  authority?: TransactionSigner<TAccountAuthority>;
   /** Payer */
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   /** System Program */
   systemProgram?: Address<TAccountSystemProgram>;
   /** Instructions sysvar account */
@@ -438,24 +437,23 @@ export async function revoke<
     TAccountAuthorizationRules
   >
 ): Promise<
-  WrappedInstruction<
-    RevokeInstruction<
-      TProgram,
-      TAccountDelegateRecord,
-      TAccountDelegate,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountMint,
-      TAccountToken,
-      TAccountAuthority,
-      TAccountPayer,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions,
-      TAccountSplTokenProgram,
-      TAccountAuthorizationRulesProgram,
-      TAccountAuthorizationRules
-    >
-  >
+  RevokeInstruction<
+    TProgram,
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  > &
+    IInstructionWithSigners
 >;
 export async function revoke<
   TAccountDelegateRecord extends string,
@@ -489,24 +487,23 @@ export async function revoke<
     TAccountAuthorizationRules
   >
 ): Promise<
-  WrappedInstruction<
-    RevokeInstruction<
-      TProgram,
-      TAccountDelegateRecord,
-      TAccountDelegate,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountMint,
-      TAccountToken,
-      TAccountAuthority,
-      TAccountPayer,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions,
-      TAccountSplTokenProgram,
-      TAccountAuthorizationRulesProgram,
-      TAccountAuthorizationRules
-    >
-  >
+  RevokeInstruction<
+    TProgram,
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  > &
+    IInstructionWithSigners
 >;
 export async function revoke<
   TReturn,
@@ -559,7 +556,7 @@ export async function revoke<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -658,7 +655,7 @@ export async function revoke<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -670,19 +667,18 @@ export async function revoke<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: revokeInstruction(
+  // Instruction.
+  const instruction = {
+    ...revokeInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as RevokeInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

@@ -27,13 +27,13 @@ import {
   IInstructionWithData,
   WritableAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 
 // Output.
@@ -182,14 +182,13 @@ export async function convertMasterEditionV1ToV2<
     TAccountPrintingMint
   >
 ): Promise<
-  WrappedInstruction<
-    ConvertMasterEditionV1ToV2Instruction<
-      TProgram,
-      TAccountMasterEdition,
-      TAccountOneTimeAuth,
-      TAccountPrintingMint
-    >
-  >
+  ConvertMasterEditionV1ToV2Instruction<
+    TProgram,
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  > &
+    IInstructionWithSigners
 >;
 export async function convertMasterEditionV1ToV2<
   TAccountMasterEdition extends string,
@@ -203,14 +202,13 @@ export async function convertMasterEditionV1ToV2<
     TAccountPrintingMint
   >
 ): Promise<
-  WrappedInstruction<
-    ConvertMasterEditionV1ToV2Instruction<
-      TProgram,
-      TAccountMasterEdition,
-      TAccountOneTimeAuth,
-      TAccountPrintingMint
-    >
-  >
+  ConvertMasterEditionV1ToV2Instruction<
+    TProgram,
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  > &
+    IInstructionWithSigners
 >;
 export async function convertMasterEditionV1ToV2<
   TReturn,
@@ -233,7 +231,7 @@ export async function convertMasterEditionV1ToV2<
     TAccountOneTimeAuth,
     TAccountPrintingMint
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -275,7 +273,7 @@ export async function convertMasterEditionV1ToV2<
   };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -287,18 +285,17 @@ export async function convertMasterEditionV1ToV2<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: convertMasterEditionV1ToV2Instruction(
+  // Instruction.
+  const instruction = {
+    ...convertMasterEditionV1ToV2Instruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

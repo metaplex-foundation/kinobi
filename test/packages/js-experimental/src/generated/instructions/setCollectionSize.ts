@@ -29,14 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 import {
   SetCollectionSizeArgs,
@@ -188,7 +187,7 @@ export type SetCollectionSizeInput<
   /** Collection Metadata account */
   collectionMetadata: Address<TAccountCollectionMetadata>;
   /** Collection Update authority */
-  collectionAuthority: Signer<TAccountCollectionAuthority>;
+  collectionAuthority: TransactionSigner<TAccountCollectionAuthority>;
   /** Mint of the Collection */
   collectionMint: Address<TAccountCollectionMint>;
   /** Collection Authority Record PDA */
@@ -237,15 +236,14 @@ export async function setCollectionSize<
     TAccountCollectionAuthorityRecord
   >
 ): Promise<
-  WrappedInstruction<
-    SetCollectionSizeInstruction<
-      TProgram,
-      TAccountCollectionMetadata,
-      TAccountCollectionAuthority,
-      TAccountCollectionMint,
-      TAccountCollectionAuthorityRecord
-    >
-  >
+  SetCollectionSizeInstruction<
+    TProgram,
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  > &
+    IInstructionWithSigners
 >;
 export async function setCollectionSize<
   TAccountCollectionMetadata extends string,
@@ -261,15 +259,14 @@ export async function setCollectionSize<
     TAccountCollectionAuthorityRecord
   >
 ): Promise<
-  WrappedInstruction<
-    SetCollectionSizeInstruction<
-      TProgram,
-      TAccountCollectionMetadata,
-      TAccountCollectionAuthority,
-      TAccountCollectionMint,
-      TAccountCollectionAuthorityRecord
-    >
-  >
+  SetCollectionSizeInstruction<
+    TProgram,
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  > &
+    IInstructionWithSigners
 >;
 export async function setCollectionSize<
   TReturn,
@@ -295,7 +292,7 @@ export async function setCollectionSize<
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -352,7 +349,7 @@ export async function setCollectionSize<
   const args = { ...input };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -364,19 +361,18 @@ export async function setCollectionSize<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: setCollectionSizeInstruction(
+  // Instruction.
+  const instruction = {
+    ...setCollectionSizeInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as SetCollectionSizeInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

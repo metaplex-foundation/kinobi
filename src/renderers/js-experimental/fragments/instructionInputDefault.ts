@@ -63,8 +63,8 @@ export function getInstructionInputDefaultFragment(
         !input.isSigner
       ) {
         return defaultFragment(
-          `expectSigner(${accountObject}.${name}.value).address`
-        ).addImports('shared', 'expectSigner');
+          `expectTransactionSigner(${accountObject}.${name}.value).address`
+        ).addImports('shared', 'expectTransactionSigner');
       }
       if (input.kind === 'account') {
         return defaultFragment(

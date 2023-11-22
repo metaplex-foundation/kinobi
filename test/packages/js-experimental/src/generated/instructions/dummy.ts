@@ -32,18 +32,17 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import { resolveTokenOrAta } from '../../hooked';
 import { findDelegateRecordPda } from '../accounts';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  expectSigner,
   expectSome,
-  getAccountMetasAndSigners,
+  expectTransactionSigner,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 import { DelegateRole } from '../types';
@@ -263,14 +262,14 @@ export type DummyInput<
   TAccountDelegateRecord extends string,
   TAccountTokenOrAtaProgram extends string
 > = {
-  edition?: Signer<TAccountEdition>;
+  edition?: TransactionSigner<TAccountEdition>;
   mint?: Address<TAccountMint>;
-  updateAuthority: Signer<TAccountUpdateAuthority>;
-  mintAuthority?: Signer<TAccountMintAuthority>;
-  payer?: Signer<TAccountPayer>;
+  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
+  mintAuthority?: TransactionSigner<TAccountMintAuthority>;
+  payer?: TransactionSigner<TAccountPayer>;
   foo?: Address<TAccountFoo>;
-  bar?: Signer<TAccountBar>;
-  delegate?: Signer<TAccountDelegate>;
+  bar?: TransactionSigner<TAccountBar>;
+  delegate?: TransactionSigner<TAccountDelegate>;
   delegateRecord?: Address<TAccountDelegateRecord>;
   tokenOrAtaProgram?: Address<TAccountTokenOrAtaProgram>;
   identityArg?: DummyInstructionExtraArgs['identityArg'];
@@ -348,21 +347,20 @@ export async function dummy<
     TAccountTokenOrAtaProgram
   >
 ): Promise<
-  WrappedInstruction<
-    DummyInstruction<
-      TProgram,
-      TAccountEdition,
-      TAccountMint,
-      TAccountUpdateAuthority,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountFoo,
-      TAccountBar,
-      TAccountDelegate,
-      TAccountDelegateRecord,
-      TAccountTokenOrAtaProgram
-    >
-  >
+  DummyInstruction<
+    TProgram,
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountFoo,
+    TAccountBar,
+    TAccountDelegate,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  > &
+    IInstructionWithSigners
 >;
 export async function dummy<
   TAccountEdition extends string,
@@ -390,21 +388,20 @@ export async function dummy<
     TAccountTokenOrAtaProgram
   >
 ): Promise<
-  WrappedInstruction<
-    DummyInstruction<
-      TProgram,
-      TAccountEdition,
-      TAccountMint,
-      TAccountUpdateAuthority,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountFoo,
-      TAccountBar,
-      TAccountDelegate,
-      TAccountDelegateRecord,
-      TAccountTokenOrAtaProgram
-    >
-  >
+  DummyInstruction<
+    TProgram,
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountFoo,
+    TAccountBar,
+    TAccountDelegate,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  > &
+    IInstructionWithSigners
 >;
 export async function dummy<
   TReturn,
@@ -448,7 +445,7 @@ export async function dummy<
     TAccountDelegateRecord,
     TAccountTokenOrAtaProgram
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
@@ -525,7 +522,7 @@ export async function dummy<
     accounts.mintAuthority.value = expectSome(accounts.updateAuthority.value);
   }
   if (!accounts.foo.value) {
-    accounts.foo.value = expectSigner(accounts.bar.value).address;
+    accounts.foo.value = expectTransactionSigner(accounts.bar.value).address;
   }
   if (!accounts.delegateRecord.value) {
     if (accounts.delegate.value) {
@@ -558,7 +555,7 @@ export async function dummy<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -573,18 +570,17 @@ export async function dummy<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: dummyInstruction(
+  // Instruction.
+  const instruction = {
+    ...dummyInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

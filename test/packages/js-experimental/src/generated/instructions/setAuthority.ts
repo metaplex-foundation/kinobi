@@ -34,14 +34,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 
 // Output.
@@ -147,7 +146,7 @@ export type SetAuthorityInput<
   TAccountAuthority extends string
 > = {
   candyMachine: Address<TAccountCandyMachine>;
-  authority?: Signer<TAccountAuthority>;
+  authority?: TransactionSigner<TAccountAuthority>;
   newAuthority: SetAuthorityInstructionDataArgs['newAuthority'];
 };
 
@@ -176,9 +175,8 @@ export async function setAuthority<
   context: Pick<Context, 'getProgramAddress'>,
   input: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<
-  WrappedInstruction<
-    SetAuthorityInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
-  >
+  SetAuthorityInstruction<TProgram, TAccountCandyMachine, TAccountAuthority> &
+    IInstructionWithSigners
 >;
 export async function setAuthority<
   TAccountCandyMachine extends string,
@@ -187,9 +185,8 @@ export async function setAuthority<
 >(
   input: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<
-  WrappedInstruction<
-    SetAuthorityInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
-  >
+  SetAuthorityInstruction<TProgram, TAccountCandyMachine, TAccountAuthority> &
+    IInstructionWithSigners
 >;
 export async function setAuthority<
   TReturn,
@@ -203,7 +200,7 @@ export async function setAuthority<
         CustomGeneratedInstruction<IInstruction, TReturn>)
     | SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>,
   rawInput?: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -242,7 +239,7 @@ export async function setAuthority<
   const args = { ...input };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -254,19 +251,18 @@ export async function setAuthority<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: setAuthorityInstruction(
+  // Instruction.
+  const instruction = {
+    ...setAuthorityInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as SetAuthorityInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

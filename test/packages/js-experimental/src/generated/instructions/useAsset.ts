@@ -29,14 +29,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 import {
@@ -310,7 +309,7 @@ export type UseAssetInput<
   /** Mint of the Metadata */
   mint: Address<TAccountMint>;
   /** Use authority or current owner of the asset */
-  useAuthority: Signer<TAccountUseAuthority>;
+  useAuthority: TransactionSigner<TAccountUseAuthority>;
   /** Owner */
   owner: Address<TAccountOwner>;
   /** SPL Token program */
@@ -404,22 +403,21 @@ export async function useAsset<
     TAccountAuthorizationRulesProgram
   >
 ): Promise<
-  WrappedInstruction<
-    UseAssetInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountTokenAccount,
-      TAccountMint,
-      TAccountUseAuthority,
-      TAccountOwner,
-      TAccountSplTokenProgram,
-      TAccountAtaProgram,
-      TAccountSystemProgram,
-      TAccountUseAuthorityRecord,
-      TAccountAuthorizationRules,
-      TAccountAuthorizationRulesProgram
-    >
-  >
+  UseAssetInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUseAuthority,
+    TAccountOwner,
+    TAccountSplTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountUseAuthorityRecord,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  > &
+    IInstructionWithSigners
 >;
 export async function useAsset<
   TAccountMetadata extends string,
@@ -449,22 +447,21 @@ export async function useAsset<
     TAccountAuthorizationRulesProgram
   >
 ): Promise<
-  WrappedInstruction<
-    UseAssetInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountTokenAccount,
-      TAccountMint,
-      TAccountUseAuthority,
-      TAccountOwner,
-      TAccountSplTokenProgram,
-      TAccountAtaProgram,
-      TAccountSystemProgram,
-      TAccountUseAuthorityRecord,
-      TAccountAuthorizationRules,
-      TAccountAuthorizationRulesProgram
-    >
-  >
+  UseAssetInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUseAuthority,
+    TAccountOwner,
+    TAccountSplTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountUseAuthorityRecord,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  > &
+    IInstructionWithSigners
 >;
 export async function useAsset<
   TReturn,
@@ -511,7 +508,7 @@ export async function useAsset<
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -618,7 +615,7 @@ export async function useAsset<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -630,19 +627,18 @@ export async function useAsset<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: useAssetInstruction(
+  // Instruction.
+  const instruction = {
+    ...useAssetInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as UseAssetInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

@@ -99,20 +99,23 @@ function getAccountType(account: ResolvedInstructionAccount): Fragment {
 
   if (account.isPda && account.isSigner === 'either') {
     return fragment(
-      `ProgramDerivedAddress<${typeParam}> | Signer<${typeParam}>`
+      `ProgramDerivedAddress<${typeParam}> | TransactionSigner<${typeParam}>`
     )
       .addImports('solanaAddresses', ['ProgramDerivedAddress'])
-      .addImports('shared', ['Signer']);
+      .addImports('solanaSigners', ['TransactionSigner']);
   }
 
   if (account.isSigner === 'either') {
-    return fragment(`Address<${typeParam}> | Signer<${typeParam}>`)
+    return fragment(`Address<${typeParam}> | TransactionSigner<${typeParam}>`)
       .addImports('solanaAddresses', ['Address'])
-      .addImports('shared', ['Signer']);
+      .addImports('solanaSigners', ['TransactionSigner']);
   }
 
   if (account.isSigner) {
-    return fragment(`Signer<${typeParam}>`).addImports('shared', ['Signer']);
+    return fragment(`TransactionSigner<${typeParam}>`).addImports(
+      'solanaSigners',
+      ['TransactionSigner']
+    );
   }
 
   return fragment(`Address<${typeParam}>`).addImports('solanaAddresses', [

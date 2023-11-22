@@ -41,14 +41,13 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 import {
   Reservation,
@@ -192,7 +191,7 @@ export type DeprecatedSetReservationListInput<
   /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
   reservationList: Address<TAccountReservationList>;
   /** The resource you tied the reservation list too */
-  resource: Signer<TAccountResource>;
+  resource: TransactionSigner<TAccountResource>;
   reservations: DeprecatedSetReservationListInstructionDataArgs['reservations'];
   totalReservationSpots: DeprecatedSetReservationListInstructionDataArgs['totalReservationSpots'];
   offset: DeprecatedSetReservationListInstructionDataArgs['offset'];
@@ -235,14 +234,13 @@ export async function deprecatedSetReservationList<
     TAccountResource
   >
 ): Promise<
-  WrappedInstruction<
-    DeprecatedSetReservationListInstruction<
-      TProgram,
-      TAccountMasterEdition,
-      TAccountReservationList,
-      TAccountResource
-    >
-  >
+  DeprecatedSetReservationListInstruction<
+    TProgram,
+    TAccountMasterEdition,
+    TAccountReservationList,
+    TAccountResource
+  > &
+    IInstructionWithSigners
 >;
 export async function deprecatedSetReservationList<
   TAccountMasterEdition extends string,
@@ -256,14 +254,13 @@ export async function deprecatedSetReservationList<
     TAccountResource
   >
 ): Promise<
-  WrappedInstruction<
-    DeprecatedSetReservationListInstruction<
-      TProgram,
-      TAccountMasterEdition,
-      TAccountReservationList,
-      TAccountResource
-    >
-  >
+  DeprecatedSetReservationListInstruction<
+    TProgram,
+    TAccountMasterEdition,
+    TAccountReservationList,
+    TAccountResource
+  > &
+    IInstructionWithSigners
 >;
 export async function deprecatedSetReservationList<
   TReturn,
@@ -286,7 +283,7 @@ export async function deprecatedSetReservationList<
     TAccountReservationList,
     TAccountResource
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -331,7 +328,7 @@ export async function deprecatedSetReservationList<
   const args = { ...input };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -343,19 +340,18 @@ export async function deprecatedSetReservationList<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: deprecatedSetReservationListInstruction(
+  // Instruction.
+  const instruction = {
+    ...deprecatedSetReservationListInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as DeprecatedSetReservationListInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

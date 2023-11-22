@@ -19,14 +19,11 @@ import {
   IInstruction,
   upgradeRoleToSigner,
 } from '@solana/instructions';
-import { SignatureBytes } from '@solana/keys';
 import {
-  BaseTransaction,
-  IDurableNonceTransaction,
-  ITransactionWithBlockhashLifetime,
-  ITransactionWithFeePayer,
-  ITransactionWithSignatures,
-} from '@solana/transactions';
+  IAccountSignerMeta,
+  isTransactionSigner as web3JsIsTransactionSigner,
+  TransactionSigner,
+} from '@solana/signers';
 
 /**
  * Asserts that the given value is not null or undefined.
@@ -44,7 +41,12 @@ export function expectSome<T>(value: T | null | undefined): T {
  * @internal
  */
 export function expectAddress<T extends string = string>(
-  value: Address<T> | ProgramDerivedAddress<T> | Signer<T> | null | undefined
+  value:
+    | Address<T>
+    | ProgramDerivedAddress<T>
+    | TransactionSigner<T>
+    | null
+    | undefined
 ): Address<T> {
   if (!value) {
     throw new Error('Expected a Address.');
@@ -63,7 +65,12 @@ export function expectAddress<T extends string = string>(
  * @internal
  */
 export function expectProgramDerivedAddress<T extends string = string>(
-  value: Address<T> | ProgramDerivedAddress<T> | Signer<T> | null | undefined
+  value:
+    | Address<T>
+    | ProgramDerivedAddress<T>
+    | TransactionSigner<T>
+    | null
+    | undefined
 ): ProgramDerivedAddress<T> {
   if (!value || !Array.isArray(value) || !isProgramDerivedAddress(value)) {
     throw new Error('Expected a ProgramDerivedAddress.');
@@ -72,14 +79,19 @@ export function expectProgramDerivedAddress<T extends string = string>(
 }
 
 /**
- * Asserts that the given value is a Signer.
+ * Asserts that the given value is a TransactionSigner.
  * @internal
  */
-export function expectSigner<T extends string = string>(
-  value: Address<T> | ProgramDerivedAddress<T> | Signer<T> | null | undefined
-): Signer<T> {
-  if (!isSigner(value)) {
-    throw new Error('Expected a Signer.');
+export function expectTransactionSigner<T extends string = string>(
+  value:
+    | Address<T>
+    | ProgramDerivedAddress<T>
+    | TransactionSigner<T>
+    | null
+    | undefined
+): TransactionSigner<T> {
+  if (!value || !isTransactionSigner(value)) {
+    throw new Error('Expected a TransactionSigner.');
   }
   return value;
 }
@@ -90,11 +102,11 @@ export function expectSigner<T extends string = string>(
  */
 export type ResolvedAccount<
   T extends string = string,
-  U extends Address<T> | ProgramDerivedAddress<T> | Signer<T> | null =
+  U extends
     | Address<T>
     | ProgramDerivedAddress<T>
-    | Signer<T>
-    | null
+    | TransactionSigner<T>
+    | null = Address<T> | ProgramDerivedAddress<T> | TransactionSigner<T> | null
 > = {
   isWritable: boolean;
   value: U;
@@ -120,13 +132,12 @@ export function accountMetaWithDefault<
  * Get account metas and signers from resolved accounts.
  * @internal
  */
-export function getAccountMetasAndSigners<TKey extends string = string>(
+export function getAccountMetasWithSigners<TKey extends string = string>(
   accounts: Record<TKey, ResolvedAccount>,
   optionalAccountStrategy: 'omitted' | 'programId',
   programAddress: Address
-): [Record<TKey, IAccountMeta>, Signer[]] {
-  const accountMetas: Record<string, IAccountMeta> = {};
-  const signers: Signer[] = [];
+): Record<TKey, IAccountMeta | IAccountSignerMeta> {
+  const accountMetas: Record<string, IAccountMeta | IAccountSignerMeta> = {};
 
   Object.keys(accounts).forEach((key) => {
     const account = accounts[key as TKey] as ResolvedAccount;
@@ -139,63 +150,32 @@ export function getAccountMetasAndSigners<TKey extends string = string>(
       return;
     }
 
-    if (isSigner(account.value)) {
-      signers.push(account.value);
-    }
     const writableRole = account.isWritable
       ? AccountRole.WRITABLE
       : AccountRole.READONLY;
-    accountMetas[key] = {
+    accountMetas[key] = Object.freeze({
       address: expectAddress(account.value),
-      role: isSigner(account.value)
+      role: isTransactionSigner(account.value)
         ? upgradeRoleToSigner(writableRole)
         : writableRole,
-    };
+      ...(isTransactionSigner(account.value) ? { signer: account.value } : {}),
+    });
   });
 
-  return [accountMetas, signers];
+  return accountMetas;
 }
 
-export type WrappedInstruction<TInstruction extends IInstruction> = {
-  instruction: TInstruction;
-  signers: Signer[];
-  bytesCreatedOnChain: number;
-};
-
-type CompilableTransaction = BaseTransaction &
-  ITransactionWithFeePayer &
-  (ITransactionWithBlockhashLifetime | IDurableNonceTransaction);
-
-export type Signer<TAddress extends string = string> =
-  | TransactionSigner<TAddress>
-  | TransactionSenderSigner<TAddress>;
-
-export type TransactionSigner<TAddress extends string = string> = {
-  address: Address<TAddress>;
-  signTransaction: <T extends CompilableTransaction>(
-    transactions: T[]
-  ) => Promise<(T & ITransactionWithSignatures)[]>;
-};
-
-export type TransactionSenderSigner<TAddress extends string = string> = {
-  address: Address<TAddress>;
-  signAndSendTransaction: (
-    transactions: CompilableTransaction[]
-  ) => Promise<SignatureBytes[]>;
-};
-
-export function isSigner<TAddress extends string = string>(
+export function isTransactionSigner<TAddress extends string = string>(
   value:
     | Address<TAddress>
     | ProgramDerivedAddress<TAddress>
-    | Signer<TAddress>
-    | unknown
-): value is Signer<TAddress> {
+    | TransactionSigner<TAddress>
+): value is TransactionSigner<TAddress> {
   return (
     !!value &&
     typeof value === 'object' &&
     'address' in value &&
-    ('signTransaction' in value || 'signAndSendTransaction' in value)
+    web3JsIsTransactionSigner(value)
   );
 }
 
@@ -203,9 +183,7 @@ export type CustomGeneratedInstruction<
   TInstruction extends IInstruction,
   TReturn
 > = {
-  getGeneratedInstruction: (
-    wrappedInstruction: WrappedInstruction<TInstruction>
-  ) => TReturn;
+  getGeneratedInstruction: (instruction: TInstruction) => TReturn;
 };
 
 export type Context = {

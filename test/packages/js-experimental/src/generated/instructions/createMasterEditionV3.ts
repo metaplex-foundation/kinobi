@@ -30,16 +30,15 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import { getMasterEditionV2Size } from '../accounts';
 import {
   ACCOUNT_HEADER_SIZE,
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 import {
@@ -266,11 +265,11 @@ export type CreateMasterEditionV3Input<
   /** Metadata mint */
   mint: Address<TAccountMint>;
   /** Update authority */
-  updateAuthority: Signer<TAccountUpdateAuthority>;
+  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   /** Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
-  mintAuthority: Signer<TAccountMintAuthority>;
+  mintAuthority: TransactionSigner<TAccountMintAuthority>;
   /** payer */
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Token program */
@@ -348,20 +347,19 @@ export async function createMasterEditionV3<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    CreateMasterEditionV3Instruction<
-      TProgram,
-      TAccountEdition,
-      TAccountMint,
-      TAccountUpdateAuthority,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountMetadata,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >
+  CreateMasterEditionV3Instruction<
+    TProgram,
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function createMasterEditionV3<
   TAccountEdition extends string,
@@ -387,20 +385,19 @@ export async function createMasterEditionV3<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    CreateMasterEditionV3Instruction<
-      TProgram,
-      TAccountEdition,
-      TAccountMint,
-      TAccountUpdateAuthority,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountMetadata,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >
+  CreateMasterEditionV3Instruction<
+    TProgram,
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function createMasterEditionV3<
   TReturn,
@@ -441,7 +438,7 @@ export async function createMasterEditionV3<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -525,7 +522,7 @@ export async function createMasterEditionV3<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -537,19 +534,18 @@ export async function createMasterEditionV3<
   // Bytes created on chain.
   const bytesCreatedOnChain = getMasterEditionV2Size() + ACCOUNT_HEADER_SIZE;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: createMasterEditionV3Instruction(
+  // Instruction.
+  const instruction = {
+    ...createMasterEditionV3Instruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as CreateMasterEditionV3InstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

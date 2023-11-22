@@ -35,14 +35,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 
@@ -321,7 +320,7 @@ export type TransferOutOfEscrowInput<
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Wallet paying for the transaction and new account */
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   /** Mint account for the new attribute */
   attributeMint: Address<TAccountAttributeMint>;
   /** Token account source for the new attribute */
@@ -341,7 +340,7 @@ export type TransferOutOfEscrowInput<
   /** Instructions sysvar account */
   sysvarInstructions?: Address<TAccountSysvarInstructions>;
   /** Authority/creator of the escrow account */
-  authority?: Signer<TAccountAuthority>;
+  authority?: TransactionSigner<TAccountAuthority>;
   amount: TransferOutOfEscrowInstructionDataArgs['amount'];
 };
 
@@ -431,24 +430,23 @@ export async function transferOutOfEscrow<
     TAccountAuthority
   >
 ): Promise<
-  WrappedInstruction<
-    TransferOutOfEscrowInstruction<
-      TProgram,
-      TAccountEscrow,
-      TAccountMetadata,
-      TAccountPayer,
-      TAccountAttributeMint,
-      TAccountAttributeSrc,
-      TAccountAttributeDst,
-      TAccountEscrowMint,
-      TAccountEscrowAccount,
-      TAccountSystemProgram,
-      TAccountAtaProgram,
-      TAccountTokenProgram,
-      TAccountSysvarInstructions,
-      TAccountAuthority
-    >
-  >
+  TransferOutOfEscrowInstruction<
+    TProgram,
+    TAccountEscrow,
+    TAccountMetadata,
+    TAccountPayer,
+    TAccountAttributeMint,
+    TAccountAttributeSrc,
+    TAccountAttributeDst,
+    TAccountEscrowMint,
+    TAccountEscrowAccount,
+    TAccountSystemProgram,
+    TAccountAtaProgram,
+    TAccountTokenProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthority
+  > &
+    IInstructionWithSigners
 >;
 export async function transferOutOfEscrow<
   TAccountEscrow extends string,
@@ -482,24 +480,23 @@ export async function transferOutOfEscrow<
     TAccountAuthority
   >
 ): Promise<
-  WrappedInstruction<
-    TransferOutOfEscrowInstruction<
-      TProgram,
-      TAccountEscrow,
-      TAccountMetadata,
-      TAccountPayer,
-      TAccountAttributeMint,
-      TAccountAttributeSrc,
-      TAccountAttributeDst,
-      TAccountEscrowMint,
-      TAccountEscrowAccount,
-      TAccountSystemProgram,
-      TAccountAtaProgram,
-      TAccountTokenProgram,
-      TAccountSysvarInstructions,
-      TAccountAuthority
-    >
-  >
+  TransferOutOfEscrowInstruction<
+    TProgram,
+    TAccountEscrow,
+    TAccountMetadata,
+    TAccountPayer,
+    TAccountAttributeMint,
+    TAccountAttributeSrc,
+    TAccountAttributeDst,
+    TAccountEscrowMint,
+    TAccountEscrowAccount,
+    TAccountSystemProgram,
+    TAccountAtaProgram,
+    TAccountTokenProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthority
+  > &
+    IInstructionWithSigners
 >;
 export async function transferOutOfEscrow<
   TReturn,
@@ -552,7 +549,7 @@ export async function transferOutOfEscrow<
     TAccountSysvarInstructions,
     TAccountAuthority
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -660,7 +657,7 @@ export async function transferOutOfEscrow<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -672,19 +669,18 @@ export async function transferOutOfEscrow<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: transferOutOfEscrowInstruction(
+  // Instruction.
+  const instruction = {
+    ...transferOutOfEscrowInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as TransferOutOfEscrowInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

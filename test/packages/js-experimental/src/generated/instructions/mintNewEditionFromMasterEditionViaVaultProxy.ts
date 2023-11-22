@@ -30,14 +30,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 import {
@@ -381,11 +380,11 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInput<
   /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE). */
   editionMarkPda: Address<TAccountEditionMarkPda>;
   /** Mint authority of new mint */
-  newMintAuthority: Signer<TAccountNewMintAuthority>;
+  newMintAuthority: TransactionSigner<TAccountNewMintAuthority>;
   /** payer */
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   /** Vault authority */
-  vaultAuthority: Signer<TAccountVaultAuthority>;
+  vaultAuthority: TransactionSigner<TAccountVaultAuthority>;
   /** Safety deposit token store account */
   safetyDepositStore: Address<TAccountSafetyDepositStore>;
   /** Safety deposit box */
@@ -513,28 +512,27 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    MintNewEditionFromMasterEditionViaVaultProxyInstruction<
-      TProgram,
-      TAccountNewMetadata,
-      TAccountNewEdition,
-      TAccountMasterEdition,
-      TAccountNewMint,
-      TAccountEditionMarkPda,
-      TAccountNewMintAuthority,
-      TAccountPayer,
-      TAccountVaultAuthority,
-      TAccountSafetyDepositStore,
-      TAccountSafetyDepositBox,
-      TAccountVault,
-      TAccountNewMetadataUpdateAuthority,
-      TAccountMetadata,
-      TAccountTokenProgram,
-      TAccountTokenVaultProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >
+  MintNewEditionFromMasterEditionViaVaultProxyInstruction<
+    TProgram,
+    TAccountNewMetadata,
+    TAccountNewEdition,
+    TAccountMasterEdition,
+    TAccountNewMint,
+    TAccountEditionMarkPda,
+    TAccountNewMintAuthority,
+    TAccountPayer,
+    TAccountVaultAuthority,
+    TAccountSafetyDepositStore,
+    TAccountSafetyDepositBox,
+    TAccountVault,
+    TAccountNewMetadataUpdateAuthority,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountTokenVaultProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function mintNewEditionFromMasterEditionViaVaultProxy<
   TAccountNewMetadata extends string,
@@ -576,28 +574,27 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
     TAccountRent
   >
 ): Promise<
-  WrappedInstruction<
-    MintNewEditionFromMasterEditionViaVaultProxyInstruction<
-      TProgram,
-      TAccountNewMetadata,
-      TAccountNewEdition,
-      TAccountMasterEdition,
-      TAccountNewMint,
-      TAccountEditionMarkPda,
-      TAccountNewMintAuthority,
-      TAccountPayer,
-      TAccountVaultAuthority,
-      TAccountSafetyDepositStore,
-      TAccountSafetyDepositBox,
-      TAccountVault,
-      TAccountNewMetadataUpdateAuthority,
-      TAccountMetadata,
-      TAccountTokenProgram,
-      TAccountTokenVaultProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >
+  MintNewEditionFromMasterEditionViaVaultProxyInstruction<
+    TProgram,
+    TAccountNewMetadata,
+    TAccountNewEdition,
+    TAccountMasterEdition,
+    TAccountNewMint,
+    TAccountEditionMarkPda,
+    TAccountNewMintAuthority,
+    TAccountPayer,
+    TAccountVaultAuthority,
+    TAccountSafetyDepositStore,
+    TAccountSafetyDepositBox,
+    TAccountVault,
+    TAccountNewMetadataUpdateAuthority,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountTokenVaultProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  > &
+    IInstructionWithSigners
 >;
 export async function mintNewEditionFromMasterEditionViaVaultProxy<
   TReturn,
@@ -662,7 +659,7 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -782,7 +779,7 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -794,19 +791,18 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: mintNewEditionFromMasterEditionViaVaultProxyInstruction(
+  // Instruction.
+  const instruction = {
+    ...mintNewEditionFromMasterEditionViaVaultProxyInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

@@ -29,15 +29,14 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
   expectProgramDerivedAddress,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 import {
@@ -179,7 +178,7 @@ export type CreateRuleSetInput<
   TAccountSystemProgram extends string
 > = {
   /** Payer and creator of the RuleSet */
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   /** The PDA account where the RuleSet is stored */
   ruleSetPda: ProgramDerivedAddress<TAccountRuleSetPda>;
   /** System program */
@@ -224,14 +223,13 @@ export async function createRuleSet<
     TAccountSystemProgram
   >
 ): Promise<
-  WrappedInstruction<
-    CreateRuleSetInstruction<
-      TProgram,
-      TAccountPayer,
-      TAccountRuleSetPda,
-      TAccountSystemProgram
-    >
-  >
+  CreateRuleSetInstruction<
+    TProgram,
+    TAccountPayer,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  > &
+    IInstructionWithSigners
 >;
 export async function createRuleSet<
   TAccountPayer extends string,
@@ -245,14 +243,13 @@ export async function createRuleSet<
     TAccountSystemProgram
   >
 ): Promise<
-  WrappedInstruction<
-    CreateRuleSetInstruction<
-      TProgram,
-      TAccountPayer,
-      TAccountRuleSetPda,
-      TAccountSystemProgram
-    >
-  >
+  CreateRuleSetInstruction<
+    TProgram,
+    TAccountPayer,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  > &
+    IInstructionWithSigners
 >;
 export async function createRuleSet<
   TReturn,
@@ -275,7 +272,7 @@ export async function createRuleSet<
     TAccountRuleSetPda,
     TAccountSystemProgram
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -335,7 +332,7 @@ export async function createRuleSet<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -347,19 +344,18 @@ export async function createRuleSet<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: createRuleSetInstruction(
+  // Instruction.
+  const instruction = {
+    ...createRuleSetInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as CreateRuleSetInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

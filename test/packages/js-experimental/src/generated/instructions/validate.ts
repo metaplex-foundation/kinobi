@@ -31,14 +31,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 import {
@@ -411,22 +410,22 @@ export type ValidateInput<
   TAccountOptRuleNonsigner5 extends string
 > = {
   /** Payer and creator of the RuleSet */
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   /** The PDA account where the RuleSet is stored */
   ruleSet: Address<TAccountRuleSet>;
   /** System program */
   systemProgram?: Address<TAccountSystemProgram>;
   optRuleSigner1?:
     | Address<TAccountOptRuleSigner1>
-    | Signer<TAccountOptRuleSigner1>;
+    | TransactionSigner<TAccountOptRuleSigner1>;
   /** Optional rule validation signer 2 */
-  optRuleSigner2?: Signer<TAccountOptRuleSigner2>;
+  optRuleSigner2?: TransactionSigner<TAccountOptRuleSigner2>;
   /** Optional rule validation signer 3 */
-  optRuleSigner3?: Signer<TAccountOptRuleSigner3>;
+  optRuleSigner3?: TransactionSigner<TAccountOptRuleSigner3>;
   /** Optional rule validation signer 4 */
-  optRuleSigner4?: Signer<TAccountOptRuleSigner4>;
+  optRuleSigner4?: TransactionSigner<TAccountOptRuleSigner4>;
   /** Optional rule validation signer 5 */
-  optRuleSigner5?: Signer<TAccountOptRuleSigner5>;
+  optRuleSigner5?: TransactionSigner<TAccountOptRuleSigner5>;
   /** Optional rule validation non-signer 1 */
   optRuleNonsigner1?: Address<TAccountOptRuleNonsigner1>;
   /** Optional rule validation non-signer 2 */
@@ -466,7 +465,7 @@ export async function validate<
         TAccountPayer,
         TAccountRuleSet,
         TAccountSystemProgram,
-        typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
+        typeof input['optRuleSigner1'] extends TransactionSigner<TAccountOptRuleSigner1>
           ? ReadonlySignerAccount<TAccountOptRuleSigner1>
           : TAccountOptRuleSigner1,
         TAccountOptRuleSigner2,
@@ -530,26 +529,25 @@ export async function validate<
     TAccountOptRuleNonsigner5
   >
 ): Promise<
-  WrappedInstruction<
-    ValidateInstruction<
-      TProgram,
-      TAccountPayer,
-      TAccountRuleSet,
-      TAccountSystemProgram,
-      typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
-        ? ReadonlySignerAccount<TAccountOptRuleSigner1>
-        : TAccountOptRuleSigner1,
-      TAccountOptRuleSigner2,
-      TAccountOptRuleSigner3,
-      TAccountOptRuleSigner4,
-      TAccountOptRuleSigner5,
-      TAccountOptRuleNonsigner1,
-      TAccountOptRuleNonsigner2,
-      TAccountOptRuleNonsigner3,
-      TAccountOptRuleNonsigner4,
-      TAccountOptRuleNonsigner5
-    >
-  >
+  ValidateInstruction<
+    TProgram,
+    TAccountPayer,
+    TAccountRuleSet,
+    TAccountSystemProgram,
+    typeof input['optRuleSigner1'] extends TransactionSigner<TAccountOptRuleSigner1>
+      ? ReadonlySignerAccount<TAccountOptRuleSigner1>
+      : TAccountOptRuleSigner1,
+    TAccountOptRuleSigner2,
+    TAccountOptRuleSigner3,
+    TAccountOptRuleSigner4,
+    TAccountOptRuleSigner5,
+    TAccountOptRuleNonsigner1,
+    TAccountOptRuleNonsigner2,
+    TAccountOptRuleNonsigner3,
+    TAccountOptRuleNonsigner4,
+    TAccountOptRuleNonsigner5
+  > &
+    IInstructionWithSigners
 >;
 export async function validate<
   TAccountPayer extends string,
@@ -583,26 +581,25 @@ export async function validate<
     TAccountOptRuleNonsigner5
   >
 ): Promise<
-  WrappedInstruction<
-    ValidateInstruction<
-      TProgram,
-      TAccountPayer,
-      TAccountRuleSet,
-      TAccountSystemProgram,
-      typeof input['optRuleSigner1'] extends Signer<TAccountOptRuleSigner1>
-        ? ReadonlySignerAccount<TAccountOptRuleSigner1>
-        : TAccountOptRuleSigner1,
-      TAccountOptRuleSigner2,
-      TAccountOptRuleSigner3,
-      TAccountOptRuleSigner4,
-      TAccountOptRuleSigner5,
-      TAccountOptRuleNonsigner1,
-      TAccountOptRuleNonsigner2,
-      TAccountOptRuleNonsigner3,
-      TAccountOptRuleNonsigner4,
-      TAccountOptRuleNonsigner5
-    >
-  >
+  ValidateInstruction<
+    TProgram,
+    TAccountPayer,
+    TAccountRuleSet,
+    TAccountSystemProgram,
+    typeof input['optRuleSigner1'] extends TransactionSigner<TAccountOptRuleSigner1>
+      ? ReadonlySignerAccount<TAccountOptRuleSigner1>
+      : TAccountOptRuleSigner1,
+    TAccountOptRuleSigner2,
+    TAccountOptRuleSigner3,
+    TAccountOptRuleSigner4,
+    TAccountOptRuleSigner5,
+    TAccountOptRuleNonsigner1,
+    TAccountOptRuleNonsigner2,
+    TAccountOptRuleNonsigner3,
+    TAccountOptRuleNonsigner4,
+    TAccountOptRuleNonsigner5
+  > &
+    IInstructionWithSigners
 >;
 export async function validate<
   TReturn,
@@ -655,7 +652,7 @@ export async function validate<
     TAccountOptRuleNonsigner4,
     TAccountOptRuleNonsigner5
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -755,7 +752,7 @@ export async function validate<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -767,19 +764,18 @@ export async function validate<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: validateInstruction(
+  // Instruction.
+  const instruction = {
+    ...validateInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as ValidateInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }

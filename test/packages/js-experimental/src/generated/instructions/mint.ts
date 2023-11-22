@@ -30,14 +30,13 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 import {
@@ -326,9 +325,9 @@ export type MintInput<
   /** Mint of token asset */
   mint: Address<TAccountMint>;
   /** Payer */
-  payer?: Signer<TAccountPayer>;
+  payer?: TransactionSigner<TAccountPayer>;
   /** (Mint or Update) authority */
-  authority?: Signer<TAccountAuthority>;
+  authority?: TransactionSigner<TAccountAuthority>;
   /** System program */
   systemProgram?: Address<TAccountSystemProgram>;
   /** Instructions sysvar account */
@@ -425,23 +424,22 @@ export async function mint<
     TAccountAuthorizationRules
   >
 ): Promise<
-  WrappedInstruction<
-    MintInstruction<
-      TProgram,
-      TAccountToken,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountMint,
-      TAccountPayer,
-      TAccountAuthority,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions,
-      TAccountSplTokenProgram,
-      TAccountSplAtaProgram,
-      TAccountAuthorizationRulesProgram,
-      TAccountAuthorizationRules
-    >
-  >
+  MintInstruction<
+    TProgram,
+    TAccountToken,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountPayer,
+    TAccountAuthority,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountSplAtaProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  > &
+    IInstructionWithSigners
 >;
 export async function mint<
   TAccountToken extends string,
@@ -473,23 +471,22 @@ export async function mint<
     TAccountAuthorizationRules
   >
 ): Promise<
-  WrappedInstruction<
-    MintInstruction<
-      TProgram,
-      TAccountToken,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountMint,
-      TAccountPayer,
-      TAccountAuthority,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions,
-      TAccountSplTokenProgram,
-      TAccountSplAtaProgram,
-      TAccountAuthorizationRulesProgram,
-      TAccountAuthorizationRules
-    >
-  >
+  MintInstruction<
+    TProgram,
+    TAccountToken,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountPayer,
+    TAccountAuthority,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountSplAtaProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  > &
+    IInstructionWithSigners
 >;
 export async function mint<
   TReturn,
@@ -539,7 +536,7 @@ export async function mint<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -651,7 +648,7 @@ export async function mint<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -663,19 +660,18 @@ export async function mint<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: mintInstruction(
+  // Instruction.
+  const instruction = {
+    ...mintInstruction(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as MintInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
   };
 
   return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+    ? context.getGeneratedInstruction(instruction)
+    : instruction;
 }
