@@ -32,6 +32,7 @@ import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -164,7 +165,8 @@ export async function removeCreatorVerification<
     TAccountMetadata,
     TAccountCreator
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function removeCreatorVerification<
   TAccountMetadata extends string,
@@ -178,7 +180,8 @@ export async function removeCreatorVerification<
     TAccountMetadata,
     TAccountCreator
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function removeCreatorVerification<
   TReturn,
@@ -192,7 +195,12 @@ export async function removeCreatorVerification<
         CustomGeneratedInstruction<IInstruction, TReturn>)
     | RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>,
   rawInput?: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
-): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
+): Promise<
+  | TReturn
+  | (IInstruction &
+      IInstructionWithSigners &
+      IInstructionWithBytesCreatedOnChain)
+> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>

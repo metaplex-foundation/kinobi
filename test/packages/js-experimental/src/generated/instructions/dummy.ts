@@ -38,6 +38,7 @@ import { findDelegateRecordPda } from '../accounts';
 import {
   Context,
   CustomGeneratedInstruction,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   expectSome,
@@ -360,7 +361,8 @@ export async function dummy<
     TAccountDelegateRecord,
     TAccountTokenOrAtaProgram
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function dummy<
   TAccountEdition extends string,
@@ -401,7 +403,8 @@ export async function dummy<
     TAccountDelegateRecord,
     TAccountTokenOrAtaProgram
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function dummy<
   TReturn,
@@ -445,7 +448,12 @@ export async function dummy<
     TAccountDelegateRecord,
     TAccountTokenOrAtaProgram
   >
-): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
+): Promise<
+  | TReturn
+  | (IInstruction &
+      IInstructionWithSigners &
+      IInstructionWithBytesCreatedOnChain)
+> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>

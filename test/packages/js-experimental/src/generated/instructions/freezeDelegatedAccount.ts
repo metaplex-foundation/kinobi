@@ -33,6 +33,7 @@ import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -236,7 +237,8 @@ export async function freezeDelegatedAccount<
     TAccountMint,
     TAccountTokenProgram
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function freezeDelegatedAccount<
   TAccountDelegate extends string,
@@ -262,7 +264,8 @@ export async function freezeDelegatedAccount<
     TAccountMint,
     TAccountTokenProgram
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function freezeDelegatedAccount<
   TReturn,
@@ -291,7 +294,12 @@ export async function freezeDelegatedAccount<
     TAccountMint,
     TAccountTokenProgram
   >
-): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
+): Promise<
+  | TReturn
+  | (IInstruction &
+      IInstructionWithSigners &
+      IInstructionWithBytesCreatedOnChain)
+> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>

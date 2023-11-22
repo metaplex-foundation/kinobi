@@ -129,6 +129,14 @@ export function accountMetaWithDefault<
 }
 
 /**
+ * Defines an instruction that stores additional bytes on-chain.
+ * @internal
+ */
+export type IInstructionWithBytesCreatedOnChain = {
+  bytesCreatedOnChain: number;
+};
+
+/**
  * Get account metas and signers from resolved accounts.
  * @internal
  */

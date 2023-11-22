@@ -33,6 +33,7 @@ import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -487,7 +488,8 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
     TAccountRent,
     TAccountReservationList
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
   TAccountMetadata extends string,
@@ -546,7 +548,8 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
     TAccountRent,
     TAccountReservationList
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
   TReturn,
@@ -608,7 +611,12 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
     TAccountRent,
     TAccountReservationList
   >
-): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
+): Promise<
+  | TReturn
+  | (IInstruction &
+      IInstructionWithSigners &
+      IInstructionWithBytesCreatedOnChain)
+> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>

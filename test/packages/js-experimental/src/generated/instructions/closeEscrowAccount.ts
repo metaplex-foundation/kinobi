@@ -33,6 +33,7 @@ import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -301,7 +302,8 @@ export async function closeEscrowAccount<
     TAccountSystemProgram,
     TAccountSysvarInstructions
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function closeEscrowAccount<
   TAccountEscrow extends string,
@@ -336,7 +338,8 @@ export async function closeEscrowAccount<
     TAccountSystemProgram,
     TAccountSysvarInstructions
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function closeEscrowAccount<
   TReturn,
@@ -374,7 +377,12 @@ export async function closeEscrowAccount<
     TAccountSystemProgram,
     TAccountSysvarInstructions
   >
-): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
+): Promise<
+  | TReturn
+  | (IInstruction &
+      IInstructionWithSigners &
+      IInstructionWithBytesCreatedOnChain)
+> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>

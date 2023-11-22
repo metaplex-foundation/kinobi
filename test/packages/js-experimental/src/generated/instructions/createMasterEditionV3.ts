@@ -36,6 +36,7 @@ import {
   ACCOUNT_HEADER_SIZE,
   Context,
   CustomGeneratedInstruction,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -359,7 +360,8 @@ export async function createMasterEditionV3<
     TAccountSystemProgram,
     TAccountRent
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function createMasterEditionV3<
   TAccountEdition extends string,
@@ -397,7 +399,8 @@ export async function createMasterEditionV3<
     TAccountSystemProgram,
     TAccountRent
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function createMasterEditionV3<
   TReturn,
@@ -438,7 +441,12 @@ export async function createMasterEditionV3<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
+): Promise<
+  | TReturn
+  | (IInstruction &
+      IInstructionWithSigners &
+      IInstructionWithBytesCreatedOnChain)
+> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>

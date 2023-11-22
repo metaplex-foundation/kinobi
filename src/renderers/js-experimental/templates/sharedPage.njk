@@ -86,6 +86,13 @@ export type ResolvedAccount<T extends string = string, U extends Address<T> | Pr
    ) as TAccount extends string ? { address: Address<TAccount>; role: TRole } : TAccount;
  }
 
+ /**
+ * Defines an instruction that stores additional bytes on-chain.
+ * @internal
+ */
+export type IInstructionWithBytesCreatedOnChain = {
+  bytesCreatedOnChain: number;
+};
 
 /**
 * Get account metas and signers from resolved accounts.

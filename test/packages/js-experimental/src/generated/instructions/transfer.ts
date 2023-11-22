@@ -34,6 +34,7 @@ import { resolveMasterEditionFromTokenStandard } from '../../hooked';
 import {
   Context,
   CustomGeneratedInstruction,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -511,7 +512,8 @@ export async function transfer<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function transfer<
   TAccountAuthority extends string,
@@ -567,7 +569,8 @@ export async function transfer<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function transfer<
   TReturn,
@@ -626,7 +629,12 @@ export async function transfer<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
+): Promise<
+  | TReturn
+  | (IInstruction &
+      IInstructionWithSigners &
+      IInstructionWithBytesCreatedOnChain)
+> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>

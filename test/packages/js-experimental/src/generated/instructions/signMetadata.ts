@@ -32,6 +32,7 @@ import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -154,7 +155,8 @@ export async function signMetadata<
   input: SignMetadataInput<TAccountMetadata, TAccountCreator>
 ): Promise<
   SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator> &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function signMetadata<
   TAccountMetadata extends string,
@@ -164,7 +166,8 @@ export async function signMetadata<
   input: SignMetadataInput<TAccountMetadata, TAccountCreator>
 ): Promise<
   SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator> &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function signMetadata<
   TReturn,
@@ -178,7 +181,12 @@ export async function signMetadata<
         CustomGeneratedInstruction<IInstruction, TReturn>)
     | SignMetadataInput<TAccountMetadata, TAccountCreator>,
   rawInput?: SignMetadataInput<TAccountMetadata, TAccountCreator>
-): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
+): Promise<
+  | TReturn
+  | (IInstruction &
+      IInstructionWithSigners &
+      IInstructionWithBytesCreatedOnChain)
+> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>

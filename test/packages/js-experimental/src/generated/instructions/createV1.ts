@@ -45,6 +45,7 @@ import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -395,7 +396,8 @@ export async function createV1<
     TAccountSysvarInstructions,
     TAccountSplTokenProgram
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function createV1<
   TAccountMetadata extends string,
@@ -435,7 +437,8 @@ export async function createV1<
     TAccountSysvarInstructions,
     TAccountSplTokenProgram
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function createV1<
   TReturn,
@@ -476,7 +479,12 @@ export async function createV1<
     TAccountSysvarInstructions,
     TAccountSplTokenProgram
   >
-): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
+): Promise<
+  | TReturn
+  | (IInstruction &
+      IInstructionWithSigners &
+      IInstructionWithBytesCreatedOnChain)
+> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>

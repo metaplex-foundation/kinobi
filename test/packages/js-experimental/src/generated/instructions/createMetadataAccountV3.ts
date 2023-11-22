@@ -43,6 +43,7 @@ import { findMetadataPda } from '../accounts';
 import {
   Context,
   CustomGeneratedInstruction,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   expectAddress,
@@ -331,7 +332,8 @@ export async function createMetadataAccountV3<
     TAccountSystemProgram,
     TAccountRent
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function createMetadataAccountV3<
   TAccountMetadata extends string,
@@ -363,7 +365,8 @@ export async function createMetadataAccountV3<
     TAccountSystemProgram,
     TAccountRent
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function createMetadataAccountV3<
   TReturn,
@@ -398,7 +401,12 @@ export async function createMetadataAccountV3<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
+): Promise<
+  | TReturn
+  | (IInstruction &
+      IInstructionWithSigners &
+      IInstructionWithBytesCreatedOnChain)
+> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>

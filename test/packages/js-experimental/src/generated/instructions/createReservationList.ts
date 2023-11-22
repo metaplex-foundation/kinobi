@@ -25,6 +25,7 @@ import {
 import {
   Context,
   CustomGeneratedInstruction,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -265,7 +266,8 @@ export async function createReservationList<
     TAccountSystemProgram,
     TAccountRent
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function createReservationList<
   TAccountReservationList extends string,
@@ -300,7 +302,8 @@ export async function createReservationList<
     TAccountSystemProgram,
     TAccountRent
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function createReservationList<
   TReturn,
@@ -338,7 +341,12 @@ export async function createReservationList<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
+): Promise<
+  | TReturn
+  | (IInstruction &
+      IInstructionWithSigners &
+      IInstructionWithBytesCreatedOnChain)
+> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>

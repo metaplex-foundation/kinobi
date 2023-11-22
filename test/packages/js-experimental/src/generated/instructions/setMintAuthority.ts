@@ -34,6 +34,7 @@ import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -192,7 +193,8 @@ export async function setMintAuthority<
     TAccountAuthority,
     TAccountMintAuthority
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function setMintAuthority<
   TAccountCandyMachine extends string,
@@ -212,7 +214,8 @@ export async function setMintAuthority<
     TAccountAuthority,
     TAccountMintAuthority
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function setMintAuthority<
   TReturn,
@@ -235,7 +238,12 @@ export async function setMintAuthority<
     TAccountAuthority,
     TAccountMintAuthority
   >
-): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
+): Promise<
+  | TReturn
+  | (IInstruction &
+      IInstructionWithSigners &
+      IInstructionWithBytesCreatedOnChain)
+> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>

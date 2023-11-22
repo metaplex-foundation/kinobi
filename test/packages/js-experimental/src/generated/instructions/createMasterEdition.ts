@@ -34,6 +34,7 @@ import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -357,7 +358,8 @@ export async function createMasterEdition<
     TAccountSystemProgram,
     TAccountRent
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function createMasterEdition<
   TAccountEdition extends string,
@@ -395,7 +397,8 @@ export async function createMasterEdition<
     TAccountSystemProgram,
     TAccountRent
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function createMasterEdition<
   TReturn,
@@ -436,7 +439,12 @@ export async function createMasterEdition<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
+): Promise<
+  | TReturn
+  | (IInstruction &
+      IInstructionWithSigners &
+      IInstructionWithBytesCreatedOnChain)
+> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>

@@ -103,7 +103,10 @@ export function getInstructionFunctionHighLevelFragment(
     )
     .addImports('solanaAddresses', ['Address'])
     .addImports('solanaSigners', ['IInstructionWithSigners'])
-    .addImports('shared', ['CustomGeneratedInstruction']);
+    .addImports('shared', [
+      'CustomGeneratedInstruction',
+      'IInstructionWithBytesCreatedOnChain',
+    ]);
 
   if (hasAccounts) {
     functionFragment

@@ -33,6 +33,7 @@ import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -243,7 +244,8 @@ export async function setCollectionSize<
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function setCollectionSize<
   TAccountCollectionMetadata extends string,
@@ -266,7 +268,8 @@ export async function setCollectionSize<
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function setCollectionSize<
   TReturn,
@@ -292,7 +295,12 @@ export async function setCollectionSize<
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
   >
-): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
+): Promise<
+  | TReturn
+  | (IInstruction &
+      IInstructionWithSigners &
+      IInstructionWithBytesCreatedOnChain)
+> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>

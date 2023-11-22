@@ -41,6 +41,7 @@ import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -211,7 +212,8 @@ export async function addConfigLines<
   input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<
   AddConfigLinesInstruction<TProgram, TAccountCandyMachine, TAccountAuthority> &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function addConfigLines<
   TAccountCandyMachine extends string,
@@ -221,7 +223,8 @@ export async function addConfigLines<
   input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<
   AddConfigLinesInstruction<TProgram, TAccountCandyMachine, TAccountAuthority> &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function addConfigLines<
   TReturn,
@@ -235,7 +238,12 @@ export async function addConfigLines<
         CustomGeneratedInstruction<IInstruction, TReturn>)
     | AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>,
   rawInput?: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
+): Promise<
+  | TReturn
+  | (IInstruction &
+      IInstructionWithSigners &
+      IInstructionWithBytesCreatedOnChain)
+> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>

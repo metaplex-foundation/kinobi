@@ -31,6 +31,7 @@ import { IInstructionWithSigners } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -131,7 +132,9 @@ export async function puffMetadata<
   context: Pick<Context, 'getProgramAddress'>,
   input: PuffMetadataInput<TAccountMetadata>
 ): Promise<
-  PuffMetadataInstruction<TProgram, TAccountMetadata> & IInstructionWithSigners
+  PuffMetadataInstruction<TProgram, TAccountMetadata> &
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function puffMetadata<
   TAccountMetadata extends string,
@@ -139,7 +142,9 @@ export async function puffMetadata<
 >(
   input: PuffMetadataInput<TAccountMetadata>
 ): Promise<
-  PuffMetadataInstruction<TProgram, TAccountMetadata> & IInstructionWithSigners
+  PuffMetadataInstruction<TProgram, TAccountMetadata> &
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function puffMetadata<
   TReturn,
@@ -152,7 +157,12 @@ export async function puffMetadata<
         CustomGeneratedInstruction<IInstruction, TReturn>)
     | PuffMetadataInput<TAccountMetadata>,
   rawInput?: PuffMetadataInput<TAccountMetadata>
-): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
+): Promise<
+  | TReturn
+  | (IInstruction &
+      IInstructionWithSigners &
+      IInstructionWithBytesCreatedOnChain)
+> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>

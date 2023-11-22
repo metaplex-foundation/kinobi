@@ -34,6 +34,7 @@ import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -157,7 +158,8 @@ export async function withdraw<
   input: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<
   WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority> &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function withdraw<
   TAccountCandyMachine extends string,
@@ -167,7 +169,8 @@ export async function withdraw<
   input: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<
   WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority> &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function withdraw<
   TReturn,
@@ -181,7 +184,12 @@ export async function withdraw<
         CustomGeneratedInstruction<IInstruction, TReturn>)
     | WithdrawInput<TAccountCandyMachine, TAccountAuthority>,
   rawInput?: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
+): Promise<
+  | TReturn
+  | (IInstruction &
+      IInstructionWithSigners &
+      IInstructionWithBytesCreatedOnChain)
+> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>

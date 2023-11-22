@@ -45,6 +45,7 @@ import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -240,7 +241,8 @@ export async function deprecatedSetReservationList<
     TAccountReservationList,
     TAccountResource
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function deprecatedSetReservationList<
   TAccountMasterEdition extends string,
@@ -260,7 +262,8 @@ export async function deprecatedSetReservationList<
     TAccountReservationList,
     TAccountResource
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function deprecatedSetReservationList<
   TReturn,
@@ -283,7 +286,12 @@ export async function deprecatedSetReservationList<
     TAccountReservationList,
     TAccountResource
   >
-): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
+): Promise<
+  | TReturn
+  | (IInstruction &
+      IInstructionWithSigners &
+      IInstructionWithBytesCreatedOnChain)
+> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>

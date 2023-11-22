@@ -52,6 +52,7 @@ import {
   ACCOUNT_HEADER_SIZE,
   Context,
   CustomGeneratedInstruction,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   expectAddress,
@@ -388,7 +389,8 @@ export async function createMetadataAccount<
     TAccountSystemProgram,
     TAccountRent
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function createMetadataAccount<
   TAccountMetadata extends string,
@@ -420,7 +422,8 @@ export async function createMetadataAccount<
     TAccountSystemProgram,
     TAccountRent
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function createMetadataAccount<
   TReturn,
@@ -455,7 +458,12 @@ export async function createMetadataAccount<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
+): Promise<
+  | TReturn
+  | (IInstruction &
+      IInstructionWithSigners &
+      IInstructionWithBytesCreatedOnChain)
+> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>

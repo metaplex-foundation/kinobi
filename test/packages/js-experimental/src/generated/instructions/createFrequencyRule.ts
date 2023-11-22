@@ -39,6 +39,7 @@ import { IInstructionWithSigners, TransactionSigner } from '@solana/signers';
 import {
   Context,
   CustomGeneratedInstruction,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -240,7 +241,8 @@ export async function createFrequencyRule<
     TAccountFrequencyPda,
     TAccountSystemProgram
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function createFrequencyRule<
   TAccountPayer extends string,
@@ -260,7 +262,8 @@ export async function createFrequencyRule<
     TAccountFrequencyPda,
     TAccountSystemProgram
   > &
-    IInstructionWithSigners
+    IInstructionWithSigners &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function createFrequencyRule<
   TReturn,
@@ -283,7 +286,12 @@ export async function createFrequencyRule<
     TAccountFrequencyPda,
     TAccountSystemProgram
   >
-): Promise<TReturn | (IInstruction & IInstructionWithSigners)> {
+): Promise<
+  | TReturn
+  | (IInstruction &
+      IInstructionWithSigners &
+      IInstructionWithBytesCreatedOnChain)
+> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
