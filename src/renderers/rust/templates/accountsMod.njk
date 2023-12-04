@@ -3,11 +3,11 @@
 {% block main %}
 
 {% for account in accountsToExport | sort(false, false, 'name') %}
-  pub(crate) mod {{ account.name | snakeCase }};
+  pub(crate) mod r#{{ account.name | snakeCase }};
 {% endfor %}
 
 {% for account in accountsToExport | sort(false, false, 'name') %}
-  pub use self::{{ account.name | snakeCase }}::*;
+  pub use self::r#{{ account.name | snakeCase }}::*;
 {% endfor %}
 
 {% endblock %}

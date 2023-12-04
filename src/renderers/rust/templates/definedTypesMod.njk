@@ -3,11 +3,11 @@
 {% block main %}
 
 {% for definedType in definedTypesToExport | sort(false, false, 'name') %}
-  pub(crate) mod {{ definedType.name | snakeCase }};
+  pub(crate) mod r#{{ definedType.name | snakeCase }};
 {% endfor %}
 
 {% for definedType in definedTypesToExport | sort(false, false, 'name') %}
-  pub use self::{{ definedType.name | snakeCase }}::*;
+  pub use self::r#{{ definedType.name | snakeCase }}::*;
 {% endfor %}
 
 {% endblock %}
