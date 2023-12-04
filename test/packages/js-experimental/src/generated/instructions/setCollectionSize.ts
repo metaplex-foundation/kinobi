@@ -93,25 +93,19 @@ export function getSetCollectionSizeInstructionDataEncoder(): Encoder<SetCollect
     getStructEncoder<{
       discriminator: number;
       setCollectionSizeArgs: SetCollectionSizeArgsArgs;
-    }>(
-      [
-        ['discriminator', getU8Encoder()],
-        ['setCollectionSizeArgs', getSetCollectionSizeArgsEncoder()],
-      ],
-      { description: 'SetCollectionSizeInstructionData' }
-    ),
+    }>([
+      ['discriminator', getU8Encoder()],
+      ['setCollectionSizeArgs', getSetCollectionSizeArgsEncoder()],
+    ]),
     (value) => ({ ...value, discriminator: 34 })
   ) as Encoder<SetCollectionSizeInstructionDataArgs>;
 }
 
 export function getSetCollectionSizeInstructionDataDecoder(): Decoder<SetCollectionSizeInstructionData> {
-  return getStructDecoder<SetCollectionSizeInstructionData>(
-    [
-      ['discriminator', getU8Decoder()],
-      ['setCollectionSizeArgs', getSetCollectionSizeArgsDecoder()],
-    ],
-    { description: 'SetCollectionSizeInstructionData' }
-  ) as Decoder<SetCollectionSizeInstructionData>;
+  return getStructDecoder<SetCollectionSizeInstructionData>([
+    ['discriminator', getU8Decoder()],
+    ['setCollectionSizeArgs', getSetCollectionSizeArgsDecoder()],
+  ]) as Decoder<SetCollectionSizeInstructionData>;
 }
 
 export function getSetCollectionSizeInstructionDataCodec(): Codec<

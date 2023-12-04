@@ -112,27 +112,21 @@ export function getCreateMetadataAccountV2InstructionDataEncoder(): Encoder<Crea
       discriminator: number;
       data: DataV2Args;
       isMutable: boolean;
-    }>(
-      [
-        ['discriminator', getU8Encoder()],
-        ['data', getDataV2Encoder()],
-        ['isMutable', getBooleanEncoder()],
-      ],
-      { description: 'CreateMetadataAccountV2InstructionData' }
-    ),
+    }>([
+      ['discriminator', getU8Encoder()],
+      ['data', getDataV2Encoder()],
+      ['isMutable', getBooleanEncoder()],
+    ]),
     (value) => ({ ...value, discriminator: 16 })
   ) as Encoder<CreateMetadataAccountV2InstructionDataArgs>;
 }
 
 export function getCreateMetadataAccountV2InstructionDataDecoder(): Decoder<CreateMetadataAccountV2InstructionData> {
-  return getStructDecoder<CreateMetadataAccountV2InstructionData>(
-    [
-      ['discriminator', getU8Decoder()],
-      ['data', getDataV2Decoder()],
-      ['isMutable', getBooleanDecoder()],
-    ],
-    { description: 'CreateMetadataAccountV2InstructionData' }
-  ) as Decoder<CreateMetadataAccountV2InstructionData>;
+  return getStructDecoder<CreateMetadataAccountV2InstructionData>([
+    ['discriminator', getU8Decoder()],
+    ['data', getDataV2Decoder()],
+    ['isMutable', getBooleanDecoder()],
+  ]) as Decoder<CreateMetadataAccountV2InstructionData>;
 }
 
 export function getCreateMetadataAccountV2InstructionDataCodec(): Codec<

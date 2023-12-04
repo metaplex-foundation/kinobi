@@ -19,15 +19,11 @@ export enum MigrateArgs {
 export type MigrateArgsArgs = MigrateArgs;
 
 export function getMigrateArgsEncoder(): Encoder<MigrateArgsArgs> {
-  return getScalarEnumEncoder<MigrateArgs>(MigrateArgs, {
-    description: 'MigrateArgs',
-  }) as Encoder<MigrateArgsArgs>;
+  return getScalarEnumEncoder(MigrateArgs) as Encoder<MigrateArgsArgs>;
 }
 
 export function getMigrateArgsDecoder(): Decoder<MigrateArgs> {
-  return getScalarEnumDecoder<MigrateArgs>(MigrateArgs, {
-    description: 'MigrateArgs',
-  }) as Decoder<MigrateArgs>;
+  return getScalarEnumDecoder(MigrateArgs) as Decoder<MigrateArgs>;
 }
 
 export function getMigrateArgsCodec(): Codec<MigrateArgsArgs, MigrateArgs> {

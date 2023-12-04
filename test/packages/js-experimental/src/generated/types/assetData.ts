@@ -101,49 +101,43 @@ export type AssetDataArgs = {
 };
 
 export function getAssetDataEncoder(): Encoder<AssetDataArgs> {
-  return getStructEncoder<AssetDataArgs>(
-    [
-      ['updateAuthority', getAddressEncoder()],
-      ['name', getStringEncoder()],
-      ['symbol', getStringEncoder()],
-      ['uri', getStringEncoder()],
-      ['sellerFeeBasisPoints', getU16Encoder()],
-      ['creators', getOptionEncoder(getArrayEncoder(getCreatorEncoder()))],
-      ['primarySaleHappened', getBooleanEncoder()],
-      ['isMutable', getBooleanEncoder()],
-      ['editionNonce', getOptionEncoder(getU8Encoder())],
-      ['tokenStandard', getTokenStandardEncoder()],
-      ['collection', getOptionEncoder(getCollectionEncoder())],
-      ['uses', getOptionEncoder(getUsesEncoder())],
-      ['collectionDetails', getOptionEncoder(getCollectionDetailsEncoder())],
-      ['programmableConfig', getOptionEncoder(getProgrammableConfigEncoder())],
-      ['delegateState', getOptionEncoder(getDelegateStateEncoder())],
-    ],
-    { description: 'AssetData' }
-  ) as Encoder<AssetDataArgs>;
+  return getStructEncoder<AssetDataArgs>([
+    ['updateAuthority', getAddressEncoder()],
+    ['name', getStringEncoder()],
+    ['symbol', getStringEncoder()],
+    ['uri', getStringEncoder()],
+    ['sellerFeeBasisPoints', getU16Encoder()],
+    ['creators', getOptionEncoder(getArrayEncoder(getCreatorEncoder()))],
+    ['primarySaleHappened', getBooleanEncoder()],
+    ['isMutable', getBooleanEncoder()],
+    ['editionNonce', getOptionEncoder(getU8Encoder())],
+    ['tokenStandard', getTokenStandardEncoder()],
+    ['collection', getOptionEncoder(getCollectionEncoder())],
+    ['uses', getOptionEncoder(getUsesEncoder())],
+    ['collectionDetails', getOptionEncoder(getCollectionDetailsEncoder())],
+    ['programmableConfig', getOptionEncoder(getProgrammableConfigEncoder())],
+    ['delegateState', getOptionEncoder(getDelegateStateEncoder())],
+  ]) as Encoder<AssetDataArgs>;
 }
 
 export function getAssetDataDecoder(): Decoder<AssetData> {
-  return getStructDecoder<AssetData>(
-    [
-      ['updateAuthority', getAddressDecoder()],
-      ['name', getStringDecoder()],
-      ['symbol', getStringDecoder()],
-      ['uri', getStringDecoder()],
-      ['sellerFeeBasisPoints', getU16Decoder()],
-      ['creators', getOptionDecoder(getArrayDecoder(getCreatorDecoder()))],
-      ['primarySaleHappened', getBooleanDecoder()],
-      ['isMutable', getBooleanDecoder()],
-      ['editionNonce', getOptionDecoder(getU8Decoder())],
-      ['tokenStandard', getTokenStandardDecoder()],
-      ['collection', getOptionDecoder(getCollectionDecoder())],
-      ['uses', getOptionDecoder(getUsesDecoder())],
-      ['collectionDetails', getOptionDecoder(getCollectionDetailsDecoder())],
-      ['programmableConfig', getOptionDecoder(getProgrammableConfigDecoder())],
-      ['delegateState', getOptionDecoder(getDelegateStateDecoder())],
-    ],
-    { description: 'AssetData' }
-  ) as Decoder<AssetData>;
+  return getStructDecoder<AssetData>([
+    ['updateAuthority', getAddressDecoder()],
+    ['name', getStringDecoder()],
+    ['symbol', getStringDecoder()],
+    ['uri', getStringDecoder()],
+    ['sellerFeeBasisPoints', getU16Decoder()],
+    ['creators', getOptionDecoder(getArrayDecoder(getCreatorDecoder()))],
+    ['primarySaleHappened', getBooleanDecoder()],
+    ['isMutable', getBooleanDecoder()],
+    ['editionNonce', getOptionDecoder(getU8Decoder())],
+    ['tokenStandard', getTokenStandardDecoder()],
+    ['collection', getOptionDecoder(getCollectionDecoder())],
+    ['uses', getOptionDecoder(getUsesDecoder())],
+    ['collectionDetails', getOptionDecoder(getCollectionDetailsDecoder())],
+    ['programmableConfig', getOptionDecoder(getProgrammableConfigDecoder())],
+    ['delegateState', getOptionDecoder(getDelegateStateDecoder())],
+  ]) as Decoder<AssetData>;
 }
 
 export function getAssetDataCodec(): Codec<AssetDataArgs, AssetData> {

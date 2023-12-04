@@ -100,19 +100,17 @@ export type SetAndVerifySizedCollectionItemInstructionDataArgs = {};
 
 export function getSetAndVerifySizedCollectionItemInstructionDataEncoder(): Encoder<SetAndVerifySizedCollectionItemInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>(
-      [['discriminator', getU8Encoder()]],
-      { description: 'SetAndVerifySizedCollectionItemInstructionData' }
-    ),
+    getStructEncoder<{ discriminator: number }>([
+      ['discriminator', getU8Encoder()],
+    ]),
     (value) => ({ ...value, discriminator: 32 })
   ) as Encoder<SetAndVerifySizedCollectionItemInstructionDataArgs>;
 }
 
 export function getSetAndVerifySizedCollectionItemInstructionDataDecoder(): Decoder<SetAndVerifySizedCollectionItemInstructionData> {
-  return getStructDecoder<SetAndVerifySizedCollectionItemInstructionData>(
-    [['discriminator', getU8Decoder()]],
-    { description: 'SetAndVerifySizedCollectionItemInstructionData' }
-  ) as Decoder<SetAndVerifySizedCollectionItemInstructionData>;
+  return getStructDecoder<SetAndVerifySizedCollectionItemInstructionData>([
+    ['discriminator', getU8Decoder()],
+  ]) as Decoder<SetAndVerifySizedCollectionItemInstructionData>;
 }
 
 export function getSetAndVerifySizedCollectionItemInstructionDataCodec(): Codec<

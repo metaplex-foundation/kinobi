@@ -85,19 +85,17 @@ export type RevokeCollectionAuthorityInstructionDataArgs = {};
 
 export function getRevokeCollectionAuthorityInstructionDataEncoder(): Encoder<RevokeCollectionAuthorityInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>(
-      [['discriminator', getU8Encoder()]],
-      { description: 'RevokeCollectionAuthorityInstructionData' }
-    ),
+    getStructEncoder<{ discriminator: number }>([
+      ['discriminator', getU8Encoder()],
+    ]),
     (value) => ({ ...value, discriminator: 24 })
   ) as Encoder<RevokeCollectionAuthorityInstructionDataArgs>;
 }
 
 export function getRevokeCollectionAuthorityInstructionDataDecoder(): Decoder<RevokeCollectionAuthorityInstructionData> {
-  return getStructDecoder<RevokeCollectionAuthorityInstructionData>(
-    [['discriminator', getU8Decoder()]],
-    { description: 'RevokeCollectionAuthorityInstructionData' }
-  ) as Decoder<RevokeCollectionAuthorityInstructionData>;
+  return getStructDecoder<RevokeCollectionAuthorityInstructionData>([
+    ['discriminator', getU8Decoder()],
+  ]) as Decoder<RevokeCollectionAuthorityInstructionData>;
 }
 
 export function getRevokeCollectionAuthorityInstructionDataCodec(): Codec<

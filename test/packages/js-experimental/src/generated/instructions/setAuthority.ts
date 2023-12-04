@@ -77,13 +77,10 @@ export type SetAuthorityInstructionDataArgs = { newAuthority: Address };
 
 export function getSetAuthorityInstructionDataEncoder(): Encoder<SetAuthorityInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ discriminator: Array<number>; newAuthority: Address }>(
-      [
-        ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
-        ['newAuthority', getAddressEncoder()],
-      ],
-      { description: 'SetAuthorityInstructionData' }
-    ),
+    getStructEncoder<{ discriminator: Array<number>; newAuthority: Address }>([
+      ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
+      ['newAuthority', getAddressEncoder()],
+    ]),
     (value) => ({
       ...value,
       discriminator: [133, 250, 37, 21, 110, 163, 26, 121],
@@ -92,13 +89,10 @@ export function getSetAuthorityInstructionDataEncoder(): Encoder<SetAuthorityIns
 }
 
 export function getSetAuthorityInstructionDataDecoder(): Decoder<SetAuthorityInstructionData> {
-  return getStructDecoder<SetAuthorityInstructionData>(
-    [
-      ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
-      ['newAuthority', getAddressDecoder()],
-    ],
-    { description: 'SetAuthorityInstructionData' }
-  ) as Decoder<SetAuthorityInstructionData>;
+  return getStructDecoder<SetAuthorityInstructionData>([
+    ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
+    ['newAuthority', getAddressDecoder()],
+  ]) as Decoder<SetAuthorityInstructionData>;
 }
 
 export function getSetAuthorityInstructionDataCodec(): Codec<

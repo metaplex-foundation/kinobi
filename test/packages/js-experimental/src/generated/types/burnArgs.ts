@@ -20,16 +20,14 @@ export enum BurnArgs {
 export type BurnArgsArgs = BurnArgs;
 
 export function getBurnArgsEncoder(): Encoder<BurnArgsArgs> {
-  return getScalarEnumEncoder<BurnArgs>(BurnArgs, {
+  return getScalarEnumEncoder(BurnArgs, {
     size: getU64Encoder(),
-    description: 'BurnArgs',
   }) as Encoder<BurnArgsArgs>;
 }
 
 export function getBurnArgsDecoder(): Decoder<BurnArgs> {
-  return getScalarEnumDecoder<BurnArgs>(BurnArgs, {
+  return getScalarEnumDecoder(BurnArgs, {
     size: getU64Decoder(),
-    description: 'BurnArgs',
   }) as Decoder<BurnArgs>;
 }
 

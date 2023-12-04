@@ -212,29 +212,23 @@ export function getValidateInstructionDataEncoder(): Encoder<ValidateInstruction
       ruleSetName: string;
       operation: OperationArgs;
       payload: PayloadArgs;
-    }>(
-      [
-        ['discriminator', getU8Encoder()],
-        ['ruleSetName', getStringEncoder()],
-        ['operation', getOperationEncoder()],
-        ['payload', getPayloadEncoder()],
-      ],
-      { description: 'ValidateInstructionData' }
-    ),
+    }>([
+      ['discriminator', getU8Encoder()],
+      ['ruleSetName', getStringEncoder()],
+      ['operation', getOperationEncoder()],
+      ['payload', getPayloadEncoder()],
+    ]),
     (value) => ({ ...value, discriminator: 1 })
   ) as Encoder<ValidateInstructionDataArgs>;
 }
 
 export function getValidateInstructionDataDecoder(): Decoder<ValidateInstructionData> {
-  return getStructDecoder<ValidateInstructionData>(
-    [
-      ['discriminator', getU8Decoder()],
-      ['ruleSetName', getStringDecoder()],
-      ['operation', getOperationDecoder()],
-      ['payload', getPayloadDecoder()],
-    ],
-    { description: 'ValidateInstructionData' }
-  ) as Decoder<ValidateInstructionData>;
+  return getStructDecoder<ValidateInstructionData>([
+    ['discriminator', getU8Decoder()],
+    ['ruleSetName', getStringDecoder()],
+    ['operation', getOperationDecoder()],
+    ['payload', getPayloadDecoder()],
+  ]) as Decoder<ValidateInstructionData>;
 }
 
 export function getValidateInstructionDataCodec(): Codec<

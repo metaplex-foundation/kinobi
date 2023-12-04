@@ -57,49 +57,43 @@ export type TmCreateArgsArgs =
     };
 
 export function getTmCreateArgsEncoder(): Encoder<TmCreateArgsArgs> {
-  return getDataEnumEncoder<TmCreateArgs>(
+  return getDataEnumEncoder<TmCreateArgs>([
     [
-      [
-        'V1',
-        getStructEncoder<GetDataEnumKindContent<TmCreateArgsArgs, 'V1'>>([
-          ['assetData', getAssetDataEncoder()],
-          ['decimals', getOptionEncoder(getU8Encoder())],
-          ['maxSupply', getOptionEncoder(getU64Encoder())],
-        ]),
-      ],
-      [
-        'V2',
-        getStructEncoder<GetDataEnumKindContent<TmCreateArgsArgs, 'V2'>>([
-          ['assetData', getAssetDataEncoder()],
-          ['maxSupply', getOptionEncoder(getU64Encoder())],
-        ]),
-      ],
+      'V1',
+      getStructEncoder<GetDataEnumKindContent<TmCreateArgsArgs, 'V1'>>([
+        ['assetData', getAssetDataEncoder()],
+        ['decimals', getOptionEncoder(getU8Encoder())],
+        ['maxSupply', getOptionEncoder(getU64Encoder())],
+      ]),
     ],
-    { description: 'TmCreateArgs' }
-  ) as Encoder<TmCreateArgsArgs>;
+    [
+      'V2',
+      getStructEncoder<GetDataEnumKindContent<TmCreateArgsArgs, 'V2'>>([
+        ['assetData', getAssetDataEncoder()],
+        ['maxSupply', getOptionEncoder(getU64Encoder())],
+      ]),
+    ],
+  ]) as Encoder<TmCreateArgsArgs>;
 }
 
 export function getTmCreateArgsDecoder(): Decoder<TmCreateArgs> {
-  return getDataEnumDecoder<TmCreateArgs>(
+  return getDataEnumDecoder<TmCreateArgs>([
     [
-      [
-        'V1',
-        getStructDecoder<GetDataEnumKindContent<TmCreateArgs, 'V1'>>([
-          ['assetData', getAssetDataDecoder()],
-          ['decimals', getOptionDecoder(getU8Decoder())],
-          ['maxSupply', getOptionDecoder(getU64Decoder())],
-        ]),
-      ],
-      [
-        'V2',
-        getStructDecoder<GetDataEnumKindContent<TmCreateArgs, 'V2'>>([
-          ['assetData', getAssetDataDecoder()],
-          ['maxSupply', getOptionDecoder(getU64Decoder())],
-        ]),
-      ],
+      'V1',
+      getStructDecoder<GetDataEnumKindContent<TmCreateArgs, 'V1'>>([
+        ['assetData', getAssetDataDecoder()],
+        ['decimals', getOptionDecoder(getU8Decoder())],
+        ['maxSupply', getOptionDecoder(getU64Decoder())],
+      ]),
     ],
-    { description: 'TmCreateArgs' }
-  ) as Decoder<TmCreateArgs>;
+    [
+      'V2',
+      getStructDecoder<GetDataEnumKindContent<TmCreateArgs, 'V2'>>([
+        ['assetData', getAssetDataDecoder()],
+        ['maxSupply', getOptionDecoder(getU64Decoder())],
+      ]),
+    ],
+  ]) as Decoder<TmCreateArgs>;
 }
 
 export function getTmCreateArgsCodec(): Codec<TmCreateArgsArgs, TmCreateArgs> {

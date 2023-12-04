@@ -82,33 +82,27 @@ export function getReservationListV2AccountDataEncoder(): Encoder<ReservationLis
       reservations: Array<ReservationArgs>;
       totalReservationSpots: number | bigint;
       currentReservationSpots: number | bigint;
-    }>(
-      [
-        ['key', getTmKeyEncoder()],
-        ['masterEdition', getAddressEncoder()],
-        ['supplySnapshot', getOptionEncoder(getU64Encoder())],
-        ['reservations', getArrayEncoder(getReservationEncoder())],
-        ['totalReservationSpots', getU64Encoder()],
-        ['currentReservationSpots', getU64Encoder()],
-      ],
-      { description: 'ReservationListV2AccountData' }
-    ),
+    }>([
+      ['key', getTmKeyEncoder()],
+      ['masterEdition', getAddressEncoder()],
+      ['supplySnapshot', getOptionEncoder(getU64Encoder())],
+      ['reservations', getArrayEncoder(getReservationEncoder())],
+      ['totalReservationSpots', getU64Encoder()],
+      ['currentReservationSpots', getU64Encoder()],
+    ]),
     (value) => ({ ...value, key: TmKey.ReservationListV2 })
   ) as Encoder<ReservationListV2AccountDataArgs>;
 }
 
 export function getReservationListV2AccountDataDecoder(): Decoder<ReservationListV2AccountData> {
-  return getStructDecoder<ReservationListV2AccountData>(
-    [
-      ['key', getTmKeyDecoder()],
-      ['masterEdition', getAddressDecoder()],
-      ['supplySnapshot', getOptionDecoder(getU64Decoder())],
-      ['reservations', getArrayDecoder(getReservationDecoder())],
-      ['totalReservationSpots', getU64Decoder()],
-      ['currentReservationSpots', getU64Decoder()],
-    ],
-    { description: 'ReservationListV2AccountData' }
-  ) as Decoder<ReservationListV2AccountData>;
+  return getStructDecoder<ReservationListV2AccountData>([
+    ['key', getTmKeyDecoder()],
+    ['masterEdition', getAddressDecoder()],
+    ['supplySnapshot', getOptionDecoder(getU64Decoder())],
+    ['reservations', getArrayDecoder(getReservationDecoder())],
+    ['totalReservationSpots', getU64Decoder()],
+    ['currentReservationSpots', getU64Decoder()],
+  ]) as Decoder<ReservationListV2AccountData>;
 }
 
 export function getReservationListV2AccountDataCodec(): Codec<

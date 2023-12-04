@@ -166,11 +166,6 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
       decoderOptions.push(`size: ${sizeManifest.decoder.render}`);
     }
 
-    if (parentName?.strict) {
-      encoderOptions.push(`description: '${pascalCase(parentName.strict)}'`);
-      decoderOptions.push(`description: '${pascalCase(parentName.strict)}'`);
-    }
-
     const encoderOptionsAsString =
       encoderOptions.length > 0 ? `, { ${encoderOptions.join(', ')} }` : '';
     const decoderOptionsAsString =
@@ -189,18 +184,14 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
         strictType: fragment(`{ ${variantNames.join(', ')} }`),
         looseType: fragment(`{ ${variantNames.join(', ')} }`),
         encoder: fragment(
-          `getScalarEnumEncoder<${parentName.strict}>(${
-            parentName.strict + encoderOptionsAsString
-          })`,
+          `getScalarEnumEncoder(${parentName.strict + encoderOptionsAsString})`,
           encoderImports.add(
             'solanaCodecsDataStructures',
             'getScalarEnumEncoder'
           )
         ),
         decoder: fragment(
-          `getScalarEnumDecoder<${parentName.strict}>(${
-            parentName.strict + decoderOptionsAsString
-          })`,
+          `getScalarEnumDecoder(${parentName.strict + decoderOptionsAsString})`,
           decoderImports.add(
             'solanaCodecsDataStructures',
             'getScalarEnumDecoder'
@@ -402,10 +393,6 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
   visitStructType(structType: nodes.StructTypeNode): TypeManifest {
     const { parentName } = this;
     this.parentName = null;
-    const structDescription =
-      parentName?.strict && !parentName.strict.match(/['"<>]/)
-        ? `, { description: '${pascalCase(parentName.strict)}' }`
-        : '';
     const optionalFields = structType.fields.filter(
       (f) => f.defaultsTo !== null
     );
@@ -413,7 +400,7 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
     const mergedManifest = mergeManifests(
       structType.fields.map((field) => visit(field, this)),
       (renders) => `{ ${renders.join('')} }`,
-      (renders) => `([${renders.join(', ')}]${structDescription})`
+      (renders) => `([${renders.join(', ')}])`
     );
 
     let decoderType = parentName?.strict;
@@ -429,7 +416,7 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
           visit({ ...field, defaultsTo: null }, this)
         ),
         (renders) => `{ ${renders.join('')} }`,
-        (renders) => `([${renders.join(', ')}]${structDescription})`
+        (renders) => `([${renders.join(', ')}])`
       );
       encoderType = nonDefaultsMergedManifest.looseType.render;
       mergedManifest.encoder.mergeImportsWith(

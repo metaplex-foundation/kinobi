@@ -65,27 +65,21 @@ export function getMasterEditionV2AccountDataEncoder(): Encoder<MasterEditionV2A
       key: TmKeyArgs;
       supply: number | bigint;
       maxSupply: OptionOrNullable<number | bigint>;
-    }>(
-      [
-        ['key', getTmKeyEncoder()],
-        ['supply', getU64Encoder()],
-        ['maxSupply', getOptionEncoder(getU64Encoder())],
-      ],
-      { description: 'MasterEditionV2AccountData' }
-    ),
+    }>([
+      ['key', getTmKeyEncoder()],
+      ['supply', getU64Encoder()],
+      ['maxSupply', getOptionEncoder(getU64Encoder())],
+    ]),
     (value) => ({ ...value, key: TmKey.MasterEditionV2 })
   ) as Encoder<MasterEditionV2AccountDataArgs>;
 }
 
 export function getMasterEditionV2AccountDataDecoder(): Decoder<MasterEditionV2AccountData> {
-  return getStructDecoder<MasterEditionV2AccountData>(
-    [
-      ['key', getTmKeyDecoder()],
-      ['supply', getU64Decoder()],
-      ['maxSupply', getOptionDecoder(getU64Decoder())],
-    ],
-    { description: 'MasterEditionV2AccountData' }
-  ) as Decoder<MasterEditionV2AccountData>;
+  return getStructDecoder<MasterEditionV2AccountData>([
+    ['key', getTmKeyDecoder()],
+    ['supply', getU64Decoder()],
+    ['maxSupply', getOptionDecoder(getU64Decoder())],
+  ]) as Decoder<MasterEditionV2AccountData>;
 }
 
 export function getMasterEditionV2AccountDataCodec(): Codec<

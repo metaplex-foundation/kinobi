@@ -126,69 +126,60 @@ export function getUpdateMetadataAccountInstructionDataEncoder(): Encoder<Update
       }>;
       updateAuthority: OptionOrNullable<Address>;
       primarySaleHappened: OptionOrNullable<boolean>;
-    }>(
+    }>([
+      ['discriminator', getU8Encoder()],
       [
-        ['discriminator', getU8Encoder()],
-        [
-          'data',
-          getOptionEncoder(
-            getStructEncoder<{
-              name: string;
-              symbol: string;
-              uri: string;
-              sellerFeeBasisPoints: number;
-              creators: OptionOrNullable<Array<CreatorArgs>>;
-            }>([
-              ['name', getStringEncoder()],
-              ['symbol', getStringEncoder()],
-              ['uri', getStringEncoder()],
-              ['sellerFeeBasisPoints', getU16Encoder()],
-              [
-                'creators',
-                getOptionEncoder(getArrayEncoder(getCreatorEncoder())),
-              ],
-            ])
-          ),
-        ],
-        ['updateAuthority', getOptionEncoder(getAddressEncoder())],
-        ['primarySaleHappened', getOptionEncoder(getBooleanEncoder())],
+        'data',
+        getOptionEncoder(
+          getStructEncoder<{
+            name: string;
+            symbol: string;
+            uri: string;
+            sellerFeeBasisPoints: number;
+            creators: OptionOrNullable<Array<CreatorArgs>>;
+          }>([
+            ['name', getStringEncoder()],
+            ['symbol', getStringEncoder()],
+            ['uri', getStringEncoder()],
+            ['sellerFeeBasisPoints', getU16Encoder()],
+            [
+              'creators',
+              getOptionEncoder(getArrayEncoder(getCreatorEncoder())),
+            ],
+          ])
+        ),
       ],
-      { description: 'UpdateMetadataAccountInstructionData' }
-    ),
+      ['updateAuthority', getOptionEncoder(getAddressEncoder())],
+      ['primarySaleHappened', getOptionEncoder(getBooleanEncoder())],
+    ]),
     (value) => ({ ...value, discriminator: 1 })
   ) as Encoder<UpdateMetadataAccountInstructionDataArgs>;
 }
 
 export function getUpdateMetadataAccountInstructionDataDecoder(): Decoder<UpdateMetadataAccountInstructionData> {
-  return getStructDecoder<UpdateMetadataAccountInstructionData>(
+  return getStructDecoder<UpdateMetadataAccountInstructionData>([
+    ['discriminator', getU8Decoder()],
     [
-      ['discriminator', getU8Decoder()],
-      [
-        'data',
-        getOptionDecoder(
-          getStructDecoder<{
-            name: string;
-            symbol: string;
-            uri: string;
-            sellerFeeBasisPoints: number;
-            creators: Option<Array<Creator>>;
-          }>([
-            ['name', getStringDecoder()],
-            ['symbol', getStringDecoder()],
-            ['uri', getStringDecoder()],
-            ['sellerFeeBasisPoints', getU16Decoder()],
-            [
-              'creators',
-              getOptionDecoder(getArrayDecoder(getCreatorDecoder())),
-            ],
-          ])
-        ),
-      ],
-      ['updateAuthority', getOptionDecoder(getAddressDecoder())],
-      ['primarySaleHappened', getOptionDecoder(getBooleanDecoder())],
+      'data',
+      getOptionDecoder(
+        getStructDecoder<{
+          name: string;
+          symbol: string;
+          uri: string;
+          sellerFeeBasisPoints: number;
+          creators: Option<Array<Creator>>;
+        }>([
+          ['name', getStringDecoder()],
+          ['symbol', getStringDecoder()],
+          ['uri', getStringDecoder()],
+          ['sellerFeeBasisPoints', getU16Decoder()],
+          ['creators', getOptionDecoder(getArrayDecoder(getCreatorDecoder()))],
+        ])
+      ),
     ],
-    { description: 'UpdateMetadataAccountInstructionData' }
-  ) as Decoder<UpdateMetadataAccountInstructionData>;
+    ['updateAuthority', getOptionDecoder(getAddressDecoder())],
+    ['primarySaleHappened', getOptionDecoder(getBooleanDecoder())],
+  ]) as Decoder<UpdateMetadataAccountInstructionData>;
 }
 
 export function getUpdateMetadataAccountInstructionDataCodec(): Codec<

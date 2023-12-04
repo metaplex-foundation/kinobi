@@ -103,31 +103,25 @@ export function getUpdateMetadataAccountV2InstructionDataEncoder(): Encoder<Upda
       updateAuthority: OptionOrNullable<Address>;
       primarySaleHappened: OptionOrNullable<boolean>;
       isMutable: OptionOrNullable<boolean>;
-    }>(
-      [
-        ['discriminator', getU8Encoder()],
-        ['data', getOptionEncoder(getDataV2Encoder())],
-        ['updateAuthority', getOptionEncoder(getAddressEncoder())],
-        ['primarySaleHappened', getOptionEncoder(getBooleanEncoder())],
-        ['isMutable', getOptionEncoder(getBooleanEncoder())],
-      ],
-      { description: 'UpdateMetadataAccountV2InstructionData' }
-    ),
+    }>([
+      ['discriminator', getU8Encoder()],
+      ['data', getOptionEncoder(getDataV2Encoder())],
+      ['updateAuthority', getOptionEncoder(getAddressEncoder())],
+      ['primarySaleHappened', getOptionEncoder(getBooleanEncoder())],
+      ['isMutable', getOptionEncoder(getBooleanEncoder())],
+    ]),
     (value) => ({ ...value, discriminator: 15 })
   ) as Encoder<UpdateMetadataAccountV2InstructionDataArgs>;
 }
 
 export function getUpdateMetadataAccountV2InstructionDataDecoder(): Decoder<UpdateMetadataAccountV2InstructionData> {
-  return getStructDecoder<UpdateMetadataAccountV2InstructionData>(
-    [
-      ['discriminator', getU8Decoder()],
-      ['data', getOptionDecoder(getDataV2Decoder())],
-      ['updateAuthority', getOptionDecoder(getAddressDecoder())],
-      ['primarySaleHappened', getOptionDecoder(getBooleanDecoder())],
-      ['isMutable', getOptionDecoder(getBooleanDecoder())],
-    ],
-    { description: 'UpdateMetadataAccountV2InstructionData' }
-  ) as Decoder<UpdateMetadataAccountV2InstructionData>;
+  return getStructDecoder<UpdateMetadataAccountV2InstructionData>([
+    ['discriminator', getU8Decoder()],
+    ['data', getOptionDecoder(getDataV2Decoder())],
+    ['updateAuthority', getOptionDecoder(getAddressDecoder())],
+    ['primarySaleHappened', getOptionDecoder(getBooleanDecoder())],
+    ['isMutable', getOptionDecoder(getBooleanDecoder())],
+  ]) as Decoder<UpdateMetadataAccountV2InstructionData>;
 }
 
 export function getUpdateMetadataAccountV2InstructionDataCodec(): Codec<

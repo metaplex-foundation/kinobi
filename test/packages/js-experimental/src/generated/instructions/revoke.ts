@@ -130,25 +130,19 @@ export type RevokeInstructionDataArgs = { revokeArgs: RevokeArgsArgs };
 
 export function getRevokeInstructionDataEncoder(): Encoder<RevokeInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number; revokeArgs: RevokeArgsArgs }>(
-      [
-        ['discriminator', getU8Encoder()],
-        ['revokeArgs', getRevokeArgsEncoder()],
-      ],
-      { description: 'RevokeInstructionData' }
-    ),
+    getStructEncoder<{ discriminator: number; revokeArgs: RevokeArgsArgs }>([
+      ['discriminator', getU8Encoder()],
+      ['revokeArgs', getRevokeArgsEncoder()],
+    ]),
     (value) => ({ ...value, discriminator: 49 })
   ) as Encoder<RevokeInstructionDataArgs>;
 }
 
 export function getRevokeInstructionDataDecoder(): Decoder<RevokeInstructionData> {
-  return getStructDecoder<RevokeInstructionData>(
-    [
-      ['discriminator', getU8Decoder()],
-      ['revokeArgs', getRevokeArgsDecoder()],
-    ],
-    { description: 'RevokeInstructionData' }
-  ) as Decoder<RevokeInstructionData>;
+  return getStructDecoder<RevokeInstructionData>([
+    ['discriminator', getU8Decoder()],
+    ['revokeArgs', getRevokeArgsDecoder()],
+  ]) as Decoder<RevokeInstructionData>;
 }
 
 export function getRevokeInstructionDataCodec(): Codec<

@@ -123,137 +123,124 @@ export type UpdateArgsArgs = {
 };
 
 export function getUpdateArgsEncoder(): Encoder<UpdateArgsArgs> {
-  return getDataEnumEncoder<UpdateArgs>(
+  return getDataEnumEncoder<UpdateArgs>([
     [
-      [
-        'V1',
-        mapEncoder(
-          getStructEncoder<{
-            authorizationData: OptionOrNullable<AuthorizationDataArgs>;
-            newUpdateAuthority: OptionOrNullable<Address>;
-            data: OptionOrNullable<{
-              name: string;
-              symbol: string;
-              uri: string;
-              sellerFeeBasisPoints: number;
-              creators: OptionOrNullable<Array<CreatorArgs>>;
-            }>;
-            primarySaleHappened: OptionOrNullable<boolean>;
-            isMutable: OptionOrNullable<boolean>;
-            tokenStandard: OptionOrNullable<TokenStandardArgs>;
-            collection: OptionOrNullable<CollectionArgs>;
-            uses: OptionOrNullable<UsesArgs>;
-            collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
-            programmableConfig: OptionOrNullable<ProgrammableConfigArgs>;
-            delegateState: OptionOrNullable<DelegateStateArgs>;
-            authorityType: AuthorityTypeArgs;
-          }>([
-            [
-              'authorizationData',
-              getOptionEncoder(getAuthorizationDataEncoder()),
-            ],
-            ['newUpdateAuthority', getOptionEncoder(getAddressEncoder())],
-            [
-              'data',
-              getOptionEncoder(
-                getStructEncoder<{
-                  name: string;
-                  symbol: string;
-                  uri: string;
-                  sellerFeeBasisPoints: number;
-                  creators: OptionOrNullable<Array<CreatorArgs>>;
-                }>([
-                  ['name', getStringEncoder()],
-                  ['symbol', getStringEncoder()],
-                  ['uri', getStringEncoder()],
-                  ['sellerFeeBasisPoints', getU16Encoder()],
-                  [
-                    'creators',
-                    getOptionEncoder(getArrayEncoder(getCreatorEncoder())),
-                  ],
-                ])
-              ),
-            ],
-            ['primarySaleHappened', getOptionEncoder(getBooleanEncoder())],
-            ['isMutable', getOptionEncoder(getBooleanEncoder())],
-            ['tokenStandard', getOptionEncoder(getTokenStandardEncoder())],
-            ['collection', getOptionEncoder(getCollectionEncoder())],
-            ['uses', getOptionEncoder(getUsesEncoder())],
-            [
-              'collectionDetails',
-              getOptionEncoder(getCollectionDetailsEncoder()),
-            ],
-            [
-              'programmableConfig',
-              getOptionEncoder(getProgrammableConfigEncoder()),
-            ],
-            ['delegateState', getOptionEncoder(getDelegateStateEncoder())],
-            ['authorityType', getAuthorityTypeEncoder()],
-          ]),
-          (value) => ({
-            ...value,
-            tokenStandard:
-              value.tokenStandard ?? some(TokenStandard.NonFungible),
-          })
-        ),
-      ],
-    ],
-    { description: 'UpdateArgs' }
-  ) as Encoder<UpdateArgsArgs>;
-}
-
-export function getUpdateArgsDecoder(): Decoder<UpdateArgs> {
-  return getDataEnumDecoder<UpdateArgs>(
-    [
-      [
-        'V1',
-        getStructDecoder<GetDataEnumKindContent<UpdateArgs, 'V1'>>([
+      'V1',
+      mapEncoder(
+        getStructEncoder<{
+          authorizationData: OptionOrNullable<AuthorizationDataArgs>;
+          newUpdateAuthority: OptionOrNullable<Address>;
+          data: OptionOrNullable<{
+            name: string;
+            symbol: string;
+            uri: string;
+            sellerFeeBasisPoints: number;
+            creators: OptionOrNullable<Array<CreatorArgs>>;
+          }>;
+          primarySaleHappened: OptionOrNullable<boolean>;
+          isMutable: OptionOrNullable<boolean>;
+          tokenStandard: OptionOrNullable<TokenStandardArgs>;
+          collection: OptionOrNullable<CollectionArgs>;
+          uses: OptionOrNullable<UsesArgs>;
+          collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
+          programmableConfig: OptionOrNullable<ProgrammableConfigArgs>;
+          delegateState: OptionOrNullable<DelegateStateArgs>;
+          authorityType: AuthorityTypeArgs;
+        }>([
           [
             'authorizationData',
-            getOptionDecoder(getAuthorizationDataDecoder()),
+            getOptionEncoder(getAuthorizationDataEncoder()),
           ],
-          ['newUpdateAuthority', getOptionDecoder(getAddressDecoder())],
+          ['newUpdateAuthority', getOptionEncoder(getAddressEncoder())],
           [
             'data',
-            getOptionDecoder(
-              getStructDecoder<{
+            getOptionEncoder(
+              getStructEncoder<{
                 name: string;
                 symbol: string;
                 uri: string;
                 sellerFeeBasisPoints: number;
-                creators: Option<Array<Creator>>;
+                creators: OptionOrNullable<Array<CreatorArgs>>;
               }>([
-                ['name', getStringDecoder()],
-                ['symbol', getStringDecoder()],
-                ['uri', getStringDecoder()],
-                ['sellerFeeBasisPoints', getU16Decoder()],
+                ['name', getStringEncoder()],
+                ['symbol', getStringEncoder()],
+                ['uri', getStringEncoder()],
+                ['sellerFeeBasisPoints', getU16Encoder()],
                 [
                   'creators',
-                  getOptionDecoder(getArrayDecoder(getCreatorDecoder())),
+                  getOptionEncoder(getArrayEncoder(getCreatorEncoder())),
                 ],
               ])
             ),
           ],
-          ['primarySaleHappened', getOptionDecoder(getBooleanDecoder())],
-          ['isMutable', getOptionDecoder(getBooleanDecoder())],
-          ['tokenStandard', getOptionDecoder(getTokenStandardDecoder())],
-          ['collection', getOptionDecoder(getCollectionDecoder())],
-          ['uses', getOptionDecoder(getUsesDecoder())],
+          ['primarySaleHappened', getOptionEncoder(getBooleanEncoder())],
+          ['isMutable', getOptionEncoder(getBooleanEncoder())],
+          ['tokenStandard', getOptionEncoder(getTokenStandardEncoder())],
+          ['collection', getOptionEncoder(getCollectionEncoder())],
+          ['uses', getOptionEncoder(getUsesEncoder())],
           [
             'collectionDetails',
-            getOptionDecoder(getCollectionDetailsDecoder()),
+            getOptionEncoder(getCollectionDetailsEncoder()),
           ],
           [
             'programmableConfig',
-            getOptionDecoder(getProgrammableConfigDecoder()),
+            getOptionEncoder(getProgrammableConfigEncoder()),
           ],
-          ['delegateState', getOptionDecoder(getDelegateStateDecoder())],
-          ['authorityType', getAuthorityTypeDecoder()],
+          ['delegateState', getOptionEncoder(getDelegateStateEncoder())],
+          ['authorityType', getAuthorityTypeEncoder()],
         ]),
-      ],
+        (value) => ({
+          ...value,
+          tokenStandard: value.tokenStandard ?? some(TokenStandard.NonFungible),
+        })
+      ),
     ],
-    { description: 'UpdateArgs' }
-  ) as Decoder<UpdateArgs>;
+  ]) as Encoder<UpdateArgsArgs>;
+}
+
+export function getUpdateArgsDecoder(): Decoder<UpdateArgs> {
+  return getDataEnumDecoder<UpdateArgs>([
+    [
+      'V1',
+      getStructDecoder<GetDataEnumKindContent<UpdateArgs, 'V1'>>([
+        ['authorizationData', getOptionDecoder(getAuthorizationDataDecoder())],
+        ['newUpdateAuthority', getOptionDecoder(getAddressDecoder())],
+        [
+          'data',
+          getOptionDecoder(
+            getStructDecoder<{
+              name: string;
+              symbol: string;
+              uri: string;
+              sellerFeeBasisPoints: number;
+              creators: Option<Array<Creator>>;
+            }>([
+              ['name', getStringDecoder()],
+              ['symbol', getStringDecoder()],
+              ['uri', getStringDecoder()],
+              ['sellerFeeBasisPoints', getU16Decoder()],
+              [
+                'creators',
+                getOptionDecoder(getArrayDecoder(getCreatorDecoder())),
+              ],
+            ])
+          ),
+        ],
+        ['primarySaleHappened', getOptionDecoder(getBooleanDecoder())],
+        ['isMutable', getOptionDecoder(getBooleanDecoder())],
+        ['tokenStandard', getOptionDecoder(getTokenStandardDecoder())],
+        ['collection', getOptionDecoder(getCollectionDecoder())],
+        ['uses', getOptionDecoder(getUsesDecoder())],
+        ['collectionDetails', getOptionDecoder(getCollectionDetailsDecoder())],
+        [
+          'programmableConfig',
+          getOptionDecoder(getProgrammableConfigDecoder()),
+        ],
+        ['delegateState', getOptionDecoder(getDelegateStateDecoder())],
+        ['authorityType', getAuthorityTypeDecoder()],
+      ]),
+    ],
+  ]) as Decoder<UpdateArgs>;
 }
 
 export function getUpdateArgsCodec(): Codec<UpdateArgsArgs, UpdateArgs> {

@@ -279,12 +279,10 @@ export function decodeAccount<
   decoder: Decoder<TData>
 ): Account<TData, TAddress> {
   try {
-    return { ...encodedAccount, data: decoder.decode(encodedAccount.data)[0] };
+    return { ...encodedAccount, data: decoder.decode(encodedAccount.data) };
   } catch (error: any) {
     // TODO: Coded error.
-    throw new Error(
-      `Failed to decode account [${encodedAccount.address}] using decoder [${decoder.description}].`
-    );
+    throw new Error(`Failed to decode account [${encodedAccount.address}].`);
   }
 }
 

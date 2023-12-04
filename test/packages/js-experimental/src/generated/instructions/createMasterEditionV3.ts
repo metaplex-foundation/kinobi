@@ -119,25 +119,19 @@ export function getCreateMasterEditionV3InstructionDataEncoder(): Encoder<Create
     getStructEncoder<{
       discriminator: number;
       createMasterEditionArgs: CreateMasterEditionArgsArgs;
-    }>(
-      [
-        ['discriminator', getU8Encoder()],
-        ['createMasterEditionArgs', getCreateMasterEditionArgsEncoder()],
-      ],
-      { description: 'CreateMasterEditionV3InstructionData' }
-    ),
+    }>([
+      ['discriminator', getU8Encoder()],
+      ['createMasterEditionArgs', getCreateMasterEditionArgsEncoder()],
+    ]),
     (value) => ({ ...value, discriminator: 17 })
   ) as Encoder<CreateMasterEditionV3InstructionDataArgs>;
 }
 
 export function getCreateMasterEditionV3InstructionDataDecoder(): Decoder<CreateMasterEditionV3InstructionData> {
-  return getStructDecoder<CreateMasterEditionV3InstructionData>(
-    [
-      ['discriminator', getU8Decoder()],
-      ['createMasterEditionArgs', getCreateMasterEditionArgsDecoder()],
-    ],
-    { description: 'CreateMasterEditionV3InstructionData' }
-  ) as Decoder<CreateMasterEditionV3InstructionData>;
+  return getStructDecoder<CreateMasterEditionV3InstructionData>([
+    ['discriminator', getU8Decoder()],
+    ['createMasterEditionArgs', getCreateMasterEditionArgsDecoder()],
+  ]) as Decoder<CreateMasterEditionV3InstructionData>;
 }
 
 export function getCreateMasterEditionV3InstructionDataCodec(): Codec<

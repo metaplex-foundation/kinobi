@@ -99,31 +99,25 @@ export function getCreateFrequencyRuleInstructionDataEncoder(): Encoder<CreateFr
       freqRuleName: string;
       lastUpdate: number | bigint;
       period: number | bigint;
-    }>(
-      [
-        ['discriminator', getU8Encoder()],
-        ['ruleSetName', getStringEncoder()],
-        ['freqRuleName', getStringEncoder()],
-        ['lastUpdate', getI64Encoder()],
-        ['period', getI64Encoder()],
-      ],
-      { description: 'CreateFrequencyRuleInstructionData' }
-    ),
+    }>([
+      ['discriminator', getU8Encoder()],
+      ['ruleSetName', getStringEncoder()],
+      ['freqRuleName', getStringEncoder()],
+      ['lastUpdate', getI64Encoder()],
+      ['period', getI64Encoder()],
+    ]),
     (value) => ({ ...value, discriminator: 2 })
   ) as Encoder<CreateFrequencyRuleInstructionDataArgs>;
 }
 
 export function getCreateFrequencyRuleInstructionDataDecoder(): Decoder<CreateFrequencyRuleInstructionData> {
-  return getStructDecoder<CreateFrequencyRuleInstructionData>(
-    [
-      ['discriminator', getU8Decoder()],
-      ['ruleSetName', getStringDecoder()],
-      ['freqRuleName', getStringDecoder()],
-      ['lastUpdate', getI64Decoder()],
-      ['period', getI64Decoder()],
-    ],
-    { description: 'CreateFrequencyRuleInstructionData' }
-  ) as Decoder<CreateFrequencyRuleInstructionData>;
+  return getStructDecoder<CreateFrequencyRuleInstructionData>([
+    ['discriminator', getU8Decoder()],
+    ['ruleSetName', getStringDecoder()],
+    ['freqRuleName', getStringDecoder()],
+    ['lastUpdate', getI64Decoder()],
+    ['period', getI64Decoder()],
+  ]) as Decoder<CreateFrequencyRuleInstructionData>;
 }
 
 export function getCreateFrequencyRuleInstructionDataCodec(): Codec<

@@ -68,19 +68,17 @@ export type SignMetadataInstructionDataArgs = {};
 
 export function getSignMetadataInstructionDataEncoder(): Encoder<SignMetadataInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>(
-      [['discriminator', getU8Encoder()]],
-      { description: 'SignMetadataInstructionData' }
-    ),
+    getStructEncoder<{ discriminator: number }>([
+      ['discriminator', getU8Encoder()],
+    ]),
     (value) => ({ ...value, discriminator: 7 })
   ) as Encoder<SignMetadataInstructionDataArgs>;
 }
 
 export function getSignMetadataInstructionDataDecoder(): Decoder<SignMetadataInstructionData> {
-  return getStructDecoder<SignMetadataInstructionData>(
-    [['discriminator', getU8Decoder()]],
-    { description: 'SignMetadataInstructionData' }
-  ) as Decoder<SignMetadataInstructionData>;
+  return getStructDecoder<SignMetadataInstructionData>([
+    ['discriminator', getU8Decoder()],
+  ]) as Decoder<SignMetadataInstructionData>;
 }
 
 export function getSignMetadataInstructionDataCodec(): Codec<

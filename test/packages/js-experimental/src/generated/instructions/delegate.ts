@@ -134,21 +134,17 @@ export function getDelegateInstructionDataEncoder(): Encoder<DelegateInstruction
       [
         ['discriminator', getU8Encoder()],
         ['delegateArgs', getDelegateArgsEncoder()],
-      ],
-      { description: 'DelegateInstructionData' }
+      ]
     ),
     (value) => ({ ...value, discriminator: 48 })
   ) as Encoder<DelegateInstructionDataArgs>;
 }
 
 export function getDelegateInstructionDataDecoder(): Decoder<DelegateInstructionData> {
-  return getStructDecoder<DelegateInstructionData>(
-    [
-      ['discriminator', getU8Decoder()],
-      ['delegateArgs', getDelegateArgsDecoder()],
-    ],
-    { description: 'DelegateInstructionData' }
-  ) as Decoder<DelegateInstructionData>;
+  return getStructDecoder<DelegateInstructionData>([
+    ['discriminator', getU8Decoder()],
+    ['delegateArgs', getDelegateArgsDecoder()],
+  ]) as Decoder<DelegateInstructionData>;
 }
 
 export function getDelegateInstructionDataCodec(): Codec<

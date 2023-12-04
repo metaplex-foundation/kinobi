@@ -108,31 +108,25 @@ export function getDeprecatedMintPrintingTokensInstructionDataEncoder(): Encoder
     getStructEncoder<{
       discriminator: number;
       mintPrintingTokensViaTokenArgs: MintPrintingTokensViaTokenArgsArgs;
-    }>(
+    }>([
+      ['discriminator', getU8Encoder()],
       [
-        ['discriminator', getU8Encoder()],
-        [
-          'mintPrintingTokensViaTokenArgs',
-          getMintPrintingTokensViaTokenArgsEncoder(),
-        ],
+        'mintPrintingTokensViaTokenArgs',
+        getMintPrintingTokensViaTokenArgsEncoder(),
       ],
-      { description: 'DeprecatedMintPrintingTokensInstructionData' }
-    ),
+    ]),
     (value) => ({ ...value, discriminator: 9 })
   ) as Encoder<DeprecatedMintPrintingTokensInstructionDataArgs>;
 }
 
 export function getDeprecatedMintPrintingTokensInstructionDataDecoder(): Decoder<DeprecatedMintPrintingTokensInstructionData> {
-  return getStructDecoder<DeprecatedMintPrintingTokensInstructionData>(
+  return getStructDecoder<DeprecatedMintPrintingTokensInstructionData>([
+    ['discriminator', getU8Decoder()],
     [
-      ['discriminator', getU8Decoder()],
-      [
-        'mintPrintingTokensViaTokenArgs',
-        getMintPrintingTokensViaTokenArgsDecoder(),
-      ],
+      'mintPrintingTokensViaTokenArgs',
+      getMintPrintingTokensViaTokenArgsDecoder(),
     ],
-    { description: 'DeprecatedMintPrintingTokensInstructionData' }
-  ) as Decoder<DeprecatedMintPrintingTokensInstructionData>;
+  ]) as Decoder<DeprecatedMintPrintingTokensInstructionData>;
 }
 
 export function getDeprecatedMintPrintingTokensInstructionDataCodec(): Codec<

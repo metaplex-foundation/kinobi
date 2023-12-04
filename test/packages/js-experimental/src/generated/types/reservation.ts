@@ -31,25 +31,19 @@ export type ReservationArgs = {
 };
 
 export function getReservationEncoder(): Encoder<ReservationArgs> {
-  return getStructEncoder<ReservationArgs>(
-    [
-      ['address', getAddressEncoder()],
-      ['spotsRemaining', getU64Encoder()],
-      ['totalSpots', getU64Encoder()],
-    ],
-    { description: 'Reservation' }
-  ) as Encoder<ReservationArgs>;
+  return getStructEncoder<ReservationArgs>([
+    ['address', getAddressEncoder()],
+    ['spotsRemaining', getU64Encoder()],
+    ['totalSpots', getU64Encoder()],
+  ]) as Encoder<ReservationArgs>;
 }
 
 export function getReservationDecoder(): Decoder<Reservation> {
-  return getStructDecoder<Reservation>(
-    [
-      ['address', getAddressDecoder()],
-      ['spotsRemaining', getU64Decoder()],
-      ['totalSpots', getU64Decoder()],
-    ],
-    { description: 'Reservation' }
-  ) as Decoder<Reservation>;
+  return getStructDecoder<Reservation>([
+    ['address', getAddressDecoder()],
+    ['spotsRemaining', getU64Decoder()],
+    ['totalSpots', getU64Decoder()],
+  ]) as Decoder<Reservation>;
 }
 
 export function getReservationCodec(): Codec<ReservationArgs, Reservation> {

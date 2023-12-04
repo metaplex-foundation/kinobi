@@ -79,31 +79,25 @@ export function getMasterEditionV1AccountDataEncoder(): Encoder<MasterEditionV1A
       maxSupply: OptionOrNullable<number | bigint>;
       printingMint: Address;
       oneTimePrintingAuthorizationMint: Address;
-    }>(
-      [
-        ['key', getTmKeyEncoder()],
-        ['supply', getU64Encoder()],
-        ['maxSupply', getOptionEncoder(getU64Encoder())],
-        ['printingMint', getAddressEncoder()],
-        ['oneTimePrintingAuthorizationMint', getAddressEncoder()],
-      ],
-      { description: 'MasterEditionV1AccountData' }
-    ),
+    }>([
+      ['key', getTmKeyEncoder()],
+      ['supply', getU64Encoder()],
+      ['maxSupply', getOptionEncoder(getU64Encoder())],
+      ['printingMint', getAddressEncoder()],
+      ['oneTimePrintingAuthorizationMint', getAddressEncoder()],
+    ]),
     (value) => ({ ...value, key: TmKey.MasterEditionV1 })
   ) as Encoder<MasterEditionV1AccountDataArgs>;
 }
 
 export function getMasterEditionV1AccountDataDecoder(): Decoder<MasterEditionV1AccountData> {
-  return getStructDecoder<MasterEditionV1AccountData>(
-    [
-      ['key', getTmKeyDecoder()],
-      ['supply', getU64Decoder()],
-      ['maxSupply', getOptionDecoder(getU64Decoder())],
-      ['printingMint', getAddressDecoder()],
-      ['oneTimePrintingAuthorizationMint', getAddressDecoder()],
-    ],
-    { description: 'MasterEditionV1AccountData' }
-  ) as Decoder<MasterEditionV1AccountData>;
+  return getStructDecoder<MasterEditionV1AccountData>([
+    ['key', getTmKeyDecoder()],
+    ['supply', getU64Decoder()],
+    ['maxSupply', getOptionDecoder(getU64Decoder())],
+    ['printingMint', getAddressDecoder()],
+    ['oneTimePrintingAuthorizationMint', getAddressDecoder()],
+  ]) as Decoder<MasterEditionV1AccountData>;
 }
 
 export function getMasterEditionV1AccountDataCodec(): Codec<

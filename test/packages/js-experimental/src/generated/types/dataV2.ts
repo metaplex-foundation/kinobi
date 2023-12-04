@@ -57,33 +57,27 @@ export type DataV2Args = {
 };
 
 export function getDataV2Encoder(): Encoder<DataV2Args> {
-  return getStructEncoder<DataV2Args>(
-    [
-      ['name', getStringEncoder()],
-      ['symbol', getStringEncoder()],
-      ['uri', getStringEncoder()],
-      ['sellerFeeBasisPoints', getU16Encoder()],
-      ['creators', getOptionEncoder(getArrayEncoder(getCreatorEncoder()))],
-      ['collection', getOptionEncoder(getCollectionEncoder())],
-      ['uses', getOptionEncoder(getUsesEncoder())],
-    ],
-    { description: 'DataV2' }
-  ) as Encoder<DataV2Args>;
+  return getStructEncoder<DataV2Args>([
+    ['name', getStringEncoder()],
+    ['symbol', getStringEncoder()],
+    ['uri', getStringEncoder()],
+    ['sellerFeeBasisPoints', getU16Encoder()],
+    ['creators', getOptionEncoder(getArrayEncoder(getCreatorEncoder()))],
+    ['collection', getOptionEncoder(getCollectionEncoder())],
+    ['uses', getOptionEncoder(getUsesEncoder())],
+  ]) as Encoder<DataV2Args>;
 }
 
 export function getDataV2Decoder(): Decoder<DataV2> {
-  return getStructDecoder<DataV2>(
-    [
-      ['name', getStringDecoder()],
-      ['symbol', getStringDecoder()],
-      ['uri', getStringDecoder()],
-      ['sellerFeeBasisPoints', getU16Decoder()],
-      ['creators', getOptionDecoder(getArrayDecoder(getCreatorDecoder()))],
-      ['collection', getOptionDecoder(getCollectionDecoder())],
-      ['uses', getOptionDecoder(getUsesDecoder())],
-    ],
-    { description: 'DataV2' }
-  ) as Decoder<DataV2>;
+  return getStructDecoder<DataV2>([
+    ['name', getStringDecoder()],
+    ['symbol', getStringDecoder()],
+    ['uri', getStringDecoder()],
+    ['sellerFeeBasisPoints', getU16Decoder()],
+    ['creators', getOptionDecoder(getArrayDecoder(getCreatorDecoder()))],
+    ['collection', getOptionDecoder(getCollectionDecoder())],
+    ['uses', getOptionDecoder(getUsesDecoder())],
+  ]) as Decoder<DataV2>;
 }
 
 export function getDataV2Codec(): Codec<DataV2Args, DataV2> {

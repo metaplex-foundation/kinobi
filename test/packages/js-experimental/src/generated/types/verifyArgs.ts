@@ -19,15 +19,11 @@ export enum VerifyArgs {
 export type VerifyArgsArgs = VerifyArgs;
 
 export function getVerifyArgsEncoder(): Encoder<VerifyArgsArgs> {
-  return getScalarEnumEncoder<VerifyArgs>(VerifyArgs, {
-    description: 'VerifyArgs',
-  }) as Encoder<VerifyArgsArgs>;
+  return getScalarEnumEncoder(VerifyArgs) as Encoder<VerifyArgsArgs>;
 }
 
 export function getVerifyArgsDecoder(): Decoder<VerifyArgs> {
-  return getScalarEnumDecoder<VerifyArgs>(VerifyArgs, {
-    description: 'VerifyArgs',
-  }) as Decoder<VerifyArgs>;
+  return getScalarEnumDecoder(VerifyArgs) as Decoder<VerifyArgs>;
 }
 
 export function getVerifyArgsCodec(): Codec<VerifyArgsArgs, VerifyArgs> {

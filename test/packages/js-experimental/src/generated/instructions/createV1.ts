@@ -138,31 +138,25 @@ export function getCreateV1InstructionDataEncoder(): Encoder<CreateV1Instruction
       assetData: AssetDataArgs;
       decimals: OptionOrNullable<number>;
       maxSupply: OptionOrNullable<number | bigint>;
-    }>(
-      [
-        ['discriminator', getU8Encoder()],
-        ['createV1Discriminator', getU8Encoder()],
-        ['assetData', getAssetDataEncoder()],
-        ['decimals', getOptionEncoder(getU8Encoder())],
-        ['maxSupply', getOptionEncoder(getU64Encoder())],
-      ],
-      { description: 'CreateV1InstructionData' }
-    ),
+    }>([
+      ['discriminator', getU8Encoder()],
+      ['createV1Discriminator', getU8Encoder()],
+      ['assetData', getAssetDataEncoder()],
+      ['decimals', getOptionEncoder(getU8Encoder())],
+      ['maxSupply', getOptionEncoder(getU64Encoder())],
+    ]),
     (value) => ({ ...value, discriminator: 41, createV1Discriminator: 0 })
   ) as Encoder<CreateV1InstructionDataArgs>;
 }
 
 export function getCreateV1InstructionDataDecoder(): Decoder<CreateV1InstructionData> {
-  return getStructDecoder<CreateV1InstructionData>(
-    [
-      ['discriminator', getU8Decoder()],
-      ['createV1Discriminator', getU8Decoder()],
-      ['assetData', getAssetDataDecoder()],
-      ['decimals', getOptionDecoder(getU8Decoder())],
-      ['maxSupply', getOptionDecoder(getU64Decoder())],
-    ],
-    { description: 'CreateV1InstructionData' }
-  ) as Decoder<CreateV1InstructionData>;
+  return getStructDecoder<CreateV1InstructionData>([
+    ['discriminator', getU8Decoder()],
+    ['createV1Discriminator', getU8Decoder()],
+    ['assetData', getAssetDataDecoder()],
+    ['decimals', getOptionDecoder(getU8Decoder())],
+    ['maxSupply', getOptionDecoder(getU64Decoder())],
+  ]) as Decoder<CreateV1InstructionData>;
 }
 
 export function getCreateV1InstructionDataCodec(): Codec<

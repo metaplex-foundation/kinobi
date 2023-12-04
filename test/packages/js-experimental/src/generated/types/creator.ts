@@ -36,14 +36,11 @@ export type CreatorArgs = {
 
 export function getCreatorEncoder(): Encoder<CreatorArgs> {
   return mapEncoder(
-    getStructEncoder<{ address: Address; verified: boolean; share: number }>(
-      [
-        ['address', getAddressEncoder()],
-        ['verified', getBooleanEncoder()],
-        ['share', getU8Encoder()],
-      ],
-      { description: 'Creator' }
-    ),
+    getStructEncoder<{ address: Address; verified: boolean; share: number }>([
+      ['address', getAddressEncoder()],
+      ['verified', getBooleanEncoder()],
+      ['share', getU8Encoder()],
+    ]),
     (value) => ({
       ...value,
       verified: value.verified ?? false,
@@ -53,14 +50,11 @@ export function getCreatorEncoder(): Encoder<CreatorArgs> {
 }
 
 export function getCreatorDecoder(): Decoder<Creator> {
-  return getStructDecoder<Creator>(
-    [
-      ['address', getAddressDecoder()],
-      ['verified', getBooleanDecoder()],
-      ['share', getU8Decoder()],
-    ],
-    { description: 'Creator' }
-  ) as Decoder<Creator>;
+  return getStructDecoder<Creator>([
+    ['address', getAddressDecoder()],
+    ['verified', getBooleanDecoder()],
+    ['share', getU8Decoder()],
+  ]) as Decoder<Creator>;
 }
 
 export function getCreatorCodec(): Codec<CreatorArgs, Creator> {

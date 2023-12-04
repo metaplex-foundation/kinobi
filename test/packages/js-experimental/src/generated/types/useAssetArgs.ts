@@ -22,31 +22,25 @@ export type UseAssetArgs = { __kind: 'V1'; useCount: bigint };
 export type UseAssetArgsArgs = { __kind: 'V1'; useCount: number | bigint };
 
 export function getUseAssetArgsEncoder(): Encoder<UseAssetArgsArgs> {
-  return getDataEnumEncoder<UseAssetArgs>(
+  return getDataEnumEncoder<UseAssetArgs>([
     [
-      [
-        'V1',
-        getStructEncoder<GetDataEnumKindContent<UseAssetArgsArgs, 'V1'>>([
-          ['useCount', getU64Encoder()],
-        ]),
-      ],
+      'V1',
+      getStructEncoder<GetDataEnumKindContent<UseAssetArgsArgs, 'V1'>>([
+        ['useCount', getU64Encoder()],
+      ]),
     ],
-    { description: 'UseAssetArgs' }
-  ) as Encoder<UseAssetArgsArgs>;
+  ]) as Encoder<UseAssetArgsArgs>;
 }
 
 export function getUseAssetArgsDecoder(): Decoder<UseAssetArgs> {
-  return getDataEnumDecoder<UseAssetArgs>(
+  return getDataEnumDecoder<UseAssetArgs>([
     [
-      [
-        'V1',
-        getStructDecoder<GetDataEnumKindContent<UseAssetArgs, 'V1'>>([
-          ['useCount', getU64Decoder()],
-        ]),
-      ],
+      'V1',
+      getStructDecoder<GetDataEnumKindContent<UseAssetArgs, 'V1'>>([
+        ['useCount', getU64Decoder()],
+      ]),
     ],
-    { description: 'UseAssetArgs' }
-  ) as Decoder<UseAssetArgs>;
+  ]) as Decoder<UseAssetArgs>;
 }
 
 export function getUseAssetArgsCodec(): Codec<UseAssetArgsArgs, UseAssetArgs> {

@@ -97,19 +97,17 @@ export type SetAndVerifyCollectionInstructionDataArgs = {};
 
 export function getSetAndVerifyCollectionInstructionDataEncoder(): Encoder<SetAndVerifyCollectionInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>(
-      [['discriminator', getU8Encoder()]],
-      { description: 'SetAndVerifyCollectionInstructionData' }
-    ),
+    getStructEncoder<{ discriminator: number }>([
+      ['discriminator', getU8Encoder()],
+    ]),
     (value) => ({ ...value, discriminator: 25 })
   ) as Encoder<SetAndVerifyCollectionInstructionDataArgs>;
 }
 
 export function getSetAndVerifyCollectionInstructionDataDecoder(): Decoder<SetAndVerifyCollectionInstructionData> {
-  return getStructDecoder<SetAndVerifyCollectionInstructionData>(
-    [['discriminator', getU8Decoder()]],
-    { description: 'SetAndVerifyCollectionInstructionData' }
-  ) as Decoder<SetAndVerifyCollectionInstructionData>;
+  return getStructDecoder<SetAndVerifyCollectionInstructionData>([
+    ['discriminator', getU8Decoder()],
+  ]) as Decoder<SetAndVerifyCollectionInstructionData>;
 }
 
 export function getSetAndVerifyCollectionInstructionDataCodec(): Codec<

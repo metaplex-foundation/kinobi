@@ -138,25 +138,19 @@ export function getDeprecatedCreateMasterEditionInstructionDataEncoder(): Encode
     getStructEncoder<{
       discriminator: number;
       createMasterEditionArgs: CreateMasterEditionArgsArgs;
-    }>(
-      [
-        ['discriminator', getU8Encoder()],
-        ['createMasterEditionArgs', getCreateMasterEditionArgsEncoder()],
-      ],
-      { description: 'DeprecatedCreateMasterEditionInstructionData' }
-    ),
+    }>([
+      ['discriminator', getU8Encoder()],
+      ['createMasterEditionArgs', getCreateMasterEditionArgsEncoder()],
+    ]),
     (value) => ({ ...value, discriminator: 2 })
   ) as Encoder<DeprecatedCreateMasterEditionInstructionDataArgs>;
 }
 
 export function getDeprecatedCreateMasterEditionInstructionDataDecoder(): Decoder<DeprecatedCreateMasterEditionInstructionData> {
-  return getStructDecoder<DeprecatedCreateMasterEditionInstructionData>(
-    [
-      ['discriminator', getU8Decoder()],
-      ['createMasterEditionArgs', getCreateMasterEditionArgsDecoder()],
-    ],
-    { description: 'DeprecatedCreateMasterEditionInstructionData' }
-  ) as Decoder<DeprecatedCreateMasterEditionInstructionData>;
+  return getStructDecoder<DeprecatedCreateMasterEditionInstructionData>([
+    ['discriminator', getU8Decoder()],
+    ['createMasterEditionArgs', getCreateMasterEditionArgsDecoder()],
+  ]) as Decoder<DeprecatedCreateMasterEditionInstructionData>;
 }
 
 export function getDeprecatedCreateMasterEditionInstructionDataCodec(): Codec<

@@ -22,17 +22,15 @@ export type ProgrammableConfig = { ruleSet: Address };
 export type ProgrammableConfigArgs = ProgrammableConfig;
 
 export function getProgrammableConfigEncoder(): Encoder<ProgrammableConfigArgs> {
-  return getStructEncoder<ProgrammableConfigArgs>(
-    [['ruleSet', getAddressEncoder()]],
-    { description: 'ProgrammableConfig' }
-  ) as Encoder<ProgrammableConfigArgs>;
+  return getStructEncoder<ProgrammableConfigArgs>([
+    ['ruleSet', getAddressEncoder()],
+  ]) as Encoder<ProgrammableConfigArgs>;
 }
 
 export function getProgrammableConfigDecoder(): Decoder<ProgrammableConfig> {
-  return getStructDecoder<ProgrammableConfig>(
-    [['ruleSet', getAddressDecoder()]],
-    { description: 'ProgrammableConfig' }
-  ) as Decoder<ProgrammableConfig>;
+  return getStructDecoder<ProgrammableConfig>([
+    ['ruleSet', getAddressDecoder()],
+  ]) as Decoder<ProgrammableConfig>;
 }
 
 export function getProgrammableConfigCodec(): Codec<

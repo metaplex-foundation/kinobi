@@ -108,19 +108,17 @@ export type BurnEditionNftInstructionDataArgs = {};
 
 export function getBurnEditionNftInstructionDataEncoder(): Encoder<BurnEditionNftInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>(
-      [['discriminator', getU8Encoder()]],
-      { description: 'BurnEditionNftInstructionData' }
-    ),
+    getStructEncoder<{ discriminator: number }>([
+      ['discriminator', getU8Encoder()],
+    ]),
     (value) => ({ ...value, discriminator: 37 })
   ) as Encoder<BurnEditionNftInstructionDataArgs>;
 }
 
 export function getBurnEditionNftInstructionDataDecoder(): Decoder<BurnEditionNftInstructionData> {
-  return getStructDecoder<BurnEditionNftInstructionData>(
-    [['discriminator', getU8Decoder()]],
-    { description: 'BurnEditionNftInstructionData' }
-  ) as Decoder<BurnEditionNftInstructionData>;
+  return getStructDecoder<BurnEditionNftInstructionData>([
+    ['discriminator', getU8Decoder()],
+  ]) as Decoder<BurnEditionNftInstructionData>;
 }
 
 export function getBurnEditionNftInstructionDataCodec(): Codec<

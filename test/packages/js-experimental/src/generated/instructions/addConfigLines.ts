@@ -100,18 +100,15 @@ export function getAddConfigLinesInstructionDataEncoder(): Encoder<AddConfigLine
       configLines: Array<ConfigLineArgs>;
       /** More dummy lines. */
       moreLines: Array<ConfigLineArgs>;
-    }>(
+    }>([
+      ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
+      ['index', getU32Encoder()],
+      ['configLines', getArrayEncoder(getConfigLineEncoder())],
       [
-        ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
-        ['index', getU32Encoder()],
-        ['configLines', getArrayEncoder(getConfigLineEncoder())],
-        [
-          'moreLines',
-          getArrayEncoder(getConfigLineEncoder(), { size: getU64Encoder() }),
-        ],
+        'moreLines',
+        getArrayEncoder(getConfigLineEncoder(), { size: getU64Encoder() }),
       ],
-      { description: 'AddConfigLinesInstructionData' }
-    ),
+    ]),
     (value) => ({
       ...value,
       discriminator: [223, 50, 224, 227, 151, 8, 115, 106],
@@ -120,18 +117,15 @@ export function getAddConfigLinesInstructionDataEncoder(): Encoder<AddConfigLine
 }
 
 export function getAddConfigLinesInstructionDataDecoder(): Decoder<AddConfigLinesInstructionData> {
-  return getStructDecoder<AddConfigLinesInstructionData>(
+  return getStructDecoder<AddConfigLinesInstructionData>([
+    ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
+    ['index', getU32Decoder()],
+    ['configLines', getArrayDecoder(getConfigLineDecoder())],
     [
-      ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
-      ['index', getU32Decoder()],
-      ['configLines', getArrayDecoder(getConfigLineDecoder())],
-      [
-        'moreLines',
-        getArrayDecoder(getConfigLineDecoder(), { size: getU64Decoder() }),
-      ],
+      'moreLines',
+      getArrayDecoder(getConfigLineDecoder(), { size: getU64Decoder() }),
     ],
-    { description: 'AddConfigLinesInstructionData' }
-  ) as Decoder<AddConfigLinesInstructionData>;
+  ]) as Decoder<AddConfigLinesInstructionData>;
 }
 
 export function getAddConfigLinesInstructionDataCodec(): Codec<

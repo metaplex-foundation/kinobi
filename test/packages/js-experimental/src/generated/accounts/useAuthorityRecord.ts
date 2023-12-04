@@ -57,27 +57,21 @@ export function getUseAuthorityRecordAccountDataEncoder(): Encoder<UseAuthorityR
       key: TmKeyArgs;
       allowedUses: number | bigint;
       bump: number;
-    }>(
-      [
-        ['key', getTmKeyEncoder()],
-        ['allowedUses', getU64Encoder()],
-        ['bump', getU8Encoder()],
-      ],
-      { description: 'UseAuthorityRecordAccountData' }
-    ),
+    }>([
+      ['key', getTmKeyEncoder()],
+      ['allowedUses', getU64Encoder()],
+      ['bump', getU8Encoder()],
+    ]),
     (value) => ({ ...value, key: TmKey.UseAuthorityRecord })
   ) as Encoder<UseAuthorityRecordAccountDataArgs>;
 }
 
 export function getUseAuthorityRecordAccountDataDecoder(): Decoder<UseAuthorityRecordAccountData> {
-  return getStructDecoder<UseAuthorityRecordAccountData>(
-    [
-      ['key', getTmKeyDecoder()],
-      ['allowedUses', getU64Decoder()],
-      ['bump', getU8Decoder()],
-    ],
-    { description: 'UseAuthorityRecordAccountData' }
-  ) as Decoder<UseAuthorityRecordAccountData>;
+  return getStructDecoder<UseAuthorityRecordAccountData>([
+    ['key', getTmKeyDecoder()],
+    ['allowedUses', getU64Decoder()],
+    ['bump', getU8Decoder()],
+  ]) as Decoder<UseAuthorityRecordAccountData>;
 }
 
 export function getUseAuthorityRecordAccountDataCodec(): Codec<

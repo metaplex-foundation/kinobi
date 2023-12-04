@@ -96,19 +96,17 @@ export type VerifySizedCollectionItemInstructionDataArgs = {};
 
 export function getVerifySizedCollectionItemInstructionDataEncoder(): Encoder<VerifySizedCollectionItemInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>(
-      [['discriminator', getU8Encoder()]],
-      { description: 'VerifySizedCollectionItemInstructionData' }
-    ),
+    getStructEncoder<{ discriminator: number }>([
+      ['discriminator', getU8Encoder()],
+    ]),
     (value) => ({ ...value, discriminator: 30 })
   ) as Encoder<VerifySizedCollectionItemInstructionDataArgs>;
 }
 
 export function getVerifySizedCollectionItemInstructionDataDecoder(): Decoder<VerifySizedCollectionItemInstructionData> {
-  return getStructDecoder<VerifySizedCollectionItemInstructionData>(
-    [['discriminator', getU8Decoder()]],
-    { description: 'VerifySizedCollectionItemInstructionData' }
-  ) as Decoder<VerifySizedCollectionItemInstructionData>;
+  return getStructDecoder<VerifySizedCollectionItemInstructionData>([
+    ['discriminator', getU8Decoder()],
+  ]) as Decoder<VerifySizedCollectionItemInstructionData>;
 }
 
 export function getVerifySizedCollectionItemInstructionDataCodec(): Codec<

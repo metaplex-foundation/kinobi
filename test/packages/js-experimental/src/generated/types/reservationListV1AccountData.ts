@@ -62,29 +62,23 @@ export function getReservationListV1AccountDataEncoder(): Encoder<ReservationLis
       masterEdition: Address;
       supplySnapshot: OptionOrNullable<number | bigint>;
       reservations: Array<ReservationV1Args>;
-    }>(
-      [
-        ['key', getTmKeyEncoder()],
-        ['masterEdition', getAddressEncoder()],
-        ['supplySnapshot', getOptionEncoder(getU64Encoder())],
-        ['reservations', getArrayEncoder(getReservationV1Encoder())],
-      ],
-      { description: 'ReservationListV1AccountData' }
-    ),
+    }>([
+      ['key', getTmKeyEncoder()],
+      ['masterEdition', getAddressEncoder()],
+      ['supplySnapshot', getOptionEncoder(getU64Encoder())],
+      ['reservations', getArrayEncoder(getReservationV1Encoder())],
+    ]),
     (value) => ({ ...value, key: TmKey.ReservationListV1 })
   ) as Encoder<ReservationListV1AccountDataArgs>;
 }
 
 export function getReservationListV1AccountDataDecoder(): Decoder<ReservationListV1AccountData> {
-  return getStructDecoder<ReservationListV1AccountData>(
-    [
-      ['key', getTmKeyDecoder()],
-      ['masterEdition', getAddressDecoder()],
-      ['supplySnapshot', getOptionDecoder(getU64Decoder())],
-      ['reservations', getArrayDecoder(getReservationV1Decoder())],
-    ],
-    { description: 'ReservationListV1AccountData' }
-  ) as Decoder<ReservationListV1AccountData>;
+  return getStructDecoder<ReservationListV1AccountData>([
+    ['key', getTmKeyDecoder()],
+    ['masterEdition', getAddressDecoder()],
+    ['supplySnapshot', getOptionDecoder(getU64Decoder())],
+    ['reservations', getArrayDecoder(getReservationV1Decoder())],
+  ]) as Decoder<ReservationListV1AccountData>;
 }
 
 export function getReservationListV1AccountDataCodec(): Codec<

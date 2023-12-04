@@ -39,23 +39,17 @@ export type ExtendedPayloadArgs = {
 };
 
 export function getExtendedPayloadEncoder(): Encoder<ExtendedPayloadArgs> {
-  return getStructEncoder<ExtendedPayloadArgs>(
-    [
-      ['map', getMapEncoder(getPayloadKeyEncoder(), getPayloadTypeEncoder())],
-      ['args', getTupleEncoder([getU8Encoder(), getStringEncoder()])],
-    ],
-    { description: 'ExtendedPayload' }
-  ) as Encoder<ExtendedPayloadArgs>;
+  return getStructEncoder<ExtendedPayloadArgs>([
+    ['map', getMapEncoder(getPayloadKeyEncoder(), getPayloadTypeEncoder())],
+    ['args', getTupleEncoder([getU8Encoder(), getStringEncoder()])],
+  ]) as Encoder<ExtendedPayloadArgs>;
 }
 
 export function getExtendedPayloadDecoder(): Decoder<ExtendedPayload> {
-  return getStructDecoder<ExtendedPayload>(
-    [
-      ['map', getMapDecoder(getPayloadKeyDecoder(), getPayloadTypeDecoder())],
-      ['args', getTupleDecoder([getU8Decoder(), getStringDecoder()])],
-    ],
-    { description: 'ExtendedPayload' }
-  ) as Decoder<ExtendedPayload>;
+  return getStructDecoder<ExtendedPayload>([
+    ['map', getMapDecoder(getPayloadKeyDecoder(), getPayloadTypeDecoder())],
+    ['args', getTupleDecoder([getU8Decoder(), getStringDecoder()])],
+  ]) as Decoder<ExtendedPayload>;
 }
 
 export function getExtendedPayloadCodec(): Codec<

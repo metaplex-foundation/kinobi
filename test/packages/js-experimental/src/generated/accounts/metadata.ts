@@ -150,58 +150,49 @@ export function getMetadataAccountDataEncoder(): Encoder<MetadataAccountDataArgs
       collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
       programmableConfig: OptionOrNullable<ProgrammableConfigArgs>;
       delegateState: OptionOrNullable<DelegateStateArgs>;
-    }>(
-      [
-        ['key', getTmKeyEncoder()],
-        ['updateAuthority', getAddressEncoder()],
-        ['mint', getAddressEncoder()],
-        ['name', getStringEncoder()],
-        ['symbol', getStringEncoder()],
-        ['uri', getStringEncoder()],
-        ['sellerFeeBasisPoints', getU16Encoder()],
-        ['creators', getOptionEncoder(getArrayEncoder(getCreatorEncoder()))],
-        ['primarySaleHappened', getBooleanEncoder()],
-        ['isMutable', getBooleanEncoder()],
-        ['editionNonce', getOptionEncoder(getU8Encoder())],
-        ['tokenStandard', getOptionEncoder(getTokenStandardEncoder())],
-        ['collection', getOptionEncoder(getCollectionEncoder())],
-        ['uses', getOptionEncoder(getUsesEncoder())],
-        ['collectionDetails', getOptionEncoder(getCollectionDetailsEncoder())],
-        [
-          'programmableConfig',
-          getOptionEncoder(getProgrammableConfigEncoder()),
-        ],
-        ['delegateState', getOptionEncoder(getDelegateStateEncoder())],
-      ],
-      { description: 'MetadataAccountData' }
-    ),
+    }>([
+      ['key', getTmKeyEncoder()],
+      ['updateAuthority', getAddressEncoder()],
+      ['mint', getAddressEncoder()],
+      ['name', getStringEncoder()],
+      ['symbol', getStringEncoder()],
+      ['uri', getStringEncoder()],
+      ['sellerFeeBasisPoints', getU16Encoder()],
+      ['creators', getOptionEncoder(getArrayEncoder(getCreatorEncoder()))],
+      ['primarySaleHappened', getBooleanEncoder()],
+      ['isMutable', getBooleanEncoder()],
+      ['editionNonce', getOptionEncoder(getU8Encoder())],
+      ['tokenStandard', getOptionEncoder(getTokenStandardEncoder())],
+      ['collection', getOptionEncoder(getCollectionEncoder())],
+      ['uses', getOptionEncoder(getUsesEncoder())],
+      ['collectionDetails', getOptionEncoder(getCollectionDetailsEncoder())],
+      ['programmableConfig', getOptionEncoder(getProgrammableConfigEncoder())],
+      ['delegateState', getOptionEncoder(getDelegateStateEncoder())],
+    ]),
     (value) => ({ ...value, key: TmKey.MetadataV1 })
   ) as Encoder<MetadataAccountDataArgs>;
 }
 
 export function getMetadataAccountDataDecoder(): Decoder<MetadataAccountData> {
-  return getStructDecoder<MetadataAccountData>(
-    [
-      ['key', getTmKeyDecoder()],
-      ['updateAuthority', getAddressDecoder()],
-      ['mint', getAddressDecoder()],
-      ['name', getStringDecoder()],
-      ['symbol', getStringDecoder()],
-      ['uri', getStringDecoder()],
-      ['sellerFeeBasisPoints', getU16Decoder()],
-      ['creators', getOptionDecoder(getArrayDecoder(getCreatorDecoder()))],
-      ['primarySaleHappened', getBooleanDecoder()],
-      ['isMutable', getBooleanDecoder()],
-      ['editionNonce', getOptionDecoder(getU8Decoder())],
-      ['tokenStandard', getOptionDecoder(getTokenStandardDecoder())],
-      ['collection', getOptionDecoder(getCollectionDecoder())],
-      ['uses', getOptionDecoder(getUsesDecoder())],
-      ['collectionDetails', getOptionDecoder(getCollectionDetailsDecoder())],
-      ['programmableConfig', getOptionDecoder(getProgrammableConfigDecoder())],
-      ['delegateState', getOptionDecoder(getDelegateStateDecoder())],
-    ],
-    { description: 'MetadataAccountData' }
-  ) as Decoder<MetadataAccountData>;
+  return getStructDecoder<MetadataAccountData>([
+    ['key', getTmKeyDecoder()],
+    ['updateAuthority', getAddressDecoder()],
+    ['mint', getAddressDecoder()],
+    ['name', getStringDecoder()],
+    ['symbol', getStringDecoder()],
+    ['uri', getStringDecoder()],
+    ['sellerFeeBasisPoints', getU16Decoder()],
+    ['creators', getOptionDecoder(getArrayDecoder(getCreatorDecoder()))],
+    ['primarySaleHappened', getBooleanDecoder()],
+    ['isMutable', getBooleanDecoder()],
+    ['editionNonce', getOptionDecoder(getU8Decoder())],
+    ['tokenStandard', getOptionDecoder(getTokenStandardDecoder())],
+    ['collection', getOptionDecoder(getCollectionDecoder())],
+    ['uses', getOptionDecoder(getUsesDecoder())],
+    ['collectionDetails', getOptionDecoder(getCollectionDetailsDecoder())],
+    ['programmableConfig', getOptionDecoder(getProgrammableConfigDecoder())],
+    ['delegateState', getOptionDecoder(getDelegateStateDecoder())],
+  ]) as Decoder<MetadataAccountData>;
 }
 
 export function getMetadataAccountDataCodec(): Codec<

@@ -135,29 +135,23 @@ export function getCreateV2InstructionDataEncoder(): Encoder<CreateV2Instruction
       createV2Discriminator: number;
       assetData: AssetDataArgs;
       maxSupply: OptionOrNullable<number | bigint>;
-    }>(
-      [
-        ['discriminator', getU8Encoder()],
-        ['createV2Discriminator', getU8Encoder()],
-        ['assetData', getAssetDataEncoder()],
-        ['maxSupply', getOptionEncoder(getU64Encoder())],
-      ],
-      { description: 'CreateV2InstructionData' }
-    ),
+    }>([
+      ['discriminator', getU8Encoder()],
+      ['createV2Discriminator', getU8Encoder()],
+      ['assetData', getAssetDataEncoder()],
+      ['maxSupply', getOptionEncoder(getU64Encoder())],
+    ]),
     (value) => ({ ...value, discriminator: 41, createV2Discriminator: 1 })
   ) as Encoder<CreateV2InstructionDataArgs>;
 }
 
 export function getCreateV2InstructionDataDecoder(): Decoder<CreateV2InstructionData> {
-  return getStructDecoder<CreateV2InstructionData>(
-    [
-      ['discriminator', getU8Decoder()],
-      ['createV2Discriminator', getU8Decoder()],
-      ['assetData', getAssetDataDecoder()],
-      ['maxSupply', getOptionDecoder(getU64Decoder())],
-    ],
-    { description: 'CreateV2InstructionData' }
-  ) as Decoder<CreateV2InstructionData>;
+  return getStructDecoder<CreateV2InstructionData>([
+    ['discriminator', getU8Decoder()],
+    ['createV2Discriminator', getU8Decoder()],
+    ['assetData', getAssetDataDecoder()],
+    ['maxSupply', getOptionDecoder(getU64Decoder())],
+  ]) as Decoder<CreateV2InstructionData>;
 }
 
 export function getCreateV2InstructionDataCodec(): Codec<

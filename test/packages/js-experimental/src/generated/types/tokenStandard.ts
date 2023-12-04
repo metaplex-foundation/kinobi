@@ -23,15 +23,11 @@ export enum TokenStandard {
 export type TokenStandardArgs = TokenStandard;
 
 export function getTokenStandardEncoder(): Encoder<TokenStandardArgs> {
-  return getScalarEnumEncoder<TokenStandard>(TokenStandard, {
-    description: 'TokenStandard',
-  }) as Encoder<TokenStandardArgs>;
+  return getScalarEnumEncoder(TokenStandard) as Encoder<TokenStandardArgs>;
 }
 
 export function getTokenStandardDecoder(): Decoder<TokenStandard> {
-  return getScalarEnumDecoder<TokenStandard>(TokenStandard, {
-    description: 'TokenStandard',
-  }) as Decoder<TokenStandard>;
+  return getScalarEnumDecoder(TokenStandard) as Decoder<TokenStandard>;
 }
 
 export function getTokenStandardCodec(): Codec<

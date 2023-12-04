@@ -98,18 +98,15 @@ export function getCandyMachineAccountDataEncoder(): Encoder<CandyMachineAccount
       itemsRedeemed: number | bigint;
       /** Candy machine configuration data. */
       data: CandyMachineDataArgs;
-    }>(
-      [
-        ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
-        ['features', getU64Encoder()],
-        ['authority', getAddressEncoder()],
-        ['mintAuthority', getAddressEncoder()],
-        ['collectionMint', getAddressEncoder()],
-        ['itemsRedeemed', getU64Encoder()],
-        ['data', getCandyMachineDataEncoder()],
-      ],
-      { description: 'CandyMachineAccountData' }
-    ),
+    }>([
+      ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
+      ['features', getU64Encoder()],
+      ['authority', getAddressEncoder()],
+      ['mintAuthority', getAddressEncoder()],
+      ['collectionMint', getAddressEncoder()],
+      ['itemsRedeemed', getU64Encoder()],
+      ['data', getCandyMachineDataEncoder()],
+    ]),
     (value) => ({
       ...value,
       discriminator: [51, 173, 177, 113, 25, 241, 109, 189],
@@ -118,18 +115,15 @@ export function getCandyMachineAccountDataEncoder(): Encoder<CandyMachineAccount
 }
 
 export function getCandyMachineAccountDataDecoder(): Decoder<CandyMachineAccountData> {
-  return getStructDecoder<CandyMachineAccountData>(
-    [
-      ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
-      ['features', getU64Decoder()],
-      ['authority', getAddressDecoder()],
-      ['mintAuthority', getAddressDecoder()],
-      ['collectionMint', getAddressDecoder()],
-      ['itemsRedeemed', getU64Decoder()],
-      ['data', getCandyMachineDataDecoder()],
-    ],
-    { description: 'CandyMachineAccountData' }
-  ) as Decoder<CandyMachineAccountData>;
+  return getStructDecoder<CandyMachineAccountData>([
+    ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
+    ['features', getU64Decoder()],
+    ['authority', getAddressDecoder()],
+    ['mintAuthority', getAddressDecoder()],
+    ['collectionMint', getAddressDecoder()],
+    ['itemsRedeemed', getU64Decoder()],
+    ['data', getCandyMachineDataDecoder()],
+  ]) as Decoder<CandyMachineAccountData>;
 }
 
 export function getCandyMachineAccountDataCodec(): Codec<

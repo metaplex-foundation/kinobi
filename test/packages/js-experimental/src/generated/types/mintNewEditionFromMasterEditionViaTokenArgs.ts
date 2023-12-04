@@ -20,17 +20,15 @@ export type MintNewEditionFromMasterEditionViaTokenArgsArgs = {
 };
 
 export function getMintNewEditionFromMasterEditionViaTokenArgsEncoder(): Encoder<MintNewEditionFromMasterEditionViaTokenArgsArgs> {
-  return getStructEncoder<MintNewEditionFromMasterEditionViaTokenArgsArgs>(
-    [['edition', getU64Encoder()]],
-    { description: 'MintNewEditionFromMasterEditionViaTokenArgs' }
-  ) as Encoder<MintNewEditionFromMasterEditionViaTokenArgsArgs>;
+  return getStructEncoder<MintNewEditionFromMasterEditionViaTokenArgsArgs>([
+    ['edition', getU64Encoder()],
+  ]) as Encoder<MintNewEditionFromMasterEditionViaTokenArgsArgs>;
 }
 
 export function getMintNewEditionFromMasterEditionViaTokenArgsDecoder(): Decoder<MintNewEditionFromMasterEditionViaTokenArgs> {
-  return getStructDecoder<MintNewEditionFromMasterEditionViaTokenArgs>(
-    [['edition', getU64Decoder()]],
-    { description: 'MintNewEditionFromMasterEditionViaTokenArgs' }
-  ) as Decoder<MintNewEditionFromMasterEditionViaTokenArgs>;
+  return getStructDecoder<MintNewEditionFromMasterEditionViaTokenArgs>([
+    ['edition', getU64Decoder()],
+  ]) as Decoder<MintNewEditionFromMasterEditionViaTokenArgs>;
 }
 
 export function getMintNewEditionFromMasterEditionViaTokenArgsCodec(): Codec<

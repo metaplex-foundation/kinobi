@@ -94,27 +94,21 @@ export function getCreateRuleSetInstructionDataEncoder(): Encoder<CreateRuleSetI
       discriminator: number;
       createArgs: TaCreateArgsArgs;
       ruleSetBump: number;
-    }>(
-      [
-        ['discriminator', getU8Encoder()],
-        ['createArgs', getTaCreateArgsEncoder()],
-        ['ruleSetBump', getU8Encoder()],
-      ],
-      { description: 'CreateRuleSetInstructionData' }
-    ),
+    }>([
+      ['discriminator', getU8Encoder()],
+      ['createArgs', getTaCreateArgsEncoder()],
+      ['ruleSetBump', getU8Encoder()],
+    ]),
     (value) => ({ ...value, discriminator: 0 })
   ) as Encoder<CreateRuleSetInstructionDataArgs>;
 }
 
 export function getCreateRuleSetInstructionDataDecoder(): Decoder<CreateRuleSetInstructionData> {
-  return getStructDecoder<CreateRuleSetInstructionData>(
-    [
-      ['discriminator', getU8Decoder()],
-      ['createArgs', getTaCreateArgsDecoder()],
-      ['ruleSetBump', getU8Decoder()],
-    ],
-    { description: 'CreateRuleSetInstructionData' }
-  ) as Decoder<CreateRuleSetInstructionData>;
+  return getStructDecoder<CreateRuleSetInstructionData>([
+    ['discriminator', getU8Decoder()],
+    ['createArgs', getTaCreateArgsDecoder()],
+    ['ruleSetBump', getU8Decoder()],
+  ]) as Decoder<CreateRuleSetInstructionData>;
 }
 
 export function getCreateRuleSetInstructionDataCodec(): Codec<

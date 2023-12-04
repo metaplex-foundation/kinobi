@@ -98,25 +98,19 @@ export function getBubblegumSetCollectionSizeInstructionDataEncoder(): Encoder<B
     getStructEncoder<{
       discriminator: number;
       setCollectionSizeArgs: SetCollectionSizeArgsArgs;
-    }>(
-      [
-        ['discriminator', getU8Encoder()],
-        ['setCollectionSizeArgs', getSetCollectionSizeArgsEncoder()],
-      ],
-      { description: 'BubblegumSetCollectionSizeInstructionData' }
-    ),
+    }>([
+      ['discriminator', getU8Encoder()],
+      ['setCollectionSizeArgs', getSetCollectionSizeArgsEncoder()],
+    ]),
     (value) => ({ ...value, discriminator: 36 })
   ) as Encoder<BubblegumSetCollectionSizeInstructionDataArgs>;
 }
 
 export function getBubblegumSetCollectionSizeInstructionDataDecoder(): Decoder<BubblegumSetCollectionSizeInstructionData> {
-  return getStructDecoder<BubblegumSetCollectionSizeInstructionData>(
-    [
-      ['discriminator', getU8Decoder()],
-      ['setCollectionSizeArgs', getSetCollectionSizeArgsDecoder()],
-    ],
-    { description: 'BubblegumSetCollectionSizeInstructionData' }
-  ) as Decoder<BubblegumSetCollectionSizeInstructionData>;
+  return getStructDecoder<BubblegumSetCollectionSizeInstructionData>([
+    ['discriminator', getU8Decoder()],
+    ['setCollectionSizeArgs', getSetCollectionSizeArgsDecoder()],
+  ]) as Decoder<BubblegumSetCollectionSizeInstructionData>;
 }
 
 export function getBubblegumSetCollectionSizeInstructionDataCodec(): Codec<

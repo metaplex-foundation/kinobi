@@ -84,13 +84,10 @@ export function getUpdateCandyMachineInstructionDataEncoder(): Encoder<UpdateCan
     getStructEncoder<{
       discriminator: Array<number>;
       data: CandyMachineDataArgs;
-    }>(
-      [
-        ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
-        ['data', getCandyMachineDataEncoder()],
-      ],
-      { description: 'UpdateCandyMachineInstructionData' }
-    ),
+    }>([
+      ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
+      ['data', getCandyMachineDataEncoder()],
+    ]),
     (value) => ({
       ...value,
       discriminator: [219, 200, 88, 176, 158, 63, 253, 127],
@@ -99,13 +96,10 @@ export function getUpdateCandyMachineInstructionDataEncoder(): Encoder<UpdateCan
 }
 
 export function getUpdateCandyMachineInstructionDataDecoder(): Decoder<UpdateCandyMachineInstructionData> {
-  return getStructDecoder<UpdateCandyMachineInstructionData>(
-    [
-      ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
-      ['data', getCandyMachineDataDecoder()],
-    ],
-    { description: 'UpdateCandyMachineInstructionData' }
-  ) as Decoder<UpdateCandyMachineInstructionData>;
+  return getStructDecoder<UpdateCandyMachineInstructionData>([
+    ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
+    ['data', getCandyMachineDataDecoder()],
+  ]) as Decoder<UpdateCandyMachineInstructionData>;
 }
 
 export function getUpdateCandyMachineInstructionDataCodec(): Codec<

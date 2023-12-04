@@ -127,21 +127,17 @@ export function getUseAssetInstructionDataEncoder(): Encoder<UseAssetInstruction
       [
         ['discriminator', getU8Encoder()],
         ['useAssetArgs', getUseAssetArgsEncoder()],
-      ],
-      { description: 'UseAssetInstructionData' }
+      ]
     ),
     (value) => ({ ...value, discriminator: 45 })
   ) as Encoder<UseAssetInstructionDataArgs>;
 }
 
 export function getUseAssetInstructionDataDecoder(): Decoder<UseAssetInstructionData> {
-  return getStructDecoder<UseAssetInstructionData>(
-    [
-      ['discriminator', getU8Decoder()],
-      ['useAssetArgs', getUseAssetArgsDecoder()],
-    ],
-    { description: 'UseAssetInstructionData' }
-  ) as Decoder<UseAssetInstructionData>;
+  return getStructDecoder<UseAssetInstructionData>([
+    ['discriminator', getU8Decoder()],
+    ['useAssetArgs', getUseAssetArgsDecoder()],
+  ]) as Decoder<UseAssetInstructionData>;
 }
 
 export function getUseAssetInstructionDataCodec(): Codec<

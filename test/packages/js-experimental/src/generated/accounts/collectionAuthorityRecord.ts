@@ -60,27 +60,21 @@ export function getCollectionAuthorityRecordAccountDataEncoder(): Encoder<Collec
       key: TmKeyArgs;
       bump: number;
       updateAuthority: OptionOrNullable<Address>;
-    }>(
-      [
-        ['key', getTmKeyEncoder()],
-        ['bump', getU8Encoder()],
-        ['updateAuthority', getOptionEncoder(getAddressEncoder())],
-      ],
-      { description: 'CollectionAuthorityRecordAccountData' }
-    ),
+    }>([
+      ['key', getTmKeyEncoder()],
+      ['bump', getU8Encoder()],
+      ['updateAuthority', getOptionEncoder(getAddressEncoder())],
+    ]),
     (value) => ({ ...value, key: TmKey.CollectionAuthorityRecord })
   ) as Encoder<CollectionAuthorityRecordAccountDataArgs>;
 }
 
 export function getCollectionAuthorityRecordAccountDataDecoder(): Decoder<CollectionAuthorityRecordAccountData> {
-  return getStructDecoder<CollectionAuthorityRecordAccountData>(
-    [
-      ['key', getTmKeyDecoder()],
-      ['bump', getU8Decoder()],
-      ['updateAuthority', getOptionDecoder(getAddressDecoder())],
-    ],
-    { description: 'CollectionAuthorityRecordAccountData' }
-  ) as Decoder<CollectionAuthorityRecordAccountData>;
+  return getStructDecoder<CollectionAuthorityRecordAccountData>([
+    ['key', getTmKeyDecoder()],
+    ['bump', getU8Decoder()],
+    ['updateAuthority', getOptionDecoder(getAddressDecoder())],
+  ]) as Decoder<CollectionAuthorityRecordAccountData>;
 }
 
 export function getCollectionAuthorityRecordAccountDataCodec(): Codec<

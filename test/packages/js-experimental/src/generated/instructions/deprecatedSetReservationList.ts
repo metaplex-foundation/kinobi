@@ -108,31 +108,25 @@ export function getDeprecatedSetReservationListInstructionDataEncoder(): Encoder
       totalReservationSpots: OptionOrNullable<number | bigint>;
       offset: number | bigint;
       totalSpotOffset: number | bigint;
-    }>(
-      [
-        ['discriminator', getU8Encoder()],
-        ['reservations', getArrayEncoder(getReservationEncoder())],
-        ['totalReservationSpots', getOptionEncoder(getU64Encoder())],
-        ['offset', getU64Encoder()],
-        ['totalSpotOffset', getU64Encoder()],
-      ],
-      { description: 'DeprecatedSetReservationListInstructionData' }
-    ),
+    }>([
+      ['discriminator', getU8Encoder()],
+      ['reservations', getArrayEncoder(getReservationEncoder())],
+      ['totalReservationSpots', getOptionEncoder(getU64Encoder())],
+      ['offset', getU64Encoder()],
+      ['totalSpotOffset', getU64Encoder()],
+    ]),
     (value) => ({ ...value, discriminator: 5 })
   ) as Encoder<DeprecatedSetReservationListInstructionDataArgs>;
 }
 
 export function getDeprecatedSetReservationListInstructionDataDecoder(): Decoder<DeprecatedSetReservationListInstructionData> {
-  return getStructDecoder<DeprecatedSetReservationListInstructionData>(
-    [
-      ['discriminator', getU8Decoder()],
-      ['reservations', getArrayDecoder(getReservationDecoder())],
-      ['totalReservationSpots', getOptionDecoder(getU64Decoder())],
-      ['offset', getU64Decoder()],
-      ['totalSpotOffset', getU64Decoder()],
-    ],
-    { description: 'DeprecatedSetReservationListInstructionData' }
-  ) as Decoder<DeprecatedSetReservationListInstructionData>;
+  return getStructDecoder<DeprecatedSetReservationListInstructionData>([
+    ['discriminator', getU8Decoder()],
+    ['reservations', getArrayDecoder(getReservationDecoder())],
+    ['totalReservationSpots', getOptionDecoder(getU64Decoder())],
+    ['offset', getU64Decoder()],
+    ['totalSpotOffset', getU64Decoder()],
+  ]) as Decoder<DeprecatedSetReservationListInstructionData>;
 }
 
 export function getDeprecatedSetReservationListInstructionDataCodec(): Codec<

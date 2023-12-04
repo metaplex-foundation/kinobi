@@ -70,19 +70,17 @@ export type RemoveCreatorVerificationInstructionDataArgs = {};
 
 export function getRemoveCreatorVerificationInstructionDataEncoder(): Encoder<RemoveCreatorVerificationInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>(
-      [['discriminator', getU8Encoder()]],
-      { description: 'RemoveCreatorVerificationInstructionData' }
-    ),
+    getStructEncoder<{ discriminator: number }>([
+      ['discriminator', getU8Encoder()],
+    ]),
     (value) => ({ ...value, discriminator: 28 })
   ) as Encoder<RemoveCreatorVerificationInstructionDataArgs>;
 }
 
 export function getRemoveCreatorVerificationInstructionDataDecoder(): Decoder<RemoveCreatorVerificationInstructionData> {
-  return getStructDecoder<RemoveCreatorVerificationInstructionData>(
-    [['discriminator', getU8Decoder()]],
-    { description: 'RemoveCreatorVerificationInstructionData' }
-  ) as Decoder<RemoveCreatorVerificationInstructionData>;
+  return getStructDecoder<RemoveCreatorVerificationInstructionData>([
+    ['discriminator', getU8Decoder()],
+  ]) as Decoder<RemoveCreatorVerificationInstructionData>;
 }
 
 export function getRemoveCreatorVerificationInstructionDataCodec(): Codec<

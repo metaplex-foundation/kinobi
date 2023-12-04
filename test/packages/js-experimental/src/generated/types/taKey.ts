@@ -20,15 +20,11 @@ export enum TaKey {
 export type TaKeyArgs = TaKey;
 
 export function getTaKeyEncoder(): Encoder<TaKeyArgs> {
-  return getScalarEnumEncoder<TaKey>(TaKey, {
-    description: 'TaKey',
-  }) as Encoder<TaKeyArgs>;
+  return getScalarEnumEncoder(TaKey) as Encoder<TaKeyArgs>;
 }
 
 export function getTaKeyDecoder(): Decoder<TaKey> {
-  return getScalarEnumDecoder<TaKey>(TaKey, {
-    description: 'TaKey',
-  }) as Decoder<TaKey>;
+  return getScalarEnumDecoder(TaKey) as Decoder<TaKey>;
 }
 
 export function getTaKeyCodec(): Codec<TaKeyArgs, TaKey> {

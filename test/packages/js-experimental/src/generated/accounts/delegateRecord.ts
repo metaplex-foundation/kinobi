@@ -64,27 +64,21 @@ export type DelegateRecordAccountDataArgs = {
 
 export function getDelegateRecordAccountDataEncoder(): Encoder<DelegateRecordAccountDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ key: TmKeyArgs; role: DelegateRoleArgs; bump: number }>(
-      [
-        ['key', getTmKeyEncoder()],
-        ['role', getDelegateRoleEncoder()],
-        ['bump', getU8Encoder()],
-      ],
-      { description: 'DelegateRecordAccountData' }
-    ),
+    getStructEncoder<{ key: TmKeyArgs; role: DelegateRoleArgs; bump: number }>([
+      ['key', getTmKeyEncoder()],
+      ['role', getDelegateRoleEncoder()],
+      ['bump', getU8Encoder()],
+    ]),
     (value) => ({ ...value, key: TmKey.Delegate })
   ) as Encoder<DelegateRecordAccountDataArgs>;
 }
 
 export function getDelegateRecordAccountDataDecoder(): Decoder<DelegateRecordAccountData> {
-  return getStructDecoder<DelegateRecordAccountData>(
-    [
-      ['key', getTmKeyDecoder()],
-      ['role', getDelegateRoleDecoder()],
-      ['bump', getU8Decoder()],
-    ],
-    { description: 'DelegateRecordAccountData' }
-  ) as Decoder<DelegateRecordAccountData>;
+  return getStructDecoder<DelegateRecordAccountData>([
+    ['key', getTmKeyDecoder()],
+    ['role', getDelegateRoleDecoder()],
+    ['bump', getU8Decoder()],
+  ]) as Decoder<DelegateRecordAccountData>;
 }
 
 export function getDelegateRecordAccountDataCodec(): Codec<

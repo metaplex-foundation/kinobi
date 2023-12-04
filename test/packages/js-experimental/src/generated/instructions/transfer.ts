@@ -148,21 +148,17 @@ export function getTransferInstructionDataEncoder(): Encoder<TransferInstruction
       [
         ['discriminator', getU8Encoder()],
         ['transferArgs', getTransferArgsEncoder()],
-      ],
-      { description: 'TransferInstructionData' }
+      ]
     ),
     (value) => ({ ...value, discriminator: 46 })
   ) as Encoder<TransferInstructionDataArgs>;
 }
 
 export function getTransferInstructionDataDecoder(): Decoder<TransferInstructionData> {
-  return getStructDecoder<TransferInstructionData>(
-    [
-      ['discriminator', getU8Decoder()],
-      ['transferArgs', getTransferArgsDecoder()],
-    ],
-    { description: 'TransferInstructionData' }
-  ) as Decoder<TransferInstructionData>;
+  return getStructDecoder<TransferInstructionData>([
+    ['discriminator', getU8Decoder()],
+    ['transferArgs', getTransferArgsDecoder()],
+  ]) as Decoder<TransferInstructionData>;
 }
 
 export function getTransferInstructionDataCodec(): Codec<

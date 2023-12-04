@@ -22,15 +22,11 @@ export enum Operation {
 export type OperationArgs = Operation;
 
 export function getOperationEncoder(): Encoder<OperationArgs> {
-  return getScalarEnumEncoder<Operation>(Operation, {
-    description: 'Operation',
-  }) as Encoder<OperationArgs>;
+  return getScalarEnumEncoder(Operation) as Encoder<OperationArgs>;
 }
 
 export function getOperationDecoder(): Decoder<Operation> {
-  return getScalarEnumDecoder<Operation>(Operation, {
-    description: 'Operation',
-  }) as Decoder<Operation>;
+  return getScalarEnumDecoder(Operation) as Decoder<Operation>;
 }
 
 export function getOperationCodec(): Codec<OperationArgs, Operation> {

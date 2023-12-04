@@ -30,45 +30,39 @@ export type DelegateArgsArgs =
   | { __kind: 'TransferV1'; amount: number | bigint };
 
 export function getDelegateArgsEncoder(): Encoder<DelegateArgsArgs> {
-  return getDataEnumEncoder<DelegateArgs>(
+  return getDataEnumEncoder<DelegateArgs>([
+    ['CollectionV1', getUnitEncoder()],
     [
-      ['CollectionV1', getUnitEncoder()],
-      [
-        'SaleV1',
-        getStructEncoder<GetDataEnumKindContent<DelegateArgsArgs, 'SaleV1'>>([
-          ['amount', getU64Encoder()],
-        ]),
-      ],
-      [
-        'TransferV1',
-        getStructEncoder<
-          GetDataEnumKindContent<DelegateArgsArgs, 'TransferV1'>
-        >([['amount', getU64Encoder()]]),
-      ],
+      'SaleV1',
+      getStructEncoder<GetDataEnumKindContent<DelegateArgsArgs, 'SaleV1'>>([
+        ['amount', getU64Encoder()],
+      ]),
     ],
-    { description: 'DelegateArgs' }
-  ) as Encoder<DelegateArgsArgs>;
+    [
+      'TransferV1',
+      getStructEncoder<GetDataEnumKindContent<DelegateArgsArgs, 'TransferV1'>>([
+        ['amount', getU64Encoder()],
+      ]),
+    ],
+  ]) as Encoder<DelegateArgsArgs>;
 }
 
 export function getDelegateArgsDecoder(): Decoder<DelegateArgs> {
-  return getDataEnumDecoder<DelegateArgs>(
+  return getDataEnumDecoder<DelegateArgs>([
+    ['CollectionV1', getUnitDecoder()],
     [
-      ['CollectionV1', getUnitDecoder()],
-      [
-        'SaleV1',
-        getStructDecoder<GetDataEnumKindContent<DelegateArgs, 'SaleV1'>>([
-          ['amount', getU64Decoder()],
-        ]),
-      ],
-      [
-        'TransferV1',
-        getStructDecoder<GetDataEnumKindContent<DelegateArgs, 'TransferV1'>>([
-          ['amount', getU64Decoder()],
-        ]),
-      ],
+      'SaleV1',
+      getStructDecoder<GetDataEnumKindContent<DelegateArgs, 'SaleV1'>>([
+        ['amount', getU64Decoder()],
+      ]),
     ],
-    { description: 'DelegateArgs' }
-  ) as Decoder<DelegateArgs>;
+    [
+      'TransferV1',
+      getStructDecoder<GetDataEnumKindContent<DelegateArgs, 'TransferV1'>>([
+        ['amount', getU64Decoder()],
+      ]),
+    ],
+  ]) as Decoder<DelegateArgs>;
 }
 
 export function getDelegateArgsCodec(): Codec<DelegateArgsArgs, DelegateArgs> {

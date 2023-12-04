@@ -68,29 +68,23 @@ export function getTokenOwnedEscrowAccountDataEncoder(): Encoder<TokenOwnedEscro
       baseToken: Address;
       authority: EscrowAuthorityArgs;
       bump: number;
-    }>(
-      [
-        ['key', getTmKeyEncoder()],
-        ['baseToken', getAddressEncoder()],
-        ['authority', getEscrowAuthorityEncoder()],
-        ['bump', getU8Encoder()],
-      ],
-      { description: 'TokenOwnedEscrowAccountData' }
-    ),
+    }>([
+      ['key', getTmKeyEncoder()],
+      ['baseToken', getAddressEncoder()],
+      ['authority', getEscrowAuthorityEncoder()],
+      ['bump', getU8Encoder()],
+    ]),
     (value) => ({ ...value, key: TmKey.TokenOwnedEscrow })
   ) as Encoder<TokenOwnedEscrowAccountDataArgs>;
 }
 
 export function getTokenOwnedEscrowAccountDataDecoder(): Decoder<TokenOwnedEscrowAccountData> {
-  return getStructDecoder<TokenOwnedEscrowAccountData>(
-    [
-      ['key', getTmKeyDecoder()],
-      ['baseToken', getAddressDecoder()],
-      ['authority', getEscrowAuthorityDecoder()],
-      ['bump', getU8Decoder()],
-    ],
-    { description: 'TokenOwnedEscrowAccountData' }
-  ) as Decoder<TokenOwnedEscrowAccountData>;
+  return getStructDecoder<TokenOwnedEscrowAccountData>([
+    ['key', getTmKeyDecoder()],
+    ['baseToken', getAddressDecoder()],
+    ['authority', getEscrowAuthorityDecoder()],
+    ['bump', getU8Decoder()],
+  ]) as Decoder<TokenOwnedEscrowAccountData>;
 }
 
 export function getTokenOwnedEscrowAccountDataCodec(): Codec<

@@ -153,62 +153,53 @@ export function getCreateMetadataAccountInstructionDataEncoder(): Encoder<Create
       };
       isMutable: boolean;
       metadataBump: number;
-    }>(
+    }>([
+      ['discriminator', getU8Encoder()],
       [
-        ['discriminator', getU8Encoder()],
-        [
-          'data',
-          getStructEncoder<{
-            name: string;
-            symbol: string;
-            uri: string;
-            sellerFeeBasisPoints: number;
-            creators: OptionOrNullable<Array<CreatorArgs>>;
-          }>([
-            ['name', getStringEncoder()],
-            ['symbol', getStringEncoder()],
-            ['uri', getStringEncoder()],
-            ['sellerFeeBasisPoints', getU16Encoder()],
-            [
-              'creators',
-              getOptionEncoder(getArrayEncoder(getCreatorEncoder())),
-            ],
-          ]),
-        ],
-        ['isMutable', getBooleanEncoder()],
-        ['metadataBump', getU8Encoder()],
+        'data',
+        getStructEncoder<{
+          name: string;
+          symbol: string;
+          uri: string;
+          sellerFeeBasisPoints: number;
+          creators: OptionOrNullable<Array<CreatorArgs>>;
+        }>([
+          ['name', getStringEncoder()],
+          ['symbol', getStringEncoder()],
+          ['uri', getStringEncoder()],
+          ['sellerFeeBasisPoints', getU16Encoder()],
+          ['creators', getOptionEncoder(getArrayEncoder(getCreatorEncoder()))],
+        ]),
       ],
-      { description: 'CreateMetadataAccountInstructionData' }
-    ),
+      ['isMutable', getBooleanEncoder()],
+      ['metadataBump', getU8Encoder()],
+    ]),
     (value) => ({ ...value, discriminator: 0 })
   ) as Encoder<CreateMetadataAccountInstructionDataArgs>;
 }
 
 export function getCreateMetadataAccountInstructionDataDecoder(): Decoder<CreateMetadataAccountInstructionData> {
-  return getStructDecoder<CreateMetadataAccountInstructionData>(
+  return getStructDecoder<CreateMetadataAccountInstructionData>([
+    ['discriminator', getU8Decoder()],
     [
-      ['discriminator', getU8Decoder()],
-      [
-        'data',
-        getStructDecoder<{
-          name: string;
-          symbol: string;
-          uri: string;
-          sellerFeeBasisPoints: number;
-          creators: Option<Array<Creator>>;
-        }>([
-          ['name', getStringDecoder()],
-          ['symbol', getStringDecoder()],
-          ['uri', getStringDecoder()],
-          ['sellerFeeBasisPoints', getU16Decoder()],
-          ['creators', getOptionDecoder(getArrayDecoder(getCreatorDecoder()))],
-        ]),
-      ],
-      ['isMutable', getBooleanDecoder()],
-      ['metadataBump', getU8Decoder()],
+      'data',
+      getStructDecoder<{
+        name: string;
+        symbol: string;
+        uri: string;
+        sellerFeeBasisPoints: number;
+        creators: Option<Array<Creator>>;
+      }>([
+        ['name', getStringDecoder()],
+        ['symbol', getStringDecoder()],
+        ['uri', getStringDecoder()],
+        ['sellerFeeBasisPoints', getU16Decoder()],
+        ['creators', getOptionDecoder(getArrayDecoder(getCreatorDecoder()))],
+      ]),
     ],
-    { description: 'CreateMetadataAccountInstructionData' }
-  ) as Decoder<CreateMetadataAccountInstructionData>;
+    ['isMutable', getBooleanDecoder()],
+    ['metadataBump', getU8Decoder()],
+  ]) as Decoder<CreateMetadataAccountInstructionData>;
 }
 
 export function getCreateMetadataAccountInstructionDataCodec(): Codec<

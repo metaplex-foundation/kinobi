@@ -28,25 +28,19 @@ export type UsesArgs = {
 };
 
 export function getUsesEncoder(): Encoder<UsesArgs> {
-  return getStructEncoder<UsesArgs>(
-    [
-      ['useMethod', getUseMethodEncoder()],
-      ['remaining', getU64Encoder()],
-      ['total', getU64Encoder()],
-    ],
-    { description: 'Uses' }
-  ) as Encoder<UsesArgs>;
+  return getStructEncoder<UsesArgs>([
+    ['useMethod', getUseMethodEncoder()],
+    ['remaining', getU64Encoder()],
+    ['total', getU64Encoder()],
+  ]) as Encoder<UsesArgs>;
 }
 
 export function getUsesDecoder(): Decoder<Uses> {
-  return getStructDecoder<Uses>(
-    [
-      ['useMethod', getUseMethodDecoder()],
-      ['remaining', getU64Decoder()],
-      ['total', getU64Decoder()],
-    ],
-    { description: 'Uses' }
-  ) as Decoder<Uses>;
+  return getStructDecoder<Uses>([
+    ['useMethod', getUseMethodDecoder()],
+    ['remaining', getU64Decoder()],
+    ['total', getU64Decoder()],
+  ]) as Decoder<Uses>;
 }
 
 export function getUsesCodec(): Codec<UsesArgs, Uses> {

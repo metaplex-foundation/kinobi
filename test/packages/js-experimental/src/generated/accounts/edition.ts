@@ -56,27 +56,21 @@ export function getEditionAccountDataEncoder(): Encoder<EditionAccountDataArgs> 
       key: TmKeyArgs;
       parent: Address;
       edition: number | bigint;
-    }>(
-      [
-        ['key', getTmKeyEncoder()],
-        ['parent', getAddressEncoder()],
-        ['edition', getU64Encoder()],
-      ],
-      { description: 'EditionAccountData' }
-    ),
+    }>([
+      ['key', getTmKeyEncoder()],
+      ['parent', getAddressEncoder()],
+      ['edition', getU64Encoder()],
+    ]),
     (value) => ({ ...value, key: TmKey.EditionV1 })
   ) as Encoder<EditionAccountDataArgs>;
 }
 
 export function getEditionAccountDataDecoder(): Decoder<EditionAccountData> {
-  return getStructDecoder<EditionAccountData>(
-    [
-      ['key', getTmKeyDecoder()],
-      ['parent', getAddressDecoder()],
-      ['edition', getU64Decoder()],
-    ],
-    { description: 'EditionAccountData' }
-  ) as Decoder<EditionAccountData>;
+  return getStructDecoder<EditionAccountData>([
+    ['key', getTmKeyDecoder()],
+    ['parent', getAddressDecoder()],
+    ['edition', getU64Decoder()],
+  ]) as Decoder<EditionAccountData>;
 }
 
 export function getEditionAccountDataCodec(): Codec<

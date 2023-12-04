@@ -31,25 +31,19 @@ export type CollectionArgs = { verified?: boolean; key: Address };
 
 export function getCollectionEncoder(): Encoder<CollectionArgs> {
   return mapEncoder(
-    getStructEncoder<{ verified: boolean; key: Address }>(
-      [
-        ['verified', getBooleanEncoder()],
-        ['key', getAddressEncoder()],
-      ],
-      { description: 'Collection' }
-    ),
+    getStructEncoder<{ verified: boolean; key: Address }>([
+      ['verified', getBooleanEncoder()],
+      ['key', getAddressEncoder()],
+    ]),
     (value) => ({ ...value, verified: value.verified ?? false })
   ) as Encoder<CollectionArgs>;
 }
 
 export function getCollectionDecoder(): Decoder<Collection> {
-  return getStructDecoder<Collection>(
-    [
-      ['verified', getBooleanDecoder()],
-      ['key', getAddressDecoder()],
-    ],
-    { description: 'Collection' }
-  ) as Decoder<Collection>;
+  return getStructDecoder<Collection>([
+    ['verified', getBooleanDecoder()],
+    ['key', getAddressDecoder()],
+  ]) as Decoder<Collection>;
 }
 
 export function getCollectionCodec(): Codec<CollectionArgs, Collection> {
