@@ -13,33 +13,28 @@ import {
   getStructDecoder,
   getStructEncoder,
 } from '@solana/codecs-data-structures';
-import {
-  ConfigLine,
-  ConfigLineArgs,
-  getConfigLineDecoder,
-  getConfigLineEncoder,
-} from '.';
+import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
 
 /** Dummy lines. */
 export type DummyLines = {
   /** The dummy lines. */
-  lines: Array<ConfigLine>;
+  lines: Array<bigint>;
 };
 
 export type DummyLinesArgs = {
   /** The dummy lines. */
-  lines: Array<ConfigLineArgs>;
+  lines: Array<number | bigint>;
 };
 
 export function getDummyLinesEncoder() {
   return getStructEncoder<DummyLinesArgs>([
-    ['lines', getArrayEncoder(getConfigLineEncoder(), { size: 'remainder' })],
+    ['lines', getArrayEncoder(getU64Encoder(), { size: 'remainder' })],
   ]) satisfies Encoder<DummyLinesArgs>;
 }
 
 export function getDummyLinesDecoder() {
   return getStructDecoder<DummyLines>([
-    ['lines', getArrayDecoder(getConfigLineDecoder(), { size: 'remainder' })],
+    ['lines', getArrayDecoder(getU64Decoder(), { size: 'remainder' })],
   ]) satisfies Decoder<DummyLines>;
 }
 

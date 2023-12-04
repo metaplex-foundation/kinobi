@@ -5,7 +5,6 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::ConfigLine;
 use borsh::BorshDeserialize;
 use borsh::BorshSerialize;
 use kaigan::types::RemainderVec;
@@ -15,5 +14,5 @@ use kaigan::types::RemainderVec;
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct DummyLines {
     /// The dummy lines.
-    pub lines: RemainderVec<ConfigLine>,
+    pub lines: RemainderVec<u64>,
 }
