@@ -80,7 +80,13 @@ pub struct DeprecatedSetReservationListInstructionArgs {
     pub total_spot_offset: u64,
 }
 
-/// Instruction builder.
+/// Instruction builder for `DeprecatedSetReservationList`.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` master_edition
+///   1. `[writable]` reservation_list
+///   2. `[signer]` resource
 #[derive(Default)]
 pub struct DeprecatedSetReservationListBuilder {
     master_edition: Option<solana_program::pubkey::Pubkey>,
@@ -297,7 +303,13 @@ impl<'a, 'b> DeprecatedSetReservationListCpi<'a, 'b> {
     }
 }
 
-/// `deprecated_set_reservation_list` CPI instruction builder.
+/// Instruction builder for `DeprecatedSetReservationList` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` master_edition
+///   1. `[writable]` reservation_list
+///   2. `[signer]` resource
 pub struct DeprecatedSetReservationListCpiBuilder<'a, 'b> {
     instruction: Box<DeprecatedSetReservationListCpiBuilderInstruction<'a, 'b>>,
 }

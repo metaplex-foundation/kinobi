@@ -92,7 +92,18 @@ impl CreateReservationListInstructionData {
     }
 }
 
-/// Instruction builder.
+/// Instruction builder for `CreateReservationList`.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` reservation_list
+///   1. `[signer]` payer
+///   2. `[signer]` update_authority
+///   3. `[]` master_edition
+///   4. `[]` resource
+///   5. `[]` metadata
+///   6. `[optional]` system_program (default to `11111111111111111111111111111111`)
+///   7. `[optional]` rent (default to `SysvarRent111111111111111111111111111111111`)
 #[derive(Default)]
 pub struct CreateReservationListBuilder {
     reservation_list: Option<solana_program::pubkey::Pubkey>,
@@ -368,7 +379,18 @@ impl<'a, 'b> CreateReservationListCpi<'a, 'b> {
     }
 }
 
-/// `create_reservation_list` CPI instruction builder.
+/// Instruction builder for `CreateReservationList` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` reservation_list
+///   1. `[signer]` payer
+///   2. `[signer]` update_authority
+///   3. `[]` master_edition
+///   4. `[]` resource
+///   5. `[]` metadata
+///   6. `[]` system_program
+///   7. `[]` rent
 pub struct CreateReservationListCpiBuilder<'a, 'b> {
     instruction: Box<CreateReservationListCpiBuilderInstruction<'a, 'b>>,
 }

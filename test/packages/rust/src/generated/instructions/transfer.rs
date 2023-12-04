@@ -173,7 +173,25 @@ pub struct TransferInstructionArgs {
     pub transfer_args: TransferArgs,
 }
 
-/// Instruction builder.
+/// Instruction builder for `Transfer`.
+///
+/// ### Accounts:
+///
+///   0. `[writable, signer]` authority
+///   1. `[writable, optional]` delegate_record
+///   2. `[writable]` token
+///   3. `[]` token_owner
+///   4. `[writable]` destination
+///   5. `[]` destination_owner
+///   6. `[]` mint
+///   7. `[writable]` metadata
+///   8. `[optional]` master_edition
+///   9. `[optional]` spl_token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
+///   10. `[optional]` spl_ata_program (default to `ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL`)
+///   11. `[optional]` system_program (default to `11111111111111111111111111111111`)
+///   12. `[optional]` sysvar_instructions (default to `Sysvar1nstructions1111111111111111111111111`)
+///   13. `[optional]` authorization_rules_program
+///   14. `[optional]` authorization_rules
 #[derive(Default)]
 pub struct TransferBuilder {
     authority: Option<solana_program::pubkey::Pubkey>,
@@ -657,7 +675,25 @@ impl<'a, 'b> TransferCpi<'a, 'b> {
     }
 }
 
-/// `transfer` CPI instruction builder.
+/// Instruction builder for `Transfer` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable, signer]` authority
+///   1. `[writable, optional]` delegate_record
+///   2. `[writable]` token
+///   3. `[]` token_owner
+///   4. `[writable]` destination
+///   5. `[]` destination_owner
+///   6. `[]` mint
+///   7. `[writable]` metadata
+///   8. `[optional]` master_edition
+///   9. `[]` spl_token_program
+///   10. `[]` spl_ata_program
+///   11. `[]` system_program
+///   12. `[]` sysvar_instructions
+///   13. `[optional]` authorization_rules_program
+///   14. `[optional]` authorization_rules
 pub struct TransferCpiBuilder<'a, 'b> {
     instruction: Box<TransferCpiBuilderInstruction<'a, 'b>>,
 }

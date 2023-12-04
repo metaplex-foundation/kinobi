@@ -100,7 +100,17 @@ pub struct DeprecatedMintPrintingTokensInstructionArgs {
     pub mint_printing_tokens_via_token_args: MintPrintingTokensViaTokenArgs,
 }
 
-/// Instruction builder.
+/// Instruction builder for `DeprecatedMintPrintingTokens`.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` destination
+///   1. `[writable]` printing_mint
+///   2. `[signer]` update_authority
+///   3. `[]` metadata
+///   4. `[]` master_edition
+///   5. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
+///   6. `[optional]` rent (default to `SysvarRent111111111111111111111111111111111`)
 #[derive(Default)]
 pub struct DeprecatedMintPrintingTokensBuilder {
     destination: Option<solana_program::pubkey::Pubkey>,
@@ -376,7 +386,17 @@ impl<'a, 'b> DeprecatedMintPrintingTokensCpi<'a, 'b> {
     }
 }
 
-/// `deprecated_mint_printing_tokens` CPI instruction builder.
+/// Instruction builder for `DeprecatedMintPrintingTokens` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` destination
+///   1. `[writable]` printing_mint
+///   2. `[signer]` update_authority
+///   3. `[]` metadata
+///   4. `[]` master_edition
+///   5. `[]` token_program
+///   6. `[]` rent
 pub struct DeprecatedMintPrintingTokensCpiBuilder<'a, 'b> {
     instruction: Box<DeprecatedMintPrintingTokensCpiBuilderInstruction<'a, 'b>>,
 }

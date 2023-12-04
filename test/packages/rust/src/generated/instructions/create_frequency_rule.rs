@@ -78,7 +78,13 @@ pub struct CreateFrequencyRuleInstructionArgs {
     pub period: i64,
 }
 
-/// Instruction builder.
+/// Instruction builder for `CreateFrequencyRule`.
+///
+/// ### Accounts:
+///
+///   0. `[writable, signer]` payer
+///   1. `[writable]` frequency_pda
+///   2. `[optional]` system_program (default to `11111111111111111111111111111111`)
 #[derive(Default)]
 pub struct CreateFrequencyRuleBuilder {
     payer: Option<solana_program::pubkey::Pubkey>,
@@ -297,7 +303,13 @@ impl<'a, 'b> CreateFrequencyRuleCpi<'a, 'b> {
     }
 }
 
-/// `create_frequency_rule` CPI instruction builder.
+/// Instruction builder for `CreateFrequencyRule` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable, signer]` payer
+///   1. `[writable]` frequency_pda
+///   2. `[]` system_program
 pub struct CreateFrequencyRuleCpiBuilder<'a, 'b> {
     instruction: Box<CreateFrequencyRuleCpiBuilderInstruction<'a, 'b>>,
 }

@@ -157,7 +157,23 @@ pub struct ValidateInstructionArgs {
     pub payload: Payload,
 }
 
-/// Instruction builder.
+/// Instruction builder for `Validate`.
+///
+/// ### Accounts:
+///
+///   0. `[writable, signer]` payer
+///   1. `[writable]` rule_set
+///   2. `[optional]` system_program (default to `11111111111111111111111111111111`)
+///   3. `[signer, optional]` opt_rule_signer1
+///   4. `[signer, optional]` opt_rule_signer2
+///   5. `[signer, optional]` opt_rule_signer3
+///   6. `[signer, optional]` opt_rule_signer4
+///   7. `[signer, optional]` opt_rule_signer5
+///   8. `[optional]` opt_rule_nonsigner1
+///   9. `[optional]` opt_rule_nonsigner2
+///   10. `[optional]` opt_rule_nonsigner3
+///   11. `[optional]` opt_rule_nonsigner4
+///   12. `[optional]` opt_rule_nonsigner5
 #[derive(Default)]
 pub struct ValidateBuilder {
     payer: Option<solana_program::pubkey::Pubkey>,
@@ -628,7 +644,23 @@ impl<'a, 'b> ValidateCpi<'a, 'b> {
     }
 }
 
-/// `validate` CPI instruction builder.
+/// Instruction builder for `Validate` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable, signer]` payer
+///   1. `[writable]` rule_set
+///   2. `[]` system_program
+///   3. `[signer, optional]` opt_rule_signer1
+///   4. `[signer, optional]` opt_rule_signer2
+///   5. `[signer, optional]` opt_rule_signer3
+///   6. `[signer, optional]` opt_rule_signer4
+///   7. `[signer, optional]` opt_rule_signer5
+///   8. `[optional]` opt_rule_nonsigner1
+///   9. `[optional]` opt_rule_nonsigner2
+///   10. `[optional]` opt_rule_nonsigner3
+///   11. `[optional]` opt_rule_nonsigner4
+///   12. `[optional]` opt_rule_nonsigner5
 pub struct ValidateCpiBuilder<'a, 'b> {
     instruction: Box<ValidateCpiBuilderInstruction<'a, 'b>>,
 }

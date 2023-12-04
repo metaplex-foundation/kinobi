@@ -73,7 +73,14 @@ impl SetTokenStandardInstructionData {
     }
 }
 
-/// Instruction builder.
+/// Instruction builder for `SetTokenStandard`.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` metadata
+///   1. `[writable, signer]` update_authority
+///   2. `[]` mint
+///   3. `[optional]` edition
 #[derive(Default)]
 pub struct SetTokenStandardBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
@@ -276,7 +283,14 @@ impl<'a, 'b> SetTokenStandardCpi<'a, 'b> {
     }
 }
 
-/// `set_token_standard` CPI instruction builder.
+/// Instruction builder for `SetTokenStandard` via CPI.
+///
+/// ### Accounts:
+///
+///   0. `[writable]` metadata
+///   1. `[writable, signer]` update_authority
+///   2. `[]` mint
+///   3. `[optional]` edition
 pub struct SetTokenStandardCpiBuilder<'a, 'b> {
     instruction: Box<SetTokenStandardCpiBuilderInstruction<'a, 'b>>,
 }
