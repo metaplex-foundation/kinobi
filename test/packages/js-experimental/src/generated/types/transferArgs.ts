@@ -41,8 +41,8 @@ export type TransferArgsArgs = {
   amount: number | bigint;
 };
 
-export function getTransferArgsEncoder(): Encoder<TransferArgsArgs> {
-  return getDataEnumEncoder<TransferArgs>([
+export function getTransferArgsEncoder() {
+  return getDataEnumEncoder<TransferArgsArgs>([
     [
       'V1',
       getStructEncoder<GetDataEnumKindContent<TransferArgsArgs, 'V1'>>([
@@ -50,10 +50,10 @@ export function getTransferArgsEncoder(): Encoder<TransferArgsArgs> {
         ['amount', getU64Encoder()],
       ]),
     ],
-  ]) as Encoder<TransferArgsArgs>;
+  ]) satisfies Encoder<TransferArgsArgs>;
 }
 
-export function getTransferArgsDecoder(): Decoder<TransferArgs> {
+export function getTransferArgsDecoder() {
   return getDataEnumDecoder<TransferArgs>([
     [
       'V1',
@@ -62,7 +62,7 @@ export function getTransferArgsDecoder(): Decoder<TransferArgs> {
         ['amount', getU64Decoder()],
       ]),
     ],
-  ]) as Decoder<TransferArgs>;
+  ]) satisfies Decoder<TransferArgs>;
 }
 
 export function getTransferArgsCodec(): Codec<TransferArgsArgs, TransferArgs> {

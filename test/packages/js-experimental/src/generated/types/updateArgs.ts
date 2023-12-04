@@ -122,8 +122,8 @@ export type UpdateArgsArgs = {
   authorityType: AuthorityTypeArgs;
 };
 
-export function getUpdateArgsEncoder(): Encoder<UpdateArgsArgs> {
-  return getDataEnumEncoder<UpdateArgs>([
+export function getUpdateArgsEncoder() {
+  return getDataEnumEncoder<UpdateArgsArgs>([
     [
       'V1',
       mapEncoder(
@@ -195,10 +195,10 @@ export function getUpdateArgsEncoder(): Encoder<UpdateArgsArgs> {
         })
       ),
     ],
-  ]) as Encoder<UpdateArgsArgs>;
+  ]) satisfies Encoder<UpdateArgsArgs>;
 }
 
-export function getUpdateArgsDecoder(): Decoder<UpdateArgs> {
+export function getUpdateArgsDecoder() {
   return getDataEnumDecoder<UpdateArgs>([
     [
       'V1',
@@ -240,7 +240,7 @@ export function getUpdateArgsDecoder(): Decoder<UpdateArgs> {
         ['authorityType', getAuthorityTypeDecoder()],
       ]),
     ],
-  ]) as Decoder<UpdateArgs>;
+  ]) satisfies Decoder<UpdateArgs>;
 }
 
 export function getUpdateArgsCodec(): Codec<UpdateArgsArgs, UpdateArgs> {

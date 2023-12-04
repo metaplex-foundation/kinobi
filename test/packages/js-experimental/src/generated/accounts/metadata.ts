@@ -130,7 +130,7 @@ export type MetadataAccountDataArgs = {
   delegateState: OptionOrNullable<DelegateStateArgs>;
 };
 
-export function getMetadataAccountDataEncoder(): Encoder<MetadataAccountDataArgs> {
+export function getMetadataAccountDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       key: TmKeyArgs;
@@ -170,10 +170,10 @@ export function getMetadataAccountDataEncoder(): Encoder<MetadataAccountDataArgs
       ['delegateState', getOptionEncoder(getDelegateStateEncoder())],
     ]),
     (value) => ({ ...value, key: TmKey.MetadataV1 })
-  ) as Encoder<MetadataAccountDataArgs>;
+  ) satisfies Encoder<MetadataAccountDataArgs>;
 }
 
-export function getMetadataAccountDataDecoder(): Decoder<MetadataAccountData> {
+export function getMetadataAccountDataDecoder() {
   return getStructDecoder<MetadataAccountData>([
     ['key', getTmKeyDecoder()],
     ['updateAuthority', getAddressDecoder()],
@@ -192,7 +192,7 @@ export function getMetadataAccountDataDecoder(): Decoder<MetadataAccountData> {
     ['collectionDetails', getOptionDecoder(getCollectionDetailsDecoder())],
     ['programmableConfig', getOptionDecoder(getProgrammableConfigDecoder())],
     ['delegateState', getOptionDecoder(getDelegateStateDecoder())],
-  ]) as Decoder<MetadataAccountData>;
+  ]) satisfies Decoder<MetadataAccountData>;
 }
 
 export function getMetadataAccountDataCodec(): Codec<

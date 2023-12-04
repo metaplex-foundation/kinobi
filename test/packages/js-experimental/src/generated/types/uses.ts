@@ -27,20 +27,20 @@ export type UsesArgs = {
   total: number | bigint;
 };
 
-export function getUsesEncoder(): Encoder<UsesArgs> {
+export function getUsesEncoder() {
   return getStructEncoder<UsesArgs>([
     ['useMethod', getUseMethodEncoder()],
     ['remaining', getU64Encoder()],
     ['total', getU64Encoder()],
-  ]) as Encoder<UsesArgs>;
+  ]) satisfies Encoder<UsesArgs>;
 }
 
-export function getUsesDecoder(): Decoder<Uses> {
+export function getUsesDecoder() {
   return getStructDecoder<Uses>([
     ['useMethod', getUseMethodDecoder()],
     ['remaining', getU64Decoder()],
     ['total', getU64Decoder()],
-  ]) as Decoder<Uses>;
+  ]) satisfies Decoder<Uses>;
 }
 
 export function getUsesCodec(): Codec<UsesArgs, Uses> {

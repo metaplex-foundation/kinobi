@@ -68,7 +68,7 @@ export type WithdrawInstructionData = { discriminator: Array<number> };
 
 export type WithdrawInstructionDataArgs = {};
 
-export function getWithdrawInstructionDataEncoder(): Encoder<WithdrawInstructionDataArgs> {
+export function getWithdrawInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{ discriminator: Array<number> }>([
       ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
@@ -77,13 +77,13 @@ export function getWithdrawInstructionDataEncoder(): Encoder<WithdrawInstruction
       ...value,
       discriminator: [183, 18, 70, 156, 148, 109, 161, 34],
     })
-  ) as Encoder<WithdrawInstructionDataArgs>;
+  ) satisfies Encoder<WithdrawInstructionDataArgs>;
 }
 
-export function getWithdrawInstructionDataDecoder(): Decoder<WithdrawInstructionData> {
+export function getWithdrawInstructionDataDecoder() {
   return getStructDecoder<WithdrawInstructionData>([
     ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
-  ]) as Decoder<WithdrawInstructionData>;
+  ]) satisfies Decoder<WithdrawInstructionData>;
 }
 
 export function getWithdrawInstructionDataCodec(): Codec<

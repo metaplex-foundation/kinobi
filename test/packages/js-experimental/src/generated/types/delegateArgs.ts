@@ -29,8 +29,8 @@ export type DelegateArgsArgs =
   | { __kind: 'SaleV1'; amount: number | bigint }
   | { __kind: 'TransferV1'; amount: number | bigint };
 
-export function getDelegateArgsEncoder(): Encoder<DelegateArgsArgs> {
-  return getDataEnumEncoder<DelegateArgs>([
+export function getDelegateArgsEncoder() {
+  return getDataEnumEncoder<DelegateArgsArgs>([
     ['CollectionV1', getUnitEncoder()],
     [
       'SaleV1',
@@ -44,10 +44,10 @@ export function getDelegateArgsEncoder(): Encoder<DelegateArgsArgs> {
         ['amount', getU64Encoder()],
       ]),
     ],
-  ]) as Encoder<DelegateArgsArgs>;
+  ]) satisfies Encoder<DelegateArgsArgs>;
 }
 
-export function getDelegateArgsDecoder(): Decoder<DelegateArgs> {
+export function getDelegateArgsDecoder() {
   return getDataEnumDecoder<DelegateArgs>([
     ['CollectionV1', getUnitDecoder()],
     [
@@ -62,7 +62,7 @@ export function getDelegateArgsDecoder(): Decoder<DelegateArgs> {
         ['amount', getU64Decoder()],
       ]),
     ],
-  ]) as Decoder<DelegateArgs>;
+  ]) satisfies Decoder<DelegateArgs>;
 }
 
 export function getDelegateArgsCodec(): Codec<DelegateArgsArgs, DelegateArgs> {

@@ -85,19 +85,19 @@ export type VerifyCollectionInstructionData = { discriminator: number };
 
 export type VerifyCollectionInstructionDataArgs = {};
 
-export function getVerifyCollectionInstructionDataEncoder(): Encoder<VerifyCollectionInstructionDataArgs> {
+export function getVerifyCollectionInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{ discriminator: number }>([
       ['discriminator', getU8Encoder()],
     ]),
     (value) => ({ ...value, discriminator: 18 })
-  ) as Encoder<VerifyCollectionInstructionDataArgs>;
+  ) satisfies Encoder<VerifyCollectionInstructionDataArgs>;
 }
 
-export function getVerifyCollectionInstructionDataDecoder(): Decoder<VerifyCollectionInstructionData> {
+export function getVerifyCollectionInstructionDataDecoder() {
   return getStructDecoder<VerifyCollectionInstructionData>([
     ['discriminator', getU8Decoder()],
-  ]) as Decoder<VerifyCollectionInstructionData>;
+  ]) satisfies Decoder<VerifyCollectionInstructionData>;
 }
 
 export function getVerifyCollectionInstructionDataCodec(): Codec<

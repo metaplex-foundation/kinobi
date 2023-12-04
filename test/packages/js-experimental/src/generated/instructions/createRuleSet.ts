@@ -88,7 +88,7 @@ export type CreateRuleSetInstructionDataArgs = {
   ruleSetBump: number;
 };
 
-export function getCreateRuleSetInstructionDataEncoder(): Encoder<CreateRuleSetInstructionDataArgs> {
+export function getCreateRuleSetInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       discriminator: number;
@@ -100,15 +100,15 @@ export function getCreateRuleSetInstructionDataEncoder(): Encoder<CreateRuleSetI
       ['ruleSetBump', getU8Encoder()],
     ]),
     (value) => ({ ...value, discriminator: 0 })
-  ) as Encoder<CreateRuleSetInstructionDataArgs>;
+  ) satisfies Encoder<CreateRuleSetInstructionDataArgs>;
 }
 
-export function getCreateRuleSetInstructionDataDecoder(): Decoder<CreateRuleSetInstructionData> {
+export function getCreateRuleSetInstructionDataDecoder() {
   return getStructDecoder<CreateRuleSetInstructionData>([
     ['discriminator', getU8Decoder()],
     ['createArgs', getTaCreateArgsDecoder()],
     ['ruleSetBump', getU8Decoder()],
-  ]) as Decoder<CreateRuleSetInstructionData>;
+  ]) satisfies Decoder<CreateRuleSetInstructionData>;
 }
 
 export function getCreateRuleSetInstructionDataCodec(): Codec<

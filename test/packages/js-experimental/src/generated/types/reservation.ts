@@ -30,20 +30,20 @@ export type ReservationArgs = {
   totalSpots: number | bigint;
 };
 
-export function getReservationEncoder(): Encoder<ReservationArgs> {
+export function getReservationEncoder() {
   return getStructEncoder<ReservationArgs>([
     ['address', getAddressEncoder()],
     ['spotsRemaining', getU64Encoder()],
     ['totalSpots', getU64Encoder()],
-  ]) as Encoder<ReservationArgs>;
+  ]) satisfies Encoder<ReservationArgs>;
 }
 
-export function getReservationDecoder(): Decoder<Reservation> {
+export function getReservationDecoder() {
   return getStructDecoder<Reservation>([
     ['address', getAddressDecoder()],
     ['spotsRemaining', getU64Decoder()],
     ['totalSpots', getU64Decoder()],
-  ]) as Decoder<Reservation>;
+  ]) satisfies Decoder<Reservation>;
 }
 
 export function getReservationCodec(): Codec<ReservationArgs, Reservation> {

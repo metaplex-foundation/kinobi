@@ -68,19 +68,19 @@ export type RemoveCreatorVerificationInstructionData = {
 
 export type RemoveCreatorVerificationInstructionDataArgs = {};
 
-export function getRemoveCreatorVerificationInstructionDataEncoder(): Encoder<RemoveCreatorVerificationInstructionDataArgs> {
+export function getRemoveCreatorVerificationInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{ discriminator: number }>([
       ['discriminator', getU8Encoder()],
     ]),
     (value) => ({ ...value, discriminator: 28 })
-  ) as Encoder<RemoveCreatorVerificationInstructionDataArgs>;
+  ) satisfies Encoder<RemoveCreatorVerificationInstructionDataArgs>;
 }
 
-export function getRemoveCreatorVerificationInstructionDataDecoder(): Decoder<RemoveCreatorVerificationInstructionData> {
+export function getRemoveCreatorVerificationInstructionDataDecoder() {
   return getStructDecoder<RemoveCreatorVerificationInstructionData>([
     ['discriminator', getU8Decoder()],
-  ]) as Decoder<RemoveCreatorVerificationInstructionData>;
+  ]) satisfies Decoder<RemoveCreatorVerificationInstructionData>;
 }
 
 export function getRemoveCreatorVerificationInstructionDataCodec(): Codec<

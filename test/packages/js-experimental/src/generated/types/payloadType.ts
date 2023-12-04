@@ -46,8 +46,8 @@ export type PayloadTypeArgs =
   | { __kind: 'MerkleProof'; leaf: Uint8Array; proof: Array<Uint8Array> }
   | { __kind: 'Number'; fields: [number | bigint] };
 
-export function getPayloadTypeEncoder(): Encoder<PayloadTypeArgs> {
-  return getDataEnumEncoder<PayloadType>([
+export function getPayloadTypeEncoder() {
+  return getDataEnumEncoder<PayloadTypeArgs>([
     [
       'Pubkey',
       getStructEncoder<GetDataEnumKindContent<PayloadTypeArgs, 'Pubkey'>>([
@@ -73,10 +73,10 @@ export function getPayloadTypeEncoder(): Encoder<PayloadTypeArgs> {
         ['fields', getTupleEncoder([getU64Encoder()])],
       ]),
     ],
-  ]) as Encoder<PayloadTypeArgs>;
+  ]) satisfies Encoder<PayloadTypeArgs>;
 }
 
-export function getPayloadTypeDecoder(): Decoder<PayloadType> {
+export function getPayloadTypeDecoder() {
   return getDataEnumDecoder<PayloadType>([
     [
       'Pubkey',
@@ -103,7 +103,7 @@ export function getPayloadTypeDecoder(): Decoder<PayloadType> {
         ['fields', getTupleDecoder([getU64Decoder()])],
       ]),
     ],
-  ]) as Decoder<PayloadType>;
+  ]) satisfies Decoder<PayloadType>;
 }
 
 export function getPayloadTypeCodec(): Codec<PayloadTypeArgs, PayloadType> {

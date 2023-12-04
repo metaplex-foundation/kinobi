@@ -34,7 +34,7 @@ export type CreatorArgs = {
   share?: number;
 };
 
-export function getCreatorEncoder(): Encoder<CreatorArgs> {
+export function getCreatorEncoder() {
   return mapEncoder(
     getStructEncoder<{ address: Address; verified: boolean; share: number }>([
       ['address', getAddressEncoder()],
@@ -46,15 +46,15 @@ export function getCreatorEncoder(): Encoder<CreatorArgs> {
       verified: value.verified ?? false,
       share: value.share ?? 42,
     })
-  ) as Encoder<CreatorArgs>;
+  ) satisfies Encoder<CreatorArgs>;
 }
 
-export function getCreatorDecoder(): Decoder<Creator> {
+export function getCreatorDecoder() {
   return getStructDecoder<Creator>([
     ['address', getAddressDecoder()],
     ['verified', getBooleanDecoder()],
     ['share', getU8Decoder()],
-  ]) as Decoder<Creator>;
+  ]) satisfies Decoder<Creator>;
 }
 
 export function getCreatorCodec(): Codec<CreatorArgs, Creator> {

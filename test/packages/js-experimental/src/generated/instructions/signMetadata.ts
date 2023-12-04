@@ -66,19 +66,19 @@ export type SignMetadataInstructionData = { discriminator: number };
 
 export type SignMetadataInstructionDataArgs = {};
 
-export function getSignMetadataInstructionDataEncoder(): Encoder<SignMetadataInstructionDataArgs> {
+export function getSignMetadataInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{ discriminator: number }>([
       ['discriminator', getU8Encoder()],
     ]),
     (value) => ({ ...value, discriminator: 7 })
-  ) as Encoder<SignMetadataInstructionDataArgs>;
+  ) satisfies Encoder<SignMetadataInstructionDataArgs>;
 }
 
-export function getSignMetadataInstructionDataDecoder(): Decoder<SignMetadataInstructionData> {
+export function getSignMetadataInstructionDataDecoder() {
   return getStructDecoder<SignMetadataInstructionData>([
     ['discriminator', getU8Decoder()],
-  ]) as Decoder<SignMetadataInstructionData>;
+  ]) satisfies Decoder<SignMetadataInstructionData>;
 }
 
 export function getSignMetadataInstructionDataCodec(): Codec<

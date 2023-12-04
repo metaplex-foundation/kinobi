@@ -31,16 +31,16 @@ export type DummyLinesArgs = {
   lines: Array<ConfigLineArgs>;
 };
 
-export function getDummyLinesEncoder(): Encoder<DummyLinesArgs> {
+export function getDummyLinesEncoder() {
   return getStructEncoder<DummyLinesArgs>([
     ['lines', getArrayEncoder(getConfigLineEncoder(), { size: 'remainder' })],
-  ]) as Encoder<DummyLinesArgs>;
+  ]) satisfies Encoder<DummyLinesArgs>;
 }
 
-export function getDummyLinesDecoder(): Decoder<DummyLines> {
+export function getDummyLinesDecoder() {
   return getStructDecoder<DummyLines>([
     ['lines', getArrayDecoder(getConfigLineDecoder(), { size: 'remainder' })],
-  ]) as Decoder<DummyLines>;
+  ]) satisfies Decoder<DummyLines>;
 }
 
 export function getDummyLinesCodec(): Codec<DummyLinesArgs, DummyLines> {

@@ -94,19 +94,19 @@ export type UnverifySizedCollectionItemInstructionData = {
 
 export type UnverifySizedCollectionItemInstructionDataArgs = {};
 
-export function getUnverifySizedCollectionItemInstructionDataEncoder(): Encoder<UnverifySizedCollectionItemInstructionDataArgs> {
+export function getUnverifySizedCollectionItemInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{ discriminator: number }>([
       ['discriminator', getU8Encoder()],
     ]),
     (value) => ({ ...value, discriminator: 31 })
-  ) as Encoder<UnverifySizedCollectionItemInstructionDataArgs>;
+  ) satisfies Encoder<UnverifySizedCollectionItemInstructionDataArgs>;
 }
 
-export function getUnverifySizedCollectionItemInstructionDataDecoder(): Decoder<UnverifySizedCollectionItemInstructionData> {
+export function getUnverifySizedCollectionItemInstructionDataDecoder() {
   return getStructDecoder<UnverifySizedCollectionItemInstructionData>([
     ['discriminator', getU8Decoder()],
-  ]) as Decoder<UnverifySizedCollectionItemInstructionData>;
+  ]) satisfies Decoder<UnverifySizedCollectionItemInstructionData>;
 }
 
 export function getUnverifySizedCollectionItemInstructionDataCodec(): Codec<

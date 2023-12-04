@@ -131,7 +131,7 @@ export type SetCollectionInstructionData = { discriminator: Array<number> };
 
 export type SetCollectionInstructionDataArgs = {};
 
-export function getSetCollectionInstructionDataEncoder(): Encoder<SetCollectionInstructionDataArgs> {
+export function getSetCollectionInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{ discriminator: Array<number> }>([
       ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
@@ -140,13 +140,13 @@ export function getSetCollectionInstructionDataEncoder(): Encoder<SetCollectionI
       ...value,
       discriminator: [192, 254, 206, 76, 168, 182, 59, 223],
     })
-  ) as Encoder<SetCollectionInstructionDataArgs>;
+  ) satisfies Encoder<SetCollectionInstructionDataArgs>;
 }
 
-export function getSetCollectionInstructionDataDecoder(): Decoder<SetCollectionInstructionData> {
+export function getSetCollectionInstructionDataDecoder() {
   return getStructDecoder<SetCollectionInstructionData>([
     ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
-  ]) as Decoder<SetCollectionInstructionData>;
+  ]) satisfies Decoder<SetCollectionInstructionData>;
 }
 
 export function getSetCollectionInstructionDataCodec(): Codec<

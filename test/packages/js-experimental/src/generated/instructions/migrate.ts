@@ -115,21 +115,21 @@ export type MigrateInstructionData = {
 
 export type MigrateInstructionDataArgs = { migrateArgs: MigrateArgsArgs };
 
-export function getMigrateInstructionDataEncoder(): Encoder<MigrateInstructionDataArgs> {
+export function getMigrateInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{ discriminator: number; migrateArgs: MigrateArgsArgs }>([
       ['discriminator', getU8Encoder()],
       ['migrateArgs', getMigrateArgsEncoder()],
     ]),
     (value) => ({ ...value, discriminator: 50 })
-  ) as Encoder<MigrateInstructionDataArgs>;
+  ) satisfies Encoder<MigrateInstructionDataArgs>;
 }
 
-export function getMigrateInstructionDataDecoder(): Decoder<MigrateInstructionData> {
+export function getMigrateInstructionDataDecoder() {
   return getStructDecoder<MigrateInstructionData>([
     ['discriminator', getU8Decoder()],
     ['migrateArgs', getMigrateArgsDecoder()],
-  ]) as Decoder<MigrateInstructionData>;
+  ]) satisfies Decoder<MigrateInstructionData>;
 }
 
 export function getMigrateInstructionDataCodec(): Codec<

@@ -23,18 +23,18 @@ export type TaCreateArgs = {
 
 export type TaCreateArgsArgs = TaCreateArgs;
 
-export function getTaCreateArgsEncoder(): Encoder<TaCreateArgsArgs> {
+export function getTaCreateArgsEncoder() {
   return getStructEncoder<TaCreateArgsArgs>([
     ['ruleSetName', getStringEncoder()],
     ['serializedRuleSet', getBytesEncoder({ size: getU32Encoder() })],
-  ]) as Encoder<TaCreateArgsArgs>;
+  ]) satisfies Encoder<TaCreateArgsArgs>;
 }
 
-export function getTaCreateArgsDecoder(): Decoder<TaCreateArgs> {
+export function getTaCreateArgsDecoder() {
   return getStructDecoder<TaCreateArgs>([
     ['ruleSetName', getStringDecoder()],
     ['serializedRuleSet', getBytesDecoder({ size: getU32Decoder() })],
-  ]) as Decoder<TaCreateArgs>;
+  ]) satisfies Decoder<TaCreateArgs>;
 }
 
 export function getTaCreateArgsCodec(): Codec<TaCreateArgsArgs, TaCreateArgs> {

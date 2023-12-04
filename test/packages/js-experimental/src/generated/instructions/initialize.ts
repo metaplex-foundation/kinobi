@@ -126,7 +126,7 @@ export type InitializeInstructionData = {
 
 export type InitializeInstructionDataArgs = { data: CandyMachineDataArgs };
 
-export function getInitializeInstructionDataEncoder(): Encoder<InitializeInstructionDataArgs> {
+export function getInitializeInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       discriminator: Array<number>;
@@ -139,14 +139,14 @@ export function getInitializeInstructionDataEncoder(): Encoder<InitializeInstruc
       ...value,
       discriminator: [175, 175, 109, 31, 13, 152, 155, 237],
     })
-  ) as Encoder<InitializeInstructionDataArgs>;
+  ) satisfies Encoder<InitializeInstructionDataArgs>;
 }
 
-export function getInitializeInstructionDataDecoder(): Decoder<InitializeInstructionData> {
+export function getInitializeInstructionDataDecoder() {
   return getStructDecoder<InitializeInstructionData>([
     ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
     ['data', getCandyMachineDataDecoder()],
-  ]) as Decoder<InitializeInstructionData>;
+  ]) satisfies Decoder<InitializeInstructionData>;
 }
 
 export function getInitializeInstructionDataCodec(): Codec<

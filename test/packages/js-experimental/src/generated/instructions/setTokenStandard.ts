@@ -75,19 +75,19 @@ export type SetTokenStandardInstructionData = { discriminator: number };
 
 export type SetTokenStandardInstructionDataArgs = {};
 
-export function getSetTokenStandardInstructionDataEncoder(): Encoder<SetTokenStandardInstructionDataArgs> {
+export function getSetTokenStandardInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{ discriminator: number }>([
       ['discriminator', getU8Encoder()],
     ]),
     (value) => ({ ...value, discriminator: 35 })
-  ) as Encoder<SetTokenStandardInstructionDataArgs>;
+  ) satisfies Encoder<SetTokenStandardInstructionDataArgs>;
 }
 
-export function getSetTokenStandardInstructionDataDecoder(): Decoder<SetTokenStandardInstructionData> {
+export function getSetTokenStandardInstructionDataDecoder() {
   return getStructDecoder<SetTokenStandardInstructionData>([
     ['discriminator', getU8Decoder()],
-  ]) as Decoder<SetTokenStandardInstructionData>;
+  ]) satisfies Decoder<SetTokenStandardInstructionData>;
 }
 
 export function getSetTokenStandardInstructionDataCodec(): Codec<

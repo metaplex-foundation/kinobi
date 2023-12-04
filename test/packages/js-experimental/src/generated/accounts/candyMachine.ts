@@ -82,7 +82,7 @@ export type CandyMachineAccountDataArgs = {
   data: CandyMachineDataArgs;
 };
 
-export function getCandyMachineAccountDataEncoder(): Encoder<CandyMachineAccountDataArgs> {
+export function getCandyMachineAccountDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       discriminator: Array<number>;
@@ -111,10 +111,10 @@ export function getCandyMachineAccountDataEncoder(): Encoder<CandyMachineAccount
       ...value,
       discriminator: [51, 173, 177, 113, 25, 241, 109, 189],
     })
-  ) as Encoder<CandyMachineAccountDataArgs>;
+  ) satisfies Encoder<CandyMachineAccountDataArgs>;
 }
 
-export function getCandyMachineAccountDataDecoder(): Decoder<CandyMachineAccountData> {
+export function getCandyMachineAccountDataDecoder() {
   return getStructDecoder<CandyMachineAccountData>([
     ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
     ['features', getU64Decoder()],
@@ -123,7 +123,7 @@ export function getCandyMachineAccountDataDecoder(): Decoder<CandyMachineAccount
     ['collectionMint', getAddressDecoder()],
     ['itemsRedeemed', getU64Decoder()],
     ['data', getCandyMachineDataDecoder()],
-  ]) as Decoder<CandyMachineAccountData>;
+  ]) satisfies Decoder<CandyMachineAccountData>;
 }
 
 export function getCandyMachineAccountDataCodec(): Codec<

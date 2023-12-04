@@ -140,7 +140,7 @@ export type CreateMetadataAccountInstructionDataArgs = {
   metadataBump: number;
 };
 
-export function getCreateMetadataAccountInstructionDataEncoder(): Encoder<CreateMetadataAccountInstructionDataArgs> {
+export function getCreateMetadataAccountInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       discriminator: number;
@@ -175,10 +175,10 @@ export function getCreateMetadataAccountInstructionDataEncoder(): Encoder<Create
       ['metadataBump', getU8Encoder()],
     ]),
     (value) => ({ ...value, discriminator: 0 })
-  ) as Encoder<CreateMetadataAccountInstructionDataArgs>;
+  ) satisfies Encoder<CreateMetadataAccountInstructionDataArgs>;
 }
 
-export function getCreateMetadataAccountInstructionDataDecoder(): Decoder<CreateMetadataAccountInstructionData> {
+export function getCreateMetadataAccountInstructionDataDecoder() {
   return getStructDecoder<CreateMetadataAccountInstructionData>([
     ['discriminator', getU8Decoder()],
     [
@@ -199,7 +199,7 @@ export function getCreateMetadataAccountInstructionDataDecoder(): Decoder<Create
     ],
     ['isMutable', getBooleanDecoder()],
     ['metadataBump', getU8Decoder()],
-  ]) as Decoder<CreateMetadataAccountInstructionData>;
+  ]) satisfies Decoder<CreateMetadataAccountInstructionData>;
 }
 
 export function getCreateMetadataAccountInstructionDataCodec(): Codec<

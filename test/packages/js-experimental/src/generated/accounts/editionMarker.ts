@@ -41,21 +41,21 @@ export type EditionMarkerAccountData = { key: TmKey; ledger: Array<number> };
 
 export type EditionMarkerAccountDataArgs = { ledger: Array<number> };
 
-export function getEditionMarkerAccountDataEncoder(): Encoder<EditionMarkerAccountDataArgs> {
+export function getEditionMarkerAccountDataEncoder() {
   return mapEncoder(
     getStructEncoder<{ key: TmKeyArgs; ledger: Array<number> }>([
       ['key', getTmKeyEncoder()],
       ['ledger', getArrayEncoder(getU8Encoder(), { size: 31 })],
     ]),
     (value) => ({ ...value, key: TmKey.EditionMarker })
-  ) as Encoder<EditionMarkerAccountDataArgs>;
+  ) satisfies Encoder<EditionMarkerAccountDataArgs>;
 }
 
-export function getEditionMarkerAccountDataDecoder(): Decoder<EditionMarkerAccountData> {
+export function getEditionMarkerAccountDataDecoder() {
   return getStructDecoder<EditionMarkerAccountData>([
     ['key', getTmKeyDecoder()],
     ['ledger', getArrayDecoder(getU8Decoder(), { size: 31 })],
-  ]) as Decoder<EditionMarkerAccountData>;
+  ]) satisfies Decoder<EditionMarkerAccountData>;
 }
 
 export function getEditionMarkerAccountDataCodec(): Codec<

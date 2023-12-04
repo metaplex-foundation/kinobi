@@ -21,16 +21,16 @@ export type ProgrammableConfig = { ruleSet: Address };
 
 export type ProgrammableConfigArgs = ProgrammableConfig;
 
-export function getProgrammableConfigEncoder(): Encoder<ProgrammableConfigArgs> {
+export function getProgrammableConfigEncoder() {
   return getStructEncoder<ProgrammableConfigArgs>([
     ['ruleSet', getAddressEncoder()],
-  ]) as Encoder<ProgrammableConfigArgs>;
+  ]) satisfies Encoder<ProgrammableConfigArgs>;
 }
 
-export function getProgrammableConfigDecoder(): Decoder<ProgrammableConfig> {
+export function getProgrammableConfigDecoder() {
   return getStructDecoder<ProgrammableConfig>([
     ['ruleSet', getAddressDecoder()],
-  ]) as Decoder<ProgrammableConfig>;
+  ]) satisfies Decoder<ProgrammableConfig>;
 }
 
 export function getProgrammableConfigCodec(): Codec<

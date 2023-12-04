@@ -50,7 +50,7 @@ export type EditionAccountDataArgs = {
   edition: number | bigint;
 };
 
-export function getEditionAccountDataEncoder(): Encoder<EditionAccountDataArgs> {
+export function getEditionAccountDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       key: TmKeyArgs;
@@ -62,15 +62,15 @@ export function getEditionAccountDataEncoder(): Encoder<EditionAccountDataArgs> 
       ['edition', getU64Encoder()],
     ]),
     (value) => ({ ...value, key: TmKey.EditionV1 })
-  ) as Encoder<EditionAccountDataArgs>;
+  ) satisfies Encoder<EditionAccountDataArgs>;
 }
 
-export function getEditionAccountDataDecoder(): Decoder<EditionAccountData> {
+export function getEditionAccountDataDecoder() {
   return getStructDecoder<EditionAccountData>([
     ['key', getTmKeyDecoder()],
     ['parent', getAddressDecoder()],
     ['edition', getU64Decoder()],
-  ]) as Decoder<EditionAccountData>;
+  ]) satisfies Decoder<EditionAccountData>;
 }
 
 export function getEditionAccountDataCodec(): Codec<

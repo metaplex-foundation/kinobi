@@ -100,7 +100,7 @@ export type AssetDataArgs = {
   delegateState: OptionOrNullable<DelegateStateArgs>;
 };
 
-export function getAssetDataEncoder(): Encoder<AssetDataArgs> {
+export function getAssetDataEncoder() {
   return getStructEncoder<AssetDataArgs>([
     ['updateAuthority', getAddressEncoder()],
     ['name', getStringEncoder()],
@@ -117,10 +117,10 @@ export function getAssetDataEncoder(): Encoder<AssetDataArgs> {
     ['collectionDetails', getOptionEncoder(getCollectionDetailsEncoder())],
     ['programmableConfig', getOptionEncoder(getProgrammableConfigEncoder())],
     ['delegateState', getOptionEncoder(getDelegateStateEncoder())],
-  ]) as Encoder<AssetDataArgs>;
+  ]) satisfies Encoder<AssetDataArgs>;
 }
 
-export function getAssetDataDecoder(): Decoder<AssetData> {
+export function getAssetDataDecoder() {
   return getStructDecoder<AssetData>([
     ['updateAuthority', getAddressDecoder()],
     ['name', getStringDecoder()],
@@ -137,7 +137,7 @@ export function getAssetDataDecoder(): Decoder<AssetData> {
     ['collectionDetails', getOptionDecoder(getCollectionDetailsDecoder())],
     ['programmableConfig', getOptionDecoder(getProgrammableConfigDecoder())],
     ['delegateState', getOptionDecoder(getDelegateStateDecoder())],
-  ]) as Decoder<AssetData>;
+  ]) satisfies Decoder<AssetData>;
 }
 
 export function getAssetDataCodec(): Codec<AssetDataArgs, AssetData> {

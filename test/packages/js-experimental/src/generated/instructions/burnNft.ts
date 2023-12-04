@@ -90,19 +90,19 @@ export type BurnNftInstructionData = { discriminator: number };
 
 export type BurnNftInstructionDataArgs = {};
 
-export function getBurnNftInstructionDataEncoder(): Encoder<BurnNftInstructionDataArgs> {
+export function getBurnNftInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{ discriminator: number }>([
       ['discriminator', getU8Encoder()],
     ]),
     (value) => ({ ...value, discriminator: 29 })
-  ) as Encoder<BurnNftInstructionDataArgs>;
+  ) satisfies Encoder<BurnNftInstructionDataArgs>;
 }
 
-export function getBurnNftInstructionDataDecoder(): Decoder<BurnNftInstructionData> {
+export function getBurnNftInstructionDataDecoder() {
   return getStructDecoder<BurnNftInstructionData>([
     ['discriminator', getU8Decoder()],
-  ]) as Decoder<BurnNftInstructionData>;
+  ]) satisfies Decoder<BurnNftInstructionData>;
 }
 
 export function getBurnNftInstructionDataCodec(): Codec<

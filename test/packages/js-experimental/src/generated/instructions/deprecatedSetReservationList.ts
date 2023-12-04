@@ -100,7 +100,7 @@ export type DeprecatedSetReservationListInstructionDataArgs = {
   totalSpotOffset: number | bigint;
 };
 
-export function getDeprecatedSetReservationListInstructionDataEncoder(): Encoder<DeprecatedSetReservationListInstructionDataArgs> {
+export function getDeprecatedSetReservationListInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       discriminator: number;
@@ -116,17 +116,17 @@ export function getDeprecatedSetReservationListInstructionDataEncoder(): Encoder
       ['totalSpotOffset', getU64Encoder()],
     ]),
     (value) => ({ ...value, discriminator: 5 })
-  ) as Encoder<DeprecatedSetReservationListInstructionDataArgs>;
+  ) satisfies Encoder<DeprecatedSetReservationListInstructionDataArgs>;
 }
 
-export function getDeprecatedSetReservationListInstructionDataDecoder(): Decoder<DeprecatedSetReservationListInstructionData> {
+export function getDeprecatedSetReservationListInstructionDataDecoder() {
   return getStructDecoder<DeprecatedSetReservationListInstructionData>([
     ['discriminator', getU8Decoder()],
     ['reservations', getArrayDecoder(getReservationDecoder())],
     ['totalReservationSpots', getOptionDecoder(getU64Decoder())],
     ['offset', getU64Decoder()],
     ['totalSpotOffset', getU64Decoder()],
-  ]) as Decoder<DeprecatedSetReservationListInstructionData>;
+  ]) satisfies Decoder<DeprecatedSetReservationListInstructionData>;
 }
 
 export function getDeprecatedSetReservationListInstructionDataCodec(): Codec<

@@ -90,21 +90,21 @@ export type VerifyInstructionData = {
 
 export type VerifyInstructionDataArgs = { verifyArgs: VerifyArgsArgs };
 
-export function getVerifyInstructionDataEncoder(): Encoder<VerifyInstructionDataArgs> {
+export function getVerifyInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{ discriminator: number; verifyArgs: VerifyArgsArgs }>([
       ['discriminator', getU8Encoder()],
       ['verifyArgs', getVerifyArgsEncoder()],
     ]),
     (value) => ({ ...value, discriminator: 47 })
-  ) as Encoder<VerifyInstructionDataArgs>;
+  ) satisfies Encoder<VerifyInstructionDataArgs>;
 }
 
-export function getVerifyInstructionDataDecoder(): Decoder<VerifyInstructionData> {
+export function getVerifyInstructionDataDecoder() {
   return getStructDecoder<VerifyInstructionData>([
     ['discriminator', getU8Decoder()],
     ['verifyArgs', getVerifyArgsDecoder()],
-  ]) as Decoder<VerifyInstructionData>;
+  ]) satisfies Decoder<VerifyInstructionData>;
 }
 
 export function getVerifyInstructionDataCodec(): Codec<

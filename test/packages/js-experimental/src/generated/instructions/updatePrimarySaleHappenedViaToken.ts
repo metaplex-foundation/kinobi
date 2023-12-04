@@ -73,19 +73,19 @@ export type UpdatePrimarySaleHappenedViaTokenInstructionData = {
 
 export type UpdatePrimarySaleHappenedViaTokenInstructionDataArgs = {};
 
-export function getUpdatePrimarySaleHappenedViaTokenInstructionDataEncoder(): Encoder<UpdatePrimarySaleHappenedViaTokenInstructionDataArgs> {
+export function getUpdatePrimarySaleHappenedViaTokenInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{ discriminator: number }>([
       ['discriminator', getU8Encoder()],
     ]),
     (value) => ({ ...value, discriminator: 4 })
-  ) as Encoder<UpdatePrimarySaleHappenedViaTokenInstructionDataArgs>;
+  ) satisfies Encoder<UpdatePrimarySaleHappenedViaTokenInstructionDataArgs>;
 }
 
-export function getUpdatePrimarySaleHappenedViaTokenInstructionDataDecoder(): Decoder<UpdatePrimarySaleHappenedViaTokenInstructionData> {
+export function getUpdatePrimarySaleHappenedViaTokenInstructionDataDecoder() {
   return getStructDecoder<UpdatePrimarySaleHappenedViaTokenInstructionData>([
     ['discriminator', getU8Decoder()],
-  ]) as Decoder<UpdatePrimarySaleHappenedViaTokenInstructionData>;
+  ]) satisfies Decoder<UpdatePrimarySaleHappenedViaTokenInstructionData>;
 }
 
 export function getUpdatePrimarySaleHappenedViaTokenInstructionDataCodec(): Codec<

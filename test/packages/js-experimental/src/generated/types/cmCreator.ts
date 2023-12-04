@@ -30,20 +30,20 @@ export type CmCreator = {
 
 export type CmCreatorArgs = CmCreator;
 
-export function getCmCreatorEncoder(): Encoder<CmCreatorArgs> {
+export function getCmCreatorEncoder() {
   return getStructEncoder<CmCreatorArgs>([
     ['address', getAddressEncoder()],
     ['verified', getBooleanEncoder()],
     ['percentageShare', getU8Encoder()],
-  ]) as Encoder<CmCreatorArgs>;
+  ]) satisfies Encoder<CmCreatorArgs>;
 }
 
-export function getCmCreatorDecoder(): Decoder<CmCreator> {
+export function getCmCreatorDecoder() {
   return getStructDecoder<CmCreator>([
     ['address', getAddressDecoder()],
     ['verified', getBooleanDecoder()],
     ['percentageShare', getU8Decoder()],
-  ]) as Decoder<CmCreator>;
+  ]) satisfies Decoder<CmCreator>;
 }
 
 export function getCmCreatorCodec(): Codec<CmCreatorArgs, CmCreator> {

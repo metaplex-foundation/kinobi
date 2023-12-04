@@ -98,19 +98,19 @@ export type SetAndVerifySizedCollectionItemInstructionData = {
 
 export type SetAndVerifySizedCollectionItemInstructionDataArgs = {};
 
-export function getSetAndVerifySizedCollectionItemInstructionDataEncoder(): Encoder<SetAndVerifySizedCollectionItemInstructionDataArgs> {
+export function getSetAndVerifySizedCollectionItemInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{ discriminator: number }>([
       ['discriminator', getU8Encoder()],
     ]),
     (value) => ({ ...value, discriminator: 32 })
-  ) as Encoder<SetAndVerifySizedCollectionItemInstructionDataArgs>;
+  ) satisfies Encoder<SetAndVerifySizedCollectionItemInstructionDataArgs>;
 }
 
-export function getSetAndVerifySizedCollectionItemInstructionDataDecoder(): Decoder<SetAndVerifySizedCollectionItemInstructionData> {
+export function getSetAndVerifySizedCollectionItemInstructionDataDecoder() {
   return getStructDecoder<SetAndVerifySizedCollectionItemInstructionData>([
     ['discriminator', getU8Decoder()],
-  ]) as Decoder<SetAndVerifySizedCollectionItemInstructionData>;
+  ]) satisfies Decoder<SetAndVerifySizedCollectionItemInstructionData>;
 }
 
 export function getSetAndVerifySizedCollectionItemInstructionDataCodec(): Codec<

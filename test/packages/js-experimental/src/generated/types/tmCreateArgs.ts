@@ -56,8 +56,8 @@ export type TmCreateArgsArgs =
       maxSupply: OptionOrNullable<number | bigint>;
     };
 
-export function getTmCreateArgsEncoder(): Encoder<TmCreateArgsArgs> {
-  return getDataEnumEncoder<TmCreateArgs>([
+export function getTmCreateArgsEncoder() {
+  return getDataEnumEncoder<TmCreateArgsArgs>([
     [
       'V1',
       getStructEncoder<GetDataEnumKindContent<TmCreateArgsArgs, 'V1'>>([
@@ -73,10 +73,10 @@ export function getTmCreateArgsEncoder(): Encoder<TmCreateArgsArgs> {
         ['maxSupply', getOptionEncoder(getU64Encoder())],
       ]),
     ],
-  ]) as Encoder<TmCreateArgsArgs>;
+  ]) satisfies Encoder<TmCreateArgsArgs>;
 }
 
-export function getTmCreateArgsDecoder(): Decoder<TmCreateArgs> {
+export function getTmCreateArgsDecoder() {
   return getDataEnumDecoder<TmCreateArgs>([
     [
       'V1',
@@ -93,7 +93,7 @@ export function getTmCreateArgsDecoder(): Decoder<TmCreateArgs> {
         ['maxSupply', getOptionDecoder(getU64Decoder())],
       ]),
     ],
-  ]) as Decoder<TmCreateArgs>;
+  ]) satisfies Decoder<TmCreateArgs>;
 }
 
 export function getTmCreateArgsCodec(): Codec<TmCreateArgsArgs, TmCreateArgs> {

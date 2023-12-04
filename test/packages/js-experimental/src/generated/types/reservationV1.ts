@@ -26,20 +26,20 @@ export type ReservationV1 = {
 
 export type ReservationV1Args = ReservationV1;
 
-export function getReservationV1Encoder(): Encoder<ReservationV1Args> {
+export function getReservationV1Encoder() {
   return getStructEncoder<ReservationV1Args>([
     ['address', getAddressEncoder()],
     ['spotsRemaining', getU8Encoder()],
     ['totalSpots', getU8Encoder()],
-  ]) as Encoder<ReservationV1Args>;
+  ]) satisfies Encoder<ReservationV1Args>;
 }
 
-export function getReservationV1Decoder(): Decoder<ReservationV1> {
+export function getReservationV1Decoder() {
   return getStructDecoder<ReservationV1>([
     ['address', getAddressDecoder()],
     ['spotsRemaining', getU8Decoder()],
     ['totalSpots', getU8Decoder()],
-  ]) as Decoder<ReservationV1>;
+  ]) satisfies Decoder<ReservationV1>;
 }
 
 export function getReservationV1Codec(): Codec<

@@ -91,7 +91,7 @@ export type CreateFrequencyRuleInstructionDataArgs = {
   period: number | bigint;
 };
 
-export function getCreateFrequencyRuleInstructionDataEncoder(): Encoder<CreateFrequencyRuleInstructionDataArgs> {
+export function getCreateFrequencyRuleInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       discriminator: number;
@@ -107,17 +107,17 @@ export function getCreateFrequencyRuleInstructionDataEncoder(): Encoder<CreateFr
       ['period', getI64Encoder()],
     ]),
     (value) => ({ ...value, discriminator: 2 })
-  ) as Encoder<CreateFrequencyRuleInstructionDataArgs>;
+  ) satisfies Encoder<CreateFrequencyRuleInstructionDataArgs>;
 }
 
-export function getCreateFrequencyRuleInstructionDataDecoder(): Decoder<CreateFrequencyRuleInstructionData> {
+export function getCreateFrequencyRuleInstructionDataDecoder() {
   return getStructDecoder<CreateFrequencyRuleInstructionData>([
     ['discriminator', getU8Decoder()],
     ['ruleSetName', getStringDecoder()],
     ['freqRuleName', getStringDecoder()],
     ['lastUpdate', getI64Decoder()],
     ['period', getI64Decoder()],
-  ]) as Decoder<CreateFrequencyRuleInstructionData>;
+  ]) satisfies Decoder<CreateFrequencyRuleInstructionData>;
 }
 
 export function getCreateFrequencyRuleInstructionDataCodec(): Codec<

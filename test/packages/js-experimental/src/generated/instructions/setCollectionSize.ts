@@ -88,7 +88,7 @@ export type SetCollectionSizeInstructionDataArgs = {
   setCollectionSizeArgs: SetCollectionSizeArgsArgs;
 };
 
-export function getSetCollectionSizeInstructionDataEncoder(): Encoder<SetCollectionSizeInstructionDataArgs> {
+export function getSetCollectionSizeInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       discriminator: number;
@@ -98,14 +98,14 @@ export function getSetCollectionSizeInstructionDataEncoder(): Encoder<SetCollect
       ['setCollectionSizeArgs', getSetCollectionSizeArgsEncoder()],
     ]),
     (value) => ({ ...value, discriminator: 34 })
-  ) as Encoder<SetCollectionSizeInstructionDataArgs>;
+  ) satisfies Encoder<SetCollectionSizeInstructionDataArgs>;
 }
 
-export function getSetCollectionSizeInstructionDataDecoder(): Decoder<SetCollectionSizeInstructionData> {
+export function getSetCollectionSizeInstructionDataDecoder() {
   return getStructDecoder<SetCollectionSizeInstructionData>([
     ['discriminator', getU8Decoder()],
     ['setCollectionSizeArgs', getSetCollectionSizeArgsDecoder()],
-  ]) as Decoder<SetCollectionSizeInstructionData>;
+  ]) satisfies Decoder<SetCollectionSizeInstructionData>;
 }
 
 export function getSetCollectionSizeInstructionDataCodec(): Codec<

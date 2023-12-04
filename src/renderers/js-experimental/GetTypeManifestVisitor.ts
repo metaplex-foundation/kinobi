@@ -218,11 +218,12 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
       (renders) => renders.join(' | '),
       (renders) => renders.join(', ')
     );
-    const typeParam = parentName ? parentName.strict : 'any';
     mergedManifest.encoder
       .mapRender(
         (r) =>
-          `getDataEnumEncoder<${typeParam}>([${r}]${encoderOptionsAsString})`
+          `getDataEnumEncoder<${
+            parentName ? parentName.loose : 'any'
+          }>([${r}]${encoderOptionsAsString})`
       )
       .addImports('solanaCodecsDataStructures', [
         'GetDataEnumKindContent',
@@ -231,7 +232,9 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
     mergedManifest.decoder
       .mapRender(
         (r) =>
-          `getDataEnumDecoder<${typeParam}>([${r}]${decoderOptionsAsString})`
+          `getDataEnumDecoder<${
+            parentName ? parentName.strict : 'any'
+          }>([${r}]${decoderOptionsAsString})`
       )
       .addImports('solanaCodecsDataStructures', [
         'GetDataEnumKind',

@@ -56,7 +56,7 @@ export type DataV2Args = {
   uses: OptionOrNullable<UsesArgs>;
 };
 
-export function getDataV2Encoder(): Encoder<DataV2Args> {
+export function getDataV2Encoder() {
   return getStructEncoder<DataV2Args>([
     ['name', getStringEncoder()],
     ['symbol', getStringEncoder()],
@@ -65,10 +65,10 @@ export function getDataV2Encoder(): Encoder<DataV2Args> {
     ['creators', getOptionEncoder(getArrayEncoder(getCreatorEncoder()))],
     ['collection', getOptionEncoder(getCollectionEncoder())],
     ['uses', getOptionEncoder(getUsesEncoder())],
-  ]) as Encoder<DataV2Args>;
+  ]) satisfies Encoder<DataV2Args>;
 }
 
-export function getDataV2Decoder(): Decoder<DataV2> {
+export function getDataV2Decoder() {
   return getStructDecoder<DataV2>([
     ['name', getStringDecoder()],
     ['symbol', getStringDecoder()],
@@ -77,7 +77,7 @@ export function getDataV2Decoder(): Decoder<DataV2> {
     ['creators', getOptionDecoder(getArrayDecoder(getCreatorDecoder()))],
     ['collection', getOptionDecoder(getCollectionDecoder())],
     ['uses', getOptionDecoder(getUsesDecoder())],
-  ]) as Decoder<DataV2>;
+  ]) satisfies Decoder<DataV2>;
 }
 
 export function getDataV2Codec(): Codec<DataV2Args, DataV2> {

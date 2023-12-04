@@ -55,7 +55,7 @@ export type ReservationListV1AccountDataArgs = {
   reservations: Array<ReservationV1Args>;
 };
 
-export function getReservationListV1AccountDataEncoder(): Encoder<ReservationListV1AccountDataArgs> {
+export function getReservationListV1AccountDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       key: TmKeyArgs;
@@ -69,16 +69,16 @@ export function getReservationListV1AccountDataEncoder(): Encoder<ReservationLis
       ['reservations', getArrayEncoder(getReservationV1Encoder())],
     ]),
     (value) => ({ ...value, key: TmKey.ReservationListV1 })
-  ) as Encoder<ReservationListV1AccountDataArgs>;
+  ) satisfies Encoder<ReservationListV1AccountDataArgs>;
 }
 
-export function getReservationListV1AccountDataDecoder(): Decoder<ReservationListV1AccountData> {
+export function getReservationListV1AccountDataDecoder() {
   return getStructDecoder<ReservationListV1AccountData>([
     ['key', getTmKeyDecoder()],
     ['masterEdition', getAddressDecoder()],
     ['supplySnapshot', getOptionDecoder(getU64Decoder())],
     ['reservations', getArrayDecoder(getReservationV1Decoder())],
-  ]) as Decoder<ReservationListV1AccountData>;
+  ]) satisfies Decoder<ReservationListV1AccountData>;
 }
 
 export function getReservationListV1AccountDataCodec(): Codec<

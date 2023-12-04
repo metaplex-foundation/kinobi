@@ -95,7 +95,7 @@ export type UpdateMetadataAccountV2InstructionDataArgs = {
   isMutable: OptionOrNullable<boolean>;
 };
 
-export function getUpdateMetadataAccountV2InstructionDataEncoder(): Encoder<UpdateMetadataAccountV2InstructionDataArgs> {
+export function getUpdateMetadataAccountV2InstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       discriminator: number;
@@ -111,17 +111,17 @@ export function getUpdateMetadataAccountV2InstructionDataEncoder(): Encoder<Upda
       ['isMutable', getOptionEncoder(getBooleanEncoder())],
     ]),
     (value) => ({ ...value, discriminator: 15 })
-  ) as Encoder<UpdateMetadataAccountV2InstructionDataArgs>;
+  ) satisfies Encoder<UpdateMetadataAccountV2InstructionDataArgs>;
 }
 
-export function getUpdateMetadataAccountV2InstructionDataDecoder(): Decoder<UpdateMetadataAccountV2InstructionData> {
+export function getUpdateMetadataAccountV2InstructionDataDecoder() {
   return getStructDecoder<UpdateMetadataAccountV2InstructionData>([
     ['discriminator', getU8Decoder()],
     ['data', getOptionDecoder(getDataV2Decoder())],
     ['updateAuthority', getOptionDecoder(getAddressDecoder())],
     ['primarySaleHappened', getOptionDecoder(getBooleanDecoder())],
     ['isMutable', getOptionDecoder(getBooleanDecoder())],
-  ]) as Decoder<UpdateMetadataAccountV2InstructionData>;
+  ]) satisfies Decoder<UpdateMetadataAccountV2InstructionData>;
 }
 
 export function getUpdateMetadataAccountV2InstructionDataCodec(): Codec<

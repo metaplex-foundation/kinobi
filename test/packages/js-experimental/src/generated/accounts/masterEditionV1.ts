@@ -71,7 +71,7 @@ export type MasterEditionV1AccountDataArgs = {
   oneTimePrintingAuthorizationMint: Address;
 };
 
-export function getMasterEditionV1AccountDataEncoder(): Encoder<MasterEditionV1AccountDataArgs> {
+export function getMasterEditionV1AccountDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       key: TmKeyArgs;
@@ -87,17 +87,17 @@ export function getMasterEditionV1AccountDataEncoder(): Encoder<MasterEditionV1A
       ['oneTimePrintingAuthorizationMint', getAddressEncoder()],
     ]),
     (value) => ({ ...value, key: TmKey.MasterEditionV1 })
-  ) as Encoder<MasterEditionV1AccountDataArgs>;
+  ) satisfies Encoder<MasterEditionV1AccountDataArgs>;
 }
 
-export function getMasterEditionV1AccountDataDecoder(): Decoder<MasterEditionV1AccountData> {
+export function getMasterEditionV1AccountDataDecoder() {
   return getStructDecoder<MasterEditionV1AccountData>([
     ['key', getTmKeyDecoder()],
     ['supply', getU64Decoder()],
     ['maxSupply', getOptionDecoder(getU64Decoder())],
     ['printingMint', getAddressDecoder()],
     ['oneTimePrintingAuthorizationMint', getAddressDecoder()],
-  ]) as Decoder<MasterEditionV1AccountData>;
+  ]) satisfies Decoder<MasterEditionV1AccountData>;
 }
 
 export function getMasterEditionV1AccountDataCodec(): Codec<

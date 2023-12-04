@@ -114,7 +114,7 @@ export type CreateMasterEditionV3InstructionDataArgs = {
   createMasterEditionArgs: CreateMasterEditionArgsArgs;
 };
 
-export function getCreateMasterEditionV3InstructionDataEncoder(): Encoder<CreateMasterEditionV3InstructionDataArgs> {
+export function getCreateMasterEditionV3InstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       discriminator: number;
@@ -124,14 +124,14 @@ export function getCreateMasterEditionV3InstructionDataEncoder(): Encoder<Create
       ['createMasterEditionArgs', getCreateMasterEditionArgsEncoder()],
     ]),
     (value) => ({ ...value, discriminator: 17 })
-  ) as Encoder<CreateMasterEditionV3InstructionDataArgs>;
+  ) satisfies Encoder<CreateMasterEditionV3InstructionDataArgs>;
 }
 
-export function getCreateMasterEditionV3InstructionDataDecoder(): Decoder<CreateMasterEditionV3InstructionData> {
+export function getCreateMasterEditionV3InstructionDataDecoder() {
   return getStructDecoder<CreateMasterEditionV3InstructionData>([
     ['discriminator', getU8Decoder()],
     ['createMasterEditionArgs', getCreateMasterEditionArgsDecoder()],
-  ]) as Decoder<CreateMasterEditionV3InstructionData>;
+  ]) satisfies Decoder<CreateMasterEditionV3InstructionData>;
 }
 
 export function getCreateMasterEditionV3InstructionDataCodec(): Codec<

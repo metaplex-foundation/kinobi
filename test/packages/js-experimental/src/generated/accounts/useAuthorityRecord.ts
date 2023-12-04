@@ -51,7 +51,7 @@ export type UseAuthorityRecordAccountDataArgs = {
   bump: number;
 };
 
-export function getUseAuthorityRecordAccountDataEncoder(): Encoder<UseAuthorityRecordAccountDataArgs> {
+export function getUseAuthorityRecordAccountDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       key: TmKeyArgs;
@@ -63,15 +63,15 @@ export function getUseAuthorityRecordAccountDataEncoder(): Encoder<UseAuthorityR
       ['bump', getU8Encoder()],
     ]),
     (value) => ({ ...value, key: TmKey.UseAuthorityRecord })
-  ) as Encoder<UseAuthorityRecordAccountDataArgs>;
+  ) satisfies Encoder<UseAuthorityRecordAccountDataArgs>;
 }
 
-export function getUseAuthorityRecordAccountDataDecoder(): Decoder<UseAuthorityRecordAccountData> {
+export function getUseAuthorityRecordAccountDataDecoder() {
   return getStructDecoder<UseAuthorityRecordAccountData>([
     ['key', getTmKeyDecoder()],
     ['allowedUses', getU64Decoder()],
     ['bump', getU8Decoder()],
-  ]) as Decoder<UseAuthorityRecordAccountData>;
+  ]) satisfies Decoder<UseAuthorityRecordAccountData>;
 }
 
 export function getUseAuthorityRecordAccountDataCodec(): Codec<

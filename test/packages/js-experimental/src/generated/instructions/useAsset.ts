@@ -121,7 +121,7 @@ export type UseAssetInstructionData = {
 
 export type UseAssetInstructionDataArgs = { useAssetArgs: UseAssetArgsArgs };
 
-export function getUseAssetInstructionDataEncoder(): Encoder<UseAssetInstructionDataArgs> {
+export function getUseAssetInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{ discriminator: number; useAssetArgs: UseAssetArgsArgs }>(
       [
@@ -130,14 +130,14 @@ export function getUseAssetInstructionDataEncoder(): Encoder<UseAssetInstruction
       ]
     ),
     (value) => ({ ...value, discriminator: 45 })
-  ) as Encoder<UseAssetInstructionDataArgs>;
+  ) satisfies Encoder<UseAssetInstructionDataArgs>;
 }
 
-export function getUseAssetInstructionDataDecoder(): Decoder<UseAssetInstructionData> {
+export function getUseAssetInstructionDataDecoder() {
   return getStructDecoder<UseAssetInstructionData>([
     ['discriminator', getU8Decoder()],
     ['useAssetArgs', getUseAssetArgsDecoder()],
-  ]) as Decoder<UseAssetInstructionData>;
+  ]) satisfies Decoder<UseAssetInstructionData>;
 }
 
 export function getUseAssetInstructionDataCodec(): Codec<
