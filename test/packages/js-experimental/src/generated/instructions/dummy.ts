@@ -363,6 +363,60 @@ export type DummyInputWithSigners<
   proof?: DummyInstructionExtraArgs['proof'];
 };
 
+// Input.
+export type DummyInputAsync<
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountFoo extends string,
+  TAccountBar extends string,
+  TAccountDelegate extends string,
+  TAccountDelegateRecord extends string,
+  TAccountTokenOrAtaProgram extends string
+> = {
+  edition?: Address<TAccountEdition>;
+  mint?: Address<TAccountMint>;
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  mintAuthority?: Address<TAccountMintAuthority>;
+  payer?: Address<TAccountPayer>;
+  foo?: Address<TAccountFoo>;
+  bar?: Address<TAccountBar>;
+  delegate?: Address<TAccountDelegate>;
+  delegateRecord?: Address<TAccountDelegateRecord>;
+  tokenOrAtaProgram?: Address<TAccountTokenOrAtaProgram>;
+  identityArg?: DummyInstructionExtraArgs['identityArg'];
+  proof?: DummyInstructionExtraArgs['proof'];
+};
+
+// Input.
+export type DummyInputAsyncWithSigners<
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountFoo extends string,
+  TAccountBar extends string,
+  TAccountDelegate extends string,
+  TAccountDelegateRecord extends string,
+  TAccountTokenOrAtaProgram extends string
+> = {
+  edition?: TransactionSigner<TAccountEdition>;
+  mint?: Address<TAccountMint>;
+  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
+  mintAuthority?: TransactionSigner<TAccountMintAuthority>;
+  payer?: TransactionSigner<TAccountPayer>;
+  foo?: Address<TAccountFoo>;
+  bar?: TransactionSigner<TAccountBar>;
+  delegate?: TransactionSigner<TAccountDelegate>;
+  delegateRecord?: Address<TAccountDelegateRecord>;
+  tokenOrAtaProgram?: Address<TAccountTokenOrAtaProgram>;
+  identityArg?: DummyInstructionExtraArgs['identityArg'];
+  proof?: DummyInstructionExtraArgs['proof'];
+};
+
 export async function dummy<
   TReturn,
   TAccountEdition extends string,

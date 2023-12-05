@@ -517,6 +517,84 @@ export type MintFromCandyMachineInputWithSigners<
   recentSlothashes: Address<TAccountRecentSlothashes>;
 };
 
+// Input.
+export type MintFromCandyMachineInputAsync<
+  TAccountCandyMachine extends string,
+  TAccountAuthorityPda extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountNftMint extends string,
+  TAccountNftMintAuthority extends string,
+  TAccountNftMetadata extends string,
+  TAccountNftMasterEdition extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionMasterEdition extends string,
+  TAccountCollectionUpdateAuthority extends string,
+  TAccountTokenMetadataProgram extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRecentSlothashes extends string
+> = {
+  candyMachine: Address<TAccountCandyMachine>;
+  authorityPda: Address<TAccountAuthorityPda>;
+  mintAuthority: Address<TAccountMintAuthority>;
+  payer?: Address<TAccountPayer>;
+  nftMint: Address<TAccountNftMint>;
+  nftMintAuthority?: Address<TAccountNftMintAuthority>;
+  nftMetadata: Address<TAccountNftMetadata>;
+  nftMasterEdition: Address<TAccountNftMasterEdition>;
+  collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
+  collectionMint: Address<TAccountCollectionMint>;
+  collectionMetadata: Address<TAccountCollectionMetadata>;
+  collectionMasterEdition: Address<TAccountCollectionMasterEdition>;
+  collectionUpdateAuthority: Address<TAccountCollectionUpdateAuthority>;
+  tokenMetadataProgram?: Address<TAccountTokenMetadataProgram>;
+  tokenProgram?: Address<TAccountTokenProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
+  recentSlothashes: Address<TAccountRecentSlothashes>;
+};
+
+// Input.
+export type MintFromCandyMachineInputAsyncWithSigners<
+  TAccountCandyMachine extends string,
+  TAccountAuthorityPda extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountNftMint extends string,
+  TAccountNftMintAuthority extends string,
+  TAccountNftMetadata extends string,
+  TAccountNftMasterEdition extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionMasterEdition extends string,
+  TAccountCollectionUpdateAuthority extends string,
+  TAccountTokenMetadataProgram extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRecentSlothashes extends string
+> = {
+  candyMachine: Address<TAccountCandyMachine>;
+  authorityPda: Address<TAccountAuthorityPda>;
+  mintAuthority: TransactionSigner<TAccountMintAuthority>;
+  payer?: TransactionSigner<TAccountPayer>;
+  nftMint: Address<TAccountNftMint>;
+  nftMintAuthority?: TransactionSigner<TAccountNftMintAuthority>;
+  nftMetadata: Address<TAccountNftMetadata>;
+  nftMasterEdition: Address<TAccountNftMasterEdition>;
+  collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
+  collectionMint: Address<TAccountCollectionMint>;
+  collectionMetadata: Address<TAccountCollectionMetadata>;
+  collectionMasterEdition: Address<TAccountCollectionMasterEdition>;
+  collectionUpdateAuthority: Address<TAccountCollectionUpdateAuthority>;
+  tokenMetadataProgram?: Address<TAccountTokenMetadataProgram>;
+  tokenProgram?: Address<TAccountTokenProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
+  recentSlothashes: Address<TAccountRecentSlothashes>;
+};
+
 export async function mintFromCandyMachine<
   TReturn,
   TAccountCandyMachine extends string,

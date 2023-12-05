@@ -533,6 +533,110 @@ export type TransferInputWithSigners<
   tokenStandard?: TransferInstructionExtraArgs['tokenStandard'];
 };
 
+// Input.
+export type TransferInputAsync<
+  TAccountAuthority extends string,
+  TAccountDelegateRecord extends string,
+  TAccountToken extends string,
+  TAccountTokenOwner extends string,
+  TAccountDestination extends string,
+  TAccountDestinationOwner extends string,
+  TAccountMint extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountSplAtaProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string
+> = {
+  /** Transfer authority (token or delegate owner) */
+  authority?: Address<TAccountAuthority>;
+  /** Delegate record PDA */
+  delegateRecord?: Address<TAccountDelegateRecord>;
+  /** Token account */
+  token: Address<TAccountToken>;
+  /** Token account owner */
+  tokenOwner: Address<TAccountTokenOwner>;
+  /** Destination token account */
+  destination: Address<TAccountDestination>;
+  /** Destination token account owner */
+  destinationOwner: Address<TAccountDestinationOwner>;
+  /** Mint of token asset */
+  mint: Address<TAccountMint>;
+  /** Metadata (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** Master Edition of token asset */
+  masterEdition?: Address<TAccountMasterEdition>;
+  /** SPL Token Program */
+  splTokenProgram?: Address<TAccountSplTokenProgram>;
+  /** SPL Associated Token Account program */
+  splAtaProgram?: Address<TAccountSplAtaProgram>;
+  /** System Program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Instructions sysvar account */
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
+  /** Token Authorization Rules Program */
+  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
+  /** Token Authorization Rules account */
+  authorizationRules?: Address<TAccountAuthorizationRules>;
+  transferArgs: TransferInstructionDataArgs['transferArgs'];
+  tokenStandard?: TransferInstructionExtraArgs['tokenStandard'];
+};
+
+// Input.
+export type TransferInputAsyncWithSigners<
+  TAccountAuthority extends string,
+  TAccountDelegateRecord extends string,
+  TAccountToken extends string,
+  TAccountTokenOwner extends string,
+  TAccountDestination extends string,
+  TAccountDestinationOwner extends string,
+  TAccountMint extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountSplAtaProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string
+> = {
+  /** Transfer authority (token or delegate owner) */
+  authority?: TransactionSigner<TAccountAuthority>;
+  /** Delegate record PDA */
+  delegateRecord?: Address<TAccountDelegateRecord>;
+  /** Token account */
+  token: Address<TAccountToken>;
+  /** Token account owner */
+  tokenOwner: Address<TAccountTokenOwner>;
+  /** Destination token account */
+  destination: Address<TAccountDestination>;
+  /** Destination token account owner */
+  destinationOwner: Address<TAccountDestinationOwner>;
+  /** Mint of token asset */
+  mint: Address<TAccountMint>;
+  /** Metadata (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** Master Edition of token asset */
+  masterEdition?: Address<TAccountMasterEdition>;
+  /** SPL Token Program */
+  splTokenProgram?: Address<TAccountSplTokenProgram>;
+  /** SPL Associated Token Account program */
+  splAtaProgram?: Address<TAccountSplAtaProgram>;
+  /** System Program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Instructions sysvar account */
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
+  /** Token Authorization Rules Program */
+  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
+  /** Token Authorization Rules account */
+  authorizationRules?: Address<TAccountAuthorizationRules>;
+  transferArgs: TransferInstructionDataArgs['transferArgs'];
+  tokenStandard?: TransferInstructionExtraArgs['tokenStandard'];
+};
+
 export async function transfer<
   TReturn,
   TAccountAuthority extends string,

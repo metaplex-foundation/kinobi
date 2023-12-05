@@ -404,6 +404,62 @@ export type InitializeInputWithSigners<
   data: InitializeInstructionDataArgs['data'];
 };
 
+// Input.
+export type InitializeInputAsync<
+  TAccountCandyMachine extends string,
+  TAccountAuthorityPda extends string,
+  TAccountAuthority extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionMasterEdition extends string,
+  TAccountCollectionUpdateAuthority extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountTokenMetadataProgram extends string,
+  TAccountSystemProgram extends string
+> = {
+  candyMachine: Address<TAccountCandyMachine>;
+  authorityPda: Address<TAccountAuthorityPda>;
+  authority?: Address<TAccountAuthority>;
+  payer?: Address<TAccountPayer>;
+  collectionMetadata: Address<TAccountCollectionMetadata>;
+  collectionMint: Address<TAccountCollectionMint>;
+  collectionMasterEdition: Address<TAccountCollectionMasterEdition>;
+  collectionUpdateAuthority: Address<TAccountCollectionUpdateAuthority>;
+  collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
+  tokenMetadataProgram?: Address<TAccountTokenMetadataProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
+  data: InitializeInstructionDataArgs['data'];
+};
+
+// Input.
+export type InitializeInputAsyncWithSigners<
+  TAccountCandyMachine extends string,
+  TAccountAuthorityPda extends string,
+  TAccountAuthority extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionMasterEdition extends string,
+  TAccountCollectionUpdateAuthority extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountTokenMetadataProgram extends string,
+  TAccountSystemProgram extends string
+> = {
+  candyMachine: Address<TAccountCandyMachine>;
+  authorityPda: Address<TAccountAuthorityPda>;
+  authority?: Address<TAccountAuthority>;
+  payer?: TransactionSigner<TAccountPayer>;
+  collectionMetadata: Address<TAccountCollectionMetadata>;
+  collectionMint: Address<TAccountCollectionMint>;
+  collectionMasterEdition: Address<TAccountCollectionMasterEdition>;
+  collectionUpdateAuthority: TransactionSigner<TAccountCollectionUpdateAuthority>;
+  collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
+  tokenMetadataProgram?: Address<TAccountTokenMetadataProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
+  data: InitializeInstructionDataArgs['data'];
+};
+
 export async function initialize<
   TReturn,
   TAccountCandyMachine extends string,

@@ -167,6 +167,28 @@ export type SignMetadataInputWithSigners<
   creator: TransactionSigner<TAccountCreator>;
 };
 
+// Input.
+export type SignMetadataInputAsync<
+  TAccountMetadata extends string,
+  TAccountCreator extends string
+> = {
+  /** Metadata (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** Creator */
+  creator: Address<TAccountCreator>;
+};
+
+// Input.
+export type SignMetadataInputAsyncWithSigners<
+  TAccountMetadata extends string,
+  TAccountCreator extends string
+> = {
+  /** Metadata (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** Creator */
+  creator: TransactionSigner<TAccountCreator>;
+};
+
 export async function signMetadata<
   TReturn,
   TAccountMetadata extends string,

@@ -454,6 +454,72 @@ export type SetCollectionInputWithSigners<
   systemProgram?: Address<TAccountSystemProgram>;
 };
 
+// Input.
+export type SetCollectionInputAsync<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TAccountAuthorityPda extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountNewCollectionUpdateAuthority extends string,
+  TAccountNewCollectionMetadata extends string,
+  TAccountNewCollectionMint extends string,
+  TAccountNewCollectionMasterEdition extends string,
+  TAccountNewCollectionAuthorityRecord extends string,
+  TAccountTokenMetadataProgram extends string,
+  TAccountSystemProgram extends string
+> = {
+  candyMachine: Address<TAccountCandyMachine>;
+  authority?: Address<TAccountAuthority>;
+  authorityPda: Address<TAccountAuthorityPda>;
+  payer?: Address<TAccountPayer>;
+  collectionMint: Address<TAccountCollectionMint>;
+  collectionMetadata: Address<TAccountCollectionMetadata>;
+  collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
+  newCollectionUpdateAuthority: Address<TAccountNewCollectionUpdateAuthority>;
+  newCollectionMetadata: Address<TAccountNewCollectionMetadata>;
+  newCollectionMint: Address<TAccountNewCollectionMint>;
+  newCollectionMasterEdition: Address<TAccountNewCollectionMasterEdition>;
+  newCollectionAuthorityRecord: Address<TAccountNewCollectionAuthorityRecord>;
+  tokenMetadataProgram?: Address<TAccountTokenMetadataProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
+};
+
+// Input.
+export type SetCollectionInputAsyncWithSigners<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TAccountAuthorityPda extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountNewCollectionUpdateAuthority extends string,
+  TAccountNewCollectionMetadata extends string,
+  TAccountNewCollectionMint extends string,
+  TAccountNewCollectionMasterEdition extends string,
+  TAccountNewCollectionAuthorityRecord extends string,
+  TAccountTokenMetadataProgram extends string,
+  TAccountSystemProgram extends string
+> = {
+  candyMachine: Address<TAccountCandyMachine>;
+  authority?: TransactionSigner<TAccountAuthority>;
+  authorityPda: Address<TAccountAuthorityPda>;
+  payer?: TransactionSigner<TAccountPayer>;
+  collectionMint: Address<TAccountCollectionMint>;
+  collectionMetadata: Address<TAccountCollectionMetadata>;
+  collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
+  newCollectionUpdateAuthority: TransactionSigner<TAccountNewCollectionUpdateAuthority>;
+  newCollectionMetadata: Address<TAccountNewCollectionMetadata>;
+  newCollectionMint: Address<TAccountNewCollectionMint>;
+  newCollectionMasterEdition: Address<TAccountNewCollectionMasterEdition>;
+  newCollectionAuthorityRecord: Address<TAccountNewCollectionAuthorityRecord>;
+  tokenMetadataProgram?: Address<TAccountTokenMetadataProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
+};
+
 export async function setCollection<
   TReturn,
   TAccountCandyMachine extends string,

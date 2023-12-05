@@ -216,6 +216,40 @@ export type SetTokenStandardInputWithSigners<
   edition?: Address<TAccountEdition>;
 };
 
+// Input.
+export type SetTokenStandardInputAsync<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMint extends string,
+  TAccountEdition extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Metadata update authority */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  /** Mint account */
+  mint: Address<TAccountMint>;
+  /** Edition account */
+  edition?: Address<TAccountEdition>;
+};
+
+// Input.
+export type SetTokenStandardInputAsyncWithSigners<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMint extends string,
+  TAccountEdition extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Metadata update authority */
+  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
+  /** Mint account */
+  mint: Address<TAccountMint>;
+  /** Edition account */
+  edition?: Address<TAccountEdition>;
+};
+
 export async function setTokenStandard<
   TReturn,
   TAccountMetadata extends string,

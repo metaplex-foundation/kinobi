@@ -243,6 +243,42 @@ export type SetCollectionSizeInputWithSigners<
   setCollectionSizeArgs: SetCollectionSizeInstructionDataArgs['setCollectionSizeArgs'];
 };
 
+// Input.
+export type SetCollectionSizeInputAsync<
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionAuthorityRecord extends string
+> = {
+  /** Collection Metadata account */
+  collectionMetadata: Address<TAccountCollectionMetadata>;
+  /** Collection Update authority */
+  collectionAuthority: Address<TAccountCollectionAuthority>;
+  /** Mint of the Collection */
+  collectionMint: Address<TAccountCollectionMint>;
+  /** Collection Authority Record PDA */
+  collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
+  setCollectionSizeArgs: SetCollectionSizeInstructionDataArgs['setCollectionSizeArgs'];
+};
+
+// Input.
+export type SetCollectionSizeInputAsyncWithSigners<
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionAuthorityRecord extends string
+> = {
+  /** Collection Metadata account */
+  collectionMetadata: Address<TAccountCollectionMetadata>;
+  /** Collection Update authority */
+  collectionAuthority: TransactionSigner<TAccountCollectionAuthority>;
+  /** Mint of the Collection */
+  collectionMint: Address<TAccountCollectionMint>;
+  /** Collection Authority Record PDA */
+  collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
+  setCollectionSizeArgs: SetCollectionSizeInstructionDataArgs['setCollectionSizeArgs'];
+};
+
 export async function setCollectionSize<
   TReturn,
   TAccountCollectionMetadata extends string,

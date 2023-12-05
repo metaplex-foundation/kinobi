@@ -462,6 +462,96 @@ export type TransferOutOfEscrowInputWithSigners<
   amount: TransferOutOfEscrowInstructionDataArgs['amount'];
 };
 
+// Input.
+export type TransferOutOfEscrowInputAsync<
+  TAccountEscrow extends string,
+  TAccountMetadata extends string,
+  TAccountPayer extends string,
+  TAccountAttributeMint extends string,
+  TAccountAttributeSrc extends string,
+  TAccountAttributeDst extends string,
+  TAccountEscrowMint extends string,
+  TAccountEscrowAccount extends string,
+  TAccountSystemProgram extends string,
+  TAccountAtaProgram extends string,
+  TAccountTokenProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthority extends string
+> = {
+  /** Escrow account */
+  escrow: Address<TAccountEscrow>;
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Wallet paying for the transaction and new account */
+  payer?: Address<TAccountPayer>;
+  /** Mint account for the new attribute */
+  attributeMint: Address<TAccountAttributeMint>;
+  /** Token account source for the new attribute */
+  attributeSrc: Address<TAccountAttributeSrc>;
+  /** Token account, owned by TM, destination for the new attribute */
+  attributeDst: Address<TAccountAttributeDst>;
+  /** Mint account that the escrow is attached */
+  escrowMint: Address<TAccountEscrowMint>;
+  /** Token account that holds the token the escrow is attached to */
+  escrowAccount: Address<TAccountEscrowAccount>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Associated Token program */
+  ataProgram?: Address<TAccountAtaProgram>;
+  /** Token program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+  /** Instructions sysvar account */
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
+  /** Authority/creator of the escrow account */
+  authority?: Address<TAccountAuthority>;
+  amount: TransferOutOfEscrowInstructionDataArgs['amount'];
+};
+
+// Input.
+export type TransferOutOfEscrowInputAsyncWithSigners<
+  TAccountEscrow extends string,
+  TAccountMetadata extends string,
+  TAccountPayer extends string,
+  TAccountAttributeMint extends string,
+  TAccountAttributeSrc extends string,
+  TAccountAttributeDst extends string,
+  TAccountEscrowMint extends string,
+  TAccountEscrowAccount extends string,
+  TAccountSystemProgram extends string,
+  TAccountAtaProgram extends string,
+  TAccountTokenProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthority extends string
+> = {
+  /** Escrow account */
+  escrow: Address<TAccountEscrow>;
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Wallet paying for the transaction and new account */
+  payer?: TransactionSigner<TAccountPayer>;
+  /** Mint account for the new attribute */
+  attributeMint: Address<TAccountAttributeMint>;
+  /** Token account source for the new attribute */
+  attributeSrc: Address<TAccountAttributeSrc>;
+  /** Token account, owned by TM, destination for the new attribute */
+  attributeDst: Address<TAccountAttributeDst>;
+  /** Mint account that the escrow is attached */
+  escrowMint: Address<TAccountEscrowMint>;
+  /** Token account that holds the token the escrow is attached to */
+  escrowAccount: Address<TAccountEscrowAccount>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Associated Token program */
+  ataProgram?: Address<TAccountAtaProgram>;
+  /** Token program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+  /** Instructions sysvar account */
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
+  /** Authority/creator of the escrow account */
+  authority?: TransactionSigner<TAccountAuthority>;
+  amount: TransferOutOfEscrowInstructionDataArgs['amount'];
+};
+
 export async function transferOutOfEscrow<
   TReturn,
   TAccountEscrow extends string,

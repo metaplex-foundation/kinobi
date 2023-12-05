@@ -604,6 +604,100 @@ export type UpdateV1InputWithSigners<
   authorityType: UpdateV1InstructionDataArgs['authorityType'];
 };
 
+// Input.
+export type UpdateV1InputAsync<
+  TAccountAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountToken extends string,
+  TAccountDelegateRecord extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string
+> = {
+  /** Update authority or delegate */
+  authority?: Address<TAccountAuthority>;
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Master Edition account */
+  masterEdition?: Address<TAccountMasterEdition>;
+  /** Mint account */
+  mint: Address<TAccountMint>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** System program */
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
+  /** Token account */
+  token?: Address<TAccountToken>;
+  /** Delegate record PDA */
+  delegateRecord?: Address<TAccountDelegateRecord>;
+  /** Token Authorization Rules Program */
+  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
+  /** Token Authorization Rules account */
+  authorizationRules?: Address<TAccountAuthorizationRules>;
+  authorizationData: UpdateV1InstructionDataArgs['authorizationData'];
+  newUpdateAuthority: UpdateV1InstructionDataArgs['newUpdateAuthority'];
+  data: UpdateV1InstructionDataArgs['data'];
+  primarySaleHappened: UpdateV1InstructionDataArgs['primarySaleHappened'];
+  isMutable: UpdateV1InstructionDataArgs['isMutable'];
+  tokenStandard?: UpdateV1InstructionDataArgs['tokenStandard'];
+  collection: UpdateV1InstructionDataArgs['collection'];
+  uses: UpdateV1InstructionDataArgs['uses'];
+  collectionDetails: UpdateV1InstructionDataArgs['collectionDetails'];
+  programmableConfig: UpdateV1InstructionDataArgs['programmableConfig'];
+  delegateState: UpdateV1InstructionDataArgs['delegateState'];
+  authorityType: UpdateV1InstructionDataArgs['authorityType'];
+};
+
+// Input.
+export type UpdateV1InputAsyncWithSigners<
+  TAccountAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountToken extends string,
+  TAccountDelegateRecord extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string
+> = {
+  /** Update authority or delegate */
+  authority?: TransactionSigner<TAccountAuthority>;
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Master Edition account */
+  masterEdition?: Address<TAccountMasterEdition>;
+  /** Mint account */
+  mint: Address<TAccountMint>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** System program */
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
+  /** Token account */
+  token?: Address<TAccountToken>;
+  /** Delegate record PDA */
+  delegateRecord?: Address<TAccountDelegateRecord>;
+  /** Token Authorization Rules Program */
+  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
+  /** Token Authorization Rules account */
+  authorizationRules?: Address<TAccountAuthorizationRules>;
+  authorizationData: UpdateV1InstructionDataArgs['authorizationData'];
+  newUpdateAuthority: UpdateV1InstructionDataArgs['newUpdateAuthority'];
+  data: UpdateV1InstructionDataArgs['data'];
+  primarySaleHappened: UpdateV1InstructionDataArgs['primarySaleHappened'];
+  isMutable: UpdateV1InstructionDataArgs['isMutable'];
+  tokenStandard?: UpdateV1InstructionDataArgs['tokenStandard'];
+  collection: UpdateV1InstructionDataArgs['collection'];
+  uses: UpdateV1InstructionDataArgs['uses'];
+  collectionDetails: UpdateV1InstructionDataArgs['collectionDetails'];
+  programmableConfig: UpdateV1InstructionDataArgs['programmableConfig'];
+  delegateState: UpdateV1InstructionDataArgs['delegateState'];
+  authorityType: UpdateV1InstructionDataArgs['authorityType'];
+};
+
 export async function updateV1<
   TReturn,
   TAccountAuthority extends string,

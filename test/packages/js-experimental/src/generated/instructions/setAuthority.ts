@@ -180,6 +180,26 @@ export type SetAuthorityInputWithSigners<
   newAuthority: SetAuthorityInstructionDataArgs['newAuthority'];
 };
 
+// Input.
+export type SetAuthorityInputAsync<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string
+> = {
+  candyMachine: Address<TAccountCandyMachine>;
+  authority?: Address<TAccountAuthority>;
+  newAuthority: SetAuthorityInstructionDataArgs['newAuthority'];
+};
+
+// Input.
+export type SetAuthorityInputAsyncWithSigners<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string
+> = {
+  candyMachine: Address<TAccountCandyMachine>;
+  authority?: TransactionSigner<TAccountAuthority>;
+  newAuthority: SetAuthorityInstructionDataArgs['newAuthority'];
+};
+
 export async function setAuthority<
   TReturn,
   TAccountCandyMachine extends string,

@@ -432,6 +432,84 @@ export type UseAssetInputWithSigners<
   useAssetArgs: UseAssetInstructionDataArgs['useAssetArgs'];
 };
 
+// Input.
+export type UseAssetInputAsync<
+  TAccountMetadata extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUseAuthority extends string,
+  TAccountOwner extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountAtaProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountUseAuthorityRecord extends string,
+  TAccountAuthorizationRules extends string,
+  TAccountAuthorizationRulesProgram extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Token Account Of NFT */
+  tokenAccount: Address<TAccountTokenAccount>;
+  /** Mint of the Metadata */
+  mint: Address<TAccountMint>;
+  /** Use authority or current owner of the asset */
+  useAuthority: Address<TAccountUseAuthority>;
+  /** Owner */
+  owner: Address<TAccountOwner>;
+  /** SPL Token program */
+  splTokenProgram?: Address<TAccountSplTokenProgram>;
+  /** Associated Token program */
+  ataProgram?: Address<TAccountAtaProgram>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Use Authority Record PDA (if present the program assumes a delegated use authority) */
+  useAuthorityRecord?: Address<TAccountUseAuthorityRecord>;
+  /** Token Authorization Rules account */
+  authorizationRules?: Address<TAccountAuthorizationRules>;
+  /** Token Authorization Rules Program */
+  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
+  useAssetArgs: UseAssetInstructionDataArgs['useAssetArgs'];
+};
+
+// Input.
+export type UseAssetInputAsyncWithSigners<
+  TAccountMetadata extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUseAuthority extends string,
+  TAccountOwner extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountAtaProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountUseAuthorityRecord extends string,
+  TAccountAuthorizationRules extends string,
+  TAccountAuthorizationRulesProgram extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Token Account Of NFT */
+  tokenAccount: Address<TAccountTokenAccount>;
+  /** Mint of the Metadata */
+  mint: Address<TAccountMint>;
+  /** Use authority or current owner of the asset */
+  useAuthority: TransactionSigner<TAccountUseAuthority>;
+  /** Owner */
+  owner: Address<TAccountOwner>;
+  /** SPL Token program */
+  splTokenProgram?: Address<TAccountSplTokenProgram>;
+  /** Associated Token program */
+  ataProgram?: Address<TAccountAtaProgram>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Use Authority Record PDA (if present the program assumes a delegated use authority) */
+  useAuthorityRecord?: Address<TAccountUseAuthorityRecord>;
+  /** Token Authorization Rules account */
+  authorizationRules?: Address<TAccountAuthorizationRules>;
+  /** Token Authorization Rules Program */
+  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
+  useAssetArgs: UseAssetInstructionDataArgs['useAssetArgs'];
+};
+
 export async function useAsset<
   TReturn,
   TAccountMetadata extends string,

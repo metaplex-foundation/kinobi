@@ -423,6 +423,84 @@ export type UtilizeInputWithSigners<
   numberOfUses: UtilizeInstructionDataArgs['numberOfUses'];
 };
 
+// Input.
+export type UtilizeInputAsync<
+  TAccountMetadata extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUseAuthority extends string,
+  TAccountOwner extends string,
+  TAccountTokenProgram extends string,
+  TAccountAtaProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TAccountUseAuthorityRecord extends string,
+  TAccountBurner extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Token Account Of NFT */
+  tokenAccount: Address<TAccountTokenAccount>;
+  /** Mint of the Metadata */
+  mint: Address<TAccountMint>;
+  /** A Use Authority / Can be the current Owner of the NFT */
+  useAuthority: Address<TAccountUseAuthority>;
+  /** Owner */
+  owner: Address<TAccountOwner>;
+  /** Token program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+  /** Associated Token program */
+  ataProgram?: Address<TAccountAtaProgram>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Rent info */
+  rent?: Address<TAccountRent>;
+  /** Use Authority Record PDA If present the program Assumes a delegated use authority */
+  useAuthorityRecord?: Address<TAccountUseAuthorityRecord>;
+  /** Program As Signer (Burner) */
+  burner?: Address<TAccountBurner>;
+  numberOfUses: UtilizeInstructionDataArgs['numberOfUses'];
+};
+
+// Input.
+export type UtilizeInputAsyncWithSigners<
+  TAccountMetadata extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUseAuthority extends string,
+  TAccountOwner extends string,
+  TAccountTokenProgram extends string,
+  TAccountAtaProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TAccountUseAuthorityRecord extends string,
+  TAccountBurner extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Token Account Of NFT */
+  tokenAccount: Address<TAccountTokenAccount>;
+  /** Mint of the Metadata */
+  mint: Address<TAccountMint>;
+  /** A Use Authority / Can be the current Owner of the NFT */
+  useAuthority: TransactionSigner<TAccountUseAuthority>;
+  /** Owner */
+  owner: Address<TAccountOwner>;
+  /** Token program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+  /** Associated Token program */
+  ataProgram?: Address<TAccountAtaProgram>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Rent info */
+  rent?: Address<TAccountRent>;
+  /** Use Authority Record PDA If present the program Assumes a delegated use authority */
+  useAuthorityRecord?: Address<TAccountUseAuthorityRecord>;
+  /** Program As Signer (Burner) */
+  burner?: Address<TAccountBurner>;
+  numberOfUses: UtilizeInstructionDataArgs['numberOfUses'];
+};
+
 export async function utilize<
   TReturn,
   TAccountMetadata extends string,

@@ -268,6 +268,48 @@ export type BubblegumSetCollectionSizeInputWithSigners<
   setCollectionSizeArgs: BubblegumSetCollectionSizeInstructionDataArgs['setCollectionSizeArgs'];
 };
 
+// Input.
+export type BubblegumSetCollectionSizeInputAsync<
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountBubblegumSigner extends string,
+  TAccountCollectionAuthorityRecord extends string
+> = {
+  /** Collection Metadata account */
+  collectionMetadata: Address<TAccountCollectionMetadata>;
+  /** Collection Update authority */
+  collectionAuthority: Address<TAccountCollectionAuthority>;
+  /** Mint of the Collection */
+  collectionMint: Address<TAccountCollectionMint>;
+  /** Signing PDA of Bubblegum program */
+  bubblegumSigner: Address<TAccountBubblegumSigner>;
+  /** Collection Authority Record PDA */
+  collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
+  setCollectionSizeArgs: BubblegumSetCollectionSizeInstructionDataArgs['setCollectionSizeArgs'];
+};
+
+// Input.
+export type BubblegumSetCollectionSizeInputAsyncWithSigners<
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountBubblegumSigner extends string,
+  TAccountCollectionAuthorityRecord extends string
+> = {
+  /** Collection Metadata account */
+  collectionMetadata: Address<TAccountCollectionMetadata>;
+  /** Collection Update authority */
+  collectionAuthority: TransactionSigner<TAccountCollectionAuthority>;
+  /** Mint of the Collection */
+  collectionMint: Address<TAccountCollectionMint>;
+  /** Signing PDA of Bubblegum program */
+  bubblegumSigner: TransactionSigner<TAccountBubblegumSigner>;
+  /** Collection Authority Record PDA */
+  collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
+  setCollectionSizeArgs: BubblegumSetCollectionSizeInstructionDataArgs['setCollectionSizeArgs'];
+};
+
 export async function bubblegumSetCollectionSize<
   TReturn,
   TAccountCollectionMetadata extends string,

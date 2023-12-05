@@ -240,6 +240,46 @@ export type FreezeDelegatedAccountInputWithSigners<
   tokenProgram?: Address<TAccountTokenProgram>;
 };
 
+// Input.
+export type FreezeDelegatedAccountInputAsync<
+  TAccountDelegate extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountTokenProgram extends string
+> = {
+  /** Delegate */
+  delegate: Address<TAccountDelegate>;
+  /** Token account to freeze */
+  tokenAccount: Address<TAccountTokenAccount>;
+  /** Edition */
+  edition: Address<TAccountEdition>;
+  /** Token mint */
+  mint: Address<TAccountMint>;
+  /** Token Program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+};
+
+// Input.
+export type FreezeDelegatedAccountInputAsyncWithSigners<
+  TAccountDelegate extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountTokenProgram extends string
+> = {
+  /** Delegate */
+  delegate: TransactionSigner<TAccountDelegate>;
+  /** Token account to freeze */
+  tokenAccount: Address<TAccountTokenAccount>;
+  /** Edition */
+  edition: Address<TAccountEdition>;
+  /** Token mint */
+  mint: Address<TAccountMint>;
+  /** Token Program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+};
+
 export async function freezeDelegatedAccount<
   TReturn,
   TAccountDelegate extends string,

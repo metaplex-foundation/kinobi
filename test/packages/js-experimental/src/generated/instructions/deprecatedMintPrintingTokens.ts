@@ -317,6 +317,60 @@ export type DeprecatedMintPrintingTokensInputWithSigners<
   mintPrintingTokensViaTokenArgs: DeprecatedMintPrintingTokensInstructionDataArgs['mintPrintingTokensViaTokenArgs'];
 };
 
+// Input.
+export type DeprecatedMintPrintingTokensInputAsync<
+  TAccountDestination extends string,
+  TAccountPrintingMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenProgram extends string,
+  TAccountRent extends string
+> = {
+  /** Destination account */
+  destination: Address<TAccountDestination>;
+  /** Printing mint */
+  printingMint: Address<TAccountPrintingMint>;
+  /** Update authority */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  /** Metadata key (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
+  masterEdition: Address<TAccountMasterEdition>;
+  /** Token program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+  /** Rent */
+  rent?: Address<TAccountRent>;
+  mintPrintingTokensViaTokenArgs: DeprecatedMintPrintingTokensInstructionDataArgs['mintPrintingTokensViaTokenArgs'];
+};
+
+// Input.
+export type DeprecatedMintPrintingTokensInputAsyncWithSigners<
+  TAccountDestination extends string,
+  TAccountPrintingMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenProgram extends string,
+  TAccountRent extends string
+> = {
+  /** Destination account */
+  destination: Address<TAccountDestination>;
+  /** Printing mint */
+  printingMint: Address<TAccountPrintingMint>;
+  /** Update authority */
+  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
+  /** Metadata key (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
+  masterEdition: Address<TAccountMasterEdition>;
+  /** Token program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+  /** Rent */
+  rent?: Address<TAccountRent>;
+  mintPrintingTokensViaTokenArgs: DeprecatedMintPrintingTokensInstructionDataArgs['mintPrintingTokensViaTokenArgs'];
+};
+
 export async function deprecatedMintPrintingTokens<
   TReturn,
   TAccountDestination extends string,

@@ -217,6 +217,30 @@ export type AddConfigLinesInputWithSigners<
   moreLines: AddConfigLinesInstructionDataArgs['moreLines'];
 };
 
+// Input.
+export type AddConfigLinesInputAsync<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string
+> = {
+  candyMachine: Address<TAccountCandyMachine>;
+  authority?: Address<TAccountAuthority>;
+  index: AddConfigLinesInstructionDataArgs['index'];
+  configLines: AddConfigLinesInstructionDataArgs['configLines'];
+  moreLines: AddConfigLinesInstructionDataArgs['moreLines'];
+};
+
+// Input.
+export type AddConfigLinesInputAsyncWithSigners<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string
+> = {
+  candyMachine: Address<TAccountCandyMachine>;
+  authority?: TransactionSigner<TAccountAuthority>;
+  index: AddConfigLinesInstructionDataArgs['index'];
+  configLines: AddConfigLinesInstructionDataArgs['configLines'];
+  moreLines: AddConfigLinesInstructionDataArgs['moreLines'];
+};
+
 export async function addConfigLines<
   TReturn,
   TAccountCandyMachine extends string,

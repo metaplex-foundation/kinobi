@@ -318,6 +318,62 @@ export type CreateMetadataAccountV2InputWithSigners<
   isMutable: CreateMetadataAccountV2InstructionDataArgs['isMutable'];
 };
 
+// Input.
+export type CreateMetadataAccountV2InputAsync<
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  /** Metadata key (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** Mint of token asset */
+  mint: Address<TAccountMint>;
+  /** Mint authority */
+  mintAuthority: Address<TAccountMintAuthority>;
+  /** payer */
+  payer?: Address<TAccountPayer>;
+  /** update authority info */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Rent info */
+  rent?: Address<TAccountRent>;
+  data: CreateMetadataAccountV2InstructionDataArgs['data'];
+  isMutable: CreateMetadataAccountV2InstructionDataArgs['isMutable'];
+};
+
+// Input.
+export type CreateMetadataAccountV2InputAsyncWithSigners<
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  /** Metadata key (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** Mint of token asset */
+  mint: Address<TAccountMint>;
+  /** Mint authority */
+  mintAuthority: TransactionSigner<TAccountMintAuthority>;
+  /** payer */
+  payer?: TransactionSigner<TAccountPayer>;
+  /** update authority info */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Rent info */
+  rent?: Address<TAccountRent>;
+  data: CreateMetadataAccountV2InstructionDataArgs['data'];
+  isMutable: CreateMetadataAccountV2InstructionDataArgs['isMutable'];
+};
+
 export async function createMetadataAccountV2<
   TReturn,
   TAccountMetadata extends string,

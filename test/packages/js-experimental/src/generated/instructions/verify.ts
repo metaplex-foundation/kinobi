@@ -266,6 +266,48 @@ export type VerifyInputWithSigners<
   verifyArgs: VerifyInstructionDataArgs['verifyArgs'];
 };
 
+// Input.
+export type VerifyInputAsync<
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountAuthorizationRules extends string,
+  TAccountAuthorizationRulesProgram extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Collection Update authority */
+  collectionAuthority: Address<TAccountCollectionAuthority>;
+  /** payer */
+  payer?: Address<TAccountPayer>;
+  /** Token Authorization Rules account */
+  authorizationRules?: Address<TAccountAuthorizationRules>;
+  /** Token Authorization Rules Program */
+  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
+  verifyArgs: VerifyInstructionDataArgs['verifyArgs'];
+};
+
+// Input.
+export type VerifyInputAsyncWithSigners<
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountAuthorizationRules extends string,
+  TAccountAuthorizationRulesProgram extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Collection Update authority */
+  collectionAuthority: TransactionSigner<TAccountCollectionAuthority>;
+  /** payer */
+  payer?: TransactionSigner<TAccountPayer>;
+  /** Token Authorization Rules account */
+  authorizationRules?: Address<TAccountAuthorizationRules>;
+  /** Token Authorization Rules Program */
+  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
+  verifyArgs: VerifyInstructionDataArgs['verifyArgs'];
+};
+
 export async function verify<
   TReturn,
   TAccountMetadata extends string,

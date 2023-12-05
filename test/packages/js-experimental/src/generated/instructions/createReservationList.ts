@@ -277,6 +277,64 @@ export type CreateReservationListInputWithSigners<
   rent?: Address<TAccountRent>;
 };
 
+// Input.
+export type CreateReservationListInputAsync<
+  TAccountReservationList extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMasterEdition extends string,
+  TAccountResource extends string,
+  TAccountMetadata extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
+  reservationList: Address<TAccountReservationList>;
+  /** Payer */
+  payer?: Address<TAccountPayer>;
+  /** Update authority */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  /**  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
+  masterEdition: Address<TAccountMasterEdition>;
+  /** A resource you wish to tie the reservation list to. This is so your later visitors who come to redeem can derive your reservation list PDA with something they can easily get at. You choose what this should be. */
+  resource: Address<TAccountResource>;
+  /** Metadata key (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Rent info */
+  rent?: Address<TAccountRent>;
+};
+
+// Input.
+export type CreateReservationListInputAsyncWithSigners<
+  TAccountReservationList extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMasterEdition extends string,
+  TAccountResource extends string,
+  TAccountMetadata extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
+  reservationList: Address<TAccountReservationList>;
+  /** Payer */
+  payer?: TransactionSigner<TAccountPayer>;
+  /** Update authority */
+  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
+  /**  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
+  masterEdition: Address<TAccountMasterEdition>;
+  /** A resource you wish to tie the reservation list to. This is so your later visitors who come to redeem can derive your reservation list PDA with something they can easily get at. You choose what this should be. */
+  resource: Address<TAccountResource>;
+  /** Metadata key (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Rent info */
+  rent?: Address<TAccountRent>;
+};
+
 export async function createReservationList<
   TReturn,
   TAccountReservationList extends string,

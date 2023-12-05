@@ -199,6 +199,30 @@ export type CreateAccountInputWithSigners<
   programId: CreateAccountInstructionDataArgs['programId'];
 };
 
+// Input.
+export type CreateAccountInputAsync<
+  TAccountPayer extends string,
+  TAccountNewAccount extends string
+> = {
+  payer?: Address<TAccountPayer>;
+  newAccount: Address<TAccountNewAccount>;
+  lamports: CreateAccountInstructionDataArgs['lamports'];
+  space: CreateAccountInstructionDataArgs['space'];
+  programId: CreateAccountInstructionDataArgs['programId'];
+};
+
+// Input.
+export type CreateAccountInputAsyncWithSigners<
+  TAccountPayer extends string,
+  TAccountNewAccount extends string
+> = {
+  payer?: TransactionSigner<TAccountPayer>;
+  newAccount: TransactionSigner<TAccountNewAccount>;
+  lamports: CreateAccountInstructionDataArgs['lamports'];
+  space: CreateAccountInstructionDataArgs['space'];
+  programId: CreateAccountInstructionDataArgs['programId'];
+};
+
 export async function createAccount<
   TReturn,
   TAccountPayer extends string,

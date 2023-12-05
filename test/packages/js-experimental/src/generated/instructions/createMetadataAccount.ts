@@ -346,7 +346,7 @@ export type CreateMetadataAccountInput<
   TAccountRent extends string
 > = {
   /** Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata?: ProgramDerivedAddress<TAccountMetadata>;
+  metadata: ProgramDerivedAddress<TAccountMetadata>;
   /** Mint of token asset */
   mint: Address<TAccountMint>;
   /** Mint authority */
@@ -366,6 +366,64 @@ export type CreateMetadataAccountInput<
 
 // Input.
 export type CreateMetadataAccountInputWithSigners<
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  /** Metadata key (pda of ['metadata', program id, mint id]) */
+  metadata: ProgramDerivedAddress<TAccountMetadata>;
+  /** Mint of token asset */
+  mint: Address<TAccountMint>;
+  /** Mint authority */
+  mintAuthority: TransactionSigner<TAccountMintAuthority>;
+  /** payer */
+  payer?: TransactionSigner<TAccountPayer>;
+  /** update authority info */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Rent info */
+  rent?: Address<TAccountRent>;
+  data: CreateMetadataAccountInstructionDataArgs['data'];
+  isMutable: CreateMetadataAccountInstructionDataArgs['isMutable'];
+  metadataBump?: CreateMetadataAccountInstructionDataArgs['metadataBump'];
+};
+
+// Input.
+export type CreateMetadataAccountInputAsync<
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  /** Metadata key (pda of ['metadata', program id, mint id]) */
+  metadata?: ProgramDerivedAddress<TAccountMetadata>;
+  /** Mint of token asset */
+  mint: Address<TAccountMint>;
+  /** Mint authority */
+  mintAuthority: Address<TAccountMintAuthority>;
+  /** payer */
+  payer?: Address<TAccountPayer>;
+  /** update authority info */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Rent info */
+  rent?: Address<TAccountRent>;
+  data: CreateMetadataAccountInstructionDataArgs['data'];
+  isMutable: CreateMetadataAccountInstructionDataArgs['isMutable'];
+  metadataBump?: CreateMetadataAccountInstructionDataArgs['metadataBump'];
+};
+
+// Input.
+export type CreateMetadataAccountInputAsyncWithSigners<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountMintAuthority extends string,

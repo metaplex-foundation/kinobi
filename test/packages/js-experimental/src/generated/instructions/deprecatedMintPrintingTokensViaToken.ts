@@ -368,6 +368,72 @@ export type DeprecatedMintPrintingTokensViaTokenInputWithSigners<
   mintPrintingTokensViaTokenArgs: DeprecatedMintPrintingTokensViaTokenInstructionDataArgs['mintPrintingTokensViaTokenArgs'];
 };
 
+// Input.
+export type DeprecatedMintPrintingTokensViaTokenInputAsync<
+  TAccountDestination extends string,
+  TAccountToken extends string,
+  TAccountOneTimePrintingAuthorizationMint extends string,
+  TAccountPrintingMint extends string,
+  TAccountBurnAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenProgram extends string,
+  TAccountRent extends string
+> = {
+  /** Destination account */
+  destination: Address<TAccountDestination>;
+  /** Token account containing one time authorization token */
+  token: Address<TAccountToken>;
+  /** One time authorization mint */
+  oneTimePrintingAuthorizationMint: Address<TAccountOneTimePrintingAuthorizationMint>;
+  /** Printing mint */
+  printingMint: Address<TAccountPrintingMint>;
+  /** Burn authority */
+  burnAuthority: Address<TAccountBurnAuthority>;
+  /** Metadata key (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
+  masterEdition: Address<TAccountMasterEdition>;
+  /** Token program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+  /** Rent */
+  rent?: Address<TAccountRent>;
+  mintPrintingTokensViaTokenArgs: DeprecatedMintPrintingTokensViaTokenInstructionDataArgs['mintPrintingTokensViaTokenArgs'];
+};
+
+// Input.
+export type DeprecatedMintPrintingTokensViaTokenInputAsyncWithSigners<
+  TAccountDestination extends string,
+  TAccountToken extends string,
+  TAccountOneTimePrintingAuthorizationMint extends string,
+  TAccountPrintingMint extends string,
+  TAccountBurnAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenProgram extends string,
+  TAccountRent extends string
+> = {
+  /** Destination account */
+  destination: Address<TAccountDestination>;
+  /** Token account containing one time authorization token */
+  token: Address<TAccountToken>;
+  /** One time authorization mint */
+  oneTimePrintingAuthorizationMint: Address<TAccountOneTimePrintingAuthorizationMint>;
+  /** Printing mint */
+  printingMint: Address<TAccountPrintingMint>;
+  /** Burn authority */
+  burnAuthority: TransactionSigner<TAccountBurnAuthority>;
+  /** Metadata key (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
+  masterEdition: Address<TAccountMasterEdition>;
+  /** Token program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+  /** Rent */
+  rent?: Address<TAccountRent>;
+  mintPrintingTokensViaTokenArgs: DeprecatedMintPrintingTokensViaTokenInstructionDataArgs['mintPrintingTokensViaTokenArgs'];
+};
+
 export async function deprecatedMintPrintingTokensViaToken<
   TReturn,
   TAccountDestination extends string,

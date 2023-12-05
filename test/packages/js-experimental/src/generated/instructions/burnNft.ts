@@ -290,6 +290,58 @@ export type BurnNftInputWithSigners<
   collectionMetadata?: Address<TAccountCollectionMetadata>;
 };
 
+// Input.
+export type BurnNftInputAsync<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountMint extends string,
+  TAccountTokenAccount extends string,
+  TAccountMasterEditionAccount extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountCollectionMetadata extends string
+> = {
+  /** Metadata (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** NFT owner */
+  owner: Address<TAccountOwner>;
+  /** Mint of the NFT */
+  mint: Address<TAccountMint>;
+  /** Token account to close */
+  tokenAccount: Address<TAccountTokenAccount>;
+  /** MasterEdition2 of the NFT */
+  masterEditionAccount: Address<TAccountMasterEditionAccount>;
+  /** SPL Token Program */
+  splTokenProgram?: Address<TAccountSplTokenProgram>;
+  /** Metadata of the Collection */
+  collectionMetadata?: Address<TAccountCollectionMetadata>;
+};
+
+// Input.
+export type BurnNftInputAsyncWithSigners<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountMint extends string,
+  TAccountTokenAccount extends string,
+  TAccountMasterEditionAccount extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountCollectionMetadata extends string
+> = {
+  /** Metadata (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** NFT owner */
+  owner: TransactionSigner<TAccountOwner>;
+  /** Mint of the NFT */
+  mint: Address<TAccountMint>;
+  /** Token account to close */
+  tokenAccount: Address<TAccountTokenAccount>;
+  /** MasterEdition2 of the NFT */
+  masterEditionAccount: Address<TAccountMasterEditionAccount>;
+  /** SPL Token Program */
+  splTokenProgram?: Address<TAccountSplTokenProgram>;
+  /** Metadata of the Collection */
+  collectionMetadata?: Address<TAccountCollectionMetadata>;
+};
+
 export async function burnNft<
   TReturn,
   TAccountMetadata extends string,

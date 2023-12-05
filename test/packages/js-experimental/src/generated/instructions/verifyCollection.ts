@@ -261,6 +261,52 @@ export type VerifyCollectionInputWithSigners<
   collectionMasterEditionAccount: Address<TAccountCollectionMasterEditionAccount>;
 };
 
+// Input.
+export type VerifyCollectionInputAsync<
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollection extends string,
+  TAccountCollectionMasterEditionAccount extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Collection Update authority */
+  collectionAuthority: Address<TAccountCollectionAuthority>;
+  /** payer */
+  payer?: Address<TAccountPayer>;
+  /** Mint of the Collection */
+  collectionMint: Address<TAccountCollectionMint>;
+  /** Metadata Account of the Collection */
+  collection: Address<TAccountCollection>;
+  /** MasterEdition2 Account of the Collection Token */
+  collectionMasterEditionAccount: Address<TAccountCollectionMasterEditionAccount>;
+};
+
+// Input.
+export type VerifyCollectionInputAsyncWithSigners<
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollection extends string,
+  TAccountCollectionMasterEditionAccount extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Collection Update authority */
+  collectionAuthority: TransactionSigner<TAccountCollectionAuthority>;
+  /** payer */
+  payer?: TransactionSigner<TAccountPayer>;
+  /** Mint of the Collection */
+  collectionMint: Address<TAccountCollectionMint>;
+  /** Metadata Account of the Collection */
+  collection: Address<TAccountCollection>;
+  /** MasterEdition2 Account of the Collection Token */
+  collectionMasterEditionAccount: Address<TAccountCollectionMasterEditionAccount>;
+};
+
 export async function verifyCollection<
   TReturn,
   TAccountMetadata extends string,

@@ -456,6 +456,90 @@ export type MintInputWithSigners<
   mintArgs: MintInstructionDataArgs['mintArgs'];
 };
 
+// Input.
+export type MintInputAsync<
+  TAccountToken extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountPayer extends string,
+  TAccountAuthority extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountSplAtaProgram extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string
+> = {
+  /** Token account */
+  token: Address<TAccountToken>;
+  /** Metadata account key (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** Master Edition account */
+  masterEdition?: Address<TAccountMasterEdition>;
+  /** Mint of token asset */
+  mint: Address<TAccountMint>;
+  /** Payer */
+  payer?: Address<TAccountPayer>;
+  /** (Mint or Update) authority */
+  authority?: Address<TAccountAuthority>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Instructions sysvar account */
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
+  /** SPL Token program */
+  splTokenProgram?: Address<TAccountSplTokenProgram>;
+  /** SPL Associated Token Account program */
+  splAtaProgram?: Address<TAccountSplAtaProgram>;
+  /** Token Authorization Rules program */
+  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
+  /** Token Authorization Rules account */
+  authorizationRules?: Address<TAccountAuthorizationRules>;
+  mintArgs: MintInstructionDataArgs['mintArgs'];
+};
+
+// Input.
+export type MintInputAsyncWithSigners<
+  TAccountToken extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountPayer extends string,
+  TAccountAuthority extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountSplAtaProgram extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string
+> = {
+  /** Token account */
+  token: Address<TAccountToken>;
+  /** Metadata account key (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** Master Edition account */
+  masterEdition?: Address<TAccountMasterEdition>;
+  /** Mint of token asset */
+  mint: Address<TAccountMint>;
+  /** Payer */
+  payer?: TransactionSigner<TAccountPayer>;
+  /** (Mint or Update) authority */
+  authority?: TransactionSigner<TAccountAuthority>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Instructions sysvar account */
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
+  /** SPL Token program */
+  splTokenProgram?: Address<TAccountSplTokenProgram>;
+  /** SPL Associated Token Account program */
+  splAtaProgram?: Address<TAccountSplAtaProgram>;
+  /** Token Authorization Rules program */
+  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
+  /** Token Authorization Rules account */
+  authorizationRules?: Address<TAccountAuthorizationRules>;
+  mintArgs: MintInstructionDataArgs['mintArgs'];
+};
+
 export async function mint<
   TReturn,
   TAccountToken extends string,

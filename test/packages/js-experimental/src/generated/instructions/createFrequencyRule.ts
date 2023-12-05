@@ -242,6 +242,42 @@ export type CreateFrequencyRuleInputWithSigners<
   period: CreateFrequencyRuleInstructionDataArgs['period'];
 };
 
+// Input.
+export type CreateFrequencyRuleInputAsync<
+  TAccountPayer extends string,
+  TAccountFrequencyPda extends string,
+  TAccountSystemProgram extends string
+> = {
+  /** Payer and creator of the Frequency Rule */
+  payer?: Address<TAccountPayer>;
+  /** The PDA account where the Frequency Rule is stored */
+  frequencyPda: Address<TAccountFrequencyPda>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  ruleSetName: CreateFrequencyRuleInstructionDataArgs['ruleSetName'];
+  freqRuleName: CreateFrequencyRuleInstructionDataArgs['freqRuleName'];
+  lastUpdate: CreateFrequencyRuleInstructionDataArgs['lastUpdate'];
+  period: CreateFrequencyRuleInstructionDataArgs['period'];
+};
+
+// Input.
+export type CreateFrequencyRuleInputAsyncWithSigners<
+  TAccountPayer extends string,
+  TAccountFrequencyPda extends string,
+  TAccountSystemProgram extends string
+> = {
+  /** Payer and creator of the Frequency Rule */
+  payer?: TransactionSigner<TAccountPayer>;
+  /** The PDA account where the Frequency Rule is stored */
+  frequencyPda: Address<TAccountFrequencyPda>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  ruleSetName: CreateFrequencyRuleInstructionDataArgs['ruleSetName'];
+  freqRuleName: CreateFrequencyRuleInstructionDataArgs['freqRuleName'];
+  lastUpdate: CreateFrequencyRuleInstructionDataArgs['lastUpdate'];
+  period: CreateFrequencyRuleInstructionDataArgs['period'];
+};
+
 export async function createFrequencyRule<
   TReturn,
   TAccountPayer extends string,

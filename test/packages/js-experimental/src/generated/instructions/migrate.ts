@@ -387,6 +387,78 @@ export type MigrateInputWithSigners<
   migrateArgs: MigrateInstructionDataArgs['migrateArgs'];
 };
 
+// Input.
+export type MigrateInputAsync<
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthorizationRules extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Master edition account */
+  masterEdition: Address<TAccountMasterEdition>;
+  /** Token account */
+  tokenAccount: Address<TAccountTokenAccount>;
+  /** Mint account */
+  mint: Address<TAccountMint>;
+  /** Update authority */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  /** Collection metadata account */
+  collectionMetadata: Address<TAccountCollectionMetadata>;
+  /** Token Program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Instruction sysvar account */
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
+  /** Token Authorization Rules account */
+  authorizationRules?: Address<TAccountAuthorizationRules>;
+  migrateArgs: MigrateInstructionDataArgs['migrateArgs'];
+};
+
+// Input.
+export type MigrateInputAsyncWithSigners<
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthorizationRules extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Master edition account */
+  masterEdition: Address<TAccountMasterEdition>;
+  /** Token account */
+  tokenAccount: Address<TAccountTokenAccount>;
+  /** Mint account */
+  mint: Address<TAccountMint>;
+  /** Update authority */
+  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
+  /** Collection metadata account */
+  collectionMetadata: Address<TAccountCollectionMetadata>;
+  /** Token Program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Instruction sysvar account */
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
+  /** Token Authorization Rules account */
+  authorizationRules?: Address<TAccountAuthorizationRules>;
+  migrateArgs: MigrateInstructionDataArgs['migrateArgs'];
+};
+
 export async function migrate<
   TReturn,
   TAccountMetadata extends string,

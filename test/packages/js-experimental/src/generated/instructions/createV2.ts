@@ -396,6 +396,74 @@ export type CreateV2InputWithSigners<
   maxSupply: CreateV2InstructionDataArgs['maxSupply'];
 };
 
+// Input.
+export type CreateV2InputAsync<
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountSplTokenProgram extends string
+> = {
+  /** Metadata account key (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition'] */
+  masterEdition?: Address<TAccountMasterEdition>;
+  /** Mint of token asset */
+  mint: Address<TAccountMint>;
+  /** Mint authority */
+  mintAuthority: Address<TAccountMintAuthority>;
+  /** Payer */
+  payer?: Address<TAccountPayer>;
+  /** update authority info */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Instructions sysvar account */
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
+  /** SPL Token program */
+  splTokenProgram?: Address<TAccountSplTokenProgram>;
+  assetData: CreateV2InstructionDataArgs['assetData'];
+  maxSupply: CreateV2InstructionDataArgs['maxSupply'];
+};
+
+// Input.
+export type CreateV2InputAsyncWithSigners<
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountSplTokenProgram extends string
+> = {
+  /** Metadata account key (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition'] */
+  masterEdition?: Address<TAccountMasterEdition>;
+  /** Mint of token asset */
+  mint: Address<TAccountMint> | TransactionSigner<TAccountMint>;
+  /** Mint authority */
+  mintAuthority: TransactionSigner<TAccountMintAuthority>;
+  /** Payer */
+  payer?: TransactionSigner<TAccountPayer>;
+  /** update authority info */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Instructions sysvar account */
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
+  /** SPL Token program */
+  splTokenProgram?: Address<TAccountSplTokenProgram>;
+  assetData: CreateV2InstructionDataArgs['assetData'];
+  maxSupply: CreateV2InstructionDataArgs['maxSupply'];
+};
+
 export async function createV2<
   TReturn,
   TAccountMetadata extends string,

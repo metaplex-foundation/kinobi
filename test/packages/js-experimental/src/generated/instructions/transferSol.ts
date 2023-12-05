@@ -176,6 +176,26 @@ export type TransferSolInputWithSigners<
   amount: TransferSolInstructionDataArgs['amount'];
 };
 
+// Input.
+export type TransferSolInputAsync<
+  TAccountSource extends string,
+  TAccountDestination extends string
+> = {
+  source: Address<TAccountSource>;
+  destination: Address<TAccountDestination>;
+  amount: TransferSolInstructionDataArgs['amount'];
+};
+
+// Input.
+export type TransferSolInputAsyncWithSigners<
+  TAccountSource extends string,
+  TAccountDestination extends string
+> = {
+  source: TransactionSigner<TAccountSource>;
+  destination: Address<TAccountDestination>;
+  amount: TransferSolInstructionDataArgs['amount'];
+};
+
 export async function transferSol<
   TReturn,
   TAccountSource extends string,

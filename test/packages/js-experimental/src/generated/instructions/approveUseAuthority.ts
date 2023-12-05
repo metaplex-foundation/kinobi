@@ -392,6 +392,84 @@ export type ApproveUseAuthorityInputWithSigners<
   numberOfUses: ApproveUseAuthorityInstructionDataArgs['numberOfUses'];
 };
 
+// Input.
+export type ApproveUseAuthorityInputAsync<
+  TAccountUseAuthorityRecord extends string,
+  TAccountOwner extends string,
+  TAccountPayer extends string,
+  TAccountUser extends string,
+  TAccountOwnerTokenAccount extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountBurner extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  /** Use Authority Record PDA */
+  useAuthorityRecord: Address<TAccountUseAuthorityRecord>;
+  /** Owner */
+  owner: Address<TAccountOwner>;
+  /** Payer */
+  payer?: Address<TAccountPayer>;
+  /** A Use Authority */
+  user: Address<TAccountUser>;
+  /** Owned Token Account Of Mint */
+  ownerTokenAccount: Address<TAccountOwnerTokenAccount>;
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Mint of Metadata */
+  mint: Address<TAccountMint>;
+  /** Program As Signer (Burner) */
+  burner: Address<TAccountBurner>;
+  /** Token program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Rent info */
+  rent?: Address<TAccountRent>;
+  numberOfUses: ApproveUseAuthorityInstructionDataArgs['numberOfUses'];
+};
+
+// Input.
+export type ApproveUseAuthorityInputAsyncWithSigners<
+  TAccountUseAuthorityRecord extends string,
+  TAccountOwner extends string,
+  TAccountPayer extends string,
+  TAccountUser extends string,
+  TAccountOwnerTokenAccount extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountBurner extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  /** Use Authority Record PDA */
+  useAuthorityRecord: Address<TAccountUseAuthorityRecord>;
+  /** Owner */
+  owner: TransactionSigner<TAccountOwner>;
+  /** Payer */
+  payer?: TransactionSigner<TAccountPayer>;
+  /** A Use Authority */
+  user: Address<TAccountUser>;
+  /** Owned Token Account Of Mint */
+  ownerTokenAccount: Address<TAccountOwnerTokenAccount>;
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Mint of Metadata */
+  mint: Address<TAccountMint>;
+  /** Program As Signer (Burner) */
+  burner: Address<TAccountBurner>;
+  /** Token program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Rent info */
+  rent?: Address<TAccountRent>;
+  numberOfUses: ApproveUseAuthorityInstructionDataArgs['numberOfUses'];
+};
+
 export async function approveUseAuthority<
   TReturn,
   TAccountUseAuthorityRecord extends string,

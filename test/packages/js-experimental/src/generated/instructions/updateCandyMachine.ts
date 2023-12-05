@@ -187,6 +187,26 @@ export type UpdateCandyMachineInputWithSigners<
   data: UpdateCandyMachineInstructionDataArgs['data'];
 };
 
+// Input.
+export type UpdateCandyMachineInputAsync<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string
+> = {
+  candyMachine: Address<TAccountCandyMachine>;
+  authority?: Address<TAccountAuthority>;
+  data: UpdateCandyMachineInstructionDataArgs['data'];
+};
+
+// Input.
+export type UpdateCandyMachineInputAsyncWithSigners<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string
+> = {
+  candyMachine: Address<TAccountCandyMachine>;
+  authority?: TransactionSigner<TAccountAuthority>;
+  data: UpdateCandyMachineInstructionDataArgs['data'];
+};
+
 export async function updateCandyMachine<
   TReturn,
   TAccountCandyMachine extends string,

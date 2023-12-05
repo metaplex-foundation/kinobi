@@ -16,7 +16,8 @@ export function getInstructionInputTypeFragment(
   dataArgsManifest: TypeManifest,
   extraArgsManifest: TypeManifest,
   programNode: nodes.ProgramNode,
-  withSigners: boolean
+  withSigners: boolean,
+  useAsync: boolean
 ): Fragment {
   // Accounts.
   const accountImports = new ImportMap();
@@ -25,14 +26,17 @@ export function getInstructionInputTypeFragment(
     const resolvedAccount = resolvedInputs.find(
       (input) => input.kind === 'account' && input.name === account.name
     ) as ResolvedInstructionAccount;
-    const optionalSign =
-      !!resolvedAccount.defaultsTo || resolvedAccount.isOptional ? '?' : '';
+    const isOptionalAttribute = useAsync
+      ? !!resolvedAccount.defaultsTo || resolvedAccount.isOptional
+      : (!!resolvedAccount.defaultsTo &&
+          resolvedAccount.defaultsTo.kind !== 'pda') ||
+        resolvedAccount.isOptional;
     const type = getAccountType(resolvedAccount, withSigners);
     accountImports.mergeWith(type);
     return {
       ...resolvedAccount,
       typeParam,
-      optionalSign,
+      optionalSign: isOptionalAttribute ? '?' : '',
       type: type.render,
     };
   });
@@ -85,6 +89,7 @@ export function getInstructionInputTypeFragment(
     extraArgs,
     extraArgsType,
     withSigners,
+    useAsync,
   })
     .mergeImportsWith(accountImports, argLinkImports)
     .addImports('solanaAddresses', ['Address']);

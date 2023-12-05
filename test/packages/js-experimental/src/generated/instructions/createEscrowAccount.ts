@@ -339,6 +339,70 @@ export type CreateEscrowAccountInputWithSigners<
   authority?: TransactionSigner<TAccountAuthority>;
 };
 
+// Input.
+export type CreateEscrowAccountInputAsync<
+  TAccountEscrow extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountPayer extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthority extends string
+> = {
+  /** Escrow account */
+  escrow: Address<TAccountEscrow>;
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Mint account */
+  mint: Address<TAccountMint>;
+  /** Token account of the token */
+  tokenAccount: Address<TAccountTokenAccount>;
+  /** Edition account */
+  edition: Address<TAccountEdition>;
+  /** Wallet paying for the transaction and new account */
+  payer?: Address<TAccountPayer>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Instructions sysvar account */
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
+  /** Authority/creator of the escrow account */
+  authority?: Address<TAccountAuthority>;
+};
+
+// Input.
+export type CreateEscrowAccountInputAsyncWithSigners<
+  TAccountEscrow extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountPayer extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthority extends string
+> = {
+  /** Escrow account */
+  escrow: Address<TAccountEscrow>;
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Mint account */
+  mint: Address<TAccountMint>;
+  /** Token account of the token */
+  tokenAccount: Address<TAccountTokenAccount>;
+  /** Edition account */
+  edition: Address<TAccountEdition>;
+  /** Wallet paying for the transaction and new account */
+  payer?: TransactionSigner<TAccountPayer>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Instructions sysvar account */
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
+  /** Authority/creator of the escrow account */
+  authority?: TransactionSigner<TAccountAuthority>;
+};
+
 export async function createEscrowAccount<
   TReturn,
   TAccountEscrow extends string,

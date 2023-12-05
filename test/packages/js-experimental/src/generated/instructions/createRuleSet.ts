@@ -229,6 +229,38 @@ export type CreateRuleSetInputWithSigners<
   ruleSetBump?: CreateRuleSetInstructionDataArgs['ruleSetBump'];
 };
 
+// Input.
+export type CreateRuleSetInputAsync<
+  TAccountPayer extends string,
+  TAccountRuleSetPda extends string,
+  TAccountSystemProgram extends string
+> = {
+  /** Payer and creator of the RuleSet */
+  payer?: Address<TAccountPayer>;
+  /** The PDA account where the RuleSet is stored */
+  ruleSetPda: ProgramDerivedAddress<TAccountRuleSetPda>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  createArgs: CreateRuleSetInstructionDataArgs['createArgs'];
+  ruleSetBump?: CreateRuleSetInstructionDataArgs['ruleSetBump'];
+};
+
+// Input.
+export type CreateRuleSetInputAsyncWithSigners<
+  TAccountPayer extends string,
+  TAccountRuleSetPda extends string,
+  TAccountSystemProgram extends string
+> = {
+  /** Payer and creator of the RuleSet */
+  payer?: TransactionSigner<TAccountPayer>;
+  /** The PDA account where the RuleSet is stored */
+  ruleSetPda: ProgramDerivedAddress<TAccountRuleSetPda>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  createArgs: CreateRuleSetInstructionDataArgs['createArgs'];
+  ruleSetBump?: CreateRuleSetInstructionDataArgs['ruleSetBump'];
+};
+
 export async function createRuleSet<
   TReturn,
   TAccountPayer extends string,

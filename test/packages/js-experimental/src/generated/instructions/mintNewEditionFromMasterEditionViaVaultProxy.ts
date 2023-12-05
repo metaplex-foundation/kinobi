@@ -547,6 +547,120 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInputWithSigners<
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs['mintNewEditionFromMasterEditionViaTokenArgs'];
 };
 
+// Input.
+export type MintNewEditionFromMasterEditionViaVaultProxyInputAsync<
+  TAccountNewMetadata extends string,
+  TAccountNewEdition extends string,
+  TAccountMasterEdition extends string,
+  TAccountNewMint extends string,
+  TAccountEditionMarkPda extends string,
+  TAccountNewMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountVaultAuthority extends string,
+  TAccountSafetyDepositStore extends string,
+  TAccountSafetyDepositBox extends string,
+  TAccountVault extends string,
+  TAccountNewMetadataUpdateAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountTokenVaultProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  /** New Metadata key (pda of ['metadata', program id, mint id]) */
+  newMetadata: Address<TAccountNewMetadata>;
+  /** New Edition (pda of ['metadata', program id, mint id, 'edition']) */
+  newEdition: Address<TAccountNewEdition>;
+  /** Master Record Edition V2 (pda of ['metadata', program id, master metadata mint id, 'edition'] */
+  masterEdition: Address<TAccountMasterEdition>;
+  /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
+  newMint: Address<TAccountNewMint>;
+  /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE). */
+  editionMarkPda: Address<TAccountEditionMarkPda>;
+  /** Mint authority of new mint */
+  newMintAuthority: Address<TAccountNewMintAuthority>;
+  /** payer */
+  payer?: Address<TAccountPayer>;
+  /** Vault authority */
+  vaultAuthority: Address<TAccountVaultAuthority>;
+  /** Safety deposit token store account */
+  safetyDepositStore: Address<TAccountSafetyDepositStore>;
+  /** Safety deposit box */
+  safetyDepositBox: Address<TAccountSafetyDepositBox>;
+  /** Vault */
+  vault: Address<TAccountVault>;
+  /** Update authority info for new metadata */
+  newMetadataUpdateAuthority: Address<TAccountNewMetadataUpdateAuthority>;
+  /** Master record metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Token program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+  /** Token vault program */
+  tokenVaultProgram: Address<TAccountTokenVaultProgram>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Rent info */
+  rent?: Address<TAccountRent>;
+  mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs['mintNewEditionFromMasterEditionViaTokenArgs'];
+};
+
+// Input.
+export type MintNewEditionFromMasterEditionViaVaultProxyInputAsyncWithSigners<
+  TAccountNewMetadata extends string,
+  TAccountNewEdition extends string,
+  TAccountMasterEdition extends string,
+  TAccountNewMint extends string,
+  TAccountEditionMarkPda extends string,
+  TAccountNewMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountVaultAuthority extends string,
+  TAccountSafetyDepositStore extends string,
+  TAccountSafetyDepositBox extends string,
+  TAccountVault extends string,
+  TAccountNewMetadataUpdateAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountTokenVaultProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  /** New Metadata key (pda of ['metadata', program id, mint id]) */
+  newMetadata: Address<TAccountNewMetadata>;
+  /** New Edition (pda of ['metadata', program id, mint id, 'edition']) */
+  newEdition: Address<TAccountNewEdition>;
+  /** Master Record Edition V2 (pda of ['metadata', program id, master metadata mint id, 'edition'] */
+  masterEdition: Address<TAccountMasterEdition>;
+  /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
+  newMint: Address<TAccountNewMint>;
+  /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE). */
+  editionMarkPda: Address<TAccountEditionMarkPda>;
+  /** Mint authority of new mint */
+  newMintAuthority: TransactionSigner<TAccountNewMintAuthority>;
+  /** payer */
+  payer?: TransactionSigner<TAccountPayer>;
+  /** Vault authority */
+  vaultAuthority: TransactionSigner<TAccountVaultAuthority>;
+  /** Safety deposit token store account */
+  safetyDepositStore: Address<TAccountSafetyDepositStore>;
+  /** Safety deposit box */
+  safetyDepositBox: Address<TAccountSafetyDepositBox>;
+  /** Vault */
+  vault: Address<TAccountVault>;
+  /** Update authority info for new metadata */
+  newMetadataUpdateAuthority: Address<TAccountNewMetadataUpdateAuthority>;
+  /** Master record metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Token program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+  /** Token vault program */
+  tokenVaultProgram: Address<TAccountTokenVaultProgram>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Rent info */
+  rent?: Address<TAccountRent>;
+  mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs['mintNewEditionFromMasterEditionViaTokenArgs'];
+};
+
 export async function mintNewEditionFromMasterEditionViaVaultProxy<
   TReturn,
   TAccountNewMetadata extends string,

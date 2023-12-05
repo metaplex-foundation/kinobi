@@ -317,6 +317,64 @@ export type SetAndVerifySizedCollectionItemInputWithSigners<
   collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
 };
 
+// Input.
+export type SetAndVerifySizedCollectionItemInputAsync<
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollection extends string,
+  TAccountCollectionMasterEditionAccount extends string,
+  TAccountCollectionAuthorityRecord extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Collection Update authority */
+  collectionAuthority: Address<TAccountCollectionAuthority>;
+  /** payer */
+  payer?: Address<TAccountPayer>;
+  /** Update Authority of Collection NFT and NFT */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  /** Mint of the Collection */
+  collectionMint: Address<TAccountCollectionMint>;
+  /** Metadata Account of the Collection */
+  collection: Address<TAccountCollection>;
+  /** MasterEdition2 Account of the Collection Token */
+  collectionMasterEditionAccount: Address<TAccountCollectionMasterEditionAccount>;
+  /** Collection Authority Record PDA */
+  collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
+};
+
+// Input.
+export type SetAndVerifySizedCollectionItemInputAsyncWithSigners<
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollection extends string,
+  TAccountCollectionMasterEditionAccount extends string,
+  TAccountCollectionAuthorityRecord extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Collection Update authority */
+  collectionAuthority: TransactionSigner<TAccountCollectionAuthority>;
+  /** payer */
+  payer?: TransactionSigner<TAccountPayer>;
+  /** Update Authority of Collection NFT and NFT */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  /** Mint of the Collection */
+  collectionMint: Address<TAccountCollectionMint>;
+  /** Metadata Account of the Collection */
+  collection: Address<TAccountCollection>;
+  /** MasterEdition2 Account of the Collection Token */
+  collectionMasterEditionAccount: Address<TAccountCollectionMasterEditionAccount>;
+  /** Collection Authority Record PDA */
+  collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
+};
+
 export async function setAndVerifySizedCollectionItem<
   TReturn,
   TAccountMetadata extends string,

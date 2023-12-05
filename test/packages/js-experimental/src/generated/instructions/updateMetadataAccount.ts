@@ -278,6 +278,34 @@ export type UpdateMetadataAccountInputWithSigners<
   primarySaleHappened: UpdateMetadataAccountInstructionDataArgs['primarySaleHappened'];
 };
 
+// Input.
+export type UpdateMetadataAccountInputAsync<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Update authority key */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  data: UpdateMetadataAccountInstructionDataArgs['data'];
+  updateAuthorityArg: UpdateMetadataAccountInstructionDataArgs['updateAuthority'];
+  primarySaleHappened: UpdateMetadataAccountInstructionDataArgs['primarySaleHappened'];
+};
+
+// Input.
+export type UpdateMetadataAccountInputAsyncWithSigners<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Update authority key */
+  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
+  data: UpdateMetadataAccountInstructionDataArgs['data'];
+  updateAuthorityArg: UpdateMetadataAccountInstructionDataArgs['updateAuthority'];
+  primarySaleHappened: UpdateMetadataAccountInstructionDataArgs['primarySaleHappened'];
+};
+
 export async function updateMetadataAccount<
   TReturn,
   TAccountMetadata extends string,

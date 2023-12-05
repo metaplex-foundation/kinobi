@@ -168,6 +168,24 @@ export type WithdrawInputWithSigners<
   authority?: TransactionSigner<TAccountAuthority>;
 };
 
+// Input.
+export type WithdrawInputAsync<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string
+> = {
+  candyMachine: Address<TAccountCandyMachine>;
+  authority?: Address<TAccountAuthority>;
+};
+
+// Input.
+export type WithdrawInputAsyncWithSigners<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string
+> = {
+  candyMachine: Address<TAccountCandyMachine>;
+  authority?: TransactionSigner<TAccountAuthority>;
+};
+
 export async function withdraw<
   TReturn,
   TAccountCandyMachine extends string,

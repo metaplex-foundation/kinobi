@@ -222,6 +222,36 @@ export type UpdateMetadataAccountV2InputWithSigners<
   isMutable: UpdateMetadataAccountV2InstructionDataArgs['isMutable'];
 };
 
+// Input.
+export type UpdateMetadataAccountV2InputAsync<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Update authority key */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  data: UpdateMetadataAccountV2InstructionDataArgs['data'];
+  updateAuthorityArg: UpdateMetadataAccountV2InstructionDataArgs['updateAuthority'];
+  primarySaleHappened: UpdateMetadataAccountV2InstructionDataArgs['primarySaleHappened'];
+  isMutable: UpdateMetadataAccountV2InstructionDataArgs['isMutable'];
+};
+
+// Input.
+export type UpdateMetadataAccountV2InputAsyncWithSigners<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Update authority key */
+  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
+  data: UpdateMetadataAccountV2InstructionDataArgs['data'];
+  updateAuthorityArg: UpdateMetadataAccountV2InstructionDataArgs['updateAuthority'];
+  primarySaleHappened: UpdateMetadataAccountV2InstructionDataArgs['primarySaleHappened'];
+  isMutable: UpdateMetadataAccountV2InstructionDataArgs['isMutable'];
+};
+
 export async function updateMetadataAccountV2<
   TReturn,
   TAccountMetadata extends string,
