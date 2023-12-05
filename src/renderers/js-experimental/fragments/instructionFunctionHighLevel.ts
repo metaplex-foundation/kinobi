@@ -18,7 +18,8 @@ export function getInstructionFunctionHighLevelFragment(
   programNode: nodes.ProgramNode,
   renamedArgs: Map<string, string>,
   dataArgsManifest: TypeManifest,
-  resolvedInputs: ResolvedInstructionInput[]
+  resolvedInputs: ResolvedInstructionInput[],
+  useAsync: boolean
 ): Fragment {
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasDataArgs =
@@ -51,8 +52,12 @@ export function getInstructionFunctionHighLevelFragment(
     instructionNode,
     true
   );
-  const inputTypeFragment = getInputType(instructionNode, false);
-  const inputTypeWithSignersFragment = getInputType(instructionNode, true);
+  const inputTypeFragment = getInputType(instructionNode, false, useAsync);
+  const inputTypeWithSignersFragment = getInputType(
+    instructionNode,
+    true,
+    useAsync
+  );
   const customGeneratedInstruction = `CustomGeneratedInstruction<${instructionTypeFragment.render}, TReturn>`;
   const renamedArgsText = [...renamedArgs.entries()]
     .map(([k, v]) => `${k}: input.${v}`)
@@ -60,7 +65,8 @@ export function getInstructionFunctionHighLevelFragment(
 
   const resolvedInputsFragment = getInstructionInputResolvedFragment(
     instructionNode,
-    resolvedInputs
+    resolvedInputs,
+    useAsync
   );
   const remainingAccountsFragment =
     getInstructionRemainingAccountsFragment(instructionNode);
@@ -178,10 +184,13 @@ function getInstructionType(
 
 function getInputType(
   instructionNode: nodes.InstructionNode,
-  withSigners: boolean
+  withSigners: boolean,
+  useAsync: boolean
 ): Fragment {
   const inputTypeName = pascalCase(
-    `${instructionNode.name}AsyncInput${withSigners ? 'WithSigners' : ''}`
+    `${instructionNode.name}${useAsync ? 'Async' : ''}Input${
+      withSigners ? 'WithSigners' : ''
+    }`
   );
   if (instructionNode.accounts.length === 0) return fragment(inputTypeName);
   const accountTypeParams = instructionNode.accounts

@@ -327,7 +327,8 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         this.program,
         renamedArgs,
         dataArgsManifest,
-        resolvedInputs
+        resolvedInputs,
+        true
       );
 
     // Imports and interfaces.

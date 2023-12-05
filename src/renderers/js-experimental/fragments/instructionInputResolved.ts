@@ -12,7 +12,8 @@ import { getInstructionInputDefaultFragment } from './instructionInputDefault';
 
 export function getInstructionInputResolvedFragment(
   instructionNode: nodes.InstructionNode,
-  resolvedInputs: ResolvedInstructionInput[]
+  resolvedInputs: ResolvedInstructionInput[],
+  useAsync: boolean
 ): Fragment & { interfaces: ContextMap } {
   const interfaces = new ContextMap();
 
@@ -20,7 +21,8 @@ export function getInstructionInputResolvedFragment(
     (input: ResolvedInstructionInput): Fragment[] => {
       const inputFragment = getInstructionInputDefaultFragment(
         input,
-        instructionNode.optionalAccountStrategy
+        instructionNode.optionalAccountStrategy,
+        useAsync
       );
       if (!inputFragment.render) return [];
       interfaces.mergeWith(inputFragment.interfaces);

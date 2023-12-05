@@ -18,6 +18,7 @@ import { getValueNodeFragment } from './valueNode';
 export function getInstructionInputDefaultFragment(
   input: ResolvedInstructionInput,
   optionalAccountStrategy: 'programId' | 'omitted',
+  useAsync: boolean,
   accountObject: string = 'accounts',
   argObject: string = 'args'
 ): Fragment & { interfaces: ContextMap } {
@@ -76,6 +77,9 @@ export function getInstructionInputDefaultFragment(
       ).addImports('shared', 'expectAddress');
 
     case 'pda':
+      if (!useAsync) {
+        return fragmentWithContextMap('');
+      }
       const pdaFunction = `find${pascalCase(defaultsTo.pdaAccount)}Pda`;
       const pdaImportFrom =
         defaultsTo.importFrom === 'generated'
@@ -180,6 +184,7 @@ export function getInstructionInputDefaultFragment(
         input,
         optionalAccountStrategy,
         defaultsTo.ifTrue,
+        useAsync,
         accountObject,
         argObject
       );
@@ -187,6 +192,7 @@ export function getInstructionInputDefaultFragment(
         input,
         optionalAccountStrategy,
         defaultsTo.ifFalse,
+        useAsync,
         accountObject,
         argObject
       );
@@ -257,6 +263,7 @@ function renderNestedInstructionDefault(
   input: ResolvedInstructionInput,
   optionalAccountStrategy: 'programId' | 'omitted',
   defaultsTo: InstructionDefault | undefined,
+  useAsync: boolean,
   accountObject: string,
   argObject: string
 ): (Fragment & { interfaces: ContextMap }) | undefined {
@@ -266,6 +273,7 @@ function renderNestedInstructionDefault(
     return getInstructionInputDefaultFragment(
       { ...input, defaultsTo: defaultsTo as InstructionAccountDefault },
       optionalAccountStrategy,
+      useAsync,
       accountObject,
       argObject
     );
@@ -274,6 +282,7 @@ function renderNestedInstructionDefault(
   return getInstructionInputDefaultFragment(
     { ...input, defaultsTo: defaultsTo as InstructionArgDefault },
     optionalAccountStrategy,
+    useAsync,
     accountObject,
     argObject
   );
