@@ -137,6 +137,95 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInstruction<
     ]
   >;
 
+// Output.
+export type MintNewEditionFromMasterEditionViaVaultProxyInstructionWithSigners<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountNewMetadata extends string | IAccountMeta<string> = string,
+  TAccountNewEdition extends string | IAccountMeta<string> = string,
+  TAccountMasterEdition extends string | IAccountMeta<string> = string,
+  TAccountNewMint extends string | IAccountMeta<string> = string,
+  TAccountEditionMarkPda extends string | IAccountMeta<string> = string,
+  TAccountNewMintAuthority extends string | IAccountMeta<string> = string,
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountVaultAuthority extends string | IAccountMeta<string> = string,
+  TAccountSafetyDepositStore extends string | IAccountMeta<string> = string,
+  TAccountSafetyDepositBox extends string | IAccountMeta<string> = string,
+  TAccountVault extends string | IAccountMeta<string> = string,
+  TAccountNewMetadataUpdateAuthority extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountTokenVaultProgram extends string | IAccountMeta<string> = string,
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountRent extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountNewMetadata extends string
+        ? WritableAccount<TAccountNewMetadata>
+        : TAccountNewMetadata,
+      TAccountNewEdition extends string
+        ? WritableAccount<TAccountNewEdition>
+        : TAccountNewEdition,
+      TAccountMasterEdition extends string
+        ? WritableAccount<TAccountMasterEdition>
+        : TAccountMasterEdition,
+      TAccountNewMint extends string
+        ? WritableAccount<TAccountNewMint>
+        : TAccountNewMint,
+      TAccountEditionMarkPda extends string
+        ? WritableAccount<TAccountEditionMarkPda>
+        : TAccountEditionMarkPda,
+      TAccountNewMintAuthority extends string
+        ? ReadonlySignerAccount<TAccountNewMintAuthority> &
+            IAccountSignerMeta<TAccountNewMintAuthority>
+        : TAccountNewMintAuthority,
+      TAccountPayer extends string
+        ? WritableSignerAccount<TAccountPayer> &
+            IAccountSignerMeta<TAccountPayer>
+        : TAccountPayer,
+      TAccountVaultAuthority extends string
+        ? ReadonlySignerAccount<TAccountVaultAuthority> &
+            IAccountSignerMeta<TAccountVaultAuthority>
+        : TAccountVaultAuthority,
+      TAccountSafetyDepositStore extends string
+        ? ReadonlyAccount<TAccountSafetyDepositStore>
+        : TAccountSafetyDepositStore,
+      TAccountSafetyDepositBox extends string
+        ? ReadonlyAccount<TAccountSafetyDepositBox>
+        : TAccountSafetyDepositBox,
+      TAccountVault extends string
+        ? ReadonlyAccount<TAccountVault>
+        : TAccountVault,
+      TAccountNewMetadataUpdateAuthority extends string
+        ? ReadonlyAccount<TAccountNewMetadataUpdateAuthority>
+        : TAccountNewMetadataUpdateAuthority,
+      TAccountMetadata extends string
+        ? ReadonlyAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountTokenProgram extends string
+        ? ReadonlyAccount<TAccountTokenProgram>
+        : TAccountTokenProgram,
+      TAccountTokenVaultProgram extends string
+        ? ReadonlyAccount<TAccountTokenVaultProgram>
+        : TAccountTokenVaultProgram,
+      TAccountSystemProgram extends string
+        ? ReadonlyAccount<TAccountSystemProgram>
+        : TAccountSystemProgram,
+      TAccountRent extends string
+        ? ReadonlyAccount<TAccountRent>
+        : TAccountRent,
+      ...TRemainingAccounts
+    ]
+  >;
+
 export type MintNewEditionFromMasterEditionViaVaultProxyInstructionData = {
   discriminator: number;
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgs;

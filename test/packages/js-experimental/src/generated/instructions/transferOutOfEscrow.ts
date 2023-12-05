@@ -122,6 +122,80 @@ export type TransferOutOfEscrowInstruction<
     ]
   >;
 
+// Output.
+export type TransferOutOfEscrowInstructionWithSigners<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountEscrow extends string | IAccountMeta<string> = string,
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountAttributeMint extends string | IAccountMeta<string> = string,
+  TAccountAttributeSrc extends string | IAccountMeta<string> = string,
+  TAccountAttributeDst extends string | IAccountMeta<string> = string,
+  TAccountEscrowMint extends string | IAccountMeta<string> = string,
+  TAccountEscrowAccount extends string | IAccountMeta<string> = string,
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountAtaProgram extends
+    | string
+    | IAccountMeta<string> = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSysvarInstructions extends
+    | string
+    | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountEscrow extends string
+        ? ReadonlyAccount<TAccountEscrow>
+        : TAccountEscrow,
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountPayer extends string
+        ? WritableSignerAccount<TAccountPayer> &
+            IAccountSignerMeta<TAccountPayer>
+        : TAccountPayer,
+      TAccountAttributeMint extends string
+        ? ReadonlyAccount<TAccountAttributeMint>
+        : TAccountAttributeMint,
+      TAccountAttributeSrc extends string
+        ? WritableAccount<TAccountAttributeSrc>
+        : TAccountAttributeSrc,
+      TAccountAttributeDst extends string
+        ? WritableAccount<TAccountAttributeDst>
+        : TAccountAttributeDst,
+      TAccountEscrowMint extends string
+        ? ReadonlyAccount<TAccountEscrowMint>
+        : TAccountEscrowMint,
+      TAccountEscrowAccount extends string
+        ? ReadonlyAccount<TAccountEscrowAccount>
+        : TAccountEscrowAccount,
+      TAccountSystemProgram extends string
+        ? ReadonlyAccount<TAccountSystemProgram>
+        : TAccountSystemProgram,
+      TAccountAtaProgram extends string
+        ? ReadonlyAccount<TAccountAtaProgram>
+        : TAccountAtaProgram,
+      TAccountTokenProgram extends string
+        ? ReadonlyAccount<TAccountTokenProgram>
+        : TAccountTokenProgram,
+      TAccountSysvarInstructions extends string
+        ? ReadonlyAccount<TAccountSysvarInstructions>
+        : TAccountSysvarInstructions,
+      TAccountAuthority extends string
+        ? ReadonlySignerAccount<TAccountAuthority> &
+            IAccountSignerMeta<TAccountAuthority>
+        : TAccountAuthority,
+      ...TRemainingAccounts
+    ]
+  >;
+
 export type TransferOutOfEscrowInstructionData = {
   discriminator: number;
   amount: bigint;

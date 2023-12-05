@@ -6,7 +6,8 @@ import { getInstructionAccountTypeParamFragment } from './instructionAccountType
 
 export function getInstructionTypeFragment(
   instructionNode: nodes.InstructionNode,
-  programNode: nodes.ProgramNode
+  programNode: nodes.ProgramNode,
+  withSigners: boolean
 ): Fragment {
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasData =
@@ -30,7 +31,7 @@ export function getInstructionTypeFragment(
     instructionNode.optionalAccountStrategy === 'omitted';
   const accountMetasFragment = mergeFragments(
     instructionNode.accounts.map((account) =>
-      getInstructionAccountMetaFragment(account).mapRender((r) => {
+      getInstructionAccountMetaFragment(account, withSigners).mapRender((r) => {
         const typeParam = `TAccount${pascalCase(account.name)}`;
         const isLegacyOptional =
           account.isOptional && usesLegacyOptionalAccounts;
@@ -48,6 +49,7 @@ export function getInstructionTypeFragment(
     hasData,
     hasAccounts,
     dataType,
+    withSigners,
     accountTypeParams: accountTypeParamsFragment.render,
     accountMetas: accountMetasFragment.render,
   })

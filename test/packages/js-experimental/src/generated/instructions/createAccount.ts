@@ -70,6 +70,28 @@ export type CreateAccountInstruction<
     ]
   >;
 
+// Output.
+export type CreateAccountInstructionWithSigners<
+  TProgram extends string = '11111111111111111111111111111111',
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountNewAccount extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountPayer extends string
+        ? WritableSignerAccount<TAccountPayer> &
+            IAccountSignerMeta<TAccountPayer>
+        : TAccountPayer,
+      TAccountNewAccount extends string
+        ? WritableSignerAccount<TAccountNewAccount> &
+            IAccountSignerMeta<TAccountNewAccount>
+        : TAccountNewAccount,
+      ...TRemainingAccounts
+    ]
+  >;
+
 export type CreateAccountInstructionData = {
   discriminator: number;
   lamports: bigint;

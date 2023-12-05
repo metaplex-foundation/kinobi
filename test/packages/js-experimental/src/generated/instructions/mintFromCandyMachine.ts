@@ -139,6 +139,101 @@ export type MintFromCandyMachineInstruction<
     ]
   >;
 
+// Output.
+export type MintFromCandyMachineInstructionWithSigners<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string | IAccountMeta<string> = string,
+  TAccountAuthorityPda extends string | IAccountMeta<string> = string,
+  TAccountMintAuthority extends string | IAccountMeta<string> = string,
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountNftMint extends string | IAccountMeta<string> = string,
+  TAccountNftMintAuthority extends string | IAccountMeta<string> = string,
+  TAccountNftMetadata extends string | IAccountMeta<string> = string,
+  TAccountNftMasterEdition extends string | IAccountMeta<string> = string,
+  TAccountCollectionAuthorityRecord extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountCollectionMint extends string | IAccountMeta<string> = string,
+  TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
+  TAccountCollectionMasterEdition extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountCollectionUpdateAuthority extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountTokenMetadataProgram extends
+    | string
+    | IAccountMeta<string> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountRecentSlothashes extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountCandyMachine extends string
+        ? WritableAccount<TAccountCandyMachine>
+        : TAccountCandyMachine,
+      TAccountAuthorityPda extends string
+        ? WritableAccount<TAccountAuthorityPda>
+        : TAccountAuthorityPda,
+      TAccountMintAuthority extends string
+        ? ReadonlySignerAccount<TAccountMintAuthority> &
+            IAccountSignerMeta<TAccountMintAuthority>
+        : TAccountMintAuthority,
+      TAccountPayer extends string
+        ? WritableSignerAccount<TAccountPayer> &
+            IAccountSignerMeta<TAccountPayer>
+        : TAccountPayer,
+      TAccountNftMint extends string
+        ? WritableAccount<TAccountNftMint>
+        : TAccountNftMint,
+      TAccountNftMintAuthority extends string
+        ? ReadonlySignerAccount<TAccountNftMintAuthority> &
+            IAccountSignerMeta<TAccountNftMintAuthority>
+        : TAccountNftMintAuthority,
+      TAccountNftMetadata extends string
+        ? WritableAccount<TAccountNftMetadata>
+        : TAccountNftMetadata,
+      TAccountNftMasterEdition extends string
+        ? WritableAccount<TAccountNftMasterEdition>
+        : TAccountNftMasterEdition,
+      TAccountCollectionAuthorityRecord extends string
+        ? ReadonlyAccount<TAccountCollectionAuthorityRecord>
+        : TAccountCollectionAuthorityRecord,
+      TAccountCollectionMint extends string
+        ? ReadonlyAccount<TAccountCollectionMint>
+        : TAccountCollectionMint,
+      TAccountCollectionMetadata extends string
+        ? WritableAccount<TAccountCollectionMetadata>
+        : TAccountCollectionMetadata,
+      TAccountCollectionMasterEdition extends string
+        ? ReadonlyAccount<TAccountCollectionMasterEdition>
+        : TAccountCollectionMasterEdition,
+      TAccountCollectionUpdateAuthority extends string
+        ? ReadonlyAccount<TAccountCollectionUpdateAuthority>
+        : TAccountCollectionUpdateAuthority,
+      TAccountTokenMetadataProgram extends string
+        ? ReadonlyAccount<TAccountTokenMetadataProgram>
+        : TAccountTokenMetadataProgram,
+      TAccountTokenProgram extends string
+        ? ReadonlyAccount<TAccountTokenProgram>
+        : TAccountTokenProgram,
+      TAccountSystemProgram extends string
+        ? ReadonlyAccount<TAccountSystemProgram>
+        : TAccountSystemProgram,
+      TAccountRecentSlothashes extends string
+        ? ReadonlyAccount<TAccountRecentSlothashes>
+        : TAccountRecentSlothashes,
+      ...TRemainingAccounts
+    ]
+  >;
+
 export type MintFromCandyMachineInstructionData = {
   discriminator: Array<number>;
 };

@@ -77,6 +77,41 @@ export type RevokeCollectionAuthorityInstruction<
     ]
   >;
 
+// Output.
+export type RevokeCollectionAuthorityInstructionWithSigners<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionAuthorityRecord extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountDelegateAuthority extends string | IAccountMeta<string> = string,
+  TAccountRevokeAuthority extends string | IAccountMeta<string> = string,
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountCollectionAuthorityRecord extends string
+        ? WritableAccount<TAccountCollectionAuthorityRecord>
+        : TAccountCollectionAuthorityRecord,
+      TAccountDelegateAuthority extends string
+        ? WritableAccount<TAccountDelegateAuthority>
+        : TAccountDelegateAuthority,
+      TAccountRevokeAuthority extends string
+        ? WritableSignerAccount<TAccountRevokeAuthority> &
+            IAccountSignerMeta<TAccountRevokeAuthority>
+        : TAccountRevokeAuthority,
+      TAccountMetadata extends string
+        ? ReadonlyAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountMint extends string
+        ? ReadonlyAccount<TAccountMint>
+        : TAccountMint,
+      ...TRemainingAccounts
+    ]
+  >;
+
 export type RevokeCollectionAuthorityInstructionData = {
   discriminator: number;
 };

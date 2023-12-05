@@ -102,6 +102,65 @@ export type BurnEditionNftInstruction<
     ]
   >;
 
+// Output.
+export type BurnEditionNftInstructionWithSigners<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TAccountPrintEditionMint extends string | IAccountMeta<string> = string,
+  TAccountMasterEditionMint extends string | IAccountMeta<string> = string,
+  TAccountPrintEditionTokenAccount extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountMasterEditionTokenAccount extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountMasterEditionAccount extends string | IAccountMeta<string> = string,
+  TAccountPrintEditionAccount extends string | IAccountMeta<string> = string,
+  TAccountEditionMarkerAccount extends string | IAccountMeta<string> = string,
+  TAccountSplTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountOwner extends string
+        ? WritableSignerAccount<TAccountOwner> &
+            IAccountSignerMeta<TAccountOwner>
+        : TAccountOwner,
+      TAccountPrintEditionMint extends string
+        ? WritableAccount<TAccountPrintEditionMint>
+        : TAccountPrintEditionMint,
+      TAccountMasterEditionMint extends string
+        ? ReadonlyAccount<TAccountMasterEditionMint>
+        : TAccountMasterEditionMint,
+      TAccountPrintEditionTokenAccount extends string
+        ? WritableAccount<TAccountPrintEditionTokenAccount>
+        : TAccountPrintEditionTokenAccount,
+      TAccountMasterEditionTokenAccount extends string
+        ? ReadonlyAccount<TAccountMasterEditionTokenAccount>
+        : TAccountMasterEditionTokenAccount,
+      TAccountMasterEditionAccount extends string
+        ? WritableAccount<TAccountMasterEditionAccount>
+        : TAccountMasterEditionAccount,
+      TAccountPrintEditionAccount extends string
+        ? WritableAccount<TAccountPrintEditionAccount>
+        : TAccountPrintEditionAccount,
+      TAccountEditionMarkerAccount extends string
+        ? WritableAccount<TAccountEditionMarkerAccount>
+        : TAccountEditionMarkerAccount,
+      TAccountSplTokenProgram extends string
+        ? ReadonlyAccount<TAccountSplTokenProgram>
+        : TAccountSplTokenProgram,
+      ...TRemainingAccounts
+    ]
+  >;
+
 export type BurnEditionNftInstructionData = { discriminator: number };
 
 export type BurnEditionNftInstructionDataArgs = {};

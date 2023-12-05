@@ -61,6 +61,30 @@ export type ConvertMasterEditionV1ToV2Instruction<
     ]
   >;
 
+// Output.
+export type ConvertMasterEditionV1ToV2InstructionWithSigners<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMasterEdition extends string | IAccountMeta<string> = string,
+  TAccountOneTimeAuth extends string | IAccountMeta<string> = string,
+  TAccountPrintingMint extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountMasterEdition extends string
+        ? WritableAccount<TAccountMasterEdition>
+        : TAccountMasterEdition,
+      TAccountOneTimeAuth extends string
+        ? WritableAccount<TAccountOneTimeAuth>
+        : TAccountOneTimeAuth,
+      TAccountPrintingMint extends string
+        ? WritableAccount<TAccountPrintingMint>
+        : TAccountPrintingMint,
+      ...TRemainingAccounts
+    ]
+  >;
+
 export type ConvertMasterEditionV1ToV2InstructionData = {
   discriminator: number;
 };

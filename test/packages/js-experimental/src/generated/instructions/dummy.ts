@@ -104,6 +104,63 @@ export type DummyInstruction<
     ]
   >;
 
+// Output.
+export type DummyInstructionWithSigners<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountEdition extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
+  TAccountMintAuthority extends string | IAccountMeta<string> = string,
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountFoo extends string | IAccountMeta<string> = string,
+  TAccountBar extends
+    | string
+    | IAccountMeta<string> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountDelegate extends string | IAccountMeta<string> = string,
+  TAccountDelegateRecord extends string | IAccountMeta<string> = string,
+  TAccountTokenOrAtaProgram extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountEdition extends string
+        ? WritableSignerAccount<TAccountEdition> &
+            IAccountSignerMeta<TAccountEdition>
+        : TAccountEdition,
+      TAccountMint extends string
+        ? WritableAccount<TAccountMint>
+        : TAccountMint,
+      TAccountUpdateAuthority extends string
+        ? ReadonlySignerAccount<TAccountUpdateAuthority> &
+            IAccountSignerMeta<TAccountUpdateAuthority>
+        : TAccountUpdateAuthority,
+      TAccountMintAuthority extends string
+        ? WritableSignerAccount<TAccountMintAuthority> &
+            IAccountSignerMeta<TAccountMintAuthority>
+        : TAccountMintAuthority,
+      TAccountPayer extends string
+        ? WritableSignerAccount<TAccountPayer> &
+            IAccountSignerMeta<TAccountPayer>
+        : TAccountPayer,
+      TAccountFoo extends string ? WritableAccount<TAccountFoo> : TAccountFoo,
+      TAccountBar extends string
+        ? ReadonlySignerAccount<TAccountBar> & IAccountSignerMeta<TAccountBar>
+        : TAccountBar,
+      TAccountDelegate extends string
+        ? ReadonlySignerAccount<TAccountDelegate> &
+            IAccountSignerMeta<TAccountDelegate>
+        : TAccountDelegate,
+      TAccountDelegateRecord extends string
+        ? WritableAccount<TAccountDelegateRecord>
+        : TAccountDelegateRecord,
+      TAccountTokenOrAtaProgram extends string
+        ? ReadonlyAccount<TAccountTokenOrAtaProgram>
+        : TAccountTokenOrAtaProgram,
+      ...TRemainingAccounts
+    ]
+  >;
+
 export type DummyInstructionData = { discriminator: Array<number> };
 
 export type DummyInstructionDataArgs = {};

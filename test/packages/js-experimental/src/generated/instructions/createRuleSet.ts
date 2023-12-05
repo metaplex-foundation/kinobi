@@ -77,6 +77,33 @@ export type CreateRuleSetInstruction<
     ]
   >;
 
+// Output.
+export type CreateRuleSetInstructionWithSigners<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountRuleSetPda extends string | IAccountMeta<string> = string,
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountPayer extends string
+        ? WritableSignerAccount<TAccountPayer> &
+            IAccountSignerMeta<TAccountPayer>
+        : TAccountPayer,
+      TAccountRuleSetPda extends string
+        ? WritableAccount<TAccountRuleSetPda>
+        : TAccountRuleSetPda,
+      TAccountSystemProgram extends string
+        ? ReadonlyAccount<TAccountSystemProgram>
+        : TAccountSystemProgram,
+      ...TRemainingAccounts
+    ]
+  >;
+
 export type CreateRuleSetInstructionData = {
   discriminator: number;
   createArgs: TaCreateArgs;

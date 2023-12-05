@@ -127,6 +127,89 @@ export type SetCollectionInstruction<
     ]
   >;
 
+// Output.
+export type SetCollectionInstructionWithSigners<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string | IAccountMeta<string> = string,
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TAccountAuthorityPda extends string | IAccountMeta<string> = string,
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountCollectionMint extends string | IAccountMeta<string> = string,
+  TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
+  TAccountCollectionAuthorityRecord extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountNewCollectionUpdateAuthority extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountNewCollectionMetadata extends string | IAccountMeta<string> = string,
+  TAccountNewCollectionMint extends string | IAccountMeta<string> = string,
+  TAccountNewCollectionMasterEdition extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountNewCollectionAuthorityRecord extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountTokenMetadataProgram extends
+    | string
+    | IAccountMeta<string> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountCandyMachine extends string
+        ? WritableAccount<TAccountCandyMachine>
+        : TAccountCandyMachine,
+      TAccountAuthority extends string
+        ? ReadonlySignerAccount<TAccountAuthority> &
+            IAccountSignerMeta<TAccountAuthority>
+        : TAccountAuthority,
+      TAccountAuthorityPda extends string
+        ? WritableAccount<TAccountAuthorityPda>
+        : TAccountAuthorityPda,
+      TAccountPayer extends string
+        ? ReadonlySignerAccount<TAccountPayer> &
+            IAccountSignerMeta<TAccountPayer>
+        : TAccountPayer,
+      TAccountCollectionMint extends string
+        ? ReadonlyAccount<TAccountCollectionMint>
+        : TAccountCollectionMint,
+      TAccountCollectionMetadata extends string
+        ? ReadonlyAccount<TAccountCollectionMetadata>
+        : TAccountCollectionMetadata,
+      TAccountCollectionAuthorityRecord extends string
+        ? WritableAccount<TAccountCollectionAuthorityRecord>
+        : TAccountCollectionAuthorityRecord,
+      TAccountNewCollectionUpdateAuthority extends string
+        ? WritableSignerAccount<TAccountNewCollectionUpdateAuthority> &
+            IAccountSignerMeta<TAccountNewCollectionUpdateAuthority>
+        : TAccountNewCollectionUpdateAuthority,
+      TAccountNewCollectionMetadata extends string
+        ? ReadonlyAccount<TAccountNewCollectionMetadata>
+        : TAccountNewCollectionMetadata,
+      TAccountNewCollectionMint extends string
+        ? ReadonlyAccount<TAccountNewCollectionMint>
+        : TAccountNewCollectionMint,
+      TAccountNewCollectionMasterEdition extends string
+        ? ReadonlyAccount<TAccountNewCollectionMasterEdition>
+        : TAccountNewCollectionMasterEdition,
+      TAccountNewCollectionAuthorityRecord extends string
+        ? WritableAccount<TAccountNewCollectionAuthorityRecord>
+        : TAccountNewCollectionAuthorityRecord,
+      TAccountTokenMetadataProgram extends string
+        ? ReadonlyAccount<TAccountTokenMetadataProgram>
+        : TAccountTokenMetadataProgram,
+      TAccountSystemProgram extends string
+        ? ReadonlyAccount<TAccountSystemProgram>
+        : TAccountSystemProgram,
+      ...TRemainingAccounts
+    ]
+  >;
+
 export type SetCollectionInstructionData = { discriminator: Array<number> };
 
 export type SetCollectionInstructionDataArgs = {};

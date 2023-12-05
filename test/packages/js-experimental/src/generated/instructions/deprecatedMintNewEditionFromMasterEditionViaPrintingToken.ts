@@ -126,6 +126,91 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction
     ]
   >;
 
+// Output.
+export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionWithSigners<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountEdition extends string | IAccountMeta<string> = string,
+  TAccountMasterEdition extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountMintAuthority extends string | IAccountMeta<string> = string,
+  TAccountPrintingMint extends string | IAccountMeta<string> = string,
+  TAccountMasterTokenAccount extends string | IAccountMeta<string> = string,
+  TAccountEditionMarker extends string | IAccountMeta<string> = string,
+  TAccountBurnAuthority extends string | IAccountMeta<string> = string,
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountMasterUpdateAuthority extends string | IAccountMeta<string> = string,
+  TAccountMasterMetadata extends string | IAccountMeta<string> = string,
+  TAccountTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountRent extends
+    | string
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
+  TAccountReservationList extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountEdition extends string
+        ? WritableAccount<TAccountEdition>
+        : TAccountEdition,
+      TAccountMasterEdition extends string
+        ? WritableAccount<TAccountMasterEdition>
+        : TAccountMasterEdition,
+      TAccountMint extends string
+        ? WritableAccount<TAccountMint>
+        : TAccountMint,
+      TAccountMintAuthority extends string
+        ? ReadonlySignerAccount<TAccountMintAuthority> &
+            IAccountSignerMeta<TAccountMintAuthority>
+        : TAccountMintAuthority,
+      TAccountPrintingMint extends string
+        ? WritableAccount<TAccountPrintingMint>
+        : TAccountPrintingMint,
+      TAccountMasterTokenAccount extends string
+        ? WritableAccount<TAccountMasterTokenAccount>
+        : TAccountMasterTokenAccount,
+      TAccountEditionMarker extends string
+        ? WritableAccount<TAccountEditionMarker>
+        : TAccountEditionMarker,
+      TAccountBurnAuthority extends string
+        ? ReadonlySignerAccount<TAccountBurnAuthority> &
+            IAccountSignerMeta<TAccountBurnAuthority>
+        : TAccountBurnAuthority,
+      TAccountPayer extends string
+        ? ReadonlySignerAccount<TAccountPayer> &
+            IAccountSignerMeta<TAccountPayer>
+        : TAccountPayer,
+      TAccountMasterUpdateAuthority extends string
+        ? ReadonlyAccount<TAccountMasterUpdateAuthority>
+        : TAccountMasterUpdateAuthority,
+      TAccountMasterMetadata extends string
+        ? ReadonlyAccount<TAccountMasterMetadata>
+        : TAccountMasterMetadata,
+      TAccountTokenProgram extends string
+        ? ReadonlyAccount<TAccountTokenProgram>
+        : TAccountTokenProgram,
+      TAccountSystemProgram extends string
+        ? ReadonlyAccount<TAccountSystemProgram>
+        : TAccountSystemProgram,
+      TAccountRent extends string
+        ? ReadonlyAccount<TAccountRent>
+        : TAccountRent,
+      TAccountReservationList extends string
+        ? WritableAccount<TAccountReservationList>
+        : TAccountReservationList,
+      ...TRemainingAccounts
+    ]
+  >;
+
 export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData =
   { discriminator: number };
 

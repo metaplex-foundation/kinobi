@@ -76,6 +76,33 @@ export type CreateFrequencyRuleInstruction<
     ]
   >;
 
+// Output.
+export type CreateFrequencyRuleInstructionWithSigners<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountFrequencyPda extends string | IAccountMeta<string> = string,
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountPayer extends string
+        ? WritableSignerAccount<TAccountPayer> &
+            IAccountSignerMeta<TAccountPayer>
+        : TAccountPayer,
+      TAccountFrequencyPda extends string
+        ? WritableAccount<TAccountFrequencyPda>
+        : TAccountFrequencyPda,
+      TAccountSystemProgram extends string
+        ? ReadonlyAccount<TAccountSystemProgram>
+        : TAccountSystemProgram,
+      ...TRemainingAccounts
+    ]
+  >;
+
 export type CreateFrequencyRuleInstructionData = {
   discriminator: number;
   ruleSetName: string;

@@ -257,7 +257,13 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     // Fragments.
     const instructionTypeFragment = getInstructionTypeFragment(
       instruction,
-      this.program
+      this.program,
+      false
+    );
+    const instructionTypeWithSignersFragment = getInstructionTypeFragment(
+      instruction,
+      this.program,
+      true
     );
     const instructionDataFragment = getInstructionDataFragment(
       instruction,
@@ -293,6 +299,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     // Imports and interfaces.
     const imports = new ImportMap().mergeWith(
       instructionTypeFragment,
+      instructionTypeWithSignersFragment,
       instructionDataFragment,
       instructionExtraArgsFragment,
       instructionFunctionLowLevelFragment,
@@ -306,6 +313,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         instruction,
         imports: imports.toString(this.options.dependencyMap),
         instructionTypeFragment,
+        instructionTypeWithSignersFragment,
         instructionDataFragment,
         instructionExtraArgsFragment,
         instructionFunctionLowLevelFragment,

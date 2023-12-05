@@ -62,6 +62,27 @@ export type RemoveCreatorVerificationInstruction<
     ]
   >;
 
+// Output.
+export type RemoveCreatorVerificationInstructionWithSigners<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountCreator extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountCreator extends string
+        ? ReadonlySignerAccount<TAccountCreator> &
+            IAccountSignerMeta<TAccountCreator>
+        : TAccountCreator,
+      ...TRemainingAccounts
+    ]
+  >;
+
 export type RemoveCreatorVerificationInstructionData = {
   discriminator: number;
 };
