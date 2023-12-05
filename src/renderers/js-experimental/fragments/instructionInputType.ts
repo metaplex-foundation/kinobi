@@ -1,5 +1,5 @@
 import * as nodes from '../../../nodes';
-import { pascalCase } from '../../../shared';
+import { InstructionDefault, pascalCase } from '../../../shared';
 import {
   ResolvedInstructionAccount,
   ResolvedInstructionArg,
@@ -26,17 +26,16 @@ export function getInstructionInputTypeFragment(
     const resolvedAccount = resolvedInputs.find(
       (input) => input.kind === 'account' && input.name === account.name
     ) as ResolvedInstructionAccount;
-    const isOptionalAttribute = useAsync
-      ? !!resolvedAccount.defaultsTo || resolvedAccount.isOptional
-      : (!!resolvedAccount.defaultsTo &&
-          resolvedAccount.defaultsTo.kind !== 'pda') ||
-        resolvedAccount.isOptional;
+    const hasDefaultValue = useAsync
+      ? !!resolvedAccount.defaultsTo
+      : !!resolvedAccount.defaultsTo &&
+        !isAsyncDefaultValue(resolvedAccount.defaultsTo);
     const type = getAccountType(resolvedAccount, withSigners);
     accountImports.mergeWith(type);
     return {
       ...resolvedAccount,
       typeParam,
-      optionalSign: isOptionalAttribute ? '?' : '',
+      optionalSign: hasDefaultValue || resolvedAccount.isOptional ? '?' : '',
       type: type.render,
     };
   });
@@ -141,4 +140,23 @@ function getAccountType(
   return fragment(`Address<${typeParam}>`).addImports('solanaAddresses', [
     'Address',
   ]);
+}
+
+function isAsyncDefaultValue(defaultsTo: InstructionDefault): boolean {
+  switch (defaultsTo.kind) {
+    case 'pda':
+      return true;
+    case 'conditional':
+    case 'conditionalResolver':
+      return (
+        (defaultsTo.ifFalse == null
+          ? false
+          : isAsyncDefaultValue(defaultsTo.ifFalse)) ||
+        (defaultsTo.ifTrue == null
+          ? false
+          : isAsyncDefaultValue(defaultsTo.ifTrue))
+      );
+    default:
+      return false;
+  }
 }
