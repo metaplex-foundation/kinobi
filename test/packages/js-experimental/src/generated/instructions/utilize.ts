@@ -34,15 +34,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -212,7 +206,7 @@ export function getUtilizeInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getUtilizeInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountTokenAccount extends string | IAccountMeta<string> = string,
@@ -501,7 +495,7 @@ export type UtilizeAsyncInputWithSigners<
   numberOfUses: UtilizeInstructionDataArgs['numberOfUses'];
 };
 
-export async function utilize<
+export async function getUtilizeInstructionAsync<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -546,7 +540,7 @@ export async function utilize<
     TAccountBurner
   >
 >;
-export async function utilize<
+export async function getUtilizeInstructionAsync<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -591,7 +585,7 @@ export async function utilize<
     TAccountBurner
   >
 >;
-export async function utilize<
+export async function getUtilizeInstructionAsync<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -635,7 +629,7 @@ export async function utilize<
     TAccountBurner
   >
 >;
-export async function utilize<
+export async function getUtilizeInstructionAsync<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -679,8 +673,7 @@ export async function utilize<
     TAccountBurner
   >
 >;
-export async function utilize<
-  TReturn,
+export async function getUtilizeInstructionAsync<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -696,8 +689,6 @@ export async function utilize<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | UtilizeAsyncInput<
         TAccountMetadata,
         TAccountTokenAccount,
@@ -726,10 +717,10 @@ export async function utilize<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as UtilizeAsyncInput<
@@ -760,7 +751,7 @@ export async function utilize<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getUtilizeInstructionRaw<
       TProgram,
       TAccountMetadata,
       TAccountTokenAccount,
@@ -838,11 +829,13 @@ export async function utilize<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as UtilizeInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getUtilizeInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as UtilizeInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

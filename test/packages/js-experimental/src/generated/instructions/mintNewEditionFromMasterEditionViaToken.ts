@@ -30,15 +30,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -249,7 +243,7 @@ export function getMintNewEditionFromMasterEditionViaTokenInstructionDataCodec()
   );
 }
 
-function _createInstruction<
+function getMintNewEditionFromMasterEditionViaTokenInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountNewMetadata extends string | IAccountMeta<string> = string,
   TAccountNewEdition extends string | IAccountMeta<string> = string,
@@ -583,7 +577,7 @@ export type MintNewEditionFromMasterEditionViaTokenAsyncInputWithSigners<
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenInstructionDataArgs['mintNewEditionFromMasterEditionViaTokenArgs'];
 };
 
-export async function mintNewEditionFromMasterEditionViaToken<
+export async function getMintNewEditionFromMasterEditionViaTokenInstructionAsync<
   TAccountNewMetadata extends string,
   TAccountNewEdition extends string,
   TAccountMasterEdition extends string,
@@ -638,7 +632,7 @@ export async function mintNewEditionFromMasterEditionViaToken<
     TAccountRent
   >
 >;
-export async function mintNewEditionFromMasterEditionViaToken<
+export async function getMintNewEditionFromMasterEditionViaTokenInstructionAsync<
   TAccountNewMetadata extends string,
   TAccountNewEdition extends string,
   TAccountMasterEdition extends string,
@@ -693,7 +687,7 @@ export async function mintNewEditionFromMasterEditionViaToken<
     TAccountRent
   >
 >;
-export async function mintNewEditionFromMasterEditionViaToken<
+export async function getMintNewEditionFromMasterEditionViaTokenInstructionAsync<
   TAccountNewMetadata extends string,
   TAccountNewEdition extends string,
   TAccountMasterEdition extends string,
@@ -747,7 +741,7 @@ export async function mintNewEditionFromMasterEditionViaToken<
     TAccountRent
   >
 >;
-export async function mintNewEditionFromMasterEditionViaToken<
+export async function getMintNewEditionFromMasterEditionViaTokenInstructionAsync<
   TAccountNewMetadata extends string,
   TAccountNewEdition extends string,
   TAccountMasterEdition extends string,
@@ -801,8 +795,7 @@ export async function mintNewEditionFromMasterEditionViaToken<
     TAccountRent
   >
 >;
-export async function mintNewEditionFromMasterEditionViaToken<
-  TReturn,
+export async function getMintNewEditionFromMasterEditionViaTokenInstructionAsync<
   TAccountNewMetadata extends string,
   TAccountNewEdition extends string,
   TAccountMasterEdition extends string,
@@ -821,8 +814,6 @@ export async function mintNewEditionFromMasterEditionViaToken<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | MintNewEditionFromMasterEditionViaTokenAsyncInput<
         TAccountNewMetadata,
         TAccountNewEdition,
@@ -857,10 +848,10 @@ export async function mintNewEditionFromMasterEditionViaToken<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as MintNewEditionFromMasterEditionViaTokenAsyncInput<
@@ -894,7 +885,7 @@ export async function mintNewEditionFromMasterEditionViaToken<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getMintNewEditionFromMasterEditionViaTokenInstructionRaw<
       TProgram,
       TAccountNewMetadata,
       TAccountNewEdition,
@@ -972,11 +963,13 @@ export async function mintNewEditionFromMasterEditionViaToken<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as MintNewEditionFromMasterEditionViaTokenInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getMintNewEditionFromMasterEditionViaTokenInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as MintNewEditionFromMasterEditionViaTokenInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

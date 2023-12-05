@@ -30,15 +30,9 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -126,7 +120,7 @@ export function getSetMintAuthorityInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getSetMintAuthorityInstructionRaw<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
@@ -212,7 +206,7 @@ export type SetMintAuthorityAsyncInputWithSigners<
   mintAuthority: TransactionSigner<TAccountMintAuthority>;
 };
 
-export async function setMintAuthority<
+export async function getSetMintAuthorityInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountMintAuthority extends string,
@@ -234,7 +228,7 @@ export async function setMintAuthority<
       IAccountSignerMeta<TAccountMintAuthority>
   >
 >;
-export async function setMintAuthority<
+export async function getSetMintAuthorityInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountMintAuthority extends string,
@@ -256,7 +250,7 @@ export async function setMintAuthority<
       IAccountSignerMeta<TAccountMintAuthority>
   >
 >;
-export async function setMintAuthority<
+export async function getSetMintAuthorityInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountMintAuthority extends string,
@@ -277,7 +271,7 @@ export async function setMintAuthority<
       IAccountSignerMeta<TAccountMintAuthority>
   >
 >;
-export async function setMintAuthority<
+export async function getSetMintAuthorityInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountMintAuthority extends string,
@@ -298,8 +292,7 @@ export async function setMintAuthority<
       IAccountSignerMeta<TAccountMintAuthority>
   >
 >;
-export async function setMintAuthority<
-  TReturn,
+export async function getSetMintAuthorityInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountMintAuthority extends string,
@@ -307,8 +300,6 @@ export async function setMintAuthority<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | SetMintAuthorityAsyncInput<
         TAccountCandyMachine,
         TAccountAuthority,
@@ -321,10 +312,10 @@ export async function setMintAuthority<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as SetMintAuthorityAsyncInput<
@@ -347,7 +338,7 @@ export async function setMintAuthority<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getSetMintAuthorityInstructionRaw<
       TProgram,
       TAccountCandyMachine,
       TAccountAuthority,
@@ -373,10 +364,12 @@ export async function setMintAuthority<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress,
+  return Object.freeze({
+    ...getSetMintAuthorityInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

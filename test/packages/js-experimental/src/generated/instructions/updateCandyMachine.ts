@@ -30,15 +30,9 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -133,7 +127,7 @@ export function getUpdateCandyMachineInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getUpdateCandyMachineInstructionRaw<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
@@ -207,7 +201,7 @@ export type UpdateCandyMachineAsyncInputWithSigners<
   data: UpdateCandyMachineInstructionDataArgs['data'];
 };
 
-export async function updateCandyMachine<
+export async function getUpdateCandyMachineInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
@@ -225,7 +219,7 @@ export async function updateCandyMachine<
       IAccountSignerMeta<TAccountAuthority>
   >
 >;
-export async function updateCandyMachine<
+export async function getUpdateCandyMachineInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
@@ -240,7 +234,7 @@ export async function updateCandyMachine<
       IAccountSignerMeta<TAccountAuthority>
   >
 >;
-export async function updateCandyMachine<
+export async function getUpdateCandyMachineInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
@@ -257,7 +251,7 @@ export async function updateCandyMachine<
       IAccountSignerMeta<TAccountAuthority>
   >
 >;
-export async function updateCandyMachine<
+export async function getUpdateCandyMachineInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
@@ -271,16 +265,13 @@ export async function updateCandyMachine<
       IAccountSignerMeta<TAccountAuthority>
   >
 >;
-export async function updateCandyMachine<
-  TReturn,
+export async function getUpdateCandyMachineInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | UpdateCandyMachineAsyncInput<TAccountCandyMachine, TAccountAuthority>,
   rawInput?: UpdateCandyMachineAsyncInput<
     TAccountCandyMachine,
@@ -288,10 +279,10 @@ export async function updateCandyMachine<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as UpdateCandyMachineAsyncInput<TAccountCandyMachine, TAccountAuthority>;
@@ -310,7 +301,11 @@ export async function updateCandyMachine<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
+    typeof getUpdateCandyMachineInstructionRaw<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority
+    >
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     candyMachine: { value: input.candyMachine ?? null, isWritable: true },
@@ -333,11 +328,13 @@ export async function updateCandyMachine<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as UpdateCandyMachineInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getUpdateCandyMachineInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as UpdateCandyMachineInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

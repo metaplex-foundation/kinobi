@@ -36,15 +36,9 @@ import {
   IInstructionWithData,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -141,7 +135,7 @@ export function getCreateAccountInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getCreateAccountInstructionRaw<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountNewAccount extends string | IAccountMeta<string> = string,
@@ -223,7 +217,7 @@ export type CreateAccountAsyncInputWithSigners<
   programId: CreateAccountInstructionDataArgs['programId'];
 };
 
-export async function createAccount<
+export async function getCreateAccountInstructionAsync<
   TAccountPayer extends string,
   TAccountNewAccount extends string,
   TProgram extends string = '11111111111111111111111111111111'
@@ -238,7 +232,7 @@ export async function createAccount<
       IAccountSignerMeta<TAccountNewAccount>
   >
 >;
-export async function createAccount<
+export async function getCreateAccountInstructionAsync<
   TAccountPayer extends string,
   TAccountNewAccount extends string,
   TProgram extends string = '11111111111111111111111111111111'
@@ -253,7 +247,7 @@ export async function createAccount<
       IAccountSignerMeta<TAccountNewAccount>
   >
 >;
-export async function createAccount<
+export async function getCreateAccountInstructionAsync<
   TAccountPayer extends string,
   TAccountNewAccount extends string,
   TProgram extends string = '11111111111111111111111111111111'
@@ -267,7 +261,7 @@ export async function createAccount<
       IAccountSignerMeta<TAccountNewAccount>
   >
 >;
-export async function createAccount<
+export async function getCreateAccountInstructionAsync<
   TAccountPayer extends string,
   TAccountNewAccount extends string,
   TProgram extends string = '11111111111111111111111111111111'
@@ -281,24 +275,21 @@ export async function createAccount<
       IAccountSignerMeta<TAccountNewAccount>
   >
 >;
-export async function createAccount<
-  TReturn,
+export async function getCreateAccountInstructionAsync<
   TAccountPayer extends string,
   TAccountNewAccount extends string,
   TProgram extends string = '11111111111111111111111111111111'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | CreateAccountAsyncInput<TAccountPayer, TAccountNewAccount>,
   rawInput?: CreateAccountAsyncInput<TAccountPayer, TAccountNewAccount>
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as CreateAccountAsyncInput<TAccountPayer, TAccountNewAccount>;
@@ -317,7 +308,11 @@ export async function createAccount<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<TProgram, TAccountPayer, TAccountNewAccount>
+    typeof getCreateAccountInstructionRaw<
+      TProgram,
+      TAccountPayer,
+      TAccountNewAccount
+    >
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     payer: { value: input.payer ?? null, isWritable: true },
@@ -340,11 +335,13 @@ export async function createAccount<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as CreateAccountInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getCreateAccountInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as CreateAccountInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

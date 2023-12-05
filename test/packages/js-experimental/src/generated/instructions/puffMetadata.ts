@@ -27,11 +27,8 @@ import {
   IInstructionWithData,
   WritableAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -98,7 +95,7 @@ export function getPuffMetadataInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getPuffMetadataInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends Array<IAccountMeta<string>> = []
@@ -146,49 +143,46 @@ export type PuffMetadataAsyncInputWithSigners<TAccountMetadata extends string> =
     metadata: Address<TAccountMetadata>;
   };
 
-export async function puffMetadata<
+export async function getPuffMetadataInstructionAsync<
   TAccountMetadata extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: PuffMetadataAsyncInputWithSigners<TAccountMetadata>
 ): Promise<PuffMetadataInstructionWithSigners<TProgram, TAccountMetadata>>;
-export async function puffMetadata<
+export async function getPuffMetadataInstructionAsync<
   TAccountMetadata extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: PuffMetadataAsyncInput<TAccountMetadata>
 ): Promise<PuffMetadataInstruction<TProgram, TAccountMetadata>>;
-export async function puffMetadata<
+export async function getPuffMetadataInstructionAsync<
   TAccountMetadata extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: PuffMetadataAsyncInputWithSigners<TAccountMetadata>
 ): Promise<PuffMetadataInstructionWithSigners<TProgram, TAccountMetadata>>;
-export async function puffMetadata<
+export async function getPuffMetadataInstructionAsync<
   TAccountMetadata extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: PuffMetadataAsyncInput<TAccountMetadata>
 ): Promise<PuffMetadataInstruction<TProgram, TAccountMetadata>>;
-export async function puffMetadata<
-  TReturn,
+export async function getPuffMetadataInstructionAsync<
   TAccountMetadata extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | PuffMetadataAsyncInput<TAccountMetadata>,
   rawInput?: PuffMetadataAsyncInput<TAccountMetadata>
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as PuffMetadataAsyncInput<TAccountMetadata>;
@@ -207,7 +201,7 @@ export async function puffMetadata<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<TProgram, TAccountMetadata>
+    typeof getPuffMetadataInstructionRaw<TProgram, TAccountMetadata>
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
@@ -226,10 +220,12 @@ export async function puffMetadata<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress,
+  return Object.freeze({
+    ...getPuffMetadataInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

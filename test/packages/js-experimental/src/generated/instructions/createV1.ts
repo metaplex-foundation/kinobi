@@ -41,15 +41,9 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -225,7 +219,7 @@ export function getCreateV1InstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getCreateV1InstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
@@ -473,7 +467,7 @@ export type CreateV1AsyncInputWithSigners<
   maxSupply: CreateV1InstructionDataArgs['maxSupply'];
 };
 
-export async function createV1<
+export async function getCreateV1InstructionAsync<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountMint extends string,
@@ -514,7 +508,7 @@ export async function createV1<
     TAccountSplTokenProgram
   >
 >;
-export async function createV1<
+export async function getCreateV1InstructionAsync<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountMint extends string,
@@ -555,7 +549,7 @@ export async function createV1<
     TAccountSplTokenProgram
   >
 >;
-export async function createV1<
+export async function getCreateV1InstructionAsync<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountMint extends string,
@@ -595,7 +589,7 @@ export async function createV1<
     TAccountSplTokenProgram
   >
 >;
-export async function createV1<
+export async function getCreateV1InstructionAsync<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountMint extends string,
@@ -635,8 +629,7 @@ export async function createV1<
     TAccountSplTokenProgram
   >
 >;
-export async function createV1<
-  TReturn,
+export async function getCreateV1InstructionAsync<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountMint extends string,
@@ -650,8 +643,6 @@ export async function createV1<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | CreateV1AsyncInput<
         TAccountMetadata,
         TAccountMasterEdition,
@@ -676,10 +667,10 @@ export async function createV1<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as CreateV1AsyncInput<
@@ -708,7 +699,7 @@ export async function createV1<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getCreateV1InstructionRaw<
       TProgram,
       TAccountMetadata,
       TAccountMasterEdition,
@@ -780,11 +771,13 @@ export async function createV1<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as CreateV1InstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getCreateV1InstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as CreateV1InstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

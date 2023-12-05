@@ -1,4 +1,4 @@
-function _createInstruction<
+function get{{ instruction.name | pascalCase }}InstructionRaw<
   TProgram extends string = "{{ program.publicKey }}",
   {% if hasAccounts %}
     {{ accountTypeParams }},

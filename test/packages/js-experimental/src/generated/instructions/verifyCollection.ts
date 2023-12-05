@@ -29,15 +29,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -150,7 +144,7 @@ export function getVerifyCollectionInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getVerifyCollectionInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
@@ -307,7 +301,7 @@ export type VerifyCollectionAsyncInputWithSigners<
   collectionMasterEditionAccount: Address<TAccountCollectionMasterEditionAccount>;
 };
 
-export async function verifyCollection<
+export async function getVerifyCollectionInstructionAsync<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -337,7 +331,7 @@ export async function verifyCollection<
     TAccountCollectionMasterEditionAccount
   >
 >;
-export async function verifyCollection<
+export async function getVerifyCollectionInstructionAsync<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -367,7 +361,7 @@ export async function verifyCollection<
     TAccountCollectionMasterEditionAccount
   >
 >;
-export async function verifyCollection<
+export async function getVerifyCollectionInstructionAsync<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -396,7 +390,7 @@ export async function verifyCollection<
     TAccountCollectionMasterEditionAccount
   >
 >;
-export async function verifyCollection<
+export async function getVerifyCollectionInstructionAsync<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -425,8 +419,7 @@ export async function verifyCollection<
     TAccountCollectionMasterEditionAccount
   >
 >;
-export async function verifyCollection<
-  TReturn,
+export async function getVerifyCollectionInstructionAsync<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -437,8 +430,6 @@ export async function verifyCollection<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | VerifyCollectionAsyncInput<
         TAccountMetadata,
         TAccountCollectionAuthority,
@@ -457,10 +448,10 @@ export async function verifyCollection<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as VerifyCollectionAsyncInput<
@@ -486,7 +477,7 @@ export async function verifyCollection<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getVerifyCollectionInstructionRaw<
       TProgram,
       TAccountMetadata,
       TAccountCollectionAuthority,
@@ -524,10 +515,12 @@ export async function verifyCollection<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress,
+  return Object.freeze({
+    ...getVerifyCollectionInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

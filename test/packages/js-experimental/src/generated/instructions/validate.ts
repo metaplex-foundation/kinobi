@@ -31,15 +31,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -382,7 +376,7 @@ export function getValidateInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getValidateInstructionRaw<
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountRuleSet extends string | IAccountMeta<string> = string,
@@ -721,7 +715,7 @@ export type ValidateAsyncInputWithSigners<
   payload: ValidateInstructionDataArgs['payload'];
 };
 
-export async function validate<
+export async function getValidateInstructionAsync<
   TAccountPayer extends string,
   TAccountRuleSet extends string,
   TAccountSystemProgram extends string,
@@ -778,7 +772,7 @@ export async function validate<
     TAccountOptRuleNonsigner5
   >
 >;
-export async function validate<
+export async function getValidateInstructionAsync<
   TAccountPayer extends string,
   TAccountRuleSet extends string,
   TAccountSystemProgram extends string,
@@ -835,7 +829,7 @@ export async function validate<
     TAccountOptRuleNonsigner5
   >
 >;
-export async function validate<
+export async function getValidateInstructionAsync<
   TAccountPayer extends string,
   TAccountRuleSet extends string,
   TAccountSystemProgram extends string,
@@ -891,7 +885,7 @@ export async function validate<
     TAccountOptRuleNonsigner5
   >
 >;
-export async function validate<
+export async function getValidateInstructionAsync<
   TAccountPayer extends string,
   TAccountRuleSet extends string,
   TAccountSystemProgram extends string,
@@ -947,8 +941,7 @@ export async function validate<
     TAccountOptRuleNonsigner5
   >
 >;
-export async function validate<
-  TReturn,
+export async function getValidateInstructionAsync<
   TAccountPayer extends string,
   TAccountRuleSet extends string,
   TAccountSystemProgram extends string,
@@ -966,8 +959,6 @@ export async function validate<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | ValidateAsyncInput<
         TAccountPayer,
         TAccountRuleSet,
@@ -1000,10 +991,10 @@ export async function validate<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as ValidateAsyncInput<
@@ -1036,7 +1027,7 @@ export async function validate<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getValidateInstructionRaw<
       TProgram,
       TAccountPayer,
       TAccountRuleSet,
@@ -1110,11 +1101,13 @@ export async function validate<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as ValidateInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getValidateInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as ValidateInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

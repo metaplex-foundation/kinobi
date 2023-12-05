@@ -29,15 +29,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -149,7 +143,7 @@ export function getSetCollectionSizeInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getSetCollectionSizeInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
   TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
@@ -279,7 +273,7 @@ export type SetCollectionSizeAsyncInputWithSigners<
   setCollectionSizeArgs: SetCollectionSizeInstructionDataArgs['setCollectionSizeArgs'];
 };
 
-export async function setCollectionSize<
+export async function getSetCollectionSizeInstructionAsync<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -303,7 +297,7 @@ export async function setCollectionSize<
     TAccountCollectionAuthorityRecord
   >
 >;
-export async function setCollectionSize<
+export async function getSetCollectionSizeInstructionAsync<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -327,7 +321,7 @@ export async function setCollectionSize<
     TAccountCollectionAuthorityRecord
   >
 >;
-export async function setCollectionSize<
+export async function getSetCollectionSizeInstructionAsync<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -350,7 +344,7 @@ export async function setCollectionSize<
     TAccountCollectionAuthorityRecord
   >
 >;
-export async function setCollectionSize<
+export async function getSetCollectionSizeInstructionAsync<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -373,8 +367,7 @@ export async function setCollectionSize<
     TAccountCollectionAuthorityRecord
   >
 >;
-export async function setCollectionSize<
-  TReturn,
+export async function getSetCollectionSizeInstructionAsync<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -383,8 +376,6 @@ export async function setCollectionSize<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | SetCollectionSizeAsyncInput<
         TAccountCollectionMetadata,
         TAccountCollectionAuthority,
@@ -399,10 +390,10 @@ export async function setCollectionSize<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as SetCollectionSizeAsyncInput<
@@ -426,7 +417,7 @@ export async function setCollectionSize<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getSetCollectionSizeInstructionRaw<
       TProgram,
       TAccountCollectionMetadata,
       TAccountCollectionAuthority,
@@ -466,11 +457,13 @@ export async function setCollectionSize<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as SetCollectionSizeInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getSetCollectionSizeInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as SetCollectionSizeInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

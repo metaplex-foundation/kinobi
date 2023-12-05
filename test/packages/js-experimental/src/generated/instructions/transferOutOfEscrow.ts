@@ -35,15 +35,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -232,7 +226,7 @@ export function getTransferOutOfEscrowInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getTransferOutOfEscrowInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountEscrow extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,
@@ -552,7 +546,7 @@ export type TransferOutOfEscrowAsyncInputWithSigners<
   amount: TransferOutOfEscrowInstructionDataArgs['amount'];
 };
 
-export async function transferOutOfEscrow<
+export async function getTransferOutOfEscrowInstructionAsync<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountPayer extends string,
@@ -603,7 +597,7 @@ export async function transferOutOfEscrow<
       IAccountSignerMeta<TAccountAuthority>
   >
 >;
-export async function transferOutOfEscrow<
+export async function getTransferOutOfEscrowInstructionAsync<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountPayer extends string,
@@ -654,7 +648,7 @@ export async function transferOutOfEscrow<
       IAccountSignerMeta<TAccountAuthority>
   >
 >;
-export async function transferOutOfEscrow<
+export async function getTransferOutOfEscrowInstructionAsync<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountPayer extends string,
@@ -704,7 +698,7 @@ export async function transferOutOfEscrow<
       IAccountSignerMeta<TAccountAuthority>
   >
 >;
-export async function transferOutOfEscrow<
+export async function getTransferOutOfEscrowInstructionAsync<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountPayer extends string,
@@ -754,8 +748,7 @@ export async function transferOutOfEscrow<
       IAccountSignerMeta<TAccountAuthority>
   >
 >;
-export async function transferOutOfEscrow<
-  TReturn,
+export async function getTransferOutOfEscrowInstructionAsync<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountPayer extends string,
@@ -773,8 +766,6 @@ export async function transferOutOfEscrow<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | TransferOutOfEscrowAsyncInput<
         TAccountEscrow,
         TAccountMetadata,
@@ -807,10 +798,10 @@ export async function transferOutOfEscrow<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as TransferOutOfEscrowAsyncInput<
@@ -843,7 +834,7 @@ export async function transferOutOfEscrow<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getTransferOutOfEscrowInstructionRaw<
       TProgram,
       TAccountEscrow,
       TAccountMetadata,
@@ -925,11 +916,13 @@ export async function transferOutOfEscrow<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as TransferOutOfEscrowInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getTransferOutOfEscrowInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as TransferOutOfEscrowInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

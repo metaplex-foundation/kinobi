@@ -41,7 +41,10 @@ export function getInstructionFunctionHighLevelFragment(
     argsTypeFragment.mergeImportsWith(dataArgsManifest.looseType);
   }
 
-  const functionName = camelCase(instructionNode.name);
+  const functionName = `get${pascalCase(instructionNode.name)}InstructionAsync`;
+  const lowLevelFunctionName = `get${pascalCase(
+    instructionNode.name
+  )}InstructionRaw`;
   const typeParamsFragment = getTypeParams(instructionNode, programNode);
   const instructionTypeFragment = getInstructionType(instructionNode, false);
   const instructionTypeWithSignersFragment = getInstructionType(
@@ -83,6 +86,7 @@ export function getInstructionFunctionHighLevelFragment(
       hasAnyArgs,
       argsType: argsTypeFragment,
       functionName,
+      lowLevelFunctionName,
       typeParams: typeParamsFragment,
       instructionType: instructionTypeFragment,
       instructionTypeWithSigners: instructionTypeWithSignersFragment,
@@ -108,12 +112,7 @@ export function getInstructionFunctionHighLevelFragment(
       bytesCreatedOnChainFragment,
       argsTypeFragment
     )
-    .addImports('solanaAddresses', ['Address'])
-    .addImports('solanaSigners', ['IInstructionWithSigners'])
-    .addImports('shared', [
-      'CustomGeneratedInstruction',
-      'IInstructionWithBytesCreatedOnChain',
-    ]);
+    .addImports('solanaAddresses', ['Address']);
 
   if (hasAccounts) {
     functionFragment

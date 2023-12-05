@@ -27,11 +27,8 @@ import {
   IInstructionWithData,
   WritableAccount,
 } from '@solana/instructions';
-import { IInstructionWithSigners } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -116,7 +113,7 @@ export function getConvertMasterEditionV1ToV2InstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getConvertMasterEditionV1ToV2InstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
   TAccountOneTimeAuth extends string | IAccountMeta<string> = string,
@@ -211,7 +208,7 @@ export type ConvertMasterEditionV1ToV2AsyncInputWithSigners<
   printingMint: Address<TAccountPrintingMint>;
 };
 
-export async function convertMasterEditionV1ToV2<
+export async function getConvertMasterEditionV1ToV2InstructionAsync<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
   TAccountPrintingMint extends string,
@@ -231,7 +228,7 @@ export async function convertMasterEditionV1ToV2<
     TAccountPrintingMint
   >
 >;
-export async function convertMasterEditionV1ToV2<
+export async function getConvertMasterEditionV1ToV2InstructionAsync<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
   TAccountPrintingMint extends string,
@@ -251,7 +248,7 @@ export async function convertMasterEditionV1ToV2<
     TAccountPrintingMint
   >
 >;
-export async function convertMasterEditionV1ToV2<
+export async function getConvertMasterEditionV1ToV2InstructionAsync<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
   TAccountPrintingMint extends string,
@@ -270,7 +267,7 @@ export async function convertMasterEditionV1ToV2<
     TAccountPrintingMint
   >
 >;
-export async function convertMasterEditionV1ToV2<
+export async function getConvertMasterEditionV1ToV2InstructionAsync<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
   TAccountPrintingMint extends string,
@@ -289,8 +286,7 @@ export async function convertMasterEditionV1ToV2<
     TAccountPrintingMint
   >
 >;
-export async function convertMasterEditionV1ToV2<
-  TReturn,
+export async function getConvertMasterEditionV1ToV2InstructionAsync<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
   TAccountPrintingMint extends string,
@@ -298,8 +294,6 @@ export async function convertMasterEditionV1ToV2<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | ConvertMasterEditionV1ToV2AsyncInput<
         TAccountMasterEdition,
         TAccountOneTimeAuth,
@@ -312,10 +306,10 @@ export async function convertMasterEditionV1ToV2<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as ConvertMasterEditionV1ToV2AsyncInput<
@@ -338,7 +332,7 @@ export async function convertMasterEditionV1ToV2<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getConvertMasterEditionV1ToV2InstructionRaw<
       TProgram,
       TAccountMasterEdition,
       TAccountOneTimeAuth,
@@ -364,10 +358,12 @@ export async function convertMasterEditionV1ToV2<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress,
+  return Object.freeze({
+    ...getConvertMasterEditionV1ToV2InstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

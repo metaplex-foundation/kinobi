@@ -30,15 +30,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -227,7 +221,7 @@ export function getRevokeInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getRevokeInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountDelegateRecord extends string | IAccountMeta<string> = string,
   TAccountDelegate extends string | IAccountMeta<string> = string,
@@ -557,7 +551,7 @@ export type RevokeAsyncInputWithSigners<
   revokeArgs: RevokeInstructionDataArgs['revokeArgs'];
 };
 
-export async function revoke<
+export async function getRevokeInstructionAsync<
   TAccountDelegateRecord extends string,
   TAccountDelegate extends string,
   TAccountMetadata extends string,
@@ -608,7 +602,7 @@ export async function revoke<
     TAccountAuthorizationRules
   >
 >;
-export async function revoke<
+export async function getRevokeInstructionAsync<
   TAccountDelegateRecord extends string,
   TAccountDelegate extends string,
   TAccountMetadata extends string,
@@ -659,7 +653,7 @@ export async function revoke<
     TAccountAuthorizationRules
   >
 >;
-export async function revoke<
+export async function getRevokeInstructionAsync<
   TAccountDelegateRecord extends string,
   TAccountDelegate extends string,
   TAccountMetadata extends string,
@@ -709,7 +703,7 @@ export async function revoke<
     TAccountAuthorizationRules
   >
 >;
-export async function revoke<
+export async function getRevokeInstructionAsync<
   TAccountDelegateRecord extends string,
   TAccountDelegate extends string,
   TAccountMetadata extends string,
@@ -759,8 +753,7 @@ export async function revoke<
     TAccountAuthorizationRules
   >
 >;
-export async function revoke<
-  TReturn,
+export async function getRevokeInstructionAsync<
   TAccountDelegateRecord extends string,
   TAccountDelegate extends string,
   TAccountMetadata extends string,
@@ -778,8 +771,6 @@ export async function revoke<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | RevokeAsyncInput<
         TAccountDelegateRecord,
         TAccountDelegate,
@@ -812,10 +803,10 @@ export async function revoke<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as RevokeAsyncInput<
@@ -848,7 +839,7 @@ export async function revoke<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getRevokeInstructionRaw<
       TProgram,
       TAccountDelegateRecord,
       TAccountDelegate,
@@ -923,11 +914,13 @@ export async function revoke<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as RevokeInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getRevokeInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as RevokeInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

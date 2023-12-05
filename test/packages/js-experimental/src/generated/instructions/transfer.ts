@@ -29,16 +29,10 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { resolveMasterEditionFromTokenStandard } from '../../hooked';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -256,7 +250,7 @@ export function getTransferInstructionDataCodec(): Codec<
 
 export type TransferInstructionExtraArgs = { tokenStandard: TokenStandardArgs };
 
-function _createInstruction<
+function getTransferInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountAuthority extends string | IAccountMeta<string> = string,
   TAccountDelegateRecord extends string | IAccountMeta<string> = string,
@@ -637,7 +631,7 @@ export type TransferAsyncInputWithSigners<
   tokenStandard?: TransferInstructionExtraArgs['tokenStandard'];
 };
 
-export async function transfer<
+export async function getTransferInstructionAsync<
   TAccountAuthority extends string,
   TAccountDelegateRecord extends string,
   TAccountToken extends string,
@@ -694,7 +688,7 @@ export async function transfer<
     TAccountAuthorizationRules
   >
 >;
-export async function transfer<
+export async function getTransferInstructionAsync<
   TAccountAuthority extends string,
   TAccountDelegateRecord extends string,
   TAccountToken extends string,
@@ -751,7 +745,7 @@ export async function transfer<
     TAccountAuthorizationRules
   >
 >;
-export async function transfer<
+export async function getTransferInstructionAsync<
   TAccountAuthority extends string,
   TAccountDelegateRecord extends string,
   TAccountToken extends string,
@@ -807,7 +801,7 @@ export async function transfer<
     TAccountAuthorizationRules
   >
 >;
-export async function transfer<
+export async function getTransferInstructionAsync<
   TAccountAuthority extends string,
   TAccountDelegateRecord extends string,
   TAccountToken extends string,
@@ -863,8 +857,7 @@ export async function transfer<
     TAccountAuthorizationRules
   >
 >;
-export async function transfer<
-  TReturn,
+export async function getTransferInstructionAsync<
   TAccountAuthority extends string,
   TAccountDelegateRecord extends string,
   TAccountToken extends string,
@@ -884,8 +877,6 @@ export async function transfer<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
-    | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | TransferAsyncInput<
         TAccountAuthority,
         TAccountDelegateRecord,
@@ -922,10 +913,10 @@ export async function transfer<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
-    | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress' | 'getProgramDerivedAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as TransferAsyncInput<
@@ -960,7 +951,7 @@ export async function transfer<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getTransferInstructionRaw<
       TProgram,
       TAccountAuthority,
       TAccountDelegateRecord,
@@ -1073,11 +1064,13 @@ export async function transfer<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as TransferInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getTransferInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as TransferInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

@@ -34,15 +34,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -207,7 +201,7 @@ export function getApproveUseAuthorityInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getApproveUseAuthorityInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountUseAuthorityRecord extends string | IAccountMeta<string> = string,
   TAccountOwner extends string | IAccountMeta<string> = string,
@@ -470,7 +464,7 @@ export type ApproveUseAuthorityAsyncInputWithSigners<
   numberOfUses: ApproveUseAuthorityInstructionDataArgs['numberOfUses'];
 };
 
-export async function approveUseAuthority<
+export async function getApproveUseAuthorityInstructionAsync<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountPayer extends string,
@@ -514,7 +508,7 @@ export async function approveUseAuthority<
     TAccountRent
   >
 >;
-export async function approveUseAuthority<
+export async function getApproveUseAuthorityInstructionAsync<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountPayer extends string,
@@ -558,7 +552,7 @@ export async function approveUseAuthority<
     TAccountRent
   >
 >;
-export async function approveUseAuthority<
+export async function getApproveUseAuthorityInstructionAsync<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountPayer extends string,
@@ -601,7 +595,7 @@ export async function approveUseAuthority<
     TAccountRent
   >
 >;
-export async function approveUseAuthority<
+export async function getApproveUseAuthorityInstructionAsync<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountPayer extends string,
@@ -644,8 +638,7 @@ export async function approveUseAuthority<
     TAccountRent
   >
 >;
-export async function approveUseAuthority<
-  TReturn,
+export async function getApproveUseAuthorityInstructionAsync<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountPayer extends string,
@@ -661,8 +654,6 @@ export async function approveUseAuthority<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | ApproveUseAuthorityAsyncInput<
         TAccountUseAuthorityRecord,
         TAccountOwner,
@@ -691,10 +682,10 @@ export async function approveUseAuthority<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as ApproveUseAuthorityAsyncInput<
@@ -725,7 +716,7 @@ export async function approveUseAuthority<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getApproveUseAuthorityInstructionRaw<
       TProgram,
       TAccountUseAuthorityRecord,
       TAccountOwner,
@@ -794,11 +785,13 @@ export async function approveUseAuthority<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as ApproveUseAuthorityInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getApproveUseAuthorityInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as ApproveUseAuthorityInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

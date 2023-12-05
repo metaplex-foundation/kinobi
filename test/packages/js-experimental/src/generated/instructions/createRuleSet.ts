@@ -29,15 +29,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   expectProgramDerivedAddress,
@@ -148,7 +142,7 @@ export function getCreateRuleSetInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getCreateRuleSetInstructionRaw<
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountRuleSetPda extends string | IAccountMeta<string> = string,
@@ -261,7 +255,7 @@ export type CreateRuleSetAsyncInputWithSigners<
   ruleSetBump?: CreateRuleSetInstructionDataArgs['ruleSetBump'];
 };
 
-export async function createRuleSet<
+export async function getCreateRuleSetInstructionAsync<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
   TAccountSystemProgram extends string,
@@ -281,7 +275,7 @@ export async function createRuleSet<
     TAccountSystemProgram
   >
 >;
-export async function createRuleSet<
+export async function getCreateRuleSetInstructionAsync<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
   TAccountSystemProgram extends string,
@@ -301,7 +295,7 @@ export async function createRuleSet<
     TAccountSystemProgram
   >
 >;
-export async function createRuleSet<
+export async function getCreateRuleSetInstructionAsync<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
   TAccountSystemProgram extends string,
@@ -320,7 +314,7 @@ export async function createRuleSet<
     TAccountSystemProgram
   >
 >;
-export async function createRuleSet<
+export async function getCreateRuleSetInstructionAsync<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
   TAccountSystemProgram extends string,
@@ -339,8 +333,7 @@ export async function createRuleSet<
     TAccountSystemProgram
   >
 >;
-export async function createRuleSet<
-  TReturn,
+export async function getCreateRuleSetInstructionAsync<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
   TAccountSystemProgram extends string,
@@ -348,8 +341,6 @@ export async function createRuleSet<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | CreateRuleSetAsyncInput<
         TAccountPayer,
         TAccountRuleSetPda,
@@ -362,10 +353,10 @@ export async function createRuleSet<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as CreateRuleSetAsyncInput<
@@ -388,7 +379,7 @@ export async function createRuleSet<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getCreateRuleSetInstructionRaw<
       TProgram,
       TAccountPayer,
       TAccountRuleSetPda,
@@ -432,11 +423,13 @@ export async function createRuleSet<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as CreateRuleSetInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getCreateRuleSetInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as CreateRuleSetInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

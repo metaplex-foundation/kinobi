@@ -33,15 +33,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -122,7 +116,7 @@ export function getTransferSolInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getTransferSolInstructionRaw<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountSource extends string | IAccountMeta<string> = string,
   TAccountDestination extends string | IAccountMeta<string> = string,
@@ -196,7 +190,7 @@ export type TransferSolAsyncInputWithSigners<
   amount: TransferSolInstructionDataArgs['amount'];
 };
 
-export async function transferSol<
+export async function getTransferSolInstructionAsync<
   TAccountSource extends string,
   TAccountDestination extends string,
   TProgram extends string = '11111111111111111111111111111111'
@@ -210,7 +204,7 @@ export async function transferSol<
     TAccountDestination
   >
 >;
-export async function transferSol<
+export async function getTransferSolInstructionAsync<
   TAccountSource extends string,
   TAccountDestination extends string,
   TProgram extends string = '11111111111111111111111111111111'
@@ -224,7 +218,7 @@ export async function transferSol<
     TAccountDestination
   >
 >;
-export async function transferSol<
+export async function getTransferSolInstructionAsync<
   TAccountSource extends string,
   TAccountDestination extends string,
   TProgram extends string = '11111111111111111111111111111111'
@@ -237,7 +231,7 @@ export async function transferSol<
     TAccountDestination
   >
 >;
-export async function transferSol<
+export async function getTransferSolInstructionAsync<
   TAccountSource extends string,
   TAccountDestination extends string,
   TProgram extends string = '11111111111111111111111111111111'
@@ -250,24 +244,21 @@ export async function transferSol<
     TAccountDestination
   >
 >;
-export async function transferSol<
-  TReturn,
+export async function getTransferSolInstructionAsync<
   TAccountSource extends string,
   TAccountDestination extends string,
   TProgram extends string = '11111111111111111111111111111111'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | TransferSolAsyncInput<TAccountSource, TAccountDestination>,
   rawInput?: TransferSolAsyncInput<TAccountSource, TAccountDestination>
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as TransferSolAsyncInput<TAccountSource, TAccountDestination>;
@@ -286,7 +277,11 @@ export async function transferSol<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<TProgram, TAccountSource, TAccountDestination>
+    typeof getTransferSolInstructionRaw<
+      TProgram,
+      TAccountSource,
+      TAccountDestination
+    >
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     source: { value: input.source ?? null, isWritable: true },
@@ -309,11 +304,13 @@ export async function transferSol<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as TransferSolInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getTransferSolInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as TransferSolInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

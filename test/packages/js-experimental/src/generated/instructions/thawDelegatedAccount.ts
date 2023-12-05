@@ -29,15 +29,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -142,7 +136,7 @@ export function getThawDelegatedAccountInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getThawDelegatedAccountInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountDelegate extends string | IAccountMeta<string> = string,
   TAccountTokenAccount extends string | IAccountMeta<string> = string,
@@ -280,7 +274,7 @@ export type ThawDelegatedAccountAsyncInputWithSigners<
   tokenProgram?: Address<TAccountTokenProgram>;
 };
 
-export async function thawDelegatedAccount<
+export async function getThawDelegatedAccountInstructionAsync<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -307,7 +301,7 @@ export async function thawDelegatedAccount<
     TAccountTokenProgram
   >
 >;
-export async function thawDelegatedAccount<
+export async function getThawDelegatedAccountInstructionAsync<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -334,7 +328,7 @@ export async function thawDelegatedAccount<
     TAccountTokenProgram
   >
 >;
-export async function thawDelegatedAccount<
+export async function getThawDelegatedAccountInstructionAsync<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -360,7 +354,7 @@ export async function thawDelegatedAccount<
     TAccountTokenProgram
   >
 >;
-export async function thawDelegatedAccount<
+export async function getThawDelegatedAccountInstructionAsync<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -386,8 +380,7 @@ export async function thawDelegatedAccount<
     TAccountTokenProgram
   >
 >;
-export async function thawDelegatedAccount<
-  TReturn,
+export async function getThawDelegatedAccountInstructionAsync<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -397,8 +390,6 @@ export async function thawDelegatedAccount<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | ThawDelegatedAccountAsyncInput<
         TAccountDelegate,
         TAccountTokenAccount,
@@ -415,10 +406,10 @@ export async function thawDelegatedAccount<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as ThawDelegatedAccountAsyncInput<
@@ -443,7 +434,7 @@ export async function thawDelegatedAccount<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getThawDelegatedAccountInstructionRaw<
       TProgram,
       TAccountDelegate,
       TAccountTokenAccount,
@@ -483,10 +474,12 @@ export async function thawDelegatedAccount<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress,
+  return Object.freeze({
+    ...getThawDelegatedAccountInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

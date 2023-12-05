@@ -29,15 +29,9 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -242,7 +236,7 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
   );
 }
 
-function _createInstruction<
+function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountEdition extends string | IAccountMeta<string> = string,
@@ -608,7 +602,7 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenAsyncInputW
   reservationList?: Address<TAccountReservationList>;
 };
 
-export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
+export async function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionAsync<
   TAccountMetadata extends string,
   TAccountEdition extends string,
   TAccountMasterEdition extends string,
@@ -669,7 +663,7 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
     TAccountReservationList
   >
 >;
-export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
+export async function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionAsync<
   TAccountMetadata extends string,
   TAccountEdition extends string,
   TAccountMasterEdition extends string,
@@ -730,7 +724,7 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
     TAccountReservationList
   >
 >;
-export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
+export async function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionAsync<
   TAccountMetadata extends string,
   TAccountEdition extends string,
   TAccountMasterEdition extends string,
@@ -790,7 +784,7 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
     TAccountReservationList
   >
 >;
-export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
+export async function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionAsync<
   TAccountMetadata extends string,
   TAccountEdition extends string,
   TAccountMasterEdition extends string,
@@ -850,8 +844,7 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
     TAccountReservationList
   >
 >;
-export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
-  TReturn,
+export async function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionAsync<
   TAccountMetadata extends string,
   TAccountEdition extends string,
   TAccountMasterEdition extends string,
@@ -872,8 +865,6 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenAsyncInput<
         TAccountMetadata,
         TAccountEdition,
@@ -912,10 +903,10 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenAsyncInput<
@@ -951,7 +942,7 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionRaw<
       TProgram,
       TAccountMetadata,
       TAccountEdition,
@@ -1031,10 +1022,12 @@ export async function deprecatedMintNewEditionFromMasterEditionViaPrintingToken<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress,
+  return Object.freeze({
+    ...getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

@@ -46,17 +46,11 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { findMetadataPda, getMetadataSize } from '../accounts';
 import {
   ACCOUNT_HEADER_SIZE,
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   expectAddress,
@@ -258,7 +252,7 @@ export function getCreateMetadataAccountInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getCreateMetadataAccountInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
@@ -451,7 +445,7 @@ export type CreateMetadataAccountAsyncInputWithSigners<
   metadataBump?: CreateMetadataAccountInstructionDataArgs['metadataBump'];
 };
 
-export async function createMetadataAccount<
+export async function getCreateMetadataAccountInstructionAsync<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountMintAuthority extends string,
@@ -484,7 +478,7 @@ export async function createMetadataAccount<
     TAccountRent
   >
 >;
-export async function createMetadataAccount<
+export async function getCreateMetadataAccountInstructionAsync<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountMintAuthority extends string,
@@ -517,7 +511,7 @@ export async function createMetadataAccount<
     TAccountRent
   >
 >;
-export async function createMetadataAccount<
+export async function getCreateMetadataAccountInstructionAsync<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountMintAuthority extends string,
@@ -549,7 +543,7 @@ export async function createMetadataAccount<
     TAccountRent
   >
 >;
-export async function createMetadataAccount<
+export async function getCreateMetadataAccountInstructionAsync<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountMintAuthority extends string,
@@ -581,8 +575,7 @@ export async function createMetadataAccount<
     TAccountRent
   >
 >;
-export async function createMetadataAccount<
-  TReturn,
+export async function getCreateMetadataAccountInstructionAsync<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountMintAuthority extends string,
@@ -594,8 +587,6 @@ export async function createMetadataAccount<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
-    | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | CreateMetadataAccountAsyncInput<
         TAccountMetadata,
         TAccountMint,
@@ -616,10 +607,10 @@ export async function createMetadataAccount<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
-    | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress' | 'getProgramDerivedAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as CreateMetadataAccountAsyncInput<
@@ -646,7 +637,7 @@ export async function createMetadataAccount<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getCreateMetadataAccountInstructionRaw<
       TProgram,
       TAccountMetadata,
       TAccountMint,
@@ -708,11 +699,13 @@ export async function createMetadataAccount<
   // Bytes created on chain.
   const bytesCreatedOnChain = getMetadataSize() + ACCOUNT_HEADER_SIZE;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as CreateMetadataAccountInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getCreateMetadataAccountInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as CreateMetadataAccountInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

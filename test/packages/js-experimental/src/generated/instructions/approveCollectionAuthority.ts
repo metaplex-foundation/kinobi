@@ -29,15 +29,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -173,7 +167,7 @@ export function getApproveCollectionAuthorityInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getApproveCollectionAuthorityInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountCollectionAuthorityRecord extends
     | string
@@ -381,7 +375,7 @@ export type ApproveCollectionAuthorityAsyncInputWithSigners<
   rent?: Address<TAccountRent>;
 };
 
-export async function approveCollectionAuthority<
+export async function getApproveCollectionAuthorityInstructionAsync<
   TAccountCollectionAuthorityRecord extends string,
   TAccountNewCollectionAuthority extends string,
   TAccountUpdateAuthority extends string,
@@ -417,7 +411,7 @@ export async function approveCollectionAuthority<
     TAccountRent
   >
 >;
-export async function approveCollectionAuthority<
+export async function getApproveCollectionAuthorityInstructionAsync<
   TAccountCollectionAuthorityRecord extends string,
   TAccountNewCollectionAuthority extends string,
   TAccountUpdateAuthority extends string,
@@ -453,7 +447,7 @@ export async function approveCollectionAuthority<
     TAccountRent
   >
 >;
-export async function approveCollectionAuthority<
+export async function getApproveCollectionAuthorityInstructionAsync<
   TAccountCollectionAuthorityRecord extends string,
   TAccountNewCollectionAuthority extends string,
   TAccountUpdateAuthority extends string,
@@ -488,7 +482,7 @@ export async function approveCollectionAuthority<
     TAccountRent
   >
 >;
-export async function approveCollectionAuthority<
+export async function getApproveCollectionAuthorityInstructionAsync<
   TAccountCollectionAuthorityRecord extends string,
   TAccountNewCollectionAuthority extends string,
   TAccountUpdateAuthority extends string,
@@ -523,8 +517,7 @@ export async function approveCollectionAuthority<
     TAccountRent
   >
 >;
-export async function approveCollectionAuthority<
-  TReturn,
+export async function getApproveCollectionAuthorityInstructionAsync<
   TAccountCollectionAuthorityRecord extends string,
   TAccountNewCollectionAuthority extends string,
   TAccountUpdateAuthority extends string,
@@ -537,8 +530,6 @@ export async function approveCollectionAuthority<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | ApproveCollectionAuthorityAsyncInput<
         TAccountCollectionAuthorityRecord,
         TAccountNewCollectionAuthority,
@@ -561,10 +552,10 @@ export async function approveCollectionAuthority<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as ApproveCollectionAuthorityAsyncInput<
@@ -592,7 +583,7 @@ export async function approveCollectionAuthority<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getApproveCollectionAuthorityInstructionRaw<
       TProgram,
       TAccountCollectionAuthorityRecord,
       TAccountNewCollectionAuthority,
@@ -644,10 +635,12 @@ export async function approveCollectionAuthority<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress,
+  return Object.freeze({
+    ...getApproveCollectionAuthorityInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

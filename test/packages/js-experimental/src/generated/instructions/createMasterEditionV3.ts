@@ -30,17 +30,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { getMasterEditionV2Size } from '../accounts';
 import {
   ACCOUNT_HEADER_SIZE,
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -199,7 +193,7 @@ export function getCreateMasterEditionV3InstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getCreateMasterEditionV3InstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountEdition extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
@@ -434,7 +428,7 @@ export type CreateMasterEditionV3AsyncInputWithSigners<
   createMasterEditionArgs: CreateMasterEditionV3InstructionDataArgs['createMasterEditionArgs'];
 };
 
-export async function createMasterEditionV3<
+export async function getCreateMasterEditionV3InstructionAsync<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -474,7 +468,7 @@ export async function createMasterEditionV3<
     TAccountRent
   >
 >;
-export async function createMasterEditionV3<
+export async function getCreateMasterEditionV3InstructionAsync<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -514,7 +508,7 @@ export async function createMasterEditionV3<
     TAccountRent
   >
 >;
-export async function createMasterEditionV3<
+export async function getCreateMasterEditionV3InstructionAsync<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -553,7 +547,7 @@ export async function createMasterEditionV3<
     TAccountRent
   >
 >;
-export async function createMasterEditionV3<
+export async function getCreateMasterEditionV3InstructionAsync<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -592,8 +586,7 @@ export async function createMasterEditionV3<
     TAccountRent
   >
 >;
-export async function createMasterEditionV3<
-  TReturn,
+export async function getCreateMasterEditionV3InstructionAsync<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -607,8 +600,6 @@ export async function createMasterEditionV3<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | CreateMasterEditionV3AsyncInput<
         TAccountEdition,
         TAccountMint,
@@ -633,10 +624,10 @@ export async function createMasterEditionV3<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as CreateMasterEditionV3AsyncInput<
@@ -665,7 +656,7 @@ export async function createMasterEditionV3<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getCreateMasterEditionV3InstructionRaw<
       TProgram,
       TAccountEdition,
       TAccountMint,
@@ -727,11 +718,13 @@ export async function createMasterEditionV3<
   // Bytes created on chain.
   const bytesCreatedOnChain = getMasterEditionV2Size() + ACCOUNT_HEADER_SIZE;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as CreateMasterEditionV3InstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getCreateMasterEditionV3InstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as CreateMasterEditionV3InstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

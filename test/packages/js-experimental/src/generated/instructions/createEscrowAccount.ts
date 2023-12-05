@@ -30,15 +30,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -180,7 +174,7 @@ export function getCreateEscrowAccountInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getCreateEscrowAccountInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountEscrow extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,
@@ -403,7 +397,7 @@ export type CreateEscrowAccountAsyncInputWithSigners<
   authority?: TransactionSigner<TAccountAuthority>;
 };
 
-export async function createEscrowAccount<
+export async function getCreateEscrowAccountInstructionAsync<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -442,7 +436,7 @@ export async function createEscrowAccount<
       IAccountSignerMeta<TAccountAuthority>
   >
 >;
-export async function createEscrowAccount<
+export async function getCreateEscrowAccountInstructionAsync<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -481,7 +475,7 @@ export async function createEscrowAccount<
       IAccountSignerMeta<TAccountAuthority>
   >
 >;
-export async function createEscrowAccount<
+export async function getCreateEscrowAccountInstructionAsync<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -519,7 +513,7 @@ export async function createEscrowAccount<
       IAccountSignerMeta<TAccountAuthority>
   >
 >;
-export async function createEscrowAccount<
+export async function getCreateEscrowAccountInstructionAsync<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -557,8 +551,7 @@ export async function createEscrowAccount<
       IAccountSignerMeta<TAccountAuthority>
   >
 >;
-export async function createEscrowAccount<
-  TReturn,
+export async function getCreateEscrowAccountInstructionAsync<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -572,8 +565,6 @@ export async function createEscrowAccount<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | CreateEscrowAccountAsyncInput<
         TAccountEscrow,
         TAccountMetadata,
@@ -598,10 +589,10 @@ export async function createEscrowAccount<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as CreateEscrowAccountAsyncInput<
@@ -630,7 +621,7 @@ export async function createEscrowAccount<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getCreateEscrowAccountInstructionRaw<
       TProgram,
       TAccountEscrow,
       TAccountMetadata,
@@ -685,10 +676,12 @@ export async function createEscrowAccount<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress,
+  return Object.freeze({
+    ...getCreateEscrowAccountInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

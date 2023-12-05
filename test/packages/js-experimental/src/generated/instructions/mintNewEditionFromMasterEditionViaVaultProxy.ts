@@ -30,15 +30,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -273,7 +267,7 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataCo
   );
 }
 
-function _createInstruction<
+function getMintNewEditionFromMasterEditionViaVaultProxyInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountNewMetadata extends string | IAccountMeta<string> = string,
   TAccountNewEdition extends string | IAccountMeta<string> = string,
@@ -661,7 +655,7 @@ export type MintNewEditionFromMasterEditionViaVaultProxyAsyncInputWithSigners<
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs['mintNewEditionFromMasterEditionViaTokenArgs'];
 };
 
-export async function mintNewEditionFromMasterEditionViaVaultProxy<
+export async function getMintNewEditionFromMasterEditionViaVaultProxyInstructionAsync<
   TAccountNewMetadata extends string,
   TAccountNewEdition extends string,
   TAccountMasterEdition extends string,
@@ -725,7 +719,7 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
     TAccountRent
   >
 >;
-export async function mintNewEditionFromMasterEditionViaVaultProxy<
+export async function getMintNewEditionFromMasterEditionViaVaultProxyInstructionAsync<
   TAccountNewMetadata extends string,
   TAccountNewEdition extends string,
   TAccountMasterEdition extends string,
@@ -789,7 +783,7 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
     TAccountRent
   >
 >;
-export async function mintNewEditionFromMasterEditionViaVaultProxy<
+export async function getMintNewEditionFromMasterEditionViaVaultProxyInstructionAsync<
   TAccountNewMetadata extends string,
   TAccountNewEdition extends string,
   TAccountMasterEdition extends string,
@@ -852,7 +846,7 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
     TAccountRent
   >
 >;
-export async function mintNewEditionFromMasterEditionViaVaultProxy<
+export async function getMintNewEditionFromMasterEditionViaVaultProxyInstructionAsync<
   TAccountNewMetadata extends string,
   TAccountNewEdition extends string,
   TAccountMasterEdition extends string,
@@ -915,8 +909,7 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
     TAccountRent
   >
 >;
-export async function mintNewEditionFromMasterEditionViaVaultProxy<
-  TReturn,
+export async function getMintNewEditionFromMasterEditionViaVaultProxyInstructionAsync<
   TAccountNewMetadata extends string,
   TAccountNewEdition extends string,
   TAccountMasterEdition extends string,
@@ -938,8 +931,6 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | MintNewEditionFromMasterEditionViaVaultProxyAsyncInput<
         TAccountNewMetadata,
         TAccountNewEdition,
@@ -980,10 +971,10 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as MintNewEditionFromMasterEditionViaVaultProxyAsyncInput<
@@ -1020,7 +1011,7 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getMintNewEditionFromMasterEditionViaVaultProxyInstructionRaw<
       TProgram,
       TAccountNewMetadata,
       TAccountNewEdition,
@@ -1110,11 +1101,13 @@ export async function mintNewEditionFromMasterEditionViaVaultProxy<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getMintNewEditionFromMasterEditionViaVaultProxyInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

@@ -29,15 +29,9 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -201,7 +195,7 @@ export function getMigrateInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getMigrateInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
@@ -459,7 +453,7 @@ export type MigrateAsyncInputWithSigners<
   migrateArgs: MigrateInstructionDataArgs['migrateArgs'];
 };
 
-export async function migrate<
+export async function getMigrateInstructionAsync<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountTokenAccount extends string,
@@ -501,7 +495,7 @@ export async function migrate<
     TAccountAuthorizationRules
   >
 >;
-export async function migrate<
+export async function getMigrateInstructionAsync<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountTokenAccount extends string,
@@ -543,7 +537,7 @@ export async function migrate<
     TAccountAuthorizationRules
   >
 >;
-export async function migrate<
+export async function getMigrateInstructionAsync<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountTokenAccount extends string,
@@ -584,7 +578,7 @@ export async function migrate<
     TAccountAuthorizationRules
   >
 >;
-export async function migrate<
+export async function getMigrateInstructionAsync<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountTokenAccount extends string,
@@ -625,8 +619,7 @@ export async function migrate<
     TAccountAuthorizationRules
   >
 >;
-export async function migrate<
-  TReturn,
+export async function getMigrateInstructionAsync<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountTokenAccount extends string,
@@ -641,8 +634,6 @@ export async function migrate<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | MigrateAsyncInput<
         TAccountMetadata,
         TAccountMasterEdition,
@@ -669,10 +660,10 @@ export async function migrate<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as MigrateAsyncInput<
@@ -702,7 +693,7 @@ export async function migrate<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getMigrateInstructionRaw<
       TProgram,
       TAccountMetadata,
       TAccountMasterEdition,
@@ -779,11 +770,13 @@ export async function migrate<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as MigrateInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getMigrateInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as MigrateInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

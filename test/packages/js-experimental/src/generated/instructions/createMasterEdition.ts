@@ -30,15 +30,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -201,7 +195,7 @@ export function getCreateMasterEditionInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getCreateMasterEditionInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountEdition extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
@@ -434,7 +428,7 @@ export type CreateMasterEditionAsyncInputWithSigners<
   createMasterEditionArgs: CreateMasterEditionInstructionDataArgs['createMasterEditionArgs'];
 };
 
-export async function createMasterEdition<
+export async function getCreateMasterEditionInstructionAsync<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -474,7 +468,7 @@ export async function createMasterEdition<
     TAccountRent
   >
 >;
-export async function createMasterEdition<
+export async function getCreateMasterEditionInstructionAsync<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -514,7 +508,7 @@ export async function createMasterEdition<
     TAccountRent
   >
 >;
-export async function createMasterEdition<
+export async function getCreateMasterEditionInstructionAsync<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -553,7 +547,7 @@ export async function createMasterEdition<
     TAccountRent
   >
 >;
-export async function createMasterEdition<
+export async function getCreateMasterEditionInstructionAsync<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -592,8 +586,7 @@ export async function createMasterEdition<
     TAccountRent
   >
 >;
-export async function createMasterEdition<
-  TReturn,
+export async function getCreateMasterEditionInstructionAsync<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -607,8 +600,6 @@ export async function createMasterEdition<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | CreateMasterEditionAsyncInput<
         TAccountEdition,
         TAccountMint,
@@ -633,10 +624,10 @@ export async function createMasterEdition<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as CreateMasterEditionAsyncInput<
@@ -665,7 +656,7 @@ export async function createMasterEdition<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getCreateMasterEditionInstructionRaw<
       TProgram,
       TAccountEdition,
       TAccountMint,
@@ -731,11 +722,13 @@ export async function createMasterEdition<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as CreateMasterEditionInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getCreateMasterEditionInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as CreateMasterEditionInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

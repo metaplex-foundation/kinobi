@@ -32,15 +32,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -227,7 +221,7 @@ export function getInitializeInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getInitializeInstructionRaw<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthorityPda extends string | IAccountMeta<string> = string,
@@ -460,7 +454,7 @@ export type InitializeAsyncInputWithSigners<
   data: InitializeInstructionDataArgs['data'];
 };
 
-export async function initialize<
+export async function getInitializeInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthorityPda extends string,
   TAccountAuthority extends string,
@@ -505,7 +499,7 @@ export async function initialize<
     TAccountSystemProgram
   >
 >;
-export async function initialize<
+export async function getInitializeInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthorityPda extends string,
   TAccountAuthority extends string,
@@ -550,7 +544,7 @@ export async function initialize<
     TAccountSystemProgram
   >
 >;
-export async function initialize<
+export async function getInitializeInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthorityPda extends string,
   TAccountAuthority extends string,
@@ -594,7 +588,7 @@ export async function initialize<
     TAccountSystemProgram
   >
 >;
-export async function initialize<
+export async function getInitializeInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthorityPda extends string,
   TAccountAuthority extends string,
@@ -638,8 +632,7 @@ export async function initialize<
     TAccountSystemProgram
   >
 >;
-export async function initialize<
-  TReturn,
+export async function getInitializeInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthorityPda extends string,
   TAccountAuthority extends string,
@@ -655,8 +648,6 @@ export async function initialize<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | InitializeAsyncInput<
         TAccountCandyMachine,
         TAccountAuthorityPda,
@@ -685,10 +676,10 @@ export async function initialize<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as InitializeAsyncInput<
@@ -719,7 +710,7 @@ export async function initialize<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getInitializeInstructionRaw<
       TProgram,
       TAccountCandyMachine,
       TAccountAuthorityPda,
@@ -797,11 +788,13 @@ export async function initialize<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as InitializeInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getInitializeInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as InitializeInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

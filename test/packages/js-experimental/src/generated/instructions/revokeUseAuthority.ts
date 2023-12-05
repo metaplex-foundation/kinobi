@@ -29,15 +29,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -178,7 +172,7 @@ export function getRevokeUseAuthorityInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getRevokeUseAuthorityInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountUseAuthorityRecord extends string | IAccountMeta<string> = string,
   TAccountOwner extends string | IAccountMeta<string> = string,
@@ -400,7 +394,7 @@ export type RevokeUseAuthorityAsyncInputWithSigners<
   rent?: Address<TAccountRent>;
 };
 
-export async function revokeUseAuthority<
+export async function getRevokeUseAuthorityInstructionAsync<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountUser extends string,
@@ -438,7 +432,7 @@ export async function revokeUseAuthority<
     TAccountRent
   >
 >;
-export async function revokeUseAuthority<
+export async function getRevokeUseAuthorityInstructionAsync<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountUser extends string,
@@ -476,7 +470,7 @@ export async function revokeUseAuthority<
     TAccountRent
   >
 >;
-export async function revokeUseAuthority<
+export async function getRevokeUseAuthorityInstructionAsync<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountUser extends string,
@@ -513,7 +507,7 @@ export async function revokeUseAuthority<
     TAccountRent
   >
 >;
-export async function revokeUseAuthority<
+export async function getRevokeUseAuthorityInstructionAsync<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountUser extends string,
@@ -550,8 +544,7 @@ export async function revokeUseAuthority<
     TAccountRent
   >
 >;
-export async function revokeUseAuthority<
-  TReturn,
+export async function getRevokeUseAuthorityInstructionAsync<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountUser extends string,
@@ -565,8 +558,6 @@ export async function revokeUseAuthority<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | RevokeUseAuthorityAsyncInput<
         TAccountUseAuthorityRecord,
         TAccountOwner,
@@ -591,10 +582,10 @@ export async function revokeUseAuthority<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as RevokeUseAuthorityAsyncInput<
@@ -623,7 +614,7 @@ export async function revokeUseAuthority<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getRevokeUseAuthorityInstructionRaw<
       TProgram,
       TAccountUseAuthorityRecord,
       TAccountOwner,
@@ -685,10 +676,12 @@ export async function revokeUseAuthority<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress,
+  return Object.freeze({
+    ...getRevokeUseAuthorityInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

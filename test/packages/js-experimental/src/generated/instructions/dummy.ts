@@ -32,17 +32,11 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { resolveTokenOrAta } from '../../hooked';
 import { findDelegateRecordPda } from '../accounts';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   expectSome,
@@ -198,7 +192,7 @@ export type DummyInstructionExtraArgs = {
   proof: Array<Address>;
 };
 
-function _createInstruction<
+function getDummyInstructionRaw<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountEdition extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
@@ -417,7 +411,7 @@ export type DummyAsyncInputWithSigners<
   proof?: DummyInstructionExtraArgs['proof'];
 };
 
-export async function dummy<
+export async function getDummyInstructionAsync<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -462,7 +456,7 @@ export async function dummy<
     TAccountTokenOrAtaProgram
   >
 >;
-export async function dummy<
+export async function getDummyInstructionAsync<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -507,7 +501,7 @@ export async function dummy<
     TAccountTokenOrAtaProgram
   >
 >;
-export async function dummy<
+export async function getDummyInstructionAsync<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -551,7 +545,7 @@ export async function dummy<
     TAccountTokenOrAtaProgram
   >
 >;
-export async function dummy<
+export async function getDummyInstructionAsync<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -595,8 +589,7 @@ export async function dummy<
     TAccountTokenOrAtaProgram
   >
 >;
-export async function dummy<
-  TReturn,
+export async function getDummyInstructionAsync<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -611,8 +604,6 @@ export async function dummy<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
-    | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | DummyAsyncInput<
         TAccountEdition,
         TAccountMint,
@@ -639,10 +630,10 @@ export async function dummy<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
-    | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress' | 'getProgramDerivedAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as DummyAsyncInput<
@@ -672,7 +663,7 @@ export async function dummy<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getDummyInstructionRaw<
       TProgram,
       TAccountEdition,
       TAccountMint,
@@ -764,10 +755,12 @@ export async function dummy<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress,
+  return Object.freeze({
+    ...getDummyInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

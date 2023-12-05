@@ -29,15 +29,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -215,7 +209,7 @@ export function getUseAssetInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getUseAssetInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountTokenAccount extends string | IAccountMeta<string> = string,
@@ -510,7 +504,7 @@ export type UseAssetAsyncInputWithSigners<
   useAssetArgs: UseAssetInstructionDataArgs['useAssetArgs'];
 };
 
-export async function useAsset<
+export async function getUseAssetInstructionAsync<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -555,7 +549,7 @@ export async function useAsset<
     TAccountAuthorizationRulesProgram
   >
 >;
-export async function useAsset<
+export async function getUseAssetInstructionAsync<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -600,7 +594,7 @@ export async function useAsset<
     TAccountAuthorizationRulesProgram
   >
 >;
-export async function useAsset<
+export async function getUseAssetInstructionAsync<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -644,7 +638,7 @@ export async function useAsset<
     TAccountAuthorizationRulesProgram
   >
 >;
-export async function useAsset<
+export async function getUseAssetInstructionAsync<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -688,8 +682,7 @@ export async function useAsset<
     TAccountAuthorizationRulesProgram
   >
 >;
-export async function useAsset<
-  TReturn,
+export async function getUseAssetInstructionAsync<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -705,8 +698,6 @@ export async function useAsset<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | UseAssetAsyncInput<
         TAccountMetadata,
         TAccountTokenAccount,
@@ -735,10 +726,10 @@ export async function useAsset<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as UseAssetAsyncInput<
@@ -769,7 +760,7 @@ export async function useAsset<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getUseAssetInstructionRaw<
       TProgram,
       TAccountMetadata,
       TAccountTokenAccount,
@@ -852,11 +843,13 @@ export async function useAsset<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as UseAssetInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getUseAssetInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as UseAssetInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

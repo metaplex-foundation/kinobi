@@ -29,15 +29,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -153,7 +147,7 @@ export function getVerifyInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getVerifyInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
@@ -308,7 +302,7 @@ export type VerifyAsyncInputWithSigners<
   verifyArgs: VerifyInstructionDataArgs['verifyArgs'];
 };
 
-export async function verify<
+export async function getVerifyInstructionAsync<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -335,7 +329,7 @@ export async function verify<
     TAccountAuthorizationRulesProgram
   >
 >;
-export async function verify<
+export async function getVerifyInstructionAsync<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -362,7 +356,7 @@ export async function verify<
     TAccountAuthorizationRulesProgram
   >
 >;
-export async function verify<
+export async function getVerifyInstructionAsync<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -388,7 +382,7 @@ export async function verify<
     TAccountAuthorizationRulesProgram
   >
 >;
-export async function verify<
+export async function getVerifyInstructionAsync<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -414,8 +408,7 @@ export async function verify<
     TAccountAuthorizationRulesProgram
   >
 >;
-export async function verify<
-  TReturn,
+export async function getVerifyInstructionAsync<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -425,8 +418,6 @@ export async function verify<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | VerifyAsyncInput<
         TAccountMetadata,
         TAccountCollectionAuthority,
@@ -443,10 +434,10 @@ export async function verify<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as VerifyAsyncInput<
@@ -471,7 +462,7 @@ export async function verify<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getVerifyInstructionRaw<
       TProgram,
       TAccountMetadata,
       TAccountCollectionAuthority,
@@ -513,11 +504,13 @@ export async function verify<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as VerifyInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getVerifyInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as VerifyInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

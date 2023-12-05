@@ -37,15 +37,9 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -159,7 +153,7 @@ export function getAddConfigLinesInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getAddConfigLinesInstructionRaw<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
@@ -241,7 +235,7 @@ export type AddConfigLinesAsyncInputWithSigners<
   moreLines: AddConfigLinesInstructionDataArgs['moreLines'];
 };
 
-export async function addConfigLines<
+export async function getAddConfigLinesInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
@@ -259,7 +253,7 @@ export async function addConfigLines<
       IAccountSignerMeta<TAccountAuthority>
   >
 >;
-export async function addConfigLines<
+export async function getAddConfigLinesInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
@@ -274,7 +268,7 @@ export async function addConfigLines<
       IAccountSignerMeta<TAccountAuthority>
   >
 >;
-export async function addConfigLines<
+export async function getAddConfigLinesInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
@@ -291,7 +285,7 @@ export async function addConfigLines<
       IAccountSignerMeta<TAccountAuthority>
   >
 >;
-export async function addConfigLines<
+export async function getAddConfigLinesInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
@@ -305,24 +299,21 @@ export async function addConfigLines<
       IAccountSignerMeta<TAccountAuthority>
   >
 >;
-export async function addConfigLines<
-  TReturn,
+export async function getAddConfigLinesInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | AddConfigLinesAsyncInput<TAccountCandyMachine, TAccountAuthority>,
   rawInput?: AddConfigLinesAsyncInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as AddConfigLinesAsyncInput<TAccountCandyMachine, TAccountAuthority>;
@@ -341,7 +332,11 @@ export async function addConfigLines<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
+    typeof getAddConfigLinesInstructionRaw<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority
+    >
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     candyMachine: { value: input.candyMachine ?? null, isWritable: true },
@@ -364,11 +359,13 @@ export async function addConfigLines<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as AddConfigLinesInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getAddConfigLinesInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as AddConfigLinesInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

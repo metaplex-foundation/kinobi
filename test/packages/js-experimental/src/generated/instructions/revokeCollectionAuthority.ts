@@ -29,15 +29,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -143,7 +137,7 @@ export function getRevokeCollectionAuthorityInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getRevokeCollectionAuthorityInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountCollectionAuthorityRecord extends
     | string
@@ -280,7 +274,7 @@ export type RevokeCollectionAuthorityAsyncInputWithSigners<
   mint: Address<TAccountMint>;
 };
 
-export async function revokeCollectionAuthority<
+export async function getRevokeCollectionAuthorityInstructionAsync<
   TAccountCollectionAuthorityRecord extends string,
   TAccountDelegateAuthority extends string,
   TAccountRevokeAuthority extends string,
@@ -307,7 +301,7 @@ export async function revokeCollectionAuthority<
     TAccountMint
   >
 >;
-export async function revokeCollectionAuthority<
+export async function getRevokeCollectionAuthorityInstructionAsync<
   TAccountCollectionAuthorityRecord extends string,
   TAccountDelegateAuthority extends string,
   TAccountRevokeAuthority extends string,
@@ -334,7 +328,7 @@ export async function revokeCollectionAuthority<
     TAccountMint
   >
 >;
-export async function revokeCollectionAuthority<
+export async function getRevokeCollectionAuthorityInstructionAsync<
   TAccountCollectionAuthorityRecord extends string,
   TAccountDelegateAuthority extends string,
   TAccountRevokeAuthority extends string,
@@ -360,7 +354,7 @@ export async function revokeCollectionAuthority<
     TAccountMint
   >
 >;
-export async function revokeCollectionAuthority<
+export async function getRevokeCollectionAuthorityInstructionAsync<
   TAccountCollectionAuthorityRecord extends string,
   TAccountDelegateAuthority extends string,
   TAccountRevokeAuthority extends string,
@@ -386,8 +380,7 @@ export async function revokeCollectionAuthority<
     TAccountMint
   >
 >;
-export async function revokeCollectionAuthority<
-  TReturn,
+export async function getRevokeCollectionAuthorityInstructionAsync<
   TAccountCollectionAuthorityRecord extends string,
   TAccountDelegateAuthority extends string,
   TAccountRevokeAuthority extends string,
@@ -397,8 +390,6 @@ export async function revokeCollectionAuthority<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | RevokeCollectionAuthorityAsyncInput<
         TAccountCollectionAuthorityRecord,
         TAccountDelegateAuthority,
@@ -415,10 +406,10 @@ export async function revokeCollectionAuthority<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as RevokeCollectionAuthorityAsyncInput<
@@ -443,7 +434,7 @@ export async function revokeCollectionAuthority<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getRevokeCollectionAuthorityInstructionRaw<
       TProgram,
       TAccountCollectionAuthorityRecord,
       TAccountDelegateAuthority,
@@ -479,10 +470,12 @@ export async function revokeCollectionAuthority<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress,
+  return Object.freeze({
+    ...getRevokeCollectionAuthorityInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

@@ -29,15 +29,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -142,7 +136,7 @@ export function getFreezeDelegatedAccountInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getFreezeDelegatedAccountInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountDelegate extends string | IAccountMeta<string> = string,
   TAccountTokenAccount extends string | IAccountMeta<string> = string,
@@ -280,7 +274,7 @@ export type FreezeDelegatedAccountAsyncInputWithSigners<
   tokenProgram?: Address<TAccountTokenProgram>;
 };
 
-export async function freezeDelegatedAccount<
+export async function getFreezeDelegatedAccountInstructionAsync<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -307,7 +301,7 @@ export async function freezeDelegatedAccount<
     TAccountTokenProgram
   >
 >;
-export async function freezeDelegatedAccount<
+export async function getFreezeDelegatedAccountInstructionAsync<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -334,7 +328,7 @@ export async function freezeDelegatedAccount<
     TAccountTokenProgram
   >
 >;
-export async function freezeDelegatedAccount<
+export async function getFreezeDelegatedAccountInstructionAsync<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -360,7 +354,7 @@ export async function freezeDelegatedAccount<
     TAccountTokenProgram
   >
 >;
-export async function freezeDelegatedAccount<
+export async function getFreezeDelegatedAccountInstructionAsync<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -386,8 +380,7 @@ export async function freezeDelegatedAccount<
     TAccountTokenProgram
   >
 >;
-export async function freezeDelegatedAccount<
-  TReturn,
+export async function getFreezeDelegatedAccountInstructionAsync<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -397,8 +390,6 @@ export async function freezeDelegatedAccount<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | FreezeDelegatedAccountAsyncInput<
         TAccountDelegate,
         TAccountTokenAccount,
@@ -415,10 +406,10 @@ export async function freezeDelegatedAccount<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as FreezeDelegatedAccountAsyncInput<
@@ -443,7 +434,7 @@ export async function freezeDelegatedAccount<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getFreezeDelegatedAccountInstructionRaw<
       TProgram,
       TAccountDelegate,
       TAccountTokenAccount,
@@ -483,10 +474,12 @@ export async function freezeDelegatedAccount<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress,
+  return Object.freeze({
+    ...getFreezeDelegatedAccountInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

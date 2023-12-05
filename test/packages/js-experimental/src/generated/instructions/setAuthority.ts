@@ -34,15 +34,9 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -126,7 +120,7 @@ export function getSetAuthorityInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getSetAuthorityInstructionRaw<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
@@ -200,7 +194,7 @@ export type SetAuthorityAsyncInputWithSigners<
   newAuthority: SetAuthorityInstructionDataArgs['newAuthority'];
 };
 
-export async function setAuthority<
+export async function getSetAuthorityInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
@@ -218,7 +212,7 @@ export async function setAuthority<
       IAccountSignerMeta<TAccountAuthority>
   >
 >;
-export async function setAuthority<
+export async function getSetAuthorityInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
@@ -233,7 +227,7 @@ export async function setAuthority<
       IAccountSignerMeta<TAccountAuthority>
   >
 >;
-export async function setAuthority<
+export async function getSetAuthorityInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
@@ -250,7 +244,7 @@ export async function setAuthority<
       IAccountSignerMeta<TAccountAuthority>
   >
 >;
-export async function setAuthority<
+export async function getSetAuthorityInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
@@ -264,24 +258,21 @@ export async function setAuthority<
       IAccountSignerMeta<TAccountAuthority>
   >
 >;
-export async function setAuthority<
-  TReturn,
+export async function getSetAuthorityInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | SetAuthorityAsyncInput<TAccountCandyMachine, TAccountAuthority>,
   rawInput?: SetAuthorityAsyncInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as SetAuthorityAsyncInput<TAccountCandyMachine, TAccountAuthority>;
@@ -300,7 +291,11 @@ export async function setAuthority<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
+    typeof getSetAuthorityInstructionRaw<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority
+    >
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     candyMachine: { value: input.candyMachine ?? null, isWritable: true },
@@ -323,11 +318,13 @@ export async function setAuthority<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as SetAuthorityInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getSetAuthorityInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as SetAuthorityInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

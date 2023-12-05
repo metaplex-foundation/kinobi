@@ -17,19 +17,13 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   CreateReservationListInstructionDataArgs,
   getCreateReservationListInstructionDataEncoder,
 } from '../../hooked';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -134,7 +128,7 @@ export type CreateReservationListInstructionWithSigners<
     ]
   >;
 
-function _createInstruction<
+function getCreateReservationListInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountReservationList extends string | IAccountMeta<string> = string,
   TAccountPayer extends string | IAccountMeta<string> = string,
@@ -335,7 +329,7 @@ export type CreateReservationListAsyncInputWithSigners<
   rent?: Address<TAccountRent>;
 };
 
-export async function createReservationList<
+export async function getCreateReservationListInstructionAsync<
   TAccountReservationList extends string,
   TAccountPayer extends string,
   TAccountUpdateAuthority extends string,
@@ -371,7 +365,7 @@ export async function createReservationList<
     TAccountRent
   >
 >;
-export async function createReservationList<
+export async function getCreateReservationListInstructionAsync<
   TAccountReservationList extends string,
   TAccountPayer extends string,
   TAccountUpdateAuthority extends string,
@@ -407,7 +401,7 @@ export async function createReservationList<
     TAccountRent
   >
 >;
-export async function createReservationList<
+export async function getCreateReservationListInstructionAsync<
   TAccountReservationList extends string,
   TAccountPayer extends string,
   TAccountUpdateAuthority extends string,
@@ -442,7 +436,7 @@ export async function createReservationList<
     TAccountRent
   >
 >;
-export async function createReservationList<
+export async function getCreateReservationListInstructionAsync<
   TAccountReservationList extends string,
   TAccountPayer extends string,
   TAccountUpdateAuthority extends string,
@@ -477,8 +471,7 @@ export async function createReservationList<
     TAccountRent
   >
 >;
-export async function createReservationList<
-  TReturn,
+export async function getCreateReservationListInstructionAsync<
   TAccountReservationList extends string,
   TAccountPayer extends string,
   TAccountUpdateAuthority extends string,
@@ -491,8 +484,6 @@ export async function createReservationList<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | CreateReservationListAsyncInput<
         TAccountReservationList,
         TAccountPayer,
@@ -515,10 +506,10 @@ export async function createReservationList<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as CreateReservationListAsyncInput<
@@ -546,7 +537,7 @@ export async function createReservationList<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getCreateReservationListInstructionRaw<
       TProgram,
       TAccountReservationList,
       TAccountPayer,
@@ -602,11 +593,13 @@ export async function createReservationList<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as CreateReservationListInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getCreateReservationListInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as CreateReservationListInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

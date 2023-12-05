@@ -32,15 +32,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -242,7 +236,7 @@ export function getSetCollectionInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getSetCollectionInstructionRaw<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
@@ -520,7 +514,7 @@ export type SetCollectionAsyncInputWithSigners<
   systemProgram?: Address<TAccountSystemProgram>;
 };
 
-export async function setCollection<
+export async function getSetCollectionInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountAuthorityPda extends string,
@@ -575,7 +569,7 @@ export async function setCollection<
     TAccountSystemProgram
   >
 >;
-export async function setCollection<
+export async function getSetCollectionInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountAuthorityPda extends string,
@@ -630,7 +624,7 @@ export async function setCollection<
     TAccountSystemProgram
   >
 >;
-export async function setCollection<
+export async function getSetCollectionInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountAuthorityPda extends string,
@@ -684,7 +678,7 @@ export async function setCollection<
     TAccountSystemProgram
   >
 >;
-export async function setCollection<
+export async function getSetCollectionInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountAuthorityPda extends string,
@@ -738,8 +732,7 @@ export async function setCollection<
     TAccountSystemProgram
   >
 >;
-export async function setCollection<
-  TReturn,
+export async function getSetCollectionInstructionAsync<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountAuthorityPda extends string,
@@ -758,8 +751,6 @@ export async function setCollection<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | SetCollectionAsyncInput<
         TAccountCandyMachine,
         TAccountAuthority,
@@ -794,10 +785,10 @@ export async function setCollection<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as SetCollectionAsyncInput<
@@ -831,7 +822,7 @@ export async function setCollection<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getSetCollectionInstructionRaw<
       TProgram,
       TAccountCandyMachine,
       TAccountAuthority,
@@ -921,10 +912,12 @@ export async function setCollection<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress,
+  return Object.freeze({
+    ...getSetCollectionInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

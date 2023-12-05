@@ -29,15 +29,9 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -123,7 +117,7 @@ export function getUpdatePrimarySaleHappenedViaTokenInstructionDataCodec(): Code
   );
 }
 
-function _createInstruction<
+function getUpdatePrimarySaleHappenedViaTokenInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountOwner extends string | IAccountMeta<string> = string,
@@ -220,7 +214,7 @@ export type UpdatePrimarySaleHappenedViaTokenAsyncInputWithSigners<
   token: Address<TAccountToken>;
 };
 
-export async function updatePrimarySaleHappenedViaToken<
+export async function getUpdatePrimarySaleHappenedViaTokenInstructionAsync<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountToken extends string,
@@ -240,7 +234,7 @@ export async function updatePrimarySaleHappenedViaToken<
     TAccountToken
   >
 >;
-export async function updatePrimarySaleHappenedViaToken<
+export async function getUpdatePrimarySaleHappenedViaTokenInstructionAsync<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountToken extends string,
@@ -260,7 +254,7 @@ export async function updatePrimarySaleHappenedViaToken<
     TAccountToken
   >
 >;
-export async function updatePrimarySaleHappenedViaToken<
+export async function getUpdatePrimarySaleHappenedViaTokenInstructionAsync<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountToken extends string,
@@ -279,7 +273,7 @@ export async function updatePrimarySaleHappenedViaToken<
     TAccountToken
   >
 >;
-export async function updatePrimarySaleHappenedViaToken<
+export async function getUpdatePrimarySaleHappenedViaTokenInstructionAsync<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountToken extends string,
@@ -298,8 +292,7 @@ export async function updatePrimarySaleHappenedViaToken<
     TAccountToken
   >
 >;
-export async function updatePrimarySaleHappenedViaToken<
-  TReturn,
+export async function getUpdatePrimarySaleHappenedViaTokenInstructionAsync<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountToken extends string,
@@ -307,8 +300,6 @@ export async function updatePrimarySaleHappenedViaToken<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | UpdatePrimarySaleHappenedViaTokenAsyncInput<
         TAccountMetadata,
         TAccountOwner,
@@ -321,10 +312,10 @@ export async function updatePrimarySaleHappenedViaToken<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as UpdatePrimarySaleHappenedViaTokenAsyncInput<
@@ -347,7 +338,7 @@ export async function updatePrimarySaleHappenedViaToken<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getUpdatePrimarySaleHappenedViaTokenInstructionRaw<
       TProgram,
       TAccountMetadata,
       TAccountOwner,
@@ -373,10 +364,12 @@ export async function updatePrimarySaleHappenedViaToken<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress,
+  return Object.freeze({
+    ...getUpdatePrimarySaleHappenedViaTokenInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

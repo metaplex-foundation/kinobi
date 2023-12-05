@@ -29,15 +29,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -190,7 +184,7 @@ export function getBurnEditionNftInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getBurnEditionNftInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountOwner extends string | IAccountMeta<string> = string,
@@ -439,7 +433,7 @@ export type BurnEditionNftAsyncInputWithSigners<
   splTokenProgram?: Address<TAccountSplTokenProgram>;
 };
 
-export async function burnEditionNft<
+export async function getBurnEditionNftInstructionAsync<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountPrintEditionMint extends string,
@@ -480,7 +474,7 @@ export async function burnEditionNft<
     TAccountSplTokenProgram
   >
 >;
-export async function burnEditionNft<
+export async function getBurnEditionNftInstructionAsync<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountPrintEditionMint extends string,
@@ -521,7 +515,7 @@ export async function burnEditionNft<
     TAccountSplTokenProgram
   >
 >;
-export async function burnEditionNft<
+export async function getBurnEditionNftInstructionAsync<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountPrintEditionMint extends string,
@@ -561,7 +555,7 @@ export async function burnEditionNft<
     TAccountSplTokenProgram
   >
 >;
-export async function burnEditionNft<
+export async function getBurnEditionNftInstructionAsync<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountPrintEditionMint extends string,
@@ -601,8 +595,7 @@ export async function burnEditionNft<
     TAccountSplTokenProgram
   >
 >;
-export async function burnEditionNft<
-  TReturn,
+export async function getBurnEditionNftInstructionAsync<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountPrintEditionMint extends string,
@@ -617,8 +610,6 @@ export async function burnEditionNft<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | BurnEditionNftAsyncInput<
         TAccountMetadata,
         TAccountOwner,
@@ -645,10 +636,10 @@ export async function burnEditionNft<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as BurnEditionNftAsyncInput<
@@ -678,7 +669,7 @@ export async function burnEditionNft<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getBurnEditionNftInstructionRaw<
       TProgram,
       TAccountMetadata,
       TAccountOwner,
@@ -752,10 +743,12 @@ export async function burnEditionNft<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress,
+  return Object.freeze({
+    ...getBurnEditionNftInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

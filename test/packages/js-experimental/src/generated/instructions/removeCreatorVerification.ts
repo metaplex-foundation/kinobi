@@ -28,15 +28,9 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -114,7 +108,7 @@ export function getRemoveCreatorVerificationInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getRemoveCreatorVerificationInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountCreator extends string | IAccountMeta<string> = string,
@@ -191,7 +185,7 @@ export type RemoveCreatorVerificationAsyncInputWithSigners<
   creator: TransactionSigner<TAccountCreator>;
 };
 
-export async function removeCreatorVerification<
+export async function getRemoveCreatorVerificationInstructionAsync<
   TAccountMetadata extends string,
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
@@ -208,7 +202,7 @@ export async function removeCreatorVerification<
     ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
   >
 >;
-export async function removeCreatorVerification<
+export async function getRemoveCreatorVerificationInstructionAsync<
   TAccountMetadata extends string,
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
@@ -222,7 +216,7 @@ export async function removeCreatorVerification<
     ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
   >
 >;
-export async function removeCreatorVerification<
+export async function getRemoveCreatorVerificationInstructionAsync<
   TAccountMetadata extends string,
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
@@ -238,7 +232,7 @@ export async function removeCreatorVerification<
     ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
   >
 >;
-export async function removeCreatorVerification<
+export async function getRemoveCreatorVerificationInstructionAsync<
   TAccountMetadata extends string,
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
@@ -251,16 +245,13 @@ export async function removeCreatorVerification<
     ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
   >
 >;
-export async function removeCreatorVerification<
-  TReturn,
+export async function getRemoveCreatorVerificationInstructionAsync<
   TAccountMetadata extends string,
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | RemoveCreatorVerificationAsyncInput<TAccountMetadata, TAccountCreator>,
   rawInput?: RemoveCreatorVerificationAsyncInput<
     TAccountMetadata,
@@ -268,10 +259,10 @@ export async function removeCreatorVerification<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as RemoveCreatorVerificationAsyncInput<TAccountMetadata, TAccountCreator>;
@@ -290,7 +281,11 @@ export async function removeCreatorVerification<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<TProgram, TAccountMetadata, TAccountCreator>
+    typeof getRemoveCreatorVerificationInstructionRaw<
+      TProgram,
+      TAccountMetadata,
+      TAccountCreator
+    >
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
@@ -310,10 +305,12 @@ export async function removeCreatorVerification<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress,
+  return Object.freeze({
+    ...getRemoveCreatorVerificationInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

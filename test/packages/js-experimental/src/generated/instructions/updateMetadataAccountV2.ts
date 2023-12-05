@@ -40,15 +40,9 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -155,7 +149,7 @@ export function getUpdateMetadataAccountV2InstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getUpdateMetadataAccountV2InstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
@@ -252,7 +246,7 @@ export type UpdateMetadataAccountV2AsyncInputWithSigners<
   isMutable: UpdateMetadataAccountV2InstructionDataArgs['isMutable'];
 };
 
-export async function updateMetadataAccountV2<
+export async function getUpdateMetadataAccountV2InstructionAsync<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
@@ -270,7 +264,7 @@ export async function updateMetadataAccountV2<
       IAccountSignerMeta<TAccountUpdateAuthority>
   >
 >;
-export async function updateMetadataAccountV2<
+export async function getUpdateMetadataAccountV2InstructionAsync<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
@@ -288,7 +282,7 @@ export async function updateMetadataAccountV2<
       IAccountSignerMeta<TAccountUpdateAuthority>
   >
 >;
-export async function updateMetadataAccountV2<
+export async function getUpdateMetadataAccountV2InstructionAsync<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
@@ -305,7 +299,7 @@ export async function updateMetadataAccountV2<
       IAccountSignerMeta<TAccountUpdateAuthority>
   >
 >;
-export async function updateMetadataAccountV2<
+export async function getUpdateMetadataAccountV2InstructionAsync<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
@@ -322,16 +316,13 @@ export async function updateMetadataAccountV2<
       IAccountSignerMeta<TAccountUpdateAuthority>
   >
 >;
-export async function updateMetadataAccountV2<
-  TReturn,
+export async function getUpdateMetadataAccountV2InstructionAsync<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | UpdateMetadataAccountV2AsyncInput<
         TAccountMetadata,
         TAccountUpdateAuthority
@@ -342,10 +333,10 @@ export async function updateMetadataAccountV2<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as UpdateMetadataAccountV2AsyncInput<
@@ -367,7 +358,7 @@ export async function updateMetadataAccountV2<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getUpdateMetadataAccountV2InstructionRaw<
       TProgram,
       TAccountMetadata,
       TAccountUpdateAuthority
@@ -397,11 +388,13 @@ export async function updateMetadataAccountV2<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as UpdateMetadataAccountV2InstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getUpdateMetadataAccountV2InstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as UpdateMetadataAccountV2InstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

@@ -29,15 +29,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -170,7 +164,7 @@ export function getSetAndVerifyCollectionInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getSetAndVerifyCollectionInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
@@ -372,7 +366,7 @@ export type SetAndVerifyCollectionAsyncInputWithSigners<
   collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
 };
 
-export async function setAndVerifyCollection<
+export async function getSetAndVerifyCollectionInstructionAsync<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -408,7 +402,7 @@ export async function setAndVerifyCollection<
     TAccountCollectionAuthorityRecord
   >
 >;
-export async function setAndVerifyCollection<
+export async function getSetAndVerifyCollectionInstructionAsync<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -444,7 +438,7 @@ export async function setAndVerifyCollection<
     TAccountCollectionAuthorityRecord
   >
 >;
-export async function setAndVerifyCollection<
+export async function getSetAndVerifyCollectionInstructionAsync<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -479,7 +473,7 @@ export async function setAndVerifyCollection<
     TAccountCollectionAuthorityRecord
   >
 >;
-export async function setAndVerifyCollection<
+export async function getSetAndVerifyCollectionInstructionAsync<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -514,8 +508,7 @@ export async function setAndVerifyCollection<
     TAccountCollectionAuthorityRecord
   >
 >;
-export async function setAndVerifyCollection<
-  TReturn,
+export async function getSetAndVerifyCollectionInstructionAsync<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -528,8 +521,6 @@ export async function setAndVerifyCollection<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | SetAndVerifyCollectionAsyncInput<
         TAccountMetadata,
         TAccountCollectionAuthority,
@@ -552,10 +543,10 @@ export async function setAndVerifyCollection<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as SetAndVerifyCollectionAsyncInput<
@@ -583,7 +574,7 @@ export async function setAndVerifyCollection<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getSetAndVerifyCollectionInstructionRaw<
       TProgram,
       TAccountMetadata,
       TAccountCollectionAuthority,
@@ -631,10 +622,12 @@ export async function setAndVerifyCollection<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress,
+  return Object.freeze({
+    ...getSetAndVerifyCollectionInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

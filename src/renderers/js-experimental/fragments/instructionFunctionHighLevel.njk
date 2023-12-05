@@ -2,9 +2,9 @@ export async function {{ functionName }}<{{ typeParams }}>(context: {{ context }
 export async function {{ functionName }}<{{ typeParams }}>(context: {{ context }}, input: {{ inputType }}): Promise<{{ instructionType }}>;
 export async function {{ functionName }}<{{ typeParams }}>(input: {{ inputTypeWithSigners }}): Promise<{{ instructionTypeWithSigners }}>;
 export async function {{ functionName }}<{{ typeParams }}>(input: {{ inputType }}): Promise<{{ instructionType }}>;
-export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: {{ context }} | {{ context }} & CustomGeneratedInstruction<IInstruction, TReturn> | {{ inputType }}, rawInput?: {{ inputType }}): Promise<IInstruction> {
+export async function {{ functionName }}<{{ typeParams }}>(rawContext: {{ context }} | {{ inputType }}, rawInput?: {{ inputType }}): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as {{ context }} | {{ context }} & CustomGeneratedInstruction<IInstruction, TReturn>;
+  const context = (rawInput === undefined ? {} : rawContext) as {{ context }};
   const input = (rawInput === undefined ? rawContext : rawInput) as {{ inputType }};
 
   // Program address.
@@ -17,7 +17,7 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
 
   {% if hasAccounts %}
     // Original accounts.
-    type AccountMetas = Parameters<typeof _createInstruction<
+    type AccountMetas = Parameters<typeof {{ lowLevelFunctionName }}<
       TProgram,
       {% for account in instruction.accounts %}
         TAccount{{ account.name | pascalCase }},
@@ -45,15 +45,17 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
   {{ remainingAccounts }}
   {{ bytesCreatedOnChain }}
 
-  return _createInstruction(
-    {%- if hasAccounts -%}
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    {% endif %}
-    {%- if hasDataArgs -%}
-      args as {{ argsType }},
-    {% endif %}
-    programAddress,
+  return Object.freeze({
+    ...{{ lowLevelFunctionName }}(
+      {%- if hasAccounts -%}
+        accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      {% endif %}
+      {%- if hasDataArgs -%}
+        args as {{ argsType }},
+      {% endif %}
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

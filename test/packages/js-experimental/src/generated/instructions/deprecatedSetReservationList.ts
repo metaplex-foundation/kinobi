@@ -41,15 +41,9 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -164,7 +158,7 @@ export function getDeprecatedSetReservationListInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getDeprecatedSetReservationListInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
   TAccountReservationList extends string | IAccountMeta<string> = string,
@@ -276,7 +270,7 @@ export type DeprecatedSetReservationListAsyncInputWithSigners<
   totalSpotOffset: DeprecatedSetReservationListInstructionDataArgs['totalSpotOffset'];
 };
 
-export async function deprecatedSetReservationList<
+export async function getDeprecatedSetReservationListInstructionAsync<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
   TAccountResource extends string,
@@ -297,7 +291,7 @@ export async function deprecatedSetReservationList<
       IAccountSignerMeta<TAccountResource>
   >
 >;
-export async function deprecatedSetReservationList<
+export async function getDeprecatedSetReservationListInstructionAsync<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
   TAccountResource extends string,
@@ -318,7 +312,7 @@ export async function deprecatedSetReservationList<
       IAccountSignerMeta<TAccountResource>
   >
 >;
-export async function deprecatedSetReservationList<
+export async function getDeprecatedSetReservationListInstructionAsync<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
   TAccountResource extends string,
@@ -338,7 +332,7 @@ export async function deprecatedSetReservationList<
       IAccountSignerMeta<TAccountResource>
   >
 >;
-export async function deprecatedSetReservationList<
+export async function getDeprecatedSetReservationListInstructionAsync<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
   TAccountResource extends string,
@@ -358,8 +352,7 @@ export async function deprecatedSetReservationList<
       IAccountSignerMeta<TAccountResource>
   >
 >;
-export async function deprecatedSetReservationList<
-  TReturn,
+export async function getDeprecatedSetReservationListInstructionAsync<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
   TAccountResource extends string,
@@ -367,8 +360,6 @@ export async function deprecatedSetReservationList<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | DeprecatedSetReservationListAsyncInput<
         TAccountMasterEdition,
         TAccountReservationList,
@@ -381,10 +372,10 @@ export async function deprecatedSetReservationList<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as DeprecatedSetReservationListAsyncInput<
@@ -407,7 +398,7 @@ export async function deprecatedSetReservationList<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getDeprecatedSetReservationListInstructionRaw<
       TProgram,
       TAccountMasterEdition,
       TAccountReservationList,
@@ -436,11 +427,13 @@ export async function deprecatedSetReservationList<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as DeprecatedSetReservationListInstructionDataArgs,
-    programAddress,
+  return Object.freeze({
+    ...getDeprecatedSetReservationListInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as DeprecatedSetReservationListInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }

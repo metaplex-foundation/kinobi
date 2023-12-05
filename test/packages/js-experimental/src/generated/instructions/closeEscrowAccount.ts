@@ -29,15 +29,9 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
-import {
-  IAccountSignerMeta,
-  IInstructionWithSigners,
-  TransactionSigner,
-} from '@solana/signers';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
-  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -170,7 +164,7 @@ export function getCloseEscrowAccountInstructionDataCodec(): Codec<
   );
 }
 
-function _createInstruction<
+function getCloseEscrowAccountInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountEscrow extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,
@@ -368,7 +362,7 @@ export type CloseEscrowAccountAsyncInputWithSigners<
   sysvarInstructions?: Address<TAccountSysvarInstructions>;
 };
 
-export async function closeEscrowAccount<
+export async function getCloseEscrowAccountInstructionAsync<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -403,7 +397,7 @@ export async function closeEscrowAccount<
     TAccountSysvarInstructions
   >
 >;
-export async function closeEscrowAccount<
+export async function getCloseEscrowAccountInstructionAsync<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -438,7 +432,7 @@ export async function closeEscrowAccount<
     TAccountSysvarInstructions
   >
 >;
-export async function closeEscrowAccount<
+export async function getCloseEscrowAccountInstructionAsync<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -472,7 +466,7 @@ export async function closeEscrowAccount<
     TAccountSysvarInstructions
   >
 >;
-export async function closeEscrowAccount<
+export async function getCloseEscrowAccountInstructionAsync<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -506,8 +500,7 @@ export async function closeEscrowAccount<
     TAccountSysvarInstructions
   >
 >;
-export async function closeEscrowAccount<
-  TReturn,
+export async function getCloseEscrowAccountInstructionAsync<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -520,8 +513,6 @@ export async function closeEscrowAccount<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | CloseEscrowAccountAsyncInput<
         TAccountEscrow,
         TAccountMetadata,
@@ -544,10 +535,10 @@ export async function closeEscrowAccount<
   >
 ): Promise<IInstruction> {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as CloseEscrowAccountAsyncInput<
@@ -575,7 +566,7 @@ export async function closeEscrowAccount<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof _createInstruction<
+    typeof getCloseEscrowAccountInstructionRaw<
       TProgram,
       TAccountEscrow,
       TAccountMetadata,
@@ -628,10 +619,12 @@ export async function closeEscrowAccount<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  return _createInstruction(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress,
+  return Object.freeze({
+    ...getCloseEscrowAccountInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-    remainingAccounts
-  );
+  });
 }
