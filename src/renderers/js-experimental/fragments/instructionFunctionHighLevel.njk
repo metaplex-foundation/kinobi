@@ -1,7 +1,8 @@
-export async function {{ functionName }}<TReturn, {{ typeParams }}>(context: {{ context }} & {{ customGeneratedInstruction }}, input: {{ inputType }}): Promise<TReturn>;
-export async function {{ functionName }}<{{ typeParams }}>(context: {{ context }}, input: {{ inputType }}): Promise<{{ instructionType }} & IInstructionWithSigners & IInstructionWithBytesCreatedOnChain>;
-export async function {{ functionName }}<{{ typeParams }}>(input: {{ inputType }}): Promise<{{ instructionType }} & IInstructionWithSigners & IInstructionWithBytesCreatedOnChain>;
-export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: {{ context }} | {{ context }} & CustomGeneratedInstruction<IInstruction, TReturn> | {{ inputType }}, rawInput?: {{ inputType }}): Promise<TReturn | (IInstruction & IInstructionWithSigners & IInstructionWithBytesCreatedOnChain)> {
+export async function {{ functionName }}<{{ typeParams }}>(context: {{ context }}, input: {{ inputTypeWithSigners }}): Promise<{{ instructionTypeWithSigners }}>;
+export async function {{ functionName }}<{{ typeParams }}>(context: {{ context }}, input: {{ inputType }}): Promise<{{ instructionType }}>;
+export async function {{ functionName }}<{{ typeParams }}>(input: {{ inputTypeWithSigners }}): Promise<{{ instructionTypeWithSigners }}>;
+export async function {{ functionName }}<{{ typeParams }}>(input: {{ inputType }}): Promise<{{ instructionType }}>;
+export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: {{ context }} | {{ context }} & CustomGeneratedInstruction<IInstruction, TReturn> | {{ inputType }}, rawInput?: {{ inputType }}): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as {{ context }} | {{ context }} & CustomGeneratedInstruction<IInstruction, TReturn>;
   const input = (rawInput === undefined ? rawContext : rawInput) as {{ inputType }};
@@ -16,7 +17,7 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
 
   {% if hasAccounts %}
     // Original accounts.
-    type AccountMetas = Parameters<typeof {{ lowLevelFunctionName }}<
+    type AccountMetas = Parameters<typeof _createInstruction<
       TProgram,
       {% for account in instruction.accounts %}
         TAccount{{ account.name | pascalCase }},
@@ -44,22 +45,15 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
   {{ remainingAccounts }}
   {{ bytesCreatedOnChain }}
 
-  // Instruction.
-  const instruction = {
-    ...{{ lowLevelFunctionName }}(
-      {%- if hasAccounts -%}
-        accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      {% endif %}
-      {%- if hasDataArgs -%}
-        args as {{ argsType }},
-      {% endif %}
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    {%- if hasAccounts -%}
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    {% endif %}
+    {%- if hasDataArgs -%}
+      args as {{ argsType }},
+    {% endif %}
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return "getGeneratedInstruction" in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

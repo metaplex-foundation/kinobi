@@ -123,7 +123,7 @@ export function getUpdatePrimarySaleHappenedViaTokenInstructionDataCodec(): Code
   );
 }
 
-export function updatePrimarySaleHappenedViaTokenInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountOwner extends string | IAccountMeta<string> = string,
@@ -193,7 +193,7 @@ export type UpdatePrimarySaleHappenedViaTokenInputWithSigners<
 };
 
 // Input.
-export type UpdatePrimarySaleHappenedViaTokenInputAsync<
+export type UpdatePrimarySaleHappenedViaTokenAsyncInput<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountToken extends string
@@ -207,7 +207,7 @@ export type UpdatePrimarySaleHappenedViaTokenInputAsync<
 };
 
 // Input.
-export type UpdatePrimarySaleHappenedViaTokenInputAsyncWithSigners<
+export type UpdatePrimarySaleHappenedViaTokenAsyncInputWithSigners<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountToken extends string
@@ -221,50 +221,24 @@ export type UpdatePrimarySaleHappenedViaTokenInputAsyncWithSigners<
 };
 
 export async function updatePrimarySaleHappenedViaToken<
-  TReturn,
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountToken extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      UpdatePrimarySaleHappenedViaTokenInstruction<
-        TProgram,
-        TAccountMetadata,
-        ReadonlySignerAccount<TAccountOwner> &
-          IAccountSignerMeta<TAccountOwner>,
-        TAccountToken
-      >,
-      TReturn
-    >,
-  input: UpdatePrimarySaleHappenedViaTokenInput<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountToken
-  >
-): Promise<TReturn>;
-export async function updatePrimarySaleHappenedViaToken<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountToken extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: UpdatePrimarySaleHappenedViaTokenInput<
+  input: UpdatePrimarySaleHappenedViaTokenAsyncInputWithSigners<
     TAccountMetadata,
     TAccountOwner,
     TAccountToken
   >
 ): Promise<
-  UpdatePrimarySaleHappenedViaTokenInstruction<
+  UpdatePrimarySaleHappenedViaTokenInstructionWithSigners<
     TProgram,
     TAccountMetadata,
     ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
     TAccountToken
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function updatePrimarySaleHappenedViaToken<
   TAccountMetadata extends string,
@@ -272,7 +246,8 @@ export async function updatePrimarySaleHappenedViaToken<
   TAccountToken extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: UpdatePrimarySaleHappenedViaTokenInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UpdatePrimarySaleHappenedViaTokenAsyncInput<
     TAccountMetadata,
     TAccountOwner,
     TAccountToken
@@ -283,9 +258,45 @@ export async function updatePrimarySaleHappenedViaToken<
     TAccountMetadata,
     ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
     TAccountToken
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function updatePrimarySaleHappenedViaToken<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountToken extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: UpdatePrimarySaleHappenedViaTokenAsyncInputWithSigners<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >
+): Promise<
+  UpdatePrimarySaleHappenedViaTokenInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+    TAccountToken
+  >
+>;
+export async function updatePrimarySaleHappenedViaToken<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountToken extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: UpdatePrimarySaleHappenedViaTokenAsyncInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >
+): Promise<
+  UpdatePrimarySaleHappenedViaTokenInstruction<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+    TAccountToken
+  >
 >;
 export async function updatePrimarySaleHappenedViaToken<
   TReturn,
@@ -298,22 +309,17 @@ export async function updatePrimarySaleHappenedViaToken<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | UpdatePrimarySaleHappenedViaTokenInput<
+    | UpdatePrimarySaleHappenedViaTokenAsyncInput<
         TAccountMetadata,
         TAccountOwner,
         TAccountToken
       >,
-  rawInput?: UpdatePrimarySaleHappenedViaTokenInput<
+  rawInput?: UpdatePrimarySaleHappenedViaTokenAsyncInput<
     TAccountMetadata,
     TAccountOwner,
     TAccountToken
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -321,7 +327,7 @@ export async function updatePrimarySaleHappenedViaToken<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as UpdatePrimarySaleHappenedViaTokenInput<
+  ) as UpdatePrimarySaleHappenedViaTokenAsyncInput<
     TAccountMetadata,
     TAccountOwner,
     TAccountToken
@@ -341,7 +347,7 @@ export async function updatePrimarySaleHappenedViaToken<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof updatePrimarySaleHappenedViaTokenInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountMetadata,
       TAccountOwner,
@@ -367,17 +373,10 @@ export async function updatePrimarySaleHappenedViaToken<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...updatePrimarySaleHappenedViaTokenInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

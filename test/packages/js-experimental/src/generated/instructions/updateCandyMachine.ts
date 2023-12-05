@@ -133,7 +133,7 @@ export function getUpdateCandyMachineInstructionDataCodec(): Codec<
   );
 }
 
-export function updateCandyMachineInstruction<
+function _createInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
@@ -188,7 +188,7 @@ export type UpdateCandyMachineInputWithSigners<
 };
 
 // Input.
-export type UpdateCandyMachineInputAsync<
+export type UpdateCandyMachineAsyncInput<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string
 > = {
@@ -198,7 +198,7 @@ export type UpdateCandyMachineInputAsync<
 };
 
 // Input.
-export type UpdateCandyMachineInputAsyncWithSigners<
+export type UpdateCandyMachineAsyncInputWithSigners<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string
 > = {
@@ -208,55 +208,68 @@ export type UpdateCandyMachineInputAsyncWithSigners<
 };
 
 export async function updateCandyMachine<
-  TReturn,
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      UpdateCandyMachineInstruction<
-        TProgram,
-        TAccountCandyMachine,
-        ReadonlySignerAccount<TAccountAuthority> &
-          IAccountSignerMeta<TAccountAuthority>
-      >,
-      TReturn
-    >,
-  input: UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<TReturn>;
-export async function updateCandyMachine<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>
+  input: UpdateCandyMachineAsyncInputWithSigners<
+    TAccountCandyMachine,
+    TAccountAuthority
+  >
 ): Promise<
-  UpdateCandyMachineInstruction<
+  UpdateCandyMachineInstructionWithSigners<
     TProgram,
     TAccountCandyMachine,
     ReadonlySignerAccount<TAccountAuthority> &
       IAccountSignerMeta<TAccountAuthority>
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function updateCandyMachine<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  input: UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UpdateCandyMachineAsyncInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<
   UpdateCandyMachineInstruction<
     TProgram,
     TAccountCandyMachine,
     ReadonlySignerAccount<TAccountAuthority> &
       IAccountSignerMeta<TAccountAuthority>
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function updateCandyMachine<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: UpdateCandyMachineAsyncInputWithSigners<
+    TAccountCandyMachine,
+    TAccountAuthority
+  >
+): Promise<
+  UpdateCandyMachineInstructionWithSigners<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
+>;
+export async function updateCandyMachine<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: UpdateCandyMachineAsyncInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  UpdateCandyMachineInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
 >;
 export async function updateCandyMachine<
   TReturn,
@@ -268,14 +281,12 @@ export async function updateCandyMachine<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>,
-  rawInput?: UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+    | UpdateCandyMachineAsyncInput<TAccountCandyMachine, TAccountAuthority>,
+  rawInput?: UpdateCandyMachineAsyncInput<
+    TAccountCandyMachine,
+    TAccountAuthority
+  >
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -283,7 +294,7 @@ export async function updateCandyMachine<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>;
+  ) as UpdateCandyMachineAsyncInput<TAccountCandyMachine, TAccountAuthority>;
 
   // Program address.
   const defaultProgramAddress =
@@ -299,11 +310,7 @@ export async function updateCandyMachine<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof updateCandyMachineInstruction<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthority
-    >
+    typeof _createInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     candyMachine: { value: input.candyMachine ?? null, isWritable: true },
@@ -326,18 +333,11 @@ export async function updateCandyMachine<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...updateCandyMachineInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as UpdateCandyMachineInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as UpdateCandyMachineInstructionDataArgs,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

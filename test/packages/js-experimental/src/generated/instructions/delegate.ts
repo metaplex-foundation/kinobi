@@ -229,7 +229,7 @@ export function getDelegateInstructionDataCodec(): Codec<
   );
 }
 
-export function delegateInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountDelegateRecord extends string | IAccountMeta<string> = string,
   TAccountDelegate extends string | IAccountMeta<string> = string,
@@ -470,7 +470,7 @@ export type DelegateInputWithSigners<
 };
 
 // Input.
-export type DelegateInputAsync<
+export type DelegateAsyncInput<
   TAccountDelegateRecord extends string,
   TAccountDelegate extends string,
   TAccountMetadata extends string,
@@ -515,7 +515,7 @@ export type DelegateInputAsync<
 };
 
 // Input.
-export type DelegateInputAsyncWithSigners<
+export type DelegateAsyncInputWithSigners<
   TAccountDelegateRecord extends string,
   TAccountDelegate extends string,
   TAccountMetadata extends string,
@@ -560,61 +560,6 @@ export type DelegateInputAsyncWithSigners<
 };
 
 export async function delegate<
-  TReturn,
-  TAccountDelegateRecord extends string,
-  TAccountDelegate extends string,
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountMint extends string,
-  TAccountToken extends string,
-  TAccountAuthority extends string,
-  TAccountPayer extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      DelegateInstruction<
-        TProgram,
-        TAccountDelegateRecord,
-        TAccountDelegate,
-        TAccountMetadata,
-        TAccountMasterEdition,
-        TAccountMint,
-        TAccountToken,
-        ReadonlySignerAccount<TAccountAuthority> &
-          IAccountSignerMeta<TAccountAuthority>,
-        WritableSignerAccount<TAccountPayer> &
-          IAccountSignerMeta<TAccountPayer>,
-        TAccountSystemProgram,
-        TAccountSysvarInstructions,
-        TAccountSplTokenProgram,
-        TAccountAuthorizationRulesProgram,
-        TAccountAuthorizationRules
-      >,
-      TReturn
-    >,
-  input: DelegateInput<
-    TAccountDelegateRecord,
-    TAccountDelegate,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountToken,
-    TAccountAuthority,
-    TAccountPayer,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
-): Promise<TReturn>;
-export async function delegate<
   TAccountDelegateRecord extends string,
   TAccountDelegate extends string,
   TAccountMetadata extends string,
@@ -631,7 +576,7 @@ export async function delegate<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: DelegateInput<
+  input: DelegateAsyncInputWithSigners<
     TAccountDelegateRecord,
     TAccountDelegate,
     TAccountMetadata,
@@ -647,7 +592,7 @@ export async function delegate<
     TAccountAuthorizationRules
   >
 ): Promise<
-  DelegateInstruction<
+  DelegateInstructionWithSigners<
     TProgram,
     TAccountDelegateRecord,
     TAccountDelegate,
@@ -663,9 +608,7 @@ export async function delegate<
     TAccountSplTokenProgram,
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function delegate<
   TAccountDelegateRecord extends string,
@@ -683,7 +626,8 @@ export async function delegate<
   TAccountAuthorizationRules extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: DelegateInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: DelegateAsyncInput<
     TAccountDelegateRecord,
     TAccountDelegate,
     TAccountMetadata,
@@ -715,9 +659,107 @@ export async function delegate<
     TAccountSplTokenProgram,
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function delegate<
+  TAccountDelegateRecord extends string,
+  TAccountDelegate extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountToken extends string,
+  TAccountAuthority extends string,
+  TAccountPayer extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: DelegateAsyncInputWithSigners<
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  DelegateInstructionWithSigners<
+    TProgram,
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+>;
+export async function delegate<
+  TAccountDelegateRecord extends string,
+  TAccountDelegate extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountToken extends string,
+  TAccountAuthority extends string,
+  TAccountPayer extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: DelegateAsyncInput<
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  DelegateInstruction<
+    TProgram,
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
 >;
 export async function delegate<
   TReturn,
@@ -740,7 +782,7 @@ export async function delegate<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | DelegateInput<
+    | DelegateAsyncInput<
         TAccountDelegateRecord,
         TAccountDelegate,
         TAccountMetadata,
@@ -755,7 +797,7 @@ export async function delegate<
         TAccountAuthorizationRulesProgram,
         TAccountAuthorizationRules
       >,
-  rawInput?: DelegateInput<
+  rawInput?: DelegateAsyncInput<
     TAccountDelegateRecord,
     TAccountDelegate,
     TAccountMetadata,
@@ -770,12 +812,7 @@ export async function delegate<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -783,7 +820,7 @@ export async function delegate<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as DelegateInput<
+  ) as DelegateAsyncInput<
     TAccountDelegateRecord,
     TAccountDelegate,
     TAccountMetadata,
@@ -813,7 +850,7 @@ export async function delegate<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof delegateInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountDelegateRecord,
       TAccountDelegate,
@@ -888,18 +925,11 @@ export async function delegate<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...delegateInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as DelegateInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as DelegateInstructionDataArgs,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

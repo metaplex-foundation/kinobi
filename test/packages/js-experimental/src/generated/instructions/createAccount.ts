@@ -141,7 +141,7 @@ export function getCreateAccountInstructionDataCodec(): Codec<
   );
 }
 
-export function createAccountInstruction<
+function _createInstruction<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountNewAccount extends string | IAccountMeta<string> = string,
@@ -200,7 +200,7 @@ export type CreateAccountInputWithSigners<
 };
 
 // Input.
-export type CreateAccountInputAsync<
+export type CreateAccountAsyncInput<
   TAccountPayer extends string,
   TAccountNewAccount extends string
 > = {
@@ -212,7 +212,7 @@ export type CreateAccountInputAsync<
 };
 
 // Input.
-export type CreateAccountInputAsyncWithSigners<
+export type CreateAccountAsyncInputWithSigners<
   TAccountPayer extends string,
   TAccountNewAccount extends string
 > = {
@@ -224,56 +224,62 @@ export type CreateAccountInputAsyncWithSigners<
 };
 
 export async function createAccount<
-  TReturn,
-  TAccountPayer extends string,
-  TAccountNewAccount extends string,
-  TProgram extends string = '11111111111111111111111111111111'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      CreateAccountInstruction<
-        TProgram,
-        WritableSignerAccount<TAccountPayer> &
-          IAccountSignerMeta<TAccountPayer>,
-        WritableSignerAccount<TAccountNewAccount> &
-          IAccountSignerMeta<TAccountNewAccount>
-      >,
-      TReturn
-    >,
-  input: CreateAccountInput<TAccountPayer, TAccountNewAccount>
-): Promise<TReturn>;
-export async function createAccount<
   TAccountPayer extends string,
   TAccountNewAccount extends string,
   TProgram extends string = '11111111111111111111111111111111'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: CreateAccountInput<TAccountPayer, TAccountNewAccount>
+  input: CreateAccountAsyncInputWithSigners<TAccountPayer, TAccountNewAccount>
 ): Promise<
-  CreateAccountInstruction<
+  CreateAccountInstructionWithSigners<
     TProgram,
     WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     WritableSignerAccount<TAccountNewAccount> &
       IAccountSignerMeta<TAccountNewAccount>
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function createAccount<
   TAccountPayer extends string,
   TAccountNewAccount extends string,
   TProgram extends string = '11111111111111111111111111111111'
 >(
-  input: CreateAccountInput<TAccountPayer, TAccountNewAccount>
+  context: Pick<Context, 'getProgramAddress'>,
+  input: CreateAccountAsyncInput<TAccountPayer, TAccountNewAccount>
 ): Promise<
   CreateAccountInstruction<
     TProgram,
     WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     WritableSignerAccount<TAccountNewAccount> &
       IAccountSignerMeta<TAccountNewAccount>
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function createAccount<
+  TAccountPayer extends string,
+  TAccountNewAccount extends string,
+  TProgram extends string = '11111111111111111111111111111111'
+>(
+  input: CreateAccountAsyncInputWithSigners<TAccountPayer, TAccountNewAccount>
+): Promise<
+  CreateAccountInstructionWithSigners<
+    TProgram,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    WritableSignerAccount<TAccountNewAccount> &
+      IAccountSignerMeta<TAccountNewAccount>
+  >
+>;
+export async function createAccount<
+  TAccountPayer extends string,
+  TAccountNewAccount extends string,
+  TProgram extends string = '11111111111111111111111111111111'
+>(
+  input: CreateAccountAsyncInput<TAccountPayer, TAccountNewAccount>
+): Promise<
+  CreateAccountInstruction<
+    TProgram,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    WritableSignerAccount<TAccountNewAccount> &
+      IAccountSignerMeta<TAccountNewAccount>
+  >
 >;
 export async function createAccount<
   TReturn,
@@ -285,14 +291,9 @@ export async function createAccount<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | CreateAccountInput<TAccountPayer, TAccountNewAccount>,
-  rawInput?: CreateAccountInput<TAccountPayer, TAccountNewAccount>
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+    | CreateAccountAsyncInput<TAccountPayer, TAccountNewAccount>,
+  rawInput?: CreateAccountAsyncInput<TAccountPayer, TAccountNewAccount>
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -300,7 +301,7 @@ export async function createAccount<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as CreateAccountInput<TAccountPayer, TAccountNewAccount>;
+  ) as CreateAccountAsyncInput<TAccountPayer, TAccountNewAccount>;
 
   // Program address.
   const defaultProgramAddress =
@@ -316,7 +317,7 @@ export async function createAccount<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof createAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>
+    typeof _createInstruction<TProgram, TAccountPayer, TAccountNewAccount>
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     payer: { value: input.payer ?? null, isWritable: true },
@@ -339,18 +340,11 @@ export async function createAccount<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...createAccountInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as CreateAccountInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as CreateAccountInstructionDataArgs,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

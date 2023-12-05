@@ -98,7 +98,7 @@ export function getPuffMetadataInstructionDataCodec(): Codec<
   );
 }
 
-export function puffMetadataInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends Array<IAccountMeta<string>> = []
@@ -134,51 +134,44 @@ export type PuffMetadataInputWithSigners<TAccountMetadata extends string> = {
 };
 
 // Input.
-export type PuffMetadataInputAsync<TAccountMetadata extends string> = {
+export type PuffMetadataAsyncInput<TAccountMetadata extends string> = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
 };
 
 // Input.
-export type PuffMetadataInputAsyncWithSigners<TAccountMetadata extends string> =
+export type PuffMetadataAsyncInputWithSigners<TAccountMetadata extends string> =
   {
     /** Metadata account */
     metadata: Address<TAccountMetadata>;
   };
 
 export async function puffMetadata<
-  TReturn,
   TAccountMetadata extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      PuffMetadataInstruction<TProgram, TAccountMetadata>,
-      TReturn
-    >,
-  input: PuffMetadataInput<TAccountMetadata>
-): Promise<TReturn>;
+  context: Pick<Context, 'getProgramAddress'>,
+  input: PuffMetadataAsyncInputWithSigners<TAccountMetadata>
+): Promise<PuffMetadataInstructionWithSigners<TProgram, TAccountMetadata>>;
 export async function puffMetadata<
   TAccountMetadata extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: PuffMetadataInput<TAccountMetadata>
-): Promise<
-  PuffMetadataInstruction<TProgram, TAccountMetadata> &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
->;
+  input: PuffMetadataAsyncInput<TAccountMetadata>
+): Promise<PuffMetadataInstruction<TProgram, TAccountMetadata>>;
 export async function puffMetadata<
   TAccountMetadata extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: PuffMetadataInput<TAccountMetadata>
-): Promise<
-  PuffMetadataInstruction<TProgram, TAccountMetadata> &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
->;
+  input: PuffMetadataAsyncInputWithSigners<TAccountMetadata>
+): Promise<PuffMetadataInstructionWithSigners<TProgram, TAccountMetadata>>;
+export async function puffMetadata<
+  TAccountMetadata extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: PuffMetadataAsyncInput<TAccountMetadata>
+): Promise<PuffMetadataInstruction<TProgram, TAccountMetadata>>;
 export async function puffMetadata<
   TReturn,
   TAccountMetadata extends string,
@@ -188,14 +181,9 @@ export async function puffMetadata<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | PuffMetadataInput<TAccountMetadata>,
-  rawInput?: PuffMetadataInput<TAccountMetadata>
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+    | PuffMetadataAsyncInput<TAccountMetadata>,
+  rawInput?: PuffMetadataAsyncInput<TAccountMetadata>
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -203,7 +191,7 @@ export async function puffMetadata<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as PuffMetadataInput<TAccountMetadata>;
+  ) as PuffMetadataAsyncInput<TAccountMetadata>;
 
   // Program address.
   const defaultProgramAddress =
@@ -219,7 +207,7 @@ export async function puffMetadata<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof puffMetadataInstruction<TProgram, TAccountMetadata>
+    typeof _createInstruction<TProgram, TAccountMetadata>
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
@@ -238,17 +226,10 @@ export async function puffMetadata<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...puffMetadataInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

@@ -215,7 +215,7 @@ export function getUseAssetInstructionDataCodec(): Codec<
   );
 }
 
-export function useAssetInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountTokenAccount extends string | IAccountMeta<string> = string,
@@ -433,7 +433,7 @@ export type UseAssetInputWithSigners<
 };
 
 // Input.
-export type UseAssetInputAsync<
+export type UseAssetAsyncInput<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -472,7 +472,7 @@ export type UseAssetInputAsync<
 };
 
 // Input.
-export type UseAssetInputAsyncWithSigners<
+export type UseAssetAsyncInputWithSigners<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -511,54 +511,6 @@ export type UseAssetInputAsyncWithSigners<
 };
 
 export async function useAsset<
-  TReturn,
-  TAccountMetadata extends string,
-  TAccountTokenAccount extends string,
-  TAccountMint extends string,
-  TAccountUseAuthority extends string,
-  TAccountOwner extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountAtaProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountUseAuthorityRecord extends string,
-  TAccountAuthorizationRules extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      UseAssetInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountTokenAccount,
-        TAccountMint,
-        WritableSignerAccount<TAccountUseAuthority> &
-          IAccountSignerMeta<TAccountUseAuthority>,
-        TAccountOwner,
-        TAccountSplTokenProgram,
-        TAccountAtaProgram,
-        TAccountSystemProgram,
-        TAccountUseAuthorityRecord,
-        TAccountAuthorizationRules,
-        TAccountAuthorizationRulesProgram
-      >,
-      TReturn
-    >,
-  input: UseAssetInput<
-    TAccountMetadata,
-    TAccountTokenAccount,
-    TAccountMint,
-    TAccountUseAuthority,
-    TAccountOwner,
-    TAccountSplTokenProgram,
-    TAccountAtaProgram,
-    TAccountSystemProgram,
-    TAccountUseAuthorityRecord,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
-): Promise<TReturn>;
-export async function useAsset<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -573,7 +525,7 @@ export async function useAsset<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: UseAssetInput<
+  input: UseAssetAsyncInputWithSigners<
     TAccountMetadata,
     TAccountTokenAccount,
     TAccountMint,
@@ -587,7 +539,7 @@ export async function useAsset<
     TAccountAuthorizationRulesProgram
   >
 ): Promise<
-  UseAssetInstruction<
+  UseAssetInstructionWithSigners<
     TProgram,
     TAccountMetadata,
     TAccountTokenAccount,
@@ -601,9 +553,7 @@ export async function useAsset<
     TAccountUseAuthorityRecord,
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function useAsset<
   TAccountMetadata extends string,
@@ -619,7 +569,8 @@ export async function useAsset<
   TAccountAuthorizationRulesProgram extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: UseAssetInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UseAssetAsyncInput<
     TAccountMetadata,
     TAccountTokenAccount,
     TAccountMint,
@@ -647,9 +598,95 @@ export async function useAsset<
     TAccountUseAuthorityRecord,
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function useAsset<
+  TAccountMetadata extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUseAuthority extends string,
+  TAccountOwner extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountAtaProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountUseAuthorityRecord extends string,
+  TAccountAuthorizationRules extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: UseAssetAsyncInputWithSigners<
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUseAuthority,
+    TAccountOwner,
+    TAccountSplTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountUseAuthorityRecord,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >
+): Promise<
+  UseAssetInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    WritableSignerAccount<TAccountUseAuthority> &
+      IAccountSignerMeta<TAccountUseAuthority>,
+    TAccountOwner,
+    TAccountSplTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountUseAuthorityRecord,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >
+>;
+export async function useAsset<
+  TAccountMetadata extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUseAuthority extends string,
+  TAccountOwner extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountAtaProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountUseAuthorityRecord extends string,
+  TAccountAuthorizationRules extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: UseAssetAsyncInput<
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUseAuthority,
+    TAccountOwner,
+    TAccountSplTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountUseAuthorityRecord,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >
+): Promise<
+  UseAssetInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    WritableSignerAccount<TAccountUseAuthority> &
+      IAccountSignerMeta<TAccountUseAuthority>,
+    TAccountOwner,
+    TAccountSplTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountUseAuthorityRecord,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >
 >;
 export async function useAsset<
   TReturn,
@@ -670,7 +707,7 @@ export async function useAsset<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | UseAssetInput<
+    | UseAssetAsyncInput<
         TAccountMetadata,
         TAccountTokenAccount,
         TAccountMint,
@@ -683,7 +720,7 @@ export async function useAsset<
         TAccountAuthorizationRules,
         TAccountAuthorizationRulesProgram
       >,
-  rawInput?: UseAssetInput<
+  rawInput?: UseAssetAsyncInput<
     TAccountMetadata,
     TAccountTokenAccount,
     TAccountMint,
@@ -696,12 +733,7 @@ export async function useAsset<
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -709,7 +741,7 @@ export async function useAsset<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as UseAssetInput<
+  ) as UseAssetAsyncInput<
     TAccountMetadata,
     TAccountTokenAccount,
     TAccountMint,
@@ -737,7 +769,7 @@ export async function useAsset<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof useAssetInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountMetadata,
       TAccountTokenAccount,
@@ -820,18 +852,11 @@ export async function useAsset<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...useAssetInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as UseAssetInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as UseAssetInstructionDataArgs,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

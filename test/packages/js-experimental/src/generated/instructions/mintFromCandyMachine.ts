@@ -268,7 +268,7 @@ export function getMintFromCandyMachineInstructionDataCodec(): Codec<
   );
 }
 
-export function mintFromCandyMachineInstruction<
+function _createInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthorityPda extends string | IAccountMeta<string> = string,
@@ -518,7 +518,7 @@ export type MintFromCandyMachineInputWithSigners<
 };
 
 // Input.
-export type MintFromCandyMachineInputAsync<
+export type MintFromCandyMachineAsyncInput<
   TAccountCandyMachine extends string,
   TAccountAuthorityPda extends string,
   TAccountMintAuthority extends string,
@@ -557,7 +557,7 @@ export type MintFromCandyMachineInputAsync<
 };
 
 // Input.
-export type MintFromCandyMachineInputAsyncWithSigners<
+export type MintFromCandyMachineAsyncInputWithSigners<
   TAccountCandyMachine extends string,
   TAccountAuthorityPda extends string,
   TAccountMintAuthority extends string,
@@ -596,74 +596,6 @@ export type MintFromCandyMachineInputAsyncWithSigners<
 };
 
 export async function mintFromCandyMachine<
-  TReturn,
-  TAccountCandyMachine extends string,
-  TAccountAuthorityPda extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountNftMint extends string,
-  TAccountNftMintAuthority extends string,
-  TAccountNftMetadata extends string,
-  TAccountNftMasterEdition extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionMasterEdition extends string,
-  TAccountCollectionUpdateAuthority extends string,
-  TAccountTokenMetadataProgram extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRecentSlothashes extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      MintFromCandyMachineInstruction<
-        TProgram,
-        TAccountCandyMachine,
-        TAccountAuthorityPda,
-        ReadonlySignerAccount<TAccountMintAuthority> &
-          IAccountSignerMeta<TAccountMintAuthority>,
-        WritableSignerAccount<TAccountPayer> &
-          IAccountSignerMeta<TAccountPayer>,
-        TAccountNftMint,
-        ReadonlySignerAccount<TAccountNftMintAuthority> &
-          IAccountSignerMeta<TAccountNftMintAuthority>,
-        TAccountNftMetadata,
-        TAccountNftMasterEdition,
-        TAccountCollectionAuthorityRecord,
-        TAccountCollectionMint,
-        TAccountCollectionMetadata,
-        TAccountCollectionMasterEdition,
-        TAccountCollectionUpdateAuthority,
-        TAccountTokenMetadataProgram,
-        TAccountTokenProgram,
-        TAccountSystemProgram,
-        TAccountRecentSlothashes
-      >,
-      TReturn
-    >,
-  input: MintFromCandyMachineInput<
-    TAccountCandyMachine,
-    TAccountAuthorityPda,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountNftMint,
-    TAccountNftMintAuthority,
-    TAccountNftMetadata,
-    TAccountNftMasterEdition,
-    TAccountCollectionAuthorityRecord,
-    TAccountCollectionMint,
-    TAccountCollectionMetadata,
-    TAccountCollectionMasterEdition,
-    TAccountCollectionUpdateAuthority,
-    TAccountTokenMetadataProgram,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRecentSlothashes
-  >
-): Promise<TReturn>;
-export async function mintFromCandyMachine<
   TAccountCandyMachine extends string,
   TAccountAuthorityPda extends string,
   TAccountMintAuthority extends string,
@@ -684,7 +616,7 @@ export async function mintFromCandyMachine<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: MintFromCandyMachineInput<
+  input: MintFromCandyMachineAsyncInputWithSigners<
     TAccountCandyMachine,
     TAccountAuthorityPda,
     TAccountMintAuthority,
@@ -704,7 +636,7 @@ export async function mintFromCandyMachine<
     TAccountRecentSlothashes
   >
 ): Promise<
-  MintFromCandyMachineInstruction<
+  MintFromCandyMachineInstructionWithSigners<
     TProgram,
     TAccountCandyMachine,
     TAccountAuthorityPda,
@@ -725,9 +657,7 @@ export async function mintFromCandyMachine<
     TAccountTokenProgram,
     TAccountSystemProgram,
     TAccountRecentSlothashes
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function mintFromCandyMachine<
   TAccountCandyMachine extends string,
@@ -749,7 +679,8 @@ export async function mintFromCandyMachine<
   TAccountRecentSlothashes extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  input: MintFromCandyMachineInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: MintFromCandyMachineAsyncInput<
     TAccountCandyMachine,
     TAccountAuthorityPda,
     TAccountMintAuthority,
@@ -790,9 +721,133 @@ export async function mintFromCandyMachine<
     TAccountTokenProgram,
     TAccountSystemProgram,
     TAccountRecentSlothashes
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function mintFromCandyMachine<
+  TAccountCandyMachine extends string,
+  TAccountAuthorityPda extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountNftMint extends string,
+  TAccountNftMintAuthority extends string,
+  TAccountNftMetadata extends string,
+  TAccountNftMasterEdition extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionMasterEdition extends string,
+  TAccountCollectionUpdateAuthority extends string,
+  TAccountTokenMetadataProgram extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRecentSlothashes extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: MintFromCandyMachineAsyncInputWithSigners<
+    TAccountCandyMachine,
+    TAccountAuthorityPda,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountNftMint,
+    TAccountNftMintAuthority,
+    TAccountNftMetadata,
+    TAccountNftMasterEdition,
+    TAccountCollectionAuthorityRecord,
+    TAccountCollectionMint,
+    TAccountCollectionMetadata,
+    TAccountCollectionMasterEdition,
+    TAccountCollectionUpdateAuthority,
+    TAccountTokenMetadataProgram,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRecentSlothashes
+  >
+): Promise<
+  MintFromCandyMachineInstructionWithSigners<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthorityPda,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountNftMint,
+    ReadonlySignerAccount<TAccountNftMintAuthority> &
+      IAccountSignerMeta<TAccountNftMintAuthority>,
+    TAccountNftMetadata,
+    TAccountNftMasterEdition,
+    TAccountCollectionAuthorityRecord,
+    TAccountCollectionMint,
+    TAccountCollectionMetadata,
+    TAccountCollectionMasterEdition,
+    TAccountCollectionUpdateAuthority,
+    TAccountTokenMetadataProgram,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRecentSlothashes
+  >
+>;
+export async function mintFromCandyMachine<
+  TAccountCandyMachine extends string,
+  TAccountAuthorityPda extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountNftMint extends string,
+  TAccountNftMintAuthority extends string,
+  TAccountNftMetadata extends string,
+  TAccountNftMasterEdition extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionMasterEdition extends string,
+  TAccountCollectionUpdateAuthority extends string,
+  TAccountTokenMetadataProgram extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRecentSlothashes extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: MintFromCandyMachineAsyncInput<
+    TAccountCandyMachine,
+    TAccountAuthorityPda,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountNftMint,
+    TAccountNftMintAuthority,
+    TAccountNftMetadata,
+    TAccountNftMasterEdition,
+    TAccountCollectionAuthorityRecord,
+    TAccountCollectionMint,
+    TAccountCollectionMetadata,
+    TAccountCollectionMasterEdition,
+    TAccountCollectionUpdateAuthority,
+    TAccountTokenMetadataProgram,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRecentSlothashes
+  >
+): Promise<
+  MintFromCandyMachineInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthorityPda,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountNftMint,
+    ReadonlySignerAccount<TAccountNftMintAuthority> &
+      IAccountSignerMeta<TAccountNftMintAuthority>,
+    TAccountNftMetadata,
+    TAccountNftMasterEdition,
+    TAccountCollectionAuthorityRecord,
+    TAccountCollectionMint,
+    TAccountCollectionMetadata,
+    TAccountCollectionMasterEdition,
+    TAccountCollectionUpdateAuthority,
+    TAccountTokenMetadataProgram,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRecentSlothashes
+  >
 >;
 export async function mintFromCandyMachine<
   TReturn,
@@ -819,7 +874,7 @@ export async function mintFromCandyMachine<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | MintFromCandyMachineInput<
+    | MintFromCandyMachineAsyncInput<
         TAccountCandyMachine,
         TAccountAuthorityPda,
         TAccountMintAuthority,
@@ -838,7 +893,7 @@ export async function mintFromCandyMachine<
         TAccountSystemProgram,
         TAccountRecentSlothashes
       >,
-  rawInput?: MintFromCandyMachineInput<
+  rawInput?: MintFromCandyMachineAsyncInput<
     TAccountCandyMachine,
     TAccountAuthorityPda,
     TAccountMintAuthority,
@@ -857,12 +912,7 @@ export async function mintFromCandyMachine<
     TAccountSystemProgram,
     TAccountRecentSlothashes
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -870,7 +920,7 @@ export async function mintFromCandyMachine<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as MintFromCandyMachineInput<
+  ) as MintFromCandyMachineAsyncInput<
     TAccountCandyMachine,
     TAccountAuthorityPda,
     TAccountMintAuthority,
@@ -904,7 +954,7 @@ export async function mintFromCandyMachine<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof mintFromCandyMachineInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountCandyMachine,
       TAccountAuthorityPda,
@@ -1008,17 +1058,10 @@ export async function mintFromCandyMachine<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...mintFromCandyMachineInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

@@ -142,7 +142,7 @@ export function getFreezeDelegatedAccountInstructionDataCodec(): Codec<
   );
 }
 
-export function freezeDelegatedAccountInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountDelegate extends string | IAccountMeta<string> = string,
   TAccountTokenAccount extends string | IAccountMeta<string> = string,
@@ -241,7 +241,7 @@ export type FreezeDelegatedAccountInputWithSigners<
 };
 
 // Input.
-export type FreezeDelegatedAccountInputAsync<
+export type FreezeDelegatedAccountAsyncInput<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -261,7 +261,7 @@ export type FreezeDelegatedAccountInputAsync<
 };
 
 // Input.
-export type FreezeDelegatedAccountInputAsyncWithSigners<
+export type FreezeDelegatedAccountAsyncInputWithSigners<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -281,36 +281,6 @@ export type FreezeDelegatedAccountInputAsyncWithSigners<
 };
 
 export async function freezeDelegatedAccount<
-  TReturn,
-  TAccountDelegate extends string,
-  TAccountTokenAccount extends string,
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountTokenProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      FreezeDelegatedAccountInstruction<
-        TProgram,
-        WritableSignerAccount<TAccountDelegate> &
-          IAccountSignerMeta<TAccountDelegate>,
-        TAccountTokenAccount,
-        TAccountEdition,
-        TAccountMint,
-        TAccountTokenProgram
-      >,
-      TReturn
-    >,
-  input: FreezeDelegatedAccountInput<
-    TAccountDelegate,
-    TAccountTokenAccount,
-    TAccountEdition,
-    TAccountMint,
-    TAccountTokenProgram
-  >
-): Promise<TReturn>;
-export async function freezeDelegatedAccount<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -319,7 +289,7 @@ export async function freezeDelegatedAccount<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: FreezeDelegatedAccountInput<
+  input: FreezeDelegatedAccountAsyncInputWithSigners<
     TAccountDelegate,
     TAccountTokenAccount,
     TAccountEdition,
@@ -327,7 +297,7 @@ export async function freezeDelegatedAccount<
     TAccountTokenProgram
   >
 ): Promise<
-  FreezeDelegatedAccountInstruction<
+  FreezeDelegatedAccountInstructionWithSigners<
     TProgram,
     WritableSignerAccount<TAccountDelegate> &
       IAccountSignerMeta<TAccountDelegate>,
@@ -335,9 +305,7 @@ export async function freezeDelegatedAccount<
     TAccountEdition,
     TAccountMint,
     TAccountTokenProgram
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function freezeDelegatedAccount<
   TAccountDelegate extends string,
@@ -347,7 +315,8 @@ export async function freezeDelegatedAccount<
   TAccountTokenProgram extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: FreezeDelegatedAccountInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: FreezeDelegatedAccountAsyncInput<
     TAccountDelegate,
     TAccountTokenAccount,
     TAccountEdition,
@@ -363,9 +332,59 @@ export async function freezeDelegatedAccount<
     TAccountEdition,
     TAccountMint,
     TAccountTokenProgram
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function freezeDelegatedAccount<
+  TAccountDelegate extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountTokenProgram extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: FreezeDelegatedAccountAsyncInputWithSigners<
+    TAccountDelegate,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
+): Promise<
+  FreezeDelegatedAccountInstructionWithSigners<
+    TProgram,
+    WritableSignerAccount<TAccountDelegate> &
+      IAccountSignerMeta<TAccountDelegate>,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
+>;
+export async function freezeDelegatedAccount<
+  TAccountDelegate extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountTokenProgram extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: FreezeDelegatedAccountAsyncInput<
+    TAccountDelegate,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
+): Promise<
+  FreezeDelegatedAccountInstruction<
+    TProgram,
+    WritableSignerAccount<TAccountDelegate> &
+      IAccountSignerMeta<TAccountDelegate>,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
 >;
 export async function freezeDelegatedAccount<
   TReturn,
@@ -380,26 +399,21 @@ export async function freezeDelegatedAccount<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | FreezeDelegatedAccountInput<
+    | FreezeDelegatedAccountAsyncInput<
         TAccountDelegate,
         TAccountTokenAccount,
         TAccountEdition,
         TAccountMint,
         TAccountTokenProgram
       >,
-  rawInput?: FreezeDelegatedAccountInput<
+  rawInput?: FreezeDelegatedAccountAsyncInput<
     TAccountDelegate,
     TAccountTokenAccount,
     TAccountEdition,
     TAccountMint,
     TAccountTokenProgram
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -407,7 +421,7 @@ export async function freezeDelegatedAccount<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as FreezeDelegatedAccountInput<
+  ) as FreezeDelegatedAccountAsyncInput<
     TAccountDelegate,
     TAccountTokenAccount,
     TAccountEdition,
@@ -429,7 +443,7 @@ export async function freezeDelegatedAccount<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof freezeDelegatedAccountInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountDelegate,
       TAccountTokenAccount,
@@ -469,17 +483,10 @@ export async function freezeDelegatedAccount<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...freezeDelegatedAccountInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

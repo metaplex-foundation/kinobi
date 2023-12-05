@@ -114,7 +114,7 @@ export function getRemoveCreatorVerificationInstructionDataCodec(): Codec<
   );
 }
 
-export function removeCreatorVerificationInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountCreator extends string | IAccountMeta<string> = string,
@@ -170,7 +170,7 @@ export type RemoveCreatorVerificationInputWithSigners<
 };
 
 // Input.
-export type RemoveCreatorVerificationInputAsync<
+export type RemoveCreatorVerificationAsyncInput<
   TAccountMetadata extends string,
   TAccountCreator extends string
 > = {
@@ -181,7 +181,7 @@ export type RemoveCreatorVerificationInputAsync<
 };
 
 // Input.
-export type RemoveCreatorVerificationInputAsyncWithSigners<
+export type RemoveCreatorVerificationAsyncInputWithSigners<
   TAccountMetadata extends string,
   TAccountCreator extends string
 > = {
@@ -192,53 +192,64 @@ export type RemoveCreatorVerificationInputAsyncWithSigners<
 };
 
 export async function removeCreatorVerification<
-  TReturn,
-  TAccountMetadata extends string,
-  TAccountCreator extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      RemoveCreatorVerificationInstruction<
-        TProgram,
-        TAccountMetadata,
-        ReadonlySignerAccount<TAccountCreator> &
-          IAccountSignerMeta<TAccountCreator>
-      >,
-      TReturn
-    >,
-  input: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
-): Promise<TReturn>;
-export async function removeCreatorVerification<
   TAccountMetadata extends string,
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
+  input: RemoveCreatorVerificationAsyncInputWithSigners<
+    TAccountMetadata,
+    TAccountCreator
+  >
 ): Promise<
-  RemoveCreatorVerificationInstruction<
+  RemoveCreatorVerificationInstructionWithSigners<
     TProgram,
     TAccountMetadata,
     ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function removeCreatorVerification<
   TAccountMetadata extends string,
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
+  context: Pick<Context, 'getProgramAddress'>,
+  input: RemoveCreatorVerificationAsyncInput<TAccountMetadata, TAccountCreator>
 ): Promise<
   RemoveCreatorVerificationInstruction<
     TProgram,
     TAccountMetadata,
     ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function removeCreatorVerification<
+  TAccountMetadata extends string,
+  TAccountCreator extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: RemoveCreatorVerificationAsyncInputWithSigners<
+    TAccountMetadata,
+    TAccountCreator
+  >
+): Promise<
+  RemoveCreatorVerificationInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
+  >
+>;
+export async function removeCreatorVerification<
+  TAccountMetadata extends string,
+  TAccountCreator extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: RemoveCreatorVerificationAsyncInput<TAccountMetadata, TAccountCreator>
+): Promise<
+  RemoveCreatorVerificationInstruction<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
+  >
 >;
 export async function removeCreatorVerification<
   TReturn,
@@ -250,14 +261,12 @@ export async function removeCreatorVerification<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>,
-  rawInput?: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+    | RemoveCreatorVerificationAsyncInput<TAccountMetadata, TAccountCreator>,
+  rawInput?: RemoveCreatorVerificationAsyncInput<
+    TAccountMetadata,
+    TAccountCreator
+  >
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -265,7 +274,7 @@ export async function removeCreatorVerification<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>;
+  ) as RemoveCreatorVerificationAsyncInput<TAccountMetadata, TAccountCreator>;
 
   // Program address.
   const defaultProgramAddress =
@@ -281,11 +290,7 @@ export async function removeCreatorVerification<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof removeCreatorVerificationInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountCreator
-    >
+    typeof _createInstruction<TProgram, TAccountMetadata, TAccountCreator>
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
@@ -305,17 +310,10 @@ export async function removeCreatorVerification<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...removeCreatorVerificationInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

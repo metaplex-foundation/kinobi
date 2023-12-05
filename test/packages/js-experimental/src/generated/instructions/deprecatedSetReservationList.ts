@@ -164,7 +164,7 @@ export function getDeprecatedSetReservationListInstructionDataCodec(): Codec<
   );
 }
 
-export function deprecatedSetReservationListInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
   TAccountReservationList extends string | IAccountMeta<string> = string,
@@ -241,7 +241,7 @@ export type DeprecatedSetReservationListInputWithSigners<
 };
 
 // Input.
-export type DeprecatedSetReservationListInputAsync<
+export type DeprecatedSetReservationListAsyncInput<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
   TAccountResource extends string
@@ -259,7 +259,7 @@ export type DeprecatedSetReservationListInputAsync<
 };
 
 // Input.
-export type DeprecatedSetReservationListInputAsyncWithSigners<
+export type DeprecatedSetReservationListAsyncInputWithSigners<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
   TAccountResource extends string
@@ -277,51 +277,25 @@ export type DeprecatedSetReservationListInputAsyncWithSigners<
 };
 
 export async function deprecatedSetReservationList<
-  TReturn,
-  TAccountMasterEdition extends string,
-  TAccountReservationList extends string,
-  TAccountResource extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      DeprecatedSetReservationListInstruction<
-        TProgram,
-        TAccountMasterEdition,
-        TAccountReservationList,
-        ReadonlySignerAccount<TAccountResource> &
-          IAccountSignerMeta<TAccountResource>
-      >,
-      TReturn
-    >,
-  input: DeprecatedSetReservationListInput<
-    TAccountMasterEdition,
-    TAccountReservationList,
-    TAccountResource
-  >
-): Promise<TReturn>;
-export async function deprecatedSetReservationList<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
   TAccountResource extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: DeprecatedSetReservationListInput<
+  input: DeprecatedSetReservationListAsyncInputWithSigners<
     TAccountMasterEdition,
     TAccountReservationList,
     TAccountResource
   >
 ): Promise<
-  DeprecatedSetReservationListInstruction<
+  DeprecatedSetReservationListInstructionWithSigners<
     TProgram,
     TAccountMasterEdition,
     TAccountReservationList,
     ReadonlySignerAccount<TAccountResource> &
       IAccountSignerMeta<TAccountResource>
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function deprecatedSetReservationList<
   TAccountMasterEdition extends string,
@@ -329,7 +303,8 @@ export async function deprecatedSetReservationList<
   TAccountResource extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: DeprecatedSetReservationListInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: DeprecatedSetReservationListAsyncInput<
     TAccountMasterEdition,
     TAccountReservationList,
     TAccountResource
@@ -341,9 +316,47 @@ export async function deprecatedSetReservationList<
     TAccountReservationList,
     ReadonlySignerAccount<TAccountResource> &
       IAccountSignerMeta<TAccountResource>
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function deprecatedSetReservationList<
+  TAccountMasterEdition extends string,
+  TAccountReservationList extends string,
+  TAccountResource extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: DeprecatedSetReservationListAsyncInputWithSigners<
+    TAccountMasterEdition,
+    TAccountReservationList,
+    TAccountResource
+  >
+): Promise<
+  DeprecatedSetReservationListInstructionWithSigners<
+    TProgram,
+    TAccountMasterEdition,
+    TAccountReservationList,
+    ReadonlySignerAccount<TAccountResource> &
+      IAccountSignerMeta<TAccountResource>
+  >
+>;
+export async function deprecatedSetReservationList<
+  TAccountMasterEdition extends string,
+  TAccountReservationList extends string,
+  TAccountResource extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: DeprecatedSetReservationListAsyncInput<
+    TAccountMasterEdition,
+    TAccountReservationList,
+    TAccountResource
+  >
+): Promise<
+  DeprecatedSetReservationListInstruction<
+    TProgram,
+    TAccountMasterEdition,
+    TAccountReservationList,
+    ReadonlySignerAccount<TAccountResource> &
+      IAccountSignerMeta<TAccountResource>
+  >
 >;
 export async function deprecatedSetReservationList<
   TReturn,
@@ -356,22 +369,17 @@ export async function deprecatedSetReservationList<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | DeprecatedSetReservationListInput<
+    | DeprecatedSetReservationListAsyncInput<
         TAccountMasterEdition,
         TAccountReservationList,
         TAccountResource
       >,
-  rawInput?: DeprecatedSetReservationListInput<
+  rawInput?: DeprecatedSetReservationListAsyncInput<
     TAccountMasterEdition,
     TAccountReservationList,
     TAccountResource
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -379,7 +387,7 @@ export async function deprecatedSetReservationList<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as DeprecatedSetReservationListInput<
+  ) as DeprecatedSetReservationListAsyncInput<
     TAccountMasterEdition,
     TAccountReservationList,
     TAccountResource
@@ -399,7 +407,7 @@ export async function deprecatedSetReservationList<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof deprecatedSetReservationListInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountMasterEdition,
       TAccountReservationList,
@@ -428,18 +436,11 @@ export async function deprecatedSetReservationList<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...deprecatedSetReservationListInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as DeprecatedSetReservationListInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as DeprecatedSetReservationListInstructionDataArgs,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

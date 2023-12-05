@@ -126,7 +126,7 @@ export function getSetAuthorityInstructionDataCodec(): Codec<
   );
 }
 
-export function setAuthorityInstruction<
+function _createInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
@@ -181,7 +181,7 @@ export type SetAuthorityInputWithSigners<
 };
 
 // Input.
-export type SetAuthorityInputAsync<
+export type SetAuthorityAsyncInput<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string
 > = {
@@ -191,7 +191,7 @@ export type SetAuthorityInputAsync<
 };
 
 // Input.
-export type SetAuthorityInputAsyncWithSigners<
+export type SetAuthorityAsyncInputWithSigners<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string
 > = {
@@ -201,55 +201,68 @@ export type SetAuthorityInputAsyncWithSigners<
 };
 
 export async function setAuthority<
-  TReturn,
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      SetAuthorityInstruction<
-        TProgram,
-        TAccountCandyMachine,
-        ReadonlySignerAccount<TAccountAuthority> &
-          IAccountSignerMeta<TAccountAuthority>
-      >,
-      TReturn
-    >,
-  input: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<TReturn>;
-export async function setAuthority<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
+  input: SetAuthorityAsyncInputWithSigners<
+    TAccountCandyMachine,
+    TAccountAuthority
+  >
 ): Promise<
-  SetAuthorityInstruction<
+  SetAuthorityInstructionWithSigners<
     TProgram,
     TAccountCandyMachine,
     ReadonlySignerAccount<TAccountAuthority> &
       IAccountSignerMeta<TAccountAuthority>
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function setAuthority<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  input: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetAuthorityAsyncInput<TAccountCandyMachine, TAccountAuthority>
 ): Promise<
   SetAuthorityInstruction<
     TProgram,
     TAccountCandyMachine,
     ReadonlySignerAccount<TAccountAuthority> &
       IAccountSignerMeta<TAccountAuthority>
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function setAuthority<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: SetAuthorityAsyncInputWithSigners<
+    TAccountCandyMachine,
+    TAccountAuthority
+  >
+): Promise<
+  SetAuthorityInstructionWithSigners<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
+>;
+export async function setAuthority<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: SetAuthorityAsyncInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  SetAuthorityInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
 >;
 export async function setAuthority<
   TReturn,
@@ -261,14 +274,9 @@ export async function setAuthority<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>,
-  rawInput?: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+    | SetAuthorityAsyncInput<TAccountCandyMachine, TAccountAuthority>,
+  rawInput?: SetAuthorityAsyncInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -276,7 +284,7 @@ export async function setAuthority<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>;
+  ) as SetAuthorityAsyncInput<TAccountCandyMachine, TAccountAuthority>;
 
   // Program address.
   const defaultProgramAddress =
@@ -292,11 +300,7 @@ export async function setAuthority<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof setAuthorityInstruction<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthority
-    >
+    typeof _createInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     candyMachine: { value: input.candyMachine ?? null, isWritable: true },
@@ -319,18 +323,11 @@ export async function setAuthority<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...setAuthorityInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as SetAuthorityInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as SetAuthorityInstructionDataArgs,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

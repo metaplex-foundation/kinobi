@@ -190,7 +190,7 @@ export function getBurnEditionNftInstructionDataCodec(): Codec<
   );
 }
 
-export function burnEditionNftInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountOwner extends string | IAccountMeta<string> = string,
@@ -370,7 +370,7 @@ export type BurnEditionNftInputWithSigners<
 };
 
 // Input.
-export type BurnEditionNftInputAsync<
+export type BurnEditionNftAsyncInput<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountPrintEditionMint extends string,
@@ -405,7 +405,7 @@ export type BurnEditionNftInputAsync<
 };
 
 // Input.
-export type BurnEditionNftInputAsyncWithSigners<
+export type BurnEditionNftAsyncInputWithSigners<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountPrintEditionMint extends string,
@@ -440,51 +440,6 @@ export type BurnEditionNftInputAsyncWithSigners<
 };
 
 export async function burnEditionNft<
-  TReturn,
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountPrintEditionMint extends string,
-  TAccountMasterEditionMint extends string,
-  TAccountPrintEditionTokenAccount extends string,
-  TAccountMasterEditionTokenAccount extends string,
-  TAccountMasterEditionAccount extends string,
-  TAccountPrintEditionAccount extends string,
-  TAccountEditionMarkerAccount extends string,
-  TAccountSplTokenProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      BurnEditionNftInstruction<
-        TProgram,
-        TAccountMetadata,
-        WritableSignerAccount<TAccountOwner> &
-          IAccountSignerMeta<TAccountOwner>,
-        TAccountPrintEditionMint,
-        TAccountMasterEditionMint,
-        TAccountPrintEditionTokenAccount,
-        TAccountMasterEditionTokenAccount,
-        TAccountMasterEditionAccount,
-        TAccountPrintEditionAccount,
-        TAccountEditionMarkerAccount,
-        TAccountSplTokenProgram
-      >,
-      TReturn
-    >,
-  input: BurnEditionNftInput<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountPrintEditionMint,
-    TAccountMasterEditionMint,
-    TAccountPrintEditionTokenAccount,
-    TAccountMasterEditionTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountPrintEditionAccount,
-    TAccountEditionMarkerAccount,
-    TAccountSplTokenProgram
-  >
-): Promise<TReturn>;
-export async function burnEditionNft<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountPrintEditionMint extends string,
@@ -498,7 +453,7 @@ export async function burnEditionNft<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: BurnEditionNftInput<
+  input: BurnEditionNftAsyncInputWithSigners<
     TAccountMetadata,
     TAccountOwner,
     TAccountPrintEditionMint,
@@ -511,7 +466,7 @@ export async function burnEditionNft<
     TAccountSplTokenProgram
   >
 ): Promise<
-  BurnEditionNftInstruction<
+  BurnEditionNftInstructionWithSigners<
     TProgram,
     TAccountMetadata,
     WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
@@ -523,9 +478,7 @@ export async function burnEditionNft<
     TAccountPrintEditionAccount,
     TAccountEditionMarkerAccount,
     TAccountSplTokenProgram
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function burnEditionNft<
   TAccountMetadata extends string,
@@ -540,7 +493,8 @@ export async function burnEditionNft<
   TAccountSplTokenProgram extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: BurnEditionNftInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: BurnEditionNftAsyncInput<
     TAccountMetadata,
     TAccountOwner,
     TAccountPrintEditionMint,
@@ -565,9 +519,87 @@ export async function burnEditionNft<
     TAccountPrintEditionAccount,
     TAccountEditionMarkerAccount,
     TAccountSplTokenProgram
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function burnEditionNft<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountPrintEditionMint extends string,
+  TAccountMasterEditionMint extends string,
+  TAccountPrintEditionTokenAccount extends string,
+  TAccountMasterEditionTokenAccount extends string,
+  TAccountMasterEditionAccount extends string,
+  TAccountPrintEditionAccount extends string,
+  TAccountEditionMarkerAccount extends string,
+  TAccountSplTokenProgram extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: BurnEditionNftAsyncInputWithSigners<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountPrintEditionMint,
+    TAccountMasterEditionMint,
+    TAccountPrintEditionTokenAccount,
+    TAccountMasterEditionTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountPrintEditionAccount,
+    TAccountEditionMarkerAccount,
+    TAccountSplTokenProgram
+  >
+): Promise<
+  BurnEditionNftInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+    TAccountPrintEditionMint,
+    TAccountMasterEditionMint,
+    TAccountPrintEditionTokenAccount,
+    TAccountMasterEditionTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountPrintEditionAccount,
+    TAccountEditionMarkerAccount,
+    TAccountSplTokenProgram
+  >
+>;
+export async function burnEditionNft<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountPrintEditionMint extends string,
+  TAccountMasterEditionMint extends string,
+  TAccountPrintEditionTokenAccount extends string,
+  TAccountMasterEditionTokenAccount extends string,
+  TAccountMasterEditionAccount extends string,
+  TAccountPrintEditionAccount extends string,
+  TAccountEditionMarkerAccount extends string,
+  TAccountSplTokenProgram extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: BurnEditionNftAsyncInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountPrintEditionMint,
+    TAccountMasterEditionMint,
+    TAccountPrintEditionTokenAccount,
+    TAccountMasterEditionTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountPrintEditionAccount,
+    TAccountEditionMarkerAccount,
+    TAccountSplTokenProgram
+  >
+): Promise<
+  BurnEditionNftInstruction<
+    TProgram,
+    TAccountMetadata,
+    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+    TAccountPrintEditionMint,
+    TAccountMasterEditionMint,
+    TAccountPrintEditionTokenAccount,
+    TAccountMasterEditionTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountPrintEditionAccount,
+    TAccountEditionMarkerAccount,
+    TAccountSplTokenProgram
+  >
 >;
 export async function burnEditionNft<
   TReturn,
@@ -587,7 +619,7 @@ export async function burnEditionNft<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | BurnEditionNftInput<
+    | BurnEditionNftAsyncInput<
         TAccountMetadata,
         TAccountOwner,
         TAccountPrintEditionMint,
@@ -599,7 +631,7 @@ export async function burnEditionNft<
         TAccountEditionMarkerAccount,
         TAccountSplTokenProgram
       >,
-  rawInput?: BurnEditionNftInput<
+  rawInput?: BurnEditionNftAsyncInput<
     TAccountMetadata,
     TAccountOwner,
     TAccountPrintEditionMint,
@@ -611,12 +643,7 @@ export async function burnEditionNft<
     TAccountEditionMarkerAccount,
     TAccountSplTokenProgram
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -624,7 +651,7 @@ export async function burnEditionNft<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as BurnEditionNftInput<
+  ) as BurnEditionNftAsyncInput<
     TAccountMetadata,
     TAccountOwner,
     TAccountPrintEditionMint,
@@ -651,7 +678,7 @@ export async function burnEditionNft<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof burnEditionNftInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountMetadata,
       TAccountOwner,
@@ -725,17 +752,10 @@ export async function burnEditionNft<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...burnEditionNftInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

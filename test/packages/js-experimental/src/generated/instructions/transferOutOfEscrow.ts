@@ -232,7 +232,7 @@ export function getTransferOutOfEscrowInstructionDataCodec(): Codec<
   );
 }
 
-export function transferOutOfEscrowInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountEscrow extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,
@@ -463,7 +463,7 @@ export type TransferOutOfEscrowInputWithSigners<
 };
 
 // Input.
-export type TransferOutOfEscrowInputAsync<
+export type TransferOutOfEscrowAsyncInput<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountPayer extends string,
@@ -508,7 +508,7 @@ export type TransferOutOfEscrowInputAsync<
 };
 
 // Input.
-export type TransferOutOfEscrowInputAsyncWithSigners<
+export type TransferOutOfEscrowAsyncInputWithSigners<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountPayer extends string,
@@ -553,61 +553,6 @@ export type TransferOutOfEscrowInputAsyncWithSigners<
 };
 
 export async function transferOutOfEscrow<
-  TReturn,
-  TAccountEscrow extends string,
-  TAccountMetadata extends string,
-  TAccountPayer extends string,
-  TAccountAttributeMint extends string,
-  TAccountAttributeSrc extends string,
-  TAccountAttributeDst extends string,
-  TAccountEscrowMint extends string,
-  TAccountEscrowAccount extends string,
-  TAccountSystemProgram extends string,
-  TAccountAtaProgram extends string,
-  TAccountTokenProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      TransferOutOfEscrowInstruction<
-        TProgram,
-        TAccountEscrow,
-        TAccountMetadata,
-        WritableSignerAccount<TAccountPayer> &
-          IAccountSignerMeta<TAccountPayer>,
-        TAccountAttributeMint,
-        TAccountAttributeSrc,
-        TAccountAttributeDst,
-        TAccountEscrowMint,
-        TAccountEscrowAccount,
-        TAccountSystemProgram,
-        TAccountAtaProgram,
-        TAccountTokenProgram,
-        TAccountSysvarInstructions,
-        ReadonlySignerAccount<TAccountAuthority> &
-          IAccountSignerMeta<TAccountAuthority>
-      >,
-      TReturn
-    >,
-  input: TransferOutOfEscrowInput<
-    TAccountEscrow,
-    TAccountMetadata,
-    TAccountPayer,
-    TAccountAttributeMint,
-    TAccountAttributeSrc,
-    TAccountAttributeDst,
-    TAccountEscrowMint,
-    TAccountEscrowAccount,
-    TAccountSystemProgram,
-    TAccountAtaProgram,
-    TAccountTokenProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthority
-  >
-): Promise<TReturn>;
-export async function transferOutOfEscrow<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountPayer extends string,
@@ -624,7 +569,7 @@ export async function transferOutOfEscrow<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: TransferOutOfEscrowInput<
+  input: TransferOutOfEscrowAsyncInputWithSigners<
     TAccountEscrow,
     TAccountMetadata,
     TAccountPayer,
@@ -640,7 +585,7 @@ export async function transferOutOfEscrow<
     TAccountAuthority
   >
 ): Promise<
-  TransferOutOfEscrowInstruction<
+  TransferOutOfEscrowInstructionWithSigners<
     TProgram,
     TAccountEscrow,
     TAccountMetadata,
@@ -656,9 +601,7 @@ export async function transferOutOfEscrow<
     TAccountSysvarInstructions,
     ReadonlySignerAccount<TAccountAuthority> &
       IAccountSignerMeta<TAccountAuthority>
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function transferOutOfEscrow<
   TAccountEscrow extends string,
@@ -676,7 +619,8 @@ export async function transferOutOfEscrow<
   TAccountAuthority extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: TransferOutOfEscrowInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: TransferOutOfEscrowAsyncInput<
     TAccountEscrow,
     TAccountMetadata,
     TAccountPayer,
@@ -708,9 +652,107 @@ export async function transferOutOfEscrow<
     TAccountSysvarInstructions,
     ReadonlySignerAccount<TAccountAuthority> &
       IAccountSignerMeta<TAccountAuthority>
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function transferOutOfEscrow<
+  TAccountEscrow extends string,
+  TAccountMetadata extends string,
+  TAccountPayer extends string,
+  TAccountAttributeMint extends string,
+  TAccountAttributeSrc extends string,
+  TAccountAttributeDst extends string,
+  TAccountEscrowMint extends string,
+  TAccountEscrowAccount extends string,
+  TAccountSystemProgram extends string,
+  TAccountAtaProgram extends string,
+  TAccountTokenProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: TransferOutOfEscrowAsyncInputWithSigners<
+    TAccountEscrow,
+    TAccountMetadata,
+    TAccountPayer,
+    TAccountAttributeMint,
+    TAccountAttributeSrc,
+    TAccountAttributeDst,
+    TAccountEscrowMint,
+    TAccountEscrowAccount,
+    TAccountSystemProgram,
+    TAccountAtaProgram,
+    TAccountTokenProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthority
+  >
+): Promise<
+  TransferOutOfEscrowInstructionWithSigners<
+    TProgram,
+    TAccountEscrow,
+    TAccountMetadata,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountAttributeMint,
+    TAccountAttributeSrc,
+    TAccountAttributeDst,
+    TAccountEscrowMint,
+    TAccountEscrowAccount,
+    TAccountSystemProgram,
+    TAccountAtaProgram,
+    TAccountTokenProgram,
+    TAccountSysvarInstructions,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
+>;
+export async function transferOutOfEscrow<
+  TAccountEscrow extends string,
+  TAccountMetadata extends string,
+  TAccountPayer extends string,
+  TAccountAttributeMint extends string,
+  TAccountAttributeSrc extends string,
+  TAccountAttributeDst extends string,
+  TAccountEscrowMint extends string,
+  TAccountEscrowAccount extends string,
+  TAccountSystemProgram extends string,
+  TAccountAtaProgram extends string,
+  TAccountTokenProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: TransferOutOfEscrowAsyncInput<
+    TAccountEscrow,
+    TAccountMetadata,
+    TAccountPayer,
+    TAccountAttributeMint,
+    TAccountAttributeSrc,
+    TAccountAttributeDst,
+    TAccountEscrowMint,
+    TAccountEscrowAccount,
+    TAccountSystemProgram,
+    TAccountAtaProgram,
+    TAccountTokenProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthority
+  >
+): Promise<
+  TransferOutOfEscrowInstruction<
+    TProgram,
+    TAccountEscrow,
+    TAccountMetadata,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountAttributeMint,
+    TAccountAttributeSrc,
+    TAccountAttributeDst,
+    TAccountEscrowMint,
+    TAccountEscrowAccount,
+    TAccountSystemProgram,
+    TAccountAtaProgram,
+    TAccountTokenProgram,
+    TAccountSysvarInstructions,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
 >;
 export async function transferOutOfEscrow<
   TReturn,
@@ -733,7 +775,7 @@ export async function transferOutOfEscrow<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | TransferOutOfEscrowInput<
+    | TransferOutOfEscrowAsyncInput<
         TAccountEscrow,
         TAccountMetadata,
         TAccountPayer,
@@ -748,7 +790,7 @@ export async function transferOutOfEscrow<
         TAccountSysvarInstructions,
         TAccountAuthority
       >,
-  rawInput?: TransferOutOfEscrowInput<
+  rawInput?: TransferOutOfEscrowAsyncInput<
     TAccountEscrow,
     TAccountMetadata,
     TAccountPayer,
@@ -763,12 +805,7 @@ export async function transferOutOfEscrow<
     TAccountSysvarInstructions,
     TAccountAuthority
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -776,7 +813,7 @@ export async function transferOutOfEscrow<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as TransferOutOfEscrowInput<
+  ) as TransferOutOfEscrowAsyncInput<
     TAccountEscrow,
     TAccountMetadata,
     TAccountPayer,
@@ -806,7 +843,7 @@ export async function transferOutOfEscrow<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof transferOutOfEscrowInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountEscrow,
       TAccountMetadata,
@@ -888,18 +925,11 @@ export async function transferOutOfEscrow<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...transferOutOfEscrowInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as TransferOutOfEscrowInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as TransferOutOfEscrowInstructionDataArgs,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

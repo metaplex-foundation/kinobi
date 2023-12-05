@@ -212,7 +212,7 @@ export function getUtilizeInstructionDataCodec(): Codec<
   );
 }
 
-export function utilizeInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountTokenAccount extends string | IAccountMeta<string> = string,
@@ -424,7 +424,7 @@ export type UtilizeInputWithSigners<
 };
 
 // Input.
-export type UtilizeInputAsync<
+export type UtilizeAsyncInput<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -463,7 +463,7 @@ export type UtilizeInputAsync<
 };
 
 // Input.
-export type UtilizeInputAsyncWithSigners<
+export type UtilizeAsyncInputWithSigners<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -502,54 +502,6 @@ export type UtilizeInputAsyncWithSigners<
 };
 
 export async function utilize<
-  TReturn,
-  TAccountMetadata extends string,
-  TAccountTokenAccount extends string,
-  TAccountMint extends string,
-  TAccountUseAuthority extends string,
-  TAccountOwner extends string,
-  TAccountTokenProgram extends string,
-  TAccountAtaProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TAccountUseAuthorityRecord extends string,
-  TAccountBurner extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      UtilizeInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountTokenAccount,
-        TAccountMint,
-        WritableSignerAccount<TAccountUseAuthority> &
-          IAccountSignerMeta<TAccountUseAuthority>,
-        TAccountOwner,
-        TAccountTokenProgram,
-        TAccountAtaProgram,
-        TAccountSystemProgram,
-        TAccountRent,
-        TAccountUseAuthorityRecord,
-        TAccountBurner
-      >,
-      TReturn
-    >,
-  input: UtilizeInput<
-    TAccountMetadata,
-    TAccountTokenAccount,
-    TAccountMint,
-    TAccountUseAuthority,
-    TAccountOwner,
-    TAccountTokenProgram,
-    TAccountAtaProgram,
-    TAccountSystemProgram,
-    TAccountRent,
-    TAccountUseAuthorityRecord,
-    TAccountBurner
-  >
-): Promise<TReturn>;
-export async function utilize<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -564,7 +516,7 @@ export async function utilize<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: UtilizeInput<
+  input: UtilizeAsyncInputWithSigners<
     TAccountMetadata,
     TAccountTokenAccount,
     TAccountMint,
@@ -578,7 +530,7 @@ export async function utilize<
     TAccountBurner
   >
 ): Promise<
-  UtilizeInstruction<
+  UtilizeInstructionWithSigners<
     TProgram,
     TAccountMetadata,
     TAccountTokenAccount,
@@ -592,9 +544,7 @@ export async function utilize<
     TAccountRent,
     TAccountUseAuthorityRecord,
     TAccountBurner
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function utilize<
   TAccountMetadata extends string,
@@ -610,7 +560,8 @@ export async function utilize<
   TAccountBurner extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: UtilizeInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UtilizeAsyncInput<
     TAccountMetadata,
     TAccountTokenAccount,
     TAccountMint,
@@ -638,9 +589,95 @@ export async function utilize<
     TAccountRent,
     TAccountUseAuthorityRecord,
     TAccountBurner
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function utilize<
+  TAccountMetadata extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUseAuthority extends string,
+  TAccountOwner extends string,
+  TAccountTokenProgram extends string,
+  TAccountAtaProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TAccountUseAuthorityRecord extends string,
+  TAccountBurner extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: UtilizeAsyncInputWithSigners<
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUseAuthority,
+    TAccountOwner,
+    TAccountTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountUseAuthorityRecord,
+    TAccountBurner
+  >
+): Promise<
+  UtilizeInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    WritableSignerAccount<TAccountUseAuthority> &
+      IAccountSignerMeta<TAccountUseAuthority>,
+    TAccountOwner,
+    TAccountTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountUseAuthorityRecord,
+    TAccountBurner
+  >
+>;
+export async function utilize<
+  TAccountMetadata extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUseAuthority extends string,
+  TAccountOwner extends string,
+  TAccountTokenProgram extends string,
+  TAccountAtaProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TAccountUseAuthorityRecord extends string,
+  TAccountBurner extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: UtilizeAsyncInput<
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUseAuthority,
+    TAccountOwner,
+    TAccountTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountUseAuthorityRecord,
+    TAccountBurner
+  >
+): Promise<
+  UtilizeInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    WritableSignerAccount<TAccountUseAuthority> &
+      IAccountSignerMeta<TAccountUseAuthority>,
+    TAccountOwner,
+    TAccountTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountUseAuthorityRecord,
+    TAccountBurner
+  >
 >;
 export async function utilize<
   TReturn,
@@ -661,7 +698,7 @@ export async function utilize<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | UtilizeInput<
+    | UtilizeAsyncInput<
         TAccountMetadata,
         TAccountTokenAccount,
         TAccountMint,
@@ -674,7 +711,7 @@ export async function utilize<
         TAccountUseAuthorityRecord,
         TAccountBurner
       >,
-  rawInput?: UtilizeInput<
+  rawInput?: UtilizeAsyncInput<
     TAccountMetadata,
     TAccountTokenAccount,
     TAccountMint,
@@ -687,12 +724,7 @@ export async function utilize<
     TAccountUseAuthorityRecord,
     TAccountBurner
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -700,7 +732,7 @@ export async function utilize<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as UtilizeInput<
+  ) as UtilizeAsyncInput<
     TAccountMetadata,
     TAccountTokenAccount,
     TAccountMint,
@@ -728,7 +760,7 @@ export async function utilize<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof utilizeInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountMetadata,
       TAccountTokenAccount,
@@ -806,18 +838,11 @@ export async function utilize<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...utilizeInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as UtilizeInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as UtilizeInstructionDataArgs,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

@@ -173,7 +173,7 @@ export function getSetAndVerifySizedCollectionItemInstructionDataCodec(): Codec<
   );
 }
 
-export function setAndVerifySizedCollectionItemInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
@@ -318,7 +318,7 @@ export type SetAndVerifySizedCollectionItemInputWithSigners<
 };
 
 // Input.
-export type SetAndVerifySizedCollectionItemInputAsync<
+export type SetAndVerifySizedCollectionItemAsyncInput<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -347,7 +347,7 @@ export type SetAndVerifySizedCollectionItemInputAsync<
 };
 
 // Input.
-export type SetAndVerifySizedCollectionItemInputAsyncWithSigners<
+export type SetAndVerifySizedCollectionItemAsyncInputWithSigners<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -376,46 +376,6 @@ export type SetAndVerifySizedCollectionItemInputAsyncWithSigners<
 };
 
 export async function setAndVerifySizedCollectionItem<
-  TReturn,
-  TAccountMetadata extends string,
-  TAccountCollectionAuthority extends string,
-  TAccountPayer extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollection extends string,
-  TAccountCollectionMasterEditionAccount extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      SetAndVerifySizedCollectionItemInstruction<
-        TProgram,
-        TAccountMetadata,
-        ReadonlySignerAccount<TAccountCollectionAuthority> &
-          IAccountSignerMeta<TAccountCollectionAuthority>,
-        WritableSignerAccount<TAccountPayer> &
-          IAccountSignerMeta<TAccountPayer>,
-        TAccountUpdateAuthority,
-        TAccountCollectionMint,
-        TAccountCollection,
-        TAccountCollectionMasterEditionAccount,
-        TAccountCollectionAuthorityRecord
-      >,
-      TReturn
-    >,
-  input: SetAndVerifySizedCollectionItemInput<
-    TAccountMetadata,
-    TAccountCollectionAuthority,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount,
-    TAccountCollectionAuthorityRecord
-  >
-): Promise<TReturn>;
-export async function setAndVerifySizedCollectionItem<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -427,7 +387,7 @@ export async function setAndVerifySizedCollectionItem<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: SetAndVerifySizedCollectionItemInput<
+  input: SetAndVerifySizedCollectionItemAsyncInputWithSigners<
     TAccountMetadata,
     TAccountCollectionAuthority,
     TAccountPayer,
@@ -438,7 +398,7 @@ export async function setAndVerifySizedCollectionItem<
     TAccountCollectionAuthorityRecord
   >
 ): Promise<
-  SetAndVerifySizedCollectionItemInstruction<
+  SetAndVerifySizedCollectionItemInstructionWithSigners<
     TProgram,
     TAccountMetadata,
     ReadonlySignerAccount<TAccountCollectionAuthority> &
@@ -449,9 +409,7 @@ export async function setAndVerifySizedCollectionItem<
     TAccountCollection,
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function setAndVerifySizedCollectionItem<
   TAccountMetadata extends string,
@@ -464,7 +422,8 @@ export async function setAndVerifySizedCollectionItem<
   TAccountCollectionAuthorityRecord extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: SetAndVerifySizedCollectionItemInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetAndVerifySizedCollectionItemAsyncInput<
     TAccountMetadata,
     TAccountCollectionAuthority,
     TAccountPayer,
@@ -486,9 +445,77 @@ export async function setAndVerifySizedCollectionItem<
     TAccountCollection,
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function setAndVerifySizedCollectionItem<
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollection extends string,
+  TAccountCollectionMasterEditionAccount extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: SetAndVerifySizedCollectionItemAsyncInputWithSigners<
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  SetAndVerifySizedCollectionItemInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountUpdateAuthority,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  >
+>;
+export async function setAndVerifySizedCollectionItem<
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollection extends string,
+  TAccountCollectionMasterEditionAccount extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: SetAndVerifySizedCollectionItemAsyncInput<
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  SetAndVerifySizedCollectionItemInstruction<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountUpdateAuthority,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  >
 >;
 export async function setAndVerifySizedCollectionItem<
   TReturn,
@@ -506,7 +533,7 @@ export async function setAndVerifySizedCollectionItem<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | SetAndVerifySizedCollectionItemInput<
+    | SetAndVerifySizedCollectionItemAsyncInput<
         TAccountMetadata,
         TAccountCollectionAuthority,
         TAccountPayer,
@@ -516,7 +543,7 @@ export async function setAndVerifySizedCollectionItem<
         TAccountCollectionMasterEditionAccount,
         TAccountCollectionAuthorityRecord
       >,
-  rawInput?: SetAndVerifySizedCollectionItemInput<
+  rawInput?: SetAndVerifySizedCollectionItemAsyncInput<
     TAccountMetadata,
     TAccountCollectionAuthority,
     TAccountPayer,
@@ -526,12 +553,7 @@ export async function setAndVerifySizedCollectionItem<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -539,7 +561,7 @@ export async function setAndVerifySizedCollectionItem<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as SetAndVerifySizedCollectionItemInput<
+  ) as SetAndVerifySizedCollectionItemAsyncInput<
     TAccountMetadata,
     TAccountCollectionAuthority,
     TAccountPayer,
@@ -564,7 +586,7 @@ export async function setAndVerifySizedCollectionItem<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof setAndVerifySizedCollectionItemInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountMetadata,
       TAccountCollectionAuthority,
@@ -612,17 +634,10 @@ export async function setAndVerifySizedCollectionItem<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...setAndVerifySizedCollectionItemInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

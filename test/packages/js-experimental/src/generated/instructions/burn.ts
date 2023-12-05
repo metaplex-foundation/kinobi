@@ -186,7 +186,7 @@ export function getBurnInstructionDataCodec(): Codec<
   );
 }
 
-export function burnInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountOwner extends string | IAccountMeta<string> = string,
@@ -362,7 +362,7 @@ export type BurnInputWithSigners<
 };
 
 // Input.
-export type BurnInputAsync<
+export type BurnAsyncInput<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountMint extends string,
@@ -395,7 +395,7 @@ export type BurnInputAsync<
 };
 
 // Input.
-export type BurnInputAsyncWithSigners<
+export type BurnAsyncInputWithSigners<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountMint extends string,
@@ -428,48 +428,6 @@ export type BurnInputAsyncWithSigners<
 };
 
 export async function burn<
-  TReturn,
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountMint extends string,
-  TAccountTokenAccount extends string,
-  TAccountMasterEditionAccount extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountAuthorizationRules extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      BurnInstruction<
-        TProgram,
-        TAccountMetadata,
-        WritableSignerAccount<TAccountOwner> &
-          IAccountSignerMeta<TAccountOwner>,
-        TAccountMint,
-        TAccountTokenAccount,
-        TAccountMasterEditionAccount,
-        TAccountSplTokenProgram,
-        TAccountCollectionMetadata,
-        TAccountAuthorizationRules,
-        TAccountAuthorizationRulesProgram
-      >,
-      TReturn
-    >,
-  input: BurnInput<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountSplTokenProgram,
-    TAccountCollectionMetadata,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
-): Promise<TReturn>;
-export async function burn<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountMint extends string,
@@ -482,7 +440,7 @@ export async function burn<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: BurnInput<
+  input: BurnAsyncInputWithSigners<
     TAccountMetadata,
     TAccountOwner,
     TAccountMint,
@@ -494,7 +452,7 @@ export async function burn<
     TAccountAuthorizationRulesProgram
   >
 ): Promise<
-  BurnInstruction<
+  BurnInstructionWithSigners<
     TProgram,
     TAccountMetadata,
     WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
@@ -505,9 +463,7 @@ export async function burn<
     TAccountCollectionMetadata,
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function burn<
   TAccountMetadata extends string,
@@ -521,7 +477,8 @@ export async function burn<
   TAccountAuthorizationRulesProgram extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: BurnInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: BurnAsyncInput<
     TAccountMetadata,
     TAccountOwner,
     TAccountMint,
@@ -544,9 +501,81 @@ export async function burn<
     TAccountCollectionMetadata,
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function burn<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountMint extends string,
+  TAccountTokenAccount extends string,
+  TAccountMasterEditionAccount extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountAuthorizationRules extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: BurnAsyncInputWithSigners<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >
+): Promise<
+  BurnInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >
+>;
+export async function burn<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountMint extends string,
+  TAccountTokenAccount extends string,
+  TAccountMasterEditionAccount extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountAuthorizationRules extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: BurnAsyncInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >
+): Promise<
+  BurnInstruction<
+    TProgram,
+    TAccountMetadata,
+    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >
 >;
 export async function burn<
   TReturn,
@@ -565,7 +594,7 @@ export async function burn<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | BurnInput<
+    | BurnAsyncInput<
         TAccountMetadata,
         TAccountOwner,
         TAccountMint,
@@ -576,7 +605,7 @@ export async function burn<
         TAccountAuthorizationRules,
         TAccountAuthorizationRulesProgram
       >,
-  rawInput?: BurnInput<
+  rawInput?: BurnAsyncInput<
     TAccountMetadata,
     TAccountOwner,
     TAccountMint,
@@ -587,18 +616,15 @@ export async function burn<
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>);
-  const input = (rawInput === undefined ? rawContext : rawInput) as BurnInput<
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as BurnAsyncInput<
     TAccountMetadata,
     TAccountOwner,
     TAccountMint,
@@ -624,7 +650,7 @@ export async function burn<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof burnInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountMetadata,
       TAccountOwner,
@@ -690,18 +716,11 @@ export async function burn<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...burnInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as BurnInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as BurnInstructionDataArgs,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

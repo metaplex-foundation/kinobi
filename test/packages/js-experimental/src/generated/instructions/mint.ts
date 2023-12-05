@@ -224,7 +224,7 @@ export function getMintInstructionDataCodec(): Codec<
   );
 }
 
-export function mintInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountToken extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,
@@ -457,7 +457,7 @@ export type MintInputWithSigners<
 };
 
 // Input.
-export type MintInputAsync<
+export type MintAsyncInput<
   TAccountToken extends string,
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -499,7 +499,7 @@ export type MintInputAsync<
 };
 
 // Input.
-export type MintInputAsyncWithSigners<
+export type MintAsyncInputWithSigners<
   TAccountToken extends string,
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -541,58 +541,6 @@ export type MintInputAsyncWithSigners<
 };
 
 export async function mint<
-  TReturn,
-  TAccountToken extends string,
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountMint extends string,
-  TAccountPayer extends string,
-  TAccountAuthority extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountSplAtaProgram extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      MintInstruction<
-        TProgram,
-        TAccountToken,
-        TAccountMetadata,
-        TAccountMasterEdition,
-        TAccountMint,
-        WritableSignerAccount<TAccountPayer> &
-          IAccountSignerMeta<TAccountPayer>,
-        ReadonlySignerAccount<TAccountAuthority> &
-          IAccountSignerMeta<TAccountAuthority>,
-        TAccountSystemProgram,
-        TAccountSysvarInstructions,
-        TAccountSplTokenProgram,
-        TAccountSplAtaProgram,
-        TAccountAuthorizationRulesProgram,
-        TAccountAuthorizationRules
-      >,
-      TReturn
-    >,
-  input: MintInput<
-    TAccountToken,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountPayer,
-    TAccountAuthority,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram,
-    TAccountSplAtaProgram,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
-): Promise<TReturn>;
-export async function mint<
   TAccountToken extends string,
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -608,7 +556,7 @@ export async function mint<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: MintInput<
+  input: MintAsyncInputWithSigners<
     TAccountToken,
     TAccountMetadata,
     TAccountMasterEdition,
@@ -623,7 +571,7 @@ export async function mint<
     TAccountAuthorizationRules
   >
 ): Promise<
-  MintInstruction<
+  MintInstructionWithSigners<
     TProgram,
     TAccountToken,
     TAccountMetadata,
@@ -638,9 +586,7 @@ export async function mint<
     TAccountSplAtaProgram,
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function mint<
   TAccountToken extends string,
@@ -657,7 +603,8 @@ export async function mint<
   TAccountAuthorizationRules extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: MintInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: MintAsyncInput<
     TAccountToken,
     TAccountMetadata,
     TAccountMasterEdition,
@@ -687,9 +634,101 @@ export async function mint<
     TAccountSplAtaProgram,
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function mint<
+  TAccountToken extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountPayer extends string,
+  TAccountAuthority extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountSplAtaProgram extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: MintAsyncInputWithSigners<
+    TAccountToken,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountPayer,
+    TAccountAuthority,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountSplAtaProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  MintInstructionWithSigners<
+    TProgram,
+    TAccountToken,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountSplAtaProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+>;
+export async function mint<
+  TAccountToken extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountPayer extends string,
+  TAccountAuthority extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountSplAtaProgram extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: MintAsyncInput<
+    TAccountToken,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountPayer,
+    TAccountAuthority,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountSplAtaProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  MintInstruction<
+    TProgram,
+    TAccountToken,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountSplAtaProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
 >;
 export async function mint<
   TReturn,
@@ -711,7 +750,7 @@ export async function mint<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | MintInput<
+    | MintAsyncInput<
         TAccountToken,
         TAccountMetadata,
         TAccountMasterEdition,
@@ -725,7 +764,7 @@ export async function mint<
         TAccountAuthorizationRulesProgram,
         TAccountAuthorizationRules
       >,
-  rawInput?: MintInput<
+  rawInput?: MintAsyncInput<
     TAccountToken,
     TAccountMetadata,
     TAccountMasterEdition,
@@ -739,18 +778,15 @@ export async function mint<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>);
-  const input = (rawInput === undefined ? rawContext : rawInput) as MintInput<
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as MintAsyncInput<
     TAccountToken,
     TAccountMetadata,
     TAccountMasterEdition,
@@ -779,7 +815,7 @@ export async function mint<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof mintInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountToken,
       TAccountMetadata,
@@ -868,18 +904,11 @@ export async function mint<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...mintInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as MintInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as MintInstructionDataArgs,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

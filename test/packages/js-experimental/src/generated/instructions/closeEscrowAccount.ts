@@ -170,7 +170,7 @@ export function getCloseEscrowAccountInstructionDataCodec(): Codec<
   );
 }
 
-export function closeEscrowAccountInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountEscrow extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,
@@ -311,7 +311,7 @@ export type CloseEscrowAccountInputWithSigners<
 };
 
 // Input.
-export type CloseEscrowAccountInputAsync<
+export type CloseEscrowAccountAsyncInput<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -340,7 +340,7 @@ export type CloseEscrowAccountInputAsync<
 };
 
 // Input.
-export type CloseEscrowAccountInputAsyncWithSigners<
+export type CloseEscrowAccountAsyncInputWithSigners<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -369,45 +369,6 @@ export type CloseEscrowAccountInputAsyncWithSigners<
 };
 
 export async function closeEscrowAccount<
-  TReturn,
-  TAccountEscrow extends string,
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TAccountTokenAccount extends string,
-  TAccountEdition extends string,
-  TAccountPayer extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      CloseEscrowAccountInstruction<
-        TProgram,
-        TAccountEscrow,
-        TAccountMetadata,
-        TAccountMint,
-        TAccountTokenAccount,
-        TAccountEdition,
-        WritableSignerAccount<TAccountPayer> &
-          IAccountSignerMeta<TAccountPayer>,
-        TAccountSystemProgram,
-        TAccountSysvarInstructions
-      >,
-      TReturn
-    >,
-  input: CloseEscrowAccountInput<
-    TAccountEscrow,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountEdition,
-    TAccountPayer,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions
-  >
-): Promise<TReturn>;
-export async function closeEscrowAccount<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -419,7 +380,7 @@ export async function closeEscrowAccount<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: CloseEscrowAccountInput<
+  input: CloseEscrowAccountAsyncInputWithSigners<
     TAccountEscrow,
     TAccountMetadata,
     TAccountMint,
@@ -430,7 +391,7 @@ export async function closeEscrowAccount<
     TAccountSysvarInstructions
   >
 ): Promise<
-  CloseEscrowAccountInstruction<
+  CloseEscrowAccountInstructionWithSigners<
     TProgram,
     TAccountEscrow,
     TAccountMetadata,
@@ -440,9 +401,7 @@ export async function closeEscrowAccount<
     WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountSystemProgram,
     TAccountSysvarInstructions
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function closeEscrowAccount<
   TAccountEscrow extends string,
@@ -455,7 +414,8 @@ export async function closeEscrowAccount<
   TAccountSysvarInstructions extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: CloseEscrowAccountInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: CloseEscrowAccountAsyncInput<
     TAccountEscrow,
     TAccountMetadata,
     TAccountMint,
@@ -476,9 +436,75 @@ export async function closeEscrowAccount<
     WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountSystemProgram,
     TAccountSysvarInstructions
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function closeEscrowAccount<
+  TAccountEscrow extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountPayer extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: CloseEscrowAccountAsyncInputWithSigners<
+    TAccountEscrow,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions
+  >
+): Promise<
+  CloseEscrowAccountInstructionWithSigners<
+    TProgram,
+    TAccountEscrow,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountEdition,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions
+  >
+>;
+export async function closeEscrowAccount<
+  TAccountEscrow extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountPayer extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: CloseEscrowAccountAsyncInput<
+    TAccountEscrow,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions
+  >
+): Promise<
+  CloseEscrowAccountInstruction<
+    TProgram,
+    TAccountEscrow,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountEdition,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions
+  >
 >;
 export async function closeEscrowAccount<
   TReturn,
@@ -496,7 +522,7 @@ export async function closeEscrowAccount<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | CloseEscrowAccountInput<
+    | CloseEscrowAccountAsyncInput<
         TAccountEscrow,
         TAccountMetadata,
         TAccountMint,
@@ -506,7 +532,7 @@ export async function closeEscrowAccount<
         TAccountSystemProgram,
         TAccountSysvarInstructions
       >,
-  rawInput?: CloseEscrowAccountInput<
+  rawInput?: CloseEscrowAccountAsyncInput<
     TAccountEscrow,
     TAccountMetadata,
     TAccountMint,
@@ -516,12 +542,7 @@ export async function closeEscrowAccount<
     TAccountSystemProgram,
     TAccountSysvarInstructions
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -529,7 +550,7 @@ export async function closeEscrowAccount<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as CloseEscrowAccountInput<
+  ) as CloseEscrowAccountAsyncInput<
     TAccountEscrow,
     TAccountMetadata,
     TAccountMint,
@@ -554,7 +575,7 @@ export async function closeEscrowAccount<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof closeEscrowAccountInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountEscrow,
       TAccountMetadata,
@@ -607,17 +628,10 @@ export async function closeEscrowAccount<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...closeEscrowAccountInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

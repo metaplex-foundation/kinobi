@@ -201,7 +201,7 @@ export function getCreateMasterEditionInstructionDataCodec(): Codec<
   );
 }
 
-export function createMasterEditionInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountEdition extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
@@ -369,7 +369,7 @@ export type CreateMasterEditionInputWithSigners<
 };
 
 // Input.
-export type CreateMasterEditionInputAsync<
+export type CreateMasterEditionAsyncInput<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -402,7 +402,7 @@ export type CreateMasterEditionInputAsync<
 };
 
 // Input.
-export type CreateMasterEditionInputAsyncWithSigners<
+export type CreateMasterEditionAsyncInputWithSigners<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -435,50 +435,6 @@ export type CreateMasterEditionInputAsyncWithSigners<
 };
 
 export async function createMasterEdition<
-  TReturn,
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      CreateMasterEditionInstruction<
-        TProgram,
-        TAccountEdition,
-        TAccountMint,
-        ReadonlySignerAccount<TAccountUpdateAuthority> &
-          IAccountSignerMeta<TAccountUpdateAuthority>,
-        ReadonlySignerAccount<TAccountMintAuthority> &
-          IAccountSignerMeta<TAccountMintAuthority>,
-        WritableSignerAccount<TAccountPayer> &
-          IAccountSignerMeta<TAccountPayer>,
-        TAccountMetadata,
-        TAccountTokenProgram,
-        TAccountSystemProgram,
-        TAccountRent
-      >,
-      TReturn
-    >,
-  input: CreateMasterEditionInput<
-    TAccountEdition,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): Promise<TReturn>;
-export async function createMasterEdition<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -491,7 +447,7 @@ export async function createMasterEdition<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: CreateMasterEditionInput<
+  input: CreateMasterEditionAsyncInputWithSigners<
     TAccountEdition,
     TAccountMint,
     TAccountUpdateAuthority,
@@ -503,7 +459,7 @@ export async function createMasterEdition<
     TAccountRent
   >
 ): Promise<
-  CreateMasterEditionInstruction<
+  CreateMasterEditionInstructionWithSigners<
     TProgram,
     TAccountEdition,
     TAccountMint,
@@ -516,9 +472,7 @@ export async function createMasterEdition<
     TAccountTokenProgram,
     TAccountSystemProgram,
     TAccountRent
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function createMasterEdition<
   TAccountEdition extends string,
@@ -532,7 +486,8 @@ export async function createMasterEdition<
   TAccountRent extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: CreateMasterEditionInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: CreateMasterEditionAsyncInput<
     TAccountEdition,
     TAccountMint,
     TAccountUpdateAuthority,
@@ -557,9 +512,85 @@ export async function createMasterEdition<
     TAccountTokenProgram,
     TAccountSystemProgram,
     TAccountRent
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function createMasterEdition<
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: CreateMasterEditionAsyncInputWithSigners<
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  CreateMasterEditionInstructionWithSigners<
+    TProgram,
+    TAccountEdition,
+    TAccountMint,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+>;
+export async function createMasterEdition<
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: CreateMasterEditionAsyncInput<
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  CreateMasterEditionInstruction<
+    TProgram,
+    TAccountEdition,
+    TAccountMint,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >
 >;
 export async function createMasterEdition<
   TReturn,
@@ -578,7 +609,7 @@ export async function createMasterEdition<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | CreateMasterEditionInput<
+    | CreateMasterEditionAsyncInput<
         TAccountEdition,
         TAccountMint,
         TAccountUpdateAuthority,
@@ -589,7 +620,7 @@ export async function createMasterEdition<
         TAccountSystemProgram,
         TAccountRent
       >,
-  rawInput?: CreateMasterEditionInput<
+  rawInput?: CreateMasterEditionAsyncInput<
     TAccountEdition,
     TAccountMint,
     TAccountUpdateAuthority,
@@ -600,12 +631,7 @@ export async function createMasterEdition<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -613,7 +639,7 @@ export async function createMasterEdition<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as CreateMasterEditionInput<
+  ) as CreateMasterEditionAsyncInput<
     TAccountEdition,
     TAccountMint,
     TAccountUpdateAuthority,
@@ -639,7 +665,7 @@ export async function createMasterEdition<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof createMasterEditionInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountEdition,
       TAccountMint,
@@ -705,18 +731,11 @@ export async function createMasterEdition<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...createMasterEditionInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as CreateMasterEditionInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as CreateMasterEditionInstructionDataArgs,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

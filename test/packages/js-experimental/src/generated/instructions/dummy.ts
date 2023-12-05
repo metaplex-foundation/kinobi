@@ -198,7 +198,7 @@ export type DummyInstructionExtraArgs = {
   proof: Array<Address>;
 };
 
-export function dummyInstruction<
+function _createInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountEdition extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
@@ -364,7 +364,7 @@ export type DummyInputWithSigners<
 };
 
 // Input.
-export type DummyInputAsync<
+export type DummyAsyncInput<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -391,7 +391,7 @@ export type DummyInputAsync<
 };
 
 // Input.
-export type DummyInputAsyncWithSigners<
+export type DummyAsyncInputWithSigners<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -418,55 +418,6 @@ export type DummyInputAsyncWithSigners<
 };
 
 export async function dummy<
-  TReturn,
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountFoo extends string,
-  TAccountBar extends string,
-  TAccountDelegate extends string,
-  TAccountDelegateRecord extends string,
-  TAccountTokenOrAtaProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
-  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
-    CustomGeneratedInstruction<
-      DummyInstruction<
-        TProgram,
-        WritableSignerAccount<TAccountEdition> &
-          IAccountSignerMeta<TAccountEdition>,
-        TAccountMint,
-        ReadonlySignerAccount<TAccountUpdateAuthority> &
-          IAccountSignerMeta<TAccountUpdateAuthority>,
-        WritableSignerAccount<TAccountMintAuthority> &
-          IAccountSignerMeta<TAccountMintAuthority>,
-        WritableSignerAccount<TAccountPayer> &
-          IAccountSignerMeta<TAccountPayer>,
-        TAccountFoo,
-        ReadonlySignerAccount<TAccountBar> & IAccountSignerMeta<TAccountBar>,
-        ReadonlySignerAccount<TAccountDelegate> &
-          IAccountSignerMeta<TAccountDelegate>,
-        TAccountDelegateRecord,
-        TAccountTokenOrAtaProgram
-      >,
-      TReturn
-    >,
-  input: DummyInput<
-    TAccountEdition,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountFoo,
-    TAccountBar,
-    TAccountDelegate,
-    TAccountDelegateRecord,
-    TAccountTokenOrAtaProgram
-  >
-): Promise<TReturn>;
-export async function dummy<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -480,7 +431,7 @@ export async function dummy<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
-  input: DummyInput<
+  input: DummyAsyncInputWithSigners<
     TAccountEdition,
     TAccountMint,
     TAccountUpdateAuthority,
@@ -493,7 +444,7 @@ export async function dummy<
     TAccountTokenOrAtaProgram
   >
 ): Promise<
-  DummyInstruction<
+  DummyInstructionWithSigners<
     TProgram,
     WritableSignerAccount<TAccountEdition> &
       IAccountSignerMeta<TAccountEdition>,
@@ -509,9 +460,7 @@ export async function dummy<
       IAccountSignerMeta<TAccountDelegate>,
     TAccountDelegateRecord,
     TAccountTokenOrAtaProgram
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function dummy<
   TAccountEdition extends string,
@@ -526,7 +475,8 @@ export async function dummy<
   TAccountTokenOrAtaProgram extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  input: DummyInput<
+  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
+  input: DummyAsyncInput<
     TAccountEdition,
     TAccountMint,
     TAccountUpdateAuthority,
@@ -555,9 +505,95 @@ export async function dummy<
       IAccountSignerMeta<TAccountDelegate>,
     TAccountDelegateRecord,
     TAccountTokenOrAtaProgram
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function dummy<
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountFoo extends string,
+  TAccountBar extends string,
+  TAccountDelegate extends string,
+  TAccountDelegateRecord extends string,
+  TAccountTokenOrAtaProgram extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: DummyAsyncInputWithSigners<
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountFoo,
+    TAccountBar,
+    TAccountDelegate,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >
+): Promise<
+  DummyInstructionWithSigners<
+    TProgram,
+    WritableSignerAccount<TAccountEdition> &
+      IAccountSignerMeta<TAccountEdition>,
+    TAccountMint,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    WritableSignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountFoo,
+    ReadonlySignerAccount<TAccountBar> & IAccountSignerMeta<TAccountBar>,
+    ReadonlySignerAccount<TAccountDelegate> &
+      IAccountSignerMeta<TAccountDelegate>,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >
+>;
+export async function dummy<
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountFoo extends string,
+  TAccountBar extends string,
+  TAccountDelegate extends string,
+  TAccountDelegateRecord extends string,
+  TAccountTokenOrAtaProgram extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: DummyAsyncInput<
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountFoo,
+    TAccountBar,
+    TAccountDelegate,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >
+): Promise<
+  DummyInstruction<
+    TProgram,
+    WritableSignerAccount<TAccountEdition> &
+      IAccountSignerMeta<TAccountEdition>,
+    TAccountMint,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    WritableSignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountFoo,
+    ReadonlySignerAccount<TAccountBar> & IAccountSignerMeta<TAccountBar>,
+    ReadonlySignerAccount<TAccountDelegate> &
+      IAccountSignerMeta<TAccountDelegate>,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >
 >;
 export async function dummy<
   TReturn,
@@ -577,7 +613,7 @@ export async function dummy<
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
     | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | DummyInput<
+    | DummyAsyncInput<
         TAccountEdition,
         TAccountMint,
         TAccountUpdateAuthority,
@@ -589,7 +625,7 @@ export async function dummy<
         TAccountDelegateRecord,
         TAccountTokenOrAtaProgram
       >,
-  rawInput?: DummyInput<
+  rawInput?: DummyAsyncInput<
     TAccountEdition,
     TAccountMint,
     TAccountUpdateAuthority,
@@ -601,18 +637,15 @@ export async function dummy<
     TAccountDelegateRecord,
     TAccountTokenOrAtaProgram
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
     | (Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>);
-  const input = (rawInput === undefined ? rawContext : rawInput) as DummyInput<
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as DummyAsyncInput<
     TAccountEdition,
     TAccountMint,
     TAccountUpdateAuthority,
@@ -639,7 +672,7 @@ export async function dummy<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof dummyInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountEdition,
       TAccountMint,
@@ -731,17 +764,10 @@ export async function dummy<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...dummyInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

@@ -116,7 +116,7 @@ export function getConvertMasterEditionV1ToV2InstructionDataCodec(): Codec<
   );
 }
 
-export function convertMasterEditionV1ToV2Instruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
   TAccountOneTimeAuth extends string | IAccountMeta<string> = string,
@@ -184,7 +184,7 @@ export type ConvertMasterEditionV1ToV2InputWithSigners<
 };
 
 // Input.
-export type ConvertMasterEditionV1ToV2InputAsync<
+export type ConvertMasterEditionV1ToV2AsyncInput<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
   TAccountPrintingMint extends string
@@ -198,7 +198,7 @@ export type ConvertMasterEditionV1ToV2InputAsync<
 };
 
 // Input.
-export type ConvertMasterEditionV1ToV2InputAsyncWithSigners<
+export type ConvertMasterEditionV1ToV2AsyncInputWithSigners<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
   TAccountPrintingMint extends string
@@ -212,49 +212,24 @@ export type ConvertMasterEditionV1ToV2InputAsyncWithSigners<
 };
 
 export async function convertMasterEditionV1ToV2<
-  TReturn,
-  TAccountMasterEdition extends string,
-  TAccountOneTimeAuth extends string,
-  TAccountPrintingMint extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      ConvertMasterEditionV1ToV2Instruction<
-        TProgram,
-        TAccountMasterEdition,
-        TAccountOneTimeAuth,
-        TAccountPrintingMint
-      >,
-      TReturn
-    >,
-  input: ConvertMasterEditionV1ToV2Input<
-    TAccountMasterEdition,
-    TAccountOneTimeAuth,
-    TAccountPrintingMint
-  >
-): Promise<TReturn>;
-export async function convertMasterEditionV1ToV2<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
   TAccountPrintingMint extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: ConvertMasterEditionV1ToV2Input<
+  input: ConvertMasterEditionV1ToV2AsyncInputWithSigners<
     TAccountMasterEdition,
     TAccountOneTimeAuth,
     TAccountPrintingMint
   >
 ): Promise<
-  ConvertMasterEditionV1ToV2Instruction<
+  ConvertMasterEditionV1ToV2InstructionWithSigners<
     TProgram,
     TAccountMasterEdition,
     TAccountOneTimeAuth,
     TAccountPrintingMint
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function convertMasterEditionV1ToV2<
   TAccountMasterEdition extends string,
@@ -262,7 +237,8 @@ export async function convertMasterEditionV1ToV2<
   TAccountPrintingMint extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: ConvertMasterEditionV1ToV2Input<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: ConvertMasterEditionV1ToV2AsyncInput<
     TAccountMasterEdition,
     TAccountOneTimeAuth,
     TAccountPrintingMint
@@ -273,9 +249,45 @@ export async function convertMasterEditionV1ToV2<
     TAccountMasterEdition,
     TAccountOneTimeAuth,
     TAccountPrintingMint
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function convertMasterEditionV1ToV2<
+  TAccountMasterEdition extends string,
+  TAccountOneTimeAuth extends string,
+  TAccountPrintingMint extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: ConvertMasterEditionV1ToV2AsyncInputWithSigners<
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  >
+): Promise<
+  ConvertMasterEditionV1ToV2InstructionWithSigners<
+    TProgram,
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  >
+>;
+export async function convertMasterEditionV1ToV2<
+  TAccountMasterEdition extends string,
+  TAccountOneTimeAuth extends string,
+  TAccountPrintingMint extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: ConvertMasterEditionV1ToV2AsyncInput<
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  >
+): Promise<
+  ConvertMasterEditionV1ToV2Instruction<
+    TProgram,
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  >
 >;
 export async function convertMasterEditionV1ToV2<
   TReturn,
@@ -288,22 +300,17 @@ export async function convertMasterEditionV1ToV2<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | ConvertMasterEditionV1ToV2Input<
+    | ConvertMasterEditionV1ToV2AsyncInput<
         TAccountMasterEdition,
         TAccountOneTimeAuth,
         TAccountPrintingMint
       >,
-  rawInput?: ConvertMasterEditionV1ToV2Input<
+  rawInput?: ConvertMasterEditionV1ToV2AsyncInput<
     TAccountMasterEdition,
     TAccountOneTimeAuth,
     TAccountPrintingMint
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -311,7 +318,7 @@ export async function convertMasterEditionV1ToV2<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as ConvertMasterEditionV1ToV2Input<
+  ) as ConvertMasterEditionV1ToV2AsyncInput<
     TAccountMasterEdition,
     TAccountOneTimeAuth,
     TAccountPrintingMint
@@ -331,7 +338,7 @@ export async function convertMasterEditionV1ToV2<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof convertMasterEditionV1ToV2Instruction<
+    typeof _createInstruction<
       TProgram,
       TAccountMasterEdition,
       TAccountOneTimeAuth,
@@ -357,17 +364,10 @@ export async function convertMasterEditionV1ToV2<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...convertMasterEditionV1ToV2Instruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

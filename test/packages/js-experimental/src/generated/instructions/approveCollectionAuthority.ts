@@ -173,7 +173,7 @@ export function getApproveCollectionAuthorityInstructionDataCodec(): Codec<
   );
 }
 
-export function approveCollectionAuthorityInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountCollectionAuthorityRecord extends
     | string
@@ -324,7 +324,7 @@ export type ApproveCollectionAuthorityInputWithSigners<
 };
 
 // Input.
-export type ApproveCollectionAuthorityInputAsync<
+export type ApproveCollectionAuthorityAsyncInput<
   TAccountCollectionAuthorityRecord extends string,
   TAccountNewCollectionAuthority extends string,
   TAccountUpdateAuthority extends string,
@@ -353,7 +353,7 @@ export type ApproveCollectionAuthorityInputAsync<
 };
 
 // Input.
-export type ApproveCollectionAuthorityInputAsyncWithSigners<
+export type ApproveCollectionAuthorityAsyncInputWithSigners<
   TAccountCollectionAuthorityRecord extends string,
   TAccountNewCollectionAuthority extends string,
   TAccountUpdateAuthority extends string,
@@ -382,46 +382,6 @@ export type ApproveCollectionAuthorityInputAsyncWithSigners<
 };
 
 export async function approveCollectionAuthority<
-  TReturn,
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountNewCollectionAuthority extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountPayer extends string,
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      ApproveCollectionAuthorityInstruction<
-        TProgram,
-        TAccountCollectionAuthorityRecord,
-        TAccountNewCollectionAuthority,
-        WritableSignerAccount<TAccountUpdateAuthority> &
-          IAccountSignerMeta<TAccountUpdateAuthority>,
-        WritableSignerAccount<TAccountPayer> &
-          IAccountSignerMeta<TAccountPayer>,
-        TAccountMetadata,
-        TAccountMint,
-        TAccountSystemProgram,
-        TAccountRent
-      >,
-      TReturn
-    >,
-  input: ApproveCollectionAuthorityInput<
-    TAccountCollectionAuthorityRecord,
-    TAccountNewCollectionAuthority,
-    TAccountUpdateAuthority,
-    TAccountPayer,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): Promise<TReturn>;
-export async function approveCollectionAuthority<
   TAccountCollectionAuthorityRecord extends string,
   TAccountNewCollectionAuthority extends string,
   TAccountUpdateAuthority extends string,
@@ -433,7 +393,7 @@ export async function approveCollectionAuthority<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: ApproveCollectionAuthorityInput<
+  input: ApproveCollectionAuthorityAsyncInputWithSigners<
     TAccountCollectionAuthorityRecord,
     TAccountNewCollectionAuthority,
     TAccountUpdateAuthority,
@@ -444,7 +404,7 @@ export async function approveCollectionAuthority<
     TAccountRent
   >
 ): Promise<
-  ApproveCollectionAuthorityInstruction<
+  ApproveCollectionAuthorityInstructionWithSigners<
     TProgram,
     TAccountCollectionAuthorityRecord,
     TAccountNewCollectionAuthority,
@@ -455,9 +415,7 @@ export async function approveCollectionAuthority<
     TAccountMint,
     TAccountSystemProgram,
     TAccountRent
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function approveCollectionAuthority<
   TAccountCollectionAuthorityRecord extends string,
@@ -470,7 +428,8 @@ export async function approveCollectionAuthority<
   TAccountRent extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: ApproveCollectionAuthorityInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: ApproveCollectionAuthorityAsyncInput<
     TAccountCollectionAuthorityRecord,
     TAccountNewCollectionAuthority,
     TAccountUpdateAuthority,
@@ -492,9 +451,77 @@ export async function approveCollectionAuthority<
     TAccountMint,
     TAccountSystemProgram,
     TAccountRent
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function approveCollectionAuthority<
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountNewCollectionAuthority extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: ApproveCollectionAuthorityAsyncInputWithSigners<
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    TAccountUpdateAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  ApproveCollectionAuthorityInstructionWithSigners<
+    TProgram,
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    WritableSignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+>;
+export async function approveCollectionAuthority<
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountNewCollectionAuthority extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: ApproveCollectionAuthorityAsyncInput<
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    TAccountUpdateAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  ApproveCollectionAuthorityInstruction<
+    TProgram,
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    WritableSignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  >
 >;
 export async function approveCollectionAuthority<
   TReturn,
@@ -512,7 +539,7 @@ export async function approveCollectionAuthority<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | ApproveCollectionAuthorityInput<
+    | ApproveCollectionAuthorityAsyncInput<
         TAccountCollectionAuthorityRecord,
         TAccountNewCollectionAuthority,
         TAccountUpdateAuthority,
@@ -522,7 +549,7 @@ export async function approveCollectionAuthority<
         TAccountSystemProgram,
         TAccountRent
       >,
-  rawInput?: ApproveCollectionAuthorityInput<
+  rawInput?: ApproveCollectionAuthorityAsyncInput<
     TAccountCollectionAuthorityRecord,
     TAccountNewCollectionAuthority,
     TAccountUpdateAuthority,
@@ -532,12 +559,7 @@ export async function approveCollectionAuthority<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -545,7 +567,7 @@ export async function approveCollectionAuthority<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as ApproveCollectionAuthorityInput<
+  ) as ApproveCollectionAuthorityAsyncInput<
     TAccountCollectionAuthorityRecord,
     TAccountNewCollectionAuthority,
     TAccountUpdateAuthority,
@@ -570,7 +592,7 @@ export async function approveCollectionAuthority<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof approveCollectionAuthorityInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountCollectionAuthorityRecord,
       TAccountNewCollectionAuthority,
@@ -622,17 +644,10 @@ export async function approveCollectionAuthority<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...approveCollectionAuthorityInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

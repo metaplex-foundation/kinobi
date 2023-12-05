@@ -134,7 +134,7 @@ export type CreateReservationListInstructionWithSigners<
     ]
   >;
 
-export function createReservationListInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountReservationList extends string | IAccountMeta<string> = string,
   TAccountPayer extends string | IAccountMeta<string> = string,
@@ -278,7 +278,7 @@ export type CreateReservationListInputWithSigners<
 };
 
 // Input.
-export type CreateReservationListInputAsync<
+export type CreateReservationListAsyncInput<
   TAccountReservationList extends string,
   TAccountPayer extends string,
   TAccountUpdateAuthority extends string,
@@ -307,7 +307,7 @@ export type CreateReservationListInputAsync<
 };
 
 // Input.
-export type CreateReservationListInputAsyncWithSigners<
+export type CreateReservationListAsyncInputWithSigners<
   TAccountReservationList extends string,
   TAccountPayer extends string,
   TAccountUpdateAuthority extends string,
@@ -336,46 +336,6 @@ export type CreateReservationListInputAsyncWithSigners<
 };
 
 export async function createReservationList<
-  TReturn,
-  TAccountReservationList extends string,
-  TAccountPayer extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMasterEdition extends string,
-  TAccountResource extends string,
-  TAccountMetadata extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      CreateReservationListInstruction<
-        TProgram,
-        TAccountReservationList,
-        ReadonlySignerAccount<TAccountPayer> &
-          IAccountSignerMeta<TAccountPayer>,
-        ReadonlySignerAccount<TAccountUpdateAuthority> &
-          IAccountSignerMeta<TAccountUpdateAuthority>,
-        TAccountMasterEdition,
-        TAccountResource,
-        TAccountMetadata,
-        TAccountSystemProgram,
-        TAccountRent
-      >,
-      TReturn
-    >,
-  input: CreateReservationListInput<
-    TAccountReservationList,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountMasterEdition,
-    TAccountResource,
-    TAccountMetadata,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): Promise<TReturn>;
-export async function createReservationList<
   TAccountReservationList extends string,
   TAccountPayer extends string,
   TAccountUpdateAuthority extends string,
@@ -387,7 +347,7 @@ export async function createReservationList<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: CreateReservationListInput<
+  input: CreateReservationListAsyncInputWithSigners<
     TAccountReservationList,
     TAccountPayer,
     TAccountUpdateAuthority,
@@ -398,7 +358,7 @@ export async function createReservationList<
     TAccountRent
   >
 ): Promise<
-  CreateReservationListInstruction<
+  CreateReservationListInstructionWithSigners<
     TProgram,
     TAccountReservationList,
     ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
@@ -409,9 +369,7 @@ export async function createReservationList<
     TAccountMetadata,
     TAccountSystemProgram,
     TAccountRent
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function createReservationList<
   TAccountReservationList extends string,
@@ -424,7 +382,8 @@ export async function createReservationList<
   TAccountRent extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: CreateReservationListInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: CreateReservationListAsyncInput<
     TAccountReservationList,
     TAccountPayer,
     TAccountUpdateAuthority,
@@ -446,9 +405,77 @@ export async function createReservationList<
     TAccountMetadata,
     TAccountSystemProgram,
     TAccountRent
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function createReservationList<
+  TAccountReservationList extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMasterEdition extends string,
+  TAccountResource extends string,
+  TAccountMetadata extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: CreateReservationListAsyncInputWithSigners<
+    TAccountReservationList,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountMasterEdition,
+    TAccountResource,
+    TAccountMetadata,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  CreateReservationListInstructionWithSigners<
+    TProgram,
+    TAccountReservationList,
+    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    TAccountMasterEdition,
+    TAccountResource,
+    TAccountMetadata,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+>;
+export async function createReservationList<
+  TAccountReservationList extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMasterEdition extends string,
+  TAccountResource extends string,
+  TAccountMetadata extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: CreateReservationListAsyncInput<
+    TAccountReservationList,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountMasterEdition,
+    TAccountResource,
+    TAccountMetadata,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  CreateReservationListInstruction<
+    TProgram,
+    TAccountReservationList,
+    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    TAccountMasterEdition,
+    TAccountResource,
+    TAccountMetadata,
+    TAccountSystemProgram,
+    TAccountRent
+  >
 >;
 export async function createReservationList<
   TReturn,
@@ -466,7 +493,7 @@ export async function createReservationList<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | CreateReservationListInput<
+    | CreateReservationListAsyncInput<
         TAccountReservationList,
         TAccountPayer,
         TAccountUpdateAuthority,
@@ -476,7 +503,7 @@ export async function createReservationList<
         TAccountSystemProgram,
         TAccountRent
       >,
-  rawInput?: CreateReservationListInput<
+  rawInput?: CreateReservationListAsyncInput<
     TAccountReservationList,
     TAccountPayer,
     TAccountUpdateAuthority,
@@ -486,12 +513,7 @@ export async function createReservationList<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -499,7 +521,7 @@ export async function createReservationList<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as CreateReservationListInput<
+  ) as CreateReservationListAsyncInput<
     TAccountReservationList,
     TAccountPayer,
     TAccountUpdateAuthority,
@@ -524,7 +546,7 @@ export async function createReservationList<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof createReservationListInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountReservationList,
       TAccountPayer,
@@ -580,18 +602,11 @@ export async function createReservationList<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...createReservationListInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as CreateReservationListInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as CreateReservationListInstructionDataArgs,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

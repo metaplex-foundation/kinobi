@@ -126,7 +126,7 @@ export function getSetMintAuthorityInstructionDataCodec(): Codec<
   );
 }
 
-export function setMintAuthorityInstruction<
+function _createInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
@@ -191,7 +191,7 @@ export type SetMintAuthorityInputWithSigners<
 };
 
 // Input.
-export type SetMintAuthorityInputAsync<
+export type SetMintAuthorityAsyncInput<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountMintAuthority extends string
@@ -202,7 +202,7 @@ export type SetMintAuthorityInputAsync<
 };
 
 // Input.
-export type SetMintAuthorityInputAsyncWithSigners<
+export type SetMintAuthorityAsyncInputWithSigners<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountMintAuthority extends string
@@ -213,53 +213,26 @@ export type SetMintAuthorityInputAsyncWithSigners<
 };
 
 export async function setMintAuthority<
-  TReturn,
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TAccountMintAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      SetMintAuthorityInstruction<
-        TProgram,
-        TAccountCandyMachine,
-        ReadonlySignerAccount<TAccountAuthority> &
-          IAccountSignerMeta<TAccountAuthority>,
-        ReadonlySignerAccount<TAccountMintAuthority> &
-          IAccountSignerMeta<TAccountMintAuthority>
-      >,
-      TReturn
-    >,
-  input: SetMintAuthorityInput<
-    TAccountCandyMachine,
-    TAccountAuthority,
-    TAccountMintAuthority
-  >
-): Promise<TReturn>;
-export async function setMintAuthority<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountMintAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: SetMintAuthorityInput<
+  input: SetMintAuthorityAsyncInputWithSigners<
     TAccountCandyMachine,
     TAccountAuthority,
     TAccountMintAuthority
   >
 ): Promise<
-  SetMintAuthorityInstruction<
+  SetMintAuthorityInstructionWithSigners<
     TProgram,
     TAccountCandyMachine,
     ReadonlySignerAccount<TAccountAuthority> &
       IAccountSignerMeta<TAccountAuthority>,
     ReadonlySignerAccount<TAccountMintAuthority> &
       IAccountSignerMeta<TAccountMintAuthority>
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function setMintAuthority<
   TAccountCandyMachine extends string,
@@ -267,7 +240,8 @@ export async function setMintAuthority<
   TAccountMintAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  input: SetMintAuthorityInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetMintAuthorityAsyncInput<
     TAccountCandyMachine,
     TAccountAuthority,
     TAccountMintAuthority
@@ -280,9 +254,49 @@ export async function setMintAuthority<
       IAccountSignerMeta<TAccountAuthority>,
     ReadonlySignerAccount<TAccountMintAuthority> &
       IAccountSignerMeta<TAccountMintAuthority>
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function setMintAuthority<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TAccountMintAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: SetMintAuthorityAsyncInputWithSigners<
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountMintAuthority
+  >
+): Promise<
+  SetMintAuthorityInstructionWithSigners<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>
+  >
+>;
+export async function setMintAuthority<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TAccountMintAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: SetMintAuthorityAsyncInput<
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountMintAuthority
+  >
+): Promise<
+  SetMintAuthorityInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>
+  >
 >;
 export async function setMintAuthority<
   TReturn,
@@ -295,22 +309,17 @@ export async function setMintAuthority<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | SetMintAuthorityInput<
+    | SetMintAuthorityAsyncInput<
         TAccountCandyMachine,
         TAccountAuthority,
         TAccountMintAuthority
       >,
-  rawInput?: SetMintAuthorityInput<
+  rawInput?: SetMintAuthorityAsyncInput<
     TAccountCandyMachine,
     TAccountAuthority,
     TAccountMintAuthority
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -318,7 +327,7 @@ export async function setMintAuthority<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as SetMintAuthorityInput<
+  ) as SetMintAuthorityAsyncInput<
     TAccountCandyMachine,
     TAccountAuthority,
     TAccountMintAuthority
@@ -338,7 +347,7 @@ export async function setMintAuthority<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof setMintAuthorityInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountCandyMachine,
       TAccountAuthority,
@@ -364,17 +373,10 @@ export async function setMintAuthority<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...setMintAuthorityInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

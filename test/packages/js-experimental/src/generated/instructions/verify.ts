@@ -153,7 +153,7 @@ export function getVerifyInstructionDataCodec(): Codec<
   );
 }
 
-export function verifyInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
@@ -267,7 +267,7 @@ export type VerifyInputWithSigners<
 };
 
 // Input.
-export type VerifyInputAsync<
+export type VerifyAsyncInput<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -288,7 +288,7 @@ export type VerifyInputAsync<
 };
 
 // Input.
-export type VerifyInputAsyncWithSigners<
+export type VerifyAsyncInputWithSigners<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -309,37 +309,6 @@ export type VerifyInputAsyncWithSigners<
 };
 
 export async function verify<
-  TReturn,
-  TAccountMetadata extends string,
-  TAccountCollectionAuthority extends string,
-  TAccountPayer extends string,
-  TAccountAuthorizationRules extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      VerifyInstruction<
-        TProgram,
-        TAccountMetadata,
-        WritableSignerAccount<TAccountCollectionAuthority> &
-          IAccountSignerMeta<TAccountCollectionAuthority>,
-        WritableSignerAccount<TAccountPayer> &
-          IAccountSignerMeta<TAccountPayer>,
-        TAccountAuthorizationRules,
-        TAccountAuthorizationRulesProgram
-      >,
-      TReturn
-    >,
-  input: VerifyInput<
-    TAccountMetadata,
-    TAccountCollectionAuthority,
-    TAccountPayer,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
-): Promise<TReturn>;
-export async function verify<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -348,7 +317,7 @@ export async function verify<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: VerifyInput<
+  input: VerifyAsyncInputWithSigners<
     TAccountMetadata,
     TAccountCollectionAuthority,
     TAccountPayer,
@@ -356,7 +325,7 @@ export async function verify<
     TAccountAuthorizationRulesProgram
   >
 ): Promise<
-  VerifyInstruction<
+  VerifyInstructionWithSigners<
     TProgram,
     TAccountMetadata,
     WritableSignerAccount<TAccountCollectionAuthority> &
@@ -364,9 +333,7 @@ export async function verify<
     WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function verify<
   TAccountMetadata extends string,
@@ -376,7 +343,8 @@ export async function verify<
   TAccountAuthorizationRulesProgram extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: VerifyInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: VerifyAsyncInput<
     TAccountMetadata,
     TAccountCollectionAuthority,
     TAccountPayer,
@@ -392,9 +360,59 @@ export async function verify<
     WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function verify<
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountAuthorizationRules extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: VerifyAsyncInputWithSigners<
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >
+): Promise<
+  VerifyInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    WritableSignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >
+>;
+export async function verify<
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountAuthorizationRules extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: VerifyAsyncInput<
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >
+): Promise<
+  VerifyInstruction<
+    TProgram,
+    TAccountMetadata,
+    WritableSignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >
 >;
 export async function verify<
   TReturn,
@@ -409,32 +427,29 @@ export async function verify<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | VerifyInput<
+    | VerifyAsyncInput<
         TAccountMetadata,
         TAccountCollectionAuthority,
         TAccountPayer,
         TAccountAuthorizationRules,
         TAccountAuthorizationRulesProgram
       >,
-  rawInput?: VerifyInput<
+  rawInput?: VerifyAsyncInput<
     TAccountMetadata,
     TAccountCollectionAuthority,
     TAccountPayer,
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>);
-  const input = (rawInput === undefined ? rawContext : rawInput) as VerifyInput<
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as VerifyAsyncInput<
     TAccountMetadata,
     TAccountCollectionAuthority,
     TAccountPayer,
@@ -456,7 +471,7 @@ export async function verify<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof verifyInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountMetadata,
       TAccountCollectionAuthority,
@@ -498,18 +513,11 @@ export async function verify<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...verifyInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as VerifyInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as VerifyInstructionDataArgs,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

@@ -201,7 +201,7 @@ export function getMigrateInstructionDataCodec(): Codec<
   );
 }
 
-export function migrateInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
@@ -388,7 +388,7 @@ export type MigrateInputWithSigners<
 };
 
 // Input.
-export type MigrateInputAsync<
+export type MigrateAsyncInput<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountTokenAccount extends string,
@@ -424,7 +424,7 @@ export type MigrateInputAsync<
 };
 
 // Input.
-export type MigrateInputAsyncWithSigners<
+export type MigrateAsyncInputWithSigners<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountTokenAccount extends string,
@@ -460,51 +460,6 @@ export type MigrateInputAsyncWithSigners<
 };
 
 export async function migrate<
-  TReturn,
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountTokenAccount extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      MigrateInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountMasterEdition,
-        TAccountTokenAccount,
-        TAccountMint,
-        ReadonlySignerAccount<TAccountUpdateAuthority> &
-          IAccountSignerMeta<TAccountUpdateAuthority>,
-        TAccountCollectionMetadata,
-        TAccountTokenProgram,
-        TAccountSystemProgram,
-        TAccountSysvarInstructions,
-        TAccountAuthorizationRules
-      >,
-      TReturn
-    >,
-  input: MigrateInput<
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountTokenAccount,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountCollectionMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthorizationRules
-  >
-): Promise<TReturn>;
-export async function migrate<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountTokenAccount extends string,
@@ -518,7 +473,7 @@ export async function migrate<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: MigrateInput<
+  input: MigrateAsyncInputWithSigners<
     TAccountMetadata,
     TAccountMasterEdition,
     TAccountTokenAccount,
@@ -531,7 +486,7 @@ export async function migrate<
     TAccountAuthorizationRules
   >
 ): Promise<
-  MigrateInstruction<
+  MigrateInstructionWithSigners<
     TProgram,
     TAccountMetadata,
     TAccountMasterEdition,
@@ -544,9 +499,7 @@ export async function migrate<
     TAccountSystemProgram,
     TAccountSysvarInstructions,
     TAccountAuthorizationRules
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function migrate<
   TAccountMetadata extends string,
@@ -561,7 +514,8 @@ export async function migrate<
   TAccountAuthorizationRules extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: MigrateInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: MigrateAsyncInput<
     TAccountMetadata,
     TAccountMasterEdition,
     TAccountTokenAccount,
@@ -587,9 +541,89 @@ export async function migrate<
     TAccountSystemProgram,
     TAccountSysvarInstructions,
     TAccountAuthorizationRules
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function migrate<
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: MigrateAsyncInputWithSigners<
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountCollectionMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  MigrateInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenAccount,
+    TAccountMint,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    TAccountCollectionMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRules
+  >
+>;
+export async function migrate<
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: MigrateAsyncInput<
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountCollectionMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  MigrateInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenAccount,
+    TAccountMint,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    TAccountCollectionMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRules
+  >
 >;
 export async function migrate<
   TReturn,
@@ -609,7 +643,7 @@ export async function migrate<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | MigrateInput<
+    | MigrateAsyncInput<
         TAccountMetadata,
         TAccountMasterEdition,
         TAccountTokenAccount,
@@ -621,7 +655,7 @@ export async function migrate<
         TAccountSysvarInstructions,
         TAccountAuthorizationRules
       >,
-  rawInput?: MigrateInput<
+  rawInput?: MigrateAsyncInput<
     TAccountMetadata,
     TAccountMasterEdition,
     TAccountTokenAccount,
@@ -633,12 +667,7 @@ export async function migrate<
     TAccountSysvarInstructions,
     TAccountAuthorizationRules
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -646,7 +675,7 @@ export async function migrate<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as MigrateInput<
+  ) as MigrateAsyncInput<
     TAccountMetadata,
     TAccountMasterEdition,
     TAccountTokenAccount,
@@ -673,7 +702,7 @@ export async function migrate<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof migrateInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountMetadata,
       TAccountMasterEdition,
@@ -750,18 +779,11 @@ export async function migrate<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...migrateInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as MigrateInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as MigrateInstructionDataArgs,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

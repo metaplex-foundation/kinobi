@@ -129,7 +129,7 @@ export function getSetTokenStandardInstructionDataCodec(): Codec<
   );
 }
 
-export function setTokenStandardInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
@@ -217,7 +217,7 @@ export type SetTokenStandardInputWithSigners<
 };
 
 // Input.
-export type SetTokenStandardInputAsync<
+export type SetTokenStandardAsyncInput<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TAccountMint extends string,
@@ -234,7 +234,7 @@ export type SetTokenStandardInputAsync<
 };
 
 // Input.
-export type SetTokenStandardInputAsyncWithSigners<
+export type SetTokenStandardAsyncInputWithSigners<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TAccountMint extends string,
@@ -251,33 +251,6 @@ export type SetTokenStandardInputAsyncWithSigners<
 };
 
 export async function setTokenStandard<
-  TReturn,
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMint extends string,
-  TAccountEdition extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      SetTokenStandardInstruction<
-        TProgram,
-        TAccountMetadata,
-        WritableSignerAccount<TAccountUpdateAuthority> &
-          IAccountSignerMeta<TAccountUpdateAuthority>,
-        TAccountMint,
-        TAccountEdition
-      >,
-      TReturn
-    >,
-  input: SetTokenStandardInput<
-    TAccountMetadata,
-    TAccountUpdateAuthority,
-    TAccountMint,
-    TAccountEdition
-  >
-): Promise<TReturn>;
-export async function setTokenStandard<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TAccountMint extends string,
@@ -285,23 +258,21 @@ export async function setTokenStandard<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: SetTokenStandardInput<
+  input: SetTokenStandardAsyncInputWithSigners<
     TAccountMetadata,
     TAccountUpdateAuthority,
     TAccountMint,
     TAccountEdition
   >
 ): Promise<
-  SetTokenStandardInstruction<
+  SetTokenStandardInstructionWithSigners<
     TProgram,
     TAccountMetadata,
     WritableSignerAccount<TAccountUpdateAuthority> &
       IAccountSignerMeta<TAccountUpdateAuthority>,
     TAccountMint,
     TAccountEdition
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function setTokenStandard<
   TAccountMetadata extends string,
@@ -310,7 +281,8 @@ export async function setTokenStandard<
   TAccountEdition extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: SetTokenStandardInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetTokenStandardAsyncInput<
     TAccountMetadata,
     TAccountUpdateAuthority,
     TAccountMint,
@@ -324,9 +296,53 @@ export async function setTokenStandard<
       IAccountSignerMeta<TAccountUpdateAuthority>,
     TAccountMint,
     TAccountEdition
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function setTokenStandard<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMint extends string,
+  TAccountEdition extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: SetTokenStandardAsyncInputWithSigners<
+    TAccountMetadata,
+    TAccountUpdateAuthority,
+    TAccountMint,
+    TAccountEdition
+  >
+): Promise<
+  SetTokenStandardInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    WritableSignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    TAccountMint,
+    TAccountEdition
+  >
+>;
+export async function setTokenStandard<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMint extends string,
+  TAccountEdition extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: SetTokenStandardAsyncInput<
+    TAccountMetadata,
+    TAccountUpdateAuthority,
+    TAccountMint,
+    TAccountEdition
+  >
+): Promise<
+  SetTokenStandardInstruction<
+    TProgram,
+    TAccountMetadata,
+    WritableSignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    TAccountMint,
+    TAccountEdition
+  >
 >;
 export async function setTokenStandard<
   TReturn,
@@ -340,24 +356,19 @@ export async function setTokenStandard<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | SetTokenStandardInput<
+    | SetTokenStandardAsyncInput<
         TAccountMetadata,
         TAccountUpdateAuthority,
         TAccountMint,
         TAccountEdition
       >,
-  rawInput?: SetTokenStandardInput<
+  rawInput?: SetTokenStandardAsyncInput<
     TAccountMetadata,
     TAccountUpdateAuthority,
     TAccountMint,
     TAccountEdition
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -365,7 +376,7 @@ export async function setTokenStandard<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as SetTokenStandardInput<
+  ) as SetTokenStandardAsyncInput<
     TAccountMetadata,
     TAccountUpdateAuthority,
     TAccountMint,
@@ -386,7 +397,7 @@ export async function setTokenStandard<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof setTokenStandardInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountMetadata,
       TAccountUpdateAuthority,
@@ -414,17 +425,10 @@ export async function setTokenStandard<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...setTokenStandardInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

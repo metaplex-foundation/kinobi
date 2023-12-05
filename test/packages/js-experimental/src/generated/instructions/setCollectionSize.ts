@@ -149,7 +149,7 @@ export function getSetCollectionSizeInstructionDataCodec(): Codec<
   );
 }
 
-export function setCollectionSizeInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
   TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
@@ -244,7 +244,7 @@ export type SetCollectionSizeInputWithSigners<
 };
 
 // Input.
-export type SetCollectionSizeInputAsync<
+export type SetCollectionSizeAsyncInput<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -262,7 +262,7 @@ export type SetCollectionSizeInputAsync<
 };
 
 // Input.
-export type SetCollectionSizeInputAsyncWithSigners<
+export type SetCollectionSizeAsyncInputWithSigners<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -280,33 +280,6 @@ export type SetCollectionSizeInputAsyncWithSigners<
 };
 
 export async function setCollectionSize<
-  TReturn,
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionAuthority extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      SetCollectionSizeInstruction<
-        TProgram,
-        TAccountCollectionMetadata,
-        WritableSignerAccount<TAccountCollectionAuthority> &
-          IAccountSignerMeta<TAccountCollectionAuthority>,
-        TAccountCollectionMint,
-        TAccountCollectionAuthorityRecord
-      >,
-      TReturn
-    >,
-  input: SetCollectionSizeInput<
-    TAccountCollectionMetadata,
-    TAccountCollectionAuthority,
-    TAccountCollectionMint,
-    TAccountCollectionAuthorityRecord
-  >
-): Promise<TReturn>;
-export async function setCollectionSize<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -314,23 +287,21 @@ export async function setCollectionSize<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: SetCollectionSizeInput<
+  input: SetCollectionSizeAsyncInputWithSigners<
     TAccountCollectionMetadata,
     TAccountCollectionAuthority,
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
   >
 ): Promise<
-  SetCollectionSizeInstruction<
+  SetCollectionSizeInstructionWithSigners<
     TProgram,
     TAccountCollectionMetadata,
     WritableSignerAccount<TAccountCollectionAuthority> &
       IAccountSignerMeta<TAccountCollectionAuthority>,
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function setCollectionSize<
   TAccountCollectionMetadata extends string,
@@ -339,7 +310,8 @@ export async function setCollectionSize<
   TAccountCollectionAuthorityRecord extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: SetCollectionSizeInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetCollectionSizeAsyncInput<
     TAccountCollectionMetadata,
     TAccountCollectionAuthority,
     TAccountCollectionMint,
@@ -353,9 +325,53 @@ export async function setCollectionSize<
       IAccountSignerMeta<TAccountCollectionAuthority>,
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function setCollectionSize<
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: SetCollectionSizeAsyncInputWithSigners<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  SetCollectionSizeInstructionWithSigners<
+    TProgram,
+    TAccountCollectionMetadata,
+    WritableSignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >
+>;
+export async function setCollectionSize<
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: SetCollectionSizeAsyncInput<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  SetCollectionSizeInstruction<
+    TProgram,
+    TAccountCollectionMetadata,
+    WritableSignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >
 >;
 export async function setCollectionSize<
   TReturn,
@@ -369,24 +385,19 @@ export async function setCollectionSize<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | SetCollectionSizeInput<
+    | SetCollectionSizeAsyncInput<
         TAccountCollectionMetadata,
         TAccountCollectionAuthority,
         TAccountCollectionMint,
         TAccountCollectionAuthorityRecord
       >,
-  rawInput?: SetCollectionSizeInput<
+  rawInput?: SetCollectionSizeAsyncInput<
     TAccountCollectionMetadata,
     TAccountCollectionAuthority,
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -394,7 +405,7 @@ export async function setCollectionSize<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as SetCollectionSizeInput<
+  ) as SetCollectionSizeAsyncInput<
     TAccountCollectionMetadata,
     TAccountCollectionAuthority,
     TAccountCollectionMint,
@@ -415,7 +426,7 @@ export async function setCollectionSize<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof setCollectionSizeInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountCollectionMetadata,
       TAccountCollectionAuthority,
@@ -455,18 +466,11 @@ export async function setCollectionSize<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...setCollectionSizeInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as SetCollectionSizeInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as SetCollectionSizeInstructionDataArgs,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

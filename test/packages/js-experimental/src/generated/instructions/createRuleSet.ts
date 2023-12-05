@@ -148,7 +148,7 @@ export function getCreateRuleSetInstructionDataCodec(): Codec<
   );
 }
 
-export function createRuleSetInstruction<
+function _createInstruction<
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountRuleSetPda extends string | IAccountMeta<string> = string,
@@ -230,7 +230,7 @@ export type CreateRuleSetInputWithSigners<
 };
 
 // Input.
-export type CreateRuleSetInputAsync<
+export type CreateRuleSetAsyncInput<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
   TAccountSystemProgram extends string
@@ -246,7 +246,7 @@ export type CreateRuleSetInputAsync<
 };
 
 // Input.
-export type CreateRuleSetInputAsyncWithSigners<
+export type CreateRuleSetAsyncInputWithSigners<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
   TAccountSystemProgram extends string
@@ -262,50 +262,24 @@ export type CreateRuleSetInputAsyncWithSigners<
 };
 
 export async function createRuleSet<
-  TReturn,
-  TAccountPayer extends string,
-  TAccountRuleSetPda extends string,
-  TAccountSystemProgram extends string,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      CreateRuleSetInstruction<
-        TProgram,
-        WritableSignerAccount<TAccountPayer> &
-          IAccountSignerMeta<TAccountPayer>,
-        TAccountRuleSetPda,
-        TAccountSystemProgram
-      >,
-      TReturn
-    >,
-  input: CreateRuleSetInput<
-    TAccountPayer,
-    TAccountRuleSetPda,
-    TAccountSystemProgram
-  >
-): Promise<TReturn>;
-export async function createRuleSet<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
   TAccountSystemProgram extends string,
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: CreateRuleSetInput<
+  input: CreateRuleSetAsyncInputWithSigners<
     TAccountPayer,
     TAccountRuleSetPda,
     TAccountSystemProgram
   >
 ): Promise<
-  CreateRuleSetInstruction<
+  CreateRuleSetInstructionWithSigners<
     TProgram,
     WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountRuleSetPda,
     TAccountSystemProgram
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function createRuleSet<
   TAccountPayer extends string,
@@ -313,7 +287,8 @@ export async function createRuleSet<
   TAccountSystemProgram extends string,
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
 >(
-  input: CreateRuleSetInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: CreateRuleSetAsyncInput<
     TAccountPayer,
     TAccountRuleSetPda,
     TAccountSystemProgram
@@ -324,9 +299,45 @@ export async function createRuleSet<
     WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
     TAccountRuleSetPda,
     TAccountSystemProgram
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function createRuleSet<
+  TAccountPayer extends string,
+  TAccountRuleSetPda extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+>(
+  input: CreateRuleSetAsyncInputWithSigners<
+    TAccountPayer,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  >
+): Promise<
+  CreateRuleSetInstructionWithSigners<
+    TProgram,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  >
+>;
+export async function createRuleSet<
+  TAccountPayer extends string,
+  TAccountRuleSetPda extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+>(
+  input: CreateRuleSetAsyncInput<
+    TAccountPayer,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  >
+): Promise<
+  CreateRuleSetInstruction<
+    TProgram,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  >
 >;
 export async function createRuleSet<
   TReturn,
@@ -339,22 +350,17 @@ export async function createRuleSet<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | CreateRuleSetInput<
+    | CreateRuleSetAsyncInput<
         TAccountPayer,
         TAccountRuleSetPda,
         TAccountSystemProgram
       >,
-  rawInput?: CreateRuleSetInput<
+  rawInput?: CreateRuleSetAsyncInput<
     TAccountPayer,
     TAccountRuleSetPda,
     TAccountSystemProgram
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -362,7 +368,7 @@ export async function createRuleSet<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as CreateRuleSetInput<
+  ) as CreateRuleSetAsyncInput<
     TAccountPayer,
     TAccountRuleSetPda,
     TAccountSystemProgram
@@ -382,7 +388,7 @@ export async function createRuleSet<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof createRuleSetInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountPayer,
       TAccountRuleSetPda,
@@ -426,18 +432,11 @@ export async function createRuleSet<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...createRuleSetInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as CreateRuleSetInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as CreateRuleSetInstructionDataArgs,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

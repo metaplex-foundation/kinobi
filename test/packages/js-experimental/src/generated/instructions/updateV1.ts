@@ -378,7 +378,7 @@ export function getUpdateV1InstructionDataCodec(): Codec<
   );
 }
 
-export function updateV1Instruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountAuthority extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,
@@ -605,7 +605,7 @@ export type UpdateV1InputWithSigners<
 };
 
 // Input.
-export type UpdateV1InputAsync<
+export type UpdateV1AsyncInput<
   TAccountAuthority extends string,
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -652,7 +652,7 @@ export type UpdateV1InputAsync<
 };
 
 // Input.
-export type UpdateV1InputAsyncWithSigners<
+export type UpdateV1AsyncInputWithSigners<
   TAccountAuthority extends string,
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -699,51 +699,6 @@ export type UpdateV1InputAsyncWithSigners<
 };
 
 export async function updateV1<
-  TReturn,
-  TAccountAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountMint extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountToken extends string,
-  TAccountDelegateRecord extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      UpdateV1Instruction<
-        TProgram,
-        ReadonlySignerAccount<TAccountAuthority> &
-          IAccountSignerMeta<TAccountAuthority>,
-        TAccountMetadata,
-        TAccountMasterEdition,
-        TAccountMint,
-        TAccountSystemProgram,
-        TAccountSysvarInstructions,
-        TAccountToken,
-        TAccountDelegateRecord,
-        TAccountAuthorizationRulesProgram,
-        TAccountAuthorizationRules
-      >,
-      TReturn
-    >,
-  input: UpdateV1Input<
-    TAccountAuthority,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountToken,
-    TAccountDelegateRecord,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
-): Promise<TReturn>;
-export async function updateV1<
   TAccountAuthority extends string,
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -757,7 +712,7 @@ export async function updateV1<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: UpdateV1Input<
+  input: UpdateV1AsyncInputWithSigners<
     TAccountAuthority,
     TAccountMetadata,
     TAccountMasterEdition,
@@ -770,7 +725,7 @@ export async function updateV1<
     TAccountAuthorizationRules
   >
 ): Promise<
-  UpdateV1Instruction<
+  UpdateV1InstructionWithSigners<
     TProgram,
     ReadonlySignerAccount<TAccountAuthority> &
       IAccountSignerMeta<TAccountAuthority>,
@@ -783,9 +738,7 @@ export async function updateV1<
     TAccountDelegateRecord,
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function updateV1<
   TAccountAuthority extends string,
@@ -800,7 +753,8 @@ export async function updateV1<
   TAccountAuthorizationRules extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: UpdateV1Input<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UpdateV1AsyncInput<
     TAccountAuthority,
     TAccountMetadata,
     TAccountMasterEdition,
@@ -826,9 +780,89 @@ export async function updateV1<
     TAccountDelegateRecord,
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function updateV1<
+  TAccountAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountToken extends string,
+  TAccountDelegateRecord extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: UpdateV1AsyncInputWithSigners<
+    TAccountAuthority,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountToken,
+    TAccountDelegateRecord,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  UpdateV1InstructionWithSigners<
+    TProgram,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountToken,
+    TAccountDelegateRecord,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+>;
+export async function updateV1<
+  TAccountAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountToken extends string,
+  TAccountDelegateRecord extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: UpdateV1AsyncInput<
+    TAccountAuthority,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountToken,
+    TAccountDelegateRecord,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  UpdateV1Instruction<
+    TProgram,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountToken,
+    TAccountDelegateRecord,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
 >;
 export async function updateV1<
   TReturn,
@@ -848,7 +882,7 @@ export async function updateV1<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | UpdateV1Input<
+    | UpdateV1AsyncInput<
         TAccountAuthority,
         TAccountMetadata,
         TAccountMasterEdition,
@@ -860,7 +894,7 @@ export async function updateV1<
         TAccountAuthorizationRulesProgram,
         TAccountAuthorizationRules
       >,
-  rawInput?: UpdateV1Input<
+  rawInput?: UpdateV1AsyncInput<
     TAccountAuthority,
     TAccountMetadata,
     TAccountMasterEdition,
@@ -872,12 +906,7 @@ export async function updateV1<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -885,7 +914,7 @@ export async function updateV1<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as UpdateV1Input<
+  ) as UpdateV1AsyncInput<
     TAccountAuthority,
     TAccountMetadata,
     TAccountMasterEdition,
@@ -912,7 +941,7 @@ export async function updateV1<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof updateV1Instruction<
+    typeof _createInstruction<
       TProgram,
       TAccountAuthority,
       TAccountMetadata,
@@ -978,18 +1007,11 @@ export async function updateV1<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...updateV1Instruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as UpdateV1InstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as UpdateV1InstructionDataArgs,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

@@ -142,7 +142,7 @@ export function getThawDelegatedAccountInstructionDataCodec(): Codec<
   );
 }
 
-export function thawDelegatedAccountInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountDelegate extends string | IAccountMeta<string> = string,
   TAccountTokenAccount extends string | IAccountMeta<string> = string,
@@ -241,7 +241,7 @@ export type ThawDelegatedAccountInputWithSigners<
 };
 
 // Input.
-export type ThawDelegatedAccountInputAsync<
+export type ThawDelegatedAccountAsyncInput<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -261,7 +261,7 @@ export type ThawDelegatedAccountInputAsync<
 };
 
 // Input.
-export type ThawDelegatedAccountInputAsyncWithSigners<
+export type ThawDelegatedAccountAsyncInputWithSigners<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -281,36 +281,6 @@ export type ThawDelegatedAccountInputAsyncWithSigners<
 };
 
 export async function thawDelegatedAccount<
-  TReturn,
-  TAccountDelegate extends string,
-  TAccountTokenAccount extends string,
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountTokenProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      ThawDelegatedAccountInstruction<
-        TProgram,
-        WritableSignerAccount<TAccountDelegate> &
-          IAccountSignerMeta<TAccountDelegate>,
-        TAccountTokenAccount,
-        TAccountEdition,
-        TAccountMint,
-        TAccountTokenProgram
-      >,
-      TReturn
-    >,
-  input: ThawDelegatedAccountInput<
-    TAccountDelegate,
-    TAccountTokenAccount,
-    TAccountEdition,
-    TAccountMint,
-    TAccountTokenProgram
-  >
-): Promise<TReturn>;
-export async function thawDelegatedAccount<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -319,7 +289,7 @@ export async function thawDelegatedAccount<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: ThawDelegatedAccountInput<
+  input: ThawDelegatedAccountAsyncInputWithSigners<
     TAccountDelegate,
     TAccountTokenAccount,
     TAccountEdition,
@@ -327,7 +297,7 @@ export async function thawDelegatedAccount<
     TAccountTokenProgram
   >
 ): Promise<
-  ThawDelegatedAccountInstruction<
+  ThawDelegatedAccountInstructionWithSigners<
     TProgram,
     WritableSignerAccount<TAccountDelegate> &
       IAccountSignerMeta<TAccountDelegate>,
@@ -335,9 +305,7 @@ export async function thawDelegatedAccount<
     TAccountEdition,
     TAccountMint,
     TAccountTokenProgram
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function thawDelegatedAccount<
   TAccountDelegate extends string,
@@ -347,7 +315,8 @@ export async function thawDelegatedAccount<
   TAccountTokenProgram extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: ThawDelegatedAccountInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: ThawDelegatedAccountAsyncInput<
     TAccountDelegate,
     TAccountTokenAccount,
     TAccountEdition,
@@ -363,9 +332,59 @@ export async function thawDelegatedAccount<
     TAccountEdition,
     TAccountMint,
     TAccountTokenProgram
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function thawDelegatedAccount<
+  TAccountDelegate extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountTokenProgram extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: ThawDelegatedAccountAsyncInputWithSigners<
+    TAccountDelegate,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
+): Promise<
+  ThawDelegatedAccountInstructionWithSigners<
+    TProgram,
+    WritableSignerAccount<TAccountDelegate> &
+      IAccountSignerMeta<TAccountDelegate>,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
+>;
+export async function thawDelegatedAccount<
+  TAccountDelegate extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountTokenProgram extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: ThawDelegatedAccountAsyncInput<
+    TAccountDelegate,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
+): Promise<
+  ThawDelegatedAccountInstruction<
+    TProgram,
+    WritableSignerAccount<TAccountDelegate> &
+      IAccountSignerMeta<TAccountDelegate>,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
 >;
 export async function thawDelegatedAccount<
   TReturn,
@@ -380,26 +399,21 @@ export async function thawDelegatedAccount<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | ThawDelegatedAccountInput<
+    | ThawDelegatedAccountAsyncInput<
         TAccountDelegate,
         TAccountTokenAccount,
         TAccountEdition,
         TAccountMint,
         TAccountTokenProgram
       >,
-  rawInput?: ThawDelegatedAccountInput<
+  rawInput?: ThawDelegatedAccountAsyncInput<
     TAccountDelegate,
     TAccountTokenAccount,
     TAccountEdition,
     TAccountMint,
     TAccountTokenProgram
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -407,7 +421,7 @@ export async function thawDelegatedAccount<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as ThawDelegatedAccountInput<
+  ) as ThawDelegatedAccountAsyncInput<
     TAccountDelegate,
     TAccountTokenAccount,
     TAccountEdition,
@@ -429,7 +443,7 @@ export async function thawDelegatedAccount<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof thawDelegatedAccountInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountDelegate,
       TAccountTokenAccount,
@@ -469,17 +483,10 @@ export async function thawDelegatedAccount<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...thawDelegatedAccountInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

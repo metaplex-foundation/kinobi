@@ -42,10 +42,14 @@ export function getInstructionFunctionHighLevelFragment(
   }
 
   const functionName = camelCase(instructionNode.name);
-  const lowLevelFunctionName = `${functionName}Instruction`;
   const typeParamsFragment = getTypeParams(instructionNode, programNode);
-  const instructionTypeFragment = getInstructionType(instructionNode);
-  const inputTypeFragment = getInputType(instructionNode);
+  const instructionTypeFragment = getInstructionType(instructionNode, false);
+  const instructionTypeWithSignersFragment = getInstructionType(
+    instructionNode,
+    true
+  );
+  const inputTypeFragment = getInputType(instructionNode, false);
+  const inputTypeWithSignersFragment = getInputType(instructionNode, true);
   const customGeneratedInstruction = `CustomGeneratedInstruction<${instructionTypeFragment.render}, TReturn>`;
   const renamedArgsText = [...renamedArgs.entries()]
     .map(([k, v]) => `${k}: input.${v}`)
@@ -79,10 +83,11 @@ export function getInstructionFunctionHighLevelFragment(
       hasAnyArgs,
       argsType: argsTypeFragment,
       functionName,
-      lowLevelFunctionName,
       typeParams: typeParamsFragment,
       instructionType: instructionTypeFragment,
+      instructionTypeWithSigners: instructionTypeWithSignersFragment,
       inputType: inputTypeFragment,
+      inputTypeWithSigners: inputTypeWithSignersFragment,
       context: contextFragment,
       renamedArgs: renamedArgsText,
       resolvedInputs: resolvedInputsFragment,
@@ -94,7 +99,9 @@ export function getInstructionFunctionHighLevelFragment(
     .mergeImportsWith(
       typeParamsFragment,
       instructionTypeFragment,
+      instructionTypeWithSignersFragment,
       inputTypeFragment,
+      inputTypeWithSignersFragment,
       contextFragment,
       resolvedInputsFragment,
       remainingAccountsFragment,
@@ -130,8 +137,13 @@ function getTypeParams(
   return fragment(typeParams.filter((x) => !!x).join(', '));
 }
 
-function getInstructionType(instructionNode: nodes.InstructionNode): Fragment {
-  const instructionTypeName = pascalCase(`${instructionNode.name}Instruction`);
+function getInstructionType(
+  instructionNode: nodes.InstructionNode,
+  withSigners: boolean
+): Fragment {
+  const instructionTypeName = pascalCase(
+    `${instructionNode.name}Instruction${withSigners ? 'WithSigners' : ''}`
+  );
   const accountTypeParamsFragments = instructionNode.accounts.map((account) => {
     const typeParam = `TAccount${pascalCase(account.name)}`;
     const camelName = camelCase(account.name);
@@ -165,8 +177,13 @@ function getInstructionType(instructionNode: nodes.InstructionNode): Fragment {
   ).mapRender((r) => `${instructionTypeName}<${r}>`);
 }
 
-function getInputType(instructionNode: nodes.InstructionNode): Fragment {
-  const inputTypeName = pascalCase(`${instructionNode.name}Input`);
+function getInputType(
+  instructionNode: nodes.InstructionNode,
+  withSigners: boolean
+): Fragment {
+  const inputTypeName = pascalCase(
+    `${instructionNode.name}AsyncInput${withSigners ? 'WithSigners' : ''}`
+  );
   if (instructionNode.accounts.length === 0) return fragment(inputTypeName);
   const accountTypeParams = instructionNode.accounts
     .map((account) => `TAccount${pascalCase(account.name)}`)

@@ -112,7 +112,7 @@ export function getSignMetadataInstructionDataCodec(): Codec<
   );
 }
 
-export function signMetadataInstruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountCreator extends string | IAccountMeta<string> = string,
@@ -168,7 +168,7 @@ export type SignMetadataInputWithSigners<
 };
 
 // Input.
-export type SignMetadataInputAsync<
+export type SignMetadataAsyncInput<
   TAccountMetadata extends string,
   TAccountCreator extends string
 > = {
@@ -179,7 +179,7 @@ export type SignMetadataInputAsync<
 };
 
 // Input.
-export type SignMetadataInputAsyncWithSigners<
+export type SignMetadataAsyncInputWithSigners<
   TAccountMetadata extends string,
   TAccountCreator extends string
 > = {
@@ -190,53 +190,58 @@ export type SignMetadataInputAsyncWithSigners<
 };
 
 export async function signMetadata<
-  TReturn,
-  TAccountMetadata extends string,
-  TAccountCreator extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      SignMetadataInstruction<
-        TProgram,
-        TAccountMetadata,
-        ReadonlySignerAccount<TAccountCreator> &
-          IAccountSignerMeta<TAccountCreator>
-      >,
-      TReturn
-    >,
-  input: SignMetadataInput<TAccountMetadata, TAccountCreator>
-): Promise<TReturn>;
-export async function signMetadata<
   TAccountMetadata extends string,
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: SignMetadataInput<TAccountMetadata, TAccountCreator>
+  input: SignMetadataAsyncInputWithSigners<TAccountMetadata, TAccountCreator>
 ): Promise<
-  SignMetadataInstruction<
+  SignMetadataInstructionWithSigners<
     TProgram,
     TAccountMetadata,
     ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function signMetadata<
   TAccountMetadata extends string,
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: SignMetadataInput<TAccountMetadata, TAccountCreator>
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SignMetadataAsyncInput<TAccountMetadata, TAccountCreator>
 ): Promise<
   SignMetadataInstruction<
     TProgram,
     TAccountMetadata,
     ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function signMetadata<
+  TAccountMetadata extends string,
+  TAccountCreator extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: SignMetadataAsyncInputWithSigners<TAccountMetadata, TAccountCreator>
+): Promise<
+  SignMetadataInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
+  >
+>;
+export async function signMetadata<
+  TAccountMetadata extends string,
+  TAccountCreator extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: SignMetadataAsyncInput<TAccountMetadata, TAccountCreator>
+): Promise<
+  SignMetadataInstruction<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
+  >
 >;
 export async function signMetadata<
   TReturn,
@@ -248,14 +253,9 @@ export async function signMetadata<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | SignMetadataInput<TAccountMetadata, TAccountCreator>,
-  rawInput?: SignMetadataInput<TAccountMetadata, TAccountCreator>
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+    | SignMetadataAsyncInput<TAccountMetadata, TAccountCreator>,
+  rawInput?: SignMetadataAsyncInput<TAccountMetadata, TAccountCreator>
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -263,7 +263,7 @@ export async function signMetadata<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as SignMetadataInput<TAccountMetadata, TAccountCreator>;
+  ) as SignMetadataAsyncInput<TAccountMetadata, TAccountCreator>;
 
   // Program address.
   const defaultProgramAddress =
@@ -279,7 +279,7 @@ export async function signMetadata<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof signMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>
+    typeof _createInstruction<TProgram, TAccountMetadata, TAccountCreator>
   >[0];
   const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
@@ -299,17 +299,10 @@ export async function signMetadata<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...signMetadataInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

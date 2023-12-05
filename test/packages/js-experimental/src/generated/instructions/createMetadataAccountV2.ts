@@ -183,7 +183,7 @@ export function getCreateMetadataAccountV2InstructionDataCodec(): Codec<
   );
 }
 
-export function createMetadataAccountV2Instruction<
+function _createInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
@@ -319,7 +319,7 @@ export type CreateMetadataAccountV2InputWithSigners<
 };
 
 // Input.
-export type CreateMetadataAccountV2InputAsync<
+export type CreateMetadataAccountV2AsyncInput<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountMintAuthority extends string,
@@ -347,7 +347,7 @@ export type CreateMetadataAccountV2InputAsync<
 };
 
 // Input.
-export type CreateMetadataAccountV2InputAsyncWithSigners<
+export type CreateMetadataAccountV2AsyncInputWithSigners<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountMintAuthority extends string,
@@ -375,43 +375,6 @@ export type CreateMetadataAccountV2InputAsyncWithSigners<
 };
 
 export async function createMetadataAccountV2<
-  TReturn,
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      CreateMetadataAccountV2Instruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountMint,
-        ReadonlySignerAccount<TAccountMintAuthority> &
-          IAccountSignerMeta<TAccountMintAuthority>,
-        WritableSignerAccount<TAccountPayer> &
-          IAccountSignerMeta<TAccountPayer>,
-        TAccountUpdateAuthority,
-        TAccountSystemProgram,
-        TAccountRent
-      >,
-      TReturn
-    >,
-  input: CreateMetadataAccountV2Input<
-    TAccountMetadata,
-    TAccountMint,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): Promise<TReturn>;
-export async function createMetadataAccountV2<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountMintAuthority extends string,
@@ -422,7 +385,7 @@ export async function createMetadataAccountV2<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: CreateMetadataAccountV2Input<
+  input: CreateMetadataAccountV2AsyncInputWithSigners<
     TAccountMetadata,
     TAccountMint,
     TAccountMintAuthority,
@@ -432,7 +395,7 @@ export async function createMetadataAccountV2<
     TAccountRent
   >
 ): Promise<
-  CreateMetadataAccountV2Instruction<
+  CreateMetadataAccountV2InstructionWithSigners<
     TProgram,
     TAccountMetadata,
     TAccountMint,
@@ -442,9 +405,7 @@ export async function createMetadataAccountV2<
     TAccountUpdateAuthority,
     TAccountSystemProgram,
     TAccountRent
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function createMetadataAccountV2<
   TAccountMetadata extends string,
@@ -456,7 +417,8 @@ export async function createMetadataAccountV2<
   TAccountRent extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  input: CreateMetadataAccountV2Input<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: CreateMetadataAccountV2AsyncInput<
     TAccountMetadata,
     TAccountMint,
     TAccountMintAuthority,
@@ -476,9 +438,71 @@ export async function createMetadataAccountV2<
     TAccountUpdateAuthority,
     TAccountSystemProgram,
     TAccountRent
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function createMetadataAccountV2<
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: CreateMetadataAccountV2AsyncInputWithSigners<
+    TAccountMetadata,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  CreateMetadataAccountV2InstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    TAccountMint,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+>;
+export async function createMetadataAccountV2<
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: CreateMetadataAccountV2AsyncInput<
+    TAccountMetadata,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  CreateMetadataAccountV2Instruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountMint,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountRent
+  >
 >;
 export async function createMetadataAccountV2<
   TReturn,
@@ -495,7 +519,7 @@ export async function createMetadataAccountV2<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | CreateMetadataAccountV2Input<
+    | CreateMetadataAccountV2AsyncInput<
         TAccountMetadata,
         TAccountMint,
         TAccountMintAuthority,
@@ -504,7 +528,7 @@ export async function createMetadataAccountV2<
         TAccountSystemProgram,
         TAccountRent
       >,
-  rawInput?: CreateMetadataAccountV2Input<
+  rawInput?: CreateMetadataAccountV2AsyncInput<
     TAccountMetadata,
     TAccountMint,
     TAccountMintAuthority,
@@ -513,12 +537,7 @@ export async function createMetadataAccountV2<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -526,7 +545,7 @@ export async function createMetadataAccountV2<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as CreateMetadataAccountV2Input<
+  ) as CreateMetadataAccountV2AsyncInput<
     TAccountMetadata,
     TAccountMint,
     TAccountMintAuthority,
@@ -550,7 +569,7 @@ export async function createMetadataAccountV2<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof createMetadataAccountV2Instruction<
+    typeof _createInstruction<
       TProgram,
       TAccountMetadata,
       TAccountMint,
@@ -600,18 +619,11 @@ export async function createMetadataAccountV2<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...createMetadataAccountV2Instruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as CreateMetadataAccountV2InstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as CreateMetadataAccountV2InstructionDataArgs,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

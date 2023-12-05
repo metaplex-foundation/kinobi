@@ -242,7 +242,7 @@ export function getSetCollectionInstructionDataCodec(): Codec<
   );
 }
 
-export function setCollectionInstruction<
+function _createInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
@@ -455,7 +455,7 @@ export type SetCollectionInputWithSigners<
 };
 
 // Input.
-export type SetCollectionInputAsync<
+export type SetCollectionAsyncInput<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountAuthorityPda extends string,
@@ -488,7 +488,7 @@ export type SetCollectionInputAsync<
 };
 
 // Input.
-export type SetCollectionInputAsyncWithSigners<
+export type SetCollectionAsyncInputWithSigners<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountAuthorityPda extends string,
@@ -521,65 +521,6 @@ export type SetCollectionInputAsyncWithSigners<
 };
 
 export async function setCollection<
-  TReturn,
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TAccountAuthorityPda extends string,
-  TAccountPayer extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountNewCollectionUpdateAuthority extends string,
-  TAccountNewCollectionMetadata extends string,
-  TAccountNewCollectionMint extends string,
-  TAccountNewCollectionMasterEdition extends string,
-  TAccountNewCollectionAuthorityRecord extends string,
-  TAccountTokenMetadataProgram extends string,
-  TAccountSystemProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      SetCollectionInstruction<
-        TProgram,
-        TAccountCandyMachine,
-        ReadonlySignerAccount<TAccountAuthority> &
-          IAccountSignerMeta<TAccountAuthority>,
-        TAccountAuthorityPda,
-        ReadonlySignerAccount<TAccountPayer> &
-          IAccountSignerMeta<TAccountPayer>,
-        TAccountCollectionMint,
-        TAccountCollectionMetadata,
-        TAccountCollectionAuthorityRecord,
-        WritableSignerAccount<TAccountNewCollectionUpdateAuthority> &
-          IAccountSignerMeta<TAccountNewCollectionUpdateAuthority>,
-        TAccountNewCollectionMetadata,
-        TAccountNewCollectionMint,
-        TAccountNewCollectionMasterEdition,
-        TAccountNewCollectionAuthorityRecord,
-        TAccountTokenMetadataProgram,
-        TAccountSystemProgram
-      >,
-      TReturn
-    >,
-  input: SetCollectionInput<
-    TAccountCandyMachine,
-    TAccountAuthority,
-    TAccountAuthorityPda,
-    TAccountPayer,
-    TAccountCollectionMint,
-    TAccountCollectionMetadata,
-    TAccountCollectionAuthorityRecord,
-    TAccountNewCollectionUpdateAuthority,
-    TAccountNewCollectionMetadata,
-    TAccountNewCollectionMint,
-    TAccountNewCollectionMasterEdition,
-    TAccountNewCollectionAuthorityRecord,
-    TAccountTokenMetadataProgram,
-    TAccountSystemProgram
-  >
-): Promise<TReturn>;
-export async function setCollection<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountAuthorityPda extends string,
@@ -597,7 +538,7 @@ export async function setCollection<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   context: Pick<Context, 'getProgramAddress'>,
-  input: SetCollectionInput<
+  input: SetCollectionAsyncInputWithSigners<
     TAccountCandyMachine,
     TAccountAuthority,
     TAccountAuthorityPda,
@@ -614,7 +555,7 @@ export async function setCollection<
     TAccountSystemProgram
   >
 ): Promise<
-  SetCollectionInstruction<
+  SetCollectionInstructionWithSigners<
     TProgram,
     TAccountCandyMachine,
     ReadonlySignerAccount<TAccountAuthority> &
@@ -632,9 +573,7 @@ export async function setCollection<
     TAccountNewCollectionAuthorityRecord,
     TAccountTokenMetadataProgram,
     TAccountSystemProgram
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
 >;
 export async function setCollection<
   TAccountCandyMachine extends string,
@@ -653,7 +592,8 @@ export async function setCollection<
   TAccountSystemProgram extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  input: SetCollectionInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetCollectionAsyncInput<
     TAccountCandyMachine,
     TAccountAuthority,
     TAccountAuthorityPda,
@@ -688,9 +628,115 @@ export async function setCollection<
     TAccountNewCollectionAuthorityRecord,
     TAccountTokenMetadataProgram,
     TAccountSystemProgram
-  > &
-    IInstructionWithSigners &
-    IInstructionWithBytesCreatedOnChain
+  >
+>;
+export async function setCollection<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TAccountAuthorityPda extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountNewCollectionUpdateAuthority extends string,
+  TAccountNewCollectionMetadata extends string,
+  TAccountNewCollectionMint extends string,
+  TAccountNewCollectionMasterEdition extends string,
+  TAccountNewCollectionAuthorityRecord extends string,
+  TAccountTokenMetadataProgram extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: SetCollectionAsyncInputWithSigners<
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountAuthorityPda,
+    TAccountPayer,
+    TAccountCollectionMint,
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionUpdateAuthority,
+    TAccountNewCollectionMetadata,
+    TAccountNewCollectionMint,
+    TAccountNewCollectionMasterEdition,
+    TAccountNewCollectionAuthorityRecord,
+    TAccountTokenMetadataProgram,
+    TAccountSystemProgram
+  >
+): Promise<
+  SetCollectionInstructionWithSigners<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    TAccountAuthorityPda,
+    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountCollectionMint,
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthorityRecord,
+    WritableSignerAccount<TAccountNewCollectionUpdateAuthority> &
+      IAccountSignerMeta<TAccountNewCollectionUpdateAuthority>,
+    TAccountNewCollectionMetadata,
+    TAccountNewCollectionMint,
+    TAccountNewCollectionMasterEdition,
+    TAccountNewCollectionAuthorityRecord,
+    TAccountTokenMetadataProgram,
+    TAccountSystemProgram
+  >
+>;
+export async function setCollection<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TAccountAuthorityPda extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountNewCollectionUpdateAuthority extends string,
+  TAccountNewCollectionMetadata extends string,
+  TAccountNewCollectionMint extends string,
+  TAccountNewCollectionMasterEdition extends string,
+  TAccountNewCollectionAuthorityRecord extends string,
+  TAccountTokenMetadataProgram extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: SetCollectionAsyncInput<
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountAuthorityPda,
+    TAccountPayer,
+    TAccountCollectionMint,
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionUpdateAuthority,
+    TAccountNewCollectionMetadata,
+    TAccountNewCollectionMint,
+    TAccountNewCollectionMasterEdition,
+    TAccountNewCollectionAuthorityRecord,
+    TAccountTokenMetadataProgram,
+    TAccountSystemProgram
+  >
+): Promise<
+  SetCollectionInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    TAccountAuthorityPda,
+    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountCollectionMint,
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthorityRecord,
+    WritableSignerAccount<TAccountNewCollectionUpdateAuthority> &
+      IAccountSignerMeta<TAccountNewCollectionUpdateAuthority>,
+    TAccountNewCollectionMetadata,
+    TAccountNewCollectionMint,
+    TAccountNewCollectionMasterEdition,
+    TAccountNewCollectionAuthorityRecord,
+    TAccountTokenMetadataProgram,
+    TAccountSystemProgram
+  >
 >;
 export async function setCollection<
   TReturn,
@@ -714,7 +760,7 @@ export async function setCollection<
     | Pick<Context, 'getProgramAddress'>
     | (Pick<Context, 'getProgramAddress'> &
         CustomGeneratedInstruction<IInstruction, TReturn>)
-    | SetCollectionInput<
+    | SetCollectionAsyncInput<
         TAccountCandyMachine,
         TAccountAuthority,
         TAccountAuthorityPda,
@@ -730,7 +776,7 @@ export async function setCollection<
         TAccountTokenMetadataProgram,
         TAccountSystemProgram
       >,
-  rawInput?: SetCollectionInput<
+  rawInput?: SetCollectionAsyncInput<
     TAccountCandyMachine,
     TAccountAuthority,
     TAccountAuthorityPda,
@@ -746,12 +792,7 @@ export async function setCollection<
     TAccountTokenMetadataProgram,
     TAccountSystemProgram
   >
-): Promise<
-  | TReturn
-  | (IInstruction &
-      IInstructionWithSigners &
-      IInstructionWithBytesCreatedOnChain)
-> {
+): Promise<IInstruction> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as
     | Pick<Context, 'getProgramAddress'>
@@ -759,7 +800,7 @@ export async function setCollection<
         CustomGeneratedInstruction<IInstruction, TReturn>);
   const input = (
     rawInput === undefined ? rawContext : rawInput
-  ) as SetCollectionInput<
+  ) as SetCollectionAsyncInput<
     TAccountCandyMachine,
     TAccountAuthority,
     TAccountAuthorityPda,
@@ -790,7 +831,7 @@ export async function setCollection<
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof setCollectionInstruction<
+    typeof _createInstruction<
       TProgram,
       TAccountCandyMachine,
       TAccountAuthority,
@@ -880,17 +921,10 @@ export async function setCollection<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Instruction.
-  const instruction = {
-    ...setCollectionInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
+  return _createInstruction(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress,
     bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(instruction)
-    : instruction;
+    remainingAccounts
+  );
 }

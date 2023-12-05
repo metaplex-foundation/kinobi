@@ -1,4 +1,4 @@
-export function {{ instruction.name | camelCase }}Instruction<
+function _createInstruction<
   TProgram extends string = "{{ program.publicKey }}",
   {% if hasAccounts %}
     {{ accountTypeParams }},
