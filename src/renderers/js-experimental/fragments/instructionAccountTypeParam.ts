@@ -3,12 +3,18 @@ import { InstructionAccountDefault, pascalCase } from '../../../shared';
 import { ImportMap } from '../ImportMap';
 import { Fragment, fragment } from './common';
 
-export function getInstructionAccountTypeParamFragment(
-  instructionNode: nodes.InstructionNode,
-  instructionAccountNode: nodes.InstructionAccountNode,
-  programNode: nodes.ProgramNode,
-  allowAccountMeta: boolean
-): Fragment {
+export function getInstructionAccountTypeParamFragment(scope: {
+  instructionNode: nodes.InstructionNode;
+  instructionAccountNode: nodes.InstructionAccountNode;
+  programNode: nodes.ProgramNode;
+  allowAccountMeta: boolean;
+}): Fragment {
+  const {
+    instructionNode,
+    instructionAccountNode,
+    programNode,
+    allowAccountMeta,
+  } = scope;
   const pascalCaseName = pascalCase(instructionAccountNode.name);
   const typeParam = `TAccount${pascalCaseName}`;
   const accountMeta = allowAccountMeta ? ' | IAccountMeta<string>' : '';

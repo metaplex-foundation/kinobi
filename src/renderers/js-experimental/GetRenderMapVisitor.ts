@@ -241,67 +241,33 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
 
     // Data for fragments.
-    const resolvedInputs = visit(
-      instruction,
-      this.resolvedInstructionInputVisitor
-    );
-    const dataArgsManifest = visit(
-      instruction.dataArgs,
-      this.typeManifestVisitor
-    );
-    const extraArgsManifest = visit(
-      instruction.extraArgs,
-      this.typeManifestVisitor
-    );
-    const renamedArgs = this.getRenamedArgsMap(instruction);
+    const scope = {
+      instructionNode: instruction,
+      programNode: this.program,
+      renamedArgs: this.getRenamedArgsMap(instruction),
+      dataArgsManifest: visit(instruction.dataArgs, this.typeManifestVisitor),
+      extraArgsManifest: visit(instruction.extraArgs, this.typeManifestVisitor),
+      resolvedInputs: visit(instruction, this.resolvedInstructionInputVisitor),
+      asyncResolvers: this.options.asyncResolvers,
+    };
 
     // Fragments.
-    const instructionTypeFragment = getInstructionTypeFragment(
-      instruction,
-      this.program,
-      false
-    );
-    const instructionTypeWithSignersFragment = getInstructionTypeFragment(
-      instruction,
-      this.program,
-      true
-    );
-    const instructionDataFragment = getInstructionDataFragment(
-      instruction,
-      dataArgsManifest
-    );
-    const instructionExtraArgsFragment = getInstructionExtraArgsFragment(
-      instruction,
-      extraArgsManifest
-    );
-    const instructionFunctionLowLevelFragment =
-      getInstructionFunctionLowLevelFragment(
-        instruction,
-        this.program,
-        dataArgsManifest
-      );
+    const instructionTypeFragment = getInstructionTypeFragment({
+      ...scope,
+      withSigners: false,
+    });
+    const instructionTypeWithSignersFragment = getInstructionTypeFragment({
+      ...scope,
+      withSigners: true,
+    });
+    const instructionDataFragment = getInstructionDataFragment(scope);
+    const instructionExtraArgsFragment = getInstructionExtraArgsFragment(scope);
     const instructionFunctionHighLevelAsyncFragment =
-      getInstructionFunctionHighLevelFragment(
-        instruction,
-        this.program,
-        renamedArgs,
-        dataArgsManifest,
-        extraArgsManifest,
-        resolvedInputs,
-        this.options.asyncResolvers,
-        true
-      );
+      getInstructionFunctionHighLevelFragment({ ...scope, useAsync: true });
     const instructionFunctionHighLevelSyncFragment =
-      getInstructionFunctionHighLevelFragment(
-        instruction,
-        this.program,
-        renamedArgs,
-        dataArgsManifest,
-        extraArgsManifest,
-        resolvedInputs,
-        this.options.asyncResolvers,
-        false
-      );
+      getInstructionFunctionHighLevelFragment({ ...scope, useAsync: false });
+    const instructionFunctionLowLevelFragment =
+      getInstructionFunctionLowLevelFragment(scope);
 
     // Imports and interfaces.
     const imports = new ImportMap().mergeWith(
@@ -309,9 +275,9 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       instructionTypeWithSignersFragment,
       instructionDataFragment,
       instructionExtraArgsFragment,
-      instructionFunctionLowLevelFragment,
       instructionFunctionHighLevelAsyncFragment,
-      instructionFunctionHighLevelSyncFragment
+      instructionFunctionHighLevelSyncFragment,
+      instructionFunctionLowLevelFragment
     );
 
     return new RenderMap().add(
@@ -323,9 +289,9 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         instructionTypeWithSignersFragment,
         instructionDataFragment,
         instructionExtraArgsFragment,
-        instructionFunctionLowLevelFragment,
         instructionFunctionHighLevelAsyncFragment,
         instructionFunctionHighLevelSyncFragment,
+        instructionFunctionLowLevelFragment,
       })
     );
   }

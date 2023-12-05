@@ -5,11 +5,12 @@ import { TypeManifest } from '../TypeManifest';
 import { Fragment, fragmentFromTemplate, mergeFragments } from './common';
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
 
-export function getInstructionFunctionLowLevelFragment(
-  instructionNode: nodes.InstructionNode,
-  programNode: nodes.ProgramNode,
-  dataArgsManifest: TypeManifest
-): Fragment {
+export function getInstructionFunctionLowLevelFragment(scope: {
+  instructionNode: nodes.InstructionNode;
+  programNode: nodes.ProgramNode;
+  dataArgsManifest: TypeManifest;
+}): Fragment {
+  const { instructionNode, programNode, dataArgsManifest } = scope;
   const imports = new ImportMap();
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasLegacyOptionalAccounts =
@@ -35,12 +36,11 @@ export function getInstructionFunctionLowLevelFragment(
 
   const accountTypeParamsFragment = mergeFragments(
     instructionNode.accounts.map((account) =>
-      getInstructionAccountTypeParamFragment(
-        instructionNode,
-        account,
-        programNode,
-        true
-      )
+      getInstructionAccountTypeParamFragment({
+        ...scope,
+        instructionAccountNode: account,
+        allowAccountMeta: true,
+      })
     ),
     (renders) => renders.join(', ')
   );

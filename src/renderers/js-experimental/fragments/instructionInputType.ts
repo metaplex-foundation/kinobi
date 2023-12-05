@@ -10,17 +10,29 @@ import { TypeManifest } from '../TypeManifest';
 import { isAsyncDefaultValue } from '../asyncHelpers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
-export function getInstructionInputTypeFragment(
-  instructionNode: nodes.InstructionNode,
-  resolvedInputs: ResolvedInstructionInput[],
-  renamedArgs: Map<string, string>,
-  dataArgsManifest: TypeManifest,
-  extraArgsManifest: TypeManifest,
-  programNode: nodes.ProgramNode,
-  withSigners: boolean,
-  asyncResolvers: string[],
-  useAsync: boolean
-): Fragment {
+export function getInstructionInputTypeFragment(scope: {
+  instructionNode: nodes.InstructionNode;
+  resolvedInputs: ResolvedInstructionInput[];
+  renamedArgs: Map<string, string>;
+  dataArgsManifest: TypeManifest;
+  extraArgsManifest: TypeManifest;
+  programNode: nodes.ProgramNode;
+  withSigners: boolean;
+  asyncResolvers: string[];
+  useAsync: boolean;
+}): Fragment {
+  const {
+    instructionNode,
+    resolvedInputs,
+    renamedArgs,
+    dataArgsManifest,
+    extraArgsManifest,
+    programNode,
+    withSigners,
+    asyncResolvers,
+    useAsync,
+  } = scope;
+
   // Accounts.
   const accountImports = new ImportMap();
   const accounts = instructionNode.accounts.map((account) => {

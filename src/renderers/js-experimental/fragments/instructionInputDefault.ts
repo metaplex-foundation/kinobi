@@ -16,14 +16,22 @@ import {
 } from './common';
 import { getValueNodeFragment } from './valueNode';
 
-export function getInstructionInputDefaultFragment(
-  input: ResolvedInstructionInput,
-  optionalAccountStrategy: 'programId' | 'omitted',
-  asyncResolvers: string[],
-  useAsync: boolean,
-  accountObject: string = 'accounts',
-  argObject: string = 'args'
-): Fragment & { interfaces: ContextMap } {
+export function getInstructionInputDefaultFragment(scope: {
+  input: ResolvedInstructionInput;
+  optionalAccountStrategy: 'programId' | 'omitted';
+  asyncResolvers: string[];
+  useAsync: boolean;
+  accountObject?: string;
+  argObject?: string;
+}): Fragment & { interfaces: ContextMap } {
+  const {
+    input,
+    optionalAccountStrategy,
+    asyncResolvers,
+    useAsync,
+    accountObject = 'accounts',
+    argObject = 'args',
+  } = scope;
   if (!input.defaultsTo) {
     return fragmentWithContextMap('');
   }
@@ -185,24 +193,14 @@ export function getInstructionInputDefaultFragment(
 
     case 'conditional':
     case 'conditionalResolver':
-      const ifTrueRenderer = renderNestedInstructionDefault(
-        input,
-        optionalAccountStrategy,
-        defaultsTo.ifTrue,
-        asyncResolvers,
-        useAsync,
-        accountObject,
-        argObject
-      );
-      const ifFalseRenderer = renderNestedInstructionDefault(
-        input,
-        optionalAccountStrategy,
-        defaultsTo.ifFalse,
-        asyncResolvers,
-        useAsync,
-        accountObject,
-        argObject
-      );
+      const ifTrueRenderer = renderNestedInstructionDefault({
+        ...scope,
+        defaultsTo: defaultsTo.ifTrue,
+      });
+      const ifFalseRenderer = renderNestedInstructionDefault({
+        ...scope,
+        defaultsTo: defaultsTo.ifFalse,
+      });
       if (!ifTrueRenderer && !ifFalseRenderer) {
         return fragmentWithContextMap('');
       }
@@ -271,33 +269,22 @@ export function getInstructionInputDefaultFragment(
 }
 
 function renderNestedInstructionDefault(
-  input: ResolvedInstructionInput,
-  optionalAccountStrategy: 'programId' | 'omitted',
-  defaultsTo: InstructionDefault | undefined,
-  asyncResolvers: string[],
-  useAsync: boolean,
-  accountObject: string,
-  argObject: string
+  scope: Parameters<typeof getInstructionInputDefaultFragment>[0] & {
+    defaultsTo: InstructionDefault | undefined;
+  }
 ): (Fragment & { interfaces: ContextMap }) | undefined {
+  const { input, defaultsTo } = scope;
   if (!defaultsTo) return undefined;
 
   if (input.kind === 'account') {
-    return getInstructionInputDefaultFragment(
-      { ...input, defaultsTo: defaultsTo as InstructionAccountDefault },
-      optionalAccountStrategy,
-      asyncResolvers,
-      useAsync,
-      accountObject,
-      argObject
-    );
+    return getInstructionInputDefaultFragment({
+      ...scope,
+      input: { ...input, defaultsTo: defaultsTo as InstructionAccountDefault },
+    });
   }
 
-  return getInstructionInputDefaultFragment(
-    { ...input, defaultsTo: defaultsTo as InstructionArgDefault },
-    optionalAccountStrategy,
-    asyncResolvers,
-    useAsync,
-    accountObject,
-    argObject
-  );
+  return getInstructionInputDefaultFragment({
+    ...scope,
+    input: { ...input, defaultsTo: defaultsTo as InstructionArgDefault },
+  });
 }

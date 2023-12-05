@@ -15,16 +15,25 @@ import { getInstructionInputResolvedFragment } from './instructionInputResolved'
 import { getInstructionInputTypeFragment } from './instructionInputType';
 import { getInstructionRemainingAccountsFragment } from './instructionRemainingAccounts';
 
-export function getInstructionFunctionHighLevelFragment(
-  instructionNode: nodes.InstructionNode,
-  programNode: nodes.ProgramNode,
-  renamedArgs: Map<string, string>,
-  dataArgsManifest: TypeManifest,
-  extraArgsManifest: TypeManifest,
-  resolvedInputs: ResolvedInstructionInput[],
-  asyncResolvers: string[],
-  useAsync: boolean
-): Fragment {
+export function getInstructionFunctionHighLevelFragment(scope: {
+  instructionNode: nodes.InstructionNode;
+  programNode: nodes.ProgramNode;
+  renamedArgs: Map<string, string>;
+  dataArgsManifest: TypeManifest;
+  extraArgsManifest: TypeManifest;
+  resolvedInputs: ResolvedInstructionInput[];
+  asyncResolvers: string[];
+  useAsync: boolean;
+}): Fragment {
+  const {
+    useAsync,
+    instructionNode,
+    programNode,
+    resolvedInputs,
+    renamedArgs,
+    dataArgsManifest,
+    asyncResolvers,
+  } = scope;
   if (useAsync && !hasAsyncDefaultValues(resolvedInputs, asyncResolvers)) {
     return fragment('');
   }
@@ -66,53 +75,31 @@ export function getInstructionFunctionHighLevelFragment(
     useAsync ? `Promise<${value}>` : value;
 
   // Input.
-  const inputTypeFragment = getInstructionInputTypeFragment(
-    instructionNode,
-    resolvedInputs,
-    renamedArgs,
-    dataArgsManifest,
-    extraArgsManifest,
-    programNode,
-    false,
-    asyncResolvers,
-    useAsync
-  );
-  const inputTypeWithSignersFragment = getInstructionInputTypeFragment(
-    instructionNode,
-    resolvedInputs,
-    renamedArgs,
-    dataArgsManifest,
-    extraArgsManifest,
-    programNode,
-    true,
-    asyncResolvers,
-    useAsync
-  );
-
-  const inputTypeCallFragment = getInputTypeCall(
-    instructionNode,
-    false,
-    useAsync
-  );
-  const inputTypeCallWithSignersFragment = getInputTypeCall(
-    instructionNode,
-    true,
-    useAsync
-  );
+  const inputTypeFragment = getInstructionInputTypeFragment({
+    ...scope,
+    withSigners: false,
+  });
+  const inputTypeWithSignersFragment = getInstructionInputTypeFragment({
+    ...scope,
+    withSigners: true,
+  });
+  const inputTypeCallFragment = getInputTypeCall({
+    ...scope,
+    withSigners: false,
+  });
+  const inputTypeCallWithSignersFragment = getInputTypeCall({
+    ...scope,
+    withSigners: true,
+  });
   const renamedArgsText = [...renamedArgs.entries()]
     .map(([k, v]) => `${k}: input.${v}`)
     .join(', ');
 
-  const resolvedInputsFragment = getInstructionInputResolvedFragment(
-    instructionNode,
-    resolvedInputs,
-    asyncResolvers,
-    useAsync
-  );
+  const resolvedInputsFragment = getInstructionInputResolvedFragment(scope);
   const remainingAccountsFragment =
-    getInstructionRemainingAccountsFragment(instructionNode);
+    getInstructionRemainingAccountsFragment(scope);
   const bytesCreatedOnChainFragment =
-    getInstructionBytesCreatedOnChainFragment(instructionNode);
+    getInstructionBytesCreatedOnChainFragment(scope);
 
   const context = new ContextMap()
     .add('getProgramAddress')
@@ -221,11 +208,12 @@ function getInstructionType(
   ).mapRender((r) => `${instructionTypeName}<${r}>`);
 }
 
-function getInputTypeCall(
-  instructionNode: nodes.InstructionNode,
-  withSigners: boolean,
-  useAsync: boolean
-): Fragment {
+function getInputTypeCall(scope: {
+  instructionNode: nodes.InstructionNode;
+  withSigners: boolean;
+  useAsync: boolean;
+}): Fragment {
+  const { instructionNode, withSigners, useAsync } = scope;
   const inputTypeName = pascalCase(
     `${instructionNode.name}${useAsync ? 'Async' : ''}Input${
       withSigners ? 'WithSigners' : ''

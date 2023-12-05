@@ -4,11 +4,12 @@ import { Fragment, fragmentFromTemplate, mergeFragments } from './common';
 import { getInstructionAccountMetaFragment } from './instructionAccountMeta';
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
 
-export function getInstructionTypeFragment(
-  instructionNode: nodes.InstructionNode,
-  programNode: nodes.ProgramNode,
-  withSigners: boolean
-): Fragment {
+export function getInstructionTypeFragment(scope: {
+  instructionNode: nodes.InstructionNode;
+  programNode: nodes.ProgramNode;
+  withSigners: boolean;
+}): Fragment {
+  const { instructionNode, programNode, withSigners } = scope;
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasData =
     !!instructionNode.dataArgs.link ||
@@ -18,12 +19,11 @@ export function getInstructionTypeFragment(
     : pascalCase(instructionNode.dataArgs.name);
   const accountTypeParamsFragment = mergeFragments(
     instructionNode.accounts.map((account) =>
-      getInstructionAccountTypeParamFragment(
-        instructionNode,
-        account,
-        programNode,
-        true
-      )
+      getInstructionAccountTypeParamFragment({
+        ...scope,
+        instructionAccountNode: account,
+        allowAccountMeta: true,
+      })
     ),
     (renders) => renders.join(', ')
   );
