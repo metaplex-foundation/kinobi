@@ -127,6 +127,12 @@ export type PuffMetadataInput<TAccountMetadata extends string> = {
   metadata: Address<TAccountMetadata>;
 };
 
+// Input.
+export type PuffMetadataInputWithSigners<TAccountMetadata extends string> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+};
+
 export async function puffMetadata<
   TReturn,
   TAccountMetadata extends string,

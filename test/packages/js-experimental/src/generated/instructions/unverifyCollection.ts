@@ -239,6 +239,29 @@ export type UnverifyCollectionInput<
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Collection Authority */
+  collectionAuthority: Address<TAccountCollectionAuthority>;
+  /** Mint of the Collection */
+  collectionMint: Address<TAccountCollectionMint>;
+  /** Metadata Account of the Collection */
+  collection: Address<TAccountCollection>;
+  /** MasterEdition2 Account of the Collection Token */
+  collectionMasterEditionAccount: Address<TAccountCollectionMasterEditionAccount>;
+  /** Collection Authority Record PDA */
+  collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
+};
+
+// Input.
+export type UnverifyCollectionInputWithSigners<
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollection extends string,
+  TAccountCollectionMasterEditionAccount extends string,
+  TAccountCollectionAuthorityRecord extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Collection Authority */
   collectionAuthority: TransactionSigner<TAccountCollectionAuthority>;
   /** Mint of the Collection */
   collectionMint: Address<TAccountCollectionMint>;

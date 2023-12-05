@@ -192,6 +192,23 @@ export type SetTokenStandardInput<
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Metadata update authority */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  /** Mint account */
+  mint: Address<TAccountMint>;
+  /** Edition account */
+  edition?: Address<TAccountEdition>;
+};
+
+// Input.
+export type SetTokenStandardInputWithSigners<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMint extends string,
+  TAccountEdition extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Metadata update authority */
   updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   /** Mint account */
   mint: Address<TAccountMint>;

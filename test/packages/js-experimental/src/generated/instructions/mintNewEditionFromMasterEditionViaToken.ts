@@ -419,6 +419,54 @@ export type MintNewEditionFromMasterEditionViaTokenInput<
   /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE). */
   editionMarkPda: Address<TAccountEditionMarkPda>;
   /** Mint authority of new mint */
+  newMintAuthority: Address<TAccountNewMintAuthority>;
+  /** payer */
+  payer?: Address<TAccountPayer>;
+  /** owner of token account containing master token (#8) */
+  tokenAccountOwner: Address<TAccountTokenAccountOwner>;
+  /** token account containing token from master metadata mint */
+  tokenAccount: Address<TAccountTokenAccount>;
+  /** Update authority info for new metadata */
+  newMetadataUpdateAuthority: Address<TAccountNewMetadataUpdateAuthority>;
+  /** Master record metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Token program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Rent info */
+  rent?: Address<TAccountRent>;
+  mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenInstructionDataArgs['mintNewEditionFromMasterEditionViaTokenArgs'];
+};
+
+// Input.
+export type MintNewEditionFromMasterEditionViaTokenInputWithSigners<
+  TAccountNewMetadata extends string,
+  TAccountNewEdition extends string,
+  TAccountMasterEdition extends string,
+  TAccountNewMint extends string,
+  TAccountEditionMarkPda extends string,
+  TAccountNewMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountTokenAccountOwner extends string,
+  TAccountTokenAccount extends string,
+  TAccountNewMetadataUpdateAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  /** New Metadata key (pda of ['metadata', program id, mint id]) */
+  newMetadata: Address<TAccountNewMetadata>;
+  /** New Edition (pda of ['metadata', program id, mint id, 'edition']) */
+  newEdition: Address<TAccountNewEdition>;
+  /** Master Record Edition V2 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
+  masterEdition: Address<TAccountMasterEdition>;
+  /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
+  newMint: Address<TAccountNewMint>;
+  /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE). */
+  editionMarkPda: Address<TAccountEditionMarkPda>;
+  /** Mint authority of new mint */
   newMintAuthority: TransactionSigner<TAccountNewMintAuthority>;
   /** payer */
   payer?: TransactionSigner<TAccountPayer>;

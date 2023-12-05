@@ -169,6 +169,20 @@ export type ConvertMasterEditionV1ToV2Input<
   printingMint: Address<TAccountPrintingMint>;
 };
 
+// Input.
+export type ConvertMasterEditionV1ToV2InputWithSigners<
+  TAccountMasterEdition extends string,
+  TAccountOneTimeAuth extends string,
+  TAccountPrintingMint extends string
+> = {
+  /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
+  masterEdition: Address<TAccountMasterEdition>;
+  /** One time authorization mint */
+  oneTimeAuth: Address<TAccountOneTimeAuth>;
+  /** Printing mint */
+  printingMint: Address<TAccountPrintingMint>;
+};
+
 export async function convertMasterEditionV1ToV2<
   TReturn,
   TAccountMasterEdition extends string,

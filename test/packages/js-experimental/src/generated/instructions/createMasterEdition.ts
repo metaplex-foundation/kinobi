@@ -319,6 +319,39 @@ export type CreateMasterEditionInput<
   /** Metadata mint */
   mint: Address<TAccountMint>;
   /** Update authority */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  /** Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
+  mintAuthority: Address<TAccountMintAuthority>;
+  /** payer */
+  payer?: Address<TAccountPayer>;
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Token program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Rent info */
+  rent?: Address<TAccountRent>;
+  createMasterEditionArgs: CreateMasterEditionInstructionDataArgs['createMasterEditionArgs'];
+};
+
+// Input.
+export type CreateMasterEditionInputWithSigners<
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  /** Unallocated edition V2 account with address as pda of ['metadata', program id, mint, 'edition'] */
+  edition: Address<TAccountEdition>;
+  /** Metadata mint */
+  mint: Address<TAccountMint>;
+  /** Update authority */
   updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   /** Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
   mintAuthority: TransactionSigner<TAccountMintAuthority>;

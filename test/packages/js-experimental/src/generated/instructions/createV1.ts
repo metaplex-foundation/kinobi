@@ -350,6 +350,41 @@ export type CreateV1Input<
   /** Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition'] */
   masterEdition?: Address<TAccountMasterEdition>;
   /** Mint of token asset */
+  mint: Address<TAccountMint>;
+  /** Mint authority */
+  mintAuthority: Address<TAccountMintAuthority>;
+  /** Payer */
+  payer?: Address<TAccountPayer>;
+  /** update authority info */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Instructions sysvar account */
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
+  /** SPL Token program */
+  splTokenProgram?: Address<TAccountSplTokenProgram>;
+  assetData: CreateV1InstructionDataArgs['assetData'];
+  decimals: CreateV1InstructionDataArgs['decimals'];
+  maxSupply: CreateV1InstructionDataArgs['maxSupply'];
+};
+
+// Input.
+export type CreateV1InputWithSigners<
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountSplTokenProgram extends string
+> = {
+  /** Metadata account key (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition'] */
+  masterEdition?: Address<TAccountMasterEdition>;
+  /** Mint of token asset */
   mint: Address<TAccountMint> | TransactionSigner<TAccountMint>;
   /** Mint authority */
   mintAuthority: TransactionSigner<TAccountMintAuthority>;

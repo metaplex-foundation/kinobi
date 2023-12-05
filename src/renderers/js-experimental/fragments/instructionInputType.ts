@@ -15,7 +15,8 @@ export function getInstructionInputTypeFragment(
   renamedArgs: Map<string, string>,
   dataArgsManifest: TypeManifest,
   extraArgsManifest: TypeManifest,
-  programNode: nodes.ProgramNode
+  programNode: nodes.ProgramNode,
+  withSigners: boolean
 ): Fragment {
   // Accounts.
   const accountImports = new ImportMap();
@@ -26,7 +27,7 @@ export function getInstructionInputTypeFragment(
     ) as ResolvedInstructionAccount;
     const optionalSign =
       !!resolvedAccount.defaultsTo || resolvedAccount.isOptional ? '?' : '';
-    const type = getAccountType(resolvedAccount);
+    const type = getAccountType(resolvedAccount, withSigners);
     accountImports.mergeWith(type);
     return {
       ...resolvedAccount,
@@ -83,38 +84,52 @@ export function getInstructionInputTypeFragment(
     dataArgsType,
     extraArgs,
     extraArgsType,
+    withSigners,
   })
     .mergeImportsWith(accountImports, argLinkImports)
     .addImports('solanaAddresses', ['Address']);
 }
 
-function getAccountType(account: ResolvedInstructionAccount): Fragment {
+function getAccountType(
+  account: ResolvedInstructionAccount,
+  withSigners: boolean
+): Fragment {
   const typeParam = `TAccount${pascalCase(account.name)}`;
-  if (account.isPda && account.isSigner === false) {
+
+  if (withSigners) {
+    if (account.isPda && account.isSigner === false) {
+      return fragment(`ProgramDerivedAddress<${typeParam}>`).addImports(
+        'solanaAddresses',
+        ['ProgramDerivedAddress']
+      );
+    }
+
+    if (account.isPda && account.isSigner === 'either') {
+      return fragment(
+        `ProgramDerivedAddress<${typeParam}> | TransactionSigner<${typeParam}>`
+      )
+        .addImports('solanaAddresses', ['ProgramDerivedAddress'])
+        .addImports('solanaSigners', ['TransactionSigner']);
+    }
+
+    if (account.isSigner === 'either') {
+      return fragment(`Address<${typeParam}> | TransactionSigner<${typeParam}>`)
+        .addImports('solanaAddresses', ['Address'])
+        .addImports('solanaSigners', ['TransactionSigner']);
+    }
+
+    if (account.isSigner) {
+      return fragment(`TransactionSigner<${typeParam}>`).addImports(
+        'solanaSigners',
+        ['TransactionSigner']
+      );
+    }
+  }
+
+  if (!withSigners && account.isPda) {
     return fragment(`ProgramDerivedAddress<${typeParam}>`).addImports(
       'solanaAddresses',
       ['ProgramDerivedAddress']
-    );
-  }
-
-  if (account.isPda && account.isSigner === 'either') {
-    return fragment(
-      `ProgramDerivedAddress<${typeParam}> | TransactionSigner<${typeParam}>`
-    )
-      .addImports('solanaAddresses', ['ProgramDerivedAddress'])
-      .addImports('solanaSigners', ['TransactionSigner']);
-  }
-
-  if (account.isSigner === 'either') {
-    return fragment(`Address<${typeParam}> | TransactionSigner<${typeParam}>`)
-      .addImports('solanaAddresses', ['Address'])
-      .addImports('solanaSigners', ['TransactionSigner']);
-  }
-
-  if (account.isSigner) {
-    return fragment(`TransactionSigner<${typeParam}>`).addImports(
-      'solanaSigners',
-      ['TransactionSigner']
     );
   }
 

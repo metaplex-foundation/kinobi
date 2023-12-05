@@ -155,6 +155,17 @@ export type RemoveCreatorVerificationInput<
   /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
   /** Creator */
+  creator: Address<TAccountCreator>;
+};
+
+// Input.
+export type RemoveCreatorVerificationInputWithSigners<
+  TAccountMetadata extends string,
+  TAccountCreator extends string
+> = {
+  /** Metadata (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** Creator */
   creator: TransactionSigner<TAccountCreator>;
 };
 

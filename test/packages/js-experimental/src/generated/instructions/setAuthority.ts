@@ -166,6 +166,16 @@ export type SetAuthorityInput<
   TAccountAuthority extends string
 > = {
   candyMachine: Address<TAccountCandyMachine>;
+  authority?: Address<TAccountAuthority>;
+  newAuthority: SetAuthorityInstructionDataArgs['newAuthority'];
+};
+
+// Input.
+export type SetAuthorityInputWithSigners<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string
+> = {
+  candyMachine: Address<TAccountCandyMachine>;
   authority?: TransactionSigner<TAccountAuthority>;
   newAuthority: SetAuthorityInstructionDataArgs['newAuthority'];
 };

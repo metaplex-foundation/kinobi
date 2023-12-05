@@ -161,6 +161,16 @@ export type TransferSolInput<
   TAccountSource extends string,
   TAccountDestination extends string
 > = {
+  source: Address<TAccountSource>;
+  destination: Address<TAccountDestination>;
+  amount: TransferSolInstructionDataArgs['amount'];
+};
+
+// Input.
+export type TransferSolInputWithSigners<
+  TAccountSource extends string,
+  TAccountDestination extends string
+> = {
   source: TransactionSigner<TAccountSource>;
   destination: Address<TAccountDestination>;
   amount: TransferSolInstructionDataArgs['amount'];

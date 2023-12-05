@@ -424,6 +424,59 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
   /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
   mint: Address<TAccountMint>;
   /** Mint authority of new mint */
+  mintAuthority: Address<TAccountMintAuthority>;
+  /** Printing Mint of master record edition */
+  printingMint: Address<TAccountPrintingMint>;
+  /** Token account containing Printing mint token to be transferred */
+  masterTokenAccount: Address<TAccountMasterTokenAccount>;
+  /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master mint id, edition_number]) */
+  editionMarker: Address<TAccountEditionMarker>;
+  /** Burn authority for this token */
+  burnAuthority: Address<TAccountBurnAuthority>;
+  /** payer */
+  payer?: Address<TAccountPayer>;
+  /** update authority info for new metadata account */
+  masterUpdateAuthority: Address<TAccountMasterUpdateAuthority>;
+  /** Master record metadata account */
+  masterMetadata: Address<TAccountMasterMetadata>;
+  /** Token program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Rent info */
+  rent?: Address<TAccountRent>;
+  /** Reservation List - If present, and you are on this list, you can get an edition number given by your position on the list. */
+  reservationList?: Address<TAccountReservationList>;
+};
+
+// Input.
+export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInputWithSigners<
+  TAccountMetadata extends string,
+  TAccountEdition extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPrintingMint extends string,
+  TAccountMasterTokenAccount extends string,
+  TAccountEditionMarker extends string,
+  TAccountBurnAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMasterUpdateAuthority extends string,
+  TAccountMasterMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TAccountReservationList extends string
+> = {
+  /** New Metadata key (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** New Edition V1 (pda of ['metadata', program id, mint id, 'edition']) */
+  edition: Address<TAccountEdition>;
+  /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
+  masterEdition: Address<TAccountMasterEdition>;
+  /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
+  mint: Address<TAccountMint>;
+  /** Mint authority of new mint */
   mintAuthority: TransactionSigner<TAccountMintAuthority>;
   /** Printing Mint of master record edition */
   printingMint: Address<TAccountPrintingMint>;

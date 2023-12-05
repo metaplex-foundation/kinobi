@@ -274,6 +274,35 @@ export type CloseEscrowAccountInput<
   /** Edition account */
   edition: Address<TAccountEdition>;
   /** Wallet paying for the transaction and new account */
+  payer?: Address<TAccountPayer>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Instructions sysvar account */
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
+};
+
+// Input.
+export type CloseEscrowAccountInputWithSigners<
+  TAccountEscrow extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountPayer extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string
+> = {
+  /** Escrow account */
+  escrow: Address<TAccountEscrow>;
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Mint account */
+  mint: Address<TAccountMint>;
+  /** Token account */
+  tokenAccount: Address<TAccountTokenAccount>;
+  /** Edition account */
+  edition: Address<TAccountEdition>;
+  /** Wallet paying for the transaction and new account */
   payer?: TransactionSigner<TAccountPayer>;
   /** System program */
   systemProgram?: Address<TAccountSystemProgram>;

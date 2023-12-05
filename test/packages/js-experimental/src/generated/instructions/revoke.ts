@@ -406,6 +406,51 @@ export type RevokeInput<
   /** Owned Token Account of mint */
   token?: Address<TAccountToken>;
   /** Authority to approve the delegation */
+  authority?: Address<TAccountAuthority>;
+  /** Payer */
+  payer?: Address<TAccountPayer>;
+  /** System Program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Instructions sysvar account */
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
+  /** SPL Token Program */
+  splTokenProgram?: Address<TAccountSplTokenProgram>;
+  /** Token Authorization Rules Program */
+  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
+  /** Token Authorization Rules account */
+  authorizationRules?: Address<TAccountAuthorizationRules>;
+  revokeArgs: RevokeInstructionDataArgs['revokeArgs'];
+};
+
+// Input.
+export type RevokeInputWithSigners<
+  TAccountDelegateRecord extends string,
+  TAccountDelegate extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountToken extends string,
+  TAccountAuthority extends string,
+  TAccountPayer extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string
+> = {
+  /** Delegate account key (pda of [mint id, delegate role, user id, authority id]) */
+  delegateRecord: Address<TAccountDelegateRecord>;
+  /** Owner of the delegated account */
+  delegate: Address<TAccountDelegate>;
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Master Edition account */
+  masterEdition?: Address<TAccountMasterEdition>;
+  /** Mint of metadata */
+  mint: Address<TAccountMint>;
+  /** Owned Token Account of mint */
+  token?: Address<TAccountToken>;
+  /** Authority to approve the delegation */
   authority?: TransactionSigner<TAccountAuthority>;
   /** Payer */
   payer?: TransactionSigner<TAccountPayer>;

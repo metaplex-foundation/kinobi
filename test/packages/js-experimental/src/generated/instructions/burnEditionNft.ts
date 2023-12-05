@@ -315,6 +315,41 @@ export type BurnEditionNftInput<
   /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
   /** NFT owner */
+  owner: Address<TAccountOwner>;
+  /** Mint of the print edition NFT */
+  printEditionMint: Address<TAccountPrintEditionMint>;
+  /** Mint of the original/master NFT */
+  masterEditionMint: Address<TAccountMasterEditionMint>;
+  /** Token account the print edition NFT is in */
+  printEditionTokenAccount: Address<TAccountPrintEditionTokenAccount>;
+  /** Token account the Master Edition NFT is in */
+  masterEditionTokenAccount: Address<TAccountMasterEditionTokenAccount>;
+  /** MasterEdition2 of the original NFT */
+  masterEditionAccount: Address<TAccountMasterEditionAccount>;
+  /** Print Edition account of the NFT */
+  printEditionAccount: Address<TAccountPrintEditionAccount>;
+  /** Edition Marker PDA of the NFT */
+  editionMarkerAccount: Address<TAccountEditionMarkerAccount>;
+  /** SPL Token Program */
+  splTokenProgram?: Address<TAccountSplTokenProgram>;
+};
+
+// Input.
+export type BurnEditionNftInputWithSigners<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountPrintEditionMint extends string,
+  TAccountMasterEditionMint extends string,
+  TAccountPrintEditionTokenAccount extends string,
+  TAccountMasterEditionTokenAccount extends string,
+  TAccountMasterEditionAccount extends string,
+  TAccountPrintEditionAccount extends string,
+  TAccountEditionMarkerAccount extends string,
+  TAccountSplTokenProgram extends string
+> = {
+  /** Metadata (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** NFT owner */
   owner: TransactionSigner<TAccountOwner>;
   /** Mint of the print edition NFT */
   printEditionMint: Address<TAccountPrintEditionMint>;

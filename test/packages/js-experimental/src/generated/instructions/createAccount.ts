@@ -180,6 +180,18 @@ export type CreateAccountInput<
   TAccountPayer extends string,
   TAccountNewAccount extends string
 > = {
+  payer?: Address<TAccountPayer>;
+  newAccount: Address<TAccountNewAccount>;
+  lamports: CreateAccountInstructionDataArgs['lamports'];
+  space: CreateAccountInstructionDataArgs['space'];
+  programId: CreateAccountInstructionDataArgs['programId'];
+};
+
+// Input.
+export type CreateAccountInputWithSigners<
+  TAccountPayer extends string,
+  TAccountNewAccount extends string
+> = {
   payer?: TransactionSigner<TAccountPayer>;
   newAccount: TransactionSigner<TAccountNewAccount>;
   lamports: CreateAccountInstructionDataArgs['lamports'];

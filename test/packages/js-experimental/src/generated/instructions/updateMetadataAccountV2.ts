@@ -200,6 +200,21 @@ export type UpdateMetadataAccountV2Input<
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Update authority key */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  data: UpdateMetadataAccountV2InstructionDataArgs['data'];
+  updateAuthorityArg: UpdateMetadataAccountV2InstructionDataArgs['updateAuthority'];
+  primarySaleHappened: UpdateMetadataAccountV2InstructionDataArgs['primarySaleHappened'];
+  isMutable: UpdateMetadataAccountV2InstructionDataArgs['isMutable'];
+};
+
+// Input.
+export type UpdateMetadataAccountV2InputWithSigners<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Update authority key */
   updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   data: UpdateMetadataAccountV2InstructionDataArgs['data'];
   updateAuthorityArg: UpdateMetadataAccountV2InstructionDataArgs['updateAuthority'];

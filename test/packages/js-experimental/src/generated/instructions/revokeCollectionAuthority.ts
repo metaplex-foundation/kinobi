@@ -213,6 +213,26 @@ export type RevokeCollectionAuthorityInput<
   /** Delegated Collection Authority */
   delegateAuthority: Address<TAccountDelegateAuthority>;
   /** Update Authority, or Delegated Authority, of Collection NFT */
+  revokeAuthority: Address<TAccountRevokeAuthority>;
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Mint of Metadata */
+  mint: Address<TAccountMint>;
+};
+
+// Input.
+export type RevokeCollectionAuthorityInputWithSigners<
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountDelegateAuthority extends string,
+  TAccountRevokeAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string
+> = {
+  /** Collection Authority Record PDA */
+  collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
+  /** Delegated Collection Authority */
+  delegateAuthority: Address<TAccountDelegateAuthority>;
+  /** Update Authority, or Delegated Authority, of Collection NFT */
   revokeAuthority: TransactionSigner<TAccountRevokeAuthority>;
   /** Metadata account */
   metadata: Address<TAccountMetadata>;

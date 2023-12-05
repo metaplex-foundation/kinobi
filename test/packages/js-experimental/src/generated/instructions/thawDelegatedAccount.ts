@@ -209,6 +209,26 @@ export type ThawDelegatedAccountInput<
   TAccountTokenProgram extends string
 > = {
   /** Delegate */
+  delegate: Address<TAccountDelegate>;
+  /** Token account to thaw */
+  tokenAccount: Address<TAccountTokenAccount>;
+  /** Edition */
+  edition: Address<TAccountEdition>;
+  /** Token mint */
+  mint: Address<TAccountMint>;
+  /** Token Program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+};
+
+// Input.
+export type ThawDelegatedAccountInputWithSigners<
+  TAccountDelegate extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountTokenProgram extends string
+> = {
+  /** Delegate */
   delegate: TransactionSigner<TAccountDelegate>;
   /** Token account to thaw */
   tokenAccount: Address<TAccountTokenAccount>;

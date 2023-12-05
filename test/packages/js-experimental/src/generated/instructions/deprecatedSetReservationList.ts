@@ -215,6 +215,24 @@ export type DeprecatedSetReservationListInput<
   /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
   reservationList: Address<TAccountReservationList>;
   /** The resource you tied the reservation list too */
+  resource: Address<TAccountResource>;
+  reservations: DeprecatedSetReservationListInstructionDataArgs['reservations'];
+  totalReservationSpots: DeprecatedSetReservationListInstructionDataArgs['totalReservationSpots'];
+  offset: DeprecatedSetReservationListInstructionDataArgs['offset'];
+  totalSpotOffset: DeprecatedSetReservationListInstructionDataArgs['totalSpotOffset'];
+};
+
+// Input.
+export type DeprecatedSetReservationListInputWithSigners<
+  TAccountMasterEdition extends string,
+  TAccountReservationList extends string,
+  TAccountResource extends string
+> = {
+  /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
+  masterEdition: Address<TAccountMasterEdition>;
+  /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
+  reservationList: Address<TAccountReservationList>;
+  /** The resource you tied the reservation list too */
   resource: TransactionSigner<TAccountResource>;
   reservations: DeprecatedSetReservationListInstructionDataArgs['reservations'];
   totalReservationSpots: DeprecatedSetReservationListInstructionDataArgs['totalReservationSpots'];

@@ -550,6 +550,52 @@ export type ValidateInput<
   TAccountOptRuleNonsigner5 extends string
 > = {
   /** Payer and creator of the RuleSet */
+  payer?: Address<TAccountPayer>;
+  /** The PDA account where the RuleSet is stored */
+  ruleSet: Address<TAccountRuleSet>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  optRuleSigner1?: Address<TAccountOptRuleSigner1>;
+  /** Optional rule validation signer 2 */
+  optRuleSigner2?: Address<TAccountOptRuleSigner2>;
+  /** Optional rule validation signer 3 */
+  optRuleSigner3?: Address<TAccountOptRuleSigner3>;
+  /** Optional rule validation signer 4 */
+  optRuleSigner4?: Address<TAccountOptRuleSigner4>;
+  /** Optional rule validation signer 5 */
+  optRuleSigner5?: Address<TAccountOptRuleSigner5>;
+  /** Optional rule validation non-signer 1 */
+  optRuleNonsigner1?: Address<TAccountOptRuleNonsigner1>;
+  /** Optional rule validation non-signer 2 */
+  optRuleNonsigner2?: Address<TAccountOptRuleNonsigner2>;
+  /** Optional rule validation non-signer 3 */
+  optRuleNonsigner3?: Address<TAccountOptRuleNonsigner3>;
+  /** Optional rule validation non-signer 4 */
+  optRuleNonsigner4?: Address<TAccountOptRuleNonsigner4>;
+  /** Optional rule validation non-signer 5 */
+  optRuleNonsigner5?: Address<TAccountOptRuleNonsigner5>;
+  ruleSetName: ValidateInstructionDataArgs['ruleSetName'];
+  operation: ValidateInstructionDataArgs['operation'];
+  payload: ValidateInstructionDataArgs['payload'];
+};
+
+// Input.
+export type ValidateInputWithSigners<
+  TAccountPayer extends string,
+  TAccountRuleSet extends string,
+  TAccountSystemProgram extends string,
+  TAccountOptRuleSigner1 extends string,
+  TAccountOptRuleSigner2 extends string,
+  TAccountOptRuleSigner3 extends string,
+  TAccountOptRuleSigner4 extends string,
+  TAccountOptRuleSigner5 extends string,
+  TAccountOptRuleNonsigner1 extends string,
+  TAccountOptRuleNonsigner2 extends string,
+  TAccountOptRuleNonsigner3 extends string,
+  TAccountOptRuleNonsigner4 extends string,
+  TAccountOptRuleNonsigner5 extends string
+> = {
+  /** Payer and creator of the RuleSet */
   payer?: TransactionSigner<TAccountPayer>;
   /** The PDA account where the RuleSet is stored */
   ruleSet: Address<TAccountRuleSet>;

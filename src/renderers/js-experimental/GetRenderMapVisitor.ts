@@ -285,8 +285,19 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       renamedArgs,
       dataArgsManifest,
       extraArgsManifest,
-      this.program
+      this.program,
+      false
     );
+    const instructionInputTypeWithSignersFragment =
+      getInstructionInputTypeFragment(
+        instruction,
+        resolvedInputs,
+        renamedArgs,
+        dataArgsManifest,
+        extraArgsManifest,
+        this.program,
+        true
+      );
     const instructionFunctionHighLevelFragment =
       getInstructionFunctionHighLevelFragment(
         instruction,
@@ -304,6 +315,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       instructionExtraArgsFragment,
       instructionFunctionLowLevelFragment,
       instructionInputTypeFragment,
+      instructionInputTypeWithSignersFragment,
       instructionFunctionHighLevelFragment
     );
 
@@ -318,6 +330,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         instructionExtraArgsFragment,
         instructionFunctionLowLevelFragment,
         instructionInputTypeFragment,
+        instructionInputTypeWithSignersFragment,
         instructionFunctionHighLevelFragment,
       })
     );

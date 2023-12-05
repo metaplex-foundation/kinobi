@@ -310,6 +310,39 @@ export type BurnInput<
   /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
   /** Asset owner */
+  owner: Address<TAccountOwner>;
+  /** Mint of token asset */
+  mint: Address<TAccountMint>;
+  /** Token account to close */
+  tokenAccount: Address<TAccountTokenAccount>;
+  /** MasterEdition of the asset */
+  masterEditionAccount: Address<TAccountMasterEditionAccount>;
+  /** SPL Token Program */
+  splTokenProgram?: Address<TAccountSplTokenProgram>;
+  /** Metadata of the Collection */
+  collectionMetadata?: Address<TAccountCollectionMetadata>;
+  /** Token Authorization Rules account */
+  authorizationRules?: Address<TAccountAuthorizationRules>;
+  /** Token Authorization Rules Program */
+  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
+  burnArgs: BurnInstructionDataArgs['burnArgs'];
+};
+
+// Input.
+export type BurnInputWithSigners<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountMint extends string,
+  TAccountTokenAccount extends string,
+  TAccountMasterEditionAccount extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountAuthorizationRules extends string,
+  TAccountAuthorizationRulesProgram extends string
+> = {
+  /** Metadata (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** Asset owner */
   owner: TransactionSigner<TAccountOwner>;
   /** Mint of token asset */
   mint: Address<TAccountMint>;

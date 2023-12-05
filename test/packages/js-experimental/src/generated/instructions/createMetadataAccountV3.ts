@@ -294,6 +294,35 @@ export type CreateMetadataAccountV3Input<
   /** Mint of token asset */
   mint: Address<TAccountMint>;
   /** Mint authority */
+  mintAuthority: Address<TAccountMintAuthority>;
+  /** payer */
+  payer?: Address<TAccountPayer>;
+  /** update authority info */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Rent info */
+  rent?: Address<TAccountRent>;
+  data: CreateMetadataAccountV3InstructionDataArgs['data'];
+  isMutable: CreateMetadataAccountV3InstructionDataArgs['isMutable'];
+  collectionDetails: CreateMetadataAccountV3InstructionDataArgs['collectionDetails'];
+};
+
+// Input.
+export type CreateMetadataAccountV3InputWithSigners<
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  /** Metadata key (pda of ['metadata', program id, mint id]) */
+  metadata?: Address<TAccountMetadata>;
+  /** Mint of token asset */
+  mint: Address<TAccountMint>;
+  /** Mint authority */
   mintAuthority: TransactionSigner<TAccountMintAuthority>;
   /** payer */
   payer?: TransactionSigner<TAccountPayer>;

@@ -175,6 +175,17 @@ export type SetMintAuthorityInput<
   TAccountMintAuthority extends string
 > = {
   candyMachine: Address<TAccountCandyMachine>;
+  authority?: Address<TAccountAuthority>;
+  mintAuthority: Address<TAccountMintAuthority>;
+};
+
+// Input.
+export type SetMintAuthorityInputWithSigners<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TAccountMintAuthority extends string
+> = {
+  candyMachine: Address<TAccountCandyMachine>;
   authority?: TransactionSigner<TAccountAuthority>;
   mintAuthority: TransactionSigner<TAccountMintAuthority>;
 };

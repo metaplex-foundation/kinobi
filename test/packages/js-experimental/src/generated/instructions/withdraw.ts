@@ -156,6 +156,15 @@ export type WithdrawInput<
   TAccountAuthority extends string
 > = {
   candyMachine: Address<TAccountCandyMachine>;
+  authority?: Address<TAccountAuthority>;
+};
+
+// Input.
+export type WithdrawInputWithSigners<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string
+> = {
+  candyMachine: Address<TAccountCandyMachine>;
   authority?: TransactionSigner<TAccountAuthority>;
 };
 

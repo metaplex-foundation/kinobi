@@ -281,6 +281,35 @@ export type ApproveCollectionAuthorityInput<
   /** A Collection Authority */
   newCollectionAuthority: Address<TAccountNewCollectionAuthority>;
   /** Update Authority of Collection NFT */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  /** Payer */
+  payer?: Address<TAccountPayer>;
+  /** Collection Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Mint of Collection Metadata */
+  mint: Address<TAccountMint>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Rent info */
+  rent?: Address<TAccountRent>;
+};
+
+// Input.
+export type ApproveCollectionAuthorityInputWithSigners<
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountNewCollectionAuthority extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  /** Collection Authority Record PDA */
+  collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
+  /** A Collection Authority */
+  newCollectionAuthority: Address<TAccountNewCollectionAuthority>;
+  /** Update Authority of Collection NFT */
   updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   /** Payer */
   payer?: TransactionSigner<TAccountPayer>;

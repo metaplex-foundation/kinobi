@@ -173,6 +173,20 @@ export type UpdatePrimarySaleHappenedViaTokenInput<
   /** Metadata key (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
   /** Owner on the token account */
+  owner: Address<TAccountOwner>;
+  /** Account containing tokens from the metadata's mint */
+  token: Address<TAccountToken>;
+};
+
+// Input.
+export type UpdatePrimarySaleHappenedViaTokenInputWithSigners<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountToken extends string
+> = {
+  /** Metadata key (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** Owner on the token account */
   owner: TransactionSigner<TAccountOwner>;
   /** Account containing tokens from the metadata's mint */
   token: Address<TAccountToken>;
