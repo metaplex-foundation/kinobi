@@ -467,3 +467,198 @@ export async function getSetCollectionSizeInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getSetCollectionSizeInstruction<
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetCollectionSizeInputWithSigners<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  SetCollectionSizeInstructionWithSigners<
+    TProgram,
+    TAccountCollectionMetadata,
+    WritableSignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >
+>;
+export async function getSetCollectionSizeInstruction<
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetCollectionSizeInput<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  SetCollectionSizeInstruction<
+    TProgram,
+    TAccountCollectionMetadata,
+    WritableSignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >
+>;
+export async function getSetCollectionSizeInstruction<
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: SetCollectionSizeInputWithSigners<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  SetCollectionSizeInstructionWithSigners<
+    TProgram,
+    TAccountCollectionMetadata,
+    WritableSignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >
+>;
+export async function getSetCollectionSizeInstruction<
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: SetCollectionSizeInput<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  SetCollectionSizeInstruction<
+    TProgram,
+    TAccountCollectionMetadata,
+    WritableSignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >
+>;
+export async function getSetCollectionSizeInstruction<
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | SetCollectionSizeInput<
+        TAccountCollectionMetadata,
+        TAccountCollectionAuthority,
+        TAccountCollectionMint,
+        TAccountCollectionAuthorityRecord
+      >,
+  rawInput?: SetCollectionSizeInput<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as SetCollectionSizeInput<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >;
+
+  // Program address.
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getSetCollectionSizeInstructionRaw<
+      TProgram,
+      TAccountCollectionMetadata,
+      TAccountCollectionAuthority,
+      TAccountCollectionMint,
+      TAccountCollectionAuthorityRecord
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    collectionMetadata: {
+      value: input.collectionMetadata ?? null,
+      isWritable: true,
+    },
+    collectionAuthority: {
+      value: input.collectionAuthority ?? null,
+      isWritable: true,
+    },
+    collectionMint: { value: input.collectionMint ?? null, isWritable: false },
+    collectionAuthorityRecord: {
+      value: input.collectionAuthorityRecord ?? null,
+      isWritable: false,
+    },
+  };
+
+  // Original args.
+  const args = { ...input };
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getSetCollectionSizeInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as SetCollectionSizeInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

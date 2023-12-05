@@ -1031,3 +1031,433 @@ export async function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTok
     bytesCreatedOnChain,
   });
 }
+
+export async function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+  TAccountMetadata extends string,
+  TAccountEdition extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPrintingMint extends string,
+  TAccountMasterTokenAccount extends string,
+  TAccountEditionMarker extends string,
+  TAccountBurnAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMasterUpdateAuthority extends string,
+  TAccountMasterMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TAccountReservationList extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInputWithSigners<
+    TAccountMetadata,
+    TAccountEdition,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPrintingMint,
+    TAccountMasterTokenAccount,
+    TAccountEditionMarker,
+    TAccountBurnAuthority,
+    TAccountPayer,
+    TAccountMasterUpdateAuthority,
+    TAccountMasterMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountReservationList
+  >
+): Promise<
+  DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    TAccountEdition,
+    TAccountMasterEdition,
+    TAccountMint,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    TAccountPrintingMint,
+    TAccountMasterTokenAccount,
+    TAccountEditionMarker,
+    ReadonlySignerAccount<TAccountBurnAuthority> &
+      IAccountSignerMeta<TAccountBurnAuthority>,
+    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountMasterUpdateAuthority,
+    TAccountMasterMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountReservationList
+  >
+>;
+export async function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+  TAccountMetadata extends string,
+  TAccountEdition extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPrintingMint extends string,
+  TAccountMasterTokenAccount extends string,
+  TAccountEditionMarker extends string,
+  TAccountBurnAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMasterUpdateAuthority extends string,
+  TAccountMasterMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TAccountReservationList extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
+    TAccountMetadata,
+    TAccountEdition,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPrintingMint,
+    TAccountMasterTokenAccount,
+    TAccountEditionMarker,
+    TAccountBurnAuthority,
+    TAccountPayer,
+    TAccountMasterUpdateAuthority,
+    TAccountMasterMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountReservationList
+  >
+): Promise<
+  DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountEdition,
+    TAccountMasterEdition,
+    TAccountMint,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    TAccountPrintingMint,
+    TAccountMasterTokenAccount,
+    TAccountEditionMarker,
+    ReadonlySignerAccount<TAccountBurnAuthority> &
+      IAccountSignerMeta<TAccountBurnAuthority>,
+    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountMasterUpdateAuthority,
+    TAccountMasterMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountReservationList
+  >
+>;
+export async function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+  TAccountMetadata extends string,
+  TAccountEdition extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPrintingMint extends string,
+  TAccountMasterTokenAccount extends string,
+  TAccountEditionMarker extends string,
+  TAccountBurnAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMasterUpdateAuthority extends string,
+  TAccountMasterMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TAccountReservationList extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInputWithSigners<
+    TAccountMetadata,
+    TAccountEdition,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPrintingMint,
+    TAccountMasterTokenAccount,
+    TAccountEditionMarker,
+    TAccountBurnAuthority,
+    TAccountPayer,
+    TAccountMasterUpdateAuthority,
+    TAccountMasterMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountReservationList
+  >
+): Promise<
+  DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    TAccountEdition,
+    TAccountMasterEdition,
+    TAccountMint,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    TAccountPrintingMint,
+    TAccountMasterTokenAccount,
+    TAccountEditionMarker,
+    ReadonlySignerAccount<TAccountBurnAuthority> &
+      IAccountSignerMeta<TAccountBurnAuthority>,
+    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountMasterUpdateAuthority,
+    TAccountMasterMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountReservationList
+  >
+>;
+export async function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+  TAccountMetadata extends string,
+  TAccountEdition extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPrintingMint extends string,
+  TAccountMasterTokenAccount extends string,
+  TAccountEditionMarker extends string,
+  TAccountBurnAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMasterUpdateAuthority extends string,
+  TAccountMasterMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TAccountReservationList extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
+    TAccountMetadata,
+    TAccountEdition,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPrintingMint,
+    TAccountMasterTokenAccount,
+    TAccountEditionMarker,
+    TAccountBurnAuthority,
+    TAccountPayer,
+    TAccountMasterUpdateAuthority,
+    TAccountMasterMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountReservationList
+  >
+): Promise<
+  DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountEdition,
+    TAccountMasterEdition,
+    TAccountMint,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    TAccountPrintingMint,
+    TAccountMasterTokenAccount,
+    TAccountEditionMarker,
+    ReadonlySignerAccount<TAccountBurnAuthority> &
+      IAccountSignerMeta<TAccountBurnAuthority>,
+    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountMasterUpdateAuthority,
+    TAccountMasterMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountReservationList
+  >
+>;
+export async function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+  TAccountMetadata extends string,
+  TAccountEdition extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountMintAuthority extends string,
+  TAccountPrintingMint extends string,
+  TAccountMasterTokenAccount extends string,
+  TAccountEditionMarker extends string,
+  TAccountBurnAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMasterUpdateAuthority extends string,
+  TAccountMasterMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TAccountReservationList extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
+        TAccountMetadata,
+        TAccountEdition,
+        TAccountMasterEdition,
+        TAccountMint,
+        TAccountMintAuthority,
+        TAccountPrintingMint,
+        TAccountMasterTokenAccount,
+        TAccountEditionMarker,
+        TAccountBurnAuthority,
+        TAccountPayer,
+        TAccountMasterUpdateAuthority,
+        TAccountMasterMetadata,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountRent,
+        TAccountReservationList
+      >,
+  rawInput?: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
+    TAccountMetadata,
+    TAccountEdition,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPrintingMint,
+    TAccountMasterTokenAccount,
+    TAccountEditionMarker,
+    TAccountBurnAuthority,
+    TAccountPayer,
+    TAccountMasterUpdateAuthority,
+    TAccountMasterMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountReservationList
+  >
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
+    TAccountMetadata,
+    TAccountEdition,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPrintingMint,
+    TAccountMasterTokenAccount,
+    TAccountEditionMarker,
+    TAccountBurnAuthority,
+    TAccountPayer,
+    TAccountMasterUpdateAuthority,
+    TAccountMasterMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountReservationList
+  >;
+
+  // Program address.
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionRaw<
+      TProgram,
+      TAccountMetadata,
+      TAccountEdition,
+      TAccountMasterEdition,
+      TAccountMint,
+      TAccountMintAuthority,
+      TAccountPrintingMint,
+      TAccountMasterTokenAccount,
+      TAccountEditionMarker,
+      TAccountBurnAuthority,
+      TAccountPayer,
+      TAccountMasterUpdateAuthority,
+      TAccountMasterMetadata,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountRent,
+      TAccountReservationList
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    edition: { value: input.edition ?? null, isWritable: true },
+    masterEdition: { value: input.masterEdition ?? null, isWritable: true },
+    mint: { value: input.mint ?? null, isWritable: true },
+    mintAuthority: { value: input.mintAuthority ?? null, isWritable: false },
+    printingMint: { value: input.printingMint ?? null, isWritable: true },
+    masterTokenAccount: {
+      value: input.masterTokenAccount ?? null,
+      isWritable: true,
+    },
+    editionMarker: { value: input.editionMarker ?? null, isWritable: true },
+    burnAuthority: { value: input.burnAuthority ?? null, isWritable: false },
+    payer: { value: input.payer ?? null, isWritable: false },
+    masterUpdateAuthority: {
+      value: input.masterUpdateAuthority ?? null,
+      isWritable: false,
+    },
+    masterMetadata: { value: input.masterMetadata ?? null, isWritable: false },
+    tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+    rent: { value: input.rent ?? null, isWritable: false },
+    reservationList: { value: input.reservationList ?? null, isWritable: true },
+  };
+
+  // Resolve default values.
+  if (!accounts.tokenProgram.value) {
+    accounts.tokenProgram.value = await getProgramAddress(
+      context,
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    );
+    accounts.tokenProgram.isWritable = false;
+  }
+  if (!accounts.systemProgram.value) {
+    accounts.systemProgram.value = await getProgramAddress(
+      context,
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    accounts.systemProgram.isWritable = false;
+  }
+  if (!accounts.rent.value) {
+    accounts.rent.value =
+      'SysvarRent111111111111111111111111111111111' as Address<'SysvarRent111111111111111111111111111111111'>;
+  }
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

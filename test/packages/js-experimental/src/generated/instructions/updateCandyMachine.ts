@@ -338,3 +338,138 @@ export async function getUpdateCandyMachineInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getUpdateCandyMachineInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UpdateCandyMachineInputWithSigners<
+    TAccountCandyMachine,
+    TAccountAuthority
+  >
+): Promise<
+  UpdateCandyMachineInstructionWithSigners<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
+>;
+export async function getUpdateCandyMachineInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  UpdateCandyMachineInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
+>;
+export async function getUpdateCandyMachineInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: UpdateCandyMachineInputWithSigners<
+    TAccountCandyMachine,
+    TAccountAuthority
+  >
+): Promise<
+  UpdateCandyMachineInstructionWithSigners<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
+>;
+export async function getUpdateCandyMachineInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  UpdateCandyMachineInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
+>;
+export async function getUpdateCandyMachineInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>,
+  rawInput?: UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>;
+
+  // Program address.
+  const defaultProgramAddress =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplCandyMachineCore',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getUpdateCandyMachineInstructionRaw<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    candyMachine: { value: input.candyMachine ?? null, isWritable: true },
+    authority: { value: input.authority ?? null, isWritable: false },
+  };
+
+  // Original args.
+  const args = { ...input };
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getUpdateCandyMachineInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as UpdateCandyMachineInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

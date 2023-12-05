@@ -328,3 +328,132 @@ export async function getSetAuthorityInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getSetAuthorityInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetAuthorityInputWithSigners<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  SetAuthorityInstructionWithSigners<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
+>;
+export async function getSetAuthorityInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  SetAuthorityInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
+>;
+export async function getSetAuthorityInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: SetAuthorityInputWithSigners<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  SetAuthorityInstructionWithSigners<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
+>;
+export async function getSetAuthorityInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  SetAuthorityInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
+>;
+export async function getSetAuthorityInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>,
+  rawInput?: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>;
+
+  // Program address.
+  const defaultProgramAddress =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplCandyMachineCore',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getSetAuthorityInstructionRaw<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    candyMachine: { value: input.candyMachine ?? null, isWritable: true },
+    authority: { value: input.authority ?? null, isWritable: false },
+  };
+
+  // Original args.
+  const args = { ...input };
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getSetAuthorityInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as SetAuthorityInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

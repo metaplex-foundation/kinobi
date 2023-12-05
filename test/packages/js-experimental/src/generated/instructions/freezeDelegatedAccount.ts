@@ -483,3 +483,213 @@ export async function getFreezeDelegatedAccountInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getFreezeDelegatedAccountInstruction<
+  TAccountDelegate extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountTokenProgram extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: FreezeDelegatedAccountInputWithSigners<
+    TAccountDelegate,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
+): Promise<
+  FreezeDelegatedAccountInstructionWithSigners<
+    TProgram,
+    WritableSignerAccount<TAccountDelegate> &
+      IAccountSignerMeta<TAccountDelegate>,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
+>;
+export async function getFreezeDelegatedAccountInstruction<
+  TAccountDelegate extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountTokenProgram extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: FreezeDelegatedAccountInput<
+    TAccountDelegate,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
+): Promise<
+  FreezeDelegatedAccountInstruction<
+    TProgram,
+    WritableSignerAccount<TAccountDelegate> &
+      IAccountSignerMeta<TAccountDelegate>,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
+>;
+export async function getFreezeDelegatedAccountInstruction<
+  TAccountDelegate extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountTokenProgram extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: FreezeDelegatedAccountInputWithSigners<
+    TAccountDelegate,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
+): Promise<
+  FreezeDelegatedAccountInstructionWithSigners<
+    TProgram,
+    WritableSignerAccount<TAccountDelegate> &
+      IAccountSignerMeta<TAccountDelegate>,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
+>;
+export async function getFreezeDelegatedAccountInstruction<
+  TAccountDelegate extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountTokenProgram extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: FreezeDelegatedAccountInput<
+    TAccountDelegate,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
+): Promise<
+  FreezeDelegatedAccountInstruction<
+    TProgram,
+    WritableSignerAccount<TAccountDelegate> &
+      IAccountSignerMeta<TAccountDelegate>,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
+>;
+export async function getFreezeDelegatedAccountInstruction<
+  TAccountDelegate extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountTokenProgram extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | FreezeDelegatedAccountInput<
+        TAccountDelegate,
+        TAccountTokenAccount,
+        TAccountEdition,
+        TAccountMint,
+        TAccountTokenProgram
+      >,
+  rawInput?: FreezeDelegatedAccountInput<
+    TAccountDelegate,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as FreezeDelegatedAccountInput<
+    TAccountDelegate,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >;
+
+  // Program address.
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getFreezeDelegatedAccountInstructionRaw<
+      TProgram,
+      TAccountDelegate,
+      TAccountTokenAccount,
+      TAccountEdition,
+      TAccountMint,
+      TAccountTokenProgram
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    delegate: { value: input.delegate ?? null, isWritable: true },
+    tokenAccount: { value: input.tokenAccount ?? null, isWritable: true },
+    edition: { value: input.edition ?? null, isWritable: false },
+    mint: { value: input.mint ?? null, isWritable: false },
+    tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
+  };
+
+  // Resolve default values.
+  if (!accounts.tokenProgram.value) {
+    accounts.tokenProgram.value = await getProgramAddress(
+      context,
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    );
+    accounts.tokenProgram.isWritable = false;
+  }
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getFreezeDelegatedAccountInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

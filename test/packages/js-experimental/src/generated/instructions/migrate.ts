@@ -780,3 +780,331 @@ export async function getMigrateInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getMigrateInstruction<
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: MigrateInputWithSigners<
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountCollectionMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  MigrateInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenAccount,
+    TAccountMint,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    TAccountCollectionMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRules
+  >
+>;
+export async function getMigrateInstruction<
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: MigrateInput<
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountCollectionMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  MigrateInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenAccount,
+    TAccountMint,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    TAccountCollectionMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRules
+  >
+>;
+export async function getMigrateInstruction<
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: MigrateInputWithSigners<
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountCollectionMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  MigrateInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenAccount,
+    TAccountMint,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    TAccountCollectionMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRules
+  >
+>;
+export async function getMigrateInstruction<
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: MigrateInput<
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountCollectionMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  MigrateInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenAccount,
+    TAccountMint,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    TAccountCollectionMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRules
+  >
+>;
+export async function getMigrateInstruction<
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | MigrateInput<
+        TAccountMetadata,
+        TAccountMasterEdition,
+        TAccountTokenAccount,
+        TAccountMint,
+        TAccountUpdateAuthority,
+        TAccountCollectionMetadata,
+        TAccountTokenProgram,
+        TAccountSystemProgram,
+        TAccountSysvarInstructions,
+        TAccountAuthorizationRules
+      >,
+  rawInput?: MigrateInput<
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountCollectionMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRules
+  >
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as MigrateInput<
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountCollectionMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRules
+  >;
+
+  // Program address.
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getMigrateInstructionRaw<
+      TProgram,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      TAccountTokenAccount,
+      TAccountMint,
+      TAccountUpdateAuthority,
+      TAccountCollectionMetadata,
+      TAccountTokenProgram,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountAuthorizationRules
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    masterEdition: { value: input.masterEdition ?? null, isWritable: false },
+    tokenAccount: { value: input.tokenAccount ?? null, isWritable: true },
+    mint: { value: input.mint ?? null, isWritable: false },
+    updateAuthority: {
+      value: input.updateAuthority ?? null,
+      isWritable: false,
+    },
+    collectionMetadata: {
+      value: input.collectionMetadata ?? null,
+      isWritable: false,
+    },
+    tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+    sysvarInstructions: {
+      value: input.sysvarInstructions ?? null,
+      isWritable: false,
+    },
+    authorizationRules: {
+      value: input.authorizationRules ?? null,
+      isWritable: false,
+    },
+  };
+
+  // Original args.
+  const args = { ...input };
+
+  // Resolve default values.
+  if (!accounts.tokenProgram.value) {
+    accounts.tokenProgram.value = await getProgramAddress(
+      context,
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    );
+    accounts.tokenProgram.isWritable = false;
+  }
+  if (!accounts.systemProgram.value) {
+    accounts.systemProgram.value = await getProgramAddress(
+      context,
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    accounts.systemProgram.isWritable = false;
+  }
+  if (!accounts.sysvarInstructions.value) {
+    accounts.sysvarInstructions.value =
+      'Sysvar1nstructions1111111111111111111111111' as Address<'Sysvar1nstructions1111111111111111111111111'>;
+  }
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getMigrateInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as MigrateInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

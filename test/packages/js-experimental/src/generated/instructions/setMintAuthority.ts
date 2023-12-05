@@ -373,3 +373,171 @@ export async function getSetMintAuthorityInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getSetMintAuthorityInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TAccountMintAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetMintAuthorityInputWithSigners<
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountMintAuthority
+  >
+): Promise<
+  SetMintAuthorityInstructionWithSigners<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>
+  >
+>;
+export async function getSetMintAuthorityInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TAccountMintAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetMintAuthorityInput<
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountMintAuthority
+  >
+): Promise<
+  SetMintAuthorityInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>
+  >
+>;
+export async function getSetMintAuthorityInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TAccountMintAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: SetMintAuthorityInputWithSigners<
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountMintAuthority
+  >
+): Promise<
+  SetMintAuthorityInstructionWithSigners<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>
+  >
+>;
+export async function getSetMintAuthorityInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TAccountMintAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: SetMintAuthorityInput<
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountMintAuthority
+  >
+): Promise<
+  SetMintAuthorityInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    ReadonlySignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>
+  >
+>;
+export async function getSetMintAuthorityInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TAccountMintAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | SetMintAuthorityInput<
+        TAccountCandyMachine,
+        TAccountAuthority,
+        TAccountMintAuthority
+      >,
+  rawInput?: SetMintAuthorityInput<
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountMintAuthority
+  >
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as SetMintAuthorityInput<
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountMintAuthority
+  >;
+
+  // Program address.
+  const defaultProgramAddress =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplCandyMachineCore',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getSetMintAuthorityInstructionRaw<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority,
+      TAccountMintAuthority
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    candyMachine: { value: input.candyMachine ?? null, isWritable: true },
+    authority: { value: input.authority ?? null, isWritable: false },
+    mintAuthority: { value: input.mintAuthority ?? null, isWritable: false },
+  };
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getSetMintAuthorityInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

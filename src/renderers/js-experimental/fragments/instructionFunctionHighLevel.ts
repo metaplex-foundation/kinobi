@@ -42,7 +42,9 @@ export function getInstructionFunctionHighLevelFragment(
     argsTypeFragment.mergeImportsWith(dataArgsManifest.looseType);
   }
 
-  const functionName = `get${pascalCase(instructionNode.name)}InstructionAsync`;
+  const functionName = `get${pascalCase(instructionNode.name)}Instruction${
+    useAsync ? 'Async' : ''
+  }`;
   const lowLevelFunctionName = `get${pascalCase(
     instructionNode.name
   )}InstructionRaw`;

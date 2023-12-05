@@ -373,3 +373,163 @@ export async function getUpdatePrimarySaleHappenedViaTokenInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getUpdatePrimarySaleHappenedViaTokenInstruction<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountToken extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UpdatePrimarySaleHappenedViaTokenInputWithSigners<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >
+): Promise<
+  UpdatePrimarySaleHappenedViaTokenInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+    TAccountToken
+  >
+>;
+export async function getUpdatePrimarySaleHappenedViaTokenInstruction<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountToken extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UpdatePrimarySaleHappenedViaTokenInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >
+): Promise<
+  UpdatePrimarySaleHappenedViaTokenInstruction<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+    TAccountToken
+  >
+>;
+export async function getUpdatePrimarySaleHappenedViaTokenInstruction<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountToken extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: UpdatePrimarySaleHappenedViaTokenInputWithSigners<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >
+): Promise<
+  UpdatePrimarySaleHappenedViaTokenInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+    TAccountToken
+  >
+>;
+export async function getUpdatePrimarySaleHappenedViaTokenInstruction<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountToken extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: UpdatePrimarySaleHappenedViaTokenInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >
+): Promise<
+  UpdatePrimarySaleHappenedViaTokenInstruction<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+    TAccountToken
+  >
+>;
+export async function getUpdatePrimarySaleHappenedViaTokenInstruction<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountToken extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | UpdatePrimarySaleHappenedViaTokenInput<
+        TAccountMetadata,
+        TAccountOwner,
+        TAccountToken
+      >,
+  rawInput?: UpdatePrimarySaleHappenedViaTokenInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as UpdatePrimarySaleHappenedViaTokenInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >;
+
+  // Program address.
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getUpdatePrimarySaleHappenedViaTokenInstructionRaw<
+      TProgram,
+      TAccountMetadata,
+      TAccountOwner,
+      TAccountToken
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    owner: { value: input.owner ?? null, isWritable: false },
+    token: { value: input.token ?? null, isWritable: false },
+  };
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getUpdatePrimarySaleHappenedViaTokenInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

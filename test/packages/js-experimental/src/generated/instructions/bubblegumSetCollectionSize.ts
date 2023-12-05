@@ -523,3 +523,223 @@ export async function getBubblegumSetCollectionSizeInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getBubblegumSetCollectionSizeInstruction<
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountBubblegumSigner extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: BubblegumSetCollectionSizeInputWithSigners<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountBubblegumSigner,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  BubblegumSetCollectionSizeInstructionWithSigners<
+    TProgram,
+    TAccountCollectionMetadata,
+    WritableSignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
+    TAccountCollectionMint,
+    ReadonlySignerAccount<TAccountBubblegumSigner> &
+      IAccountSignerMeta<TAccountBubblegumSigner>,
+    TAccountCollectionAuthorityRecord
+  >
+>;
+export async function getBubblegumSetCollectionSizeInstruction<
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountBubblegumSigner extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: BubblegumSetCollectionSizeInput<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountBubblegumSigner,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  BubblegumSetCollectionSizeInstruction<
+    TProgram,
+    TAccountCollectionMetadata,
+    WritableSignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
+    TAccountCollectionMint,
+    ReadonlySignerAccount<TAccountBubblegumSigner> &
+      IAccountSignerMeta<TAccountBubblegumSigner>,
+    TAccountCollectionAuthorityRecord
+  >
+>;
+export async function getBubblegumSetCollectionSizeInstruction<
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountBubblegumSigner extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: BubblegumSetCollectionSizeInputWithSigners<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountBubblegumSigner,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  BubblegumSetCollectionSizeInstructionWithSigners<
+    TProgram,
+    TAccountCollectionMetadata,
+    WritableSignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
+    TAccountCollectionMint,
+    ReadonlySignerAccount<TAccountBubblegumSigner> &
+      IAccountSignerMeta<TAccountBubblegumSigner>,
+    TAccountCollectionAuthorityRecord
+  >
+>;
+export async function getBubblegumSetCollectionSizeInstruction<
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountBubblegumSigner extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: BubblegumSetCollectionSizeInput<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountBubblegumSigner,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  BubblegumSetCollectionSizeInstruction<
+    TProgram,
+    TAccountCollectionMetadata,
+    WritableSignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
+    TAccountCollectionMint,
+    ReadonlySignerAccount<TAccountBubblegumSigner> &
+      IAccountSignerMeta<TAccountBubblegumSigner>,
+    TAccountCollectionAuthorityRecord
+  >
+>;
+export async function getBubblegumSetCollectionSizeInstruction<
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountBubblegumSigner extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | BubblegumSetCollectionSizeInput<
+        TAccountCollectionMetadata,
+        TAccountCollectionAuthority,
+        TAccountCollectionMint,
+        TAccountBubblegumSigner,
+        TAccountCollectionAuthorityRecord
+      >,
+  rawInput?: BubblegumSetCollectionSizeInput<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountBubblegumSigner,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as BubblegumSetCollectionSizeInput<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountBubblegumSigner,
+    TAccountCollectionAuthorityRecord
+  >;
+
+  // Program address.
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getBubblegumSetCollectionSizeInstructionRaw<
+      TProgram,
+      TAccountCollectionMetadata,
+      TAccountCollectionAuthority,
+      TAccountCollectionMint,
+      TAccountBubblegumSigner,
+      TAccountCollectionAuthorityRecord
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    collectionMetadata: {
+      value: input.collectionMetadata ?? null,
+      isWritable: true,
+    },
+    collectionAuthority: {
+      value: input.collectionAuthority ?? null,
+      isWritable: true,
+    },
+    collectionMint: { value: input.collectionMint ?? null, isWritable: false },
+    bubblegumSigner: {
+      value: input.bubblegumSigner ?? null,
+      isWritable: false,
+    },
+    collectionAuthorityRecord: {
+      value: input.collectionAuthorityRecord ?? null,
+      isWritable: false,
+    },
+  };
+
+  // Original args.
+  const args = { ...input };
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getBubblegumSetCollectionSizeInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as BubblegumSetCollectionSizeInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

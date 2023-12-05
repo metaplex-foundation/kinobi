@@ -304,3 +304,128 @@ export async function getWithdrawInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getWithdrawInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: WithdrawInputWithSigners<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  WithdrawInstructionWithSigners<
+    TProgram,
+    TAccountCandyMachine,
+    WritableSignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
+>;
+export async function getWithdrawInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  WithdrawInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    WritableSignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
+>;
+export async function getWithdrawInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: WithdrawInputWithSigners<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  WithdrawInstructionWithSigners<
+    TProgram,
+    TAccountCandyMachine,
+    WritableSignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
+>;
+export async function getWithdrawInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  WithdrawInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    WritableSignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
+>;
+export async function getWithdrawInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | WithdrawInput<TAccountCandyMachine, TAccountAuthority>,
+  rawInput?: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as WithdrawInput<TAccountCandyMachine, TAccountAuthority>;
+
+  // Program address.
+  const defaultProgramAddress =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplCandyMachineCore',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getWithdrawInstructionRaw<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    candyMachine: { value: input.candyMachine ?? null, isWritable: true },
+    authority: { value: input.authority ?? null, isWritable: true },
+  };
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getWithdrawInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

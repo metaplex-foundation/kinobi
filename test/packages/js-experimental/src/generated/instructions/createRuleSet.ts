@@ -433,3 +433,182 @@ export async function getCreateRuleSetInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getCreateRuleSetInstruction<
+  TAccountPayer extends string,
+  TAccountRuleSetPda extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: CreateRuleSetInputWithSigners<
+    TAccountPayer,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  >
+): Promise<
+  CreateRuleSetInstructionWithSigners<
+    TProgram,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  >
+>;
+export async function getCreateRuleSetInstruction<
+  TAccountPayer extends string,
+  TAccountRuleSetPda extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: CreateRuleSetInput<
+    TAccountPayer,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  >
+): Promise<
+  CreateRuleSetInstruction<
+    TProgram,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  >
+>;
+export async function getCreateRuleSetInstruction<
+  TAccountPayer extends string,
+  TAccountRuleSetPda extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+>(
+  input: CreateRuleSetInputWithSigners<
+    TAccountPayer,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  >
+): Promise<
+  CreateRuleSetInstructionWithSigners<
+    TProgram,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  >
+>;
+export async function getCreateRuleSetInstruction<
+  TAccountPayer extends string,
+  TAccountRuleSetPda extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+>(
+  input: CreateRuleSetInput<
+    TAccountPayer,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  >
+): Promise<
+  CreateRuleSetInstruction<
+    TProgram,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  >
+>;
+export async function getCreateRuleSetInstruction<
+  TAccountPayer extends string,
+  TAccountRuleSetPda extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | CreateRuleSetInput<
+        TAccountPayer,
+        TAccountRuleSetPda,
+        TAccountSystemProgram
+      >,
+  rawInput?: CreateRuleSetInput<
+    TAccountPayer,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  >
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as CreateRuleSetInput<
+    TAccountPayer,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  >;
+
+  // Program address.
+  const defaultProgramAddress =
+    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenAuthRules',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getCreateRuleSetInstructionRaw<
+      TProgram,
+      TAccountPayer,
+      TAccountRuleSetPda,
+      TAccountSystemProgram
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    payer: { value: input.payer ?? null, isWritable: true },
+    ruleSetPda: { value: input.ruleSetPda ?? null, isWritable: true },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+  };
+
+  // Original args.
+  const args = { ...input };
+
+  // Resolve default values.
+  if (!accounts.systemProgram.value) {
+    accounts.systemProgram.value = await getProgramAddress(
+      context,
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    accounts.systemProgram.isWritable = false;
+  }
+  if (!args.ruleSetBump) {
+    args.ruleSetBump = expectProgramDerivedAddress(
+      accounts.ruleSetPda.value
+    )[1];
+  }
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getCreateRuleSetInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as CreateRuleSetInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

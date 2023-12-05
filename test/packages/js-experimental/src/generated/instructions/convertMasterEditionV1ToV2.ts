@@ -367,3 +367,163 @@ export async function getConvertMasterEditionV1ToV2InstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getConvertMasterEditionV1ToV2Instruction<
+  TAccountMasterEdition extends string,
+  TAccountOneTimeAuth extends string,
+  TAccountPrintingMint extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: ConvertMasterEditionV1ToV2InputWithSigners<
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  >
+): Promise<
+  ConvertMasterEditionV1ToV2InstructionWithSigners<
+    TProgram,
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  >
+>;
+export async function getConvertMasterEditionV1ToV2Instruction<
+  TAccountMasterEdition extends string,
+  TAccountOneTimeAuth extends string,
+  TAccountPrintingMint extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: ConvertMasterEditionV1ToV2Input<
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  >
+): Promise<
+  ConvertMasterEditionV1ToV2Instruction<
+    TProgram,
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  >
+>;
+export async function getConvertMasterEditionV1ToV2Instruction<
+  TAccountMasterEdition extends string,
+  TAccountOneTimeAuth extends string,
+  TAccountPrintingMint extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: ConvertMasterEditionV1ToV2InputWithSigners<
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  >
+): Promise<
+  ConvertMasterEditionV1ToV2InstructionWithSigners<
+    TProgram,
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  >
+>;
+export async function getConvertMasterEditionV1ToV2Instruction<
+  TAccountMasterEdition extends string,
+  TAccountOneTimeAuth extends string,
+  TAccountPrintingMint extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: ConvertMasterEditionV1ToV2Input<
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  >
+): Promise<
+  ConvertMasterEditionV1ToV2Instruction<
+    TProgram,
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  >
+>;
+export async function getConvertMasterEditionV1ToV2Instruction<
+  TAccountMasterEdition extends string,
+  TAccountOneTimeAuth extends string,
+  TAccountPrintingMint extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | ConvertMasterEditionV1ToV2Input<
+        TAccountMasterEdition,
+        TAccountOneTimeAuth,
+        TAccountPrintingMint
+      >,
+  rawInput?: ConvertMasterEditionV1ToV2Input<
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  >
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as ConvertMasterEditionV1ToV2Input<
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  >;
+
+  // Program address.
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getConvertMasterEditionV1ToV2InstructionRaw<
+      TProgram,
+      TAccountMasterEdition,
+      TAccountOneTimeAuth,
+      TAccountPrintingMint
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    masterEdition: { value: input.masterEdition ?? null, isWritable: true },
+    oneTimeAuth: { value: input.oneTimeAuth ?? null, isWritable: true },
+    printingMint: { value: input.printingMint ?? null, isWritable: true },
+  };
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getConvertMasterEditionV1ToV2InstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

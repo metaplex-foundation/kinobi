@@ -369,3 +369,132 @@ export async function getAddConfigLinesInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getAddConfigLinesInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: AddConfigLinesInputWithSigners<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  AddConfigLinesInstructionWithSigners<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
+>;
+export async function getAddConfigLinesInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  AddConfigLinesInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
+>;
+export async function getAddConfigLinesInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: AddConfigLinesInputWithSigners<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  AddConfigLinesInstructionWithSigners<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
+>;
+export async function getAddConfigLinesInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<
+  AddConfigLinesInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>
+  >
+>;
+export async function getAddConfigLinesInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>,
+  rawInput?: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>;
+
+  // Program address.
+  const defaultProgramAddress =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplCandyMachineCore',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getAddConfigLinesInstructionRaw<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    candyMachine: { value: input.candyMachine ?? null, isWritable: true },
+    authority: { value: input.authority ?? null, isWritable: false },
+  };
+
+  // Original args.
+  const args = { ...input };
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getAddConfigLinesInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as AddConfigLinesInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

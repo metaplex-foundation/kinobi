@@ -229,3 +229,90 @@ export async function getPuffMetadataInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getPuffMetadataInstruction<
+  TAccountMetadata extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: PuffMetadataInputWithSigners<TAccountMetadata>
+): Promise<PuffMetadataInstructionWithSigners<TProgram, TAccountMetadata>>;
+export async function getPuffMetadataInstruction<
+  TAccountMetadata extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: PuffMetadataInput<TAccountMetadata>
+): Promise<PuffMetadataInstruction<TProgram, TAccountMetadata>>;
+export async function getPuffMetadataInstruction<
+  TAccountMetadata extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: PuffMetadataInputWithSigners<TAccountMetadata>
+): Promise<PuffMetadataInstructionWithSigners<TProgram, TAccountMetadata>>;
+export async function getPuffMetadataInstruction<
+  TAccountMetadata extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: PuffMetadataInput<TAccountMetadata>
+): Promise<PuffMetadataInstruction<TProgram, TAccountMetadata>>;
+export async function getPuffMetadataInstruction<
+  TAccountMetadata extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | PuffMetadataInput<TAccountMetadata>,
+  rawInput?: PuffMetadataInput<TAccountMetadata>
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as PuffMetadataInput<TAccountMetadata>;
+
+  // Program address.
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getPuffMetadataInstructionRaw<TProgram, TAccountMetadata>
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    metadata: { value: input.metadata ?? null, isWritable: true },
+  };
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getPuffMetadataInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

@@ -303,3 +303,124 @@ export async function getSignMetadataInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getSignMetadataInstruction<
+  TAccountMetadata extends string,
+  TAccountCreator extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SignMetadataInputWithSigners<TAccountMetadata, TAccountCreator>
+): Promise<
+  SignMetadataInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
+  >
+>;
+export async function getSignMetadataInstruction<
+  TAccountMetadata extends string,
+  TAccountCreator extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SignMetadataInput<TAccountMetadata, TAccountCreator>
+): Promise<
+  SignMetadataInstruction<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
+  >
+>;
+export async function getSignMetadataInstruction<
+  TAccountMetadata extends string,
+  TAccountCreator extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: SignMetadataInputWithSigners<TAccountMetadata, TAccountCreator>
+): Promise<
+  SignMetadataInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
+  >
+>;
+export async function getSignMetadataInstruction<
+  TAccountMetadata extends string,
+  TAccountCreator extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: SignMetadataInput<TAccountMetadata, TAccountCreator>
+): Promise<
+  SignMetadataInstruction<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
+  >
+>;
+export async function getSignMetadataInstruction<
+  TAccountMetadata extends string,
+  TAccountCreator extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | SignMetadataInput<TAccountMetadata, TAccountCreator>,
+  rawInput?: SignMetadataInput<TAccountMetadata, TAccountCreator>
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as SignMetadataInput<TAccountMetadata, TAccountCreator>;
+
+  // Program address.
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getSignMetadataInstructionRaw<
+      TProgram,
+      TAccountMetadata,
+      TAccountCreator
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    creator: { value: input.creator ?? null, isWritable: false },
+  };
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getSignMetadataInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

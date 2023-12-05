@@ -398,3 +398,144 @@ export async function getUpdateMetadataAccountV2InstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getUpdateMetadataAccountV2Instruction<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UpdateMetadataAccountV2InputWithSigners<
+    TAccountMetadata,
+    TAccountUpdateAuthority
+  >
+): Promise<
+  UpdateMetadataAccountV2InstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>
+  >
+>;
+export async function getUpdateMetadataAccountV2Instruction<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UpdateMetadataAccountV2Input<TAccountMetadata, TAccountUpdateAuthority>
+): Promise<
+  UpdateMetadataAccountV2Instruction<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>
+  >
+>;
+export async function getUpdateMetadataAccountV2Instruction<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: UpdateMetadataAccountV2InputWithSigners<
+    TAccountMetadata,
+    TAccountUpdateAuthority
+  >
+): Promise<
+  UpdateMetadataAccountV2InstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>
+  >
+>;
+export async function getUpdateMetadataAccountV2Instruction<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: UpdateMetadataAccountV2Input<TAccountMetadata, TAccountUpdateAuthority>
+): Promise<
+  UpdateMetadataAccountV2Instruction<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>
+  >
+>;
+export async function getUpdateMetadataAccountV2Instruction<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | UpdateMetadataAccountV2Input<TAccountMetadata, TAccountUpdateAuthority>,
+  rawInput?: UpdateMetadataAccountV2Input<
+    TAccountMetadata,
+    TAccountUpdateAuthority
+  >
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as UpdateMetadataAccountV2Input<TAccountMetadata, TAccountUpdateAuthority>;
+
+  // Program address.
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getUpdateMetadataAccountV2InstructionRaw<
+      TProgram,
+      TAccountMetadata,
+      TAccountUpdateAuthority
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    updateAuthority: {
+      value: input.updateAuthority ?? null,
+      isWritable: false,
+    },
+  };
+
+  // Original args.
+  const args = { ...input, updateAuthority: input.updateAuthorityArg };
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getUpdateMetadataAccountV2InstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as UpdateMetadataAccountV2InstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

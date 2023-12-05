@@ -345,3 +345,132 @@ export async function getCreateAccountInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getCreateAccountInstruction<
+  TAccountPayer extends string,
+  TAccountNewAccount extends string,
+  TProgram extends string = '11111111111111111111111111111111'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: CreateAccountInputWithSigners<TAccountPayer, TAccountNewAccount>
+): Promise<
+  CreateAccountInstructionWithSigners<
+    TProgram,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    WritableSignerAccount<TAccountNewAccount> &
+      IAccountSignerMeta<TAccountNewAccount>
+  >
+>;
+export async function getCreateAccountInstruction<
+  TAccountPayer extends string,
+  TAccountNewAccount extends string,
+  TProgram extends string = '11111111111111111111111111111111'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: CreateAccountInput<TAccountPayer, TAccountNewAccount>
+): Promise<
+  CreateAccountInstruction<
+    TProgram,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    WritableSignerAccount<TAccountNewAccount> &
+      IAccountSignerMeta<TAccountNewAccount>
+  >
+>;
+export async function getCreateAccountInstruction<
+  TAccountPayer extends string,
+  TAccountNewAccount extends string,
+  TProgram extends string = '11111111111111111111111111111111'
+>(
+  input: CreateAccountInputWithSigners<TAccountPayer, TAccountNewAccount>
+): Promise<
+  CreateAccountInstructionWithSigners<
+    TProgram,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    WritableSignerAccount<TAccountNewAccount> &
+      IAccountSignerMeta<TAccountNewAccount>
+  >
+>;
+export async function getCreateAccountInstruction<
+  TAccountPayer extends string,
+  TAccountNewAccount extends string,
+  TProgram extends string = '11111111111111111111111111111111'
+>(
+  input: CreateAccountInput<TAccountPayer, TAccountNewAccount>
+): Promise<
+  CreateAccountInstruction<
+    TProgram,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    WritableSignerAccount<TAccountNewAccount> &
+      IAccountSignerMeta<TAccountNewAccount>
+  >
+>;
+export async function getCreateAccountInstruction<
+  TAccountPayer extends string,
+  TAccountNewAccount extends string,
+  TProgram extends string = '11111111111111111111111111111111'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | CreateAccountInput<TAccountPayer, TAccountNewAccount>,
+  rawInput?: CreateAccountInput<TAccountPayer, TAccountNewAccount>
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as CreateAccountInput<TAccountPayer, TAccountNewAccount>;
+
+  // Program address.
+  const defaultProgramAddress =
+    '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'splSystem',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getCreateAccountInstructionRaw<
+      TProgram,
+      TAccountPayer,
+      TAccountNewAccount
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    payer: { value: input.payer ?? null, isWritable: true },
+    newAccount: { value: input.newAccount ?? null, isWritable: true },
+  };
+
+  // Original args.
+  const args = { ...input };
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getCreateAccountInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as CreateAccountInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

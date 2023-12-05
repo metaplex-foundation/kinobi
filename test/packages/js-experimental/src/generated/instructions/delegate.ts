@@ -926,3 +926,377 @@ export async function getDelegateInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getDelegateInstruction<
+  TAccountDelegateRecord extends string,
+  TAccountDelegate extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountToken extends string,
+  TAccountAuthority extends string,
+  TAccountPayer extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: DelegateInputWithSigners<
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  DelegateInstructionWithSigners<
+    TProgram,
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+>;
+export async function getDelegateInstruction<
+  TAccountDelegateRecord extends string,
+  TAccountDelegate extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountToken extends string,
+  TAccountAuthority extends string,
+  TAccountPayer extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: DelegateInput<
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  DelegateInstruction<
+    TProgram,
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+>;
+export async function getDelegateInstruction<
+  TAccountDelegateRecord extends string,
+  TAccountDelegate extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountToken extends string,
+  TAccountAuthority extends string,
+  TAccountPayer extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: DelegateInputWithSigners<
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  DelegateInstructionWithSigners<
+    TProgram,
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+>;
+export async function getDelegateInstruction<
+  TAccountDelegateRecord extends string,
+  TAccountDelegate extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountToken extends string,
+  TAccountAuthority extends string,
+  TAccountPayer extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: DelegateInput<
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+): Promise<
+  DelegateInstruction<
+    TProgram,
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    ReadonlySignerAccount<TAccountAuthority> &
+      IAccountSignerMeta<TAccountAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+>;
+export async function getDelegateInstruction<
+  TAccountDelegateRecord extends string,
+  TAccountDelegate extends string,
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountMint extends string,
+  TAccountToken extends string,
+  TAccountAuthority extends string,
+  TAccountPayer extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountAuthorizationRulesProgram extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | DelegateInput<
+        TAccountDelegateRecord,
+        TAccountDelegate,
+        TAccountMetadata,
+        TAccountMasterEdition,
+        TAccountMint,
+        TAccountToken,
+        TAccountAuthority,
+        TAccountPayer,
+        TAccountSystemProgram,
+        TAccountSysvarInstructions,
+        TAccountSplTokenProgram,
+        TAccountAuthorizationRulesProgram,
+        TAccountAuthorizationRules
+      >,
+  rawInput?: DelegateInput<
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as DelegateInput<
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >;
+
+  // Program address.
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getDelegateInstructionRaw<
+      TProgram,
+      TAccountDelegateRecord,
+      TAccountDelegate,
+      TAccountMetadata,
+      TAccountMasterEdition,
+      TAccountMint,
+      TAccountToken,
+      TAccountAuthority,
+      TAccountPayer,
+      TAccountSystemProgram,
+      TAccountSysvarInstructions,
+      TAccountSplTokenProgram,
+      TAccountAuthorizationRulesProgram,
+      TAccountAuthorizationRules
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    delegateRecord: { value: input.delegateRecord ?? null, isWritable: true },
+    delegate: { value: input.delegate ?? null, isWritable: false },
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    masterEdition: { value: input.masterEdition ?? null, isWritable: false },
+    mint: { value: input.mint ?? null, isWritable: false },
+    token: { value: input.token ?? null, isWritable: true },
+    authority: { value: input.authority ?? null, isWritable: false },
+    payer: { value: input.payer ?? null, isWritable: true },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+    sysvarInstructions: {
+      value: input.sysvarInstructions ?? null,
+      isWritable: false,
+    },
+    splTokenProgram: {
+      value: input.splTokenProgram ?? null,
+      isWritable: false,
+    },
+    authorizationRulesProgram: {
+      value: input.authorizationRulesProgram ?? null,
+      isWritable: false,
+    },
+    authorizationRules: {
+      value: input.authorizationRules ?? null,
+      isWritable: false,
+    },
+  };
+
+  // Original args.
+  const args = { ...input };
+
+  // Resolve default values.
+  if (!accounts.systemProgram.value) {
+    accounts.systemProgram.value = await getProgramAddress(
+      context,
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    accounts.systemProgram.isWritable = false;
+  }
+  if (!accounts.sysvarInstructions.value) {
+    accounts.sysvarInstructions.value =
+      'Sysvar1nstructions1111111111111111111111111' as Address<'Sysvar1nstructions1111111111111111111111111'>;
+  }
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getDelegateInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as DelegateInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

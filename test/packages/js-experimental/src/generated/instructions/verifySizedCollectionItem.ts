@@ -587,3 +587,248 @@ export async function getVerifySizedCollectionItemInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getVerifySizedCollectionItemInstruction<
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollection extends string,
+  TAccountCollectionMasterEditionAccount extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: VerifySizedCollectionItemInputWithSigners<
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  VerifySizedCollectionItemInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  >
+>;
+export async function getVerifySizedCollectionItemInstruction<
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollection extends string,
+  TAccountCollectionMasterEditionAccount extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: VerifySizedCollectionItemInput<
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  VerifySizedCollectionItemInstruction<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  >
+>;
+export async function getVerifySizedCollectionItemInstruction<
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollection extends string,
+  TAccountCollectionMasterEditionAccount extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: VerifySizedCollectionItemInputWithSigners<
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  VerifySizedCollectionItemInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  >
+>;
+export async function getVerifySizedCollectionItemInstruction<
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollection extends string,
+  TAccountCollectionMasterEditionAccount extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: VerifySizedCollectionItemInput<
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<
+  VerifySizedCollectionItemInstruction<
+    TProgram,
+    TAccountMetadata,
+    ReadonlySignerAccount<TAccountCollectionAuthority> &
+      IAccountSignerMeta<TAccountCollectionAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  >
+>;
+export async function getVerifySizedCollectionItemInstruction<
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountPayer extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollection extends string,
+  TAccountCollectionMasterEditionAccount extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | VerifySizedCollectionItemInput<
+        TAccountMetadata,
+        TAccountCollectionAuthority,
+        TAccountPayer,
+        TAccountCollectionMint,
+        TAccountCollection,
+        TAccountCollectionMasterEditionAccount,
+        TAccountCollectionAuthorityRecord
+      >,
+  rawInput?: VerifySizedCollectionItemInput<
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  >
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as VerifySizedCollectionItemInput<
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  >;
+
+  // Program address.
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getVerifySizedCollectionItemInstructionRaw<
+      TProgram,
+      TAccountMetadata,
+      TAccountCollectionAuthority,
+      TAccountPayer,
+      TAccountCollectionMint,
+      TAccountCollection,
+      TAccountCollectionMasterEditionAccount,
+      TAccountCollectionAuthorityRecord
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    collectionAuthority: {
+      value: input.collectionAuthority ?? null,
+      isWritable: false,
+    },
+    payer: { value: input.payer ?? null, isWritable: true },
+    collectionMint: { value: input.collectionMint ?? null, isWritable: false },
+    collection: { value: input.collection ?? null, isWritable: true },
+    collectionMasterEditionAccount: {
+      value: input.collectionMasterEditionAccount ?? null,
+      isWritable: false,
+    },
+    collectionAuthorityRecord: {
+      value: input.collectionAuthorityRecord ?? null,
+      isWritable: false,
+    },
+  };
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getVerifySizedCollectionItemInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

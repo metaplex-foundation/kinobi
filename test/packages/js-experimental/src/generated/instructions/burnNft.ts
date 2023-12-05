@@ -586,3 +586,254 @@ export async function getBurnNftInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getBurnNftInstruction<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountMint extends string,
+  TAccountTokenAccount extends string,
+  TAccountMasterEditionAccount extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountCollectionMetadata extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: BurnNftInputWithSigners<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata
+  >
+): Promise<
+  BurnNftInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata
+  >
+>;
+export async function getBurnNftInstruction<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountMint extends string,
+  TAccountTokenAccount extends string,
+  TAccountMasterEditionAccount extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountCollectionMetadata extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: BurnNftInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata
+  >
+): Promise<
+  BurnNftInstruction<
+    TProgram,
+    TAccountMetadata,
+    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata
+  >
+>;
+export async function getBurnNftInstruction<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountMint extends string,
+  TAccountTokenAccount extends string,
+  TAccountMasterEditionAccount extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountCollectionMetadata extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: BurnNftInputWithSigners<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata
+  >
+): Promise<
+  BurnNftInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata
+  >
+>;
+export async function getBurnNftInstruction<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountMint extends string,
+  TAccountTokenAccount extends string,
+  TAccountMasterEditionAccount extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountCollectionMetadata extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: BurnNftInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata
+  >
+): Promise<
+  BurnNftInstruction<
+    TProgram,
+    TAccountMetadata,
+    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata
+  >
+>;
+export async function getBurnNftInstruction<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountMint extends string,
+  TAccountTokenAccount extends string,
+  TAccountMasterEditionAccount extends string,
+  TAccountSplTokenProgram extends string,
+  TAccountCollectionMetadata extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | BurnNftInput<
+        TAccountMetadata,
+        TAccountOwner,
+        TAccountMint,
+        TAccountTokenAccount,
+        TAccountMasterEditionAccount,
+        TAccountSplTokenProgram,
+        TAccountCollectionMetadata
+      >,
+  rawInput?: BurnNftInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata
+  >
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as BurnNftInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata
+  >;
+
+  // Program address.
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getBurnNftInstructionRaw<
+      TProgram,
+      TAccountMetadata,
+      TAccountOwner,
+      TAccountMint,
+      TAccountTokenAccount,
+      TAccountMasterEditionAccount,
+      TAccountSplTokenProgram,
+      TAccountCollectionMetadata
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    owner: { value: input.owner ?? null, isWritable: true },
+    mint: { value: input.mint ?? null, isWritable: true },
+    tokenAccount: { value: input.tokenAccount ?? null, isWritable: true },
+    masterEditionAccount: {
+      value: input.masterEditionAccount ?? null,
+      isWritable: true,
+    },
+    splTokenProgram: {
+      value: input.splTokenProgram ?? null,
+      isWritable: false,
+    },
+    collectionMetadata: {
+      value: input.collectionMetadata ?? null,
+      isWritable: true,
+    },
+  };
+
+  // Resolve default values.
+  if (!accounts.splTokenProgram.value) {
+    accounts.splTokenProgram.value = await getProgramAddress(
+      context,
+      'splToken',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+    );
+    accounts.splTokenProgram.isWritable = false;
+  }
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getBurnNftInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

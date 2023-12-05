@@ -764,3 +764,352 @@ export async function getDummyInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getDummyInstruction<
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountFoo extends string,
+  TAccountBar extends string,
+  TAccountDelegate extends string,
+  TAccountDelegateRecord extends string,
+  TAccountTokenOrAtaProgram extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
+  input: DummyInputWithSigners<
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountFoo,
+    TAccountBar,
+    TAccountDelegate,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >
+): Promise<
+  DummyInstructionWithSigners<
+    TProgram,
+    WritableSignerAccount<TAccountEdition> &
+      IAccountSignerMeta<TAccountEdition>,
+    TAccountMint,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    WritableSignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountFoo,
+    ReadonlySignerAccount<TAccountBar> & IAccountSignerMeta<TAccountBar>,
+    ReadonlySignerAccount<TAccountDelegate> &
+      IAccountSignerMeta<TAccountDelegate>,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >
+>;
+export async function getDummyInstruction<
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountFoo extends string,
+  TAccountBar extends string,
+  TAccountDelegate extends string,
+  TAccountDelegateRecord extends string,
+  TAccountTokenOrAtaProgram extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
+  input: DummyInput<
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountFoo,
+    TAccountBar,
+    TAccountDelegate,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >
+): Promise<
+  DummyInstruction<
+    TProgram,
+    WritableSignerAccount<TAccountEdition> &
+      IAccountSignerMeta<TAccountEdition>,
+    TAccountMint,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    WritableSignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountFoo,
+    ReadonlySignerAccount<TAccountBar> & IAccountSignerMeta<TAccountBar>,
+    ReadonlySignerAccount<TAccountDelegate> &
+      IAccountSignerMeta<TAccountDelegate>,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >
+>;
+export async function getDummyInstruction<
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountFoo extends string,
+  TAccountBar extends string,
+  TAccountDelegate extends string,
+  TAccountDelegateRecord extends string,
+  TAccountTokenOrAtaProgram extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: DummyInputWithSigners<
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountFoo,
+    TAccountBar,
+    TAccountDelegate,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >
+): Promise<
+  DummyInstructionWithSigners<
+    TProgram,
+    WritableSignerAccount<TAccountEdition> &
+      IAccountSignerMeta<TAccountEdition>,
+    TAccountMint,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    WritableSignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountFoo,
+    ReadonlySignerAccount<TAccountBar> & IAccountSignerMeta<TAccountBar>,
+    ReadonlySignerAccount<TAccountDelegate> &
+      IAccountSignerMeta<TAccountDelegate>,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >
+>;
+export async function getDummyInstruction<
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountFoo extends string,
+  TAccountBar extends string,
+  TAccountDelegate extends string,
+  TAccountDelegateRecord extends string,
+  TAccountTokenOrAtaProgram extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: DummyInput<
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountFoo,
+    TAccountBar,
+    TAccountDelegate,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >
+): Promise<
+  DummyInstruction<
+    TProgram,
+    WritableSignerAccount<TAccountEdition> &
+      IAccountSignerMeta<TAccountEdition>,
+    TAccountMint,
+    ReadonlySignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    WritableSignerAccount<TAccountMintAuthority> &
+      IAccountSignerMeta<TAccountMintAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountFoo,
+    ReadonlySignerAccount<TAccountBar> & IAccountSignerMeta<TAccountBar>,
+    ReadonlySignerAccount<TAccountDelegate> &
+      IAccountSignerMeta<TAccountDelegate>,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >
+>;
+export async function getDummyInstruction<
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountFoo extends string,
+  TAccountBar extends string,
+  TAccountDelegate extends string,
+  TAccountDelegateRecord extends string,
+  TAccountTokenOrAtaProgram extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
+    | DummyInput<
+        TAccountEdition,
+        TAccountMint,
+        TAccountUpdateAuthority,
+        TAccountMintAuthority,
+        TAccountPayer,
+        TAccountFoo,
+        TAccountBar,
+        TAccountDelegate,
+        TAccountDelegateRecord,
+        TAccountTokenOrAtaProgram
+      >,
+  rawInput?: DummyInput<
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountFoo,
+    TAccountBar,
+    TAccountDelegate,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress' | 'getProgramDerivedAddress'
+  >;
+  const input = (rawInput === undefined ? rawContext : rawInput) as DummyInput<
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountFoo,
+    TAccountBar,
+    TAccountDelegate,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >;
+
+  // Program address.
+  const defaultProgramAddress =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplCandyMachineCore',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getDummyInstructionRaw<
+      TProgram,
+      TAccountEdition,
+      TAccountMint,
+      TAccountUpdateAuthority,
+      TAccountMintAuthority,
+      TAccountPayer,
+      TAccountFoo,
+      TAccountBar,
+      TAccountDelegate,
+      TAccountDelegateRecord,
+      TAccountTokenOrAtaProgram
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    edition: { value: input.edition ?? null, isWritable: true },
+    mint: { value: input.mint ?? null, isWritable: true },
+    updateAuthority: {
+      value: input.updateAuthority ?? null,
+      isWritable: false,
+    },
+    mintAuthority: { value: input.mintAuthority ?? null, isWritable: true },
+    payer: { value: input.payer ?? null, isWritable: true },
+    foo: { value: input.foo ?? null, isWritable: true },
+    bar: { value: input.bar ?? null, isWritable: false },
+    delegate: { value: input.delegate ?? null, isWritable: false },
+    delegateRecord: { value: input.delegateRecord ?? null, isWritable: true },
+    tokenOrAtaProgram: {
+      value: input.tokenOrAtaProgram ?? null,
+      isWritable: false,
+    },
+  };
+
+  // Original args.
+  const args = { ...input };
+
+  // Resolve default values.
+  if (!accounts.edition.value) {
+    accounts.edition.value = expectSome(accounts.payer.value);
+  }
+  if (!accounts.mintAuthority.value) {
+    accounts.mintAuthority.value = expectSome(accounts.updateAuthority.value);
+  }
+  if (!accounts.foo.value) {
+    accounts.foo.value = expectTransactionSigner(accounts.bar.value).address;
+  }
+  if (!accounts.delegateRecord.value) {
+    if (accounts.delegate.value) {
+    }
+  }
+  if (!args.proof) {
+    args.proof = [];
+  }
+  if (!accounts.tokenOrAtaProgram.value) {
+    if (
+      await resolveTokenOrAta(context, accounts, args, programAddress, false)
+    ) {
+      accounts.tokenOrAtaProgram.value = await getProgramAddress(
+        context,
+        'splToken',
+        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+      );
+      accounts.tokenOrAtaProgram.isWritable = false;
+    } else {
+      accounts.tokenOrAtaProgram.value = await getProgramAddress(
+        context,
+        'splAssociatedToken',
+        'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+      );
+      accounts.tokenOrAtaProgram.isWritable = false;
+    }
+  }
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = args.proof.map((address) => ({
+    address,
+    role: AccountRole.READONLY,
+  }));
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getDummyInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

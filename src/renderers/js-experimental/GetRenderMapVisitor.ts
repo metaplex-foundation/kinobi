@@ -321,7 +321,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         true,
         true
       );
-    const instructionFunctionHighLevelFragment =
+    const instructionFunctionHighLevelAsyncFragment =
       getInstructionFunctionHighLevelFragment(
         instruction,
         this.program,
@@ -329,6 +329,15 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         dataArgsManifest,
         resolvedInputs,
         true
+      );
+    const instructionFunctionHighLevelSyncFragment =
+      getInstructionFunctionHighLevelFragment(
+        instruction,
+        this.program,
+        renamedArgs,
+        dataArgsManifest,
+        resolvedInputs,
+        false
       );
 
     // Imports and interfaces.
@@ -342,7 +351,8 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       instructionInputTypeWithSignersFragment,
       instructionInputAsyncTypeFragment,
       instructionInputAsyncTypeWithSignersFragment,
-      instructionFunctionHighLevelFragment
+      instructionFunctionHighLevelAsyncFragment,
+      instructionFunctionHighLevelSyncFragment
     );
 
     return new RenderMap().add(
@@ -359,7 +369,8 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         instructionInputTypeWithSignersFragment,
         instructionInputAsyncTypeFragment,
         instructionInputAsyncTypeWithSignersFragment,
-        instructionFunctionHighLevelFragment,
+        instructionFunctionHighLevelAsyncFragment,
+        instructionFunctionHighLevelSyncFragment,
       })
     );
   }

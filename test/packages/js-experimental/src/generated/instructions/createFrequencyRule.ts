@@ -445,3 +445,177 @@ export async function getCreateFrequencyRuleInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getCreateFrequencyRuleInstruction<
+  TAccountPayer extends string,
+  TAccountFrequencyPda extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: CreateFrequencyRuleInputWithSigners<
+    TAccountPayer,
+    TAccountFrequencyPda,
+    TAccountSystemProgram
+  >
+): Promise<
+  CreateFrequencyRuleInstructionWithSigners<
+    TProgram,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountFrequencyPda,
+    TAccountSystemProgram
+  >
+>;
+export async function getCreateFrequencyRuleInstruction<
+  TAccountPayer extends string,
+  TAccountFrequencyPda extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: CreateFrequencyRuleInput<
+    TAccountPayer,
+    TAccountFrequencyPda,
+    TAccountSystemProgram
+  >
+): Promise<
+  CreateFrequencyRuleInstruction<
+    TProgram,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountFrequencyPda,
+    TAccountSystemProgram
+  >
+>;
+export async function getCreateFrequencyRuleInstruction<
+  TAccountPayer extends string,
+  TAccountFrequencyPda extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+>(
+  input: CreateFrequencyRuleInputWithSigners<
+    TAccountPayer,
+    TAccountFrequencyPda,
+    TAccountSystemProgram
+  >
+): Promise<
+  CreateFrequencyRuleInstructionWithSigners<
+    TProgram,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountFrequencyPda,
+    TAccountSystemProgram
+  >
+>;
+export async function getCreateFrequencyRuleInstruction<
+  TAccountPayer extends string,
+  TAccountFrequencyPda extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+>(
+  input: CreateFrequencyRuleInput<
+    TAccountPayer,
+    TAccountFrequencyPda,
+    TAccountSystemProgram
+  >
+): Promise<
+  CreateFrequencyRuleInstruction<
+    TProgram,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountFrequencyPda,
+    TAccountSystemProgram
+  >
+>;
+export async function getCreateFrequencyRuleInstruction<
+  TAccountPayer extends string,
+  TAccountFrequencyPda extends string,
+  TAccountSystemProgram extends string,
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | CreateFrequencyRuleInput<
+        TAccountPayer,
+        TAccountFrequencyPda,
+        TAccountSystemProgram
+      >,
+  rawInput?: CreateFrequencyRuleInput<
+    TAccountPayer,
+    TAccountFrequencyPda,
+    TAccountSystemProgram
+  >
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as CreateFrequencyRuleInput<
+    TAccountPayer,
+    TAccountFrequencyPda,
+    TAccountSystemProgram
+  >;
+
+  // Program address.
+  const defaultProgramAddress =
+    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenAuthRules',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getCreateFrequencyRuleInstructionRaw<
+      TProgram,
+      TAccountPayer,
+      TAccountFrequencyPda,
+      TAccountSystemProgram
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    payer: { value: input.payer ?? null, isWritable: true },
+    frequencyPda: { value: input.frequencyPda ?? null, isWritable: true },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+  };
+
+  // Original args.
+  const args = { ...input };
+
+  // Resolve default values.
+  if (!accounts.systemProgram.value) {
+    accounts.systemProgram.value = await getProgramAddress(
+      context,
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    accounts.systemProgram.isWritable = false;
+  }
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getCreateFrequencyRuleInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as CreateFrequencyRuleInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

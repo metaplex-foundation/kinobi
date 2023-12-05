@@ -425,3 +425,185 @@ export async function getSetTokenStandardInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getSetTokenStandardInstruction<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMint extends string,
+  TAccountEdition extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetTokenStandardInputWithSigners<
+    TAccountMetadata,
+    TAccountUpdateAuthority,
+    TAccountMint,
+    TAccountEdition
+  >
+): Promise<
+  SetTokenStandardInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    WritableSignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    TAccountMint,
+    TAccountEdition
+  >
+>;
+export async function getSetTokenStandardInstruction<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMint extends string,
+  TAccountEdition extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetTokenStandardInput<
+    TAccountMetadata,
+    TAccountUpdateAuthority,
+    TAccountMint,
+    TAccountEdition
+  >
+): Promise<
+  SetTokenStandardInstruction<
+    TProgram,
+    TAccountMetadata,
+    WritableSignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    TAccountMint,
+    TAccountEdition
+  >
+>;
+export async function getSetTokenStandardInstruction<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMint extends string,
+  TAccountEdition extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: SetTokenStandardInputWithSigners<
+    TAccountMetadata,
+    TAccountUpdateAuthority,
+    TAccountMint,
+    TAccountEdition
+  >
+): Promise<
+  SetTokenStandardInstructionWithSigners<
+    TProgram,
+    TAccountMetadata,
+    WritableSignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    TAccountMint,
+    TAccountEdition
+  >
+>;
+export async function getSetTokenStandardInstruction<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMint extends string,
+  TAccountEdition extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: SetTokenStandardInput<
+    TAccountMetadata,
+    TAccountUpdateAuthority,
+    TAccountMint,
+    TAccountEdition
+  >
+): Promise<
+  SetTokenStandardInstruction<
+    TProgram,
+    TAccountMetadata,
+    WritableSignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    TAccountMint,
+    TAccountEdition
+  >
+>;
+export async function getSetTokenStandardInstruction<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMint extends string,
+  TAccountEdition extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | SetTokenStandardInput<
+        TAccountMetadata,
+        TAccountUpdateAuthority,
+        TAccountMint,
+        TAccountEdition
+      >,
+  rawInput?: SetTokenStandardInput<
+    TAccountMetadata,
+    TAccountUpdateAuthority,
+    TAccountMint,
+    TAccountEdition
+  >
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as SetTokenStandardInput<
+    TAccountMetadata,
+    TAccountUpdateAuthority,
+    TAccountMint,
+    TAccountEdition
+  >;
+
+  // Program address.
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getSetTokenStandardInstructionRaw<
+      TProgram,
+      TAccountMetadata,
+      TAccountUpdateAuthority,
+      TAccountMint,
+      TAccountEdition
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    updateAuthority: { value: input.updateAuthority ?? null, isWritable: true },
+    mint: { value: input.mint ?? null, isWritable: false },
+    edition: { value: input.edition ?? null, isWritable: false },
+  };
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getSetTokenStandardInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

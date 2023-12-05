@@ -644,3 +644,273 @@ export async function getApproveCollectionAuthorityInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getApproveCollectionAuthorityInstruction<
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountNewCollectionAuthority extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: ApproveCollectionAuthorityInputWithSigners<
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    TAccountUpdateAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  ApproveCollectionAuthorityInstructionWithSigners<
+    TProgram,
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    WritableSignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+>;
+export async function getApproveCollectionAuthorityInstruction<
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountNewCollectionAuthority extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: ApproveCollectionAuthorityInput<
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    TAccountUpdateAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  ApproveCollectionAuthorityInstruction<
+    TProgram,
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    WritableSignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+>;
+export async function getApproveCollectionAuthorityInstruction<
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountNewCollectionAuthority extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: ApproveCollectionAuthorityInputWithSigners<
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    TAccountUpdateAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  ApproveCollectionAuthorityInstructionWithSigners<
+    TProgram,
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    WritableSignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+>;
+export async function getApproveCollectionAuthorityInstruction<
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountNewCollectionAuthority extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: ApproveCollectionAuthorityInput<
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    TAccountUpdateAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<
+  ApproveCollectionAuthorityInstruction<
+    TProgram,
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    WritableSignerAccount<TAccountUpdateAuthority> &
+      IAccountSignerMeta<TAccountUpdateAuthority>,
+    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+>;
+export async function getApproveCollectionAuthorityInstruction<
+  TAccountCollectionAuthorityRecord extends string,
+  TAccountNewCollectionAuthority extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountPayer extends string,
+  TAccountMetadata extends string,
+  TAccountMint extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | ApproveCollectionAuthorityInput<
+        TAccountCollectionAuthorityRecord,
+        TAccountNewCollectionAuthority,
+        TAccountUpdateAuthority,
+        TAccountPayer,
+        TAccountMetadata,
+        TAccountMint,
+        TAccountSystemProgram,
+        TAccountRent
+      >,
+  rawInput?: ApproveCollectionAuthorityInput<
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    TAccountUpdateAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as ApproveCollectionAuthorityInput<
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    TAccountUpdateAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  >;
+
+  // Program address.
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getApproveCollectionAuthorityInstructionRaw<
+      TProgram,
+      TAccountCollectionAuthorityRecord,
+      TAccountNewCollectionAuthority,
+      TAccountUpdateAuthority,
+      TAccountPayer,
+      TAccountMetadata,
+      TAccountMint,
+      TAccountSystemProgram,
+      TAccountRent
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    collectionAuthorityRecord: {
+      value: input.collectionAuthorityRecord ?? null,
+      isWritable: true,
+    },
+    newCollectionAuthority: {
+      value: input.newCollectionAuthority ?? null,
+      isWritable: false,
+    },
+    updateAuthority: { value: input.updateAuthority ?? null, isWritable: true },
+    payer: { value: input.payer ?? null, isWritable: true },
+    metadata: { value: input.metadata ?? null, isWritable: false },
+    mint: { value: input.mint ?? null, isWritable: false },
+    systemProgram: { value: input.systemProgram ?? null, isWritable: false },
+    rent: { value: input.rent ?? null, isWritable: false },
+  };
+
+  // Resolve default values.
+  if (!accounts.systemProgram.value) {
+    accounts.systemProgram.value = await getProgramAddress(
+      context,
+      'splSystem',
+      '11111111111111111111111111111111'
+    );
+    accounts.systemProgram.isWritable = false;
+  }
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getApproveCollectionAuthorityInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}

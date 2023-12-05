@@ -314,3 +314,128 @@ export async function getTransferSolInstructionAsync<
     bytesCreatedOnChain,
   });
 }
+
+export async function getTransferSolInstruction<
+  TAccountSource extends string,
+  TAccountDestination extends string,
+  TProgram extends string = '11111111111111111111111111111111'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: TransferSolInputWithSigners<TAccountSource, TAccountDestination>
+): Promise<
+  TransferSolInstructionWithSigners<
+    TProgram,
+    WritableSignerAccount<TAccountSource> & IAccountSignerMeta<TAccountSource>,
+    TAccountDestination
+  >
+>;
+export async function getTransferSolInstruction<
+  TAccountSource extends string,
+  TAccountDestination extends string,
+  TProgram extends string = '11111111111111111111111111111111'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: TransferSolInput<TAccountSource, TAccountDestination>
+): Promise<
+  TransferSolInstruction<
+    TProgram,
+    WritableSignerAccount<TAccountSource> & IAccountSignerMeta<TAccountSource>,
+    TAccountDestination
+  >
+>;
+export async function getTransferSolInstruction<
+  TAccountSource extends string,
+  TAccountDestination extends string,
+  TProgram extends string = '11111111111111111111111111111111'
+>(
+  input: TransferSolInputWithSigners<TAccountSource, TAccountDestination>
+): Promise<
+  TransferSolInstructionWithSigners<
+    TProgram,
+    WritableSignerAccount<TAccountSource> & IAccountSignerMeta<TAccountSource>,
+    TAccountDestination
+  >
+>;
+export async function getTransferSolInstruction<
+  TAccountSource extends string,
+  TAccountDestination extends string,
+  TProgram extends string = '11111111111111111111111111111111'
+>(
+  input: TransferSolInput<TAccountSource, TAccountDestination>
+): Promise<
+  TransferSolInstruction<
+    TProgram,
+    WritableSignerAccount<TAccountSource> & IAccountSignerMeta<TAccountSource>,
+    TAccountDestination
+  >
+>;
+export async function getTransferSolInstruction<
+  TAccountSource extends string,
+  TAccountDestination extends string,
+  TProgram extends string = '11111111111111111111111111111111'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | TransferSolInput<TAccountSource, TAccountDestination>,
+  rawInput?: TransferSolInput<TAccountSource, TAccountDestination>
+): Promise<IInstruction> {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as TransferSolInput<TAccountSource, TAccountDestination>;
+
+  // Program address.
+  const defaultProgramAddress =
+    '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? await context.getProgramAddress({
+          name: 'splSystem',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getTransferSolInstructionRaw<
+      TProgram,
+      TAccountSource,
+      TAccountDestination
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    source: { value: input.source ?? null, isWritable: true },
+    destination: { value: input.destination ?? null, isWritable: true },
+  };
+
+  // Original args.
+  const args = { ...input };
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getTransferSolInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as TransferSolInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}
