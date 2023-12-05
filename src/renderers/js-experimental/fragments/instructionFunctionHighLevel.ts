@@ -22,9 +22,10 @@ export function getInstructionFunctionHighLevelFragment(
   dataArgsManifest: TypeManifest,
   extraArgsManifest: TypeManifest,
   resolvedInputs: ResolvedInstructionInput[],
+  asyncResolvers: string[],
   useAsync: boolean
 ): Fragment {
-  if (useAsync && !hasAsyncDefaultValues(resolvedInputs)) {
+  if (useAsync && !hasAsyncDefaultValues(resolvedInputs, asyncResolvers)) {
     return fragment('');
   }
 
@@ -73,6 +74,7 @@ export function getInstructionFunctionHighLevelFragment(
     extraArgsManifest,
     programNode,
     false,
+    asyncResolvers,
     useAsync
   );
   const inputTypeWithSignersFragment = getInstructionInputTypeFragment(
@@ -83,6 +85,7 @@ export function getInstructionFunctionHighLevelFragment(
     extraArgsManifest,
     programNode,
     true,
+    asyncResolvers,
     useAsync
   );
 
@@ -103,6 +106,7 @@ export function getInstructionFunctionHighLevelFragment(
   const resolvedInputsFragment = getInstructionInputResolvedFragment(
     instructionNode,
     resolvedInputs,
+    asyncResolvers,
     useAsync
   );
   const remainingAccountsFragment =

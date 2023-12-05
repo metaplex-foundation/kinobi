@@ -7,6 +7,7 @@ import {
 } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import { ContextMap } from '../ContextMap';
+import { isAsyncDefaultValue } from '../asyncHelpers';
 import {
   Fragment,
   fragment,
@@ -18,11 +19,16 @@ import { getValueNodeFragment } from './valueNode';
 export function getInstructionInputDefaultFragment(
   input: ResolvedInstructionInput,
   optionalAccountStrategy: 'programId' | 'omitted',
+  asyncResolvers: string[],
   useAsync: boolean,
   accountObject: string = 'accounts',
   argObject: string = 'args'
 ): Fragment & { interfaces: ContextMap } {
   if (!input.defaultsTo) {
+    return fragmentWithContextMap('');
+  }
+
+  if (!useAsync && isAsyncDefaultValue(input.defaultsTo, asyncResolvers)) {
     return fragmentWithContextMap('');
   }
 
@@ -77,9 +83,6 @@ export function getInstructionInputDefaultFragment(
       ).addImports('shared', 'expectAddress');
 
     case 'pda':
-      if (!useAsync) {
-        return fragmentWithContextMap('');
-      }
       const pdaFunction = `find${pascalCase(defaultsTo.pdaAccount)}Pda`;
       const pdaImportFrom =
         defaultsTo.importFrom === 'generated'
@@ -169,8 +172,10 @@ export function getInstructionInputDefaultFragment(
       const resolverName = camelCase(defaultsTo.name);
       const isWritable =
         input.kind === 'account' && input.isWritable ? 'true' : 'false';
+      const resolverAwait =
+        useAsync && asyncResolvers.includes(defaultsTo.name) ? 'await ' : '';
       const resolverFragment = defaultFragment(
-        `${resolverName}(context, ${accountObject}, ${argObject}, programAddress, ${isWritable})`
+        `${resolverAwait}${resolverName}(context, ${accountObject}, ${argObject}, programAddress, ${isWritable})`
       ).addImports(defaultsTo.importFrom, resolverName);
       resolverFragment.interfaces.add([
         'getProgramAddress',
@@ -184,6 +189,7 @@ export function getInstructionInputDefaultFragment(
         input,
         optionalAccountStrategy,
         defaultsTo.ifTrue,
+        asyncResolvers,
         useAsync,
         accountObject,
         argObject
@@ -192,6 +198,7 @@ export function getInstructionInputDefaultFragment(
         input,
         optionalAccountStrategy,
         defaultsTo.ifFalse,
+        asyncResolvers,
         useAsync,
         accountObject,
         argObject
@@ -238,7 +245,11 @@ export function getInstructionInputDefaultFragment(
           'getProgramAddress',
           'getProgramDerivedAddress',
         ]);
-        condition = `${conditionalResolverName}(context, ${accountObject}, ${argObject}, programAddress, ${conditionalIsWritable})`;
+        const conditionalResolverAwait =
+          useAsync && asyncResolvers.includes(defaultsTo.resolver.name)
+            ? 'await '
+            : '';
+        condition = `${conditionalResolverAwait}${conditionalResolverName}(context, ${accountObject}, ${argObject}, programAddress, ${conditionalIsWritable})`;
         condition = negatedCondition ? `!${condition}` : condition;
       }
 
@@ -263,6 +274,7 @@ function renderNestedInstructionDefault(
   input: ResolvedInstructionInput,
   optionalAccountStrategy: 'programId' | 'omitted',
   defaultsTo: InstructionDefault | undefined,
+  asyncResolvers: string[],
   useAsync: boolean,
   accountObject: string,
   argObject: string
@@ -273,6 +285,7 @@ function renderNestedInstructionDefault(
     return getInstructionInputDefaultFragment(
       { ...input, defaultsTo: defaultsTo as InstructionAccountDefault },
       optionalAccountStrategy,
+      asyncResolvers,
       useAsync,
       accountObject,
       argObject
@@ -282,6 +295,7 @@ function renderNestedInstructionDefault(
   return getInstructionInputDefaultFragment(
     { ...input, defaultsTo: defaultsTo as InstructionArgDefault },
     optionalAccountStrategy,
+    asyncResolvers,
     useAsync,
     accountObject,
     argObject

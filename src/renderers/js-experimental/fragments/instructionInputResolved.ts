@@ -13,6 +13,7 @@ import { getInstructionInputDefaultFragment } from './instructionInputDefault';
 export function getInstructionInputResolvedFragment(
   instructionNode: nodes.InstructionNode,
   resolvedInputs: ResolvedInstructionInput[],
+  asyncResolvers: string[],
   useAsync: boolean
 ): Fragment & { interfaces: ContextMap } {
   const interfaces = new ContextMap();
@@ -22,6 +23,7 @@ export function getInstructionInputResolvedFragment(
       const inputFragment = getInstructionInputDefaultFragment(
         input,
         instructionNode.optionalAccountStrategy,
+        asyncResolvers,
         useAsync
       );
       if (!inputFragment.render) return [];

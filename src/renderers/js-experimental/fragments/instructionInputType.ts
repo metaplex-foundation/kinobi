@@ -18,6 +18,7 @@ export function getInstructionInputTypeFragment(
   extraArgsManifest: TypeManifest,
   programNode: nodes.ProgramNode,
   withSigners: boolean,
+  asyncResolvers: string[],
   useAsync: boolean
 ): Fragment {
   // Accounts.
@@ -30,7 +31,7 @@ export function getInstructionInputTypeFragment(
     const hasDefaultValue = useAsync
       ? !!resolvedAccount.defaultsTo
       : !!resolvedAccount.defaultsTo &&
-        !isAsyncDefaultValue(resolvedAccount.defaultsTo);
+        !isAsyncDefaultValue(resolvedAccount.defaultsTo, asyncResolvers);
     const type = getAccountType(resolvedAccount, withSigners);
     accountImports.mergeWith(type);
     return {

@@ -904,10 +904,6 @@ export function getDummyInstruction<
   if (!accounts.foo.value) {
     accounts.foo.value = expectTransactionSigner(accounts.bar.value).address;
   }
-  if (!accounts.delegateRecord.value) {
-    if (accounts.delegate.value) {
-    }
-  }
   if (!args.proof) {
     args.proof = [];
   }

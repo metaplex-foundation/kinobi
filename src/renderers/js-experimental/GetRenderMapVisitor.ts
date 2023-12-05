@@ -53,6 +53,7 @@ export type GetRenderMapOptions = {
     registerDefinedTypes?: (definedTypes: nodes.DefinedTypeNode[]) => void;
   };
   resolvedInstructionInputVisitor?: Visitor<ResolvedInstructionInput[]>;
+  asyncResolvers?: string[];
 };
 
 export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
@@ -76,6 +77,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       resolvedInstructionInputVisitor:
         options.resolvedInstructionInputVisitor ??
         new GetResolvedInstructionInputsVisitor(),
+      asyncResolvers: options.asyncResolvers ?? [],
     };
   }
 
@@ -286,6 +288,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         dataArgsManifest,
         extraArgsManifest,
         resolvedInputs,
+        this.options.asyncResolvers,
         true
       );
     const instructionFunctionHighLevelSyncFragment =
@@ -296,6 +299,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         dataArgsManifest,
         extraArgsManifest,
         resolvedInputs,
+        this.options.asyncResolvers,
         false
       );
 
