@@ -117,47 +117,6 @@ export function getUpdatePrimarySaleHappenedViaTokenInstructionDataCodec(): Code
   );
 }
 
-export function getUpdatePrimarySaleHappenedViaTokenInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountOwner extends string | IAccountMeta<string> = string,
-  TAccountToken extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    owner: TAccountOwner extends string
-      ? Address<TAccountOwner>
-      : TAccountOwner;
-    token: TAccountToken extends string
-      ? Address<TAccountToken>
-      : TAccountToken;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.owner, AccountRole.READONLY_SIGNER),
-      accountMetaWithDefault(accounts.token, AccountRole.READONLY),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getUpdatePrimarySaleHappenedViaTokenInstructionDataEncoder().encode(
-      {}
-    ),
-    programAddress,
-  } as UpdatePrimarySaleHappenedViaTokenInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountToken,
-    TRemainingAccounts
-  >;
-}
-
 // Input.
 export type UpdatePrimarySaleHappenedViaTokenInput<
   TAccountMetadata extends string,
@@ -174,34 +133,6 @@ export type UpdatePrimarySaleHappenedViaTokenInput<
 
 // Input.
 export type UpdatePrimarySaleHappenedViaTokenInputWithSigners<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountToken extends string
-> = {
-  /** Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata: Address<TAccountMetadata>;
-  /** Owner on the token account */
-  owner: TransactionSigner<TAccountOwner>;
-  /** Account containing tokens from the metadata's mint */
-  token: Address<TAccountToken>;
-};
-
-// Input.
-export type UpdatePrimarySaleHappenedViaTokenAsyncInput<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountToken extends string
-> = {
-  /** Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata: Address<TAccountMetadata>;
-  /** Owner on the token account */
-  owner: Address<TAccountOwner>;
-  /** Account containing tokens from the metadata's mint */
-  token: Address<TAccountToken>;
-};
-
-// Input.
-export type UpdatePrimarySaleHappenedViaTokenAsyncInputWithSigners<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountToken extends string
@@ -364,4 +295,45 @@ export function getUpdatePrimarySaleHappenedViaTokenInstruction<
     ),
     bytesCreatedOnChain,
   });
+}
+
+export function getUpdatePrimarySaleHappenedViaTokenInstructionRaw<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TAccountToken extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+>(
+  accounts: {
+    metadata: TAccountMetadata extends string
+      ? Address<TAccountMetadata>
+      : TAccountMetadata;
+    owner: TAccountOwner extends string
+      ? Address<TAccountOwner>
+      : TAccountOwner;
+    token: TAccountToken extends string
+      ? Address<TAccountToken>
+      : TAccountToken;
+  },
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
+  remainingAccounts?: TRemainingAccounts
+) {
+  return {
+    accounts: [
+      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.owner, AccountRole.READONLY_SIGNER),
+      accountMetaWithDefault(accounts.token, AccountRole.READONLY),
+      ...(remainingAccounts ?? []),
+    ],
+    data: getUpdatePrimarySaleHappenedViaTokenInstructionDataEncoder().encode(
+      {}
+    ),
+    programAddress,
+  } as UpdatePrimarySaleHappenedViaTokenInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken,
+    TRemainingAccounts
+  >;
 }

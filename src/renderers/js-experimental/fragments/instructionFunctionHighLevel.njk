@@ -1,11 +1,14 @@
-export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParams }}>(context: {{ context }}, input: {{ inputTypeWithSigners }}): {{ wrapInPromiseIfAsync(instructionTypeWithSigners) }};
-export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParams }}>(context: {{ context }}, input: {{ inputType }}): {{ wrapInPromiseIfAsync(instructionType) }};
-export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParams }}>(input: {{ inputTypeWithSigners }}): {{ wrapInPromiseIfAsync(instructionTypeWithSigners) }};
-export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParams }}>(input: {{ inputType }}): {{ wrapInPromiseIfAsync(instructionType) }};
-export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParams }}>(rawContext: {{ context }} | {{ inputType }}, rawInput?: {{ inputType }}): {{ wrapInPromiseIfAsync('IInstruction') }} {
+{{ inputTypeFragment }}
+{{ inputTypeWithSignersFragment }}
+
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(context: {{ contextFragment }}, input: {{ inputTypeCallWithSignersFragment }}): {{ wrapInPromiseIfAsync(instructionTypeWithSignersFragment) }};
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(context: {{ contextFragment }}, input: {{ inputTypeCallFragment }}): {{ wrapInPromiseIfAsync(instructionTypeFragment) }};
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(input: {{ inputTypeCallWithSignersFragment }}): {{ wrapInPromiseIfAsync(instructionTypeWithSignersFragment) }};
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(input: {{ inputTypeCallFragment }}): {{ wrapInPromiseIfAsync(instructionTypeFragment) }};
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(rawContext: {{ contextFragment }} | {{ inputTypeCallFragment }}, rawInput?: {{ inputTypeCallFragment }}): {{ wrapInPromiseIfAsync('IInstruction') }} {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as {{ context }};
-  const input = (rawInput === undefined ? rawContext : rawInput) as {{ inputType }};
+  const context = (rawInput === undefined ? {} : rawContext) as {{ contextFragment }};
+  const input = (rawInput === undefined ? rawContext : rawInput) as {{ inputTypeCallFragment }};
 
   // Program address.
   const defaultProgramAddress = "{{ program.publicKey }}" as Address<"{{ program.publicKey }}">;
@@ -35,15 +38,15 @@ export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParams }}>(r
     const args = { ...input, {{ renamedArgs }} };
   {% endif %}
 
-  {{ resolvedInputs }}
+  {{ resolvedInputsFragment }}
 
   {% if hasAccounts %}
     // Get account metas and signers.
     const accountMetas = getAccountMetasWithSigners(accounts, 'programId', programAddress);
   {% endif %}
 
-  {{ remainingAccounts }}
-  {{ bytesCreatedOnChain }}
+  {{ remainingAccountsFragment }}
+  {{ bytesCreatedOnChainFragment }}
 
   return Object.freeze({
     ...{{ lowLevelFunctionName }}(
@@ -51,7 +54,7 @@ export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParams }}>(r
         accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       {% endif %}
       {%- if hasDataArgs -%}
-        args as {{ argsType }},
+        args as {{ argsTypeFragment }},
       {% endif %}
       programAddress,
       remainingAccounts

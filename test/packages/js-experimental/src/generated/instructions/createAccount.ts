@@ -135,40 +135,6 @@ export function getCreateAccountInstructionDataCodec(): Codec<
   );
 }
 
-export function getCreateAccountInstructionRaw<
-  TProgram extends string = '11111111111111111111111111111111',
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountNewAccount extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
->(
-  accounts: {
-    payer: TAccountPayer extends string
-      ? Address<TAccountPayer>
-      : TAccountPayer;
-    newAccount: TAccountNewAccount extends string
-      ? Address<TAccountNewAccount>
-      : TAccountNewAccount;
-  },
-  args: CreateAccountInstructionDataArgs,
-  programAddress: Address<TProgram> = '11111111111111111111111111111111' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.newAccount, AccountRole.WRITABLE_SIGNER),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getCreateAccountInstructionDataEncoder().encode(args),
-    programAddress,
-  } as CreateAccountInstruction<
-    TProgram,
-    TAccountPayer,
-    TAccountNewAccount,
-    TRemainingAccounts
-  >;
-}
-
 // Input.
 export type CreateAccountInput<
   TAccountPayer extends string,
@@ -183,30 +149,6 @@ export type CreateAccountInput<
 
 // Input.
 export type CreateAccountInputWithSigners<
-  TAccountPayer extends string,
-  TAccountNewAccount extends string
-> = {
-  payer?: TransactionSigner<TAccountPayer>;
-  newAccount: TransactionSigner<TAccountNewAccount>;
-  lamports: CreateAccountInstructionDataArgs['lamports'];
-  space: CreateAccountInstructionDataArgs['space'];
-  programId: CreateAccountInstructionDataArgs['programId'];
-};
-
-// Input.
-export type CreateAccountAsyncInput<
-  TAccountPayer extends string,
-  TAccountNewAccount extends string
-> = {
-  payer?: Address<TAccountPayer>;
-  newAccount: Address<TAccountNewAccount>;
-  lamports: CreateAccountInstructionDataArgs['lamports'];
-  space: CreateAccountInstructionDataArgs['space'];
-  programId: CreateAccountInstructionDataArgs['programId'];
-};
-
-// Input.
-export type CreateAccountAsyncInputWithSigners<
   TAccountPayer extends string,
   TAccountNewAccount extends string
 > = {
@@ -336,4 +278,38 @@ export function getCreateAccountInstruction<
     ),
     bytesCreatedOnChain,
   });
+}
+
+export function getCreateAccountInstructionRaw<
+  TProgram extends string = '11111111111111111111111111111111',
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountNewAccount extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+>(
+  accounts: {
+    payer: TAccountPayer extends string
+      ? Address<TAccountPayer>
+      : TAccountPayer;
+    newAccount: TAccountNewAccount extends string
+      ? Address<TAccountNewAccount>
+      : TAccountNewAccount;
+  },
+  args: CreateAccountInstructionDataArgs,
+  programAddress: Address<TProgram> = '11111111111111111111111111111111' as Address<TProgram>,
+  remainingAccounts?: TRemainingAccounts
+) {
+  return {
+    accounts: [
+      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(accounts.newAccount, AccountRole.WRITABLE_SIGNER),
+      ...(remainingAccounts ?? []),
+    ],
+    data: getCreateAccountInstructionDataEncoder().encode(args),
+    programAddress,
+  } as CreateAccountInstruction<
+    TProgram,
+    TAccountPayer,
+    TAccountNewAccount,
+    TRemainingAccounts
+  >;
 }

@@ -108,39 +108,6 @@ export function getRemoveCreatorVerificationInstructionDataCodec(): Codec<
   );
 }
 
-export function getRemoveCreatorVerificationInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountCreator extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    creator: TAccountCreator extends string
-      ? Address<TAccountCreator>
-      : TAccountCreator;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.creator, AccountRole.READONLY_SIGNER),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getRemoveCreatorVerificationInstructionDataEncoder().encode({}),
-    programAddress,
-  } as RemoveCreatorVerificationInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountCreator,
-    TRemainingAccounts
-  >;
-}
-
 // Input.
 export type RemoveCreatorVerificationInput<
   TAccountMetadata extends string,
@@ -154,28 +121,6 @@ export type RemoveCreatorVerificationInput<
 
 // Input.
 export type RemoveCreatorVerificationInputWithSigners<
-  TAccountMetadata extends string,
-  TAccountCreator extends string
-> = {
-  /** Metadata (pda of ['metadata', program id, mint id]) */
-  metadata: Address<TAccountMetadata>;
-  /** Creator */
-  creator: TransactionSigner<TAccountCreator>;
-};
-
-// Input.
-export type RemoveCreatorVerificationAsyncInput<
-  TAccountMetadata extends string,
-  TAccountCreator extends string
-> = {
-  /** Metadata (pda of ['metadata', program id, mint id]) */
-  metadata: Address<TAccountMetadata>;
-  /** Creator */
-  creator: Address<TAccountCreator>;
-};
-
-// Input.
-export type RemoveCreatorVerificationAsyncInputWithSigners<
   TAccountMetadata extends string,
   TAccountCreator extends string
 > = {
@@ -302,4 +247,37 @@ export function getRemoveCreatorVerificationInstruction<
     ),
     bytesCreatedOnChain,
   });
+}
+
+export function getRemoveCreatorVerificationInstructionRaw<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountCreator extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+>(
+  accounts: {
+    metadata: TAccountMetadata extends string
+      ? Address<TAccountMetadata>
+      : TAccountMetadata;
+    creator: TAccountCreator extends string
+      ? Address<TAccountCreator>
+      : TAccountCreator;
+  },
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
+  remainingAccounts?: TRemainingAccounts
+) {
+  return {
+    accounts: [
+      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.creator, AccountRole.READONLY_SIGNER),
+      ...(remainingAccounts ?? []),
+    ],
+    data: getRemoveCreatorVerificationInstructionDataEncoder().encode({}),
+    programAddress,
+  } as RemoveCreatorVerificationInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountCreator,
+    TRemainingAccounts
+  >;
 }

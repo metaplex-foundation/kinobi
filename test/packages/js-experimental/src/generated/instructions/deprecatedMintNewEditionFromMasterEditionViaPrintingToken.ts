@@ -236,160 +236,6 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
   );
 }
 
-export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountEdition extends string | IAccountMeta<string> = string,
-  TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountMintAuthority extends string | IAccountMeta<string> = string,
-  TAccountPrintingMint extends string | IAccountMeta<string> = string,
-  TAccountMasterTokenAccount extends string | IAccountMeta<string> = string,
-  TAccountEditionMarker extends string | IAccountMeta<string> = string,
-  TAccountBurnAuthority extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountMasterUpdateAuthority extends string | IAccountMeta<string> = string,
-  TAccountMasterMetadata extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountRent extends
-    | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TAccountReservationList extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    edition: TAccountEdition extends string
-      ? Address<TAccountEdition>
-      : TAccountEdition;
-    masterEdition: TAccountMasterEdition extends string
-      ? Address<TAccountMasterEdition>
-      : TAccountMasterEdition;
-    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
-    mintAuthority: TAccountMintAuthority extends string
-      ? Address<TAccountMintAuthority>
-      : TAccountMintAuthority;
-    printingMint: TAccountPrintingMint extends string
-      ? Address<TAccountPrintingMint>
-      : TAccountPrintingMint;
-    masterTokenAccount: TAccountMasterTokenAccount extends string
-      ? Address<TAccountMasterTokenAccount>
-      : TAccountMasterTokenAccount;
-    editionMarker: TAccountEditionMarker extends string
-      ? Address<TAccountEditionMarker>
-      : TAccountEditionMarker;
-    burnAuthority: TAccountBurnAuthority extends string
-      ? Address<TAccountBurnAuthority>
-      : TAccountBurnAuthority;
-    payer: TAccountPayer extends string
-      ? Address<TAccountPayer>
-      : TAccountPayer;
-    masterUpdateAuthority: TAccountMasterUpdateAuthority extends string
-      ? Address<TAccountMasterUpdateAuthority>
-      : TAccountMasterUpdateAuthority;
-    masterMetadata: TAccountMasterMetadata extends string
-      ? Address<TAccountMasterMetadata>
-      : TAccountMasterMetadata;
-    tokenProgram?: TAccountTokenProgram extends string
-      ? Address<TAccountTokenProgram>
-      : TAccountTokenProgram;
-    systemProgram?: TAccountSystemProgram extends string
-      ? Address<TAccountSystemProgram>
-      : TAccountSystemProgram;
-    rent?: TAccountRent extends string ? Address<TAccountRent> : TAccountRent;
-    reservationList?: TAccountReservationList extends string
-      ? Address<TAccountReservationList>
-      : TAccountReservationList;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.edition, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.masterEdition, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.mintAuthority,
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(accounts.printingMint, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.masterTokenAccount, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.editionMarker, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.burnAuthority,
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(accounts.payer, AccountRole.READONLY_SIGNER),
-      accountMetaWithDefault(
-        accounts.masterUpdateAuthority,
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(accounts.masterMetadata, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.tokenProgram ?? {
-          address:
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.systemProgram ?? {
-          address:
-            '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.rent ?? 'SysvarRent111111111111111111111111111111111',
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.reservationList ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.WRITABLE
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataEncoder().encode(
-      {}
-    ),
-    programAddress,
-  } as DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountEdition,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountMintAuthority,
-    TAccountPrintingMint,
-    TAccountMasterTokenAccount,
-    TAccountEditionMarker,
-    TAccountBurnAuthority,
-    TAccountPayer,
-    TAccountMasterUpdateAuthority,
-    TAccountMasterMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent,
-    TAccountReservationList,
-    TRemainingAccounts
-  >;
-}
-
 // Input.
 export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
   TAccountMetadata extends string,
@@ -445,112 +291,6 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
 
 // Input.
 export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInputWithSigners<
-  TAccountMetadata extends string,
-  TAccountEdition extends string,
-  TAccountMasterEdition extends string,
-  TAccountMint extends string,
-  TAccountMintAuthority extends string,
-  TAccountPrintingMint extends string,
-  TAccountMasterTokenAccount extends string,
-  TAccountEditionMarker extends string,
-  TAccountBurnAuthority extends string,
-  TAccountPayer extends string,
-  TAccountMasterUpdateAuthority extends string,
-  TAccountMasterMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TAccountReservationList extends string
-> = {
-  /** New Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata: Address<TAccountMetadata>;
-  /** New Edition V1 (pda of ['metadata', program id, mint id, 'edition']) */
-  edition: Address<TAccountEdition>;
-  /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
-  masterEdition: Address<TAccountMasterEdition>;
-  /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
-  mint: Address<TAccountMint>;
-  /** Mint authority of new mint */
-  mintAuthority: TransactionSigner<TAccountMintAuthority>;
-  /** Printing Mint of master record edition */
-  printingMint: Address<TAccountPrintingMint>;
-  /** Token account containing Printing mint token to be transferred */
-  masterTokenAccount: Address<TAccountMasterTokenAccount>;
-  /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master mint id, edition_number]) */
-  editionMarker: Address<TAccountEditionMarker>;
-  /** Burn authority for this token */
-  burnAuthority: TransactionSigner<TAccountBurnAuthority>;
-  /** payer */
-  payer?: TransactionSigner<TAccountPayer>;
-  /** update authority info for new metadata account */
-  masterUpdateAuthority: Address<TAccountMasterUpdateAuthority>;
-  /** Master record metadata account */
-  masterMetadata: Address<TAccountMasterMetadata>;
-  /** Token program */
-  tokenProgram?: Address<TAccountTokenProgram>;
-  /** System program */
-  systemProgram?: Address<TAccountSystemProgram>;
-  /** Rent info */
-  rent?: Address<TAccountRent>;
-  /** Reservation List - If present, and you are on this list, you can get an edition number given by your position on the list. */
-  reservationList?: Address<TAccountReservationList>;
-};
-
-// Input.
-export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenAsyncInput<
-  TAccountMetadata extends string,
-  TAccountEdition extends string,
-  TAccountMasterEdition extends string,
-  TAccountMint extends string,
-  TAccountMintAuthority extends string,
-  TAccountPrintingMint extends string,
-  TAccountMasterTokenAccount extends string,
-  TAccountEditionMarker extends string,
-  TAccountBurnAuthority extends string,
-  TAccountPayer extends string,
-  TAccountMasterUpdateAuthority extends string,
-  TAccountMasterMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TAccountReservationList extends string
-> = {
-  /** New Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata: Address<TAccountMetadata>;
-  /** New Edition V1 (pda of ['metadata', program id, mint id, 'edition']) */
-  edition: Address<TAccountEdition>;
-  /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
-  masterEdition: Address<TAccountMasterEdition>;
-  /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
-  mint: Address<TAccountMint>;
-  /** Mint authority of new mint */
-  mintAuthority: Address<TAccountMintAuthority>;
-  /** Printing Mint of master record edition */
-  printingMint: Address<TAccountPrintingMint>;
-  /** Token account containing Printing mint token to be transferred */
-  masterTokenAccount: Address<TAccountMasterTokenAccount>;
-  /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master mint id, edition_number]) */
-  editionMarker: Address<TAccountEditionMarker>;
-  /** Burn authority for this token */
-  burnAuthority: Address<TAccountBurnAuthority>;
-  /** payer */
-  payer?: Address<TAccountPayer>;
-  /** update authority info for new metadata account */
-  masterUpdateAuthority: Address<TAccountMasterUpdateAuthority>;
-  /** Master record metadata account */
-  masterMetadata: Address<TAccountMasterMetadata>;
-  /** Token program */
-  tokenProgram?: Address<TAccountTokenProgram>;
-  /** System program */
-  systemProgram?: Address<TAccountSystemProgram>;
-  /** Rent info */
-  rent?: Address<TAccountRent>;
-  /** Reservation List - If present, and you are on this list, you can get an edition number given by your position on the list. */
-  reservationList?: Address<TAccountReservationList>;
-};
-
-// Input.
-export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenAsyncInputWithSigners<
   TAccountMetadata extends string,
   TAccountEdition extends string,
   TAccountMasterEdition extends string,
@@ -1022,4 +762,158 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
     ),
     bytesCreatedOnChain,
   });
+}
+
+export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionRaw<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountEdition extends string | IAccountMeta<string> = string,
+  TAccountMasterEdition extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountMintAuthority extends string | IAccountMeta<string> = string,
+  TAccountPrintingMint extends string | IAccountMeta<string> = string,
+  TAccountMasterTokenAccount extends string | IAccountMeta<string> = string,
+  TAccountEditionMarker extends string | IAccountMeta<string> = string,
+  TAccountBurnAuthority extends string | IAccountMeta<string> = string,
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountMasterUpdateAuthority extends string | IAccountMeta<string> = string,
+  TAccountMasterMetadata extends string | IAccountMeta<string> = string,
+  TAccountTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountRent extends
+    | string
+    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
+  TAccountReservationList extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+>(
+  accounts: {
+    metadata: TAccountMetadata extends string
+      ? Address<TAccountMetadata>
+      : TAccountMetadata;
+    edition: TAccountEdition extends string
+      ? Address<TAccountEdition>
+      : TAccountEdition;
+    masterEdition: TAccountMasterEdition extends string
+      ? Address<TAccountMasterEdition>
+      : TAccountMasterEdition;
+    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
+    mintAuthority: TAccountMintAuthority extends string
+      ? Address<TAccountMintAuthority>
+      : TAccountMintAuthority;
+    printingMint: TAccountPrintingMint extends string
+      ? Address<TAccountPrintingMint>
+      : TAccountPrintingMint;
+    masterTokenAccount: TAccountMasterTokenAccount extends string
+      ? Address<TAccountMasterTokenAccount>
+      : TAccountMasterTokenAccount;
+    editionMarker: TAccountEditionMarker extends string
+      ? Address<TAccountEditionMarker>
+      : TAccountEditionMarker;
+    burnAuthority: TAccountBurnAuthority extends string
+      ? Address<TAccountBurnAuthority>
+      : TAccountBurnAuthority;
+    payer: TAccountPayer extends string
+      ? Address<TAccountPayer>
+      : TAccountPayer;
+    masterUpdateAuthority: TAccountMasterUpdateAuthority extends string
+      ? Address<TAccountMasterUpdateAuthority>
+      : TAccountMasterUpdateAuthority;
+    masterMetadata: TAccountMasterMetadata extends string
+      ? Address<TAccountMasterMetadata>
+      : TAccountMasterMetadata;
+    tokenProgram?: TAccountTokenProgram extends string
+      ? Address<TAccountTokenProgram>
+      : TAccountTokenProgram;
+    systemProgram?: TAccountSystemProgram extends string
+      ? Address<TAccountSystemProgram>
+      : TAccountSystemProgram;
+    rent?: TAccountRent extends string ? Address<TAccountRent> : TAccountRent;
+    reservationList?: TAccountReservationList extends string
+      ? Address<TAccountReservationList>
+      : TAccountReservationList;
+  },
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
+  remainingAccounts?: TRemainingAccounts
+) {
+  return {
+    accounts: [
+      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.edition, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.masterEdition, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.mintAuthority,
+        AccountRole.READONLY_SIGNER
+      ),
+      accountMetaWithDefault(accounts.printingMint, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.masterTokenAccount, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.editionMarker, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.burnAuthority,
+        AccountRole.READONLY_SIGNER
+      ),
+      accountMetaWithDefault(accounts.payer, AccountRole.READONLY_SIGNER),
+      accountMetaWithDefault(
+        accounts.masterUpdateAuthority,
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(accounts.masterMetadata, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.tokenProgram ?? {
+          address:
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.systemProgram ?? {
+          address:
+            '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.rent ?? 'SysvarRent111111111111111111111111111111111',
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.reservationList ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.WRITABLE
+      ),
+      ...(remainingAccounts ?? []),
+    ],
+    data: getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataEncoder().encode(
+      {}
+    ),
+    programAddress,
+  } as DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountEdition,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPrintingMint,
+    TAccountMasterTokenAccount,
+    TAccountEditionMarker,
+    TAccountBurnAuthority,
+    TAccountPayer,
+    TAccountMasterUpdateAuthority,
+    TAccountMasterMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountReservationList,
+    TRemainingAccounts
+  >;
 }

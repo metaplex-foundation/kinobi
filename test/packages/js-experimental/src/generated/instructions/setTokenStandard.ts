@@ -123,59 +123,6 @@ export function getSetTokenStandardInstructionDataCodec(): Codec<
   );
 }
 
-export function getSetTokenStandardInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountEdition extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    updateAuthority: TAccountUpdateAuthority extends string
-      ? Address<TAccountUpdateAuthority>
-      : TAccountUpdateAuthority;
-    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
-    edition?: TAccountEdition extends string
-      ? Address<TAccountEdition>
-      : TAccountEdition;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.updateAuthority,
-        AccountRole.WRITABLE_SIGNER
-      ),
-      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.edition ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getSetTokenStandardInstructionDataEncoder().encode({}),
-    programAddress,
-  } as SetTokenStandardInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountUpdateAuthority,
-    TAccountMint,
-    TAccountEdition,
-    TRemainingAccounts
-  >;
-}
-
 // Input.
 export type SetTokenStandardInput<
   TAccountMetadata extends string,
@@ -195,40 +142,6 @@ export type SetTokenStandardInput<
 
 // Input.
 export type SetTokenStandardInputWithSigners<
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMint extends string,
-  TAccountEdition extends string
-> = {
-  /** Metadata account */
-  metadata: Address<TAccountMetadata>;
-  /** Metadata update authority */
-  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
-  /** Mint account */
-  mint: Address<TAccountMint>;
-  /** Edition account */
-  edition?: Address<TAccountEdition>;
-};
-
-// Input.
-export type SetTokenStandardAsyncInput<
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMint extends string,
-  TAccountEdition extends string
-> = {
-  /** Metadata account */
-  metadata: Address<TAccountMetadata>;
-  /** Metadata update authority */
-  updateAuthority: Address<TAccountUpdateAuthority>;
-  /** Mint account */
-  mint: Address<TAccountMint>;
-  /** Edition account */
-  edition?: Address<TAccountEdition>;
-};
-
-// Input.
-export type SetTokenStandardAsyncInputWithSigners<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TAccountMint extends string,
@@ -416,4 +329,57 @@ export function getSetTokenStandardInstruction<
     ),
     bytesCreatedOnChain,
   });
+}
+
+export function getSetTokenStandardInstructionRaw<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountEdition extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+>(
+  accounts: {
+    metadata: TAccountMetadata extends string
+      ? Address<TAccountMetadata>
+      : TAccountMetadata;
+    updateAuthority: TAccountUpdateAuthority extends string
+      ? Address<TAccountUpdateAuthority>
+      : TAccountUpdateAuthority;
+    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
+    edition?: TAccountEdition extends string
+      ? Address<TAccountEdition>
+      : TAccountEdition;
+  },
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
+  remainingAccounts?: TRemainingAccounts
+) {
+  return {
+    accounts: [
+      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.updateAuthority,
+        AccountRole.WRITABLE_SIGNER
+      ),
+      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.edition ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      ...(remainingAccounts ?? []),
+    ],
+    data: getSetTokenStandardInstructionDataEncoder().encode({}),
+    programAddress,
+  } as SetTokenStandardInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountUpdateAuthority,
+    TAccountMint,
+    TAccountEdition,
+    TRemainingAccounts
+  >;
 }

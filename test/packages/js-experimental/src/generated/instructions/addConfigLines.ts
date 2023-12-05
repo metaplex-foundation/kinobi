@@ -153,40 +153,6 @@ export function getAddConfigLinesInstructionDataCodec(): Codec<
   );
 }
 
-export function getAddConfigLinesInstructionRaw<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string | IAccountMeta<string> = string,
-  TAccountAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
->(
-  accounts: {
-    candyMachine: TAccountCandyMachine extends string
-      ? Address<TAccountCandyMachine>
-      : TAccountCandyMachine;
-    authority: TAccountAuthority extends string
-      ? Address<TAccountAuthority>
-      : TAccountAuthority;
-  },
-  args: AddConfigLinesInstructionDataArgs,
-  programAddress: Address<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getAddConfigLinesInstructionDataEncoder().encode(args),
-    programAddress,
-  } as AddConfigLinesInstruction<
-    TProgram,
-    TAccountCandyMachine,
-    TAccountAuthority,
-    TRemainingAccounts
-  >;
-}
-
 // Input.
 export type AddConfigLinesInput<
   TAccountCandyMachine extends string,
@@ -201,30 +167,6 @@ export type AddConfigLinesInput<
 
 // Input.
 export type AddConfigLinesInputWithSigners<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string
-> = {
-  candyMachine: Address<TAccountCandyMachine>;
-  authority?: TransactionSigner<TAccountAuthority>;
-  index: AddConfigLinesInstructionDataArgs['index'];
-  configLines: AddConfigLinesInstructionDataArgs['configLines'];
-  moreLines: AddConfigLinesInstructionDataArgs['moreLines'];
-};
-
-// Input.
-export type AddConfigLinesAsyncInput<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string
-> = {
-  candyMachine: Address<TAccountCandyMachine>;
-  authority?: Address<TAccountAuthority>;
-  index: AddConfigLinesInstructionDataArgs['index'];
-  configLines: AddConfigLinesInstructionDataArgs['configLines'];
-  moreLines: AddConfigLinesInstructionDataArgs['moreLines'];
-};
-
-// Input.
-export type AddConfigLinesAsyncInputWithSigners<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string
 > = {
@@ -354,4 +296,38 @@ export function getAddConfigLinesInstruction<
     ),
     bytesCreatedOnChain,
   });
+}
+
+export function getAddConfigLinesInstructionRaw<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string | IAccountMeta<string> = string,
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+>(
+  accounts: {
+    candyMachine: TAccountCandyMachine extends string
+      ? Address<TAccountCandyMachine>
+      : TAccountCandyMachine;
+    authority: TAccountAuthority extends string
+      ? Address<TAccountAuthority>
+      : TAccountAuthority;
+  },
+  args: AddConfigLinesInstructionDataArgs,
+  programAddress: Address<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<TProgram>,
+  remainingAccounts?: TRemainingAccounts
+) {
+  return {
+    accounts: [
+      accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
+      ...(remainingAccounts ?? []),
+    ],
+    data: getAddConfigLinesInstructionDataEncoder().encode(args),
+    programAddress,
+  } as AddConfigLinesInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TRemainingAccounts
+  >;
 }

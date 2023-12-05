@@ -12,6 +12,7 @@ import {
 } from './common';
 import { getInstructionBytesCreatedOnChainFragment } from './instructionBytesCreatedOnChain';
 import { getInstructionInputResolvedFragment } from './instructionInputResolved';
+import { getInstructionInputTypeFragment } from './instructionInputType';
 import { getInstructionRemainingAccountsFragment } from './instructionRemainingAccounts';
 
 export function getInstructionFunctionHighLevelFragment(
@@ -19,6 +20,7 @@ export function getInstructionFunctionHighLevelFragment(
   programNode: nodes.ProgramNode,
   renamedArgs: Map<string, string>,
   dataArgsManifest: TypeManifest,
+  extraArgsManifest: TypeManifest,
   resolvedInputs: ResolvedInstructionInput[],
   useAsync: boolean
 ): Fragment {
@@ -61,8 +63,35 @@ export function getInstructionFunctionHighLevelFragment(
   );
   const wrapInPromiseIfAsync = (value: string) =>
     useAsync ? `Promise<${value}>` : value;
-  const inputTypeFragment = getInputType(instructionNode, false, useAsync);
-  const inputTypeWithSignersFragment = getInputType(
+
+  // Input.
+  const inputTypeFragment = getInstructionInputTypeFragment(
+    instructionNode,
+    resolvedInputs,
+    renamedArgs,
+    dataArgsManifest,
+    extraArgsManifest,
+    programNode,
+    false,
+    useAsync
+  );
+  const inputTypeWithSignersFragment = getInstructionInputTypeFragment(
+    instructionNode,
+    resolvedInputs,
+    renamedArgs,
+    dataArgsManifest,
+    extraArgsManifest,
+    programNode,
+    true,
+    useAsync
+  );
+
+  const inputTypeCallFragment = getInputTypeCall(
+    instructionNode,
+    false,
+    useAsync
+  );
+  const inputTypeCallWithSignersFragment = getInputTypeCall(
     instructionNode,
     true,
     useAsync
@@ -98,19 +127,21 @@ export function getInstructionFunctionHighLevelFragment(
       hasDataArgs,
       hasExtraArgs,
       hasAnyArgs,
-      argsType: argsTypeFragment,
+      argsTypeFragment,
       functionName,
       lowLevelFunctionName,
-      typeParams: typeParamsFragment,
-      instructionType: instructionTypeFragment,
-      instructionTypeWithSigners: instructionTypeWithSignersFragment,
-      inputType: inputTypeFragment,
-      inputTypeWithSigners: inputTypeWithSignersFragment,
-      context: contextFragment,
+      typeParamsFragment,
+      instructionTypeFragment,
+      instructionTypeWithSignersFragment,
+      inputTypeFragment,
+      inputTypeWithSignersFragment,
+      inputTypeCallFragment,
+      inputTypeCallWithSignersFragment,
+      contextFragment,
       renamedArgs: renamedArgsText,
-      resolvedInputs: resolvedInputsFragment,
-      remainingAccounts: remainingAccountsFragment,
-      bytesCreatedOnChain: bytesCreatedOnChainFragment,
+      resolvedInputsFragment,
+      remainingAccountsFragment,
+      bytesCreatedOnChainFragment,
       useAsync,
       wrapInPromiseIfAsync,
     }
@@ -121,6 +152,8 @@ export function getInstructionFunctionHighLevelFragment(
       instructionTypeWithSignersFragment,
       inputTypeFragment,
       inputTypeWithSignersFragment,
+      inputTypeCallFragment,
+      inputTypeCallWithSignersFragment,
       contextFragment,
       resolvedInputsFragment,
       remainingAccountsFragment,
@@ -191,7 +224,7 @@ function getInstructionType(
   ).mapRender((r) => `${instructionTypeName}<${r}>`);
 }
 
-function getInputType(
+function getInputTypeCall(
   instructionNode: nodes.InstructionNode,
   withSigners: boolean,
   useAsync: boolean

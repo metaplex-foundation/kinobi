@@ -95,29 +95,6 @@ export function getPuffMetadataInstructionDataCodec(): Codec<
   );
 }
 
-export function getPuffMetadataInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getPuffMetadataInstructionDataEncoder().encode({}),
-    programAddress,
-  } as PuffMetadataInstruction<TProgram, TAccountMetadata, TRemainingAccounts>;
-}
-
 // Input.
 export type PuffMetadataInput<TAccountMetadata extends string> = {
   /** Metadata account */
@@ -129,19 +106,6 @@ export type PuffMetadataInputWithSigners<TAccountMetadata extends string> = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
 };
-
-// Input.
-export type PuffMetadataAsyncInput<TAccountMetadata extends string> = {
-  /** Metadata account */
-  metadata: Address<TAccountMetadata>;
-};
-
-// Input.
-export type PuffMetadataAsyncInputWithSigners<TAccountMetadata extends string> =
-  {
-    /** Metadata account */
-    metadata: Address<TAccountMetadata>;
-  };
 
 export function getPuffMetadataInstruction<
   TAccountMetadata extends string,
@@ -228,4 +192,27 @@ export function getPuffMetadataInstruction<
     ),
     bytesCreatedOnChain,
   });
+}
+
+export function getPuffMetadataInstructionRaw<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+>(
+  accounts: {
+    metadata: TAccountMetadata extends string
+      ? Address<TAccountMetadata>
+      : TAccountMetadata;
+  },
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
+  remainingAccounts?: TRemainingAccounts
+) {
+  return {
+    accounts: [
+      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
+      ...(remainingAccounts ?? []),
+    ],
+    data: getPuffMetadataInstructionDataEncoder().encode({}),
+    programAddress,
+  } as PuffMetadataInstruction<TProgram, TAccountMetadata, TRemainingAccounts>;
 }

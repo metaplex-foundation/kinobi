@@ -116,40 +116,6 @@ export function getTransferSolInstructionDataCodec(): Codec<
   );
 }
 
-export function getTransferSolInstructionRaw<
-  TProgram extends string = '11111111111111111111111111111111',
-  TAccountSource extends string | IAccountMeta<string> = string,
-  TAccountDestination extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
->(
-  accounts: {
-    source: TAccountSource extends string
-      ? Address<TAccountSource>
-      : TAccountSource;
-    destination: TAccountDestination extends string
-      ? Address<TAccountDestination>
-      : TAccountDestination;
-  },
-  args: TransferSolInstructionDataArgs,
-  programAddress: Address<TProgram> = '11111111111111111111111111111111' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.source, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getTransferSolInstructionDataEncoder().encode(args),
-    programAddress,
-  } as TransferSolInstruction<
-    TProgram,
-    TAccountSource,
-    TAccountDestination,
-    TRemainingAccounts
-  >;
-}
-
 // Input.
 export type TransferSolInput<
   TAccountSource extends string,
@@ -162,26 +128,6 @@ export type TransferSolInput<
 
 // Input.
 export type TransferSolInputWithSigners<
-  TAccountSource extends string,
-  TAccountDestination extends string
-> = {
-  source: TransactionSigner<TAccountSource>;
-  destination: Address<TAccountDestination>;
-  amount: TransferSolInstructionDataArgs['amount'];
-};
-
-// Input.
-export type TransferSolAsyncInput<
-  TAccountSource extends string,
-  TAccountDestination extends string
-> = {
-  source: Address<TAccountSource>;
-  destination: Address<TAccountDestination>;
-  amount: TransferSolInstructionDataArgs['amount'];
-};
-
-// Input.
-export type TransferSolAsyncInputWithSigners<
   TAccountSource extends string,
   TAccountDestination extends string
 > = {
@@ -305,4 +251,38 @@ export function getTransferSolInstruction<
     ),
     bytesCreatedOnChain,
   });
+}
+
+export function getTransferSolInstructionRaw<
+  TProgram extends string = '11111111111111111111111111111111',
+  TAccountSource extends string | IAccountMeta<string> = string,
+  TAccountDestination extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+>(
+  accounts: {
+    source: TAccountSource extends string
+      ? Address<TAccountSource>
+      : TAccountSource;
+    destination: TAccountDestination extends string
+      ? Address<TAccountDestination>
+      : TAccountDestination;
+  },
+  args: TransferSolInstructionDataArgs,
+  programAddress: Address<TProgram> = '11111111111111111111111111111111' as Address<TProgram>,
+  remainingAccounts?: TRemainingAccounts
+) {
+  return {
+    accounts: [
+      accountMetaWithDefault(accounts.source, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
+      ...(remainingAccounts ?? []),
+    ],
+    data: getTransferSolInstructionDataEncoder().encode(args),
+    programAddress,
+  } as TransferSolInstruction<
+    TProgram,
+    TAccountSource,
+    TAccountDestination,
+    TRemainingAccounts
+  >;
 }

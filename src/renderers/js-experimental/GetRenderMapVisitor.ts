@@ -22,7 +22,6 @@ import {
   getInstructionExtraArgsFragment,
   getInstructionFunctionHighLevelFragment,
   getInstructionFunctionLowLevelFragment,
-  getInstructionInputTypeFragment,
   getInstructionTypeFragment,
   getProgramErrorsFragment,
   getProgramFragment,
@@ -279,54 +278,13 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         this.program,
         dataArgsManifest
       );
-    const instructionInputTypeFragment = getInstructionInputTypeFragment(
-      instruction,
-      resolvedInputs,
-      renamedArgs,
-      dataArgsManifest,
-      extraArgsManifest,
-      this.program,
-      false,
-      false
-    );
-    const instructionInputTypeWithSignersFragment =
-      getInstructionInputTypeFragment(
-        instruction,
-        resolvedInputs,
-        renamedArgs,
-        dataArgsManifest,
-        extraArgsManifest,
-        this.program,
-        true,
-        false
-      );
-    const instructionInputAsyncTypeFragment = getInstructionInputTypeFragment(
-      instruction,
-      resolvedInputs,
-      renamedArgs,
-      dataArgsManifest,
-      extraArgsManifest,
-      this.program,
-      false,
-      true
-    );
-    const instructionInputAsyncTypeWithSignersFragment =
-      getInstructionInputTypeFragment(
-        instruction,
-        resolvedInputs,
-        renamedArgs,
-        dataArgsManifest,
-        extraArgsManifest,
-        this.program,
-        true,
-        true
-      );
     const instructionFunctionHighLevelAsyncFragment =
       getInstructionFunctionHighLevelFragment(
         instruction,
         this.program,
         renamedArgs,
         dataArgsManifest,
+        extraArgsManifest,
         resolvedInputs,
         true
       );
@@ -336,6 +294,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         this.program,
         renamedArgs,
         dataArgsManifest,
+        extraArgsManifest,
         resolvedInputs,
         false
       );
@@ -347,10 +306,6 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       instructionDataFragment,
       instructionExtraArgsFragment,
       instructionFunctionLowLevelFragment,
-      instructionInputTypeFragment,
-      instructionInputTypeWithSignersFragment,
-      instructionInputAsyncTypeFragment,
-      instructionInputAsyncTypeWithSignersFragment,
       instructionFunctionHighLevelAsyncFragment,
       instructionFunctionHighLevelSyncFragment
     );
@@ -365,10 +320,6 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         instructionDataFragment,
         instructionExtraArgsFragment,
         instructionFunctionLowLevelFragment,
-        instructionInputTypeFragment,
-        instructionInputTypeWithSignersFragment,
-        instructionInputAsyncTypeFragment,
-        instructionInputAsyncTypeWithSignersFragment,
         instructionFunctionHighLevelAsyncFragment,
         instructionFunctionHighLevelSyncFragment,
       })

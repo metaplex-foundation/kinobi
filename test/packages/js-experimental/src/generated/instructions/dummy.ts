@@ -192,171 +192,6 @@ export type DummyInstructionExtraArgs = {
   proof: Array<Address>;
 };
 
-export function getDummyInstructionRaw<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountEdition extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TAccountMintAuthority extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountFoo extends string | IAccountMeta<string> = string,
-  TAccountBar extends
-    | string
-    | IAccountMeta<string> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountDelegate extends string | IAccountMeta<string> = string,
-  TAccountDelegateRecord extends string | IAccountMeta<string> = string,
-  TAccountTokenOrAtaProgram extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
->(
-  accounts: {
-    edition: TAccountEdition extends string
-      ? Address<TAccountEdition>
-      : TAccountEdition;
-    mint?: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
-    updateAuthority: TAccountUpdateAuthority extends string
-      ? Address<TAccountUpdateAuthority>
-      : TAccountUpdateAuthority;
-    mintAuthority: TAccountMintAuthority extends string
-      ? Address<TAccountMintAuthority>
-      : TAccountMintAuthority;
-    payer: TAccountPayer extends string
-      ? Address<TAccountPayer>
-      : TAccountPayer;
-    foo: TAccountFoo extends string ? Address<TAccountFoo> : TAccountFoo;
-    bar?: TAccountBar extends string ? Address<TAccountBar> : TAccountBar;
-    delegate?: TAccountDelegate extends string
-      ? Address<TAccountDelegate>
-      : TAccountDelegate;
-    delegateRecord?: TAccountDelegateRecord extends string
-      ? Address<TAccountDelegateRecord>
-      : TAccountDelegateRecord;
-    tokenOrAtaProgram: TAccountTokenOrAtaProgram extends string
-      ? Address<TAccountTokenOrAtaProgram>
-      : TAccountTokenOrAtaProgram;
-  },
-  programAddress: Address<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.edition, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(
-        accounts.mint ?? {
-          address:
-            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.WRITABLE
-      ),
-      accountMetaWithDefault(
-        accounts.updateAuthority,
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(
-        accounts.mintAuthority,
-        AccountRole.WRITABLE_SIGNER
-      ),
-      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.foo, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.bar ?? {
-          address:
-            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(
-        accounts.delegate ?? {
-          address:
-            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(
-        accounts.delegateRecord ?? {
-          address:
-            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.WRITABLE
-      ),
-      accountMetaWithDefault(accounts.tokenOrAtaProgram, AccountRole.READONLY),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getDummyInstructionDataEncoder().encode({}),
-    programAddress,
-  } as DummyInstruction<
-    TProgram,
-    TAccountEdition,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountFoo,
-    TAccountBar,
-    TAccountDelegate,
-    TAccountDelegateRecord,
-    TAccountTokenOrAtaProgram,
-    TRemainingAccounts
-  >;
-}
-
-// Input.
-export type DummyInput<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountFoo extends string,
-  TAccountBar extends string,
-  TAccountDelegate extends string,
-  TAccountDelegateRecord extends string,
-  TAccountTokenOrAtaProgram extends string
-> = {
-  edition?: Address<TAccountEdition>;
-  mint?: Address<TAccountMint>;
-  updateAuthority: Address<TAccountUpdateAuthority>;
-  mintAuthority?: Address<TAccountMintAuthority>;
-  payer?: Address<TAccountPayer>;
-  foo?: Address<TAccountFoo>;
-  bar?: Address<TAccountBar>;
-  delegate?: Address<TAccountDelegate>;
-  delegateRecord?: Address<TAccountDelegateRecord>;
-  tokenOrAtaProgram?: Address<TAccountTokenOrAtaProgram>;
-  identityArg?: DummyInstructionExtraArgs['identityArg'];
-  proof?: DummyInstructionExtraArgs['proof'];
-};
-
-// Input.
-export type DummyInputWithSigners<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountFoo extends string,
-  TAccountBar extends string,
-  TAccountDelegate extends string,
-  TAccountDelegateRecord extends string,
-  TAccountTokenOrAtaProgram extends string
-> = {
-  edition?: TransactionSigner<TAccountEdition>;
-  mint?: Address<TAccountMint>;
-  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
-  mintAuthority?: TransactionSigner<TAccountMintAuthority>;
-  payer?: TransactionSigner<TAccountPayer>;
-  foo?: Address<TAccountFoo>;
-  bar?: TransactionSigner<TAccountBar>;
-  delegate?: TransactionSigner<TAccountDelegate>;
-  delegateRecord?: Address<TAccountDelegateRecord>;
-  tokenOrAtaProgram?: Address<TAccountTokenOrAtaProgram>;
-  identityArg?: DummyInstructionExtraArgs['identityArg'];
-  proof?: DummyInstructionExtraArgs['proof'];
-};
-
 // Input.
 export type DummyAsyncInput<
   TAccountEdition extends string,
@@ -763,6 +598,60 @@ export async function getDummyInstructionAsync<
   });
 }
 
+// Input.
+export type DummyInput<
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountFoo extends string,
+  TAccountBar extends string,
+  TAccountDelegate extends string,
+  TAccountDelegateRecord extends string,
+  TAccountTokenOrAtaProgram extends string
+> = {
+  edition?: Address<TAccountEdition>;
+  mint?: Address<TAccountMint>;
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  mintAuthority?: Address<TAccountMintAuthority>;
+  payer?: Address<TAccountPayer>;
+  foo?: Address<TAccountFoo>;
+  bar?: Address<TAccountBar>;
+  delegate?: Address<TAccountDelegate>;
+  delegateRecord?: Address<TAccountDelegateRecord>;
+  tokenOrAtaProgram?: Address<TAccountTokenOrAtaProgram>;
+  identityArg?: DummyInstructionExtraArgs['identityArg'];
+  proof?: DummyInstructionExtraArgs['proof'];
+};
+
+// Input.
+export type DummyInputWithSigners<
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountMintAuthority extends string,
+  TAccountPayer extends string,
+  TAccountFoo extends string,
+  TAccountBar extends string,
+  TAccountDelegate extends string,
+  TAccountDelegateRecord extends string,
+  TAccountTokenOrAtaProgram extends string
+> = {
+  edition?: TransactionSigner<TAccountEdition>;
+  mint?: Address<TAccountMint>;
+  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
+  mintAuthority?: TransactionSigner<TAccountMintAuthority>;
+  payer?: TransactionSigner<TAccountPayer>;
+  foo?: Address<TAccountFoo>;
+  bar?: TransactionSigner<TAccountBar>;
+  delegate?: TransactionSigner<TAccountDelegate>;
+  delegateRecord?: Address<TAccountDelegateRecord>;
+  tokenOrAtaProgram?: Address<TAccountTokenOrAtaProgram>;
+  identityArg?: DummyInstructionExtraArgs['identityArg'];
+  proof?: DummyInstructionExtraArgs['proof'];
+};
+
 export function getDummyInstruction<
   TAccountEdition extends string,
   TAccountMint extends string,
@@ -1096,4 +985,115 @@ export function getDummyInstruction<
     ),
     bytesCreatedOnChain,
   });
+}
+
+export function getDummyInstructionRaw<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountEdition extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
+  TAccountMintAuthority extends string | IAccountMeta<string> = string,
+  TAccountPayer extends string | IAccountMeta<string> = string,
+  TAccountFoo extends string | IAccountMeta<string> = string,
+  TAccountBar extends
+    | string
+    | IAccountMeta<string> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountDelegate extends string | IAccountMeta<string> = string,
+  TAccountDelegateRecord extends string | IAccountMeta<string> = string,
+  TAccountTokenOrAtaProgram extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+>(
+  accounts: {
+    edition: TAccountEdition extends string
+      ? Address<TAccountEdition>
+      : TAccountEdition;
+    mint?: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
+    updateAuthority: TAccountUpdateAuthority extends string
+      ? Address<TAccountUpdateAuthority>
+      : TAccountUpdateAuthority;
+    mintAuthority: TAccountMintAuthority extends string
+      ? Address<TAccountMintAuthority>
+      : TAccountMintAuthority;
+    payer: TAccountPayer extends string
+      ? Address<TAccountPayer>
+      : TAccountPayer;
+    foo: TAccountFoo extends string ? Address<TAccountFoo> : TAccountFoo;
+    bar?: TAccountBar extends string ? Address<TAccountBar> : TAccountBar;
+    delegate?: TAccountDelegate extends string
+      ? Address<TAccountDelegate>
+      : TAccountDelegate;
+    delegateRecord?: TAccountDelegateRecord extends string
+      ? Address<TAccountDelegateRecord>
+      : TAccountDelegateRecord;
+    tokenOrAtaProgram: TAccountTokenOrAtaProgram extends string
+      ? Address<TAccountTokenOrAtaProgram>
+      : TAccountTokenOrAtaProgram;
+  },
+  programAddress: Address<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<TProgram>,
+  remainingAccounts?: TRemainingAccounts
+) {
+  return {
+    accounts: [
+      accountMetaWithDefault(accounts.edition, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(
+        accounts.mint ?? {
+          address:
+            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.WRITABLE
+      ),
+      accountMetaWithDefault(
+        accounts.updateAuthority,
+        AccountRole.READONLY_SIGNER
+      ),
+      accountMetaWithDefault(
+        accounts.mintAuthority,
+        AccountRole.WRITABLE_SIGNER
+      ),
+      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(accounts.foo, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.bar ?? {
+          address:
+            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY_SIGNER
+      ),
+      accountMetaWithDefault(
+        accounts.delegate ?? {
+          address:
+            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY_SIGNER
+      ),
+      accountMetaWithDefault(
+        accounts.delegateRecord ?? {
+          address:
+            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.WRITABLE
+      ),
+      accountMetaWithDefault(accounts.tokenOrAtaProgram, AccountRole.READONLY),
+      ...(remainingAccounts ?? []),
+    ],
+    data: getDummyInstructionDataEncoder().encode({}),
+    programAddress,
+  } as DummyInstruction<
+    TProgram,
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountFoo,
+    TAccountBar,
+    TAccountDelegate,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram,
+    TRemainingAccounts
+  >;
 }

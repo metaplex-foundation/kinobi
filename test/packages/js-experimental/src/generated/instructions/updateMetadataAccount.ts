@@ -207,43 +207,6 @@ export function getUpdateMetadataAccountInstructionDataCodec(): Codec<
   );
 }
 
-export function getUpdateMetadataAccountInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    updateAuthority: TAccountUpdateAuthority extends string
-      ? Address<TAccountUpdateAuthority>
-      : TAccountUpdateAuthority;
-  },
-  args: UpdateMetadataAccountInstructionDataArgs,
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.updateAuthority,
-        AccountRole.READONLY_SIGNER
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getUpdateMetadataAccountInstructionDataEncoder().encode(args),
-    programAddress,
-  } as UpdateMetadataAccountInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountUpdateAuthority,
-    TRemainingAccounts
-  >;
-}
-
 // Input.
 export type UpdateMetadataAccountInput<
   TAccountMetadata extends string,
@@ -260,34 +223,6 @@ export type UpdateMetadataAccountInput<
 
 // Input.
 export type UpdateMetadataAccountInputWithSigners<
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string
-> = {
-  /** Metadata account */
-  metadata: Address<TAccountMetadata>;
-  /** Update authority key */
-  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
-  data: UpdateMetadataAccountInstructionDataArgs['data'];
-  updateAuthorityArg: UpdateMetadataAccountInstructionDataArgs['updateAuthority'];
-  primarySaleHappened: UpdateMetadataAccountInstructionDataArgs['primarySaleHappened'];
-};
-
-// Input.
-export type UpdateMetadataAccountAsyncInput<
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string
-> = {
-  /** Metadata account */
-  metadata: Address<TAccountMetadata>;
-  /** Update authority key */
-  updateAuthority: Address<TAccountUpdateAuthority>;
-  data: UpdateMetadataAccountInstructionDataArgs['data'];
-  updateAuthorityArg: UpdateMetadataAccountInstructionDataArgs['updateAuthority'];
-  primarySaleHappened: UpdateMetadataAccountInstructionDataArgs['primarySaleHappened'];
-};
-
-// Input.
-export type UpdateMetadataAccountAsyncInputWithSigners<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string
 > = {
@@ -431,4 +366,41 @@ export function getUpdateMetadataAccountInstruction<
     ),
     bytesCreatedOnChain,
   });
+}
+
+export function getUpdateMetadataAccountInstructionRaw<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+>(
+  accounts: {
+    metadata: TAccountMetadata extends string
+      ? Address<TAccountMetadata>
+      : TAccountMetadata;
+    updateAuthority: TAccountUpdateAuthority extends string
+      ? Address<TAccountUpdateAuthority>
+      : TAccountUpdateAuthority;
+  },
+  args: UpdateMetadataAccountInstructionDataArgs,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
+  remainingAccounts?: TRemainingAccounts
+) {
+  return {
+    accounts: [
+      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.updateAuthority,
+        AccountRole.READONLY_SIGNER
+      ),
+      ...(remainingAccounts ?? []),
+    ],
+    data: getUpdateMetadataAccountInstructionDataEncoder().encode(args),
+    programAddress,
+  } as UpdateMetadataAccountInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountUpdateAuthority,
+    TRemainingAccounts
+  >;
 }

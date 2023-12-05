@@ -158,46 +158,6 @@ export function getDeprecatedSetReservationListInstructionDataCodec(): Codec<
   );
 }
 
-export function getDeprecatedSetReservationListInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountReservationList extends string | IAccountMeta<string> = string,
-  TAccountResource extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
->(
-  accounts: {
-    masterEdition: TAccountMasterEdition extends string
-      ? Address<TAccountMasterEdition>
-      : TAccountMasterEdition;
-    reservationList: TAccountReservationList extends string
-      ? Address<TAccountReservationList>
-      : TAccountReservationList;
-    resource: TAccountResource extends string
-      ? Address<TAccountResource>
-      : TAccountResource;
-  },
-  args: DeprecatedSetReservationListInstructionDataArgs,
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.masterEdition, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.reservationList, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.resource, AccountRole.READONLY_SIGNER),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getDeprecatedSetReservationListInstructionDataEncoder().encode(args),
-    programAddress,
-  } as DeprecatedSetReservationListInstruction<
-    TProgram,
-    TAccountMasterEdition,
-    TAccountReservationList,
-    TAccountResource,
-    TRemainingAccounts
-  >;
-}
-
 // Input.
 export type DeprecatedSetReservationListInput<
   TAccountMasterEdition extends string,
@@ -218,42 +178,6 @@ export type DeprecatedSetReservationListInput<
 
 // Input.
 export type DeprecatedSetReservationListInputWithSigners<
-  TAccountMasterEdition extends string,
-  TAccountReservationList extends string,
-  TAccountResource extends string
-> = {
-  /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
-  masterEdition: Address<TAccountMasterEdition>;
-  /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
-  reservationList: Address<TAccountReservationList>;
-  /** The resource you tied the reservation list too */
-  resource: TransactionSigner<TAccountResource>;
-  reservations: DeprecatedSetReservationListInstructionDataArgs['reservations'];
-  totalReservationSpots: DeprecatedSetReservationListInstructionDataArgs['totalReservationSpots'];
-  offset: DeprecatedSetReservationListInstructionDataArgs['offset'];
-  totalSpotOffset: DeprecatedSetReservationListInstructionDataArgs['totalSpotOffset'];
-};
-
-// Input.
-export type DeprecatedSetReservationListAsyncInput<
-  TAccountMasterEdition extends string,
-  TAccountReservationList extends string,
-  TAccountResource extends string
-> = {
-  /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
-  masterEdition: Address<TAccountMasterEdition>;
-  /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
-  reservationList: Address<TAccountReservationList>;
-  /** The resource you tied the reservation list too */
-  resource: Address<TAccountResource>;
-  reservations: DeprecatedSetReservationListInstructionDataArgs['reservations'];
-  totalReservationSpots: DeprecatedSetReservationListInstructionDataArgs['totalReservationSpots'];
-  offset: DeprecatedSetReservationListInstructionDataArgs['offset'];
-  totalSpotOffset: DeprecatedSetReservationListInstructionDataArgs['totalSpotOffset'];
-};
-
-// Input.
-export type DeprecatedSetReservationListAsyncInputWithSigners<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
   TAccountResource extends string
@@ -424,4 +348,44 @@ export function getDeprecatedSetReservationListInstruction<
     ),
     bytesCreatedOnChain,
   });
+}
+
+export function getDeprecatedSetReservationListInstructionRaw<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMasterEdition extends string | IAccountMeta<string> = string,
+  TAccountReservationList extends string | IAccountMeta<string> = string,
+  TAccountResource extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+>(
+  accounts: {
+    masterEdition: TAccountMasterEdition extends string
+      ? Address<TAccountMasterEdition>
+      : TAccountMasterEdition;
+    reservationList: TAccountReservationList extends string
+      ? Address<TAccountReservationList>
+      : TAccountReservationList;
+    resource: TAccountResource extends string
+      ? Address<TAccountResource>
+      : TAccountResource;
+  },
+  args: DeprecatedSetReservationListInstructionDataArgs,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
+  remainingAccounts?: TRemainingAccounts
+) {
+  return {
+    accounts: [
+      accountMetaWithDefault(accounts.masterEdition, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.reservationList, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.resource, AccountRole.READONLY_SIGNER),
+      ...(remainingAccounts ?? []),
+    ],
+    data: getDeprecatedSetReservationListInstructionDataEncoder().encode(args),
+    programAddress,
+  } as DeprecatedSetReservationListInstruction<
+    TProgram,
+    TAccountMasterEdition,
+    TAccountReservationList,
+    TAccountResource,
+    TRemainingAccounts
+  >;
 }

@@ -113,45 +113,6 @@ export function getConvertMasterEditionV1ToV2InstructionDataCodec(): Codec<
   );
 }
 
-export function getConvertMasterEditionV1ToV2InstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountOneTimeAuth extends string | IAccountMeta<string> = string,
-  TAccountPrintingMint extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
->(
-  accounts: {
-    masterEdition: TAccountMasterEdition extends string
-      ? Address<TAccountMasterEdition>
-      : TAccountMasterEdition;
-    oneTimeAuth: TAccountOneTimeAuth extends string
-      ? Address<TAccountOneTimeAuth>
-      : TAccountOneTimeAuth;
-    printingMint: TAccountPrintingMint extends string
-      ? Address<TAccountPrintingMint>
-      : TAccountPrintingMint;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.masterEdition, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.oneTimeAuth, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.printingMint, AccountRole.WRITABLE),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getConvertMasterEditionV1ToV2InstructionDataEncoder().encode({}),
-    programAddress,
-  } as ConvertMasterEditionV1ToV2Instruction<
-    TProgram,
-    TAccountMasterEdition,
-    TAccountOneTimeAuth,
-    TAccountPrintingMint,
-    TRemainingAccounts
-  >;
-}
-
 // Input.
 export type ConvertMasterEditionV1ToV2Input<
   TAccountMasterEdition extends string,
@@ -168,34 +129,6 @@ export type ConvertMasterEditionV1ToV2Input<
 
 // Input.
 export type ConvertMasterEditionV1ToV2InputWithSigners<
-  TAccountMasterEdition extends string,
-  TAccountOneTimeAuth extends string,
-  TAccountPrintingMint extends string
-> = {
-  /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
-  masterEdition: Address<TAccountMasterEdition>;
-  /** One time authorization mint */
-  oneTimeAuth: Address<TAccountOneTimeAuth>;
-  /** Printing mint */
-  printingMint: Address<TAccountPrintingMint>;
-};
-
-// Input.
-export type ConvertMasterEditionV1ToV2AsyncInput<
-  TAccountMasterEdition extends string,
-  TAccountOneTimeAuth extends string,
-  TAccountPrintingMint extends string
-> = {
-  /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
-  masterEdition: Address<TAccountMasterEdition>;
-  /** One time authorization mint */
-  oneTimeAuth: Address<TAccountOneTimeAuth>;
-  /** Printing mint */
-  printingMint: Address<TAccountPrintingMint>;
-};
-
-// Input.
-export type ConvertMasterEditionV1ToV2AsyncInputWithSigners<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
   TAccountPrintingMint extends string
@@ -358,4 +291,43 @@ export function getConvertMasterEditionV1ToV2Instruction<
     ),
     bytesCreatedOnChain,
   });
+}
+
+export function getConvertMasterEditionV1ToV2InstructionRaw<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMasterEdition extends string | IAccountMeta<string> = string,
+  TAccountOneTimeAuth extends string | IAccountMeta<string> = string,
+  TAccountPrintingMint extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+>(
+  accounts: {
+    masterEdition: TAccountMasterEdition extends string
+      ? Address<TAccountMasterEdition>
+      : TAccountMasterEdition;
+    oneTimeAuth: TAccountOneTimeAuth extends string
+      ? Address<TAccountOneTimeAuth>
+      : TAccountOneTimeAuth;
+    printingMint: TAccountPrintingMint extends string
+      ? Address<TAccountPrintingMint>
+      : TAccountPrintingMint;
+  },
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
+  remainingAccounts?: TRemainingAccounts
+) {
+  return {
+    accounts: [
+      accountMetaWithDefault(accounts.masterEdition, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.oneTimeAuth, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.printingMint, AccountRole.WRITABLE),
+      ...(remainingAccounts ?? []),
+    ],
+    data: getConvertMasterEditionV1ToV2InstructionDataEncoder().encode({}),
+    programAddress,
+  } as ConvertMasterEditionV1ToV2Instruction<
+    TProgram,
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint,
+    TRemainingAccounts
+  >;
 }

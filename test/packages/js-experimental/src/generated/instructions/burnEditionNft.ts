@@ -184,115 +184,6 @@ export function getBurnEditionNftInstructionDataCodec(): Codec<
   );
 }
 
-export function getBurnEditionNftInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountOwner extends string | IAccountMeta<string> = string,
-  TAccountPrintEditionMint extends string | IAccountMeta<string> = string,
-  TAccountMasterEditionMint extends string | IAccountMeta<string> = string,
-  TAccountPrintEditionTokenAccount extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountMasterEditionTokenAccount extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountMasterEditionAccount extends string | IAccountMeta<string> = string,
-  TAccountPrintEditionAccount extends string | IAccountMeta<string> = string,
-  TAccountEditionMarkerAccount extends string | IAccountMeta<string> = string,
-  TAccountSplTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    owner: TAccountOwner extends string
-      ? Address<TAccountOwner>
-      : TAccountOwner;
-    printEditionMint: TAccountPrintEditionMint extends string
-      ? Address<TAccountPrintEditionMint>
-      : TAccountPrintEditionMint;
-    masterEditionMint: TAccountMasterEditionMint extends string
-      ? Address<TAccountMasterEditionMint>
-      : TAccountMasterEditionMint;
-    printEditionTokenAccount: TAccountPrintEditionTokenAccount extends string
-      ? Address<TAccountPrintEditionTokenAccount>
-      : TAccountPrintEditionTokenAccount;
-    masterEditionTokenAccount: TAccountMasterEditionTokenAccount extends string
-      ? Address<TAccountMasterEditionTokenAccount>
-      : TAccountMasterEditionTokenAccount;
-    masterEditionAccount: TAccountMasterEditionAccount extends string
-      ? Address<TAccountMasterEditionAccount>
-      : TAccountMasterEditionAccount;
-    printEditionAccount: TAccountPrintEditionAccount extends string
-      ? Address<TAccountPrintEditionAccount>
-      : TAccountPrintEditionAccount;
-    editionMarkerAccount: TAccountEditionMarkerAccount extends string
-      ? Address<TAccountEditionMarkerAccount>
-      : TAccountEditionMarkerAccount;
-    splTokenProgram?: TAccountSplTokenProgram extends string
-      ? Address<TAccountSplTokenProgram>
-      : TAccountSplTokenProgram;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.owner, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.printEditionMint, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.masterEditionMint, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.printEditionTokenAccount,
-        AccountRole.WRITABLE
-      ),
-      accountMetaWithDefault(
-        accounts.masterEditionTokenAccount,
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.masterEditionAccount,
-        AccountRole.WRITABLE
-      ),
-      accountMetaWithDefault(
-        accounts.printEditionAccount,
-        AccountRole.WRITABLE
-      ),
-      accountMetaWithDefault(
-        accounts.editionMarkerAccount,
-        AccountRole.WRITABLE
-      ),
-      accountMetaWithDefault(
-        accounts.splTokenProgram ?? {
-          address:
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getBurnEditionNftInstructionDataEncoder().encode({}),
-    programAddress,
-  } as BurnEditionNftInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountPrintEditionMint,
-    TAccountMasterEditionMint,
-    TAccountPrintEditionTokenAccount,
-    TAccountMasterEditionTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountPrintEditionAccount,
-    TAccountEditionMarkerAccount,
-    TAccountSplTokenProgram,
-    TRemainingAccounts
-  >;
-}
-
 // Input.
 export type BurnEditionNftInput<
   TAccountMetadata extends string,
@@ -330,76 +221,6 @@ export type BurnEditionNftInput<
 
 // Input.
 export type BurnEditionNftInputWithSigners<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountPrintEditionMint extends string,
-  TAccountMasterEditionMint extends string,
-  TAccountPrintEditionTokenAccount extends string,
-  TAccountMasterEditionTokenAccount extends string,
-  TAccountMasterEditionAccount extends string,
-  TAccountPrintEditionAccount extends string,
-  TAccountEditionMarkerAccount extends string,
-  TAccountSplTokenProgram extends string
-> = {
-  /** Metadata (pda of ['metadata', program id, mint id]) */
-  metadata: Address<TAccountMetadata>;
-  /** NFT owner */
-  owner: TransactionSigner<TAccountOwner>;
-  /** Mint of the print edition NFT */
-  printEditionMint: Address<TAccountPrintEditionMint>;
-  /** Mint of the original/master NFT */
-  masterEditionMint: Address<TAccountMasterEditionMint>;
-  /** Token account the print edition NFT is in */
-  printEditionTokenAccount: Address<TAccountPrintEditionTokenAccount>;
-  /** Token account the Master Edition NFT is in */
-  masterEditionTokenAccount: Address<TAccountMasterEditionTokenAccount>;
-  /** MasterEdition2 of the original NFT */
-  masterEditionAccount: Address<TAccountMasterEditionAccount>;
-  /** Print Edition account of the NFT */
-  printEditionAccount: Address<TAccountPrintEditionAccount>;
-  /** Edition Marker PDA of the NFT */
-  editionMarkerAccount: Address<TAccountEditionMarkerAccount>;
-  /** SPL Token Program */
-  splTokenProgram?: Address<TAccountSplTokenProgram>;
-};
-
-// Input.
-export type BurnEditionNftAsyncInput<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountPrintEditionMint extends string,
-  TAccountMasterEditionMint extends string,
-  TAccountPrintEditionTokenAccount extends string,
-  TAccountMasterEditionTokenAccount extends string,
-  TAccountMasterEditionAccount extends string,
-  TAccountPrintEditionAccount extends string,
-  TAccountEditionMarkerAccount extends string,
-  TAccountSplTokenProgram extends string
-> = {
-  /** Metadata (pda of ['metadata', program id, mint id]) */
-  metadata: Address<TAccountMetadata>;
-  /** NFT owner */
-  owner: Address<TAccountOwner>;
-  /** Mint of the print edition NFT */
-  printEditionMint: Address<TAccountPrintEditionMint>;
-  /** Mint of the original/master NFT */
-  masterEditionMint: Address<TAccountMasterEditionMint>;
-  /** Token account the print edition NFT is in */
-  printEditionTokenAccount: Address<TAccountPrintEditionTokenAccount>;
-  /** Token account the Master Edition NFT is in */
-  masterEditionTokenAccount: Address<TAccountMasterEditionTokenAccount>;
-  /** MasterEdition2 of the original NFT */
-  masterEditionAccount: Address<TAccountMasterEditionAccount>;
-  /** Print Edition account of the NFT */
-  printEditionAccount: Address<TAccountPrintEditionAccount>;
-  /** Edition Marker PDA of the NFT */
-  editionMarkerAccount: Address<TAccountEditionMarkerAccount>;
-  /** SPL Token Program */
-  splTokenProgram?: Address<TAccountSplTokenProgram>;
-};
-
-// Input.
-export type BurnEditionNftAsyncInputWithSigners<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountPrintEditionMint extends string,
@@ -743,4 +564,113 @@ export function getBurnEditionNftInstruction<
     ),
     bytesCreatedOnChain,
   });
+}
+
+export function getBurnEditionNftInstructionRaw<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TAccountPrintEditionMint extends string | IAccountMeta<string> = string,
+  TAccountMasterEditionMint extends string | IAccountMeta<string> = string,
+  TAccountPrintEditionTokenAccount extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountMasterEditionTokenAccount extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountMasterEditionAccount extends string | IAccountMeta<string> = string,
+  TAccountPrintEditionAccount extends string | IAccountMeta<string> = string,
+  TAccountEditionMarkerAccount extends string | IAccountMeta<string> = string,
+  TAccountSplTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+>(
+  accounts: {
+    metadata: TAccountMetadata extends string
+      ? Address<TAccountMetadata>
+      : TAccountMetadata;
+    owner: TAccountOwner extends string
+      ? Address<TAccountOwner>
+      : TAccountOwner;
+    printEditionMint: TAccountPrintEditionMint extends string
+      ? Address<TAccountPrintEditionMint>
+      : TAccountPrintEditionMint;
+    masterEditionMint: TAccountMasterEditionMint extends string
+      ? Address<TAccountMasterEditionMint>
+      : TAccountMasterEditionMint;
+    printEditionTokenAccount: TAccountPrintEditionTokenAccount extends string
+      ? Address<TAccountPrintEditionTokenAccount>
+      : TAccountPrintEditionTokenAccount;
+    masterEditionTokenAccount: TAccountMasterEditionTokenAccount extends string
+      ? Address<TAccountMasterEditionTokenAccount>
+      : TAccountMasterEditionTokenAccount;
+    masterEditionAccount: TAccountMasterEditionAccount extends string
+      ? Address<TAccountMasterEditionAccount>
+      : TAccountMasterEditionAccount;
+    printEditionAccount: TAccountPrintEditionAccount extends string
+      ? Address<TAccountPrintEditionAccount>
+      : TAccountPrintEditionAccount;
+    editionMarkerAccount: TAccountEditionMarkerAccount extends string
+      ? Address<TAccountEditionMarkerAccount>
+      : TAccountEditionMarkerAccount;
+    splTokenProgram?: TAccountSplTokenProgram extends string
+      ? Address<TAccountSplTokenProgram>
+      : TAccountSplTokenProgram;
+  },
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
+  remainingAccounts?: TRemainingAccounts
+) {
+  return {
+    accounts: [
+      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.owner, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(accounts.printEditionMint, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.masterEditionMint, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.printEditionTokenAccount,
+        AccountRole.WRITABLE
+      ),
+      accountMetaWithDefault(
+        accounts.masterEditionTokenAccount,
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.masterEditionAccount,
+        AccountRole.WRITABLE
+      ),
+      accountMetaWithDefault(
+        accounts.printEditionAccount,
+        AccountRole.WRITABLE
+      ),
+      accountMetaWithDefault(
+        accounts.editionMarkerAccount,
+        AccountRole.WRITABLE
+      ),
+      accountMetaWithDefault(
+        accounts.splTokenProgram ?? {
+          address:
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      ...(remainingAccounts ?? []),
+    ],
+    data: getBurnEditionNftInstructionDataEncoder().encode({}),
+    programAddress,
+  } as BurnEditionNftInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountPrintEditionMint,
+    TAccountMasterEditionMint,
+    TAccountPrintEditionTokenAccount,
+    TAccountMasterEditionTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountPrintEditionAccount,
+    TAccountEditionMarkerAccount,
+    TAccountSplTokenProgram,
+    TRemainingAccounts
+  >;
 }

@@ -127,40 +127,6 @@ export function getUpdateCandyMachineInstructionDataCodec(): Codec<
   );
 }
 
-export function getUpdateCandyMachineInstructionRaw<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string | IAccountMeta<string> = string,
-  TAccountAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
->(
-  accounts: {
-    candyMachine: TAccountCandyMachine extends string
-      ? Address<TAccountCandyMachine>
-      : TAccountCandyMachine;
-    authority: TAccountAuthority extends string
-      ? Address<TAccountAuthority>
-      : TAccountAuthority;
-  },
-  args: UpdateCandyMachineInstructionDataArgs,
-  programAddress: Address<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getUpdateCandyMachineInstructionDataEncoder().encode(args),
-    programAddress,
-  } as UpdateCandyMachineInstruction<
-    TProgram,
-    TAccountCandyMachine,
-    TAccountAuthority,
-    TRemainingAccounts
-  >;
-}
-
 // Input.
 export type UpdateCandyMachineInput<
   TAccountCandyMachine extends string,
@@ -173,26 +139,6 @@ export type UpdateCandyMachineInput<
 
 // Input.
 export type UpdateCandyMachineInputWithSigners<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string
-> = {
-  candyMachine: Address<TAccountCandyMachine>;
-  authority?: TransactionSigner<TAccountAuthority>;
-  data: UpdateCandyMachineInstructionDataArgs['data'];
-};
-
-// Input.
-export type UpdateCandyMachineAsyncInput<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string
-> = {
-  candyMachine: Address<TAccountCandyMachine>;
-  authority?: Address<TAccountAuthority>;
-  data: UpdateCandyMachineInstructionDataArgs['data'];
-};
-
-// Input.
-export type UpdateCandyMachineAsyncInputWithSigners<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string
 > = {
@@ -326,4 +272,38 @@ export function getUpdateCandyMachineInstruction<
     ),
     bytesCreatedOnChain,
   });
+}
+
+export function getUpdateCandyMachineInstructionRaw<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string | IAccountMeta<string> = string,
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+>(
+  accounts: {
+    candyMachine: TAccountCandyMachine extends string
+      ? Address<TAccountCandyMachine>
+      : TAccountCandyMachine;
+    authority: TAccountAuthority extends string
+      ? Address<TAccountAuthority>
+      : TAccountAuthority;
+  },
+  args: UpdateCandyMachineInstructionDataArgs,
+  programAddress: Address<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<TProgram>,
+  remainingAccounts?: TRemainingAccounts
+) {
+  return {
+    accounts: [
+      accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
+      ...(remainingAccounts ?? []),
+    ],
+    data: getUpdateCandyMachineInstructionDataEncoder().encode(args),
+    programAddress,
+  } as UpdateCandyMachineInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TRemainingAccounts
+  >;
 }
