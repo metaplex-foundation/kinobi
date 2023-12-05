@@ -128,7 +128,7 @@ export type CreateReservationListInstructionWithSigners<
     ]
   >;
 
-function getCreateReservationListInstructionRaw<
+export function getCreateReservationListInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountReservationList extends string | IAccountMeta<string> = string,
   TAccountPayer extends string | IAccountMeta<string> = string,

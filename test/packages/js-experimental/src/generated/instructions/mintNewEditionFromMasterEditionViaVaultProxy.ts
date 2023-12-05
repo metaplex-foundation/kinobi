@@ -267,7 +267,7 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataCo
   );
 }
 
-function getMintNewEditionFromMasterEditionViaVaultProxyInstructionRaw<
+export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountNewMetadata extends string | IAccountMeta<string> = string,
   TAccountNewEdition extends string | IAccountMeta<string> = string,

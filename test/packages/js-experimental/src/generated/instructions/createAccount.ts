@@ -135,7 +135,7 @@ export function getCreateAccountInstructionDataCodec(): Codec<
   );
 }
 
-function getCreateAccountInstructionRaw<
+export function getCreateAccountInstructionRaw<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountNewAccount extends string | IAccountMeta<string> = string,

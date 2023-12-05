@@ -223,7 +223,7 @@ export function getDelegateInstructionDataCodec(): Codec<
   );
 }
 
-function getDelegateInstructionRaw<
+export function getDelegateInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountDelegateRecord extends string | IAccountMeta<string> = string,
   TAccountDelegate extends string | IAccountMeta<string> = string,

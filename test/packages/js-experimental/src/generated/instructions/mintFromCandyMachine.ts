@@ -262,7 +262,7 @@ export function getMintFromCandyMachineInstructionDataCodec(): Codec<
   );
 }
 
-function getMintFromCandyMachineInstructionRaw<
+export function getMintFromCandyMachineInstructionRaw<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthorityPda extends string | IAccountMeta<string> = string,

@@ -192,7 +192,7 @@ export type DummyInstructionExtraArgs = {
   proof: Array<Address>;
 };
 
-function getDummyInstructionRaw<
+export function getDummyInstructionRaw<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountEdition extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,

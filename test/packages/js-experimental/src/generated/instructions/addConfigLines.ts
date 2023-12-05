@@ -153,7 +153,7 @@ export function getAddConfigLinesInstructionDataCodec(): Codec<
   );
 }
 
-function getAddConfigLinesInstructionRaw<
+export function getAddConfigLinesInstructionRaw<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,

@@ -143,7 +143,7 @@ export function getSetCollectionSizeInstructionDataCodec(): Codec<
   );
 }
 
-function getSetCollectionSizeInstructionRaw<
+export function getSetCollectionSizeInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
   TAccountCollectionAuthority extends string | IAccountMeta<string> = string,

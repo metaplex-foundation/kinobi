@@ -372,7 +372,7 @@ export function getUpdateV1InstructionDataCodec(): Codec<
   );
 }
 
-function getUpdateV1InstructionRaw<
+export function getUpdateV1InstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountAuthority extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,

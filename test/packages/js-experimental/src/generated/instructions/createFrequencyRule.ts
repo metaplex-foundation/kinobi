@@ -151,7 +151,7 @@ export function getCreateFrequencyRuleInstructionDataCodec(): Codec<
   );
 }
 
-function getCreateFrequencyRuleInstructionRaw<
+export function getCreateFrequencyRuleInstructionRaw<
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountFrequencyPda extends string | IAccountMeta<string> = string,

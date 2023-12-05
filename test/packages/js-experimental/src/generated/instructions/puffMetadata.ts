@@ -95,7 +95,7 @@ export function getPuffMetadataInstructionDataCodec(): Codec<
   );
 }
 
-function getPuffMetadataInstructionRaw<
+export function getPuffMetadataInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends Array<IAccountMeta<string>> = []

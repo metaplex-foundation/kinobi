@@ -236,7 +236,7 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
   );
 }
 
-function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionRaw<
+export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountEdition extends string | IAccountMeta<string> = string,

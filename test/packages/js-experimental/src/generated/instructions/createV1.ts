@@ -219,7 +219,7 @@ export function getCreateV1InstructionDataCodec(): Codec<
   );
 }
 
-function getCreateV1InstructionRaw<
+export function getCreateV1InstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMasterEdition extends string | IAccountMeta<string> = string,

@@ -250,7 +250,7 @@ export function getTransferInstructionDataCodec(): Codec<
 
 export type TransferInstructionExtraArgs = { tokenStandard: TokenStandardArgs };
 
-function getTransferInstructionRaw<
+export function getTransferInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountAuthority extends string | IAccountMeta<string> = string,
   TAccountDelegateRecord extends string | IAccountMeta<string> = string,

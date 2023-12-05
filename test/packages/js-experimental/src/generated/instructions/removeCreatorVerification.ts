@@ -108,7 +108,7 @@ export function getRemoveCreatorVerificationInstructionDataCodec(): Codec<
   );
 }
 
-function getRemoveCreatorVerificationInstructionRaw<
+export function getRemoveCreatorVerificationInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountCreator extends string | IAccountMeta<string> = string,

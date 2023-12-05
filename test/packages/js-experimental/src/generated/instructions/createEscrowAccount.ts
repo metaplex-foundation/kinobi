@@ -174,7 +174,7 @@ export function getCreateEscrowAccountInstructionDataCodec(): Codec<
   );
 }
 
-function getCreateEscrowAccountInstructionRaw<
+export function getCreateEscrowAccountInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountEscrow extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,

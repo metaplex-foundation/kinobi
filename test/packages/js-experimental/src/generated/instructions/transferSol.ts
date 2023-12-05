@@ -116,7 +116,7 @@ export function getTransferSolInstructionDataCodec(): Codec<
   );
 }
 
-function getTransferSolInstructionRaw<
+export function getTransferSolInstructionRaw<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountSource extends string | IAccountMeta<string> = string,
   TAccountDestination extends string | IAccountMeta<string> = string,

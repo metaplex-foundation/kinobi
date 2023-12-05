@@ -198,7 +198,7 @@ export function getDeprecatedMintPrintingTokensViaTokenInstructionDataCodec(): C
   );
 }
 
-function getDeprecatedMintPrintingTokensViaTokenInstructionRaw<
+export function getDeprecatedMintPrintingTokensViaTokenInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountDestination extends string | IAccountMeta<string> = string,
   TAccountToken extends string | IAccountMeta<string> = string,

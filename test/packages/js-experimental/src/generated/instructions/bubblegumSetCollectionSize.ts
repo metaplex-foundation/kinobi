@@ -153,7 +153,7 @@ export function getBubblegumSetCollectionSizeInstructionDataCodec(): Codec<
   );
 }
 
-function getBubblegumSetCollectionSizeInstructionRaw<
+export function getBubblegumSetCollectionSizeInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
   TAccountCollectionAuthority extends string | IAccountMeta<string> = string,

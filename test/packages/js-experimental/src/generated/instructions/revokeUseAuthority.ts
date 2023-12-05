@@ -172,7 +172,7 @@ export function getRevokeUseAuthorityInstructionDataCodec(): Codec<
   );
 }
 
-function getRevokeUseAuthorityInstructionRaw<
+export function getRevokeUseAuthorityInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountUseAuthorityRecord extends string | IAccountMeta<string> = string,
   TAccountOwner extends string | IAccountMeta<string> = string,

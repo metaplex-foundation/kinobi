@@ -236,7 +236,7 @@ export function getDeprecatedCreateMasterEditionInstructionDataCodec(): Codec<
   );
 }
 
-function getDeprecatedCreateMasterEditionInstructionRaw<
+export function getDeprecatedCreateMasterEditionInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountEdition extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,

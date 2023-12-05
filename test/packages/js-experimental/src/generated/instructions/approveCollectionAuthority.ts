@@ -167,7 +167,7 @@ export function getApproveCollectionAuthorityInstructionDataCodec(): Codec<
   );
 }
 
-function getApproveCollectionAuthorityInstructionRaw<
+export function getApproveCollectionAuthorityInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountCollectionAuthorityRecord extends
     | string

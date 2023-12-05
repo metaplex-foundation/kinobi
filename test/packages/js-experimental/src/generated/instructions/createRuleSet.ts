@@ -142,7 +142,7 @@ export function getCreateRuleSetInstructionDataCodec(): Codec<
   );
 }
 
-function getCreateRuleSetInstructionRaw<
+export function getCreateRuleSetInstructionRaw<
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountRuleSetPda extends string | IAccountMeta<string> = string,

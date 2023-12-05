@@ -218,7 +218,7 @@ export function getMintInstructionDataCodec(): Codec<
   );
 }
 
-function getMintInstructionRaw<
+export function getMintInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountToken extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,

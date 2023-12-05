@@ -252,7 +252,7 @@ export function getCreateMetadataAccountInstructionDataCodec(): Codec<
   );
 }
 
-function getCreateMetadataAccountInstructionRaw<
+export function getCreateMetadataAccountInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,

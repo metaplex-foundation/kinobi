@@ -193,7 +193,7 @@ export function getCreateMasterEditionV3InstructionDataCodec(): Codec<
   );
 }
 
-function getCreateMasterEditionV3InstructionRaw<
+export function getCreateMasterEditionV3InstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountEdition extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,

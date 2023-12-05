@@ -158,7 +158,7 @@ export function getDeprecatedSetReservationListInstructionDataCodec(): Codec<
   );
 }
 
-function getDeprecatedSetReservationListInstructionRaw<
+export function getDeprecatedSetReservationListInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
   TAccountReservationList extends string | IAccountMeta<string> = string,

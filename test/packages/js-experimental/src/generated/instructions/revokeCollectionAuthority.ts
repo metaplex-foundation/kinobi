@@ -137,7 +137,7 @@ export function getRevokeCollectionAuthorityInstructionDataCodec(): Codec<
   );
 }
 
-function getRevokeCollectionAuthorityInstructionRaw<
+export function getRevokeCollectionAuthorityInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountCollectionAuthorityRecord extends
     | string
