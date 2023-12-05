@@ -504,7 +504,7 @@ export type UseAssetAsyncInputWithSigners<
   useAssetArgs: UseAssetInstructionDataArgs['useAssetArgs'];
 };
 
-export async function getUseAssetInstruction<
+export function getUseAssetInstruction<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -532,24 +532,22 @@ export async function getUseAssetInstruction<
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
   >
-): Promise<
-  UseAssetInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    TAccountTokenAccount,
-    TAccountMint,
-    WritableSignerAccount<TAccountUseAuthority> &
-      IAccountSignerMeta<TAccountUseAuthority>,
-    TAccountOwner,
-    TAccountSplTokenProgram,
-    TAccountAtaProgram,
-    TAccountSystemProgram,
-    TAccountUseAuthorityRecord,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
+): UseAssetInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  TAccountTokenAccount,
+  TAccountMint,
+  WritableSignerAccount<TAccountUseAuthority> &
+    IAccountSignerMeta<TAccountUseAuthority>,
+  TAccountOwner,
+  TAccountSplTokenProgram,
+  TAccountAtaProgram,
+  TAccountSystemProgram,
+  TAccountUseAuthorityRecord,
+  TAccountAuthorizationRules,
+  TAccountAuthorizationRulesProgram
 >;
-export async function getUseAssetInstruction<
+export function getUseAssetInstruction<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -577,24 +575,22 @@ export async function getUseAssetInstruction<
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
   >
-): Promise<
-  UseAssetInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountTokenAccount,
-    TAccountMint,
-    WritableSignerAccount<TAccountUseAuthority> &
-      IAccountSignerMeta<TAccountUseAuthority>,
-    TAccountOwner,
-    TAccountSplTokenProgram,
-    TAccountAtaProgram,
-    TAccountSystemProgram,
-    TAccountUseAuthorityRecord,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
+): UseAssetInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountTokenAccount,
+  TAccountMint,
+  WritableSignerAccount<TAccountUseAuthority> &
+    IAccountSignerMeta<TAccountUseAuthority>,
+  TAccountOwner,
+  TAccountSplTokenProgram,
+  TAccountAtaProgram,
+  TAccountSystemProgram,
+  TAccountUseAuthorityRecord,
+  TAccountAuthorizationRules,
+  TAccountAuthorizationRulesProgram
 >;
-export async function getUseAssetInstruction<
+export function getUseAssetInstruction<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -621,24 +617,22 @@ export async function getUseAssetInstruction<
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
   >
-): Promise<
-  UseAssetInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    TAccountTokenAccount,
-    TAccountMint,
-    WritableSignerAccount<TAccountUseAuthority> &
-      IAccountSignerMeta<TAccountUseAuthority>,
-    TAccountOwner,
-    TAccountSplTokenProgram,
-    TAccountAtaProgram,
-    TAccountSystemProgram,
-    TAccountUseAuthorityRecord,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
+): UseAssetInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  TAccountTokenAccount,
+  TAccountMint,
+  WritableSignerAccount<TAccountUseAuthority> &
+    IAccountSignerMeta<TAccountUseAuthority>,
+  TAccountOwner,
+  TAccountSplTokenProgram,
+  TAccountAtaProgram,
+  TAccountSystemProgram,
+  TAccountUseAuthorityRecord,
+  TAccountAuthorizationRules,
+  TAccountAuthorizationRulesProgram
 >;
-export async function getUseAssetInstruction<
+export function getUseAssetInstruction<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -665,24 +659,22 @@ export async function getUseAssetInstruction<
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
   >
-): Promise<
-  UseAssetInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountTokenAccount,
-    TAccountMint,
-    WritableSignerAccount<TAccountUseAuthority> &
-      IAccountSignerMeta<TAccountUseAuthority>,
-    TAccountOwner,
-    TAccountSplTokenProgram,
-    TAccountAtaProgram,
-    TAccountSystemProgram,
-    TAccountUseAuthorityRecord,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
+): UseAssetInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountTokenAccount,
+  TAccountMint,
+  WritableSignerAccount<TAccountUseAuthority> &
+    IAccountSignerMeta<TAccountUseAuthority>,
+  TAccountOwner,
+  TAccountSplTokenProgram,
+  TAccountAtaProgram,
+  TAccountSystemProgram,
+  TAccountUseAuthorityRecord,
+  TAccountAuthorizationRules,
+  TAccountAuthorizationRulesProgram
 >;
-export async function getUseAssetInstruction<
+export function getUseAssetInstruction<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -724,7 +716,7 @@ export async function getUseAssetInstruction<
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -751,7 +743,7 @@ export async function getUseAssetInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
@@ -806,7 +798,7 @@ export async function getUseAssetInstruction<
 
   // Resolve default values.
   if (!accounts.splTokenProgram.value) {
-    accounts.splTokenProgram.value = await getProgramAddress(
+    accounts.splTokenProgram.value = getProgramAddress(
       context,
       'splToken',
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
@@ -814,7 +806,7 @@ export async function getUseAssetInstruction<
     accounts.splTokenProgram.isWritable = false;
   }
   if (!accounts.ataProgram.value) {
-    accounts.ataProgram.value = await getProgramAddress(
+    accounts.ataProgram.value = getProgramAddress(
       context,
       'splAssociatedToken',
       'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
@@ -822,7 +814,7 @@ export async function getUseAssetInstruction<
     accounts.ataProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'

@@ -235,65 +235,57 @@ export type AddConfigLinesAsyncInputWithSigners<
   moreLines: AddConfigLinesInstructionDataArgs['moreLines'];
 };
 
-export async function getAddConfigLinesInstruction<
+export function getAddConfigLinesInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: AddConfigLinesInputWithSigners<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  AddConfigLinesInstructionWithSigners<
-    TProgram,
-    TAccountCandyMachine,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>
-  >
+): AddConfigLinesInstructionWithSigners<
+  TProgram,
+  TAccountCandyMachine,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>
 >;
-export async function getAddConfigLinesInstruction<
+export function getAddConfigLinesInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  AddConfigLinesInstruction<
-    TProgram,
-    TAccountCandyMachine,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>
-  >
+): AddConfigLinesInstruction<
+  TProgram,
+  TAccountCandyMachine,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>
 >;
-export async function getAddConfigLinesInstruction<
+export function getAddConfigLinesInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   input: AddConfigLinesInputWithSigners<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  AddConfigLinesInstructionWithSigners<
-    TProgram,
-    TAccountCandyMachine,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>
-  >
+): AddConfigLinesInstructionWithSigners<
+  TProgram,
+  TAccountCandyMachine,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>
 >;
-export async function getAddConfigLinesInstruction<
+export function getAddConfigLinesInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  AddConfigLinesInstruction<
-    TProgram,
-    TAccountCandyMachine,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>
-  >
+): AddConfigLinesInstruction<
+  TProgram,
+  TAccountCandyMachine,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>
 >;
-export async function getAddConfigLinesInstruction<
+export function getAddConfigLinesInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
@@ -302,7 +294,7 @@ export async function getAddConfigLinesInstruction<
     | Pick<Context, 'getProgramAddress'>
     | AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>,
   rawInput?: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -317,7 +309,7 @@ export async function getAddConfigLinesInstruction<
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplCandyMachineCore',
           address: defaultProgramAddress,
         })

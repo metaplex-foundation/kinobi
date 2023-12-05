@@ -366,7 +366,7 @@ export type SetAndVerifyCollectionAsyncInputWithSigners<
   collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
 };
 
-export async function getSetAndVerifyCollectionInstruction<
+export function getSetAndVerifyCollectionInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -388,21 +388,19 @@ export async function getSetAndVerifyCollectionInstruction<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  SetAndVerifyCollectionInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountCollectionAuthority> &
-      IAccountSignerMeta<TAccountCollectionAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUpdateAuthority,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount,
-    TAccountCollectionAuthorityRecord
-  >
+): SetAndVerifyCollectionInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountCollectionAuthority> &
+    IAccountSignerMeta<TAccountCollectionAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount,
+  TAccountCollectionAuthorityRecord
 >;
-export async function getSetAndVerifyCollectionInstruction<
+export function getSetAndVerifyCollectionInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -424,21 +422,19 @@ export async function getSetAndVerifyCollectionInstruction<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  SetAndVerifyCollectionInstruction<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountCollectionAuthority> &
-      IAccountSignerMeta<TAccountCollectionAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUpdateAuthority,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount,
-    TAccountCollectionAuthorityRecord
-  >
+): SetAndVerifyCollectionInstruction<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountCollectionAuthority> &
+    IAccountSignerMeta<TAccountCollectionAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount,
+  TAccountCollectionAuthorityRecord
 >;
-export async function getSetAndVerifyCollectionInstruction<
+export function getSetAndVerifyCollectionInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -459,21 +455,19 @@ export async function getSetAndVerifyCollectionInstruction<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  SetAndVerifyCollectionInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountCollectionAuthority> &
-      IAccountSignerMeta<TAccountCollectionAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUpdateAuthority,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount,
-    TAccountCollectionAuthorityRecord
-  >
+): SetAndVerifyCollectionInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountCollectionAuthority> &
+    IAccountSignerMeta<TAccountCollectionAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount,
+  TAccountCollectionAuthorityRecord
 >;
-export async function getSetAndVerifyCollectionInstruction<
+export function getSetAndVerifyCollectionInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -494,21 +488,19 @@ export async function getSetAndVerifyCollectionInstruction<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  SetAndVerifyCollectionInstruction<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountCollectionAuthority> &
-      IAccountSignerMeta<TAccountCollectionAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUpdateAuthority,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount,
-    TAccountCollectionAuthorityRecord
-  >
+): SetAndVerifyCollectionInstruction<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountCollectionAuthority> &
+    IAccountSignerMeta<TAccountCollectionAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount,
+  TAccountCollectionAuthorityRecord
 >;
-export async function getSetAndVerifyCollectionInstruction<
+export function getSetAndVerifyCollectionInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -541,7 +533,7 @@ export async function getSetAndVerifyCollectionInstruction<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -565,7 +557,7 @@ export async function getSetAndVerifyCollectionInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })

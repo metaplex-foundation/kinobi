@@ -313,7 +313,7 @@ export type UnverifyCollectionAsyncInputWithSigners<
   collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
 };
 
-export async function getUnverifyCollectionInstruction<
+export function getUnverifyCollectionInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -331,19 +331,17 @@ export async function getUnverifyCollectionInstruction<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  UnverifyCollectionInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountCollectionAuthority> &
-      IAccountSignerMeta<TAccountCollectionAuthority>,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount,
-    TAccountCollectionAuthorityRecord
-  >
+): UnverifyCollectionInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountCollectionAuthority> &
+    IAccountSignerMeta<TAccountCollectionAuthority>,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount,
+  TAccountCollectionAuthorityRecord
 >;
-export async function getUnverifyCollectionInstruction<
+export function getUnverifyCollectionInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -361,19 +359,17 @@ export async function getUnverifyCollectionInstruction<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  UnverifyCollectionInstruction<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountCollectionAuthority> &
-      IAccountSignerMeta<TAccountCollectionAuthority>,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount,
-    TAccountCollectionAuthorityRecord
-  >
+): UnverifyCollectionInstruction<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountCollectionAuthority> &
+    IAccountSignerMeta<TAccountCollectionAuthority>,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount,
+  TAccountCollectionAuthorityRecord
 >;
-export async function getUnverifyCollectionInstruction<
+export function getUnverifyCollectionInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -390,19 +386,17 @@ export async function getUnverifyCollectionInstruction<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  UnverifyCollectionInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountCollectionAuthority> &
-      IAccountSignerMeta<TAccountCollectionAuthority>,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount,
-    TAccountCollectionAuthorityRecord
-  >
+): UnverifyCollectionInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountCollectionAuthority> &
+    IAccountSignerMeta<TAccountCollectionAuthority>,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount,
+  TAccountCollectionAuthorityRecord
 >;
-export async function getUnverifyCollectionInstruction<
+export function getUnverifyCollectionInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -419,19 +413,17 @@ export async function getUnverifyCollectionInstruction<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  UnverifyCollectionInstruction<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountCollectionAuthority> &
-      IAccountSignerMeta<TAccountCollectionAuthority>,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount,
-    TAccountCollectionAuthorityRecord
-  >
+): UnverifyCollectionInstruction<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountCollectionAuthority> &
+    IAccountSignerMeta<TAccountCollectionAuthority>,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount,
+  TAccountCollectionAuthorityRecord
 >;
-export async function getUnverifyCollectionInstruction<
+export function getUnverifyCollectionInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -458,7 +450,7 @@ export async function getUnverifyCollectionInstruction<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -480,7 +472,7 @@ export async function getUnverifyCollectionInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })

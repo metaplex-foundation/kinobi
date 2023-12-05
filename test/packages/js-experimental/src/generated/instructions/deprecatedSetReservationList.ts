@@ -270,7 +270,7 @@ export type DeprecatedSetReservationListAsyncInputWithSigners<
   totalSpotOffset: DeprecatedSetReservationListInstructionDataArgs['totalSpotOffset'];
 };
 
-export async function getDeprecatedSetReservationListInstruction<
+export function getDeprecatedSetReservationListInstruction<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
   TAccountResource extends string,
@@ -282,16 +282,13 @@ export async function getDeprecatedSetReservationListInstruction<
     TAccountReservationList,
     TAccountResource
   >
-): Promise<
-  DeprecatedSetReservationListInstructionWithSigners<
-    TProgram,
-    TAccountMasterEdition,
-    TAccountReservationList,
-    ReadonlySignerAccount<TAccountResource> &
-      IAccountSignerMeta<TAccountResource>
-  >
+): DeprecatedSetReservationListInstructionWithSigners<
+  TProgram,
+  TAccountMasterEdition,
+  TAccountReservationList,
+  ReadonlySignerAccount<TAccountResource> & IAccountSignerMeta<TAccountResource>
 >;
-export async function getDeprecatedSetReservationListInstruction<
+export function getDeprecatedSetReservationListInstruction<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
   TAccountResource extends string,
@@ -303,16 +300,13 @@ export async function getDeprecatedSetReservationListInstruction<
     TAccountReservationList,
     TAccountResource
   >
-): Promise<
-  DeprecatedSetReservationListInstruction<
-    TProgram,
-    TAccountMasterEdition,
-    TAccountReservationList,
-    ReadonlySignerAccount<TAccountResource> &
-      IAccountSignerMeta<TAccountResource>
-  >
+): DeprecatedSetReservationListInstruction<
+  TProgram,
+  TAccountMasterEdition,
+  TAccountReservationList,
+  ReadonlySignerAccount<TAccountResource> & IAccountSignerMeta<TAccountResource>
 >;
-export async function getDeprecatedSetReservationListInstruction<
+export function getDeprecatedSetReservationListInstruction<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
   TAccountResource extends string,
@@ -323,16 +317,13 @@ export async function getDeprecatedSetReservationListInstruction<
     TAccountReservationList,
     TAccountResource
   >
-): Promise<
-  DeprecatedSetReservationListInstructionWithSigners<
-    TProgram,
-    TAccountMasterEdition,
-    TAccountReservationList,
-    ReadonlySignerAccount<TAccountResource> &
-      IAccountSignerMeta<TAccountResource>
-  >
+): DeprecatedSetReservationListInstructionWithSigners<
+  TProgram,
+  TAccountMasterEdition,
+  TAccountReservationList,
+  ReadonlySignerAccount<TAccountResource> & IAccountSignerMeta<TAccountResource>
 >;
-export async function getDeprecatedSetReservationListInstruction<
+export function getDeprecatedSetReservationListInstruction<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
   TAccountResource extends string,
@@ -343,16 +334,13 @@ export async function getDeprecatedSetReservationListInstruction<
     TAccountReservationList,
     TAccountResource
   >
-): Promise<
-  DeprecatedSetReservationListInstruction<
-    TProgram,
-    TAccountMasterEdition,
-    TAccountReservationList,
-    ReadonlySignerAccount<TAccountResource> &
-      IAccountSignerMeta<TAccountResource>
-  >
+): DeprecatedSetReservationListInstruction<
+  TProgram,
+  TAccountMasterEdition,
+  TAccountReservationList,
+  ReadonlySignerAccount<TAccountResource> & IAccountSignerMeta<TAccountResource>
 >;
-export async function getDeprecatedSetReservationListInstruction<
+export function getDeprecatedSetReservationListInstruction<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
   TAccountResource extends string,
@@ -370,7 +358,7 @@ export async function getDeprecatedSetReservationListInstruction<
     TAccountReservationList,
     TAccountResource
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -389,7 +377,7 @@ export async function getDeprecatedSetReservationListInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })

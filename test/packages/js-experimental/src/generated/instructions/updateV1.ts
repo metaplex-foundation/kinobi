@@ -692,7 +692,7 @@ export type UpdateV1AsyncInputWithSigners<
   authorityType: UpdateV1InstructionDataArgs['authorityType'];
 };
 
-export async function getUpdateV1Instruction<
+export function getUpdateV1Instruction<
   TAccountAuthority extends string,
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -718,23 +718,21 @@ export async function getUpdateV1Instruction<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  UpdateV1InstructionWithSigners<
-    TProgram,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountToken,
-    TAccountDelegateRecord,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
+): UpdateV1InstructionWithSigners<
+  TProgram,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountMint,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountToken,
+  TAccountDelegateRecord,
+  TAccountAuthorizationRulesProgram,
+  TAccountAuthorizationRules
 >;
-export async function getUpdateV1Instruction<
+export function getUpdateV1Instruction<
   TAccountAuthority extends string,
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -760,23 +758,21 @@ export async function getUpdateV1Instruction<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  UpdateV1Instruction<
-    TProgram,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountToken,
-    TAccountDelegateRecord,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
+): UpdateV1Instruction<
+  TProgram,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountMint,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountToken,
+  TAccountDelegateRecord,
+  TAccountAuthorizationRulesProgram,
+  TAccountAuthorizationRules
 >;
-export async function getUpdateV1Instruction<
+export function getUpdateV1Instruction<
   TAccountAuthority extends string,
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -801,23 +797,21 @@ export async function getUpdateV1Instruction<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  UpdateV1InstructionWithSigners<
-    TProgram,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountToken,
-    TAccountDelegateRecord,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
+): UpdateV1InstructionWithSigners<
+  TProgram,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountMint,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountToken,
+  TAccountDelegateRecord,
+  TAccountAuthorizationRulesProgram,
+  TAccountAuthorizationRules
 >;
-export async function getUpdateV1Instruction<
+export function getUpdateV1Instruction<
   TAccountAuthority extends string,
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -842,23 +836,21 @@ export async function getUpdateV1Instruction<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  UpdateV1Instruction<
-    TProgram,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountToken,
-    TAccountDelegateRecord,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
+): UpdateV1Instruction<
+  TProgram,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountMint,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountToken,
+  TAccountDelegateRecord,
+  TAccountAuthorizationRulesProgram,
+  TAccountAuthorizationRules
 >;
-export async function getUpdateV1Instruction<
+export function getUpdateV1Instruction<
   TAccountAuthority extends string,
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -897,7 +889,7 @@ export async function getUpdateV1Instruction<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -923,7 +915,7 @@ export async function getUpdateV1Instruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
@@ -973,7 +965,7 @@ export async function getUpdateV1Instruction<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'

@@ -362,7 +362,7 @@ export type CloseEscrowAccountAsyncInputWithSigners<
   sysvarInstructions?: Address<TAccountSysvarInstructions>;
 };
 
-export async function getCloseEscrowAccountInstruction<
+export function getCloseEscrowAccountInstruction<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -384,20 +384,18 @@ export async function getCloseEscrowAccountInstruction<
     TAccountSystemProgram,
     TAccountSysvarInstructions
   >
-): Promise<
-  CloseEscrowAccountInstructionWithSigners<
-    TProgram,
-    TAccountEscrow,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountEdition,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions
-  >
+): CloseEscrowAccountInstructionWithSigners<
+  TProgram,
+  TAccountEscrow,
+  TAccountMetadata,
+  TAccountMint,
+  TAccountTokenAccount,
+  TAccountEdition,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions
 >;
-export async function getCloseEscrowAccountInstruction<
+export function getCloseEscrowAccountInstruction<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -419,20 +417,18 @@ export async function getCloseEscrowAccountInstruction<
     TAccountSystemProgram,
     TAccountSysvarInstructions
   >
-): Promise<
-  CloseEscrowAccountInstruction<
-    TProgram,
-    TAccountEscrow,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountEdition,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions
-  >
+): CloseEscrowAccountInstruction<
+  TProgram,
+  TAccountEscrow,
+  TAccountMetadata,
+  TAccountMint,
+  TAccountTokenAccount,
+  TAccountEdition,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions
 >;
-export async function getCloseEscrowAccountInstruction<
+export function getCloseEscrowAccountInstruction<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -453,20 +449,18 @@ export async function getCloseEscrowAccountInstruction<
     TAccountSystemProgram,
     TAccountSysvarInstructions
   >
-): Promise<
-  CloseEscrowAccountInstructionWithSigners<
-    TProgram,
-    TAccountEscrow,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountEdition,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions
-  >
+): CloseEscrowAccountInstructionWithSigners<
+  TProgram,
+  TAccountEscrow,
+  TAccountMetadata,
+  TAccountMint,
+  TAccountTokenAccount,
+  TAccountEdition,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions
 >;
-export async function getCloseEscrowAccountInstruction<
+export function getCloseEscrowAccountInstruction<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -487,20 +481,18 @@ export async function getCloseEscrowAccountInstruction<
     TAccountSystemProgram,
     TAccountSysvarInstructions
   >
-): Promise<
-  CloseEscrowAccountInstruction<
-    TProgram,
-    TAccountEscrow,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountEdition,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions
-  >
+): CloseEscrowAccountInstruction<
+  TProgram,
+  TAccountEscrow,
+  TAccountMetadata,
+  TAccountMint,
+  TAccountTokenAccount,
+  TAccountEdition,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions
 >;
-export async function getCloseEscrowAccountInstruction<
+export function getCloseEscrowAccountInstruction<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -533,7 +525,7 @@ export async function getCloseEscrowAccountInstruction<
     TAccountSystemProgram,
     TAccountSysvarInstructions
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -557,7 +549,7 @@ export async function getCloseEscrowAccountInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
@@ -594,7 +586,7 @@ export async function getCloseEscrowAccountInstruction<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'

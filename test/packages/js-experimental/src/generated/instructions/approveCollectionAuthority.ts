@@ -375,7 +375,7 @@ export type ApproveCollectionAuthorityAsyncInputWithSigners<
   rent?: Address<TAccountRent>;
 };
 
-export async function getApproveCollectionAuthorityInstruction<
+export function getApproveCollectionAuthorityInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TAccountNewCollectionAuthority extends string,
   TAccountUpdateAuthority extends string,
@@ -397,21 +397,19 @@ export async function getApproveCollectionAuthorityInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  ApproveCollectionAuthorityInstructionWithSigners<
-    TProgram,
-    TAccountCollectionAuthorityRecord,
-    TAccountNewCollectionAuthority,
-    WritableSignerAccount<TAccountUpdateAuthority> &
-      IAccountSignerMeta<TAccountUpdateAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): ApproveCollectionAuthorityInstructionWithSigners<
+  TProgram,
+  TAccountCollectionAuthorityRecord,
+  TAccountNewCollectionAuthority,
+  WritableSignerAccount<TAccountUpdateAuthority> &
+    IAccountSignerMeta<TAccountUpdateAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountMetadata,
+  TAccountMint,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getApproveCollectionAuthorityInstruction<
+export function getApproveCollectionAuthorityInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TAccountNewCollectionAuthority extends string,
   TAccountUpdateAuthority extends string,
@@ -433,21 +431,19 @@ export async function getApproveCollectionAuthorityInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  ApproveCollectionAuthorityInstruction<
-    TProgram,
-    TAccountCollectionAuthorityRecord,
-    TAccountNewCollectionAuthority,
-    WritableSignerAccount<TAccountUpdateAuthority> &
-      IAccountSignerMeta<TAccountUpdateAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): ApproveCollectionAuthorityInstruction<
+  TProgram,
+  TAccountCollectionAuthorityRecord,
+  TAccountNewCollectionAuthority,
+  WritableSignerAccount<TAccountUpdateAuthority> &
+    IAccountSignerMeta<TAccountUpdateAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountMetadata,
+  TAccountMint,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getApproveCollectionAuthorityInstruction<
+export function getApproveCollectionAuthorityInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TAccountNewCollectionAuthority extends string,
   TAccountUpdateAuthority extends string,
@@ -468,21 +464,19 @@ export async function getApproveCollectionAuthorityInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  ApproveCollectionAuthorityInstructionWithSigners<
-    TProgram,
-    TAccountCollectionAuthorityRecord,
-    TAccountNewCollectionAuthority,
-    WritableSignerAccount<TAccountUpdateAuthority> &
-      IAccountSignerMeta<TAccountUpdateAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): ApproveCollectionAuthorityInstructionWithSigners<
+  TProgram,
+  TAccountCollectionAuthorityRecord,
+  TAccountNewCollectionAuthority,
+  WritableSignerAccount<TAccountUpdateAuthority> &
+    IAccountSignerMeta<TAccountUpdateAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountMetadata,
+  TAccountMint,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getApproveCollectionAuthorityInstruction<
+export function getApproveCollectionAuthorityInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TAccountNewCollectionAuthority extends string,
   TAccountUpdateAuthority extends string,
@@ -503,21 +497,19 @@ export async function getApproveCollectionAuthorityInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  ApproveCollectionAuthorityInstruction<
-    TProgram,
-    TAccountCollectionAuthorityRecord,
-    TAccountNewCollectionAuthority,
-    WritableSignerAccount<TAccountUpdateAuthority> &
-      IAccountSignerMeta<TAccountUpdateAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): ApproveCollectionAuthorityInstruction<
+  TProgram,
+  TAccountCollectionAuthorityRecord,
+  TAccountNewCollectionAuthority,
+  WritableSignerAccount<TAccountUpdateAuthority> &
+    IAccountSignerMeta<TAccountUpdateAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountMetadata,
+  TAccountMint,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getApproveCollectionAuthorityInstruction<
+export function getApproveCollectionAuthorityInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TAccountNewCollectionAuthority extends string,
   TAccountUpdateAuthority extends string,
@@ -550,7 +542,7 @@ export async function getApproveCollectionAuthorityInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -574,7 +566,7 @@ export async function getApproveCollectionAuthorityInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
@@ -614,7 +606,7 @@ export async function getApproveCollectionAuthorityInstruction<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'

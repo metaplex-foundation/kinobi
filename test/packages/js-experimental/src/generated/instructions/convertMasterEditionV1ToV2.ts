@@ -208,7 +208,7 @@ export type ConvertMasterEditionV1ToV2AsyncInputWithSigners<
   printingMint: Address<TAccountPrintingMint>;
 };
 
-export async function getConvertMasterEditionV1ToV2Instruction<
+export function getConvertMasterEditionV1ToV2Instruction<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
   TAccountPrintingMint extends string,
@@ -220,15 +220,13 @@ export async function getConvertMasterEditionV1ToV2Instruction<
     TAccountOneTimeAuth,
     TAccountPrintingMint
   >
-): Promise<
-  ConvertMasterEditionV1ToV2InstructionWithSigners<
-    TProgram,
-    TAccountMasterEdition,
-    TAccountOneTimeAuth,
-    TAccountPrintingMint
-  >
+): ConvertMasterEditionV1ToV2InstructionWithSigners<
+  TProgram,
+  TAccountMasterEdition,
+  TAccountOneTimeAuth,
+  TAccountPrintingMint
 >;
-export async function getConvertMasterEditionV1ToV2Instruction<
+export function getConvertMasterEditionV1ToV2Instruction<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
   TAccountPrintingMint extends string,
@@ -240,15 +238,13 @@ export async function getConvertMasterEditionV1ToV2Instruction<
     TAccountOneTimeAuth,
     TAccountPrintingMint
   >
-): Promise<
-  ConvertMasterEditionV1ToV2Instruction<
-    TProgram,
-    TAccountMasterEdition,
-    TAccountOneTimeAuth,
-    TAccountPrintingMint
-  >
+): ConvertMasterEditionV1ToV2Instruction<
+  TProgram,
+  TAccountMasterEdition,
+  TAccountOneTimeAuth,
+  TAccountPrintingMint
 >;
-export async function getConvertMasterEditionV1ToV2Instruction<
+export function getConvertMasterEditionV1ToV2Instruction<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
   TAccountPrintingMint extends string,
@@ -259,15 +255,13 @@ export async function getConvertMasterEditionV1ToV2Instruction<
     TAccountOneTimeAuth,
     TAccountPrintingMint
   >
-): Promise<
-  ConvertMasterEditionV1ToV2InstructionWithSigners<
-    TProgram,
-    TAccountMasterEdition,
-    TAccountOneTimeAuth,
-    TAccountPrintingMint
-  >
+): ConvertMasterEditionV1ToV2InstructionWithSigners<
+  TProgram,
+  TAccountMasterEdition,
+  TAccountOneTimeAuth,
+  TAccountPrintingMint
 >;
-export async function getConvertMasterEditionV1ToV2Instruction<
+export function getConvertMasterEditionV1ToV2Instruction<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
   TAccountPrintingMint extends string,
@@ -278,15 +272,13 @@ export async function getConvertMasterEditionV1ToV2Instruction<
     TAccountOneTimeAuth,
     TAccountPrintingMint
   >
-): Promise<
-  ConvertMasterEditionV1ToV2Instruction<
-    TProgram,
-    TAccountMasterEdition,
-    TAccountOneTimeAuth,
-    TAccountPrintingMint
-  >
+): ConvertMasterEditionV1ToV2Instruction<
+  TProgram,
+  TAccountMasterEdition,
+  TAccountOneTimeAuth,
+  TAccountPrintingMint
 >;
-export async function getConvertMasterEditionV1ToV2Instruction<
+export function getConvertMasterEditionV1ToV2Instruction<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
   TAccountPrintingMint extends string,
@@ -304,7 +296,7 @@ export async function getConvertMasterEditionV1ToV2Instruction<
     TAccountOneTimeAuth,
     TAccountPrintingMint
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -323,7 +315,7 @@ export async function getConvertMasterEditionV1ToV2Instruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })

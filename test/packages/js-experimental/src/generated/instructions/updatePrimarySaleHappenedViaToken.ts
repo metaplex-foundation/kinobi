@@ -214,7 +214,7 @@ export type UpdatePrimarySaleHappenedViaTokenAsyncInputWithSigners<
   token: Address<TAccountToken>;
 };
 
-export async function getUpdatePrimarySaleHappenedViaTokenInstruction<
+export function getUpdatePrimarySaleHappenedViaTokenInstruction<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountToken extends string,
@@ -226,15 +226,13 @@ export async function getUpdatePrimarySaleHappenedViaTokenInstruction<
     TAccountOwner,
     TAccountToken
   >
-): Promise<
-  UpdatePrimarySaleHappenedViaTokenInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-    TAccountToken
-  >
+): UpdatePrimarySaleHappenedViaTokenInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountToken
 >;
-export async function getUpdatePrimarySaleHappenedViaTokenInstruction<
+export function getUpdatePrimarySaleHappenedViaTokenInstruction<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountToken extends string,
@@ -246,15 +244,13 @@ export async function getUpdatePrimarySaleHappenedViaTokenInstruction<
     TAccountOwner,
     TAccountToken
   >
-): Promise<
-  UpdatePrimarySaleHappenedViaTokenInstruction<
-    TProgram,
-    TAccountMetadata,
-    ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-    TAccountToken
-  >
+): UpdatePrimarySaleHappenedViaTokenInstruction<
+  TProgram,
+  TAccountMetadata,
+  ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountToken
 >;
-export async function getUpdatePrimarySaleHappenedViaTokenInstruction<
+export function getUpdatePrimarySaleHappenedViaTokenInstruction<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountToken extends string,
@@ -265,15 +261,13 @@ export async function getUpdatePrimarySaleHappenedViaTokenInstruction<
     TAccountOwner,
     TAccountToken
   >
-): Promise<
-  UpdatePrimarySaleHappenedViaTokenInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-    TAccountToken
-  >
+): UpdatePrimarySaleHappenedViaTokenInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountToken
 >;
-export async function getUpdatePrimarySaleHappenedViaTokenInstruction<
+export function getUpdatePrimarySaleHappenedViaTokenInstruction<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountToken extends string,
@@ -284,15 +278,13 @@ export async function getUpdatePrimarySaleHappenedViaTokenInstruction<
     TAccountOwner,
     TAccountToken
   >
-): Promise<
-  UpdatePrimarySaleHappenedViaTokenInstruction<
-    TProgram,
-    TAccountMetadata,
-    ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-    TAccountToken
-  >
+): UpdatePrimarySaleHappenedViaTokenInstruction<
+  TProgram,
+  TAccountMetadata,
+  ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountToken
 >;
-export async function getUpdatePrimarySaleHappenedViaTokenInstruction<
+export function getUpdatePrimarySaleHappenedViaTokenInstruction<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountToken extends string,
@@ -310,7 +302,7 @@ export async function getUpdatePrimarySaleHappenedViaTokenInstruction<
     TAccountOwner,
     TAccountToken
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -329,7 +321,7 @@ export async function getUpdatePrimarySaleHappenedViaTokenInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })

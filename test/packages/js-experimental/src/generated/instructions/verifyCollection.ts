@@ -301,7 +301,7 @@ export type VerifyCollectionAsyncInputWithSigners<
   collectionMasterEditionAccount: Address<TAccountCollectionMasterEditionAccount>;
 };
 
-export async function getVerifyCollectionInstruction<
+export function getVerifyCollectionInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -319,19 +319,17 @@ export async function getVerifyCollectionInstruction<
     TAccountCollection,
     TAccountCollectionMasterEditionAccount
   >
-): Promise<
-  VerifyCollectionInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountCollectionAuthority> &
-      IAccountSignerMeta<TAccountCollectionAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount
-  >
+): VerifyCollectionInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountCollectionAuthority> &
+    IAccountSignerMeta<TAccountCollectionAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount
 >;
-export async function getVerifyCollectionInstruction<
+export function getVerifyCollectionInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -349,19 +347,17 @@ export async function getVerifyCollectionInstruction<
     TAccountCollection,
     TAccountCollectionMasterEditionAccount
   >
-): Promise<
-  VerifyCollectionInstruction<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountCollectionAuthority> &
-      IAccountSignerMeta<TAccountCollectionAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount
-  >
+): VerifyCollectionInstruction<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountCollectionAuthority> &
+    IAccountSignerMeta<TAccountCollectionAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount
 >;
-export async function getVerifyCollectionInstruction<
+export function getVerifyCollectionInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -378,19 +374,17 @@ export async function getVerifyCollectionInstruction<
     TAccountCollection,
     TAccountCollectionMasterEditionAccount
   >
-): Promise<
-  VerifyCollectionInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountCollectionAuthority> &
-      IAccountSignerMeta<TAccountCollectionAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount
-  >
+): VerifyCollectionInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountCollectionAuthority> &
+    IAccountSignerMeta<TAccountCollectionAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount
 >;
-export async function getVerifyCollectionInstruction<
+export function getVerifyCollectionInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -407,19 +401,17 @@ export async function getVerifyCollectionInstruction<
     TAccountCollection,
     TAccountCollectionMasterEditionAccount
   >
-): Promise<
-  VerifyCollectionInstruction<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountCollectionAuthority> &
-      IAccountSignerMeta<TAccountCollectionAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount
-  >
+): VerifyCollectionInstruction<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountCollectionAuthority> &
+    IAccountSignerMeta<TAccountCollectionAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount
 >;
-export async function getVerifyCollectionInstruction<
+export function getVerifyCollectionInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -446,7 +438,7 @@ export async function getVerifyCollectionInstruction<
     TAccountCollection,
     TAccountCollectionMasterEditionAccount
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -468,7 +460,7 @@ export async function getVerifyCollectionInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })

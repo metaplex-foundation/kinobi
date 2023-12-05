@@ -715,7 +715,7 @@ export type ValidateAsyncInputWithSigners<
   payload: ValidateInstructionDataArgs['payload'];
 };
 
-export async function getValidateInstruction<
+export function getValidateInstruction<
   TAccountPayer extends string,
   TAccountRuleSet extends string,
   TAccountSystemProgram extends string,
@@ -747,32 +747,30 @@ export async function getValidateInstruction<
     TAccountOptRuleNonsigner4,
     TAccountOptRuleNonsigner5
   >
-): Promise<
-  ValidateInstructionWithSigners<
-    TProgram,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountRuleSet,
-    TAccountSystemProgram,
-    typeof input['optRuleSigner1'] extends TransactionSigner<TAccountOptRuleSigner1>
-      ? ReadonlySignerAccount<TAccountOptRuleSigner1> &
-          IAccountSignerMeta<TAccountOptRuleSigner1>
-      : TAccountOptRuleSigner1,
-    ReadonlySignerAccount<TAccountOptRuleSigner2> &
-      IAccountSignerMeta<TAccountOptRuleSigner2>,
-    ReadonlySignerAccount<TAccountOptRuleSigner3> &
-      IAccountSignerMeta<TAccountOptRuleSigner3>,
-    ReadonlySignerAccount<TAccountOptRuleSigner4> &
-      IAccountSignerMeta<TAccountOptRuleSigner4>,
-    ReadonlySignerAccount<TAccountOptRuleSigner5> &
-      IAccountSignerMeta<TAccountOptRuleSigner5>,
-    TAccountOptRuleNonsigner1,
-    TAccountOptRuleNonsigner2,
-    TAccountOptRuleNonsigner3,
-    TAccountOptRuleNonsigner4,
-    TAccountOptRuleNonsigner5
-  >
+): ValidateInstructionWithSigners<
+  TProgram,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountRuleSet,
+  TAccountSystemProgram,
+  typeof input['optRuleSigner1'] extends TransactionSigner<TAccountOptRuleSigner1>
+    ? ReadonlySignerAccount<TAccountOptRuleSigner1> &
+        IAccountSignerMeta<TAccountOptRuleSigner1>
+    : TAccountOptRuleSigner1,
+  ReadonlySignerAccount<TAccountOptRuleSigner2> &
+    IAccountSignerMeta<TAccountOptRuleSigner2>,
+  ReadonlySignerAccount<TAccountOptRuleSigner3> &
+    IAccountSignerMeta<TAccountOptRuleSigner3>,
+  ReadonlySignerAccount<TAccountOptRuleSigner4> &
+    IAccountSignerMeta<TAccountOptRuleSigner4>,
+  ReadonlySignerAccount<TAccountOptRuleSigner5> &
+    IAccountSignerMeta<TAccountOptRuleSigner5>,
+  TAccountOptRuleNonsigner1,
+  TAccountOptRuleNonsigner2,
+  TAccountOptRuleNonsigner3,
+  TAccountOptRuleNonsigner4,
+  TAccountOptRuleNonsigner5
 >;
-export async function getValidateInstruction<
+export function getValidateInstruction<
   TAccountPayer extends string,
   TAccountRuleSet extends string,
   TAccountSystemProgram extends string,
@@ -804,32 +802,30 @@ export async function getValidateInstruction<
     TAccountOptRuleNonsigner4,
     TAccountOptRuleNonsigner5
   >
-): Promise<
-  ValidateInstruction<
-    TProgram,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountRuleSet,
-    TAccountSystemProgram,
-    typeof input['optRuleSigner1'] extends TransactionSigner<TAccountOptRuleSigner1>
-      ? ReadonlySignerAccount<TAccountOptRuleSigner1> &
-          IAccountSignerMeta<TAccountOptRuleSigner1>
-      : TAccountOptRuleSigner1,
-    ReadonlySignerAccount<TAccountOptRuleSigner2> &
-      IAccountSignerMeta<TAccountOptRuleSigner2>,
-    ReadonlySignerAccount<TAccountOptRuleSigner3> &
-      IAccountSignerMeta<TAccountOptRuleSigner3>,
-    ReadonlySignerAccount<TAccountOptRuleSigner4> &
-      IAccountSignerMeta<TAccountOptRuleSigner4>,
-    ReadonlySignerAccount<TAccountOptRuleSigner5> &
-      IAccountSignerMeta<TAccountOptRuleSigner5>,
-    TAccountOptRuleNonsigner1,
-    TAccountOptRuleNonsigner2,
-    TAccountOptRuleNonsigner3,
-    TAccountOptRuleNonsigner4,
-    TAccountOptRuleNonsigner5
-  >
+): ValidateInstruction<
+  TProgram,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountRuleSet,
+  TAccountSystemProgram,
+  typeof input['optRuleSigner1'] extends TransactionSigner<TAccountOptRuleSigner1>
+    ? ReadonlySignerAccount<TAccountOptRuleSigner1> &
+        IAccountSignerMeta<TAccountOptRuleSigner1>
+    : TAccountOptRuleSigner1,
+  ReadonlySignerAccount<TAccountOptRuleSigner2> &
+    IAccountSignerMeta<TAccountOptRuleSigner2>,
+  ReadonlySignerAccount<TAccountOptRuleSigner3> &
+    IAccountSignerMeta<TAccountOptRuleSigner3>,
+  ReadonlySignerAccount<TAccountOptRuleSigner4> &
+    IAccountSignerMeta<TAccountOptRuleSigner4>,
+  ReadonlySignerAccount<TAccountOptRuleSigner5> &
+    IAccountSignerMeta<TAccountOptRuleSigner5>,
+  TAccountOptRuleNonsigner1,
+  TAccountOptRuleNonsigner2,
+  TAccountOptRuleNonsigner3,
+  TAccountOptRuleNonsigner4,
+  TAccountOptRuleNonsigner5
 >;
-export async function getValidateInstruction<
+export function getValidateInstruction<
   TAccountPayer extends string,
   TAccountRuleSet extends string,
   TAccountSystemProgram extends string,
@@ -860,32 +856,30 @@ export async function getValidateInstruction<
     TAccountOptRuleNonsigner4,
     TAccountOptRuleNonsigner5
   >
-): Promise<
-  ValidateInstructionWithSigners<
-    TProgram,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountRuleSet,
-    TAccountSystemProgram,
-    typeof input['optRuleSigner1'] extends TransactionSigner<TAccountOptRuleSigner1>
-      ? ReadonlySignerAccount<TAccountOptRuleSigner1> &
-          IAccountSignerMeta<TAccountOptRuleSigner1>
-      : TAccountOptRuleSigner1,
-    ReadonlySignerAccount<TAccountOptRuleSigner2> &
-      IAccountSignerMeta<TAccountOptRuleSigner2>,
-    ReadonlySignerAccount<TAccountOptRuleSigner3> &
-      IAccountSignerMeta<TAccountOptRuleSigner3>,
-    ReadonlySignerAccount<TAccountOptRuleSigner4> &
-      IAccountSignerMeta<TAccountOptRuleSigner4>,
-    ReadonlySignerAccount<TAccountOptRuleSigner5> &
-      IAccountSignerMeta<TAccountOptRuleSigner5>,
-    TAccountOptRuleNonsigner1,
-    TAccountOptRuleNonsigner2,
-    TAccountOptRuleNonsigner3,
-    TAccountOptRuleNonsigner4,
-    TAccountOptRuleNonsigner5
-  >
+): ValidateInstructionWithSigners<
+  TProgram,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountRuleSet,
+  TAccountSystemProgram,
+  typeof input['optRuleSigner1'] extends TransactionSigner<TAccountOptRuleSigner1>
+    ? ReadonlySignerAccount<TAccountOptRuleSigner1> &
+        IAccountSignerMeta<TAccountOptRuleSigner1>
+    : TAccountOptRuleSigner1,
+  ReadonlySignerAccount<TAccountOptRuleSigner2> &
+    IAccountSignerMeta<TAccountOptRuleSigner2>,
+  ReadonlySignerAccount<TAccountOptRuleSigner3> &
+    IAccountSignerMeta<TAccountOptRuleSigner3>,
+  ReadonlySignerAccount<TAccountOptRuleSigner4> &
+    IAccountSignerMeta<TAccountOptRuleSigner4>,
+  ReadonlySignerAccount<TAccountOptRuleSigner5> &
+    IAccountSignerMeta<TAccountOptRuleSigner5>,
+  TAccountOptRuleNonsigner1,
+  TAccountOptRuleNonsigner2,
+  TAccountOptRuleNonsigner3,
+  TAccountOptRuleNonsigner4,
+  TAccountOptRuleNonsigner5
 >;
-export async function getValidateInstruction<
+export function getValidateInstruction<
   TAccountPayer extends string,
   TAccountRuleSet extends string,
   TAccountSystemProgram extends string,
@@ -916,32 +910,30 @@ export async function getValidateInstruction<
     TAccountOptRuleNonsigner4,
     TAccountOptRuleNonsigner5
   >
-): Promise<
-  ValidateInstruction<
-    TProgram,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountRuleSet,
-    TAccountSystemProgram,
-    typeof input['optRuleSigner1'] extends TransactionSigner<TAccountOptRuleSigner1>
-      ? ReadonlySignerAccount<TAccountOptRuleSigner1> &
-          IAccountSignerMeta<TAccountOptRuleSigner1>
-      : TAccountOptRuleSigner1,
-    ReadonlySignerAccount<TAccountOptRuleSigner2> &
-      IAccountSignerMeta<TAccountOptRuleSigner2>,
-    ReadonlySignerAccount<TAccountOptRuleSigner3> &
-      IAccountSignerMeta<TAccountOptRuleSigner3>,
-    ReadonlySignerAccount<TAccountOptRuleSigner4> &
-      IAccountSignerMeta<TAccountOptRuleSigner4>,
-    ReadonlySignerAccount<TAccountOptRuleSigner5> &
-      IAccountSignerMeta<TAccountOptRuleSigner5>,
-    TAccountOptRuleNonsigner1,
-    TAccountOptRuleNonsigner2,
-    TAccountOptRuleNonsigner3,
-    TAccountOptRuleNonsigner4,
-    TAccountOptRuleNonsigner5
-  >
+): ValidateInstruction<
+  TProgram,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountRuleSet,
+  TAccountSystemProgram,
+  typeof input['optRuleSigner1'] extends TransactionSigner<TAccountOptRuleSigner1>
+    ? ReadonlySignerAccount<TAccountOptRuleSigner1> &
+        IAccountSignerMeta<TAccountOptRuleSigner1>
+    : TAccountOptRuleSigner1,
+  ReadonlySignerAccount<TAccountOptRuleSigner2> &
+    IAccountSignerMeta<TAccountOptRuleSigner2>,
+  ReadonlySignerAccount<TAccountOptRuleSigner3> &
+    IAccountSignerMeta<TAccountOptRuleSigner3>,
+  ReadonlySignerAccount<TAccountOptRuleSigner4> &
+    IAccountSignerMeta<TAccountOptRuleSigner4>,
+  ReadonlySignerAccount<TAccountOptRuleSigner5> &
+    IAccountSignerMeta<TAccountOptRuleSigner5>,
+  TAccountOptRuleNonsigner1,
+  TAccountOptRuleNonsigner2,
+  TAccountOptRuleNonsigner3,
+  TAccountOptRuleNonsigner4,
+  TAccountOptRuleNonsigner5
 >;
-export async function getValidateInstruction<
+export function getValidateInstruction<
   TAccountPayer extends string,
   TAccountRuleSet extends string,
   TAccountSystemProgram extends string,
@@ -989,7 +981,7 @@ export async function getValidateInstruction<
     TAccountOptRuleNonsigner4,
     TAccountOptRuleNonsigner5
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -1018,7 +1010,7 @@ export async function getValidateInstruction<
     'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenAuthRules',
           address: defaultProgramAddress,
         })
@@ -1080,7 +1072,7 @@ export async function getValidateInstruction<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'

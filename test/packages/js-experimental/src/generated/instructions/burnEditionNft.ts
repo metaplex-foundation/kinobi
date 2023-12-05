@@ -433,7 +433,7 @@ export type BurnEditionNftAsyncInputWithSigners<
   splTokenProgram?: Address<TAccountSplTokenProgram>;
 };
 
-export async function getBurnEditionNftInstruction<
+export function getBurnEditionNftInstruction<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountPrintEditionMint extends string,
@@ -459,22 +459,20 @@ export async function getBurnEditionNftInstruction<
     TAccountEditionMarkerAccount,
     TAccountSplTokenProgram
   >
-): Promise<
-  BurnEditionNftInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-    TAccountPrintEditionMint,
-    TAccountMasterEditionMint,
-    TAccountPrintEditionTokenAccount,
-    TAccountMasterEditionTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountPrintEditionAccount,
-    TAccountEditionMarkerAccount,
-    TAccountSplTokenProgram
-  >
+): BurnEditionNftInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountPrintEditionMint,
+  TAccountMasterEditionMint,
+  TAccountPrintEditionTokenAccount,
+  TAccountMasterEditionTokenAccount,
+  TAccountMasterEditionAccount,
+  TAccountPrintEditionAccount,
+  TAccountEditionMarkerAccount,
+  TAccountSplTokenProgram
 >;
-export async function getBurnEditionNftInstruction<
+export function getBurnEditionNftInstruction<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountPrintEditionMint extends string,
@@ -500,22 +498,20 @@ export async function getBurnEditionNftInstruction<
     TAccountEditionMarkerAccount,
     TAccountSplTokenProgram
   >
-): Promise<
-  BurnEditionNftInstruction<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-    TAccountPrintEditionMint,
-    TAccountMasterEditionMint,
-    TAccountPrintEditionTokenAccount,
-    TAccountMasterEditionTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountPrintEditionAccount,
-    TAccountEditionMarkerAccount,
-    TAccountSplTokenProgram
-  >
+): BurnEditionNftInstruction<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountPrintEditionMint,
+  TAccountMasterEditionMint,
+  TAccountPrintEditionTokenAccount,
+  TAccountMasterEditionTokenAccount,
+  TAccountMasterEditionAccount,
+  TAccountPrintEditionAccount,
+  TAccountEditionMarkerAccount,
+  TAccountSplTokenProgram
 >;
-export async function getBurnEditionNftInstruction<
+export function getBurnEditionNftInstruction<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountPrintEditionMint extends string,
@@ -540,22 +536,20 @@ export async function getBurnEditionNftInstruction<
     TAccountEditionMarkerAccount,
     TAccountSplTokenProgram
   >
-): Promise<
-  BurnEditionNftInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-    TAccountPrintEditionMint,
-    TAccountMasterEditionMint,
-    TAccountPrintEditionTokenAccount,
-    TAccountMasterEditionTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountPrintEditionAccount,
-    TAccountEditionMarkerAccount,
-    TAccountSplTokenProgram
-  >
+): BurnEditionNftInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountPrintEditionMint,
+  TAccountMasterEditionMint,
+  TAccountPrintEditionTokenAccount,
+  TAccountMasterEditionTokenAccount,
+  TAccountMasterEditionAccount,
+  TAccountPrintEditionAccount,
+  TAccountEditionMarkerAccount,
+  TAccountSplTokenProgram
 >;
-export async function getBurnEditionNftInstruction<
+export function getBurnEditionNftInstruction<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountPrintEditionMint extends string,
@@ -580,22 +574,20 @@ export async function getBurnEditionNftInstruction<
     TAccountEditionMarkerAccount,
     TAccountSplTokenProgram
   >
-): Promise<
-  BurnEditionNftInstruction<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-    TAccountPrintEditionMint,
-    TAccountMasterEditionMint,
-    TAccountPrintEditionTokenAccount,
-    TAccountMasterEditionTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountPrintEditionAccount,
-    TAccountEditionMarkerAccount,
-    TAccountSplTokenProgram
-  >
+): BurnEditionNftInstruction<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountPrintEditionMint,
+  TAccountMasterEditionMint,
+  TAccountPrintEditionTokenAccount,
+  TAccountMasterEditionTokenAccount,
+  TAccountMasterEditionAccount,
+  TAccountPrintEditionAccount,
+  TAccountEditionMarkerAccount,
+  TAccountSplTokenProgram
 >;
-export async function getBurnEditionNftInstruction<
+export function getBurnEditionNftInstruction<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountPrintEditionMint extends string,
@@ -634,7 +626,7 @@ export async function getBurnEditionNftInstruction<
     TAccountEditionMarkerAccount,
     TAccountSplTokenProgram
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -660,7 +652,7 @@ export async function getBurnEditionNftInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
@@ -722,7 +714,7 @@ export async function getBurnEditionNftInstruction<
 
   // Resolve default values.
   if (!accounts.splTokenProgram.value) {
-    accounts.splTokenProgram.value = await getProgramAddress(
+    accounts.splTokenProgram.value = getProgramAddress(
       context,
       'splToken',
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'

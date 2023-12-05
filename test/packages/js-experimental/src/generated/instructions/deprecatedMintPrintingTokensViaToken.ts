@@ -428,7 +428,7 @@ export type DeprecatedMintPrintingTokensViaTokenAsyncInputWithSigners<
   mintPrintingTokensViaTokenArgs: DeprecatedMintPrintingTokensViaTokenInstructionDataArgs['mintPrintingTokensViaTokenArgs'];
 };
 
-export async function getDeprecatedMintPrintingTokensViaTokenInstruction<
+export function getDeprecatedMintPrintingTokensViaTokenInstruction<
   TAccountDestination extends string,
   TAccountToken extends string,
   TAccountOneTimePrintingAuthorizationMint extends string,
@@ -452,22 +452,20 @@ export async function getDeprecatedMintPrintingTokensViaTokenInstruction<
     TAccountTokenProgram,
     TAccountRent
   >
-): Promise<
-  DeprecatedMintPrintingTokensViaTokenInstructionWithSigners<
-    TProgram,
-    TAccountDestination,
-    TAccountToken,
-    TAccountOneTimePrintingAuthorizationMint,
-    TAccountPrintingMint,
-    ReadonlySignerAccount<TAccountBurnAuthority> &
-      IAccountSignerMeta<TAccountBurnAuthority>,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountTokenProgram,
-    TAccountRent
-  >
+): DeprecatedMintPrintingTokensViaTokenInstructionWithSigners<
+  TProgram,
+  TAccountDestination,
+  TAccountToken,
+  TAccountOneTimePrintingAuthorizationMint,
+  TAccountPrintingMint,
+  ReadonlySignerAccount<TAccountBurnAuthority> &
+    IAccountSignerMeta<TAccountBurnAuthority>,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountTokenProgram,
+  TAccountRent
 >;
-export async function getDeprecatedMintPrintingTokensViaTokenInstruction<
+export function getDeprecatedMintPrintingTokensViaTokenInstruction<
   TAccountDestination extends string,
   TAccountToken extends string,
   TAccountOneTimePrintingAuthorizationMint extends string,
@@ -491,22 +489,20 @@ export async function getDeprecatedMintPrintingTokensViaTokenInstruction<
     TAccountTokenProgram,
     TAccountRent
   >
-): Promise<
-  DeprecatedMintPrintingTokensViaTokenInstruction<
-    TProgram,
-    TAccountDestination,
-    TAccountToken,
-    TAccountOneTimePrintingAuthorizationMint,
-    TAccountPrintingMint,
-    ReadonlySignerAccount<TAccountBurnAuthority> &
-      IAccountSignerMeta<TAccountBurnAuthority>,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountTokenProgram,
-    TAccountRent
-  >
+): DeprecatedMintPrintingTokensViaTokenInstruction<
+  TProgram,
+  TAccountDestination,
+  TAccountToken,
+  TAccountOneTimePrintingAuthorizationMint,
+  TAccountPrintingMint,
+  ReadonlySignerAccount<TAccountBurnAuthority> &
+    IAccountSignerMeta<TAccountBurnAuthority>,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountTokenProgram,
+  TAccountRent
 >;
-export async function getDeprecatedMintPrintingTokensViaTokenInstruction<
+export function getDeprecatedMintPrintingTokensViaTokenInstruction<
   TAccountDestination extends string,
   TAccountToken extends string,
   TAccountOneTimePrintingAuthorizationMint extends string,
@@ -529,22 +525,20 @@ export async function getDeprecatedMintPrintingTokensViaTokenInstruction<
     TAccountTokenProgram,
     TAccountRent
   >
-): Promise<
-  DeprecatedMintPrintingTokensViaTokenInstructionWithSigners<
-    TProgram,
-    TAccountDestination,
-    TAccountToken,
-    TAccountOneTimePrintingAuthorizationMint,
-    TAccountPrintingMint,
-    ReadonlySignerAccount<TAccountBurnAuthority> &
-      IAccountSignerMeta<TAccountBurnAuthority>,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountTokenProgram,
-    TAccountRent
-  >
+): DeprecatedMintPrintingTokensViaTokenInstructionWithSigners<
+  TProgram,
+  TAccountDestination,
+  TAccountToken,
+  TAccountOneTimePrintingAuthorizationMint,
+  TAccountPrintingMint,
+  ReadonlySignerAccount<TAccountBurnAuthority> &
+    IAccountSignerMeta<TAccountBurnAuthority>,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountTokenProgram,
+  TAccountRent
 >;
-export async function getDeprecatedMintPrintingTokensViaTokenInstruction<
+export function getDeprecatedMintPrintingTokensViaTokenInstruction<
   TAccountDestination extends string,
   TAccountToken extends string,
   TAccountOneTimePrintingAuthorizationMint extends string,
@@ -567,22 +561,20 @@ export async function getDeprecatedMintPrintingTokensViaTokenInstruction<
     TAccountTokenProgram,
     TAccountRent
   >
-): Promise<
-  DeprecatedMintPrintingTokensViaTokenInstruction<
-    TProgram,
-    TAccountDestination,
-    TAccountToken,
-    TAccountOneTimePrintingAuthorizationMint,
-    TAccountPrintingMint,
-    ReadonlySignerAccount<TAccountBurnAuthority> &
-      IAccountSignerMeta<TAccountBurnAuthority>,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountTokenProgram,
-    TAccountRent
-  >
+): DeprecatedMintPrintingTokensViaTokenInstruction<
+  TProgram,
+  TAccountDestination,
+  TAccountToken,
+  TAccountOneTimePrintingAuthorizationMint,
+  TAccountPrintingMint,
+  ReadonlySignerAccount<TAccountBurnAuthority> &
+    IAccountSignerMeta<TAccountBurnAuthority>,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountTokenProgram,
+  TAccountRent
 >;
-export async function getDeprecatedMintPrintingTokensViaTokenInstruction<
+export function getDeprecatedMintPrintingTokensViaTokenInstruction<
   TAccountDestination extends string,
   TAccountToken extends string,
   TAccountOneTimePrintingAuthorizationMint extends string,
@@ -618,7 +610,7 @@ export async function getDeprecatedMintPrintingTokensViaTokenInstruction<
     TAccountTokenProgram,
     TAccountRent
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -643,7 +635,7 @@ export async function getDeprecatedMintPrintingTokensViaTokenInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
@@ -685,7 +677,7 @@ export async function getDeprecatedMintPrintingTokensViaTokenInstruction<
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value = await getProgramAddress(
+    accounts.tokenProgram.value = getProgramAddress(
       context,
       'splToken',
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'

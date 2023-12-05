@@ -1,8 +1,8 @@
-export async function {{ functionName }}<{{ typeParams }}>(context: {{ context }}, input: {{ inputTypeWithSigners }}): Promise<{{ instructionTypeWithSigners }}>;
-export async function {{ functionName }}<{{ typeParams }}>(context: {{ context }}, input: {{ inputType }}): Promise<{{ instructionType }}>;
-export async function {{ functionName }}<{{ typeParams }}>(input: {{ inputTypeWithSigners }}): Promise<{{ instructionTypeWithSigners }}>;
-export async function {{ functionName }}<{{ typeParams }}>(input: {{ inputType }}): Promise<{{ instructionType }}>;
-export async function {{ functionName }}<{{ typeParams }}>(rawContext: {{ context }} | {{ inputType }}, rawInput?: {{ inputType }}): Promise<IInstruction> {
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParams }}>(context: {{ context }}, input: {{ inputTypeWithSigners }}): {{ wrapInPromiseIfAsync(instructionTypeWithSigners) }};
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParams }}>(context: {{ context }}, input: {{ inputType }}): {{ wrapInPromiseIfAsync(instructionType) }};
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParams }}>(input: {{ inputTypeWithSigners }}): {{ wrapInPromiseIfAsync(instructionTypeWithSigners) }};
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParams }}>(input: {{ inputType }}): {{ wrapInPromiseIfAsync(instructionType) }};
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParams }}>(rawContext: {{ context }} | {{ inputType }}, rawInput?: {{ inputType }}): {{ wrapInPromiseIfAsync('IInstruction') }} {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as {{ context }};
   const input = (rawInput === undefined ? rawContext : rawInput) as {{ inputType }};
@@ -11,7 +11,7 @@ export async function {{ functionName }}<{{ typeParams }}>(rawContext: {{ contex
   const defaultProgramAddress = "{{ program.publicKey }}" as Address<"{{ program.publicKey }}">;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({ name: "{{ program.name }}", address: defaultProgramAddress })
+      ? context.getProgramAddress({ name: "{{ program.name }}", address: defaultProgramAddress })
       : defaultProgramAddress
   ) as Address<TProgram>;
 

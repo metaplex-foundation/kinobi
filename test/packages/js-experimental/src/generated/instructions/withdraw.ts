@@ -180,65 +180,57 @@ export type WithdrawAsyncInputWithSigners<
   authority?: TransactionSigner<TAccountAuthority>;
 };
 
-export async function getWithdrawInstruction<
+export function getWithdrawInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: WithdrawInputWithSigners<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  WithdrawInstructionWithSigners<
-    TProgram,
-    TAccountCandyMachine,
-    WritableSignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>
-  >
+): WithdrawInstructionWithSigners<
+  TProgram,
+  TAccountCandyMachine,
+  WritableSignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>
 >;
-export async function getWithdrawInstruction<
+export function getWithdrawInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  WithdrawInstruction<
-    TProgram,
-    TAccountCandyMachine,
-    WritableSignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>
-  >
+): WithdrawInstruction<
+  TProgram,
+  TAccountCandyMachine,
+  WritableSignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>
 >;
-export async function getWithdrawInstruction<
+export function getWithdrawInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   input: WithdrawInputWithSigners<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  WithdrawInstructionWithSigners<
-    TProgram,
-    TAccountCandyMachine,
-    WritableSignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>
-  >
+): WithdrawInstructionWithSigners<
+  TProgram,
+  TAccountCandyMachine,
+  WritableSignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>
 >;
-export async function getWithdrawInstruction<
+export function getWithdrawInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   input: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  WithdrawInstruction<
-    TProgram,
-    TAccountCandyMachine,
-    WritableSignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>
-  >
+): WithdrawInstruction<
+  TProgram,
+  TAccountCandyMachine,
+  WritableSignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>
 >;
-export async function getWithdrawInstruction<
+export function getWithdrawInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
@@ -247,7 +239,7 @@ export async function getWithdrawInstruction<
     | Pick<Context, 'getProgramAddress'>
     | WithdrawInput<TAccountCandyMachine, TAccountAuthority>,
   rawInput?: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -262,7 +254,7 @@ export async function getWithdrawInstruction<
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplCandyMachineCore',
           address: defaultProgramAddress,
         })

@@ -464,7 +464,7 @@ export type ApproveUseAuthorityAsyncInputWithSigners<
   numberOfUses: ApproveUseAuthorityInstructionDataArgs['numberOfUses'];
 };
 
-export async function getApproveUseAuthorityInstruction<
+export function getApproveUseAuthorityInstruction<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountPayer extends string,
@@ -492,23 +492,21 @@ export async function getApproveUseAuthorityInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  ApproveUseAuthorityInstructionWithSigners<
-    TProgram,
-    TAccountUseAuthorityRecord,
-    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUser,
-    TAccountOwnerTokenAccount,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountBurner,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): ApproveUseAuthorityInstructionWithSigners<
+  TProgram,
+  TAccountUseAuthorityRecord,
+  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUser,
+  TAccountOwnerTokenAccount,
+  TAccountMetadata,
+  TAccountMint,
+  TAccountBurner,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getApproveUseAuthorityInstruction<
+export function getApproveUseAuthorityInstruction<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountPayer extends string,
@@ -536,23 +534,21 @@ export async function getApproveUseAuthorityInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  ApproveUseAuthorityInstruction<
-    TProgram,
-    TAccountUseAuthorityRecord,
-    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUser,
-    TAccountOwnerTokenAccount,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountBurner,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): ApproveUseAuthorityInstruction<
+  TProgram,
+  TAccountUseAuthorityRecord,
+  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUser,
+  TAccountOwnerTokenAccount,
+  TAccountMetadata,
+  TAccountMint,
+  TAccountBurner,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getApproveUseAuthorityInstruction<
+export function getApproveUseAuthorityInstruction<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountPayer extends string,
@@ -579,23 +575,21 @@ export async function getApproveUseAuthorityInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  ApproveUseAuthorityInstructionWithSigners<
-    TProgram,
-    TAccountUseAuthorityRecord,
-    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUser,
-    TAccountOwnerTokenAccount,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountBurner,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): ApproveUseAuthorityInstructionWithSigners<
+  TProgram,
+  TAccountUseAuthorityRecord,
+  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUser,
+  TAccountOwnerTokenAccount,
+  TAccountMetadata,
+  TAccountMint,
+  TAccountBurner,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getApproveUseAuthorityInstruction<
+export function getApproveUseAuthorityInstruction<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountPayer extends string,
@@ -622,23 +616,21 @@ export async function getApproveUseAuthorityInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  ApproveUseAuthorityInstruction<
-    TProgram,
-    TAccountUseAuthorityRecord,
-    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUser,
-    TAccountOwnerTokenAccount,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountBurner,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): ApproveUseAuthorityInstruction<
+  TProgram,
+  TAccountUseAuthorityRecord,
+  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUser,
+  TAccountOwnerTokenAccount,
+  TAccountMetadata,
+  TAccountMint,
+  TAccountBurner,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getApproveUseAuthorityInstruction<
+export function getApproveUseAuthorityInstruction<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountPayer extends string,
@@ -680,7 +672,7 @@ export async function getApproveUseAuthorityInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -707,7 +699,7 @@ export async function getApproveUseAuthorityInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
@@ -756,7 +748,7 @@ export async function getApproveUseAuthorityInstruction<
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value = await getProgramAddress(
+    accounts.tokenProgram.value = getProgramAddress(
       context,
       'splToken',
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
@@ -764,7 +756,7 @@ export async function getApproveUseAuthorityInstruction<
     accounts.tokenProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'

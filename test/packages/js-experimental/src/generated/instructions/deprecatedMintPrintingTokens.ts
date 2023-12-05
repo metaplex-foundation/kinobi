@@ -365,7 +365,7 @@ export type DeprecatedMintPrintingTokensAsyncInputWithSigners<
   mintPrintingTokensViaTokenArgs: DeprecatedMintPrintingTokensInstructionDataArgs['mintPrintingTokensViaTokenArgs'];
 };
 
-export async function getDeprecatedMintPrintingTokensInstruction<
+export function getDeprecatedMintPrintingTokensInstruction<
   TAccountDestination extends string,
   TAccountPrintingMint extends string,
   TAccountUpdateAuthority extends string,
@@ -385,20 +385,18 @@ export async function getDeprecatedMintPrintingTokensInstruction<
     TAccountTokenProgram,
     TAccountRent
   >
-): Promise<
-  DeprecatedMintPrintingTokensInstructionWithSigners<
-    TProgram,
-    TAccountDestination,
-    TAccountPrintingMint,
-    ReadonlySignerAccount<TAccountUpdateAuthority> &
-      IAccountSignerMeta<TAccountUpdateAuthority>,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountTokenProgram,
-    TAccountRent
-  >
+): DeprecatedMintPrintingTokensInstructionWithSigners<
+  TProgram,
+  TAccountDestination,
+  TAccountPrintingMint,
+  ReadonlySignerAccount<TAccountUpdateAuthority> &
+    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountTokenProgram,
+  TAccountRent
 >;
-export async function getDeprecatedMintPrintingTokensInstruction<
+export function getDeprecatedMintPrintingTokensInstruction<
   TAccountDestination extends string,
   TAccountPrintingMint extends string,
   TAccountUpdateAuthority extends string,
@@ -418,20 +416,18 @@ export async function getDeprecatedMintPrintingTokensInstruction<
     TAccountTokenProgram,
     TAccountRent
   >
-): Promise<
-  DeprecatedMintPrintingTokensInstruction<
-    TProgram,
-    TAccountDestination,
-    TAccountPrintingMint,
-    ReadonlySignerAccount<TAccountUpdateAuthority> &
-      IAccountSignerMeta<TAccountUpdateAuthority>,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountTokenProgram,
-    TAccountRent
-  >
+): DeprecatedMintPrintingTokensInstruction<
+  TProgram,
+  TAccountDestination,
+  TAccountPrintingMint,
+  ReadonlySignerAccount<TAccountUpdateAuthority> &
+    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountTokenProgram,
+  TAccountRent
 >;
-export async function getDeprecatedMintPrintingTokensInstruction<
+export function getDeprecatedMintPrintingTokensInstruction<
   TAccountDestination extends string,
   TAccountPrintingMint extends string,
   TAccountUpdateAuthority extends string,
@@ -450,20 +446,18 @@ export async function getDeprecatedMintPrintingTokensInstruction<
     TAccountTokenProgram,
     TAccountRent
   >
-): Promise<
-  DeprecatedMintPrintingTokensInstructionWithSigners<
-    TProgram,
-    TAccountDestination,
-    TAccountPrintingMint,
-    ReadonlySignerAccount<TAccountUpdateAuthority> &
-      IAccountSignerMeta<TAccountUpdateAuthority>,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountTokenProgram,
-    TAccountRent
-  >
+): DeprecatedMintPrintingTokensInstructionWithSigners<
+  TProgram,
+  TAccountDestination,
+  TAccountPrintingMint,
+  ReadonlySignerAccount<TAccountUpdateAuthority> &
+    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountTokenProgram,
+  TAccountRent
 >;
-export async function getDeprecatedMintPrintingTokensInstruction<
+export function getDeprecatedMintPrintingTokensInstruction<
   TAccountDestination extends string,
   TAccountPrintingMint extends string,
   TAccountUpdateAuthority extends string,
@@ -482,20 +476,18 @@ export async function getDeprecatedMintPrintingTokensInstruction<
     TAccountTokenProgram,
     TAccountRent
   >
-): Promise<
-  DeprecatedMintPrintingTokensInstruction<
-    TProgram,
-    TAccountDestination,
-    TAccountPrintingMint,
-    ReadonlySignerAccount<TAccountUpdateAuthority> &
-      IAccountSignerMeta<TAccountUpdateAuthority>,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountTokenProgram,
-    TAccountRent
-  >
+): DeprecatedMintPrintingTokensInstruction<
+  TProgram,
+  TAccountDestination,
+  TAccountPrintingMint,
+  ReadonlySignerAccount<TAccountUpdateAuthority> &
+    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountTokenProgram,
+  TAccountRent
 >;
-export async function getDeprecatedMintPrintingTokensInstruction<
+export function getDeprecatedMintPrintingTokensInstruction<
   TAccountDestination extends string,
   TAccountPrintingMint extends string,
   TAccountUpdateAuthority extends string,
@@ -525,7 +517,7 @@ export async function getDeprecatedMintPrintingTokensInstruction<
     TAccountTokenProgram,
     TAccountRent
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -548,7 +540,7 @@ export async function getDeprecatedMintPrintingTokensInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
@@ -586,7 +578,7 @@ export async function getDeprecatedMintPrintingTokensInstruction<
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value = await getProgramAddress(
+    accounts.tokenProgram.value = getProgramAddress(
       context,
       'splToken',
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'

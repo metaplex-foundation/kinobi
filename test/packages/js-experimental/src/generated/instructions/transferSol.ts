@@ -190,61 +190,53 @@ export type TransferSolAsyncInputWithSigners<
   amount: TransferSolInstructionDataArgs['amount'];
 };
 
-export async function getTransferSolInstruction<
+export function getTransferSolInstruction<
   TAccountSource extends string,
   TAccountDestination extends string,
   TProgram extends string = '11111111111111111111111111111111'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: TransferSolInputWithSigners<TAccountSource, TAccountDestination>
-): Promise<
-  TransferSolInstructionWithSigners<
-    TProgram,
-    WritableSignerAccount<TAccountSource> & IAccountSignerMeta<TAccountSource>,
-    TAccountDestination
-  >
+): TransferSolInstructionWithSigners<
+  TProgram,
+  WritableSignerAccount<TAccountSource> & IAccountSignerMeta<TAccountSource>,
+  TAccountDestination
 >;
-export async function getTransferSolInstruction<
+export function getTransferSolInstruction<
   TAccountSource extends string,
   TAccountDestination extends string,
   TProgram extends string = '11111111111111111111111111111111'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: TransferSolInput<TAccountSource, TAccountDestination>
-): Promise<
-  TransferSolInstruction<
-    TProgram,
-    WritableSignerAccount<TAccountSource> & IAccountSignerMeta<TAccountSource>,
-    TAccountDestination
-  >
+): TransferSolInstruction<
+  TProgram,
+  WritableSignerAccount<TAccountSource> & IAccountSignerMeta<TAccountSource>,
+  TAccountDestination
 >;
-export async function getTransferSolInstruction<
+export function getTransferSolInstruction<
   TAccountSource extends string,
   TAccountDestination extends string,
   TProgram extends string = '11111111111111111111111111111111'
 >(
   input: TransferSolInputWithSigners<TAccountSource, TAccountDestination>
-): Promise<
-  TransferSolInstructionWithSigners<
-    TProgram,
-    WritableSignerAccount<TAccountSource> & IAccountSignerMeta<TAccountSource>,
-    TAccountDestination
-  >
+): TransferSolInstructionWithSigners<
+  TProgram,
+  WritableSignerAccount<TAccountSource> & IAccountSignerMeta<TAccountSource>,
+  TAccountDestination
 >;
-export async function getTransferSolInstruction<
+export function getTransferSolInstruction<
   TAccountSource extends string,
   TAccountDestination extends string,
   TProgram extends string = '11111111111111111111111111111111'
 >(
   input: TransferSolInput<TAccountSource, TAccountDestination>
-): Promise<
-  TransferSolInstruction<
-    TProgram,
-    WritableSignerAccount<TAccountSource> & IAccountSignerMeta<TAccountSource>,
-    TAccountDestination
-  >
+): TransferSolInstruction<
+  TProgram,
+  WritableSignerAccount<TAccountSource> & IAccountSignerMeta<TAccountSource>,
+  TAccountDestination
 >;
-export async function getTransferSolInstruction<
+export function getTransferSolInstruction<
   TAccountSource extends string,
   TAccountDestination extends string,
   TProgram extends string = '11111111111111111111111111111111'
@@ -253,7 +245,7 @@ export async function getTransferSolInstruction<
     | Pick<Context, 'getProgramAddress'>
     | TransferSolInput<TAccountSource, TAccountDestination>,
   rawInput?: TransferSolInput<TAccountSource, TAccountDestination>
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -268,7 +260,7 @@ export async function getTransferSolInstruction<
     '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'splSystem',
           address: defaultProgramAddress,
         })

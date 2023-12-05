@@ -244,7 +244,7 @@ export type SetTokenStandardAsyncInputWithSigners<
   edition?: Address<TAccountEdition>;
 };
 
-export async function getSetTokenStandardInstruction<
+export function getSetTokenStandardInstruction<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TAccountMint extends string,
@@ -258,17 +258,15 @@ export async function getSetTokenStandardInstruction<
     TAccountMint,
     TAccountEdition
   >
-): Promise<
-  SetTokenStandardInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountUpdateAuthority> &
-      IAccountSignerMeta<TAccountUpdateAuthority>,
-    TAccountMint,
-    TAccountEdition
-  >
+): SetTokenStandardInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountUpdateAuthority> &
+    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountMint,
+  TAccountEdition
 >;
-export async function getSetTokenStandardInstruction<
+export function getSetTokenStandardInstruction<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TAccountMint extends string,
@@ -282,17 +280,15 @@ export async function getSetTokenStandardInstruction<
     TAccountMint,
     TAccountEdition
   >
-): Promise<
-  SetTokenStandardInstruction<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountUpdateAuthority> &
-      IAccountSignerMeta<TAccountUpdateAuthority>,
-    TAccountMint,
-    TAccountEdition
-  >
+): SetTokenStandardInstruction<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountUpdateAuthority> &
+    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountMint,
+  TAccountEdition
 >;
-export async function getSetTokenStandardInstruction<
+export function getSetTokenStandardInstruction<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TAccountMint extends string,
@@ -305,17 +301,15 @@ export async function getSetTokenStandardInstruction<
     TAccountMint,
     TAccountEdition
   >
-): Promise<
-  SetTokenStandardInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountUpdateAuthority> &
-      IAccountSignerMeta<TAccountUpdateAuthority>,
-    TAccountMint,
-    TAccountEdition
-  >
+): SetTokenStandardInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountUpdateAuthority> &
+    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountMint,
+  TAccountEdition
 >;
-export async function getSetTokenStandardInstruction<
+export function getSetTokenStandardInstruction<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TAccountMint extends string,
@@ -328,17 +322,15 @@ export async function getSetTokenStandardInstruction<
     TAccountMint,
     TAccountEdition
   >
-): Promise<
-  SetTokenStandardInstruction<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountUpdateAuthority> &
-      IAccountSignerMeta<TAccountUpdateAuthority>,
-    TAccountMint,
-    TAccountEdition
-  >
+): SetTokenStandardInstruction<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountUpdateAuthority> &
+    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountMint,
+  TAccountEdition
 >;
-export async function getSetTokenStandardInstruction<
+export function getSetTokenStandardInstruction<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TAccountMint extends string,
@@ -359,7 +351,7 @@ export async function getSetTokenStandardInstruction<
     TAccountMint,
     TAccountEdition
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -379,7 +371,7 @@ export async function getSetTokenStandardInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })

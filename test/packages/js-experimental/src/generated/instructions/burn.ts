@@ -421,7 +421,7 @@ export type BurnAsyncInputWithSigners<
   burnArgs: BurnInstructionDataArgs['burnArgs'];
 };
 
-export async function getBurnInstruction<
+export function getBurnInstruction<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountMint extends string,
@@ -445,21 +445,19 @@ export async function getBurnInstruction<
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
   >
-): Promise<
-  BurnInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountSplTokenProgram,
-    TAccountCollectionMetadata,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
+): BurnInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountMint,
+  TAccountTokenAccount,
+  TAccountMasterEditionAccount,
+  TAccountSplTokenProgram,
+  TAccountCollectionMetadata,
+  TAccountAuthorizationRules,
+  TAccountAuthorizationRulesProgram
 >;
-export async function getBurnInstruction<
+export function getBurnInstruction<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountMint extends string,
@@ -483,21 +481,19 @@ export async function getBurnInstruction<
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
   >
-): Promise<
-  BurnInstruction<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountSplTokenProgram,
-    TAccountCollectionMetadata,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
+): BurnInstruction<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountMint,
+  TAccountTokenAccount,
+  TAccountMasterEditionAccount,
+  TAccountSplTokenProgram,
+  TAccountCollectionMetadata,
+  TAccountAuthorizationRules,
+  TAccountAuthorizationRulesProgram
 >;
-export async function getBurnInstruction<
+export function getBurnInstruction<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountMint extends string,
@@ -520,21 +516,19 @@ export async function getBurnInstruction<
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
   >
-): Promise<
-  BurnInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountSplTokenProgram,
-    TAccountCollectionMetadata,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
+): BurnInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountMint,
+  TAccountTokenAccount,
+  TAccountMasterEditionAccount,
+  TAccountSplTokenProgram,
+  TAccountCollectionMetadata,
+  TAccountAuthorizationRules,
+  TAccountAuthorizationRulesProgram
 >;
-export async function getBurnInstruction<
+export function getBurnInstruction<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountMint extends string,
@@ -557,21 +551,19 @@ export async function getBurnInstruction<
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
   >
-): Promise<
-  BurnInstruction<
-    TProgram,
-    TAccountMetadata,
-    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountSplTokenProgram,
-    TAccountCollectionMetadata,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
+): BurnInstruction<
+  TProgram,
+  TAccountMetadata,
+  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountMint,
+  TAccountTokenAccount,
+  TAccountMasterEditionAccount,
+  TAccountSplTokenProgram,
+  TAccountCollectionMetadata,
+  TAccountAuthorizationRules,
+  TAccountAuthorizationRulesProgram
 >;
-export async function getBurnInstruction<
+export function getBurnInstruction<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountMint extends string,
@@ -607,7 +599,7 @@ export async function getBurnInstruction<
     TAccountAuthorizationRules,
     TAccountAuthorizationRulesProgram
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -630,7 +622,7 @@ export async function getBurnInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
@@ -684,7 +676,7 @@ export async function getBurnInstruction<
 
   // Resolve default values.
   if (!accounts.splTokenProgram.value) {
-    accounts.splTokenProgram.value = await getProgramAddress(
+    accounts.splTokenProgram.value = getProgramAddress(
       context,
       'splToken',
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'

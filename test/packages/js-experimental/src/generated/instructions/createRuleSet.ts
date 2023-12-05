@@ -255,7 +255,7 @@ export type CreateRuleSetAsyncInputWithSigners<
   ruleSetBump?: CreateRuleSetInstructionDataArgs['ruleSetBump'];
 };
 
-export async function getCreateRuleSetInstruction<
+export function getCreateRuleSetInstruction<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
   TAccountSystemProgram extends string,
@@ -267,15 +267,13 @@ export async function getCreateRuleSetInstruction<
     TAccountRuleSetPda,
     TAccountSystemProgram
   >
-): Promise<
-  CreateRuleSetInstructionWithSigners<
-    TProgram,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountRuleSetPda,
-    TAccountSystemProgram
-  >
+): CreateRuleSetInstructionWithSigners<
+  TProgram,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountRuleSetPda,
+  TAccountSystemProgram
 >;
-export async function getCreateRuleSetInstruction<
+export function getCreateRuleSetInstruction<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
   TAccountSystemProgram extends string,
@@ -287,15 +285,13 @@ export async function getCreateRuleSetInstruction<
     TAccountRuleSetPda,
     TAccountSystemProgram
   >
-): Promise<
-  CreateRuleSetInstruction<
-    TProgram,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountRuleSetPda,
-    TAccountSystemProgram
-  >
+): CreateRuleSetInstruction<
+  TProgram,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountRuleSetPda,
+  TAccountSystemProgram
 >;
-export async function getCreateRuleSetInstruction<
+export function getCreateRuleSetInstruction<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
   TAccountSystemProgram extends string,
@@ -306,15 +302,13 @@ export async function getCreateRuleSetInstruction<
     TAccountRuleSetPda,
     TAccountSystemProgram
   >
-): Promise<
-  CreateRuleSetInstructionWithSigners<
-    TProgram,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountRuleSetPda,
-    TAccountSystemProgram
-  >
+): CreateRuleSetInstructionWithSigners<
+  TProgram,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountRuleSetPda,
+  TAccountSystemProgram
 >;
-export async function getCreateRuleSetInstruction<
+export function getCreateRuleSetInstruction<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
   TAccountSystemProgram extends string,
@@ -325,15 +319,13 @@ export async function getCreateRuleSetInstruction<
     TAccountRuleSetPda,
     TAccountSystemProgram
   >
-): Promise<
-  CreateRuleSetInstruction<
-    TProgram,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountRuleSetPda,
-    TAccountSystemProgram
-  >
+): CreateRuleSetInstruction<
+  TProgram,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountRuleSetPda,
+  TAccountSystemProgram
 >;
-export async function getCreateRuleSetInstruction<
+export function getCreateRuleSetInstruction<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
   TAccountSystemProgram extends string,
@@ -351,7 +343,7 @@ export async function getCreateRuleSetInstruction<
     TAccountRuleSetPda,
     TAccountSystemProgram
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -370,7 +362,7 @@ export async function getCreateRuleSetInstruction<
     'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenAuthRules',
           address: defaultProgramAddress,
         })
@@ -397,7 +389,7 @@ export async function getCreateRuleSetInstruction<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'

@@ -368,7 +368,7 @@ export type CreateMetadataAccountV2AsyncInputWithSigners<
   isMutable: CreateMetadataAccountV2InstructionDataArgs['isMutable'];
 };
 
-export async function getCreateMetadataAccountV2Instruction<
+export function getCreateMetadataAccountV2Instruction<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountMintAuthority extends string,
@@ -388,20 +388,18 @@ export async function getCreateMetadataAccountV2Instruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  CreateMetadataAccountV2InstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    TAccountMint,
-    ReadonlySignerAccount<TAccountMintAuthority> &
-      IAccountSignerMeta<TAccountMintAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): CreateMetadataAccountV2InstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  TAccountMint,
+  ReadonlySignerAccount<TAccountMintAuthority> &
+    IAccountSignerMeta<TAccountMintAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getCreateMetadataAccountV2Instruction<
+export function getCreateMetadataAccountV2Instruction<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountMintAuthority extends string,
@@ -421,20 +419,18 @@ export async function getCreateMetadataAccountV2Instruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  CreateMetadataAccountV2Instruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountMint,
-    ReadonlySignerAccount<TAccountMintAuthority> &
-      IAccountSignerMeta<TAccountMintAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): CreateMetadataAccountV2Instruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountMint,
+  ReadonlySignerAccount<TAccountMintAuthority> &
+    IAccountSignerMeta<TAccountMintAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getCreateMetadataAccountV2Instruction<
+export function getCreateMetadataAccountV2Instruction<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountMintAuthority extends string,
@@ -453,20 +449,18 @@ export async function getCreateMetadataAccountV2Instruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  CreateMetadataAccountV2InstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    TAccountMint,
-    ReadonlySignerAccount<TAccountMintAuthority> &
-      IAccountSignerMeta<TAccountMintAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): CreateMetadataAccountV2InstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  TAccountMint,
+  ReadonlySignerAccount<TAccountMintAuthority> &
+    IAccountSignerMeta<TAccountMintAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getCreateMetadataAccountV2Instruction<
+export function getCreateMetadataAccountV2Instruction<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountMintAuthority extends string,
@@ -485,20 +479,18 @@ export async function getCreateMetadataAccountV2Instruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  CreateMetadataAccountV2Instruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountMint,
-    ReadonlySignerAccount<TAccountMintAuthority> &
-      IAccountSignerMeta<TAccountMintAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): CreateMetadataAccountV2Instruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountMint,
+  ReadonlySignerAccount<TAccountMintAuthority> &
+    IAccountSignerMeta<TAccountMintAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getCreateMetadataAccountV2Instruction<
+export function getCreateMetadataAccountV2Instruction<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountMintAuthority extends string,
@@ -528,7 +520,7 @@ export async function getCreateMetadataAccountV2Instruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -551,7 +543,7 @@ export async function getCreateMetadataAccountV2Instruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
@@ -589,7 +581,7 @@ export async function getCreateMetadataAccountV2Instruction<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'

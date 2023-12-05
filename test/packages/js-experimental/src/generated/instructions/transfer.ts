@@ -631,7 +631,7 @@ export type TransferAsyncInputWithSigners<
   tokenStandard?: TransferInstructionExtraArgs['tokenStandard'];
 };
 
-export async function getTransferInstruction<
+export function getTransferInstruction<
   TAccountAuthority extends string,
   TAccountDelegateRecord extends string,
   TAccountToken extends string,
@@ -667,28 +667,26 @@ export async function getTransferInstruction<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  TransferInstructionWithSigners<
-    TProgram,
-    WritableSignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>,
-    TAccountDelegateRecord,
-    TAccountToken,
-    TAccountTokenOwner,
-    TAccountDestination,
-    TAccountDestinationOwner,
-    TAccountMint,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountSplTokenProgram,
-    TAccountSplAtaProgram,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
+): TransferInstructionWithSigners<
+  TProgram,
+  WritableSignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>,
+  TAccountDelegateRecord,
+  TAccountToken,
+  TAccountTokenOwner,
+  TAccountDestination,
+  TAccountDestinationOwner,
+  TAccountMint,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountSplTokenProgram,
+  TAccountSplAtaProgram,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountAuthorizationRulesProgram,
+  TAccountAuthorizationRules
 >;
-export async function getTransferInstruction<
+export function getTransferInstruction<
   TAccountAuthority extends string,
   TAccountDelegateRecord extends string,
   TAccountToken extends string,
@@ -724,28 +722,26 @@ export async function getTransferInstruction<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  TransferInstruction<
-    TProgram,
-    WritableSignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>,
-    TAccountDelegateRecord,
-    TAccountToken,
-    TAccountTokenOwner,
-    TAccountDestination,
-    TAccountDestinationOwner,
-    TAccountMint,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountSplTokenProgram,
-    TAccountSplAtaProgram,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
+): TransferInstruction<
+  TProgram,
+  WritableSignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>,
+  TAccountDelegateRecord,
+  TAccountToken,
+  TAccountTokenOwner,
+  TAccountDestination,
+  TAccountDestinationOwner,
+  TAccountMint,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountSplTokenProgram,
+  TAccountSplAtaProgram,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountAuthorizationRulesProgram,
+  TAccountAuthorizationRules
 >;
-export async function getTransferInstruction<
+export function getTransferInstruction<
   TAccountAuthority extends string,
   TAccountDelegateRecord extends string,
   TAccountToken extends string,
@@ -780,28 +776,26 @@ export async function getTransferInstruction<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  TransferInstructionWithSigners<
-    TProgram,
-    WritableSignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>,
-    TAccountDelegateRecord,
-    TAccountToken,
-    TAccountTokenOwner,
-    TAccountDestination,
-    TAccountDestinationOwner,
-    TAccountMint,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountSplTokenProgram,
-    TAccountSplAtaProgram,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
+): TransferInstructionWithSigners<
+  TProgram,
+  WritableSignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>,
+  TAccountDelegateRecord,
+  TAccountToken,
+  TAccountTokenOwner,
+  TAccountDestination,
+  TAccountDestinationOwner,
+  TAccountMint,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountSplTokenProgram,
+  TAccountSplAtaProgram,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountAuthorizationRulesProgram,
+  TAccountAuthorizationRules
 >;
-export async function getTransferInstruction<
+export function getTransferInstruction<
   TAccountAuthority extends string,
   TAccountDelegateRecord extends string,
   TAccountToken extends string,
@@ -836,28 +830,26 @@ export async function getTransferInstruction<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  TransferInstruction<
-    TProgram,
-    WritableSignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>,
-    TAccountDelegateRecord,
-    TAccountToken,
-    TAccountTokenOwner,
-    TAccountDestination,
-    TAccountDestinationOwner,
-    TAccountMint,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountSplTokenProgram,
-    TAccountSplAtaProgram,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
+): TransferInstruction<
+  TProgram,
+  WritableSignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>,
+  TAccountDelegateRecord,
+  TAccountToken,
+  TAccountTokenOwner,
+  TAccountDestination,
+  TAccountDestinationOwner,
+  TAccountMint,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountSplTokenProgram,
+  TAccountSplAtaProgram,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountAuthorizationRulesProgram,
+  TAccountAuthorizationRules
 >;
-export async function getTransferInstruction<
+export function getTransferInstruction<
   TAccountAuthority extends string,
   TAccountDelegateRecord extends string,
   TAccountToken extends string,
@@ -911,7 +903,7 @@ export async function getTransferInstruction<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -942,7 +934,7 @@ export async function getTransferInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
@@ -1013,17 +1005,17 @@ export async function getTransferInstruction<
   if (!accounts.masterEdition.value) {
     accounts.masterEdition = {
       ...accounts.masterEdition,
-      ...(await resolveMasterEditionFromTokenStandard(
+      ...resolveMasterEditionFromTokenStandard(
         context,
         accounts,
         args,
         programAddress,
         false
-      )),
+      ),
     };
   }
   if (!accounts.splTokenProgram.value) {
-    accounts.splTokenProgram.value = await getProgramAddress(
+    accounts.splTokenProgram.value = getProgramAddress(
       context,
       'splToken',
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
@@ -1031,7 +1023,7 @@ export async function getTransferInstruction<
     accounts.splTokenProgram.isWritable = false;
   }
   if (!accounts.splAtaProgram.value) {
-    accounts.splAtaProgram.value = await getProgramAddress(
+    accounts.splAtaProgram.value = getProgramAddress(
       context,
       'splAssociatedToken',
       'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
@@ -1039,7 +1031,7 @@ export async function getTransferInstruction<
     accounts.splAtaProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'

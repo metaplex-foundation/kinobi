@@ -206,7 +206,7 @@ export type SetMintAuthorityAsyncInputWithSigners<
   mintAuthority: TransactionSigner<TAccountMintAuthority>;
 };
 
-export async function getSetMintAuthorityInstruction<
+export function getSetMintAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountMintAuthority extends string,
@@ -218,17 +218,15 @@ export async function getSetMintAuthorityInstruction<
     TAccountAuthority,
     TAccountMintAuthority
   >
-): Promise<
-  SetMintAuthorityInstructionWithSigners<
-    TProgram,
-    TAccountCandyMachine,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>,
-    ReadonlySignerAccount<TAccountMintAuthority> &
-      IAccountSignerMeta<TAccountMintAuthority>
-  >
+): SetMintAuthorityInstructionWithSigners<
+  TProgram,
+  TAccountCandyMachine,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>,
+  ReadonlySignerAccount<TAccountMintAuthority> &
+    IAccountSignerMeta<TAccountMintAuthority>
 >;
-export async function getSetMintAuthorityInstruction<
+export function getSetMintAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountMintAuthority extends string,
@@ -240,17 +238,15 @@ export async function getSetMintAuthorityInstruction<
     TAccountAuthority,
     TAccountMintAuthority
   >
-): Promise<
-  SetMintAuthorityInstruction<
-    TProgram,
-    TAccountCandyMachine,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>,
-    ReadonlySignerAccount<TAccountMintAuthority> &
-      IAccountSignerMeta<TAccountMintAuthority>
-  >
+): SetMintAuthorityInstruction<
+  TProgram,
+  TAccountCandyMachine,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>,
+  ReadonlySignerAccount<TAccountMintAuthority> &
+    IAccountSignerMeta<TAccountMintAuthority>
 >;
-export async function getSetMintAuthorityInstruction<
+export function getSetMintAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountMintAuthority extends string,
@@ -261,17 +257,15 @@ export async function getSetMintAuthorityInstruction<
     TAccountAuthority,
     TAccountMintAuthority
   >
-): Promise<
-  SetMintAuthorityInstructionWithSigners<
-    TProgram,
-    TAccountCandyMachine,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>,
-    ReadonlySignerAccount<TAccountMintAuthority> &
-      IAccountSignerMeta<TAccountMintAuthority>
-  >
+): SetMintAuthorityInstructionWithSigners<
+  TProgram,
+  TAccountCandyMachine,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>,
+  ReadonlySignerAccount<TAccountMintAuthority> &
+    IAccountSignerMeta<TAccountMintAuthority>
 >;
-export async function getSetMintAuthorityInstruction<
+export function getSetMintAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountMintAuthority extends string,
@@ -282,17 +276,15 @@ export async function getSetMintAuthorityInstruction<
     TAccountAuthority,
     TAccountMintAuthority
   >
-): Promise<
-  SetMintAuthorityInstruction<
-    TProgram,
-    TAccountCandyMachine,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>,
-    ReadonlySignerAccount<TAccountMintAuthority> &
-      IAccountSignerMeta<TAccountMintAuthority>
-  >
+): SetMintAuthorityInstruction<
+  TProgram,
+  TAccountCandyMachine,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>,
+  ReadonlySignerAccount<TAccountMintAuthority> &
+    IAccountSignerMeta<TAccountMintAuthority>
 >;
-export async function getSetMintAuthorityInstruction<
+export function getSetMintAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountMintAuthority extends string,
@@ -310,7 +302,7 @@ export async function getSetMintAuthorityInstruction<
     TAccountAuthority,
     TAccountMintAuthority
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -329,7 +321,7 @@ export async function getSetMintAuthorityInstruction<
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplCandyMachineCore',
           address: defaultProgramAddress,
         })

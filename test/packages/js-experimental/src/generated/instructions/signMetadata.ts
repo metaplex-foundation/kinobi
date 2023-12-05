@@ -183,61 +183,53 @@ export type SignMetadataAsyncInputWithSigners<
   creator: TransactionSigner<TAccountCreator>;
 };
 
-export async function getSignMetadataInstruction<
+export function getSignMetadataInstruction<
   TAccountMetadata extends string,
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: SignMetadataInputWithSigners<TAccountMetadata, TAccountCreator>
-): Promise<
-  SignMetadataInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
-  >
+): SignMetadataInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
 >;
-export async function getSignMetadataInstruction<
+export function getSignMetadataInstruction<
   TAccountMetadata extends string,
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: SignMetadataInput<TAccountMetadata, TAccountCreator>
-): Promise<
-  SignMetadataInstruction<
-    TProgram,
-    TAccountMetadata,
-    ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
-  >
+): SignMetadataInstruction<
+  TProgram,
+  TAccountMetadata,
+  ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
 >;
-export async function getSignMetadataInstruction<
+export function getSignMetadataInstruction<
   TAccountMetadata extends string,
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: SignMetadataInputWithSigners<TAccountMetadata, TAccountCreator>
-): Promise<
-  SignMetadataInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
-  >
+): SignMetadataInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
 >;
-export async function getSignMetadataInstruction<
+export function getSignMetadataInstruction<
   TAccountMetadata extends string,
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: SignMetadataInput<TAccountMetadata, TAccountCreator>
-): Promise<
-  SignMetadataInstruction<
-    TProgram,
-    TAccountMetadata,
-    ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
-  >
+): SignMetadataInstruction<
+  TProgram,
+  TAccountMetadata,
+  ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
 >;
-export async function getSignMetadataInstruction<
+export function getSignMetadataInstruction<
   TAccountMetadata extends string,
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
@@ -246,7 +238,7 @@ export async function getSignMetadataInstruction<
     | Pick<Context, 'getProgramAddress'>
     | SignMetadataInput<TAccountMetadata, TAccountCreator>,
   rawInput?: SignMetadataInput<TAccountMetadata, TAccountCreator>
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -261,7 +253,7 @@ export async function getSignMetadataInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })

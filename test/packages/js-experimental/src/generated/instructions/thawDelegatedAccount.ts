@@ -274,7 +274,7 @@ export type ThawDelegatedAccountAsyncInputWithSigners<
   tokenProgram?: Address<TAccountTokenProgram>;
 };
 
-export async function getThawDelegatedAccountInstruction<
+export function getThawDelegatedAccountInstruction<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -290,18 +290,16 @@ export async function getThawDelegatedAccountInstruction<
     TAccountMint,
     TAccountTokenProgram
   >
-): Promise<
-  ThawDelegatedAccountInstructionWithSigners<
-    TProgram,
-    WritableSignerAccount<TAccountDelegate> &
-      IAccountSignerMeta<TAccountDelegate>,
-    TAccountTokenAccount,
-    TAccountEdition,
-    TAccountMint,
-    TAccountTokenProgram
-  >
+): ThawDelegatedAccountInstructionWithSigners<
+  TProgram,
+  WritableSignerAccount<TAccountDelegate> &
+    IAccountSignerMeta<TAccountDelegate>,
+  TAccountTokenAccount,
+  TAccountEdition,
+  TAccountMint,
+  TAccountTokenProgram
 >;
-export async function getThawDelegatedAccountInstruction<
+export function getThawDelegatedAccountInstruction<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -317,18 +315,16 @@ export async function getThawDelegatedAccountInstruction<
     TAccountMint,
     TAccountTokenProgram
   >
-): Promise<
-  ThawDelegatedAccountInstruction<
-    TProgram,
-    WritableSignerAccount<TAccountDelegate> &
-      IAccountSignerMeta<TAccountDelegate>,
-    TAccountTokenAccount,
-    TAccountEdition,
-    TAccountMint,
-    TAccountTokenProgram
-  >
+): ThawDelegatedAccountInstruction<
+  TProgram,
+  WritableSignerAccount<TAccountDelegate> &
+    IAccountSignerMeta<TAccountDelegate>,
+  TAccountTokenAccount,
+  TAccountEdition,
+  TAccountMint,
+  TAccountTokenProgram
 >;
-export async function getThawDelegatedAccountInstruction<
+export function getThawDelegatedAccountInstruction<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -343,18 +339,16 @@ export async function getThawDelegatedAccountInstruction<
     TAccountMint,
     TAccountTokenProgram
   >
-): Promise<
-  ThawDelegatedAccountInstructionWithSigners<
-    TProgram,
-    WritableSignerAccount<TAccountDelegate> &
-      IAccountSignerMeta<TAccountDelegate>,
-    TAccountTokenAccount,
-    TAccountEdition,
-    TAccountMint,
-    TAccountTokenProgram
-  >
+): ThawDelegatedAccountInstructionWithSigners<
+  TProgram,
+  WritableSignerAccount<TAccountDelegate> &
+    IAccountSignerMeta<TAccountDelegate>,
+  TAccountTokenAccount,
+  TAccountEdition,
+  TAccountMint,
+  TAccountTokenProgram
 >;
-export async function getThawDelegatedAccountInstruction<
+export function getThawDelegatedAccountInstruction<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -369,18 +363,16 @@ export async function getThawDelegatedAccountInstruction<
     TAccountMint,
     TAccountTokenProgram
   >
-): Promise<
-  ThawDelegatedAccountInstruction<
-    TProgram,
-    WritableSignerAccount<TAccountDelegate> &
-      IAccountSignerMeta<TAccountDelegate>,
-    TAccountTokenAccount,
-    TAccountEdition,
-    TAccountMint,
-    TAccountTokenProgram
-  >
+): ThawDelegatedAccountInstruction<
+  TProgram,
+  WritableSignerAccount<TAccountDelegate> &
+    IAccountSignerMeta<TAccountDelegate>,
+  TAccountTokenAccount,
+  TAccountEdition,
+  TAccountMint,
+  TAccountTokenProgram
 >;
-export async function getThawDelegatedAccountInstruction<
+export function getThawDelegatedAccountInstruction<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -404,7 +396,7 @@ export async function getThawDelegatedAccountInstruction<
     TAccountMint,
     TAccountTokenProgram
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -425,7 +417,7 @@ export async function getThawDelegatedAccountInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
@@ -453,7 +445,7 @@ export async function getThawDelegatedAccountInstruction<
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value = await getProgramAddress(
+    accounts.tokenProgram.value = getProgramAddress(
       context,
       'splToken',
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'

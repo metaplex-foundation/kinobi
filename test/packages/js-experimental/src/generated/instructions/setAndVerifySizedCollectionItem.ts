@@ -369,7 +369,7 @@ export type SetAndVerifySizedCollectionItemAsyncInputWithSigners<
   collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
 };
 
-export async function getSetAndVerifySizedCollectionItemInstruction<
+export function getSetAndVerifySizedCollectionItemInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -391,21 +391,19 @@ export async function getSetAndVerifySizedCollectionItemInstruction<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  SetAndVerifySizedCollectionItemInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    ReadonlySignerAccount<TAccountCollectionAuthority> &
-      IAccountSignerMeta<TAccountCollectionAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUpdateAuthority,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount,
-    TAccountCollectionAuthorityRecord
-  >
+): SetAndVerifySizedCollectionItemInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  ReadonlySignerAccount<TAccountCollectionAuthority> &
+    IAccountSignerMeta<TAccountCollectionAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount,
+  TAccountCollectionAuthorityRecord
 >;
-export async function getSetAndVerifySizedCollectionItemInstruction<
+export function getSetAndVerifySizedCollectionItemInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -427,21 +425,19 @@ export async function getSetAndVerifySizedCollectionItemInstruction<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  SetAndVerifySizedCollectionItemInstruction<
-    TProgram,
-    TAccountMetadata,
-    ReadonlySignerAccount<TAccountCollectionAuthority> &
-      IAccountSignerMeta<TAccountCollectionAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUpdateAuthority,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount,
-    TAccountCollectionAuthorityRecord
-  >
+): SetAndVerifySizedCollectionItemInstruction<
+  TProgram,
+  TAccountMetadata,
+  ReadonlySignerAccount<TAccountCollectionAuthority> &
+    IAccountSignerMeta<TAccountCollectionAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount,
+  TAccountCollectionAuthorityRecord
 >;
-export async function getSetAndVerifySizedCollectionItemInstruction<
+export function getSetAndVerifySizedCollectionItemInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -462,21 +458,19 @@ export async function getSetAndVerifySizedCollectionItemInstruction<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  SetAndVerifySizedCollectionItemInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    ReadonlySignerAccount<TAccountCollectionAuthority> &
-      IAccountSignerMeta<TAccountCollectionAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUpdateAuthority,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount,
-    TAccountCollectionAuthorityRecord
-  >
+): SetAndVerifySizedCollectionItemInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  ReadonlySignerAccount<TAccountCollectionAuthority> &
+    IAccountSignerMeta<TAccountCollectionAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount,
+  TAccountCollectionAuthorityRecord
 >;
-export async function getSetAndVerifySizedCollectionItemInstruction<
+export function getSetAndVerifySizedCollectionItemInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -497,21 +491,19 @@ export async function getSetAndVerifySizedCollectionItemInstruction<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  SetAndVerifySizedCollectionItemInstruction<
-    TProgram,
-    TAccountMetadata,
-    ReadonlySignerAccount<TAccountCollectionAuthority> &
-      IAccountSignerMeta<TAccountCollectionAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUpdateAuthority,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount,
-    TAccountCollectionAuthorityRecord
-  >
+): SetAndVerifySizedCollectionItemInstruction<
+  TProgram,
+  TAccountMetadata,
+  ReadonlySignerAccount<TAccountCollectionAuthority> &
+    IAccountSignerMeta<TAccountCollectionAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount,
+  TAccountCollectionAuthorityRecord
 >;
-export async function getSetAndVerifySizedCollectionItemInstruction<
+export function getSetAndVerifySizedCollectionItemInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
@@ -544,7 +536,7 @@ export async function getSetAndVerifySizedCollectionItemInstruction<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -568,7 +560,7 @@ export async function getSetAndVerifySizedCollectionItemInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })

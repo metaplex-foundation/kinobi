@@ -454,7 +454,7 @@ export type InitializeAsyncInputWithSigners<
   data: InitializeInstructionDataArgs['data'];
 };
 
-export async function getInitializeInstruction<
+export function getInitializeInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthorityPda extends string,
   TAccountAuthority extends string,
@@ -482,24 +482,22 @@ export async function getInitializeInstruction<
     TAccountTokenMetadataProgram,
     TAccountSystemProgram
   >
-): Promise<
-  InitializeInstructionWithSigners<
-    TProgram,
-    TAccountCandyMachine,
-    TAccountAuthorityPda,
-    TAccountAuthority,
-    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountCollectionMetadata,
-    TAccountCollectionMint,
-    TAccountCollectionMasterEdition,
-    WritableSignerAccount<TAccountCollectionUpdateAuthority> &
-      IAccountSignerMeta<TAccountCollectionUpdateAuthority>,
-    TAccountCollectionAuthorityRecord,
-    TAccountTokenMetadataProgram,
-    TAccountSystemProgram
-  >
+): InitializeInstructionWithSigners<
+  TProgram,
+  TAccountCandyMachine,
+  TAccountAuthorityPda,
+  TAccountAuthority,
+  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionMetadata,
+  TAccountCollectionMint,
+  TAccountCollectionMasterEdition,
+  WritableSignerAccount<TAccountCollectionUpdateAuthority> &
+    IAccountSignerMeta<TAccountCollectionUpdateAuthority>,
+  TAccountCollectionAuthorityRecord,
+  TAccountTokenMetadataProgram,
+  TAccountSystemProgram
 >;
-export async function getInitializeInstruction<
+export function getInitializeInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthorityPda extends string,
   TAccountAuthority extends string,
@@ -527,24 +525,22 @@ export async function getInitializeInstruction<
     TAccountTokenMetadataProgram,
     TAccountSystemProgram
   >
-): Promise<
-  InitializeInstruction<
-    TProgram,
-    TAccountCandyMachine,
-    TAccountAuthorityPda,
-    TAccountAuthority,
-    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountCollectionMetadata,
-    TAccountCollectionMint,
-    TAccountCollectionMasterEdition,
-    WritableSignerAccount<TAccountCollectionUpdateAuthority> &
-      IAccountSignerMeta<TAccountCollectionUpdateAuthority>,
-    TAccountCollectionAuthorityRecord,
-    TAccountTokenMetadataProgram,
-    TAccountSystemProgram
-  >
+): InitializeInstruction<
+  TProgram,
+  TAccountCandyMachine,
+  TAccountAuthorityPda,
+  TAccountAuthority,
+  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionMetadata,
+  TAccountCollectionMint,
+  TAccountCollectionMasterEdition,
+  WritableSignerAccount<TAccountCollectionUpdateAuthority> &
+    IAccountSignerMeta<TAccountCollectionUpdateAuthority>,
+  TAccountCollectionAuthorityRecord,
+  TAccountTokenMetadataProgram,
+  TAccountSystemProgram
 >;
-export async function getInitializeInstruction<
+export function getInitializeInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthorityPda extends string,
   TAccountAuthority extends string,
@@ -571,24 +567,22 @@ export async function getInitializeInstruction<
     TAccountTokenMetadataProgram,
     TAccountSystemProgram
   >
-): Promise<
-  InitializeInstructionWithSigners<
-    TProgram,
-    TAccountCandyMachine,
-    TAccountAuthorityPda,
-    TAccountAuthority,
-    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountCollectionMetadata,
-    TAccountCollectionMint,
-    TAccountCollectionMasterEdition,
-    WritableSignerAccount<TAccountCollectionUpdateAuthority> &
-      IAccountSignerMeta<TAccountCollectionUpdateAuthority>,
-    TAccountCollectionAuthorityRecord,
-    TAccountTokenMetadataProgram,
-    TAccountSystemProgram
-  >
+): InitializeInstructionWithSigners<
+  TProgram,
+  TAccountCandyMachine,
+  TAccountAuthorityPda,
+  TAccountAuthority,
+  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionMetadata,
+  TAccountCollectionMint,
+  TAccountCollectionMasterEdition,
+  WritableSignerAccount<TAccountCollectionUpdateAuthority> &
+    IAccountSignerMeta<TAccountCollectionUpdateAuthority>,
+  TAccountCollectionAuthorityRecord,
+  TAccountTokenMetadataProgram,
+  TAccountSystemProgram
 >;
-export async function getInitializeInstruction<
+export function getInitializeInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthorityPda extends string,
   TAccountAuthority extends string,
@@ -615,24 +609,22 @@ export async function getInitializeInstruction<
     TAccountTokenMetadataProgram,
     TAccountSystemProgram
   >
-): Promise<
-  InitializeInstruction<
-    TProgram,
-    TAccountCandyMachine,
-    TAccountAuthorityPda,
-    TAccountAuthority,
-    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountCollectionMetadata,
-    TAccountCollectionMint,
-    TAccountCollectionMasterEdition,
-    WritableSignerAccount<TAccountCollectionUpdateAuthority> &
-      IAccountSignerMeta<TAccountCollectionUpdateAuthority>,
-    TAccountCollectionAuthorityRecord,
-    TAccountTokenMetadataProgram,
-    TAccountSystemProgram
-  >
+): InitializeInstruction<
+  TProgram,
+  TAccountCandyMachine,
+  TAccountAuthorityPda,
+  TAccountAuthority,
+  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionMetadata,
+  TAccountCollectionMint,
+  TAccountCollectionMasterEdition,
+  WritableSignerAccount<TAccountCollectionUpdateAuthority> &
+    IAccountSignerMeta<TAccountCollectionUpdateAuthority>,
+  TAccountCollectionAuthorityRecord,
+  TAccountTokenMetadataProgram,
+  TAccountSystemProgram
 >;
-export async function getInitializeInstruction<
+export function getInitializeInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthorityPda extends string,
   TAccountAuthority extends string,
@@ -674,7 +666,7 @@ export async function getInitializeInstruction<
     TAccountTokenMetadataProgram,
     TAccountSystemProgram
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -701,7 +693,7 @@ export async function getInitializeInstruction<
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplCandyMachineCore',
           address: defaultProgramAddress,
         })
@@ -759,7 +751,7 @@ export async function getInitializeInstruction<
 
   // Resolve default values.
   if (!accounts.tokenMetadataProgram.value) {
-    accounts.tokenMetadataProgram.value = await getProgramAddress(
+    accounts.tokenMetadataProgram.value = getProgramAddress(
       context,
       'mplTokenMetadata',
       'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
@@ -767,7 +759,7 @@ export async function getInitializeInstruction<
     accounts.tokenMetadataProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'

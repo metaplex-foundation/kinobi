@@ -553,7 +553,7 @@ export type DelegateAsyncInputWithSigners<
   delegateArgs: DelegateInstructionDataArgs['delegateArgs'];
 };
 
-export async function getDelegateInstruction<
+export function getDelegateInstruction<
   TAccountDelegateRecord extends string,
   TAccountDelegate extends string,
   TAccountMetadata extends string,
@@ -585,26 +585,24 @@ export async function getDelegateInstruction<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  DelegateInstructionWithSigners<
-    TProgram,
-    TAccountDelegateRecord,
-    TAccountDelegate,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountToken,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
+): DelegateInstructionWithSigners<
+  TProgram,
+  TAccountDelegateRecord,
+  TAccountDelegate,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountMint,
+  TAccountToken,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountSplTokenProgram,
+  TAccountAuthorizationRulesProgram,
+  TAccountAuthorizationRules
 >;
-export async function getDelegateInstruction<
+export function getDelegateInstruction<
   TAccountDelegateRecord extends string,
   TAccountDelegate extends string,
   TAccountMetadata extends string,
@@ -636,26 +634,24 @@ export async function getDelegateInstruction<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  DelegateInstruction<
-    TProgram,
-    TAccountDelegateRecord,
-    TAccountDelegate,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountToken,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
+): DelegateInstruction<
+  TProgram,
+  TAccountDelegateRecord,
+  TAccountDelegate,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountMint,
+  TAccountToken,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountSplTokenProgram,
+  TAccountAuthorizationRulesProgram,
+  TAccountAuthorizationRules
 >;
-export async function getDelegateInstruction<
+export function getDelegateInstruction<
   TAccountDelegateRecord extends string,
   TAccountDelegate extends string,
   TAccountMetadata extends string,
@@ -686,26 +682,24 @@ export async function getDelegateInstruction<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  DelegateInstructionWithSigners<
-    TProgram,
-    TAccountDelegateRecord,
-    TAccountDelegate,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountToken,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
+): DelegateInstructionWithSigners<
+  TProgram,
+  TAccountDelegateRecord,
+  TAccountDelegate,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountMint,
+  TAccountToken,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountSplTokenProgram,
+  TAccountAuthorizationRulesProgram,
+  TAccountAuthorizationRules
 >;
-export async function getDelegateInstruction<
+export function getDelegateInstruction<
   TAccountDelegateRecord extends string,
   TAccountDelegate extends string,
   TAccountMetadata extends string,
@@ -736,26 +730,24 @@ export async function getDelegateInstruction<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  DelegateInstruction<
-    TProgram,
-    TAccountDelegateRecord,
-    TAccountDelegate,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountToken,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
+): DelegateInstruction<
+  TProgram,
+  TAccountDelegateRecord,
+  TAccountDelegate,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountMint,
+  TAccountToken,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountSplTokenProgram,
+  TAccountAuthorizationRulesProgram,
+  TAccountAuthorizationRules
 >;
-export async function getDelegateInstruction<
+export function getDelegateInstruction<
   TAccountDelegateRecord extends string,
   TAccountDelegate extends string,
   TAccountMetadata extends string,
@@ -803,7 +795,7 @@ export async function getDelegateInstruction<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -832,7 +824,7 @@ export async function getDelegateInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
@@ -891,7 +883,7 @@ export async function getDelegateInstruction<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'

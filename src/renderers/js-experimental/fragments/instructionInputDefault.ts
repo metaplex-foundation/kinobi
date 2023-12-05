@@ -127,7 +127,7 @@ export function getInstructionInputDefaultFragment(
 
     case 'program':
       const programFragment = defaultFragment(
-        `await getProgramAddress(context, '${defaultsTo.program.name}', '${defaultsTo.program.publicKey}')`,
+        `getProgramAddress(context, '${defaultsTo.program.name}', '${defaultsTo.program.publicKey}')`,
         false
       ).addImports('shared', ['getProgramAddress']);
       programFragment.interfaces.add('getProgramAddress');
@@ -170,7 +170,7 @@ export function getInstructionInputDefaultFragment(
       const isWritable =
         input.kind === 'account' && input.isWritable ? 'true' : 'false';
       const resolverFragment = defaultFragment(
-        `await ${resolverName}(context, ${accountObject}, ${argObject}, programAddress, ${isWritable})`
+        `${resolverName}(context, ${accountObject}, ${argObject}, programAddress, ${isWritable})`
       ).addImports(defaultsTo.importFrom, resolverName);
       resolverFragment.interfaces.add([
         'getProgramAddress',
@@ -238,7 +238,7 @@ export function getInstructionInputDefaultFragment(
           'getProgramAddress',
           'getProgramDerivedAddress',
         ]);
-        condition = `await ${conditionalResolverName}(context, ${accountObject}, ${argObject}, programAddress, ${conditionalIsWritable})`;
+        condition = `${conditionalResolverName}(context, ${accountObject}, ${argObject}, programAddress, ${conditionalIsWritable})`;
         condition = negatedCondition ? `!${condition}` : condition;
       }
 

@@ -394,7 +394,7 @@ export type RevokeUseAuthorityAsyncInputWithSigners<
   rent?: Address<TAccountRent>;
 };
 
-export async function getRevokeUseAuthorityInstruction<
+export function getRevokeUseAuthorityInstruction<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountUser extends string,
@@ -418,21 +418,19 @@ export async function getRevokeUseAuthorityInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  RevokeUseAuthorityInstructionWithSigners<
-    TProgram,
-    TAccountUseAuthorityRecord,
-    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-    TAccountUser,
-    TAccountOwnerTokenAccount,
-    TAccountMint,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): RevokeUseAuthorityInstructionWithSigners<
+  TProgram,
+  TAccountUseAuthorityRecord,
+  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountUser,
+  TAccountOwnerTokenAccount,
+  TAccountMint,
+  TAccountMetadata,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getRevokeUseAuthorityInstruction<
+export function getRevokeUseAuthorityInstruction<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountUser extends string,
@@ -456,21 +454,19 @@ export async function getRevokeUseAuthorityInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  RevokeUseAuthorityInstruction<
-    TProgram,
-    TAccountUseAuthorityRecord,
-    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-    TAccountUser,
-    TAccountOwnerTokenAccount,
-    TAccountMint,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): RevokeUseAuthorityInstruction<
+  TProgram,
+  TAccountUseAuthorityRecord,
+  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountUser,
+  TAccountOwnerTokenAccount,
+  TAccountMint,
+  TAccountMetadata,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getRevokeUseAuthorityInstruction<
+export function getRevokeUseAuthorityInstruction<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountUser extends string,
@@ -493,21 +489,19 @@ export async function getRevokeUseAuthorityInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  RevokeUseAuthorityInstructionWithSigners<
-    TProgram,
-    TAccountUseAuthorityRecord,
-    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-    TAccountUser,
-    TAccountOwnerTokenAccount,
-    TAccountMint,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): RevokeUseAuthorityInstructionWithSigners<
+  TProgram,
+  TAccountUseAuthorityRecord,
+  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountUser,
+  TAccountOwnerTokenAccount,
+  TAccountMint,
+  TAccountMetadata,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getRevokeUseAuthorityInstruction<
+export function getRevokeUseAuthorityInstruction<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountUser extends string,
@@ -530,21 +524,19 @@ export async function getRevokeUseAuthorityInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  RevokeUseAuthorityInstruction<
-    TProgram,
-    TAccountUseAuthorityRecord,
-    WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-    TAccountUser,
-    TAccountOwnerTokenAccount,
-    TAccountMint,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): RevokeUseAuthorityInstruction<
+  TProgram,
+  TAccountUseAuthorityRecord,
+  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountUser,
+  TAccountOwnerTokenAccount,
+  TAccountMint,
+  TAccountMetadata,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getRevokeUseAuthorityInstruction<
+export function getRevokeUseAuthorityInstruction<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountUser extends string,
@@ -580,7 +572,7 @@ export async function getRevokeUseAuthorityInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -605,7 +597,7 @@ export async function getRevokeUseAuthorityInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
@@ -647,7 +639,7 @@ export async function getRevokeUseAuthorityInstruction<
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value = await getProgramAddress(
+    accounts.tokenProgram.value = getProgramAddress(
       context,
       'splToken',
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
@@ -655,7 +647,7 @@ export async function getRevokeUseAuthorityInstruction<
     accounts.tokenProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'

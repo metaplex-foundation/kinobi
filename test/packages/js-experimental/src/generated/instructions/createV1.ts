@@ -467,7 +467,7 @@ export type CreateV1AsyncInputWithSigners<
   maxSupply: CreateV1InstructionDataArgs['maxSupply'];
 };
 
-export async function getCreateV1Instruction<
+export function getCreateV1Instruction<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountMint extends string,
@@ -491,24 +491,22 @@ export async function getCreateV1Instruction<
     TAccountSysvarInstructions,
     TAccountSplTokenProgram
   >
-): Promise<
-  CreateV1InstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    typeof input['mint'] extends TransactionSigner<TAccountMint>
-      ? WritableSignerAccount<TAccountMint> & IAccountSignerMeta<TAccountMint>
-      : TAccountMint,
-    ReadonlySignerAccount<TAccountMintAuthority> &
-      IAccountSignerMeta<TAccountMintAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram
-  >
+): CreateV1InstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  typeof input['mint'] extends TransactionSigner<TAccountMint>
+    ? WritableSignerAccount<TAccountMint> & IAccountSignerMeta<TAccountMint>
+    : TAccountMint,
+  ReadonlySignerAccount<TAccountMintAuthority> &
+    IAccountSignerMeta<TAccountMintAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountSplTokenProgram
 >;
-export async function getCreateV1Instruction<
+export function getCreateV1Instruction<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountMint extends string,
@@ -532,24 +530,22 @@ export async function getCreateV1Instruction<
     TAccountSysvarInstructions,
     TAccountSplTokenProgram
   >
-): Promise<
-  CreateV1Instruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    typeof input['mint'] extends TransactionSigner<TAccountMint>
-      ? WritableSignerAccount<TAccountMint> & IAccountSignerMeta<TAccountMint>
-      : TAccountMint,
-    ReadonlySignerAccount<TAccountMintAuthority> &
-      IAccountSignerMeta<TAccountMintAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram
-  >
+): CreateV1Instruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  typeof input['mint'] extends TransactionSigner<TAccountMint>
+    ? WritableSignerAccount<TAccountMint> & IAccountSignerMeta<TAccountMint>
+    : TAccountMint,
+  ReadonlySignerAccount<TAccountMintAuthority> &
+    IAccountSignerMeta<TAccountMintAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountSplTokenProgram
 >;
-export async function getCreateV1Instruction<
+export function getCreateV1Instruction<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountMint extends string,
@@ -572,24 +568,22 @@ export async function getCreateV1Instruction<
     TAccountSysvarInstructions,
     TAccountSplTokenProgram
   >
-): Promise<
-  CreateV1InstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    typeof input['mint'] extends TransactionSigner<TAccountMint>
-      ? WritableSignerAccount<TAccountMint> & IAccountSignerMeta<TAccountMint>
-      : TAccountMint,
-    ReadonlySignerAccount<TAccountMintAuthority> &
-      IAccountSignerMeta<TAccountMintAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram
-  >
+): CreateV1InstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  typeof input['mint'] extends TransactionSigner<TAccountMint>
+    ? WritableSignerAccount<TAccountMint> & IAccountSignerMeta<TAccountMint>
+    : TAccountMint,
+  ReadonlySignerAccount<TAccountMintAuthority> &
+    IAccountSignerMeta<TAccountMintAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountSplTokenProgram
 >;
-export async function getCreateV1Instruction<
+export function getCreateV1Instruction<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountMint extends string,
@@ -612,24 +606,22 @@ export async function getCreateV1Instruction<
     TAccountSysvarInstructions,
     TAccountSplTokenProgram
   >
-): Promise<
-  CreateV1Instruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    typeof input['mint'] extends TransactionSigner<TAccountMint>
-      ? WritableSignerAccount<TAccountMint> & IAccountSignerMeta<TAccountMint>
-      : TAccountMint,
-    ReadonlySignerAccount<TAccountMintAuthority> &
-      IAccountSignerMeta<TAccountMintAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram
-  >
+): CreateV1Instruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  typeof input['mint'] extends TransactionSigner<TAccountMint>
+    ? WritableSignerAccount<TAccountMint> & IAccountSignerMeta<TAccountMint>
+    : TAccountMint,
+  ReadonlySignerAccount<TAccountMintAuthority> &
+    IAccountSignerMeta<TAccountMintAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountSplTokenProgram
 >;
-export async function getCreateV1Instruction<
+export function getCreateV1Instruction<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountMint extends string,
@@ -665,7 +657,7 @@ export async function getCreateV1Instruction<
     TAccountSysvarInstructions,
     TAccountSplTokenProgram
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -690,7 +682,7 @@ export async function getCreateV1Instruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
@@ -738,7 +730,7 @@ export async function getCreateV1Instruction<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'
@@ -750,7 +742,7 @@ export async function getCreateV1Instruction<
       'Sysvar1nstructions1111111111111111111111111' as Address<'Sysvar1nstructions1111111111111111111111111'>;
   }
   if (!accounts.splTokenProgram.value) {
-    accounts.splTokenProgram.value = await getProgramAddress(
+    accounts.splTokenProgram.value = getProgramAddress(
       context,
       'splToken',
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'

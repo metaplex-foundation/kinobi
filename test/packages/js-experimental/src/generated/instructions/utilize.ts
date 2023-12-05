@@ -495,7 +495,7 @@ export type UtilizeAsyncInputWithSigners<
   numberOfUses: UtilizeInstructionDataArgs['numberOfUses'];
 };
 
-export async function getUtilizeInstruction<
+export function getUtilizeInstruction<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -523,24 +523,22 @@ export async function getUtilizeInstruction<
     TAccountUseAuthorityRecord,
     TAccountBurner
   >
-): Promise<
-  UtilizeInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    TAccountTokenAccount,
-    TAccountMint,
-    WritableSignerAccount<TAccountUseAuthority> &
-      IAccountSignerMeta<TAccountUseAuthority>,
-    TAccountOwner,
-    TAccountTokenProgram,
-    TAccountAtaProgram,
-    TAccountSystemProgram,
-    TAccountRent,
-    TAccountUseAuthorityRecord,
-    TAccountBurner
-  >
+): UtilizeInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  TAccountTokenAccount,
+  TAccountMint,
+  WritableSignerAccount<TAccountUseAuthority> &
+    IAccountSignerMeta<TAccountUseAuthority>,
+  TAccountOwner,
+  TAccountTokenProgram,
+  TAccountAtaProgram,
+  TAccountSystemProgram,
+  TAccountRent,
+  TAccountUseAuthorityRecord,
+  TAccountBurner
 >;
-export async function getUtilizeInstruction<
+export function getUtilizeInstruction<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -568,24 +566,22 @@ export async function getUtilizeInstruction<
     TAccountUseAuthorityRecord,
     TAccountBurner
   >
-): Promise<
-  UtilizeInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountTokenAccount,
-    TAccountMint,
-    WritableSignerAccount<TAccountUseAuthority> &
-      IAccountSignerMeta<TAccountUseAuthority>,
-    TAccountOwner,
-    TAccountTokenProgram,
-    TAccountAtaProgram,
-    TAccountSystemProgram,
-    TAccountRent,
-    TAccountUseAuthorityRecord,
-    TAccountBurner
-  >
+): UtilizeInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountTokenAccount,
+  TAccountMint,
+  WritableSignerAccount<TAccountUseAuthority> &
+    IAccountSignerMeta<TAccountUseAuthority>,
+  TAccountOwner,
+  TAccountTokenProgram,
+  TAccountAtaProgram,
+  TAccountSystemProgram,
+  TAccountRent,
+  TAccountUseAuthorityRecord,
+  TAccountBurner
 >;
-export async function getUtilizeInstruction<
+export function getUtilizeInstruction<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -612,24 +608,22 @@ export async function getUtilizeInstruction<
     TAccountUseAuthorityRecord,
     TAccountBurner
   >
-): Promise<
-  UtilizeInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    TAccountTokenAccount,
-    TAccountMint,
-    WritableSignerAccount<TAccountUseAuthority> &
-      IAccountSignerMeta<TAccountUseAuthority>,
-    TAccountOwner,
-    TAccountTokenProgram,
-    TAccountAtaProgram,
-    TAccountSystemProgram,
-    TAccountRent,
-    TAccountUseAuthorityRecord,
-    TAccountBurner
-  >
+): UtilizeInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  TAccountTokenAccount,
+  TAccountMint,
+  WritableSignerAccount<TAccountUseAuthority> &
+    IAccountSignerMeta<TAccountUseAuthority>,
+  TAccountOwner,
+  TAccountTokenProgram,
+  TAccountAtaProgram,
+  TAccountSystemProgram,
+  TAccountRent,
+  TAccountUseAuthorityRecord,
+  TAccountBurner
 >;
-export async function getUtilizeInstruction<
+export function getUtilizeInstruction<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -656,24 +650,22 @@ export async function getUtilizeInstruction<
     TAccountUseAuthorityRecord,
     TAccountBurner
   >
-): Promise<
-  UtilizeInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountTokenAccount,
-    TAccountMint,
-    WritableSignerAccount<TAccountUseAuthority> &
-      IAccountSignerMeta<TAccountUseAuthority>,
-    TAccountOwner,
-    TAccountTokenProgram,
-    TAccountAtaProgram,
-    TAccountSystemProgram,
-    TAccountRent,
-    TAccountUseAuthorityRecord,
-    TAccountBurner
-  >
+): UtilizeInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountTokenAccount,
+  TAccountMint,
+  WritableSignerAccount<TAccountUseAuthority> &
+    IAccountSignerMeta<TAccountUseAuthority>,
+  TAccountOwner,
+  TAccountTokenProgram,
+  TAccountAtaProgram,
+  TAccountSystemProgram,
+  TAccountRent,
+  TAccountUseAuthorityRecord,
+  TAccountBurner
 >;
-export async function getUtilizeInstruction<
+export function getUtilizeInstruction<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
   TAccountMint extends string,
@@ -715,7 +707,7 @@ export async function getUtilizeInstruction<
     TAccountUseAuthorityRecord,
     TAccountBurner
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -742,7 +734,7 @@ export async function getUtilizeInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
@@ -788,7 +780,7 @@ export async function getUtilizeInstruction<
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value = await getProgramAddress(
+    accounts.tokenProgram.value = getProgramAddress(
       context,
       'splToken',
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
@@ -796,7 +788,7 @@ export async function getUtilizeInstruction<
     accounts.tokenProgram.isWritable = false;
   }
   if (!accounts.ataProgram.value) {
-    accounts.ataProgram.value = await getProgramAddress(
+    accounts.ataProgram.value = getProgramAddress(
       context,
       'splAssociatedToken',
       'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
@@ -804,7 +796,7 @@ export async function getUtilizeInstruction<
     accounts.ataProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'

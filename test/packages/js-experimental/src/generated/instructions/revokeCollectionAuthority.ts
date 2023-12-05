@@ -274,7 +274,7 @@ export type RevokeCollectionAuthorityAsyncInputWithSigners<
   mint: Address<TAccountMint>;
 };
 
-export async function getRevokeCollectionAuthorityInstruction<
+export function getRevokeCollectionAuthorityInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TAccountDelegateAuthority extends string,
   TAccountRevokeAuthority extends string,
@@ -290,18 +290,16 @@ export async function getRevokeCollectionAuthorityInstruction<
     TAccountMetadata,
     TAccountMint
   >
-): Promise<
-  RevokeCollectionAuthorityInstructionWithSigners<
-    TProgram,
-    TAccountCollectionAuthorityRecord,
-    TAccountDelegateAuthority,
-    WritableSignerAccount<TAccountRevokeAuthority> &
-      IAccountSignerMeta<TAccountRevokeAuthority>,
-    TAccountMetadata,
-    TAccountMint
-  >
+): RevokeCollectionAuthorityInstructionWithSigners<
+  TProgram,
+  TAccountCollectionAuthorityRecord,
+  TAccountDelegateAuthority,
+  WritableSignerAccount<TAccountRevokeAuthority> &
+    IAccountSignerMeta<TAccountRevokeAuthority>,
+  TAccountMetadata,
+  TAccountMint
 >;
-export async function getRevokeCollectionAuthorityInstruction<
+export function getRevokeCollectionAuthorityInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TAccountDelegateAuthority extends string,
   TAccountRevokeAuthority extends string,
@@ -317,18 +315,16 @@ export async function getRevokeCollectionAuthorityInstruction<
     TAccountMetadata,
     TAccountMint
   >
-): Promise<
-  RevokeCollectionAuthorityInstruction<
-    TProgram,
-    TAccountCollectionAuthorityRecord,
-    TAccountDelegateAuthority,
-    WritableSignerAccount<TAccountRevokeAuthority> &
-      IAccountSignerMeta<TAccountRevokeAuthority>,
-    TAccountMetadata,
-    TAccountMint
-  >
+): RevokeCollectionAuthorityInstruction<
+  TProgram,
+  TAccountCollectionAuthorityRecord,
+  TAccountDelegateAuthority,
+  WritableSignerAccount<TAccountRevokeAuthority> &
+    IAccountSignerMeta<TAccountRevokeAuthority>,
+  TAccountMetadata,
+  TAccountMint
 >;
-export async function getRevokeCollectionAuthorityInstruction<
+export function getRevokeCollectionAuthorityInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TAccountDelegateAuthority extends string,
   TAccountRevokeAuthority extends string,
@@ -343,18 +339,16 @@ export async function getRevokeCollectionAuthorityInstruction<
     TAccountMetadata,
     TAccountMint
   >
-): Promise<
-  RevokeCollectionAuthorityInstructionWithSigners<
-    TProgram,
-    TAccountCollectionAuthorityRecord,
-    TAccountDelegateAuthority,
-    WritableSignerAccount<TAccountRevokeAuthority> &
-      IAccountSignerMeta<TAccountRevokeAuthority>,
-    TAccountMetadata,
-    TAccountMint
-  >
+): RevokeCollectionAuthorityInstructionWithSigners<
+  TProgram,
+  TAccountCollectionAuthorityRecord,
+  TAccountDelegateAuthority,
+  WritableSignerAccount<TAccountRevokeAuthority> &
+    IAccountSignerMeta<TAccountRevokeAuthority>,
+  TAccountMetadata,
+  TAccountMint
 >;
-export async function getRevokeCollectionAuthorityInstruction<
+export function getRevokeCollectionAuthorityInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TAccountDelegateAuthority extends string,
   TAccountRevokeAuthority extends string,
@@ -369,18 +363,16 @@ export async function getRevokeCollectionAuthorityInstruction<
     TAccountMetadata,
     TAccountMint
   >
-): Promise<
-  RevokeCollectionAuthorityInstruction<
-    TProgram,
-    TAccountCollectionAuthorityRecord,
-    TAccountDelegateAuthority,
-    WritableSignerAccount<TAccountRevokeAuthority> &
-      IAccountSignerMeta<TAccountRevokeAuthority>,
-    TAccountMetadata,
-    TAccountMint
-  >
+): RevokeCollectionAuthorityInstruction<
+  TProgram,
+  TAccountCollectionAuthorityRecord,
+  TAccountDelegateAuthority,
+  WritableSignerAccount<TAccountRevokeAuthority> &
+    IAccountSignerMeta<TAccountRevokeAuthority>,
+  TAccountMetadata,
+  TAccountMint
 >;
-export async function getRevokeCollectionAuthorityInstruction<
+export function getRevokeCollectionAuthorityInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TAccountDelegateAuthority extends string,
   TAccountRevokeAuthority extends string,
@@ -404,7 +396,7 @@ export async function getRevokeCollectionAuthorityInstruction<
     TAccountMetadata,
     TAccountMint
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -425,7 +417,7 @@ export async function getRevokeCollectionAuthorityInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })

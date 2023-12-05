@@ -246,7 +246,7 @@ export type UpdateMetadataAccountV2AsyncInputWithSigners<
   isMutable: UpdateMetadataAccountV2InstructionDataArgs['isMutable'];
 };
 
-export async function getUpdateMetadataAccountV2Instruction<
+export function getUpdateMetadataAccountV2Instruction<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
@@ -256,30 +256,26 @@ export async function getUpdateMetadataAccountV2Instruction<
     TAccountMetadata,
     TAccountUpdateAuthority
   >
-): Promise<
-  UpdateMetadataAccountV2InstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    ReadonlySignerAccount<TAccountUpdateAuthority> &
-      IAccountSignerMeta<TAccountUpdateAuthority>
-  >
+): UpdateMetadataAccountV2InstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  ReadonlySignerAccount<TAccountUpdateAuthority> &
+    IAccountSignerMeta<TAccountUpdateAuthority>
 >;
-export async function getUpdateMetadataAccountV2Instruction<
+export function getUpdateMetadataAccountV2Instruction<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: UpdateMetadataAccountV2Input<TAccountMetadata, TAccountUpdateAuthority>
-): Promise<
-  UpdateMetadataAccountV2Instruction<
-    TProgram,
-    TAccountMetadata,
-    ReadonlySignerAccount<TAccountUpdateAuthority> &
-      IAccountSignerMeta<TAccountUpdateAuthority>
-  >
+): UpdateMetadataAccountV2Instruction<
+  TProgram,
+  TAccountMetadata,
+  ReadonlySignerAccount<TAccountUpdateAuthority> &
+    IAccountSignerMeta<TAccountUpdateAuthority>
 >;
-export async function getUpdateMetadataAccountV2Instruction<
+export function getUpdateMetadataAccountV2Instruction<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
@@ -288,29 +284,25 @@ export async function getUpdateMetadataAccountV2Instruction<
     TAccountMetadata,
     TAccountUpdateAuthority
   >
-): Promise<
-  UpdateMetadataAccountV2InstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    ReadonlySignerAccount<TAccountUpdateAuthority> &
-      IAccountSignerMeta<TAccountUpdateAuthority>
-  >
+): UpdateMetadataAccountV2InstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  ReadonlySignerAccount<TAccountUpdateAuthority> &
+    IAccountSignerMeta<TAccountUpdateAuthority>
 >;
-export async function getUpdateMetadataAccountV2Instruction<
+export function getUpdateMetadataAccountV2Instruction<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: UpdateMetadataAccountV2Input<TAccountMetadata, TAccountUpdateAuthority>
-): Promise<
-  UpdateMetadataAccountV2Instruction<
-    TProgram,
-    TAccountMetadata,
-    ReadonlySignerAccount<TAccountUpdateAuthority> &
-      IAccountSignerMeta<TAccountUpdateAuthority>
-  >
+): UpdateMetadataAccountV2Instruction<
+  TProgram,
+  TAccountMetadata,
+  ReadonlySignerAccount<TAccountUpdateAuthority> &
+    IAccountSignerMeta<TAccountUpdateAuthority>
 >;
-export async function getUpdateMetadataAccountV2Instruction<
+export function getUpdateMetadataAccountV2Instruction<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
@@ -322,7 +314,7 @@ export async function getUpdateMetadataAccountV2Instruction<
     TAccountMetadata,
     TAccountUpdateAuthority
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -337,7 +329,7 @@ export async function getUpdateMetadataAccountV2Instruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })

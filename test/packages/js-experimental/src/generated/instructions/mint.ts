@@ -534,7 +534,7 @@ export type MintAsyncInputWithSigners<
   mintArgs: MintInstructionDataArgs['mintArgs'];
 };
 
-export async function getMintInstruction<
+export function getMintInstruction<
   TAccountToken extends string,
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -564,25 +564,23 @@ export async function getMintInstruction<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  MintInstructionWithSigners<
-    TProgram,
-    TAccountToken,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram,
-    TAccountSplAtaProgram,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
+): MintInstructionWithSigners<
+  TProgram,
+  TAccountToken,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountMint,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountSplTokenProgram,
+  TAccountSplAtaProgram,
+  TAccountAuthorizationRulesProgram,
+  TAccountAuthorizationRules
 >;
-export async function getMintInstruction<
+export function getMintInstruction<
   TAccountToken extends string,
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -612,25 +610,23 @@ export async function getMintInstruction<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  MintInstruction<
-    TProgram,
-    TAccountToken,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram,
-    TAccountSplAtaProgram,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
+): MintInstruction<
+  TProgram,
+  TAccountToken,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountMint,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountSplTokenProgram,
+  TAccountSplAtaProgram,
+  TAccountAuthorizationRulesProgram,
+  TAccountAuthorizationRules
 >;
-export async function getMintInstruction<
+export function getMintInstruction<
   TAccountToken extends string,
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -659,25 +655,23 @@ export async function getMintInstruction<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  MintInstructionWithSigners<
-    TProgram,
-    TAccountToken,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram,
-    TAccountSplAtaProgram,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
+): MintInstructionWithSigners<
+  TProgram,
+  TAccountToken,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountMint,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountSplTokenProgram,
+  TAccountSplAtaProgram,
+  TAccountAuthorizationRulesProgram,
+  TAccountAuthorizationRules
 >;
-export async function getMintInstruction<
+export function getMintInstruction<
   TAccountToken extends string,
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -706,25 +700,23 @@ export async function getMintInstruction<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<
-  MintInstruction<
-    TProgram,
-    TAccountToken,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram,
-    TAccountSplAtaProgram,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
+): MintInstruction<
+  TProgram,
+  TAccountToken,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountMint,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountSplTokenProgram,
+  TAccountSplAtaProgram,
+  TAccountAuthorizationRulesProgram,
+  TAccountAuthorizationRules
 >;
-export async function getMintInstruction<
+export function getMintInstruction<
   TAccountToken extends string,
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -769,7 +761,7 @@ export async function getMintInstruction<
     TAccountAuthorizationRulesProgram,
     TAccountAuthorizationRules
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -795,7 +787,7 @@ export async function getMintInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
@@ -852,7 +844,7 @@ export async function getMintInstruction<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'
@@ -864,7 +856,7 @@ export async function getMintInstruction<
       'Sysvar1nstructions1111111111111111111111111' as Address<'Sysvar1nstructions1111111111111111111111111'>;
   }
   if (!accounts.splTokenProgram.value) {
-    accounts.splTokenProgram.value = await getProgramAddress(
+    accounts.splTokenProgram.value = getProgramAddress(
       context,
       'splToken',
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
@@ -872,7 +864,7 @@ export async function getMintInstruction<
     accounts.splTokenProgram.isWritable = false;
   }
   if (!accounts.splAtaProgram.value) {
-    accounts.splAtaProgram.value = await getProgramAddress(
+    accounts.splAtaProgram.value = getProgramAddress(
       context,
       'splAssociatedToken',
       'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'

@@ -185,7 +185,7 @@ export type RemoveCreatorVerificationAsyncInputWithSigners<
   creator: TransactionSigner<TAccountCreator>;
 };
 
-export async function getRemoveCreatorVerificationInstruction<
+export function getRemoveCreatorVerificationInstruction<
   TAccountMetadata extends string,
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
@@ -195,28 +195,24 @@ export async function getRemoveCreatorVerificationInstruction<
     TAccountMetadata,
     TAccountCreator
   >
-): Promise<
-  RemoveCreatorVerificationInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
-  >
+): RemoveCreatorVerificationInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
 >;
-export async function getRemoveCreatorVerificationInstruction<
+export function getRemoveCreatorVerificationInstruction<
   TAccountMetadata extends string,
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
-): Promise<
-  RemoveCreatorVerificationInstruction<
-    TProgram,
-    TAccountMetadata,
-    ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
-  >
+): RemoveCreatorVerificationInstruction<
+  TProgram,
+  TAccountMetadata,
+  ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
 >;
-export async function getRemoveCreatorVerificationInstruction<
+export function getRemoveCreatorVerificationInstruction<
   TAccountMetadata extends string,
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
@@ -225,27 +221,23 @@ export async function getRemoveCreatorVerificationInstruction<
     TAccountMetadata,
     TAccountCreator
   >
-): Promise<
-  RemoveCreatorVerificationInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
-  >
+): RemoveCreatorVerificationInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
 >;
-export async function getRemoveCreatorVerificationInstruction<
+export function getRemoveCreatorVerificationInstruction<
   TAccountMetadata extends string,
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
-): Promise<
-  RemoveCreatorVerificationInstruction<
-    TProgram,
-    TAccountMetadata,
-    ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
-  >
+): RemoveCreatorVerificationInstruction<
+  TProgram,
+  TAccountMetadata,
+  ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
 >;
-export async function getRemoveCreatorVerificationInstruction<
+export function getRemoveCreatorVerificationInstruction<
   TAccountMetadata extends string,
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
@@ -254,7 +246,7 @@ export async function getRemoveCreatorVerificationInstruction<
     | Pick<Context, 'getProgramAddress'>
     | RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>,
   rawInput?: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -269,7 +261,7 @@ export async function getRemoveCreatorVerificationInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })

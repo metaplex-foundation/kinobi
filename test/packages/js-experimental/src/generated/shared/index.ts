@@ -203,25 +203,20 @@ export type Context = {
     addresses: Address[],
     options?: FetchEncodedAccountsOptions
   ) => Promise<MaybeEncodedAccount[]>;
-  getProgramAddress?: (program: {
-    name: string;
-    address: Address;
-  }) => Promise<Address>;
+  getProgramAddress?: (program: { name: string; address: Address }) => Address;
   getProgramDerivedAddress?: (
     programAddress: Address,
     seeds: Uint8Array[]
   ) => Promise<ProgramDerivedAddress>;
 };
 
-export async function getProgramAddress<TAddress extends string = string>(
+export function getProgramAddress<TAddress extends string = string>(
   context: Pick<Context, 'getProgramAddress'>,
   name: string,
   address: TAddress
-): Promise<
-  typeof context['getProgramAddress'] extends undefined
-    ? Address<TAddress>
-    : Address
-> {
+): typeof context['getProgramAddress'] extends undefined
+  ? Address<TAddress>
+  : Address {
   return context.getProgramAddress
     ? context.getProgramAddress({ name, address: address as Address<TAddress> })
     : (address as Address<TAddress>);

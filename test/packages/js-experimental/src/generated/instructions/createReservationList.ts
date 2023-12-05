@@ -329,7 +329,7 @@ export type CreateReservationListAsyncInputWithSigners<
   rent?: Address<TAccountRent>;
 };
 
-export async function getCreateReservationListInstruction<
+export function getCreateReservationListInstruction<
   TAccountReservationList extends string,
   TAccountPayer extends string,
   TAccountUpdateAuthority extends string,
@@ -351,21 +351,19 @@ export async function getCreateReservationListInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  CreateReservationListInstructionWithSigners<
-    TProgram,
-    TAccountReservationList,
-    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    ReadonlySignerAccount<TAccountUpdateAuthority> &
-      IAccountSignerMeta<TAccountUpdateAuthority>,
-    TAccountMasterEdition,
-    TAccountResource,
-    TAccountMetadata,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): CreateReservationListInstructionWithSigners<
+  TProgram,
+  TAccountReservationList,
+  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  ReadonlySignerAccount<TAccountUpdateAuthority> &
+    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountMasterEdition,
+  TAccountResource,
+  TAccountMetadata,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getCreateReservationListInstruction<
+export function getCreateReservationListInstruction<
   TAccountReservationList extends string,
   TAccountPayer extends string,
   TAccountUpdateAuthority extends string,
@@ -387,21 +385,19 @@ export async function getCreateReservationListInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  CreateReservationListInstruction<
-    TProgram,
-    TAccountReservationList,
-    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    ReadonlySignerAccount<TAccountUpdateAuthority> &
-      IAccountSignerMeta<TAccountUpdateAuthority>,
-    TAccountMasterEdition,
-    TAccountResource,
-    TAccountMetadata,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): CreateReservationListInstruction<
+  TProgram,
+  TAccountReservationList,
+  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  ReadonlySignerAccount<TAccountUpdateAuthority> &
+    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountMasterEdition,
+  TAccountResource,
+  TAccountMetadata,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getCreateReservationListInstruction<
+export function getCreateReservationListInstruction<
   TAccountReservationList extends string,
   TAccountPayer extends string,
   TAccountUpdateAuthority extends string,
@@ -422,21 +418,19 @@ export async function getCreateReservationListInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  CreateReservationListInstructionWithSigners<
-    TProgram,
-    TAccountReservationList,
-    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    ReadonlySignerAccount<TAccountUpdateAuthority> &
-      IAccountSignerMeta<TAccountUpdateAuthority>,
-    TAccountMasterEdition,
-    TAccountResource,
-    TAccountMetadata,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): CreateReservationListInstructionWithSigners<
+  TProgram,
+  TAccountReservationList,
+  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  ReadonlySignerAccount<TAccountUpdateAuthority> &
+    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountMasterEdition,
+  TAccountResource,
+  TAccountMetadata,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getCreateReservationListInstruction<
+export function getCreateReservationListInstruction<
   TAccountReservationList extends string,
   TAccountPayer extends string,
   TAccountUpdateAuthority extends string,
@@ -457,21 +451,19 @@ export async function getCreateReservationListInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  CreateReservationListInstruction<
-    TProgram,
-    TAccountReservationList,
-    ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    ReadonlySignerAccount<TAccountUpdateAuthority> &
-      IAccountSignerMeta<TAccountUpdateAuthority>,
-    TAccountMasterEdition,
-    TAccountResource,
-    TAccountMetadata,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): CreateReservationListInstruction<
+  TProgram,
+  TAccountReservationList,
+  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  ReadonlySignerAccount<TAccountUpdateAuthority> &
+    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountMasterEdition,
+  TAccountResource,
+  TAccountMetadata,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getCreateReservationListInstruction<
+export function getCreateReservationListInstruction<
   TAccountReservationList extends string,
   TAccountPayer extends string,
   TAccountUpdateAuthority extends string,
@@ -504,7 +496,7 @@ export async function getCreateReservationListInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -528,7 +520,7 @@ export async function getCreateReservationListInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
@@ -568,7 +560,7 @@ export async function getCreateReservationListInstruction<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'

@@ -217,65 +217,57 @@ export type CreateAccountAsyncInputWithSigners<
   programId: CreateAccountInstructionDataArgs['programId'];
 };
 
-export async function getCreateAccountInstruction<
+export function getCreateAccountInstruction<
   TAccountPayer extends string,
   TAccountNewAccount extends string,
   TProgram extends string = '11111111111111111111111111111111'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: CreateAccountInputWithSigners<TAccountPayer, TAccountNewAccount>
-): Promise<
-  CreateAccountInstructionWithSigners<
-    TProgram,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    WritableSignerAccount<TAccountNewAccount> &
-      IAccountSignerMeta<TAccountNewAccount>
-  >
+): CreateAccountInstructionWithSigners<
+  TProgram,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  WritableSignerAccount<TAccountNewAccount> &
+    IAccountSignerMeta<TAccountNewAccount>
 >;
-export async function getCreateAccountInstruction<
+export function getCreateAccountInstruction<
   TAccountPayer extends string,
   TAccountNewAccount extends string,
   TProgram extends string = '11111111111111111111111111111111'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: CreateAccountInput<TAccountPayer, TAccountNewAccount>
-): Promise<
-  CreateAccountInstruction<
-    TProgram,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    WritableSignerAccount<TAccountNewAccount> &
-      IAccountSignerMeta<TAccountNewAccount>
-  >
+): CreateAccountInstruction<
+  TProgram,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  WritableSignerAccount<TAccountNewAccount> &
+    IAccountSignerMeta<TAccountNewAccount>
 >;
-export async function getCreateAccountInstruction<
+export function getCreateAccountInstruction<
   TAccountPayer extends string,
   TAccountNewAccount extends string,
   TProgram extends string = '11111111111111111111111111111111'
 >(
   input: CreateAccountInputWithSigners<TAccountPayer, TAccountNewAccount>
-): Promise<
-  CreateAccountInstructionWithSigners<
-    TProgram,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    WritableSignerAccount<TAccountNewAccount> &
-      IAccountSignerMeta<TAccountNewAccount>
-  >
+): CreateAccountInstructionWithSigners<
+  TProgram,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  WritableSignerAccount<TAccountNewAccount> &
+    IAccountSignerMeta<TAccountNewAccount>
 >;
-export async function getCreateAccountInstruction<
+export function getCreateAccountInstruction<
   TAccountPayer extends string,
   TAccountNewAccount extends string,
   TProgram extends string = '11111111111111111111111111111111'
 >(
   input: CreateAccountInput<TAccountPayer, TAccountNewAccount>
-): Promise<
-  CreateAccountInstruction<
-    TProgram,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    WritableSignerAccount<TAccountNewAccount> &
-      IAccountSignerMeta<TAccountNewAccount>
-  >
+): CreateAccountInstruction<
+  TProgram,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  WritableSignerAccount<TAccountNewAccount> &
+    IAccountSignerMeta<TAccountNewAccount>
 >;
-export async function getCreateAccountInstruction<
+export function getCreateAccountInstruction<
   TAccountPayer extends string,
   TAccountNewAccount extends string,
   TProgram extends string = '11111111111111111111111111111111'
@@ -284,7 +276,7 @@ export async function getCreateAccountInstruction<
     | Pick<Context, 'getProgramAddress'>
     | CreateAccountInput<TAccountPayer, TAccountNewAccount>,
   rawInput?: CreateAccountInput<TAccountPayer, TAccountNewAccount>
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -299,7 +291,7 @@ export async function getCreateAccountInstruction<
     '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'splSystem',
           address: defaultProgramAddress,
         })

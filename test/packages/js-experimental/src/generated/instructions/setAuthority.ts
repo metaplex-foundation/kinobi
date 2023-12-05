@@ -194,65 +194,57 @@ export type SetAuthorityAsyncInputWithSigners<
   newAuthority: SetAuthorityInstructionDataArgs['newAuthority'];
 };
 
-export async function getSetAuthorityInstruction<
+export function getSetAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: SetAuthorityInputWithSigners<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  SetAuthorityInstructionWithSigners<
-    TProgram,
-    TAccountCandyMachine,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>
-  >
+): SetAuthorityInstructionWithSigners<
+  TProgram,
+  TAccountCandyMachine,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>
 >;
-export async function getSetAuthorityInstruction<
+export function getSetAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  SetAuthorityInstruction<
-    TProgram,
-    TAccountCandyMachine,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>
-  >
+): SetAuthorityInstruction<
+  TProgram,
+  TAccountCandyMachine,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>
 >;
-export async function getSetAuthorityInstruction<
+export function getSetAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   input: SetAuthorityInputWithSigners<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  SetAuthorityInstructionWithSigners<
-    TProgram,
-    TAccountCandyMachine,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>
-  >
+): SetAuthorityInstructionWithSigners<
+  TProgram,
+  TAccountCandyMachine,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>
 >;
-export async function getSetAuthorityInstruction<
+export function getSetAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   input: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  SetAuthorityInstruction<
-    TProgram,
-    TAccountCandyMachine,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>
-  >
+): SetAuthorityInstruction<
+  TProgram,
+  TAccountCandyMachine,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>
 >;
-export async function getSetAuthorityInstruction<
+export function getSetAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
@@ -261,7 +253,7 @@ export async function getSetAuthorityInstruction<
     | Pick<Context, 'getProgramAddress'>
     | SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>,
   rawInput?: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -276,7 +268,7 @@ export async function getSetAuthorityInstruction<
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplCandyMachineCore',
           address: defaultProgramAddress,
         })

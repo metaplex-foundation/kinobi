@@ -272,7 +272,7 @@ export type CreateFrequencyRuleAsyncInputWithSigners<
   period: CreateFrequencyRuleInstructionDataArgs['period'];
 };
 
-export async function getCreateFrequencyRuleInstruction<
+export function getCreateFrequencyRuleInstruction<
   TAccountPayer extends string,
   TAccountFrequencyPda extends string,
   TAccountSystemProgram extends string,
@@ -284,15 +284,13 @@ export async function getCreateFrequencyRuleInstruction<
     TAccountFrequencyPda,
     TAccountSystemProgram
   >
-): Promise<
-  CreateFrequencyRuleInstructionWithSigners<
-    TProgram,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountFrequencyPda,
-    TAccountSystemProgram
-  >
+): CreateFrequencyRuleInstructionWithSigners<
+  TProgram,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountFrequencyPda,
+  TAccountSystemProgram
 >;
-export async function getCreateFrequencyRuleInstruction<
+export function getCreateFrequencyRuleInstruction<
   TAccountPayer extends string,
   TAccountFrequencyPda extends string,
   TAccountSystemProgram extends string,
@@ -304,15 +302,13 @@ export async function getCreateFrequencyRuleInstruction<
     TAccountFrequencyPda,
     TAccountSystemProgram
   >
-): Promise<
-  CreateFrequencyRuleInstruction<
-    TProgram,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountFrequencyPda,
-    TAccountSystemProgram
-  >
+): CreateFrequencyRuleInstruction<
+  TProgram,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountFrequencyPda,
+  TAccountSystemProgram
 >;
-export async function getCreateFrequencyRuleInstruction<
+export function getCreateFrequencyRuleInstruction<
   TAccountPayer extends string,
   TAccountFrequencyPda extends string,
   TAccountSystemProgram extends string,
@@ -323,15 +319,13 @@ export async function getCreateFrequencyRuleInstruction<
     TAccountFrequencyPda,
     TAccountSystemProgram
   >
-): Promise<
-  CreateFrequencyRuleInstructionWithSigners<
-    TProgram,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountFrequencyPda,
-    TAccountSystemProgram
-  >
+): CreateFrequencyRuleInstructionWithSigners<
+  TProgram,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountFrequencyPda,
+  TAccountSystemProgram
 >;
-export async function getCreateFrequencyRuleInstruction<
+export function getCreateFrequencyRuleInstruction<
   TAccountPayer extends string,
   TAccountFrequencyPda extends string,
   TAccountSystemProgram extends string,
@@ -342,15 +336,13 @@ export async function getCreateFrequencyRuleInstruction<
     TAccountFrequencyPda,
     TAccountSystemProgram
   >
-): Promise<
-  CreateFrequencyRuleInstruction<
-    TProgram,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountFrequencyPda,
-    TAccountSystemProgram
-  >
+): CreateFrequencyRuleInstruction<
+  TProgram,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountFrequencyPda,
+  TAccountSystemProgram
 >;
-export async function getCreateFrequencyRuleInstruction<
+export function getCreateFrequencyRuleInstruction<
   TAccountPayer extends string,
   TAccountFrequencyPda extends string,
   TAccountSystemProgram extends string,
@@ -368,7 +360,7 @@ export async function getCreateFrequencyRuleInstruction<
     TAccountFrequencyPda,
     TAccountSystemProgram
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -387,7 +379,7 @@ export async function getCreateFrequencyRuleInstruction<
     'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenAuthRules',
           address: defaultProgramAddress,
         })
@@ -414,7 +406,7 @@ export async function getCreateFrequencyRuleInstruction<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'

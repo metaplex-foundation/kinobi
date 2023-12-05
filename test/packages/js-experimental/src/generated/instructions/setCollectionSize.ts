@@ -273,7 +273,7 @@ export type SetCollectionSizeAsyncInputWithSigners<
   setCollectionSizeArgs: SetCollectionSizeInstructionDataArgs['setCollectionSizeArgs'];
 };
 
-export async function getSetCollectionSizeInstruction<
+export function getSetCollectionSizeInstruction<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -287,17 +287,15 @@ export async function getSetCollectionSizeInstruction<
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  SetCollectionSizeInstructionWithSigners<
-    TProgram,
-    TAccountCollectionMetadata,
-    WritableSignerAccount<TAccountCollectionAuthority> &
-      IAccountSignerMeta<TAccountCollectionAuthority>,
-    TAccountCollectionMint,
-    TAccountCollectionAuthorityRecord
-  >
+): SetCollectionSizeInstructionWithSigners<
+  TProgram,
+  TAccountCollectionMetadata,
+  WritableSignerAccount<TAccountCollectionAuthority> &
+    IAccountSignerMeta<TAccountCollectionAuthority>,
+  TAccountCollectionMint,
+  TAccountCollectionAuthorityRecord
 >;
-export async function getSetCollectionSizeInstruction<
+export function getSetCollectionSizeInstruction<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -311,17 +309,15 @@ export async function getSetCollectionSizeInstruction<
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  SetCollectionSizeInstruction<
-    TProgram,
-    TAccountCollectionMetadata,
-    WritableSignerAccount<TAccountCollectionAuthority> &
-      IAccountSignerMeta<TAccountCollectionAuthority>,
-    TAccountCollectionMint,
-    TAccountCollectionAuthorityRecord
-  >
+): SetCollectionSizeInstruction<
+  TProgram,
+  TAccountCollectionMetadata,
+  WritableSignerAccount<TAccountCollectionAuthority> &
+    IAccountSignerMeta<TAccountCollectionAuthority>,
+  TAccountCollectionMint,
+  TAccountCollectionAuthorityRecord
 >;
-export async function getSetCollectionSizeInstruction<
+export function getSetCollectionSizeInstruction<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -334,17 +330,15 @@ export async function getSetCollectionSizeInstruction<
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  SetCollectionSizeInstructionWithSigners<
-    TProgram,
-    TAccountCollectionMetadata,
-    WritableSignerAccount<TAccountCollectionAuthority> &
-      IAccountSignerMeta<TAccountCollectionAuthority>,
-    TAccountCollectionMint,
-    TAccountCollectionAuthorityRecord
-  >
+): SetCollectionSizeInstructionWithSigners<
+  TProgram,
+  TAccountCollectionMetadata,
+  WritableSignerAccount<TAccountCollectionAuthority> &
+    IAccountSignerMeta<TAccountCollectionAuthority>,
+  TAccountCollectionMint,
+  TAccountCollectionAuthorityRecord
 >;
-export async function getSetCollectionSizeInstruction<
+export function getSetCollectionSizeInstruction<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -357,17 +351,15 @@ export async function getSetCollectionSizeInstruction<
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  SetCollectionSizeInstruction<
-    TProgram,
-    TAccountCollectionMetadata,
-    WritableSignerAccount<TAccountCollectionAuthority> &
-      IAccountSignerMeta<TAccountCollectionAuthority>,
-    TAccountCollectionMint,
-    TAccountCollectionAuthorityRecord
-  >
+): SetCollectionSizeInstruction<
+  TProgram,
+  TAccountCollectionMetadata,
+  WritableSignerAccount<TAccountCollectionAuthority> &
+    IAccountSignerMeta<TAccountCollectionAuthority>,
+  TAccountCollectionMint,
+  TAccountCollectionAuthorityRecord
 >;
-export async function getSetCollectionSizeInstruction<
+export function getSetCollectionSizeInstruction<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -388,7 +380,7 @@ export async function getSetCollectionSizeInstruction<
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -408,7 +400,7 @@ export async function getSetCollectionSizeInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })

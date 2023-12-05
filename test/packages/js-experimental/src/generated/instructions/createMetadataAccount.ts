@@ -628,7 +628,7 @@ export async function getCreateMetadataAccountInstructionAsync<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
@@ -671,7 +671,7 @@ export async function getCreateMetadataAccountInstructionAsync<
     });
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'
@@ -710,7 +710,7 @@ export async function getCreateMetadataAccountInstructionAsync<
   });
 }
 
-export async function getCreateMetadataAccountInstruction<
+export function getCreateMetadataAccountInstruction<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountMintAuthority extends string,
@@ -730,20 +730,18 @@ export async function getCreateMetadataAccountInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  CreateMetadataAccountInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    TAccountMint,
-    ReadonlySignerAccount<TAccountMintAuthority> &
-      IAccountSignerMeta<TAccountMintAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): CreateMetadataAccountInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  TAccountMint,
+  ReadonlySignerAccount<TAccountMintAuthority> &
+    IAccountSignerMeta<TAccountMintAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getCreateMetadataAccountInstruction<
+export function getCreateMetadataAccountInstruction<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountMintAuthority extends string,
@@ -763,20 +761,18 @@ export async function getCreateMetadataAccountInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  CreateMetadataAccountInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountMint,
-    ReadonlySignerAccount<TAccountMintAuthority> &
-      IAccountSignerMeta<TAccountMintAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): CreateMetadataAccountInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountMint,
+  ReadonlySignerAccount<TAccountMintAuthority> &
+    IAccountSignerMeta<TAccountMintAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getCreateMetadataAccountInstruction<
+export function getCreateMetadataAccountInstruction<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountMintAuthority extends string,
@@ -795,20 +791,18 @@ export async function getCreateMetadataAccountInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  CreateMetadataAccountInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    TAccountMint,
-    ReadonlySignerAccount<TAccountMintAuthority> &
-      IAccountSignerMeta<TAccountMintAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): CreateMetadataAccountInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  TAccountMint,
+  ReadonlySignerAccount<TAccountMintAuthority> &
+    IAccountSignerMeta<TAccountMintAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getCreateMetadataAccountInstruction<
+export function getCreateMetadataAccountInstruction<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountMintAuthority extends string,
@@ -827,20 +821,18 @@ export async function getCreateMetadataAccountInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  CreateMetadataAccountInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountMint,
-    ReadonlySignerAccount<TAccountMintAuthority> &
-      IAccountSignerMeta<TAccountMintAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountRent
-  >
+): CreateMetadataAccountInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountMint,
+  ReadonlySignerAccount<TAccountMintAuthority> &
+    IAccountSignerMeta<TAccountMintAuthority>,
+  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function getCreateMetadataAccountInstruction<
+export function getCreateMetadataAccountInstruction<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountMintAuthority extends string,
@@ -870,7 +862,7 @@ export async function getCreateMetadataAccountInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -893,7 +885,7 @@ export async function getCreateMetadataAccountInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
@@ -931,7 +923,7 @@ export async function getCreateMetadataAccountInstruction<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'

@@ -143,33 +143,33 @@ export type PuffMetadataAsyncInputWithSigners<TAccountMetadata extends string> =
     metadata: Address<TAccountMetadata>;
   };
 
-export async function getPuffMetadataInstruction<
+export function getPuffMetadataInstruction<
   TAccountMetadata extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: PuffMetadataInputWithSigners<TAccountMetadata>
-): Promise<PuffMetadataInstructionWithSigners<TProgram, TAccountMetadata>>;
-export async function getPuffMetadataInstruction<
+): PuffMetadataInstructionWithSigners<TProgram, TAccountMetadata>;
+export function getPuffMetadataInstruction<
   TAccountMetadata extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: PuffMetadataInput<TAccountMetadata>
-): Promise<PuffMetadataInstruction<TProgram, TAccountMetadata>>;
-export async function getPuffMetadataInstruction<
+): PuffMetadataInstruction<TProgram, TAccountMetadata>;
+export function getPuffMetadataInstruction<
   TAccountMetadata extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: PuffMetadataInputWithSigners<TAccountMetadata>
-): Promise<PuffMetadataInstructionWithSigners<TProgram, TAccountMetadata>>;
-export async function getPuffMetadataInstruction<
+): PuffMetadataInstructionWithSigners<TProgram, TAccountMetadata>;
+export function getPuffMetadataInstruction<
   TAccountMetadata extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: PuffMetadataInput<TAccountMetadata>
-): Promise<PuffMetadataInstruction<TProgram, TAccountMetadata>>;
-export async function getPuffMetadataInstruction<
+): PuffMetadataInstruction<TProgram, TAccountMetadata>;
+export function getPuffMetadataInstruction<
   TAccountMetadata extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
@@ -177,7 +177,7 @@ export async function getPuffMetadataInstruction<
     | Pick<Context, 'getProgramAddress'>
     | PuffMetadataInput<TAccountMetadata>,
   rawInput?: PuffMetadataInput<TAccountMetadata>
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -192,7 +192,7 @@ export async function getPuffMetadataInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })

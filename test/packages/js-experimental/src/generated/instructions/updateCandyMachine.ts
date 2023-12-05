@@ -201,7 +201,7 @@ export type UpdateCandyMachineAsyncInputWithSigners<
   data: UpdateCandyMachineInstructionDataArgs['data'];
 };
 
-export async function getUpdateCandyMachineInstruction<
+export function getUpdateCandyMachineInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
@@ -211,30 +211,26 @@ export async function getUpdateCandyMachineInstruction<
     TAccountCandyMachine,
     TAccountAuthority
   >
-): Promise<
-  UpdateCandyMachineInstructionWithSigners<
-    TProgram,
-    TAccountCandyMachine,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>
-  >
+): UpdateCandyMachineInstructionWithSigners<
+  TProgram,
+  TAccountCandyMachine,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>
 >;
-export async function getUpdateCandyMachineInstruction<
+export function getUpdateCandyMachineInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  UpdateCandyMachineInstruction<
-    TProgram,
-    TAccountCandyMachine,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>
-  >
+): UpdateCandyMachineInstruction<
+  TProgram,
+  TAccountCandyMachine,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>
 >;
-export async function getUpdateCandyMachineInstruction<
+export function getUpdateCandyMachineInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
@@ -243,29 +239,25 @@ export async function getUpdateCandyMachineInstruction<
     TAccountCandyMachine,
     TAccountAuthority
   >
-): Promise<
-  UpdateCandyMachineInstructionWithSigners<
-    TProgram,
-    TAccountCandyMachine,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>
-  >
+): UpdateCandyMachineInstructionWithSigners<
+  TProgram,
+  TAccountCandyMachine,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>
 >;
-export async function getUpdateCandyMachineInstruction<
+export function getUpdateCandyMachineInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   input: UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  UpdateCandyMachineInstruction<
-    TProgram,
-    TAccountCandyMachine,
-    ReadonlySignerAccount<TAccountAuthority> &
-      IAccountSignerMeta<TAccountAuthority>
-  >
+): UpdateCandyMachineInstruction<
+  TProgram,
+  TAccountCandyMachine,
+  ReadonlySignerAccount<TAccountAuthority> &
+    IAccountSignerMeta<TAccountAuthority>
 >;
-export async function getUpdateCandyMachineInstruction<
+export function getUpdateCandyMachineInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
@@ -274,7 +266,7 @@ export async function getUpdateCandyMachineInstruction<
     | Pick<Context, 'getProgramAddress'>
     | UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>,
   rawInput?: UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<IInstruction> {
+): IInstruction {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -289,7 +281,7 @@ export async function getUpdateCandyMachineInstruction<
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplCandyMachineCore',
           address: defaultProgramAddress,
         })

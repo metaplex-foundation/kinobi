@@ -59,13 +59,14 @@ export function getInstructionFunctionHighLevelFragment(
     instructionNode,
     true
   );
+  const wrapInPromiseIfAsync = (value: string) =>
+    useAsync ? `Promise<${value}>` : value;
   const inputTypeFragment = getInputType(instructionNode, false, useAsync);
   const inputTypeWithSignersFragment = getInputType(
     instructionNode,
     true,
     useAsync
   );
-  const customGeneratedInstruction = `CustomGeneratedInstruction<${instructionTypeFragment.render}, TReturn>`;
   const renamedArgsText = [...renamedArgs.entries()]
     .map(([k, v]) => `${k}: input.${v}`)
     .join(', ');
@@ -110,7 +111,8 @@ export function getInstructionFunctionHighLevelFragment(
       resolvedInputs: resolvedInputsFragment,
       remainingAccounts: remainingAccountsFragment,
       bytesCreatedOnChain: bytesCreatedOnChainFragment,
-      customGeneratedInstruction,
+      useAsync,
+      wrapInPromiseIfAsync,
     }
   )
     .mergeImportsWith(
