@@ -3,6 +3,7 @@ import { camelCase, pascalCase } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import { ContextMap } from '../ContextMap';
 import { TypeManifest } from '../TypeManifest';
+import { hasAsyncDefaultValues } from '../asyncHelpers';
 import {
   Fragment,
   fragment,
@@ -21,6 +22,10 @@ export function getInstructionFunctionHighLevelFragment(
   resolvedInputs: ResolvedInstructionInput[],
   useAsync: boolean
 ): Fragment {
+  if (useAsync && !hasAsyncDefaultValues(resolvedInputs)) {
+    return fragment('');
+  }
+
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasDataArgs =
     !!instructionNode.dataArgs.link ||

@@ -1,5 +1,5 @@
 import * as nodes from '../../../nodes';
-import { InstructionDefault, pascalCase } from '../../../shared';
+import { pascalCase } from '../../../shared';
 import {
   ResolvedInstructionAccount,
   ResolvedInstructionArg,
@@ -7,6 +7,7 @@ import {
 } from '../../../visitors';
 import { ImportMap } from '../ImportMap';
 import { TypeManifest } from '../TypeManifest';
+import { isAsyncDefaultValue } from '../asyncHelpers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getInstructionInputTypeFragment(
@@ -140,23 +141,4 @@ function getAccountType(
   return fragment(`Address<${typeParam}>`).addImports('solanaAddresses', [
     'Address',
   ]);
-}
-
-function isAsyncDefaultValue(defaultsTo: InstructionDefault): boolean {
-  switch (defaultsTo.kind) {
-    case 'pda':
-      return true;
-    case 'conditional':
-    case 'conditionalResolver':
-      return (
-        (defaultsTo.ifFalse == null
-          ? false
-          : isAsyncDefaultValue(defaultsTo.ifFalse)) ||
-        (defaultsTo.ifTrue == null
-          ? false
-          : isAsyncDefaultValue(defaultsTo.ifTrue))
-      );
-    default:
-      return false;
-  }
 }
