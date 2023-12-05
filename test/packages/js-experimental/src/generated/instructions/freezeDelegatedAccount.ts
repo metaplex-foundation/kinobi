@@ -136,7 +136,6 @@ export function getFreezeDelegatedAccountInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type FreezeDelegatedAccountInput<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
@@ -156,7 +155,6 @@ export type FreezeDelegatedAccountInput<
   tokenProgram?: Address<TAccountTokenProgram>;
 };
 
-// Input.
 export type FreezeDelegatedAccountInputWithSigners<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
@@ -194,8 +192,7 @@ export function getFreezeDelegatedAccountInstruction<
   >
 ): FreezeDelegatedAccountInstructionWithSigners<
   TProgram,
-  WritableSignerAccount<TAccountDelegate> &
-    IAccountSignerMeta<TAccountDelegate>,
+  TAccountDelegate,
   TAccountTokenAccount,
   TAccountEdition,
   TAccountMint,
@@ -219,8 +216,7 @@ export function getFreezeDelegatedAccountInstruction<
   >
 ): FreezeDelegatedAccountInstruction<
   TProgram,
-  WritableSignerAccount<TAccountDelegate> &
-    IAccountSignerMeta<TAccountDelegate>,
+  TAccountDelegate,
   TAccountTokenAccount,
   TAccountEdition,
   TAccountMint,
@@ -243,8 +239,7 @@ export function getFreezeDelegatedAccountInstruction<
   >
 ): FreezeDelegatedAccountInstructionWithSigners<
   TProgram,
-  WritableSignerAccount<TAccountDelegate> &
-    IAccountSignerMeta<TAccountDelegate>,
+  TAccountDelegate,
   TAccountTokenAccount,
   TAccountEdition,
   TAccountMint,
@@ -267,8 +262,7 @@ export function getFreezeDelegatedAccountInstruction<
   >
 ): FreezeDelegatedAccountInstruction<
   TProgram,
-  WritableSignerAccount<TAccountDelegate> &
-    IAccountSignerMeta<TAccountDelegate>,
+  TAccountDelegate,
   TAccountTokenAccount,
   TAccountEdition,
   TAccountMint,

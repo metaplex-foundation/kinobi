@@ -111,7 +111,6 @@ export function getWithdrawInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type WithdrawInput<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string
@@ -120,7 +119,6 @@ export type WithdrawInput<
   authority?: Address<TAccountAuthority>;
 };
 
-// Input.
 export type WithdrawInputWithSigners<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string
@@ -139,8 +137,7 @@ export function getWithdrawInstruction<
 ): WithdrawInstructionWithSigners<
   TProgram,
   TAccountCandyMachine,
-  WritableSignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
+  TAccountAuthority
 >;
 export function getWithdrawInstruction<
   TAccountCandyMachine extends string,
@@ -149,12 +146,7 @@ export function getWithdrawInstruction<
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
-): WithdrawInstruction<
-  TProgram,
-  TAccountCandyMachine,
-  WritableSignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
->;
+): WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>;
 export function getWithdrawInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
@@ -164,8 +156,7 @@ export function getWithdrawInstruction<
 ): WithdrawInstructionWithSigners<
   TProgram,
   TAccountCandyMachine,
-  WritableSignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
+  TAccountAuthority
 >;
 export function getWithdrawInstruction<
   TAccountCandyMachine extends string,
@@ -173,12 +164,7 @@ export function getWithdrawInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   input: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
-): WithdrawInstruction<
-  TProgram,
-  TAccountCandyMachine,
-  WritableSignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
->;
+): WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>;
 export function getWithdrawInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,

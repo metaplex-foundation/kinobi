@@ -144,7 +144,6 @@ export function getVerifyCollectionInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type VerifyCollectionInput<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
@@ -167,7 +166,6 @@ export type VerifyCollectionInput<
   collectionMasterEditionAccount: Address<TAccountCollectionMasterEditionAccount>;
 };
 
-// Input.
 export type VerifyCollectionInputWithSigners<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
@@ -211,9 +209,8 @@ export function getVerifyCollectionInstruction<
 ): VerifyCollectionInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionAuthority,
+  TAccountPayer,
   TAccountCollectionMint,
   TAccountCollection,
   TAccountCollectionMasterEditionAccount
@@ -239,9 +236,8 @@ export function getVerifyCollectionInstruction<
 ): VerifyCollectionInstruction<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionAuthority,
+  TAccountPayer,
   TAccountCollectionMint,
   TAccountCollection,
   TAccountCollectionMasterEditionAccount
@@ -266,9 +262,8 @@ export function getVerifyCollectionInstruction<
 ): VerifyCollectionInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionAuthority,
+  TAccountPayer,
   TAccountCollectionMint,
   TAccountCollection,
   TAccountCollectionMasterEditionAccount
@@ -293,9 +288,8 @@ export function getVerifyCollectionInstruction<
 ): VerifyCollectionInstruction<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionAuthority,
+  TAccountPayer,
   TAccountCollectionMint,
   TAccountCollection,
   TAccountCollectionMasterEditionAccount

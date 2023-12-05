@@ -218,7 +218,6 @@ export function getMintInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type MintInput<
   TAccountToken extends string,
   TAccountMetadata extends string,
@@ -260,7 +259,6 @@ export type MintInput<
   mintArgs: MintInstructionDataArgs['mintArgs'];
 };
 
-// Input.
 export type MintInputWithSigners<
   TAccountToken extends string,
   TAccountMetadata extends string,
@@ -338,9 +336,8 @@ export function getMintInstruction<
   TAccountMetadata,
   TAccountMasterEdition,
   TAccountMint,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
+  TAccountPayer,
+  TAccountAuthority,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
   TAccountSplTokenProgram,
@@ -384,9 +381,8 @@ export function getMintInstruction<
   TAccountMetadata,
   TAccountMasterEdition,
   TAccountMint,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
+  TAccountPayer,
+  TAccountAuthority,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
   TAccountSplTokenProgram,
@@ -429,9 +425,8 @@ export function getMintInstruction<
   TAccountMetadata,
   TAccountMasterEdition,
   TAccountMint,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
+  TAccountPayer,
+  TAccountAuthority,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
   TAccountSplTokenProgram,
@@ -474,9 +469,8 @@ export function getMintInstruction<
   TAccountMetadata,
   TAccountMasterEdition,
   TAccountMint,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
+  TAccountPayer,
+  TAccountAuthority,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
   TAccountSplTokenProgram,

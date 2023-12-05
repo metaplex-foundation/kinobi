@@ -178,7 +178,6 @@ export function getDeprecatedMintPrintingTokensInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type DeprecatedMintPrintingTokensInput<
   TAccountDestination extends string,
   TAccountPrintingMint extends string,
@@ -205,7 +204,6 @@ export type DeprecatedMintPrintingTokensInput<
   mintPrintingTokensViaTokenArgs: DeprecatedMintPrintingTokensInstructionDataArgs['mintPrintingTokensViaTokenArgs'];
 };
 
-// Input.
 export type DeprecatedMintPrintingTokensInputWithSigners<
   TAccountDestination extends string,
   TAccountPrintingMint extends string,
@@ -256,8 +254,7 @@ export function getDeprecatedMintPrintingTokensInstruction<
   TProgram,
   TAccountDestination,
   TAccountPrintingMint,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountUpdateAuthority,
   TAccountMetadata,
   TAccountMasterEdition,
   TAccountTokenProgram,
@@ -287,8 +284,7 @@ export function getDeprecatedMintPrintingTokensInstruction<
   TProgram,
   TAccountDestination,
   TAccountPrintingMint,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountUpdateAuthority,
   TAccountMetadata,
   TAccountMasterEdition,
   TAccountTokenProgram,
@@ -317,8 +313,7 @@ export function getDeprecatedMintPrintingTokensInstruction<
   TProgram,
   TAccountDestination,
   TAccountPrintingMint,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountUpdateAuthority,
   TAccountMetadata,
   TAccountMasterEdition,
   TAccountTokenProgram,
@@ -347,8 +342,7 @@ export function getDeprecatedMintPrintingTokensInstruction<
   TProgram,
   TAccountDestination,
   TAccountPrintingMint,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountUpdateAuthority,
   TAccountMetadata,
   TAccountMasterEdition,
   TAccountTokenProgram,

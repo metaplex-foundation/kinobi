@@ -226,7 +226,6 @@ export function getTransferOutOfEscrowInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type TransferOutOfEscrowInput<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
@@ -271,7 +270,6 @@ export type TransferOutOfEscrowInput<
   amount: TransferOutOfEscrowInstructionDataArgs['amount'];
 };
 
-// Input.
 export type TransferOutOfEscrowInputWithSigners<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
@@ -352,7 +350,7 @@ export function getTransferOutOfEscrowInstruction<
   TProgram,
   TAccountEscrow,
   TAccountMetadata,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountAttributeMint,
   TAccountAttributeSrc,
   TAccountAttributeDst,
@@ -362,8 +360,7 @@ export function getTransferOutOfEscrowInstruction<
   TAccountAtaProgram,
   TAccountTokenProgram,
   TAccountSysvarInstructions,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
+  TAccountAuthority
 >;
 export function getTransferOutOfEscrowInstruction<
   TAccountEscrow extends string,
@@ -401,7 +398,7 @@ export function getTransferOutOfEscrowInstruction<
   TProgram,
   TAccountEscrow,
   TAccountMetadata,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountAttributeMint,
   TAccountAttributeSrc,
   TAccountAttributeDst,
@@ -411,8 +408,7 @@ export function getTransferOutOfEscrowInstruction<
   TAccountAtaProgram,
   TAccountTokenProgram,
   TAccountSysvarInstructions,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
+  TAccountAuthority
 >;
 export function getTransferOutOfEscrowInstruction<
   TAccountEscrow extends string,
@@ -449,7 +445,7 @@ export function getTransferOutOfEscrowInstruction<
   TProgram,
   TAccountEscrow,
   TAccountMetadata,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountAttributeMint,
   TAccountAttributeSrc,
   TAccountAttributeDst,
@@ -459,8 +455,7 @@ export function getTransferOutOfEscrowInstruction<
   TAccountAtaProgram,
   TAccountTokenProgram,
   TAccountSysvarInstructions,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
+  TAccountAuthority
 >;
 export function getTransferOutOfEscrowInstruction<
   TAccountEscrow extends string,
@@ -497,7 +492,7 @@ export function getTransferOutOfEscrowInstruction<
   TProgram,
   TAccountEscrow,
   TAccountMetadata,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountAttributeMint,
   TAccountAttributeSrc,
   TAccountAttributeDst,
@@ -507,8 +502,7 @@ export function getTransferOutOfEscrowInstruction<
   TAccountAtaProgram,
   TAccountTokenProgram,
   TAccountSysvarInstructions,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
+  TAccountAuthority
 >;
 export function getTransferOutOfEscrowInstruction<
   TAccountEscrow extends string,

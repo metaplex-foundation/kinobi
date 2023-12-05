@@ -236,7 +236,6 @@ export function getSetCollectionInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type SetCollectionInput<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
@@ -269,7 +268,6 @@ export type SetCollectionInput<
   systemProgram?: Address<TAccountSystemProgram>;
 };
 
-// Input.
 export type SetCollectionInputWithSigners<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
@@ -339,15 +337,13 @@ export function getSetCollectionInstruction<
 ): SetCollectionInstructionWithSigners<
   TProgram,
   TAccountCandyMachine,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
+  TAccountAuthority,
   TAccountAuthorityPda,
-  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountCollectionMint,
   TAccountCollectionMetadata,
   TAccountCollectionAuthorityRecord,
-  WritableSignerAccount<TAccountNewCollectionUpdateAuthority> &
-    IAccountSignerMeta<TAccountNewCollectionUpdateAuthority>,
+  TAccountNewCollectionUpdateAuthority,
   TAccountNewCollectionMetadata,
   TAccountNewCollectionMint,
   TAccountNewCollectionMasterEdition,
@@ -392,15 +388,13 @@ export function getSetCollectionInstruction<
 ): SetCollectionInstruction<
   TProgram,
   TAccountCandyMachine,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
+  TAccountAuthority,
   TAccountAuthorityPda,
-  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountCollectionMint,
   TAccountCollectionMetadata,
   TAccountCollectionAuthorityRecord,
-  WritableSignerAccount<TAccountNewCollectionUpdateAuthority> &
-    IAccountSignerMeta<TAccountNewCollectionUpdateAuthority>,
+  TAccountNewCollectionUpdateAuthority,
   TAccountNewCollectionMetadata,
   TAccountNewCollectionMint,
   TAccountNewCollectionMasterEdition,
@@ -444,15 +438,13 @@ export function getSetCollectionInstruction<
 ): SetCollectionInstructionWithSigners<
   TProgram,
   TAccountCandyMachine,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
+  TAccountAuthority,
   TAccountAuthorityPda,
-  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountCollectionMint,
   TAccountCollectionMetadata,
   TAccountCollectionAuthorityRecord,
-  WritableSignerAccount<TAccountNewCollectionUpdateAuthority> &
-    IAccountSignerMeta<TAccountNewCollectionUpdateAuthority>,
+  TAccountNewCollectionUpdateAuthority,
   TAccountNewCollectionMetadata,
   TAccountNewCollectionMint,
   TAccountNewCollectionMasterEdition,
@@ -496,15 +488,13 @@ export function getSetCollectionInstruction<
 ): SetCollectionInstruction<
   TProgram,
   TAccountCandyMachine,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
+  TAccountAuthority,
   TAccountAuthorityPda,
-  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountCollectionMint,
   TAccountCollectionMetadata,
   TAccountCollectionAuthorityRecord,
-  WritableSignerAccount<TAccountNewCollectionUpdateAuthority> &
-    IAccountSignerMeta<TAccountNewCollectionUpdateAuthority>,
+  TAccountNewCollectionUpdateAuthority,
   TAccountNewCollectionMetadata,
   TAccountNewCollectionMint,
   TAccountNewCollectionMasterEdition,

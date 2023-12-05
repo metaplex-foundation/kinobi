@@ -174,7 +174,6 @@ export function getCreateEscrowAccountInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type CreateEscrowAccountInput<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
@@ -206,7 +205,6 @@ export type CreateEscrowAccountInput<
   authority?: Address<TAccountAuthority>;
 };
 
-// Input.
 export type CreateEscrowAccountInputWithSigners<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
@@ -269,11 +267,10 @@ export function getCreateEscrowAccountInstruction<
   TAccountMint,
   TAccountTokenAccount,
   TAccountEdition,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
+  TAccountAuthority
 >;
 export function getCreateEscrowAccountInstruction<
   TAccountEscrow extends string,
@@ -306,11 +303,10 @@ export function getCreateEscrowAccountInstruction<
   TAccountMint,
   TAccountTokenAccount,
   TAccountEdition,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
+  TAccountAuthority
 >;
 export function getCreateEscrowAccountInstruction<
   TAccountEscrow extends string,
@@ -342,11 +338,10 @@ export function getCreateEscrowAccountInstruction<
   TAccountMint,
   TAccountTokenAccount,
   TAccountEdition,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
+  TAccountAuthority
 >;
 export function getCreateEscrowAccountInstruction<
   TAccountEscrow extends string,
@@ -378,11 +373,10 @@ export function getCreateEscrowAccountInstruction<
   TAccountMint,
   TAccountTokenAccount,
   TAccountEdition,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
+  TAccountAuthority
 >;
 export function getCreateEscrowAccountInstruction<
   TAccountEscrow extends string,

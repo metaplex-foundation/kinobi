@@ -201,7 +201,6 @@ export function getApproveUseAuthorityInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type ApproveUseAuthorityInput<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
@@ -240,7 +239,6 @@ export type ApproveUseAuthorityInput<
   numberOfUses: ApproveUseAuthorityInstructionDataArgs['numberOfUses'];
 };
 
-// Input.
 export type ApproveUseAuthorityInputWithSigners<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
@@ -310,8 +308,8 @@ export function getApproveUseAuthorityInstruction<
 ): ApproveUseAuthorityInstructionWithSigners<
   TProgram,
   TAccountUseAuthorityRecord,
-  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountOwner,
+  TAccountPayer,
   TAccountUser,
   TAccountOwnerTokenAccount,
   TAccountMetadata,
@@ -352,8 +350,8 @@ export function getApproveUseAuthorityInstruction<
 ): ApproveUseAuthorityInstruction<
   TProgram,
   TAccountUseAuthorityRecord,
-  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountOwner,
+  TAccountPayer,
   TAccountUser,
   TAccountOwnerTokenAccount,
   TAccountMetadata,
@@ -393,8 +391,8 @@ export function getApproveUseAuthorityInstruction<
 ): ApproveUseAuthorityInstructionWithSigners<
   TProgram,
   TAccountUseAuthorityRecord,
-  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountOwner,
+  TAccountPayer,
   TAccountUser,
   TAccountOwnerTokenAccount,
   TAccountMetadata,
@@ -434,8 +432,8 @@ export function getApproveUseAuthorityInstruction<
 ): ApproveUseAuthorityInstruction<
   TProgram,
   TAccountUseAuthorityRecord,
-  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountOwner,
+  TAccountPayer,
   TAccountUser,
   TAccountOwnerTokenAccount,
   TAccountMetadata,

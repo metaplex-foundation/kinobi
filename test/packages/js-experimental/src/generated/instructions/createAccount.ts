@@ -135,7 +135,6 @@ export function getCreateAccountInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type CreateAccountInput<
   TAccountPayer extends string,
   TAccountNewAccount extends string
@@ -147,7 +146,6 @@ export type CreateAccountInput<
   programId: CreateAccountInstructionDataArgs['programId'];
 };
 
-// Input.
 export type CreateAccountInputWithSigners<
   TAccountPayer extends string,
   TAccountNewAccount extends string
@@ -168,9 +166,8 @@ export function getCreateAccountInstruction<
   input: CreateAccountInputWithSigners<TAccountPayer, TAccountNewAccount>
 ): CreateAccountInstructionWithSigners<
   TProgram,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-  WritableSignerAccount<TAccountNewAccount> &
-    IAccountSignerMeta<TAccountNewAccount>
+  TAccountPayer,
+  TAccountNewAccount
 >;
 export function getCreateAccountInstruction<
   TAccountPayer extends string,
@@ -179,12 +176,7 @@ export function getCreateAccountInstruction<
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: CreateAccountInput<TAccountPayer, TAccountNewAccount>
-): CreateAccountInstruction<
-  TProgram,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-  WritableSignerAccount<TAccountNewAccount> &
-    IAccountSignerMeta<TAccountNewAccount>
->;
+): CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>;
 export function getCreateAccountInstruction<
   TAccountPayer extends string,
   TAccountNewAccount extends string,
@@ -193,9 +185,8 @@ export function getCreateAccountInstruction<
   input: CreateAccountInputWithSigners<TAccountPayer, TAccountNewAccount>
 ): CreateAccountInstructionWithSigners<
   TProgram,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-  WritableSignerAccount<TAccountNewAccount> &
-    IAccountSignerMeta<TAccountNewAccount>
+  TAccountPayer,
+  TAccountNewAccount
 >;
 export function getCreateAccountInstruction<
   TAccountPayer extends string,
@@ -203,12 +194,7 @@ export function getCreateAccountInstruction<
   TProgram extends string = '11111111111111111111111111111111'
 >(
   input: CreateAccountInput<TAccountPayer, TAccountNewAccount>
-): CreateAccountInstruction<
-  TProgram,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-  WritableSignerAccount<TAccountNewAccount> &
-    IAccountSignerMeta<TAccountNewAccount>
->;
+): CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>;
 export function getCreateAccountInstruction<
   TAccountPayer extends string,
   TAccountNewAccount extends string,

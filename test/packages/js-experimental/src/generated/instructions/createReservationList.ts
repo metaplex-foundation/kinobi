@@ -128,7 +128,6 @@ export type CreateReservationListInstructionWithSigners<
     ]
   >;
 
-// Input.
 export type CreateReservationListInput<
   TAccountReservationList extends string,
   TAccountPayer extends string,
@@ -157,7 +156,6 @@ export type CreateReservationListInput<
   rent?: Address<TAccountRent>;
 };
 
-// Input.
 export type CreateReservationListInputWithSigners<
   TAccountReservationList extends string,
   TAccountPayer extends string,
@@ -211,9 +209,8 @@ export function getCreateReservationListInstruction<
 ): CreateReservationListInstructionWithSigners<
   TProgram,
   TAccountReservationList,
-  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountPayer,
+  TAccountUpdateAuthority,
   TAccountMasterEdition,
   TAccountResource,
   TAccountMetadata,
@@ -245,9 +242,8 @@ export function getCreateReservationListInstruction<
 ): CreateReservationListInstruction<
   TProgram,
   TAccountReservationList,
-  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountPayer,
+  TAccountUpdateAuthority,
   TAccountMasterEdition,
   TAccountResource,
   TAccountMetadata,
@@ -278,9 +274,8 @@ export function getCreateReservationListInstruction<
 ): CreateReservationListInstructionWithSigners<
   TProgram,
   TAccountReservationList,
-  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountPayer,
+  TAccountUpdateAuthority,
   TAccountMasterEdition,
   TAccountResource,
   TAccountMetadata,
@@ -311,9 +306,8 @@ export function getCreateReservationListInstruction<
 ): CreateReservationListInstruction<
   TProgram,
   TAccountReservationList,
-  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountPayer,
+  TAccountUpdateAuthority,
   TAccountMasterEdition,
   TAccountResource,
   TAccountMetadata,

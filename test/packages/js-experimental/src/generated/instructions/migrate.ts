@@ -195,7 +195,6 @@ export function getMigrateInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type MigrateInput<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -231,7 +230,6 @@ export type MigrateInput<
   migrateArgs: MigrateInstructionDataArgs['migrateArgs'];
 };
 
-// Input.
 export type MigrateInputWithSigners<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -299,8 +297,7 @@ export function getMigrateInstruction<
   TAccountMasterEdition,
   TAccountTokenAccount,
   TAccountMint,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountUpdateAuthority,
   TAccountCollectionMetadata,
   TAccountTokenProgram,
   TAccountSystemProgram,
@@ -339,8 +336,7 @@ export function getMigrateInstruction<
   TAccountMasterEdition,
   TAccountTokenAccount,
   TAccountMint,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountUpdateAuthority,
   TAccountCollectionMetadata,
   TAccountTokenProgram,
   TAccountSystemProgram,
@@ -378,8 +374,7 @@ export function getMigrateInstruction<
   TAccountMasterEdition,
   TAccountTokenAccount,
   TAccountMint,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountUpdateAuthority,
   TAccountCollectionMetadata,
   TAccountTokenProgram,
   TAccountSystemProgram,
@@ -417,8 +412,7 @@ export function getMigrateInstruction<
   TAccountMasterEdition,
   TAccountTokenAccount,
   TAccountMint,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountUpdateAuthority,
   TAccountCollectionMetadata,
   TAccountTokenProgram,
   TAccountSystemProgram,

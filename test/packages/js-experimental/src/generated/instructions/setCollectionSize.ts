@@ -143,7 +143,6 @@ export function getSetCollectionSizeInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type SetCollectionSizeInput<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
@@ -161,7 +160,6 @@ export type SetCollectionSizeInput<
   setCollectionSizeArgs: SetCollectionSizeInstructionDataArgs['setCollectionSizeArgs'];
 };
 
-// Input.
 export type SetCollectionSizeInputWithSigners<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
@@ -196,8 +194,7 @@ export function getSetCollectionSizeInstruction<
 ): SetCollectionSizeInstructionWithSigners<
   TProgram,
   TAccountCollectionMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
+  TAccountCollectionAuthority,
   TAccountCollectionMint,
   TAccountCollectionAuthorityRecord
 >;
@@ -218,8 +215,7 @@ export function getSetCollectionSizeInstruction<
 ): SetCollectionSizeInstruction<
   TProgram,
   TAccountCollectionMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
+  TAccountCollectionAuthority,
   TAccountCollectionMint,
   TAccountCollectionAuthorityRecord
 >;
@@ -239,8 +235,7 @@ export function getSetCollectionSizeInstruction<
 ): SetCollectionSizeInstructionWithSigners<
   TProgram,
   TAccountCollectionMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
+  TAccountCollectionAuthority,
   TAccountCollectionMint,
   TAccountCollectionAuthorityRecord
 >;
@@ -260,8 +255,7 @@ export function getSetCollectionSizeInstruction<
 ): SetCollectionSizeInstruction<
   TProgram,
   TAccountCollectionMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
+  TAccountCollectionAuthority,
   TAccountCollectionMint,
   TAccountCollectionAuthorityRecord
 >;

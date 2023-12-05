@@ -120,7 +120,6 @@ export function getSetAuthorityInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type SetAuthorityInput<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string
@@ -130,7 +129,6 @@ export type SetAuthorityInput<
   newAuthority: SetAuthorityInstructionDataArgs['newAuthority'];
 };
 
-// Input.
 export type SetAuthorityInputWithSigners<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string
@@ -150,8 +148,7 @@ export function getSetAuthorityInstruction<
 ): SetAuthorityInstructionWithSigners<
   TProgram,
   TAccountCandyMachine,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
+  TAccountAuthority
 >;
 export function getSetAuthorityInstruction<
   TAccountCandyMachine extends string,
@@ -160,12 +157,7 @@ export function getSetAuthorityInstruction<
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
-): SetAuthorityInstruction<
-  TProgram,
-  TAccountCandyMachine,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
->;
+): SetAuthorityInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>;
 export function getSetAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
@@ -175,8 +167,7 @@ export function getSetAuthorityInstruction<
 ): SetAuthorityInstructionWithSigners<
   TProgram,
   TAccountCandyMachine,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
+  TAccountAuthority
 >;
 export function getSetAuthorityInstruction<
   TAccountCandyMachine extends string,
@@ -184,12 +175,7 @@ export function getSetAuthorityInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   input: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
-): SetAuthorityInstruction<
-  TProgram,
-  TAccountCandyMachine,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
->;
+): SetAuthorityInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>;
 export function getSetAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,

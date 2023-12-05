@@ -147,7 +147,6 @@ export function getUnverifyCollectionInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type UnverifyCollectionInput<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
@@ -170,7 +169,6 @@ export type UnverifyCollectionInput<
   collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
 };
 
-// Input.
 export type UnverifyCollectionInputWithSigners<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
@@ -214,8 +212,7 @@ export function getUnverifyCollectionInstruction<
 ): UnverifyCollectionInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
+  TAccountCollectionAuthority,
   TAccountCollectionMint,
   TAccountCollection,
   TAccountCollectionMasterEditionAccount,
@@ -242,8 +239,7 @@ export function getUnverifyCollectionInstruction<
 ): UnverifyCollectionInstruction<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
+  TAccountCollectionAuthority,
   TAccountCollectionMint,
   TAccountCollection,
   TAccountCollectionMasterEditionAccount,
@@ -269,8 +265,7 @@ export function getUnverifyCollectionInstruction<
 ): UnverifyCollectionInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
+  TAccountCollectionAuthority,
   TAccountCollectionMint,
   TAccountCollection,
   TAccountCollectionMasterEditionAccount,
@@ -296,8 +291,7 @@ export function getUnverifyCollectionInstruction<
 ): UnverifyCollectionInstruction<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
+  TAccountCollectionAuthority,
   TAccountCollectionMint,
   TAccountCollection,
   TAccountCollectionMasterEditionAccount,

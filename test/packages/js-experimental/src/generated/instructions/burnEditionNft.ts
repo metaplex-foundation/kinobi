@@ -184,7 +184,6 @@ export function getBurnEditionNftInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type BurnEditionNftInput<
   TAccountMetadata extends string,
   TAccountOwner extends string,
@@ -219,7 +218,6 @@ export type BurnEditionNftInput<
   splTokenProgram?: Address<TAccountSplTokenProgram>;
 };
 
-// Input.
 export type BurnEditionNftInputWithSigners<
   TAccountMetadata extends string,
   TAccountOwner extends string,
@@ -283,7 +281,7 @@ export function getBurnEditionNftInstruction<
 ): BurnEditionNftInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountOwner,
   TAccountPrintEditionMint,
   TAccountMasterEditionMint,
   TAccountPrintEditionTokenAccount,
@@ -322,7 +320,7 @@ export function getBurnEditionNftInstruction<
 ): BurnEditionNftInstruction<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountOwner,
   TAccountPrintEditionMint,
   TAccountMasterEditionMint,
   TAccountPrintEditionTokenAccount,
@@ -360,7 +358,7 @@ export function getBurnEditionNftInstruction<
 ): BurnEditionNftInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountOwner,
   TAccountPrintEditionMint,
   TAccountMasterEditionMint,
   TAccountPrintEditionTokenAccount,
@@ -398,7 +396,7 @@ export function getBurnEditionNftInstruction<
 ): BurnEditionNftInstruction<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountOwner,
   TAccountPrintEditionMint,
   TAccountMasterEditionMint,
   TAccountPrintEditionTokenAccount,

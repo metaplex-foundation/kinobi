@@ -252,7 +252,6 @@ export function getCreateMetadataAccountInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type CreateMetadataAccountAsyncInput<
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -281,7 +280,6 @@ export type CreateMetadataAccountAsyncInput<
   metadataBump?: CreateMetadataAccountInstructionDataArgs['metadataBump'];
 };
 
-// Input.
 export type CreateMetadataAccountAsyncInputWithSigners<
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -335,9 +333,8 @@ export async function getCreateMetadataAccountInstructionAsync<
     TProgram,
     TAccountMetadata,
     TAccountMint,
-    ReadonlySignerAccount<TAccountMintAuthority> &
-      IAccountSignerMeta<TAccountMintAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountMintAuthority,
+    TAccountPayer,
     TAccountUpdateAuthority,
     TAccountSystemProgram,
     TAccountRent
@@ -368,9 +365,8 @@ export async function getCreateMetadataAccountInstructionAsync<
     TProgram,
     TAccountMetadata,
     TAccountMint,
-    ReadonlySignerAccount<TAccountMintAuthority> &
-      IAccountSignerMeta<TAccountMintAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountMintAuthority,
+    TAccountPayer,
     TAccountUpdateAuthority,
     TAccountSystemProgram,
     TAccountRent
@@ -400,9 +396,8 @@ export async function getCreateMetadataAccountInstructionAsync<
     TProgram,
     TAccountMetadata,
     TAccountMint,
-    ReadonlySignerAccount<TAccountMintAuthority> &
-      IAccountSignerMeta<TAccountMintAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountMintAuthority,
+    TAccountPayer,
     TAccountUpdateAuthority,
     TAccountSystemProgram,
     TAccountRent
@@ -432,9 +427,8 @@ export async function getCreateMetadataAccountInstructionAsync<
     TProgram,
     TAccountMetadata,
     TAccountMint,
-    ReadonlySignerAccount<TAccountMintAuthority> &
-      IAccountSignerMeta<TAccountMintAuthority>,
-    WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+    TAccountMintAuthority,
+    TAccountPayer,
     TAccountUpdateAuthority,
     TAccountSystemProgram,
     TAccountRent
@@ -575,7 +569,6 @@ export async function getCreateMetadataAccountInstructionAsync<
   });
 }
 
-// Input.
 export type CreateMetadataAccountInput<
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -604,7 +597,6 @@ export type CreateMetadataAccountInput<
   metadataBump?: CreateMetadataAccountInstructionDataArgs['metadataBump'];
 };
 
-// Input.
 export type CreateMetadataAccountInputWithSigners<
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -657,9 +649,8 @@ export function getCreateMetadataAccountInstruction<
   TProgram,
   TAccountMetadata,
   TAccountMint,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountMintAuthority,
+  TAccountPayer,
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountRent
@@ -688,9 +679,8 @@ export function getCreateMetadataAccountInstruction<
   TProgram,
   TAccountMetadata,
   TAccountMint,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountMintAuthority,
+  TAccountPayer,
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountRent
@@ -718,9 +708,8 @@ export function getCreateMetadataAccountInstruction<
   TProgram,
   TAccountMetadata,
   TAccountMint,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountMintAuthority,
+  TAccountPayer,
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountRent
@@ -748,9 +737,8 @@ export function getCreateMetadataAccountInstruction<
   TProgram,
   TAccountMetadata,
   TAccountMint,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountMintAuthority,
+  TAccountPayer,
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountRent

@@ -236,7 +236,6 @@ export function getDeprecatedCreateMasterEditionInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type DeprecatedCreateMasterEditionInput<
   TAccountEdition extends string,
   TAccountMint extends string,
@@ -281,7 +280,6 @@ export type DeprecatedCreateMasterEditionInput<
   createMasterEditionArgs: DeprecatedCreateMasterEditionInstructionDataArgs['createMasterEditionArgs'];
 };
 
-// Input.
 export type DeprecatedCreateMasterEditionInputWithSigners<
   TAccountEdition extends string,
   TAccountMint extends string,
@@ -364,19 +362,15 @@ export function getDeprecatedCreateMasterEditionInstruction<
   TAccountMint,
   TAccountPrintingMint,
   TAccountOneTimePrintingAuthorizationMint,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
-  ReadonlySignerAccount<TAccountPrintingMintAuthority> &
-    IAccountSignerMeta<TAccountPrintingMintAuthority>,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
+  TAccountUpdateAuthority,
+  TAccountPrintingMintAuthority,
+  TAccountMintAuthority,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountTokenProgram,
   TAccountSystemProgram,
   TAccountRent,
-  ReadonlySignerAccount<TAccountOneTimePrintingAuthorizationMintAuthority> &
-    IAccountSignerMeta<TAccountOneTimePrintingAuthorizationMintAuthority>
+  TAccountOneTimePrintingAuthorizationMintAuthority
 >;
 export function getDeprecatedCreateMasterEditionInstruction<
   TAccountEdition extends string,
@@ -416,19 +410,15 @@ export function getDeprecatedCreateMasterEditionInstruction<
   TAccountMint,
   TAccountPrintingMint,
   TAccountOneTimePrintingAuthorizationMint,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
-  ReadonlySignerAccount<TAccountPrintingMintAuthority> &
-    IAccountSignerMeta<TAccountPrintingMintAuthority>,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
+  TAccountUpdateAuthority,
+  TAccountPrintingMintAuthority,
+  TAccountMintAuthority,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountTokenProgram,
   TAccountSystemProgram,
   TAccountRent,
-  ReadonlySignerAccount<TAccountOneTimePrintingAuthorizationMintAuthority> &
-    IAccountSignerMeta<TAccountOneTimePrintingAuthorizationMintAuthority>
+  TAccountOneTimePrintingAuthorizationMintAuthority
 >;
 export function getDeprecatedCreateMasterEditionInstruction<
   TAccountEdition extends string,
@@ -467,19 +457,15 @@ export function getDeprecatedCreateMasterEditionInstruction<
   TAccountMint,
   TAccountPrintingMint,
   TAccountOneTimePrintingAuthorizationMint,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
-  ReadonlySignerAccount<TAccountPrintingMintAuthority> &
-    IAccountSignerMeta<TAccountPrintingMintAuthority>,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
+  TAccountUpdateAuthority,
+  TAccountPrintingMintAuthority,
+  TAccountMintAuthority,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountTokenProgram,
   TAccountSystemProgram,
   TAccountRent,
-  ReadonlySignerAccount<TAccountOneTimePrintingAuthorizationMintAuthority> &
-    IAccountSignerMeta<TAccountOneTimePrintingAuthorizationMintAuthority>
+  TAccountOneTimePrintingAuthorizationMintAuthority
 >;
 export function getDeprecatedCreateMasterEditionInstruction<
   TAccountEdition extends string,
@@ -518,19 +504,15 @@ export function getDeprecatedCreateMasterEditionInstruction<
   TAccountMint,
   TAccountPrintingMint,
   TAccountOneTimePrintingAuthorizationMint,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
-  ReadonlySignerAccount<TAccountPrintingMintAuthority> &
-    IAccountSignerMeta<TAccountPrintingMintAuthority>,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
+  TAccountUpdateAuthority,
+  TAccountPrintingMintAuthority,
+  TAccountMintAuthority,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountTokenProgram,
   TAccountSystemProgram,
   TAccountRent,
-  ReadonlySignerAccount<TAccountOneTimePrintingAuthorizationMintAuthority> &
-    IAccountSignerMeta<TAccountOneTimePrintingAuthorizationMintAuthority>
+  TAccountOneTimePrintingAuthorizationMintAuthority
 >;
 export function getDeprecatedCreateMasterEditionInstruction<
   TAccountEdition extends string,

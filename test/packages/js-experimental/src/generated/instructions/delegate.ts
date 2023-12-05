@@ -223,7 +223,6 @@ export function getDelegateInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type DelegateInput<
   TAccountDelegateRecord extends string,
   TAccountDelegate extends string,
@@ -268,7 +267,6 @@ export type DelegateInput<
   delegateArgs: DelegateInstructionDataArgs['delegateArgs'];
 };
 
-// Input.
 export type DelegateInputWithSigners<
   TAccountDelegateRecord extends string,
   TAccountDelegate extends string,
@@ -353,9 +351,8 @@ export function getDelegateInstruction<
   TAccountMasterEdition,
   TAccountMint,
   TAccountToken,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountAuthority,
+  TAccountPayer,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
   TAccountSplTokenProgram,
@@ -402,9 +399,8 @@ export function getDelegateInstruction<
   TAccountMasterEdition,
   TAccountMint,
   TAccountToken,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountAuthority,
+  TAccountPayer,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
   TAccountSplTokenProgram,
@@ -450,9 +446,8 @@ export function getDelegateInstruction<
   TAccountMasterEdition,
   TAccountMint,
   TAccountToken,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountAuthority,
+  TAccountPayer,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
   TAccountSplTokenProgram,
@@ -498,9 +493,8 @@ export function getDelegateInstruction<
   TAccountMasterEdition,
   TAccountMint,
   TAccountToken,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountAuthority,
+  TAccountPayer,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
   TAccountSplTokenProgram,

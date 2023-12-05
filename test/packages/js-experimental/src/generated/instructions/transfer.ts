@@ -250,7 +250,6 @@ export function getTransferInstructionDataCodec(): Codec<
 
 export type TransferInstructionExtraArgs = { tokenStandard: TokenStandardArgs };
 
-// Input.
 export type TransferInput<
   TAccountAuthority extends string,
   TAccountDelegateRecord extends string,
@@ -302,7 +301,6 @@ export type TransferInput<
   tokenStandard?: TransferInstructionExtraArgs['tokenStandard'];
 };
 
-// Input.
 export type TransferInputWithSigners<
   TAccountAuthority extends string,
   TAccountDelegateRecord extends string,
@@ -392,8 +390,7 @@ export function getTransferInstruction<
   >
 ): TransferInstructionWithSigners<
   TProgram,
-  WritableSignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
+  TAccountAuthority,
   TAccountDelegateRecord,
   TAccountToken,
   TAccountTokenOwner,
@@ -447,8 +444,7 @@ export function getTransferInstruction<
   >
 ): TransferInstruction<
   TProgram,
-  WritableSignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
+  TAccountAuthority,
   TAccountDelegateRecord,
   TAccountToken,
   TAccountTokenOwner,
@@ -501,8 +497,7 @@ export function getTransferInstruction<
   >
 ): TransferInstructionWithSigners<
   TProgram,
-  WritableSignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
+  TAccountAuthority,
   TAccountDelegateRecord,
   TAccountToken,
   TAccountTokenOwner,
@@ -555,8 +550,7 @@ export function getTransferInstruction<
   >
 ): TransferInstruction<
   TProgram,
-  WritableSignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
+  TAccountAuthority,
   TAccountDelegateRecord,
   TAccountToken,
   TAccountTokenOwner,

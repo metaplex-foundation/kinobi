@@ -167,7 +167,6 @@ export function getApproveCollectionAuthorityInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type ApproveCollectionAuthorityInput<
   TAccountCollectionAuthorityRecord extends string,
   TAccountNewCollectionAuthority extends string,
@@ -196,7 +195,6 @@ export type ApproveCollectionAuthorityInput<
   rent?: Address<TAccountRent>;
 };
 
-// Input.
 export type ApproveCollectionAuthorityInputWithSigners<
   TAccountCollectionAuthorityRecord extends string,
   TAccountNewCollectionAuthority extends string,
@@ -251,9 +249,8 @@ export function getApproveCollectionAuthorityInstruction<
   TProgram,
   TAccountCollectionAuthorityRecord,
   TAccountNewCollectionAuthority,
-  WritableSignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountPayer,
   TAccountMetadata,
   TAccountMint,
   TAccountSystemProgram,
@@ -285,9 +282,8 @@ export function getApproveCollectionAuthorityInstruction<
   TProgram,
   TAccountCollectionAuthorityRecord,
   TAccountNewCollectionAuthority,
-  WritableSignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountPayer,
   TAccountMetadata,
   TAccountMint,
   TAccountSystemProgram,
@@ -318,9 +314,8 @@ export function getApproveCollectionAuthorityInstruction<
   TProgram,
   TAccountCollectionAuthorityRecord,
   TAccountNewCollectionAuthority,
-  WritableSignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountPayer,
   TAccountMetadata,
   TAccountMint,
   TAccountSystemProgram,
@@ -351,9 +346,8 @@ export function getApproveCollectionAuthorityInstruction<
   TProgram,
   TAccountCollectionAuthorityRecord,
   TAccountNewCollectionAuthority,
-  WritableSignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountPayer,
   TAccountMetadata,
   TAccountMint,
   TAccountSystemProgram,

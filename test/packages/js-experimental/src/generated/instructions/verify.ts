@@ -147,7 +147,6 @@ export function getVerifyInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type VerifyInput<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
@@ -168,7 +167,6 @@ export type VerifyInput<
   verifyArgs: VerifyInstructionDataArgs['verifyArgs'];
 };
 
-// Input.
 export type VerifyInputWithSigners<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
@@ -208,9 +206,8 @@ export function getVerifyInstruction<
 ): VerifyInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionAuthority,
+  TAccountPayer,
   TAccountAuthorizationRules,
   TAccountAuthorizationRulesProgram
 >;
@@ -233,9 +230,8 @@ export function getVerifyInstruction<
 ): VerifyInstruction<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionAuthority,
+  TAccountPayer,
   TAccountAuthorizationRules,
   TAccountAuthorizationRulesProgram
 >;
@@ -257,9 +253,8 @@ export function getVerifyInstruction<
 ): VerifyInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionAuthority,
+  TAccountPayer,
   TAccountAuthorizationRules,
   TAccountAuthorizationRulesProgram
 >;
@@ -281,9 +276,8 @@ export function getVerifyInstruction<
 ): VerifyInstruction<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionAuthority,
+  TAccountPayer,
   TAccountAuthorizationRules,
   TAccountAuthorizationRulesProgram
 >;

@@ -221,7 +221,6 @@ export function getRevokeInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type RevokeInput<
   TAccountDelegateRecord extends string,
   TAccountDelegate extends string,
@@ -266,7 +265,6 @@ export type RevokeInput<
   revokeArgs: RevokeInstructionDataArgs['revokeArgs'];
 };
 
-// Input.
 export type RevokeInputWithSigners<
   TAccountDelegateRecord extends string,
   TAccountDelegate extends string,
@@ -351,9 +349,8 @@ export function getRevokeInstruction<
   TAccountMasterEdition,
   TAccountMint,
   TAccountToken,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountAuthority,
+  TAccountPayer,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
   TAccountSplTokenProgram,
@@ -400,9 +397,8 @@ export function getRevokeInstruction<
   TAccountMasterEdition,
   TAccountMint,
   TAccountToken,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountAuthority,
+  TAccountPayer,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
   TAccountSplTokenProgram,
@@ -448,9 +444,8 @@ export function getRevokeInstruction<
   TAccountMasterEdition,
   TAccountMint,
   TAccountToken,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountAuthority,
+  TAccountPayer,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
   TAccountSplTokenProgram,
@@ -496,9 +491,8 @@ export function getRevokeInstruction<
   TAccountMasterEdition,
   TAccountMint,
   TAccountToken,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountAuthority,
+  TAccountPayer,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
   TAccountSplTokenProgram,

@@ -149,7 +149,6 @@ export function getUpdateMetadataAccountV2InstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type UpdateMetadataAccountV2Input<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string
@@ -164,7 +163,6 @@ export type UpdateMetadataAccountV2Input<
   isMutable: UpdateMetadataAccountV2InstructionDataArgs['isMutable'];
 };
 
-// Input.
 export type UpdateMetadataAccountV2InputWithSigners<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string
@@ -192,8 +190,7 @@ export function getUpdateMetadataAccountV2Instruction<
 ): UpdateMetadataAccountV2InstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>
+  TAccountUpdateAuthority
 >;
 export function getUpdateMetadataAccountV2Instruction<
   TAccountMetadata extends string,
@@ -205,8 +202,7 @@ export function getUpdateMetadataAccountV2Instruction<
 ): UpdateMetadataAccountV2Instruction<
   TProgram,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>
+  TAccountUpdateAuthority
 >;
 export function getUpdateMetadataAccountV2Instruction<
   TAccountMetadata extends string,
@@ -220,8 +216,7 @@ export function getUpdateMetadataAccountV2Instruction<
 ): UpdateMetadataAccountV2InstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>
+  TAccountUpdateAuthority
 >;
 export function getUpdateMetadataAccountV2Instruction<
   TAccountMetadata extends string,
@@ -232,8 +227,7 @@ export function getUpdateMetadataAccountV2Instruction<
 ): UpdateMetadataAccountV2Instruction<
   TProgram,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>
+  TAccountUpdateAuthority
 >;
 export function getUpdateMetadataAccountV2Instruction<
   TAccountMetadata extends string,

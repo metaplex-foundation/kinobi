@@ -117,7 +117,6 @@ export function getUpdatePrimarySaleHappenedViaTokenInstructionDataCodec(): Code
   );
 }
 
-// Input.
 export type UpdatePrimarySaleHappenedViaTokenInput<
   TAccountMetadata extends string,
   TAccountOwner extends string,
@@ -131,7 +130,6 @@ export type UpdatePrimarySaleHappenedViaTokenInput<
   token: Address<TAccountToken>;
 };
 
-// Input.
 export type UpdatePrimarySaleHappenedViaTokenInputWithSigners<
   TAccountMetadata extends string,
   TAccountOwner extends string,
@@ -160,7 +158,7 @@ export function getUpdatePrimarySaleHappenedViaTokenInstruction<
 ): UpdatePrimarySaleHappenedViaTokenInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountOwner,
   TAccountToken
 >;
 export function getUpdatePrimarySaleHappenedViaTokenInstruction<
@@ -178,7 +176,7 @@ export function getUpdatePrimarySaleHappenedViaTokenInstruction<
 ): UpdatePrimarySaleHappenedViaTokenInstruction<
   TProgram,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountOwner,
   TAccountToken
 >;
 export function getUpdatePrimarySaleHappenedViaTokenInstruction<
@@ -195,7 +193,7 @@ export function getUpdatePrimarySaleHappenedViaTokenInstruction<
 ): UpdatePrimarySaleHappenedViaTokenInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountOwner,
   TAccountToken
 >;
 export function getUpdatePrimarySaleHappenedViaTokenInstruction<
@@ -212,7 +210,7 @@ export function getUpdatePrimarySaleHappenedViaTokenInstruction<
 ): UpdatePrimarySaleHappenedViaTokenInstruction<
   TProgram,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountOwner,
   TAccountToken
 >;
 export function getUpdatePrimarySaleHappenedViaTokenInstruction<

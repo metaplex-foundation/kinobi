@@ -164,7 +164,6 @@ export function getCloseEscrowAccountInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type CloseEscrowAccountInput<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
@@ -193,7 +192,6 @@ export type CloseEscrowAccountInput<
   sysvarInstructions?: Address<TAccountSysvarInstructions>;
 };
 
-// Input.
 export type CloseEscrowAccountInputWithSigners<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
@@ -251,7 +249,7 @@ export function getCloseEscrowAccountInstruction<
   TAccountMint,
   TAccountTokenAccount,
   TAccountEdition,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountSystemProgram,
   TAccountSysvarInstructions
 >;
@@ -284,7 +282,7 @@ export function getCloseEscrowAccountInstruction<
   TAccountMint,
   TAccountTokenAccount,
   TAccountEdition,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountSystemProgram,
   TAccountSysvarInstructions
 >;
@@ -316,7 +314,7 @@ export function getCloseEscrowAccountInstruction<
   TAccountMint,
   TAccountTokenAccount,
   TAccountEdition,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountSystemProgram,
   TAccountSysvarInstructions
 >;
@@ -348,7 +346,7 @@ export function getCloseEscrowAccountInstruction<
   TAccountMint,
   TAccountTokenAccount,
   TAccountEdition,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountSystemProgram,
   TAccountSysvarInstructions
 >;

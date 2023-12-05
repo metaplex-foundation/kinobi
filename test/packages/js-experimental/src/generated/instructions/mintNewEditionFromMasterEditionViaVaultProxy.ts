@@ -267,7 +267,6 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataCo
   );
 }
 
-// Input.
 export type MintNewEditionFromMasterEditionViaVaultProxyInput<
   TAccountNewMetadata extends string,
   TAccountNewEdition extends string,
@@ -324,7 +323,6 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInput<
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs['mintNewEditionFromMasterEditionViaTokenArgs'];
 };
 
-// Input.
 export type MintNewEditionFromMasterEditionViaVaultProxyInputWithSigners<
   TAccountNewMetadata extends string,
   TAccountNewEdition extends string,
@@ -428,11 +426,9 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
   TAccountMasterEdition,
   TAccountNewMint,
   TAccountEditionMarkPda,
-  ReadonlySignerAccount<TAccountNewMintAuthority> &
-    IAccountSignerMeta<TAccountNewMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-  ReadonlySignerAccount<TAccountVaultAuthority> &
-    IAccountSignerMeta<TAccountVaultAuthority>,
+  TAccountNewMintAuthority,
+  TAccountPayer,
+  TAccountVaultAuthority,
   TAccountSafetyDepositStore,
   TAccountSafetyDepositBox,
   TAccountVault,
@@ -490,11 +486,9 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
   TAccountMasterEdition,
   TAccountNewMint,
   TAccountEditionMarkPda,
-  ReadonlySignerAccount<TAccountNewMintAuthority> &
-    IAccountSignerMeta<TAccountNewMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-  ReadonlySignerAccount<TAccountVaultAuthority> &
-    IAccountSignerMeta<TAccountVaultAuthority>,
+  TAccountNewMintAuthority,
+  TAccountPayer,
+  TAccountVaultAuthority,
   TAccountSafetyDepositStore,
   TAccountSafetyDepositBox,
   TAccountVault,
@@ -551,11 +545,9 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
   TAccountMasterEdition,
   TAccountNewMint,
   TAccountEditionMarkPda,
-  ReadonlySignerAccount<TAccountNewMintAuthority> &
-    IAccountSignerMeta<TAccountNewMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-  ReadonlySignerAccount<TAccountVaultAuthority> &
-    IAccountSignerMeta<TAccountVaultAuthority>,
+  TAccountNewMintAuthority,
+  TAccountPayer,
+  TAccountVaultAuthority,
   TAccountSafetyDepositStore,
   TAccountSafetyDepositBox,
   TAccountVault,
@@ -612,11 +604,9 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
   TAccountMasterEdition,
   TAccountNewMint,
   TAccountEditionMarkPda,
-  ReadonlySignerAccount<TAccountNewMintAuthority> &
-    IAccountSignerMeta<TAccountNewMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-  ReadonlySignerAccount<TAccountVaultAuthority> &
-    IAccountSignerMeta<TAccountVaultAuthority>,
+  TAccountNewMintAuthority,
+  TAccountPayer,
+  TAccountVaultAuthority,
   TAccountSafetyDepositStore,
   TAccountSafetyDepositBox,
   TAccountVault,

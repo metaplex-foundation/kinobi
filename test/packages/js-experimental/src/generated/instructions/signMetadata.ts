@@ -106,7 +106,6 @@ export function getSignMetadataInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type SignMetadataInput<
   TAccountMetadata extends string,
   TAccountCreator extends string
@@ -117,7 +116,6 @@ export type SignMetadataInput<
   creator: Address<TAccountCreator>;
 };
 
-// Input.
 export type SignMetadataInputWithSigners<
   TAccountMetadata extends string,
   TAccountCreator extends string
@@ -138,7 +136,7 @@ export function getSignMetadataInstruction<
 ): SignMetadataInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
+  TAccountCreator
 >;
 export function getSignMetadataInstruction<
   TAccountMetadata extends string,
@@ -147,11 +145,7 @@ export function getSignMetadataInstruction<
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: SignMetadataInput<TAccountMetadata, TAccountCreator>
-): SignMetadataInstruction<
-  TProgram,
-  TAccountMetadata,
-  ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
->;
+): SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>;
 export function getSignMetadataInstruction<
   TAccountMetadata extends string,
   TAccountCreator extends string,
@@ -161,7 +155,7 @@ export function getSignMetadataInstruction<
 ): SignMetadataInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
+  TAccountCreator
 >;
 export function getSignMetadataInstruction<
   TAccountMetadata extends string,
@@ -169,11 +163,7 @@ export function getSignMetadataInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
   input: SignMetadataInput<TAccountMetadata, TAccountCreator>
-): SignMetadataInstruction<
-  TProgram,
-  TAccountMetadata,
-  ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
->;
+): SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>;
 export function getSignMetadataInstruction<
   TAccountMetadata extends string,
   TAccountCreator extends string,

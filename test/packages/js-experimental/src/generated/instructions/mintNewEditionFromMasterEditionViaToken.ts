@@ -243,7 +243,6 @@ export function getMintNewEditionFromMasterEditionViaTokenInstructionDataCodec()
   );
 }
 
-// Input.
 export type MintNewEditionFromMasterEditionViaTokenInput<
   TAccountNewMetadata extends string,
   TAccountNewEdition extends string,
@@ -291,7 +290,6 @@ export type MintNewEditionFromMasterEditionViaTokenInput<
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenInstructionDataArgs['mintNewEditionFromMasterEditionViaTokenArgs'];
 };
 
-// Input.
 export type MintNewEditionFromMasterEditionViaTokenInputWithSigners<
   TAccountNewMetadata extends string,
   TAccountNewEdition extends string,
@@ -380,11 +378,9 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
   TAccountMasterEdition,
   TAccountNewMint,
   TAccountEditionMarkPda,
-  ReadonlySignerAccount<TAccountNewMintAuthority> &
-    IAccountSignerMeta<TAccountNewMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-  ReadonlySignerAccount<TAccountTokenAccountOwner> &
-    IAccountSignerMeta<TAccountTokenAccountOwner>,
+  TAccountNewMintAuthority,
+  TAccountPayer,
+  TAccountTokenAccountOwner,
   TAccountTokenAccount,
   TAccountNewMetadataUpdateAuthority,
   TAccountMetadata,
@@ -433,11 +429,9 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
   TAccountMasterEdition,
   TAccountNewMint,
   TAccountEditionMarkPda,
-  ReadonlySignerAccount<TAccountNewMintAuthority> &
-    IAccountSignerMeta<TAccountNewMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-  ReadonlySignerAccount<TAccountTokenAccountOwner> &
-    IAccountSignerMeta<TAccountTokenAccountOwner>,
+  TAccountNewMintAuthority,
+  TAccountPayer,
+  TAccountTokenAccountOwner,
   TAccountTokenAccount,
   TAccountNewMetadataUpdateAuthority,
   TAccountMetadata,
@@ -485,11 +479,9 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
   TAccountMasterEdition,
   TAccountNewMint,
   TAccountEditionMarkPda,
-  ReadonlySignerAccount<TAccountNewMintAuthority> &
-    IAccountSignerMeta<TAccountNewMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-  ReadonlySignerAccount<TAccountTokenAccountOwner> &
-    IAccountSignerMeta<TAccountTokenAccountOwner>,
+  TAccountNewMintAuthority,
+  TAccountPayer,
+  TAccountTokenAccountOwner,
   TAccountTokenAccount,
   TAccountNewMetadataUpdateAuthority,
   TAccountMetadata,
@@ -537,11 +529,9 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
   TAccountMasterEdition,
   TAccountNewMint,
   TAccountEditionMarkPda,
-  ReadonlySignerAccount<TAccountNewMintAuthority> &
-    IAccountSignerMeta<TAccountNewMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
-  ReadonlySignerAccount<TAccountTokenAccountOwner> &
-    IAccountSignerMeta<TAccountTokenAccountOwner>,
+  TAccountNewMintAuthority,
+  TAccountPayer,
+  TAccountTokenAccountOwner,
   TAccountTokenAccount,
   TAccountNewMetadataUpdateAuthority,
   TAccountMetadata,

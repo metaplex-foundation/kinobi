@@ -113,7 +113,6 @@ export function getConvertMasterEditionV1ToV2InstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type ConvertMasterEditionV1ToV2Input<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
@@ -127,7 +126,6 @@ export type ConvertMasterEditionV1ToV2Input<
   printingMint: Address<TAccountPrintingMint>;
 };
 
-// Input.
 export type ConvertMasterEditionV1ToV2InputWithSigners<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,

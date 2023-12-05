@@ -177,7 +177,6 @@ export function getCreateMetadataAccountV2InstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type CreateMetadataAccountV2Input<
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -205,7 +204,6 @@ export type CreateMetadataAccountV2Input<
   isMutable: CreateMetadataAccountV2InstructionDataArgs['isMutable'];
 };
 
-// Input.
 export type CreateMetadataAccountV2InputWithSigners<
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -257,9 +255,8 @@ export function getCreateMetadataAccountV2Instruction<
   TProgram,
   TAccountMetadata,
   TAccountMint,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountMintAuthority,
+  TAccountPayer,
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountRent
@@ -288,9 +285,8 @@ export function getCreateMetadataAccountV2Instruction<
   TProgram,
   TAccountMetadata,
   TAccountMint,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountMintAuthority,
+  TAccountPayer,
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountRent
@@ -318,9 +314,8 @@ export function getCreateMetadataAccountV2Instruction<
   TProgram,
   TAccountMetadata,
   TAccountMint,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountMintAuthority,
+  TAccountPayer,
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountRent
@@ -348,9 +343,8 @@ export function getCreateMetadataAccountV2Instruction<
   TProgram,
   TAccountMetadata,
   TAccountMint,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountMintAuthority,
+  TAccountPayer,
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountRent

@@ -164,7 +164,6 @@ export function getSetAndVerifyCollectionInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type SetAndVerifyCollectionInput<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
@@ -193,7 +192,6 @@ export type SetAndVerifyCollectionInput<
   collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
 };
 
-// Input.
 export type SetAndVerifyCollectionInputWithSigners<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
@@ -247,9 +245,8 @@ export function getSetAndVerifyCollectionInstruction<
 ): SetAndVerifyCollectionInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionAuthority,
+  TAccountPayer,
   TAccountUpdateAuthority,
   TAccountCollectionMint,
   TAccountCollection,
@@ -281,9 +278,8 @@ export function getSetAndVerifyCollectionInstruction<
 ): SetAndVerifyCollectionInstruction<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionAuthority,
+  TAccountPayer,
   TAccountUpdateAuthority,
   TAccountCollectionMint,
   TAccountCollection,
@@ -314,9 +310,8 @@ export function getSetAndVerifyCollectionInstruction<
 ): SetAndVerifyCollectionInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionAuthority,
+  TAccountPayer,
   TAccountUpdateAuthority,
   TAccountCollectionMint,
   TAccountCollection,
@@ -347,9 +342,8 @@ export function getSetAndVerifyCollectionInstruction<
 ): SetAndVerifyCollectionInstruction<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionAuthority,
+  TAccountPayer,
   TAccountUpdateAuthority,
   TAccountCollectionMint,
   TAccountCollection,

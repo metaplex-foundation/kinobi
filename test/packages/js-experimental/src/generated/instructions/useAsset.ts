@@ -209,7 +209,6 @@ export function getUseAssetInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type UseAssetInput<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
@@ -248,7 +247,6 @@ export type UseAssetInput<
   useAssetArgs: UseAssetInstructionDataArgs['useAssetArgs'];
 };
 
-// Input.
 export type UseAssetInputWithSigners<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
@@ -320,8 +318,7 @@ export function getUseAssetInstruction<
   TAccountMetadata,
   TAccountTokenAccount,
   TAccountMint,
-  WritableSignerAccount<TAccountUseAuthority> &
-    IAccountSignerMeta<TAccountUseAuthority>,
+  TAccountUseAuthority,
   TAccountOwner,
   TAccountSplTokenProgram,
   TAccountAtaProgram,
@@ -363,8 +360,7 @@ export function getUseAssetInstruction<
   TAccountMetadata,
   TAccountTokenAccount,
   TAccountMint,
-  WritableSignerAccount<TAccountUseAuthority> &
-    IAccountSignerMeta<TAccountUseAuthority>,
+  TAccountUseAuthority,
   TAccountOwner,
   TAccountSplTokenProgram,
   TAccountAtaProgram,
@@ -405,8 +401,7 @@ export function getUseAssetInstruction<
   TAccountMetadata,
   TAccountTokenAccount,
   TAccountMint,
-  WritableSignerAccount<TAccountUseAuthority> &
-    IAccountSignerMeta<TAccountUseAuthority>,
+  TAccountUseAuthority,
   TAccountOwner,
   TAccountSplTokenProgram,
   TAccountAtaProgram,
@@ -447,8 +442,7 @@ export function getUseAssetInstruction<
   TAccountMetadata,
   TAccountTokenAccount,
   TAccountMint,
-  WritableSignerAccount<TAccountUseAuthority> &
-    IAccountSignerMeta<TAccountUseAuthority>,
+  TAccountUseAuthority,
   TAccountOwner,
   TAccountSplTokenProgram,
   TAccountAtaProgram,

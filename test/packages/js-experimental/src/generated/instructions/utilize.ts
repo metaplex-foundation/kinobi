@@ -206,7 +206,6 @@ export function getUtilizeInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type UtilizeInput<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
@@ -245,7 +244,6 @@ export type UtilizeInput<
   numberOfUses: UtilizeInstructionDataArgs['numberOfUses'];
 };
 
-// Input.
 export type UtilizeInputWithSigners<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
@@ -317,8 +315,7 @@ export function getUtilizeInstruction<
   TAccountMetadata,
   TAccountTokenAccount,
   TAccountMint,
-  WritableSignerAccount<TAccountUseAuthority> &
-    IAccountSignerMeta<TAccountUseAuthority>,
+  TAccountUseAuthority,
   TAccountOwner,
   TAccountTokenProgram,
   TAccountAtaProgram,
@@ -360,8 +357,7 @@ export function getUtilizeInstruction<
   TAccountMetadata,
   TAccountTokenAccount,
   TAccountMint,
-  WritableSignerAccount<TAccountUseAuthority> &
-    IAccountSignerMeta<TAccountUseAuthority>,
+  TAccountUseAuthority,
   TAccountOwner,
   TAccountTokenProgram,
   TAccountAtaProgram,
@@ -402,8 +398,7 @@ export function getUtilizeInstruction<
   TAccountMetadata,
   TAccountTokenAccount,
   TAccountMint,
-  WritableSignerAccount<TAccountUseAuthority> &
-    IAccountSignerMeta<TAccountUseAuthority>,
+  TAccountUseAuthority,
   TAccountOwner,
   TAccountTokenProgram,
   TAccountAtaProgram,
@@ -444,8 +439,7 @@ export function getUtilizeInstruction<
   TAccountMetadata,
   TAccountTokenAccount,
   TAccountMint,
-  WritableSignerAccount<TAccountUseAuthority> &
-    IAccountSignerMeta<TAccountUseAuthority>,
+  TAccountUseAuthority,
   TAccountOwner,
   TAccountTokenProgram,
   TAccountAtaProgram,

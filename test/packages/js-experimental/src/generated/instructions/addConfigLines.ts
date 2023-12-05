@@ -153,7 +153,6 @@ export function getAddConfigLinesInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type AddConfigLinesInput<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string
@@ -165,7 +164,6 @@ export type AddConfigLinesInput<
   moreLines: AddConfigLinesInstructionDataArgs['moreLines'];
 };
 
-// Input.
 export type AddConfigLinesInputWithSigners<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string
@@ -187,8 +185,7 @@ export function getAddConfigLinesInstruction<
 ): AddConfigLinesInstructionWithSigners<
   TProgram,
   TAccountCandyMachine,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
+  TAccountAuthority
 >;
 export function getAddConfigLinesInstruction<
   TAccountCandyMachine extends string,
@@ -197,12 +194,7 @@ export function getAddConfigLinesInstruction<
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
-): AddConfigLinesInstruction<
-  TProgram,
-  TAccountCandyMachine,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
->;
+): AddConfigLinesInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>;
 export function getAddConfigLinesInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
@@ -212,8 +204,7 @@ export function getAddConfigLinesInstruction<
 ): AddConfigLinesInstructionWithSigners<
   TProgram,
   TAccountCandyMachine,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
+  TAccountAuthority
 >;
 export function getAddConfigLinesInstruction<
   TAccountCandyMachine extends string,
@@ -221,12 +212,7 @@ export function getAddConfigLinesInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
   input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
-): AddConfigLinesInstruction<
-  TProgram,
-  TAccountCandyMachine,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
->;
+): AddConfigLinesInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>;
 export function getAddConfigLinesInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,

@@ -180,7 +180,6 @@ export function getBurnInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type BurnInput<
   TAccountMetadata extends string,
   TAccountOwner extends string,
@@ -213,7 +212,6 @@ export type BurnInput<
   burnArgs: BurnInstructionDataArgs['burnArgs'];
 };
 
-// Input.
 export type BurnInputWithSigners<
   TAccountMetadata extends string,
   TAccountOwner extends string,
@@ -273,7 +271,7 @@ export function getBurnInstruction<
 ): BurnInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountOwner,
   TAccountMint,
   TAccountTokenAccount,
   TAccountMasterEditionAccount,
@@ -309,7 +307,7 @@ export function getBurnInstruction<
 ): BurnInstruction<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountOwner,
   TAccountMint,
   TAccountTokenAccount,
   TAccountMasterEditionAccount,
@@ -344,7 +342,7 @@ export function getBurnInstruction<
 ): BurnInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountOwner,
   TAccountMint,
   TAccountTokenAccount,
   TAccountMasterEditionAccount,
@@ -379,7 +377,7 @@ export function getBurnInstruction<
 ): BurnInstruction<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountOwner,
   TAccountMint,
   TAccountTokenAccount,
   TAccountMasterEditionAccount,

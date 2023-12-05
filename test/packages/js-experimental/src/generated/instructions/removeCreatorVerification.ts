@@ -108,7 +108,6 @@ export function getRemoveCreatorVerificationInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type RemoveCreatorVerificationInput<
   TAccountMetadata extends string,
   TAccountCreator extends string
@@ -119,7 +118,6 @@ export type RemoveCreatorVerificationInput<
   creator: Address<TAccountCreator>;
 };
 
-// Input.
 export type RemoveCreatorVerificationInputWithSigners<
   TAccountMetadata extends string,
   TAccountCreator extends string
@@ -143,7 +141,7 @@ export function getRemoveCreatorVerificationInstruction<
 ): RemoveCreatorVerificationInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
+  TAccountCreator
 >;
 export function getRemoveCreatorVerificationInstruction<
   TAccountMetadata extends string,
@@ -155,7 +153,7 @@ export function getRemoveCreatorVerificationInstruction<
 ): RemoveCreatorVerificationInstruction<
   TProgram,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
+  TAccountCreator
 >;
 export function getRemoveCreatorVerificationInstruction<
   TAccountMetadata extends string,
@@ -169,7 +167,7 @@ export function getRemoveCreatorVerificationInstruction<
 ): RemoveCreatorVerificationInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
+  TAccountCreator
 >;
 export function getRemoveCreatorVerificationInstruction<
   TAccountMetadata extends string,
@@ -180,7 +178,7 @@ export function getRemoveCreatorVerificationInstruction<
 ): RemoveCreatorVerificationInstruction<
   TProgram,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountCreator> & IAccountSignerMeta<TAccountCreator>
+  TAccountCreator
 >;
 export function getRemoveCreatorVerificationInstruction<
   TAccountMetadata extends string,

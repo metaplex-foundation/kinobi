@@ -262,7 +262,6 @@ export function getMintFromCandyMachineInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type MintFromCandyMachineInput<
   TAccountCandyMachine extends string,
   TAccountAuthorityPda extends string,
@@ -301,7 +300,6 @@ export type MintFromCandyMachineInput<
   recentSlothashes: Address<TAccountRecentSlothashes>;
 };
 
-// Input.
 export type MintFromCandyMachineInputWithSigners<
   TAccountCandyMachine extends string,
   TAccountAuthorityPda extends string,
@@ -384,12 +382,10 @@ export function getMintFromCandyMachineInstruction<
   TProgram,
   TAccountCandyMachine,
   TAccountAuthorityPda,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountMintAuthority,
+  TAccountPayer,
   TAccountNftMint,
-  ReadonlySignerAccount<TAccountNftMintAuthority> &
-    IAccountSignerMeta<TAccountNftMintAuthority>,
+  TAccountNftMintAuthority,
   TAccountNftMetadata,
   TAccountNftMasterEdition,
   TAccountCollectionAuthorityRecord,
@@ -446,12 +442,10 @@ export function getMintFromCandyMachineInstruction<
   TProgram,
   TAccountCandyMachine,
   TAccountAuthorityPda,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountMintAuthority,
+  TAccountPayer,
   TAccountNftMint,
-  ReadonlySignerAccount<TAccountNftMintAuthority> &
-    IAccountSignerMeta<TAccountNftMintAuthority>,
+  TAccountNftMintAuthority,
   TAccountNftMetadata,
   TAccountNftMasterEdition,
   TAccountCollectionAuthorityRecord,
@@ -507,12 +501,10 @@ export function getMintFromCandyMachineInstruction<
   TProgram,
   TAccountCandyMachine,
   TAccountAuthorityPda,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountMintAuthority,
+  TAccountPayer,
   TAccountNftMint,
-  ReadonlySignerAccount<TAccountNftMintAuthority> &
-    IAccountSignerMeta<TAccountNftMintAuthority>,
+  TAccountNftMintAuthority,
   TAccountNftMetadata,
   TAccountNftMasterEdition,
   TAccountCollectionAuthorityRecord,
@@ -568,12 +560,10 @@ export function getMintFromCandyMachineInstruction<
   TProgram,
   TAccountCandyMachine,
   TAccountAuthorityPda,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountMintAuthority,
+  TAccountPayer,
   TAccountNftMint,
-  ReadonlySignerAccount<TAccountNftMintAuthority> &
-    IAccountSignerMeta<TAccountNftMintAuthority>,
+  TAccountNftMintAuthority,
   TAccountNftMetadata,
   TAccountNftMasterEdition,
   TAccountCollectionAuthorityRecord,

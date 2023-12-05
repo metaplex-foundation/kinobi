@@ -95,13 +95,11 @@ export function getPuffMetadataInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type PuffMetadataInput<TAccountMetadata extends string> = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
 };
 
-// Input.
 export type PuffMetadataInputWithSigners<TAccountMetadata extends string> = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;

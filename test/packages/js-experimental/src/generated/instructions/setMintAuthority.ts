@@ -120,7 +120,6 @@ export function getSetMintAuthorityInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type SetMintAuthorityInput<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
@@ -131,7 +130,6 @@ export type SetMintAuthorityInput<
   mintAuthority: Address<TAccountMintAuthority>;
 };
 
-// Input.
 export type SetMintAuthorityInputWithSigners<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
@@ -157,10 +155,8 @@ export function getSetMintAuthorityInstruction<
 ): SetMintAuthorityInstructionWithSigners<
   TProgram,
   TAccountCandyMachine,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>
+  TAccountAuthority,
+  TAccountMintAuthority
 >;
 export function getSetMintAuthorityInstruction<
   TAccountCandyMachine extends string,
@@ -177,10 +173,8 @@ export function getSetMintAuthorityInstruction<
 ): SetMintAuthorityInstruction<
   TProgram,
   TAccountCandyMachine,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>
+  TAccountAuthority,
+  TAccountMintAuthority
 >;
 export function getSetMintAuthorityInstruction<
   TAccountCandyMachine extends string,
@@ -196,10 +190,8 @@ export function getSetMintAuthorityInstruction<
 ): SetMintAuthorityInstructionWithSigners<
   TProgram,
   TAccountCandyMachine,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>
+  TAccountAuthority,
+  TAccountMintAuthority
 >;
 export function getSetMintAuthorityInstruction<
   TAccountCandyMachine extends string,
@@ -215,10 +207,8 @@ export function getSetMintAuthorityInstruction<
 ): SetMintAuthorityInstruction<
   TProgram,
   TAccountCandyMachine,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>
+  TAccountAuthority,
+  TAccountMintAuthority
 >;
 export function getSetMintAuthorityInstruction<
   TAccountCandyMachine extends string,

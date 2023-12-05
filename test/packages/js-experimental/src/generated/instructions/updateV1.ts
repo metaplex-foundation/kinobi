@@ -372,7 +372,6 @@ export function getUpdateV1InstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type UpdateV1Input<
   TAccountAuthority extends string,
   TAccountMetadata extends string,
@@ -419,7 +418,6 @@ export type UpdateV1Input<
   authorityType: UpdateV1InstructionDataArgs['authorityType'];
 };
 
-// Input.
 export type UpdateV1InputWithSigners<
   TAccountAuthority extends string,
   TAccountMetadata extends string,
@@ -494,8 +492,7 @@ export function getUpdateV1Instruction<
   >
 ): UpdateV1InstructionWithSigners<
   TProgram,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
+  TAccountAuthority,
   TAccountMetadata,
   TAccountMasterEdition,
   TAccountMint,
@@ -534,8 +531,7 @@ export function getUpdateV1Instruction<
   >
 ): UpdateV1Instruction<
   TProgram,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
+  TAccountAuthority,
   TAccountMetadata,
   TAccountMasterEdition,
   TAccountMint,
@@ -573,8 +569,7 @@ export function getUpdateV1Instruction<
   >
 ): UpdateV1InstructionWithSigners<
   TProgram,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
+  TAccountAuthority,
   TAccountMetadata,
   TAccountMasterEdition,
   TAccountMint,
@@ -612,8 +607,7 @@ export function getUpdateV1Instruction<
   >
 ): UpdateV1Instruction<
   TProgram,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>,
+  TAccountAuthority,
   TAccountMetadata,
   TAccountMasterEdition,
   TAccountMint,

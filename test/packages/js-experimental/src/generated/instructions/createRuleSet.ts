@@ -142,7 +142,6 @@ export function getCreateRuleSetInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type CreateRuleSetInput<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
@@ -158,7 +157,6 @@ export type CreateRuleSetInput<
   ruleSetBump?: CreateRuleSetInstructionDataArgs['ruleSetBump'];
 };
 
-// Input.
 export type CreateRuleSetInputWithSigners<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
@@ -188,7 +186,7 @@ export function getCreateRuleSetInstruction<
   >
 ): CreateRuleSetInstructionWithSigners<
   TProgram,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountRuleSetPda,
   TAccountSystemProgram
 >;
@@ -206,7 +204,7 @@ export function getCreateRuleSetInstruction<
   >
 ): CreateRuleSetInstruction<
   TProgram,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountRuleSetPda,
   TAccountSystemProgram
 >;
@@ -223,7 +221,7 @@ export function getCreateRuleSetInstruction<
   >
 ): CreateRuleSetInstructionWithSigners<
   TProgram,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountRuleSetPda,
   TAccountSystemProgram
 >;
@@ -240,7 +238,7 @@ export function getCreateRuleSetInstruction<
   >
 ): CreateRuleSetInstruction<
   TProgram,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountRuleSetPda,
   TAccountSystemProgram
 >;

@@ -198,7 +198,6 @@ export function getDeprecatedMintPrintingTokensViaTokenInstructionDataCodec(): C
   );
 }
 
-// Input.
 export type DeprecatedMintPrintingTokensViaTokenInput<
   TAccountDestination extends string,
   TAccountToken extends string,
@@ -231,7 +230,6 @@ export type DeprecatedMintPrintingTokensViaTokenInput<
   mintPrintingTokensViaTokenArgs: DeprecatedMintPrintingTokensViaTokenInstructionDataArgs['mintPrintingTokensViaTokenArgs'];
 };
 
-// Input.
 export type DeprecatedMintPrintingTokensViaTokenInputWithSigners<
   TAccountDestination extends string,
   TAccountToken extends string,
@@ -294,8 +292,7 @@ export function getDeprecatedMintPrintingTokensViaTokenInstruction<
   TAccountToken,
   TAccountOneTimePrintingAuthorizationMint,
   TAccountPrintingMint,
-  ReadonlySignerAccount<TAccountBurnAuthority> &
-    IAccountSignerMeta<TAccountBurnAuthority>,
+  TAccountBurnAuthority,
   TAccountMetadata,
   TAccountMasterEdition,
   TAccountTokenProgram,
@@ -331,8 +328,7 @@ export function getDeprecatedMintPrintingTokensViaTokenInstruction<
   TAccountToken,
   TAccountOneTimePrintingAuthorizationMint,
   TAccountPrintingMint,
-  ReadonlySignerAccount<TAccountBurnAuthority> &
-    IAccountSignerMeta<TAccountBurnAuthority>,
+  TAccountBurnAuthority,
   TAccountMetadata,
   TAccountMasterEdition,
   TAccountTokenProgram,
@@ -367,8 +363,7 @@ export function getDeprecatedMintPrintingTokensViaTokenInstruction<
   TAccountToken,
   TAccountOneTimePrintingAuthorizationMint,
   TAccountPrintingMint,
-  ReadonlySignerAccount<TAccountBurnAuthority> &
-    IAccountSignerMeta<TAccountBurnAuthority>,
+  TAccountBurnAuthority,
   TAccountMetadata,
   TAccountMasterEdition,
   TAccountTokenProgram,
@@ -403,8 +398,7 @@ export function getDeprecatedMintPrintingTokensViaTokenInstruction<
   TAccountToken,
   TAccountOneTimePrintingAuthorizationMint,
   TAccountPrintingMint,
-  ReadonlySignerAccount<TAccountBurnAuthority> &
-    IAccountSignerMeta<TAccountBurnAuthority>,
+  TAccountBurnAuthority,
   TAccountMetadata,
   TAccountMasterEdition,
   TAccountTokenProgram,

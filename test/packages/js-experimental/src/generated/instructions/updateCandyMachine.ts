@@ -127,7 +127,6 @@ export function getUpdateCandyMachineInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type UpdateCandyMachineInput<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string
@@ -137,7 +136,6 @@ export type UpdateCandyMachineInput<
   data: UpdateCandyMachineInstructionDataArgs['data'];
 };
 
-// Input.
 export type UpdateCandyMachineInputWithSigners<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string
@@ -160,8 +158,7 @@ export function getUpdateCandyMachineInstruction<
 ): UpdateCandyMachineInstructionWithSigners<
   TProgram,
   TAccountCandyMachine,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
+  TAccountAuthority
 >;
 export function getUpdateCandyMachineInstruction<
   TAccountCandyMachine extends string,
@@ -173,8 +170,7 @@ export function getUpdateCandyMachineInstruction<
 ): UpdateCandyMachineInstruction<
   TProgram,
   TAccountCandyMachine,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
+  TAccountAuthority
 >;
 export function getUpdateCandyMachineInstruction<
   TAccountCandyMachine extends string,
@@ -188,8 +184,7 @@ export function getUpdateCandyMachineInstruction<
 ): UpdateCandyMachineInstructionWithSigners<
   TProgram,
   TAccountCandyMachine,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
+  TAccountAuthority
 >;
 export function getUpdateCandyMachineInstruction<
   TAccountCandyMachine extends string,
@@ -200,8 +195,7 @@ export function getUpdateCandyMachineInstruction<
 ): UpdateCandyMachineInstruction<
   TProgram,
   TAccountCandyMachine,
-  ReadonlySignerAccount<TAccountAuthority> &
-    IAccountSignerMeta<TAccountAuthority>
+  TAccountAuthority
 >;
 export function getUpdateCandyMachineInstruction<
   TAccountCandyMachine extends string,

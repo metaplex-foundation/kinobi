@@ -221,7 +221,6 @@ export function getInitializeInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type InitializeInput<
   TAccountCandyMachine extends string,
   TAccountAuthorityPda extends string,
@@ -249,7 +248,6 @@ export type InitializeInput<
   data: InitializeInstructionDataArgs['data'];
 };
 
-// Input.
 export type InitializeInputWithSigners<
   TAccountCandyMachine extends string,
   TAccountAuthorityPda extends string,
@@ -310,12 +308,11 @@ export function getInitializeInstruction<
   TAccountCandyMachine,
   TAccountAuthorityPda,
   TAccountAuthority,
-  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountCollectionMetadata,
   TAccountCollectionMint,
   TAccountCollectionMasterEdition,
-  WritableSignerAccount<TAccountCollectionUpdateAuthority> &
-    IAccountSignerMeta<TAccountCollectionUpdateAuthority>,
+  TAccountCollectionUpdateAuthority,
   TAccountCollectionAuthorityRecord,
   TAccountTokenMetadataProgram,
   TAccountSystemProgram
@@ -353,12 +350,11 @@ export function getInitializeInstruction<
   TAccountCandyMachine,
   TAccountAuthorityPda,
   TAccountAuthority,
-  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountCollectionMetadata,
   TAccountCollectionMint,
   TAccountCollectionMasterEdition,
-  WritableSignerAccount<TAccountCollectionUpdateAuthority> &
-    IAccountSignerMeta<TAccountCollectionUpdateAuthority>,
+  TAccountCollectionUpdateAuthority,
   TAccountCollectionAuthorityRecord,
   TAccountTokenMetadataProgram,
   TAccountSystemProgram
@@ -395,12 +391,11 @@ export function getInitializeInstruction<
   TAccountCandyMachine,
   TAccountAuthorityPda,
   TAccountAuthority,
-  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountCollectionMetadata,
   TAccountCollectionMint,
   TAccountCollectionMasterEdition,
-  WritableSignerAccount<TAccountCollectionUpdateAuthority> &
-    IAccountSignerMeta<TAccountCollectionUpdateAuthority>,
+  TAccountCollectionUpdateAuthority,
   TAccountCollectionAuthorityRecord,
   TAccountTokenMetadataProgram,
   TAccountSystemProgram
@@ -437,12 +432,11 @@ export function getInitializeInstruction<
   TAccountCandyMachine,
   TAccountAuthorityPda,
   TAccountAuthority,
-  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountCollectionMetadata,
   TAccountCollectionMint,
   TAccountCollectionMasterEdition,
-  WritableSignerAccount<TAccountCollectionUpdateAuthority> &
-    IAccountSignerMeta<TAccountCollectionUpdateAuthority>,
+  TAccountCollectionUpdateAuthority,
   TAccountCollectionAuthorityRecord,
   TAccountTokenMetadataProgram,
   TAccountSystemProgram

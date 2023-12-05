@@ -195,7 +195,6 @@ export function getCreateMasterEditionInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type CreateMasterEditionInput<
   TAccountEdition extends string,
   TAccountMint extends string,
@@ -228,7 +227,6 @@ export type CreateMasterEditionInput<
   createMasterEditionArgs: CreateMasterEditionInstructionDataArgs['createMasterEditionArgs'];
 };
 
-// Input.
 export type CreateMasterEditionInputWithSigners<
   TAccountEdition extends string,
   TAccountMint extends string,
@@ -289,11 +287,9 @@ export function getCreateMasterEditionInstruction<
   TProgram,
   TAccountEdition,
   TAccountMint,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountMintAuthority,
+  TAccountPayer,
   TAccountMetadata,
   TAccountTokenProgram,
   TAccountSystemProgram,
@@ -327,11 +323,9 @@ export function getCreateMasterEditionInstruction<
   TProgram,
   TAccountEdition,
   TAccountMint,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountMintAuthority,
+  TAccountPayer,
   TAccountMetadata,
   TAccountTokenProgram,
   TAccountSystemProgram,
@@ -364,11 +358,9 @@ export function getCreateMasterEditionInstruction<
   TProgram,
   TAccountEdition,
   TAccountMint,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountMintAuthority,
+  TAccountPayer,
   TAccountMetadata,
   TAccountTokenProgram,
   TAccountSystemProgram,
@@ -401,11 +393,9 @@ export function getCreateMasterEditionInstruction<
   TProgram,
   TAccountEdition,
   TAccountMint,
-  ReadonlySignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountUpdateAuthority,
+  TAccountMintAuthority,
+  TAccountPayer,
   TAccountMetadata,
   TAccountTokenProgram,
   TAccountSystemProgram,

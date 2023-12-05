@@ -116,7 +116,6 @@ export function getTransferSolInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type TransferSolInput<
   TAccountSource extends string,
   TAccountDestination extends string
@@ -126,7 +125,6 @@ export type TransferSolInput<
   amount: TransferSolInstructionDataArgs['amount'];
 };
 
-// Input.
 export type TransferSolInputWithSigners<
   TAccountSource extends string,
   TAccountDestination extends string
@@ -145,7 +143,7 @@ export function getTransferSolInstruction<
   input: TransferSolInputWithSigners<TAccountSource, TAccountDestination>
 ): TransferSolInstructionWithSigners<
   TProgram,
-  WritableSignerAccount<TAccountSource> & IAccountSignerMeta<TAccountSource>,
+  TAccountSource,
   TAccountDestination
 >;
 export function getTransferSolInstruction<
@@ -155,11 +153,7 @@ export function getTransferSolInstruction<
 >(
   context: Pick<Context, 'getProgramAddress'>,
   input: TransferSolInput<TAccountSource, TAccountDestination>
-): TransferSolInstruction<
-  TProgram,
-  WritableSignerAccount<TAccountSource> & IAccountSignerMeta<TAccountSource>,
-  TAccountDestination
->;
+): TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>;
 export function getTransferSolInstruction<
   TAccountSource extends string,
   TAccountDestination extends string,
@@ -168,7 +162,7 @@ export function getTransferSolInstruction<
   input: TransferSolInputWithSigners<TAccountSource, TAccountDestination>
 ): TransferSolInstructionWithSigners<
   TProgram,
-  WritableSignerAccount<TAccountSource> & IAccountSignerMeta<TAccountSource>,
+  TAccountSource,
   TAccountDestination
 >;
 export function getTransferSolInstruction<
@@ -177,11 +171,7 @@ export function getTransferSolInstruction<
   TProgram extends string = '11111111111111111111111111111111'
 >(
   input: TransferSolInput<TAccountSource, TAccountDestination>
-): TransferSolInstruction<
-  TProgram,
-  WritableSignerAccount<TAccountSource> & IAccountSignerMeta<TAccountSource>,
-  TAccountDestination
->;
+): TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>;
 export function getTransferSolInstruction<
   TAccountSource extends string,
   TAccountDestination extends string,

@@ -151,7 +151,6 @@ export function getCreateFrequencyRuleInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type CreateFrequencyRuleInput<
   TAccountPayer extends string,
   TAccountFrequencyPda extends string,
@@ -169,7 +168,6 @@ export type CreateFrequencyRuleInput<
   period: CreateFrequencyRuleInstructionDataArgs['period'];
 };
 
-// Input.
 export type CreateFrequencyRuleInputWithSigners<
   TAccountPayer extends string,
   TAccountFrequencyPda extends string,
@@ -201,7 +199,7 @@ export function getCreateFrequencyRuleInstruction<
   >
 ): CreateFrequencyRuleInstructionWithSigners<
   TProgram,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountFrequencyPda,
   TAccountSystemProgram
 >;
@@ -219,7 +217,7 @@ export function getCreateFrequencyRuleInstruction<
   >
 ): CreateFrequencyRuleInstruction<
   TProgram,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountFrequencyPda,
   TAccountSystemProgram
 >;
@@ -236,7 +234,7 @@ export function getCreateFrequencyRuleInstruction<
   >
 ): CreateFrequencyRuleInstructionWithSigners<
   TProgram,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountFrequencyPda,
   TAccountSystemProgram
 >;
@@ -253,7 +251,7 @@ export function getCreateFrequencyRuleInstruction<
   >
 ): CreateFrequencyRuleInstruction<
   TProgram,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountPayer,
   TAccountFrequencyPda,
   TAccountSystemProgram
 >;

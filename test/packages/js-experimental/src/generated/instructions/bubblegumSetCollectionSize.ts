@@ -153,7 +153,6 @@ export function getBubblegumSetCollectionSizeInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type BubblegumSetCollectionSizeInput<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
@@ -174,7 +173,6 @@ export type BubblegumSetCollectionSizeInput<
   setCollectionSizeArgs: BubblegumSetCollectionSizeInstructionDataArgs['setCollectionSizeArgs'];
 };
 
-// Input.
 export type BubblegumSetCollectionSizeInputWithSigners<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
@@ -214,11 +212,9 @@ export function getBubblegumSetCollectionSizeInstruction<
 ): BubblegumSetCollectionSizeInstructionWithSigners<
   TProgram,
   TAccountCollectionMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
+  TAccountCollectionAuthority,
   TAccountCollectionMint,
-  ReadonlySignerAccount<TAccountBubblegumSigner> &
-    IAccountSignerMeta<TAccountBubblegumSigner>,
+  TAccountBubblegumSigner,
   TAccountCollectionAuthorityRecord
 >;
 export function getBubblegumSetCollectionSizeInstruction<
@@ -240,11 +236,9 @@ export function getBubblegumSetCollectionSizeInstruction<
 ): BubblegumSetCollectionSizeInstruction<
   TProgram,
   TAccountCollectionMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
+  TAccountCollectionAuthority,
   TAccountCollectionMint,
-  ReadonlySignerAccount<TAccountBubblegumSigner> &
-    IAccountSignerMeta<TAccountBubblegumSigner>,
+  TAccountBubblegumSigner,
   TAccountCollectionAuthorityRecord
 >;
 export function getBubblegumSetCollectionSizeInstruction<
@@ -265,11 +259,9 @@ export function getBubblegumSetCollectionSizeInstruction<
 ): BubblegumSetCollectionSizeInstructionWithSigners<
   TProgram,
   TAccountCollectionMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
+  TAccountCollectionAuthority,
   TAccountCollectionMint,
-  ReadonlySignerAccount<TAccountBubblegumSigner> &
-    IAccountSignerMeta<TAccountBubblegumSigner>,
+  TAccountBubblegumSigner,
   TAccountCollectionAuthorityRecord
 >;
 export function getBubblegumSetCollectionSizeInstruction<
@@ -290,11 +282,9 @@ export function getBubblegumSetCollectionSizeInstruction<
 ): BubblegumSetCollectionSizeInstruction<
   TProgram,
   TAccountCollectionMetadata,
-  WritableSignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
+  TAccountCollectionAuthority,
   TAccountCollectionMint,
-  ReadonlySignerAccount<TAccountBubblegumSigner> &
-    IAccountSignerMeta<TAccountBubblegumSigner>,
+  TAccountBubblegumSigner,
   TAccountCollectionAuthorityRecord
 >;
 export function getBubblegumSetCollectionSizeInstruction<

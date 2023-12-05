@@ -167,7 +167,6 @@ export function getSetAndVerifySizedCollectionItemInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type SetAndVerifySizedCollectionItemInput<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
@@ -196,7 +195,6 @@ export type SetAndVerifySizedCollectionItemInput<
   collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
 };
 
-// Input.
 export type SetAndVerifySizedCollectionItemInputWithSigners<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
@@ -250,9 +248,8 @@ export function getSetAndVerifySizedCollectionItemInstruction<
 ): SetAndVerifySizedCollectionItemInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionAuthority,
+  TAccountPayer,
   TAccountUpdateAuthority,
   TAccountCollectionMint,
   TAccountCollection,
@@ -284,9 +281,8 @@ export function getSetAndVerifySizedCollectionItemInstruction<
 ): SetAndVerifySizedCollectionItemInstruction<
   TProgram,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionAuthority,
+  TAccountPayer,
   TAccountUpdateAuthority,
   TAccountCollectionMint,
   TAccountCollection,
@@ -317,9 +313,8 @@ export function getSetAndVerifySizedCollectionItemInstruction<
 ): SetAndVerifySizedCollectionItemInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionAuthority,
+  TAccountPayer,
   TAccountUpdateAuthority,
   TAccountCollectionMint,
   TAccountCollection,
@@ -350,9 +345,8 @@ export function getSetAndVerifySizedCollectionItemInstruction<
 ): SetAndVerifySizedCollectionItemInstruction<
   TProgram,
   TAccountMetadata,
-  ReadonlySignerAccount<TAccountCollectionAuthority> &
-    IAccountSignerMeta<TAccountCollectionAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountCollectionAuthority,
+  TAccountPayer,
   TAccountUpdateAuthority,
   TAccountCollectionMint,
   TAccountCollection,

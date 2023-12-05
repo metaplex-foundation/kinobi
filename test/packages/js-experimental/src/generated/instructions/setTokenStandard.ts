@@ -123,7 +123,6 @@ export function getSetTokenStandardInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type SetTokenStandardInput<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
@@ -140,7 +139,6 @@ export type SetTokenStandardInput<
   edition?: Address<TAccountEdition>;
 };
 
-// Input.
 export type SetTokenStandardInputWithSigners<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
@@ -174,8 +172,7 @@ export function getSetTokenStandardInstruction<
 ): SetTokenStandardInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountUpdateAuthority,
   TAccountMint,
   TAccountEdition
 >;
@@ -196,8 +193,7 @@ export function getSetTokenStandardInstruction<
 ): SetTokenStandardInstruction<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountUpdateAuthority,
   TAccountMint,
   TAccountEdition
 >;
@@ -217,8 +213,7 @@ export function getSetTokenStandardInstruction<
 ): SetTokenStandardInstructionWithSigners<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountUpdateAuthority,
   TAccountMint,
   TAccountEdition
 >;
@@ -238,8 +233,7 @@ export function getSetTokenStandardInstruction<
 ): SetTokenStandardInstruction<
   TProgram,
   TAccountMetadata,
-  WritableSignerAccount<TAccountUpdateAuthority> &
-    IAccountSignerMeta<TAccountUpdateAuthority>,
+  TAccountUpdateAuthority,
   TAccountMint,
   TAccountEdition
 >;

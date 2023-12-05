@@ -158,7 +158,6 @@ export function getDeprecatedSetReservationListInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type DeprecatedSetReservationListInput<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
@@ -176,7 +175,6 @@ export type DeprecatedSetReservationListInput<
   totalSpotOffset: DeprecatedSetReservationListInstructionDataArgs['totalSpotOffset'];
 };
 
-// Input.
 export type DeprecatedSetReservationListInputWithSigners<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
@@ -210,7 +208,7 @@ export function getDeprecatedSetReservationListInstruction<
   TProgram,
   TAccountMasterEdition,
   TAccountReservationList,
-  ReadonlySignerAccount<TAccountResource> & IAccountSignerMeta<TAccountResource>
+  TAccountResource
 >;
 export function getDeprecatedSetReservationListInstruction<
   TAccountMasterEdition extends string,
@@ -228,7 +226,7 @@ export function getDeprecatedSetReservationListInstruction<
   TProgram,
   TAccountMasterEdition,
   TAccountReservationList,
-  ReadonlySignerAccount<TAccountResource> & IAccountSignerMeta<TAccountResource>
+  TAccountResource
 >;
 export function getDeprecatedSetReservationListInstruction<
   TAccountMasterEdition extends string,
@@ -245,7 +243,7 @@ export function getDeprecatedSetReservationListInstruction<
   TProgram,
   TAccountMasterEdition,
   TAccountReservationList,
-  ReadonlySignerAccount<TAccountResource> & IAccountSignerMeta<TAccountResource>
+  TAccountResource
 >;
 export function getDeprecatedSetReservationListInstruction<
   TAccountMasterEdition extends string,
@@ -262,7 +260,7 @@ export function getDeprecatedSetReservationListInstruction<
   TProgram,
   TAccountMasterEdition,
   TAccountReservationList,
-  ReadonlySignerAccount<TAccountResource> & IAccountSignerMeta<TAccountResource>
+  TAccountResource
 >;
 export function getDeprecatedSetReservationListInstruction<
   TAccountMasterEdition extends string,

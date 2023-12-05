@@ -172,7 +172,6 @@ export function getRevokeUseAuthorityInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type RevokeUseAuthorityInput<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
@@ -204,7 +203,6 @@ export type RevokeUseAuthorityInput<
   rent?: Address<TAccountRent>;
 };
 
-// Input.
 export type RevokeUseAuthorityInputWithSigners<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
@@ -263,7 +261,7 @@ export function getRevokeUseAuthorityInstruction<
 ): RevokeUseAuthorityInstructionWithSigners<
   TProgram,
   TAccountUseAuthorityRecord,
-  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountOwner,
   TAccountUser,
   TAccountOwnerTokenAccount,
   TAccountMint,
@@ -299,7 +297,7 @@ export function getRevokeUseAuthorityInstruction<
 ): RevokeUseAuthorityInstruction<
   TProgram,
   TAccountUseAuthorityRecord,
-  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountOwner,
   TAccountUser,
   TAccountOwnerTokenAccount,
   TAccountMint,
@@ -334,7 +332,7 @@ export function getRevokeUseAuthorityInstruction<
 ): RevokeUseAuthorityInstructionWithSigners<
   TProgram,
   TAccountUseAuthorityRecord,
-  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountOwner,
   TAccountUser,
   TAccountOwnerTokenAccount,
   TAccountMint,
@@ -369,7 +367,7 @@ export function getRevokeUseAuthorityInstruction<
 ): RevokeUseAuthorityInstruction<
   TProgram,
   TAccountUseAuthorityRecord,
-  WritableSignerAccount<TAccountOwner> & IAccountSignerMeta<TAccountOwner>,
+  TAccountOwner,
   TAccountUser,
   TAccountOwnerTokenAccount,
   TAccountMint,

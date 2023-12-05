@@ -195,27 +195,20 @@ function getInstructionType(
     const typeParam = `TAccount${pascalCase(account.name)}`;
     const camelName = camelCase(account.name);
 
-    if (account.isSigner === false) {
-      return fragment(typeParam);
+    if (account.isSigner === 'either' && withSigners) {
+      const signerRole = account.isWritable
+        ? 'WritableSignerAccount'
+        : 'ReadonlySignerAccount';
+      return fragment(
+        `typeof input["${camelName}"] extends TransactionSigner<${typeParam}> ` +
+          `? ${signerRole}<${typeParam}> & IAccountSignerMeta<${typeParam}> ` +
+          `: ${typeParam}`
+      )
+        .addImports('solanaInstructions', [signerRole])
+        .addImports('solanaSigners', ['IAccountSignerMeta']);
     }
 
-    const signerRole = account.isWritable
-      ? 'WritableSignerAccount'
-      : 'ReadonlySignerAccount';
-    const signerTypeFragment = fragment(
-      `${signerRole}<${typeParam}> & IAccountSignerMeta<${typeParam}>`
-    )
-      .addImports('solanaInstructions', [signerRole])
-      .addImports('solanaSigners', ['IAccountSignerMeta']);
-
-    if (account.isSigner === 'either') {
-      return signerTypeFragment.mapRender(
-        (r) =>
-          `typeof input["${camelName}"] extends TransactionSigner<${typeParam}> ? ${r} : ${typeParam}`
-      );
-    }
-
-    return signerTypeFragment;
+    return fragment(typeParam);
   });
 
   return mergeFragments(

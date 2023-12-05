@@ -236,7 +236,6 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
   );
 }
 
-// Input.
 export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
   TAccountMetadata extends string,
   TAccountEdition extends string,
@@ -289,7 +288,6 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
   reservationList?: Address<TAccountReservationList>;
 };
 
-// Input.
 export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInputWithSigners<
   TAccountMetadata extends string,
   TAccountEdition extends string,
@@ -386,14 +384,12 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
   TAccountEdition,
   TAccountMasterEdition,
   TAccountMint,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
+  TAccountMintAuthority,
   TAccountPrintingMint,
   TAccountMasterTokenAccount,
   TAccountEditionMarker,
-  ReadonlySignerAccount<TAccountBurnAuthority> &
-    IAccountSignerMeta<TAccountBurnAuthority>,
-  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountBurnAuthority,
+  TAccountPayer,
   TAccountMasterUpdateAuthority,
   TAccountMasterMetadata,
   TAccountTokenProgram,
@@ -445,14 +441,12 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
   TAccountEdition,
   TAccountMasterEdition,
   TAccountMint,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
+  TAccountMintAuthority,
   TAccountPrintingMint,
   TAccountMasterTokenAccount,
   TAccountEditionMarker,
-  ReadonlySignerAccount<TAccountBurnAuthority> &
-    IAccountSignerMeta<TAccountBurnAuthority>,
-  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountBurnAuthority,
+  TAccountPayer,
   TAccountMasterUpdateAuthority,
   TAccountMasterMetadata,
   TAccountTokenProgram,
@@ -503,14 +497,12 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
   TAccountEdition,
   TAccountMasterEdition,
   TAccountMint,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
+  TAccountMintAuthority,
   TAccountPrintingMint,
   TAccountMasterTokenAccount,
   TAccountEditionMarker,
-  ReadonlySignerAccount<TAccountBurnAuthority> &
-    IAccountSignerMeta<TAccountBurnAuthority>,
-  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountBurnAuthority,
+  TAccountPayer,
   TAccountMasterUpdateAuthority,
   TAccountMasterMetadata,
   TAccountTokenProgram,
@@ -561,14 +553,12 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
   TAccountEdition,
   TAccountMasterEdition,
   TAccountMint,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
+  TAccountMintAuthority,
   TAccountPrintingMint,
   TAccountMasterTokenAccount,
   TAccountEditionMarker,
-  ReadonlySignerAccount<TAccountBurnAuthority> &
-    IAccountSignerMeta<TAccountBurnAuthority>,
-  ReadonlySignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountBurnAuthority,
+  TAccountPayer,
   TAccountMasterUpdateAuthority,
   TAccountMasterMetadata,
   TAccountTokenProgram,

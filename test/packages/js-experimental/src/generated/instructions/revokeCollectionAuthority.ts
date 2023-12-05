@@ -137,7 +137,6 @@ export function getRevokeCollectionAuthorityInstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type RevokeCollectionAuthorityInput<
   TAccountCollectionAuthorityRecord extends string,
   TAccountDelegateAuthority extends string,
@@ -157,7 +156,6 @@ export type RevokeCollectionAuthorityInput<
   mint: Address<TAccountMint>;
 };
 
-// Input.
 export type RevokeCollectionAuthorityInputWithSigners<
   TAccountCollectionAuthorityRecord extends string,
   TAccountDelegateAuthority extends string,
@@ -197,8 +195,7 @@ export function getRevokeCollectionAuthorityInstruction<
   TProgram,
   TAccountCollectionAuthorityRecord,
   TAccountDelegateAuthority,
-  WritableSignerAccount<TAccountRevokeAuthority> &
-    IAccountSignerMeta<TAccountRevokeAuthority>,
+  TAccountRevokeAuthority,
   TAccountMetadata,
   TAccountMint
 >;
@@ -222,8 +219,7 @@ export function getRevokeCollectionAuthorityInstruction<
   TProgram,
   TAccountCollectionAuthorityRecord,
   TAccountDelegateAuthority,
-  WritableSignerAccount<TAccountRevokeAuthority> &
-    IAccountSignerMeta<TAccountRevokeAuthority>,
+  TAccountRevokeAuthority,
   TAccountMetadata,
   TAccountMint
 >;
@@ -246,8 +242,7 @@ export function getRevokeCollectionAuthorityInstruction<
   TProgram,
   TAccountCollectionAuthorityRecord,
   TAccountDelegateAuthority,
-  WritableSignerAccount<TAccountRevokeAuthority> &
-    IAccountSignerMeta<TAccountRevokeAuthority>,
+  TAccountRevokeAuthority,
   TAccountMetadata,
   TAccountMint
 >;
@@ -270,8 +265,7 @@ export function getRevokeCollectionAuthorityInstruction<
   TProgram,
   TAccountCollectionAuthorityRecord,
   TAccountDelegateAuthority,
-  WritableSignerAccount<TAccountRevokeAuthority> &
-    IAccountSignerMeta<TAccountRevokeAuthority>,
+  TAccountRevokeAuthority,
   TAccountMetadata,
   TAccountMint
 >;

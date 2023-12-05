@@ -214,7 +214,6 @@ export function getCreateV2InstructionDataCodec(): Codec<
   );
 }
 
-// Input.
 export type CreateV2Input<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -248,7 +247,6 @@ export type CreateV2Input<
   maxSupply: CreateV2InstructionDataArgs['maxSupply'];
 };
 
-// Input.
 export type CreateV2InputWithSigners<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -313,9 +311,8 @@ export function getCreateV2Instruction<
   typeof input['mint'] extends TransactionSigner<TAccountMint>
     ? WritableSignerAccount<TAccountMint> & IAccountSignerMeta<TAccountMint>
     : TAccountMint,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountMintAuthority,
+  TAccountPayer,
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
@@ -349,12 +346,9 @@ export function getCreateV2Instruction<
   TProgram,
   TAccountMetadata,
   TAccountMasterEdition,
-  typeof input['mint'] extends TransactionSigner<TAccountMint>
-    ? WritableSignerAccount<TAccountMint> & IAccountSignerMeta<TAccountMint>
-    : TAccountMint,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountMint,
+  TAccountMintAuthority,
+  TAccountPayer,
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
@@ -390,9 +384,8 @@ export function getCreateV2Instruction<
   typeof input['mint'] extends TransactionSigner<TAccountMint>
     ? WritableSignerAccount<TAccountMint> & IAccountSignerMeta<TAccountMint>
     : TAccountMint,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountMintAuthority,
+  TAccountPayer,
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
@@ -425,12 +418,9 @@ export function getCreateV2Instruction<
   TProgram,
   TAccountMetadata,
   TAccountMasterEdition,
-  typeof input['mint'] extends TransactionSigner<TAccountMint>
-    ? WritableSignerAccount<TAccountMint> & IAccountSignerMeta<TAccountMint>
-    : TAccountMint,
-  ReadonlySignerAccount<TAccountMintAuthority> &
-    IAccountSignerMeta<TAccountMintAuthority>,
-  WritableSignerAccount<TAccountPayer> & IAccountSignerMeta<TAccountPayer>,
+  TAccountMint,
+  TAccountMintAuthority,
+  TAccountPayer,
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
