@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { BASE_ACCOUNT_SIZE } from '@solana/accounts';
 import { Address } from '@solana/addresses';
 import {
   Codec,
@@ -33,7 +34,6 @@ import {
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { getMasterEditionV2Size } from '../accounts';
 import {
-  ACCOUNT_HEADER_SIZE,
   Context,
   ResolvedAccount,
   accountMetaWithDefault,
@@ -529,7 +529,7 @@ export function getCreateMasterEditionV3Instruction<
   const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
-  const bytesCreatedOnChain = getMasterEditionV2Size() + ACCOUNT_HEADER_SIZE;
+  const bytesCreatedOnChain = getMasterEditionV2Size() + BASE_ACCOUNT_SIZE;
 
   return Object.freeze({
     ...getCreateMasterEditionV3InstructionRaw(

@@ -12,7 +12,7 @@ export function getInstructionBytesCreatedOnChainFragment(scope: {
   const interfaces = new ContextMap();
 
   if (bytes && 'includeHeader' in bytes && bytes.includeHeader) {
-    imports.add('shared', 'ACCOUNT_HEADER_SIZE');
+    imports.add('solanaAccounts', 'BASE_ACCOUNT_SIZE');
   }
 
   if (bytes?.kind === 'account') {

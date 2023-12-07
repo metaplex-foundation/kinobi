@@ -7,6 +7,14 @@
  */
 
 import {
+  Account,
+  EncodedAccount,
+  FetchAccountConfig,
+  FetchAccountsConfig,
+  assertAccountExists,
+  decodeAccount,
+} from '@solana/accounts';
+import {
   Address,
   getAddressDecoder,
   getAddressEncoder,
@@ -29,15 +37,7 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import {
-  Account,
-  Context,
-  EncodedAccount,
-  FetchEncodedAccountOptions,
-  FetchEncodedAccountsOptions,
-  assertAccountExists,
-  decodeAccount,
-} from '../shared';
+import { Context } from '../shared';
 import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type CollectionAuthorityRecord<TAddress extends string = string> =
@@ -103,7 +103,7 @@ export async function fetchCollectionAuthorityRecord<
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
   address: Address<TAddress>,
-  options?: FetchEncodedAccountOptions
+  options?: FetchAccountConfig
 ): Promise<CollectionAuthorityRecord<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -115,7 +115,7 @@ export async function safeFetchCollectionAuthorityRecord<
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
   address: Address<TAddress>,
-  options?: FetchEncodedAccountOptions
+  options?: FetchAccountConfig
 ): Promise<CollectionAuthorityRecord<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists
@@ -126,7 +126,7 @@ export async function safeFetchCollectionAuthorityRecord<
 export async function fetchAllCollectionAuthorityRecord(
   context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Address>,
-  options?: FetchEncodedAccountsOptions
+  options?: FetchAccountsConfig
 ): Promise<CollectionAuthorityRecord[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -138,7 +138,7 @@ export async function fetchAllCollectionAuthorityRecord(
 export async function safeFetchAllCollectionAuthorityRecord(
   context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Address>,
-  options?: FetchEncodedAccountsOptions
+  options?: FetchAccountsConfig
 ): Promise<CollectionAuthorityRecord[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts

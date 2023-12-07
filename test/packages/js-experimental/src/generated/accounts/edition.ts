@@ -7,6 +7,14 @@
  */
 
 import {
+  Account,
+  EncodedAccount,
+  FetchAccountConfig,
+  FetchAccountsConfig,
+  assertAccountExists,
+  decodeAccount,
+} from '@solana/accounts';
+import {
   Address,
   getAddressDecoder,
   getAddressEncoder,
@@ -23,15 +31,7 @@ import {
   getStructEncoder,
 } from '@solana/codecs-data-structures';
 import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
-import {
-  Account,
-  Context,
-  EncodedAccount,
-  FetchEncodedAccountOptions,
-  FetchEncodedAccountsOptions,
-  assertAccountExists,
-  decodeAccount,
-} from '../shared';
+import { Context } from '../shared';
 import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type Edition<TAddress extends string = string> = Account<
@@ -92,7 +92,7 @@ export function decodeEdition<TAddress extends string = string>(
 export async function fetchEdition<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
   address: Address<TAddress>,
-  options?: FetchEncodedAccountOptions
+  options?: FetchAccountConfig
 ): Promise<Edition<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -102,7 +102,7 @@ export async function fetchEdition<TAddress extends string = string>(
 export async function safeFetchEdition<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
   address: Address<TAddress>,
-  options?: FetchEncodedAccountOptions
+  options?: FetchAccountConfig
 ): Promise<Edition<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists ? decodeEdition(maybeAccount) : null;
@@ -111,7 +111,7 @@ export async function safeFetchEdition<TAddress extends string = string>(
 export async function fetchAllEdition(
   context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Address>,
-  options?: FetchEncodedAccountsOptions
+  options?: FetchAccountsConfig
 ): Promise<Edition[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -123,7 +123,7 @@ export async function fetchAllEdition(
 export async function safeFetchAllEdition(
   context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Address>,
-  options?: FetchEncodedAccountsOptions
+  options?: FetchAccountsConfig
 ): Promise<Edition[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts

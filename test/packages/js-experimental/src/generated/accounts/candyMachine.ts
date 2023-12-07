@@ -7,6 +7,14 @@
  */
 
 import {
+  Account,
+  EncodedAccount,
+  FetchAccountConfig,
+  FetchAccountsConfig,
+  assertAccountExists,
+  decodeAccount,
+} from '@solana/accounts';
+import {
   Address,
   getAddressDecoder,
   getAddressEncoder,
@@ -30,15 +38,7 @@ import {
   getU8Decoder,
   getU8Encoder,
 } from '@solana/codecs-numbers';
-import {
-  Account,
-  Context,
-  EncodedAccount,
-  FetchEncodedAccountOptions,
-  FetchEncodedAccountsOptions,
-  assertAccountExists,
-  decodeAccount,
-} from '../shared';
+import { Context } from '../shared';
 import {
   CandyMachineData,
   CandyMachineDataArgs,
@@ -145,7 +145,7 @@ export function decodeCandyMachine<TAddress extends string = string>(
 export async function fetchCandyMachine<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
   address: Address<TAddress>,
-  options?: FetchEncodedAccountOptions
+  options?: FetchAccountConfig
 ): Promise<CandyMachine<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -155,7 +155,7 @@ export async function fetchCandyMachine<TAddress extends string = string>(
 export async function safeFetchCandyMachine<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
   address: Address<TAddress>,
-  options?: FetchEncodedAccountOptions
+  options?: FetchAccountConfig
 ): Promise<CandyMachine<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists ? decodeCandyMachine(maybeAccount) : null;
@@ -164,7 +164,7 @@ export async function safeFetchCandyMachine<TAddress extends string = string>(
 export async function fetchAllCandyMachine(
   context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Address>,
-  options?: FetchEncodedAccountsOptions
+  options?: FetchAccountsConfig
 ): Promise<CandyMachine[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -176,7 +176,7 @@ export async function fetchAllCandyMachine(
 export async function safeFetchAllCandyMachine(
   context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Address>,
-  options?: FetchEncodedAccountsOptions
+  options?: FetchAccountsConfig
 ): Promise<CandyMachine[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts

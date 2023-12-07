@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+import { BASE_ACCOUNT_SIZE } from '@solana/accounts';
 import { Address, ProgramDerivedAddress } from '@solana/addresses';
 import {
   Codec,
@@ -49,7 +50,6 @@ import {
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { findMetadataPda, getMetadataSize } from '../accounts';
 import {
-  ACCOUNT_HEADER_SIZE,
   Context,
   ResolvedAccount,
   accountMetaWithDefault,
@@ -556,7 +556,7 @@ export async function getCreateMetadataAccountInstructionAsync<
   const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
-  const bytesCreatedOnChain = getMetadataSize() + ACCOUNT_HEADER_SIZE;
+  const bytesCreatedOnChain = getMetadataSize() + BASE_ACCOUNT_SIZE;
 
   return Object.freeze({
     ...getCreateMetadataAccountInstructionRaw(
@@ -860,7 +860,7 @@ export function getCreateMetadataAccountInstruction<
   const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
-  const bytesCreatedOnChain = getMetadataSize() + ACCOUNT_HEADER_SIZE;
+  const bytesCreatedOnChain = getMetadataSize() + BASE_ACCOUNT_SIZE;
 
   return Object.freeze({
     ...getCreateMetadataAccountInstructionRaw(

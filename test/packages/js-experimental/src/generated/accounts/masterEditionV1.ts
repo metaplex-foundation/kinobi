@@ -7,6 +7,14 @@
  */
 
 import {
+  Account,
+  EncodedAccount,
+  FetchAccountConfig,
+  FetchAccountsConfig,
+  assertAccountExists,
+  decodeAccount,
+} from '@solana/accounts';
+import {
   Address,
   ProgramDerivedAddress,
   getAddressDecoder,
@@ -32,13 +40,7 @@ import {
   getOptionEncoder,
 } from '@solana/options';
 import {
-  Account,
   Context,
-  EncodedAccount,
-  FetchEncodedAccountOptions,
-  FetchEncodedAccountsOptions,
-  assertAccountExists,
-  decodeAccount,
   getProgramAddress,
   getProgramDerivedAddress,
 } from '../shared';
@@ -119,7 +121,7 @@ export function decodeMasterEditionV1<TAddress extends string = string>(
 export async function fetchMasterEditionV1<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
   address: Address<TAddress>,
-  options?: FetchEncodedAccountOptions
+  options?: FetchAccountConfig
 ): Promise<MasterEditionV1<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -131,7 +133,7 @@ export async function safeFetchMasterEditionV1<
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
   address: Address<TAddress>,
-  options?: FetchEncodedAccountOptions
+  options?: FetchAccountConfig
 ): Promise<MasterEditionV1<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists ? decodeMasterEditionV1(maybeAccount) : null;
@@ -140,7 +142,7 @@ export async function safeFetchMasterEditionV1<
 export async function fetchAllMasterEditionV1(
   context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Address>,
-  options?: FetchEncodedAccountsOptions
+  options?: FetchAccountsConfig
 ): Promise<MasterEditionV1[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -152,7 +154,7 @@ export async function fetchAllMasterEditionV1(
 export async function safeFetchAllMasterEditionV1(
   context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Address>,
-  options?: FetchEncodedAccountsOptions
+  options?: FetchAccountsConfig
 ): Promise<MasterEditionV1[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts
@@ -187,7 +189,7 @@ export async function fetchMasterEditionV1FromSeeds(
     'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
   >,
   seeds: Parameters<typeof findMasterEditionV1Pda>[1],
-  options?: FetchEncodedAccountOptions
+  options?: FetchAccountConfig
 ): Promise<MasterEditionV1> {
   const [address] = await findMasterEditionV1Pda(context, seeds);
   return fetchMasterEditionV1(context, address, options);
@@ -199,7 +201,7 @@ export async function safeFetchMasterEditionV1FromSeeds(
     'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
   >,
   seeds: Parameters<typeof findMasterEditionV1Pda>[1],
-  options?: FetchEncodedAccountOptions
+  options?: FetchAccountConfig
 ): Promise<MasterEditionV1 | null> {
   const [address] = await findMasterEditionV1Pda(context, seeds);
   return safeFetchMasterEditionV1(context, address, options);

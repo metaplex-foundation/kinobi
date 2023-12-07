@@ -7,16 +7,19 @@
  */
 
 import {
+  FetchAccountConfig,
+  FetchAccountsConfig,
+  MaybeEncodedAccount,
+} from '@solana/accounts';
+import {
   Address,
   isProgramDerivedAddress,
   getProgramDerivedAddress as web3JsGetProgramDerivedAddress,
   ProgramDerivedAddress,
 } from '@solana/addresses';
-import { Decoder } from '@solana/codecs-core';
 import {
   AccountRole,
   IAccountMeta,
-  IInstruction,
   upgradeRoleToSigner,
 } from '@solana/instructions';
 import {
@@ -187,21 +190,14 @@ export function isTransactionSigner<TAddress extends string = string>(
   );
 }
 
-export type CustomGeneratedInstruction<
-  TInstruction extends IInstruction,
-  TReturn
-> = {
-  getGeneratedInstruction: (instruction: TInstruction) => TReturn;
-};
-
 export type Context = {
   fetchEncodedAccount: <TAddress extends string = string>(
     address: Address<TAddress>,
-    options?: FetchEncodedAccountOptions
+    options?: FetchAccountConfig
   ) => Promise<MaybeEncodedAccount<TAddress>>;
   fetchEncodedAccounts: (
     addresses: Address[],
-    options?: FetchEncodedAccountsOptions
+    options?: FetchAccountsConfig
   ) => Promise<MaybeEncodedAccount[]>;
   getProgramAddress?: (program: { name: string; address: Address }) => Address;
   getProgramDerivedAddress?: (
@@ -234,76 +230,6 @@ export async function getProgramDerivedAddress(
         seeds,
       });
 }
-
-export const ACCOUNT_HEADER_SIZE = 128;
-
-export type AccountHeader = {
-  programAddress: Address;
-  executable: boolean;
-  lamports: bigint;
-  rentEpoch?: bigint;
-};
-
-export type Account<
-  TData extends object | Uint8Array,
-  TAddress extends string = string
-> = AccountHeader & {
-  address: Address<TAddress>;
-  data: TData;
-};
-
-export type MaybeAccount<
-  TData extends object | Uint8Array,
-  TAddress extends string = string
-> =
-  | ({ exists: true } & Account<TData, TAddress>)
-  | { exists: false; address: Address<TAddress> };
-
-export type EncodedAccount<TAddress extends string = string> = Account<
-  Uint8Array,
-  TAddress
->;
-export type MaybeEncodedAccount<TAddress extends string = string> =
-  MaybeAccount<Uint8Array, TAddress>;
-
-export function decodeAccount<
-  TData extends object,
-  TAddress extends string = string
->(
-  encodedAccount: EncodedAccount<TAddress>,
-  decoder: Decoder<TData>
-): Account<TData, TAddress> {
-  try {
-    return { ...encodedAccount, data: decoder.decode(encodedAccount.data) };
-  } catch (error: any) {
-    // TODO: Coded error.
-    throw new Error(`Failed to decode account [${encodedAccount.address}].`);
-  }
-}
-
-export function assertAccountExists<
-  TData extends object | Uint8Array,
-  TAddress extends string = string
->(
-  account: MaybeAccount<TData, TAddress>
-): asserts account is Account<TData, TAddress> & { exists: true } {
-  if (!account.exists) {
-    // TODO: Coded error.
-    throw new Error(`Expected account [${account.address}] to exist.`);
-  }
-}
-
-export type Commitment = 'confirmed' | 'finalized' | 'processed';
-
-export type FetchEncodedAccountOptions = {
-  commitment?: Commitment;
-  abortSignal?: AbortSignal;
-};
-
-export type FetchEncodedAccountsOptions = {
-  commitment?: Commitment;
-  abortSignal?: AbortSignal;
-};
 
 export type Program<TAddress extends string = string> = {
   name: string;

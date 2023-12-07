@@ -4,6 +4,7 @@ import { TypeManifest } from './TypeManifest';
 
 const DEFAULT_MODULE_MAP: Record<string, string> = {
   // External.
+  solanaAccounts: '@solana/accounts',
   solanaAddresses: '@solana/addresses',
   solanaCodecsCore: '@solana/codecs-core',
   solanaCodecsNumbers: '@solana/codecs-numbers',
