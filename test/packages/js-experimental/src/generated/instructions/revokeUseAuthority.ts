@@ -38,7 +38,6 @@ import {
   getProgramAddress,
 } from '../shared';
 
-// Output.
 export type RevokeUseAuthorityInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountUseAuthorityRecord extends string | IAccountMeta<string> = string,
@@ -90,7 +89,6 @@ export type RevokeUseAuthorityInstruction<
     ]
   >;
 
-// Output.
 export type RevokeUseAuthorityInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountUseAuthorityRecord extends string | IAccountMeta<string> = string,

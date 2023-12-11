@@ -44,7 +44,6 @@ import {
   getMintPrintingTokensViaTokenArgsEncoder,
 } from '../types';
 
-// Output.
 export type DeprecatedMintPrintingTokensInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountDestination extends string | IAccountMeta<string> = string,
@@ -88,7 +87,6 @@ export type DeprecatedMintPrintingTokensInstruction<
     ]
   >;
 
-// Output.
 export type DeprecatedMintPrintingTokensInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountDestination extends string | IAccountMeta<string> = string,

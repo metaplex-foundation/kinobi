@@ -41,7 +41,9 @@ export const enum MplTokenAuthRulesProgramErrorCode {
 
 export class MplTokenAuthRulesProgramError extends Error {
   override readonly name = 'MplTokenAuthRulesProgramError';
+
   readonly code: MplTokenAuthRulesProgramErrorCode;
+
   readonly cause: Error | undefined;
 
   constructor(
@@ -51,7 +53,6 @@ export class MplTokenAuthRulesProgramError extends Error {
     cause?: Error
   ) {
     super(`${name} (${code}): ${message}`);
-    Error.captureStackTrace(this, this.constructor);
     this.code = code;
     this.cause = cause;
   }
@@ -137,12 +138,12 @@ export function getMplTokenAuthRulesProgramErrorFromCode(
       )[code],
       cause
     );
-  } else {
-    return new MplTokenAuthRulesProgramError(
-      code,
-      'Unknown',
-      'Error message not available in production bundles. Compile with __DEV__ set to true to see more information.',
-      cause
-    );
   }
+
+  return new MplTokenAuthRulesProgramError(
+    code,
+    'Unknown',
+    'Error message not available in production bundles. Compile with __DEV__ set to true to see more information.',
+    cause
+  );
 }

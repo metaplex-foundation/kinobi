@@ -45,7 +45,6 @@ import {
   getMintNewEditionFromMasterEditionViaTokenArgsEncoder,
 } from '../types';
 
-// Output.
 export type MintNewEditionFromMasterEditionViaVaultProxyInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountNewMetadata extends string | IAccountMeta<string> = string,
@@ -131,7 +130,6 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInstruction<
     ]
   >;
 
-// Output.
 export type MintNewEditionFromMasterEditionViaVaultProxyInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountNewMetadata extends string | IAccountMeta<string> = string,

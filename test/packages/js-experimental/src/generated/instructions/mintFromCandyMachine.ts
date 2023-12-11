@@ -41,7 +41,6 @@ import {
   getProgramAddress,
 } from '../shared';
 
-// Output.
 export type MintFromCandyMachineInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
@@ -133,7 +132,6 @@ export type MintFromCandyMachineInstruction<
     ]
   >;
 
-// Output.
 export type MintFromCandyMachineInstructionWithSigners<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,

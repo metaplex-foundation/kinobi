@@ -45,7 +45,6 @@ import {
   getRevokeArgsEncoder,
 } from '../types';
 
-// Output.
 export type RevokeInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountDelegateRecord extends string | IAccountMeta<string> = string,
@@ -115,7 +114,6 @@ export type RevokeInstruction<
     ]
   >;
 
-// Output.
 export type RevokeInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountDelegateRecord extends string | IAccountMeta<string> = string,

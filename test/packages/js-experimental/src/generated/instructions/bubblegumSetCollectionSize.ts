@@ -44,7 +44,6 @@ import {
   getSetCollectionSizeArgsEncoder,
 } from '../types';
 
-// Output.
 export type BubblegumSetCollectionSizeInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
@@ -78,7 +77,6 @@ export type BubblegumSetCollectionSizeInstruction<
     ]
   >;
 
-// Output.
 export type BubblegumSetCollectionSizeInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountCollectionMetadata extends string | IAccountMeta<string> = string,

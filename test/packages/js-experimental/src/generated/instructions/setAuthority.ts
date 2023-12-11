@@ -42,7 +42,6 @@ import {
   getAccountMetasWithSigners,
 } from '../shared';
 
-// Output.
 export type SetAuthorityInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
@@ -62,7 +61,6 @@ export type SetAuthorityInstruction<
     ]
   >;
 
-// Output.
 export type SetAuthorityInstructionWithSigners<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,

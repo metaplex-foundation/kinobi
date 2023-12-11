@@ -56,7 +56,6 @@ import {
   getAssetDataEncoder,
 } from '../types';
 
-// Output.
 export type CreateV1Instruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
@@ -110,7 +109,6 @@ export type CreateV1Instruction<
     ]
   >;
 
-// Output.
 export type CreateV1InstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,

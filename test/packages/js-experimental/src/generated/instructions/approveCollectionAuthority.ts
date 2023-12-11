@@ -38,7 +38,6 @@ import {
   getProgramAddress,
 } from '../shared';
 
-// Output.
 export type ApproveCollectionAuthorityInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountCollectionAuthorityRecord extends
@@ -86,7 +85,6 @@ export type ApproveCollectionAuthorityInstruction<
     ]
   >;
 
-// Output.
 export type ApproveCollectionAuthorityInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountCollectionAuthorityRecord extends

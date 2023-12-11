@@ -53,7 +53,9 @@ export const enum MplCandyMachineCoreProgramErrorCode {
 
 export class MplCandyMachineCoreProgramError extends Error {
   override readonly name = 'MplCandyMachineCoreProgramError';
+
   readonly code: MplCandyMachineCoreProgramErrorCode;
+
   readonly cause: Error | undefined;
 
   constructor(
@@ -63,7 +65,6 @@ export class MplCandyMachineCoreProgramError extends Error {
     cause?: Error
   ) {
     super(`${name} (${code}): ${message}`);
-    Error.captureStackTrace(this, this.constructor);
     this.code = code;
     this.cause = cause;
   }
@@ -178,12 +179,12 @@ export function getMplCandyMachineCoreProgramErrorFromCode(
       )[code],
       cause
     );
-  } else {
-    return new MplCandyMachineCoreProgramError(
-      code,
-      'Unknown',
-      'Error message not available in production bundles. Compile with __DEV__ set to true to see more information.',
-      cause
-    );
   }
+
+  return new MplCandyMachineCoreProgramError(
+    code,
+    'Unknown',
+    'Error message not available in production bundles. Compile with __DEV__ set to true to see more information.',
+    cause
+  );
 }

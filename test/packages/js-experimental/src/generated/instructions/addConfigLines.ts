@@ -51,7 +51,6 @@ import {
   getConfigLineEncoder,
 } from '../types';
 
-// Output.
 export type AddConfigLinesInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
@@ -71,7 +70,6 @@ export type AddConfigLinesInstruction<
     ]
   >;
 
-// Output.
 export type AddConfigLinesInstructionWithSigners<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,

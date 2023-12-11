@@ -44,7 +44,6 @@ import {
   getProgramAddress,
 } from '../shared';
 
-// Output.
 export type CreateFrequencyRuleInstruction<
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
   TAccountPayer extends string | IAccountMeta<string> = string,
@@ -70,7 +69,6 @@ export type CreateFrequencyRuleInstruction<
     ]
   >;
 
-// Output.
 export type CreateFrequencyRuleInstructionWithSigners<
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
   TAccountPayer extends string | IAccountMeta<string> = string,

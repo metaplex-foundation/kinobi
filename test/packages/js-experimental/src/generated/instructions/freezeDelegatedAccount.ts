@@ -38,7 +38,6 @@ import {
   getProgramAddress,
 } from '../shared';
 
-// Output.
 export type FreezeDelegatedAccountInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountDelegate extends string | IAccountMeta<string> = string,
@@ -72,7 +71,6 @@ export type FreezeDelegatedAccountInstruction<
     ]
   >;
 
-// Output.
 export type FreezeDelegatedAccountInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountDelegate extends string | IAccountMeta<string> = string,

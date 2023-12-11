@@ -45,7 +45,6 @@ import {
   getTaCreateArgsEncoder,
 } from '../types';
 
-// Output.
 export type CreateRuleSetInstruction<
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
   TAccountPayer extends string | IAccountMeta<string> = string,
@@ -71,7 +70,6 @@ export type CreateRuleSetInstruction<
     ]
   >;
 
-// Output.
 export type CreateRuleSetInstructionWithSigners<
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
   TAccountPayer extends string | IAccountMeta<string> = string,

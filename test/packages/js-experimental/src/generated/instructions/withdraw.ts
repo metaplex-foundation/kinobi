@@ -38,7 +38,6 @@ import {
   getAccountMetasWithSigners,
 } from '../shared';
 
-// Output.
 export type WithdrawInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
@@ -58,7 +57,6 @@ export type WithdrawInstruction<
     ]
   >;
 
-// Output.
 export type WithdrawInstructionWithSigners<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,

@@ -313,7 +313,9 @@ export const enum MplTokenMetadataProgramErrorCode {
 
 export class MplTokenMetadataProgramError extends Error {
   override readonly name = 'MplTokenMetadataProgramError';
+
   readonly code: MplTokenMetadataProgramErrorCode;
+
   readonly cause: Error | undefined;
 
   constructor(
@@ -323,7 +325,6 @@ export class MplTokenMetadataProgramError extends Error {
     cause?: Error
   ) {
     super(`${name} (${code}): ${message}`);
-    Error.captureStackTrace(this, this.constructor);
     this.code = code;
     this.cause = cause;
   }
@@ -976,12 +977,12 @@ export function getMplTokenMetadataProgramErrorFromCode(
       )[code],
       cause
     );
-  } else {
-    return new MplTokenMetadataProgramError(
-      code,
-      'Unknown',
-      'Error message not available in production bundles. Compile with __DEV__ set to true to see more information.',
-      cause
-    );
   }
+
+  return new MplTokenMetadataProgramError(
+    code,
+    'Unknown',
+    'Error message not available in production bundles. Compile with __DEV__ set to true to see more information.',
+    cause
+  );
 }

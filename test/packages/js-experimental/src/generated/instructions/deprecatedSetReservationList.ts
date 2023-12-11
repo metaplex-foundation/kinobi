@@ -55,7 +55,6 @@ import {
   getReservationEncoder,
 } from '../types';
 
-// Output.
 export type DeprecatedSetReservationListInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
@@ -79,7 +78,6 @@ export type DeprecatedSetReservationListInstruction<
     ]
   >;
 
-// Output.
 export type DeprecatedSetReservationListInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
