@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.16.11
+
+### Patch Changes
+
+- [#108](https://github.com/metaplex-foundation/kinobi/pull/108) [`5a4c9a1`](https://github.com/metaplex-foundation/kinobi/commit/5a4c9a172ca1e7642f4729911f9f3f79545b7062) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix TypeScript issues with generated errors on js-experimental
+
 ## 0.16.10
 
 ### Patch Changes
