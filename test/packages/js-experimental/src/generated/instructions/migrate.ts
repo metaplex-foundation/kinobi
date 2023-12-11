@@ -44,7 +44,6 @@ import {
   getMigrateArgsEncoder,
 } from '../types';
 
-// Output.
 export type MigrateInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
@@ -102,7 +101,6 @@ export type MigrateInstruction<
     ]
   >;
 
-// Output.
 export type MigrateInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,

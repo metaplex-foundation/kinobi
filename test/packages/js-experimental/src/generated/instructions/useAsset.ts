@@ -44,7 +44,6 @@ import {
   getUseAssetArgsEncoder,
 } from '../types';
 
-// Output.
 export type UseAssetInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
@@ -108,7 +107,6 @@ export type UseAssetInstruction<
     ]
   >;
 
-// Output.
 export type UseAssetInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,

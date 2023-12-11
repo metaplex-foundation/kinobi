@@ -62,7 +62,6 @@ import {
   getCreatorEncoder,
 } from '../types';
 
-// Output.
 export type UpdateMetadataAccountInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
@@ -82,7 +81,6 @@ export type UpdateMetadataAccountInstruction<
     ]
   >;
 
-// Output.
 export type UpdateMetadataAccountInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,

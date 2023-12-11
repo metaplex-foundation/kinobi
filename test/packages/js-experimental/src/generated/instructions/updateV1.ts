@@ -97,7 +97,6 @@ import {
   getUsesEncoder,
 } from '../types';
 
-// Output.
 export type UpdateV1Instruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountAuthority extends string | IAccountMeta<string> = string,
@@ -155,7 +154,6 @@ export type UpdateV1Instruction<
     ]
   >;
 
-// Output.
 export type UpdateV1InstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountAuthority extends string | IAccountMeta<string> = string,

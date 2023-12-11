@@ -44,7 +44,6 @@ import {
   getProgramAddress,
 } from '../shared';
 
-// Output.
 export type TransferOutOfEscrowInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountEscrow extends string | IAccountMeta<string> = string,
@@ -116,7 +115,6 @@ export type TransferOutOfEscrowInstruction<
     ]
   >;
 
-// Output.
 export type TransferOutOfEscrowInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountEscrow extends string | IAccountMeta<string> = string,

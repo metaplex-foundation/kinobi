@@ -50,7 +50,6 @@ import {
   getPayloadEncoder,
 } from '../types';
 
-// Output.
 export type ValidateInstruction<
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
   TAccountPayer extends string | IAccountMeta<string> = string,
@@ -186,7 +185,6 @@ export type ValidateInstruction<
     ]
   >;
 
-// Output.
 export type ValidateInstructionWithSigners<
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
   TAccountPayer extends string | IAccountMeta<string> = string,

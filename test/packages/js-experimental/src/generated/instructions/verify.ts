@@ -43,7 +43,6 @@ import {
   getVerifyArgsEncoder,
 } from '../types';
 
-// Output.
 export type VerifyInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
@@ -77,7 +76,6 @@ export type VerifyInstruction<
     ]
   >;
 
-// Output.
 export type VerifyInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,

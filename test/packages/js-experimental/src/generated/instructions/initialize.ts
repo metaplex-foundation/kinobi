@@ -47,7 +47,6 @@ import {
   getCandyMachineDataEncoder,
 } from '../types';
 
-// Output.
 export type InitializeInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
@@ -113,7 +112,6 @@ export type InitializeInstruction<
     ]
   >;
 
-// Output.
 export type InitializeInstructionWithSigners<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,

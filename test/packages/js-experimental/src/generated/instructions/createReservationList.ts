@@ -30,7 +30,6 @@ import {
   getProgramAddress,
 } from '../shared';
 
-// Output.
 export type CreateReservationListInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountReservationList extends string | IAccountMeta<string> = string,
@@ -78,7 +77,6 @@ export type CreateReservationListInstruction<
     ]
   >;
 
-// Output.
 export type CreateReservationListInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountReservationList extends string | IAccountMeta<string> = string,

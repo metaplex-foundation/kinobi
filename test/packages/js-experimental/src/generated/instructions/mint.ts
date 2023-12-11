@@ -45,7 +45,6 @@ import {
   getMintArgsEncoder,
 } from '../types';
 
-// Output.
 export type MintInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountToken extends string | IAccountMeta<string> = string,
@@ -115,7 +114,6 @@ export type MintInstruction<
     ]
   >;
 
-// Output.
 export type MintInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountToken extends string | IAccountMeta<string> = string,

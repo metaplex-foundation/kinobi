@@ -54,7 +54,6 @@ import {
   getDataV2Encoder,
 } from '../types';
 
-// Output.
 export type UpdateMetadataAccountV2Instruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
@@ -74,7 +73,6 @@ export type UpdateMetadataAccountV2Instruction<
     ]
   >;
 
-// Output.
 export type UpdateMetadataAccountV2InstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,

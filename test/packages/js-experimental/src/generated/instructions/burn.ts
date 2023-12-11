@@ -44,7 +44,6 @@ import {
   getBurnArgsEncoder,
 } from '../types';
 
-// Output.
 export type BurnInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
@@ -96,7 +95,6 @@ export type BurnInstruction<
     ]
   >;
 
-// Output.
 export type BurnInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,

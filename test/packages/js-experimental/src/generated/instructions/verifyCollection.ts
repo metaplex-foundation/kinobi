@@ -37,7 +37,6 @@ import {
   getAccountMetasWithSigners,
 } from '../shared';
 
-// Output.
 export type VerifyCollectionInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
@@ -75,7 +74,6 @@ export type VerifyCollectionInstruction<
     ]
   >;
 
-// Output.
 export type VerifyCollectionInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,

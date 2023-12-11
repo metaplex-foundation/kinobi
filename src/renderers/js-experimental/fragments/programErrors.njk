@@ -9,12 +9,13 @@ export const enum {{ programErrorName }}Code {
 
 export class {{ programErrorName }} extends Error {
   override readonly name = '{{ programErrorName }}';
+
   readonly code: {{ programErrorName }}Code;
+
   readonly cause: Error | undefined;
 
   constructor(code: {{ programErrorName }}Code, name: string, message: string, cause?: Error) {
     super(`${name} (${code}): ${message}`);
-    Error.captureStackTrace(this, this.constructor);
     this.code = code;
     this.cause = cause;
   }
@@ -32,7 +33,7 @@ if (__DEV__) {
 export function get{{ programErrorName }}FromCode(code: {{ programErrorName }}Code, cause?: Error): {{ programErrorName }} {
   if (__DEV__) {
     return new {{ programErrorName }}(code, ...({{ programErrorName | camelCase }}CodeMap as Record<{{ programErrorName }}Code, [string, string]>)[code], cause);
-  } else {
-    return new {{ programErrorName }}(code, 'Unknown', 'Error message not available in production bundles. Compile with __DEV__ set to true to see more information.', cause);
   }
+
+  return new {{ programErrorName }}(code, 'Unknown', 'Error message not available in production bundles. Compile with __DEV__ set to true to see more information.', cause);
 }

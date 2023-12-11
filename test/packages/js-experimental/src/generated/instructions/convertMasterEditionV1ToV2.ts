@@ -34,7 +34,6 @@ import {
   getAccountMetasWithSigners,
 } from '../shared';
 
-// Output.
 export type ConvertMasterEditionV1ToV2Instruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
@@ -58,7 +57,6 @@ export type ConvertMasterEditionV1ToV2Instruction<
     ]
   >;
 
-// Output.
 export type ConvertMasterEditionV1ToV2InstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMasterEdition extends string | IAccountMeta<string> = string,

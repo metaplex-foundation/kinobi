@@ -46,7 +46,6 @@ import {
 } from '../shared';
 import { DelegateRole } from '../types';
 
-// Output.
 export type DummyInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountEdition extends string | IAccountMeta<string> = string,
@@ -98,7 +97,6 @@ export type DummyInstruction<
     ]
   >;
 
-// Output.
 export type DummyInstructionWithSigners<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountEdition extends string | IAccountMeta<string> = string,

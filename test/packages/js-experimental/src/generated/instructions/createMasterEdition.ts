@@ -45,7 +45,6 @@ import {
   getCreateMasterEditionArgsEncoder,
 } from '../types';
 
-// Output.
 export type CreateMasterEditionInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountEdition extends string | IAccountMeta<string> = string,
@@ -99,7 +98,6 @@ export type CreateMasterEditionInstruction<
     ]
   >;
 
-// Output.
 export type CreateMasterEditionInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountEdition extends string | IAccountMeta<string> = string,

@@ -45,7 +45,6 @@ import {
   getDelegateArgsEncoder,
 } from '../types';
 
-// Output.
 export type DelegateInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountDelegateRecord extends string | IAccountMeta<string> = string,
@@ -115,7 +114,6 @@ export type DelegateInstruction<
     ]
   >;
 
-// Output.
 export type DelegateInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountDelegateRecord extends string | IAccountMeta<string> = string,

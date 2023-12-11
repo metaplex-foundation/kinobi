@@ -47,7 +47,6 @@ import {
   getTransferArgsEncoder,
 } from '../types';
 
-// Output.
 export type TransferInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountAuthority extends string | IAccountMeta<string> = string,
@@ -129,7 +128,6 @@ export type TransferInstruction<
     ]
   >;
 
-// Output.
 export type TransferInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountAuthority extends string | IAccountMeta<string> = string,

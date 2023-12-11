@@ -43,7 +43,6 @@ import {
   getSetCollectionSizeArgsEncoder,
 } from '../types';
 
-// Output.
 export type SetCollectionSizeInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
@@ -73,7 +72,6 @@ export type SetCollectionSizeInstruction<
     ]
   >;
 
-// Output.
 export type SetCollectionSizeInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
