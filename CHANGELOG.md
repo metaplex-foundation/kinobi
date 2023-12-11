@@ -1,5 +1,13 @@
 # @metaplex-foundation/kinobi
 
+## 0.16.10
+
+### Patch Changes
+
+- [#107](https://github.com/metaplex-foundation/kinobi/pull/107) [`bf5faaa`](https://github.com/metaplex-foundation/kinobi/commit/bf5faaac9303ed9a3416abe6a2cd625e50976966) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Update js-experimental renderer
+
+- [#104](https://github.com/metaplex-foundation/kinobi/pull/104) [`1099f88`](https://github.com/metaplex-foundation/kinobi/commit/1099f883d300a8359cc3c1490116241c2f50f5ed) Thanks [@febo](https://github.com/febo)! - Escape module names in Rust client
+
 ## 0.16.9
 
 ### Patch Changes
