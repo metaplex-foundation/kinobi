@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   MplTokenMetadataProgramError,
   MplTokenMetadataProgramErrorCode,
@@ -20,7 +20,7 @@ import {
 } from '../shared';
 
 export const MPL_TOKEN_METADATA_PROGRAM_ADDRESS =
-  'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
 export type MplTokenMetadataProgram =
   Program<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'> &
@@ -41,7 +41,7 @@ export function createMplTokenMetadataProgram(): MplTokenMetadataProgram {
 
 export async function getMplTokenMetadataProgramAddress(
   context: Pick<Context, 'getProgramAddress'> = {}
-): Promise<Base58EncodedAddress> {
+): Promise<Address> {
   return getProgramAddress(
     context,
     'mplTokenMetadata',

@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -29,14 +29,12 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 
 // Output.
@@ -63,27 +61,50 @@ export type UpdatePrimarySaleHappenedViaTokenInstruction<
     ]
   >;
 
+// Output.
+export type UpdatePrimarySaleHappenedViaTokenInstructionWithSigners<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TAccountToken extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountOwner extends string
+        ? ReadonlySignerAccount<TAccountOwner> &
+            IAccountSignerMeta<TAccountOwner>
+        : TAccountOwner,
+      TAccountToken extends string
+        ? ReadonlyAccount<TAccountToken>
+        : TAccountToken,
+      ...TRemainingAccounts
+    ]
+  >;
+
 export type UpdatePrimarySaleHappenedViaTokenInstructionData = {
   discriminator: number;
 };
 
 export type UpdatePrimarySaleHappenedViaTokenInstructionDataArgs = {};
 
-export function getUpdatePrimarySaleHappenedViaTokenInstructionDataEncoder(): Encoder<UpdatePrimarySaleHappenedViaTokenInstructionDataArgs> {
+export function getUpdatePrimarySaleHappenedViaTokenInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>(
-      [['discriminator', getU8Encoder()]],
-      { description: 'UpdatePrimarySaleHappenedViaTokenInstructionData' }
-    ),
+    getStructEncoder<{ discriminator: number }>([
+      ['discriminator', getU8Encoder()],
+    ]),
     (value) => ({ ...value, discriminator: 4 })
-  ) as Encoder<UpdatePrimarySaleHappenedViaTokenInstructionDataArgs>;
+  ) satisfies Encoder<UpdatePrimarySaleHappenedViaTokenInstructionDataArgs>;
 }
 
-export function getUpdatePrimarySaleHappenedViaTokenInstructionDataDecoder(): Decoder<UpdatePrimarySaleHappenedViaTokenInstructionData> {
-  return getStructDecoder<UpdatePrimarySaleHappenedViaTokenInstructionData>(
-    [['discriminator', getU8Decoder()]],
-    { description: 'UpdatePrimarySaleHappenedViaTokenInstructionData' }
-  ) as Decoder<UpdatePrimarySaleHappenedViaTokenInstructionData>;
+export function getUpdatePrimarySaleHappenedViaTokenInstructionDataDecoder() {
+  return getStructDecoder<UpdatePrimarySaleHappenedViaTokenInstructionData>([
+    ['discriminator', getU8Decoder()],
+  ]) satisfies Decoder<UpdatePrimarySaleHappenedViaTokenInstructionData>;
 }
 
 export function getUpdatePrimarySaleHappenedViaTokenInstructionDataCodec(): Codec<
@@ -96,7 +117,185 @@ export function getUpdatePrimarySaleHappenedViaTokenInstructionDataCodec(): Code
   );
 }
 
-export function updatePrimarySaleHappenedViaTokenInstruction<
+export type UpdatePrimarySaleHappenedViaTokenInput<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountToken extends string
+> = {
+  /** Metadata key (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** Owner on the token account */
+  owner: Address<TAccountOwner>;
+  /** Account containing tokens from the metadata's mint */
+  token: Address<TAccountToken>;
+};
+
+export type UpdatePrimarySaleHappenedViaTokenInputWithSigners<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountToken extends string
+> = {
+  /** Metadata key (pda of ['metadata', program id, mint id]) */
+  metadata: Address<TAccountMetadata>;
+  /** Owner on the token account */
+  owner: TransactionSigner<TAccountOwner>;
+  /** Account containing tokens from the metadata's mint */
+  token: Address<TAccountToken>;
+};
+
+export function getUpdatePrimarySaleHappenedViaTokenInstruction<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountToken extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UpdatePrimarySaleHappenedViaTokenInputWithSigners<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >
+): UpdatePrimarySaleHappenedViaTokenInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  TAccountOwner,
+  TAccountToken
+>;
+export function getUpdatePrimarySaleHappenedViaTokenInstruction<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountToken extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UpdatePrimarySaleHappenedViaTokenInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >
+): UpdatePrimarySaleHappenedViaTokenInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountOwner,
+  TAccountToken
+>;
+export function getUpdatePrimarySaleHappenedViaTokenInstruction<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountToken extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: UpdatePrimarySaleHappenedViaTokenInputWithSigners<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >
+): UpdatePrimarySaleHappenedViaTokenInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  TAccountOwner,
+  TAccountToken
+>;
+export function getUpdatePrimarySaleHappenedViaTokenInstruction<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountToken extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: UpdatePrimarySaleHappenedViaTokenInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >
+): UpdatePrimarySaleHappenedViaTokenInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountOwner,
+  TAccountToken
+>;
+export function getUpdatePrimarySaleHappenedViaTokenInstruction<
+  TAccountMetadata extends string,
+  TAccountOwner extends string,
+  TAccountToken extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | UpdatePrimarySaleHappenedViaTokenInput<
+        TAccountMetadata,
+        TAccountOwner,
+        TAccountToken
+      >,
+  rawInput?: UpdatePrimarySaleHappenedViaTokenInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >
+): IInstruction {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as UpdatePrimarySaleHappenedViaTokenInput<
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >;
+
+  // Program address.
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getUpdatePrimarySaleHappenedViaTokenInstructionRaw<
+      TProgram,
+      TAccountMetadata,
+      TAccountOwner,
+      TAccountToken
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    owner: { value: input.owner ?? null, isWritable: false },
+    token: { value: input.token ?? null, isWritable: false },
+  };
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getUpdatePrimarySaleHappenedViaTokenInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}
+
+export function getUpdatePrimarySaleHappenedViaTokenInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountOwner extends string | IAccountMeta<string> = string,
@@ -105,16 +304,16 @@ export function updatePrimarySaleHappenedViaTokenInstruction<
 >(
   accounts: {
     metadata: TAccountMetadata extends string
-      ? Base58EncodedAddress<TAccountMetadata>
+      ? Address<TAccountMetadata>
       : TAccountMetadata;
     owner: TAccountOwner extends string
-      ? Base58EncodedAddress<TAccountOwner>
+      ? Address<TAccountOwner>
       : TAccountOwner;
     token: TAccountToken extends string
-      ? Base58EncodedAddress<TAccountToken>
+      ? Address<TAccountToken>
       : TAccountToken;
   },
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -135,175 +334,4 @@ export function updatePrimarySaleHappenedViaTokenInstruction<
     TAccountToken,
     TRemainingAccounts
   >;
-}
-
-// Input.
-export type UpdatePrimarySaleHappenedViaTokenInput<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountToken extends string
-> = {
-  /** Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata: Base58EncodedAddress<TAccountMetadata>;
-  /** Owner on the token account */
-  owner: Signer<TAccountOwner>;
-  /** Account containing tokens from the metadata's mint */
-  token: Base58EncodedAddress<TAccountToken>;
-};
-
-export async function updatePrimarySaleHappenedViaToken<
-  TReturn,
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountToken extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      UpdatePrimarySaleHappenedViaTokenInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountOwner,
-        TAccountToken
-      >,
-      TReturn
-    >,
-  input: UpdatePrimarySaleHappenedViaTokenInput<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountToken
-  >
-): Promise<TReturn>;
-export async function updatePrimarySaleHappenedViaToken<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountToken extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: UpdatePrimarySaleHappenedViaTokenInput<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountToken
-  >
-): Promise<
-  WrappedInstruction<
-    UpdatePrimarySaleHappenedViaTokenInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountOwner,
-      TAccountToken
-    >
-  >
->;
-export async function updatePrimarySaleHappenedViaToken<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountToken extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  input: UpdatePrimarySaleHappenedViaTokenInput<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountToken
-  >
-): Promise<
-  WrappedInstruction<
-    UpdatePrimarySaleHappenedViaTokenInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountOwner,
-      TAccountToken
-    >
-  >
->;
-export async function updatePrimarySaleHappenedViaToken<
-  TReturn,
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountToken extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
-    | UpdatePrimarySaleHappenedViaTokenInput<
-        TAccountMetadata,
-        TAccountOwner,
-        TAccountToken
-      >,
-  rawInput?: UpdatePrimarySaleHappenedViaTokenInput<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountToken
-  >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as UpdatePrimarySaleHappenedViaTokenInput<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountToken
-  >;
-
-  // Program address.
-  const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
-  const programAddress = (
-    context.getProgramAddress
-      ? await context.getProgramAddress({
-          name: 'mplTokenMetadata',
-          address: defaultProgramAddress,
-        })
-      : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
-
-  // Original accounts.
-  type AccountMetas = Parameters<
-    typeof updatePrimarySaleHappenedViaTokenInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountOwner,
-      TAccountToken
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
-    metadata: { value: input.metadata ?? null, isWritable: true },
-    owner: { value: input.owner ?? null, isWritable: false },
-    token: { value: input.token ?? null, isWritable: false },
-  };
-
-  // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: updatePrimarySaleHappenedViaTokenInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
-    signers,
-    bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
 }

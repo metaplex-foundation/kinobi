@@ -46,9 +46,9 @@ export function getAccountPdaHelpersFragment(
   })
     .mergeImportsWith(imports)
     .addImports('solanaAddresses', ['ProgramDerivedAddress'])
+    .addImports('solanaAccounts', ['FetchAccountConfig'])
     .addImports('shared', [
       'Context',
-      'FetchEncodedAccountOptions',
       'getProgramAddress',
       'getProgramDerivedAddress',
     ]);

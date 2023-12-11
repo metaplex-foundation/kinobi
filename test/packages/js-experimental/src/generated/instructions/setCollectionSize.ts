@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -29,14 +29,12 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 import {
   SetCollectionSizeArgs,
@@ -75,6 +73,37 @@ export type SetCollectionSizeInstruction<
     ]
   >;
 
+// Output.
+export type SetCollectionSizeInstructionWithSigners<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
+  TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
+  TAccountCollectionMint extends string | IAccountMeta<string> = string,
+  TAccountCollectionAuthorityRecord extends
+    | string
+    | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountCollectionMetadata extends string
+        ? WritableAccount<TAccountCollectionMetadata>
+        : TAccountCollectionMetadata,
+      TAccountCollectionAuthority extends string
+        ? WritableSignerAccount<TAccountCollectionAuthority> &
+            IAccountSignerMeta<TAccountCollectionAuthority>
+        : TAccountCollectionAuthority,
+      TAccountCollectionMint extends string
+        ? ReadonlyAccount<TAccountCollectionMint>
+        : TAccountCollectionMint,
+      TAccountCollectionAuthorityRecord extends string
+        ? ReadonlyAccount<TAccountCollectionAuthorityRecord>
+        : TAccountCollectionAuthorityRecord,
+      ...TRemainingAccounts
+    ]
+  >;
+
 export type SetCollectionSizeInstructionData = {
   discriminator: number;
   setCollectionSizeArgs: SetCollectionSizeArgs;
@@ -84,30 +113,24 @@ export type SetCollectionSizeInstructionDataArgs = {
   setCollectionSizeArgs: SetCollectionSizeArgsArgs;
 };
 
-export function getSetCollectionSizeInstructionDataEncoder(): Encoder<SetCollectionSizeInstructionDataArgs> {
+export function getSetCollectionSizeInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       discriminator: number;
       setCollectionSizeArgs: SetCollectionSizeArgsArgs;
-    }>(
-      [
-        ['discriminator', getU8Encoder()],
-        ['setCollectionSizeArgs', getSetCollectionSizeArgsEncoder()],
-      ],
-      { description: 'SetCollectionSizeInstructionData' }
-    ),
+    }>([
+      ['discriminator', getU8Encoder()],
+      ['setCollectionSizeArgs', getSetCollectionSizeArgsEncoder()],
+    ]),
     (value) => ({ ...value, discriminator: 34 })
-  ) as Encoder<SetCollectionSizeInstructionDataArgs>;
+  ) satisfies Encoder<SetCollectionSizeInstructionDataArgs>;
 }
 
-export function getSetCollectionSizeInstructionDataDecoder(): Decoder<SetCollectionSizeInstructionData> {
-  return getStructDecoder<SetCollectionSizeInstructionData>(
-    [
-      ['discriminator', getU8Decoder()],
-      ['setCollectionSizeArgs', getSetCollectionSizeArgsDecoder()],
-    ],
-    { description: 'SetCollectionSizeInstructionData' }
-  ) as Decoder<SetCollectionSizeInstructionData>;
+export function getSetCollectionSizeInstructionDataDecoder() {
+  return getStructDecoder<SetCollectionSizeInstructionData>([
+    ['discriminator', getU8Decoder()],
+    ['setCollectionSizeArgs', getSetCollectionSizeArgsDecoder()],
+  ]) satisfies Decoder<SetCollectionSizeInstructionData>;
 }
 
 export function getSetCollectionSizeInstructionDataCodec(): Codec<
@@ -120,65 +143,6 @@ export function getSetCollectionSizeInstructionDataCodec(): Codec<
   );
 }
 
-export function setCollectionSizeInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
-  TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
-  TAccountCollectionMint extends string | IAccountMeta<string> = string,
-  TAccountCollectionAuthorityRecord extends
-    | string
-    | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
->(
-  accounts: {
-    collectionMetadata: TAccountCollectionMetadata extends string
-      ? Base58EncodedAddress<TAccountCollectionMetadata>
-      : TAccountCollectionMetadata;
-    collectionAuthority: TAccountCollectionAuthority extends string
-      ? Base58EncodedAddress<TAccountCollectionAuthority>
-      : TAccountCollectionAuthority;
-    collectionMint: TAccountCollectionMint extends string
-      ? Base58EncodedAddress<TAccountCollectionMint>
-      : TAccountCollectionMint;
-    collectionAuthorityRecord?: TAccountCollectionAuthorityRecord extends string
-      ? Base58EncodedAddress<TAccountCollectionAuthorityRecord>
-      : TAccountCollectionAuthorityRecord;
-  },
-  args: SetCollectionSizeInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.collectionMetadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.collectionAuthority,
-        AccountRole.WRITABLE_SIGNER
-      ),
-      accountMetaWithDefault(accounts.collectionMint, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.collectionAuthorityRecord ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getSetCollectionSizeInstructionDataEncoder().encode(args),
-    programAddress,
-  } as SetCollectionSizeInstruction<
-    TProgram,
-    TAccountCollectionMetadata,
-    TAccountCollectionAuthority,
-    TAccountCollectionMint,
-    TAccountCollectionAuthorityRecord,
-    TRemainingAccounts
-  >;
-}
-
-// Input.
 export type SetCollectionSizeInput<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
@@ -186,43 +150,55 @@ export type SetCollectionSizeInput<
   TAccountCollectionAuthorityRecord extends string
 > = {
   /** Collection Metadata account */
-  collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
+  collectionMetadata: Address<TAccountCollectionMetadata>;
   /** Collection Update authority */
-  collectionAuthority: Signer<TAccountCollectionAuthority>;
+  collectionAuthority: Address<TAccountCollectionAuthority>;
   /** Mint of the Collection */
-  collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
+  collectionMint: Address<TAccountCollectionMint>;
   /** Collection Authority Record PDA */
-  collectionAuthorityRecord?: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+  collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
   setCollectionSizeArgs: SetCollectionSizeInstructionDataArgs['setCollectionSizeArgs'];
 };
 
-export async function setCollectionSize<
-  TReturn,
+export type SetCollectionSizeInputWithSigners<
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionAuthorityRecord extends string
+> = {
+  /** Collection Metadata account */
+  collectionMetadata: Address<TAccountCollectionMetadata>;
+  /** Collection Update authority */
+  collectionAuthority: TransactionSigner<TAccountCollectionAuthority>;
+  /** Mint of the Collection */
+  collectionMint: Address<TAccountCollectionMint>;
+  /** Collection Authority Record PDA */
+  collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
+  setCollectionSizeArgs: SetCollectionSizeInstructionDataArgs['setCollectionSizeArgs'];
+};
+
+export function getSetCollectionSizeInstruction<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
   TAccountCollectionAuthorityRecord extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      SetCollectionSizeInstruction<
-        TProgram,
-        TAccountCollectionMetadata,
-        TAccountCollectionAuthority,
-        TAccountCollectionMint,
-        TAccountCollectionAuthorityRecord
-      >,
-      TReturn
-    >,
-  input: SetCollectionSizeInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: SetCollectionSizeInputWithSigners<
     TAccountCollectionMetadata,
     TAccountCollectionAuthority,
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
   >
-): Promise<TReturn>;
-export async function setCollectionSize<
+): SetCollectionSizeInstructionWithSigners<
+  TProgram,
+  TAccountCollectionMetadata,
+  TAccountCollectionAuthority,
+  TAccountCollectionMint,
+  TAccountCollectionAuthorityRecord
+>;
+export function getSetCollectionSizeInstruction<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -236,18 +212,34 @@ export async function setCollectionSize<
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  WrappedInstruction<
-    SetCollectionSizeInstruction<
-      TProgram,
-      TAccountCollectionMetadata,
-      TAccountCollectionAuthority,
-      TAccountCollectionMint,
-      TAccountCollectionAuthorityRecord
-    >
-  >
+): SetCollectionSizeInstruction<
+  TProgram,
+  TAccountCollectionMetadata,
+  TAccountCollectionAuthority,
+  TAccountCollectionMint,
+  TAccountCollectionAuthorityRecord
 >;
-export async function setCollectionSize<
+export function getSetCollectionSizeInstruction<
+  TAccountCollectionMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: SetCollectionSizeInputWithSigners<
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >
+): SetCollectionSizeInstructionWithSigners<
+  TProgram,
+  TAccountCollectionMetadata,
+  TAccountCollectionAuthority,
+  TAccountCollectionMint,
+  TAccountCollectionAuthorityRecord
+>;
+export function getSetCollectionSizeInstruction<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -260,19 +252,14 @@ export async function setCollectionSize<
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  WrappedInstruction<
-    SetCollectionSizeInstruction<
-      TProgram,
-      TAccountCollectionMetadata,
-      TAccountCollectionAuthority,
-      TAccountCollectionMint,
-      TAccountCollectionAuthorityRecord
-    >
-  >
+): SetCollectionSizeInstruction<
+  TProgram,
+  TAccountCollectionMetadata,
+  TAccountCollectionAuthority,
+  TAccountCollectionMint,
+  TAccountCollectionAuthorityRecord
 >;
-export async function setCollectionSize<
-  TReturn,
+export function getSetCollectionSizeInstruction<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -281,8 +268,6 @@ export async function setCollectionSize<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | SetCollectionSizeInput<
         TAccountCollectionMetadata,
         TAccountCollectionAuthority,
@@ -295,12 +280,12 @@ export async function setCollectionSize<
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): IInstruction {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as SetCollectionSizeInput<
@@ -312,19 +297,19 @@ export async function setCollectionSize<
 
   // Program address.
   const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof setCollectionSizeInstruction<
+    typeof getSetCollectionSizeInstructionRaw<
       TProgram,
       TAccountCollectionMetadata,
       TAccountCollectionAuthority,
@@ -352,7 +337,7 @@ export async function setCollectionSize<
   const args = { ...input };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -364,19 +349,71 @@ export async function setCollectionSize<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: setCollectionSizeInstruction(
+  return Object.freeze({
+    ...getSetCollectionSizeInstructionRaw(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as SetCollectionSizeInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
-  };
+  });
+}
 
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+export function getSetCollectionSizeInstructionRaw<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
+  TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
+  TAccountCollectionMint extends string | IAccountMeta<string> = string,
+  TAccountCollectionAuthorityRecord extends
+    | string
+    | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+>(
+  accounts: {
+    collectionMetadata: TAccountCollectionMetadata extends string
+      ? Address<TAccountCollectionMetadata>
+      : TAccountCollectionMetadata;
+    collectionAuthority: TAccountCollectionAuthority extends string
+      ? Address<TAccountCollectionAuthority>
+      : TAccountCollectionAuthority;
+    collectionMint: TAccountCollectionMint extends string
+      ? Address<TAccountCollectionMint>
+      : TAccountCollectionMint;
+    collectionAuthorityRecord?: TAccountCollectionAuthorityRecord extends string
+      ? Address<TAccountCollectionAuthorityRecord>
+      : TAccountCollectionAuthorityRecord;
+  },
+  args: SetCollectionSizeInstructionDataArgs,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
+  remainingAccounts?: TRemainingAccounts
+) {
+  return {
+    accounts: [
+      accountMetaWithDefault(accounts.collectionMetadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.collectionAuthority,
+        AccountRole.WRITABLE_SIGNER
+      ),
+      accountMetaWithDefault(accounts.collectionMint, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.collectionAuthorityRecord ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      ...(remainingAccounts ?? []),
+    ],
+    data: getSetCollectionSizeInstructionDataEncoder().encode(args),
+    programAddress,
+  } as SetCollectionSizeInstruction<
+    TProgram,
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord,
+    TRemainingAccounts
+  >;
 }

@@ -3,10 +3,11 @@ import { pascalCase } from '../../../shared';
 import { TypeManifest } from '../TypeManifest';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
-export function getInstructionExtraArgsFragment(
-  instructionNode: nodes.InstructionNode,
-  extraArgsManifest: TypeManifest
-): Fragment {
+export function getInstructionExtraArgsFragment(scope: {
+  instructionNode: nodes.InstructionNode;
+  extraArgsManifest: TypeManifest;
+}): Fragment {
+  const { instructionNode, extraArgsManifest } = scope;
   if (
     instructionNode.extraArgs.struct.fields.length === 0 ||
     !!instructionNode.extraArgs.link

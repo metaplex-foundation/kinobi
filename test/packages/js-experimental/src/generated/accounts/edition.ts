@@ -7,7 +7,15 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Account,
+  EncodedAccount,
+  FetchAccountConfig,
+  FetchAccountsConfig,
+  assertAccountExists,
+  decodeAccount,
+} from '@solana/accounts';
+import {
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -23,15 +31,7 @@ import {
   getStructEncoder,
 } from '@solana/codecs-data-structures';
 import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
-import {
-  Account,
-  Context,
-  EncodedAccount,
-  FetchEncodedAccountOptions,
-  FetchEncodedAccountsOptions,
-  assertAccountExists,
-  decodeAccount,
-} from '../shared';
+import { Context } from '../shared';
 import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type Edition<TAddress extends string = string> = Account<
@@ -41,42 +41,36 @@ export type Edition<TAddress extends string = string> = Account<
 
 export type EditionAccountData = {
   key: TmKey;
-  parent: Base58EncodedAddress;
+  parent: Address;
   edition: bigint;
 };
 
 export type EditionAccountDataArgs = {
-  parent: Base58EncodedAddress;
+  parent: Address;
   edition: number | bigint;
 };
 
-export function getEditionAccountDataEncoder(): Encoder<EditionAccountDataArgs> {
+export function getEditionAccountDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       key: TmKeyArgs;
-      parent: Base58EncodedAddress;
+      parent: Address;
       edition: number | bigint;
-    }>(
-      [
-        ['key', getTmKeyEncoder()],
-        ['parent', getAddressEncoder()],
-        ['edition', getU64Encoder()],
-      ],
-      { description: 'EditionAccountData' }
-    ),
+    }>([
+      ['key', getTmKeyEncoder()],
+      ['parent', getAddressEncoder()],
+      ['edition', getU64Encoder()],
+    ]),
     (value) => ({ ...value, key: TmKey.EditionV1 })
-  ) as Encoder<EditionAccountDataArgs>;
+  ) satisfies Encoder<EditionAccountDataArgs>;
 }
 
-export function getEditionAccountDataDecoder(): Decoder<EditionAccountData> {
-  return getStructDecoder<EditionAccountData>(
-    [
-      ['key', getTmKeyDecoder()],
-      ['parent', getAddressDecoder()],
-      ['edition', getU64Decoder()],
-    ],
-    { description: 'EditionAccountData' }
-  ) as Decoder<EditionAccountData>;
+export function getEditionAccountDataDecoder() {
+  return getStructDecoder<EditionAccountData>([
+    ['key', getTmKeyDecoder()],
+    ['parent', getAddressDecoder()],
+    ['edition', getU64Decoder()],
+  ]) satisfies Decoder<EditionAccountData>;
 }
 
 export function getEditionAccountDataCodec(): Codec<
@@ -97,8 +91,8 @@ export function decodeEdition<TAddress extends string = string>(
 
 export async function fetchEdition<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<Edition<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -107,8 +101,8 @@ export async function fetchEdition<TAddress extends string = string>(
 
 export async function safeFetchEdition<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<Edition<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists ? decodeEdition(maybeAccount) : null;
@@ -116,8 +110,8 @@ export async function safeFetchEdition<TAddress extends string = string>(
 
 export async function fetchAllEdition(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<Edition[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -128,8 +122,8 @@ export async function fetchAllEdition(
 
 export async function safeFetchAllEdition(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<Edition[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts

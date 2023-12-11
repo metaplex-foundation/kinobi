@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -26,49 +26,35 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 
-export type Creator = {
-  address: Base58EncodedAddress;
-  verified: boolean;
-  share: number;
-};
+export type Creator = { address: Address; verified: boolean; share: number };
 
 export type CreatorArgs = {
-  address: Base58EncodedAddress;
+  address: Address;
   verified?: boolean;
   share?: number;
 };
 
-export function getCreatorEncoder(): Encoder<CreatorArgs> {
+export function getCreatorEncoder() {
   return mapEncoder(
-    getStructEncoder<{
-      address: Base58EncodedAddress;
-      verified: boolean;
-      share: number;
-    }>(
-      [
-        ['address', getAddressEncoder()],
-        ['verified', getBooleanEncoder()],
-        ['share', getU8Encoder()],
-      ],
-      { description: 'Creator' }
-    ),
+    getStructEncoder<{ address: Address; verified: boolean; share: number }>([
+      ['address', getAddressEncoder()],
+      ['verified', getBooleanEncoder()],
+      ['share', getU8Encoder()],
+    ]),
     (value) => ({
       ...value,
       verified: value.verified ?? false,
       share: value.share ?? 42,
     })
-  ) as Encoder<CreatorArgs>;
+  ) satisfies Encoder<CreatorArgs>;
 }
 
-export function getCreatorDecoder(): Decoder<Creator> {
-  return getStructDecoder<Creator>(
-    [
-      ['address', getAddressDecoder()],
-      ['verified', getBooleanDecoder()],
-      ['share', getU8Decoder()],
-    ],
-    { description: 'Creator' }
-  ) as Decoder<Creator>;
+export function getCreatorDecoder() {
+  return getStructDecoder<Creator>([
+    ['address', getAddressDecoder()],
+    ['verified', getBooleanDecoder()],
+    ['share', getU8Decoder()],
+  ]) satisfies Decoder<Creator>;
 }
 
 export function getCreatorCodec(): Codec<CreatorArgs, Creator> {

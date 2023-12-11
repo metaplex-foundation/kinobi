@@ -13,7 +13,7 @@ export function getProgramFragment(programNode: nodes.ProgramNode): Fragment {
     programAddressConstant,
     programErrorName,
   })
-    .addImports('solanaAddresses', ['Base58EncodedAddress'])
+    .addImports('solanaAddresses', ['Address'])
     .addImports('shared', ['Program', 'getProgramAddress', 'Context']);
 
   if (programNode.errors.length > 0) {

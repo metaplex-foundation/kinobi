@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -37,14 +37,12 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 import {
   ConfigLine,
@@ -73,6 +71,27 @@ export type AddConfigLinesInstruction<
     ]
   >;
 
+// Output.
+export type AddConfigLinesInstructionWithSigners<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountCandyMachine extends string | IAccountMeta<string> = string,
+  TAccountAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountCandyMachine extends string
+        ? WritableAccount<TAccountCandyMachine>
+        : TAccountCandyMachine,
+      TAccountAuthority extends string
+        ? ReadonlySignerAccount<TAccountAuthority> &
+            IAccountSignerMeta<TAccountAuthority>
+        : TAccountAuthority,
+      ...TRemainingAccounts
+    ]
+  >;
+
 export type AddConfigLinesInstructionData = {
   discriminator: Array<number>;
   index: number;
@@ -88,7 +107,7 @@ export type AddConfigLinesInstructionDataArgs = {
   moreLines: Array<ConfigLineArgs>;
 };
 
-export function getAddConfigLinesInstructionDataEncoder(): Encoder<AddConfigLinesInstructionDataArgs> {
+export function getAddConfigLinesInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       discriminator: Array<number>;
@@ -96,38 +115,32 @@ export function getAddConfigLinesInstructionDataEncoder(): Encoder<AddConfigLine
       configLines: Array<ConfigLineArgs>;
       /** More dummy lines. */
       moreLines: Array<ConfigLineArgs>;
-    }>(
+    }>([
+      ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
+      ['index', getU32Encoder()],
+      ['configLines', getArrayEncoder(getConfigLineEncoder())],
       [
-        ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
-        ['index', getU32Encoder()],
-        ['configLines', getArrayEncoder(getConfigLineEncoder())],
-        [
-          'moreLines',
-          getArrayEncoder(getConfigLineEncoder(), { size: getU64Encoder() }),
-        ],
+        'moreLines',
+        getArrayEncoder(getConfigLineEncoder(), { size: getU64Encoder() }),
       ],
-      { description: 'AddConfigLinesInstructionData' }
-    ),
+    ]),
     (value) => ({
       ...value,
       discriminator: [223, 50, 224, 227, 151, 8, 115, 106],
     })
-  ) as Encoder<AddConfigLinesInstructionDataArgs>;
+  ) satisfies Encoder<AddConfigLinesInstructionDataArgs>;
 }
 
-export function getAddConfigLinesInstructionDataDecoder(): Decoder<AddConfigLinesInstructionData> {
-  return getStructDecoder<AddConfigLinesInstructionData>(
+export function getAddConfigLinesInstructionDataDecoder() {
+  return getStructDecoder<AddConfigLinesInstructionData>([
+    ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
+    ['index', getU32Decoder()],
+    ['configLines', getArrayDecoder(getConfigLineDecoder())],
     [
-      ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
-      ['index', getU32Decoder()],
-      ['configLines', getArrayDecoder(getConfigLineDecoder())],
-      [
-        'moreLines',
-        getArrayDecoder(getConfigLineDecoder(), { size: getU64Decoder() }),
-      ],
+      'moreLines',
+      getArrayDecoder(getConfigLineDecoder(), { size: getU64Decoder() }),
     ],
-    { description: 'AddConfigLinesInstructionData' }
-  ) as Decoder<AddConfigLinesInstructionData>;
+  ]) satisfies Decoder<AddConfigLinesInstructionData>;
 }
 
 export function getAddConfigLinesInstructionDataCodec(): Codec<
@@ -140,7 +153,138 @@ export function getAddConfigLinesInstructionDataCodec(): Codec<
   );
 }
 
-export function addConfigLinesInstruction<
+export type AddConfigLinesInput<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string
+> = {
+  candyMachine: Address<TAccountCandyMachine>;
+  authority?: Address<TAccountAuthority>;
+  index: AddConfigLinesInstructionDataArgs['index'];
+  configLines: AddConfigLinesInstructionDataArgs['configLines'];
+  moreLines: AddConfigLinesInstructionDataArgs['moreLines'];
+};
+
+export type AddConfigLinesInputWithSigners<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string
+> = {
+  candyMachine: Address<TAccountCandyMachine>;
+  authority?: TransactionSigner<TAccountAuthority>;
+  index: AddConfigLinesInstructionDataArgs['index'];
+  configLines: AddConfigLinesInstructionDataArgs['configLines'];
+  moreLines: AddConfigLinesInstructionDataArgs['moreLines'];
+};
+
+export function getAddConfigLinesInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: AddConfigLinesInputWithSigners<TAccountCandyMachine, TAccountAuthority>
+): AddConfigLinesInstructionWithSigners<
+  TProgram,
+  TAccountCandyMachine,
+  TAccountAuthority
+>;
+export function getAddConfigLinesInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
+): AddConfigLinesInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>;
+export function getAddConfigLinesInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: AddConfigLinesInputWithSigners<TAccountCandyMachine, TAccountAuthority>
+): AddConfigLinesInstructionWithSigners<
+  TProgram,
+  TAccountCandyMachine,
+  TAccountAuthority
+>;
+export function getAddConfigLinesInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
+): AddConfigLinesInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>;
+export function getAddConfigLinesInstruction<
+  TAccountCandyMachine extends string,
+  TAccountAuthority extends string,
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>,
+  rawInput?: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
+): IInstruction {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>;
+
+  // Program address.
+  const defaultProgramAddress =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? context.getProgramAddress({
+          name: 'mplCandyMachineCore',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getAddConfigLinesInstructionRaw<
+      TProgram,
+      TAccountCandyMachine,
+      TAccountAuthority
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    candyMachine: { value: input.candyMachine ?? null, isWritable: true },
+    authority: { value: input.authority ?? null, isWritable: false },
+  };
+
+  // Original args.
+  const args = { ...input };
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getAddConfigLinesInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as AddConfigLinesInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}
+
+export function getAddConfigLinesInstructionRaw<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
@@ -148,14 +292,14 @@ export function addConfigLinesInstruction<
 >(
   accounts: {
     candyMachine: TAccountCandyMachine extends string
-      ? Base58EncodedAddress<TAccountCandyMachine>
+      ? Address<TAccountCandyMachine>
       : TAccountCandyMachine;
     authority: TAccountAuthority extends string
-      ? Base58EncodedAddress<TAccountAuthority>
+      ? Address<TAccountAuthority>
       : TAccountAuthority;
   },
   args: AddConfigLinesInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -172,136 +316,4 @@ export function addConfigLinesInstruction<
     TAccountAuthority,
     TRemainingAccounts
   >;
-}
-
-// Input.
-export type AddConfigLinesInput<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string
-> = {
-  candyMachine: Base58EncodedAddress<TAccountCandyMachine>;
-  authority?: Signer<TAccountAuthority>;
-  index: AddConfigLinesInstructionDataArgs['index'];
-  configLines: AddConfigLinesInstructionDataArgs['configLines'];
-  moreLines: AddConfigLinesInstructionDataArgs['moreLines'];
-};
-
-export async function addConfigLines<
-  TReturn,
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      AddConfigLinesInstruction<
-        TProgram,
-        TAccountCandyMachine,
-        TAccountAuthority
-      >,
-      TReturn
-    >,
-  input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<TReturn>;
-export async function addConfigLines<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  WrappedInstruction<
-    AddConfigLinesInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
-  >
->;
-export async function addConfigLines<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
-  input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<
-  WrappedInstruction<
-    AddConfigLinesInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>
-  >
->;
-export async function addConfigLines<
-  TReturn,
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
-    | AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>,
-  rawInput?: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>;
-
-  // Program address.
-  const defaultProgramAddress =
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Base58EncodedAddress<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
-  const programAddress = (
-    context.getProgramAddress
-      ? await context.getProgramAddress({
-          name: 'mplCandyMachineCore',
-          address: defaultProgramAddress,
-        })
-      : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
-
-  // Original accounts.
-  type AccountMetas = Parameters<
-    typeof addConfigLinesInstruction<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthority
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
-    candyMachine: { value: input.candyMachine ?? null, isWritable: true },
-    authority: { value: input.authority ?? null, isWritable: false },
-  };
-
-  // Original args.
-  const args = { ...input };
-
-  // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: addConfigLinesInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as AddConfigLinesInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    signers,
-    bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
 }

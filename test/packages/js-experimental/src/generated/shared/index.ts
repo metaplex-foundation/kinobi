@@ -7,26 +7,26 @@
  */
 
 import {
-  Base58EncodedAddress,
+  FetchAccountConfig,
+  FetchAccountsConfig,
+  MaybeEncodedAccount,
+} from '@solana/accounts';
+import {
+  Address,
   isProgramDerivedAddress,
   getProgramDerivedAddress as web3JsGetProgramDerivedAddress,
   ProgramDerivedAddress,
 } from '@solana/addresses';
-import { Decoder } from '@solana/codecs-core';
 import {
   AccountRole,
   IAccountMeta,
-  IInstruction,
   upgradeRoleToSigner,
 } from '@solana/instructions';
-import { Ed25519Signature } from '@solana/keys';
 import {
-  BaseTransaction,
-  IDurableNonceTransaction,
-  ITransactionWithBlockhashLifetime,
-  ITransactionWithFeePayer,
-  ITransactionWithSignatures,
-} from '@solana/transactions';
+  IAccountSignerMeta,
+  isTransactionSigner as web3JsIsTransactionSigner,
+  TransactionSigner,
+} from '@solana/signers';
 
 /**
  * Asserts that the given value is not null or undefined.
@@ -45,14 +45,14 @@ export function expectSome<T>(value: T | null | undefined): T {
  */
 export function expectAddress<T extends string = string>(
   value:
-    | Base58EncodedAddress<T>
+    | Address<T>
     | ProgramDerivedAddress<T>
-    | Signer<T>
+    | TransactionSigner<T>
     | null
     | undefined
-): Base58EncodedAddress<T> {
+): Address<T> {
   if (!value) {
-    throw new Error('Expected a Base58EncodedAddress.');
+    throw new Error('Expected a Address.');
   }
   if (typeof value === 'object' && 'address' in value) {
     return value.address;
@@ -60,7 +60,7 @@ export function expectAddress<T extends string = string>(
   if (Array.isArray(value)) {
     return value[0];
   }
-  return value as Base58EncodedAddress<T>;
+  return value as Address<T>;
 }
 
 /**
@@ -69,9 +69,9 @@ export function expectAddress<T extends string = string>(
  */
 export function expectProgramDerivedAddress<T extends string = string>(
   value:
-    | Base58EncodedAddress<T>
+    | Address<T>
     | ProgramDerivedAddress<T>
-    | Signer<T>
+    | TransactionSigner<T>
     | null
     | undefined
 ): ProgramDerivedAddress<T> {
@@ -82,19 +82,19 @@ export function expectProgramDerivedAddress<T extends string = string>(
 }
 
 /**
- * Asserts that the given value is a Signer.
+ * Asserts that the given value is a TransactionSigner.
  * @internal
  */
-export function expectSigner<T extends string = string>(
+export function expectTransactionSigner<T extends string = string>(
   value:
-    | Base58EncodedAddress<T>
+    | Address<T>
     | ProgramDerivedAddress<T>
-    | Signer<T>
+    | TransactionSigner<T>
     | null
     | undefined
-): Signer<T> {
-  if (!isSigner(value)) {
-    throw new Error('Expected a Signer.');
+): TransactionSigner<T> {
+  if (!value || !isTransactionSigner(value)) {
+    throw new Error('Expected a TransactionSigner.');
   }
   return value;
 }
@@ -106,14 +106,10 @@ export function expectSigner<T extends string = string>(
 export type ResolvedAccount<
   T extends string = string,
   U extends
-    | Base58EncodedAddress<T>
+    | Address<T>
     | ProgramDerivedAddress<T>
-    | Signer<T>
-    | null =
-    | Base58EncodedAddress<T>
-    | ProgramDerivedAddress<T>
-    | Signer<T>
-    | null
+    | TransactionSigner<T>
+    | null = Address<T> | ProgramDerivedAddress<T> | TransactionSigner<T> | null
 > = {
   isWritable: boolean;
   value: U;
@@ -131,21 +127,28 @@ export function accountMetaWithDefault<
   return (
     typeof account === 'string' ? { address: account, role } : account
   ) as TAccount extends string
-    ? { address: Base58EncodedAddress<TAccount>; role: TRole }
+    ? { address: Address<TAccount>; role: TRole }
     : TAccount;
 }
+
+/**
+ * Defines an instruction that stores additional bytes on-chain.
+ * @internal
+ */
+export type IInstructionWithBytesCreatedOnChain = {
+  bytesCreatedOnChain: number;
+};
 
 /**
  * Get account metas and signers from resolved accounts.
  * @internal
  */
-export function getAccountMetasAndSigners<TKey extends string = string>(
+export function getAccountMetasWithSigners<TKey extends string = string>(
   accounts: Record<TKey, ResolvedAccount>,
   optionalAccountStrategy: 'omitted' | 'programId',
-  programAddress: Base58EncodedAddress
-): [Record<TKey, IAccountMeta>, Signer[]] {
-  const accountMetas: Record<string, IAccountMeta> = {};
-  const signers: Signer[] = [];
+  programAddress: Address
+): Record<TKey, IAccountMeta | IAccountSignerMeta> {
+  const accountMetas: Record<string, IAccountMeta | IAccountSignerMeta> = {};
 
   Object.keys(accounts).forEach((key) => {
     const account = accounts[key as TKey] as ResolvedAccount;
@@ -158,109 +161,61 @@ export function getAccountMetasAndSigners<TKey extends string = string>(
       return;
     }
 
-    if (isSigner(account.value)) {
-      signers.push(account.value);
-    }
     const writableRole = account.isWritable
       ? AccountRole.WRITABLE
       : AccountRole.READONLY;
-    accountMetas[key] = {
+    accountMetas[key] = Object.freeze({
       address: expectAddress(account.value),
-      role: isSigner(account.value)
+      role: isTransactionSigner(account.value)
         ? upgradeRoleToSigner(writableRole)
         : writableRole,
-    };
+      ...(isTransactionSigner(account.value) ? { signer: account.value } : {}),
+    });
   });
 
-  return [accountMetas, signers];
+  return accountMetas;
 }
 
-export type WrappedInstruction<TInstruction extends IInstruction> = {
-  instruction: TInstruction;
-  signers: Signer[];
-  bytesCreatedOnChain: number;
-};
-
-type CompilableTransaction = BaseTransaction &
-  ITransactionWithFeePayer &
-  (ITransactionWithBlockhashLifetime | IDurableNonceTransaction);
-
-export type Signer<TAddress extends string = string> =
-  | TransactionSigner<TAddress>
-  | TransactionSenderSigner<TAddress>;
-
-export type TransactionSigner<TAddress extends string = string> = {
-  address: Base58EncodedAddress<TAddress>;
-  signTransaction: <T extends CompilableTransaction>(
-    transactions: T[]
-  ) => Promise<(T & ITransactionWithSignatures)[]>;
-};
-
-export type TransactionSenderSigner<TAddress extends string = string> = {
-  address: Base58EncodedAddress<TAddress>;
-  signAndSendTransaction: (
-    transactions: CompilableTransaction[]
-  ) => Promise<Ed25519Signature[]>;
-};
-
-export function isSigner<TAddress extends string = string>(
+export function isTransactionSigner<TAddress extends string = string>(
   value:
-    | Base58EncodedAddress<TAddress>
+    | Address<TAddress>
     | ProgramDerivedAddress<TAddress>
-    | Signer<TAddress>
-    | unknown
-): value is Signer<TAddress> {
+    | TransactionSigner<TAddress>
+): value is TransactionSigner<TAddress> {
   return (
     !!value &&
     typeof value === 'object' &&
     'address' in value &&
-    ('signTransaction' in value || 'signAndSendTransaction' in value)
+    web3JsIsTransactionSigner(value)
   );
 }
 
-export type CustomGeneratedInstruction<
-  TInstruction extends IInstruction,
-  TReturn
-> = {
-  getGeneratedInstruction: (
-    wrappedInstruction: WrappedInstruction<TInstruction>
-  ) => TReturn;
-};
-
 export type Context = {
   fetchEncodedAccount: <TAddress extends string = string>(
-    address: Base58EncodedAddress<TAddress>,
-    options?: FetchEncodedAccountOptions
+    address: Address<TAddress>,
+    options?: FetchAccountConfig
   ) => Promise<MaybeEncodedAccount<TAddress>>;
   fetchEncodedAccounts: (
-    addresses: Base58EncodedAddress[],
-    options?: FetchEncodedAccountsOptions
+    addresses: Address[],
+    options?: FetchAccountsConfig
   ) => Promise<MaybeEncodedAccount[]>;
-  getProgramAddress?: (program: {
-    name: string;
-    address: Base58EncodedAddress;
-  }) => Promise<Base58EncodedAddress>;
+  getProgramAddress?: (program: { name: string; address: Address }) => Address;
   getProgramDerivedAddress?: (
-    programAddress: Base58EncodedAddress,
+    programAddress: Address,
     seeds: Uint8Array[]
   ) => Promise<ProgramDerivedAddress>;
 };
 
-export async function getProgramAddress<TAddress extends string = string>(
+export function getProgramAddress<TAddress extends string = string>(
   context: Pick<Context, 'getProgramAddress'>,
   name: string,
   address: TAddress
-): Promise<
-  typeof context['getProgramAddress'] extends undefined
-    ? Base58EncodedAddress<TAddress>
-    : Base58EncodedAddress
-> {
+): typeof context['getProgramAddress'] extends undefined
+  ? Address<TAddress>
+  : Address {
   return context.getProgramAddress
-    ? context.getProgramAddress({
-        name,
-        address: address as Base58EncodedAddress<TAddress>,
-      })
-    : (address as Base58EncodedAddress<TAddress>);
+    ? context.getProgramAddress({ name, address: address as Address<TAddress> })
+    : (address as Address<TAddress>);
 }
 
 export async function getProgramDerivedAddress(
@@ -269,91 +224,16 @@ export async function getProgramDerivedAddress(
   seeds: Uint8Array[]
 ): Promise<ProgramDerivedAddress> {
   return context.getProgramDerivedAddress
-    ? context.getProgramDerivedAddress(
-        programAddress as Base58EncodedAddress,
-        seeds
-      )
+    ? context.getProgramDerivedAddress(programAddress as Address, seeds)
     : web3JsGetProgramDerivedAddress({
-        programAddress: programAddress as Base58EncodedAddress,
+        programAddress: programAddress as Address,
         seeds,
       });
 }
 
-export const ACCOUNT_HEADER_SIZE = 128;
-
-export type AccountHeader = {
-  programAddress: Base58EncodedAddress;
-  executable: boolean;
-  lamports: bigint;
-  rentEpoch?: bigint;
-};
-
-export type Account<
-  TData extends object | Uint8Array,
-  TAddress extends string = string
-> = AccountHeader & {
-  address: Base58EncodedAddress<TAddress>;
-  data: TData;
-};
-
-export type MaybeAccount<
-  TData extends object | Uint8Array,
-  TAddress extends string = string
-> =
-  | ({ exists: true } & Account<TData, TAddress>)
-  | { exists: false; address: Base58EncodedAddress<TAddress> };
-
-export type EncodedAccount<TAddress extends string = string> = Account<
-  Uint8Array,
-  TAddress
->;
-export type MaybeEncodedAccount<TAddress extends string = string> =
-  MaybeAccount<Uint8Array, TAddress>;
-
-export function decodeAccount<
-  TData extends object,
-  TAddress extends string = string
->(
-  encodedAccount: EncodedAccount<TAddress>,
-  decoder: Decoder<TData>
-): Account<TData, TAddress> {
-  try {
-    return { ...encodedAccount, data: decoder.decode(encodedAccount.data)[0] };
-  } catch (error: any) {
-    // TODO: Coded error.
-    throw new Error(
-      `Failed to decode account [${encodedAccount.address}] using decoder [${decoder.description}].`
-    );
-  }
-}
-
-export function assertAccountExists<
-  TData extends object | Uint8Array,
-  TAddress extends string = string
->(
-  account: MaybeAccount<TData, TAddress>
-): asserts account is Account<TData, TAddress> & { exists: true } {
-  if (!account.exists) {
-    // TODO: Coded error.
-    throw new Error(`Expected account [${account.address}] to exist.`);
-  }
-}
-
-export type Commitment = 'confirmed' | 'finalized' | 'processed';
-
-export type FetchEncodedAccountOptions = {
-  commitment?: Commitment;
-  abortSignal?: AbortSignal;
-};
-
-export type FetchEncodedAccountsOptions = {
-  commitment?: Commitment;
-  abortSignal?: AbortSignal;
-};
-
 export type Program<TAddress extends string = string> = {
   name: string;
-  address: Base58EncodedAddress<TAddress>;
+  address: Address<TAddress>;
   getErrorFromCode?: (code: number, cause?: Error) => Error;
 };
 

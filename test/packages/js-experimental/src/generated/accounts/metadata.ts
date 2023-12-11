@@ -7,7 +7,15 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Account,
+  EncodedAccount,
+  FetchAccountConfig,
+  FetchAccountsConfig,
+  assertAccountExists,
+  decodeAccount,
+} from '@solana/accounts';
+import {
+  Address,
   ProgramDerivedAddress,
   getAddressDecoder,
   getAddressEncoder,
@@ -41,13 +49,7 @@ import {
   getOptionEncoder,
 } from '@solana/options';
 import {
-  Account,
   Context,
-  EncodedAccount,
-  FetchEncodedAccountOptions,
-  FetchEncodedAccountsOptions,
-  assertAccountExists,
-  decodeAccount,
   getProgramAddress,
   getProgramDerivedAddress,
 } from '../shared';
@@ -93,8 +95,8 @@ export type Metadata<TAddress extends string = string> = Account<
 
 export type MetadataAccountData = {
   key: TmKey;
-  updateAuthority: Base58EncodedAddress;
-  mint: Base58EncodedAddress;
+  updateAuthority: Address;
+  mint: Address;
   name: string;
   symbol: string;
   uri: string;
@@ -112,8 +114,8 @@ export type MetadataAccountData = {
 };
 
 export type MetadataAccountDataArgs = {
-  updateAuthority: Base58EncodedAddress;
-  mint: Base58EncodedAddress;
+  updateAuthority: Address;
+  mint: Address;
   name: string;
   symbol: string;
   uri: string;
@@ -130,12 +132,12 @@ export type MetadataAccountDataArgs = {
   delegateState: OptionOrNullable<DelegateStateArgs>;
 };
 
-export function getMetadataAccountDataEncoder(): Encoder<MetadataAccountDataArgs> {
+export function getMetadataAccountDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       key: TmKeyArgs;
-      updateAuthority: Base58EncodedAddress;
-      mint: Base58EncodedAddress;
+      updateAuthority: Address;
+      mint: Address;
       name: string;
       symbol: string;
       uri: string;
@@ -150,58 +152,49 @@ export function getMetadataAccountDataEncoder(): Encoder<MetadataAccountDataArgs
       collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
       programmableConfig: OptionOrNullable<ProgrammableConfigArgs>;
       delegateState: OptionOrNullable<DelegateStateArgs>;
-    }>(
-      [
-        ['key', getTmKeyEncoder()],
-        ['updateAuthority', getAddressEncoder()],
-        ['mint', getAddressEncoder()],
-        ['name', getStringEncoder()],
-        ['symbol', getStringEncoder()],
-        ['uri', getStringEncoder()],
-        ['sellerFeeBasisPoints', getU16Encoder()],
-        ['creators', getOptionEncoder(getArrayEncoder(getCreatorEncoder()))],
-        ['primarySaleHappened', getBooleanEncoder()],
-        ['isMutable', getBooleanEncoder()],
-        ['editionNonce', getOptionEncoder(getU8Encoder())],
-        ['tokenStandard', getOptionEncoder(getTokenStandardEncoder())],
-        ['collection', getOptionEncoder(getCollectionEncoder())],
-        ['uses', getOptionEncoder(getUsesEncoder())],
-        ['collectionDetails', getOptionEncoder(getCollectionDetailsEncoder())],
-        [
-          'programmableConfig',
-          getOptionEncoder(getProgrammableConfigEncoder()),
-        ],
-        ['delegateState', getOptionEncoder(getDelegateStateEncoder())],
-      ],
-      { description: 'MetadataAccountData' }
-    ),
+    }>([
+      ['key', getTmKeyEncoder()],
+      ['updateAuthority', getAddressEncoder()],
+      ['mint', getAddressEncoder()],
+      ['name', getStringEncoder()],
+      ['symbol', getStringEncoder()],
+      ['uri', getStringEncoder()],
+      ['sellerFeeBasisPoints', getU16Encoder()],
+      ['creators', getOptionEncoder(getArrayEncoder(getCreatorEncoder()))],
+      ['primarySaleHappened', getBooleanEncoder()],
+      ['isMutable', getBooleanEncoder()],
+      ['editionNonce', getOptionEncoder(getU8Encoder())],
+      ['tokenStandard', getOptionEncoder(getTokenStandardEncoder())],
+      ['collection', getOptionEncoder(getCollectionEncoder())],
+      ['uses', getOptionEncoder(getUsesEncoder())],
+      ['collectionDetails', getOptionEncoder(getCollectionDetailsEncoder())],
+      ['programmableConfig', getOptionEncoder(getProgrammableConfigEncoder())],
+      ['delegateState', getOptionEncoder(getDelegateStateEncoder())],
+    ]),
     (value) => ({ ...value, key: TmKey.MetadataV1 })
-  ) as Encoder<MetadataAccountDataArgs>;
+  ) satisfies Encoder<MetadataAccountDataArgs>;
 }
 
-export function getMetadataAccountDataDecoder(): Decoder<MetadataAccountData> {
-  return getStructDecoder<MetadataAccountData>(
-    [
-      ['key', getTmKeyDecoder()],
-      ['updateAuthority', getAddressDecoder()],
-      ['mint', getAddressDecoder()],
-      ['name', getStringDecoder()],
-      ['symbol', getStringDecoder()],
-      ['uri', getStringDecoder()],
-      ['sellerFeeBasisPoints', getU16Decoder()],
-      ['creators', getOptionDecoder(getArrayDecoder(getCreatorDecoder()))],
-      ['primarySaleHappened', getBooleanDecoder()],
-      ['isMutable', getBooleanDecoder()],
-      ['editionNonce', getOptionDecoder(getU8Decoder())],
-      ['tokenStandard', getOptionDecoder(getTokenStandardDecoder())],
-      ['collection', getOptionDecoder(getCollectionDecoder())],
-      ['uses', getOptionDecoder(getUsesDecoder())],
-      ['collectionDetails', getOptionDecoder(getCollectionDetailsDecoder())],
-      ['programmableConfig', getOptionDecoder(getProgrammableConfigDecoder())],
-      ['delegateState', getOptionDecoder(getDelegateStateDecoder())],
-    ],
-    { description: 'MetadataAccountData' }
-  ) as Decoder<MetadataAccountData>;
+export function getMetadataAccountDataDecoder() {
+  return getStructDecoder<MetadataAccountData>([
+    ['key', getTmKeyDecoder()],
+    ['updateAuthority', getAddressDecoder()],
+    ['mint', getAddressDecoder()],
+    ['name', getStringDecoder()],
+    ['symbol', getStringDecoder()],
+    ['uri', getStringDecoder()],
+    ['sellerFeeBasisPoints', getU16Decoder()],
+    ['creators', getOptionDecoder(getArrayDecoder(getCreatorDecoder()))],
+    ['primarySaleHappened', getBooleanDecoder()],
+    ['isMutable', getBooleanDecoder()],
+    ['editionNonce', getOptionDecoder(getU8Decoder())],
+    ['tokenStandard', getOptionDecoder(getTokenStandardDecoder())],
+    ['collection', getOptionDecoder(getCollectionDecoder())],
+    ['uses', getOptionDecoder(getUsesDecoder())],
+    ['collectionDetails', getOptionDecoder(getCollectionDetailsDecoder())],
+    ['programmableConfig', getOptionDecoder(getProgrammableConfigDecoder())],
+    ['delegateState', getOptionDecoder(getDelegateStateDecoder())],
+  ]) satisfies Decoder<MetadataAccountData>;
 }
 
 export function getMetadataAccountDataCodec(): Codec<
@@ -222,8 +215,8 @@ export function decodeMetadata<TAddress extends string = string>(
 
 export async function fetchMetadata<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<Metadata<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -232,8 +225,8 @@ export async function fetchMetadata<TAddress extends string = string>(
 
 export async function safeFetchMetadata<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<Metadata<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists ? decodeMetadata(maybeAccount) : null;
@@ -241,8 +234,8 @@ export async function safeFetchMetadata<TAddress extends string = string>(
 
 export async function fetchAllMetadata(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<Metadata[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -253,8 +246,8 @@ export async function fetchAllMetadata(
 
 export async function safeFetchAllMetadata(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<Metadata[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts
@@ -270,7 +263,7 @@ export async function findMetadataPda(
   context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
   seeds: {
     /** The address of the mint account */
-    mint: Base58EncodedAddress;
+    mint: Address;
   }
 ): Promise<ProgramDerivedAddress> {
   const programAddress = await getProgramAddress(
@@ -291,7 +284,7 @@ export async function fetchMetadataFromSeeds(
     'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
   >,
   seeds: Parameters<typeof findMetadataPda>[1],
-  options?: FetchEncodedAccountOptions
+  options?: FetchAccountConfig
 ): Promise<Metadata> {
   const [address] = await findMetadataPda(context, seeds);
   return fetchMetadata(context, address, options);
@@ -303,7 +296,7 @@ export async function safeFetchMetadataFromSeeds(
     'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
   >,
   seeds: Parameters<typeof findMetadataPda>[1],
-  options?: FetchEncodedAccountOptions
+  options?: FetchAccountConfig
 ): Promise<Metadata | null> {
   const [address] = await findMetadataPda(context, seeds);
   return safeFetchMetadata(context, address, options);

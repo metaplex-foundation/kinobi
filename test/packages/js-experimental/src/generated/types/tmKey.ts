@@ -29,16 +29,12 @@ export enum TmKey {
 
 export type TmKeyArgs = TmKey;
 
-export function getTmKeyEncoder(): Encoder<TmKeyArgs> {
-  return getScalarEnumEncoder<TmKey>(TmKey, {
-    description: 'TmKey',
-  }) as Encoder<TmKeyArgs>;
+export function getTmKeyEncoder() {
+  return getScalarEnumEncoder(TmKey) satisfies Encoder<TmKeyArgs>;
 }
 
-export function getTmKeyDecoder(): Decoder<TmKey> {
-  return getScalarEnumDecoder<TmKey>(TmKey, {
-    description: 'TmKey',
-  }) as Decoder<TmKey>;
+export function getTmKeyDecoder() {
+  return getScalarEnumDecoder(TmKey) satisfies Decoder<TmKey>;
 }
 
 export function getTmKeyCodec(): Codec<TmKeyArgs, TmKey> {

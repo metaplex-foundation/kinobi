@@ -20,16 +20,12 @@ export enum UseMethod {
 
 export type UseMethodArgs = UseMethod;
 
-export function getUseMethodEncoder(): Encoder<UseMethodArgs> {
-  return getScalarEnumEncoder<UseMethod>(UseMethod, {
-    description: 'UseMethod',
-  }) as Encoder<UseMethodArgs>;
+export function getUseMethodEncoder() {
+  return getScalarEnumEncoder(UseMethod) satisfies Encoder<UseMethodArgs>;
 }
 
-export function getUseMethodDecoder(): Decoder<UseMethod> {
-  return getScalarEnumDecoder<UseMethod>(UseMethod, {
-    description: 'UseMethod',
-  }) as Decoder<UseMethod>;
+export function getUseMethodDecoder() {
+  return getScalarEnumDecoder(UseMethod) satisfies Decoder<UseMethod>;
 }
 
 export function getUseMethodCodec(): Codec<UseMethodArgs, UseMethod> {

@@ -7,7 +7,15 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Account,
+  EncodedAccount,
+  FetchAccountConfig,
+  FetchAccountsConfig,
+  assertAccountExists,
+  decodeAccount,
+} from '@solana/accounts';
+import {
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -30,15 +38,7 @@ import {
   getU8Decoder,
   getU8Encoder,
 } from '@solana/codecs-numbers';
-import {
-  Account,
-  Context,
-  EncodedAccount,
-  FetchEncodedAccountOptions,
-  FetchEncodedAccountsOptions,
-  assertAccountExists,
-  decodeAccount,
-} from '../shared';
+import { Context } from '../shared';
 import {
   CandyMachineData,
   CandyMachineDataArgs,
@@ -56,11 +56,11 @@ export type CandyMachineAccountData = {
   /** Features versioning flags. */
   features: bigint;
   /** Authority address. */
-  authority: Base58EncodedAddress;
+  authority: Address;
   /** Authority address allowed to mint from the candy machine. */
-  mintAuthority: Base58EncodedAddress;
+  mintAuthority: Address;
   /** The collection mint for the candy machine. */
-  collectionMint: Base58EncodedAddress;
+  collectionMint: Address;
   /** Number of assets redeemed. */
   itemsRedeemed: bigint;
   /** Candy machine configuration data. */
@@ -71,65 +71,59 @@ export type CandyMachineAccountDataArgs = {
   /** Features versioning flags. */
   features: number | bigint;
   /** Authority address. */
-  authority: Base58EncodedAddress;
+  authority: Address;
   /** Authority address allowed to mint from the candy machine. */
-  mintAuthority: Base58EncodedAddress;
+  mintAuthority: Address;
   /** The collection mint for the candy machine. */
-  collectionMint: Base58EncodedAddress;
+  collectionMint: Address;
   /** Number of assets redeemed. */
   itemsRedeemed: number | bigint;
   /** Candy machine configuration data. */
   data: CandyMachineDataArgs;
 };
 
-export function getCandyMachineAccountDataEncoder(): Encoder<CandyMachineAccountDataArgs> {
+export function getCandyMachineAccountDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       discriminator: Array<number>;
       /** Features versioning flags. */
       features: number | bigint;
       /** Authority address. */
-      authority: Base58EncodedAddress;
+      authority: Address;
       /** Authority address allowed to mint from the candy machine. */
-      mintAuthority: Base58EncodedAddress;
+      mintAuthority: Address;
       /** The collection mint for the candy machine. */
-      collectionMint: Base58EncodedAddress;
+      collectionMint: Address;
       /** Number of assets redeemed. */
       itemsRedeemed: number | bigint;
       /** Candy machine configuration data. */
       data: CandyMachineDataArgs;
-    }>(
-      [
-        ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
-        ['features', getU64Encoder()],
-        ['authority', getAddressEncoder()],
-        ['mintAuthority', getAddressEncoder()],
-        ['collectionMint', getAddressEncoder()],
-        ['itemsRedeemed', getU64Encoder()],
-        ['data', getCandyMachineDataEncoder()],
-      ],
-      { description: 'CandyMachineAccountData' }
-    ),
+    }>([
+      ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
+      ['features', getU64Encoder()],
+      ['authority', getAddressEncoder()],
+      ['mintAuthority', getAddressEncoder()],
+      ['collectionMint', getAddressEncoder()],
+      ['itemsRedeemed', getU64Encoder()],
+      ['data', getCandyMachineDataEncoder()],
+    ]),
     (value) => ({
       ...value,
       discriminator: [51, 173, 177, 113, 25, 241, 109, 189],
     })
-  ) as Encoder<CandyMachineAccountDataArgs>;
+  ) satisfies Encoder<CandyMachineAccountDataArgs>;
 }
 
-export function getCandyMachineAccountDataDecoder(): Decoder<CandyMachineAccountData> {
-  return getStructDecoder<CandyMachineAccountData>(
-    [
-      ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
-      ['features', getU64Decoder()],
-      ['authority', getAddressDecoder()],
-      ['mintAuthority', getAddressDecoder()],
-      ['collectionMint', getAddressDecoder()],
-      ['itemsRedeemed', getU64Decoder()],
-      ['data', getCandyMachineDataDecoder()],
-    ],
-    { description: 'CandyMachineAccountData' }
-  ) as Decoder<CandyMachineAccountData>;
+export function getCandyMachineAccountDataDecoder() {
+  return getStructDecoder<CandyMachineAccountData>([
+    ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
+    ['features', getU64Decoder()],
+    ['authority', getAddressDecoder()],
+    ['mintAuthority', getAddressDecoder()],
+    ['collectionMint', getAddressDecoder()],
+    ['itemsRedeemed', getU64Decoder()],
+    ['data', getCandyMachineDataDecoder()],
+  ]) satisfies Decoder<CandyMachineAccountData>;
 }
 
 export function getCandyMachineAccountDataCodec(): Codec<
@@ -150,8 +144,8 @@ export function decodeCandyMachine<TAddress extends string = string>(
 
 export async function fetchCandyMachine<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<CandyMachine<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -160,8 +154,8 @@ export async function fetchCandyMachine<TAddress extends string = string>(
 
 export async function safeFetchCandyMachine<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<CandyMachine<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists ? decodeCandyMachine(maybeAccount) : null;
@@ -169,8 +163,8 @@ export async function safeFetchCandyMachine<TAddress extends string = string>(
 
 export async function fetchAllCandyMachine(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<CandyMachine[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -181,8 +175,8 @@ export async function fetchAllCandyMachine(
 
 export async function safeFetchAllCandyMachine(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<CandyMachine[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts

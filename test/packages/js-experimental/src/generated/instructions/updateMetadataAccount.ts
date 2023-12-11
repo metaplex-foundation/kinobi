@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -48,14 +48,12 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 import {
   Creator,
@@ -84,6 +82,27 @@ export type UpdateMetadataAccountInstruction<
     ]
   >;
 
+// Output.
+export type UpdateMetadataAccountInstructionWithSigners<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountUpdateAuthority extends string
+        ? ReadonlySignerAccount<TAccountUpdateAuthority> &
+            IAccountSignerMeta<TAccountUpdateAuthority>
+        : TAccountUpdateAuthority,
+      ...TRemainingAccounts
+    ]
+  >;
+
 export type UpdateMetadataAccountInstructionData = {
   discriminator: number;
   data: Option<{
@@ -93,7 +112,7 @@ export type UpdateMetadataAccountInstructionData = {
     sellerFeeBasisPoints: number;
     creators: Option<Array<Creator>>;
   }>;
-  updateAuthority: Option<Base58EncodedAddress>;
+  updateAuthority: Option<Address>;
   primarySaleHappened: Option<boolean>;
 };
 
@@ -105,11 +124,11 @@ export type UpdateMetadataAccountInstructionDataArgs = {
     sellerFeeBasisPoints: number;
     creators: OptionOrNullable<Array<CreatorArgs>>;
   }>;
-  updateAuthority: OptionOrNullable<Base58EncodedAddress>;
+  updateAuthority: OptionOrNullable<Address>;
   primarySaleHappened: OptionOrNullable<boolean>;
 };
 
-export function getUpdateMetadataAccountInstructionDataEncoder(): Encoder<UpdateMetadataAccountInstructionDataArgs> {
+export function getUpdateMetadataAccountInstructionDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       discriminator: number;
@@ -120,71 +139,62 @@ export function getUpdateMetadataAccountInstructionDataEncoder(): Encoder<Update
         sellerFeeBasisPoints: number;
         creators: OptionOrNullable<Array<CreatorArgs>>;
       }>;
-      updateAuthority: OptionOrNullable<Base58EncodedAddress>;
+      updateAuthority: OptionOrNullable<Address>;
       primarySaleHappened: OptionOrNullable<boolean>;
-    }>(
-      [
-        ['discriminator', getU8Encoder()],
-        [
-          'data',
-          getOptionEncoder(
-            getStructEncoder<{
-              name: string;
-              symbol: string;
-              uri: string;
-              sellerFeeBasisPoints: number;
-              creators: OptionOrNullable<Array<CreatorArgs>>;
-            }>([
-              ['name', getStringEncoder()],
-              ['symbol', getStringEncoder()],
-              ['uri', getStringEncoder()],
-              ['sellerFeeBasisPoints', getU16Encoder()],
-              [
-                'creators',
-                getOptionEncoder(getArrayEncoder(getCreatorEncoder())),
-              ],
-            ])
-          ),
-        ],
-        ['updateAuthority', getOptionEncoder(getAddressEncoder())],
-        ['primarySaleHappened', getOptionEncoder(getBooleanEncoder())],
-      ],
-      { description: 'UpdateMetadataAccountInstructionData' }
-    ),
-    (value) => ({ ...value, discriminator: 1 })
-  ) as Encoder<UpdateMetadataAccountInstructionDataArgs>;
-}
-
-export function getUpdateMetadataAccountInstructionDataDecoder(): Decoder<UpdateMetadataAccountInstructionData> {
-  return getStructDecoder<UpdateMetadataAccountInstructionData>(
-    [
-      ['discriminator', getU8Decoder()],
+    }>([
+      ['discriminator', getU8Encoder()],
       [
         'data',
-        getOptionDecoder(
-          getStructDecoder<{
+        getOptionEncoder(
+          getStructEncoder<{
             name: string;
             symbol: string;
             uri: string;
             sellerFeeBasisPoints: number;
-            creators: Option<Array<Creator>>;
+            creators: OptionOrNullable<Array<CreatorArgs>>;
           }>([
-            ['name', getStringDecoder()],
-            ['symbol', getStringDecoder()],
-            ['uri', getStringDecoder()],
-            ['sellerFeeBasisPoints', getU16Decoder()],
+            ['name', getStringEncoder()],
+            ['symbol', getStringEncoder()],
+            ['uri', getStringEncoder()],
+            ['sellerFeeBasisPoints', getU16Encoder()],
             [
               'creators',
-              getOptionDecoder(getArrayDecoder(getCreatorDecoder())),
+              getOptionEncoder(getArrayEncoder(getCreatorEncoder())),
             ],
           ])
         ),
       ],
-      ['updateAuthority', getOptionDecoder(getAddressDecoder())],
-      ['primarySaleHappened', getOptionDecoder(getBooleanDecoder())],
+      ['updateAuthority', getOptionEncoder(getAddressEncoder())],
+      ['primarySaleHappened', getOptionEncoder(getBooleanEncoder())],
+    ]),
+    (value) => ({ ...value, discriminator: 1 })
+  ) satisfies Encoder<UpdateMetadataAccountInstructionDataArgs>;
+}
+
+export function getUpdateMetadataAccountInstructionDataDecoder() {
+  return getStructDecoder<UpdateMetadataAccountInstructionData>([
+    ['discriminator', getU8Decoder()],
+    [
+      'data',
+      getOptionDecoder(
+        getStructDecoder<{
+          name: string;
+          symbol: string;
+          uri: string;
+          sellerFeeBasisPoints: number;
+          creators: Option<Array<Creator>>;
+        }>([
+          ['name', getStringDecoder()],
+          ['symbol', getStringDecoder()],
+          ['uri', getStringDecoder()],
+          ['sellerFeeBasisPoints', getU16Decoder()],
+          ['creators', getOptionDecoder(getArrayDecoder(getCreatorDecoder()))],
+        ])
+      ),
     ],
-    { description: 'UpdateMetadataAccountInstructionData' }
-  ) as Decoder<UpdateMetadataAccountInstructionData>;
+    ['updateAuthority', getOptionDecoder(getAddressDecoder())],
+    ['primarySaleHappened', getOptionDecoder(getBooleanDecoder())],
+  ]) satisfies Decoder<UpdateMetadataAccountInstructionData>;
 }
 
 export function getUpdateMetadataAccountInstructionDataCodec(): Codec<
@@ -197,7 +207,162 @@ export function getUpdateMetadataAccountInstructionDataCodec(): Codec<
   );
 }
 
-export function updateMetadataAccountInstruction<
+export type UpdateMetadataAccountInput<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Update authority key */
+  updateAuthority: Address<TAccountUpdateAuthority>;
+  data: UpdateMetadataAccountInstructionDataArgs['data'];
+  updateAuthorityArg: UpdateMetadataAccountInstructionDataArgs['updateAuthority'];
+  primarySaleHappened: UpdateMetadataAccountInstructionDataArgs['primarySaleHappened'];
+};
+
+export type UpdateMetadataAccountInputWithSigners<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Update authority key */
+  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
+  data: UpdateMetadataAccountInstructionDataArgs['data'];
+  updateAuthorityArg: UpdateMetadataAccountInstructionDataArgs['updateAuthority'];
+  primarySaleHappened: UpdateMetadataAccountInstructionDataArgs['primarySaleHappened'];
+};
+
+export function getUpdateMetadataAccountInstruction<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UpdateMetadataAccountInputWithSigners<
+    TAccountMetadata,
+    TAccountUpdateAuthority
+  >
+): UpdateMetadataAccountInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  TAccountUpdateAuthority
+>;
+export function getUpdateMetadataAccountInstruction<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>
+): UpdateMetadataAccountInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountUpdateAuthority
+>;
+export function getUpdateMetadataAccountInstruction<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: UpdateMetadataAccountInputWithSigners<
+    TAccountMetadata,
+    TAccountUpdateAuthority
+  >
+): UpdateMetadataAccountInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  TAccountUpdateAuthority
+>;
+export function getUpdateMetadataAccountInstruction<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>
+): UpdateMetadataAccountInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountUpdateAuthority
+>;
+export function getUpdateMetadataAccountInstruction<
+  TAccountMetadata extends string,
+  TAccountUpdateAuthority extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  rawContext:
+    | Pick<Context, 'getProgramAddress'>
+    | UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>,
+  rawInput?: UpdateMetadataAccountInput<
+    TAccountMetadata,
+    TAccountUpdateAuthority
+  >
+): IInstruction {
+  // Resolve context and input arguments.
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
+  const input = (
+    rawInput === undefined ? rawContext : rawInput
+  ) as UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>;
+
+  // Program address.
+  const defaultProgramAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = (
+    context.getProgramAddress
+      ? context.getProgramAddress({
+          name: 'mplTokenMetadata',
+          address: defaultProgramAddress,
+        })
+      : defaultProgramAddress
+  ) as Address<TProgram>;
+
+  // Original accounts.
+  type AccountMetas = Parameters<
+    typeof getUpdateMetadataAccountInstructionRaw<
+      TProgram,
+      TAccountMetadata,
+      TAccountUpdateAuthority
+    >
+  >[0];
+  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    updateAuthority: {
+      value: input.updateAuthority ?? null,
+      isWritable: false,
+    },
+  };
+
+  // Original args.
+  const args = { ...input, updateAuthority: input.updateAuthorityArg };
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
+
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
+
+  return Object.freeze({
+    ...getUpdateMetadataAccountInstructionRaw(
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+      args as UpdateMetadataAccountInstructionDataArgs,
+      programAddress,
+      remainingAccounts
+    ),
+    bytesCreatedOnChain,
+  });
+}
+
+export function getUpdateMetadataAccountInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
@@ -205,14 +370,14 @@ export function updateMetadataAccountInstruction<
 >(
   accounts: {
     metadata: TAccountMetadata extends string
-      ? Base58EncodedAddress<TAccountMetadata>
+      ? Address<TAccountMetadata>
       : TAccountMetadata;
     updateAuthority: TAccountUpdateAuthority extends string
-      ? Base58EncodedAddress<TAccountUpdateAuthority>
+      ? Address<TAccountUpdateAuthority>
       : TAccountUpdateAuthority;
   },
   args: UpdateMetadataAccountInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {
@@ -232,152 +397,4 @@ export function updateMetadataAccountInstruction<
     TAccountUpdateAuthority,
     TRemainingAccounts
   >;
-}
-
-// Input.
-export type UpdateMetadataAccountInput<
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string
-> = {
-  /** Metadata account */
-  metadata: Base58EncodedAddress<TAccountMetadata>;
-  /** Update authority key */
-  updateAuthority: Signer<TAccountUpdateAuthority>;
-  data: UpdateMetadataAccountInstructionDataArgs['data'];
-  updateAuthorityArg: UpdateMetadataAccountInstructionDataArgs['updateAuthority'];
-  primarySaleHappened: UpdateMetadataAccountInstructionDataArgs['primarySaleHappened'];
-};
-
-export async function updateMetadataAccount<
-  TReturn,
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      UpdateMetadataAccountInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountUpdateAuthority
-      >,
-      TReturn
-    >,
-  input: UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>
-): Promise<TReturn>;
-export async function updateMetadataAccount<
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>
-): Promise<
-  WrappedInstruction<
-    UpdateMetadataAccountInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountUpdateAuthority
-    >
-  >
->;
-export async function updateMetadataAccount<
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  input: UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>
-): Promise<
-  WrappedInstruction<
-    UpdateMetadataAccountInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountUpdateAuthority
-    >
-  >
->;
-export async function updateMetadataAccount<
-  TReturn,
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
-    | UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>,
-  rawInput?: UpdateMetadataAccountInput<
-    TAccountMetadata,
-    TAccountUpdateAuthority
-  >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>;
-
-  // Program address.
-  const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
-  const programAddress = (
-    context.getProgramAddress
-      ? await context.getProgramAddress({
-          name: 'mplTokenMetadata',
-          address: defaultProgramAddress,
-        })
-      : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
-
-  // Original accounts.
-  type AccountMetas = Parameters<
-    typeof updateMetadataAccountInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountUpdateAuthority
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
-    metadata: { value: input.metadata ?? null, isWritable: true },
-    updateAuthority: {
-      value: input.updateAuthority ?? null,
-      isWritable: false,
-    },
-  };
-
-  // Original args.
-  const args = { ...input, updateAuthority: input.updateAuthorityArg };
-
-  // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: updateMetadataAccountInstruction(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as UpdateMetadataAccountInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    signers,
-    bytesCreatedOnChain,
-  };
-
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
 }

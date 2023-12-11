@@ -10,18 +10,21 @@ import {
 } from './common';
 import { getInstructionInputDefaultFragment } from './instructionInputDefault';
 
-export function getInstructionInputResolvedFragment(
-  instructionNode: nodes.InstructionNode,
-  resolvedInputs: ResolvedInstructionInput[]
-): Fragment & { interfaces: ContextMap } {
+export function getInstructionInputResolvedFragment(scope: {
+  instructionNode: nodes.InstructionNode;
+  resolvedInputs: ResolvedInstructionInput[];
+  asyncResolvers: string[];
+  useAsync: boolean;
+}): Fragment & { interfaces: ContextMap } {
   const interfaces = new ContextMap();
 
-  const resolvedInputFragments = resolvedInputs.flatMap(
+  const resolvedInputFragments = scope.resolvedInputs.flatMap(
     (input: ResolvedInstructionInput): Fragment[] => {
-      const inputFragment = getInstructionInputDefaultFragment(
+      const inputFragment = getInstructionInputDefaultFragment({
+        ...scope,
         input,
-        instructionNode.optionalAccountStrategy
-      );
+        optionalAccountStrategy: scope.instructionNode.optionalAccountStrategy,
+      });
       if (!inputFragment.render) return [];
       interfaces.mergeWith(inputFragment.interfaces);
       const camelName = camelCase(input.name);

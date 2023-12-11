@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -27,36 +27,30 @@ import {
 
 export type DelegateState = {
   role: DelegateRole;
-  delegate: Base58EncodedAddress;
+  delegate: Address;
   hasData: boolean;
 };
 
 export type DelegateStateArgs = {
   role: DelegateRoleArgs;
-  delegate: Base58EncodedAddress;
+  delegate: Address;
   hasData: boolean;
 };
 
-export function getDelegateStateEncoder(): Encoder<DelegateStateArgs> {
-  return getStructEncoder<DelegateStateArgs>(
-    [
-      ['role', getDelegateRoleEncoder()],
-      ['delegate', getAddressEncoder()],
-      ['hasData', getBooleanEncoder()],
-    ],
-    { description: 'DelegateState' }
-  ) as Encoder<DelegateStateArgs>;
+export function getDelegateStateEncoder() {
+  return getStructEncoder<DelegateStateArgs>([
+    ['role', getDelegateRoleEncoder()],
+    ['delegate', getAddressEncoder()],
+    ['hasData', getBooleanEncoder()],
+  ]) satisfies Encoder<DelegateStateArgs>;
 }
 
-export function getDelegateStateDecoder(): Decoder<DelegateState> {
-  return getStructDecoder<DelegateState>(
-    [
-      ['role', getDelegateRoleDecoder()],
-      ['delegate', getAddressDecoder()],
-      ['hasData', getBooleanDecoder()],
-    ],
-    { description: 'DelegateState' }
-  ) as Decoder<DelegateState>;
+export function getDelegateStateDecoder() {
+  return getStructDecoder<DelegateState>([
+    ['role', getDelegateRoleDecoder()],
+    ['delegate', getAddressDecoder()],
+    ['hasData', getBooleanDecoder()],
+  ]) satisfies Decoder<DelegateState>;
 }
 
 export function getDelegateStateCodec(): Codec<

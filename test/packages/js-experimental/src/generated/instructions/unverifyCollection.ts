@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -29,14 +29,12 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
 } from '../shared';
 
 // Output.
@@ -79,38 +77,8 @@ export type UnverifyCollectionInstruction<
     ]
   >;
 
-export type UnverifyCollectionInstructionData = { discriminator: number };
-
-export type UnverifyCollectionInstructionDataArgs = {};
-
-export function getUnverifyCollectionInstructionDataEncoder(): Encoder<UnverifyCollectionInstructionDataArgs> {
-  return mapEncoder(
-    getStructEncoder<{ discriminator: number }>(
-      [['discriminator', getU8Encoder()]],
-      { description: 'UnverifyCollectionInstructionData' }
-    ),
-    (value) => ({ ...value, discriminator: 22 })
-  ) as Encoder<UnverifyCollectionInstructionDataArgs>;
-}
-
-export function getUnverifyCollectionInstructionDataDecoder(): Decoder<UnverifyCollectionInstructionData> {
-  return getStructDecoder<UnverifyCollectionInstructionData>(
-    [['discriminator', getU8Decoder()]],
-    { description: 'UnverifyCollectionInstructionData' }
-  ) as Decoder<UnverifyCollectionInstructionData>;
-}
-
-export function getUnverifyCollectionInstructionDataCodec(): Codec<
-  UnverifyCollectionInstructionDataArgs,
-  UnverifyCollectionInstructionData
-> {
-  return combineCodec(
-    getUnverifyCollectionInstructionDataEncoder(),
-    getUnverifyCollectionInstructionDataDecoder()
-  );
-}
-
-export function unverifyCollectionInstruction<
+// Output.
+export type UnverifyCollectionInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
@@ -123,68 +91,62 @@ export function unverifyCollectionInstruction<
     | string
     | IAccountMeta<string> = string,
   TRemainingAccounts extends Array<IAccountMeta<string>> = []
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Base58EncodedAddress<TAccountMetadata>
-      : TAccountMetadata;
-    collectionAuthority: TAccountCollectionAuthority extends string
-      ? Base58EncodedAddress<TAccountCollectionAuthority>
-      : TAccountCollectionAuthority;
-    collectionMint: TAccountCollectionMint extends string
-      ? Base58EncodedAddress<TAccountCollectionMint>
-      : TAccountCollectionMint;
-    collection: TAccountCollection extends string
-      ? Base58EncodedAddress<TAccountCollection>
-      : TAccountCollection;
-    collectionMasterEditionAccount: TAccountCollectionMasterEditionAccount extends string
-      ? Base58EncodedAddress<TAccountCollectionMasterEditionAccount>
-      : TAccountCollectionMasterEditionAccount;
-    collectionAuthorityRecord?: TAccountCollectionAuthorityRecord extends string
-      ? Base58EncodedAddress<TAccountCollectionAuthorityRecord>
-      : TAccountCollectionAuthorityRecord;
-  },
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.collectionAuthority,
-        AccountRole.WRITABLE_SIGNER
-      ),
-      accountMetaWithDefault(accounts.collectionMint, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.collection, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.collectionMasterEditionAccount,
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.collectionAuthorityRecord ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getUnverifyCollectionInstructionDataEncoder().encode({}),
-    programAddress,
-  } as UnverifyCollectionInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountCollectionAuthority,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount,
-    TAccountCollectionAuthorityRecord,
-    TRemainingAccounts
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountCollectionAuthority extends string
+        ? WritableSignerAccount<TAccountCollectionAuthority> &
+            IAccountSignerMeta<TAccountCollectionAuthority>
+        : TAccountCollectionAuthority,
+      TAccountCollectionMint extends string
+        ? ReadonlyAccount<TAccountCollectionMint>
+        : TAccountCollectionMint,
+      TAccountCollection extends string
+        ? ReadonlyAccount<TAccountCollection>
+        : TAccountCollection,
+      TAccountCollectionMasterEditionAccount extends string
+        ? ReadonlyAccount<TAccountCollectionMasterEditionAccount>
+        : TAccountCollectionMasterEditionAccount,
+      TAccountCollectionAuthorityRecord extends string
+        ? ReadonlyAccount<TAccountCollectionAuthorityRecord>
+        : TAccountCollectionAuthorityRecord,
+      ...TRemainingAccounts
+    ]
   >;
+
+export type UnverifyCollectionInstructionData = { discriminator: number };
+
+export type UnverifyCollectionInstructionDataArgs = {};
+
+export function getUnverifyCollectionInstructionDataEncoder() {
+  return mapEncoder(
+    getStructEncoder<{ discriminator: number }>([
+      ['discriminator', getU8Encoder()],
+    ]),
+    (value) => ({ ...value, discriminator: 22 })
+  ) satisfies Encoder<UnverifyCollectionInstructionDataArgs>;
 }
 
-// Input.
+export function getUnverifyCollectionInstructionDataDecoder() {
+  return getStructDecoder<UnverifyCollectionInstructionData>([
+    ['discriminator', getU8Decoder()],
+  ]) satisfies Decoder<UnverifyCollectionInstructionData>;
+}
+
+export function getUnverifyCollectionInstructionDataCodec(): Codec<
+  UnverifyCollectionInstructionDataArgs,
+  UnverifyCollectionInstructionData
+> {
+  return combineCodec(
+    getUnverifyCollectionInstructionDataEncoder(),
+    getUnverifyCollectionInstructionDataDecoder()
+  );
+}
+
 export type UnverifyCollectionInput<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
@@ -194,21 +156,42 @@ export type UnverifyCollectionInput<
   TAccountCollectionAuthorityRecord extends string
 > = {
   /** Metadata account */
-  metadata: Base58EncodedAddress<TAccountMetadata>;
+  metadata: Address<TAccountMetadata>;
   /** Collection Authority */
-  collectionAuthority: Signer<TAccountCollectionAuthority>;
+  collectionAuthority: Address<TAccountCollectionAuthority>;
   /** Mint of the Collection */
-  collectionMint: Base58EncodedAddress<TAccountCollectionMint>;
+  collectionMint: Address<TAccountCollectionMint>;
   /** Metadata Account of the Collection */
-  collection: Base58EncodedAddress<TAccountCollection>;
+  collection: Address<TAccountCollection>;
   /** MasterEdition2 Account of the Collection Token */
-  collectionMasterEditionAccount: Base58EncodedAddress<TAccountCollectionMasterEditionAccount>;
+  collectionMasterEditionAccount: Address<TAccountCollectionMasterEditionAccount>;
   /** Collection Authority Record PDA */
-  collectionAuthorityRecord?: Base58EncodedAddress<TAccountCollectionAuthorityRecord>;
+  collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
 };
 
-export async function unverifyCollection<
-  TReturn,
+export type UnverifyCollectionInputWithSigners<
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollection extends string,
+  TAccountCollectionMasterEditionAccount extends string,
+  TAccountCollectionAuthorityRecord extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Collection Authority */
+  collectionAuthority: TransactionSigner<TAccountCollectionAuthority>;
+  /** Mint of the Collection */
+  collectionMint: Address<TAccountCollectionMint>;
+  /** Metadata Account of the Collection */
+  collection: Address<TAccountCollection>;
+  /** MasterEdition2 Account of the Collection Token */
+  collectionMasterEditionAccount: Address<TAccountCollectionMasterEditionAccount>;
+  /** Collection Authority Record PDA */
+  collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
+};
+
+export function getUnverifyCollectionInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -217,20 +200,8 @@ export async function unverifyCollection<
   TAccountCollectionAuthorityRecord extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      UnverifyCollectionInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountCollectionAuthority,
-        TAccountCollectionMint,
-        TAccountCollection,
-        TAccountCollectionMasterEditionAccount,
-        TAccountCollectionAuthorityRecord
-      >,
-      TReturn
-    >,
-  input: UnverifyCollectionInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: UnverifyCollectionInputWithSigners<
     TAccountMetadata,
     TAccountCollectionAuthority,
     TAccountCollectionMint,
@@ -238,8 +209,16 @@ export async function unverifyCollection<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<TReturn>;
-export async function unverifyCollection<
+): UnverifyCollectionInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  TAccountCollectionAuthority,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount,
+  TAccountCollectionAuthorityRecord
+>;
+export function getUnverifyCollectionInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -257,20 +236,42 @@ export async function unverifyCollection<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  WrappedInstruction<
-    UnverifyCollectionInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountCollectionAuthority,
-      TAccountCollectionMint,
-      TAccountCollection,
-      TAccountCollectionMasterEditionAccount,
-      TAccountCollectionAuthorityRecord
-    >
-  >
+): UnverifyCollectionInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountCollectionAuthority,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount,
+  TAccountCollectionAuthorityRecord
 >;
-export async function unverifyCollection<
+export function getUnverifyCollectionInstruction<
+  TAccountMetadata extends string,
+  TAccountCollectionAuthority extends string,
+  TAccountCollectionMint extends string,
+  TAccountCollection extends string,
+  TAccountCollectionMasterEditionAccount extends string,
+  TAccountCollectionAuthorityRecord extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: UnverifyCollectionInputWithSigners<
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord
+  >
+): UnverifyCollectionInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  TAccountCollectionAuthority,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount,
+  TAccountCollectionAuthorityRecord
+>;
+export function getUnverifyCollectionInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -287,21 +288,16 @@ export async function unverifyCollection<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<
-  WrappedInstruction<
-    UnverifyCollectionInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountCollectionAuthority,
-      TAccountCollectionMint,
-      TAccountCollection,
-      TAccountCollectionMasterEditionAccount,
-      TAccountCollectionAuthorityRecord
-    >
-  >
+): UnverifyCollectionInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountCollectionAuthority,
+  TAccountCollectionMint,
+  TAccountCollection,
+  TAccountCollectionMasterEditionAccount,
+  TAccountCollectionAuthorityRecord
 >;
-export async function unverifyCollection<
-  TReturn,
+export function getUnverifyCollectionInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
@@ -312,8 +308,6 @@ export async function unverifyCollection<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | UnverifyCollectionInput<
         TAccountMetadata,
         TAccountCollectionAuthority,
@@ -330,12 +324,12 @@ export async function unverifyCollection<
     TAccountCollectionMasterEditionAccount,
     TAccountCollectionAuthorityRecord
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): IInstruction {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as UnverifyCollectionInput<
@@ -349,19 +343,19 @@ export async function unverifyCollection<
 
   // Program address.
   const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof unverifyCollectionInstruction<
+    typeof getUnverifyCollectionInstructionRaw<
       TProgram,
       TAccountMetadata,
       TAccountCollectionAuthority,
@@ -390,7 +384,7 @@ export async function unverifyCollection<
   };
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -402,18 +396,86 @@ export async function unverifyCollection<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: unverifyCollectionInstruction(
+  return Object.freeze({
+    ...getUnverifyCollectionInstructionRaw(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
-  };
+  });
+}
 
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+export function getUnverifyCollectionInstructionRaw<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
+  TAccountCollectionMint extends string | IAccountMeta<string> = string,
+  TAccountCollection extends string | IAccountMeta<string> = string,
+  TAccountCollectionMasterEditionAccount extends
+    | string
+    | IAccountMeta<string> = string,
+  TAccountCollectionAuthorityRecord extends
+    | string
+    | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+>(
+  accounts: {
+    metadata: TAccountMetadata extends string
+      ? Address<TAccountMetadata>
+      : TAccountMetadata;
+    collectionAuthority: TAccountCollectionAuthority extends string
+      ? Address<TAccountCollectionAuthority>
+      : TAccountCollectionAuthority;
+    collectionMint: TAccountCollectionMint extends string
+      ? Address<TAccountCollectionMint>
+      : TAccountCollectionMint;
+    collection: TAccountCollection extends string
+      ? Address<TAccountCollection>
+      : TAccountCollection;
+    collectionMasterEditionAccount: TAccountCollectionMasterEditionAccount extends string
+      ? Address<TAccountCollectionMasterEditionAccount>
+      : TAccountCollectionMasterEditionAccount;
+    collectionAuthorityRecord?: TAccountCollectionAuthorityRecord extends string
+      ? Address<TAccountCollectionAuthorityRecord>
+      : TAccountCollectionAuthorityRecord;
+  },
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
+  remainingAccounts?: TRemainingAccounts
+) {
+  return {
+    accounts: [
+      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(
+        accounts.collectionAuthority,
+        AccountRole.WRITABLE_SIGNER
+      ),
+      accountMetaWithDefault(accounts.collectionMint, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.collection, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.collectionMasterEditionAccount,
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.collectionAuthorityRecord ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      ...(remainingAccounts ?? []),
+    ],
+    data: getUnverifyCollectionInstructionDataEncoder().encode({}),
+    programAddress,
+  } as UnverifyCollectionInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollection,
+    TAccountCollectionMasterEditionAccount,
+    TAccountCollectionAuthorityRecord,
+    TRemainingAccounts
+  >;
 }

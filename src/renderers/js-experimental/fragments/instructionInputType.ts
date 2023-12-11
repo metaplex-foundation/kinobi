@@ -7,16 +7,32 @@ import {
 } from '../../../visitors';
 import { ImportMap } from '../ImportMap';
 import { TypeManifest } from '../TypeManifest';
+import { isAsyncDefaultValue } from '../asyncHelpers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
-export function getInstructionInputTypeFragment(
-  instructionNode: nodes.InstructionNode,
-  resolvedInputs: ResolvedInstructionInput[],
-  renamedArgs: Map<string, string>,
-  dataArgsManifest: TypeManifest,
-  extraArgsManifest: TypeManifest,
-  programNode: nodes.ProgramNode
-): Fragment {
+export function getInstructionInputTypeFragment(scope: {
+  instructionNode: nodes.InstructionNode;
+  resolvedInputs: ResolvedInstructionInput[];
+  renamedArgs: Map<string, string>;
+  dataArgsManifest: TypeManifest;
+  extraArgsManifest: TypeManifest;
+  programNode: nodes.ProgramNode;
+  withSigners: boolean;
+  asyncResolvers: string[];
+  useAsync: boolean;
+}): Fragment {
+  const {
+    instructionNode,
+    resolvedInputs,
+    renamedArgs,
+    dataArgsManifest,
+    extraArgsManifest,
+    programNode,
+    withSigners,
+    asyncResolvers,
+    useAsync,
+  } = scope;
+
   // Accounts.
   const accountImports = new ImportMap();
   const accounts = instructionNode.accounts.map((account) => {
@@ -24,14 +40,16 @@ export function getInstructionInputTypeFragment(
     const resolvedAccount = resolvedInputs.find(
       (input) => input.kind === 'account' && input.name === account.name
     ) as ResolvedInstructionAccount;
-    const optionalSign =
-      !!resolvedAccount.defaultsTo || resolvedAccount.isOptional ? '?' : '';
-    const type = getAccountType(resolvedAccount);
+    const hasDefaultValue = useAsync
+      ? !!resolvedAccount.defaultsTo
+      : !!resolvedAccount.defaultsTo &&
+        !isAsyncDefaultValue(resolvedAccount.defaultsTo, asyncResolvers);
+    const type = getAccountType(resolvedAccount, withSigners);
     accountImports.mergeWith(type);
     return {
       ...resolvedAccount,
       typeParam,
-      optionalSign,
+      optionalSign: hasDefaultValue || resolvedAccount.isOptional ? '?' : '',
       type: type.render,
     };
   });
@@ -83,40 +101,57 @@ export function getInstructionInputTypeFragment(
     dataArgsType,
     extraArgs,
     extraArgsType,
+    withSigners,
+    useAsync,
   })
     .mergeImportsWith(accountImports, argLinkImports)
-    .addImports('solanaAddresses', ['Base58EncodedAddress']);
+    .addImports('solanaAddresses', ['Address']);
 }
 
-function getAccountType(account: ResolvedInstructionAccount): Fragment {
+function getAccountType(
+  account: ResolvedInstructionAccount,
+  withSigners: boolean
+): Fragment {
   const typeParam = `TAccount${pascalCase(account.name)}`;
-  if (account.isPda && account.isSigner === false) {
+
+  if (withSigners) {
+    if (account.isPda && account.isSigner === false) {
+      return fragment(`ProgramDerivedAddress<${typeParam}>`).addImports(
+        'solanaAddresses',
+        ['ProgramDerivedAddress']
+      );
+    }
+
+    if (account.isPda && account.isSigner === 'either') {
+      return fragment(
+        `ProgramDerivedAddress<${typeParam}> | TransactionSigner<${typeParam}>`
+      )
+        .addImports('solanaAddresses', ['ProgramDerivedAddress'])
+        .addImports('solanaSigners', ['TransactionSigner']);
+    }
+
+    if (account.isSigner === 'either') {
+      return fragment(`Address<${typeParam}> | TransactionSigner<${typeParam}>`)
+        .addImports('solanaAddresses', ['Address'])
+        .addImports('solanaSigners', ['TransactionSigner']);
+    }
+
+    if (account.isSigner) {
+      return fragment(`TransactionSigner<${typeParam}>`).addImports(
+        'solanaSigners',
+        ['TransactionSigner']
+      );
+    }
+  }
+
+  if (!withSigners && account.isPda) {
     return fragment(`ProgramDerivedAddress<${typeParam}>`).addImports(
       'solanaAddresses',
       ['ProgramDerivedAddress']
     );
   }
 
-  if (account.isPda && account.isSigner === 'either') {
-    return fragment(
-      `ProgramDerivedAddress<${typeParam}> | Signer<${typeParam}>`
-    )
-      .addImports('solanaAddresses', ['ProgramDerivedAddress'])
-      .addImports('shared', ['Signer']);
-  }
-
-  if (account.isSigner === 'either') {
-    return fragment(`Base58EncodedAddress<${typeParam}> | Signer<${typeParam}>`)
-      .addImports('solanaAddresses', ['Base58EncodedAddress'])
-      .addImports('shared', ['Signer']);
-  }
-
-  if (account.isSigner) {
-    return fragment(`Signer<${typeParam}>`).addImports('shared', ['Signer']);
-  }
-
-  return fragment(`Base58EncodedAddress<${typeParam}>`).addImports(
-    'solanaAddresses',
-    ['Base58EncodedAddress']
-  );
+  return fragment(`Address<${typeParam}>`).addImports('solanaAddresses', [
+    'Address',
+  ]);
 }

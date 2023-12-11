@@ -7,7 +7,15 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Account,
+  EncodedAccount,
+  FetchAccountConfig,
+  FetchAccountsConfig,
+  assertAccountExists,
+  decodeAccount,
+} from '@solana/accounts';
+import {
+  Address,
   ProgramDerivedAddress,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -30,13 +38,7 @@ import {
 } from '@solana/codecs-numbers';
 import { getStringEncoder } from '@solana/codecs-strings';
 import {
-  Account,
   Context,
-  EncodedAccount,
-  FetchEncodedAccountOptions,
-  FetchEncodedAccountsOptions,
-  assertAccountExists,
-  decodeAccount,
   getProgramAddress,
   getProgramDerivedAddress,
 } from '../shared';
@@ -67,7 +69,7 @@ export type FrequencyAccountAccountDataArgs = {
   period: number | bigint;
 };
 
-export function getFrequencyAccountAccountDataEncoder(): Encoder<FrequencyAccountAccountDataArgs> {
+export function getFrequencyAccountAccountDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       /** Test with only one line. */
@@ -78,27 +80,21 @@ export function getFrequencyAccountAccountDataEncoder(): Encoder<FrequencyAccoun
        */
       lastUpdate: number | bigint;
       period: number | bigint;
-    }>(
-      [
-        ['key', getU64Encoder()],
-        ['lastUpdate', getI64Encoder()],
-        ['period', getI64Encoder()],
-      ],
-      { description: 'FrequencyAccountAccountData' }
-    ),
+    }>([
+      ['key', getU64Encoder()],
+      ['lastUpdate', getI64Encoder()],
+      ['period', getI64Encoder()],
+    ]),
     (value) => ({ ...value, key: TaKey.Frequency })
-  ) as Encoder<FrequencyAccountAccountDataArgs>;
+  ) satisfies Encoder<FrequencyAccountAccountDataArgs>;
 }
 
-export function getFrequencyAccountAccountDataDecoder(): Decoder<FrequencyAccountAccountData> {
-  return getStructDecoder<FrequencyAccountAccountData>(
-    [
-      ['key', getU64Decoder()],
-      ['lastUpdate', getI64Decoder()],
-      ['period', getI64Decoder()],
-    ],
-    { description: 'FrequencyAccountAccountData' }
-  ) as Decoder<FrequencyAccountAccountData>;
+export function getFrequencyAccountAccountDataDecoder() {
+  return getStructDecoder<FrequencyAccountAccountData>([
+    ['key', getU64Decoder()],
+    ['lastUpdate', getI64Decoder()],
+    ['period', getI64Decoder()],
+  ]) satisfies Decoder<FrequencyAccountAccountData>;
 }
 
 export function getFrequencyAccountAccountDataCodec(): Codec<
@@ -119,8 +115,8 @@ export function decodeFrequencyAccount<TAddress extends string = string>(
 
 export async function fetchFrequencyAccount<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<FrequencyAccount<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -131,8 +127,8 @@ export async function safeFetchFrequencyAccount<
   TAddress extends string = string
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<FrequencyAccount<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists ? decodeFrequencyAccount(maybeAccount) : null;
@@ -140,8 +136,8 @@ export async function safeFetchFrequencyAccount<
 
 export async function fetchAllFrequencyAccount(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<FrequencyAccount[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -152,8 +148,8 @@ export async function fetchAllFrequencyAccount(
 
 export async function safeFetchAllFrequencyAccount(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<FrequencyAccount[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts
@@ -186,7 +182,7 @@ export async function fetchFrequencyAccountFromSeeds(
     Context,
     'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
   >,
-  options?: FetchEncodedAccountOptions
+  options?: FetchAccountConfig
 ): Promise<FrequencyAccount> {
   const [address] = await findFrequencyAccountPda(context);
   return fetchFrequencyAccount(context, address, options);
@@ -197,7 +193,7 @@ export async function safeFetchFrequencyAccountFromSeeds(
     Context,
     'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
   >,
-  options?: FetchEncodedAccountOptions
+  options?: FetchAccountConfig
 ): Promise<FrequencyAccount | null> {
   const [address] = await findFrequencyAccountPda(context);
   return safeFetchFrequencyAccount(context, address, options);

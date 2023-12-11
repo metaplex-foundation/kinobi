@@ -6,7 +6,15 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import {
+  Account,
+  EncodedAccount,
+  FetchAccountConfig,
+  FetchAccountsConfig,
+  assertAccountExists,
+  decodeAccount,
+} from '@solana/accounts';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -21,15 +29,7 @@ import {
   getStructEncoder,
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
-import {
-  Account,
-  Context,
-  EncodedAccount,
-  FetchEncodedAccountOptions,
-  FetchEncodedAccountsOptions,
-  assertAccountExists,
-  decodeAccount,
-} from '../shared';
+import { Context } from '../shared';
 import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type EditionMarker<TAddress extends string = string> = Account<
@@ -41,27 +41,21 @@ export type EditionMarkerAccountData = { key: TmKey; ledger: Array<number> };
 
 export type EditionMarkerAccountDataArgs = { ledger: Array<number> };
 
-export function getEditionMarkerAccountDataEncoder(): Encoder<EditionMarkerAccountDataArgs> {
+export function getEditionMarkerAccountDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ key: TmKeyArgs; ledger: Array<number> }>(
-      [
-        ['key', getTmKeyEncoder()],
-        ['ledger', getArrayEncoder(getU8Encoder(), { size: 31 })],
-      ],
-      { description: 'EditionMarkerAccountData' }
-    ),
+    getStructEncoder<{ key: TmKeyArgs; ledger: Array<number> }>([
+      ['key', getTmKeyEncoder()],
+      ['ledger', getArrayEncoder(getU8Encoder(), { size: 31 })],
+    ]),
     (value) => ({ ...value, key: TmKey.EditionMarker })
-  ) as Encoder<EditionMarkerAccountDataArgs>;
+  ) satisfies Encoder<EditionMarkerAccountDataArgs>;
 }
 
-export function getEditionMarkerAccountDataDecoder(): Decoder<EditionMarkerAccountData> {
-  return getStructDecoder<EditionMarkerAccountData>(
-    [
-      ['key', getTmKeyDecoder()],
-      ['ledger', getArrayDecoder(getU8Decoder(), { size: 31 })],
-    ],
-    { description: 'EditionMarkerAccountData' }
-  ) as Decoder<EditionMarkerAccountData>;
+export function getEditionMarkerAccountDataDecoder() {
+  return getStructDecoder<EditionMarkerAccountData>([
+    ['key', getTmKeyDecoder()],
+    ['ledger', getArrayDecoder(getU8Decoder(), { size: 31 })],
+  ]) satisfies Decoder<EditionMarkerAccountData>;
 }
 
 export function getEditionMarkerAccountDataCodec(): Codec<
@@ -82,8 +76,8 @@ export function decodeEditionMarker<TAddress extends string = string>(
 
 export async function fetchEditionMarker<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<EditionMarker<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -92,8 +86,8 @@ export async function fetchEditionMarker<TAddress extends string = string>(
 
 export async function safeFetchEditionMarker<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<EditionMarker<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists ? decodeEditionMarker(maybeAccount) : null;
@@ -101,8 +95,8 @@ export async function safeFetchEditionMarker<TAddress extends string = string>(
 
 export async function fetchAllEditionMarker(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<EditionMarker[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -113,8 +107,8 @@ export async function fetchAllEditionMarker(
 
 export async function safeFetchAllEditionMarker(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<EditionMarker[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts

@@ -19,18 +19,16 @@ export type MintNewEditionFromMasterEditionViaTokenArgsArgs = {
   edition: number | bigint;
 };
 
-export function getMintNewEditionFromMasterEditionViaTokenArgsEncoder(): Encoder<MintNewEditionFromMasterEditionViaTokenArgsArgs> {
-  return getStructEncoder<MintNewEditionFromMasterEditionViaTokenArgsArgs>(
-    [['edition', getU64Encoder()]],
-    { description: 'MintNewEditionFromMasterEditionViaTokenArgs' }
-  ) as Encoder<MintNewEditionFromMasterEditionViaTokenArgsArgs>;
+export function getMintNewEditionFromMasterEditionViaTokenArgsEncoder() {
+  return getStructEncoder<MintNewEditionFromMasterEditionViaTokenArgsArgs>([
+    ['edition', getU64Encoder()],
+  ]) satisfies Encoder<MintNewEditionFromMasterEditionViaTokenArgsArgs>;
 }
 
-export function getMintNewEditionFromMasterEditionViaTokenArgsDecoder(): Decoder<MintNewEditionFromMasterEditionViaTokenArgs> {
-  return getStructDecoder<MintNewEditionFromMasterEditionViaTokenArgs>(
-    [['edition', getU64Decoder()]],
-    { description: 'MintNewEditionFromMasterEditionViaTokenArgs' }
-  ) as Decoder<MintNewEditionFromMasterEditionViaTokenArgs>;
+export function getMintNewEditionFromMasterEditionViaTokenArgsDecoder() {
+  return getStructDecoder<MintNewEditionFromMasterEditionViaTokenArgs>([
+    ['edition', getU64Decoder()],
+  ]) satisfies Decoder<MintNewEditionFromMasterEditionViaTokenArgs>;
 }
 
 export function getMintNewEditionFromMasterEditionViaTokenArgsCodec(): Codec<

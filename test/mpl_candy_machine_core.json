@@ -727,9 +727,7 @@
               "The dummy lines."
             ],
             "type": {
-              "vec": {
-                "defined": "ConfigLine"
-              },
+              "vec": "u64",
               "size": "remainder"
             }
           }

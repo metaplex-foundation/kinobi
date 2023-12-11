@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -29,14 +29,12 @@ import {
   ReadonlySignerAccount,
   WritableAccount,
 } from '@solana/instructions';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 import {
@@ -104,47 +102,8 @@ export type MigrateInstruction<
     ]
   >;
 
-export type MigrateInstructionData = {
-  discriminator: number;
-  migrateArgs: MigrateArgs;
-};
-
-export type MigrateInstructionDataArgs = { migrateArgs: MigrateArgsArgs };
-
-export function getMigrateInstructionDataEncoder(): Encoder<MigrateInstructionDataArgs> {
-  return mapEncoder(
-    getStructEncoder<{ discriminator: number; migrateArgs: MigrateArgsArgs }>(
-      [
-        ['discriminator', getU8Encoder()],
-        ['migrateArgs', getMigrateArgsEncoder()],
-      ],
-      { description: 'MigrateInstructionData' }
-    ),
-    (value) => ({ ...value, discriminator: 50 })
-  ) as Encoder<MigrateInstructionDataArgs>;
-}
-
-export function getMigrateInstructionDataDecoder(): Decoder<MigrateInstructionData> {
-  return getStructDecoder<MigrateInstructionData>(
-    [
-      ['discriminator', getU8Decoder()],
-      ['migrateArgs', getMigrateArgsDecoder()],
-    ],
-    { description: 'MigrateInstructionData' }
-  ) as Decoder<MigrateInstructionData>;
-}
-
-export function getMigrateInstructionDataCodec(): Codec<
-  MigrateInstructionDataArgs,
-  MigrateInstructionData
-> {
-  return combineCodec(
-    getMigrateInstructionDataEncoder(),
-    getMigrateInstructionDataDecoder()
-  );
-}
-
-export function migrateInstruction<
+// Output.
+export type MigrateInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
@@ -163,104 +122,79 @@ export function migrateInstruction<
     | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
   TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends Array<IAccountMeta<string>> = []
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Base58EncodedAddress<TAccountMetadata>
-      : TAccountMetadata;
-    masterEdition: TAccountMasterEdition extends string
-      ? Base58EncodedAddress<TAccountMasterEdition>
-      : TAccountMasterEdition;
-    tokenAccount: TAccountTokenAccount extends string
-      ? Base58EncodedAddress<TAccountTokenAccount>
-      : TAccountTokenAccount;
-    mint: TAccountMint extends string
-      ? Base58EncodedAddress<TAccountMint>
-      : TAccountMint;
-    updateAuthority: TAccountUpdateAuthority extends string
-      ? Base58EncodedAddress<TAccountUpdateAuthority>
-      : TAccountUpdateAuthority;
-    collectionMetadata: TAccountCollectionMetadata extends string
-      ? Base58EncodedAddress<TAccountCollectionMetadata>
-      : TAccountCollectionMetadata;
-    tokenProgram?: TAccountTokenProgram extends string
-      ? Base58EncodedAddress<TAccountTokenProgram>
-      : TAccountTokenProgram;
-    systemProgram?: TAccountSystemProgram extends string
-      ? Base58EncodedAddress<TAccountSystemProgram>
-      : TAccountSystemProgram;
-    sysvarInstructions?: TAccountSysvarInstructions extends string
-      ? Base58EncodedAddress<TAccountSysvarInstructions>
-      : TAccountSysvarInstructions;
-    authorizationRules?: TAccountAuthorizationRules extends string
-      ? Base58EncodedAddress<TAccountAuthorizationRules>
-      : TAccountAuthorizationRules;
-  },
-  args: MigrateInstructionDataArgs,
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.masterEdition, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.tokenAccount, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.updateAuthority,
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(accounts.collectionMetadata, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.tokenProgram ?? {
-          address:
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.systemProgram ?? {
-          address:
-            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.sysvarInstructions ??
-          'Sysvar1nstructions1111111111111111111111111',
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.authorizationRules ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getMigrateInstructionDataEncoder().encode(args),
-    programAddress,
-  } as MigrateInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountTokenAccount,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountCollectionMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthorizationRules,
-    TRemainingAccounts
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountMasterEdition extends string
+        ? ReadonlyAccount<TAccountMasterEdition>
+        : TAccountMasterEdition,
+      TAccountTokenAccount extends string
+        ? WritableAccount<TAccountTokenAccount>
+        : TAccountTokenAccount,
+      TAccountMint extends string
+        ? ReadonlyAccount<TAccountMint>
+        : TAccountMint,
+      TAccountUpdateAuthority extends string
+        ? ReadonlySignerAccount<TAccountUpdateAuthority> &
+            IAccountSignerMeta<TAccountUpdateAuthority>
+        : TAccountUpdateAuthority,
+      TAccountCollectionMetadata extends string
+        ? ReadonlyAccount<TAccountCollectionMetadata>
+        : TAccountCollectionMetadata,
+      TAccountTokenProgram extends string
+        ? ReadonlyAccount<TAccountTokenProgram>
+        : TAccountTokenProgram,
+      TAccountSystemProgram extends string
+        ? ReadonlyAccount<TAccountSystemProgram>
+        : TAccountSystemProgram,
+      TAccountSysvarInstructions extends string
+        ? ReadonlyAccount<TAccountSysvarInstructions>
+        : TAccountSysvarInstructions,
+      TAccountAuthorizationRules extends string
+        ? ReadonlyAccount<TAccountAuthorizationRules>
+        : TAccountAuthorizationRules,
+      ...TRemainingAccounts
+    ]
   >;
+
+export type MigrateInstructionData = {
+  discriminator: number;
+  migrateArgs: MigrateArgs;
+};
+
+export type MigrateInstructionDataArgs = { migrateArgs: MigrateArgsArgs };
+
+export function getMigrateInstructionDataEncoder() {
+  return mapEncoder(
+    getStructEncoder<{ discriminator: number; migrateArgs: MigrateArgsArgs }>([
+      ['discriminator', getU8Encoder()],
+      ['migrateArgs', getMigrateArgsEncoder()],
+    ]),
+    (value) => ({ ...value, discriminator: 50 })
+  ) satisfies Encoder<MigrateInstructionDataArgs>;
 }
 
-// Input.
+export function getMigrateInstructionDataDecoder() {
+  return getStructDecoder<MigrateInstructionData>([
+    ['discriminator', getU8Decoder()],
+    ['migrateArgs', getMigrateArgsDecoder()],
+  ]) satisfies Decoder<MigrateInstructionData>;
+}
+
+export function getMigrateInstructionDataCodec(): Codec<
+  MigrateInstructionDataArgs,
+  MigrateInstructionData
+> {
+  return combineCodec(
+    getMigrateInstructionDataEncoder(),
+    getMigrateInstructionDataDecoder()
+  );
+}
+
 export type MigrateInput<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
@@ -274,30 +208,64 @@ export type MigrateInput<
   TAccountAuthorizationRules extends string
 > = {
   /** Metadata account */
-  metadata: Base58EncodedAddress<TAccountMetadata>;
+  metadata: Address<TAccountMetadata>;
   /** Master edition account */
-  masterEdition: Base58EncodedAddress<TAccountMasterEdition>;
+  masterEdition: Address<TAccountMasterEdition>;
   /** Token account */
-  tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+  tokenAccount: Address<TAccountTokenAccount>;
   /** Mint account */
-  mint: Base58EncodedAddress<TAccountMint>;
+  mint: Address<TAccountMint>;
   /** Update authority */
-  updateAuthority: Signer<TAccountUpdateAuthority>;
+  updateAuthority: Address<TAccountUpdateAuthority>;
   /** Collection metadata account */
-  collectionMetadata: Base58EncodedAddress<TAccountCollectionMetadata>;
+  collectionMetadata: Address<TAccountCollectionMetadata>;
   /** Token Program */
-  tokenProgram?: Base58EncodedAddress<TAccountTokenProgram>;
+  tokenProgram?: Address<TAccountTokenProgram>;
   /** System program */
-  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
   /** Instruction sysvar account */
-  sysvarInstructions?: Base58EncodedAddress<TAccountSysvarInstructions>;
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
   /** Token Authorization Rules account */
-  authorizationRules?: Base58EncodedAddress<TAccountAuthorizationRules>;
+  authorizationRules?: Address<TAccountAuthorizationRules>;
   migrateArgs: MigrateInstructionDataArgs['migrateArgs'];
 };
 
-export async function migrate<
-  TReturn,
+export type MigrateInputWithSigners<
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthorizationRules extends string
+> = {
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Master edition account */
+  masterEdition: Address<TAccountMasterEdition>;
+  /** Token account */
+  tokenAccount: Address<TAccountTokenAccount>;
+  /** Mint account */
+  mint: Address<TAccountMint>;
+  /** Update authority */
+  updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
+  /** Collection metadata account */
+  collectionMetadata: Address<TAccountCollectionMetadata>;
+  /** Token Program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Instruction sysvar account */
+  sysvarInstructions?: Address<TAccountSysvarInstructions>;
+  /** Token Authorization Rules account */
+  authorizationRules?: Address<TAccountAuthorizationRules>;
+  migrateArgs: MigrateInstructionDataArgs['migrateArgs'];
+};
+
+export function getMigrateInstruction<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountTokenAccount extends string,
@@ -310,24 +278,8 @@ export async function migrate<
   TAccountAuthorizationRules extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      MigrateInstruction<
-        TProgram,
-        TAccountMetadata,
-        TAccountMasterEdition,
-        TAccountTokenAccount,
-        TAccountMint,
-        TAccountUpdateAuthority,
-        TAccountCollectionMetadata,
-        TAccountTokenProgram,
-        TAccountSystemProgram,
-        TAccountSysvarInstructions,
-        TAccountAuthorizationRules
-      >,
-      TReturn
-    >,
-  input: MigrateInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: MigrateInputWithSigners<
     TAccountMetadata,
     TAccountMasterEdition,
     TAccountTokenAccount,
@@ -339,8 +291,20 @@ export async function migrate<
     TAccountSysvarInstructions,
     TAccountAuthorizationRules
   >
-): Promise<TReturn>;
-export async function migrate<
+): MigrateInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountTokenAccount,
+  TAccountMint,
+  TAccountUpdateAuthority,
+  TAccountCollectionMetadata,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountAuthorizationRules
+>;
+export function getMigrateInstruction<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountTokenAccount extends string,
@@ -366,24 +330,58 @@ export async function migrate<
     TAccountSysvarInstructions,
     TAccountAuthorizationRules
   >
-): Promise<
-  WrappedInstruction<
-    MigrateInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountTokenAccount,
-      TAccountMint,
-      TAccountUpdateAuthority,
-      TAccountCollectionMetadata,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions,
-      TAccountAuthorizationRules
-    >
-  >
+): MigrateInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountTokenAccount,
+  TAccountMint,
+  TAccountUpdateAuthority,
+  TAccountCollectionMetadata,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountAuthorizationRules
 >;
-export async function migrate<
+export function getMigrateInstruction<
+  TAccountMetadata extends string,
+  TAccountMasterEdition extends string,
+  TAccountTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountUpdateAuthority extends string,
+  TAccountCollectionMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountSysvarInstructions extends string,
+  TAccountAuthorizationRules extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: MigrateInputWithSigners<
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountCollectionMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRules
+  >
+): MigrateInstructionWithSigners<
+  TProgram,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountTokenAccount,
+  TAccountMint,
+  TAccountUpdateAuthority,
+  TAccountCollectionMetadata,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountAuthorizationRules
+>;
+export function getMigrateInstruction<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountTokenAccount extends string,
@@ -408,25 +406,20 @@ export async function migrate<
     TAccountSysvarInstructions,
     TAccountAuthorizationRules
   >
-): Promise<
-  WrappedInstruction<
-    MigrateInstruction<
-      TProgram,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountTokenAccount,
-      TAccountMint,
-      TAccountUpdateAuthority,
-      TAccountCollectionMetadata,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions,
-      TAccountAuthorizationRules
-    >
-  >
+): MigrateInstruction<
+  TProgram,
+  TAccountMetadata,
+  TAccountMasterEdition,
+  TAccountTokenAccount,
+  TAccountMint,
+  TAccountUpdateAuthority,
+  TAccountCollectionMetadata,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountSysvarInstructions,
+  TAccountAuthorizationRules
 >;
-export async function migrate<
-  TReturn,
+export function getMigrateInstruction<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountTokenAccount extends string,
@@ -441,8 +434,6 @@ export async function migrate<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | MigrateInput<
         TAccountMetadata,
         TAccountMasterEdition,
@@ -467,12 +458,12 @@ export async function migrate<
     TAccountSysvarInstructions,
     TAccountAuthorizationRules
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): IInstruction {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as MigrateInput<
@@ -490,19 +481,19 @@ export async function migrate<
 
   // Program address.
   const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof migrateInstruction<
+    typeof getMigrateInstructionRaw<
       TProgram,
       TAccountMetadata,
       TAccountMasterEdition,
@@ -546,7 +537,7 @@ export async function migrate<
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value = await getProgramAddress(
+    accounts.tokenProgram.value = getProgramAddress(
       context,
       'splToken',
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
@@ -554,7 +545,7 @@ export async function migrate<
     accounts.tokenProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'
@@ -563,11 +554,11 @@ export async function migrate<
   }
   if (!accounts.sysvarInstructions.value) {
     accounts.sysvarInstructions.value =
-      'Sysvar1nstructions1111111111111111111111111' as Base58EncodedAddress<'Sysvar1nstructions1111111111111111111111111'>;
+      'Sysvar1nstructions1111111111111111111111111' as Address<'Sysvar1nstructions1111111111111111111111111'>;
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -579,19 +570,127 @@ export async function migrate<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: migrateInstruction(
+  return Object.freeze({
+    ...getMigrateInstructionRaw(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as MigrateInstructionDataArgs,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
-  };
+  });
+}
 
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+export function getMigrateInstructionRaw<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountMasterEdition extends string | IAccountMeta<string> = string,
+  TAccountTokenAccount extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
+  TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
+  TAccountTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends
+    | string
+    | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+>(
+  accounts: {
+    metadata: TAccountMetadata extends string
+      ? Address<TAccountMetadata>
+      : TAccountMetadata;
+    masterEdition: TAccountMasterEdition extends string
+      ? Address<TAccountMasterEdition>
+      : TAccountMasterEdition;
+    tokenAccount: TAccountTokenAccount extends string
+      ? Address<TAccountTokenAccount>
+      : TAccountTokenAccount;
+    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
+    updateAuthority: TAccountUpdateAuthority extends string
+      ? Address<TAccountUpdateAuthority>
+      : TAccountUpdateAuthority;
+    collectionMetadata: TAccountCollectionMetadata extends string
+      ? Address<TAccountCollectionMetadata>
+      : TAccountCollectionMetadata;
+    tokenProgram?: TAccountTokenProgram extends string
+      ? Address<TAccountTokenProgram>
+      : TAccountTokenProgram;
+    systemProgram?: TAccountSystemProgram extends string
+      ? Address<TAccountSystemProgram>
+      : TAccountSystemProgram;
+    sysvarInstructions?: TAccountSysvarInstructions extends string
+      ? Address<TAccountSysvarInstructions>
+      : TAccountSysvarInstructions;
+    authorizationRules?: TAccountAuthorizationRules extends string
+      ? Address<TAccountAuthorizationRules>
+      : TAccountAuthorizationRules;
+  },
+  args: MigrateInstructionDataArgs,
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
+  remainingAccounts?: TRemainingAccounts
+) {
+  return {
+    accounts: [
+      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.masterEdition, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.tokenAccount, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.updateAuthority,
+        AccountRole.READONLY_SIGNER
+      ),
+      accountMetaWithDefault(accounts.collectionMetadata, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.tokenProgram ?? {
+          address:
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.systemProgram ?? {
+          address:
+            '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.sysvarInstructions ??
+          'Sysvar1nstructions1111111111111111111111111',
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.authorizationRules ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      ...(remainingAccounts ?? []),
+    ],
+    data: getMigrateInstructionDataEncoder().encode(args),
+    programAddress,
+  } as MigrateInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountCollectionMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthorizationRules,
+    TRemainingAccounts
+  >;
 }

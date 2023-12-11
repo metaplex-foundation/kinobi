@@ -7,7 +7,6 @@ import {
   BaseThrowVisitor,
   GetByteSizeVisitor,
   GetResolvedInstructionInputsVisitor,
-  ResolvedInstructionAccount,
   ResolvedInstructionInput,
   visit,
   Visitor,
@@ -23,7 +22,6 @@ import {
   getInstructionExtraArgsFragment,
   getInstructionFunctionHighLevelFragment,
   getInstructionFunctionLowLevelFragment,
-  getInstructionInputTypeFragment,
   getInstructionTypeFragment,
   getProgramErrorsFragment,
   getProgramFragment,
@@ -55,6 +53,7 @@ export type GetRenderMapOptions = {
     registerDefinedTypes?: (definedTypes: nodes.DefinedTypeNode[]) => void;
   };
   resolvedInstructionInputVisitor?: Visitor<ResolvedInstructionInput[]>;
+  asyncResolvers?: string[];
 };
 
 export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
@@ -78,6 +77,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       resolvedInstructionInputVisitor:
         options.resolvedInstructionInputVisitor ??
         new GetResolvedInstructionInputsVisitor(),
+      asyncResolvers: options.asyncResolvers ?? [],
     };
   }
 
@@ -241,64 +241,43 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
 
     // Data for fragments.
-    const resolvedInputs = visit(
-      instruction,
-      this.resolvedInstructionInputVisitor
-    );
-    const dataArgsManifest = visit(
-      instruction.dataArgs,
-      this.typeManifestVisitor
-    );
-    const extraArgsManifest = visit(
-      instruction.extraArgs,
-      this.typeManifestVisitor
-    );
-    const renamedArgs = this.getRenamedArgsMap(instruction);
+    const scope = {
+      instructionNode: instruction,
+      programNode: this.program,
+      renamedArgs: this.getRenamedArgsMap(instruction),
+      dataArgsManifest: visit(instruction.dataArgs, this.typeManifestVisitor),
+      extraArgsManifest: visit(instruction.extraArgs, this.typeManifestVisitor),
+      resolvedInputs: visit(instruction, this.resolvedInstructionInputVisitor),
+      asyncResolvers: this.options.asyncResolvers,
+    };
 
     // Fragments.
-    const instructionTypeFragment = getInstructionTypeFragment(
-      instruction,
-      this.program
-    );
-    const instructionDataFragment = getInstructionDataFragment(
-      instruction,
-      dataArgsManifest
-    );
-    const instructionExtraArgsFragment = getInstructionExtraArgsFragment(
-      instruction,
-      extraArgsManifest
-    );
+    const instructionTypeFragment = getInstructionTypeFragment({
+      ...scope,
+      withSigners: false,
+    });
+    const instructionTypeWithSignersFragment = getInstructionTypeFragment({
+      ...scope,
+      withSigners: true,
+    });
+    const instructionDataFragment = getInstructionDataFragment(scope);
+    const instructionExtraArgsFragment = getInstructionExtraArgsFragment(scope);
+    const instructionFunctionHighLevelAsyncFragment =
+      getInstructionFunctionHighLevelFragment({ ...scope, useAsync: true });
+    const instructionFunctionHighLevelSyncFragment =
+      getInstructionFunctionHighLevelFragment({ ...scope, useAsync: false });
     const instructionFunctionLowLevelFragment =
-      getInstructionFunctionLowLevelFragment(
-        instruction,
-        this.program,
-        dataArgsManifest
-      );
-    const instructionInputTypeFragment = getInstructionInputTypeFragment(
-      instruction,
-      resolvedInputs,
-      renamedArgs,
-      dataArgsManifest,
-      extraArgsManifest,
-      this.program
-    );
-    const instructionFunctionHighLevelFragment =
-      getInstructionFunctionHighLevelFragment(
-        instruction,
-        this.program,
-        renamedArgs,
-        dataArgsManifest,
-        resolvedInputs
-      );
+      getInstructionFunctionLowLevelFragment(scope);
 
     // Imports and interfaces.
     const imports = new ImportMap().mergeWith(
       instructionTypeFragment,
+      instructionTypeWithSignersFragment,
       instructionDataFragment,
       instructionExtraArgsFragment,
-      instructionFunctionLowLevelFragment,
-      instructionInputTypeFragment,
-      instructionFunctionHighLevelFragment
+      instructionFunctionHighLevelAsyncFragment,
+      instructionFunctionHighLevelSyncFragment,
+      instructionFunctionLowLevelFragment
     );
 
     return new RenderMap().add(
@@ -307,11 +286,12 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         instruction,
         imports: imports.toString(this.options.dependencyMap),
         instructionTypeFragment,
+        instructionTypeWithSignersFragment,
         instructionDataFragment,
         instructionExtraArgsFragment,
+        instructionFunctionHighLevelAsyncFragment,
+        instructionFunctionHighLevelSyncFragment,
         instructionFunctionLowLevelFragment,
-        instructionInputTypeFragment,
-        instructionFunctionHighLevelFragment,
       })
     );
   }
@@ -359,39 +339,6 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   get resolvedInstructionInputVisitor() {
     return this.options.resolvedInstructionInputVisitor;
-  }
-
-  protected getInstructionAccountType(
-    account: ResolvedInstructionAccount
-  ): string {
-    if (account.isPda && account.isSigner === false) return 'Pda';
-    if (account.isSigner === 'either') return 'PublicKey | Pda | Signer';
-    return account.isSigner ? 'Signer' : 'PublicKey | Pda';
-  }
-
-  protected getInstructionAccountImports(
-    accounts: ResolvedInstructionAccount[]
-  ): ImportMap {
-    const imports = new ImportMap();
-    accounts.forEach((account) => {
-      if (account.isSigner !== true && !account.isPda)
-        imports.add('umi', 'PublicKey');
-      if (account.isSigner !== true) imports.add('umi', 'Pda');
-      if (account.isSigner !== false) imports.add('umi', 'Signer');
-    });
-    return imports;
-  }
-
-  protected getMergeConflictsForInstructionAccountsAndArgs(
-    instruction: nodes.InstructionNode
-  ): string[] {
-    const allNames = [
-      ...instruction.accounts.map((account) => account.name),
-      ...instruction.dataArgs.struct.fields.map((field) => field.name),
-      ...instruction.extraArgs.struct.fields.map((field) => field.name),
-    ];
-    const duplicates = allNames.filter((e, i, a) => a.indexOf(e) !== i);
-    return [...new Set(duplicates)];
   }
 
   protected getRenamedArgsMap(

@@ -6,7 +6,15 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import {
+  Account,
+  EncodedAccount,
+  FetchAccountConfig,
+  FetchAccountsConfig,
+  assertAccountExists,
+  decodeAccount,
+} from '@solana/accounts';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -24,15 +32,7 @@ import {
   getU8Decoder,
   getU8Encoder,
 } from '@solana/codecs-numbers';
-import {
-  Account,
-  Context,
-  EncodedAccount,
-  FetchEncodedAccountOptions,
-  FetchEncodedAccountsOptions,
-  assertAccountExists,
-  decodeAccount,
-} from '../shared';
+import { Context } from '../shared';
 import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type UseAuthorityRecord<TAddress extends string = string> = Account<
@@ -51,33 +51,27 @@ export type UseAuthorityRecordAccountDataArgs = {
   bump: number;
 };
 
-export function getUseAuthorityRecordAccountDataEncoder(): Encoder<UseAuthorityRecordAccountDataArgs> {
+export function getUseAuthorityRecordAccountDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       key: TmKeyArgs;
       allowedUses: number | bigint;
       bump: number;
-    }>(
-      [
-        ['key', getTmKeyEncoder()],
-        ['allowedUses', getU64Encoder()],
-        ['bump', getU8Encoder()],
-      ],
-      { description: 'UseAuthorityRecordAccountData' }
-    ),
+    }>([
+      ['key', getTmKeyEncoder()],
+      ['allowedUses', getU64Encoder()],
+      ['bump', getU8Encoder()],
+    ]),
     (value) => ({ ...value, key: TmKey.UseAuthorityRecord })
-  ) as Encoder<UseAuthorityRecordAccountDataArgs>;
+  ) satisfies Encoder<UseAuthorityRecordAccountDataArgs>;
 }
 
-export function getUseAuthorityRecordAccountDataDecoder(): Decoder<UseAuthorityRecordAccountData> {
-  return getStructDecoder<UseAuthorityRecordAccountData>(
-    [
-      ['key', getTmKeyDecoder()],
-      ['allowedUses', getU64Decoder()],
-      ['bump', getU8Decoder()],
-    ],
-    { description: 'UseAuthorityRecordAccountData' }
-  ) as Decoder<UseAuthorityRecordAccountData>;
+export function getUseAuthorityRecordAccountDataDecoder() {
+  return getStructDecoder<UseAuthorityRecordAccountData>([
+    ['key', getTmKeyDecoder()],
+    ['allowedUses', getU64Decoder()],
+    ['bump', getU8Decoder()],
+  ]) satisfies Decoder<UseAuthorityRecordAccountData>;
 }
 
 export function getUseAuthorityRecordAccountDataCodec(): Codec<
@@ -101,8 +95,8 @@ export function decodeUseAuthorityRecord<TAddress extends string = string>(
 
 export async function fetchUseAuthorityRecord<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<UseAuthorityRecord<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -113,8 +107,8 @@ export async function safeFetchUseAuthorityRecord<
   TAddress extends string = string
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<UseAuthorityRecord<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists ? decodeUseAuthorityRecord(maybeAccount) : null;
@@ -122,8 +116,8 @@ export async function safeFetchUseAuthorityRecord<
 
 export async function fetchAllUseAuthorityRecord(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<UseAuthorityRecord[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -134,8 +128,8 @@ export async function fetchAllUseAuthorityRecord(
 
 export async function safeFetchAllUseAuthorityRecord(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<UseAuthorityRecord[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts

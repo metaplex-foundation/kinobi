@@ -82,36 +82,30 @@ export type CandyMachineDataArgs = {
   hiddenSettings: OptionOrNullable<HiddenSettingsArgs>;
 };
 
-export function getCandyMachineDataEncoder(): Encoder<CandyMachineDataArgs> {
-  return getStructEncoder<CandyMachineDataArgs>(
-    [
-      ['itemsAvailable', getU64Encoder()],
-      ['symbol', getStringEncoder()],
-      ['sellerFeeBasisPoints', getU16Encoder()],
-      ['maxSupply', getU64Encoder()],
-      ['isMutable', getBooleanEncoder()],
-      ['creators', getArrayEncoder(getCmCreatorEncoder())],
-      ['configLineSettings', getOptionEncoder(getConfigLineSettingsEncoder())],
-      ['hiddenSettings', getOptionEncoder(getHiddenSettingsEncoder())],
-    ],
-    { description: 'CandyMachineData' }
-  ) as Encoder<CandyMachineDataArgs>;
+export function getCandyMachineDataEncoder() {
+  return getStructEncoder<CandyMachineDataArgs>([
+    ['itemsAvailable', getU64Encoder()],
+    ['symbol', getStringEncoder()],
+    ['sellerFeeBasisPoints', getU16Encoder()],
+    ['maxSupply', getU64Encoder()],
+    ['isMutable', getBooleanEncoder()],
+    ['creators', getArrayEncoder(getCmCreatorEncoder())],
+    ['configLineSettings', getOptionEncoder(getConfigLineSettingsEncoder())],
+    ['hiddenSettings', getOptionEncoder(getHiddenSettingsEncoder())],
+  ]) satisfies Encoder<CandyMachineDataArgs>;
 }
 
-export function getCandyMachineDataDecoder(): Decoder<CandyMachineData> {
-  return getStructDecoder<CandyMachineData>(
-    [
-      ['itemsAvailable', getU64Decoder()],
-      ['symbol', getStringDecoder()],
-      ['sellerFeeBasisPoints', getU16Decoder()],
-      ['maxSupply', getU64Decoder()],
-      ['isMutable', getBooleanDecoder()],
-      ['creators', getArrayDecoder(getCmCreatorDecoder())],
-      ['configLineSettings', getOptionDecoder(getConfigLineSettingsDecoder())],
-      ['hiddenSettings', getOptionDecoder(getHiddenSettingsDecoder())],
-    ],
-    { description: 'CandyMachineData' }
-  ) as Decoder<CandyMachineData>;
+export function getCandyMachineDataDecoder() {
+  return getStructDecoder<CandyMachineData>([
+    ['itemsAvailable', getU64Decoder()],
+    ['symbol', getStringDecoder()],
+    ['sellerFeeBasisPoints', getU16Decoder()],
+    ['maxSupply', getU64Decoder()],
+    ['isMutable', getBooleanDecoder()],
+    ['creators', getArrayDecoder(getCmCreatorDecoder())],
+    ['configLineSettings', getOptionDecoder(getConfigLineSettingsDecoder())],
+    ['hiddenSettings', getOptionDecoder(getHiddenSettingsDecoder())],
+  ]) satisfies Decoder<CandyMachineData>;
 }
 
 export function getCandyMachineDataCodec(): Codec<

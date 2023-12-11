@@ -7,10 +7,10 @@ import {
   fragmentWithContextMap,
 } from './common';
 
-export function getInstructionRemainingAccountsFragment(
-  instructionNode: nodes.InstructionNode
-): Fragment & { interfaces: ContextMap } {
-  const { remainingAccounts } = instructionNode;
+export function getInstructionRemainingAccountsFragment(scope: {
+  instructionNode: nodes.InstructionNode;
+}): Fragment & { interfaces: ContextMap } {
+  const { remainingAccounts } = scope.instructionNode;
   const remainingAccountsFragment = fragmentWithContextMap('').addImports(
     'solanaInstructions',
     ['IAccountMeta']

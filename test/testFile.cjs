@@ -1,6 +1,7 @@
 const k = require('../dist/cjs/index.js');
 
 const kinobi = k.createFromIdls([
+  __dirname + '/spl_system.json',
   __dirname + '/mpl_candy_machine_core.json',
   __dirname + '/mpl_token_auth_rules.json',
   __dirname + '/mpl_token_metadata.json',
@@ -251,7 +252,8 @@ kinobiReconstructed.accept(
 
 kinobiReconstructed.accept(
   new k.RenderJavaScriptExperimentalVisitor(
-    './test/packages/js-experimental/src/generated'
+    './test/packages/js-experimental/src/generated',
+    { asyncResolvers: ['resolveMasterEditionFromTokenStandard'] }
   )
 );
 

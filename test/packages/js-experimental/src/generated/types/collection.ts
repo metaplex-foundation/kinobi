@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -25,31 +25,25 @@ import {
   getStructEncoder,
 } from '@solana/codecs-data-structures';
 
-export type Collection = { verified: boolean; key: Base58EncodedAddress };
+export type Collection = { verified: boolean; key: Address };
 
-export type CollectionArgs = { verified?: boolean; key: Base58EncodedAddress };
+export type CollectionArgs = { verified?: boolean; key: Address };
 
-export function getCollectionEncoder(): Encoder<CollectionArgs> {
+export function getCollectionEncoder() {
   return mapEncoder(
-    getStructEncoder<{ verified: boolean; key: Base58EncodedAddress }>(
-      [
-        ['verified', getBooleanEncoder()],
-        ['key', getAddressEncoder()],
-      ],
-      { description: 'Collection' }
-    ),
+    getStructEncoder<{ verified: boolean; key: Address }>([
+      ['verified', getBooleanEncoder()],
+      ['key', getAddressEncoder()],
+    ]),
     (value) => ({ ...value, verified: value.verified ?? false })
-  ) as Encoder<CollectionArgs>;
+  ) satisfies Encoder<CollectionArgs>;
 }
 
-export function getCollectionDecoder(): Decoder<Collection> {
-  return getStructDecoder<Collection>(
-    [
-      ['verified', getBooleanDecoder()],
-      ['key', getAddressDecoder()],
-    ],
-    { description: 'Collection' }
-  ) as Decoder<Collection>;
+export function getCollectionDecoder() {
+  return getStructDecoder<Collection>([
+    ['verified', getBooleanDecoder()],
+    ['key', getAddressDecoder()],
+  ]) satisfies Decoder<Collection>;
 }
 
 export function getCollectionCodec(): Codec<CollectionArgs, Collection> {

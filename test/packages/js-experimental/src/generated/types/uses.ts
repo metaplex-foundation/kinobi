@@ -27,26 +27,20 @@ export type UsesArgs = {
   total: number | bigint;
 };
 
-export function getUsesEncoder(): Encoder<UsesArgs> {
-  return getStructEncoder<UsesArgs>(
-    [
-      ['useMethod', getUseMethodEncoder()],
-      ['remaining', getU64Encoder()],
-      ['total', getU64Encoder()],
-    ],
-    { description: 'Uses' }
-  ) as Encoder<UsesArgs>;
+export function getUsesEncoder() {
+  return getStructEncoder<UsesArgs>([
+    ['useMethod', getUseMethodEncoder()],
+    ['remaining', getU64Encoder()],
+    ['total', getU64Encoder()],
+  ]) satisfies Encoder<UsesArgs>;
 }
 
-export function getUsesDecoder(): Decoder<Uses> {
-  return getStructDecoder<Uses>(
-    [
-      ['useMethod', getUseMethodDecoder()],
-      ['remaining', getU64Decoder()],
-      ['total', getU64Decoder()],
-    ],
-    { description: 'Uses' }
-  ) as Decoder<Uses>;
+export function getUsesDecoder() {
+  return getStructDecoder<Uses>([
+    ['useMethod', getUseMethodDecoder()],
+    ['remaining', getU64Decoder()],
+    ['total', getU64Decoder()],
+  ]) satisfies Decoder<Uses>;
 }
 
 export function getUsesCodec(): Codec<UsesArgs, Uses> {

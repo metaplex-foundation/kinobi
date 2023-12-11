@@ -7,7 +7,15 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Account,
+  EncodedAccount,
+  FetchAccountConfig,
+  FetchAccountsConfig,
+  assertAccountExists,
+  decodeAccount,
+} from '@solana/accounts';
+import {
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -29,15 +37,7 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import {
-  Account,
-  Context,
-  EncodedAccount,
-  FetchEncodedAccountOptions,
-  FetchEncodedAccountsOptions,
-  assertAccountExists,
-  decodeAccount,
-} from '../shared';
+import { Context } from '../shared';
 import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type CollectionAuthorityRecord<TAddress extends string = string> =
@@ -46,41 +46,35 @@ export type CollectionAuthorityRecord<TAddress extends string = string> =
 export type CollectionAuthorityRecordAccountData = {
   key: TmKey;
   bump: number;
-  updateAuthority: Option<Base58EncodedAddress>;
+  updateAuthority: Option<Address>;
 };
 
 export type CollectionAuthorityRecordAccountDataArgs = {
   bump: number;
-  updateAuthority: OptionOrNullable<Base58EncodedAddress>;
+  updateAuthority: OptionOrNullable<Address>;
 };
 
-export function getCollectionAuthorityRecordAccountDataEncoder(): Encoder<CollectionAuthorityRecordAccountDataArgs> {
+export function getCollectionAuthorityRecordAccountDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       key: TmKeyArgs;
       bump: number;
-      updateAuthority: OptionOrNullable<Base58EncodedAddress>;
-    }>(
-      [
-        ['key', getTmKeyEncoder()],
-        ['bump', getU8Encoder()],
-        ['updateAuthority', getOptionEncoder(getAddressEncoder())],
-      ],
-      { description: 'CollectionAuthorityRecordAccountData' }
-    ),
+      updateAuthority: OptionOrNullable<Address>;
+    }>([
+      ['key', getTmKeyEncoder()],
+      ['bump', getU8Encoder()],
+      ['updateAuthority', getOptionEncoder(getAddressEncoder())],
+    ]),
     (value) => ({ ...value, key: TmKey.CollectionAuthorityRecord })
-  ) as Encoder<CollectionAuthorityRecordAccountDataArgs>;
+  ) satisfies Encoder<CollectionAuthorityRecordAccountDataArgs>;
 }
 
-export function getCollectionAuthorityRecordAccountDataDecoder(): Decoder<CollectionAuthorityRecordAccountData> {
-  return getStructDecoder<CollectionAuthorityRecordAccountData>(
-    [
-      ['key', getTmKeyDecoder()],
-      ['bump', getU8Decoder()],
-      ['updateAuthority', getOptionDecoder(getAddressDecoder())],
-    ],
-    { description: 'CollectionAuthorityRecordAccountData' }
-  ) as Decoder<CollectionAuthorityRecordAccountData>;
+export function getCollectionAuthorityRecordAccountDataDecoder() {
+  return getStructDecoder<CollectionAuthorityRecordAccountData>([
+    ['key', getTmKeyDecoder()],
+    ['bump', getU8Decoder()],
+    ['updateAuthority', getOptionDecoder(getAddressDecoder())],
+  ]) satisfies Decoder<CollectionAuthorityRecordAccountData>;
 }
 
 export function getCollectionAuthorityRecordAccountDataCodec(): Codec<
@@ -108,8 +102,8 @@ export async function fetchCollectionAuthorityRecord<
   TAddress extends string = string
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<CollectionAuthorityRecord<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -120,8 +114,8 @@ export async function safeFetchCollectionAuthorityRecord<
   TAddress extends string = string
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<CollectionAuthorityRecord<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists
@@ -131,8 +125,8 @@ export async function safeFetchCollectionAuthorityRecord<
 
 export async function fetchAllCollectionAuthorityRecord(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<CollectionAuthorityRecord[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -143,8 +137,8 @@ export async function fetchAllCollectionAuthorityRecord(
 
 export async function safeFetchAllCollectionAuthorityRecord(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<CollectionAuthorityRecord[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts

@@ -7,6 +7,7 @@ import {
 } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import { ContextMap } from '../ContextMap';
+import { isAsyncDefaultValue } from '../asyncHelpers';
 import {
   Fragment,
   fragment,
@@ -15,13 +16,27 @@ import {
 } from './common';
 import { getValueNodeFragment } from './valueNode';
 
-export function getInstructionInputDefaultFragment(
-  input: ResolvedInstructionInput,
-  optionalAccountStrategy: 'programId' | 'omitted',
-  accountObject: string = 'accounts',
-  argObject: string = 'args'
-): Fragment & { interfaces: ContextMap } {
+export function getInstructionInputDefaultFragment(scope: {
+  input: ResolvedInstructionInput;
+  optionalAccountStrategy: 'programId' | 'omitted';
+  asyncResolvers: string[];
+  useAsync: boolean;
+  accountObject?: string;
+  argObject?: string;
+}): Fragment & { interfaces: ContextMap } {
+  const {
+    input,
+    optionalAccountStrategy,
+    asyncResolvers,
+    useAsync,
+    accountObject = 'accounts',
+    argObject = 'args',
+  } = scope;
   if (!input.defaultsTo) {
+    return fragmentWithContextMap('');
+  }
+
+  if (!useAsync && isAsyncDefaultValue(input.defaultsTo, asyncResolvers)) {
     return fragmentWithContextMap('');
   }
 
@@ -63,8 +78,8 @@ export function getInstructionInputDefaultFragment(
         !input.isSigner
       ) {
         return defaultFragment(
-          `expectSigner(${accountObject}.${name}.value).address`
-        ).addImports('shared', 'expectSigner');
+          `expectTransactionSigner(${accountObject}.${name}.value).address`
+        ).addImports('shared', 'expectTransactionSigner');
       }
       if (input.kind === 'account') {
         return defaultFragment(
@@ -118,12 +133,12 @@ export function getInstructionInputDefaultFragment(
 
     case 'publicKey':
       return defaultFragment(
-        `'${defaultsTo.publicKey}' as Base58EncodedAddress<'${defaultsTo.publicKey}'>`
-      ).addImports('solanaAddresses', 'Base58EncodedAddress');
+        `'${defaultsTo.publicKey}' as Address<'${defaultsTo.publicKey}'>`
+      ).addImports('solanaAddresses', 'Address');
 
     case 'program':
       const programFragment = defaultFragment(
-        `await getProgramAddress(context, '${defaultsTo.program.name}', '${defaultsTo.program.publicKey}')`,
+        `getProgramAddress(context, '${defaultsTo.program.name}', '${defaultsTo.program.publicKey}')`,
         false
       ).addImports('shared', ['getProgramAddress']);
       programFragment.interfaces.add('getProgramAddress');
@@ -165,8 +180,10 @@ export function getInstructionInputDefaultFragment(
       const resolverName = camelCase(defaultsTo.name);
       const isWritable =
         input.kind === 'account' && input.isWritable ? 'true' : 'false';
+      const resolverAwait =
+        useAsync && asyncResolvers.includes(defaultsTo.name) ? 'await ' : '';
       const resolverFragment = defaultFragment(
-        `await ${resolverName}(context, ${accountObject}, ${argObject}, programAddress, ${isWritable})`
+        `${resolverAwait}${resolverName}(context, ${accountObject}, ${argObject}, programAddress, ${isWritable})`
       ).addImports(defaultsTo.importFrom, resolverName);
       resolverFragment.interfaces.add([
         'getProgramAddress',
@@ -176,20 +193,14 @@ export function getInstructionInputDefaultFragment(
 
     case 'conditional':
     case 'conditionalResolver':
-      const ifTrueRenderer = renderNestedInstructionDefault(
-        input,
-        optionalAccountStrategy,
-        defaultsTo.ifTrue,
-        accountObject,
-        argObject
-      );
-      const ifFalseRenderer = renderNestedInstructionDefault(
-        input,
-        optionalAccountStrategy,
-        defaultsTo.ifFalse,
-        accountObject,
-        argObject
-      );
+      const ifTrueRenderer = renderNestedInstructionDefault({
+        ...scope,
+        defaultsTo: defaultsTo.ifTrue,
+      });
+      const ifFalseRenderer = renderNestedInstructionDefault({
+        ...scope,
+        defaultsTo: defaultsTo.ifFalse,
+      });
       if (!ifTrueRenderer && !ifFalseRenderer) {
         return fragmentWithContextMap('');
       }
@@ -232,7 +243,11 @@ export function getInstructionInputDefaultFragment(
           'getProgramAddress',
           'getProgramDerivedAddress',
         ]);
-        condition = `await ${conditionalResolverName}(context, ${accountObject}, ${argObject}, programAddress, ${conditionalIsWritable})`;
+        const conditionalResolverAwait =
+          useAsync && asyncResolvers.includes(defaultsTo.resolver.name)
+            ? 'await '
+            : '';
+        condition = `${conditionalResolverAwait}${conditionalResolverName}(context, ${accountObject}, ${argObject}, programAddress, ${conditionalIsWritable})`;
         condition = negatedCondition ? `!${condition}` : condition;
       }
 
@@ -254,27 +269,22 @@ export function getInstructionInputDefaultFragment(
 }
 
 function renderNestedInstructionDefault(
-  input: ResolvedInstructionInput,
-  optionalAccountStrategy: 'programId' | 'omitted',
-  defaultsTo: InstructionDefault | undefined,
-  accountObject: string,
-  argObject: string
+  scope: Parameters<typeof getInstructionInputDefaultFragment>[0] & {
+    defaultsTo: InstructionDefault | undefined;
+  }
 ): (Fragment & { interfaces: ContextMap }) | undefined {
+  const { input, defaultsTo } = scope;
   if (!defaultsTo) return undefined;
 
   if (input.kind === 'account') {
-    return getInstructionInputDefaultFragment(
-      { ...input, defaultsTo: defaultsTo as InstructionAccountDefault },
-      optionalAccountStrategy,
-      accountObject,
-      argObject
-    );
+    return getInstructionInputDefaultFragment({
+      ...scope,
+      input: { ...input, defaultsTo: defaultsTo as InstructionAccountDefault },
+    });
   }
 
-  return getInstructionInputDefaultFragment(
-    { ...input, defaultsTo: defaultsTo as InstructionArgDefault },
-    optionalAccountStrategy,
-    accountObject,
-    argObject
-  );
+  return getInstructionInputDefaultFragment({
+    ...scope,
+    input: { ...input, defaultsTo: defaultsTo as InstructionArgDefault },
+  });
 }

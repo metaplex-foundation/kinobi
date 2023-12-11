@@ -7,7 +7,15 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Account,
+  EncodedAccount,
+  FetchAccountConfig,
+  FetchAccountsConfig,
+  assertAccountExists,
+  decodeAccount,
+} from '@solana/accounts';
+import {
+  Address,
   ProgramDerivedAddress,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -31,13 +39,7 @@ import {
   getOptionEncoder,
 } from '@solana/options';
 import {
-  Account,
   Context,
-  EncodedAccount,
-  FetchEncodedAccountOptions,
-  FetchEncodedAccountsOptions,
-  assertAccountExists,
-  decodeAccount,
   getProgramAddress,
   getProgramDerivedAddress,
 } from '../shared';
@@ -59,33 +61,27 @@ export type MasterEditionV2AccountDataArgs = {
   maxSupply: OptionOrNullable<number | bigint>;
 };
 
-export function getMasterEditionV2AccountDataEncoder(): Encoder<MasterEditionV2AccountDataArgs> {
+export function getMasterEditionV2AccountDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       key: TmKeyArgs;
       supply: number | bigint;
       maxSupply: OptionOrNullable<number | bigint>;
-    }>(
-      [
-        ['key', getTmKeyEncoder()],
-        ['supply', getU64Encoder()],
-        ['maxSupply', getOptionEncoder(getU64Encoder())],
-      ],
-      { description: 'MasterEditionV2AccountData' }
-    ),
+    }>([
+      ['key', getTmKeyEncoder()],
+      ['supply', getU64Encoder()],
+      ['maxSupply', getOptionEncoder(getU64Encoder())],
+    ]),
     (value) => ({ ...value, key: TmKey.MasterEditionV2 })
-  ) as Encoder<MasterEditionV2AccountDataArgs>;
+  ) satisfies Encoder<MasterEditionV2AccountDataArgs>;
 }
 
-export function getMasterEditionV2AccountDataDecoder(): Decoder<MasterEditionV2AccountData> {
-  return getStructDecoder<MasterEditionV2AccountData>(
-    [
-      ['key', getTmKeyDecoder()],
-      ['supply', getU64Decoder()],
-      ['maxSupply', getOptionDecoder(getU64Decoder())],
-    ],
-    { description: 'MasterEditionV2AccountData' }
-  ) as Decoder<MasterEditionV2AccountData>;
+export function getMasterEditionV2AccountDataDecoder() {
+  return getStructDecoder<MasterEditionV2AccountData>([
+    ['key', getTmKeyDecoder()],
+    ['supply', getU64Decoder()],
+    ['maxSupply', getOptionDecoder(getU64Decoder())],
+  ]) satisfies Decoder<MasterEditionV2AccountData>;
 }
 
 export function getMasterEditionV2AccountDataCodec(): Codec<
@@ -106,8 +102,8 @@ export function decodeMasterEditionV2<TAddress extends string = string>(
 
 export async function fetchMasterEditionV2<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<MasterEditionV2<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -118,8 +114,8 @@ export async function safeFetchMasterEditionV2<
   TAddress extends string = string
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<MasterEditionV2<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists ? decodeMasterEditionV2(maybeAccount) : null;
@@ -127,8 +123,8 @@ export async function safeFetchMasterEditionV2<
 
 export async function fetchAllMasterEditionV2(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<MasterEditionV2[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -139,8 +135,8 @@ export async function fetchAllMasterEditionV2(
 
 export async function safeFetchAllMasterEditionV2(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<MasterEditionV2[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts
@@ -158,7 +154,7 @@ export async function findMasterEditionV2Pda(
   context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
   seeds: {
     /** The address of the mint account */
-    mint: Base58EncodedAddress;
+    mint: Address;
   }
 ): Promise<ProgramDerivedAddress> {
   const programAddress = await getProgramAddress(
@@ -180,7 +176,7 @@ export async function fetchMasterEditionV2FromSeeds(
     'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
   >,
   seeds: Parameters<typeof findMasterEditionV2Pda>[1],
-  options?: FetchEncodedAccountOptions
+  options?: FetchAccountConfig
 ): Promise<MasterEditionV2> {
   const [address] = await findMasterEditionV2Pda(context, seeds);
   return fetchMasterEditionV2(context, address, options);
@@ -192,7 +188,7 @@ export async function safeFetchMasterEditionV2FromSeeds(
     'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
   >,
   seeds: Parameters<typeof findMasterEditionV2Pda>[1],
-  options?: FetchEncodedAccountOptions
+  options?: FetchAccountConfig
 ): Promise<MasterEditionV2 | null> {
   const [address] = await findMasterEditionV2Pda(context, seeds);
   return safeFetchMasterEditionV2(context, address, options);

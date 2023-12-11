@@ -23,5 +23,5 @@ export function getAccountTypeFragment(
     typeWithCodec: typeWithCodecFragment,
   })
     .mergeImportsWith(dataNameFragment, typeWithCodecFragment)
-    .addImports('shared', 'Account');
+    .addImports('solanaAccounts', 'Account');
 }

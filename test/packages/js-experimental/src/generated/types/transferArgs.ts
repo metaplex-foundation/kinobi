@@ -41,40 +41,28 @@ export type TransferArgsArgs = {
   amount: number | bigint;
 };
 
-export function getTransferArgsEncoder(): Encoder<TransferArgsArgs> {
-  return getDataEnumEncoder<TransferArgs>(
+export function getTransferArgsEncoder() {
+  return getDataEnumEncoder<TransferArgsArgs>([
     [
-      [
-        'V1',
-        getStructEncoder<GetDataEnumKindContent<TransferArgsArgs, 'V1'>>([
-          [
-            'authorizationData',
-            getOptionEncoder(getAuthorizationDataEncoder()),
-          ],
-          ['amount', getU64Encoder()],
-        ]),
-      ],
+      'V1',
+      getStructEncoder<GetDataEnumKindContent<TransferArgsArgs, 'V1'>>([
+        ['authorizationData', getOptionEncoder(getAuthorizationDataEncoder())],
+        ['amount', getU64Encoder()],
+      ]),
     ],
-    { description: 'TransferArgs' }
-  ) as Encoder<TransferArgsArgs>;
+  ]) satisfies Encoder<TransferArgsArgs>;
 }
 
-export function getTransferArgsDecoder(): Decoder<TransferArgs> {
-  return getDataEnumDecoder<TransferArgs>(
+export function getTransferArgsDecoder() {
+  return getDataEnumDecoder<TransferArgs>([
     [
-      [
-        'V1',
-        getStructDecoder<GetDataEnumKindContent<TransferArgs, 'V1'>>([
-          [
-            'authorizationData',
-            getOptionDecoder(getAuthorizationDataDecoder()),
-          ],
-          ['amount', getU64Decoder()],
-        ]),
-      ],
+      'V1',
+      getStructDecoder<GetDataEnumKindContent<TransferArgs, 'V1'>>([
+        ['authorizationData', getOptionDecoder(getAuthorizationDataDecoder())],
+        ['amount', getU64Decoder()],
+      ]),
     ],
-    { description: 'TransferArgs' }
-  ) as Decoder<TransferArgs>;
+  ]) satisfies Decoder<TransferArgs>;
 }
 
 export function getTransferArgsCodec(): Codec<TransferArgsArgs, TransferArgs> {

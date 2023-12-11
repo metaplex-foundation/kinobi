@@ -10,26 +10,25 @@ import {
   Serializer,
   array,
   struct,
+  u64,
 } from '@metaplex-foundation/umi/serializers';
-import { ConfigLine, ConfigLineArgs, getConfigLineSerializer } from '.';
 
 /** Dummy lines. */
 export type DummyLines = {
   /** The dummy lines. */
-  lines: Array<ConfigLine>;
+  lines: Array<bigint>;
 };
 
 export type DummyLinesArgs = {
   /** The dummy lines. */
-  lines: Array<ConfigLineArgs>;
+  lines: Array<number | bigint>;
 };
 
 export function getDummyLinesSerializer(): Serializer<
   DummyLinesArgs,
   DummyLines
 > {
-  return struct<DummyLines>(
-    [['lines', array(getConfigLineSerializer(), { size: 'remainder' })]],
-    { description: 'DummyLines' }
-  ) as Serializer<DummyLinesArgs, DummyLines>;
+  return struct<DummyLines>([['lines', array(u64(), { size: 'remainder' })]], {
+    description: 'DummyLines',
+  }) as Serializer<DummyLinesArgs, DummyLines>;
 }

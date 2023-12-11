@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   MplTokenAuthRulesProgramError,
   MplTokenAuthRulesProgramErrorCode,
@@ -20,7 +20,7 @@ import {
 } from '../shared';
 
 export const MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS =
-  'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Base58EncodedAddress<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
+  'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
 
 export type MplTokenAuthRulesProgram =
   Program<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'> &
@@ -41,7 +41,7 @@ export function createMplTokenAuthRulesProgram(): MplTokenAuthRulesProgram {
 
 export async function getMplTokenAuthRulesProgramAddress(
   context: Pick<Context, 'getProgramAddress'> = {}
-): Promise<Base58EncodedAddress> {
+): Promise<Address> {
   return getProgramAddress(
     context,
     'mplTokenAuthRules',

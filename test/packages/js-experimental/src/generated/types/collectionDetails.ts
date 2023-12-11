@@ -21,32 +21,26 @@ export type CollectionDetails = { __kind: 'V1'; size: bigint };
 
 export type CollectionDetailsArgs = { __kind: 'V1'; size: number | bigint };
 
-export function getCollectionDetailsEncoder(): Encoder<CollectionDetailsArgs> {
-  return getDataEnumEncoder<CollectionDetails>(
+export function getCollectionDetailsEncoder() {
+  return getDataEnumEncoder<CollectionDetailsArgs>([
     [
-      [
-        'V1',
-        getStructEncoder<GetDataEnumKindContent<CollectionDetailsArgs, 'V1'>>([
-          ['size', getU64Encoder()],
-        ]),
-      ],
+      'V1',
+      getStructEncoder<GetDataEnumKindContent<CollectionDetailsArgs, 'V1'>>([
+        ['size', getU64Encoder()],
+      ]),
     ],
-    { description: 'CollectionDetails' }
-  ) as Encoder<CollectionDetailsArgs>;
+  ]) satisfies Encoder<CollectionDetailsArgs>;
 }
 
-export function getCollectionDetailsDecoder(): Decoder<CollectionDetails> {
-  return getDataEnumDecoder<CollectionDetails>(
+export function getCollectionDetailsDecoder() {
+  return getDataEnumDecoder<CollectionDetails>([
     [
-      [
-        'V1',
-        getStructDecoder<GetDataEnumKindContent<CollectionDetails, 'V1'>>([
-          ['size', getU64Decoder()],
-        ]),
-      ],
+      'V1',
+      getStructDecoder<GetDataEnumKindContent<CollectionDetails, 'V1'>>([
+        ['size', getU64Decoder()],
+      ]),
     ],
-    { description: 'CollectionDetails' }
-  ) as Decoder<CollectionDetails>;
+  ]) satisfies Decoder<CollectionDetails>;
 }
 
 export function getCollectionDetailsCodec(): Codec<

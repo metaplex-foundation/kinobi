@@ -1,4 +1,4 @@
-import { Base58EncodedAddress, ProgramDerivedAddress } from '@solana/addresses';
+import { Address, ProgramDerivedAddress } from '@solana/addresses';
 import {
   Context,
   ResolvedAccount,
@@ -24,12 +24,12 @@ export const resolveMasterEditionFromTokenStandard = async (
     : { value: null };
 };
 
-export const resolveTokenOrAta = async (
+export const resolveTokenOrAta = (
   _context: any,
   _accounts: Record<string, ResolvedAccount>,
-  args: { proof?: Base58EncodedAddress[] },
+  args: { proof?: Address[] },
   _programId?: any,
   _isWritable?: any
-): Promise<boolean> => {
+): boolean => {
   return !!args.proof && args.proof.length > 0;
 };

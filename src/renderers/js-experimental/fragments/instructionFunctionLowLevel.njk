@@ -1,4 +1,4 @@
-export function {{ instruction.name | camelCase }}Instruction<
+export function get{{ instruction.name | pascalCase }}InstructionRaw<
   TProgram extends string = "{{ program.publicKey }}",
   {% if hasAccounts %}
     {{ accountTypeParams }},
@@ -8,14 +8,14 @@ export function {{ instruction.name | camelCase }}Instruction<
   {% if hasAccounts %}
     accounts: {
     {% for account in accounts %}
-      {{ account.name | camelCase }}{{ "?" if account.isOptionalOrHasLowLevelDefaultValues }}: {{ account.typeParam }} extends string ? Base58EncodedAddress<{{ account.typeParam }}> : {{ account.typeParam }};
+      {{ account.name | camelCase }}{{ "?" if account.isOptionalOrHasLowLevelDefaultValues }}: {{ account.typeParam }} extends string ? Address<{{ account.typeParam }}> : {{ account.typeParam }};
     {% endfor %}
     },
   {% endif %}
   {% if hasArgs %}
     args: {{ argsType }},
   {% endif %}
-  programAddress: Base58EncodedAddress<TProgram> = "{{ program.publicKey }}" as Base58EncodedAddress<TProgram>,
+  programAddress: Address<TProgram> = "{{ program.publicKey }}" as Address<TProgram>,
   remainingAccounts?: TRemainingAccounts
 ) {
   return {

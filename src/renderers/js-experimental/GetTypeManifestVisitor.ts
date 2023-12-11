@@ -166,11 +166,6 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
       decoderOptions.push(`size: ${sizeManifest.decoder.render}`);
     }
 
-    if (parentName?.strict) {
-      encoderOptions.push(`description: '${pascalCase(parentName.strict)}'`);
-      decoderOptions.push(`description: '${pascalCase(parentName.strict)}'`);
-    }
-
     const encoderOptionsAsString =
       encoderOptions.length > 0 ? `, { ${encoderOptions.join(', ')} }` : '';
     const decoderOptionsAsString =
@@ -189,18 +184,14 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
         strictType: fragment(`{ ${variantNames.join(', ')} }`),
         looseType: fragment(`{ ${variantNames.join(', ')} }`),
         encoder: fragment(
-          `getScalarEnumEncoder<${parentName.strict}>(${
-            parentName.strict + encoderOptionsAsString
-          })`,
+          `getScalarEnumEncoder(${parentName.strict + encoderOptionsAsString})`,
           encoderImports.add(
             'solanaCodecsDataStructures',
             'getScalarEnumEncoder'
           )
         ),
         decoder: fragment(
-          `getScalarEnumDecoder<${parentName.strict}>(${
-            parentName.strict + decoderOptionsAsString
-          })`,
+          `getScalarEnumDecoder(${parentName.strict + decoderOptionsAsString})`,
           decoderImports.add(
             'solanaCodecsDataStructures',
             'getScalarEnumDecoder'
@@ -227,11 +218,12 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
       (renders) => renders.join(' | '),
       (renders) => renders.join(', ')
     );
-    const typeParam = parentName ? parentName.strict : 'any';
     mergedManifest.encoder
       .mapRender(
         (r) =>
-          `getDataEnumEncoder<${typeParam}>([${r}]${encoderOptionsAsString})`
+          `getDataEnumEncoder<${
+            parentName ? parentName.loose : 'any'
+          }>([${r}]${encoderOptionsAsString})`
       )
       .addImports('solanaCodecsDataStructures', [
         'GetDataEnumKindContent',
@@ -240,7 +232,9 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
     mergedManifest.decoder
       .mapRender(
         (r) =>
-          `getDataEnumDecoder<${typeParam}>([${r}]${decoderOptionsAsString})`
+          `getDataEnumDecoder<${
+            parentName ? parentName.strict : 'any'
+          }>([${r}]${decoderOptionsAsString})`
       )
       .addImports('solanaCodecsDataStructures', [
         'GetDataEnumKind',
@@ -402,10 +396,6 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
   visitStructType(structType: nodes.StructTypeNode): TypeManifest {
     const { parentName } = this;
     this.parentName = null;
-    const structDescription =
-      parentName?.strict && !parentName.strict.match(/['"<>]/)
-        ? `, { description: '${pascalCase(parentName.strict)}' }`
-        : '';
     const optionalFields = structType.fields.filter(
       (f) => f.defaultsTo !== null
     );
@@ -413,7 +403,7 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
     const mergedManifest = mergeManifests(
       structType.fields.map((field) => visit(field, this)),
       (renders) => `{ ${renders.join('')} }`,
-      (renders) => `([${renders.join(', ')}]${structDescription})`
+      (renders) => `([${renders.join(', ')}])`
     );
 
     let decoderType = parentName?.strict;
@@ -429,7 +419,7 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
           visit({ ...field, defaultsTo: null }, this)
         ),
         (renders) => `{ ${renders.join('')} }`,
-        (renders) => `([${renders.join(', ')}]${structDescription})`
+        (renders) => `([${renders.join(', ')}])`
       );
       encoderType = nonDefaultsMergedManifest.looseType.render;
       mergedManifest.encoder.mergeImportsWith(
@@ -626,14 +616,11 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
   }
 
   visitPublicKeyType(): TypeManifest {
-    const imports = new ImportMap().add(
-      'solanaAddresses',
-      'Base58EncodedAddress'
-    );
+    const imports = new ImportMap().add('solanaAddresses', 'Address');
     return {
       isEnum: false,
-      strictType: fragment('Base58EncodedAddress', imports),
-      looseType: fragment('Base58EncodedAddress', imports),
+      strictType: fragment('Address', imports),
+      looseType: fragment('Address', imports),
       encoder: fragment('getAddressEncoder()').addImports(
         'solanaAddresses',
         'getAddressEncoder'

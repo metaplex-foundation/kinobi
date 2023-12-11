@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -22,7 +22,7 @@ import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 
 export type CmCreator = {
   /** Pubkey address */
-  address: Base58EncodedAddress;
+  address: Address;
   /** Whether the creator is verified or not */
   verified: boolean;
   percentageShare: number;
@@ -30,26 +30,20 @@ export type CmCreator = {
 
 export type CmCreatorArgs = CmCreator;
 
-export function getCmCreatorEncoder(): Encoder<CmCreatorArgs> {
-  return getStructEncoder<CmCreatorArgs>(
-    [
-      ['address', getAddressEncoder()],
-      ['verified', getBooleanEncoder()],
-      ['percentageShare', getU8Encoder()],
-    ],
-    { description: 'CmCreator' }
-  ) as Encoder<CmCreatorArgs>;
+export function getCmCreatorEncoder() {
+  return getStructEncoder<CmCreatorArgs>([
+    ['address', getAddressEncoder()],
+    ['verified', getBooleanEncoder()],
+    ['percentageShare', getU8Encoder()],
+  ]) satisfies Encoder<CmCreatorArgs>;
 }
 
-export function getCmCreatorDecoder(): Decoder<CmCreator> {
-  return getStructDecoder<CmCreator>(
-    [
-      ['address', getAddressDecoder()],
-      ['verified', getBooleanDecoder()],
-      ['percentageShare', getU8Decoder()],
-    ],
-    { description: 'CmCreator' }
-  ) as Decoder<CmCreator>;
+export function getCmCreatorDecoder() {
+  return getStructDecoder<CmCreator>([
+    ['address', getAddressDecoder()],
+    ['verified', getBooleanDecoder()],
+    ['percentageShare', getU8Decoder()],
+  ]) satisfies Decoder<CmCreator>;
 }
 
 export function getCmCreatorCodec(): Codec<CmCreatorArgs, CmCreator> {

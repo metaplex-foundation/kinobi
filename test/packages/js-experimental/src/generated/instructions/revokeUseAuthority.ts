@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -29,14 +29,12 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 
@@ -92,38 +90,8 @@ export type RevokeUseAuthorityInstruction<
     ]
   >;
 
-export type RevokeUseAuthorityInstructionData = { discriminator: number };
-
-export type RevokeUseAuthorityInstructionDataArgs = {};
-
-export function getRevokeUseAuthorityInstructionDataEncoder(): Encoder<RevokeUseAuthorityInstructionDataArgs> {
-  return mapEncoder(
-    getStructEncoder<{ discriminator: number }>(
-      [['discriminator', getU8Encoder()]],
-      { description: 'RevokeUseAuthorityInstructionData' }
-    ),
-    (value) => ({ ...value, discriminator: 21 })
-  ) as Encoder<RevokeUseAuthorityInstructionDataArgs>;
-}
-
-export function getRevokeUseAuthorityInstructionDataDecoder(): Decoder<RevokeUseAuthorityInstructionData> {
-  return getStructDecoder<RevokeUseAuthorityInstructionData>(
-    [['discriminator', getU8Decoder()]],
-    { description: 'RevokeUseAuthorityInstructionData' }
-  ) as Decoder<RevokeUseAuthorityInstructionData>;
-}
-
-export function getRevokeUseAuthorityInstructionDataCodec(): Codec<
-  RevokeUseAuthorityInstructionDataArgs,
-  RevokeUseAuthorityInstructionData
-> {
-  return combineCodec(
-    getRevokeUseAuthorityInstructionDataEncoder(),
-    getRevokeUseAuthorityInstructionDataDecoder()
-  );
-}
-
-export function revokeUseAuthorityInstruction<
+// Output.
+export type RevokeUseAuthorityInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountUseAuthorityRecord extends string | IAccountMeta<string> = string,
   TAccountOwner extends string | IAccountMeta<string> = string,
@@ -139,91 +107,71 @@ export function revokeUseAuthorityInstruction<
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountRent extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends Array<IAccountMeta<string>> = []
->(
-  accounts: {
-    useAuthorityRecord: TAccountUseAuthorityRecord extends string
-      ? Base58EncodedAddress<TAccountUseAuthorityRecord>
-      : TAccountUseAuthorityRecord;
-    owner: TAccountOwner extends string
-      ? Base58EncodedAddress<TAccountOwner>
-      : TAccountOwner;
-    user: TAccountUser extends string
-      ? Base58EncodedAddress<TAccountUser>
-      : TAccountUser;
-    ownerTokenAccount: TAccountOwnerTokenAccount extends string
-      ? Base58EncodedAddress<TAccountOwnerTokenAccount>
-      : TAccountOwnerTokenAccount;
-    mint: TAccountMint extends string
-      ? Base58EncodedAddress<TAccountMint>
-      : TAccountMint;
-    metadata: TAccountMetadata extends string
-      ? Base58EncodedAddress<TAccountMetadata>
-      : TAccountMetadata;
-    tokenProgram?: TAccountTokenProgram extends string
-      ? Base58EncodedAddress<TAccountTokenProgram>
-      : TAccountTokenProgram;
-    systemProgram?: TAccountSystemProgram extends string
-      ? Base58EncodedAddress<TAccountSystemProgram>
-      : TAccountSystemProgram;
-    rent?: TAccountRent extends string
-      ? Base58EncodedAddress<TAccountRent>
-      : TAccountRent;
-  },
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.useAuthorityRecord, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.owner, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.user, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.ownerTokenAccount, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.metadata, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.tokenProgram ?? {
-          address:
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.systemProgram ?? {
-          address:
-            '11111111111111111111111111111111' as Base58EncodedAddress<'11111111111111111111111111111111'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.rent ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getRevokeUseAuthorityInstructionDataEncoder().encode({}),
-    programAddress,
-  } as RevokeUseAuthorityInstruction<
-    TProgram,
-    TAccountUseAuthorityRecord,
-    TAccountOwner,
-    TAccountUser,
-    TAccountOwnerTokenAccount,
-    TAccountMint,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent,
-    TRemainingAccounts
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountUseAuthorityRecord extends string
+        ? WritableAccount<TAccountUseAuthorityRecord>
+        : TAccountUseAuthorityRecord,
+      TAccountOwner extends string
+        ? WritableSignerAccount<TAccountOwner> &
+            IAccountSignerMeta<TAccountOwner>
+        : TAccountOwner,
+      TAccountUser extends string
+        ? ReadonlyAccount<TAccountUser>
+        : TAccountUser,
+      TAccountOwnerTokenAccount extends string
+        ? WritableAccount<TAccountOwnerTokenAccount>
+        : TAccountOwnerTokenAccount,
+      TAccountMint extends string
+        ? ReadonlyAccount<TAccountMint>
+        : TAccountMint,
+      TAccountMetadata extends string
+        ? ReadonlyAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountTokenProgram extends string
+        ? ReadonlyAccount<TAccountTokenProgram>
+        : TAccountTokenProgram,
+      TAccountSystemProgram extends string
+        ? ReadonlyAccount<TAccountSystemProgram>
+        : TAccountSystemProgram,
+      TAccountRent extends string
+        ? ReadonlyAccount<TAccountRent>
+        : TAccountRent,
+      ...TRemainingAccounts
+    ]
   >;
+
+export type RevokeUseAuthorityInstructionData = { discriminator: number };
+
+export type RevokeUseAuthorityInstructionDataArgs = {};
+
+export function getRevokeUseAuthorityInstructionDataEncoder() {
+  return mapEncoder(
+    getStructEncoder<{ discriminator: number }>([
+      ['discriminator', getU8Encoder()],
+    ]),
+    (value) => ({ ...value, discriminator: 21 })
+  ) satisfies Encoder<RevokeUseAuthorityInstructionDataArgs>;
 }
 
-// Input.
+export function getRevokeUseAuthorityInstructionDataDecoder() {
+  return getStructDecoder<RevokeUseAuthorityInstructionData>([
+    ['discriminator', getU8Decoder()],
+  ]) satisfies Decoder<RevokeUseAuthorityInstructionData>;
+}
+
+export function getRevokeUseAuthorityInstructionDataCodec(): Codec<
+  RevokeUseAuthorityInstructionDataArgs,
+  RevokeUseAuthorityInstructionData
+> {
+  return combineCodec(
+    getRevokeUseAuthorityInstructionDataEncoder(),
+    getRevokeUseAuthorityInstructionDataDecoder()
+  );
+}
+
 export type RevokeUseAuthorityInput<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
@@ -236,27 +184,57 @@ export type RevokeUseAuthorityInput<
   TAccountRent extends string
 > = {
   /** Use Authority Record PDA */
-  useAuthorityRecord: Base58EncodedAddress<TAccountUseAuthorityRecord>;
+  useAuthorityRecord: Address<TAccountUseAuthorityRecord>;
   /** Owner */
-  owner: Signer<TAccountOwner>;
+  owner: Address<TAccountOwner>;
   /** A Use Authority */
-  user: Base58EncodedAddress<TAccountUser>;
+  user: Address<TAccountUser>;
   /** Owned Token Account Of Mint */
-  ownerTokenAccount: Base58EncodedAddress<TAccountOwnerTokenAccount>;
+  ownerTokenAccount: Address<TAccountOwnerTokenAccount>;
   /** Mint of Metadata */
-  mint: Base58EncodedAddress<TAccountMint>;
+  mint: Address<TAccountMint>;
   /** Metadata account */
-  metadata: Base58EncodedAddress<TAccountMetadata>;
+  metadata: Address<TAccountMetadata>;
   /** Token program */
-  tokenProgram?: Base58EncodedAddress<TAccountTokenProgram>;
+  tokenProgram?: Address<TAccountTokenProgram>;
   /** System program */
-  systemProgram?: Base58EncodedAddress<TAccountSystemProgram>;
+  systemProgram?: Address<TAccountSystemProgram>;
   /** Rent info */
-  rent?: Base58EncodedAddress<TAccountRent>;
+  rent?: Address<TAccountRent>;
 };
 
-export async function revokeUseAuthority<
-  TReturn,
+export type RevokeUseAuthorityInputWithSigners<
+  TAccountUseAuthorityRecord extends string,
+  TAccountOwner extends string,
+  TAccountUser extends string,
+  TAccountOwnerTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string
+> = {
+  /** Use Authority Record PDA */
+  useAuthorityRecord: Address<TAccountUseAuthorityRecord>;
+  /** Owner */
+  owner: TransactionSigner<TAccountOwner>;
+  /** A Use Authority */
+  user: Address<TAccountUser>;
+  /** Owned Token Account Of Mint */
+  ownerTokenAccount: Address<TAccountOwnerTokenAccount>;
+  /** Mint of Metadata */
+  mint: Address<TAccountMint>;
+  /** Metadata account */
+  metadata: Address<TAccountMetadata>;
+  /** Token program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+  /** System program */
+  systemProgram?: Address<TAccountSystemProgram>;
+  /** Rent info */
+  rent?: Address<TAccountRent>;
+};
+
+export function getRevokeUseAuthorityInstruction<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountUser extends string,
@@ -268,23 +246,8 @@ export async function revokeUseAuthority<
   TAccountRent extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      RevokeUseAuthorityInstruction<
-        TProgram,
-        TAccountUseAuthorityRecord,
-        TAccountOwner,
-        TAccountUser,
-        TAccountOwnerTokenAccount,
-        TAccountMint,
-        TAccountMetadata,
-        TAccountTokenProgram,
-        TAccountSystemProgram,
-        TAccountRent
-      >,
-      TReturn
-    >,
-  input: RevokeUseAuthorityInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: RevokeUseAuthorityInputWithSigners<
     TAccountUseAuthorityRecord,
     TAccountOwner,
     TAccountUser,
@@ -295,8 +258,19 @@ export async function revokeUseAuthority<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<TReturn>;
-export async function revokeUseAuthority<
+): RevokeUseAuthorityInstructionWithSigners<
+  TProgram,
+  TAccountUseAuthorityRecord,
+  TAccountOwner,
+  TAccountUser,
+  TAccountOwnerTokenAccount,
+  TAccountMint,
+  TAccountMetadata,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountRent
+>;
+export function getRevokeUseAuthorityInstruction<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountUser extends string,
@@ -320,23 +294,54 @@ export async function revokeUseAuthority<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  WrappedInstruction<
-    RevokeUseAuthorityInstruction<
-      TProgram,
-      TAccountUseAuthorityRecord,
-      TAccountOwner,
-      TAccountUser,
-      TAccountOwnerTokenAccount,
-      TAccountMint,
-      TAccountMetadata,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >
+): RevokeUseAuthorityInstruction<
+  TProgram,
+  TAccountUseAuthorityRecord,
+  TAccountOwner,
+  TAccountUser,
+  TAccountOwnerTokenAccount,
+  TAccountMint,
+  TAccountMetadata,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function revokeUseAuthority<
+export function getRevokeUseAuthorityInstruction<
+  TAccountUseAuthorityRecord extends string,
+  TAccountOwner extends string,
+  TAccountUser extends string,
+  TAccountOwnerTokenAccount extends string,
+  TAccountMint extends string,
+  TAccountMetadata extends string,
+  TAccountTokenProgram extends string,
+  TAccountSystemProgram extends string,
+  TAccountRent extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: RevokeUseAuthorityInputWithSigners<
+    TAccountUseAuthorityRecord,
+    TAccountOwner,
+    TAccountUser,
+    TAccountOwnerTokenAccount,
+    TAccountMint,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >
+): RevokeUseAuthorityInstructionWithSigners<
+  TProgram,
+  TAccountUseAuthorityRecord,
+  TAccountOwner,
+  TAccountUser,
+  TAccountOwnerTokenAccount,
+  TAccountMint,
+  TAccountMetadata,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountRent
+>;
+export function getRevokeUseAuthorityInstruction<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountUser extends string,
@@ -359,24 +364,19 @@ export async function revokeUseAuthority<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<
-  WrappedInstruction<
-    RevokeUseAuthorityInstruction<
-      TProgram,
-      TAccountUseAuthorityRecord,
-      TAccountOwner,
-      TAccountUser,
-      TAccountOwnerTokenAccount,
-      TAccountMint,
-      TAccountMetadata,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >
+): RevokeUseAuthorityInstruction<
+  TProgram,
+  TAccountUseAuthorityRecord,
+  TAccountOwner,
+  TAccountUser,
+  TAccountOwnerTokenAccount,
+  TAccountMint,
+  TAccountMetadata,
+  TAccountTokenProgram,
+  TAccountSystemProgram,
+  TAccountRent
 >;
-export async function revokeUseAuthority<
-  TReturn,
+export function getRevokeUseAuthorityInstruction<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
   TAccountUser extends string,
@@ -390,8 +390,6 @@ export async function revokeUseAuthority<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | RevokeUseAuthorityInput<
         TAccountUseAuthorityRecord,
         TAccountOwner,
@@ -414,12 +412,12 @@ export async function revokeUseAuthority<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): IInstruction {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as RevokeUseAuthorityInput<
@@ -436,19 +434,19 @@ export async function revokeUseAuthority<
 
   // Program address.
   const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof revokeUseAuthorityInstruction<
+    typeof getRevokeUseAuthorityInstructionRaw<
       TProgram,
       TAccountUseAuthorityRecord,
       TAccountOwner,
@@ -481,7 +479,7 @@ export async function revokeUseAuthority<
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value = await getProgramAddress(
+    accounts.tokenProgram.value = getProgramAddress(
       context,
       'splToken',
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
@@ -489,7 +487,7 @@ export async function revokeUseAuthority<
     accounts.tokenProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = await getProgramAddress(
+    accounts.systemProgram.value = getProgramAddress(
       context,
       'splSystem',
       '11111111111111111111111111111111'
@@ -498,7 +496,7 @@ export async function revokeUseAuthority<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -510,18 +508,106 @@ export async function revokeUseAuthority<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: revokeUseAuthorityInstruction(
+  return Object.freeze({
+    ...getRevokeUseAuthorityInstructionRaw(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
-  };
+  });
+}
 
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+export function getRevokeUseAuthorityInstructionRaw<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountUseAuthorityRecord extends string | IAccountMeta<string> = string,
+  TAccountOwner extends string | IAccountMeta<string> = string,
+  TAccountUser extends string | IAccountMeta<string> = string,
+  TAccountOwnerTokenAccount extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends
+    | string
+    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountRent extends string | IAccountMeta<string> = string,
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+>(
+  accounts: {
+    useAuthorityRecord: TAccountUseAuthorityRecord extends string
+      ? Address<TAccountUseAuthorityRecord>
+      : TAccountUseAuthorityRecord;
+    owner: TAccountOwner extends string
+      ? Address<TAccountOwner>
+      : TAccountOwner;
+    user: TAccountUser extends string ? Address<TAccountUser> : TAccountUser;
+    ownerTokenAccount: TAccountOwnerTokenAccount extends string
+      ? Address<TAccountOwnerTokenAccount>
+      : TAccountOwnerTokenAccount;
+    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
+    metadata: TAccountMetadata extends string
+      ? Address<TAccountMetadata>
+      : TAccountMetadata;
+    tokenProgram?: TAccountTokenProgram extends string
+      ? Address<TAccountTokenProgram>
+      : TAccountTokenProgram;
+    systemProgram?: TAccountSystemProgram extends string
+      ? Address<TAccountSystemProgram>
+      : TAccountSystemProgram;
+    rent?: TAccountRent extends string ? Address<TAccountRent> : TAccountRent;
+  },
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
+  remainingAccounts?: TRemainingAccounts
+) {
+  return {
+    accounts: [
+      accountMetaWithDefault(accounts.useAuthorityRecord, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.owner, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(accounts.user, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.ownerTokenAccount, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.metadata, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.tokenProgram ?? {
+          address:
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.systemProgram ?? {
+          address:
+            '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      accountMetaWithDefault(
+        accounts.rent ?? {
+          address:
+            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      ...(remainingAccounts ?? []),
+    ],
+    data: getRevokeUseAuthorityInstructionDataEncoder().encode({}),
+    programAddress,
+  } as RevokeUseAuthorityInstruction<
+    TProgram,
+    TAccountUseAuthorityRecord,
+    TAccountOwner,
+    TAccountUser,
+    TAccountOwnerTokenAccount,
+    TAccountMint,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TRemainingAccounts
+  >;
 }

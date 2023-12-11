@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -35,89 +35,75 @@ import {
 
 /** This is a union of all the possible payload types. */
 export type PayloadType =
-  | { __kind: 'Pubkey'; fields: [Base58EncodedAddress] }
+  | { __kind: 'Pubkey'; fields: [Address] }
   | { __kind: 'Seeds'; seeds: Array<Uint8Array> }
   | { __kind: 'MerkleProof'; leaf: Uint8Array; proof: Array<Uint8Array> }
   | { __kind: 'Number'; fields: [bigint] };
 
 export type PayloadTypeArgs =
-  | { __kind: 'Pubkey'; fields: [Base58EncodedAddress] }
+  | { __kind: 'Pubkey'; fields: [Address] }
   | { __kind: 'Seeds'; seeds: Array<Uint8Array> }
   | { __kind: 'MerkleProof'; leaf: Uint8Array; proof: Array<Uint8Array> }
   | { __kind: 'Number'; fields: [number | bigint] };
 
-export function getPayloadTypeEncoder(): Encoder<PayloadTypeArgs> {
-  return getDataEnumEncoder<PayloadType>(
+export function getPayloadTypeEncoder() {
+  return getDataEnumEncoder<PayloadTypeArgs>([
     [
-      [
-        'Pubkey',
-        getStructEncoder<GetDataEnumKindContent<PayloadTypeArgs, 'Pubkey'>>([
-          ['fields', getTupleEncoder([getAddressEncoder()])],
-        ]),
-      ],
-      [
-        'Seeds',
-        getStructEncoder<GetDataEnumKindContent<PayloadTypeArgs, 'Seeds'>>([
-          [
-            'seeds',
-            getArrayEncoder(getBytesEncoder({ size: getU32Encoder() })),
-          ],
-        ]),
-      ],
-      [
-        'MerkleProof',
-        getStructEncoder<
-          GetDataEnumKindContent<PayloadTypeArgs, 'MerkleProof'>
-        >([
-          ['leaf', getBytesEncoder({ size: 32 })],
-          ['proof', getArrayEncoder(getBytesEncoder({ size: 32 }))],
-        ]),
-      ],
-      [
-        'Number',
-        getStructEncoder<GetDataEnumKindContent<PayloadTypeArgs, 'Number'>>([
-          ['fields', getTupleEncoder([getU64Encoder()])],
-        ]),
-      ],
+      'Pubkey',
+      getStructEncoder<GetDataEnumKindContent<PayloadTypeArgs, 'Pubkey'>>([
+        ['fields', getTupleEncoder([getAddressEncoder()])],
+      ]),
     ],
-    { description: 'PayloadType' }
-  ) as Encoder<PayloadTypeArgs>;
+    [
+      'Seeds',
+      getStructEncoder<GetDataEnumKindContent<PayloadTypeArgs, 'Seeds'>>([
+        ['seeds', getArrayEncoder(getBytesEncoder({ size: getU32Encoder() }))],
+      ]),
+    ],
+    [
+      'MerkleProof',
+      getStructEncoder<GetDataEnumKindContent<PayloadTypeArgs, 'MerkleProof'>>([
+        ['leaf', getBytesEncoder({ size: 32 })],
+        ['proof', getArrayEncoder(getBytesEncoder({ size: 32 }))],
+      ]),
+    ],
+    [
+      'Number',
+      getStructEncoder<GetDataEnumKindContent<PayloadTypeArgs, 'Number'>>([
+        ['fields', getTupleEncoder([getU64Encoder()])],
+      ]),
+    ],
+  ]) satisfies Encoder<PayloadTypeArgs>;
 }
 
-export function getPayloadTypeDecoder(): Decoder<PayloadType> {
-  return getDataEnumDecoder<PayloadType>(
+export function getPayloadTypeDecoder() {
+  return getDataEnumDecoder<PayloadType>([
     [
-      [
-        'Pubkey',
-        getStructDecoder<GetDataEnumKindContent<PayloadType, 'Pubkey'>>([
-          ['fields', getTupleDecoder([getAddressDecoder()])],
-        ]),
-      ],
-      [
-        'Seeds',
-        getStructDecoder<GetDataEnumKindContent<PayloadType, 'Seeds'>>([
-          [
-            'seeds',
-            getArrayDecoder(getBytesDecoder({ size: getU32Decoder() })),
-          ],
-        ]),
-      ],
-      [
-        'MerkleProof',
-        getStructDecoder<GetDataEnumKindContent<PayloadType, 'MerkleProof'>>([
-          ['leaf', getBytesDecoder({ size: 32 })],
-          ['proof', getArrayDecoder(getBytesDecoder({ size: 32 }))],
-        ]),
-      ],
-      [
-        'Number',
-        getStructDecoder<GetDataEnumKindContent<PayloadType, 'Number'>>([
-          ['fields', getTupleDecoder([getU64Decoder()])],
-        ]),
-      ],
+      'Pubkey',
+      getStructDecoder<GetDataEnumKindContent<PayloadType, 'Pubkey'>>([
+        ['fields', getTupleDecoder([getAddressDecoder()])],
+      ]),
     ],
-    { description: 'PayloadType' }
-  ) as Decoder<PayloadType>;
+    [
+      'Seeds',
+      getStructDecoder<GetDataEnumKindContent<PayloadType, 'Seeds'>>([
+        ['seeds', getArrayDecoder(getBytesDecoder({ size: getU32Decoder() }))],
+      ]),
+    ],
+    [
+      'MerkleProof',
+      getStructDecoder<GetDataEnumKindContent<PayloadType, 'MerkleProof'>>([
+        ['leaf', getBytesDecoder({ size: 32 })],
+        ['proof', getArrayDecoder(getBytesDecoder({ size: 32 }))],
+      ]),
+    ],
+    [
+      'Number',
+      getStructDecoder<GetDataEnumKindContent<PayloadType, 'Number'>>([
+        ['fields', getTupleDecoder([getU64Decoder()])],
+      ]),
+    ],
+  ]) satisfies Decoder<PayloadType>;
 }
 
 export function getPayloadTypeCodec(): Codec<PayloadTypeArgs, PayloadType> {

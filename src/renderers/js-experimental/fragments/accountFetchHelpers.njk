@@ -4,8 +4,8 @@ export function decode{{ pascalCaseName }}<TAddress extends string = string>(enc
 
 export async function fetch{{ pascalCaseName }}<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions,
+  address: Address<TAddress>,
+  options?: FetchAccountConfig,
 ): Promise<{{ pascalCaseName }}<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -14,8 +14,8 @@ export async function fetch{{ pascalCaseName }}<TAddress extends string = string
 
 export async function safeFetch{{ pascalCaseName }}<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions,
+  address: Address<TAddress>,
+  options?: FetchAccountConfig,
 ): Promise<{{ pascalCaseName }}<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists
@@ -25,8 +25,8 @@ export async function safeFetch{{ pascalCaseName }}<TAddress extends string = st
 
 export async function fetchAll{{ pascalCaseName }}(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions,
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig,
 ): Promise<{{ pascalCaseName }}[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -37,8 +37,8 @@ export async function fetchAll{{ pascalCaseName }}(
 
 export async function safeFetchAll{{ pascalCaseName }}(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions,
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig,
 ): Promise<{{ pascalCaseName }}[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts

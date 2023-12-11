@@ -5,11 +5,12 @@ import { TypeManifest } from '../TypeManifest';
 import { Fragment, fragmentFromTemplate, mergeFragments } from './common';
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
 
-export function getInstructionFunctionLowLevelFragment(
-  instructionNode: nodes.InstructionNode,
-  programNode: nodes.ProgramNode,
-  dataArgsManifest: TypeManifest
-): Fragment {
+export function getInstructionFunctionLowLevelFragment(scope: {
+  instructionNode: nodes.InstructionNode;
+  programNode: nodes.ProgramNode;
+  dataArgsManifest: TypeManifest;
+}): Fragment {
+  const { instructionNode, programNode, dataArgsManifest } = scope;
   const imports = new ImportMap();
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasLegacyOptionalAccounts =
@@ -35,12 +36,11 @@ export function getInstructionFunctionLowLevelFragment(
 
   const accountTypeParamsFragment = mergeFragments(
     instructionNode.accounts.map((account) =>
-      getInstructionAccountTypeParamFragment(
-        instructionNode,
-        account,
-        programNode,
-        true
-      )
+      getInstructionAccountTypeParamFragment({
+        ...scope,
+        instructionAccountNode: account,
+        allowAccountMeta: true,
+      })
     ),
     (renders) => renders.join(', ')
   );
@@ -77,7 +77,7 @@ export function getInstructionFunctionLowLevelFragment(
     accountTypeParams: accountTypeParamsFragment.render,
   })
     .mergeImportsWith(imports, accountTypeParamsFragment)
-    .addImports('solanaAddresses', ['Base58EncodedAddress'])
+    .addImports('solanaAddresses', ['Address'])
     .addImports('solanaInstructions', ['IAccountMeta']);
 
   if (hasAccounts) {
@@ -111,10 +111,10 @@ function getDefaultValue(
     return null;
   }
   if (account.isOptional || account.defaultsTo?.kind === 'programId') {
-    return `{ address: "${program.publicKey}" as Base58EncodedAddress<"${program.publicKey}">, role: AccountRole.READONLY }`;
+    return `{ address: "${program.publicKey}" as Address<"${program.publicKey}">, role: AccountRole.READONLY }`;
   }
   if (account.defaultsTo?.kind === 'program') {
-    return `{ address: "${account.defaultsTo.program.publicKey}" as Base58EncodedAddress<"${account.defaultsTo.program.publicKey}">, role: AccountRole.READONLY }`;
+    return `{ address: "${account.defaultsTo.program.publicKey}" as Address<"${account.defaultsTo.program.publicKey}">, role: AccountRole.READONLY }`;
   }
   if (account.defaultsTo?.kind === 'publicKey') {
     return `"${account.defaultsTo.publicKey}"`;

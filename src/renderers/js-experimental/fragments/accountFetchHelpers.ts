@@ -16,13 +16,13 @@ export function getAccountFetchHelpersFragment(
     decoderFunction: decoderFunctionFragment.render,
   })
     .mergeImportsWith(decoderFunctionFragment)
-    .addImports('solanaAddresses', ['Base58EncodedAddress'])
-    .addImports('shared', [
+    .addImports('solanaAddresses', ['Address'])
+    .addImports('shared', ['Context'])
+    .addImports('solanaAccounts', [
       'assertAccountExists',
-      'Context',
       'decodeAccount',
       'EncodedAccount',
-      'FetchEncodedAccountOptions',
-      'FetchEncodedAccountsOptions',
+      'FetchAccountConfig',
+      'FetchAccountsConfig',
     ]);
 }

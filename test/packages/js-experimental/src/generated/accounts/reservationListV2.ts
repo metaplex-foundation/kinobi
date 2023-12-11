@@ -7,7 +7,15 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Account,
+  EncodedAccount,
+  FetchAccountConfig,
+  FetchAccountsConfig,
+  assertAccountExists,
+  decodeAccount,
+} from '@solana/accounts';
+import {
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -31,15 +39,7 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import {
-  Account,
-  Context,
-  EncodedAccount,
-  FetchEncodedAccountOptions,
-  FetchEncodedAccountsOptions,
-  assertAccountExists,
-  decodeAccount,
-} from '../shared';
+import { Context } from '../shared';
 import {
   Reservation,
   ReservationArgs,
@@ -58,7 +58,7 @@ export type ReservationListV2<TAddress extends string = string> = Account<
 
 export type ReservationListV2AccountData = {
   key: TmKey;
-  masterEdition: Base58EncodedAddress;
+  masterEdition: Address;
   supplySnapshot: Option<bigint>;
   reservations: Array<Reservation>;
   totalReservationSpots: bigint;
@@ -66,49 +66,43 @@ export type ReservationListV2AccountData = {
 };
 
 export type ReservationListV2AccountDataArgs = {
-  masterEdition: Base58EncodedAddress;
+  masterEdition: Address;
   supplySnapshot: OptionOrNullable<number | bigint>;
   reservations: Array<ReservationArgs>;
   totalReservationSpots: number | bigint;
   currentReservationSpots: number | bigint;
 };
 
-export function getReservationListV2AccountDataEncoder(): Encoder<ReservationListV2AccountDataArgs> {
+export function getReservationListV2AccountDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       key: TmKeyArgs;
-      masterEdition: Base58EncodedAddress;
+      masterEdition: Address;
       supplySnapshot: OptionOrNullable<number | bigint>;
       reservations: Array<ReservationArgs>;
       totalReservationSpots: number | bigint;
       currentReservationSpots: number | bigint;
-    }>(
-      [
-        ['key', getTmKeyEncoder()],
-        ['masterEdition', getAddressEncoder()],
-        ['supplySnapshot', getOptionEncoder(getU64Encoder())],
-        ['reservations', getArrayEncoder(getReservationEncoder())],
-        ['totalReservationSpots', getU64Encoder()],
-        ['currentReservationSpots', getU64Encoder()],
-      ],
-      { description: 'ReservationListV2AccountData' }
-    ),
+    }>([
+      ['key', getTmKeyEncoder()],
+      ['masterEdition', getAddressEncoder()],
+      ['supplySnapshot', getOptionEncoder(getU64Encoder())],
+      ['reservations', getArrayEncoder(getReservationEncoder())],
+      ['totalReservationSpots', getU64Encoder()],
+      ['currentReservationSpots', getU64Encoder()],
+    ]),
     (value) => ({ ...value, key: TmKey.ReservationListV2 })
-  ) as Encoder<ReservationListV2AccountDataArgs>;
+  ) satisfies Encoder<ReservationListV2AccountDataArgs>;
 }
 
-export function getReservationListV2AccountDataDecoder(): Decoder<ReservationListV2AccountData> {
-  return getStructDecoder<ReservationListV2AccountData>(
-    [
-      ['key', getTmKeyDecoder()],
-      ['masterEdition', getAddressDecoder()],
-      ['supplySnapshot', getOptionDecoder(getU64Decoder())],
-      ['reservations', getArrayDecoder(getReservationDecoder())],
-      ['totalReservationSpots', getU64Decoder()],
-      ['currentReservationSpots', getU64Decoder()],
-    ],
-    { description: 'ReservationListV2AccountData' }
-  ) as Decoder<ReservationListV2AccountData>;
+export function getReservationListV2AccountDataDecoder() {
+  return getStructDecoder<ReservationListV2AccountData>([
+    ['key', getTmKeyDecoder()],
+    ['masterEdition', getAddressDecoder()],
+    ['supplySnapshot', getOptionDecoder(getU64Decoder())],
+    ['reservations', getArrayDecoder(getReservationDecoder())],
+    ['totalReservationSpots', getU64Decoder()],
+    ['currentReservationSpots', getU64Decoder()],
+  ]) satisfies Decoder<ReservationListV2AccountData>;
 }
 
 export function getReservationListV2AccountDataCodec(): Codec<
@@ -132,8 +126,8 @@ export function decodeReservationListV2<TAddress extends string = string>(
 
 export async function fetchReservationListV2<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<ReservationListV2<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -144,8 +138,8 @@ export async function safeFetchReservationListV2<
   TAddress extends string = string
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<ReservationListV2<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists ? decodeReservationListV2(maybeAccount) : null;
@@ -153,8 +147,8 @@ export async function safeFetchReservationListV2<
 
 export async function fetchAllReservationListV2(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<ReservationListV2[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -165,8 +159,8 @@ export async function fetchAllReservationListV2(
 
 export async function safeFetchAllReservationListV2(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<ReservationListV2[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts

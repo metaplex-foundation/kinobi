@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -27,38 +27,32 @@ import {
 
 export type EscrowAuthority =
   | { __kind: 'TokenOwner' }
-  | { __kind: 'Creator'; fields: [Base58EncodedAddress] };
+  | { __kind: 'Creator'; fields: [Address] };
 
 export type EscrowAuthorityArgs = EscrowAuthority;
 
-export function getEscrowAuthorityEncoder(): Encoder<EscrowAuthorityArgs> {
-  return getDataEnumEncoder<EscrowAuthority>(
+export function getEscrowAuthorityEncoder() {
+  return getDataEnumEncoder<EscrowAuthorityArgs>([
+    ['TokenOwner', getUnitEncoder()],
     [
-      ['TokenOwner', getUnitEncoder()],
-      [
-        'Creator',
-        getStructEncoder<
-          GetDataEnumKindContent<EscrowAuthorityArgs, 'Creator'>
-        >([['fields', getTupleEncoder([getAddressEncoder()])]]),
-      ],
+      'Creator',
+      getStructEncoder<GetDataEnumKindContent<EscrowAuthorityArgs, 'Creator'>>([
+        ['fields', getTupleEncoder([getAddressEncoder()])],
+      ]),
     ],
-    { description: 'EscrowAuthority' }
-  ) as Encoder<EscrowAuthorityArgs>;
+  ]) satisfies Encoder<EscrowAuthorityArgs>;
 }
 
-export function getEscrowAuthorityDecoder(): Decoder<EscrowAuthority> {
-  return getDataEnumDecoder<EscrowAuthority>(
+export function getEscrowAuthorityDecoder() {
+  return getDataEnumDecoder<EscrowAuthority>([
+    ['TokenOwner', getUnitDecoder()],
     [
-      ['TokenOwner', getUnitDecoder()],
-      [
-        'Creator',
-        getStructDecoder<GetDataEnumKindContent<EscrowAuthority, 'Creator'>>([
-          ['fields', getTupleDecoder([getAddressDecoder()])],
-        ]),
-      ],
+      'Creator',
+      getStructDecoder<GetDataEnumKindContent<EscrowAuthority, 'Creator'>>([
+        ['fields', getTupleDecoder([getAddressDecoder()])],
+      ]),
     ],
-    { description: 'EscrowAuthority' }
-  ) as Decoder<EscrowAuthority>;
+  ]) satisfies Decoder<EscrowAuthority>;
 }
 
 export function getEscrowAuthorityCodec(): Codec<

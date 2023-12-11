@@ -4,10 +4,12 @@ import { Fragment, fragmentFromTemplate, mergeFragments } from './common';
 import { getInstructionAccountMetaFragment } from './instructionAccountMeta';
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
 
-export function getInstructionTypeFragment(
-  instructionNode: nodes.InstructionNode,
-  programNode: nodes.ProgramNode
-): Fragment {
+export function getInstructionTypeFragment(scope: {
+  instructionNode: nodes.InstructionNode;
+  programNode: nodes.ProgramNode;
+  withSigners: boolean;
+}): Fragment {
+  const { instructionNode, programNode, withSigners } = scope;
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasData =
     !!instructionNode.dataArgs.link ||
@@ -17,12 +19,11 @@ export function getInstructionTypeFragment(
     : pascalCase(instructionNode.dataArgs.name);
   const accountTypeParamsFragment = mergeFragments(
     instructionNode.accounts.map((account) =>
-      getInstructionAccountTypeParamFragment(
-        instructionNode,
-        account,
-        programNode,
-        true
-      )
+      getInstructionAccountTypeParamFragment({
+        ...scope,
+        instructionAccountNode: account,
+        allowAccountMeta: true,
+      })
     ),
     (renders) => renders.join(', ')
   );
@@ -30,7 +31,7 @@ export function getInstructionTypeFragment(
     instructionNode.optionalAccountStrategy === 'omitted';
   const accountMetasFragment = mergeFragments(
     instructionNode.accounts.map((account) =>
-      getInstructionAccountMetaFragment(account).mapRender((r) => {
+      getInstructionAccountMetaFragment(account, withSigners).mapRender((r) => {
         const typeParam = `TAccount${pascalCase(account.name)}`;
         const isLegacyOptional =
           account.isOptional && usesLegacyOptionalAccounts;
@@ -48,6 +49,7 @@ export function getInstructionTypeFragment(
     hasData,
     hasAccounts,
     dataType,
+    withSigners,
     accountTypeParams: accountTypeParamsFragment.render,
     accountMetas: accountMetasFragment.render,
   })

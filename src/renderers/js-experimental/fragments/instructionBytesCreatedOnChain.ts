@@ -4,15 +4,15 @@ import { ContextMap } from '../ContextMap';
 import { ImportMap } from '../ImportMap';
 import { Fragment, fragmentFromTemplate } from './common';
 
-export function getInstructionBytesCreatedOnChainFragment(
-  instructionNode: nodes.InstructionNode
-): Fragment & { interfaces: ContextMap } {
-  const bytes = instructionNode.bytesCreatedOnChain;
+export function getInstructionBytesCreatedOnChainFragment(scope: {
+  instructionNode: nodes.InstructionNode;
+}): Fragment & { interfaces: ContextMap } {
+  const bytes = scope.instructionNode.bytesCreatedOnChain;
   const imports = new ImportMap();
   const interfaces = new ContextMap();
 
   if (bytes && 'includeHeader' in bytes && bytes.includeHeader) {
-    imports.add('shared', 'ACCOUNT_HEADER_SIZE');
+    imports.add('solanaAccounts', 'BASE_ACCOUNT_SIZE');
   }
 
   if (bytes?.kind === 'account') {

@@ -1,18 +1,22 @@
-export async function {{ functionName }}<TReturn, {{ typeParams }}>(context: {{ context }} & {{ customGeneratedInstruction }}, input: {{ inputType }}): Promise<TReturn>;
-export async function {{ functionName }}<{{ typeParams }}>(context: {{ context }}, input: {{ inputType }}): Promise<WrappedInstruction<{{ instructionType }}>>;
-export async function {{ functionName }}<{{ typeParams }}>(input: {{ inputType }}): Promise<WrappedInstruction<{{ instructionType }}>>;
-export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: {{ context }} | {{ context }} & CustomGeneratedInstruction<IInstruction, TReturn> | {{ inputType }}, rawInput?: {{ inputType }}): Promise<TReturn | WrappedInstruction<IInstruction>> {
+{{ inputTypeFragment }}
+{{ inputTypeWithSignersFragment }}
+
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(context: {{ contextFragment }}, input: {{ inputTypeCallWithSignersFragment }}): {{ wrapInPromiseIfAsync(instructionTypeWithSignersFragment) }};
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(context: {{ contextFragment }}, input: {{ inputTypeCallFragment }}): {{ wrapInPromiseIfAsync(instructionTypeFragment) }};
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(input: {{ inputTypeCallWithSignersFragment }}): {{ wrapInPromiseIfAsync(instructionTypeWithSignersFragment) }};
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(input: {{ inputTypeCallFragment }}): {{ wrapInPromiseIfAsync(instructionTypeFragment) }};
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(rawContext: {{ contextFragment }} | {{ inputTypeCallFragment }}, rawInput?: {{ inputTypeCallFragment }}): {{ wrapInPromiseIfAsync('IInstruction') }} {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as {{ context }} | {{ context }} & CustomGeneratedInstruction<IInstruction, TReturn>;
-  const input = (rawInput === undefined ? rawContext : rawInput) as {{ inputType }};
+  const context = (rawInput === undefined ? {} : rawContext) as {{ contextFragment }};
+  const input = (rawInput === undefined ? rawContext : rawInput) as {{ inputTypeCallFragment }};
 
   // Program address.
-  const defaultProgramAddress = "{{ program.publicKey }}" as Base58EncodedAddress<"{{ program.publicKey }}">;
+  const defaultProgramAddress = "{{ program.publicKey }}" as Address<"{{ program.publicKey }}">;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({ name: "{{ program.name }}", address: defaultProgramAddress })
+      ? context.getProgramAddress({ name: "{{ program.name }}", address: defaultProgramAddress })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   {% if hasAccounts %}
     // Original accounts.
@@ -34,32 +38,27 @@ export async function {{ functionName }}<TReturn, {{ typeParams }}>(rawContext: 
     const args = { ...input, {{ renamedArgs }} };
   {% endif %}
 
-  {{ resolvedInputs }}
+  {{ resolvedInputsFragment }}
 
   {% if hasAccounts %}
     // Get account metas and signers.
-    const [accountMetas, signers] = getAccountMetasAndSigners(accounts, 'programId', programAddress);
+    const accountMetas = getAccountMetasWithSigners(accounts, 'programId', programAddress);
   {% endif %}
 
-  {{ remainingAccounts }}
-  {{ bytesCreatedOnChain }}
+  {{ remainingAccountsFragment }}
+  {{ bytesCreatedOnChainFragment }}
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: {{ lowLevelFunctionName }}(
+  return Object.freeze({
+    ...{{ lowLevelFunctionName }}(
       {%- if hasAccounts -%}
         accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       {% endif %}
       {%- if hasDataArgs -%}
-        args as {{ argsType }},
+        args as {{ argsTypeFragment }},
       {% endif %}
       programAddress,
-      remainingAccounts),
-    {{ 'signers' if hasAccounts else 'signers: []'}},
+      remainingAccounts
+    ),
     bytesCreatedOnChain,
-  };
-
-  return "getGeneratedInstruction" in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+  });
 }

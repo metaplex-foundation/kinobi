@@ -6,7 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Base58EncodedAddress } from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -29,14 +29,12 @@ import {
   WritableAccount,
   WritableSignerAccount,
 } from '@solana/instructions';
+import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   Context,
-  CustomGeneratedInstruction,
   ResolvedAccount,
-  Signer,
-  WrappedInstruction,
   accountMetaWithDefault,
-  getAccountMetasAndSigners,
+  getAccountMetasWithSigners,
   getProgramAddress,
 } from '../shared';
 
@@ -74,25 +72,58 @@ export type ThawDelegatedAccountInstruction<
     ]
   >;
 
+// Output.
+export type ThawDelegatedAccountInstructionWithSigners<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountDelegate extends string | IAccountMeta<string> = string,
+  TAccountTokenAccount extends string | IAccountMeta<string> = string,
+  TAccountEdition extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+> = IInstruction<TProgram> &
+  IInstructionWithData<Uint8Array> &
+  IInstructionWithAccounts<
+    [
+      TAccountDelegate extends string
+        ? WritableSignerAccount<TAccountDelegate> &
+            IAccountSignerMeta<TAccountDelegate>
+        : TAccountDelegate,
+      TAccountTokenAccount extends string
+        ? WritableAccount<TAccountTokenAccount>
+        : TAccountTokenAccount,
+      TAccountEdition extends string
+        ? ReadonlyAccount<TAccountEdition>
+        : TAccountEdition,
+      TAccountMint extends string
+        ? ReadonlyAccount<TAccountMint>
+        : TAccountMint,
+      TAccountTokenProgram extends string
+        ? ReadonlyAccount<TAccountTokenProgram>
+        : TAccountTokenProgram,
+      ...TRemainingAccounts
+    ]
+  >;
+
 export type ThawDelegatedAccountInstructionData = { discriminator: number };
 
 export type ThawDelegatedAccountInstructionDataArgs = {};
 
-export function getThawDelegatedAccountInstructionDataEncoder(): Encoder<ThawDelegatedAccountInstructionDataArgs> {
+export function getThawDelegatedAccountInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>(
-      [['discriminator', getU8Encoder()]],
-      { description: 'ThawDelegatedAccountInstructionData' }
-    ),
+    getStructEncoder<{ discriminator: number }>([
+      ['discriminator', getU8Encoder()],
+    ]),
     (value) => ({ ...value, discriminator: 27 })
-  ) as Encoder<ThawDelegatedAccountInstructionDataArgs>;
+  ) satisfies Encoder<ThawDelegatedAccountInstructionDataArgs>;
 }
 
-export function getThawDelegatedAccountInstructionDataDecoder(): Decoder<ThawDelegatedAccountInstructionData> {
-  return getStructDecoder<ThawDelegatedAccountInstructionData>(
-    [['discriminator', getU8Decoder()]],
-    { description: 'ThawDelegatedAccountInstructionData' }
-  ) as Decoder<ThawDelegatedAccountInstructionData>;
+export function getThawDelegatedAccountInstructionDataDecoder() {
+  return getStructDecoder<ThawDelegatedAccountInstructionData>([
+    ['discriminator', getU8Decoder()],
+  ]) satisfies Decoder<ThawDelegatedAccountInstructionData>;
 }
 
 export function getThawDelegatedAccountInstructionDataCodec(): Codec<
@@ -105,67 +136,6 @@ export function getThawDelegatedAccountInstructionDataCodec(): Codec<
   );
 }
 
-export function thawDelegatedAccountInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountDelegate extends string | IAccountMeta<string> = string,
-  TAccountTokenAccount extends string | IAccountMeta<string> = string,
-  TAccountEdition extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
->(
-  accounts: {
-    delegate: TAccountDelegate extends string
-      ? Base58EncodedAddress<TAccountDelegate>
-      : TAccountDelegate;
-    tokenAccount: TAccountTokenAccount extends string
-      ? Base58EncodedAddress<TAccountTokenAccount>
-      : TAccountTokenAccount;
-    edition: TAccountEdition extends string
-      ? Base58EncodedAddress<TAccountEdition>
-      : TAccountEdition;
-    mint: TAccountMint extends string
-      ? Base58EncodedAddress<TAccountMint>
-      : TAccountMint;
-    tokenProgram?: TAccountTokenProgram extends string
-      ? Base58EncodedAddress<TAccountTokenProgram>
-      : TAccountTokenProgram;
-  },
-  programAddress: Base58EncodedAddress<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.delegate, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.tokenAccount, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.edition, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.tokenProgram ?? {
-          address:
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Base58EncodedAddress<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getThawDelegatedAccountInstructionDataEncoder().encode({}),
-    programAddress,
-  } as ThawDelegatedAccountInstruction<
-    TProgram,
-    TAccountDelegate,
-    TAccountTokenAccount,
-    TAccountEdition,
-    TAccountMint,
-    TAccountTokenProgram,
-    TRemainingAccounts
-  >;
-}
-
-// Input.
 export type ThawDelegatedAccountInput<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
@@ -174,19 +144,37 @@ export type ThawDelegatedAccountInput<
   TAccountTokenProgram extends string
 > = {
   /** Delegate */
-  delegate: Signer<TAccountDelegate>;
+  delegate: Address<TAccountDelegate>;
   /** Token account to thaw */
-  tokenAccount: Base58EncodedAddress<TAccountTokenAccount>;
+  tokenAccount: Address<TAccountTokenAccount>;
   /** Edition */
-  edition: Base58EncodedAddress<TAccountEdition>;
+  edition: Address<TAccountEdition>;
   /** Token mint */
-  mint: Base58EncodedAddress<TAccountMint>;
+  mint: Address<TAccountMint>;
   /** Token Program */
-  tokenProgram?: Base58EncodedAddress<TAccountTokenProgram>;
+  tokenProgram?: Address<TAccountTokenProgram>;
 };
 
-export async function thawDelegatedAccount<
-  TReturn,
+export type ThawDelegatedAccountInputWithSigners<
+  TAccountDelegate extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountTokenProgram extends string
+> = {
+  /** Delegate */
+  delegate: TransactionSigner<TAccountDelegate>;
+  /** Token account to thaw */
+  tokenAccount: Address<TAccountTokenAccount>;
+  /** Edition */
+  edition: Address<TAccountEdition>;
+  /** Token mint */
+  mint: Address<TAccountMint>;
+  /** Token Program */
+  tokenProgram?: Address<TAccountTokenProgram>;
+};
+
+export function getThawDelegatedAccountInstruction<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -194,27 +182,23 @@ export async function thawDelegatedAccount<
   TAccountTokenProgram extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'> &
-    CustomGeneratedInstruction<
-      ThawDelegatedAccountInstruction<
-        TProgram,
-        TAccountDelegate,
-        TAccountTokenAccount,
-        TAccountEdition,
-        TAccountMint,
-        TAccountTokenProgram
-      >,
-      TReturn
-    >,
-  input: ThawDelegatedAccountInput<
+  context: Pick<Context, 'getProgramAddress'>,
+  input: ThawDelegatedAccountInputWithSigners<
     TAccountDelegate,
     TAccountTokenAccount,
     TAccountEdition,
     TAccountMint,
     TAccountTokenProgram
   >
-): Promise<TReturn>;
-export async function thawDelegatedAccount<
+): ThawDelegatedAccountInstructionWithSigners<
+  TProgram,
+  TAccountDelegate,
+  TAccountTokenAccount,
+  TAccountEdition,
+  TAccountMint,
+  TAccountTokenProgram
+>;
+export function getThawDelegatedAccountInstruction<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -230,19 +214,38 @@ export async function thawDelegatedAccount<
     TAccountMint,
     TAccountTokenProgram
   >
-): Promise<
-  WrappedInstruction<
-    ThawDelegatedAccountInstruction<
-      TProgram,
-      TAccountDelegate,
-      TAccountTokenAccount,
-      TAccountEdition,
-      TAccountMint,
-      TAccountTokenProgram
-    >
-  >
+): ThawDelegatedAccountInstruction<
+  TProgram,
+  TAccountDelegate,
+  TAccountTokenAccount,
+  TAccountEdition,
+  TAccountMint,
+  TAccountTokenProgram
 >;
-export async function thawDelegatedAccount<
+export function getThawDelegatedAccountInstruction<
+  TAccountDelegate extends string,
+  TAccountTokenAccount extends string,
+  TAccountEdition extends string,
+  TAccountMint extends string,
+  TAccountTokenProgram extends string,
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  input: ThawDelegatedAccountInputWithSigners<
+    TAccountDelegate,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram
+  >
+): ThawDelegatedAccountInstructionWithSigners<
+  TProgram,
+  TAccountDelegate,
+  TAccountTokenAccount,
+  TAccountEdition,
+  TAccountMint,
+  TAccountTokenProgram
+>;
+export function getThawDelegatedAccountInstruction<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -257,20 +260,15 @@ export async function thawDelegatedAccount<
     TAccountMint,
     TAccountTokenProgram
   >
-): Promise<
-  WrappedInstruction<
-    ThawDelegatedAccountInstruction<
-      TProgram,
-      TAccountDelegate,
-      TAccountTokenAccount,
-      TAccountEdition,
-      TAccountMint,
-      TAccountTokenProgram
-    >
-  >
+): ThawDelegatedAccountInstruction<
+  TProgram,
+  TAccountDelegate,
+  TAccountTokenAccount,
+  TAccountEdition,
+  TAccountMint,
+  TAccountTokenProgram
 >;
-export async function thawDelegatedAccount<
-  TReturn,
+export function getThawDelegatedAccountInstruction<
   TAccountDelegate extends string,
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
@@ -280,8 +278,6 @@ export async function thawDelegatedAccount<
 >(
   rawContext:
     | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>)
     | ThawDelegatedAccountInput<
         TAccountDelegate,
         TAccountTokenAccount,
@@ -296,12 +292,12 @@ export async function thawDelegatedAccount<
     TAccountMint,
     TAccountTokenProgram
   >
-): Promise<TReturn | WrappedInstruction<IInstruction>> {
+): IInstruction {
   // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as
-    | Pick<Context, 'getProgramAddress'>
-    | (Pick<Context, 'getProgramAddress'> &
-        CustomGeneratedInstruction<IInstruction, TReturn>);
+  const context = (rawInput === undefined ? {} : rawContext) as Pick<
+    Context,
+    'getProgramAddress'
+  >;
   const input = (
     rawInput === undefined ? rawContext : rawInput
   ) as ThawDelegatedAccountInput<
@@ -314,19 +310,19 @@ export async function thawDelegatedAccount<
 
   // Program address.
   const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Base58EncodedAddress<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
   const programAddress = (
     context.getProgramAddress
-      ? await context.getProgramAddress({
+      ? context.getProgramAddress({
           name: 'mplTokenMetadata',
           address: defaultProgramAddress,
         })
       : defaultProgramAddress
-  ) as Base58EncodedAddress<TProgram>;
+  ) as Address<TProgram>;
 
   // Original accounts.
   type AccountMetas = Parameters<
-    typeof thawDelegatedAccountInstruction<
+    typeof getThawDelegatedAccountInstructionRaw<
       TProgram,
       TAccountDelegate,
       TAccountTokenAccount,
@@ -345,7 +341,7 @@ export async function thawDelegatedAccount<
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value = await getProgramAddress(
+    accounts.tokenProgram.value = getProgramAddress(
       context,
       'splToken',
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
@@ -354,7 +350,7 @@ export async function thawDelegatedAccount<
   }
 
   // Get account metas and signers.
-  const [accountMetas, signers] = getAccountMetasAndSigners(
+  const accountMetas = getAccountMetasWithSigners(
     accounts,
     'programId',
     programAddress
@@ -366,18 +362,70 @@ export async function thawDelegatedAccount<
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
 
-  // Wrapped instruction.
-  const wrappedInstruction = {
-    instruction: thawDelegatedAccountInstruction(
+  return Object.freeze({
+    ...getThawDelegatedAccountInstructionRaw(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       programAddress,
       remainingAccounts
     ),
-    signers,
     bytesCreatedOnChain,
-  };
+  });
+}
 
-  return 'getGeneratedInstruction' in context && context.getGeneratedInstruction
-    ? context.getGeneratedInstruction(wrappedInstruction)
-    : wrappedInstruction;
+export function getThawDelegatedAccountInstructionRaw<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountDelegate extends string | IAccountMeta<string> = string,
+  TAccountTokenAccount extends string | IAccountMeta<string> = string,
+  TAccountEdition extends string | IAccountMeta<string> = string,
+  TAccountMint extends string | IAccountMeta<string> = string,
+  TAccountTokenProgram extends
+    | string
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+>(
+  accounts: {
+    delegate: TAccountDelegate extends string
+      ? Address<TAccountDelegate>
+      : TAccountDelegate;
+    tokenAccount: TAccountTokenAccount extends string
+      ? Address<TAccountTokenAccount>
+      : TAccountTokenAccount;
+    edition: TAccountEdition extends string
+      ? Address<TAccountEdition>
+      : TAccountEdition;
+    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
+    tokenProgram?: TAccountTokenProgram extends string
+      ? Address<TAccountTokenProgram>
+      : TAccountTokenProgram;
+  },
+  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
+  remainingAccounts?: TRemainingAccounts
+) {
+  return {
+    accounts: [
+      accountMetaWithDefault(accounts.delegate, AccountRole.WRITABLE_SIGNER),
+      accountMetaWithDefault(accounts.tokenAccount, AccountRole.WRITABLE),
+      accountMetaWithDefault(accounts.edition, AccountRole.READONLY),
+      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
+      accountMetaWithDefault(
+        accounts.tokenProgram ?? {
+          address:
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
+          role: AccountRole.READONLY,
+        },
+        AccountRole.READONLY
+      ),
+      ...(remainingAccounts ?? []),
+    ],
+    data: getThawDelegatedAccountInstructionDataEncoder().encode({}),
+    programAddress,
+  } as ThawDelegatedAccountInstruction<
+    TProgram,
+    TAccountDelegate,
+    TAccountTokenAccount,
+    TAccountEdition,
+    TAccountMint,
+    TAccountTokenProgram,
+    TRemainingAccounts
+  >;
 }

@@ -7,7 +7,7 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -19,37 +19,31 @@ import {
 import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
 
 export type Reservation = {
-  address: Base58EncodedAddress;
+  address: Address;
   spotsRemaining: bigint;
   totalSpots: bigint;
 };
 
 export type ReservationArgs = {
-  address: Base58EncodedAddress;
+  address: Address;
   spotsRemaining: number | bigint;
   totalSpots: number | bigint;
 };
 
-export function getReservationEncoder(): Encoder<ReservationArgs> {
-  return getStructEncoder<ReservationArgs>(
-    [
-      ['address', getAddressEncoder()],
-      ['spotsRemaining', getU64Encoder()],
-      ['totalSpots', getU64Encoder()],
-    ],
-    { description: 'Reservation' }
-  ) as Encoder<ReservationArgs>;
+export function getReservationEncoder() {
+  return getStructEncoder<ReservationArgs>([
+    ['address', getAddressEncoder()],
+    ['spotsRemaining', getU64Encoder()],
+    ['totalSpots', getU64Encoder()],
+  ]) satisfies Encoder<ReservationArgs>;
 }
 
-export function getReservationDecoder(): Decoder<Reservation> {
-  return getStructDecoder<Reservation>(
-    [
-      ['address', getAddressDecoder()],
-      ['spotsRemaining', getU64Decoder()],
-      ['totalSpots', getU64Decoder()],
-    ],
-    { description: 'Reservation' }
-  ) as Decoder<Reservation>;
+export function getReservationDecoder() {
+  return getStructDecoder<Reservation>([
+    ['address', getAddressDecoder()],
+    ['spotsRemaining', getU64Decoder()],
+    ['totalSpots', getU64Decoder()],
+  ]) satisfies Decoder<Reservation>;
 }
 
 export function getReservationCodec(): Codec<ReservationArgs, Reservation> {

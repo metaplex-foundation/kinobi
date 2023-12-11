@@ -7,7 +7,15 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Account,
+  EncodedAccount,
+  FetchAccountConfig,
+  FetchAccountsConfig,
+  assertAccountExists,
+  decodeAccount,
+} from '@solana/accounts';
+import {
+  Address,
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -23,15 +31,7 @@ import {
   getStructEncoder,
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
-import {
-  Account,
-  Context,
-  EncodedAccount,
-  FetchEncodedAccountOptions,
-  FetchEncodedAccountsOptions,
-  assertAccountExists,
-  decodeAccount,
-} from '../shared';
+import { Context } from '../shared';
 import {
   EscrowAuthority,
   EscrowAuthorityArgs,
@@ -50,47 +50,41 @@ export type TokenOwnedEscrow<TAddress extends string = string> = Account<
 
 export type TokenOwnedEscrowAccountData = {
   key: TmKey;
-  baseToken: Base58EncodedAddress;
+  baseToken: Address;
   authority: EscrowAuthority;
   bump: number;
 };
 
 export type TokenOwnedEscrowAccountDataArgs = {
-  baseToken: Base58EncodedAddress;
+  baseToken: Address;
   authority: EscrowAuthorityArgs;
   bump: number;
 };
 
-export function getTokenOwnedEscrowAccountDataEncoder(): Encoder<TokenOwnedEscrowAccountDataArgs> {
+export function getTokenOwnedEscrowAccountDataEncoder() {
   return mapEncoder(
     getStructEncoder<{
       key: TmKeyArgs;
-      baseToken: Base58EncodedAddress;
+      baseToken: Address;
       authority: EscrowAuthorityArgs;
       bump: number;
-    }>(
-      [
-        ['key', getTmKeyEncoder()],
-        ['baseToken', getAddressEncoder()],
-        ['authority', getEscrowAuthorityEncoder()],
-        ['bump', getU8Encoder()],
-      ],
-      { description: 'TokenOwnedEscrowAccountData' }
-    ),
+    }>([
+      ['key', getTmKeyEncoder()],
+      ['baseToken', getAddressEncoder()],
+      ['authority', getEscrowAuthorityEncoder()],
+      ['bump', getU8Encoder()],
+    ]),
     (value) => ({ ...value, key: TmKey.TokenOwnedEscrow })
-  ) as Encoder<TokenOwnedEscrowAccountDataArgs>;
+  ) satisfies Encoder<TokenOwnedEscrowAccountDataArgs>;
 }
 
-export function getTokenOwnedEscrowAccountDataDecoder(): Decoder<TokenOwnedEscrowAccountData> {
-  return getStructDecoder<TokenOwnedEscrowAccountData>(
-    [
-      ['key', getTmKeyDecoder()],
-      ['baseToken', getAddressDecoder()],
-      ['authority', getEscrowAuthorityDecoder()],
-      ['bump', getU8Decoder()],
-    ],
-    { description: 'TokenOwnedEscrowAccountData' }
-  ) as Decoder<TokenOwnedEscrowAccountData>;
+export function getTokenOwnedEscrowAccountDataDecoder() {
+  return getStructDecoder<TokenOwnedEscrowAccountData>([
+    ['key', getTmKeyDecoder()],
+    ['baseToken', getAddressDecoder()],
+    ['authority', getEscrowAuthorityDecoder()],
+    ['bump', getU8Decoder()],
+  ]) satisfies Decoder<TokenOwnedEscrowAccountData>;
 }
 
 export function getTokenOwnedEscrowAccountDataCodec(): Codec<
@@ -111,8 +105,8 @@ export function decodeTokenOwnedEscrow<TAddress extends string = string>(
 
 export async function fetchTokenOwnedEscrow<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<TokenOwnedEscrow<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -123,8 +117,8 @@ export async function safeFetchTokenOwnedEscrow<
   TAddress extends string = string
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<TokenOwnedEscrow<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists ? decodeTokenOwnedEscrow(maybeAccount) : null;
@@ -132,8 +126,8 @@ export async function safeFetchTokenOwnedEscrow<
 
 export async function fetchAllTokenOwnedEscrow(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<TokenOwnedEscrow[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -144,8 +138,8 @@ export async function fetchAllTokenOwnedEscrow(
 
 export async function safeFetchAllTokenOwnedEscrow(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<TokenOwnedEscrow[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts

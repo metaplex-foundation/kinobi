@@ -1,7 +1,7 @@
 {% import "templates/macros.njk" as macros %}
 
 // Output.
-export type {{ instruction.name | pascalCase }}Instruction<
+export type {{ instruction.name | pascalCase }}Instruction{{ 'WithSigners' if withSigners }}<
   TProgram extends string = "{{ program.publicKey }}",
   {% if hasAccounts %}
     {{ accountTypeParams }},
@@ -10,7 +10,6 @@ export type {{ instruction.name | pascalCase }}Instruction<
 > = IInstruction<TProgram>
   {% if hasData %}
     & IInstructionWithData<Uint8Array>
-    {# & IInstructionWithData<{{ dataType }}> #}
   {% endif %}
   {% if hasAccounts %}
     & IInstructionWithAccounts<[{{ accountMetas }}, ...TRemainingAccounts]>

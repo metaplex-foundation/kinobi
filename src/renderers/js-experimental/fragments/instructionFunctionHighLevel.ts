@@ -3,6 +3,7 @@ import { camelCase, pascalCase } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import { ContextMap } from '../ContextMap';
 import { TypeManifest } from '../TypeManifest';
+import { hasAsyncDefaultValues } from '../asyncHelpers';
 import {
   Fragment,
   fragment,
@@ -11,15 +12,32 @@ import {
 } from './common';
 import { getInstructionBytesCreatedOnChainFragment } from './instructionBytesCreatedOnChain';
 import { getInstructionInputResolvedFragment } from './instructionInputResolved';
+import { getInstructionInputTypeFragment } from './instructionInputType';
 import { getInstructionRemainingAccountsFragment } from './instructionRemainingAccounts';
 
-export function getInstructionFunctionHighLevelFragment(
-  instructionNode: nodes.InstructionNode,
-  programNode: nodes.ProgramNode,
-  renamedArgs: Map<string, string>,
-  dataArgsManifest: TypeManifest,
-  resolvedInputs: ResolvedInstructionInput[]
-): Fragment {
+export function getInstructionFunctionHighLevelFragment(scope: {
+  instructionNode: nodes.InstructionNode;
+  programNode: nodes.ProgramNode;
+  renamedArgs: Map<string, string>;
+  dataArgsManifest: TypeManifest;
+  extraArgsManifest: TypeManifest;
+  resolvedInputs: ResolvedInstructionInput[];
+  asyncResolvers: string[];
+  useAsync: boolean;
+}): Fragment {
+  const {
+    useAsync,
+    instructionNode,
+    programNode,
+    resolvedInputs,
+    renamedArgs,
+    dataArgsManifest,
+    asyncResolvers,
+  } = scope;
+  if (useAsync && !hasAsyncDefaultValues(resolvedInputs, asyncResolvers)) {
+    return fragment('');
+  }
+
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasDataArgs =
     !!instructionNode.dataArgs.link ||
@@ -41,24 +59,47 @@ export function getInstructionFunctionHighLevelFragment(
     argsTypeFragment.mergeImportsWith(dataArgsManifest.looseType);
   }
 
-  const functionName = camelCase(instructionNode.name);
-  const lowLevelFunctionName = `${functionName}Instruction`;
+  const functionName = `get${pascalCase(instructionNode.name)}Instruction${
+    useAsync ? 'Async' : ''
+  }`;
+  const lowLevelFunctionName = `get${pascalCase(
+    instructionNode.name
+  )}InstructionRaw`;
   const typeParamsFragment = getTypeParams(instructionNode, programNode);
-  const instructionTypeFragment = getInstructionType(instructionNode);
-  const inputTypeFragment = getInputType(instructionNode);
-  const customGeneratedInstruction = `CustomGeneratedInstruction<${instructionTypeFragment.render}, TReturn>`;
+  const instructionTypeFragment = getInstructionType(instructionNode, false);
+  const instructionTypeWithSignersFragment = getInstructionType(
+    instructionNode,
+    true
+  );
+  const wrapInPromiseIfAsync = (value: string) =>
+    useAsync ? `Promise<${value}>` : value;
+
+  // Input.
+  const inputTypeFragment = getInstructionInputTypeFragment({
+    ...scope,
+    withSigners: false,
+  });
+  const inputTypeWithSignersFragment = getInstructionInputTypeFragment({
+    ...scope,
+    withSigners: true,
+  });
+  const inputTypeCallFragment = getInputTypeCall({
+    ...scope,
+    withSigners: false,
+  });
+  const inputTypeCallWithSignersFragment = getInputTypeCall({
+    ...scope,
+    withSigners: true,
+  });
   const renamedArgsText = [...renamedArgs.entries()]
     .map(([k, v]) => `${k}: input.${v}`)
     .join(', ');
 
-  const resolvedInputsFragment = getInstructionInputResolvedFragment(
-    instructionNode,
-    resolvedInputs
-  );
+  const resolvedInputsFragment = getInstructionInputResolvedFragment(scope);
   const remainingAccountsFragment =
-    getInstructionRemainingAccountsFragment(instructionNode);
+    getInstructionRemainingAccountsFragment(scope);
   const bytesCreatedOnChainFragment =
-    getInstructionBytesCreatedOnChainFragment(instructionNode);
+    getInstructionBytesCreatedOnChainFragment(scope);
 
   const context = new ContextMap()
     .add('getProgramAddress')
@@ -77,37 +118,45 @@ export function getInstructionFunctionHighLevelFragment(
       hasDataArgs,
       hasExtraArgs,
       hasAnyArgs,
-      argsType: argsTypeFragment,
+      argsTypeFragment,
       functionName,
       lowLevelFunctionName,
-      typeParams: typeParamsFragment,
-      instructionType: instructionTypeFragment,
-      inputType: inputTypeFragment,
-      context: contextFragment,
+      typeParamsFragment,
+      instructionTypeFragment,
+      instructionTypeWithSignersFragment,
+      inputTypeFragment,
+      inputTypeWithSignersFragment,
+      inputTypeCallFragment,
+      inputTypeCallWithSignersFragment,
+      contextFragment,
       renamedArgs: renamedArgsText,
-      resolvedInputs: resolvedInputsFragment,
-      remainingAccounts: remainingAccountsFragment,
-      bytesCreatedOnChain: bytesCreatedOnChainFragment,
-      customGeneratedInstruction,
+      resolvedInputsFragment,
+      remainingAccountsFragment,
+      bytesCreatedOnChainFragment,
+      useAsync,
+      wrapInPromiseIfAsync,
     }
   )
     .mergeImportsWith(
       typeParamsFragment,
       instructionTypeFragment,
+      instructionTypeWithSignersFragment,
       inputTypeFragment,
+      inputTypeWithSignersFragment,
+      inputTypeCallFragment,
+      inputTypeCallWithSignersFragment,
       contextFragment,
       resolvedInputsFragment,
       remainingAccountsFragment,
       bytesCreatedOnChainFragment,
       argsTypeFragment
     )
-    .addImports('solanaAddresses', ['Base58EncodedAddress'])
-    .addImports('shared', ['CustomGeneratedInstruction', 'WrappedInstruction']);
+    .addImports('solanaAddresses', ['Address']);
 
   if (hasAccounts) {
     functionFragment
       .addImports('solanaInstructions', ['IAccountMeta'])
-      .addImports('shared', ['getAccountMetasAndSigners', 'ResolvedAccount']);
+      .addImports('shared', ['getAccountMetasWithSigners', 'ResolvedAccount']);
   }
 
   return functionFragment;
@@ -126,18 +175,28 @@ function getTypeParams(
   return fragment(typeParams.filter((x) => !!x).join(', '));
 }
 
-function getInstructionType(instructionNode: nodes.InstructionNode): Fragment {
-  const instructionTypeName = pascalCase(`${instructionNode.name}Instruction`);
+function getInstructionType(
+  instructionNode: nodes.InstructionNode,
+  withSigners: boolean
+): Fragment {
+  const instructionTypeName = pascalCase(
+    `${instructionNode.name}Instruction${withSigners ? 'WithSigners' : ''}`
+  );
   const accountTypeParamsFragments = instructionNode.accounts.map((account) => {
     const typeParam = `TAccount${pascalCase(account.name)}`;
     const camelName = camelCase(account.name);
-    if (account.isSigner === 'either') {
-      const role = account.isWritable
+
+    if (account.isSigner === 'either' && withSigners) {
+      const signerRole = account.isWritable
         ? 'WritableSignerAccount'
         : 'ReadonlySignerAccount';
       return fragment(
-        `typeof input["${camelName}"] extends Signer<${typeParam}> ? ${role}<${typeParam}> : ${typeParam}`
-      ).addImports('solanaInstructions', [role]);
+        `typeof input["${camelName}"] extends TransactionSigner<${typeParam}> ` +
+          `? ${signerRole}<${typeParam}> & IAccountSignerMeta<${typeParam}> ` +
+          `: ${typeParam}`
+      )
+        .addImports('solanaInstructions', [signerRole])
+        .addImports('solanaSigners', ['IAccountSignerMeta']);
     }
 
     return fragment(typeParam);
@@ -149,8 +208,17 @@ function getInstructionType(instructionNode: nodes.InstructionNode): Fragment {
   ).mapRender((r) => `${instructionTypeName}<${r}>`);
 }
 
-function getInputType(instructionNode: nodes.InstructionNode): Fragment {
-  const inputTypeName = pascalCase(`${instructionNode.name}Input`);
+function getInputTypeCall(scope: {
+  instructionNode: nodes.InstructionNode;
+  withSigners: boolean;
+  useAsync: boolean;
+}): Fragment {
+  const { instructionNode, withSigners, useAsync } = scope;
+  const inputTypeName = pascalCase(
+    `${instructionNode.name}${useAsync ? 'Async' : ''}Input${
+      withSigners ? 'WithSigners' : ''
+    }`
+  );
   if (instructionNode.accounts.length === 0) return fragment(inputTypeName);
   const accountTypeParams = instructionNode.accounts
     .map((account) => `TAccount${pascalCase(account.name)}`)

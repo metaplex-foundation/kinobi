@@ -13,36 +13,29 @@ import {
   getStructDecoder,
   getStructEncoder,
 } from '@solana/codecs-data-structures';
-import {
-  ConfigLine,
-  ConfigLineArgs,
-  getConfigLineDecoder,
-  getConfigLineEncoder,
-} from '.';
+import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
 
 /** Dummy lines. */
 export type DummyLines = {
   /** The dummy lines. */
-  lines: Array<ConfigLine>;
+  lines: Array<bigint>;
 };
 
 export type DummyLinesArgs = {
   /** The dummy lines. */
-  lines: Array<ConfigLineArgs>;
+  lines: Array<number | bigint>;
 };
 
-export function getDummyLinesEncoder(): Encoder<DummyLinesArgs> {
-  return getStructEncoder<DummyLinesArgs>(
-    [['lines', getArrayEncoder(getConfigLineEncoder(), { size: 'remainder' })]],
-    { description: 'DummyLines' }
-  ) as Encoder<DummyLinesArgs>;
+export function getDummyLinesEncoder() {
+  return getStructEncoder<DummyLinesArgs>([
+    ['lines', getArrayEncoder(getU64Encoder(), { size: 'remainder' })],
+  ]) satisfies Encoder<DummyLinesArgs>;
 }
 
-export function getDummyLinesDecoder(): Decoder<DummyLines> {
-  return getStructDecoder<DummyLines>(
-    [['lines', getArrayDecoder(getConfigLineDecoder(), { size: 'remainder' })]],
-    { description: 'DummyLines' }
-  ) as Decoder<DummyLines>;
+export function getDummyLinesDecoder() {
+  return getStructDecoder<DummyLines>([
+    ['lines', getArrayDecoder(getU64Decoder(), { size: 'remainder' })],
+  ]) satisfies Decoder<DummyLines>;
 }
 
 export function getDummyLinesCodec(): Codec<DummyLinesArgs, DummyLines> {

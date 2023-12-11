@@ -7,7 +7,15 @@
  */
 
 import {
-  Base58EncodedAddress,
+  Account,
+  EncodedAccount,
+  FetchAccountConfig,
+  FetchAccountsConfig,
+  assertAccountExists,
+  decodeAccount,
+} from '@solana/accounts';
+import {
+  Address,
   ProgramDerivedAddress,
   getAddressEncoder,
 } from '@solana/addresses';
@@ -25,13 +33,7 @@ import {
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import { getStringEncoder } from '@solana/codecs-strings';
 import {
-  Account,
   Context,
-  EncodedAccount,
-  FetchEncodedAccountOptions,
-  FetchEncodedAccountsOptions,
-  assertAccountExists,
-  decodeAccount,
   getProgramAddress,
   getProgramDerivedAddress,
 } from '../shared';
@@ -62,29 +64,23 @@ export type DelegateRecordAccountDataArgs = {
   bump: number;
 };
 
-export function getDelegateRecordAccountDataEncoder(): Encoder<DelegateRecordAccountDataArgs> {
+export function getDelegateRecordAccountDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ key: TmKeyArgs; role: DelegateRoleArgs; bump: number }>(
-      [
-        ['key', getTmKeyEncoder()],
-        ['role', getDelegateRoleEncoder()],
-        ['bump', getU8Encoder()],
-      ],
-      { description: 'DelegateRecordAccountData' }
-    ),
+    getStructEncoder<{ key: TmKeyArgs; role: DelegateRoleArgs; bump: number }>([
+      ['key', getTmKeyEncoder()],
+      ['role', getDelegateRoleEncoder()],
+      ['bump', getU8Encoder()],
+    ]),
     (value) => ({ ...value, key: TmKey.Delegate })
-  ) as Encoder<DelegateRecordAccountDataArgs>;
+  ) satisfies Encoder<DelegateRecordAccountDataArgs>;
 }
 
-export function getDelegateRecordAccountDataDecoder(): Decoder<DelegateRecordAccountData> {
-  return getStructDecoder<DelegateRecordAccountData>(
-    [
-      ['key', getTmKeyDecoder()],
-      ['role', getDelegateRoleDecoder()],
-      ['bump', getU8Decoder()],
-    ],
-    { description: 'DelegateRecordAccountData' }
-  ) as Decoder<DelegateRecordAccountData>;
+export function getDelegateRecordAccountDataDecoder() {
+  return getStructDecoder<DelegateRecordAccountData>([
+    ['key', getTmKeyDecoder()],
+    ['role', getDelegateRoleDecoder()],
+    ['bump', getU8Decoder()],
+  ]) satisfies Decoder<DelegateRecordAccountData>;
 }
 
 export function getDelegateRecordAccountDataCodec(): Codec<
@@ -105,8 +101,8 @@ export function decodeDelegateRecord<TAddress extends string = string>(
 
 export async function fetchDelegateRecord<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<DelegateRecord<TAddress>> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   assertAccountExists(maybeAccount);
@@ -115,8 +111,8 @@ export async function fetchDelegateRecord<TAddress extends string = string>(
 
 export async function safeFetchDelegateRecord<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
-  address: Base58EncodedAddress<TAddress>,
-  options?: FetchEncodedAccountOptions
+  address: Address<TAddress>,
+  options?: FetchAccountConfig
 ): Promise<DelegateRecord<TAddress> | null> {
   const maybeAccount = await context.fetchEncodedAccount(address, options);
   return maybeAccount.exists ? decodeDelegateRecord(maybeAccount) : null;
@@ -124,8 +120,8 @@ export async function safeFetchDelegateRecord<TAddress extends string = string>(
 
 export async function fetchAllDelegateRecord(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<DelegateRecord[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts.map((maybeAccount) => {
@@ -136,8 +132,8 @@ export async function fetchAllDelegateRecord(
 
 export async function safeFetchAllDelegateRecord(
   context: Pick<Context, 'fetchEncodedAccounts'>,
-  addresses: Array<Base58EncodedAddress>,
-  options?: FetchEncodedAccountsOptions
+  addresses: Array<Address>,
+  options?: FetchAccountsConfig
 ): Promise<DelegateRecord[]> {
   const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
   return maybeAccounts
@@ -176,7 +172,7 @@ export async function fetchDelegateRecordFromSeeds(
     'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
   >,
   seeds: Parameters<typeof findDelegateRecordPda>[1],
-  options?: FetchEncodedAccountOptions
+  options?: FetchAccountConfig
 ): Promise<DelegateRecord> {
   const [address] = await findDelegateRecordPda(context, seeds);
   return fetchDelegateRecord(context, address, options);
@@ -188,7 +184,7 @@ export async function safeFetchDelegateRecordFromSeeds(
     'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
   >,
   seeds: Parameters<typeof findDelegateRecordPda>[1],
-  options?: FetchEncodedAccountOptions
+  options?: FetchAccountConfig
 ): Promise<DelegateRecord | null> {
   const [address] = await findDelegateRecordPda(context, seeds);
   return safeFetchDelegateRecord(context, address, options);

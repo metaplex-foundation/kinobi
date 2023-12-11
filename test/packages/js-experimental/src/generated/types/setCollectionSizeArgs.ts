@@ -17,17 +17,16 @@ export type SetCollectionSizeArgs = { size: bigint };
 
 export type SetCollectionSizeArgsArgs = { size: number | bigint };
 
-export function getSetCollectionSizeArgsEncoder(): Encoder<SetCollectionSizeArgsArgs> {
-  return getStructEncoder<SetCollectionSizeArgsArgs>(
-    [['size', getU64Encoder()]],
-    { description: 'SetCollectionSizeArgs' }
-  ) as Encoder<SetCollectionSizeArgsArgs>;
+export function getSetCollectionSizeArgsEncoder() {
+  return getStructEncoder<SetCollectionSizeArgsArgs>([
+    ['size', getU64Encoder()],
+  ]) satisfies Encoder<SetCollectionSizeArgsArgs>;
 }
 
-export function getSetCollectionSizeArgsDecoder(): Decoder<SetCollectionSizeArgs> {
-  return getStructDecoder<SetCollectionSizeArgs>([['size', getU64Decoder()]], {
-    description: 'SetCollectionSizeArgs',
-  }) as Decoder<SetCollectionSizeArgs>;
+export function getSetCollectionSizeArgsDecoder() {
+  return getStructDecoder<SetCollectionSizeArgs>([
+    ['size', getU64Decoder()],
+  ]) satisfies Decoder<SetCollectionSizeArgs>;
 }
 
 export function getSetCollectionSizeArgsCodec(): Codec<

@@ -41,40 +41,28 @@ export type MintArgsArgs = {
   authorizationData: OptionOrNullable<AuthorizationDataArgs>;
 };
 
-export function getMintArgsEncoder(): Encoder<MintArgsArgs> {
-  return getDataEnumEncoder<MintArgs>(
+export function getMintArgsEncoder() {
+  return getDataEnumEncoder<MintArgsArgs>([
     [
-      [
-        'V1',
-        getStructEncoder<GetDataEnumKindContent<MintArgsArgs, 'V1'>>([
-          ['amount', getU64Encoder()],
-          [
-            'authorizationData',
-            getOptionEncoder(getAuthorizationDataEncoder()),
-          ],
-        ]),
-      ],
+      'V1',
+      getStructEncoder<GetDataEnumKindContent<MintArgsArgs, 'V1'>>([
+        ['amount', getU64Encoder()],
+        ['authorizationData', getOptionEncoder(getAuthorizationDataEncoder())],
+      ]),
     ],
-    { description: 'MintArgs' }
-  ) as Encoder<MintArgsArgs>;
+  ]) satisfies Encoder<MintArgsArgs>;
 }
 
-export function getMintArgsDecoder(): Decoder<MintArgs> {
-  return getDataEnumDecoder<MintArgs>(
+export function getMintArgsDecoder() {
+  return getDataEnumDecoder<MintArgs>([
     [
-      [
-        'V1',
-        getStructDecoder<GetDataEnumKindContent<MintArgs, 'V1'>>([
-          ['amount', getU64Decoder()],
-          [
-            'authorizationData',
-            getOptionDecoder(getAuthorizationDataDecoder()),
-          ],
-        ]),
-      ],
+      'V1',
+      getStructDecoder<GetDataEnumKindContent<MintArgs, 'V1'>>([
+        ['amount', getU64Decoder()],
+        ['authorizationData', getOptionDecoder(getAuthorizationDataDecoder())],
+      ]),
     ],
-    { description: 'MintArgs' }
-  ) as Decoder<MintArgs>;
+  ]) satisfies Decoder<MintArgs>;
 }
 
 export function getMintArgsCodec(): Codec<MintArgsArgs, MintArgs> {
