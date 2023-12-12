@@ -163,7 +163,8 @@ export function getInstructionFunctionHighLevelFragment(scope: {
       resolvedFragment,
       argsTypeFragment
     )
-    .addImports('solanaAddresses', ['Address']);
+    .addImports('solanaAddresses', ['Address'])
+    .addImports('shared', ['getProgramAddress']);
 
   if (hasAccounts) {
     functionFragment

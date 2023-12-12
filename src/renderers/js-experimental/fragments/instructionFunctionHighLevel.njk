@@ -11,12 +11,7 @@ export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragme
   const input = (rawInput === undefined ? rawContext : rawInput) as {{ inputTypeCallFragment }};
 
   // Program address.
-  const defaultProgramAddress = "{{ program.publicKey }}" as Address<"{{ program.publicKey }}">;
-  const programAddress = (
-    context.getProgramAddress
-      ? context.getProgramAddress({ name: "{{ program.name }}", address: defaultProgramAddress })
-      : defaultProgramAddress
-  ) as Address<TProgram>;
+  const programAddress = getProgramAddress(context, "{{ program.name }}", "{{ program.publicKey }}" as Address<"{{ program.publicKey }}">);
 
   {% if hasAccounts %}
     // Original accounts.
