@@ -135,6 +135,4 @@ export type FragmentFeature =
   | 'context:fetchEncodedAccounts'
   | 'context:getProgramAddress'
   | 'context:getProgramDerivedAddress'
-  // | 'instruction:accountsVariable'
-  // | 'instruction:argsVariable'
   | 'instruction:resolverScopeVariable';

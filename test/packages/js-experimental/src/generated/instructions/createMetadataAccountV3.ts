@@ -477,6 +477,11 @@ export async function getCreateMetadataAccountV3InstructionAsync<
     );
     accounts.systemProgram.isWritable = false;
   }
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -484,12 +489,6 @@ export async function getCreateMetadataAccountV3InstructionAsync<
     'programId',
     programAddress
   );
-
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   return Object.freeze({
     ...getCreateMetadataAccountV3InstructionRaw(
@@ -774,6 +773,11 @@ export function getCreateMetadataAccountV3Instruction<
     );
     accounts.systemProgram.isWritable = false;
   }
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -781,12 +785,6 @@ export function getCreateMetadataAccountV3Instruction<
     'programId',
     programAddress
   );
-
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   return Object.freeze({
     ...getCreateMetadataAccountV3InstructionRaw(

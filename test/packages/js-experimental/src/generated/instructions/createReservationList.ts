@@ -420,6 +420,11 @@ export function getCreateReservationListInstruction<
     accounts.rent.value =
       'SysvarRent111111111111111111111111111111111' as Address<'SysvarRent111111111111111111111111111111111'>;
   }
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -427,12 +432,6 @@ export function getCreateReservationListInstruction<
     'programId',
     programAddress
   );
-
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   return Object.freeze({
     ...getCreateReservationListInstructionRaw(

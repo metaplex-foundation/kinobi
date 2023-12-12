@@ -94,17 +94,11 @@ export function getInstructionFunctionHighLevelFragment(scope: {
     .map(([k, v]) => `${k}: input.${v}`)
     .join(', ');
 
-  const resolvedInputsFragment = getInstructionInputResolvedFragment(scope);
-  const remainingAccountsFragment =
-    getInstructionRemainingAccountsFragment(scope);
-  const bytesCreatedOnChainFragment =
-    getInstructionBytesCreatedOnChainFragment(scope);
-
   const resolvedFragment = mergeFragments(
     [
-      resolvedInputsFragment,
-      remainingAccountsFragment,
-      bytesCreatedOnChainFragment,
+      getInstructionInputResolvedFragment(scope),
+      getInstructionRemainingAccountsFragment(scope),
+      getInstructionBytesCreatedOnChainFragment(scope),
     ],
     (renders) => renders.join('\n')
   ).addFeatures('context:getProgramAddress');
@@ -134,9 +128,7 @@ export function getInstructionFunctionHighLevelFragment(scope: {
       inputTypeCallWithSignersFragment,
       contextFragment,
       renamedArgs: renamedArgsText,
-      resolvedInputsFragment,
-      remainingAccountsFragment,
-      bytesCreatedOnChainFragment,
+      resolvedFragment,
       hasResolver,
       useAsync,
       wrapInPromiseIfAsync,
@@ -151,9 +143,7 @@ export function getInstructionFunctionHighLevelFragment(scope: {
       inputTypeCallFragment,
       inputTypeCallWithSignersFragment,
       contextFragment,
-      resolvedInputsFragment,
-      remainingAccountsFragment,
-      bytesCreatedOnChainFragment,
+      resolvedFragment,
       argsTypeFragment
     )
     .addImports('solanaAddresses', ['Address']);

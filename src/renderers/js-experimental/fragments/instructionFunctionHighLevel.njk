@@ -43,15 +43,12 @@ export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragme
     const resolverScope = { context, programAddress{{ ', accounts' if hasAccounts }}{{ ', args' if hasAnyArgs }} };
   {% endif %}
 
-  {{ resolvedInputsFragment }}
+  {{ resolvedFragment }}
 
   {% if hasAccounts %}
     // Get account metas and signers.
     const accountMetas = getAccountMetasWithSigners(accounts, 'programId', programAddress);
   {% endif %}
-
-  {{ remainingAccountsFragment }}
-  {{ bytesCreatedOnChainFragment }}
 
   return Object.freeze({
     ...{{ lowLevelFunctionName }}(

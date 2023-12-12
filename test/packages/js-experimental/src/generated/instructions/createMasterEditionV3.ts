@@ -515,6 +515,11 @@ export function getCreateMasterEditionV3Instruction<
     );
     accounts.systemProgram.isWritable = false;
   }
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = getMasterEditionV2Size() + BASE_ACCOUNT_SIZE;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -522,12 +527,6 @@ export function getCreateMasterEditionV3Instruction<
     'programId',
     programAddress
   );
-
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = getMasterEditionV2Size() + BASE_ACCOUNT_SIZE;
 
   return Object.freeze({
     ...getCreateMasterEditionV3InstructionRaw(

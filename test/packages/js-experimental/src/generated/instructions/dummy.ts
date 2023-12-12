@@ -554,14 +554,6 @@ export async function getDummyInstructionAsync<
       accounts.tokenOrAtaProgram.isWritable = false;
     }
   }
-
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
   // Remaining accounts.
   const remainingAccounts: IAccountMeta[] = args.proof.map((address) => ({
     address,
@@ -570,6 +562,13 @@ export async function getDummyInstructionAsync<
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
 
   return Object.freeze({
     ...getDummyInstructionRaw(
@@ -928,14 +927,6 @@ export function getDummyInstruction<
       accounts.tokenOrAtaProgram.isWritable = false;
     }
   }
-
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
   // Remaining accounts.
   const remainingAccounts: IAccountMeta[] = args.proof.map((address) => ({
     address,
@@ -944,6 +935,13 @@ export function getDummyInstruction<
 
   // Bytes created on chain.
   const bytesCreatedOnChain = 0;
+
+  // Get account metas and signers.
+  const accountMetas = getAccountMetasWithSigners(
+    accounts,
+    'programId',
+    programAddress
+  );
 
   return Object.freeze({
     ...getDummyInstructionRaw(

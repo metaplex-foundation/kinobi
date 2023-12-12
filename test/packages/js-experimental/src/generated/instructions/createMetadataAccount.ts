@@ -542,6 +542,11 @@ export async function getCreateMetadataAccountInstructionAsync<
   if (!args.metadataBump) {
     args.metadataBump = expectProgramDerivedAddress(accounts.metadata.value)[1];
   }
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = getMetadataSize() + BASE_ACCOUNT_SIZE;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -549,12 +554,6 @@ export async function getCreateMetadataAccountInstructionAsync<
     'programId',
     programAddress
   );
-
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = getMetadataSize() + BASE_ACCOUNT_SIZE;
 
   return Object.freeze({
     ...getCreateMetadataAccountInstructionRaw(
@@ -846,6 +845,11 @@ export function getCreateMetadataAccountInstruction<
   if (!args.metadataBump) {
     args.metadataBump = expectProgramDerivedAddress(accounts.metadata.value)[1];
   }
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = [];
+
+  // Bytes created on chain.
+  const bytesCreatedOnChain = getMetadataSize() + BASE_ACCOUNT_SIZE;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -853,12 +857,6 @@ export function getCreateMetadataAccountInstruction<
     'programId',
     programAddress
   );
-
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = getMetadataSize() + BASE_ACCOUNT_SIZE;
 
   return Object.freeze({
     ...getCreateMetadataAccountInstructionRaw(
