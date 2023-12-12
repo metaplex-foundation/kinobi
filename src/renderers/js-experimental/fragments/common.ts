@@ -98,6 +98,11 @@ export class Fragment {
     return this;
   }
 
+  hasFeatures(features: FragmentFeature | FragmentFeature[]): boolean {
+    const featureArray = typeof features === 'string' ? [features] : features;
+    return featureArray.every((f) => this.features.has(f));
+  }
+
   mergeFeaturesWith(...others: Fragment[]): this {
     others.forEach((f) => this.addFeatures([...f.features]));
     return this;

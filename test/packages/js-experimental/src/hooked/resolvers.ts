@@ -7,13 +7,15 @@ import {
   findMasterEditionV2Pda,
 } from '../generated';
 
-export const resolveMasterEditionFromTokenStandard = async (
-  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
-  accounts: Record<string, ResolvedAccount>,
-  args: { tokenStandard?: TokenStandard },
-  _programId: any,
-  _isWritable: any
-): Promise<Partial<{ value: ProgramDerivedAddress | null }>> => {
+export const resolveMasterEditionFromTokenStandard = async ({
+  context,
+  accounts,
+  args,
+}: {
+  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>;
+  accounts: Record<string, ResolvedAccount>;
+  args: { tokenStandard?: TokenStandard };
+}): Promise<Partial<{ value: ProgramDerivedAddress | null }>> => {
   return args.tokenStandard === TokenStandard.NonFungible ||
     args.tokenStandard === TokenStandard.ProgrammableNonFungible
     ? {
@@ -24,12 +26,10 @@ export const resolveMasterEditionFromTokenStandard = async (
     : { value: null };
 };
 
-export const resolveTokenOrAta = (
-  _context: any,
-  _accounts: Record<string, ResolvedAccount>,
-  args: { proof?: Address[] },
-  _programId?: any,
-  _isWritable?: any
-): boolean => {
+export const resolveTokenOrAta = ({
+  args,
+}: {
+  args: { proof?: Address[] };
+}): boolean => {
   return !!args.proof && args.proof.length > 0;
 };

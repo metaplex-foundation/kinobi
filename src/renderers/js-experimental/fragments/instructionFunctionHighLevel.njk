@@ -38,6 +38,11 @@ export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragme
     const args = { ...input, {{ renamedArgs }} };
   {% endif %}
 
+  {% if hasResolver %}
+    // Resolver scope.
+    const resolverScope = { context, programAddress{{ ', accounts' if hasAccounts }}{{ ', args' if hasAnyArgs }} };
+  {% endif %}
+
   {{ resolvedInputsFragment }}
 
   {% if hasAccounts %}

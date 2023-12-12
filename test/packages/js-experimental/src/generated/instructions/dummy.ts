@@ -514,6 +514,9 @@ export async function getDummyInstructionAsync<
   // Original args.
   const args = { ...input };
 
+  // Resolver scope.
+  const resolverScope = { context, programAddress, accounts, args };
+
   // Resolve default values.
   if (!accounts.edition.value) {
     accounts.edition.value = expectSome(accounts.payer.value);
@@ -891,6 +894,9 @@ export function getDummyInstruction<
 
   // Original args.
   const args = { ...input };
+
+  // Resolver scope.
+  const resolverScope = { context, programAddress, accounts, args };
 
   // Resolve default values.
   if (!accounts.edition.value) {
