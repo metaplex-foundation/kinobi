@@ -1,5 +1,25 @@
-import { ResolvedInstructionInput } from '../../visitors';
+import { InstructionNode } from '../../nodes';
 import { InstructionDefault } from '../../shared';
+import { ResolvedInstructionInput } from '../../visitors';
+
+export function hasAsyncFunction(
+  instructionNode: InstructionNode,
+  resolvedInputs: ResolvedInstructionInput[],
+  asyncResolvers: string[]
+): boolean {
+  const isBytesCreatedOnChainAsync =
+    instructionNode.bytesCreatedOnChain?.kind === 'resolver' &&
+    asyncResolvers.includes(instructionNode.bytesCreatedOnChain.name);
+  const isRemainingAccountAsync =
+    instructionNode.remainingAccounts?.kind === 'resolver' &&
+    asyncResolvers.includes(instructionNode.remainingAccounts.name);
+
+  return (
+    hasAsyncDefaultValues(resolvedInputs, asyncResolvers) ||
+    isBytesCreatedOnChainAsync ||
+    isRemainingAccountAsync
+  );
+}
 
 export function hasAsyncDefaultValues(
   resolvedInputs: ResolvedInstructionInput[],

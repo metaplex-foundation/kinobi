@@ -735,16 +735,11 @@ export function getValidateInstruction<
   >;
 
   // Program address.
-  const defaultProgramAddress =
-    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
-  const programAddress = (
-    context.getProgramAddress
-      ? context.getProgramAddress({
-          name: 'mplTokenAuthRules',
-          address: defaultProgramAddress,
-        })
-      : defaultProgramAddress
-  ) as Address<TProgram>;
+  const programAddress = getProgramAddress(
+    context,
+    'mplTokenAuthRules',
+    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>
+  );
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -816,21 +811,13 @@ export function getValidateInstruction<
     programAddress
   );
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
+  const instruction = getValidateInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as ValidateInstructionDataArgs,
+    programAddress
+  );
 
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
-  return Object.freeze({
-    ...getValidateInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as ValidateInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  return instruction;
 }
 
 export function getValidateInstructionRaw<

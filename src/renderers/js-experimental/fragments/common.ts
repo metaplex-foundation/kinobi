@@ -2,7 +2,6 @@ import { ConfigureOptions } from 'nunjucks';
 import { ImportFrom } from '../../../shared';
 import { resolveTemplate } from '../../utils';
 import { ImportMap } from '../ImportMap';
-import { ContextMap } from '../ContextMap';
 
 export function fragment(render: string, imports?: ImportMap): Fragment {
   return new Fragment(render, imports);
@@ -23,22 +22,14 @@ export function fragmentFromTemplate(
   );
 }
 
-export function fragmentWithContextMap(
-  render: string,
-  imports?: ImportMap
-): Fragment & { interfaces: ContextMap } {
-  const f = fragment(render, imports) as Fragment & { interfaces: ContextMap };
-  f.interfaces = new ContextMap();
-  return f;
-}
-
 export function mergeFragments(
   fragments: Fragment[],
   mergeRenders: (renders: string[]) => string
 ): Fragment {
   return new Fragment(
     mergeRenders(fragments.map((f) => f.render)),
-    new ImportMap().mergeWith(...fragments)
+    new ImportMap().mergeWith(...fragments),
+    new Set(fragments.flatMap((f) => [...f.features]))
   );
 }
 
@@ -47,9 +38,16 @@ export class Fragment {
 
   public imports: ImportMap;
 
-  constructor(render: string, imports?: ImportMap) {
+  public features: Set<FragmentFeature>;
+
+  constructor(
+    render: string,
+    imports?: ImportMap,
+    features?: Set<FragmentFeature>
+  ) {
     this.render = render;
     this.imports = imports ?? new ImportMap();
+    this.features = features ?? new Set();
   }
 
   setRender(render: string): this {
@@ -88,6 +86,41 @@ export class Fragment {
     return this;
   }
 
+  addFeatures(features: FragmentFeature | FragmentFeature[]): this {
+    const featureArray = typeof features === 'string' ? [features] : features;
+    featureArray.forEach((f) => this.features.add(f));
+    return this;
+  }
+
+  removeFeatures(features: FragmentFeature | FragmentFeature[]): this {
+    const featureArray = typeof features === 'string' ? [features] : features;
+    featureArray.forEach((f) => this.features.delete(f));
+    return this;
+  }
+
+  hasFeatures(features: FragmentFeature | FragmentFeature[]): boolean {
+    const featureArray = typeof features === 'string' ? [features] : features;
+    return featureArray.every((f) => this.features.has(f));
+  }
+
+  mergeFeaturesWith(...others: Fragment[]): this {
+    others.forEach((f) => this.addFeatures([...f.features]));
+    return this;
+  }
+
+  getContextString(): string {
+    const contextInterfaces = [...this.features]
+      .filter((f) => f.startsWith('context:'))
+      .sort()
+      .map((i) => `"${i.substring(8)}"`)
+      .join(' | ');
+    return `Pick<Context, ${contextInterfaces}>`;
+  }
+
+  getContextFragment(): Fragment {
+    return fragment(this.getContextString()).addImports('shared', 'Context');
+  }
+
   clone(): Fragment {
     return new Fragment(this.render).mergeImportsWith(this.imports);
   }
@@ -96,3 +129,10 @@ export class Fragment {
     return this.render;
   }
 }
+
+export type FragmentFeature =
+  | 'context:fetchEncodedAccount'
+  | 'context:fetchEncodedAccounts'
+  | 'context:getProgramAddress'
+  | 'context:getProgramDerivedAddress'
+  | 'instruction:resolverScopeVariable';

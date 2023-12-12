@@ -35,6 +35,7 @@ import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { getMasterEditionV2Size } from '../accounts';
 import {
   Context,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -290,7 +291,8 @@ export function getCreateMasterEditionV3Instruction<
   TAccountTokenProgram,
   TAccountSystemProgram,
   TAccountRent
->;
+> &
+  IInstructionWithBytesCreatedOnChain;
 export function getCreateMasterEditionV3Instruction<
   TAccountEdition extends string,
   TAccountMint extends string,
@@ -326,7 +328,8 @@ export function getCreateMasterEditionV3Instruction<
   TAccountTokenProgram,
   TAccountSystemProgram,
   TAccountRent
->;
+> &
+  IInstructionWithBytesCreatedOnChain;
 export function getCreateMasterEditionV3Instruction<
   TAccountEdition extends string,
   TAccountMint extends string,
@@ -361,7 +364,8 @@ export function getCreateMasterEditionV3Instruction<
   TAccountTokenProgram,
   TAccountSystemProgram,
   TAccountRent
->;
+> &
+  IInstructionWithBytesCreatedOnChain;
 export function getCreateMasterEditionV3Instruction<
   TAccountEdition extends string,
   TAccountMint extends string,
@@ -396,7 +400,8 @@ export function getCreateMasterEditionV3Instruction<
   TAccountTokenProgram,
   TAccountSystemProgram,
   TAccountRent
->;
+> &
+  IInstructionWithBytesCreatedOnChain;
 export function getCreateMasterEditionV3Instruction<
   TAccountEdition extends string,
   TAccountMint extends string,
@@ -433,7 +438,7 @@ export function getCreateMasterEditionV3Instruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): IInstruction {
+): IInstruction & IInstructionWithBytesCreatedOnChain {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -454,16 +459,11 @@ export function getCreateMasterEditionV3Instruction<
   >;
 
   // Program address.
-  const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
-  const programAddress = (
-    context.getProgramAddress
-      ? context.getProgramAddress({
-          name: 'mplTokenMetadata',
-          address: defaultProgramAddress,
-        })
-      : defaultProgramAddress
-  ) as Address<TProgram>;
+  const programAddress = getProgramAddress(
+    context,
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
+  );
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -516,6 +516,9 @@ export function getCreateMasterEditionV3Instruction<
     accounts.systemProgram.isWritable = false;
   }
 
+  // Bytes created on chain.
+  const bytesCreatedOnChain = getMasterEditionV2Size() + BASE_ACCOUNT_SIZE;
+
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
     accounts,
@@ -523,21 +526,13 @@ export function getCreateMasterEditionV3Instruction<
     programAddress
   );
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
+  const instruction = getCreateMasterEditionV3InstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as CreateMasterEditionV3InstructionDataArgs,
+    programAddress
+  );
 
-  // Bytes created on chain.
-  const bytesCreatedOnChain = getMasterEditionV2Size() + BASE_ACCOUNT_SIZE;
-
-  return Object.freeze({
-    ...getCreateMasterEditionV3InstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as CreateMasterEditionV3InstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  return Object.freeze({ ...instruction, bytesCreatedOnChain });
 }
 
 export function getCreateMasterEditionV3InstructionRaw<

@@ -36,6 +36,7 @@ import {
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
+  getProgramAddress,
 } from '../shared';
 import {
   SetCollectionSizeArgs,
@@ -326,16 +327,11 @@ export function getBubblegumSetCollectionSizeInstruction<
   >;
 
   // Program address.
-  const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
-  const programAddress = (
-    context.getProgramAddress
-      ? context.getProgramAddress({
-          name: 'mplTokenMetadata',
-          address: defaultProgramAddress,
-        })
-      : defaultProgramAddress
-  ) as Address<TProgram>;
+  const programAddress = getProgramAddress(
+    context,
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
+  );
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -378,21 +374,13 @@ export function getBubblegumSetCollectionSizeInstruction<
     programAddress
   );
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
+  const instruction = getBubblegumSetCollectionSizeInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as BubblegumSetCollectionSizeInstructionDataArgs,
+    programAddress
+  );
 
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
-  return Object.freeze({
-    ...getBubblegumSetCollectionSizeInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as BubblegumSetCollectionSizeInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  return instruction;
 }
 
 export function getBubblegumSetCollectionSizeInstructionRaw<

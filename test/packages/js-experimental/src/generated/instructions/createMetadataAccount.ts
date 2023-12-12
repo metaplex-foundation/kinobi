@@ -51,6 +51,7 @@ import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { findMetadataPda, getMetadataSize } from '../accounts';
 import {
   Context,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   expectAddress,
@@ -336,7 +337,8 @@ export async function getCreateMetadataAccountInstructionAsync<
     TAccountUpdateAuthority,
     TAccountSystemProgram,
     TAccountRent
-  >
+  > &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function getCreateMetadataAccountInstructionAsync<
   TAccountMetadata extends string,
@@ -368,7 +370,8 @@ export async function getCreateMetadataAccountInstructionAsync<
     TAccountUpdateAuthority,
     TAccountSystemProgram,
     TAccountRent
-  >
+  > &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function getCreateMetadataAccountInstructionAsync<
   TAccountMetadata extends string,
@@ -399,7 +402,8 @@ export async function getCreateMetadataAccountInstructionAsync<
     TAccountUpdateAuthority,
     TAccountSystemProgram,
     TAccountRent
-  >
+  > &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function getCreateMetadataAccountInstructionAsync<
   TAccountMetadata extends string,
@@ -430,7 +434,8 @@ export async function getCreateMetadataAccountInstructionAsync<
     TAccountUpdateAuthority,
     TAccountSystemProgram,
     TAccountRent
-  >
+  > &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function getCreateMetadataAccountInstructionAsync<
   TAccountMetadata extends string,
@@ -462,7 +467,7 @@ export async function getCreateMetadataAccountInstructionAsync<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<IInstruction> {
+): Promise<IInstruction & IInstructionWithBytesCreatedOnChain> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -481,16 +486,11 @@ export async function getCreateMetadataAccountInstructionAsync<
   >;
 
   // Program address.
-  const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
-  const programAddress = (
-    context.getProgramAddress
-      ? context.getProgramAddress({
-          name: 'mplTokenMetadata',
-          address: defaultProgramAddress,
-        })
-      : defaultProgramAddress
-  ) as Address<TProgram>;
+  const programAddress = getProgramAddress(
+    context,
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
+  );
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -543,6 +543,9 @@ export async function getCreateMetadataAccountInstructionAsync<
     args.metadataBump = expectProgramDerivedAddress(accounts.metadata.value)[1];
   }
 
+  // Bytes created on chain.
+  const bytesCreatedOnChain = getMetadataSize() + BASE_ACCOUNT_SIZE;
+
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
     accounts,
@@ -550,21 +553,13 @@ export async function getCreateMetadataAccountInstructionAsync<
     programAddress
   );
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
+  const instruction = getCreateMetadataAccountInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as CreateMetadataAccountInstructionDataArgs,
+    programAddress
+  );
 
-  // Bytes created on chain.
-  const bytesCreatedOnChain = getMetadataSize() + BASE_ACCOUNT_SIZE;
-
-  return Object.freeze({
-    ...getCreateMetadataAccountInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as CreateMetadataAccountInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  return Object.freeze({ ...instruction, bytesCreatedOnChain });
 }
 
 export type CreateMetadataAccountInput<
@@ -652,7 +647,8 @@ export function getCreateMetadataAccountInstruction<
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountRent
->;
+> &
+  IInstructionWithBytesCreatedOnChain;
 export function getCreateMetadataAccountInstruction<
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -682,7 +678,8 @@ export function getCreateMetadataAccountInstruction<
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountRent
->;
+> &
+  IInstructionWithBytesCreatedOnChain;
 export function getCreateMetadataAccountInstruction<
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -711,7 +708,8 @@ export function getCreateMetadataAccountInstruction<
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountRent
->;
+> &
+  IInstructionWithBytesCreatedOnChain;
 export function getCreateMetadataAccountInstruction<
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -740,7 +738,8 @@ export function getCreateMetadataAccountInstruction<
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountRent
->;
+> &
+  IInstructionWithBytesCreatedOnChain;
 export function getCreateMetadataAccountInstruction<
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -771,7 +770,7 @@ export function getCreateMetadataAccountInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): IInstruction {
+): IInstruction & IInstructionWithBytesCreatedOnChain {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -790,16 +789,11 @@ export function getCreateMetadataAccountInstruction<
   >;
 
   // Program address.
-  const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
-  const programAddress = (
-    context.getProgramAddress
-      ? context.getProgramAddress({
-          name: 'mplTokenMetadata',
-          address: defaultProgramAddress,
-        })
-      : defaultProgramAddress
-  ) as Address<TProgram>;
+  const programAddress = getProgramAddress(
+    context,
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
+  );
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -847,6 +841,9 @@ export function getCreateMetadataAccountInstruction<
     args.metadataBump = expectProgramDerivedAddress(accounts.metadata.value)[1];
   }
 
+  // Bytes created on chain.
+  const bytesCreatedOnChain = getMetadataSize() + BASE_ACCOUNT_SIZE;
+
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
     accounts,
@@ -854,21 +851,13 @@ export function getCreateMetadataAccountInstruction<
     programAddress
   );
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
+  const instruction = getCreateMetadataAccountInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as CreateMetadataAccountInstructionDataArgs,
+    programAddress
+  );
 
-  // Bytes created on chain.
-  const bytesCreatedOnChain = getMetadataSize() + BASE_ACCOUNT_SIZE;
-
-  return Object.freeze({
-    ...getCreateMetadataAccountInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as CreateMetadataAccountInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  return Object.freeze({ ...instruction, bytesCreatedOnChain });
 }
 
 export function getCreateMetadataAccountInstructionRaw<

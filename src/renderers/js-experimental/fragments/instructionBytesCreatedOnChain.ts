@@ -1,34 +1,41 @@
 import * as nodes from '../../../nodes';
 import { camelCase, pascalCase } from '../../../shared';
-import { ContextMap } from '../ContextMap';
-import { ImportMap } from '../ImportMap';
-import { Fragment, fragmentFromTemplate } from './common';
+import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getInstructionBytesCreatedOnChainFragment(scope: {
   instructionNode: nodes.InstructionNode;
-  argObject?: string;
-}): Fragment & { interfaces: ContextMap } {
+  asyncResolvers: string[];
+  useAsync: boolean;
+}): Fragment {
   const bytes = scope.instructionNode.bytesCreatedOnChain;
-  const imports = new ImportMap();
-  const interfaces = new ContextMap();
+  if (!bytes) return fragment('');
+
+  const isAsync =
+    bytes?.kind === 'resolver' && scope.asyncResolvers.includes(bytes.name);
+  if (!scope.useAsync && isAsync) return fragment('');
+
+  const awaitKeyword = scope.useAsync && isAsync ? 'await ' : '';
+  const bytesFragment = fragmentFromTemplate(
+    'instructionBytesCreatedOnChain.njk',
+    { bytes, awaitKeyword }
+  );
 
   if (bytes && 'includeHeader' in bytes && bytes.includeHeader) {
-    imports.add('solanaAccounts', 'BASE_ACCOUNT_SIZE');
+    bytesFragment.addImports('solanaAccounts', 'BASE_ACCOUNT_SIZE');
   }
 
   if (bytes?.kind === 'account') {
     const importFrom =
       bytes.importFrom === 'generated' ? 'generatedAccounts' : bytes.importFrom;
-    imports.add(importFrom, `get${pascalCase(bytes.name)}Size`);
+    bytesFragment.addImports(importFrom, `get${pascalCase(bytes.name)}Size`);
   } else if (bytes?.kind === 'resolver') {
-    imports.add(bytes.importFrom, camelCase(bytes.name));
-    interfaces.add(['getProgramAddress', 'getProgramDerivedAddress']);
+    bytesFragment.addImports(bytes.importFrom, camelCase(bytes.name));
+    bytesFragment.addFeatures([
+      'context:getProgramAddress',
+      'context:getProgramDerivedAddress',
+      'instruction:resolverScopeVariable',
+    ]);
   }
 
-  const bytesFragment = fragmentFromTemplate(
-    'instructionBytesCreatedOnChain.njk',
-    { bytes, argObject: scope.argObject ?? 'args' }
-  ).mergeImportsWith(imports) as Fragment & { interfaces: ContextMap };
-  bytesFragment.interfaces = interfaces;
   return bytesFragment;
 }

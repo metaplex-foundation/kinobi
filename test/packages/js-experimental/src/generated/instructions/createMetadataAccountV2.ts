@@ -396,16 +396,11 @@ export function getCreateMetadataAccountV2Instruction<
   >;
 
   // Program address.
-  const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
-  const programAddress = (
-    context.getProgramAddress
-      ? context.getProgramAddress({
-          name: 'mplTokenMetadata',
-          address: defaultProgramAddress,
-        })
-      : defaultProgramAddress
-  ) as Address<TProgram>;
+  const programAddress = getProgramAddress(
+    context,
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
+  );
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -453,21 +448,13 @@ export function getCreateMetadataAccountV2Instruction<
     programAddress
   );
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
+  const instruction = getCreateMetadataAccountV2InstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as CreateMetadataAccountV2InstructionDataArgs,
+    programAddress
+  );
 
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
-  return Object.freeze({
-    ...getCreateMetadataAccountV2InstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as CreateMetadataAccountV2InstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  return instruction;
 }
 
 export function getCreateMetadataAccountV2InstructionRaw<

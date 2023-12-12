@@ -1,39 +1,40 @@
 import * as nodes from '../../../nodes';
 import { camelCase } from '../../../shared';
-import { ContextMap } from '../ContextMap';
-import {
-  Fragment,
-  fragmentFromTemplate,
-  fragmentWithContextMap,
-} from './common';
+import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getInstructionRemainingAccountsFragment(scope: {
   instructionNode: nodes.InstructionNode;
-}): Fragment & { interfaces: ContextMap } {
+  asyncResolvers: string[];
+  useAsync: boolean;
+}): Fragment {
   const { remainingAccounts } = scope.instructionNode;
-  const remainingAccountsFragment = fragmentWithContextMap('').addImports(
-    'solanaInstructions',
-    ['IAccountMeta']
-  );
+  if (!remainingAccounts) return fragment('');
+
+  const isAsync =
+    remainingAccounts?.kind === 'resolver' &&
+    scope.asyncResolvers.includes(remainingAccounts.name);
+  if (!scope.useAsync && isAsync) return fragment('');
+
+  const awaitKeyword = scope.useAsync && isAsync ? 'await ' : '';
+  const remainingAccountsFragment = fragmentFromTemplate(
+    'instructionRemainingAccounts.njk',
+    { remainingAccounts, awaitKeyword }
+  ).addImports('solanaInstructions', ['IAccountMeta']);
 
   if (remainingAccounts?.kind === 'arg') {
     remainingAccountsFragment.addImports('solanaInstructions', ['AccountRole']);
   } else if (remainingAccounts?.kind === 'resolver') {
-    remainingAccountsFragment.addImports(
-      remainingAccounts.importFrom,
-      camelCase(remainingAccounts.name)
-    );
-    remainingAccountsFragment.interfaces.add([
-      'getProgramAddress',
-      'getProgramDerivedAddress',
-    ]);
+    remainingAccountsFragment
+      .addImports(
+        remainingAccounts.importFrom,
+        camelCase(remainingAccounts.name)
+      )
+      .addFeatures([
+        'context:getProgramAddress',
+        'context:getProgramDerivedAddress',
+        'instruction:resolverScopeVariable',
+      ]);
   }
-
-  remainingAccountsFragment.setRender(
-    fragmentFromTemplate('instructionRemainingAccounts.njk', {
-      remainingAccounts,
-    }).render
-  );
 
   return remainingAccountsFragment;
 }

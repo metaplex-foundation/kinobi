@@ -478,16 +478,11 @@ export function getMigrateInstruction<
   >;
 
   // Program address.
-  const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
-  const programAddress = (
-    context.getProgramAddress
-      ? context.getProgramAddress({
-          name: 'mplTokenMetadata',
-          address: defaultProgramAddress,
-        })
-      : defaultProgramAddress
-  ) as Address<TProgram>;
+  const programAddress = getProgramAddress(
+    context,
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
+  );
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -562,21 +557,13 @@ export function getMigrateInstruction<
     programAddress
   );
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
+  const instruction = getMigrateInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as MigrateInstructionDataArgs,
+    programAddress
+  );
 
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
-  return Object.freeze({
-    ...getMigrateInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as MigrateInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  return instruction;
 }
 
 export function getMigrateInstructionRaw<

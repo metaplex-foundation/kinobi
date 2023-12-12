@@ -653,16 +653,11 @@ export async function getTransferInstructionAsync<
   >;
 
   // Program address.
-  const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
-  const programAddress = (
-    context.getProgramAddress
-      ? context.getProgramAddress({
-          name: 'mplTokenMetadata',
-          address: defaultProgramAddress,
-        })
-      : defaultProgramAddress
-  ) as Address<TProgram>;
+  const programAddress = getProgramAddress(
+    context,
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
+  );
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -721,6 +716,9 @@ export async function getTransferInstructionAsync<
   // Original args.
   const args = { ...input };
 
+  // Resolver scope.
+  const resolverScope = { context, programAddress, accounts, args };
+
   // Resolve default values.
   if (!args.tokenStandard) {
     args.tokenStandard = TokenStandard.NonFungible;
@@ -728,13 +726,7 @@ export async function getTransferInstructionAsync<
   if (!accounts.masterEdition.value) {
     accounts.masterEdition = {
       ...accounts.masterEdition,
-      ...(await resolveMasterEditionFromTokenStandard(
-        context,
-        accounts,
-        args,
-        programAddress,
-        false
-      )),
+      ...(await resolveMasterEditionFromTokenStandard(resolverScope)),
     };
   }
   if (!accounts.splTokenProgram.value) {
@@ -773,21 +765,13 @@ export async function getTransferInstructionAsync<
     programAddress
   );
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
+  const instruction = getTransferInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as TransferInstructionDataArgs,
+    programAddress
+  );
 
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
-  return Object.freeze({
-    ...getTransferInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as TransferInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  return instruction;
 }
 
 export type TransferInput<
@@ -1187,16 +1171,11 @@ export function getTransferInstruction<
   >;
 
   // Program address.
-  const defaultProgramAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
-  const programAddress = (
-    context.getProgramAddress
-      ? context.getProgramAddress({
-          name: 'mplTokenMetadata',
-          address: defaultProgramAddress,
-        })
-      : defaultProgramAddress
-  ) as Address<TProgram>;
+  const programAddress = getProgramAddress(
+    context,
+    'mplTokenMetadata',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
+  );
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -1295,21 +1274,13 @@ export function getTransferInstruction<
     programAddress
   );
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
+  const instruction = getTransferInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as TransferInstructionDataArgs,
+    programAddress
+  );
 
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
-  return Object.freeze({
-    ...getTransferInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as TransferInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  return instruction;
 }
 
 export function getTransferInstructionRaw<

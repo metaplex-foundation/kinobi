@@ -1,22 +1,17 @@
 {{ inputTypeFragment }}
 {{ inputTypeWithSignersFragment }}
 
-export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(context: {{ contextFragment }}, input: {{ inputTypeCallWithSignersFragment }}): {{ wrapInPromiseIfAsync(instructionTypeWithSignersFragment) }};
-export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(context: {{ contextFragment }}, input: {{ inputTypeCallFragment }}): {{ wrapInPromiseIfAsync(instructionTypeFragment) }};
-export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(input: {{ inputTypeCallWithSignersFragment }}): {{ wrapInPromiseIfAsync(instructionTypeWithSignersFragment) }};
-export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(input: {{ inputTypeCallFragment }}): {{ wrapInPromiseIfAsync(instructionTypeFragment) }};
-export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(rawContext: {{ contextFragment }} | {{ inputTypeCallFragment }}, rawInput?: {{ inputTypeCallFragment }}): {{ wrapInPromiseIfAsync('IInstruction') }} {
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(context: {{ contextFragment }}, input: {{ inputTypeCallWithSignersFragment }}): {{ getReturnType(instructionTypeWithSignersFragment) }};
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(context: {{ contextFragment }}, input: {{ inputTypeCallFragment }}): {{ getReturnType(instructionTypeFragment) }};
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(input: {{ inputTypeCallWithSignersFragment }}): {{ getReturnType(instructionTypeWithSignersFragment) }};
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(input: {{ inputTypeCallFragment }}): {{ getReturnType(instructionTypeFragment) }};
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(rawContext: {{ contextFragment }} | {{ inputTypeCallFragment }}, rawInput?: {{ inputTypeCallFragment }}): {{ getReturnType('IInstruction') }} {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as {{ contextFragment }};
   const input = (rawInput === undefined ? rawContext : rawInput) as {{ inputTypeCallFragment }};
 
   // Program address.
-  const defaultProgramAddress = "{{ program.publicKey }}" as Address<"{{ program.publicKey }}">;
-  const programAddress = (
-    context.getProgramAddress
-      ? context.getProgramAddress({ name: "{{ program.name }}", address: defaultProgramAddress })
-      : defaultProgramAddress
-  ) as Address<TProgram>;
+  const programAddress = getProgramAddress(context, "{{ program.name }}", "{{ program.publicKey }}" as Address<"{{ program.publicKey }}">);
 
   {% if hasAccounts %}
     // Original accounts.
@@ -38,27 +33,34 @@ export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragme
     const args = { ...input, {{ renamedArgs }} };
   {% endif %}
 
-  {{ resolvedInputsFragment }}
+  {% if hasResolver %}
+    // Resolver scope.
+    const resolverScope = { context, programAddress{{ ', accounts' if hasAccounts }}{{ ', args' if hasAnyArgs }} };
+  {% endif %}
+
+  {{ resolvedFragment }}
 
   {% if hasAccounts %}
     // Get account metas and signers.
     const accountMetas = getAccountMetasWithSigners(accounts, 'programId', programAddress);
   {% endif %}
 
-  {{ remainingAccountsFragment }}
-  {{ bytesCreatedOnChainFragment }}
+  const instruction = {{ lowLevelFunctionName }}(
+    {%- if hasAccounts -%}
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    {% endif %}
+    {%- if hasDataArgs -%}
+      args as {{ argsTypeFragment }},
+    {% endif %}
+    programAddress,
+    {%- if hasRemainingAccounts -%}
+      remainingAccounts,
+    {% endif %}
+  );
 
-  return Object.freeze({
-    ...{{ lowLevelFunctionName }}(
-      {%- if hasAccounts -%}
-        accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      {% endif %}
-      {%- if hasDataArgs -%}
-        args as {{ argsTypeFragment }},
-      {% endif %}
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  {% if hasBytesCreatedOnChain %}
+    return Object.freeze({ ...instruction, bytesCreatedOnChain });
+  {% else %}
+    return instruction;
+  {% endif %}
 }

@@ -465,16 +465,11 @@ export async function getDummyInstructionAsync<
   >;
 
   // Program address.
-  const defaultProgramAddress =
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
-  const programAddress = (
-    context.getProgramAddress
-      ? context.getProgramAddress({
-          name: 'mplCandyMachineCore',
-          address: defaultProgramAddress,
-        })
-      : defaultProgramAddress
-  ) as Address<TProgram>;
+  const programAddress = getProgramAddress(
+    context,
+    'mplCandyMachineCore',
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>
+  );
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -514,6 +509,9 @@ export async function getDummyInstructionAsync<
   // Original args.
   const args = { ...input };
 
+  // Resolver scope.
+  const resolverScope = { context, programAddress, accounts, args };
+
   // Resolve default values.
   if (!accounts.edition.value) {
     accounts.edition.value = expectSome(accounts.payer.value);
@@ -535,7 +533,7 @@ export async function getDummyInstructionAsync<
     args.proof = [];
   }
   if (!accounts.tokenOrAtaProgram.value) {
-    if (resolveTokenOrAta(context, accounts, args, programAddress, false)) {
+    if (resolveTokenOrAta(resolverScope)) {
       accounts.tokenOrAtaProgram.value = getProgramAddress(
         context,
         'splToken',
@@ -552,6 +550,12 @@ export async function getDummyInstructionAsync<
     }
   }
 
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = args.proof.map((address) => ({
+    address,
+    role: AccountRole.READONLY,
+  }));
+
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
     accounts,
@@ -559,23 +563,13 @@ export async function getDummyInstructionAsync<
     programAddress
   );
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = args.proof.map((address) => ({
-    address,
-    role: AccountRole.READONLY,
-  }));
+  const instruction = getDummyInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress,
+    remainingAccounts
+  );
 
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
-  return Object.freeze({
-    ...getDummyInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  return instruction;
 }
 
 export type DummyInput<
@@ -843,16 +837,11 @@ export function getDummyInstruction<
   >;
 
   // Program address.
-  const defaultProgramAddress =
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
-  const programAddress = (
-    context.getProgramAddress
-      ? context.getProgramAddress({
-          name: 'mplCandyMachineCore',
-          address: defaultProgramAddress,
-        })
-      : defaultProgramAddress
-  ) as Address<TProgram>;
+  const programAddress = getProgramAddress(
+    context,
+    'mplCandyMachineCore',
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>
+  );
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -892,6 +881,9 @@ export function getDummyInstruction<
   // Original args.
   const args = { ...input };
 
+  // Resolver scope.
+  const resolverScope = { context, programAddress, accounts, args };
+
   // Resolve default values.
   if (!accounts.edition.value) {
     accounts.edition.value = expectSome(accounts.payer.value);
@@ -906,7 +898,7 @@ export function getDummyInstruction<
     args.proof = [];
   }
   if (!accounts.tokenOrAtaProgram.value) {
-    if (resolveTokenOrAta(context, accounts, args, programAddress, false)) {
+    if (resolveTokenOrAta(resolverScope)) {
       accounts.tokenOrAtaProgram.value = getProgramAddress(
         context,
         'splToken',
@@ -923,6 +915,12 @@ export function getDummyInstruction<
     }
   }
 
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = args.proof.map((address) => ({
+    address,
+    role: AccountRole.READONLY,
+  }));
+
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
     accounts,
@@ -930,23 +928,13 @@ export function getDummyInstruction<
     programAddress
   );
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = args.proof.map((address) => ({
-    address,
-    role: AccountRole.READONLY,
-  }));
+  const instruction = getDummyInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress,
+    remainingAccounts
+  );
 
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
-  return Object.freeze({
-    ...getDummyInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  return instruction;
 }
 
 export function getDummyInstructionRaw<

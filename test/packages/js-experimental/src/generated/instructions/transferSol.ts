@@ -39,6 +39,7 @@ import {
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
+  getProgramAddress,
 } from '../shared';
 
 export type TransferSolInstruction<
@@ -190,16 +191,11 @@ export function getTransferSolInstruction<
   ) as TransferSolInput<TAccountSource, TAccountDestination>;
 
   // Program address.
-  const defaultProgramAddress =
-    '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
-  const programAddress = (
-    context.getProgramAddress
-      ? context.getProgramAddress({
-          name: 'splSystem',
-          address: defaultProgramAddress,
-        })
-      : defaultProgramAddress
-  ) as Address<TProgram>;
+  const programAddress = getProgramAddress(
+    context,
+    'splSystem',
+    '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>
+  );
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -224,21 +220,13 @@ export function getTransferSolInstruction<
     programAddress
   );
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
+  const instruction = getTransferSolInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as TransferSolInstructionDataArgs,
+    programAddress
+  );
 
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
-  return Object.freeze({
-    ...getTransferSolInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as TransferSolInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  return instruction;
 }
 
 export function getTransferSolInstructionRaw<

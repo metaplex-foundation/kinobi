@@ -1,9 +1,8 @@
 import * as nodes from '../../../nodes';
 import { camelCase, pascalCase } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
-import { ContextMap } from '../ContextMap';
 import { TypeManifest } from '../TypeManifest';
-import { hasAsyncDefaultValues } from '../asyncHelpers';
+import { hasAsyncFunction } from '../asyncHelpers';
 import {
   Fragment,
   fragment,
@@ -34,7 +33,10 @@ export function getInstructionFunctionHighLevelFragment(scope: {
     dataArgsManifest,
     asyncResolvers,
   } = scope;
-  if (useAsync && !hasAsyncDefaultValues(resolvedInputs, asyncResolvers)) {
+  if (
+    useAsync &&
+    !hasAsyncFunction(instructionNode, resolvedInputs, asyncResolvers)
+  ) {
     return fragment('');
   }
 
@@ -71,8 +73,6 @@ export function getInstructionFunctionHighLevelFragment(scope: {
     instructionNode,
     true
   );
-  const wrapInPromiseIfAsync = (value: string) =>
-    useAsync ? `Promise<${value}>` : value;
 
   // Input.
   const inputTypeFragment = getInstructionInputTypeFragment({
@@ -100,15 +100,28 @@ export function getInstructionFunctionHighLevelFragment(scope: {
     getInstructionRemainingAccountsFragment(scope);
   const bytesCreatedOnChainFragment =
     getInstructionBytesCreatedOnChainFragment(scope);
+  const resolvedFragment = mergeFragments(
+    [
+      resolvedInputsFragment,
+      remainingAccountsFragment,
+      bytesCreatedOnChainFragment,
+    ],
+    (renders) => renders.join('\n\n')
+  ).addFeatures('context:getProgramAddress');
+  const hasRemainingAccounts = remainingAccountsFragment.render !== '';
+  const hasBytesCreatedOnChain = bytesCreatedOnChainFragment.render !== '';
+  const hasResolver = resolvedFragment.hasFeatures(
+    'instruction:resolverScopeVariable'
+  );
+  const contextFragment = resolvedFragment.getContextFragment();
+  const getReturnType = (instructionType: string) => {
+    let returnType = instructionType;
+    if (hasBytesCreatedOnChain) {
+      returnType = `${returnType} & IInstructionWithBytesCreatedOnChain`;
+    }
+    return useAsync ? `Promise<${returnType}>` : returnType;
+  };
 
-  const context = new ContextMap()
-    .add('getProgramAddress')
-    .mergeWith(
-      resolvedInputsFragment.interfaces,
-      remainingAccountsFragment.interfaces,
-      bytesCreatedOnChainFragment.interfaces
-    );
-  const contextFragment = context.toFragment();
   const functionFragment = fragmentFromTemplate(
     'instructionFunctionHighLevel.njk',
     {
@@ -130,11 +143,12 @@ export function getInstructionFunctionHighLevelFragment(scope: {
       inputTypeCallWithSignersFragment,
       contextFragment,
       renamedArgs: renamedArgsText,
-      resolvedInputsFragment,
-      remainingAccountsFragment,
-      bytesCreatedOnChainFragment,
+      resolvedFragment,
+      hasRemainingAccounts,
+      hasBytesCreatedOnChain,
+      hasResolver,
       useAsync,
-      wrapInPromiseIfAsync,
+      getReturnType,
     }
   )
     .mergeImportsWith(
@@ -146,17 +160,22 @@ export function getInstructionFunctionHighLevelFragment(scope: {
       inputTypeCallFragment,
       inputTypeCallWithSignersFragment,
       contextFragment,
-      resolvedInputsFragment,
-      remainingAccountsFragment,
-      bytesCreatedOnChainFragment,
+      resolvedFragment,
       argsTypeFragment
     )
-    .addImports('solanaAddresses', ['Address']);
+    .addImports('solanaAddresses', ['Address'])
+    .addImports('shared', ['getProgramAddress']);
 
   if (hasAccounts) {
     functionFragment
       .addImports('solanaInstructions', ['IAccountMeta'])
       .addImports('shared', ['getAccountMetasWithSigners', 'ResolvedAccount']);
+  }
+
+  if (hasBytesCreatedOnChain) {
+    functionFragment.addImports('shared', [
+      'IInstructionWithBytesCreatedOnChain',
+    ]);
   }
 
   return functionFragment;
