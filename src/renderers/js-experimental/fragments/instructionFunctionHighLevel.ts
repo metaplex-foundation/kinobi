@@ -2,7 +2,7 @@ import * as nodes from '../../../nodes';
 import { camelCase, pascalCase } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import { TypeManifest } from '../TypeManifest';
-import { hasAsyncDefaultValues } from '../asyncHelpers';
+import { hasAsyncFunction } from '../asyncHelpers';
 import {
   Fragment,
   fragment,
@@ -33,7 +33,10 @@ export function getInstructionFunctionHighLevelFragment(scope: {
     dataArgsManifest,
     asyncResolvers,
   } = scope;
-  if (useAsync && !hasAsyncDefaultValues(resolvedInputs, asyncResolvers)) {
+  if (
+    useAsync &&
+    !hasAsyncFunction(instructionNode, resolvedInputs, asyncResolvers)
+  ) {
     return fragment('');
   }
 

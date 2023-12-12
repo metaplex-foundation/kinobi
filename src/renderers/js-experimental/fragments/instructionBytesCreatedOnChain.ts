@@ -8,12 +8,11 @@ export function getInstructionBytesCreatedOnChainFragment(scope: {
   useAsync: boolean;
 }): Fragment {
   const bytes = scope.instructionNode.bytesCreatedOnChain;
-  const awaitKeyword =
+  const isAsync =
     scope.useAsync &&
     bytes?.kind === 'resolver' &&
-    scope.asyncResolvers.includes(bytes.name)
-      ? 'await '
-      : '';
+    scope.asyncResolvers.includes(bytes.name);
+  const awaitKeyword = isAsync ? 'await ' : '';
   const bytesFragment = fragmentFromTemplate(
     'instructionBytesCreatedOnChain.njk',
     { bytes, awaitKeyword }

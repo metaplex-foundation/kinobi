@@ -8,12 +8,11 @@ export function getInstructionRemainingAccountsFragment(scope: {
   useAsync: boolean;
 }): Fragment {
   const { remainingAccounts } = scope.instructionNode;
-  const awaitKeyword =
+  const isAsync =
     scope.useAsync &&
     remainingAccounts?.kind === 'resolver' &&
-    scope.asyncResolvers.includes(remainingAccounts.name)
-      ? 'await '
-      : '';
+    scope.asyncResolvers.includes(remainingAccounts.name);
+  const awaitKeyword = isAsync ? 'await ' : '';
   const remainingAccountsFragment = fragmentFromTemplate(
     'instructionRemainingAccounts.njk',
     { remainingAccounts, awaitKeyword }
