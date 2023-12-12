@@ -1,5 +1,5 @@
 /// `{{ instruction.name | snakeCase }}` CPI accounts.
-pub struct {{ instruction.name | pascalCase }}CpiAccounts<'a, 'b> {
+pub struct {{ instruction.name | pascalCase }}CpiAccounts{{ '<\'a, \'b>' if instruction.accounts.length > 0 }} {
   {% for account in instruction.accounts %}
     {% if account.docs.length > 0 %}
       {{ macros.docblock(account.docs) }}
