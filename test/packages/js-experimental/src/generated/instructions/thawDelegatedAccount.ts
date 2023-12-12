@@ -346,11 +346,6 @@ export function getThawDelegatedAccountInstruction<
     );
     accounts.tokenProgram.isWritable = false;
   }
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -359,14 +354,12 @@ export function getThawDelegatedAccountInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getThawDelegatedAccountInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getThawDelegatedAccountInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getThawDelegatedAccountInstructionRaw<

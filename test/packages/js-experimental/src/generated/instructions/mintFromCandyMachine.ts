@@ -766,11 +766,6 @@ export function getMintFromCandyMachineInstruction<
     );
     accounts.systemProgram.isWritable = false;
   }
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -779,14 +774,12 @@ export function getMintFromCandyMachineInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getMintFromCandyMachineInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getMintFromCandyMachineInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getMintFromCandyMachineInstructionRaw<

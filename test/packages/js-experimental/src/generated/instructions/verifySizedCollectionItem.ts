@@ -417,12 +417,6 @@ export function getVerifySizedCollectionItemInstruction<
     },
   };
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
     accounts,
@@ -430,14 +424,12 @@ export function getVerifySizedCollectionItemInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getVerifySizedCollectionItemInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getVerifySizedCollectionItemInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getVerifySizedCollectionItemInstructionRaw<

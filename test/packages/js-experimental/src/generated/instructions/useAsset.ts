@@ -596,11 +596,6 @@ export function getUseAssetInstruction<
     );
     accounts.systemProgram.isWritable = false;
   }
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -609,15 +604,13 @@ export function getUseAssetInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getUseAssetInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as UseAssetInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getUseAssetInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as UseAssetInstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getUseAssetInstructionRaw<

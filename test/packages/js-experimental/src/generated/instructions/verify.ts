@@ -360,12 +360,6 @@ export function getVerifyInstruction<
   // Original args.
   const args = { ...input };
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
     accounts,
@@ -373,15 +367,13 @@ export function getVerifyInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getVerifyInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as VerifyInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getVerifyInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as VerifyInstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getVerifyInstructionRaw<

@@ -50,17 +50,22 @@ export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragme
     const accountMetas = getAccountMetasWithSigners(accounts, 'programId', programAddress);
   {% endif %}
 
-  return Object.freeze({
-    ...{{ lowLevelFunctionName }}(
-      {%- if hasAccounts -%}
-        accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      {% endif %}
-      {%- if hasDataArgs -%}
-        args as {{ argsTypeFragment }},
-      {% endif %}
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = {{ lowLevelFunctionName }}(
+    {%- if hasAccounts -%}
+      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    {% endif %}
+    {%- if hasDataArgs -%}
+      args as {{ argsTypeFragment }},
+    {% endif %}
+    programAddress,
+    {%- if hasRemainingAccounts -%}
+      remainingAccounts,
+    {% endif %}
+  );
+
+  {% if hasBytesCreatedOnChain %}
+    return Object.freeze({ ...instruction, bytesCreatedOnChain });
+  {% else %}
+    return instruction;
+  {% endif %}
 }

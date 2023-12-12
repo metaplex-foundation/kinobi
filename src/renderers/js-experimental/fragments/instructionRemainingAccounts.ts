@@ -1,6 +1,6 @@
 import * as nodes from '../../../nodes';
 import { camelCase } from '../../../shared';
-import { Fragment, fragmentFromTemplate } from './common';
+import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getInstructionRemainingAccountsFragment(scope: {
   instructionNode: nodes.InstructionNode;
@@ -8,10 +8,14 @@ export function getInstructionRemainingAccountsFragment(scope: {
   useAsync: boolean;
 }): Fragment {
   const { remainingAccounts } = scope.instructionNode;
+  if (!remainingAccounts) return fragment('');
+
   const isAsync =
     scope.useAsync &&
     remainingAccounts?.kind === 'resolver' &&
     scope.asyncResolvers.includes(remainingAccounts.name);
+  if (!scope.useAsync && isAsync) return fragment('');
+
   const awaitKeyword = isAsync ? 'await ' : '';
   const remainingAccountsFragment = fragmentFromTemplate(
     'instructionRemainingAccounts.njk',

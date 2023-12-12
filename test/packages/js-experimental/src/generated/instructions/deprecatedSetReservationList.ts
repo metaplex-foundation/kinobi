@@ -322,12 +322,6 @@ export function getDeprecatedSetReservationListInstruction<
   // Original args.
   const args = { ...input };
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
     accounts,
@@ -335,15 +329,13 @@ export function getDeprecatedSetReservationListInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getDeprecatedSetReservationListInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as DeprecatedSetReservationListInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getDeprecatedSetReservationListInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as DeprecatedSetReservationListInstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getDeprecatedSetReservationListInstructionRaw<

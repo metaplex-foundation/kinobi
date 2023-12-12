@@ -559,11 +559,6 @@ export function getCreateV1Instruction<
     );
     accounts.splTokenProgram.isWritable = false;
   }
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -572,15 +567,13 @@ export function getCreateV1Instruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getCreateV1InstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as CreateV1InstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getCreateV1InstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as CreateV1InstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getCreateV1InstructionRaw<

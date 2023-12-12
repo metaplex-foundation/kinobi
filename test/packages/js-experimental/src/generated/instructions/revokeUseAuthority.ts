@@ -492,11 +492,6 @@ export function getRevokeUseAuthorityInstruction<
     );
     accounts.systemProgram.isWritable = false;
   }
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -505,14 +500,12 @@ export function getRevokeUseAuthorityInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getRevokeUseAuthorityInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getRevokeUseAuthorityInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getRevokeUseAuthorityInstructionRaw<

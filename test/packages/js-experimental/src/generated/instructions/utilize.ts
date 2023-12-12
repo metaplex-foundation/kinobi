@@ -588,11 +588,6 @@ export function getUtilizeInstruction<
     accounts.rent.value =
       'SysvarRent111111111111111111111111111111111' as Address<'SysvarRent111111111111111111111111111111111'>;
   }
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -601,15 +596,13 @@ export function getUtilizeInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getUtilizeInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as UtilizeInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getUtilizeInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as UtilizeInstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getUtilizeInstructionRaw<

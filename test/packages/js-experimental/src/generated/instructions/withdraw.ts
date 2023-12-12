@@ -207,12 +207,6 @@ export function getWithdrawInstruction<
     authority: { value: input.authority ?? null, isWritable: true },
   };
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
     accounts,
@@ -220,14 +214,12 @@ export function getWithdrawInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getWithdrawInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getWithdrawInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getWithdrawInstructionRaw<

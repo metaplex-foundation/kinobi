@@ -554,11 +554,6 @@ export function getMigrateInstruction<
     accounts.sysvarInstructions.value =
       'Sysvar1nstructions1111111111111111111111111' as Address<'Sysvar1nstructions1111111111111111111111111'>;
   }
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -567,15 +562,13 @@ export function getMigrateInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getMigrateInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as MigrateInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getMigrateInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as MigrateInstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getMigrateInstructionRaw<

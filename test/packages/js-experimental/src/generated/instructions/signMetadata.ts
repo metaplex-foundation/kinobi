@@ -206,12 +206,6 @@ export function getSignMetadataInstruction<
     creator: { value: input.creator ?? null, isWritable: false },
   };
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
     accounts,
@@ -219,14 +213,12 @@ export function getSignMetadataInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getSignMetadataInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getSignMetadataInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getSignMetadataInstructionRaw<

@@ -242,12 +242,6 @@ export function getUpdateCandyMachineInstruction<
   // Original args.
   const args = { ...input };
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
     accounts,
@@ -255,15 +249,13 @@ export function getUpdateCandyMachineInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getUpdateCandyMachineInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as UpdateCandyMachineInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getUpdateCandyMachineInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as UpdateCandyMachineInstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getUpdateCandyMachineInstructionRaw<

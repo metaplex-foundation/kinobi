@@ -477,11 +477,6 @@ export async function getCreateMetadataAccountV3InstructionAsync<
     );
     accounts.systemProgram.isWritable = false;
   }
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -490,15 +485,13 @@ export async function getCreateMetadataAccountV3InstructionAsync<
     programAddress
   );
 
-  return Object.freeze({
-    ...getCreateMetadataAccountV3InstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as CreateMetadataAccountV3InstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getCreateMetadataAccountV3InstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as CreateMetadataAccountV3InstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export type CreateMetadataAccountV3Input<
@@ -773,11 +766,6 @@ export function getCreateMetadataAccountV3Instruction<
     );
     accounts.systemProgram.isWritable = false;
   }
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -786,15 +774,13 @@ export function getCreateMetadataAccountV3Instruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getCreateMetadataAccountV3InstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as CreateMetadataAccountV3InstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getCreateMetadataAccountV3InstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as CreateMetadataAccountV3InstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getCreateMetadataAccountV3InstructionRaw<

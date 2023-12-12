@@ -1,6 +1,6 @@
 import * as nodes from '../../../nodes';
 import { camelCase, pascalCase } from '../../../shared';
-import { Fragment, fragmentFromTemplate } from './common';
+import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getInstructionBytesCreatedOnChainFragment(scope: {
   instructionNode: nodes.InstructionNode;
@@ -8,10 +8,14 @@ export function getInstructionBytesCreatedOnChainFragment(scope: {
   useAsync: boolean;
 }): Fragment {
   const bytes = scope.instructionNode.bytesCreatedOnChain;
+  if (!bytes) return fragment('');
+
   const isAsync =
     scope.useAsync &&
     bytes?.kind === 'resolver' &&
     scope.asyncResolvers.includes(bytes.name);
+  if (!scope.useAsync && isAsync) return fragment('');
+
   const awaitKeyword = isAsync ? 'await ' : '';
   const bytesFragment = fragmentFromTemplate(
     'instructionBytesCreatedOnChain.njk',

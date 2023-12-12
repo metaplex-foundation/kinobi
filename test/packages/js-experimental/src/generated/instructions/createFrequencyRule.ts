@@ -324,11 +324,6 @@ export function getCreateFrequencyRuleInstruction<
     );
     accounts.systemProgram.isWritable = false;
   }
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -337,15 +332,13 @@ export function getCreateFrequencyRuleInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getCreateFrequencyRuleInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as CreateFrequencyRuleInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getCreateFrequencyRuleInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as CreateFrequencyRuleInstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getCreateFrequencyRuleInstructionRaw<

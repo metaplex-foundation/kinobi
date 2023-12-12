@@ -646,11 +646,6 @@ export function getDelegateInstruction<
     accounts.sysvarInstructions.value =
       'Sysvar1nstructions1111111111111111111111111' as Address<'Sysvar1nstructions1111111111111111111111111'>;
   }
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -659,15 +654,13 @@ export function getDelegateInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getDelegateInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as DelegateInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getDelegateInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as DelegateInstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getDelegateInstructionRaw<

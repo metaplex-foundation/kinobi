@@ -448,11 +448,6 @@ export function getDeprecatedMintPrintingTokensInstruction<
     accounts.rent.value =
       'SysvarRent111111111111111111111111111111111' as Address<'SysvarRent111111111111111111111111111111111'>;
   }
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -461,15 +456,13 @@ export function getDeprecatedMintPrintingTokensInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getDeprecatedMintPrintingTokensInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as DeprecatedMintPrintingTokensInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getDeprecatedMintPrintingTokensInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as DeprecatedMintPrintingTokensInstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getDeprecatedMintPrintingTokensInstructionRaw<

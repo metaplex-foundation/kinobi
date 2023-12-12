@@ -504,11 +504,6 @@ export function getBurnInstruction<
     );
     accounts.splTokenProgram.isWritable = false;
   }
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -517,15 +512,13 @@ export function getBurnInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getBurnInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as BurnInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getBurnInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as BurnInstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getBurnInstructionRaw<

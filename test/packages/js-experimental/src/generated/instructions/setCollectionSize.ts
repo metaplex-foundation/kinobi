@@ -334,12 +334,6 @@ export function getSetCollectionSizeInstruction<
   // Original args.
   const args = { ...input };
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
     accounts,
@@ -347,15 +341,13 @@ export function getSetCollectionSizeInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getSetCollectionSizeInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as SetCollectionSizeInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getSetCollectionSizeInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as SetCollectionSizeInstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getSetCollectionSizeInstructionRaw<

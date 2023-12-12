@@ -515,8 +515,6 @@ export function getCreateMasterEditionV3Instruction<
     );
     accounts.systemProgram.isWritable = false;
   }
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = getMasterEditionV2Size() + BASE_ACCOUNT_SIZE;
@@ -528,15 +526,13 @@ export function getCreateMasterEditionV3Instruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getCreateMasterEditionV3InstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as CreateMasterEditionV3InstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getCreateMasterEditionV3InstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as CreateMasterEditionV3InstructionDataArgs,
+    programAddress
+  );
+
+  return Object.freeze({ ...instruction, bytesCreatedOnChain });
 }
 
 export function getCreateMasterEditionV3InstructionRaw<

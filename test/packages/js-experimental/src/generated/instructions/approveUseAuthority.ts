@@ -574,11 +574,6 @@ export function getApproveUseAuthorityInstruction<
     );
     accounts.systemProgram.isWritable = false;
   }
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -587,15 +582,13 @@ export function getApproveUseAuthorityInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getApproveUseAuthorityInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as ApproveUseAuthorityInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getApproveUseAuthorityInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as ApproveUseAuthorityInstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getApproveUseAuthorityInstructionRaw<

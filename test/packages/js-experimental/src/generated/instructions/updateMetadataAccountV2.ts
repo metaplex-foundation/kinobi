@@ -280,12 +280,6 @@ export function getUpdateMetadataAccountV2Instruction<
   // Original args.
   const args = { ...input, updateAuthority: input.updateAuthorityArg };
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
     accounts,
@@ -293,15 +287,13 @@ export function getUpdateMetadataAccountV2Instruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getUpdateMetadataAccountV2InstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as UpdateMetadataAccountV2InstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getUpdateMetadataAccountV2InstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as UpdateMetadataAccountV2InstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getUpdateMetadataAccountV2InstructionRaw<

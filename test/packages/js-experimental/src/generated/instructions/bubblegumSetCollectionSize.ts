@@ -371,12 +371,6 @@ export function getBubblegumSetCollectionSizeInstruction<
   // Original args.
   const args = { ...input };
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
     accounts,
@@ -384,15 +378,13 @@ export function getBubblegumSetCollectionSizeInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getBubblegumSetCollectionSizeInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as BubblegumSetCollectionSizeInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getBubblegumSetCollectionSizeInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as BubblegumSetCollectionSizeInstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getBubblegumSetCollectionSizeInstructionRaw<

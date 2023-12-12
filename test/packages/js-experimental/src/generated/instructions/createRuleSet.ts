@@ -316,11 +316,6 @@ export function getCreateRuleSetInstruction<
       accounts.ruleSetPda.value
     )[1];
   }
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -329,15 +324,13 @@ export function getCreateRuleSetInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getCreateRuleSetInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as CreateRuleSetInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getCreateRuleSetInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as CreateRuleSetInstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getCreateRuleSetInstructionRaw<

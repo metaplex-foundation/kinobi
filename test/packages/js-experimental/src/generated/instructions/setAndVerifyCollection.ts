@@ -449,12 +449,6 @@ export function getSetAndVerifyCollectionInstruction<
     },
   };
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
     accounts,
@@ -462,14 +456,12 @@ export function getSetAndVerifyCollectionInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getSetAndVerifyCollectionInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getSetAndVerifyCollectionInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getSetAndVerifyCollectionInstructionRaw<

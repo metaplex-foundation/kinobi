@@ -7,6 +7,4 @@
   const bytesCreatedOnChain = get{{ bytes.name | pascalCase }}Size(){% if bytes.includeHeader %} + BASE_ACCOUNT_SIZE{% endif %};
 {% elif bytes.kind === 'resolver' %}
   const bytesCreatedOnChain = {{ awaitKeyword }}{{ bytes.name | camelCase }}(resolverScope);
-{% else %}
-  const bytesCreatedOnChain = 0;
 {% endif %}

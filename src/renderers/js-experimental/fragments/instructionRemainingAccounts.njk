@@ -3,6 +3,4 @@
   const remainingAccounts: IAccountMeta[] = args.{{ remainingAccounts.name | camelCase }}.map((address) => ({ address, role: {{ "AccountRole.WRITABLE" if remainingAccounts.isWritable else "AccountRole.READONLY" }} }));
 {% elif remainingAccounts.kind === 'resolver' %}
   const remainingAccounts: IAccountMeta[] = {{ awaitKeyword }}{{ remainingAccounts.name | camelCase }}(resolverScope);
-{% else %}
-  const remainingAccounts: IAccountMeta[] = [];
 {% endif %}

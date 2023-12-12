@@ -793,11 +793,6 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
     );
     accounts.systemProgram.isWritable = false;
   }
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -806,15 +801,14 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getMintNewEditionFromMasterEditionViaVaultProxyInstructionRaw(
+  const instruction =
+    getMintNewEditionFromMasterEditionViaVaultProxyInstructionRaw(
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+      programAddress
+    );
+
+  return instruction;
 }
 
 export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionRaw<

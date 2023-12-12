@@ -97,14 +97,21 @@ export function getInstructionFunctionHighLevelFragment(scope: {
     .map(([k, v]) => `${k}: input.${v}`)
     .join(', ');
 
+  const resolvedInputsFragment = getInstructionInputResolvedFragment(scope);
+  const remainingAccountsFragment =
+    getInstructionRemainingAccountsFragment(scope);
+  const bytesCreatedOnChainFragment =
+    getInstructionBytesCreatedOnChainFragment(scope);
   const resolvedFragment = mergeFragments(
     [
-      getInstructionInputResolvedFragment(scope),
-      getInstructionRemainingAccountsFragment(scope),
-      getInstructionBytesCreatedOnChainFragment(scope),
+      resolvedInputsFragment,
+      remainingAccountsFragment,
+      bytesCreatedOnChainFragment,
     ],
-    (renders) => renders.join('\n')
+    (renders) => renders.join('\n\n')
   ).addFeatures('context:getProgramAddress');
+  const hasRemainingAccounts = remainingAccountsFragment.render !== '';
+  const hasBytesCreatedOnChain = bytesCreatedOnChainFragment.render !== '';
   const hasResolver = resolvedFragment.hasFeatures(
     'instruction:resolverScopeVariable'
   );
@@ -132,6 +139,8 @@ export function getInstructionFunctionHighLevelFragment(scope: {
       contextFragment,
       renamedArgs: renamedArgsText,
       resolvedFragment,
+      hasRemainingAccounts,
+      hasBytesCreatedOnChain,
       hasResolver,
       useAsync,
       wrapInPromiseIfAsync,

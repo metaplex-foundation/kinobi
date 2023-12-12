@@ -542,8 +542,6 @@ export async function getCreateMetadataAccountInstructionAsync<
   if (!args.metadataBump) {
     args.metadataBump = expectProgramDerivedAddress(accounts.metadata.value)[1];
   }
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = getMetadataSize() + BASE_ACCOUNT_SIZE;
@@ -555,15 +553,13 @@ export async function getCreateMetadataAccountInstructionAsync<
     programAddress
   );
 
-  return Object.freeze({
-    ...getCreateMetadataAccountInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as CreateMetadataAccountInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getCreateMetadataAccountInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as CreateMetadataAccountInstructionDataArgs,
+    programAddress
+  );
+
+  return Object.freeze({ ...instruction, bytesCreatedOnChain });
 }
 
 export type CreateMetadataAccountInput<
@@ -845,8 +841,6 @@ export function getCreateMetadataAccountInstruction<
   if (!args.metadataBump) {
     args.metadataBump = expectProgramDerivedAddress(accounts.metadata.value)[1];
   }
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
 
   // Bytes created on chain.
   const bytesCreatedOnChain = getMetadataSize() + BASE_ACCOUNT_SIZE;
@@ -858,15 +852,13 @@ export function getCreateMetadataAccountInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getCreateMetadataAccountInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as CreateMetadataAccountInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getCreateMetadataAccountInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as CreateMetadataAccountInstructionDataArgs,
+    programAddress
+  );
+
+  return Object.freeze({ ...instruction, bytesCreatedOnChain });
 }
 
 export function getCreateMetadataAccountInstructionRaw<

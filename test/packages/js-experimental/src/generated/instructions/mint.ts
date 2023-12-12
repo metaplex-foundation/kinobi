@@ -631,11 +631,6 @@ export function getMintInstruction<
     );
     accounts.splAtaProgram.isWritable = false;
   }
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -644,15 +639,13 @@ export function getMintInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getMintInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as MintInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getMintInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as MintInstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getMintInstructionRaw<

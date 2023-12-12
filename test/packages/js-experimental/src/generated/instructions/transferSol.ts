@@ -217,12 +217,6 @@ export function getTransferSolInstruction<
   // Original args.
   const args = { ...input };
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
     accounts,
@@ -230,15 +224,13 @@ export function getTransferSolInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getTransferSolInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as TransferSolInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getTransferSolInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as TransferSolInstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getTransferSolInstructionRaw<

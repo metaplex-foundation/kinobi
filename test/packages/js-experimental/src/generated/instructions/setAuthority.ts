@@ -221,12 +221,6 @@ export function getSetAuthorityInstruction<
   // Original args.
   const args = { ...input };
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
     accounts,
@@ -234,15 +228,13 @@ export function getSetAuthorityInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getSetAuthorityInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      args as SetAuthorityInstructionDataArgs,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getSetAuthorityInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    args as SetAuthorityInstructionDataArgs,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getSetAuthorityInstructionRaw<

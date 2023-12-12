@@ -554,14 +554,12 @@ export async function getDummyInstructionAsync<
       accounts.tokenOrAtaProgram.isWritable = false;
     }
   }
+
   // Remaining accounts.
   const remainingAccounts: IAccountMeta[] = args.proof.map((address) => ({
     address,
     role: AccountRole.READONLY,
   }));
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -570,14 +568,13 @@ export async function getDummyInstructionAsync<
     programAddress
   );
 
-  return Object.freeze({
-    ...getDummyInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getDummyInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress,
+    remainingAccounts
+  );
+
+  return instruction;
 }
 
 export type DummyInput<
@@ -927,14 +924,12 @@ export function getDummyInstruction<
       accounts.tokenOrAtaProgram.isWritable = false;
     }
   }
+
   // Remaining accounts.
   const remainingAccounts: IAccountMeta[] = args.proof.map((address) => ({
     address,
     role: AccountRole.READONLY,
   }));
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -943,14 +938,13 @@ export function getDummyInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getDummyInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getDummyInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress,
+    remainingAccounts
+  );
+
+  return instruction;
 }
 
 export function getDummyInstructionRaw<

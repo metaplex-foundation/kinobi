@@ -167,12 +167,6 @@ export function getPuffMetadataInstruction<
     metadata: { value: input.metadata ?? null, isWritable: true },
   };
 
-  // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [];
-
-  // Bytes created on chain.
-  const bytesCreatedOnChain = 0;
-
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
     accounts,
@@ -180,14 +174,12 @@ export function getPuffMetadataInstruction<
     programAddress
   );
 
-  return Object.freeze({
-    ...getPuffMetadataInstructionRaw(
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-      programAddress,
-      remainingAccounts
-    ),
-    bytesCreatedOnChain,
-  });
+  const instruction = getPuffMetadataInstructionRaw(
+    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+    programAddress
+  );
+
+  return instruction;
 }
 
 export function getPuffMetadataInstructionRaw<
