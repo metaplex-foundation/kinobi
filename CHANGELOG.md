@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.16.12
+
+### Patch Changes
+
+- [`02a9c7c`](https://github.com/metaplex-foundation/kinobi/commit/02a9c7cbceee8a1d365a5c4be88826d91a0b1f08) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix bytesCreatedOnChain arg strategy for js-experimental
+
 ## 0.16.11
 
 ### Patch Changes
