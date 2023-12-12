@@ -2,7 +2,6 @@ import { ConfigureOptions } from 'nunjucks';
 import { ImportFrom } from '../../../shared';
 import { resolveTemplate } from '../../utils';
 import { ImportMap } from '../ImportMap';
-import { ContextMap } from '../ContextMap';
 
 export function fragment(render: string, imports?: ImportMap): Fragment {
   return new Fragment(render, imports);
@@ -21,15 +20,6 @@ export function fragmentFromTemplate(
       options
     )
   );
-}
-
-export function fragmentWithContextMap(
-  render: string,
-  imports?: ImportMap
-): Fragment & { interfaces: ContextMap } {
-  const f = fragment(render, imports) as Fragment & { interfaces: ContextMap };
-  f.interfaces = new ContextMap();
-  return f;
 }
 
 export function mergeFragments(
@@ -105,6 +95,11 @@ export class Fragment {
   removeFeatures(features: FragmentFeature | FragmentFeature[]): this {
     const featureArray = typeof features === 'string' ? [features] : features;
     featureArray.forEach((f) => this.features.delete(f));
+    return this;
+  }
+
+  mergeFeaturesWith(...others: Fragment[]): this {
+    others.forEach((f) => this.addFeatures([...f.features]));
     return this;
   }
 

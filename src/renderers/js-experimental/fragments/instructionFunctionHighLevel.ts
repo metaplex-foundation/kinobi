@@ -1,7 +1,6 @@
 import * as nodes from '../../../nodes';
 import { camelCase, pascalCase } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
-import { ContextMap } from '../ContextMap';
 import { TypeManifest } from '../TypeManifest';
 import { hasAsyncDefaultValues } from '../asyncHelpers';
 import {
@@ -101,14 +100,13 @@ export function getInstructionFunctionHighLevelFragment(scope: {
   const bytesCreatedOnChainFragment =
     getInstructionBytesCreatedOnChainFragment(scope);
 
-  const context = new ContextMap()
-    .add('getProgramAddress')
-    .mergeWith(
-      resolvedInputsFragment.interfaces,
-      remainingAccountsFragment.interfaces,
-      bytesCreatedOnChainFragment.interfaces
-    );
-  const contextFragment = context.toFragment();
+  const contextFragment = fragment('')
+    .mergeFeaturesWith(
+      resolvedInputsFragment,
+      remainingAccountsFragment,
+      bytesCreatedOnChainFragment
+    )
+    .getContextFragment();
   const functionFragment = fragmentFromTemplate(
     'instructionFunctionHighLevel.njk',
     {
