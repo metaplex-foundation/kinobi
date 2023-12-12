@@ -73,8 +73,6 @@ export function getInstructionFunctionHighLevelFragment(scope: {
     instructionNode,
     true
   );
-  const wrapInPromiseIfAsync = (value: string) =>
-    useAsync ? `Promise<${value}>` : value;
 
   // Input.
   const inputTypeFragment = getInstructionInputTypeFragment({
@@ -116,6 +114,13 @@ export function getInstructionFunctionHighLevelFragment(scope: {
     'instruction:resolverScopeVariable'
   );
   const contextFragment = resolvedFragment.getContextFragment();
+  const getReturnType = (instructionType: string) => {
+    let returnType = instructionType;
+    if (hasBytesCreatedOnChain) {
+      returnType = `${returnType} & IInstructionWithBytesCreatedOnChain`;
+    }
+    return useAsync ? `Promise<${returnType}>` : returnType;
+  };
 
   const functionFragment = fragmentFromTemplate(
     'instructionFunctionHighLevel.njk',
@@ -143,7 +148,7 @@ export function getInstructionFunctionHighLevelFragment(scope: {
       hasBytesCreatedOnChain,
       hasResolver,
       useAsync,
-      wrapInPromiseIfAsync,
+      getReturnType,
     }
   )
     .mergeImportsWith(
@@ -164,6 +169,12 @@ export function getInstructionFunctionHighLevelFragment(scope: {
     functionFragment
       .addImports('solanaInstructions', ['IAccountMeta'])
       .addImports('shared', ['getAccountMetasWithSigners', 'ResolvedAccount']);
+  }
+
+  if (hasBytesCreatedOnChain) {
+    functionFragment.addImports('shared', [
+      'IInstructionWithBytesCreatedOnChain',
+    ]);
   }
 
   return functionFragment;

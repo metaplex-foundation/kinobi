@@ -51,6 +51,7 @@ import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { findMetadataPda, getMetadataSize } from '../accounts';
 import {
   Context,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   expectAddress,
@@ -336,7 +337,8 @@ export async function getCreateMetadataAccountInstructionAsync<
     TAccountUpdateAuthority,
     TAccountSystemProgram,
     TAccountRent
-  >
+  > &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function getCreateMetadataAccountInstructionAsync<
   TAccountMetadata extends string,
@@ -368,7 +370,8 @@ export async function getCreateMetadataAccountInstructionAsync<
     TAccountUpdateAuthority,
     TAccountSystemProgram,
     TAccountRent
-  >
+  > &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function getCreateMetadataAccountInstructionAsync<
   TAccountMetadata extends string,
@@ -399,7 +402,8 @@ export async function getCreateMetadataAccountInstructionAsync<
     TAccountUpdateAuthority,
     TAccountSystemProgram,
     TAccountRent
-  >
+  > &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function getCreateMetadataAccountInstructionAsync<
   TAccountMetadata extends string,
@@ -430,7 +434,8 @@ export async function getCreateMetadataAccountInstructionAsync<
     TAccountUpdateAuthority,
     TAccountSystemProgram,
     TAccountRent
-  >
+  > &
+    IInstructionWithBytesCreatedOnChain
 >;
 export async function getCreateMetadataAccountInstructionAsync<
   TAccountMetadata extends string,
@@ -462,7 +467,7 @@ export async function getCreateMetadataAccountInstructionAsync<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<IInstruction> {
+): Promise<IInstruction & IInstructionWithBytesCreatedOnChain> {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
@@ -647,7 +652,8 @@ export function getCreateMetadataAccountInstruction<
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountRent
->;
+> &
+  IInstructionWithBytesCreatedOnChain;
 export function getCreateMetadataAccountInstruction<
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -677,7 +683,8 @@ export function getCreateMetadataAccountInstruction<
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountRent
->;
+> &
+  IInstructionWithBytesCreatedOnChain;
 export function getCreateMetadataAccountInstruction<
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -706,7 +713,8 @@ export function getCreateMetadataAccountInstruction<
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountRent
->;
+> &
+  IInstructionWithBytesCreatedOnChain;
 export function getCreateMetadataAccountInstruction<
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -735,7 +743,8 @@ export function getCreateMetadataAccountInstruction<
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountRent
->;
+> &
+  IInstructionWithBytesCreatedOnChain;
 export function getCreateMetadataAccountInstruction<
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -766,7 +775,7 @@ export function getCreateMetadataAccountInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): IInstruction {
+): IInstruction & IInstructionWithBytesCreatedOnChain {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,

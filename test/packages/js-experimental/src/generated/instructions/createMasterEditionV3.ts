@@ -35,6 +35,7 @@ import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { getMasterEditionV2Size } from '../accounts';
 import {
   Context,
+  IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -290,7 +291,8 @@ export function getCreateMasterEditionV3Instruction<
   TAccountTokenProgram,
   TAccountSystemProgram,
   TAccountRent
->;
+> &
+  IInstructionWithBytesCreatedOnChain;
 export function getCreateMasterEditionV3Instruction<
   TAccountEdition extends string,
   TAccountMint extends string,
@@ -326,7 +328,8 @@ export function getCreateMasterEditionV3Instruction<
   TAccountTokenProgram,
   TAccountSystemProgram,
   TAccountRent
->;
+> &
+  IInstructionWithBytesCreatedOnChain;
 export function getCreateMasterEditionV3Instruction<
   TAccountEdition extends string,
   TAccountMint extends string,
@@ -361,7 +364,8 @@ export function getCreateMasterEditionV3Instruction<
   TAccountTokenProgram,
   TAccountSystemProgram,
   TAccountRent
->;
+> &
+  IInstructionWithBytesCreatedOnChain;
 export function getCreateMasterEditionV3Instruction<
   TAccountEdition extends string,
   TAccountMint extends string,
@@ -396,7 +400,8 @@ export function getCreateMasterEditionV3Instruction<
   TAccountTokenProgram,
   TAccountSystemProgram,
   TAccountRent
->;
+> &
+  IInstructionWithBytesCreatedOnChain;
 export function getCreateMasterEditionV3Instruction<
   TAccountEdition extends string,
   TAccountMint extends string,
@@ -433,7 +438,7 @@ export function getCreateMasterEditionV3Instruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): IInstruction {
+): IInstruction & IInstructionWithBytesCreatedOnChain {
   // Resolve context and input arguments.
   const context = (rawInput === undefined ? {} : rawContext) as Pick<
     Context,
