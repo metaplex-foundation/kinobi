@@ -6,6 +6,7 @@ import { Fragment, fragmentFromTemplate } from './common';
 
 export function getInstructionBytesCreatedOnChainFragment(scope: {
   instructionNode: nodes.InstructionNode;
+  argObject?: string;
 }): Fragment & { interfaces: ContextMap } {
   const bytes = scope.instructionNode.bytesCreatedOnChain;
   const imports = new ImportMap();
@@ -26,7 +27,7 @@ export function getInstructionBytesCreatedOnChainFragment(scope: {
 
   const bytesFragment = fragmentFromTemplate(
     'instructionBytesCreatedOnChain.njk',
-    { bytes }
+    { bytes, argObject: scope.argObject ?? 'args' }
   ).mergeImportsWith(imports) as Fragment & { interfaces: ContextMap };
   bytesFragment.interfaces = interfaces;
   return bytesFragment;
