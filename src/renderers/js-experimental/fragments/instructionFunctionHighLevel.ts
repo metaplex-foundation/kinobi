@@ -101,6 +101,7 @@ export function getInstructionFunctionHighLevelFragment(scope: {
     getInstructionBytesCreatedOnChainFragment(scope);
 
   const contextFragment = fragment('')
+    .addFeatures('context:getProgramAddress')
     .mergeFeaturesWith(
       resolvedInputsFragment,
       remainingAccountsFragment,
