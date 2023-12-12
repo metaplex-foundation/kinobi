@@ -38,7 +38,8 @@ export function mergeFragments(
 ): Fragment {
   return new Fragment(
     mergeRenders(fragments.map((f) => f.render)),
-    new ImportMap().mergeWith(...fragments)
+    new ImportMap().mergeWith(...fragments),
+    new Set(fragments.flatMap((f) => [...f.features]))
   );
 }
 
@@ -47,9 +48,16 @@ export class Fragment {
 
   public imports: ImportMap;
 
-  constructor(render: string, imports?: ImportMap) {
+  public features: Set<FragmentFeature>;
+
+  constructor(
+    render: string,
+    imports?: ImportMap,
+    features?: Set<FragmentFeature>
+  ) {
     this.render = render;
     this.imports = imports ?? new ImportMap();
+    this.features = features ?? new Set();
   }
 
   setRender(render: string): this {
@@ -88,6 +96,19 @@ export class Fragment {
     return this;
   }
 
+  getContextString(): string {
+    const contextInterfaces = [...this.features]
+      .filter((f) => f.startsWith('context:'))
+      .sort()
+      .map((i) => `"${i.substring(8)}"`)
+      .join(' | ');
+    return `Pick<Context, ${contextInterfaces}>`;
+  }
+
+  getContextFragment(): Fragment {
+    return fragment(this.getContextString()).addImports('shared', 'Context');
+  }
+
   clone(): Fragment {
     return new Fragment(this.render).mergeImportsWith(this.imports);
   }
@@ -96,3 +117,12 @@ export class Fragment {
     return this.render;
   }
 }
+
+export type FragmentFeature =
+  | 'context:fetchEncodedAccount'
+  | 'context:fetchEncodedAccounts'
+  | 'context:getProgramAddress'
+  | 'context:getProgramDerivedAddress'
+  | 'instruction:hasResolver'
+  | 'instruction:argsVariable'
+  | 'instruction:accountsVariable';
