@@ -96,6 +96,18 @@ export class Fragment {
     return this;
   }
 
+  addFeatures(features: FragmentFeature | FragmentFeature[]): this {
+    const featureArray = typeof features === 'string' ? [features] : features;
+    featureArray.forEach((f) => this.features.add(f));
+    return this;
+  }
+
+  removeFeatures(features: FragmentFeature | FragmentFeature[]): this {
+    const featureArray = typeof features === 'string' ? [features] : features;
+    featureArray.forEach((f) => this.features.delete(f));
+    return this;
+  }
+
   getContextString(): string {
     const contextInterfaces = [...this.features]
       .filter((f) => f.startsWith('context:'))
