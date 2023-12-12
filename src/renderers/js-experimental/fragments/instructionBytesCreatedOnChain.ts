@@ -4,12 +4,19 @@ import { Fragment, fragmentFromTemplate } from './common';
 
 export function getInstructionBytesCreatedOnChainFragment(scope: {
   instructionNode: nodes.InstructionNode;
-  argObject?: string;
+  asyncResolvers: string[];
+  useAsync: boolean;
 }): Fragment {
   const bytes = scope.instructionNode.bytesCreatedOnChain;
+  const awaitKeyword =
+    scope.useAsync &&
+    bytes?.kind === 'resolver' &&
+    scope.asyncResolvers.includes(bytes.name)
+      ? 'await '
+      : '';
   const bytesFragment = fragmentFromTemplate(
     'instructionBytesCreatedOnChain.njk',
-    { bytes, argObject: scope.argObject ?? 'args' }
+    { bytes, awaitKeyword }
   );
 
   if (bytes && 'includeHeader' in bytes && bytes.includeHeader) {
@@ -25,6 +32,7 @@ export function getInstructionBytesCreatedOnChainFragment(scope: {
     bytesFragment.addFeatures([
       'context:getProgramAddress',
       'context:getProgramDerivedAddress',
+      'instruction:resolverScopeVariable',
     ]);
   }
 

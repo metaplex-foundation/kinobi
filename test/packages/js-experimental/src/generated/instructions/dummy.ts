@@ -535,7 +535,7 @@ export async function getDummyInstructionAsync<
     args.proof = [];
   }
   if (!accounts.tokenOrAtaProgram.value) {
-    if (resolveTokenOrAta(context, accounts, args, programAddress, false)) {
+    if (resolveTokenOrAta(resolverScope)) {
       accounts.tokenOrAtaProgram.value = getProgramAddress(
         context,
         'splToken',
@@ -906,7 +906,7 @@ export function getDummyInstruction<
     args.proof = [];
   }
   if (!accounts.tokenOrAtaProgram.value) {
-    if (resolveTokenOrAta(context, accounts, args, programAddress, false)) {
+    if (resolveTokenOrAta(resolverScope)) {
       accounts.tokenOrAtaProgram.value = getProgramAddress(
         context,
         'splToken',

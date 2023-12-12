@@ -4,11 +4,19 @@ import { Fragment, fragmentFromTemplate } from './common';
 
 export function getInstructionRemainingAccountsFragment(scope: {
   instructionNode: nodes.InstructionNode;
+  asyncResolvers: string[];
+  useAsync: boolean;
 }): Fragment {
   const { remainingAccounts } = scope.instructionNode;
+  const awaitKeyword =
+    scope.useAsync &&
+    remainingAccounts?.kind === 'resolver' &&
+    scope.asyncResolvers.includes(remainingAccounts.name)
+      ? 'await '
+      : '';
   const remainingAccountsFragment = fragmentFromTemplate(
     'instructionRemainingAccounts.njk',
-    { remainingAccounts }
+    { remainingAccounts, awaitKeyword }
   ).addImports('solanaInstructions', ['IAccountMeta']);
 
   if (remainingAccounts?.kind === 'arg') {
@@ -22,6 +30,7 @@ export function getInstructionRemainingAccountsFragment(scope: {
       .addFeatures([
         'context:getProgramAddress',
         'context:getProgramDerivedAddress',
+        'instruction:resolverScopeVariable',
       ]);
   }
 

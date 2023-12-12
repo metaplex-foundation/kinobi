@@ -728,13 +728,7 @@ export async function getTransferInstructionAsync<
   if (!accounts.masterEdition.value) {
     accounts.masterEdition = {
       ...accounts.masterEdition,
-      ...(await resolveMasterEditionFromTokenStandard(
-        context,
-        accounts,
-        args,
-        programAddress,
-        false
-      )),
+      ...(await resolveMasterEditionFromTokenStandard(resolverScope)),
     };
   }
   if (!accounts.splTokenProgram.value) {
