@@ -217,7 +217,7 @@ export type ApproveUseAuthorityInput<
   /** Owner */
   owner: Address<TAccountOwner>;
   /** Payer */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** A Use Authority */
   user: Address<TAccountUser>;
   /** Owned Token Account Of Mint */
@@ -255,7 +255,7 @@ export type ApproveUseAuthorityInputWithSigners<
   /** Owner */
   owner: TransactionSigner<TAccountOwner>;
   /** Payer */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** A Use Authority */
   user: Address<TAccountUser>;
   /** Owned Token Account Of Mint */

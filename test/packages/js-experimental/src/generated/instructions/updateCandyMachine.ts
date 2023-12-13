@@ -131,7 +131,7 @@ export type UpdateCandyMachineInput<
   TAccountAuthority extends string
 > = {
   candyMachine: Address<TAccountCandyMachine>;
-  authority?: Address<TAccountAuthority>;
+  authority: Address<TAccountAuthority>;
   data: UpdateCandyMachineInstructionDataArgs['data'];
 };
 
@@ -140,7 +140,7 @@ export type UpdateCandyMachineInputWithSigners<
   TAccountAuthority extends string
 > = {
   candyMachine: Address<TAccountCandyMachine>;
-  authority?: TransactionSigner<TAccountAuthority>;
+  authority: TransactionSigner<TAccountAuthority>;
   data: UpdateCandyMachineInstructionDataArgs['data'];
 };
 

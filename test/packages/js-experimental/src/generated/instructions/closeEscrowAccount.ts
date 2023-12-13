@@ -183,7 +183,7 @@ export type CloseEscrowAccountInput<
   /** Edition account */
   edition: Address<TAccountEdition>;
   /** Wallet paying for the transaction and new account */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** System program */
   systemProgram?: Address<TAccountSystemProgram>;
   /** Instructions sysvar account */
@@ -211,7 +211,7 @@ export type CloseEscrowAccountInputWithSigners<
   /** Edition account */
   edition: Address<TAccountEdition>;
   /** Wallet paying for the transaction and new account */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** System program */
   systemProgram?: Address<TAccountSystemProgram>;
   /** Instructions sysvar account */

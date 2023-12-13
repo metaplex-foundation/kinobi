@@ -146,7 +146,7 @@ export type CreateRuleSetInput<
   TAccountSystemProgram extends string
 > = {
   /** Payer and creator of the RuleSet */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** The PDA account where the RuleSet is stored */
   ruleSetPda: ProgramDerivedAddress<TAccountRuleSetPda>;
   /** System program */
@@ -161,7 +161,7 @@ export type CreateRuleSetInputWithSigners<
   TAccountSystemProgram extends string
 > = {
   /** Payer and creator of the RuleSet */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** The PDA account where the RuleSet is stored */
   ruleSetPda: ProgramDerivedAddress<TAccountRuleSetPda>;
   /** System program */

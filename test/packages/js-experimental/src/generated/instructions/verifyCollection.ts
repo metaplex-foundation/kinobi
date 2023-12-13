@@ -156,7 +156,7 @@ export type VerifyCollectionInput<
   /** Collection Update authority */
   collectionAuthority: Address<TAccountCollectionAuthority>;
   /** payer */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** Mint of the Collection */
   collectionMint: Address<TAccountCollectionMint>;
   /** Metadata Account of the Collection */
@@ -178,7 +178,7 @@ export type VerifyCollectionInputWithSigners<
   /** Collection Update authority */
   collectionAuthority: TransactionSigner<TAccountCollectionAuthority>;
   /** payer */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** Mint of the Collection */
   collectionMint: Address<TAccountCollectionMint>;
   /** Metadata Account of the Collection */

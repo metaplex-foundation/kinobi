@@ -182,7 +182,7 @@ export type ApproveCollectionAuthorityInput<
   /** Update Authority of Collection NFT */
   updateAuthority: Address<TAccountUpdateAuthority>;
   /** Payer */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** Collection Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Mint of Collection Metadata */
@@ -210,7 +210,7 @@ export type ApproveCollectionAuthorityInputWithSigners<
   /** Update Authority of Collection NFT */
   updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   /** Payer */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** Collection Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Mint of Collection Metadata */

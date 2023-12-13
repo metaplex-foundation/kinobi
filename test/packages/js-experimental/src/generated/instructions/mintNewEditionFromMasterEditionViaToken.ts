@@ -270,7 +270,7 @@ export type MintNewEditionFromMasterEditionViaTokenInput<
   /** Mint authority of new mint */
   newMintAuthority: Address<TAccountNewMintAuthority>;
   /** payer */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** owner of token account containing master token (#8) */
   tokenAccountOwner: Address<TAccountTokenAccountOwner>;
   /** token account containing token from master metadata mint */
@@ -317,7 +317,7 @@ export type MintNewEditionFromMasterEditionViaTokenInputWithSigners<
   /** Mint authority of new mint */
   newMintAuthority: TransactionSigner<TAccountNewMintAuthority>;
   /** payer */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** owner of token account containing master token (#8) */
   tokenAccountOwner: TransactionSigner<TAccountTokenAccountOwner>;
   /** token account containing token from master metadata mint */

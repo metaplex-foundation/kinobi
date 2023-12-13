@@ -208,7 +208,7 @@ export type CreateMetadataAccountV3AsyncInput<
   /** Mint authority */
   mintAuthority: Address<TAccountMintAuthority>;
   /** payer */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** update authority info */
   updateAuthority: Address<TAccountUpdateAuthority>;
   /** System program */
@@ -236,7 +236,7 @@ export type CreateMetadataAccountV3AsyncInputWithSigners<
   /** Mint authority */
   mintAuthority: TransactionSigner<TAccountMintAuthority>;
   /** payer */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** update authority info */
   updateAuthority: Address<TAccountUpdateAuthority>;
   /** System program */
@@ -505,7 +505,7 @@ export type CreateMetadataAccountV3Input<
   /** Mint authority */
   mintAuthority: Address<TAccountMintAuthority>;
   /** payer */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** update authority info */
   updateAuthority: Address<TAccountUpdateAuthority>;
   /** System program */
@@ -533,7 +533,7 @@ export type CreateMetadataAccountV3InputWithSigners<
   /** Mint authority */
   mintAuthority: TransactionSigner<TAccountMintAuthority>;
   /** payer */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** update authority info */
   updateAuthority: Address<TAccountUpdateAuthority>;
   /** System program */

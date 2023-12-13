@@ -239,9 +239,9 @@ export type MintInput<
   /** Mint of token asset */
   mint: Address<TAccountMint>;
   /** Payer */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** (Mint or Update) authority */
-  authority?: Address<TAccountAuthority>;
+  authority: Address<TAccountAuthority>;
   /** System program */
   systemProgram?: Address<TAccountSystemProgram>;
   /** Instructions sysvar account */
@@ -280,9 +280,9 @@ export type MintInputWithSigners<
   /** Mint of token asset */
   mint: Address<TAccountMint>;
   /** Payer */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** (Mint or Update) authority */
-  authority?: TransactionSigner<TAccountAuthority>;
+  authority: TransactionSigner<TAccountAuthority>;
   /** System program */
   systemProgram?: Address<TAccountSystemProgram>;
   /** Instructions sysvar account */

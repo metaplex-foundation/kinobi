@@ -139,7 +139,7 @@ export type CreateReservationListInput<
   /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
   reservationList: Address<TAccountReservationList>;
   /** Payer */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** Update authority */
   updateAuthority: Address<TAccountUpdateAuthority>;
   /**  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
@@ -167,7 +167,7 @@ export type CreateReservationListInputWithSigners<
   /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
   reservationList: Address<TAccountReservationList>;
   /** Payer */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** Update authority */
   updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   /**  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */

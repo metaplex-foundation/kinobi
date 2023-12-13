@@ -282,9 +282,9 @@ export type MintFromCandyMachineInput<
   candyMachine: Address<TAccountCandyMachine>;
   authorityPda: Address<TAccountAuthorityPda>;
   mintAuthority: Address<TAccountMintAuthority>;
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   nftMint: Address<TAccountNftMint>;
-  nftMintAuthority?: Address<TAccountNftMintAuthority>;
+  nftMintAuthority: Address<TAccountNftMintAuthority>;
   nftMetadata: Address<TAccountNftMetadata>;
   nftMasterEdition: Address<TAccountNftMasterEdition>;
   collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
@@ -320,9 +320,9 @@ export type MintFromCandyMachineInputWithSigners<
   candyMachine: Address<TAccountCandyMachine>;
   authorityPda: Address<TAccountAuthorityPda>;
   mintAuthority: TransactionSigner<TAccountMintAuthority>;
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   nftMint: Address<TAccountNftMint>;
-  nftMintAuthority?: TransactionSigner<TAccountNftMintAuthority>;
+  nftMintAuthority: TransactionSigner<TAccountNftMintAuthority>;
   nftMetadata: Address<TAccountNftMetadata>;
   nftMasterEdition: Address<TAccountNftMasterEdition>;
   collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;

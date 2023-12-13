@@ -40,10 +40,11 @@ export function getInstructionInputTypeFragment(scope: {
     const resolvedAccount = resolvedInputs.find(
       (input) => input.kind === 'account' && input.name === account.name
     ) as ResolvedInstructionAccount;
-    const hasDefaultValue = useAsync
-      ? !!resolvedAccount.defaultsTo
-      : !!resolvedAccount.defaultsTo &&
-        !isAsyncDefaultValue(resolvedAccount.defaultsTo, asyncResolvers);
+    const hasDefaultValue =
+      !!resolvedAccount.defaultsTo &&
+      !['identity', 'payer'].includes(resolvedAccount.defaultsTo.kind) &&
+      (useAsync ||
+        !isAsyncDefaultValue(resolvedAccount.defaultsTo, asyncResolvers));
     const type = getAccountType(resolvedAccount, withSigners);
     accountImports.mergeWith(type);
     return {

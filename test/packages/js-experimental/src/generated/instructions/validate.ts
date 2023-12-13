@@ -390,7 +390,7 @@ export type ValidateInput<
   TAccountOptRuleNonsigner5 extends string
 > = {
   /** Payer and creator of the RuleSet */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** The PDA account where the RuleSet is stored */
   ruleSet: Address<TAccountRuleSet>;
   /** System program */
@@ -435,7 +435,7 @@ export type ValidateInputWithSigners<
   TAccountOptRuleNonsigner5 extends string
 > = {
   /** Payer and creator of the RuleSet */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** The PDA account where the RuleSet is stored */
   ruleSet: Address<TAccountRuleSet>;
   /** System program */

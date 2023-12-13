@@ -266,7 +266,7 @@ export type TransferAsyncInput<
   TAccountAuthorizationRules extends string
 > = {
   /** Transfer authority (token or delegate owner) */
-  authority?: Address<TAccountAuthority>;
+  authority: Address<TAccountAuthority>;
   /** Delegate record PDA */
   delegateRecord?: Address<TAccountDelegateRecord>;
   /** Token account */
@@ -317,7 +317,7 @@ export type TransferAsyncInputWithSigners<
   TAccountAuthorizationRules extends string
 > = {
   /** Transfer authority (token or delegate owner) */
-  authority?: TransactionSigner<TAccountAuthority>;
+  authority: TransactionSigner<TAccountAuthority>;
   /** Delegate record PDA */
   delegateRecord?: Address<TAccountDelegateRecord>;
   /** Token account */
@@ -792,7 +792,7 @@ export type TransferInput<
   TAccountAuthorizationRules extends string
 > = {
   /** Transfer authority (token or delegate owner) */
-  authority?: Address<TAccountAuthority>;
+  authority: Address<TAccountAuthority>;
   /** Delegate record PDA */
   delegateRecord?: Address<TAccountDelegateRecord>;
   /** Token account */
@@ -843,7 +843,7 @@ export type TransferInputWithSigners<
   TAccountAuthorizationRules extends string
 > = {
   /** Transfer authority (token or delegate owner) */
-  authority?: TransactionSigner<TAccountAuthority>;
+  authority: TransactionSigner<TAccountAuthority>;
   /** Delegate record PDA */
   delegateRecord?: Address<TAccountDelegateRecord>;
   /** Token account */

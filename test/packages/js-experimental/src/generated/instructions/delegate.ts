@@ -249,9 +249,9 @@ export type DelegateInput<
   /** Owned Token Account of mint */
   token?: Address<TAccountToken>;
   /** Authority to approve the delegation */
-  authority?: Address<TAccountAuthority>;
+  authority: Address<TAccountAuthority>;
   /** Payer */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** System Program */
   systemProgram?: Address<TAccountSystemProgram>;
   /** Instructions sysvar account */
@@ -293,9 +293,9 @@ export type DelegateInputWithSigners<
   /** Owned Token Account of mint */
   token?: Address<TAccountToken>;
   /** Authority to approve the delegation */
-  authority?: TransactionSigner<TAccountAuthority>;
+  authority: TransactionSigner<TAccountAuthority>;
   /** Payer */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** System Program */
   systemProgram?: Address<TAccountSystemProgram>;
   /** Instructions sysvar account */

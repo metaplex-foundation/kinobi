@@ -271,7 +271,7 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
   /** Burn authority for this token */
   burnAuthority: Address<TAccountBurnAuthority>;
   /** payer */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** update authority info for new metadata account */
   masterUpdateAuthority: Address<TAccountMasterUpdateAuthority>;
   /** Master record metadata account */
@@ -323,7 +323,7 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInputWithSi
   /** Burn authority for this token */
   burnAuthority: TransactionSigner<TAccountBurnAuthority>;
   /** payer */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** update authority info for new metadata account */
   masterUpdateAuthority: Address<TAccountMasterUpdateAuthority>;
   /** Master record metadata account */

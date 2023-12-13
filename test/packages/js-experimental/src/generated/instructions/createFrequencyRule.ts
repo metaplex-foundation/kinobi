@@ -155,7 +155,7 @@ export type CreateFrequencyRuleInput<
   TAccountSystemProgram extends string
 > = {
   /** Payer and creator of the Frequency Rule */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** The PDA account where the Frequency Rule is stored */
   frequencyPda: Address<TAccountFrequencyPda>;
   /** System program */
@@ -172,7 +172,7 @@ export type CreateFrequencyRuleInputWithSigners<
   TAccountSystemProgram extends string
 > = {
   /** Payer and creator of the Frequency Rule */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** The PDA account where the Frequency Rule is stored */
   frequencyPda: Address<TAccountFrequencyPda>;
   /** System program */

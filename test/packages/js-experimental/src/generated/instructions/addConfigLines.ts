@@ -157,7 +157,7 @@ export type AddConfigLinesInput<
   TAccountAuthority extends string
 > = {
   candyMachine: Address<TAccountCandyMachine>;
-  authority?: Address<TAccountAuthority>;
+  authority: Address<TAccountAuthority>;
   index: AddConfigLinesInstructionDataArgs['index'];
   configLines: AddConfigLinesInstructionDataArgs['configLines'];
   moreLines: AddConfigLinesInstructionDataArgs['moreLines'];
@@ -168,7 +168,7 @@ export type AddConfigLinesInputWithSigners<
   TAccountAuthority extends string
 > = {
   candyMachine: Address<TAccountCandyMachine>;
-  authority?: TransactionSigner<TAccountAuthority>;
+  authority: TransactionSigner<TAccountAuthority>;
   index: AddConfigLinesInstructionDataArgs['index'];
   configLines: AddConfigLinesInstructionDataArgs['configLines'];
   moreLines: AddConfigLinesInstructionDataArgs['moreLines'];

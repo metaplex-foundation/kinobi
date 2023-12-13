@@ -297,7 +297,7 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInput<
   /** Mint authority of new mint */
   newMintAuthority: Address<TAccountNewMintAuthority>;
   /** payer */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** Vault authority */
   vaultAuthority: Address<TAccountVaultAuthority>;
   /** Safety deposit token store account */
@@ -353,7 +353,7 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInputWithSigners<
   /** Mint authority of new mint */
   newMintAuthority: TransactionSigner<TAccountNewMintAuthority>;
   /** payer */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** Vault authority */
   vaultAuthority: TransactionSigner<TAccountVaultAuthority>;
   /** Safety deposit token store account */

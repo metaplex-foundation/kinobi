@@ -251,9 +251,9 @@ export type SetCollectionInput<
   TAccountSystemProgram extends string
 > = {
   candyMachine: Address<TAccountCandyMachine>;
-  authority?: Address<TAccountAuthority>;
+  authority: Address<TAccountAuthority>;
   authorityPda: Address<TAccountAuthorityPda>;
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   collectionMint: Address<TAccountCollectionMint>;
   collectionMetadata: Address<TAccountCollectionMetadata>;
   collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
@@ -283,9 +283,9 @@ export type SetCollectionInputWithSigners<
   TAccountSystemProgram extends string
 > = {
   candyMachine: Address<TAccountCandyMachine>;
-  authority?: TransactionSigner<TAccountAuthority>;
+  authority: TransactionSigner<TAccountAuthority>;
   authorityPda: Address<TAccountAuthorityPda>;
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   collectionMint: Address<TAccountCollectionMint>;
   collectionMetadata: Address<TAccountCollectionMetadata>;
   collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;

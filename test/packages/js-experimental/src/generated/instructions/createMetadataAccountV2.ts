@@ -191,7 +191,7 @@ export type CreateMetadataAccountV2Input<
   /** Mint authority */
   mintAuthority: Address<TAccountMintAuthority>;
   /** payer */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** update authority info */
   updateAuthority: Address<TAccountUpdateAuthority>;
   /** System program */
@@ -218,7 +218,7 @@ export type CreateMetadataAccountV2InputWithSigners<
   /** Mint authority */
   mintAuthority: TransactionSigner<TAccountMintAuthority>;
   /** payer */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** update authority info */
   updateAuthority: Address<TAccountUpdateAuthority>;
   /** System program */

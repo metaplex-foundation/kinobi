@@ -234,8 +234,8 @@ export type InitializeInput<
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authorityPda: Address<TAccountAuthorityPda>;
-  authority?: Address<TAccountAuthority>;
-  payer?: Address<TAccountPayer>;
+  authority: Address<TAccountAuthority>;
+  payer: Address<TAccountPayer>;
   collectionMetadata: Address<TAccountCollectionMetadata>;
   collectionMint: Address<TAccountCollectionMint>;
   collectionMasterEdition: Address<TAccountCollectionMasterEdition>;
@@ -261,8 +261,8 @@ export type InitializeInputWithSigners<
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authorityPda: Address<TAccountAuthorityPda>;
-  authority?: Address<TAccountAuthority>;
-  payer?: TransactionSigner<TAccountPayer>;
+  authority: Address<TAccountAuthority>;
+  payer: TransactionSigner<TAccountPayer>;
   collectionMetadata: Address<TAccountCollectionMetadata>;
   collectionMint: Address<TAccountCollectionMint>;
   collectionMasterEdition: Address<TAccountCollectionMasterEdition>;

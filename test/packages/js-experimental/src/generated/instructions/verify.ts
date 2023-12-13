@@ -158,7 +158,7 @@ export type VerifyInput<
   /** Collection Update authority */
   collectionAuthority: Address<TAccountCollectionAuthority>;
   /** payer */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** Token Authorization Rules account */
   authorizationRules?: Address<TAccountAuthorizationRules>;
   /** Token Authorization Rules Program */
@@ -178,7 +178,7 @@ export type VerifyInputWithSigners<
   /** Collection Update authority */
   collectionAuthority: TransactionSigner<TAccountCollectionAuthority>;
   /** payer */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** Token Authorization Rules account */
   authorizationRules?: Address<TAccountAuthorizationRules>;
   /** Token Authorization Rules Program */

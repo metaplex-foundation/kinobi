@@ -237,7 +237,7 @@ export type CreateV1Input<
   /** Mint authority */
   mintAuthority: Address<TAccountMintAuthority>;
   /** Payer */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** update authority info */
   updateAuthority: Address<TAccountUpdateAuthority>;
   /** System program */
@@ -271,7 +271,7 @@ export type CreateV1InputWithSigners<
   /** Mint authority */
   mintAuthority: TransactionSigner<TAccountMintAuthority>;
   /** Payer */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** update authority info */
   updateAuthority: Address<TAccountUpdateAuthority>;
   /** System program */

@@ -244,7 +244,7 @@ export type TransferOutOfEscrowInput<
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Wallet paying for the transaction and new account */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** Mint account for the new attribute */
   attributeMint: Address<TAccountAttributeMint>;
   /** Token account source for the new attribute */
@@ -288,7 +288,7 @@ export type TransferOutOfEscrowInputWithSigners<
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Wallet paying for the transaction and new account */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** Mint account for the new attribute */
   attributeMint: Address<TAccountAttributeMint>;
   /** Token account source for the new attribute */

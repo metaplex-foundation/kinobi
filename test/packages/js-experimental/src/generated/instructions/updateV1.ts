@@ -383,7 +383,7 @@ export type UpdateV1Input<
   TAccountAuthorizationRules extends string
 > = {
   /** Update authority or delegate */
-  authority?: Address<TAccountAuthority>;
+  authority: Address<TAccountAuthority>;
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Master Edition account */
@@ -429,7 +429,7 @@ export type UpdateV1InputWithSigners<
   TAccountAuthorizationRules extends string
 > = {
   /** Update authority or delegate */
-  authority?: TransactionSigner<TAccountAuthority>;
+  authority: TransactionSigner<TAccountAuthority>;
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Master Edition account */

@@ -206,7 +206,7 @@ export type DummyAsyncInput<
   mint?: Address<TAccountMint>;
   updateAuthority: Address<TAccountUpdateAuthority>;
   mintAuthority?: Address<TAccountMintAuthority>;
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   foo?: Address<TAccountFoo>;
   bar?: Address<TAccountBar>;
   delegate?: Address<TAccountDelegate>;
@@ -232,7 +232,7 @@ export type DummyAsyncInputWithSigners<
   mint?: Address<TAccountMint>;
   updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   mintAuthority?: TransactionSigner<TAccountMintAuthority>;
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   foo?: Address<TAccountFoo>;
   bar?: TransactionSigner<TAccountBar>;
   delegate?: TransactionSigner<TAccountDelegate>;
@@ -588,7 +588,7 @@ export type DummyInput<
   mint?: Address<TAccountMint>;
   updateAuthority: Address<TAccountUpdateAuthority>;
   mintAuthority?: Address<TAccountMintAuthority>;
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   foo?: Address<TAccountFoo>;
   bar?: Address<TAccountBar>;
   delegate?: Address<TAccountDelegate>;
@@ -614,7 +614,7 @@ export type DummyInputWithSigners<
   mint?: Address<TAccountMint>;
   updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   mintAuthority?: TransactionSigner<TAccountMintAuthority>;
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   foo?: Address<TAccountFoo>;
   bar?: TransactionSigner<TAccountBar>;
   delegate?: TransactionSigner<TAccountDelegate>;

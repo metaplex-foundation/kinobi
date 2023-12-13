@@ -213,7 +213,7 @@ export type CreateMasterEditionInput<
   /** Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
   mintAuthority: Address<TAccountMintAuthority>;
   /** payer */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Token program */
@@ -245,7 +245,7 @@ export type CreateMasterEditionInputWithSigners<
   /** Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
   mintAuthority: TransactionSigner<TAccountMintAuthority>;
   /** payer */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Token program */

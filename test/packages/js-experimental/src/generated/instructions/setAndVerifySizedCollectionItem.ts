@@ -181,7 +181,7 @@ export type SetAndVerifySizedCollectionItemInput<
   /** Collection Update authority */
   collectionAuthority: Address<TAccountCollectionAuthority>;
   /** payer */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** Update Authority of Collection NFT and NFT */
   updateAuthority: Address<TAccountUpdateAuthority>;
   /** Mint of the Collection */
@@ -209,7 +209,7 @@ export type SetAndVerifySizedCollectionItemInputWithSigners<
   /** Collection Update authority */
   collectionAuthority: TransactionSigner<TAccountCollectionAuthority>;
   /** payer */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** Update Authority of Collection NFT and NFT */
   updateAuthority: Address<TAccountUpdateAuthority>;
   /** Mint of the Collection */

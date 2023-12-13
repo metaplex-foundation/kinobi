@@ -266,7 +266,7 @@ export type DeprecatedCreateMasterEditionInput<
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** payer */
-  payer?: Address<TAccountPayer>;
+  payer: Address<TAccountPayer>;
   /** Token program */
   tokenProgram?: Address<TAccountTokenProgram>;
   /** System program */
@@ -310,7 +310,7 @@ export type DeprecatedCreateMasterEditionInputWithSigners<
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** payer */
-  payer?: TransactionSigner<TAccountPayer>;
+  payer: TransactionSigner<TAccountPayer>;
   /** Token program */
   tokenProgram?: Address<TAccountTokenProgram>;
   /** System program */
