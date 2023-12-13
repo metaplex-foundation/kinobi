@@ -106,9 +106,9 @@ export function decodeTokenOwnedEscrow<TAddress extends string = string>(
 export async function fetchTokenOwnedEscrow<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
   address: Address<TAddress>,
-  options?: FetchAccountConfig
+  config?: FetchAccountConfig
 ): Promise<TokenOwnedEscrow<TAddress>> {
-  const maybeAccount = await context.fetchEncodedAccount(address, options);
+  const maybeAccount = await context.fetchEncodedAccount(address, config);
   assertAccountExists(maybeAccount);
   return decodeTokenOwnedEscrow(maybeAccount);
 }
@@ -118,18 +118,18 @@ export async function safeFetchTokenOwnedEscrow<
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
   address: Address<TAddress>,
-  options?: FetchAccountConfig
+  config?: FetchAccountConfig
 ): Promise<TokenOwnedEscrow<TAddress> | null> {
-  const maybeAccount = await context.fetchEncodedAccount(address, options);
+  const maybeAccount = await context.fetchEncodedAccount(address, config);
   return maybeAccount.exists ? decodeTokenOwnedEscrow(maybeAccount) : null;
 }
 
 export async function fetchAllTokenOwnedEscrow(
   context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Address>,
-  options?: FetchAccountsConfig
+  config?: FetchAccountsConfig
 ): Promise<TokenOwnedEscrow[]> {
-  const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
+  const maybeAccounts = await context.fetchEncodedAccounts(addresses, config);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount);
     return decodeTokenOwnedEscrow(maybeAccount);
@@ -139,9 +139,9 @@ export async function fetchAllTokenOwnedEscrow(
 export async function safeFetchAllTokenOwnedEscrow(
   context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Address>,
-  options?: FetchAccountsConfig
+  config?: FetchAccountsConfig
 ): Promise<TokenOwnedEscrow[]> {
-  const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
+  const maybeAccounts = await context.fetchEncodedAccounts(addresses, config);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>

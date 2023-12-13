@@ -77,9 +77,9 @@ export function decodeEditionMarker<TAddress extends string = string>(
 export async function fetchEditionMarker<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
   address: Address<TAddress>,
-  options?: FetchAccountConfig
+  config?: FetchAccountConfig
 ): Promise<EditionMarker<TAddress>> {
-  const maybeAccount = await context.fetchEncodedAccount(address, options);
+  const maybeAccount = await context.fetchEncodedAccount(address, config);
   assertAccountExists(maybeAccount);
   return decodeEditionMarker(maybeAccount);
 }
@@ -87,18 +87,18 @@ export async function fetchEditionMarker<TAddress extends string = string>(
 export async function safeFetchEditionMarker<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
   address: Address<TAddress>,
-  options?: FetchAccountConfig
+  config?: FetchAccountConfig
 ): Promise<EditionMarker<TAddress> | null> {
-  const maybeAccount = await context.fetchEncodedAccount(address, options);
+  const maybeAccount = await context.fetchEncodedAccount(address, config);
   return maybeAccount.exists ? decodeEditionMarker(maybeAccount) : null;
 }
 
 export async function fetchAllEditionMarker(
   context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Address>,
-  options?: FetchAccountsConfig
+  config?: FetchAccountsConfig
 ): Promise<EditionMarker[]> {
-  const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
+  const maybeAccounts = await context.fetchEncodedAccounts(addresses, config);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount);
     return decodeEditionMarker(maybeAccount);
@@ -108,9 +108,9 @@ export async function fetchAllEditionMarker(
 export async function safeFetchAllEditionMarker(
   context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Address>,
-  options?: FetchAccountsConfig
+  config?: FetchAccountsConfig
 ): Promise<EditionMarker[]> {
-  const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
+  const maybeAccounts = await context.fetchEncodedAccounts(addresses, config);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) => decodeEditionMarker(maybeAccount as EncodedAccount));

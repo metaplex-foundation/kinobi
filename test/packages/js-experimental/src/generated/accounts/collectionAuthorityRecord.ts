@@ -103,9 +103,9 @@ export async function fetchCollectionAuthorityRecord<
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
   address: Address<TAddress>,
-  options?: FetchAccountConfig
+  config?: FetchAccountConfig
 ): Promise<CollectionAuthorityRecord<TAddress>> {
-  const maybeAccount = await context.fetchEncodedAccount(address, options);
+  const maybeAccount = await context.fetchEncodedAccount(address, config);
   assertAccountExists(maybeAccount);
   return decodeCollectionAuthorityRecord(maybeAccount);
 }
@@ -115,9 +115,9 @@ export async function safeFetchCollectionAuthorityRecord<
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
   address: Address<TAddress>,
-  options?: FetchAccountConfig
+  config?: FetchAccountConfig
 ): Promise<CollectionAuthorityRecord<TAddress> | null> {
-  const maybeAccount = await context.fetchEncodedAccount(address, options);
+  const maybeAccount = await context.fetchEncodedAccount(address, config);
   return maybeAccount.exists
     ? decodeCollectionAuthorityRecord(maybeAccount)
     : null;
@@ -126,9 +126,9 @@ export async function safeFetchCollectionAuthorityRecord<
 export async function fetchAllCollectionAuthorityRecord(
   context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Address>,
-  options?: FetchAccountsConfig
+  config?: FetchAccountsConfig
 ): Promise<CollectionAuthorityRecord[]> {
-  const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
+  const maybeAccounts = await context.fetchEncodedAccounts(addresses, config);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount);
     return decodeCollectionAuthorityRecord(maybeAccount);
@@ -138,9 +138,9 @@ export async function fetchAllCollectionAuthorityRecord(
 export async function safeFetchAllCollectionAuthorityRecord(
   context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Address>,
-  options?: FetchAccountsConfig
+  config?: FetchAccountsConfig
 ): Promise<CollectionAuthorityRecord[]> {
-  const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
+  const maybeAccounts = await context.fetchEncodedAccounts(addresses, config);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>

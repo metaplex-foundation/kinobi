@@ -127,9 +127,9 @@ export function decodeReservationListV2<TAddress extends string = string>(
 export async function fetchReservationListV2<TAddress extends string = string>(
   context: Pick<Context, 'fetchEncodedAccount'>,
   address: Address<TAddress>,
-  options?: FetchAccountConfig
+  config?: FetchAccountConfig
 ): Promise<ReservationListV2<TAddress>> {
-  const maybeAccount = await context.fetchEncodedAccount(address, options);
+  const maybeAccount = await context.fetchEncodedAccount(address, config);
   assertAccountExists(maybeAccount);
   return decodeReservationListV2(maybeAccount);
 }
@@ -139,18 +139,18 @@ export async function safeFetchReservationListV2<
 >(
   context: Pick<Context, 'fetchEncodedAccount'>,
   address: Address<TAddress>,
-  options?: FetchAccountConfig
+  config?: FetchAccountConfig
 ): Promise<ReservationListV2<TAddress> | null> {
-  const maybeAccount = await context.fetchEncodedAccount(address, options);
+  const maybeAccount = await context.fetchEncodedAccount(address, config);
   return maybeAccount.exists ? decodeReservationListV2(maybeAccount) : null;
 }
 
 export async function fetchAllReservationListV2(
   context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Address>,
-  options?: FetchAccountsConfig
+  config?: FetchAccountsConfig
 ): Promise<ReservationListV2[]> {
-  const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
+  const maybeAccounts = await context.fetchEncodedAccounts(addresses, config);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount);
     return decodeReservationListV2(maybeAccount);
@@ -160,9 +160,9 @@ export async function fetchAllReservationListV2(
 export async function safeFetchAllReservationListV2(
   context: Pick<Context, 'fetchEncodedAccounts'>,
   addresses: Array<Address>,
-  options?: FetchAccountsConfig
+  config?: FetchAccountsConfig
 ): Promise<ReservationListV2[]> {
-  const maybeAccounts = await context.fetchEncodedAccounts(addresses, options);
+  const maybeAccounts = await context.fetchEncodedAccounts(addresses, config);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
