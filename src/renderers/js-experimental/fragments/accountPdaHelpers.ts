@@ -24,7 +24,7 @@ export function getAccountPdaHelpersFragment(scope: {
       const seedManifest = visit(seed.type, typeManifestVisitor);
       imports.mergeWith(seedManifest.encoder);
       const seedValue = seed.value;
-      const valueManifest = getValueNodeFragment(seedValue);
+      const valueManifest = getValueNodeFragment(seedValue, nameApi);
       (seedValue as any).render = valueManifest.render;
       imports.mergeWith(valueManifest.imports);
       return { ...seed, typeManifest: seedManifest };

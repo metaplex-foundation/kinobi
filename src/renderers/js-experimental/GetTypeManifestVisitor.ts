@@ -3,6 +3,7 @@ import { SizeStrategy, camelCase, pascalCase } from '../../shared';
 import { Visitor, visit } from '../../visitors';
 import { Fragment, fragment, getValueNodeFragment } from './fragments';
 import { ImportMap } from './ImportMap';
+import { NameApi } from './nameTransformers';
 import { TypeManifest, mergeManifests } from './TypeManifest';
 
 function getEncoderFunction(name: string) {
@@ -15,6 +16,12 @@ function getDecoderFunction(name: string) {
 
 export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
   private parentName: { strict: string; loose: string } | null = null;
+
+  private nameApi: NameApi;
+
+  constructor(nameApi: NameApi) {
+    this.nameApi = nameApi;
+  }
 
   visitRoot(): TypeManifest {
     throw new Error(
@@ -443,7 +450,8 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
         const key = camelCase(f.name);
         const defaultsTo = f.defaultsTo as NonNullable<typeof f.defaultsTo>;
         const { render: renderedValue, imports } = getValueNodeFragment(
-          defaultsTo.value
+          defaultsTo.value,
+          this.nameApi
         );
         mergedManifest.encoder.mergeImportsWith(imports);
         return defaultsTo.strategy === 'omitted'

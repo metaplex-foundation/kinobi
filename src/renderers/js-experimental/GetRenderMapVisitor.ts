@@ -74,6 +74,11 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   constructor(options: GetRenderMapOptions = {}) {
     super();
+    const nameTransformers = {
+      ...DEFAULT_NAME_TRANSFORMERS,
+      ...options.nameTransformers,
+    };
+    this.nameApi = getNameApi(nameTransformers);
     this.options = {
       renderParentInstructions: options.renderParentInstructions ?? false,
       formatCode: options.formatCode ?? true,
@@ -83,18 +88,14 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       },
       dependencyMap: options.dependencyMap ?? {},
       typeManifestVisitor:
-        options.typeManifestVisitor ?? new GetTypeManifestVisitor(),
+        options.typeManifestVisitor ?? new GetTypeManifestVisitor(this.nameApi),
       byteSizeVisitor: options.byteSizeVisitor ?? new GetByteSizeVisitor(),
       resolvedInstructionInputVisitor:
         options.resolvedInstructionInputVisitor ??
         new GetResolvedInstructionInputsVisitor(),
       asyncResolvers: options.asyncResolvers ?? [],
-      nameTransformers: {
-        ...DEFAULT_NAME_TRANSFORMERS,
-        ...options.nameTransformers,
-      },
+      nameTransformers,
     };
-    this.nameApi = getNameApi(this.options.nameTransformers);
   }
 
   visitRoot(root: nodes.RootNode): RenderMap {

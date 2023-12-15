@@ -1,24 +1,28 @@
 import * as nodes from '../../../nodes';
-import { camelCase, pascalCase } from '../../../shared';
+import { pascalCase } from '../../../shared';
+import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, mergeFragments } from './common';
 
-export function getValueNodeFragment(value: nodes.ValueNode): Fragment {
+export function getValueNodeFragment(
+  value: nodes.ValueNode,
+  nameApi: NameApi
+): Fragment {
   switch (value.kind) {
     case 'list':
     case 'tuple':
       return mergeFragments(
-        value.values.map((v) => getValueNodeFragment(v)),
+        value.values.map((v) => getValueNodeFragment(v, nameApi)),
         (renders) => `[${renders.join(', ')}]`
       );
     case 'set':
       return mergeFragments(
-        value.values.map((v) => getValueNodeFragment(v)),
+        value.values.map((v) => getValueNodeFragment(v, nameApi)),
         (renders) => `new Set([${renders.join(', ')}])`
       );
     case 'map':
       const entryFragments = value.values.map(([k, v]) =>
         mergeFragments(
-          [getValueNodeFragment(k), getValueNodeFragment(v)],
+          [getValueNodeFragment(k, nameApi), getValueNodeFragment(v, nameApi)],
           (renders) => `[${renders.join(', ')}]`
         )
       );
@@ -28,15 +32,15 @@ export function getValueNodeFragment(value: nodes.ValueNode): Fragment {
       );
     case 'struct':
       const fieldFragments = Object.entries(value.values).map(([k, v]) =>
-        getValueNodeFragment(v).mapRender((r) => `${k}: ${r}`)
+        getValueNodeFragment(v, nameApi).mapRender((r) => `${k}: ${r}`)
       );
       return mergeFragments(
         fieldFragments,
         (renders) => `{ ${renders.join(', ')} }`
       );
     case 'enum':
-      const enumName = pascalCase(value.enumType);
-      const enumFn = camelCase(value.enumType);
+      const enumName = nameApi.dataType(value.enumType);
+      const enumFunction = nameApi.dataEnumFunction(value.enumType);
       const variantName = pascalCase(value.variant);
       const rawImportFrom = value.importFrom ?? 'generated';
       const importFrom =
@@ -50,17 +54,17 @@ export function getValueNodeFragment(value: nodes.ValueNode): Fragment {
       }
 
       if (value.value === 'empty') {
-        return fragment(`${enumFn}('${variantName}')`).addImports(
+        return fragment(`${enumFunction}('${variantName}')`).addImports(
           importFrom,
-          enumFn
+          enumFunction
         );
       }
 
-      return getValueNodeFragment(value.value)
-        .mapRender((r) => `${enumFn}('${variantName}', ${r})`)
-        .addImports(importFrom, enumFn);
+      return getValueNodeFragment(value.value, nameApi)
+        .mapRender((r) => `${enumFunction}('${variantName}', ${r})`)
+        .addImports(importFrom, enumFunction);
     case 'optionSome':
-      return getValueNodeFragment(value.value)
+      return getValueNodeFragment(value.value, nameApi)
         .mapRender((r) => `some(${r})`)
         .addImports('solanaOptions', 'some');
     case 'optionNone':

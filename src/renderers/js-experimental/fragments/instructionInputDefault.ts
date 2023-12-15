@@ -7,6 +7,7 @@ import {
 } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import { isAsyncDefaultValue } from '../asyncHelpers';
+import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, mergeFragments } from './common';
 import { getValueNodeFragment } from './valueNode';
 
@@ -15,8 +16,10 @@ export function getInstructionInputDefaultFragment(scope: {
   optionalAccountStrategy: 'programId' | 'omitted';
   asyncResolvers: string[];
   useAsync: boolean;
+  nameApi: NameApi;
 }): Fragment {
-  const { input, optionalAccountStrategy, asyncResolvers, useAsync } = scope;
+  const { input, optionalAccountStrategy, asyncResolvers, useAsync, nameApi } =
+    scope;
   if (!input.defaultsTo) {
     return fragment('');
   }
@@ -92,7 +95,7 @@ export function getInstructionInputDefaultFragment(scope: {
               `${seed}: expectSome(args.${camelCase(seedValue.name)})`
             ).addImports('shared', 'expectSome');
           }
-          return getValueNodeFragment(seedValue.value).mapRender(
+          return getValueNodeFragment(seedValue.value, nameApi).mapRender(
             (r) => `${seed}: ${r}`
           );
         }
@@ -145,7 +148,7 @@ export function getInstructionInputDefaultFragment(scope: {
       ).addImports('shared', 'expectSome');
 
     case 'value':
-      const valueManifest = getValueNodeFragment(defaultsTo.value);
+      const valueManifest = getValueNodeFragment(defaultsTo.value, nameApi);
       return defaultFragment(valueManifest.render).mergeImportsWith(
         valueManifest
       );
@@ -191,7 +194,7 @@ export function getInstructionInputDefaultFragment(scope: {
             ? `accounts.${camelCase(defaultsTo.input.name)}.value`
             : `args.${camelCase(defaultsTo.input.name)}`;
         if (defaultsTo.value) {
-          const comparedValue = getValueNodeFragment(defaultsTo.value);
+          const comparedValue = getValueNodeFragment(defaultsTo.value, nameApi);
           conditionalFragment
             .mergeImportsWith(comparedValue)
             .mergeFeaturesWith(comparedValue);
