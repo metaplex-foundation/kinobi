@@ -28,10 +28,10 @@ export function getInstructionFunctionLowLevelFragment(scope: {
     ).length > 0;
   const argsType = instructionNode.dataArgs.link
     ? dataArgsManifest.looseType.render
-    : `${pascalCase(instructionNode.dataArgs.name)}Args`;
+    : nameApi.dataArgsType(instructionNode.dataArgs.name);
   const encoderFunction = instructionNode.dataArgs.link
     ? dataArgsManifest.encoder.render
-    : `get${pascalCase(instructionNode.dataArgs.name)}Encoder()`;
+    : `${nameApi.encoderFunction(instructionNode.dataArgs.name)}()`;
   if (instructionNode.dataArgs.link) {
     imports.mergeWith(dataArgsManifest.looseType, dataArgsManifest.encoder);
   }

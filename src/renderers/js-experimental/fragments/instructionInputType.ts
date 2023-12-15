@@ -85,14 +85,14 @@ export function getInstructionInputTypeFragment(scope: {
     ];
   };
   const dataArgsType = instructionNode.dataArgs.link
-    ? `${pascalCase(instructionNode.dataArgs.link.name)}Args`
-    : `${pascalCase(instructionNode.dataArgs.name)}Args`;
+    ? nameApi.dataArgsType(instructionNode.dataArgs.link.name)
+    : nameApi.dataArgsType(instructionNode.dataArgs.name);
   const dataArgs = instructionNode.dataArgs.link
     ? []
     : instructionNode.dataArgs.struct.fields.flatMap(resolveArg);
   const extraArgsType = instructionNode.extraArgs.link
-    ? `${pascalCase(instructionNode.extraArgs.link.name)}Args`
-    : `${pascalCase(instructionNode.extraArgs.name)}Args`;
+    ? nameApi.dataArgsType(instructionNode.extraArgs.link.name)
+    : nameApi.dataArgsType(instructionNode.extraArgs.name);
   const extraArgs = instructionNode.extraArgs.link
     ? []
     : instructionNode.extraArgs.struct.fields.flatMap(resolveArg);

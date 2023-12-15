@@ -58,7 +58,7 @@ export function getInstructionFunctionHighLevelFragment(scope: {
   const argsTypeFragment = fragment(
     instructionNode.dataArgs.link
       ? dataArgsManifest.looseType.render
-      : `${pascalCase(instructionNode.dataArgs.name)}Args`
+      : nameApi.dataArgsType(instructionNode.dataArgs.name)
   );
   if (instructionNode.dataArgs.link) {
     argsTypeFragment.mergeImportsWith(dataArgsManifest.looseType);

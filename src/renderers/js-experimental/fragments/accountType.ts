@@ -1,5 +1,4 @@
 import * as nodes from '../../../nodes';
-import { pascalCase } from '../../../shared';
 import { TypeManifest } from '../TypeManifest';
 import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
@@ -21,7 +20,7 @@ export function getAccountTypeFragment(scope: {
 
   const dataNameFragment = accountNode.data.link
     ? typeManifest.strictType.clone()
-    : fragment(pascalCase(accountNode.data.name));
+    : fragment(nameApi.dataType(accountNode.data.name));
 
   return fragmentFromTemplate('accountType.njk', {
     accountType: nameApi.accountType(accountNode.name),
