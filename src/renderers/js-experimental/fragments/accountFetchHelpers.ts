@@ -11,12 +11,12 @@ export function getAccountFetchHelpersFragment(scope: {
   const { accountNode, typeManifest, nameApi } = scope;
   const decoderFunctionFragment = accountNode.data.link
     ? typeManifest.decoder.clone()
-    : fragment(nameApi.decoderFunction(accountNode.data.name));
+    : fragment(`${nameApi.decoderFunction(accountNode.data.name)}()`);
 
   return fragmentFromTemplate('accountFetchHelpers.njk', {
     decoderFunction: decoderFunctionFragment.render,
     accountType: nameApi.accountType(accountNode.name),
-    decodeFunction: nameApi.accountDecodeFunction(accountNode.data.name),
+    decodeFunction: nameApi.accountDecodeFunction(accountNode.name),
     fetchFunction: nameApi.accountFetchFunction(accountNode.name),
     safeFetchFunction: nameApi.accountSafeFetchFunction(accountNode.name),
     fetchAllFunction: nameApi.accountFetchAllFunction(accountNode.name),

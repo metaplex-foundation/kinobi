@@ -9,7 +9,7 @@ export async function {{ fetchFunction }}<TAddress extends string = string>(
 ): Promise<{{ accountType }}<TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   assertAccountExists(maybeAccount);
-  return decode{{ pascalCaseName }}(maybeAccount);
+  return {{ decodeFunction }}(maybeAccount);
 }
 
 export async function {{ safeFetchFunction }}<TAddress extends string = string>(
@@ -18,9 +18,7 @@ export async function {{ safeFetchFunction }}<TAddress extends string = string>(
   config?: FetchAccountConfig,
 ): Promise<{{ accountType }}<TAddress> | null> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
-  return maybeAccount.exists
-    ? decode{{ pascalCaseName }}(maybeAccount)
-    : null;
+  return maybeAccount.exists ? {{ decodeFunction }}(maybeAccount) : null;
 }
 
 export async function {{ fetchAllFunction }}(
@@ -31,7 +29,7 @@ export async function {{ fetchAllFunction }}(
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount);
-    return decode{{ pascalCaseName }}(maybeAccount);
+    return {{ decodeFunction }}(maybeAccount);
   });
 }
 

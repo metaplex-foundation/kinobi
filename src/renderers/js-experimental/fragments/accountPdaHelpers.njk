@@ -37,7 +37,7 @@ export async function {{ fetchFromSeedsFunction }}(
     seeds: {{ accountSeedsType }},
   {% endif %}
   config: FetchAccountConfig & { programAddress?: Address } = {},
-): Promise<{{ pascalCaseName }}> {
+): Promise<{{ accountType }}> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await {{ findPdaFunction }}({% if hasVariableSeeds %}seeds, {% endif %}{ programAddress });
   return {{ fetchFunction }}(rpc, address, fetchConfig);
@@ -49,7 +49,7 @@ export async function {{ safeFetchFromSeedsFunction }}(
     seeds: {{ accountSeedsType }},
   {% endif %}
   config: FetchAccountConfig & { programAddress?: Address } = {},
-): Promise<{{ pascalCaseName }} | null> {
+): Promise<{{ accountType }} | null> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await {{ findPdaFunction }}({% if hasVariableSeeds %}seeds, {% endif %}{ programAddress });
   return {{ safeFetchFunction }}(rpc, address, fetchConfig);
