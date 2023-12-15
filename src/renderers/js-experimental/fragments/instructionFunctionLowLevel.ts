@@ -36,8 +36,6 @@ export function getInstructionFunctionLowLevelFragment(scope: {
     imports.mergeWith(dataArgsManifest.looseType, dataArgsManifest.encoder);
   }
 
-  const functionName = nameApi.instructionRawFunction(instructionNode.name);
-
   const accountTypeParamsFragment = mergeFragments(
     instructionNode.accounts.map((account) =>
       getInstructionAccountTypeParamFragment({
@@ -71,7 +69,8 @@ export function getInstructionFunctionLowLevelFragment(scope: {
   const fragment = fragmentFromTemplate('instructionFunctionLowLevel.njk', {
     instruction: instructionNode,
     program: programNode,
-    functionName,
+    functionName: nameApi.instructionRawFunction(instructionNode.name),
+    instructionType: nameApi.instructionType(instructionNode.name),
     hasAccounts,
     hasLegacyOptionalAccounts,
     accounts,

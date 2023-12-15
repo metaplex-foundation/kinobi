@@ -39,7 +39,7 @@ export function {{ functionName }}<
       data: {{ encoderFunction }}.encode({}),
     {% endif %}
     programAddress,
-  } as {{ instruction.name | pascalCase }}Instruction<
+  } as {{ instructionType }}<
     TProgram,
     {% for account in accounts %}
       {{ account.typeParam }},

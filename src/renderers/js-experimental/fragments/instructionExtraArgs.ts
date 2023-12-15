@@ -1,13 +1,14 @@
 import * as nodes from '../../../nodes';
-import { pascalCase } from '../../../shared';
 import { TypeManifest } from '../TypeManifest';
+import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getInstructionExtraArgsFragment(scope: {
   instructionNode: nodes.InstructionNode;
   extraArgsManifest: TypeManifest;
+  nameApi: NameApi;
 }): Fragment {
-  const { instructionNode, extraArgsManifest } = scope;
+  const { instructionNode, extraArgsManifest, nameApi } = scope;
   if (
     instructionNode.extraArgs.struct.fields.length === 0 ||
     !!instructionNode.extraArgs.link
@@ -15,10 +16,9 @@ export function getInstructionExtraArgsFragment(scope: {
     return fragment('');
   }
 
-  const strictName = pascalCase(instructionNode.extraArgs.name);
-  const looseName = `${strictName}Args`;
   return fragmentFromTemplate('instructionExtraArgs.njk', {
-    looseName,
+    strictName: nameApi.dataType(instructionNode.extraArgs.name),
+    looseName: nameApi.dataArgsType(instructionNode.extraArgs.name),
     manifest: extraArgsManifest,
   }).mergeImportsWith(extraArgsManifest.looseType);
 }

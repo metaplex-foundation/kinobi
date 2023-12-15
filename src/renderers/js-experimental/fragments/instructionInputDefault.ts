@@ -3,7 +3,6 @@ import {
   InstructionArgDefault,
   InstructionDefault,
   camelCase,
-  pascalCase,
 } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import { isAsyncDefaultValue } from '../asyncHelpers';
@@ -74,7 +73,7 @@ export function getInstructionInputDefaultFragment(scope: {
       ).addImports('shared', 'expectAddress');
 
     case 'pda':
-      const pdaFunction = `find${pascalCase(defaultsTo.pdaAccount)}Pda`;
+      const pdaFunction = nameApi.accountFindPdaFunction(defaultsTo.pdaAccount);
       const pdaImportFrom =
         defaultsTo.importFrom === 'generated'
           ? 'generatedAccounts'
@@ -131,6 +130,7 @@ export function getInstructionInputDefaultFragment(scope: {
       }
       return defaultFragment('programAddress', false);
 
+    // Deprecated
     case 'identity':
     case 'payer':
       return fragment('');
@@ -154,11 +154,13 @@ export function getInstructionInputDefaultFragment(scope: {
       );
 
     case 'resolver':
-      const resolverName = camelCase(defaultsTo.name);
+      const resolverFunction = nameApi.resolverFunction(defaultsTo.name);
       const resolverAwait =
         useAsync && asyncResolvers.includes(defaultsTo.name) ? 'await ' : '';
-      return defaultFragment(`${resolverAwait}${resolverName}(resolverScope)`)
-        .addImports(defaultsTo.importFrom, resolverName)
+      return defaultFragment(
+        `${resolverAwait}${resolverFunction}(resolverScope)`
+      )
+        .addImports(defaultsTo.importFrom, resolverFunction)
         .addFeatures(['instruction:resolverScopeVariable']);
 
     case 'conditional':
@@ -206,15 +208,20 @@ export function getInstructionInputDefaultFragment(scope: {
             : comparedInputName;
         }
       } else {
-        const conditionalResolverName = camelCase(defaultsTo.resolver.name);
+        const conditionalResolverFunction = nameApi.resolverFunction(
+          defaultsTo.resolver.name
+        );
         conditionalFragment
-          .addImports(defaultsTo.resolver.importFrom, conditionalResolverName)
+          .addImports(
+            defaultsTo.resolver.importFrom,
+            conditionalResolverFunction
+          )
           .addFeatures(['instruction:resolverScopeVariable']);
         const conditionalResolverAwait =
           useAsync && asyncResolvers.includes(defaultsTo.resolver.name)
             ? 'await '
             : '';
-        condition = `${conditionalResolverAwait}${conditionalResolverName}(resolverScope)`;
+        condition = `${conditionalResolverAwait}${conditionalResolverFunction}(resolverScope)`;
         condition = negatedCondition ? `!${condition}` : condition;
       }
 
