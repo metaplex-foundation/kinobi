@@ -15,8 +15,7 @@ export function getInstructionAccountTypeParamFragment(scope: {
     programNode,
     allowAccountMeta,
   } = scope;
-  const pascalCaseName = pascalCase(instructionAccountNode.name);
-  const typeParam = `TAccount${pascalCaseName}`;
+  const typeParam = `TAccount${pascalCase(instructionAccountNode.name)}`;
   const accountMeta = allowAccountMeta ? ' | IAccountMeta<string>' : '';
   const imports = new ImportMap();
   if (allowAccountMeta) {

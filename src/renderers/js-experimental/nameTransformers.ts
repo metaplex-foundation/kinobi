@@ -48,7 +48,8 @@ export type NameTransformerKey =
   // | 'instructionData'
   | 'instructionAsyncFunction'
   | 'instructionSyncFunction'
-  | 'instructionRawFunction';
+  | 'instructionRawFunction'
+  | 'resolverFunction';
 
 export type NameTransformers = Record<NameTransformerKey, NameTransformer>;
 
@@ -103,4 +104,5 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
   instructionAsyncFunction: (name) => `get${pascalCase(name)}InstructionAsync`,
   instructionSyncFunction: (name) => `get${pascalCase(name)}Instruction`,
   instructionRawFunction: (name) => `get${pascalCase(name)}InstructionRaw`,
+  resolverFunction: (name) => `${camelCase(name)}`,
 };
