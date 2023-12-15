@@ -1,14 +1,19 @@
 import * as nodes from '../../../nodes';
-import { pascalCase } from '../../../shared';
+import { NameApi } from '../nameTransformers';
 import { Fragment, fragmentFromTemplate } from './common';
 
-export function getProgramErrorsFragment(
-  programNode: nodes.ProgramNode
-): Fragment {
-  const programErrorName = `${pascalCase(programNode.name)}ProgramError`;
-
+export function getProgramErrorsFragment(scope: {
+  programNode: nodes.ProgramNode;
+  nameApi: NameApi;
+}): Fragment {
+  const { programNode, nameApi } = scope;
   return fragmentFromTemplate('programErrors.njk', {
     errors: programNode.errors,
-    programErrorName,
+    programErrorClass: nameApi.programErrorClass(programNode.name),
+    programErrorCodeEnum: nameApi.programErrorCodeEnum(programNode.name),
+    programErrorCodeMap: nameApi.programErrorCodeMap(programNode.name),
+    programGetErrorFromCodeFunction: nameApi.programGetErrorFromCodeFunction(
+      programNode.name
+    ),
   });
 }

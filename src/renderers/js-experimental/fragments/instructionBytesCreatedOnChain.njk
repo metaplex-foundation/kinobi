@@ -4,7 +4,7 @@
 {% elif bytes.kind === 'arg' %}
   const bytesCreatedOnChain = Number(args.{{ bytes.name }}){% if bytes.includeHeader %} + BASE_ACCOUNT_SIZE{% endif %};
 {% elif bytes.kind === 'account' %}
-  const bytesCreatedOnChain = get{{ bytes.name | pascalCase }}Size(){% if bytes.includeHeader %} + BASE_ACCOUNT_SIZE{% endif %};
+  const bytesCreatedOnChain = {{ nameApi.accountGetSizeFunction(bytes.name) }}(){% if bytes.includeHeader %} + BASE_ACCOUNT_SIZE{% endif %};
 {% elif bytes.kind === 'resolver' %}
-  const bytesCreatedOnChain = {{ awaitKeyword }}{{ bytes.name | camelCase }}(resolverScope);
+  const bytesCreatedOnChain = {{ awaitKeyword }}{{ nameApi.resolverFunction(bytes.name) }}(resolverScope);
 {% endif %}

@@ -8,6 +8,7 @@ import {
 import { ImportMap } from '../ImportMap';
 import { TypeManifest } from '../TypeManifest';
 import { isAsyncDefaultValue } from '../asyncHelpers';
+import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getInstructionInputTypeFragment(scope: {
@@ -20,6 +21,7 @@ export function getInstructionInputTypeFragment(scope: {
   withSigners: boolean;
   asyncResolvers: string[];
   useAsync: boolean;
+  nameApi: NameApi;
 }): Fragment {
   const {
     instructionNode,
@@ -31,6 +33,7 @@ export function getInstructionInputTypeFragment(scope: {
     withSigners,
     asyncResolvers,
     useAsync,
+    nameApi,
   } = scope;
 
   // Accounts.
@@ -82,28 +85,35 @@ export function getInstructionInputTypeFragment(scope: {
     ];
   };
   const dataArgsType = instructionNode.dataArgs.link
-    ? `${pascalCase(instructionNode.dataArgs.link.name)}Args`
-    : `${pascalCase(instructionNode.dataArgs.name)}Args`;
+    ? nameApi.dataArgsType(instructionNode.dataArgs.link.name)
+    : nameApi.dataArgsType(instructionNode.dataArgs.name);
   const dataArgs = instructionNode.dataArgs.link
     ? []
     : instructionNode.dataArgs.struct.fields.flatMap(resolveArg);
   const extraArgsType = instructionNode.extraArgs.link
-    ? `${pascalCase(instructionNode.extraArgs.link.name)}Args`
-    : `${pascalCase(instructionNode.extraArgs.name)}Args`;
+    ? nameApi.dataArgsType(instructionNode.extraArgs.link.name)
+    : nameApi.dataArgsType(instructionNode.extraArgs.name);
   const extraArgs = instructionNode.extraArgs.link
     ? []
     : instructionNode.extraArgs.struct.fields.flatMap(resolveArg);
 
+  const syncInputType = withSigners
+    ? nameApi.instructionSyncInputWithSignersType(instructionNode.name)
+    : nameApi.instructionSyncInputType(instructionNode.name);
+  const asyncInputType = withSigners
+    ? nameApi.instructionAsyncInputWithSignersType(instructionNode.name)
+    : nameApi.instructionAsyncInputType(instructionNode.name);
+  const instructionInputType = useAsync ? asyncInputType : syncInputType;
+
   return fragmentFromTemplate('instructionInputType.njk', {
     instruction: instructionNode,
     program: programNode,
+    instructionInputType,
     accounts,
     dataArgs,
     dataArgsType,
     extraArgs,
     extraArgsType,
-    withSigners,
-    useAsync,
   })
     .mergeImportsWith(accountImports, argLinkImports)
     .addImports('solanaAddresses', ['Address']);

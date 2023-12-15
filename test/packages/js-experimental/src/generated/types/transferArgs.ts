@@ -82,6 +82,7 @@ export function transferArgs<K extends TransferArgsArgs['__kind']>(
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };
 }
+
 export function isTransferArgs<K extends TransferArgs['__kind']>(
   kind: K,
   value: TransferArgs

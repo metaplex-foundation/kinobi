@@ -1,7 +1,7 @@
 import type { ConfigureOptions } from 'nunjucks';
 import { format as formatCode, Options as PrettierOptions } from 'prettier';
 import * as nodes from '../../nodes';
-import { camelCase, ImportFrom, mainCase, pascalCase } from '../../shared';
+import { camelCase, ImportFrom, mainCase } from '../../shared';
 import { logWarn } from '../../shared/logs';
 import {
   BaseThrowVisitor,
@@ -31,6 +31,12 @@ import {
 import { GetTypeManifestVisitor } from './GetTypeManifestVisitor';
 import { ImportMap } from './ImportMap';
 import { TypeManifest } from './TypeManifest';
+import {
+  NameTransformers,
+  DEFAULT_NAME_TRANSFORMERS,
+  NameApi,
+  getNameApi,
+} from './nameTransformers';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -54,15 +60,25 @@ export type GetRenderMapOptions = {
   };
   resolvedInstructionInputVisitor?: Visitor<ResolvedInstructionInput[]>;
   asyncResolvers?: string[];
+  nameTransformers?: Partial<NameTransformers>;
 };
 
 export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
-  readonly options: Required<GetRenderMapOptions>;
+  readonly options: Required<GetRenderMapOptions> & {
+    nameTransformers: NameTransformers;
+  };
 
   private program: nodes.ProgramNode | null = null;
 
+  private nameApi: NameApi;
+
   constructor(options: GetRenderMapOptions = {}) {
     super();
+    const nameTransformers = {
+      ...DEFAULT_NAME_TRANSFORMERS,
+      ...options.nameTransformers,
+    };
+    this.nameApi = getNameApi(nameTransformers);
     this.options = {
       renderParentInstructions: options.renderParentInstructions ?? false,
       formatCode: options.formatCode ?? true,
@@ -72,12 +88,13 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       },
       dependencyMap: options.dependencyMap ?? {},
       typeManifestVisitor:
-        options.typeManifestVisitor ?? new GetTypeManifestVisitor(),
+        options.typeManifestVisitor ?? new GetTypeManifestVisitor(this.nameApi),
       byteSizeVisitor: options.byteSizeVisitor ?? new GetByteSizeVisitor(),
       resolvedInstructionInputVisitor:
         options.resolvedInstructionInputVisitor ??
         new GetResolvedInstructionInputsVisitor(),
       asyncResolvers: options.asyncResolvers ?? [],
+      nameTransformers,
     };
   }
 
@@ -144,8 +161,6 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   visitProgram(program: nodes.ProgramNode): RenderMap {
     this.program = program;
-    const { name } = program;
-    // const pascalCaseName = pascalCase(name);
     const renderMap = new RenderMap()
       .mergeWith(...program.accounts.map((account) => visit(account, this)))
       .mergeWith(...program.definedTypes.map((type) => visit(type, this)));
@@ -159,9 +174,12 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
 
     if (program.errors.length > 0) {
-      const programErrorsFragment = getProgramErrorsFragment(program);
+      const programErrorsFragment = getProgramErrorsFragment({
+        programNode: program,
+        nameApi: this.nameApi,
+      });
       renderMap.add(
-        `errors/${camelCase(name)}.ts`,
+        `errors/${camelCase(program.name)}.ts`,
         this.render('errorsPage.njk', {
           imports: new ImportMap()
             .mergeWith(programErrorsFragment)
@@ -171,9 +189,12 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       );
     }
 
-    const programFragment = getProgramFragment(program);
+    const programFragment = getProgramFragment({
+      programNode: program,
+      nameApi: this.nameApi,
+    });
     renderMap.add(
-      `programs/${camelCase(name)}.ts`,
+      `programs/${camelCase(program.name)}.ts`,
       this.render('programsPage.njk', {
         imports: new ImportMap()
           .mergeWith(programFragment)
@@ -195,29 +216,25 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitAccount(account: nodes.AccountNode): RenderMap {
-    const typeManifest = visit(account, this.typeManifestVisitor);
-    const program = this.program as nodes.ProgramNode;
-    const accountTypeFragment = getAccountTypeFragment(account, typeManifest);
-    const accountFetchHelpersFragment = getAccountFetchHelpersFragment(
-      account,
-      typeManifest
-    );
-    // const accountGpaHelpersFragment = getAccountGpaHelpersFragment(
-    //   account,
-    //   program,
-    //   this.typeManifestVisitor,
-    //   this.byteSizeVisitor
-    // );
-    const accountSizeHelpersFragment = getAccountSizeHelpersFragment(account);
-    const accountPdaHelpersFragment = getAccountPdaHelpersFragment(
-      account,
-      program,
-      this.typeManifestVisitor
-    );
+    if (!this.program) {
+      throw new Error('Account must be visited inside a program.');
+    }
+
+    const scope = {
+      accountNode: account,
+      programNode: this.program,
+      typeManifest: visit(account, this.typeManifestVisitor),
+      typeManifestVisitor: this.typeManifestVisitor,
+      nameApi: this.nameApi,
+    };
+
+    const accountTypeFragment = getAccountTypeFragment(scope);
+    const accountFetchHelpersFragment = getAccountFetchHelpersFragment(scope);
+    const accountSizeHelpersFragment = getAccountSizeHelpersFragment(scope);
+    const accountPdaHelpersFragment = getAccountPdaHelpersFragment(scope);
     const imports = new ImportMap().mergeWith(
       accountTypeFragment,
       accountFetchHelpersFragment,
-      // accountGpaHelpersFragment,
       accountSizeHelpersFragment,
       accountPdaHelpersFragment
     );
@@ -228,7 +245,6 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         imports: imports.toString(this.options.dependencyMap),
         accountTypeFragment,
         accountFetchHelpersFragment,
-        // accountGpaHelpersFragment,
         accountSizeHelpersFragment,
         accountPdaHelpersFragment,
       })
@@ -240,7 +256,6 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       throw new Error('Instruction must be visited inside a program.');
     }
 
-    // Data for fragments.
     const scope = {
       instructionNode: instruction,
       programNode: this.program,
@@ -249,6 +264,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       extraArgsManifest: visit(instruction.extraArgs, this.typeManifestVisitor),
       resolvedInputs: visit(instruction, this.resolvedInstructionInputVisitor),
       asyncResolvers: this.options.asyncResolvers,
+      nameApi: this.nameApi,
     };
 
     // Fragments.
@@ -297,23 +313,27 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): RenderMap {
-    const pascalCaseName = pascalCase(definedType.name);
-    const typeManifest = visit(definedType, this.typeManifestVisitor);
-    const typeWithCodecFragment = getTypeWithCodecFragment(
-      pascalCaseName,
-      typeManifest,
-      definedType.docs
-    );
-    const typeDataEnumHelpersFragment = getTypeDataEnumHelpersFragment(
-      pascalCaseName,
-      definedType.data
-    );
+    const scope = {
+      typeNode: definedType.data,
+      name: definedType.name,
+      manifest: visit(definedType, this.typeManifestVisitor),
+      typeDocs: definedType.docs,
+      encoderDocs: [],
+      decoderDocs: [],
+      codecDocs: [],
+      nameApi: this.nameApi,
+    };
+
+    const typeWithCodecFragment = getTypeWithCodecFragment(scope);
+    const typeDataEnumHelpersFragment = getTypeDataEnumHelpersFragment(scope);
     const imports = new ImportMap()
       .mergeWith(typeWithCodecFragment, typeDataEnumHelpersFragment)
       .remove('generatedTypes', [
-        pascalCaseName,
-        `${pascalCaseName}Args`,
-        `get${pascalCaseName}Serializer`,
+        this.nameApi.dataType(definedType.name),
+        this.nameApi.dataArgsType(definedType.name),
+        this.nameApi.encoderFunction(definedType.name),
+        this.nameApi.decoderFunction(definedType.name),
+        this.nameApi.codecFunction(definedType.name),
       ]);
 
     return new RenderMap().add(

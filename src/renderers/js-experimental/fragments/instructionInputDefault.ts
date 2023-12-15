@@ -3,10 +3,10 @@ import {
   InstructionArgDefault,
   InstructionDefault,
   camelCase,
-  pascalCase,
 } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import { isAsyncDefaultValue } from '../asyncHelpers';
+import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, mergeFragments } from './common';
 import { getValueNodeFragment } from './valueNode';
 
@@ -15,8 +15,10 @@ export function getInstructionInputDefaultFragment(scope: {
   optionalAccountStrategy: 'programId' | 'omitted';
   asyncResolvers: string[];
   useAsync: boolean;
+  nameApi: NameApi;
 }): Fragment {
-  const { input, optionalAccountStrategy, asyncResolvers, useAsync } = scope;
+  const { input, optionalAccountStrategy, asyncResolvers, useAsync, nameApi } =
+    scope;
   if (!input.defaultsTo) {
     return fragment('');
   }
@@ -71,7 +73,7 @@ export function getInstructionInputDefaultFragment(scope: {
       ).addImports('shared', 'expectAddress');
 
     case 'pda':
-      const pdaFunction = `find${pascalCase(defaultsTo.pdaAccount)}Pda`;
+      const pdaFunction = nameApi.accountFindPdaFunction(defaultsTo.pdaAccount);
       const pdaImportFrom =
         defaultsTo.importFrom === 'generated'
           ? 'generatedAccounts'
@@ -92,7 +94,7 @@ export function getInstructionInputDefaultFragment(scope: {
               `${seed}: expectSome(args.${camelCase(seedValue.name)})`
             ).addImports('shared', 'expectSome');
           }
-          return getValueNodeFragment(seedValue.value).mapRender(
+          return getValueNodeFragment(seedValue.value, nameApi).mapRender(
             (r) => `${seed}: ${r}`
           );
         }
@@ -128,6 +130,7 @@ export function getInstructionInputDefaultFragment(scope: {
       }
       return defaultFragment('programAddress', false);
 
+    // Deprecated
     case 'identity':
     case 'payer':
       return fragment('');
@@ -145,17 +148,19 @@ export function getInstructionInputDefaultFragment(scope: {
       ).addImports('shared', 'expectSome');
 
     case 'value':
-      const valueManifest = getValueNodeFragment(defaultsTo.value);
+      const valueManifest = getValueNodeFragment(defaultsTo.value, nameApi);
       return defaultFragment(valueManifest.render).mergeImportsWith(
         valueManifest
       );
 
     case 'resolver':
-      const resolverName = camelCase(defaultsTo.name);
+      const resolverFunction = nameApi.resolverFunction(defaultsTo.name);
       const resolverAwait =
         useAsync && asyncResolvers.includes(defaultsTo.name) ? 'await ' : '';
-      return defaultFragment(`${resolverAwait}${resolverName}(resolverScope)`)
-        .addImports(defaultsTo.importFrom, resolverName)
+      return defaultFragment(
+        `${resolverAwait}${resolverFunction}(resolverScope)`
+      )
+        .addImports(defaultsTo.importFrom, resolverFunction)
         .addFeatures(['instruction:resolverScopeVariable']);
 
     case 'conditional':
@@ -191,7 +196,7 @@ export function getInstructionInputDefaultFragment(scope: {
             ? `accounts.${camelCase(defaultsTo.input.name)}.value`
             : `args.${camelCase(defaultsTo.input.name)}`;
         if (defaultsTo.value) {
-          const comparedValue = getValueNodeFragment(defaultsTo.value);
+          const comparedValue = getValueNodeFragment(defaultsTo.value, nameApi);
           conditionalFragment
             .mergeImportsWith(comparedValue)
             .mergeFeaturesWith(comparedValue);
@@ -203,15 +208,20 @@ export function getInstructionInputDefaultFragment(scope: {
             : comparedInputName;
         }
       } else {
-        const conditionalResolverName = camelCase(defaultsTo.resolver.name);
+        const conditionalResolverFunction = nameApi.resolverFunction(
+          defaultsTo.resolver.name
+        );
         conditionalFragment
-          .addImports(defaultsTo.resolver.importFrom, conditionalResolverName)
+          .addImports(
+            defaultsTo.resolver.importFrom,
+            conditionalResolverFunction
+          )
           .addFeatures(['instruction:resolverScopeVariable']);
         const conditionalResolverAwait =
           useAsync && asyncResolvers.includes(defaultsTo.resolver.name)
             ? 'await '
             : '';
-        condition = `${conditionalResolverAwait}${conditionalResolverName}(resolverScope)`;
+        condition = `${conditionalResolverAwait}${conditionalResolverFunction}(resolverScope)`;
         condition = negatedCondition ? `!${condition}` : condition;
       }
 

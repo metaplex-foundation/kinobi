@@ -1,25 +1,30 @@
 import * as nodes from '../../../nodes';
-import { pascalCase } from '../../../shared';
 import { TypeManifest } from '../TypeManifest';
+import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 import { getTypeWithCodecFragment } from './typeWithCodec';
 
-export function getAccountTypeFragment(
-  accountNode: nodes.AccountNode,
-  manifest: TypeManifest
-): Fragment {
+export function getAccountTypeFragment(scope: {
+  accountNode: nodes.AccountNode;
+  typeManifest: TypeManifest;
+  nameApi: NameApi;
+}): Fragment {
+  const { accountNode, typeManifest, nameApi } = scope;
   const typeWithCodecFragment = accountNode.data.link
     ? fragment('')
-    : getTypeWithCodecFragment(accountNode.data.name, manifest);
+    : getTypeWithCodecFragment({
+        name: accountNode.data.name,
+        manifest: typeManifest,
+        nameApi,
+      });
 
   const dataNameFragment = accountNode.data.link
-    ? manifest.strictType.clone()
-    : fragment(pascalCase(accountNode.data.name));
+    ? typeManifest.strictType.clone()
+    : fragment(nameApi.dataType(accountNode.data.name));
 
   return fragmentFromTemplate('accountType.njk', {
-    name: pascalCase(accountNode.name),
+    accountType: nameApi.accountType(accountNode.name),
     dataName: dataNameFragment.render,
-    link: accountNode.data.link,
     typeWithCodec: typeWithCodecFragment,
   })
     .mergeImportsWith(dataNameFragment, typeWithCodecFragment)

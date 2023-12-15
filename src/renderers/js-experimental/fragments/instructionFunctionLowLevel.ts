@@ -2,6 +2,7 @@ import * as nodes from '../../../nodes';
 import { pascalCase } from '../../../shared';
 import { ImportMap } from '../ImportMap';
 import { TypeManifest } from '../TypeManifest';
+import { NameApi } from '../nameTransformers';
 import { Fragment, fragmentFromTemplate, mergeFragments } from './common';
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
 
@@ -9,8 +10,9 @@ export function getInstructionFunctionLowLevelFragment(scope: {
   instructionNode: nodes.InstructionNode;
   programNode: nodes.ProgramNode;
   dataArgsManifest: TypeManifest;
+  nameApi: NameApi;
 }): Fragment {
-  const { instructionNode, programNode, dataArgsManifest } = scope;
+  const { instructionNode, programNode, dataArgsManifest, nameApi } = scope;
   const imports = new ImportMap();
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasLegacyOptionalAccounts =
@@ -26,10 +28,10 @@ export function getInstructionFunctionLowLevelFragment(scope: {
     ).length > 0;
   const argsType = instructionNode.dataArgs.link
     ? dataArgsManifest.looseType.render
-    : `${pascalCase(instructionNode.dataArgs.name)}Args`;
+    : nameApi.dataArgsType(instructionNode.dataArgs.name);
   const encoderFunction = instructionNode.dataArgs.link
     ? dataArgsManifest.encoder.render
-    : `get${pascalCase(instructionNode.dataArgs.name)}Encoder()`;
+    : `${nameApi.encoderFunction(instructionNode.dataArgs.name)}()`;
   if (instructionNode.dataArgs.link) {
     imports.mergeWith(dataArgsManifest.looseType, dataArgsManifest.encoder);
   }
@@ -67,6 +69,8 @@ export function getInstructionFunctionLowLevelFragment(scope: {
   const fragment = fragmentFromTemplate('instructionFunctionLowLevel.njk', {
     instruction: instructionNode,
     program: programNode,
+    functionName: nameApi.instructionRawFunction(instructionNode.name),
+    instructionType: nameApi.instructionType(instructionNode.name),
     hasAccounts,
     hasLegacyOptionalAccounts,
     accounts,

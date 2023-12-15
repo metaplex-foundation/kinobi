@@ -1,4 +1,4 @@
-export function get{{ instruction.name | pascalCase }}InstructionRaw<
+export function {{ functionName }}<
   TProgram extends string = "{{ program.publicKey }}",
   {% if hasAccounts %}
     {{ accountTypeParams }},
@@ -39,7 +39,7 @@ export function get{{ instruction.name | pascalCase }}InstructionRaw<
       data: {{ encoderFunction }}.encode({}),
     {% endif %}
     programAddress,
-  } as {{ instruction.name | pascalCase }}Instruction<
+  } as {{ instructionType }}<
     TProgram,
     {% for account in accounts %}
       {{ account.typeParam }},

@@ -1,16 +1,18 @@
 import * as nodes from '../../../nodes';
-import { pascalCase } from '../../../shared';
 import { Visitor, visit } from '../../../visitors';
 import { ImportMap } from '../ImportMap';
 import { TypeManifest } from '../TypeManifest';
+import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 import { getValueNodeFragment } from './valueNode';
 
-export function getAccountPdaHelpersFragment(
-  accountNode: nodes.AccountNode,
-  programNode: nodes.ProgramNode,
-  typeManifestVisitor: Visitor<TypeManifest>
-): Fragment {
+export function getAccountPdaHelpersFragment(scope: {
+  accountNode: nodes.AccountNode;
+  programNode: nodes.ProgramNode;
+  typeManifestVisitor: Visitor<TypeManifest>;
+  nameApi: NameApi;
+}): Fragment {
+  const { accountNode, programNode, typeManifestVisitor, nameApi } = scope;
   if (accountNode.seeds.length === 0) {
     return fragment('');
   }
@@ -22,7 +24,7 @@ export function getAccountPdaHelpersFragment(
       const seedManifest = visit(seed.type, typeManifestVisitor);
       imports.mergeWith(seedManifest.encoder);
       const seedValue = seed.value;
-      const valueManifest = getValueNodeFragment(seedValue);
+      const valueManifest = getValueNodeFragment(seedValue, nameApi);
       (seedValue as any).render = valueManifest.render;
       imports.mergeWith(valueManifest.imports);
       return { ...seed, typeManifest: seedManifest };
@@ -39,7 +41,17 @@ export function getAccountPdaHelpersFragment(
     accountNode.seeds.filter((seed) => seed.kind === 'variable').length > 0;
 
   return fragmentFromTemplate('accountPdaHelpers.njk', {
-    pascalCaseName: pascalCase(accountNode.name),
+    accountType: nameApi.accountType(accountNode.name),
+    fetchFunction: nameApi.accountFetchFunction(accountNode.name),
+    safeFetchFunction: nameApi.accountSafeFetchFunction(accountNode.name),
+    accountSeedsType: nameApi.accountSeedsType(accountNode.name),
+    findPdaFunction: nameApi.accountFindPdaFunction(accountNode.name),
+    fetchFromSeedsFunction: nameApi.accountFetchFromSeedsFunction(
+      accountNode.name
+    ),
+    safeFetchFromSeedsFunction: nameApi.accountSafeFetchFromSeedsFunction(
+      accountNode.name
+    ),
     program: programNode,
     seeds,
     hasVariableSeeds,

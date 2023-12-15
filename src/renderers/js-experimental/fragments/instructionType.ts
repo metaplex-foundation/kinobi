@@ -1,5 +1,6 @@
 import * as nodes from '../../../nodes';
 import { pascalCase } from '../../../shared';
+import { NameApi } from '../nameTransformers';
 import { Fragment, fragmentFromTemplate, mergeFragments } from './common';
 import { getInstructionAccountMetaFragment } from './instructionAccountMeta';
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
@@ -8,8 +9,9 @@ export function getInstructionTypeFragment(scope: {
   instructionNode: nodes.InstructionNode;
   programNode: nodes.ProgramNode;
   withSigners: boolean;
+  nameApi: NameApi;
 }): Fragment {
-  const { instructionNode, programNode, withSigners } = scope;
+  const { instructionNode, programNode, withSigners, nameApi } = scope;
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasData =
     !!instructionNode.dataArgs.link ||
@@ -45,11 +47,13 @@ export function getInstructionTypeFragment(scope: {
 
   const fragment = fragmentFromTemplate('instructionType.njk', {
     instruction: instructionNode,
+    instructionType: withSigners
+      ? nameApi.instructionWithSignersType(instructionNode.name)
+      : nameApi.instructionType(instructionNode.name),
     program: programNode,
     hasData,
     hasAccounts,
     dataType,
-    withSigners,
     accountTypeParams: accountTypeParamsFragment.render,
     accountMetas: accountMetasFragment.render,
   })

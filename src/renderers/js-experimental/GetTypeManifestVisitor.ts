@@ -3,18 +3,17 @@ import { SizeStrategy, camelCase, pascalCase } from '../../shared';
 import { Visitor, visit } from '../../visitors';
 import { Fragment, fragment, getValueNodeFragment } from './fragments';
 import { ImportMap } from './ImportMap';
+import { NameApi } from './nameTransformers';
 import { TypeManifest, mergeManifests } from './TypeManifest';
-
-function getEncoderFunction(name: string) {
-  return `get${pascalCase(name)}Encoder`;
-}
-
-function getDecoderFunction(name: string) {
-  return `get${pascalCase(name)}Decoder`;
-}
 
 export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
   private parentName: { strict: string; loose: string } | null = null;
+
+  private nameApi: NameApi;
+
+  constructor(nameApi: NameApi) {
+    this.nameApi = nameApi;
+  }
 
   visitRoot(): TypeManifest {
     throw new Error(
@@ -34,8 +33,8 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
 
   visitAccountData(accountData: nodes.AccountDataNode): TypeManifest {
     this.parentName = {
-      strict: pascalCase(accountData.name),
-      loose: `${pascalCase(accountData.name)}Args`,
+      strict: this.nameApi.dataType(accountData.name),
+      loose: this.nameApi.dataArgsType(accountData.name),
     };
     const manifest = accountData.link
       ? visit(accountData.link, this)
@@ -58,8 +57,8 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
     instructionDataArgs: nodes.InstructionDataArgsNode
   ): TypeManifest {
     this.parentName = {
-      strict: pascalCase(instructionDataArgs.name),
-      loose: `${pascalCase(instructionDataArgs.name)}Args`,
+      strict: this.nameApi.dataType(instructionDataArgs.name),
+      loose: this.nameApi.dataArgsType(instructionDataArgs.name),
     };
     const manifest = instructionDataArgs.link
       ? visit(instructionDataArgs.link, this)
@@ -72,8 +71,8 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
     instructionExtraArgs: nodes.InstructionExtraArgsNode
   ): TypeManifest {
     this.parentName = {
-      strict: pascalCase(instructionExtraArgs.name),
-      loose: `${pascalCase(instructionExtraArgs.name)}Args`,
+      strict: this.nameApi.dataType(instructionExtraArgs.name),
+      loose: this.nameApi.dataArgsType(instructionExtraArgs.name),
     };
     const manifest = instructionExtraArgs.link
       ? visit(instructionExtraArgs.link, this)
@@ -84,8 +83,8 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): TypeManifest {
     this.parentName = {
-      strict: pascalCase(definedType.name),
-      loose: `${pascalCase(definedType.name)}Args`,
+      strict: this.nameApi.dataType(definedType.name),
+      loose: this.nameApi.dataArgsType(definedType.name),
     };
     const manifest = visit(definedType.data, this);
     this.parentName = null;
@@ -119,9 +118,10 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
   }
 
   visitLinkType(linkType: nodes.LinkTypeNode): TypeManifest {
-    const pascalCaseDefinedType = pascalCase(linkType.name);
-    const encoderFunction = getEncoderFunction(linkType.name);
-    const decoderFunction = getDecoderFunction(linkType.name);
+    const strictName = this.nameApi.dataType(linkType.name);
+    const looseName = this.nameApi.dataArgsType(linkType.name);
+    const encoderFunction = this.nameApi.encoderFunction(linkType.name);
+    const decoderFunction = this.nameApi.decoderFunction(linkType.name);
     const importFrom =
       linkType.importFrom === 'generated'
         ? 'generatedTypes'
@@ -129,14 +129,8 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
 
     return {
       isEnum: false,
-      strictType: fragment(pascalCaseDefinedType).addImports(
-        importFrom,
-        pascalCaseDefinedType
-      ),
-      looseType: fragment(`${pascalCaseDefinedType}Args`).addImports(
-        importFrom,
-        `${pascalCaseDefinedType}Args`
-      ),
+      strictType: fragment(strictName).addImports(importFrom, strictName),
+      looseType: fragment(looseName).addImports(importFrom, looseName),
       encoder: fragment(`${encoderFunction}()`).addImports(
         importFrom,
         encoderFunction
@@ -443,7 +437,8 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
         const key = camelCase(f.name);
         const defaultsTo = f.defaultsTo as NonNullable<typeof f.defaultsTo>;
         const { render: renderedValue, imports } = getValueNodeFragment(
-          defaultsTo.value
+          defaultsTo.value,
+          this.nameApi
         );
         mergedManifest.encoder.mergeImportsWith(imports);
         return defaultsTo.strategy === 'omitted'
@@ -579,8 +574,8 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
   }
 
   visitNumberType(numberType: nodes.NumberTypeNode): TypeManifest {
-    const encoderFunction = getEncoderFunction(numberType.format);
-    const decoderFunction = getDecoderFunction(numberType.format);
+    const encoderFunction = this.nameApi.encoderFunction(numberType.format);
+    const decoderFunction = this.nameApi.decoderFunction(numberType.format);
     const isBigNumber = ['u64', 'u128', 'i64', 'i128'].includes(
       numberType.format
     );
@@ -646,8 +641,8 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
 
     // Encoding option.
     if (stringType.encoding !== 'utf8') {
-      const encoderFunction = getEncoderFunction(stringType.encoding);
-      const decoderFunction = getDecoderFunction(stringType.encoding);
+      const encoderFunction = this.nameApi.encoderFunction(stringType.encoding);
+      const decoderFunction = this.nameApi.decoderFunction(stringType.encoding);
       encoderImports.add('solanaCodecsStrings', encoderFunction);
       decoderImports.add('solanaCodecsStrings', decoderFunction);
       encoderOptions.push(`encoding: ${encoderFunction}`);

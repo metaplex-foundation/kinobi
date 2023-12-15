@@ -1,6 +1,7 @@
 import * as nodes from '../../../nodes';
 import { camelCase } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
+import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, mergeFragments } from './common';
 import { getInstructionInputDefaultFragment } from './instructionInputDefault';
 
@@ -9,6 +10,7 @@ export function getInstructionInputResolvedFragment(scope: {
   resolvedInputs: ResolvedInstructionInput[];
   asyncResolvers: string[];
   useAsync: boolean;
+  nameApi: NameApi;
 }): Fragment {
   const resolvedInputFragments = scope.resolvedInputs.flatMap(
     (input: ResolvedInstructionInput): Fragment[] => {

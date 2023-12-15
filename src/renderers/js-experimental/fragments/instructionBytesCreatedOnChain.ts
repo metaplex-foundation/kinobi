@@ -1,11 +1,12 @@
 import * as nodes from '../../../nodes';
-import { camelCase, pascalCase } from '../../../shared';
+import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getInstructionBytesCreatedOnChainFragment(scope: {
   instructionNode: nodes.InstructionNode;
   asyncResolvers: string[];
   useAsync: boolean;
+  nameApi: NameApi;
 }): Fragment {
   const bytes = scope.instructionNode.bytesCreatedOnChain;
   if (!bytes) return fragment('');
@@ -17,7 +18,7 @@ export function getInstructionBytesCreatedOnChainFragment(scope: {
   const awaitKeyword = scope.useAsync && isAsync ? 'await ' : '';
   const bytesFragment = fragmentFromTemplate(
     'instructionBytesCreatedOnChain.njk',
-    { bytes, awaitKeyword }
+    { bytes, awaitKeyword, nameApi: scope.nameApi }
   );
 
   if (bytes && 'includeHeader' in bytes && bytes.includeHeader) {
@@ -25,11 +26,13 @@ export function getInstructionBytesCreatedOnChainFragment(scope: {
   }
 
   if (bytes?.kind === 'account') {
+    const functionName = scope.nameApi.accountGetSizeFunction(bytes.name);
     const importFrom =
       bytes.importFrom === 'generated' ? 'generatedAccounts' : bytes.importFrom;
-    bytesFragment.addImports(importFrom, `get${pascalCase(bytes.name)}Size`);
+    bytesFragment.addImports(importFrom, functionName);
   } else if (bytes?.kind === 'resolver') {
-    bytesFragment.addImports(bytes.importFrom, camelCase(bytes.name));
+    const functionName = scope.nameApi.resolverFunction(bytes.name);
+    bytesFragment.addImports(bytes.importFrom, functionName);
     bytesFragment.addFeatures(['instruction:resolverScopeVariable']);
   }
 

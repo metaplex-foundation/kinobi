@@ -82,6 +82,7 @@ export function mintArgs<K extends MintArgsArgs['__kind']>(
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };
 }
+
 export function isMintArgs<K extends MintArgs['__kind']>(
   kind: K,
   value: MintArgs
