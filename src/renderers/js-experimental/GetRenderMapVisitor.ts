@@ -161,8 +161,6 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   visitProgram(program: nodes.ProgramNode): RenderMap {
     this.program = program;
-    const { name } = program;
-    // const pascalCaseName = pascalCase(name);
     const renderMap = new RenderMap()
       .mergeWith(...program.accounts.map((account) => visit(account, this)))
       .mergeWith(...program.definedTypes.map((type) => visit(type, this)));
@@ -176,9 +174,12 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     }
 
     if (program.errors.length > 0) {
-      const programErrorsFragment = getProgramErrorsFragment(program);
+      const programErrorsFragment = getProgramErrorsFragment({
+        programNode: program,
+        nameApi: this.nameApi,
+      });
       renderMap.add(
-        `errors/${camelCase(name)}.ts`,
+        `errors/${camelCase(program.name)}.ts`,
         this.render('errorsPage.njk', {
           imports: new ImportMap()
             .mergeWith(programErrorsFragment)
@@ -188,9 +189,12 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       );
     }
 
-    const programFragment = getProgramFragment(program);
+    const programFragment = getProgramFragment({
+      programNode: program,
+      nameApi: this.nameApi,
+    });
     renderMap.add(
-      `programs/${camelCase(name)}.ts`,
+      `programs/${camelCase(program.name)}.ts`,
       this.render('programsPage.njk', {
         imports: new ImportMap()
           .mergeWith(programFragment)

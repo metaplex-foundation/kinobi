@@ -51,6 +51,13 @@ export type NameTransformerKey =
   | 'instructionAsyncFunction'
   | 'instructionSyncFunction'
   | 'instructionRawFunction'
+  | 'programType'
+  | 'programAddressConstant'
+  | 'programCreateFunction'
+  | 'programErrorClass'
+  | 'programErrorCodeEnum'
+  | 'programErrorCodeMap'
+  | 'programGetErrorFromCodeFunction'
   | 'resolverFunction';
 
 export type NameTransformers = Record<NameTransformerKey, NameTransformer>;
@@ -108,5 +115,14 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
   instructionAsyncFunction: (name) => `get${pascalCase(name)}InstructionAsync`,
   instructionSyncFunction: (name) => `get${pascalCase(name)}Instruction`,
   instructionRawFunction: (name) => `get${pascalCase(name)}InstructionRaw`,
+  programType: (name) => `${pascalCase(name)}Program`,
+  programAddressConstant: (name) =>
+    `${snakeCase(name).toUpperCase()}_PROGRAM_ADDRESS`,
+  programCreateFunction: (name) => `create${pascalCase(name)}Program`,
+  programErrorClass: (name) => `${pascalCase(name)}ProgramError`,
+  programErrorCodeEnum: (name) => `${pascalCase(name)}ProgramErrorCode`,
+  programErrorCodeMap: (name) => `${camelCase(name)}ProgramErrorCodeMap`,
+  programGetErrorFromCodeFunction: (name) =>
+    `get${pascalCase(name)}ProgramErrorFromCode`,
   resolverFunction: (name) => `${camelCase(name)}`,
 };
