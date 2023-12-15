@@ -39,6 +39,8 @@ export type NameTransformerKey =
   | 'accountFetchFromSeedsFunction'
   | 'accountSafeFetchFromSeedsFunction'
   | 'accountGetSizeFunction'
+  | 'dataEnumFunction'
+  | 'isDataEnumFunction'
   | 'instructionAsyncInputType'
   | 'instructionAsyncInputWithSignersType'
   | 'instructionSyncInputType'
@@ -91,6 +93,8 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
   accountSafeFetchFromSeedsFunction: (name) =>
     `safeFetch${pascalCase(name)}FromSeeds`,
   accountGetSizeFunction: (name) => `get${pascalCase(name)}Size`,
+  dataEnumFunction: (name) => `${camelCase(name)}`,
+  isDataEnumFunction: (name) => `is${pascalCase(name)}`,
   instructionAsyncInputType: (name) => `${pascalCase(name)}AsyncInput`,
   instructionAsyncInputWithSignersType: (name) =>
     `${pascalCase(name)}AsyncInputWithSigners`,

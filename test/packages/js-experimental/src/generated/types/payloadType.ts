@@ -135,6 +135,7 @@ export function payloadType<K extends PayloadTypeArgs['__kind']>(
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };
 }
+
 export function isPayloadType<K extends PayloadType['__kind']>(
   kind: K,
   value: PayloadType

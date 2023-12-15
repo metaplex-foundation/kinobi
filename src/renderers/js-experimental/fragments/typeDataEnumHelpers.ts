@@ -1,11 +1,13 @@
 import * as nodes from '../../../nodes';
-import { pascalCase } from '../../../shared';
+import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
-export function getTypeDataEnumHelpersFragment(
-  name: string,
-  typeNode: nodes.TypeNode
-): Fragment {
+export function getTypeDataEnumHelpersFragment(scope: {
+  name: string;
+  typeNode: nodes.TypeNode;
+  nameApi: NameApi;
+}): Fragment {
+  const { name, typeNode, nameApi } = scope;
   const isDataEnum =
     nodes.isEnumTypeNode(typeNode) && nodes.isDataEnum(typeNode);
 
@@ -13,12 +15,14 @@ export function getTypeDataEnumHelpersFragment(
     return fragment('');
   }
 
-  const strictName = pascalCase(name);
-  const looseName = `${strictName}Args`;
-  const context = { strictName, looseName, typeNode };
-
-  return fragmentFromTemplate('typeDataEnumHelpers.njk', context).addImports(
-    'solanaCodecsDataStructures',
-    ['GetDataEnumKindContent', 'GetDataEnumKind']
-  );
+  return fragmentFromTemplate('typeDataEnumHelpers.njk', {
+    strictName: nameApi.dataType(name),
+    looseName: nameApi.dataArgsType(name),
+    dataEnumFunction: nameApi.dataEnumFunction(name),
+    isDataEnumFunction: nameApi.isDataEnumFunction(name),
+    typeNode,
+  }).addImports('solanaCodecsDataStructures', [
+    'GetDataEnumKindContent',
+    'GetDataEnumKind',
+  ]);
 }

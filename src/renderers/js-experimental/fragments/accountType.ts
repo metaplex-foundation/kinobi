@@ -13,7 +13,11 @@ export function getAccountTypeFragment(scope: {
   const { accountNode, typeManifest, nameApi } = scope;
   const typeWithCodecFragment = accountNode.data.link
     ? fragment('')
-    : getTypeWithCodecFragment(accountNode.data.name, typeManifest);
+    : getTypeWithCodecFragment({
+        name: accountNode.data.name,
+        manifest: typeManifest,
+        nameApi,
+      });
 
   const dataNameFragment = accountNode.data.link
     ? typeManifest.strictType.clone()

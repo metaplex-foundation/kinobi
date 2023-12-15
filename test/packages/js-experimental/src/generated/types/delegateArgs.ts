@@ -89,6 +89,7 @@ export function delegateArgs<K extends DelegateArgsArgs['__kind']>(
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };
 }
+
 export function isDelegateArgs<K extends DelegateArgs['__kind']>(
   kind: K,
   value: DelegateArgs

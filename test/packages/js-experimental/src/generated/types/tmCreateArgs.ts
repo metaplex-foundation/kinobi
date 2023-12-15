@@ -117,6 +117,7 @@ export function tmCreateArgs<K extends TmCreateArgsArgs['__kind']>(
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };
 }
+
 export function isTmCreateArgs<K extends TmCreateArgs['__kind']>(
   kind: K,
   value: TmCreateArgs

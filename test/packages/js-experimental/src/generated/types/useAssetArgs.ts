@@ -60,6 +60,7 @@ export function useAssetArgs<K extends UseAssetArgsArgs['__kind']>(
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };
 }
+
 export function isUseAssetArgs<K extends UseAssetArgs['__kind']>(
   kind: K,
   value: UseAssetArgs

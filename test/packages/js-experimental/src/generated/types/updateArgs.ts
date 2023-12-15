@@ -260,6 +260,7 @@ export function updateArgs<K extends UpdateArgsArgs['__kind']>(
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };
 }
+
 export function isUpdateArgs<K extends UpdateArgs['__kind']>(
   kind: K,
   value: UpdateArgs

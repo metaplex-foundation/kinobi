@@ -78,6 +78,7 @@ export function escrowAuthority<K extends EscrowAuthorityArgs['__kind']>(
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };
 }
+
 export function isEscrowAuthority<K extends EscrowAuthority['__kind']>(
   kind: K,
   value: EscrowAuthority

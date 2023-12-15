@@ -66,6 +66,7 @@ export function collectionDetails<K extends CollectionDetailsArgs['__kind']>(
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };
 }
+
 export function isCollectionDetails<K extends CollectionDetails['__kind']>(
   kind: K,
   value: CollectionDetails

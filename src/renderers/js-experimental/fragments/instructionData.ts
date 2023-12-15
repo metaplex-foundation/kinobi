@@ -1,13 +1,15 @@
 import * as nodes from '../../../nodes';
 import { TypeManifest } from '../TypeManifest';
+import { NameApi } from '../nameTransformers';
 import { Fragment, fragment } from './common';
 import { getTypeWithCodecFragment } from './typeWithCodec';
 
 export function getInstructionDataFragment(scope: {
   instructionNode: nodes.InstructionNode;
   dataArgsManifest: TypeManifest;
+  nameApi: NameApi;
 }): Fragment {
-  const { instructionNode, dataArgsManifest } = scope;
+  const { instructionNode, dataArgsManifest, nameApi } = scope;
   if (
     instructionNode.dataArgs.struct.fields.length === 0 ||
     !!instructionNode.dataArgs.link
@@ -15,8 +17,9 @@ export function getInstructionDataFragment(scope: {
     return fragment('');
   }
 
-  return getTypeWithCodecFragment(
-    instructionNode.dataArgs.name,
-    dataArgsManifest
-  );
+  return getTypeWithCodecFragment({
+    name: instructionNode.dataArgs.name,
+    manifest: dataArgsManifest,
+    nameApi,
+  });
 }

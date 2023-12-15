@@ -1,7 +1,7 @@
 import type { ConfigureOptions } from 'nunjucks';
 import { format as formatCode, Options as PrettierOptions } from 'prettier';
 import * as nodes from '../../nodes';
-import { camelCase, ImportFrom, mainCase, pascalCase } from '../../shared';
+import { camelCase, ImportFrom, mainCase } from '../../shared';
 import { logWarn } from '../../shared/logs';
 import {
   BaseThrowVisitor,
@@ -308,23 +308,27 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitDefinedType(definedType: nodes.DefinedTypeNode): RenderMap {
-    const pascalCaseName = pascalCase(definedType.name);
-    const typeManifest = visit(definedType, this.typeManifestVisitor);
-    const typeWithCodecFragment = getTypeWithCodecFragment(
-      pascalCaseName,
-      typeManifest,
-      definedType.docs
-    );
-    const typeDataEnumHelpersFragment = getTypeDataEnumHelpersFragment(
-      pascalCaseName,
-      definedType.data
-    );
+    const scope = {
+      typeNode: definedType.data,
+      name: definedType.name,
+      manifest: visit(definedType, this.typeManifestVisitor),
+      typeDocs: definedType.docs,
+      encoderDocs: [],
+      decoderDocs: [],
+      codecDocs: [],
+      nameApi: this.nameApi,
+    };
+
+    const typeWithCodecFragment = getTypeWithCodecFragment(scope);
+    const typeDataEnumHelpersFragment = getTypeDataEnumHelpersFragment(scope);
     const imports = new ImportMap()
       .mergeWith(typeWithCodecFragment, typeDataEnumHelpersFragment)
       .remove('generatedTypes', [
-        pascalCaseName,
-        `${pascalCaseName}Args`,
-        `get${pascalCaseName}Serializer`,
+        this.nameApi.dataType(definedType.name),
+        this.nameApi.dataArgsType(definedType.name),
+        this.nameApi.encoderFunction(definedType.name),
+        this.nameApi.decoderFunction(definedType.name),
+        this.nameApi.codecFunction(definedType.name),
       ]);
 
     return new RenderMap().add(
