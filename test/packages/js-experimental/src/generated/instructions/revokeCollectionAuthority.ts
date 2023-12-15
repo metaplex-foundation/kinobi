@@ -31,11 +31,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type RevokeCollectionAuthorityInstruction<
@@ -182,54 +180,6 @@ export function getRevokeCollectionAuthorityInstruction<
   TAccountMint extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: RevokeCollectionAuthorityInputWithSigners<
-    TAccountCollectionAuthorityRecord,
-    TAccountDelegateAuthority,
-    TAccountRevokeAuthority,
-    TAccountMetadata,
-    TAccountMint
-  >
-): RevokeCollectionAuthorityInstructionWithSigners<
-  TProgram,
-  TAccountCollectionAuthorityRecord,
-  TAccountDelegateAuthority,
-  TAccountRevokeAuthority,
-  TAccountMetadata,
-  TAccountMint
->;
-export function getRevokeCollectionAuthorityInstruction<
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountDelegateAuthority extends string,
-  TAccountRevokeAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: RevokeCollectionAuthorityInput<
-    TAccountCollectionAuthorityRecord,
-    TAccountDelegateAuthority,
-    TAccountRevokeAuthority,
-    TAccountMetadata,
-    TAccountMint
-  >
-): RevokeCollectionAuthorityInstruction<
-  TProgram,
-  TAccountCollectionAuthorityRecord,
-  TAccountDelegateAuthority,
-  TAccountRevokeAuthority,
-  TAccountMetadata,
-  TAccountMint
->;
-export function getRevokeCollectionAuthorityInstruction<
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountDelegateAuthority extends string,
-  TAccountRevokeAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: RevokeCollectionAuthorityInputWithSigners<
     TAccountCollectionAuthorityRecord,
     TAccountDelegateAuthority,
@@ -276,16 +226,7 @@ export function getRevokeCollectionAuthorityInstruction<
   TAccountMint extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | RevokeCollectionAuthorityInput<
-        TAccountCollectionAuthorityRecord,
-        TAccountDelegateAuthority,
-        TAccountRevokeAuthority,
-        TAccountMetadata,
-        TAccountMint
-      >,
-  rawInput?: RevokeCollectionAuthorityInput<
+  input: RevokeCollectionAuthorityInput<
     TAccountCollectionAuthorityRecord,
     TAccountDelegateAuthority,
     TAccountRevokeAuthority,
@@ -293,27 +234,9 @@ export function getRevokeCollectionAuthorityInstruction<
     TAccountMint
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as RevokeCollectionAuthorityInput<
-    TAccountCollectionAuthorityRecord,
-    TAccountDelegateAuthority,
-    TAccountRevokeAuthority,
-    TAccountMetadata,
-    TAccountMint
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<

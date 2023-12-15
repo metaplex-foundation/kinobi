@@ -31,11 +31,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 import {
   SetCollectionSizeArgs,
@@ -183,48 +181,6 @@ export function getSetCollectionSizeInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: SetCollectionSizeInputWithSigners<
-    TAccountCollectionMetadata,
-    TAccountCollectionAuthority,
-    TAccountCollectionMint,
-    TAccountCollectionAuthorityRecord
-  >
-): SetCollectionSizeInstructionWithSigners<
-  TProgram,
-  TAccountCollectionMetadata,
-  TAccountCollectionAuthority,
-  TAccountCollectionMint,
-  TAccountCollectionAuthorityRecord
->;
-export function getSetCollectionSizeInstruction<
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionAuthority extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: SetCollectionSizeInput<
-    TAccountCollectionMetadata,
-    TAccountCollectionAuthority,
-    TAccountCollectionMint,
-    TAccountCollectionAuthorityRecord
-  >
-): SetCollectionSizeInstruction<
-  TProgram,
-  TAccountCollectionMetadata,
-  TAccountCollectionAuthority,
-  TAccountCollectionMint,
-  TAccountCollectionAuthorityRecord
->;
-export function getSetCollectionSizeInstruction<
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionAuthority extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: SetCollectionSizeInputWithSigners<
     TAccountCollectionMetadata,
     TAccountCollectionAuthority,
@@ -265,41 +221,16 @@ export function getSetCollectionSizeInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | SetCollectionSizeInput<
-        TAccountCollectionMetadata,
-        TAccountCollectionAuthority,
-        TAccountCollectionMint,
-        TAccountCollectionAuthorityRecord
-      >,
-  rawInput?: SetCollectionSizeInput<
+  input: SetCollectionSizeInput<
     TAccountCollectionMetadata,
     TAccountCollectionAuthority,
     TAccountCollectionMint,
     TAccountCollectionAuthorityRecord
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as SetCollectionSizeInput<
-    TAccountCollectionMetadata,
-    TAccountCollectionAuthority,
-    TAccountCollectionMint,
-    TAccountCollectionAuthorityRecord
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<

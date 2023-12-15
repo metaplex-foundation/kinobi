@@ -34,11 +34,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 import {
   CandyMachineData,
@@ -287,90 +285,6 @@ export function getInitializeInstruction<
   TAccountSystemProgram extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: InitializeInputWithSigners<
-    TAccountCandyMachine,
-    TAccountAuthorityPda,
-    TAccountAuthority,
-    TAccountPayer,
-    TAccountCollectionMetadata,
-    TAccountCollectionMint,
-    TAccountCollectionMasterEdition,
-    TAccountCollectionUpdateAuthority,
-    TAccountCollectionAuthorityRecord,
-    TAccountTokenMetadataProgram,
-    TAccountSystemProgram
-  >
-): InitializeInstructionWithSigners<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthorityPda,
-  TAccountAuthority,
-  TAccountPayer,
-  TAccountCollectionMetadata,
-  TAccountCollectionMint,
-  TAccountCollectionMasterEdition,
-  TAccountCollectionUpdateAuthority,
-  TAccountCollectionAuthorityRecord,
-  TAccountTokenMetadataProgram,
-  TAccountSystemProgram
->;
-export function getInitializeInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthorityPda extends string,
-  TAccountAuthority extends string,
-  TAccountPayer extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionMasterEdition extends string,
-  TAccountCollectionUpdateAuthority extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountTokenMetadataProgram extends string,
-  TAccountSystemProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: InitializeInput<
-    TAccountCandyMachine,
-    TAccountAuthorityPda,
-    TAccountAuthority,
-    TAccountPayer,
-    TAccountCollectionMetadata,
-    TAccountCollectionMint,
-    TAccountCollectionMasterEdition,
-    TAccountCollectionUpdateAuthority,
-    TAccountCollectionAuthorityRecord,
-    TAccountTokenMetadataProgram,
-    TAccountSystemProgram
-  >
-): InitializeInstruction<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthorityPda,
-  TAccountAuthority,
-  TAccountPayer,
-  TAccountCollectionMetadata,
-  TAccountCollectionMint,
-  TAccountCollectionMasterEdition,
-  TAccountCollectionUpdateAuthority,
-  TAccountCollectionAuthorityRecord,
-  TAccountTokenMetadataProgram,
-  TAccountSystemProgram
->;
-export function getInitializeInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthorityPda extends string,
-  TAccountAuthority extends string,
-  TAccountPayer extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionMasterEdition extends string,
-  TAccountCollectionUpdateAuthority extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountTokenMetadataProgram extends string,
-  TAccountSystemProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
   input: InitializeInputWithSigners<
     TAccountCandyMachine,
     TAccountAuthorityPda,
@@ -453,22 +367,7 @@ export function getInitializeInstruction<
   TAccountSystemProgram extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | InitializeInput<
-        TAccountCandyMachine,
-        TAccountAuthorityPda,
-        TAccountAuthority,
-        TAccountPayer,
-        TAccountCollectionMetadata,
-        TAccountCollectionMint,
-        TAccountCollectionMasterEdition,
-        TAccountCollectionUpdateAuthority,
-        TAccountCollectionAuthorityRecord,
-        TAccountTokenMetadataProgram,
-        TAccountSystemProgram
-      >,
-  rawInput?: InitializeInput<
+  input: InitializeInput<
     TAccountCandyMachine,
     TAccountAuthorityPda,
     TAccountAuthority,
@@ -482,33 +381,9 @@ export function getInitializeInstruction<
     TAccountSystemProgram
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as InitializeInput<
-    TAccountCandyMachine,
-    TAccountAuthorityPda,
-    TAccountAuthority,
-    TAccountPayer,
-    TAccountCollectionMetadata,
-    TAccountCollectionMint,
-    TAccountCollectionMasterEdition,
-    TAccountCollectionUpdateAuthority,
-    TAccountCollectionAuthorityRecord,
-    TAccountTokenMetadataProgram,
-    TAccountSystemProgram
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplCandyMachineCore',
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>
-  );
+  const programAddress =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -561,19 +436,13 @@ export function getInitializeInstruction<
 
   // Resolve default values.
   if (!accounts.tokenMetadataProgram.value) {
-    accounts.tokenMetadataProgram.value = getProgramAddress(
-      context,
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    );
+    accounts.tokenMetadataProgram.value =
+      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
     accounts.tokenMetadataProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = getProgramAddress(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value =
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
     accounts.systemProgram.isWritable = false;
   }
 

@@ -13,11 +13,14 @@ import {
   FetchAccountsConfig,
   assertAccountExists,
   decodeAccount,
+  fetchEncodedAccount,
+  fetchEncodedAccounts,
 } from '@solana/accounts';
 import {
   Address,
   ProgramDerivedAddress,
   getAddressEncoder,
+  getProgramDerivedAddress,
 } from '@solana/addresses';
 import {
   Codec,
@@ -32,11 +35,6 @@ import {
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import { getStringEncoder } from '@solana/codecs-strings';
-import {
-  Context,
-  getProgramAddress,
-  getProgramDerivedAddress,
-} from '../shared';
 import {
   DelegateRole,
   DelegateRoleArgs,
@@ -100,30 +98,30 @@ export function decodeDelegateRecord<TAddress extends string = string>(
 }
 
 export async function fetchDelegateRecord<TAddress extends string = string>(
-  context: Pick<Context, 'fetchEncodedAccount'>,
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<DelegateRecord<TAddress>> {
-  const maybeAccount = await context.fetchEncodedAccount(address, config);
+  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   assertAccountExists(maybeAccount);
   return decodeDelegateRecord(maybeAccount);
 }
 
 export async function safeFetchDelegateRecord<TAddress extends string = string>(
-  context: Pick<Context, 'fetchEncodedAccount'>,
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<DelegateRecord<TAddress> | null> {
-  const maybeAccount = await context.fetchEncodedAccount(address, config);
+  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   return maybeAccount.exists ? decodeDelegateRecord(maybeAccount) : null;
 }
 
 export async function fetchAllDelegateRecord(
-  context: Pick<Context, 'fetchEncodedAccounts'>,
+  rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<DelegateRecord[]> {
-  const maybeAccounts = await context.fetchEncodedAccounts(addresses, config);
+  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount);
     return decodeDelegateRecord(maybeAccount);
@@ -131,11 +129,11 @@ export async function fetchAllDelegateRecord(
 }
 
 export async function safeFetchAllDelegateRecord(
-  context: Pick<Context, 'fetchEncodedAccounts'>,
+  rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<DelegateRecord[]> {
-  const maybeAccounts = await context.fetchEncodedAccounts(addresses, config);
+  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
@@ -147,45 +145,44 @@ export function getDelegateRecordSize(): number {
   return 282;
 }
 
+export type DelegateRecordSeeds = {
+  /** The delegate role */
+  role: DelegateRoleArgs;
+};
+
 export async function findDelegateRecordPda(
-  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
-  seeds: {
-    /** The delegate role */
-    role: DelegateRoleArgs;
-  }
+  seeds: DelegateRecordSeeds,
+  config: { programAddress?: Address | undefined } = {}
 ): Promise<ProgramDerivedAddress> {
-  const programAddress = await getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
-  return getProgramDerivedAddress(context, programAddress, [
-    getStringEncoder({ size: 'variable' }).encode('delegate_record'),
-    getAddressEncoder().encode(programAddress),
-    getDelegateRoleEncoder().encode(seeds.role),
-  ]);
+  const {
+    programAddress = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+  } = config;
+  return getProgramDerivedAddress({
+    programAddress,
+    seeds: [
+      getStringEncoder({ size: 'variable' }).encode('delegate_record'),
+      getAddressEncoder().encode(programAddress),
+      getDelegateRoleEncoder().encode(seeds.role),
+    ],
+  });
 }
 
 export async function fetchDelegateRecordFromSeeds(
-  context: Pick<
-    Context,
-    'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
-  >,
-  seeds: Parameters<typeof findDelegateRecordPda>[1],
-  options?: FetchAccountConfig
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
+  seeds: DelegateRecordSeeds,
+  config: FetchAccountConfig & { programAddress?: Address } = {}
 ): Promise<DelegateRecord> {
-  const [address] = await findDelegateRecordPda(context, seeds);
-  return fetchDelegateRecord(context, address, options);
+  const { programAddress, ...fetchConfig } = config;
+  const [address] = await findDelegateRecordPda(seeds, { programAddress });
+  return fetchDelegateRecord(rpc, address, fetchConfig);
 }
 
 export async function safeFetchDelegateRecordFromSeeds(
-  context: Pick<
-    Context,
-    'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
-  >,
-  seeds: Parameters<typeof findDelegateRecordPda>[1],
-  options?: FetchAccountConfig
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
+  seeds: DelegateRecordSeeds,
+  config: FetchAccountConfig & { programAddress?: Address } = {}
 ): Promise<DelegateRecord | null> {
-  const [address] = await findDelegateRecordPda(context, seeds);
-  return safeFetchDelegateRecord(context, address, options);
+  const { programAddress, ...fetchConfig } = config;
+  const [address] = await findDelegateRecordPda(seeds, { programAddress });
+  return safeFetchDelegateRecord(rpc, address, fetchConfig);
 }

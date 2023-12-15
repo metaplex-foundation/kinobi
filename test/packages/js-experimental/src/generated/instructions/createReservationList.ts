@@ -23,11 +23,9 @@ import {
   getCreateReservationListInstructionDataEncoder,
 } from '../../hooked';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type CreateReservationListInstruction<
@@ -193,72 +191,6 @@ export function getCreateReservationListInstruction<
   TAccountRent extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: CreateReservationListInputWithSigners<
-    TAccountReservationList,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountMasterEdition,
-    TAccountResource,
-    TAccountMetadata,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): CreateReservationListInstructionWithSigners<
-  TProgram,
-  TAccountReservationList,
-  TAccountPayer,
-  TAccountUpdateAuthority,
-  TAccountMasterEdition,
-  TAccountResource,
-  TAccountMetadata,
-  TAccountSystemProgram,
-  TAccountRent
->;
-export function getCreateReservationListInstruction<
-  TAccountReservationList extends string,
-  TAccountPayer extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMasterEdition extends string,
-  TAccountResource extends string,
-  TAccountMetadata extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: CreateReservationListInput<
-    TAccountReservationList,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountMasterEdition,
-    TAccountResource,
-    TAccountMetadata,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): CreateReservationListInstruction<
-  TProgram,
-  TAccountReservationList,
-  TAccountPayer,
-  TAccountUpdateAuthority,
-  TAccountMasterEdition,
-  TAccountResource,
-  TAccountMetadata,
-  TAccountSystemProgram,
-  TAccountRent
->;
-export function getCreateReservationListInstruction<
-  TAccountReservationList extends string,
-  TAccountPayer extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMasterEdition extends string,
-  TAccountResource extends string,
-  TAccountMetadata extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: CreateReservationListInputWithSigners<
     TAccountReservationList,
     TAccountPayer,
@@ -323,19 +255,7 @@ export function getCreateReservationListInstruction<
   TAccountRent extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | CreateReservationListInput<
-        TAccountReservationList,
-        TAccountPayer,
-        TAccountUpdateAuthority,
-        TAccountMasterEdition,
-        TAccountResource,
-        TAccountMetadata,
-        TAccountSystemProgram,
-        TAccountRent
-      >,
-  rawInput?: CreateReservationListInput<
+  input: CreateReservationListInput<
     TAccountReservationList,
     TAccountPayer,
     TAccountUpdateAuthority,
@@ -346,30 +266,9 @@ export function getCreateReservationListInstruction<
     TAccountRent
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as CreateReservationListInput<
-    TAccountReservationList,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountMasterEdition,
-    TAccountResource,
-    TAccountMetadata,
-    TAccountSystemProgram,
-    TAccountRent
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -404,11 +303,8 @@ export function getCreateReservationListInstruction<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = getProgramAddress(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value =
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
     accounts.systemProgram.isWritable = false;
   }
   if (!accounts.rent.value) {

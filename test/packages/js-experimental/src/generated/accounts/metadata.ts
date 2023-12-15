@@ -13,12 +13,15 @@ import {
   FetchAccountsConfig,
   assertAccountExists,
   decodeAccount,
+  fetchEncodedAccount,
+  fetchEncodedAccounts,
 } from '@solana/accounts';
 import {
   Address,
   ProgramDerivedAddress,
   getAddressDecoder,
   getAddressEncoder,
+  getProgramDerivedAddress,
 } from '@solana/addresses';
 import {
   Codec,
@@ -48,11 +51,6 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import {
-  Context,
-  getProgramAddress,
-  getProgramDerivedAddress,
-} from '../shared';
 import {
   Collection,
   CollectionArgs,
@@ -214,30 +212,30 @@ export function decodeMetadata<TAddress extends string = string>(
 }
 
 export async function fetchMetadata<TAddress extends string = string>(
-  context: Pick<Context, 'fetchEncodedAccount'>,
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<Metadata<TAddress>> {
-  const maybeAccount = await context.fetchEncodedAccount(address, config);
+  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   assertAccountExists(maybeAccount);
   return decodeMetadata(maybeAccount);
 }
 
 export async function safeFetchMetadata<TAddress extends string = string>(
-  context: Pick<Context, 'fetchEncodedAccount'>,
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<Metadata<TAddress> | null> {
-  const maybeAccount = await context.fetchEncodedAccount(address, config);
+  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   return maybeAccount.exists ? decodeMetadata(maybeAccount) : null;
 }
 
 export async function fetchAllMetadata(
-  context: Pick<Context, 'fetchEncodedAccounts'>,
+  rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<Metadata[]> {
-  const maybeAccounts = await context.fetchEncodedAccounts(addresses, config);
+  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount);
     return decodeMetadata(maybeAccount);
@@ -245,11 +243,11 @@ export async function fetchAllMetadata(
 }
 
 export async function safeFetchAllMetadata(
-  context: Pick<Context, 'fetchEncodedAccounts'>,
+  rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<Metadata[]> {
-  const maybeAccounts = await context.fetchEncodedAccounts(addresses, config);
+  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) => decodeMetadata(maybeAccount as EncodedAccount));
@@ -259,45 +257,44 @@ export function getMetadataSize(): number {
   return 679;
 }
 
+export type MetadataSeeds = {
+  /** The address of the mint account */
+  mint: Address;
+};
+
 export async function findMetadataPda(
-  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
-  seeds: {
-    /** The address of the mint account */
-    mint: Address;
-  }
+  seeds: MetadataSeeds,
+  config: { programAddress?: Address | undefined } = {}
 ): Promise<ProgramDerivedAddress> {
-  const programAddress = await getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
-  return getProgramDerivedAddress(context, programAddress, [
-    getStringEncoder({ size: 'variable' }).encode('metadata'),
-    getAddressEncoder().encode(programAddress),
-    getAddressEncoder().encode(seeds.mint),
-  ]);
+  const {
+    programAddress = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+  } = config;
+  return getProgramDerivedAddress({
+    programAddress,
+    seeds: [
+      getStringEncoder({ size: 'variable' }).encode('metadata'),
+      getAddressEncoder().encode(programAddress),
+      getAddressEncoder().encode(seeds.mint),
+    ],
+  });
 }
 
 export async function fetchMetadataFromSeeds(
-  context: Pick<
-    Context,
-    'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
-  >,
-  seeds: Parameters<typeof findMetadataPda>[1],
-  options?: FetchAccountConfig
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
+  seeds: MetadataSeeds,
+  config: FetchAccountConfig & { programAddress?: Address } = {}
 ): Promise<Metadata> {
-  const [address] = await findMetadataPda(context, seeds);
-  return fetchMetadata(context, address, options);
+  const { programAddress, ...fetchConfig } = config;
+  const [address] = await findMetadataPda(seeds, { programAddress });
+  return fetchMetadata(rpc, address, fetchConfig);
 }
 
 export async function safeFetchMetadataFromSeeds(
-  context: Pick<
-    Context,
-    'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
-  >,
-  seeds: Parameters<typeof findMetadataPda>[1],
-  options?: FetchAccountConfig
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
+  seeds: MetadataSeeds,
+  config: FetchAccountConfig & { programAddress?: Address } = {}
 ): Promise<Metadata | null> {
-  const [address] = await findMetadataPda(context, seeds);
-  return safeFetchMetadata(context, address, options);
+  const { programAddress, ...fetchConfig } = config;
+  const [address] = await findMetadataPda(seeds, { programAddress });
+  return safeFetchMetadata(rpc, address, fetchConfig);
 }

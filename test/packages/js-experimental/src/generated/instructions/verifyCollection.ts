@@ -31,11 +31,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type VerifyCollectionInstruction<
@@ -196,60 +194,6 @@ export function getVerifyCollectionInstruction<
   TAccountCollectionMasterEditionAccount extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: VerifyCollectionInputWithSigners<
-    TAccountMetadata,
-    TAccountCollectionAuthority,
-    TAccountPayer,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount
-  >
-): VerifyCollectionInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountCollectionAuthority,
-  TAccountPayer,
-  TAccountCollectionMint,
-  TAccountCollection,
-  TAccountCollectionMasterEditionAccount
->;
-export function getVerifyCollectionInstruction<
-  TAccountMetadata extends string,
-  TAccountCollectionAuthority extends string,
-  TAccountPayer extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollection extends string,
-  TAccountCollectionMasterEditionAccount extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: VerifyCollectionInput<
-    TAccountMetadata,
-    TAccountCollectionAuthority,
-    TAccountPayer,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount
-  >
-): VerifyCollectionInstruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountCollectionAuthority,
-  TAccountPayer,
-  TAccountCollectionMint,
-  TAccountCollection,
-  TAccountCollectionMasterEditionAccount
->;
-export function getVerifyCollectionInstruction<
-  TAccountMetadata extends string,
-  TAccountCollectionAuthority extends string,
-  TAccountPayer extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollection extends string,
-  TAccountCollectionMasterEditionAccount extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: VerifyCollectionInputWithSigners<
     TAccountMetadata,
     TAccountCollectionAuthority,
@@ -302,17 +246,7 @@ export function getVerifyCollectionInstruction<
   TAccountCollectionMasterEditionAccount extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | VerifyCollectionInput<
-        TAccountMetadata,
-        TAccountCollectionAuthority,
-        TAccountPayer,
-        TAccountCollectionMint,
-        TAccountCollection,
-        TAccountCollectionMasterEditionAccount
-      >,
-  rawInput?: VerifyCollectionInput<
+  input: VerifyCollectionInput<
     TAccountMetadata,
     TAccountCollectionAuthority,
     TAccountPayer,
@@ -321,28 +255,9 @@ export function getVerifyCollectionInstruction<
     TAccountCollectionMasterEditionAccount
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as VerifyCollectionInput<
-    TAccountMetadata,
-    TAccountCollectionAuthority,
-    TAccountPayer,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<

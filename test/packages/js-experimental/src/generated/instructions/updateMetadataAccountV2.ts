@@ -42,11 +42,9 @@ import {
 } from '@solana/options';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 import {
   DataV2,
@@ -181,33 +179,6 @@ export function getUpdateMetadataAccountV2Instruction<
   TAccountUpdateAuthority extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: UpdateMetadataAccountV2InputWithSigners<
-    TAccountMetadata,
-    TAccountUpdateAuthority
-  >
-): UpdateMetadataAccountV2InstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountUpdateAuthority
->;
-export function getUpdateMetadataAccountV2Instruction<
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: UpdateMetadataAccountV2Input<TAccountMetadata, TAccountUpdateAuthority>
-): UpdateMetadataAccountV2Instruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountUpdateAuthority
->;
-export function getUpdateMetadataAccountV2Instruction<
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: UpdateMetadataAccountV2InputWithSigners<
     TAccountMetadata,
     TAccountUpdateAuthority
@@ -233,29 +204,11 @@ export function getUpdateMetadataAccountV2Instruction<
   TAccountUpdateAuthority extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | UpdateMetadataAccountV2Input<TAccountMetadata, TAccountUpdateAuthority>,
-  rawInput?: UpdateMetadataAccountV2Input<
-    TAccountMetadata,
-    TAccountUpdateAuthority
-  >
+  input: UpdateMetadataAccountV2Input<TAccountMetadata, TAccountUpdateAuthority>
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as UpdateMetadataAccountV2Input<TAccountMetadata, TAccountUpdateAuthority>;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<

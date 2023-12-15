@@ -12,12 +12,7 @@ import {
   MplCandyMachineCoreProgramErrorCode,
   getMplCandyMachineCoreProgramErrorFromCode,
 } from '../errors';
-import {
-  Context,
-  Program,
-  ProgramWithErrors,
-  getProgramAddress,
-} from '../shared';
+import { Program, ProgramWithErrors } from '../shared';
 
 export const MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS =
   'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
@@ -37,14 +32,4 @@ export function createMplCandyMachineCoreProgram(): MplCandyMachineCoreProgram {
       return getMplCandyMachineCoreProgramErrorFromCode(code, cause);
     },
   };
-}
-
-export async function getMplCandyMachineCoreProgramAddress(
-  context: Pick<Context, 'getProgramAddress'> = {}
-): Promise<Address> {
-  return getProgramAddress(
-    context,
-    'mplCandyMachineCore',
-    MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS
-  );
 }

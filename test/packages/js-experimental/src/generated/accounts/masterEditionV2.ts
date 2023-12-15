@@ -13,11 +13,14 @@ import {
   FetchAccountsConfig,
   assertAccountExists,
   decodeAccount,
+  fetchEncodedAccount,
+  fetchEncodedAccounts,
 } from '@solana/accounts';
 import {
   Address,
   ProgramDerivedAddress,
   getAddressEncoder,
+  getProgramDerivedAddress,
 } from '@solana/addresses';
 import {
   Codec,
@@ -38,11 +41,6 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import {
-  Context,
-  getProgramAddress,
-  getProgramDerivedAddress,
-} from '../shared';
 import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type MasterEditionV2<TAddress extends string = string> = Account<
@@ -101,11 +99,11 @@ export function decodeMasterEditionV2<TAddress extends string = string>(
 }
 
 export async function fetchMasterEditionV2<TAddress extends string = string>(
-  context: Pick<Context, 'fetchEncodedAccount'>,
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<MasterEditionV2<TAddress>> {
-  const maybeAccount = await context.fetchEncodedAccount(address, config);
+  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   assertAccountExists(maybeAccount);
   return decodeMasterEditionV2(maybeAccount);
 }
@@ -113,20 +111,20 @@ export async function fetchMasterEditionV2<TAddress extends string = string>(
 export async function safeFetchMasterEditionV2<
   TAddress extends string = string
 >(
-  context: Pick<Context, 'fetchEncodedAccount'>,
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<MasterEditionV2<TAddress> | null> {
-  const maybeAccount = await context.fetchEncodedAccount(address, config);
+  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   return maybeAccount.exists ? decodeMasterEditionV2(maybeAccount) : null;
 }
 
 export async function fetchAllMasterEditionV2(
-  context: Pick<Context, 'fetchEncodedAccounts'>,
+  rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<MasterEditionV2[]> {
-  const maybeAccounts = await context.fetchEncodedAccounts(addresses, config);
+  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount);
     return decodeMasterEditionV2(maybeAccount);
@@ -134,11 +132,11 @@ export async function fetchAllMasterEditionV2(
 }
 
 export async function safeFetchAllMasterEditionV2(
-  context: Pick<Context, 'fetchEncodedAccounts'>,
+  rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<MasterEditionV2[]> {
-  const maybeAccounts = await context.fetchEncodedAccounts(addresses, config);
+  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
@@ -150,46 +148,45 @@ export function getMasterEditionV2Size(): number {
   return 282;
 }
 
+export type MasterEditionV2Seeds = {
+  /** The address of the mint account */
+  mint: Address;
+};
+
 export async function findMasterEditionV2Pda(
-  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
-  seeds: {
-    /** The address of the mint account */
-    mint: Address;
-  }
+  seeds: MasterEditionV2Seeds,
+  config: { programAddress?: Address | undefined } = {}
 ): Promise<ProgramDerivedAddress> {
-  const programAddress = await getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  );
-  return getProgramDerivedAddress(context, programAddress, [
-    getStringEncoder({ size: 'variable' }).encode('metadata'),
-    getAddressEncoder().encode(programAddress),
-    getAddressEncoder().encode(seeds.mint),
-    getStringEncoder({ size: 'variable' }).encode('edition'),
-  ]);
+  const {
+    programAddress = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
+  } = config;
+  return getProgramDerivedAddress({
+    programAddress,
+    seeds: [
+      getStringEncoder({ size: 'variable' }).encode('metadata'),
+      getAddressEncoder().encode(programAddress),
+      getAddressEncoder().encode(seeds.mint),
+      getStringEncoder({ size: 'variable' }).encode('edition'),
+    ],
+  });
 }
 
 export async function fetchMasterEditionV2FromSeeds(
-  context: Pick<
-    Context,
-    'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
-  >,
-  seeds: Parameters<typeof findMasterEditionV2Pda>[1],
-  options?: FetchAccountConfig
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
+  seeds: MasterEditionV2Seeds,
+  config: FetchAccountConfig & { programAddress?: Address } = {}
 ): Promise<MasterEditionV2> {
-  const [address] = await findMasterEditionV2Pda(context, seeds);
-  return fetchMasterEditionV2(context, address, options);
+  const { programAddress, ...fetchConfig } = config;
+  const [address] = await findMasterEditionV2Pda(seeds, { programAddress });
+  return fetchMasterEditionV2(rpc, address, fetchConfig);
 }
 
 export async function safeFetchMasterEditionV2FromSeeds(
-  context: Pick<
-    Context,
-    'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
-  >,
-  seeds: Parameters<typeof findMasterEditionV2Pda>[1],
-  options?: FetchAccountConfig
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
+  seeds: MasterEditionV2Seeds,
+  config: FetchAccountConfig & { programAddress?: Address } = {}
 ): Promise<MasterEditionV2 | null> {
-  const [address] = await findMasterEditionV2Pda(context, seeds);
-  return safeFetchMasterEditionV2(context, address, options);
+  const { programAddress, ...fetchConfig } = config;
+  const [address] = await findMasterEditionV2Pda(seeds, { programAddress });
+  return safeFetchMasterEditionV2(rpc, address, fetchConfig);
 }

@@ -32,11 +32,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 import {
   MintArgs,
@@ -313,96 +311,6 @@ export function getMintInstruction<
   TAccountAuthorizationRules extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: MintInputWithSigners<
-    TAccountToken,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountPayer,
-    TAccountAuthority,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram,
-    TAccountSplAtaProgram,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
-): MintInstructionWithSigners<
-  TProgram,
-  TAccountToken,
-  TAccountMetadata,
-  TAccountMasterEdition,
-  TAccountMint,
-  TAccountPayer,
-  TAccountAuthority,
-  TAccountSystemProgram,
-  TAccountSysvarInstructions,
-  TAccountSplTokenProgram,
-  TAccountSplAtaProgram,
-  TAccountAuthorizationRulesProgram,
-  TAccountAuthorizationRules
->;
-export function getMintInstruction<
-  TAccountToken extends string,
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountMint extends string,
-  TAccountPayer extends string,
-  TAccountAuthority extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountSplAtaProgram extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: MintInput<
-    TAccountToken,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountPayer,
-    TAccountAuthority,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram,
-    TAccountSplAtaProgram,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
-): MintInstruction<
-  TProgram,
-  TAccountToken,
-  TAccountMetadata,
-  TAccountMasterEdition,
-  TAccountMint,
-  TAccountPayer,
-  TAccountAuthority,
-  TAccountSystemProgram,
-  TAccountSysvarInstructions,
-  TAccountSplTokenProgram,
-  TAccountSplAtaProgram,
-  TAccountAuthorizationRulesProgram,
-  TAccountAuthorizationRules
->;
-export function getMintInstruction<
-  TAccountToken extends string,
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountMint extends string,
-  TAccountPayer extends string,
-  TAccountAuthority extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountSplAtaProgram extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: MintInputWithSigners<
     TAccountToken,
     TAccountMetadata,
@@ -491,23 +399,7 @@ export function getMintInstruction<
   TAccountAuthorizationRules extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | MintInput<
-        TAccountToken,
-        TAccountMetadata,
-        TAccountMasterEdition,
-        TAccountMint,
-        TAccountPayer,
-        TAccountAuthority,
-        TAccountSystemProgram,
-        TAccountSysvarInstructions,
-        TAccountSplTokenProgram,
-        TAccountSplAtaProgram,
-        TAccountAuthorizationRulesProgram,
-        TAccountAuthorizationRules
-      >,
-  rawInput?: MintInput<
+  input: MintInput<
     TAccountToken,
     TAccountMetadata,
     TAccountMasterEdition,
@@ -522,32 +414,9 @@ export function getMintInstruction<
     TAccountAuthorizationRules
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (rawInput === undefined ? rawContext : rawInput) as MintInput<
-    TAccountToken,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountPayer,
-    TAccountAuthority,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram,
-    TAccountSplAtaProgram,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -599,11 +468,8 @@ export function getMintInstruction<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = getProgramAddress(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value =
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
     accounts.systemProgram.isWritable = false;
   }
   if (!accounts.sysvarInstructions.value) {
@@ -611,19 +477,13 @@ export function getMintInstruction<
       'Sysvar1nstructions1111111111111111111111111' as Address<'Sysvar1nstructions1111111111111111111111111'>;
   }
   if (!accounts.splTokenProgram.value) {
-    accounts.splTokenProgram.value = getProgramAddress(
-      context,
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    );
+    accounts.splTokenProgram.value =
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
     accounts.splTokenProgram.isWritable = false;
   }
   if (!accounts.splAtaProgram.value) {
-    accounts.splAtaProgram.value = getProgramAddress(
-      context,
-      'splAssociatedToken',
-      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
-    );
+    accounts.splAtaProgram.value =
+      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>;
     accounts.splAtaProgram.isWritable = false;
   }
 

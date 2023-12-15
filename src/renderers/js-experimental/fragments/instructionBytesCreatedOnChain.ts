@@ -30,11 +30,7 @@ export function getInstructionBytesCreatedOnChainFragment(scope: {
     bytesFragment.addImports(importFrom, `get${pascalCase(bytes.name)}Size`);
   } else if (bytes?.kind === 'resolver') {
     bytesFragment.addImports(bytes.importFrom, camelCase(bytes.name));
-    bytesFragment.addFeatures([
-      'context:getProgramAddress',
-      'context:getProgramDerivedAddress',
-      'instruction:resolverScopeVariable',
-    ]);
+    bytesFragment.addFeatures(['instruction:resolverScopeVariable']);
   }
 
   return bytesFragment;

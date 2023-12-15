@@ -31,11 +31,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 import {
   BurnArgs,
@@ -254,78 +252,6 @@ export function getBurnInstruction<
   TAccountAuthorizationRulesProgram extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: BurnInputWithSigners<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountSplTokenProgram,
-    TAccountCollectionMetadata,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
-): BurnInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountOwner,
-  TAccountMint,
-  TAccountTokenAccount,
-  TAccountMasterEditionAccount,
-  TAccountSplTokenProgram,
-  TAccountCollectionMetadata,
-  TAccountAuthorizationRules,
-  TAccountAuthorizationRulesProgram
->;
-export function getBurnInstruction<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountMint extends string,
-  TAccountTokenAccount extends string,
-  TAccountMasterEditionAccount extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountAuthorizationRules extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: BurnInput<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountSplTokenProgram,
-    TAccountCollectionMetadata,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
-): BurnInstruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountOwner,
-  TAccountMint,
-  TAccountTokenAccount,
-  TAccountMasterEditionAccount,
-  TAccountSplTokenProgram,
-  TAccountCollectionMetadata,
-  TAccountAuthorizationRules,
-  TAccountAuthorizationRulesProgram
->;
-export function getBurnInstruction<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountMint extends string,
-  TAccountTokenAccount extends string,
-  TAccountMasterEditionAccount extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountAuthorizationRules extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: BurnInputWithSigners<
     TAccountMetadata,
     TAccountOwner,
@@ -396,20 +322,7 @@ export function getBurnInstruction<
   TAccountAuthorizationRulesProgram extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | BurnInput<
-        TAccountMetadata,
-        TAccountOwner,
-        TAccountMint,
-        TAccountTokenAccount,
-        TAccountMasterEditionAccount,
-        TAccountSplTokenProgram,
-        TAccountCollectionMetadata,
-        TAccountAuthorizationRules,
-        TAccountAuthorizationRulesProgram
-      >,
-  rawInput?: BurnInput<
+  input: BurnInput<
     TAccountMetadata,
     TAccountOwner,
     TAccountMint,
@@ -421,29 +334,9 @@ export function getBurnInstruction<
     TAccountAuthorizationRulesProgram
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (rawInput === undefined ? rawContext : rawInput) as BurnInput<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountSplTokenProgram,
-    TAccountCollectionMetadata,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -492,11 +385,8 @@ export function getBurnInstruction<
 
   // Resolve default values.
   if (!accounts.splTokenProgram.value) {
-    accounts.splTokenProgram.value = getProgramAddress(
-      context,
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    );
+    accounts.splTokenProgram.value =
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
     accounts.splTokenProgram.isWritable = false;
   }
 

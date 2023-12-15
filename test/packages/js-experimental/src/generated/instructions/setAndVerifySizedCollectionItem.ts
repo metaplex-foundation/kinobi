@@ -32,11 +32,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type SetAndVerifySizedCollectionItemInstruction<
@@ -233,72 +231,6 @@ export function getSetAndVerifySizedCollectionItemInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: SetAndVerifySizedCollectionItemInputWithSigners<
-    TAccountMetadata,
-    TAccountCollectionAuthority,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount,
-    TAccountCollectionAuthorityRecord
-  >
-): SetAndVerifySizedCollectionItemInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountCollectionAuthority,
-  TAccountPayer,
-  TAccountUpdateAuthority,
-  TAccountCollectionMint,
-  TAccountCollection,
-  TAccountCollectionMasterEditionAccount,
-  TAccountCollectionAuthorityRecord
->;
-export function getSetAndVerifySizedCollectionItemInstruction<
-  TAccountMetadata extends string,
-  TAccountCollectionAuthority extends string,
-  TAccountPayer extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollection extends string,
-  TAccountCollectionMasterEditionAccount extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: SetAndVerifySizedCollectionItemInput<
-    TAccountMetadata,
-    TAccountCollectionAuthority,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount,
-    TAccountCollectionAuthorityRecord
-  >
-): SetAndVerifySizedCollectionItemInstruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountCollectionAuthority,
-  TAccountPayer,
-  TAccountUpdateAuthority,
-  TAccountCollectionMint,
-  TAccountCollection,
-  TAccountCollectionMasterEditionAccount,
-  TAccountCollectionAuthorityRecord
->;
-export function getSetAndVerifySizedCollectionItemInstruction<
-  TAccountMetadata extends string,
-  TAccountCollectionAuthority extends string,
-  TAccountPayer extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollection extends string,
-  TAccountCollectionMasterEditionAccount extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: SetAndVerifySizedCollectionItemInputWithSigners<
     TAccountMetadata,
     TAccountCollectionAuthority,
@@ -363,19 +295,7 @@ export function getSetAndVerifySizedCollectionItemInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | SetAndVerifySizedCollectionItemInput<
-        TAccountMetadata,
-        TAccountCollectionAuthority,
-        TAccountPayer,
-        TAccountUpdateAuthority,
-        TAccountCollectionMint,
-        TAccountCollection,
-        TAccountCollectionMasterEditionAccount,
-        TAccountCollectionAuthorityRecord
-      >,
-  rawInput?: SetAndVerifySizedCollectionItemInput<
+  input: SetAndVerifySizedCollectionItemInput<
     TAccountMetadata,
     TAccountCollectionAuthority,
     TAccountPayer,
@@ -386,30 +306,9 @@ export function getSetAndVerifySizedCollectionItemInstruction<
     TAccountCollectionAuthorityRecord
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as SetAndVerifySizedCollectionItemInput<
-    TAccountMetadata,
-    TAccountCollectionAuthority,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount,
-    TAccountCollectionAuthorityRecord
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<

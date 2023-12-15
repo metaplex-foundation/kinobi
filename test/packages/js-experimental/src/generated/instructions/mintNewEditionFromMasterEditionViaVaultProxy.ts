@@ -32,11 +32,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 import {
   MintNewEditionFromMasterEditionViaTokenArgs,
@@ -397,126 +395,6 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
   TAccountRent extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: MintNewEditionFromMasterEditionViaVaultProxyInputWithSigners<
-    TAccountNewMetadata,
-    TAccountNewEdition,
-    TAccountMasterEdition,
-    TAccountNewMint,
-    TAccountEditionMarkPda,
-    TAccountNewMintAuthority,
-    TAccountPayer,
-    TAccountVaultAuthority,
-    TAccountSafetyDepositStore,
-    TAccountSafetyDepositBox,
-    TAccountVault,
-    TAccountNewMetadataUpdateAuthority,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountTokenVaultProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): MintNewEditionFromMasterEditionViaVaultProxyInstructionWithSigners<
-  TProgram,
-  TAccountNewMetadata,
-  TAccountNewEdition,
-  TAccountMasterEdition,
-  TAccountNewMint,
-  TAccountEditionMarkPda,
-  TAccountNewMintAuthority,
-  TAccountPayer,
-  TAccountVaultAuthority,
-  TAccountSafetyDepositStore,
-  TAccountSafetyDepositBox,
-  TAccountVault,
-  TAccountNewMetadataUpdateAuthority,
-  TAccountMetadata,
-  TAccountTokenProgram,
-  TAccountTokenVaultProgram,
-  TAccountSystemProgram,
-  TAccountRent
->;
-export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
-  TAccountNewMetadata extends string,
-  TAccountNewEdition extends string,
-  TAccountMasterEdition extends string,
-  TAccountNewMint extends string,
-  TAccountEditionMarkPda extends string,
-  TAccountNewMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountVaultAuthority extends string,
-  TAccountSafetyDepositStore extends string,
-  TAccountSafetyDepositBox extends string,
-  TAccountVault extends string,
-  TAccountNewMetadataUpdateAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountTokenVaultProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: MintNewEditionFromMasterEditionViaVaultProxyInput<
-    TAccountNewMetadata,
-    TAccountNewEdition,
-    TAccountMasterEdition,
-    TAccountNewMint,
-    TAccountEditionMarkPda,
-    TAccountNewMintAuthority,
-    TAccountPayer,
-    TAccountVaultAuthority,
-    TAccountSafetyDepositStore,
-    TAccountSafetyDepositBox,
-    TAccountVault,
-    TAccountNewMetadataUpdateAuthority,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountTokenVaultProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): MintNewEditionFromMasterEditionViaVaultProxyInstruction<
-  TProgram,
-  TAccountNewMetadata,
-  TAccountNewEdition,
-  TAccountMasterEdition,
-  TAccountNewMint,
-  TAccountEditionMarkPda,
-  TAccountNewMintAuthority,
-  TAccountPayer,
-  TAccountVaultAuthority,
-  TAccountSafetyDepositStore,
-  TAccountSafetyDepositBox,
-  TAccountVault,
-  TAccountNewMetadataUpdateAuthority,
-  TAccountMetadata,
-  TAccountTokenProgram,
-  TAccountTokenVaultProgram,
-  TAccountSystemProgram,
-  TAccountRent
->;
-export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
-  TAccountNewMetadata extends string,
-  TAccountNewEdition extends string,
-  TAccountMasterEdition extends string,
-  TAccountNewMint extends string,
-  TAccountEditionMarkPda extends string,
-  TAccountNewMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountVaultAuthority extends string,
-  TAccountSafetyDepositStore extends string,
-  TAccountSafetyDepositBox extends string,
-  TAccountVault extends string,
-  TAccountNewMetadataUpdateAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountTokenVaultProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: MintNewEditionFromMasterEditionViaVaultProxyInputWithSigners<
     TAccountNewMetadata,
     TAccountNewEdition,
@@ -635,28 +513,7 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
   TAccountRent extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | MintNewEditionFromMasterEditionViaVaultProxyInput<
-        TAccountNewMetadata,
-        TAccountNewEdition,
-        TAccountMasterEdition,
-        TAccountNewMint,
-        TAccountEditionMarkPda,
-        TAccountNewMintAuthority,
-        TAccountPayer,
-        TAccountVaultAuthority,
-        TAccountSafetyDepositStore,
-        TAccountSafetyDepositBox,
-        TAccountVault,
-        TAccountNewMetadataUpdateAuthority,
-        TAccountMetadata,
-        TAccountTokenProgram,
-        TAccountTokenVaultProgram,
-        TAccountSystemProgram,
-        TAccountRent
-      >,
-  rawInput?: MintNewEditionFromMasterEditionViaVaultProxyInput<
+  input: MintNewEditionFromMasterEditionViaVaultProxyInput<
     TAccountNewMetadata,
     TAccountNewEdition,
     TAccountMasterEdition,
@@ -676,39 +533,9 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
     TAccountRent
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as MintNewEditionFromMasterEditionViaVaultProxyInput<
-    TAccountNewMetadata,
-    TAccountNewEdition,
-    TAccountMasterEdition,
-    TAccountNewMint,
-    TAccountEditionMarkPda,
-    TAccountNewMintAuthority,
-    TAccountPayer,
-    TAccountVaultAuthority,
-    TAccountSafetyDepositStore,
-    TAccountSafetyDepositBox,
-    TAccountVault,
-    TAccountNewMetadataUpdateAuthority,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountTokenVaultProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -773,19 +600,13 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value = getProgramAddress(
-      context,
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    );
+    accounts.tokenProgram.value =
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
     accounts.tokenProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = getProgramAddress(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value =
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
     accounts.systemProgram.isWritable = false;
   }
 

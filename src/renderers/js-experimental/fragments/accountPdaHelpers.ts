@@ -45,11 +45,10 @@ export function getAccountPdaHelpersFragment(
     hasVariableSeeds,
   })
     .mergeImportsWith(imports)
-    .addImports('solanaAddresses', ['ProgramDerivedAddress'])
-    .addImports('solanaAccounts', ['FetchAccountConfig'])
-    .addImports('shared', [
-      'Context',
-      'getProgramAddress',
+    .addImports('solanaAddresses', [
+      'Address',
       'getProgramDerivedAddress',
-    ]);
+      'ProgramDerivedAddress',
+    ])
+    .addImports('solanaAccounts', ['FetchAccountConfig']);
 }

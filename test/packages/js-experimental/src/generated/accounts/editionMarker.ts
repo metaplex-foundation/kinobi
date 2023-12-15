@@ -13,6 +13,8 @@ import {
   FetchAccountsConfig,
   assertAccountExists,
   decodeAccount,
+  fetchEncodedAccount,
+  fetchEncodedAccounts,
 } from '@solana/accounts';
 import { Address } from '@solana/addresses';
 import {
@@ -29,7 +31,6 @@ import {
   getStructEncoder,
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
-import { Context } from '../shared';
 import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type EditionMarker<TAddress extends string = string> = Account<
@@ -75,30 +76,30 @@ export function decodeEditionMarker<TAddress extends string = string>(
 }
 
 export async function fetchEditionMarker<TAddress extends string = string>(
-  context: Pick<Context, 'fetchEncodedAccount'>,
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<EditionMarker<TAddress>> {
-  const maybeAccount = await context.fetchEncodedAccount(address, config);
+  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   assertAccountExists(maybeAccount);
   return decodeEditionMarker(maybeAccount);
 }
 
 export async function safeFetchEditionMarker<TAddress extends string = string>(
-  context: Pick<Context, 'fetchEncodedAccount'>,
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<EditionMarker<TAddress> | null> {
-  const maybeAccount = await context.fetchEncodedAccount(address, config);
+  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   return maybeAccount.exists ? decodeEditionMarker(maybeAccount) : null;
 }
 
 export async function fetchAllEditionMarker(
-  context: Pick<Context, 'fetchEncodedAccounts'>,
+  rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<EditionMarker[]> {
-  const maybeAccounts = await context.fetchEncodedAccounts(addresses, config);
+  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount);
     return decodeEditionMarker(maybeAccount);
@@ -106,11 +107,11 @@ export async function fetchAllEditionMarker(
 }
 
 export async function safeFetchAllEditionMarker(
-  context: Pick<Context, 'fetchEncodedAccounts'>,
+  rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<EditionMarker[]> {
-  const maybeAccounts = await context.fetchEncodedAccounts(addresses, config);
+  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) => decodeEditionMarker(maybeAccount as EncodedAccount));

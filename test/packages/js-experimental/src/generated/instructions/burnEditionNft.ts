@@ -31,11 +31,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type BurnEditionNftInstruction<
@@ -263,84 +261,6 @@ export function getBurnEditionNftInstruction<
   TAccountSplTokenProgram extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: BurnEditionNftInputWithSigners<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountPrintEditionMint,
-    TAccountMasterEditionMint,
-    TAccountPrintEditionTokenAccount,
-    TAccountMasterEditionTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountPrintEditionAccount,
-    TAccountEditionMarkerAccount,
-    TAccountSplTokenProgram
-  >
-): BurnEditionNftInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountOwner,
-  TAccountPrintEditionMint,
-  TAccountMasterEditionMint,
-  TAccountPrintEditionTokenAccount,
-  TAccountMasterEditionTokenAccount,
-  TAccountMasterEditionAccount,
-  TAccountPrintEditionAccount,
-  TAccountEditionMarkerAccount,
-  TAccountSplTokenProgram
->;
-export function getBurnEditionNftInstruction<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountPrintEditionMint extends string,
-  TAccountMasterEditionMint extends string,
-  TAccountPrintEditionTokenAccount extends string,
-  TAccountMasterEditionTokenAccount extends string,
-  TAccountMasterEditionAccount extends string,
-  TAccountPrintEditionAccount extends string,
-  TAccountEditionMarkerAccount extends string,
-  TAccountSplTokenProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: BurnEditionNftInput<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountPrintEditionMint,
-    TAccountMasterEditionMint,
-    TAccountPrintEditionTokenAccount,
-    TAccountMasterEditionTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountPrintEditionAccount,
-    TAccountEditionMarkerAccount,
-    TAccountSplTokenProgram
-  >
-): BurnEditionNftInstruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountOwner,
-  TAccountPrintEditionMint,
-  TAccountMasterEditionMint,
-  TAccountPrintEditionTokenAccount,
-  TAccountMasterEditionTokenAccount,
-  TAccountMasterEditionAccount,
-  TAccountPrintEditionAccount,
-  TAccountEditionMarkerAccount,
-  TAccountSplTokenProgram
->;
-export function getBurnEditionNftInstruction<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountPrintEditionMint extends string,
-  TAccountMasterEditionMint extends string,
-  TAccountPrintEditionTokenAccount extends string,
-  TAccountMasterEditionTokenAccount extends string,
-  TAccountMasterEditionAccount extends string,
-  TAccountPrintEditionAccount extends string,
-  TAccountEditionMarkerAccount extends string,
-  TAccountSplTokenProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: BurnEditionNftInputWithSigners<
     TAccountMetadata,
     TAccountOwner,
@@ -417,21 +337,7 @@ export function getBurnEditionNftInstruction<
   TAccountSplTokenProgram extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | BurnEditionNftInput<
-        TAccountMetadata,
-        TAccountOwner,
-        TAccountPrintEditionMint,
-        TAccountMasterEditionMint,
-        TAccountPrintEditionTokenAccount,
-        TAccountMasterEditionTokenAccount,
-        TAccountMasterEditionAccount,
-        TAccountPrintEditionAccount,
-        TAccountEditionMarkerAccount,
-        TAccountSplTokenProgram
-      >,
-  rawInput?: BurnEditionNftInput<
+  input: BurnEditionNftInput<
     TAccountMetadata,
     TAccountOwner,
     TAccountPrintEditionMint,
@@ -444,32 +350,9 @@ export function getBurnEditionNftInstruction<
     TAccountSplTokenProgram
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as BurnEditionNftInput<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountPrintEditionMint,
-    TAccountMasterEditionMint,
-    TAccountPrintEditionTokenAccount,
-    TAccountMasterEditionTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountPrintEditionAccount,
-    TAccountEditionMarkerAccount,
-    TAccountSplTokenProgram
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -526,11 +409,8 @@ export function getBurnEditionNftInstruction<
 
   // Resolve default values.
   if (!accounts.splTokenProgram.value) {
-    accounts.splTokenProgram.value = getProgramAddress(
-      context,
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    );
+    accounts.splTokenProgram.value =
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
     accounts.splTokenProgram.isWritable = false;
   }
 

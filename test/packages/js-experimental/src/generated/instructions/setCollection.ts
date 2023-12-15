@@ -34,11 +34,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type SetCollectionInstruction<
@@ -315,108 +313,6 @@ export function getSetCollectionInstruction<
   TAccountSystemProgram extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: SetCollectionInputWithSigners<
-    TAccountCandyMachine,
-    TAccountAuthority,
-    TAccountAuthorityPda,
-    TAccountPayer,
-    TAccountCollectionMint,
-    TAccountCollectionMetadata,
-    TAccountCollectionAuthorityRecord,
-    TAccountNewCollectionUpdateAuthority,
-    TAccountNewCollectionMetadata,
-    TAccountNewCollectionMint,
-    TAccountNewCollectionMasterEdition,
-    TAccountNewCollectionAuthorityRecord,
-    TAccountTokenMetadataProgram,
-    TAccountSystemProgram
-  >
-): SetCollectionInstructionWithSigners<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthority,
-  TAccountAuthorityPda,
-  TAccountPayer,
-  TAccountCollectionMint,
-  TAccountCollectionMetadata,
-  TAccountCollectionAuthorityRecord,
-  TAccountNewCollectionUpdateAuthority,
-  TAccountNewCollectionMetadata,
-  TAccountNewCollectionMint,
-  TAccountNewCollectionMasterEdition,
-  TAccountNewCollectionAuthorityRecord,
-  TAccountTokenMetadataProgram,
-  TAccountSystemProgram
->;
-export function getSetCollectionInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TAccountAuthorityPda extends string,
-  TAccountPayer extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountNewCollectionUpdateAuthority extends string,
-  TAccountNewCollectionMetadata extends string,
-  TAccountNewCollectionMint extends string,
-  TAccountNewCollectionMasterEdition extends string,
-  TAccountNewCollectionAuthorityRecord extends string,
-  TAccountTokenMetadataProgram extends string,
-  TAccountSystemProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: SetCollectionInput<
-    TAccountCandyMachine,
-    TAccountAuthority,
-    TAccountAuthorityPda,
-    TAccountPayer,
-    TAccountCollectionMint,
-    TAccountCollectionMetadata,
-    TAccountCollectionAuthorityRecord,
-    TAccountNewCollectionUpdateAuthority,
-    TAccountNewCollectionMetadata,
-    TAccountNewCollectionMint,
-    TAccountNewCollectionMasterEdition,
-    TAccountNewCollectionAuthorityRecord,
-    TAccountTokenMetadataProgram,
-    TAccountSystemProgram
-  >
-): SetCollectionInstruction<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthority,
-  TAccountAuthorityPda,
-  TAccountPayer,
-  TAccountCollectionMint,
-  TAccountCollectionMetadata,
-  TAccountCollectionAuthorityRecord,
-  TAccountNewCollectionUpdateAuthority,
-  TAccountNewCollectionMetadata,
-  TAccountNewCollectionMint,
-  TAccountNewCollectionMasterEdition,
-  TAccountNewCollectionAuthorityRecord,
-  TAccountTokenMetadataProgram,
-  TAccountSystemProgram
->;
-export function getSetCollectionInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TAccountAuthorityPda extends string,
-  TAccountPayer extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountNewCollectionUpdateAuthority extends string,
-  TAccountNewCollectionMetadata extends string,
-  TAccountNewCollectionMint extends string,
-  TAccountNewCollectionMasterEdition extends string,
-  TAccountNewCollectionAuthorityRecord extends string,
-  TAccountTokenMetadataProgram extends string,
-  TAccountSystemProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
   input: SetCollectionInputWithSigners<
     TAccountCandyMachine,
     TAccountAuthority,
@@ -517,25 +413,7 @@ export function getSetCollectionInstruction<
   TAccountSystemProgram extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | SetCollectionInput<
-        TAccountCandyMachine,
-        TAccountAuthority,
-        TAccountAuthorityPda,
-        TAccountPayer,
-        TAccountCollectionMint,
-        TAccountCollectionMetadata,
-        TAccountCollectionAuthorityRecord,
-        TAccountNewCollectionUpdateAuthority,
-        TAccountNewCollectionMetadata,
-        TAccountNewCollectionMint,
-        TAccountNewCollectionMasterEdition,
-        TAccountNewCollectionAuthorityRecord,
-        TAccountTokenMetadataProgram,
-        TAccountSystemProgram
-      >,
-  rawInput?: SetCollectionInput<
+  input: SetCollectionInput<
     TAccountCandyMachine,
     TAccountAuthority,
     TAccountAuthorityPda,
@@ -552,36 +430,9 @@ export function getSetCollectionInstruction<
     TAccountSystemProgram
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as SetCollectionInput<
-    TAccountCandyMachine,
-    TAccountAuthority,
-    TAccountAuthorityPda,
-    TAccountPayer,
-    TAccountCollectionMint,
-    TAccountCollectionMetadata,
-    TAccountCollectionAuthorityRecord,
-    TAccountNewCollectionUpdateAuthority,
-    TAccountNewCollectionMetadata,
-    TAccountNewCollectionMint,
-    TAccountNewCollectionMasterEdition,
-    TAccountNewCollectionAuthorityRecord,
-    TAccountTokenMetadataProgram,
-    TAccountSystemProgram
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplCandyMachineCore',
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>
-  );
+  const programAddress =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -646,19 +497,13 @@ export function getSetCollectionInstruction<
 
   // Resolve default values.
   if (!accounts.tokenMetadataProgram.value) {
-    accounts.tokenMetadataProgram.value = getProgramAddress(
-      context,
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    );
+    accounts.tokenMetadataProgram.value =
+      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
     accounts.tokenMetadataProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = getProgramAddress(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value =
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
     accounts.systemProgram.isWritable = false;
   }
 

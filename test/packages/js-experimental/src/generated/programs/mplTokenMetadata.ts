@@ -12,12 +12,7 @@ import {
   MplTokenMetadataProgramErrorCode,
   getMplTokenMetadataProgramErrorFromCode,
 } from '../errors';
-import {
-  Context,
-  Program,
-  ProgramWithErrors,
-  getProgramAddress,
-} from '../shared';
+import { Program, ProgramWithErrors } from '../shared';
 
 export const MPL_TOKEN_METADATA_PROGRAM_ADDRESS =
   'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -37,14 +32,4 @@ export function createMplTokenMetadataProgram(): MplTokenMetadataProgram {
       return getMplTokenMetadataProgramErrorFromCode(code, cause);
     },
   };
-}
-
-export async function getMplTokenMetadataProgramAddress(
-  context: Pick<Context, 'getProgramAddress'> = {}
-): Promise<Address> {
-  return getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    MPL_TOKEN_METADATA_PROGRAM_ADDRESS
-  );
 }

@@ -37,11 +37,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type CreateFrequencyRuleInstruction<
@@ -189,42 +187,6 @@ export function getCreateFrequencyRuleInstruction<
   TAccountSystemProgram extends string,
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: CreateFrequencyRuleInputWithSigners<
-    TAccountPayer,
-    TAccountFrequencyPda,
-    TAccountSystemProgram
-  >
-): CreateFrequencyRuleInstructionWithSigners<
-  TProgram,
-  TAccountPayer,
-  TAccountFrequencyPda,
-  TAccountSystemProgram
->;
-export function getCreateFrequencyRuleInstruction<
-  TAccountPayer extends string,
-  TAccountFrequencyPda extends string,
-  TAccountSystemProgram extends string,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: CreateFrequencyRuleInput<
-    TAccountPayer,
-    TAccountFrequencyPda,
-    TAccountSystemProgram
-  >
-): CreateFrequencyRuleInstruction<
-  TProgram,
-  TAccountPayer,
-  TAccountFrequencyPda,
-  TAccountSystemProgram
->;
-export function getCreateFrequencyRuleInstruction<
-  TAccountPayer extends string,
-  TAccountFrequencyPda extends string,
-  TAccountSystemProgram extends string,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
->(
   input: CreateFrequencyRuleInputWithSigners<
     TAccountPayer,
     TAccountFrequencyPda,
@@ -259,38 +221,15 @@ export function getCreateFrequencyRuleInstruction<
   TAccountSystemProgram extends string,
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | CreateFrequencyRuleInput<
-        TAccountPayer,
-        TAccountFrequencyPda,
-        TAccountSystemProgram
-      >,
-  rawInput?: CreateFrequencyRuleInput<
+  input: CreateFrequencyRuleInput<
     TAccountPayer,
     TAccountFrequencyPda,
     TAccountSystemProgram
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as CreateFrequencyRuleInput<
-    TAccountPayer,
-    TAccountFrequencyPda,
-    TAccountSystemProgram
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenAuthRules',
-    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>
-  );
+  const programAddress =
+    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -312,11 +251,8 @@ export function getCreateFrequencyRuleInstruction<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = getProgramAddress(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value =
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
     accounts.systemProgram.isWritable = false;
   }
 

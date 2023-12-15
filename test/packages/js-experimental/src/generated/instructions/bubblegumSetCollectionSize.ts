@@ -32,11 +32,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 import {
   SetCollectionSizeArgs,
@@ -200,54 +198,6 @@ export function getBubblegumSetCollectionSizeInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: BubblegumSetCollectionSizeInputWithSigners<
-    TAccountCollectionMetadata,
-    TAccountCollectionAuthority,
-    TAccountCollectionMint,
-    TAccountBubblegumSigner,
-    TAccountCollectionAuthorityRecord
-  >
-): BubblegumSetCollectionSizeInstructionWithSigners<
-  TProgram,
-  TAccountCollectionMetadata,
-  TAccountCollectionAuthority,
-  TAccountCollectionMint,
-  TAccountBubblegumSigner,
-  TAccountCollectionAuthorityRecord
->;
-export function getBubblegumSetCollectionSizeInstruction<
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionAuthority extends string,
-  TAccountCollectionMint extends string,
-  TAccountBubblegumSigner extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: BubblegumSetCollectionSizeInput<
-    TAccountCollectionMetadata,
-    TAccountCollectionAuthority,
-    TAccountCollectionMint,
-    TAccountBubblegumSigner,
-    TAccountCollectionAuthorityRecord
-  >
-): BubblegumSetCollectionSizeInstruction<
-  TProgram,
-  TAccountCollectionMetadata,
-  TAccountCollectionAuthority,
-  TAccountCollectionMint,
-  TAccountBubblegumSigner,
-  TAccountCollectionAuthorityRecord
->;
-export function getBubblegumSetCollectionSizeInstruction<
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionAuthority extends string,
-  TAccountCollectionMint extends string,
-  TAccountBubblegumSigner extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: BubblegumSetCollectionSizeInputWithSigners<
     TAccountCollectionMetadata,
     TAccountCollectionAuthority,
@@ -294,16 +244,7 @@ export function getBubblegumSetCollectionSizeInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | BubblegumSetCollectionSizeInput<
-        TAccountCollectionMetadata,
-        TAccountCollectionAuthority,
-        TAccountCollectionMint,
-        TAccountBubblegumSigner,
-        TAccountCollectionAuthorityRecord
-      >,
-  rawInput?: BubblegumSetCollectionSizeInput<
+  input: BubblegumSetCollectionSizeInput<
     TAccountCollectionMetadata,
     TAccountCollectionAuthority,
     TAccountCollectionMint,
@@ -311,27 +252,9 @@ export function getBubblegumSetCollectionSizeInstruction<
     TAccountCollectionAuthorityRecord
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as BubblegumSetCollectionSizeInput<
-    TAccountCollectionMetadata,
-    TAccountCollectionAuthority,
-    TAccountCollectionMint,
-    TAccountBubblegumSigner,
-    TAccountCollectionAuthorityRecord
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<

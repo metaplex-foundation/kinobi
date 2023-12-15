@@ -29,11 +29,7 @@ export function getInstructionRemainingAccountsFragment(scope: {
         remainingAccounts.importFrom,
         camelCase(remainingAccounts.name)
       )
-      .addFeatures([
-        'context:getProgramAddress',
-        'context:getProgramDerivedAddress',
-        'instruction:resolverScopeVariable',
-      ]);
+      .addFeatures(['instruction:resolverScopeVariable']);
   }
 
   return remainingAccountsFragment;

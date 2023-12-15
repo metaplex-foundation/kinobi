@@ -12,12 +12,7 @@ import {
   MplTokenAuthRulesProgramErrorCode,
   getMplTokenAuthRulesProgramErrorFromCode,
 } from '../errors';
-import {
-  Context,
-  Program,
-  ProgramWithErrors,
-  getProgramAddress,
-} from '../shared';
+import { Program, ProgramWithErrors } from '../shared';
 
 export const MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS =
   'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
@@ -37,14 +32,4 @@ export function createMplTokenAuthRulesProgram(): MplTokenAuthRulesProgram {
       return getMplTokenAuthRulesProgramErrorFromCode(code, cause);
     },
   };
-}
-
-export async function getMplTokenAuthRulesProgramAddress(
-  context: Pick<Context, 'getProgramAddress'> = {}
-): Promise<Address> {
-  return getProgramAddress(
-    context,
-    'mplTokenAuthRules',
-    MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS
-  );
 }

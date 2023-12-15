@@ -107,13 +107,12 @@ export function getInstructionFunctionHighLevelFragment(scope: {
       bytesCreatedOnChainFragment,
     ],
     (renders) => renders.join('\n\n')
-  ).addFeatures('context:getProgramAddress');
+  );
   const hasRemainingAccounts = remainingAccountsFragment.render !== '';
   const hasBytesCreatedOnChain = bytesCreatedOnChainFragment.render !== '';
   const hasResolver = resolvedFragment.hasFeatures(
     'instruction:resolverScopeVariable'
   );
-  const contextFragment = resolvedFragment.getContextFragment();
   const getReturnType = (instructionType: string) => {
     let returnType = instructionType;
     if (hasBytesCreatedOnChain) {
@@ -141,7 +140,6 @@ export function getInstructionFunctionHighLevelFragment(scope: {
       inputTypeWithSignersFragment,
       inputTypeCallFragment,
       inputTypeCallWithSignersFragment,
-      contextFragment,
       renamedArgs: renamedArgsText,
       resolvedFragment,
       hasRemainingAccounts,
@@ -159,12 +157,10 @@ export function getInstructionFunctionHighLevelFragment(scope: {
       inputTypeWithSignersFragment,
       inputTypeCallFragment,
       inputTypeCallWithSignersFragment,
-      contextFragment,
       resolvedFragment,
       argsTypeFragment
     )
-    .addImports('solanaAddresses', ['Address'])
-    .addImports('shared', ['getProgramAddress']);
+    .addImports('solanaAddresses', ['Address']);
 
   if (hasAccounts) {
     functionFragment

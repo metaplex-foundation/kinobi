@@ -31,11 +31,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type FreezeDelegatedAccountInstruction<
@@ -180,54 +178,6 @@ export function getFreezeDelegatedAccountInstruction<
   TAccountTokenProgram extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: FreezeDelegatedAccountInputWithSigners<
-    TAccountDelegate,
-    TAccountTokenAccount,
-    TAccountEdition,
-    TAccountMint,
-    TAccountTokenProgram
-  >
-): FreezeDelegatedAccountInstructionWithSigners<
-  TProgram,
-  TAccountDelegate,
-  TAccountTokenAccount,
-  TAccountEdition,
-  TAccountMint,
-  TAccountTokenProgram
->;
-export function getFreezeDelegatedAccountInstruction<
-  TAccountDelegate extends string,
-  TAccountTokenAccount extends string,
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountTokenProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: FreezeDelegatedAccountInput<
-    TAccountDelegate,
-    TAccountTokenAccount,
-    TAccountEdition,
-    TAccountMint,
-    TAccountTokenProgram
-  >
-): FreezeDelegatedAccountInstruction<
-  TProgram,
-  TAccountDelegate,
-  TAccountTokenAccount,
-  TAccountEdition,
-  TAccountMint,
-  TAccountTokenProgram
->;
-export function getFreezeDelegatedAccountInstruction<
-  TAccountDelegate extends string,
-  TAccountTokenAccount extends string,
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountTokenProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: FreezeDelegatedAccountInputWithSigners<
     TAccountDelegate,
     TAccountTokenAccount,
@@ -274,16 +224,7 @@ export function getFreezeDelegatedAccountInstruction<
   TAccountTokenProgram extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | FreezeDelegatedAccountInput<
-        TAccountDelegate,
-        TAccountTokenAccount,
-        TAccountEdition,
-        TAccountMint,
-        TAccountTokenProgram
-      >,
-  rawInput?: FreezeDelegatedAccountInput<
+  input: FreezeDelegatedAccountInput<
     TAccountDelegate,
     TAccountTokenAccount,
     TAccountEdition,
@@ -291,27 +232,9 @@ export function getFreezeDelegatedAccountInstruction<
     TAccountTokenProgram
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as FreezeDelegatedAccountInput<
-    TAccountDelegate,
-    TAccountTokenAccount,
-    TAccountEdition,
-    TAccountMint,
-    TAccountTokenProgram
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -334,11 +257,8 @@ export function getFreezeDelegatedAccountInstruction<
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value = getProgramAddress(
-      context,
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    );
+    accounts.tokenProgram.value =
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
     accounts.tokenProgram.isWritable = false;
   }
 

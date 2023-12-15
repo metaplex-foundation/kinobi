@@ -13,11 +13,14 @@ import {
   FetchAccountsConfig,
   assertAccountExists,
   decodeAccount,
+  fetchEncodedAccount,
+  fetchEncodedAccounts,
 } from '@solana/accounts';
 import {
   Address,
   ProgramDerivedAddress,
   getAddressEncoder,
+  getProgramDerivedAddress,
 } from '@solana/addresses';
 import {
   Codec,
@@ -37,11 +40,6 @@ import {
   getU64Encoder,
 } from '@solana/codecs-numbers';
 import { getStringEncoder } from '@solana/codecs-strings';
-import {
-  Context,
-  getProgramAddress,
-  getProgramDerivedAddress,
-} from '../shared';
 import { TaKey } from '../types';
 
 export type FrequencyAccount<TAddress extends string = string> = Account<
@@ -114,11 +112,11 @@ export function decodeFrequencyAccount<TAddress extends string = string>(
 }
 
 export async function fetchFrequencyAccount<TAddress extends string = string>(
-  context: Pick<Context, 'fetchEncodedAccount'>,
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<FrequencyAccount<TAddress>> {
-  const maybeAccount = await context.fetchEncodedAccount(address, config);
+  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   assertAccountExists(maybeAccount);
   return decodeFrequencyAccount(maybeAccount);
 }
@@ -126,20 +124,20 @@ export async function fetchFrequencyAccount<TAddress extends string = string>(
 export async function safeFetchFrequencyAccount<
   TAddress extends string = string
 >(
-  context: Pick<Context, 'fetchEncodedAccount'>,
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<FrequencyAccount<TAddress> | null> {
-  const maybeAccount = await context.fetchEncodedAccount(address, config);
+  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   return maybeAccount.exists ? decodeFrequencyAccount(maybeAccount) : null;
 }
 
 export async function fetchAllFrequencyAccount(
-  context: Pick<Context, 'fetchEncodedAccounts'>,
+  rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<FrequencyAccount[]> {
-  const maybeAccounts = await context.fetchEncodedAccounts(addresses, config);
+  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount);
     return decodeFrequencyAccount(maybeAccount);
@@ -147,11 +145,11 @@ export async function fetchAllFrequencyAccount(
 }
 
 export async function safeFetchAllFrequencyAccount(
-  context: Pick<Context, 'fetchEncodedAccounts'>,
+  rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<FrequencyAccount[]> {
-  const maybeAccounts = await context.fetchEncodedAccounts(addresses, config);
+  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>
@@ -164,37 +162,34 @@ export function getFrequencyAccountSize(): number {
 }
 
 export async function findFrequencyAccountPda(
-  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
+  config: { programAddress?: Address | undefined } = {}
 ): Promise<ProgramDerivedAddress> {
-  const programAddress = await getProgramAddress(
-    context,
-    'mplTokenAuthRules',
-    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
-  );
-  return getProgramDerivedAddress(context, programAddress, [
-    getStringEncoder({ size: 'variable' }).encode('frequency_pda'),
-    getAddressEncoder().encode(programAddress),
-  ]);
+  const {
+    programAddress = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>,
+  } = config;
+  return getProgramDerivedAddress({
+    programAddress,
+    seeds: [
+      getStringEncoder({ size: 'variable' }).encode('frequency_pda'),
+      getAddressEncoder().encode(programAddress),
+    ],
+  });
 }
 
 export async function fetchFrequencyAccountFromSeeds(
-  context: Pick<
-    Context,
-    'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
-  >,
-  options?: FetchAccountConfig
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
+  config: FetchAccountConfig & { programAddress?: Address } = {}
 ): Promise<FrequencyAccount> {
-  const [address] = await findFrequencyAccountPda(context);
-  return fetchFrequencyAccount(context, address, options);
+  const { programAddress, ...fetchConfig } = config;
+  const [address] = await findFrequencyAccountPda({ programAddress });
+  return fetchFrequencyAccount(rpc, address, fetchConfig);
 }
 
 export async function safeFetchFrequencyAccountFromSeeds(
-  context: Pick<
-    Context,
-    'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'
-  >,
-  options?: FetchAccountConfig
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
+  config: FetchAccountConfig & { programAddress?: Address } = {}
 ): Promise<FrequencyAccount | null> {
-  const [address] = await findFrequencyAccountPda(context);
-  return safeFetchFrequencyAccount(context, address, options);
+  const { programAddress, ...fetchConfig } = config;
+  const [address] = await findFrequencyAccountPda({ programAddress });
+  return safeFetchFrequencyAccount(rpc, address, fetchConfig);
 }

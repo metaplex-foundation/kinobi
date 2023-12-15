@@ -28,11 +28,9 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type ConvertMasterEditionV1ToV2Instruction<
@@ -144,42 +142,6 @@ export function getConvertMasterEditionV1ToV2Instruction<
   TAccountPrintingMint extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: ConvertMasterEditionV1ToV2InputWithSigners<
-    TAccountMasterEdition,
-    TAccountOneTimeAuth,
-    TAccountPrintingMint
-  >
-): ConvertMasterEditionV1ToV2InstructionWithSigners<
-  TProgram,
-  TAccountMasterEdition,
-  TAccountOneTimeAuth,
-  TAccountPrintingMint
->;
-export function getConvertMasterEditionV1ToV2Instruction<
-  TAccountMasterEdition extends string,
-  TAccountOneTimeAuth extends string,
-  TAccountPrintingMint extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: ConvertMasterEditionV1ToV2Input<
-    TAccountMasterEdition,
-    TAccountOneTimeAuth,
-    TAccountPrintingMint
-  >
-): ConvertMasterEditionV1ToV2Instruction<
-  TProgram,
-  TAccountMasterEdition,
-  TAccountOneTimeAuth,
-  TAccountPrintingMint
->;
-export function getConvertMasterEditionV1ToV2Instruction<
-  TAccountMasterEdition extends string,
-  TAccountOneTimeAuth extends string,
-  TAccountPrintingMint extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: ConvertMasterEditionV1ToV2InputWithSigners<
     TAccountMasterEdition,
     TAccountOneTimeAuth,
@@ -214,38 +176,15 @@ export function getConvertMasterEditionV1ToV2Instruction<
   TAccountPrintingMint extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | ConvertMasterEditionV1ToV2Input<
-        TAccountMasterEdition,
-        TAccountOneTimeAuth,
-        TAccountPrintingMint
-      >,
-  rawInput?: ConvertMasterEditionV1ToV2Input<
+  input: ConvertMasterEditionV1ToV2Input<
     TAccountMasterEdition,
     TAccountOneTimeAuth,
     TAccountPrintingMint
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as ConvertMasterEditionV1ToV2Input<
-    TAccountMasterEdition,
-    TAccountOneTimeAuth,
-    TAccountPrintingMint
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<

@@ -13,6 +13,8 @@ import {
   FetchAccountsConfig,
   assertAccountExists,
   decodeAccount,
+  fetchEncodedAccount,
+  fetchEncodedAccounts,
 } from '@solana/accounts';
 import {
   Address,
@@ -37,7 +39,6 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { Context } from '../shared';
 import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type CollectionAuthorityRecord<TAddress extends string = string> =
@@ -101,11 +102,11 @@ export function decodeCollectionAuthorityRecord<
 export async function fetchCollectionAuthorityRecord<
   TAddress extends string = string
 >(
-  context: Pick<Context, 'fetchEncodedAccount'>,
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<CollectionAuthorityRecord<TAddress>> {
-  const maybeAccount = await context.fetchEncodedAccount(address, config);
+  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   assertAccountExists(maybeAccount);
   return decodeCollectionAuthorityRecord(maybeAccount);
 }
@@ -113,22 +114,22 @@ export async function fetchCollectionAuthorityRecord<
 export async function safeFetchCollectionAuthorityRecord<
   TAddress extends string = string
 >(
-  context: Pick<Context, 'fetchEncodedAccount'>,
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<CollectionAuthorityRecord<TAddress> | null> {
-  const maybeAccount = await context.fetchEncodedAccount(address, config);
+  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   return maybeAccount.exists
     ? decodeCollectionAuthorityRecord(maybeAccount)
     : null;
 }
 
 export async function fetchAllCollectionAuthorityRecord(
-  context: Pick<Context, 'fetchEncodedAccounts'>,
+  rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<CollectionAuthorityRecord[]> {
-  const maybeAccounts = await context.fetchEncodedAccounts(addresses, config);
+  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount);
     return decodeCollectionAuthorityRecord(maybeAccount);
@@ -136,11 +137,11 @@ export async function fetchAllCollectionAuthorityRecord(
 }
 
 export async function safeFetchAllCollectionAuthorityRecord(
-  context: Pick<Context, 'fetchEncodedAccounts'>,
+  rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<CollectionAuthorityRecord[]> {
-  const maybeAccounts = await context.fetchEncodedAccounts(addresses, config);
+  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
     .map((maybeAccount) =>

@@ -31,11 +31,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 import {
   UseAssetArgs,
@@ -297,90 +295,6 @@ export function getUseAssetInstruction<
   TAccountAuthorizationRulesProgram extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: UseAssetInputWithSigners<
-    TAccountMetadata,
-    TAccountTokenAccount,
-    TAccountMint,
-    TAccountUseAuthority,
-    TAccountOwner,
-    TAccountSplTokenProgram,
-    TAccountAtaProgram,
-    TAccountSystemProgram,
-    TAccountUseAuthorityRecord,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
-): UseAssetInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountTokenAccount,
-  TAccountMint,
-  TAccountUseAuthority,
-  TAccountOwner,
-  TAccountSplTokenProgram,
-  TAccountAtaProgram,
-  TAccountSystemProgram,
-  TAccountUseAuthorityRecord,
-  TAccountAuthorizationRules,
-  TAccountAuthorizationRulesProgram
->;
-export function getUseAssetInstruction<
-  TAccountMetadata extends string,
-  TAccountTokenAccount extends string,
-  TAccountMint extends string,
-  TAccountUseAuthority extends string,
-  TAccountOwner extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountAtaProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountUseAuthorityRecord extends string,
-  TAccountAuthorizationRules extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: UseAssetInput<
-    TAccountMetadata,
-    TAccountTokenAccount,
-    TAccountMint,
-    TAccountUseAuthority,
-    TAccountOwner,
-    TAccountSplTokenProgram,
-    TAccountAtaProgram,
-    TAccountSystemProgram,
-    TAccountUseAuthorityRecord,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
-): UseAssetInstruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountTokenAccount,
-  TAccountMint,
-  TAccountUseAuthority,
-  TAccountOwner,
-  TAccountSplTokenProgram,
-  TAccountAtaProgram,
-  TAccountSystemProgram,
-  TAccountUseAuthorityRecord,
-  TAccountAuthorizationRules,
-  TAccountAuthorizationRulesProgram
->;
-export function getUseAssetInstruction<
-  TAccountMetadata extends string,
-  TAccountTokenAccount extends string,
-  TAccountMint extends string,
-  TAccountUseAuthority extends string,
-  TAccountOwner extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountAtaProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountUseAuthorityRecord extends string,
-  TAccountAuthorizationRules extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: UseAssetInputWithSigners<
     TAccountMetadata,
     TAccountTokenAccount,
@@ -463,22 +377,7 @@ export function getUseAssetInstruction<
   TAccountAuthorizationRulesProgram extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | UseAssetInput<
-        TAccountMetadata,
-        TAccountTokenAccount,
-        TAccountMint,
-        TAccountUseAuthority,
-        TAccountOwner,
-        TAccountSplTokenProgram,
-        TAccountAtaProgram,
-        TAccountSystemProgram,
-        TAccountUseAuthorityRecord,
-        TAccountAuthorizationRules,
-        TAccountAuthorizationRulesProgram
-      >,
-  rawInput?: UseAssetInput<
+  input: UseAssetInput<
     TAccountMetadata,
     TAccountTokenAccount,
     TAccountMint,
@@ -492,33 +391,9 @@ export function getUseAssetInstruction<
     TAccountAuthorizationRulesProgram
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as UseAssetInput<
-    TAccountMetadata,
-    TAccountTokenAccount,
-    TAccountMint,
-    TAccountUseAuthority,
-    TAccountOwner,
-    TAccountSplTokenProgram,
-    TAccountAtaProgram,
-    TAccountSystemProgram,
-    TAccountUseAuthorityRecord,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -568,27 +443,18 @@ export function getUseAssetInstruction<
 
   // Resolve default values.
   if (!accounts.splTokenProgram.value) {
-    accounts.splTokenProgram.value = getProgramAddress(
-      context,
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    );
+    accounts.splTokenProgram.value =
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
     accounts.splTokenProgram.isWritable = false;
   }
   if (!accounts.ataProgram.value) {
-    accounts.ataProgram.value = getProgramAddress(
-      context,
-      'splAssociatedToken',
-      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
-    );
+    accounts.ataProgram.value =
+      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>;
     accounts.ataProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = getProgramAddress(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value =
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
     accounts.systemProgram.isWritable = false;
   }
 

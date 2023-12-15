@@ -7,14 +7,8 @@
  */
 
 import {
-  FetchAccountConfig,
-  FetchAccountsConfig,
-  MaybeEncodedAccount,
-} from '@solana/accounts';
-import {
   Address,
   isProgramDerivedAddress,
-  getProgramDerivedAddress as web3JsGetProgramDerivedAddress,
   ProgramDerivedAddress,
 } from '@solana/addresses';
 import {
@@ -188,47 +182,6 @@ export function isTransactionSigner<TAddress extends string = string>(
     'address' in value &&
     web3JsIsTransactionSigner(value)
   );
-}
-
-export type Context = {
-  fetchEncodedAccount: <TAddress extends string = string>(
-    address: Address<TAddress>,
-    options?: FetchAccountConfig
-  ) => Promise<MaybeEncodedAccount<TAddress>>;
-  fetchEncodedAccounts: (
-    addresses: Address[],
-    options?: FetchAccountsConfig
-  ) => Promise<MaybeEncodedAccount[]>;
-  getProgramAddress?: (program: { name: string; address: Address }) => Address;
-  getProgramDerivedAddress?: (
-    programAddress: Address,
-    seeds: Uint8Array[]
-  ) => Promise<ProgramDerivedAddress>;
-};
-
-export function getProgramAddress<TAddress extends string = string>(
-  context: Pick<Context, 'getProgramAddress'>,
-  name: string,
-  address: TAddress
-): typeof context['getProgramAddress'] extends undefined
-  ? Address<TAddress>
-  : Address {
-  return context.getProgramAddress
-    ? context.getProgramAddress({ name, address: address as Address<TAddress> })
-    : (address as Address<TAddress>);
-}
-
-export async function getProgramDerivedAddress(
-  context: Pick<Context, 'getProgramDerivedAddress'>,
-  programAddress: string,
-  seeds: Uint8Array[]
-): Promise<ProgramDerivedAddress> {
-  return context.getProgramDerivedAddress
-    ? context.getProgramDerivedAddress(programAddress as Address, seeds)
-    : web3JsGetProgramDerivedAddress({
-        programAddress: programAddress as Address,
-        seeds,
-      });
 }
 
 export type Program<TAddress extends string = string> = {

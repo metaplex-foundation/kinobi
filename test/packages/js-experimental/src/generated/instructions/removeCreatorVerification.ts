@@ -30,11 +30,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type RemoveCreatorVerificationInstruction<
@@ -132,33 +130,6 @@ export function getRemoveCreatorVerificationInstruction<
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: RemoveCreatorVerificationInputWithSigners<
-    TAccountMetadata,
-    TAccountCreator
-  >
-): RemoveCreatorVerificationInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountCreator
->;
-export function getRemoveCreatorVerificationInstruction<
-  TAccountMetadata extends string,
-  TAccountCreator extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
-): RemoveCreatorVerificationInstruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountCreator
->;
-export function getRemoveCreatorVerificationInstruction<
-  TAccountMetadata extends string,
-  TAccountCreator extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: RemoveCreatorVerificationInputWithSigners<
     TAccountMetadata,
     TAccountCreator
@@ -184,26 +155,11 @@ export function getRemoveCreatorVerificationInstruction<
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>,
-  rawInput?: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
+  input: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<

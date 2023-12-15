@@ -17,11 +17,12 @@ export function getAccountFetchHelpersFragment(
   })
     .mergeImportsWith(decoderFunctionFragment)
     .addImports('solanaAddresses', ['Address'])
-    .addImports('shared', ['Context'])
     .addImports('solanaAccounts', [
       'assertAccountExists',
       'decodeAccount',
       'EncodedAccount',
+      'fetchEncodedAccount',
+      'fetchEncodedAccounts',
       'FetchAccountConfig',
       'FetchAccountsConfig',
     ]);

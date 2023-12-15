@@ -76,7 +76,7 @@ export function getInstructionInputDefaultFragment(scope: {
         defaultsTo.importFrom === 'generated'
           ? 'generatedAccounts'
           : defaultsTo.importFrom;
-      const pdaArgs = ['context'];
+      const pdaArgs = [];
       const pdaSeeds = Object.keys(defaultsTo.seeds).map(
         (seed: string): Fragment => {
           const seedValue = defaultsTo.seeds[seed];
@@ -105,8 +105,7 @@ export function getInstructionInputDefaultFragment(scope: {
       }
       return defaultFragment(`await ${pdaFunction}(${pdaArgs.join(', ')})`)
         .mergeImportsWith(pdaSeedsFragment)
-        .addImports(pdaImportFrom, pdaFunction)
-        .addFeatures('context:getProgramDerivedAddress');
+        .addImports(pdaImportFrom, pdaFunction);
 
     case 'publicKey':
       return defaultFragment(
@@ -115,11 +114,9 @@ export function getInstructionInputDefaultFragment(scope: {
 
     case 'program':
       return defaultFragment(
-        `getProgramAddress(context, '${defaultsTo.program.name}', '${defaultsTo.program.publicKey}')`,
+        `'${defaultsTo.program.publicKey}' as Address<'${defaultsTo.program.publicKey}'>`,
         false
-      )
-        .addImports('shared', ['getProgramAddress'])
-        .addFeatures('context:getProgramAddress');
+      ).addImports('solanaAddresses', ['Address']);
 
     case 'programId':
       if (
@@ -159,11 +156,7 @@ export function getInstructionInputDefaultFragment(scope: {
         useAsync && asyncResolvers.includes(defaultsTo.name) ? 'await ' : '';
       return defaultFragment(`${resolverAwait}${resolverName}(resolverScope)`)
         .addImports(defaultsTo.importFrom, resolverName)
-        .addFeatures([
-          'context:getProgramAddress',
-          'context:getProgramDerivedAddress',
-          'instruction:resolverScopeVariable',
-        ]);
+        .addFeatures(['instruction:resolverScopeVariable']);
 
     case 'conditional':
     case 'conditionalResolver':
@@ -213,11 +206,7 @@ export function getInstructionInputDefaultFragment(scope: {
         const conditionalResolverName = camelCase(defaultsTo.resolver.name);
         conditionalFragment
           .addImports(defaultsTo.resolver.importFrom, conditionalResolverName)
-          .addFeatures([
-            'context:getProgramAddress',
-            'context:getProgramDerivedAddress',
-            'instruction:resolverScopeVariable',
-          ]);
+          .addFeatures(['instruction:resolverScopeVariable']);
         const conditionalResolverAwait =
           useAsync && asyncResolvers.includes(defaultsTo.resolver.name)
             ? 'await '

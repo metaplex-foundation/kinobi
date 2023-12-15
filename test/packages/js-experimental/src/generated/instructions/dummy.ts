@@ -36,13 +36,11 @@ import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { resolveTokenOrAta } from '../../hooked';
 import { findDelegateRecordPda } from '../accounts';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   expectSome,
   expectTransactionSigner,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 import { DelegateRole } from '../types';
 
@@ -255,88 +253,6 @@ export async function getDummyInstructionAsync<
   TAccountTokenOrAtaProgram extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
-  input: DummyAsyncInputWithSigners<
-    TAccountEdition,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountFoo,
-    TAccountBar,
-    TAccountDelegate,
-    TAccountDelegateRecord,
-    TAccountTokenOrAtaProgram
-  >
-): Promise<
-  DummyInstructionWithSigners<
-    TProgram,
-    TAccountEdition,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountFoo,
-    TAccountBar,
-    TAccountDelegate,
-    TAccountDelegateRecord,
-    TAccountTokenOrAtaProgram
-  >
->;
-export async function getDummyInstructionAsync<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountFoo extends string,
-  TAccountBar extends string,
-  TAccountDelegate extends string,
-  TAccountDelegateRecord extends string,
-  TAccountTokenOrAtaProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
-  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
-  input: DummyAsyncInput<
-    TAccountEdition,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountFoo,
-    TAccountBar,
-    TAccountDelegate,
-    TAccountDelegateRecord,
-    TAccountTokenOrAtaProgram
-  >
-): Promise<
-  DummyInstruction<
-    TProgram,
-    TAccountEdition,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountFoo,
-    TAccountBar,
-    TAccountDelegate,
-    TAccountDelegateRecord,
-    TAccountTokenOrAtaProgram
-  >
->;
-export async function getDummyInstructionAsync<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountFoo extends string,
-  TAccountBar extends string,
-  TAccountDelegate extends string,
-  TAccountDelegateRecord extends string,
-  TAccountTokenOrAtaProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
   input: DummyAsyncInputWithSigners<
     TAccountEdition,
     TAccountMint,
@@ -417,21 +333,7 @@ export async function getDummyInstructionAsync<
   TAccountTokenOrAtaProgram extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
-    | DummyAsyncInput<
-        TAccountEdition,
-        TAccountMint,
-        TAccountUpdateAuthority,
-        TAccountMintAuthority,
-        TAccountPayer,
-        TAccountFoo,
-        TAccountBar,
-        TAccountDelegate,
-        TAccountDelegateRecord,
-        TAccountTokenOrAtaProgram
-      >,
-  rawInput?: DummyAsyncInput<
+  input: DummyAsyncInput<
     TAccountEdition,
     TAccountMint,
     TAccountUpdateAuthority,
@@ -444,32 +346,9 @@ export async function getDummyInstructionAsync<
     TAccountTokenOrAtaProgram
   >
 ): Promise<IInstruction> {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress' | 'getProgramDerivedAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as DummyAsyncInput<
-    TAccountEdition,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountFoo,
-    TAccountBar,
-    TAccountDelegate,
-    TAccountDelegateRecord,
-    TAccountTokenOrAtaProgram
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplCandyMachineCore',
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>
-  );
+  const programAddress =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -510,7 +389,7 @@ export async function getDummyInstructionAsync<
   const args = { ...input };
 
   // Resolver scope.
-  const resolverScope = { context, programAddress, accounts, args };
+  const resolverScope = { programAddress, accounts, args };
 
   // Resolve default values.
   if (!accounts.edition.value) {
@@ -524,7 +403,7 @@ export async function getDummyInstructionAsync<
   }
   if (!accounts.delegateRecord.value) {
     if (accounts.delegate.value) {
-      accounts.delegateRecord.value = await findDelegateRecordPda(context, {
+      accounts.delegateRecord.value = await findDelegateRecordPda({
         role: DelegateRole.Collection,
       });
     }
@@ -534,18 +413,12 @@ export async function getDummyInstructionAsync<
   }
   if (!accounts.tokenOrAtaProgram.value) {
     if (resolveTokenOrAta(resolverScope)) {
-      accounts.tokenOrAtaProgram.value = getProgramAddress(
-        context,
-        'splToken',
-        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-      );
+      accounts.tokenOrAtaProgram.value =
+        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
       accounts.tokenOrAtaProgram.isWritable = false;
     } else {
-      accounts.tokenOrAtaProgram.value = getProgramAddress(
-        context,
-        'splAssociatedToken',
-        'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
-      );
+      accounts.tokenOrAtaProgram.value =
+        'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>;
       accounts.tokenOrAtaProgram.isWritable = false;
     }
   }
@@ -637,84 +510,6 @@ export function getDummyInstruction<
   TAccountTokenOrAtaProgram extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
-  input: DummyInputWithSigners<
-    TAccountEdition,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountFoo,
-    TAccountBar,
-    TAccountDelegate,
-    TAccountDelegateRecord,
-    TAccountTokenOrAtaProgram
-  >
-): DummyInstructionWithSigners<
-  TProgram,
-  TAccountEdition,
-  TAccountMint,
-  TAccountUpdateAuthority,
-  TAccountMintAuthority,
-  TAccountPayer,
-  TAccountFoo,
-  TAccountBar,
-  TAccountDelegate,
-  TAccountDelegateRecord,
-  TAccountTokenOrAtaProgram
->;
-export function getDummyInstruction<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountFoo extends string,
-  TAccountBar extends string,
-  TAccountDelegate extends string,
-  TAccountDelegateRecord extends string,
-  TAccountTokenOrAtaProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
-  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
-  input: DummyInput<
-    TAccountEdition,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountFoo,
-    TAccountBar,
-    TAccountDelegate,
-    TAccountDelegateRecord,
-    TAccountTokenOrAtaProgram
-  >
-): DummyInstruction<
-  TProgram,
-  TAccountEdition,
-  TAccountMint,
-  TAccountUpdateAuthority,
-  TAccountMintAuthority,
-  TAccountPayer,
-  TAccountFoo,
-  TAccountBar,
-  TAccountDelegate,
-  TAccountDelegateRecord,
-  TAccountTokenOrAtaProgram
->;
-export function getDummyInstruction<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountFoo extends string,
-  TAccountBar extends string,
-  TAccountDelegate extends string,
-  TAccountDelegateRecord extends string,
-  TAccountTokenOrAtaProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
   input: DummyInputWithSigners<
     TAccountEdition,
     TAccountMint,
@@ -791,21 +586,7 @@ export function getDummyInstruction<
   TAccountTokenOrAtaProgram extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
-    | DummyInput<
-        TAccountEdition,
-        TAccountMint,
-        TAccountUpdateAuthority,
-        TAccountMintAuthority,
-        TAccountPayer,
-        TAccountFoo,
-        TAccountBar,
-        TAccountDelegate,
-        TAccountDelegateRecord,
-        TAccountTokenOrAtaProgram
-      >,
-  rawInput?: DummyInput<
+  input: DummyInput<
     TAccountEdition,
     TAccountMint,
     TAccountUpdateAuthority,
@@ -818,30 +599,9 @@ export function getDummyInstruction<
     TAccountTokenOrAtaProgram
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress' | 'getProgramDerivedAddress'
-  >;
-  const input = (rawInput === undefined ? rawContext : rawInput) as DummyInput<
-    TAccountEdition,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountFoo,
-    TAccountBar,
-    TAccountDelegate,
-    TAccountDelegateRecord,
-    TAccountTokenOrAtaProgram
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplCandyMachineCore',
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>
-  );
+  const programAddress =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -882,7 +642,7 @@ export function getDummyInstruction<
   const args = { ...input };
 
   // Resolver scope.
-  const resolverScope = { context, programAddress, accounts, args };
+  const resolverScope = { programAddress, accounts, args };
 
   // Resolve default values.
   if (!accounts.edition.value) {
@@ -899,18 +659,12 @@ export function getDummyInstruction<
   }
   if (!accounts.tokenOrAtaProgram.value) {
     if (resolveTokenOrAta(resolverScope)) {
-      accounts.tokenOrAtaProgram.value = getProgramAddress(
-        context,
-        'splToken',
-        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-      );
+      accounts.tokenOrAtaProgram.value =
+        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
       accounts.tokenOrAtaProgram.isWritable = false;
     } else {
-      accounts.tokenOrAtaProgram.value = getProgramAddress(
-        context,
-        'splAssociatedToken',
-        'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
-      );
+      accounts.tokenOrAtaProgram.value =
+        'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>;
       accounts.tokenOrAtaProgram.isWritable = false;
     }
   }

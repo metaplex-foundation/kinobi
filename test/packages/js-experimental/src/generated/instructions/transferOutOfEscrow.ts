@@ -37,11 +37,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type TransferOutOfEscrowInstruction<
@@ -328,102 +326,6 @@ export function getTransferOutOfEscrowInstruction<
   TAccountAuthority extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: TransferOutOfEscrowInputWithSigners<
-    TAccountEscrow,
-    TAccountMetadata,
-    TAccountPayer,
-    TAccountAttributeMint,
-    TAccountAttributeSrc,
-    TAccountAttributeDst,
-    TAccountEscrowMint,
-    TAccountEscrowAccount,
-    TAccountSystemProgram,
-    TAccountAtaProgram,
-    TAccountTokenProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthority
-  >
-): TransferOutOfEscrowInstructionWithSigners<
-  TProgram,
-  TAccountEscrow,
-  TAccountMetadata,
-  TAccountPayer,
-  TAccountAttributeMint,
-  TAccountAttributeSrc,
-  TAccountAttributeDst,
-  TAccountEscrowMint,
-  TAccountEscrowAccount,
-  TAccountSystemProgram,
-  TAccountAtaProgram,
-  TAccountTokenProgram,
-  TAccountSysvarInstructions,
-  TAccountAuthority
->;
-export function getTransferOutOfEscrowInstruction<
-  TAccountEscrow extends string,
-  TAccountMetadata extends string,
-  TAccountPayer extends string,
-  TAccountAttributeMint extends string,
-  TAccountAttributeSrc extends string,
-  TAccountAttributeDst extends string,
-  TAccountEscrowMint extends string,
-  TAccountEscrowAccount extends string,
-  TAccountSystemProgram extends string,
-  TAccountAtaProgram extends string,
-  TAccountTokenProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: TransferOutOfEscrowInput<
-    TAccountEscrow,
-    TAccountMetadata,
-    TAccountPayer,
-    TAccountAttributeMint,
-    TAccountAttributeSrc,
-    TAccountAttributeDst,
-    TAccountEscrowMint,
-    TAccountEscrowAccount,
-    TAccountSystemProgram,
-    TAccountAtaProgram,
-    TAccountTokenProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthority
-  >
-): TransferOutOfEscrowInstruction<
-  TProgram,
-  TAccountEscrow,
-  TAccountMetadata,
-  TAccountPayer,
-  TAccountAttributeMint,
-  TAccountAttributeSrc,
-  TAccountAttributeDst,
-  TAccountEscrowMint,
-  TAccountEscrowAccount,
-  TAccountSystemProgram,
-  TAccountAtaProgram,
-  TAccountTokenProgram,
-  TAccountSysvarInstructions,
-  TAccountAuthority
->;
-export function getTransferOutOfEscrowInstruction<
-  TAccountEscrow extends string,
-  TAccountMetadata extends string,
-  TAccountPayer extends string,
-  TAccountAttributeMint extends string,
-  TAccountAttributeSrc extends string,
-  TAccountAttributeDst extends string,
-  TAccountEscrowMint extends string,
-  TAccountEscrowAccount extends string,
-  TAccountSystemProgram extends string,
-  TAccountAtaProgram extends string,
-  TAccountTokenProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: TransferOutOfEscrowInputWithSigners<
     TAccountEscrow,
     TAccountMetadata,
@@ -518,24 +420,7 @@ export function getTransferOutOfEscrowInstruction<
   TAccountAuthority extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | TransferOutOfEscrowInput<
-        TAccountEscrow,
-        TAccountMetadata,
-        TAccountPayer,
-        TAccountAttributeMint,
-        TAccountAttributeSrc,
-        TAccountAttributeDst,
-        TAccountEscrowMint,
-        TAccountEscrowAccount,
-        TAccountSystemProgram,
-        TAccountAtaProgram,
-        TAccountTokenProgram,
-        TAccountSysvarInstructions,
-        TAccountAuthority
-      >,
-  rawInput?: TransferOutOfEscrowInput<
+  input: TransferOutOfEscrowInput<
     TAccountEscrow,
     TAccountMetadata,
     TAccountPayer,
@@ -551,35 +436,9 @@ export function getTransferOutOfEscrowInstruction<
     TAccountAuthority
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as TransferOutOfEscrowInput<
-    TAccountEscrow,
-    TAccountMetadata,
-    TAccountPayer,
-    TAccountAttributeMint,
-    TAccountAttributeSrc,
-    TAccountAttributeDst,
-    TAccountEscrowMint,
-    TAccountEscrowAccount,
-    TAccountSystemProgram,
-    TAccountAtaProgram,
-    TAccountTokenProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthority
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -624,27 +483,18 @@ export function getTransferOutOfEscrowInstruction<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = getProgramAddress(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value =
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
     accounts.systemProgram.isWritable = false;
   }
   if (!accounts.ataProgram.value) {
-    accounts.ataProgram.value = getProgramAddress(
-      context,
-      'splAssociatedToken',
-      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
-    );
+    accounts.ataProgram.value =
+      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>;
     accounts.ataProgram.isWritable = false;
   }
   if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value = getProgramAddress(
-      context,
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    );
+    accounts.tokenProgram.value =
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
     accounts.tokenProgram.isWritable = false;
   }
   if (!accounts.sysvarInstructions.value) {

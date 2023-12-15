@@ -20,7 +20,3 @@ export function create{{ program.name | pascalCase }}Program(): {{ program.name 
     {% endif %}
   };
 }
-
-export async function get{{ program.name | pascalCase }}ProgramAddress(context: Pick<Context, 'getProgramAddress'> = {}): Promise<Address> {
-  return getProgramAddress(context, "{{ program.name | camelCase }}", {{ programAddressConstant }});
-}

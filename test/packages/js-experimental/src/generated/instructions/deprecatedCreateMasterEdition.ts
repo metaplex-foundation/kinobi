@@ -31,11 +31,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 import {
   CreateMasterEditionArgs,
@@ -338,102 +336,6 @@ export function getDeprecatedCreateMasterEditionInstruction<
   TAccountOneTimePrintingAuthorizationMintAuthority extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: DeprecatedCreateMasterEditionInputWithSigners<
-    TAccountEdition,
-    TAccountMint,
-    TAccountPrintingMint,
-    TAccountOneTimePrintingAuthorizationMint,
-    TAccountUpdateAuthority,
-    TAccountPrintingMintAuthority,
-    TAccountMintAuthority,
-    TAccountMetadata,
-    TAccountPayer,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent,
-    TAccountOneTimePrintingAuthorizationMintAuthority
-  >
-): DeprecatedCreateMasterEditionInstructionWithSigners<
-  TProgram,
-  TAccountEdition,
-  TAccountMint,
-  TAccountPrintingMint,
-  TAccountOneTimePrintingAuthorizationMint,
-  TAccountUpdateAuthority,
-  TAccountPrintingMintAuthority,
-  TAccountMintAuthority,
-  TAccountMetadata,
-  TAccountPayer,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountRent,
-  TAccountOneTimePrintingAuthorizationMintAuthority
->;
-export function getDeprecatedCreateMasterEditionInstruction<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountPrintingMint extends string,
-  TAccountOneTimePrintingAuthorizationMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountPrintingMintAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountPayer extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TAccountOneTimePrintingAuthorizationMintAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: DeprecatedCreateMasterEditionInput<
-    TAccountEdition,
-    TAccountMint,
-    TAccountPrintingMint,
-    TAccountOneTimePrintingAuthorizationMint,
-    TAccountUpdateAuthority,
-    TAccountPrintingMintAuthority,
-    TAccountMintAuthority,
-    TAccountMetadata,
-    TAccountPayer,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent,
-    TAccountOneTimePrintingAuthorizationMintAuthority
-  >
-): DeprecatedCreateMasterEditionInstruction<
-  TProgram,
-  TAccountEdition,
-  TAccountMint,
-  TAccountPrintingMint,
-  TAccountOneTimePrintingAuthorizationMint,
-  TAccountUpdateAuthority,
-  TAccountPrintingMintAuthority,
-  TAccountMintAuthority,
-  TAccountMetadata,
-  TAccountPayer,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountRent,
-  TAccountOneTimePrintingAuthorizationMintAuthority
->;
-export function getDeprecatedCreateMasterEditionInstruction<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountPrintingMint extends string,
-  TAccountOneTimePrintingAuthorizationMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountPrintingMintAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountPayer extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TAccountOneTimePrintingAuthorizationMintAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: DeprecatedCreateMasterEditionInputWithSigners<
     TAccountEdition,
     TAccountMint,
@@ -528,24 +430,7 @@ export function getDeprecatedCreateMasterEditionInstruction<
   TAccountOneTimePrintingAuthorizationMintAuthority extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | DeprecatedCreateMasterEditionInput<
-        TAccountEdition,
-        TAccountMint,
-        TAccountPrintingMint,
-        TAccountOneTimePrintingAuthorizationMint,
-        TAccountUpdateAuthority,
-        TAccountPrintingMintAuthority,
-        TAccountMintAuthority,
-        TAccountMetadata,
-        TAccountPayer,
-        TAccountTokenProgram,
-        TAccountSystemProgram,
-        TAccountRent,
-        TAccountOneTimePrintingAuthorizationMintAuthority
-      >,
-  rawInput?: DeprecatedCreateMasterEditionInput<
+  input: DeprecatedCreateMasterEditionInput<
     TAccountEdition,
     TAccountMint,
     TAccountPrintingMint,
@@ -561,35 +446,9 @@ export function getDeprecatedCreateMasterEditionInstruction<
     TAccountOneTimePrintingAuthorizationMintAuthority
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as DeprecatedCreateMasterEditionInput<
-    TAccountEdition,
-    TAccountMint,
-    TAccountPrintingMint,
-    TAccountOneTimePrintingAuthorizationMint,
-    TAccountUpdateAuthority,
-    TAccountPrintingMintAuthority,
-    TAccountMintAuthority,
-    TAccountMetadata,
-    TAccountPayer,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent,
-    TAccountOneTimePrintingAuthorizationMintAuthority
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -643,19 +502,13 @@ export function getDeprecatedCreateMasterEditionInstruction<
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value = getProgramAddress(
-      context,
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    );
+    accounts.tokenProgram.value =
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
     accounts.tokenProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = getProgramAddress(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value =
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
     accounts.systemProgram.isWritable = false;
   }
   if (!accounts.rent.value) {

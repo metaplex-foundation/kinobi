@@ -32,11 +32,9 @@ import {
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { resolveMasterEditionFromTokenStandard } from '../../hooked';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 import {
   TokenStandard,
@@ -368,118 +366,6 @@ export async function getTransferInstructionAsync<
   TAccountAuthorizationRules extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
-  input: TransferAsyncInputWithSigners<
-    TAccountAuthority,
-    TAccountDelegateRecord,
-    TAccountToken,
-    TAccountTokenOwner,
-    TAccountDestination,
-    TAccountDestinationOwner,
-    TAccountMint,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountSplTokenProgram,
-    TAccountSplAtaProgram,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
-): Promise<
-  TransferInstructionWithSigners<
-    TProgram,
-    TAccountAuthority,
-    TAccountDelegateRecord,
-    TAccountToken,
-    TAccountTokenOwner,
-    TAccountDestination,
-    TAccountDestinationOwner,
-    TAccountMint,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountSplTokenProgram,
-    TAccountSplAtaProgram,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
->;
-export async function getTransferInstructionAsync<
-  TAccountAuthority extends string,
-  TAccountDelegateRecord extends string,
-  TAccountToken extends string,
-  TAccountTokenOwner extends string,
-  TAccountDestination extends string,
-  TAccountDestinationOwner extends string,
-  TAccountMint extends string,
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountSplAtaProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
-  input: TransferAsyncInput<
-    TAccountAuthority,
-    TAccountDelegateRecord,
-    TAccountToken,
-    TAccountTokenOwner,
-    TAccountDestination,
-    TAccountDestinationOwner,
-    TAccountMint,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountSplTokenProgram,
-    TAccountSplAtaProgram,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
-): Promise<
-  TransferInstruction<
-    TProgram,
-    TAccountAuthority,
-    TAccountDelegateRecord,
-    TAccountToken,
-    TAccountTokenOwner,
-    TAccountDestination,
-    TAccountDestinationOwner,
-    TAccountMint,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountSplTokenProgram,
-    TAccountSplAtaProgram,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
->;
-export async function getTransferInstructionAsync<
-  TAccountAuthority extends string,
-  TAccountDelegateRecord extends string,
-  TAccountToken extends string,
-  TAccountTokenOwner extends string,
-  TAccountDestination extends string,
-  TAccountDestinationOwner extends string,
-  TAccountMint extends string,
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountSplAtaProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: TransferAsyncInputWithSigners<
     TAccountAuthority,
     TAccountDelegateRecord,
@@ -590,26 +476,7 @@ export async function getTransferInstructionAsync<
   TAccountAuthorizationRules extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>
-    | TransferAsyncInput<
-        TAccountAuthority,
-        TAccountDelegateRecord,
-        TAccountToken,
-        TAccountTokenOwner,
-        TAccountDestination,
-        TAccountDestinationOwner,
-        TAccountMint,
-        TAccountMetadata,
-        TAccountMasterEdition,
-        TAccountSplTokenProgram,
-        TAccountSplAtaProgram,
-        TAccountSystemProgram,
-        TAccountSysvarInstructions,
-        TAccountAuthorizationRulesProgram,
-        TAccountAuthorizationRules
-      >,
-  rawInput?: TransferAsyncInput<
+  input: TransferAsyncInput<
     TAccountAuthority,
     TAccountDelegateRecord,
     TAccountToken,
@@ -627,37 +494,9 @@ export async function getTransferInstructionAsync<
     TAccountAuthorizationRules
   >
 ): Promise<IInstruction> {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress' | 'getProgramDerivedAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as TransferAsyncInput<
-    TAccountAuthority,
-    TAccountDelegateRecord,
-    TAccountToken,
-    TAccountTokenOwner,
-    TAccountDestination,
-    TAccountDestinationOwner,
-    TAccountMint,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountSplTokenProgram,
-    TAccountSplAtaProgram,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -717,7 +556,7 @@ export async function getTransferInstructionAsync<
   const args = { ...input };
 
   // Resolver scope.
-  const resolverScope = { context, programAddress, accounts, args };
+  const resolverScope = { programAddress, accounts, args };
 
   // Resolve default values.
   if (!args.tokenStandard) {
@@ -730,27 +569,18 @@ export async function getTransferInstructionAsync<
     };
   }
   if (!accounts.splTokenProgram.value) {
-    accounts.splTokenProgram.value = getProgramAddress(
-      context,
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    );
+    accounts.splTokenProgram.value =
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
     accounts.splTokenProgram.isWritable = false;
   }
   if (!accounts.splAtaProgram.value) {
-    accounts.splAtaProgram.value = getProgramAddress(
-      context,
-      'splAssociatedToken',
-      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
-    );
+    accounts.splAtaProgram.value =
+      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>;
     accounts.splAtaProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = getProgramAddress(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value =
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
     accounts.systemProgram.isWritable = false;
   }
   if (!accounts.sysvarInstructions.value) {
@@ -894,114 +724,6 @@ export function getTransferInstruction<
   TAccountAuthorizationRules extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: TransferInputWithSigners<
-    TAccountAuthority,
-    TAccountDelegateRecord,
-    TAccountToken,
-    TAccountTokenOwner,
-    TAccountDestination,
-    TAccountDestinationOwner,
-    TAccountMint,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountSplTokenProgram,
-    TAccountSplAtaProgram,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
-): TransferInstructionWithSigners<
-  TProgram,
-  TAccountAuthority,
-  TAccountDelegateRecord,
-  TAccountToken,
-  TAccountTokenOwner,
-  TAccountDestination,
-  TAccountDestinationOwner,
-  TAccountMint,
-  TAccountMetadata,
-  TAccountMasterEdition,
-  TAccountSplTokenProgram,
-  TAccountSplAtaProgram,
-  TAccountSystemProgram,
-  TAccountSysvarInstructions,
-  TAccountAuthorizationRulesProgram,
-  TAccountAuthorizationRules
->;
-export function getTransferInstruction<
-  TAccountAuthority extends string,
-  TAccountDelegateRecord extends string,
-  TAccountToken extends string,
-  TAccountTokenOwner extends string,
-  TAccountDestination extends string,
-  TAccountDestinationOwner extends string,
-  TAccountMint extends string,
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountSplAtaProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: TransferInput<
-    TAccountAuthority,
-    TAccountDelegateRecord,
-    TAccountToken,
-    TAccountTokenOwner,
-    TAccountDestination,
-    TAccountDestinationOwner,
-    TAccountMint,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountSplTokenProgram,
-    TAccountSplAtaProgram,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
-): TransferInstruction<
-  TProgram,
-  TAccountAuthority,
-  TAccountDelegateRecord,
-  TAccountToken,
-  TAccountTokenOwner,
-  TAccountDestination,
-  TAccountDestinationOwner,
-  TAccountMint,
-  TAccountMetadata,
-  TAccountMasterEdition,
-  TAccountSplTokenProgram,
-  TAccountSplAtaProgram,
-  TAccountSystemProgram,
-  TAccountSysvarInstructions,
-  TAccountAuthorizationRulesProgram,
-  TAccountAuthorizationRules
->;
-export function getTransferInstruction<
-  TAccountAuthority extends string,
-  TAccountDelegateRecord extends string,
-  TAccountToken extends string,
-  TAccountTokenOwner extends string,
-  TAccountDestination extends string,
-  TAccountDestinationOwner extends string,
-  TAccountMint extends string,
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountSplAtaProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: TransferInputWithSigners<
     TAccountAuthority,
     TAccountDelegateRecord,
@@ -1108,26 +830,7 @@ export function getTransferInstruction<
   TAccountAuthorizationRules extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | TransferInput<
-        TAccountAuthority,
-        TAccountDelegateRecord,
-        TAccountToken,
-        TAccountTokenOwner,
-        TAccountDestination,
-        TAccountDestinationOwner,
-        TAccountMint,
-        TAccountMetadata,
-        TAccountMasterEdition,
-        TAccountSplTokenProgram,
-        TAccountSplAtaProgram,
-        TAccountSystemProgram,
-        TAccountSysvarInstructions,
-        TAccountAuthorizationRulesProgram,
-        TAccountAuthorizationRules
-      >,
-  rawInput?: TransferInput<
+  input: TransferInput<
     TAccountAuthority,
     TAccountDelegateRecord,
     TAccountToken,
@@ -1145,37 +848,9 @@ export function getTransferInstruction<
     TAccountAuthorizationRules
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as TransferInput<
-    TAccountAuthority,
-    TAccountDelegateRecord,
-    TAccountToken,
-    TAccountTokenOwner,
-    TAccountDestination,
-    TAccountDestinationOwner,
-    TAccountMint,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountSplTokenProgram,
-    TAccountSplAtaProgram,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -1239,27 +914,18 @@ export function getTransferInstruction<
     args.tokenStandard = TokenStandard.NonFungible;
   }
   if (!accounts.splTokenProgram.value) {
-    accounts.splTokenProgram.value = getProgramAddress(
-      context,
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    );
+    accounts.splTokenProgram.value =
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
     accounts.splTokenProgram.isWritable = false;
   }
   if (!accounts.splAtaProgram.value) {
-    accounts.splAtaProgram.value = getProgramAddress(
-      context,
-      'splAssociatedToken',
-      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
-    );
+    accounts.splAtaProgram.value =
+      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>;
     accounts.splAtaProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = getProgramAddress(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value =
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
     accounts.systemProgram.isWritable = false;
   }
   if (!accounts.sysvarInstructions.value) {

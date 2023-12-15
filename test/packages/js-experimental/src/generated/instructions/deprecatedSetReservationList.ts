@@ -43,11 +43,9 @@ import {
 } from '@solana/options';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 import {
   Reservation,
@@ -197,42 +195,6 @@ export function getDeprecatedSetReservationListInstruction<
   TAccountResource extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: DeprecatedSetReservationListInputWithSigners<
-    TAccountMasterEdition,
-    TAccountReservationList,
-    TAccountResource
-  >
-): DeprecatedSetReservationListInstructionWithSigners<
-  TProgram,
-  TAccountMasterEdition,
-  TAccountReservationList,
-  TAccountResource
->;
-export function getDeprecatedSetReservationListInstruction<
-  TAccountMasterEdition extends string,
-  TAccountReservationList extends string,
-  TAccountResource extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: DeprecatedSetReservationListInput<
-    TAccountMasterEdition,
-    TAccountReservationList,
-    TAccountResource
-  >
-): DeprecatedSetReservationListInstruction<
-  TProgram,
-  TAccountMasterEdition,
-  TAccountReservationList,
-  TAccountResource
->;
-export function getDeprecatedSetReservationListInstruction<
-  TAccountMasterEdition extends string,
-  TAccountReservationList extends string,
-  TAccountResource extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: DeprecatedSetReservationListInputWithSigners<
     TAccountMasterEdition,
     TAccountReservationList,
@@ -267,38 +229,15 @@ export function getDeprecatedSetReservationListInstruction<
   TAccountResource extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | DeprecatedSetReservationListInput<
-        TAccountMasterEdition,
-        TAccountReservationList,
-        TAccountResource
-      >,
-  rawInput?: DeprecatedSetReservationListInput<
+  input: DeprecatedSetReservationListInput<
     TAccountMasterEdition,
     TAccountReservationList,
     TAccountResource
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as DeprecatedSetReservationListInput<
-    TAccountMasterEdition,
-    TAccountReservationList,
-    TAccountResource
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<

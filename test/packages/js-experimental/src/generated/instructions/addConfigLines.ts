@@ -39,11 +39,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 import {
   ConfigLine,
@@ -179,26 +177,6 @@ export function getAddConfigLinesInstruction<
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: AddConfigLinesInputWithSigners<TAccountCandyMachine, TAccountAuthority>
-): AddConfigLinesInstructionWithSigners<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthority
->;
-export function getAddConfigLinesInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
-): AddConfigLinesInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>;
-export function getAddConfigLinesInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
   input: AddConfigLinesInputWithSigners<TAccountCandyMachine, TAccountAuthority>
 ): AddConfigLinesInstructionWithSigners<
   TProgram,
@@ -217,26 +195,11 @@ export function getAddConfigLinesInstruction<
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>,
-  rawInput?: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
+  input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplCandyMachineCore',
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>
-  );
+  const programAddress =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
 
   // Original accounts.
   type AccountMetas = Parameters<

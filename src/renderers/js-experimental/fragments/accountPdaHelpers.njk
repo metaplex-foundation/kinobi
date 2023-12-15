@@ -1,20 +1,24 @@
 {% import "templates/macros.njk" as macros %}
 
+{% if hasVariableSeeds %}
+export type {{ pascalCaseName }}Seeds = {
+  {% for seed in seeds %}
+    {% if seed.kind === 'variable' %}
+      {{ macros.docblock(seed.docs) }}
+      {{ seed.name | camelCase }}: {{ seed.typeManifest.looseType.render }};
+    {% endif %}
+  {% endfor %}
+}
+{% endif %}
+
 export async function find{{ pascalCaseName }}Pda(
-  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>,
   {% if hasVariableSeeds %}
-    seeds: {
-      {% for seed in seeds %}
-        {% if seed.kind === 'variable' %}
-          {{ macros.docblock(seed.docs) }}
-          {{ seed.name | camelCase }}: {{ seed.typeManifest.looseType.render }};
-        {% endif %}
-      {% endfor %}
-    }
+    seeds: {{ pascalCaseName }}Seeds,
   {% endif %}
+  config: { programAddress?: Address | undefined } = {},
 ): Promise<ProgramDerivedAddress> {
-  const programAddress = await getProgramAddress(context, '{{ program.name | camelCase }}', '{{ program.publicKey }}');
-  return getProgramDerivedAddress(context, programAddress, [
+  const { programAddress = '{{ program.publicKey }}' as Address<'{{ program.publicKey }}'> } = config;
+  return getProgramDerivedAddress({ programAddress, seeds: [
     {% for seed in seeds %}
       {% if seed.kind === 'programId' %}
         getAddressEncoder().encode(programAddress),
@@ -24,27 +28,29 @@ export async function find{{ pascalCaseName }}Pda(
         {{ seed.typeManifest.encoder.render }}.encode(seeds.{{ seed.name | camelCase }}),
       {% endif %}
     {% endfor %}
-  ]);
+  ]});
 }
 
 export async function fetch{{ pascalCaseName }}FromSeeds(
-  context: Pick<Context, 'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'>,
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
   {% if hasVariableSeeds %}
-    seeds: Parameters<typeof find{{ pascalCaseName }}Pda>[1],
+    seeds: {{ pascalCaseName }}Seeds,
   {% endif %}
-  options?: FetchAccountConfig,
+  config: FetchAccountConfig & { programAddress?: Address } = {},
 ): Promise<{{ pascalCaseName }}> {
-  const [address] = await find{{ pascalCaseName }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %});
-  return fetch{{ pascalCaseName }}(context, address, options);
+  const { programAddress, ...fetchConfig } = config;
+  const [address] = await find{{ pascalCaseName }}Pda({% if hasVariableSeeds %}seeds, {% endif %}{ programAddress });
+  return fetch{{ pascalCaseName }}(rpc, address, fetchConfig);
 }
 
 export async function safeFetch{{ pascalCaseName }}FromSeeds(
-  context: Pick<Context, 'fetchEncodedAccount' | 'getProgramAddress' | 'getProgramDerivedAddress'>,
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
   {% if hasVariableSeeds %}
-    seeds: Parameters<typeof find{{ pascalCaseName }}Pda>[1],
+    seeds: {{ pascalCaseName }}Seeds,
   {% endif %}
-  options?: FetchAccountConfig,
+  config: FetchAccountConfig & { programAddress?: Address } = {},
 ): Promise<{{ pascalCaseName }} | null> {
-  const [address] = await find{{ pascalCaseName }}Pda(context{% if hasVariableSeeds %}, seeds{% endif %});
-  return safeFetch{{ pascalCaseName }}(context, address, options);
+  const { programAddress, ...fetchConfig } = config;
+  const [address] = await find{{ pascalCaseName }}Pda({% if hasVariableSeeds %}seeds, {% endif %}{ programAddress });
+  return safeFetch{{ pascalCaseName }}(rpc, address, fetchConfig);
 }

@@ -35,11 +35,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type TransferSolInstruction<
@@ -138,26 +136,6 @@ export function getTransferSolInstruction<
   TAccountDestination extends string,
   TProgram extends string = '11111111111111111111111111111111'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: TransferSolInputWithSigners<TAccountSource, TAccountDestination>
-): TransferSolInstructionWithSigners<
-  TProgram,
-  TAccountSource,
-  TAccountDestination
->;
-export function getTransferSolInstruction<
-  TAccountSource extends string,
-  TAccountDestination extends string,
-  TProgram extends string = '11111111111111111111111111111111'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: TransferSolInput<TAccountSource, TAccountDestination>
-): TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>;
-export function getTransferSolInstruction<
-  TAccountSource extends string,
-  TAccountDestination extends string,
-  TProgram extends string = '11111111111111111111111111111111'
->(
   input: TransferSolInputWithSigners<TAccountSource, TAccountDestination>
 ): TransferSolInstructionWithSigners<
   TProgram,
@@ -175,27 +153,10 @@ export function getTransferSolInstruction<
   TAccountSource extends string,
   TAccountDestination extends string,
   TProgram extends string = '11111111111111111111111111111111'
->(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | TransferSolInput<TAccountSource, TAccountDestination>,
-  rawInput?: TransferSolInput<TAccountSource, TAccountDestination>
-): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as TransferSolInput<TAccountSource, TAccountDestination>;
-
+>(input: TransferSolInput<TAccountSource, TAccountDestination>): IInstruction {
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'splSystem',
-    '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>
-  );
+  const programAddress =
+    '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
 
   // Original accounts.
   type AccountMetas = Parameters<

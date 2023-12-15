@@ -14,7 +14,7 @@ export function getProgramFragment(programNode: nodes.ProgramNode): Fragment {
     programErrorName,
   })
     .addImports('solanaAddresses', ['Address'])
-    .addImports('shared', ['Program', 'getProgramAddress', 'Context']);
+    .addImports('shared', ['Program']);
 
   if (programNode.errors.length > 0) {
     programFragment

@@ -33,11 +33,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 import {
   Operation,
@@ -482,105 +480,6 @@ export function getValidateInstruction<
   TAccountOptRuleNonsigner5 extends string,
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: ValidateInputWithSigners<
-    TAccountPayer,
-    TAccountRuleSet,
-    TAccountSystemProgram,
-    TAccountOptRuleSigner1,
-    TAccountOptRuleSigner2,
-    TAccountOptRuleSigner3,
-    TAccountOptRuleSigner4,
-    TAccountOptRuleSigner5,
-    TAccountOptRuleNonsigner1,
-    TAccountOptRuleNonsigner2,
-    TAccountOptRuleNonsigner3,
-    TAccountOptRuleNonsigner4,
-    TAccountOptRuleNonsigner5
-  >
-): ValidateInstructionWithSigners<
-  TProgram,
-  TAccountPayer,
-  TAccountRuleSet,
-  TAccountSystemProgram,
-  typeof input['optRuleSigner1'] extends TransactionSigner<TAccountOptRuleSigner1>
-    ? ReadonlySignerAccount<TAccountOptRuleSigner1> &
-        IAccountSignerMeta<TAccountOptRuleSigner1>
-    : TAccountOptRuleSigner1,
-  TAccountOptRuleSigner2,
-  TAccountOptRuleSigner3,
-  TAccountOptRuleSigner4,
-  TAccountOptRuleSigner5,
-  TAccountOptRuleNonsigner1,
-  TAccountOptRuleNonsigner2,
-  TAccountOptRuleNonsigner3,
-  TAccountOptRuleNonsigner4,
-  TAccountOptRuleNonsigner5
->;
-export function getValidateInstruction<
-  TAccountPayer extends string,
-  TAccountRuleSet extends string,
-  TAccountSystemProgram extends string,
-  TAccountOptRuleSigner1 extends string,
-  TAccountOptRuleSigner2 extends string,
-  TAccountOptRuleSigner3 extends string,
-  TAccountOptRuleSigner4 extends string,
-  TAccountOptRuleSigner5 extends string,
-  TAccountOptRuleNonsigner1 extends string,
-  TAccountOptRuleNonsigner2 extends string,
-  TAccountOptRuleNonsigner3 extends string,
-  TAccountOptRuleNonsigner4 extends string,
-  TAccountOptRuleNonsigner5 extends string,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: ValidateInput<
-    TAccountPayer,
-    TAccountRuleSet,
-    TAccountSystemProgram,
-    TAccountOptRuleSigner1,
-    TAccountOptRuleSigner2,
-    TAccountOptRuleSigner3,
-    TAccountOptRuleSigner4,
-    TAccountOptRuleSigner5,
-    TAccountOptRuleNonsigner1,
-    TAccountOptRuleNonsigner2,
-    TAccountOptRuleNonsigner3,
-    TAccountOptRuleNonsigner4,
-    TAccountOptRuleNonsigner5
-  >
-): ValidateInstruction<
-  TProgram,
-  TAccountPayer,
-  TAccountRuleSet,
-  TAccountSystemProgram,
-  TAccountOptRuleSigner1,
-  TAccountOptRuleSigner2,
-  TAccountOptRuleSigner3,
-  TAccountOptRuleSigner4,
-  TAccountOptRuleSigner5,
-  TAccountOptRuleNonsigner1,
-  TAccountOptRuleNonsigner2,
-  TAccountOptRuleNonsigner3,
-  TAccountOptRuleNonsigner4,
-  TAccountOptRuleNonsigner5
->;
-export function getValidateInstruction<
-  TAccountPayer extends string,
-  TAccountRuleSet extends string,
-  TAccountSystemProgram extends string,
-  TAccountOptRuleSigner1 extends string,
-  TAccountOptRuleSigner2 extends string,
-  TAccountOptRuleSigner3 extends string,
-  TAccountOptRuleSigner4 extends string,
-  TAccountOptRuleSigner5 extends string,
-  TAccountOptRuleNonsigner1 extends string,
-  TAccountOptRuleNonsigner2 extends string,
-  TAccountOptRuleNonsigner3 extends string,
-  TAccountOptRuleNonsigner4 extends string,
-  TAccountOptRuleNonsigner5 extends string,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
->(
   input: ValidateInputWithSigners<
     TAccountPayer,
     TAccountRuleSet,
@@ -678,24 +577,7 @@ export function getValidateInstruction<
   TAccountOptRuleNonsigner5 extends string,
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | ValidateInput<
-        TAccountPayer,
-        TAccountRuleSet,
-        TAccountSystemProgram,
-        TAccountOptRuleSigner1,
-        TAccountOptRuleSigner2,
-        TAccountOptRuleSigner3,
-        TAccountOptRuleSigner4,
-        TAccountOptRuleSigner5,
-        TAccountOptRuleNonsigner1,
-        TAccountOptRuleNonsigner2,
-        TAccountOptRuleNonsigner3,
-        TAccountOptRuleNonsigner4,
-        TAccountOptRuleNonsigner5
-      >,
-  rawInput?: ValidateInput<
+  input: ValidateInput<
     TAccountPayer,
     TAccountRuleSet,
     TAccountSystemProgram,
@@ -711,35 +593,9 @@ export function getValidateInstruction<
     TAccountOptRuleNonsigner5
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as ValidateInput<
-    TAccountPayer,
-    TAccountRuleSet,
-    TAccountSystemProgram,
-    TAccountOptRuleSigner1,
-    TAccountOptRuleSigner2,
-    TAccountOptRuleSigner3,
-    TAccountOptRuleSigner4,
-    TAccountOptRuleSigner5,
-    TAccountOptRuleNonsigner1,
-    TAccountOptRuleNonsigner2,
-    TAccountOptRuleNonsigner3,
-    TAccountOptRuleNonsigner4,
-    TAccountOptRuleNonsigner5
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenAuthRules',
-    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>
-  );
+  const programAddress =
+    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -796,11 +652,8 @@ export function getValidateInstruction<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = getProgramAddress(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value =
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
     accounts.systemProgram.isWritable = false;
   }
 

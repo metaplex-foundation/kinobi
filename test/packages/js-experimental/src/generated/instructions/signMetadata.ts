@@ -30,11 +30,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type SignMetadataInstruction<
@@ -130,26 +128,6 @@ export function getSignMetadataInstruction<
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: SignMetadataInputWithSigners<TAccountMetadata, TAccountCreator>
-): SignMetadataInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountCreator
->;
-export function getSignMetadataInstruction<
-  TAccountMetadata extends string,
-  TAccountCreator extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: SignMetadataInput<TAccountMetadata, TAccountCreator>
-): SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>;
-export function getSignMetadataInstruction<
-  TAccountMetadata extends string,
-  TAccountCreator extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: SignMetadataInputWithSigners<TAccountMetadata, TAccountCreator>
 ): SignMetadataInstructionWithSigners<
   TProgram,
@@ -167,27 +145,10 @@ export function getSignMetadataInstruction<
   TAccountMetadata extends string,
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | SignMetadataInput<TAccountMetadata, TAccountCreator>,
-  rawInput?: SignMetadataInput<TAccountMetadata, TAccountCreator>
-): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as SignMetadataInput<TAccountMetadata, TAccountCreator>;
-
+>(input: SignMetadataInput<TAccountMetadata, TAccountCreator>): IInstruction {
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<

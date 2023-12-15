@@ -32,11 +32,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type WithdrawInstruction<
@@ -131,26 +129,6 @@ export function getWithdrawInstruction<
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: WithdrawInputWithSigners<TAccountCandyMachine, TAccountAuthority>
-): WithdrawInstructionWithSigners<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthority
->;
-export function getWithdrawInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
-): WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>;
-export function getWithdrawInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
   input: WithdrawInputWithSigners<TAccountCandyMachine, TAccountAuthority>
 ): WithdrawInstructionWithSigners<
   TProgram,
@@ -168,27 +146,10 @@ export function getWithdrawInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | WithdrawInput<TAccountCandyMachine, TAccountAuthority>,
-  rawInput?: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
-): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as WithdrawInput<TAccountCandyMachine, TAccountAuthority>;
-
+>(input: WithdrawInput<TAccountCandyMachine, TAccountAuthority>): IInstruction {
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplCandyMachineCore',
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>
-  );
+  const programAddress =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
 
   // Original accounts.
   type AccountMetas = Parameters<

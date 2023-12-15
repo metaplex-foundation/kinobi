@@ -34,11 +34,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type MintFromCandyMachineInstruction<
@@ -356,126 +354,6 @@ export function getMintFromCandyMachineInstruction<
   TAccountRecentSlothashes extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: MintFromCandyMachineInputWithSigners<
-    TAccountCandyMachine,
-    TAccountAuthorityPda,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountNftMint,
-    TAccountNftMintAuthority,
-    TAccountNftMetadata,
-    TAccountNftMasterEdition,
-    TAccountCollectionAuthorityRecord,
-    TAccountCollectionMint,
-    TAccountCollectionMetadata,
-    TAccountCollectionMasterEdition,
-    TAccountCollectionUpdateAuthority,
-    TAccountTokenMetadataProgram,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRecentSlothashes
-  >
-): MintFromCandyMachineInstructionWithSigners<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthorityPda,
-  TAccountMintAuthority,
-  TAccountPayer,
-  TAccountNftMint,
-  TAccountNftMintAuthority,
-  TAccountNftMetadata,
-  TAccountNftMasterEdition,
-  TAccountCollectionAuthorityRecord,
-  TAccountCollectionMint,
-  TAccountCollectionMetadata,
-  TAccountCollectionMasterEdition,
-  TAccountCollectionUpdateAuthority,
-  TAccountTokenMetadataProgram,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountRecentSlothashes
->;
-export function getMintFromCandyMachineInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthorityPda extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountNftMint extends string,
-  TAccountNftMintAuthority extends string,
-  TAccountNftMetadata extends string,
-  TAccountNftMasterEdition extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionMasterEdition extends string,
-  TAccountCollectionUpdateAuthority extends string,
-  TAccountTokenMetadataProgram extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRecentSlothashes extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: MintFromCandyMachineInput<
-    TAccountCandyMachine,
-    TAccountAuthorityPda,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountNftMint,
-    TAccountNftMintAuthority,
-    TAccountNftMetadata,
-    TAccountNftMasterEdition,
-    TAccountCollectionAuthorityRecord,
-    TAccountCollectionMint,
-    TAccountCollectionMetadata,
-    TAccountCollectionMasterEdition,
-    TAccountCollectionUpdateAuthority,
-    TAccountTokenMetadataProgram,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRecentSlothashes
-  >
-): MintFromCandyMachineInstruction<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthorityPda,
-  TAccountMintAuthority,
-  TAccountPayer,
-  TAccountNftMint,
-  TAccountNftMintAuthority,
-  TAccountNftMetadata,
-  TAccountNftMasterEdition,
-  TAccountCollectionAuthorityRecord,
-  TAccountCollectionMint,
-  TAccountCollectionMetadata,
-  TAccountCollectionMasterEdition,
-  TAccountCollectionUpdateAuthority,
-  TAccountTokenMetadataProgram,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountRecentSlothashes
->;
-export function getMintFromCandyMachineInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthorityPda extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountNftMint extends string,
-  TAccountNftMintAuthority extends string,
-  TAccountNftMetadata extends string,
-  TAccountNftMasterEdition extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionMasterEdition extends string,
-  TAccountCollectionUpdateAuthority extends string,
-  TAccountTokenMetadataProgram extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRecentSlothashes extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
   input: MintFromCandyMachineInputWithSigners<
     TAccountCandyMachine,
     TAccountAuthorityPda,
@@ -594,28 +472,7 @@ export function getMintFromCandyMachineInstruction<
   TAccountRecentSlothashes extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | MintFromCandyMachineInput<
-        TAccountCandyMachine,
-        TAccountAuthorityPda,
-        TAccountMintAuthority,
-        TAccountPayer,
-        TAccountNftMint,
-        TAccountNftMintAuthority,
-        TAccountNftMetadata,
-        TAccountNftMasterEdition,
-        TAccountCollectionAuthorityRecord,
-        TAccountCollectionMint,
-        TAccountCollectionMetadata,
-        TAccountCollectionMasterEdition,
-        TAccountCollectionUpdateAuthority,
-        TAccountTokenMetadataProgram,
-        TAccountTokenProgram,
-        TAccountSystemProgram,
-        TAccountRecentSlothashes
-      >,
-  rawInput?: MintFromCandyMachineInput<
+  input: MintFromCandyMachineInput<
     TAccountCandyMachine,
     TAccountAuthorityPda,
     TAccountMintAuthority,
@@ -635,39 +492,9 @@ export function getMintFromCandyMachineInstruction<
     TAccountRecentSlothashes
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as MintFromCandyMachineInput<
-    TAccountCandyMachine,
-    TAccountAuthorityPda,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountNftMint,
-    TAccountNftMintAuthority,
-    TAccountNftMetadata,
-    TAccountNftMasterEdition,
-    TAccountCollectionAuthorityRecord,
-    TAccountCollectionMint,
-    TAccountCollectionMetadata,
-    TAccountCollectionMasterEdition,
-    TAccountCollectionUpdateAuthority,
-    TAccountTokenMetadataProgram,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRecentSlothashes
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplCandyMachineCore',
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>
-  );
+  const programAddress =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -738,27 +565,18 @@ export function getMintFromCandyMachineInstruction<
 
   // Resolve default values.
   if (!accounts.tokenMetadataProgram.value) {
-    accounts.tokenMetadataProgram.value = getProgramAddress(
-      context,
-      'mplTokenMetadata',
-      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-    );
+    accounts.tokenMetadataProgram.value =
+      'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
     accounts.tokenMetadataProgram.isWritable = false;
   }
   if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value = getProgramAddress(
-      context,
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    );
+    accounts.tokenProgram.value =
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
     accounts.tokenProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = getProgramAddress(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value =
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
     accounts.systemProgram.isWritable = false;
   }
 

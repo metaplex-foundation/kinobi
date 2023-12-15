@@ -31,11 +31,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 import {
   MigrateArgs,
@@ -276,84 +274,6 @@ export function getMigrateInstruction<
   TAccountAuthorizationRules extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: MigrateInputWithSigners<
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountTokenAccount,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountCollectionMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthorizationRules
-  >
-): MigrateInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountMasterEdition,
-  TAccountTokenAccount,
-  TAccountMint,
-  TAccountUpdateAuthority,
-  TAccountCollectionMetadata,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountSysvarInstructions,
-  TAccountAuthorizationRules
->;
-export function getMigrateInstruction<
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountTokenAccount extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: MigrateInput<
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountTokenAccount,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountCollectionMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthorizationRules
-  >
-): MigrateInstruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountMasterEdition,
-  TAccountTokenAccount,
-  TAccountMint,
-  TAccountUpdateAuthority,
-  TAccountCollectionMetadata,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountSysvarInstructions,
-  TAccountAuthorizationRules
->;
-export function getMigrateInstruction<
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountTokenAccount extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: MigrateInputWithSigners<
     TAccountMetadata,
     TAccountMasterEdition,
@@ -430,21 +350,7 @@ export function getMigrateInstruction<
   TAccountAuthorizationRules extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | MigrateInput<
-        TAccountMetadata,
-        TAccountMasterEdition,
-        TAccountTokenAccount,
-        TAccountMint,
-        TAccountUpdateAuthority,
-        TAccountCollectionMetadata,
-        TAccountTokenProgram,
-        TAccountSystemProgram,
-        TAccountSysvarInstructions,
-        TAccountAuthorizationRules
-      >,
-  rawInput?: MigrateInput<
+  input: MigrateInput<
     TAccountMetadata,
     TAccountMasterEdition,
     TAccountTokenAccount,
@@ -457,32 +363,9 @@ export function getMigrateInstruction<
     TAccountAuthorizationRules
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as MigrateInput<
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountTokenAccount,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountCollectionMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthorizationRules
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -530,19 +413,13 @@ export function getMigrateInstruction<
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value = getProgramAddress(
-      context,
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    );
+    accounts.tokenProgram.value =
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
     accounts.tokenProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = getProgramAddress(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value =
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
     accounts.systemProgram.isWritable = false;
   }
   if (!accounts.sysvarInstructions.value) {

@@ -1,6 +1,5 @@
 import { Address, ProgramDerivedAddress } from '@solana/addresses';
 import {
-  Context,
   ResolvedAccount,
   TokenStandard,
   expectAddress,
@@ -8,18 +7,16 @@ import {
 } from '../generated';
 
 export const resolveMasterEditionFromTokenStandard = async ({
-  context,
   accounts,
   args,
 }: {
-  context: Pick<Context, 'getProgramAddress' | 'getProgramDerivedAddress'>;
   accounts: Record<string, ResolvedAccount>;
   args: { tokenStandard?: TokenStandard };
 }): Promise<Partial<{ value: ProgramDerivedAddress | null }>> => {
   return args.tokenStandard === TokenStandard.NonFungible ||
     args.tokenStandard === TokenStandard.ProgrammableNonFungible
     ? {
-        value: await findMasterEditionV2Pda(context, {
+        value: await findMasterEditionV2Pda({
           mint: expectAddress(accounts.mint?.value),
         }),
       }

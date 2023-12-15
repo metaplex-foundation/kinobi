@@ -32,11 +32,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type CreateEscrowAccountInstruction<
@@ -246,78 +244,6 @@ export function getCreateEscrowAccountInstruction<
   TAccountAuthority extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: CreateEscrowAccountInputWithSigners<
-    TAccountEscrow,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountEdition,
-    TAccountPayer,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthority
-  >
-): CreateEscrowAccountInstructionWithSigners<
-  TProgram,
-  TAccountEscrow,
-  TAccountMetadata,
-  TAccountMint,
-  TAccountTokenAccount,
-  TAccountEdition,
-  TAccountPayer,
-  TAccountSystemProgram,
-  TAccountSysvarInstructions,
-  TAccountAuthority
->;
-export function getCreateEscrowAccountInstruction<
-  TAccountEscrow extends string,
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TAccountTokenAccount extends string,
-  TAccountEdition extends string,
-  TAccountPayer extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: CreateEscrowAccountInput<
-    TAccountEscrow,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountEdition,
-    TAccountPayer,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthority
-  >
-): CreateEscrowAccountInstruction<
-  TProgram,
-  TAccountEscrow,
-  TAccountMetadata,
-  TAccountMint,
-  TAccountTokenAccount,
-  TAccountEdition,
-  TAccountPayer,
-  TAccountSystemProgram,
-  TAccountSysvarInstructions,
-  TAccountAuthority
->;
-export function getCreateEscrowAccountInstruction<
-  TAccountEscrow extends string,
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TAccountTokenAccount extends string,
-  TAccountEdition extends string,
-  TAccountPayer extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: CreateEscrowAccountInputWithSigners<
     TAccountEscrow,
     TAccountMetadata,
@@ -388,20 +314,7 @@ export function getCreateEscrowAccountInstruction<
   TAccountAuthority extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | CreateEscrowAccountInput<
-        TAccountEscrow,
-        TAccountMetadata,
-        TAccountMint,
-        TAccountTokenAccount,
-        TAccountEdition,
-        TAccountPayer,
-        TAccountSystemProgram,
-        TAccountSysvarInstructions,
-        TAccountAuthority
-      >,
-  rawInput?: CreateEscrowAccountInput<
+  input: CreateEscrowAccountInput<
     TAccountEscrow,
     TAccountMetadata,
     TAccountMint,
@@ -413,31 +326,9 @@ export function getCreateEscrowAccountInstruction<
     TAccountAuthority
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as CreateEscrowAccountInput<
-    TAccountEscrow,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountEdition,
-    TAccountPayer,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthority
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -471,11 +362,8 @@ export function getCreateEscrowAccountInstruction<
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = getProgramAddress(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value =
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
     accounts.systemProgram.isWritable = false;
   }
   if (!accounts.sysvarInstructions.value) {

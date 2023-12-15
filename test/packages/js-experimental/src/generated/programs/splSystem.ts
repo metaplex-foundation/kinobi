@@ -7,7 +7,7 @@
  */
 
 import { Address } from '@solana/addresses';
-import { Context, Program, getProgramAddress } from '../shared';
+import { Program } from '../shared';
 
 export const SPL_SYSTEM_PROGRAM_ADDRESS =
   '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
@@ -19,10 +19,4 @@ export function createSplSystemProgram(): SplSystemProgram {
     name: 'splSystem',
     address: SPL_SYSTEM_PROGRAM_ADDRESS,
   };
-}
-
-export async function getSplSystemProgramAddress(
-  context: Pick<Context, 'getProgramAddress'> = {}
-): Promise<Address> {
-  return getProgramAddress(context, 'splSystem', SPL_SYSTEM_PROGRAM_ADDRESS);
 }

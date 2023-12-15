@@ -28,11 +28,9 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type PuffMetadataInstruction<
@@ -108,20 +106,6 @@ export function getPuffMetadataInstruction<
   TAccountMetadata extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: PuffMetadataInputWithSigners<TAccountMetadata>
-): PuffMetadataInstructionWithSigners<TProgram, TAccountMetadata>;
-export function getPuffMetadataInstruction<
-  TAccountMetadata extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: PuffMetadataInput<TAccountMetadata>
-): PuffMetadataInstruction<TProgram, TAccountMetadata>;
-export function getPuffMetadataInstruction<
-  TAccountMetadata extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: PuffMetadataInputWithSigners<TAccountMetadata>
 ): PuffMetadataInstructionWithSigners<TProgram, TAccountMetadata>;
 export function getPuffMetadataInstruction<
@@ -133,27 +117,10 @@ export function getPuffMetadataInstruction<
 export function getPuffMetadataInstruction<
   TAccountMetadata extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | PuffMetadataInput<TAccountMetadata>,
-  rawInput?: PuffMetadataInput<TAccountMetadata>
-): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as PuffMetadataInput<TAccountMetadata>;
-
+>(input: PuffMetadataInput<TAccountMetadata>): IInstruction {
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<

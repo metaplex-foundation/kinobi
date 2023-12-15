@@ -31,11 +31,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type RevokeUseAuthorityInstruction<
@@ -244,78 +242,6 @@ export function getRevokeUseAuthorityInstruction<
   TAccountRent extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: RevokeUseAuthorityInputWithSigners<
-    TAccountUseAuthorityRecord,
-    TAccountOwner,
-    TAccountUser,
-    TAccountOwnerTokenAccount,
-    TAccountMint,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): RevokeUseAuthorityInstructionWithSigners<
-  TProgram,
-  TAccountUseAuthorityRecord,
-  TAccountOwner,
-  TAccountUser,
-  TAccountOwnerTokenAccount,
-  TAccountMint,
-  TAccountMetadata,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountRent
->;
-export function getRevokeUseAuthorityInstruction<
-  TAccountUseAuthorityRecord extends string,
-  TAccountOwner extends string,
-  TAccountUser extends string,
-  TAccountOwnerTokenAccount extends string,
-  TAccountMint extends string,
-  TAccountMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: RevokeUseAuthorityInput<
-    TAccountUseAuthorityRecord,
-    TAccountOwner,
-    TAccountUser,
-    TAccountOwnerTokenAccount,
-    TAccountMint,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): RevokeUseAuthorityInstruction<
-  TProgram,
-  TAccountUseAuthorityRecord,
-  TAccountOwner,
-  TAccountUser,
-  TAccountOwnerTokenAccount,
-  TAccountMint,
-  TAccountMetadata,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountRent
->;
-export function getRevokeUseAuthorityInstruction<
-  TAccountUseAuthorityRecord extends string,
-  TAccountOwner extends string,
-  TAccountUser extends string,
-  TAccountOwnerTokenAccount extends string,
-  TAccountMint extends string,
-  TAccountMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: RevokeUseAuthorityInputWithSigners<
     TAccountUseAuthorityRecord,
     TAccountOwner,
@@ -386,20 +312,7 @@ export function getRevokeUseAuthorityInstruction<
   TAccountRent extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | RevokeUseAuthorityInput<
-        TAccountUseAuthorityRecord,
-        TAccountOwner,
-        TAccountUser,
-        TAccountOwnerTokenAccount,
-        TAccountMint,
-        TAccountMetadata,
-        TAccountTokenProgram,
-        TAccountSystemProgram,
-        TAccountRent
-      >,
-  rawInput?: RevokeUseAuthorityInput<
+  input: RevokeUseAuthorityInput<
     TAccountUseAuthorityRecord,
     TAccountOwner,
     TAccountUser,
@@ -411,31 +324,9 @@ export function getRevokeUseAuthorityInstruction<
     TAccountRent
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as RevokeUseAuthorityInput<
-    TAccountUseAuthorityRecord,
-    TAccountOwner,
-    TAccountUser,
-    TAccountOwnerTokenAccount,
-    TAccountMint,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -472,19 +363,13 @@ export function getRevokeUseAuthorityInstruction<
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value = getProgramAddress(
-      context,
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    );
+    accounts.tokenProgram.value =
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
     accounts.tokenProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = getProgramAddress(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value =
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
     accounts.systemProgram.isWritable = false;
   }
 

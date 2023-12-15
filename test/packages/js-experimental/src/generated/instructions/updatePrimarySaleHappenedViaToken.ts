@@ -31,11 +31,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type UpdatePrimarySaleHappenedViaTokenInstruction<
@@ -148,42 +146,6 @@ export function getUpdatePrimarySaleHappenedViaTokenInstruction<
   TAccountToken extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: UpdatePrimarySaleHappenedViaTokenInputWithSigners<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountToken
-  >
-): UpdatePrimarySaleHappenedViaTokenInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountOwner,
-  TAccountToken
->;
-export function getUpdatePrimarySaleHappenedViaTokenInstruction<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountToken extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: UpdatePrimarySaleHappenedViaTokenInput<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountToken
-  >
-): UpdatePrimarySaleHappenedViaTokenInstruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountOwner,
-  TAccountToken
->;
-export function getUpdatePrimarySaleHappenedViaTokenInstruction<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountToken extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: UpdatePrimarySaleHappenedViaTokenInputWithSigners<
     TAccountMetadata,
     TAccountOwner,
@@ -218,38 +180,15 @@ export function getUpdatePrimarySaleHappenedViaTokenInstruction<
   TAccountToken extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | UpdatePrimarySaleHappenedViaTokenInput<
-        TAccountMetadata,
-        TAccountOwner,
-        TAccountToken
-      >,
-  rawInput?: UpdatePrimarySaleHappenedViaTokenInput<
+  input: UpdatePrimarySaleHappenedViaTokenInput<
     TAccountMetadata,
     TAccountOwner,
     TAccountToken
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as UpdatePrimarySaleHappenedViaTokenInput<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountToken
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<

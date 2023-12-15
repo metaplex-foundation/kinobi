@@ -32,11 +32,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 import {
   MintNewEditionFromMasterEditionViaTokenArgs,
@@ -352,108 +350,6 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
   TAccountRent extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: MintNewEditionFromMasterEditionViaTokenInputWithSigners<
-    TAccountNewMetadata,
-    TAccountNewEdition,
-    TAccountMasterEdition,
-    TAccountNewMint,
-    TAccountEditionMarkPda,
-    TAccountNewMintAuthority,
-    TAccountPayer,
-    TAccountTokenAccountOwner,
-    TAccountTokenAccount,
-    TAccountNewMetadataUpdateAuthority,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): MintNewEditionFromMasterEditionViaTokenInstructionWithSigners<
-  TProgram,
-  TAccountNewMetadata,
-  TAccountNewEdition,
-  TAccountMasterEdition,
-  TAccountNewMint,
-  TAccountEditionMarkPda,
-  TAccountNewMintAuthority,
-  TAccountPayer,
-  TAccountTokenAccountOwner,
-  TAccountTokenAccount,
-  TAccountNewMetadataUpdateAuthority,
-  TAccountMetadata,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountRent
->;
-export function getMintNewEditionFromMasterEditionViaTokenInstruction<
-  TAccountNewMetadata extends string,
-  TAccountNewEdition extends string,
-  TAccountMasterEdition extends string,
-  TAccountNewMint extends string,
-  TAccountEditionMarkPda extends string,
-  TAccountNewMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountTokenAccountOwner extends string,
-  TAccountTokenAccount extends string,
-  TAccountNewMetadataUpdateAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: MintNewEditionFromMasterEditionViaTokenInput<
-    TAccountNewMetadata,
-    TAccountNewEdition,
-    TAccountMasterEdition,
-    TAccountNewMint,
-    TAccountEditionMarkPda,
-    TAccountNewMintAuthority,
-    TAccountPayer,
-    TAccountTokenAccountOwner,
-    TAccountTokenAccount,
-    TAccountNewMetadataUpdateAuthority,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): MintNewEditionFromMasterEditionViaTokenInstruction<
-  TProgram,
-  TAccountNewMetadata,
-  TAccountNewEdition,
-  TAccountMasterEdition,
-  TAccountNewMint,
-  TAccountEditionMarkPda,
-  TAccountNewMintAuthority,
-  TAccountPayer,
-  TAccountTokenAccountOwner,
-  TAccountTokenAccount,
-  TAccountNewMetadataUpdateAuthority,
-  TAccountMetadata,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountRent
->;
-export function getMintNewEditionFromMasterEditionViaTokenInstruction<
-  TAccountNewMetadata extends string,
-  TAccountNewEdition extends string,
-  TAccountMasterEdition extends string,
-  TAccountNewMint extends string,
-  TAccountEditionMarkPda extends string,
-  TAccountNewMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountTokenAccountOwner extends string,
-  TAccountTokenAccount extends string,
-  TAccountNewMetadataUpdateAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: MintNewEditionFromMasterEditionViaTokenInputWithSigners<
     TAccountNewMetadata,
     TAccountNewEdition,
@@ -554,25 +450,7 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
   TAccountRent extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | MintNewEditionFromMasterEditionViaTokenInput<
-        TAccountNewMetadata,
-        TAccountNewEdition,
-        TAccountMasterEdition,
-        TAccountNewMint,
-        TAccountEditionMarkPda,
-        TAccountNewMintAuthority,
-        TAccountPayer,
-        TAccountTokenAccountOwner,
-        TAccountTokenAccount,
-        TAccountNewMetadataUpdateAuthority,
-        TAccountMetadata,
-        TAccountTokenProgram,
-        TAccountSystemProgram,
-        TAccountRent
-      >,
-  rawInput?: MintNewEditionFromMasterEditionViaTokenInput<
+  input: MintNewEditionFromMasterEditionViaTokenInput<
     TAccountNewMetadata,
     TAccountNewEdition,
     TAccountMasterEdition,
@@ -589,36 +467,9 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
     TAccountRent
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as MintNewEditionFromMasterEditionViaTokenInput<
-    TAccountNewMetadata,
-    TAccountNewEdition,
-    TAccountMasterEdition,
-    TAccountNewMint,
-    TAccountEditionMarkPda,
-    TAccountNewMintAuthority,
-    TAccountPayer,
-    TAccountTokenAccountOwner,
-    TAccountTokenAccount,
-    TAccountNewMetadataUpdateAuthority,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -671,19 +522,13 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value = getProgramAddress(
-      context,
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    );
+    accounts.tokenProgram.value =
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
     accounts.tokenProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = getProgramAddress(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value =
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
     accounts.systemProgram.isWritable = false;
   }
 

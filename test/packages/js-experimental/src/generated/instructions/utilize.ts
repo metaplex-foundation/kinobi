@@ -36,11 +36,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type UtilizeInstruction<
@@ -294,90 +292,6 @@ export function getUtilizeInstruction<
   TAccountBurner extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: UtilizeInputWithSigners<
-    TAccountMetadata,
-    TAccountTokenAccount,
-    TAccountMint,
-    TAccountUseAuthority,
-    TAccountOwner,
-    TAccountTokenProgram,
-    TAccountAtaProgram,
-    TAccountSystemProgram,
-    TAccountRent,
-    TAccountUseAuthorityRecord,
-    TAccountBurner
-  >
-): UtilizeInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountTokenAccount,
-  TAccountMint,
-  TAccountUseAuthority,
-  TAccountOwner,
-  TAccountTokenProgram,
-  TAccountAtaProgram,
-  TAccountSystemProgram,
-  TAccountRent,
-  TAccountUseAuthorityRecord,
-  TAccountBurner
->;
-export function getUtilizeInstruction<
-  TAccountMetadata extends string,
-  TAccountTokenAccount extends string,
-  TAccountMint extends string,
-  TAccountUseAuthority extends string,
-  TAccountOwner extends string,
-  TAccountTokenProgram extends string,
-  TAccountAtaProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TAccountUseAuthorityRecord extends string,
-  TAccountBurner extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: UtilizeInput<
-    TAccountMetadata,
-    TAccountTokenAccount,
-    TAccountMint,
-    TAccountUseAuthority,
-    TAccountOwner,
-    TAccountTokenProgram,
-    TAccountAtaProgram,
-    TAccountSystemProgram,
-    TAccountRent,
-    TAccountUseAuthorityRecord,
-    TAccountBurner
-  >
-): UtilizeInstruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountTokenAccount,
-  TAccountMint,
-  TAccountUseAuthority,
-  TAccountOwner,
-  TAccountTokenProgram,
-  TAccountAtaProgram,
-  TAccountSystemProgram,
-  TAccountRent,
-  TAccountUseAuthorityRecord,
-  TAccountBurner
->;
-export function getUtilizeInstruction<
-  TAccountMetadata extends string,
-  TAccountTokenAccount extends string,
-  TAccountMint extends string,
-  TAccountUseAuthority extends string,
-  TAccountOwner extends string,
-  TAccountTokenProgram extends string,
-  TAccountAtaProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TAccountUseAuthorityRecord extends string,
-  TAccountBurner extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: UtilizeInputWithSigners<
     TAccountMetadata,
     TAccountTokenAccount,
@@ -460,22 +374,7 @@ export function getUtilizeInstruction<
   TAccountBurner extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | UtilizeInput<
-        TAccountMetadata,
-        TAccountTokenAccount,
-        TAccountMint,
-        TAccountUseAuthority,
-        TAccountOwner,
-        TAccountTokenProgram,
-        TAccountAtaProgram,
-        TAccountSystemProgram,
-        TAccountRent,
-        TAccountUseAuthorityRecord,
-        TAccountBurner
-      >,
-  rawInput?: UtilizeInput<
+  input: UtilizeInput<
     TAccountMetadata,
     TAccountTokenAccount,
     TAccountMint,
@@ -489,33 +388,9 @@ export function getUtilizeInstruction<
     TAccountBurner
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as UtilizeInput<
-    TAccountMetadata,
-    TAccountTokenAccount,
-    TAccountMint,
-    TAccountUseAuthority,
-    TAccountOwner,
-    TAccountTokenProgram,
-    TAccountAtaProgram,
-    TAccountSystemProgram,
-    TAccountRent,
-    TAccountUseAuthorityRecord,
-    TAccountBurner
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<
@@ -556,27 +431,18 @@ export function getUtilizeInstruction<
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value = getProgramAddress(
-      context,
-      'splToken',
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-    );
+    accounts.tokenProgram.value =
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
     accounts.tokenProgram.isWritable = false;
   }
   if (!accounts.ataProgram.value) {
-    accounts.ataProgram.value = getProgramAddress(
-      context,
-      'splAssociatedToken',
-      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
-    );
+    accounts.ataProgram.value =
+      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>;
     accounts.ataProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value = getProgramAddress(
-      context,
-      'splSystem',
-      '11111111111111111111111111111111'
-    );
+    accounts.systemProgram.value =
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
     accounts.systemProgram.isWritable = false;
   }
   if (!accounts.rent.value) {

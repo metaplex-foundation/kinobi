@@ -31,11 +31,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type SetTokenStandardInstruction<
@@ -161,48 +159,6 @@ export function getSetTokenStandardInstruction<
   TAccountEdition extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: SetTokenStandardInputWithSigners<
-    TAccountMetadata,
-    TAccountUpdateAuthority,
-    TAccountMint,
-    TAccountEdition
-  >
-): SetTokenStandardInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountUpdateAuthority,
-  TAccountMint,
-  TAccountEdition
->;
-export function getSetTokenStandardInstruction<
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMint extends string,
-  TAccountEdition extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: SetTokenStandardInput<
-    TAccountMetadata,
-    TAccountUpdateAuthority,
-    TAccountMint,
-    TAccountEdition
-  >
-): SetTokenStandardInstruction<
-  TProgram,
-  TAccountMetadata,
-  TAccountUpdateAuthority,
-  TAccountMint,
-  TAccountEdition
->;
-export function getSetTokenStandardInstruction<
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMint extends string,
-  TAccountEdition extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
->(
   input: SetTokenStandardInputWithSigners<
     TAccountMetadata,
     TAccountUpdateAuthority,
@@ -243,41 +199,16 @@ export function getSetTokenStandardInstruction<
   TAccountEdition extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | SetTokenStandardInput<
-        TAccountMetadata,
-        TAccountUpdateAuthority,
-        TAccountMint,
-        TAccountEdition
-      >,
-  rawInput?: SetTokenStandardInput<
+  input: SetTokenStandardInput<
     TAccountMetadata,
     TAccountUpdateAuthority,
     TAccountMint,
     TAccountEdition
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as SetTokenStandardInput<
-    TAccountMetadata,
-    TAccountUpdateAuthority,
-    TAccountMint,
-    TAccountEdition
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplTokenMetadata',
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>
-  );
+  const programAddress =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
   type AccountMetas = Parameters<

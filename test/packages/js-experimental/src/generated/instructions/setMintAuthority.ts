@@ -32,11 +32,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
-  Context,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
-  getProgramAddress,
 } from '../shared';
 
 export type SetMintAuthorityInstruction<
@@ -145,42 +143,6 @@ export function getSetMintAuthorityInstruction<
   TAccountMintAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: SetMintAuthorityInputWithSigners<
-    TAccountCandyMachine,
-    TAccountAuthority,
-    TAccountMintAuthority
-  >
-): SetMintAuthorityInstructionWithSigners<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthority,
-  TAccountMintAuthority
->;
-export function getSetMintAuthorityInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TAccountMintAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
-  context: Pick<Context, 'getProgramAddress'>,
-  input: SetMintAuthorityInput<
-    TAccountCandyMachine,
-    TAccountAuthority,
-    TAccountMintAuthority
-  >
-): SetMintAuthorityInstruction<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthority,
-  TAccountMintAuthority
->;
-export function getSetMintAuthorityInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TAccountMintAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
->(
   input: SetMintAuthorityInputWithSigners<
     TAccountCandyMachine,
     TAccountAuthority,
@@ -215,38 +177,15 @@ export function getSetMintAuthorityInstruction<
   TAccountMintAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
 >(
-  rawContext:
-    | Pick<Context, 'getProgramAddress'>
-    | SetMintAuthorityInput<
-        TAccountCandyMachine,
-        TAccountAuthority,
-        TAccountMintAuthority
-      >,
-  rawInput?: SetMintAuthorityInput<
+  input: SetMintAuthorityInput<
     TAccountCandyMachine,
     TAccountAuthority,
     TAccountMintAuthority
   >
 ): IInstruction {
-  // Resolve context and input arguments.
-  const context = (rawInput === undefined ? {} : rawContext) as Pick<
-    Context,
-    'getProgramAddress'
-  >;
-  const input = (
-    rawInput === undefined ? rawContext : rawInput
-  ) as SetMintAuthorityInput<
-    TAccountCandyMachine,
-    TAccountAuthority,
-    TAccountMintAuthority
-  >;
-
   // Program address.
-  const programAddress = getProgramAddress(
-    context,
-    'mplCandyMachineCore',
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>
-  );
+  const programAddress =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
 
   // Original accounts.
   type AccountMetas = Parameters<

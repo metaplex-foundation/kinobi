@@ -108,19 +108,6 @@ export class Fragment {
     return this;
   }
 
-  getContextString(): string {
-    const contextInterfaces = [...this.features]
-      .filter((f) => f.startsWith('context:'))
-      .sort()
-      .map((i) => `"${i.substring(8)}"`)
-      .join(' | ');
-    return `Pick<Context, ${contextInterfaces}>`;
-  }
-
-  getContextFragment(): Fragment {
-    return fragment(this.getContextString()).addImports('shared', 'Context');
-  }
-
   clone(): Fragment {
     return new Fragment(this.render).mergeImportsWith(this.imports);
   }
@@ -130,9 +117,4 @@ export class Fragment {
   }
 }
 
-export type FragmentFeature =
-  | 'context:fetchEncodedAccount'
-  | 'context:fetchEncodedAccounts'
-  | 'context:getProgramAddress'
-  | 'context:getProgramDerivedAddress'
-  | 'instruction:resolverScopeVariable';
+export type FragmentFeature = 'instruction:resolverScopeVariable';
