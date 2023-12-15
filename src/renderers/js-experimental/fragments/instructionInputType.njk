@@ -1,6 +1,6 @@
 {% import "templates/macros.njk" as macros %}
 
-export type {{ instruction.name | pascalCase }}{{ 'Async' if useAsync }}Input{{ 'WithSigners' if withSigners }}
+export type {{ instructionInputType }}
 {%- if accounts.length > 0 -%}
 <
   {%- for account in accounts -%}
