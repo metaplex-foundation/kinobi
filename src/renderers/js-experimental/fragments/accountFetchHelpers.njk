@@ -1,33 +1,33 @@
-export function decode{{ pascalCaseName }}<TAddress extends string = string>(encodedAccount: EncodedAccount<TAddress>): {{ pascalCaseName }}<TAddress> {
+export function {{ decodeFunction }}<TAddress extends string = string>(encodedAccount: EncodedAccount<TAddress>): {{ accountType }}<TAddress> {
   return decodeAccount(encodedAccount, {{ decoderFunction }});
 }
 
-export async function fetch{{ pascalCaseName }}<TAddress extends string = string>(
+export async function {{ fetchFunction }}<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig,
-): Promise<{{ pascalCaseName }}<TAddress>> {
+): Promise<{{ accountType }}<TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   assertAccountExists(maybeAccount);
   return decode{{ pascalCaseName }}(maybeAccount);
 }
 
-export async function safeFetch{{ pascalCaseName }}<TAddress extends string = string>(
+export async function {{ safeFetchFunction }}<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig,
-): Promise<{{ pascalCaseName }}<TAddress> | null> {
+): Promise<{{ accountType }}<TAddress> | null> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   return maybeAccount.exists
     ? decode{{ pascalCaseName }}(maybeAccount)
     : null;
 }
 
-export async function fetchAll{{ pascalCaseName }}(
+export async function {{ fetchAllFunction }}(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig,
-): Promise<{{ pascalCaseName }}[]> {
+): Promise<{{ accountType }}[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts.map((maybeAccount) => {
     assertAccountExists(maybeAccount);
@@ -35,13 +35,13 @@ export async function fetchAll{{ pascalCaseName }}(
   });
 }
 
-export async function safeFetchAll{{ pascalCaseName }}(
+export async function {{ safeFetchAllFunction }}(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig,
-): Promise<{{ pascalCaseName }}[]> {
+): Promise<{{ accountType }}[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts
     .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) => decode{{ pascalCaseName }}(maybeAccount as EncodedAccount));
+    .map((maybeAccount) => {{ decodeFunction }}(maybeAccount as EncodedAccount));
 }

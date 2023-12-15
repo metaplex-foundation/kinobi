@@ -3,6 +3,7 @@ import { camelCase, pascalCase } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import { TypeManifest } from '../TypeManifest';
 import { hasAsyncFunction } from '../asyncHelpers';
+import { NameApi } from '../nameTransformers';
 import {
   Fragment,
   fragment,
@@ -23,6 +24,7 @@ export function getInstructionFunctionHighLevelFragment(scope: {
   resolvedInputs: ResolvedInstructionInput[];
   asyncResolvers: string[];
   useAsync: boolean;
+  nameApi: NameApi;
 }): Fragment {
   const {
     useAsync,
@@ -32,6 +34,7 @@ export function getInstructionFunctionHighLevelFragment(scope: {
     renamedArgs,
     dataArgsManifest,
     asyncResolvers,
+    nameApi,
   } = scope;
   if (
     useAsync &&
@@ -61,18 +64,22 @@ export function getInstructionFunctionHighLevelFragment(scope: {
     argsTypeFragment.mergeImportsWith(dataArgsManifest.looseType);
   }
 
-  const functionName = `get${pascalCase(instructionNode.name)}Instruction${
-    useAsync ? 'Async' : ''
-  }`;
-  const lowLevelFunctionName = `get${pascalCase(
+  const functionName = useAsync
+    ? nameApi.instructionAsyncFunction(instructionNode.name)
+    : nameApi.instructionSyncFunction(instructionNode.name);
+  const lowLevelFunctionName = nameApi.instructionRawFunction(
     instructionNode.name
-  )}InstructionRaw`;
-  const typeParamsFragment = getTypeParams(instructionNode, programNode);
-  const instructionTypeFragment = getInstructionType(instructionNode, false);
-  const instructionTypeWithSignersFragment = getInstructionType(
-    instructionNode,
-    true
   );
+
+  const typeParamsFragment = getTypeParams(instructionNode, programNode);
+  const instructionTypeFragment = getInstructionType({
+    ...scope,
+    withSigners: false,
+  });
+  const instructionTypeWithSignersFragment = getInstructionType({
+    ...scope,
+    withSigners: true,
+  });
 
   // Input.
   const inputTypeFragment = getInstructionInputTypeFragment({
@@ -190,13 +197,15 @@ function getTypeParams(
   return fragment(typeParams.filter((x) => !!x).join(', '));
 }
 
-function getInstructionType(
-  instructionNode: nodes.InstructionNode,
-  withSigners: boolean
-): Fragment {
-  const instructionTypeName = pascalCase(
-    `${instructionNode.name}Instruction${withSigners ? 'WithSigners' : ''}`
-  );
+function getInstructionType(scope: {
+  instructionNode: nodes.InstructionNode;
+  withSigners: boolean;
+  nameApi: NameApi;
+}): Fragment {
+  const { instructionNode, withSigners, nameApi } = scope;
+  const instructionTypeName = withSigners
+    ? nameApi.instructionWithSignersType(instructionNode.name)
+    : nameApi.instructionType(instructionNode.name);
   const accountTypeParamsFragments = instructionNode.accounts.map((account) => {
     const typeParam = `TAccount${pascalCase(account.name)}`;
     const camelName = camelCase(account.name);
@@ -227,13 +236,16 @@ function getInputTypeCall(scope: {
   instructionNode: nodes.InstructionNode;
   withSigners: boolean;
   useAsync: boolean;
+  nameApi: NameApi;
 }): Fragment {
-  const { instructionNode, withSigners, useAsync } = scope;
-  const inputTypeName = pascalCase(
-    `${instructionNode.name}${useAsync ? 'Async' : ''}Input${
-      withSigners ? 'WithSigners' : ''
-    }`
-  );
+  const { instructionNode, withSigners, useAsync, nameApi } = scope;
+  const syncInputTypeName = withSigners
+    ? nameApi.instructionSyncInputWithSignersType(instructionNode.name)
+    : nameApi.instructionSyncInputType(instructionNode.name);
+  const asyncInputTypeName = withSigners
+    ? nameApi.instructionAsyncInputWithSignersType(instructionNode.name)
+    : nameApi.instructionAsyncInputType(instructionNode.name);
+  const inputTypeName = useAsync ? asyncInputTypeName : syncInputTypeName;
   if (instructionNode.accounts.length === 0) return fragment(inputTypeName);
   const accountTypeParams = instructionNode.accounts
     .map((account) => `TAccount${pascalCase(account.name)}`)

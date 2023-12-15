@@ -31,6 +31,12 @@ import {
 import { GetTypeManifestVisitor } from './GetTypeManifestVisitor';
 import { ImportMap } from './ImportMap';
 import { TypeManifest } from './TypeManifest';
+import {
+  NameTransformers,
+  DEFAULT_NAME_TRANSFORMERS,
+  NameApi,
+  getNameApi,
+} from './nameTransformers';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -54,12 +60,17 @@ export type GetRenderMapOptions = {
   };
   resolvedInstructionInputVisitor?: Visitor<ResolvedInstructionInput[]>;
   asyncResolvers?: string[];
+  nameTransformers?: Partial<NameTransformers>;
 };
 
 export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
-  readonly options: Required<GetRenderMapOptions>;
+  readonly options: Required<GetRenderMapOptions> & {
+    nameTransformers: NameTransformers;
+  };
 
   private program: nodes.ProgramNode | null = null;
+
+  private nameApi: NameApi;
 
   constructor(options: GetRenderMapOptions = {}) {
     super();
@@ -78,7 +89,12 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         options.resolvedInstructionInputVisitor ??
         new GetResolvedInstructionInputsVisitor(),
       asyncResolvers: options.asyncResolvers ?? [],
+      nameTransformers: {
+        ...DEFAULT_NAME_TRANSFORMERS,
+        ...options.nameTransformers,
+      },
     };
+    this.nameApi = getNameApi(this.options.nameTransformers);
   }
 
   visitRoot(root: nodes.RootNode): RenderMap {
@@ -195,29 +211,25 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitAccount(account: nodes.AccountNode): RenderMap {
-    const typeManifest = visit(account, this.typeManifestVisitor);
-    const program = this.program as nodes.ProgramNode;
-    const accountTypeFragment = getAccountTypeFragment(account, typeManifest);
-    const accountFetchHelpersFragment = getAccountFetchHelpersFragment(
-      account,
-      typeManifest
-    );
-    // const accountGpaHelpersFragment = getAccountGpaHelpersFragment(
-    //   account,
-    //   program,
-    //   this.typeManifestVisitor,
-    //   this.byteSizeVisitor
-    // );
-    const accountSizeHelpersFragment = getAccountSizeHelpersFragment(account);
-    const accountPdaHelpersFragment = getAccountPdaHelpersFragment(
-      account,
-      program,
-      this.typeManifestVisitor
-    );
+    if (!this.program) {
+      throw new Error('Account must be visited inside a program.');
+    }
+
+    const scope = {
+      accountNode: account,
+      programNode: this.program,
+      typeManifest: visit(account, this.typeManifestVisitor),
+      typeManifestVisitor: this.typeManifestVisitor,
+      nameApi: this.nameApi,
+    };
+
+    const accountTypeFragment = getAccountTypeFragment(scope);
+    const accountFetchHelpersFragment = getAccountFetchHelpersFragment(scope);
+    const accountSizeHelpersFragment = getAccountSizeHelpersFragment(scope);
+    const accountPdaHelpersFragment = getAccountPdaHelpersFragment(scope);
     const imports = new ImportMap().mergeWith(
       accountTypeFragment,
       accountFetchHelpersFragment,
-      // accountGpaHelpersFragment,
       accountSizeHelpersFragment,
       accountPdaHelpersFragment
     );
@@ -228,7 +240,6 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         imports: imports.toString(this.options.dependencyMap),
         accountTypeFragment,
         accountFetchHelpersFragment,
-        // accountGpaHelpersFragment,
         accountSizeHelpersFragment,
         accountPdaHelpersFragment,
       })
@@ -240,7 +251,6 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       throw new Error('Instruction must be visited inside a program.');
     }
 
-    // Data for fragments.
     const scope = {
       instructionNode: instruction,
       programNode: this.program,
@@ -249,6 +259,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       extraArgsManifest: visit(instruction.extraArgs, this.typeManifestVisitor),
       resolvedInputs: visit(instruction, this.resolvedInstructionInputVisitor),
       asyncResolvers: this.options.asyncResolvers,
+      nameApi: this.nameApi,
     };
 
     // Fragments.

@@ -1,7 +1,7 @@
 {% import "templates/macros.njk" as macros %}
 
 {% if hasVariableSeeds %}
-export type {{ pascalCaseName }}Seeds = {
+export type {{ accountSeedsType }} = {
   {% for seed in seeds %}
     {% if seed.kind === 'variable' %}
       {{ macros.docblock(seed.docs) }}
@@ -11,9 +11,9 @@ export type {{ pascalCaseName }}Seeds = {
 }
 {% endif %}
 
-export async function find{{ pascalCaseName }}Pda(
+export async function {{ findPdaFunction }}(
   {% if hasVariableSeeds %}
-    seeds: {{ pascalCaseName }}Seeds,
+    seeds: {{ accountSeedsType }},
   {% endif %}
   config: { programAddress?: Address | undefined } = {},
 ): Promise<ProgramDerivedAddress> {
@@ -31,26 +31,26 @@ export async function find{{ pascalCaseName }}Pda(
   ]});
 }
 
-export async function fetch{{ pascalCaseName }}FromSeeds(
+export async function {{ fetchFromSeedsFunction }}(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   {% if hasVariableSeeds %}
-    seeds: {{ pascalCaseName }}Seeds,
+    seeds: {{ accountSeedsType }},
   {% endif %}
   config: FetchAccountConfig & { programAddress?: Address } = {},
 ): Promise<{{ pascalCaseName }}> {
   const { programAddress, ...fetchConfig } = config;
-  const [address] = await find{{ pascalCaseName }}Pda({% if hasVariableSeeds %}seeds, {% endif %}{ programAddress });
-  return fetch{{ pascalCaseName }}(rpc, address, fetchConfig);
+  const [address] = await {{ findPdaFunction }}({% if hasVariableSeeds %}seeds, {% endif %}{ programAddress });
+  return {{ fetchFunction }}(rpc, address, fetchConfig);
 }
 
-export async function safeFetch{{ pascalCaseName }}FromSeeds(
+export async function {{ safeFetchFromSeedsFunction }}(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   {% if hasVariableSeeds %}
-    seeds: {{ pascalCaseName }}Seeds,
+    seeds: {{ accountSeedsType }},
   {% endif %}
   config: FetchAccountConfig & { programAddress?: Address } = {},
 ): Promise<{{ pascalCaseName }} | null> {
   const { programAddress, ...fetchConfig } = config;
-  const [address] = await find{{ pascalCaseName }}Pda({% if hasVariableSeeds %}seeds, {% endif %}{ programAddress });
-  return safeFetch{{ pascalCaseName }}(rpc, address, fetchConfig);
+  const [address] = await {{ findPdaFunction }}({% if hasVariableSeeds %}seeds, {% endif %}{ programAddress });
+  return {{ safeFetchFunction }}(rpc, address, fetchConfig);
 }

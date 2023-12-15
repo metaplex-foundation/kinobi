@@ -1,4 +1,4 @@
-export function get{{ instruction.name | pascalCase }}InstructionRaw<
+export function {{ functionName }}<
   TProgram extends string = "{{ program.publicKey }}",
   {% if hasAccounts %}
     {{ accountTypeParams }},

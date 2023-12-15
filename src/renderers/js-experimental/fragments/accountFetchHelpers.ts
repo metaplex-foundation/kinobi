@@ -1,19 +1,26 @@
 import * as nodes from '../../../nodes';
-import { pascalCase } from '../../../shared';
 import { TypeManifest } from '../TypeManifest';
+import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
-export function getAccountFetchHelpersFragment(
-  accountNode: nodes.AccountNode,
-  manifest: TypeManifest
-): Fragment {
+export function getAccountFetchHelpersFragment(scope: {
+  accountNode: nodes.AccountNode;
+  typeManifest: TypeManifest;
+  nameApi: NameApi;
+}): Fragment {
+  const { accountNode, typeManifest, nameApi } = scope;
   const decoderFunctionFragment = accountNode.data.link
-    ? manifest.decoder.clone()
-    : fragment(`get${pascalCase(accountNode.data.name)}Decoder()`);
+    ? typeManifest.decoder.clone()
+    : fragment(nameApi.decoderFunction(accountNode.data.name));
 
   return fragmentFromTemplate('accountFetchHelpers.njk', {
-    pascalCaseName: pascalCase(accountNode.name),
     decoderFunction: decoderFunctionFragment.render,
+    accountType: nameApi.accountType(accountNode.name),
+    decodeFunction: nameApi.accountDecodeFunction(accountNode.data.name),
+    fetchFunction: nameApi.accountFetchFunction(accountNode.name),
+    safeFetchFunction: nameApi.accountSafeFetchFunction(accountNode.name),
+    fetchAllFunction: nameApi.accountFetchAllFunction(accountNode.name),
+    safeFetchAllFunction: nameApi.accountSafeFetchAllFunction(accountNode.name),
   })
     .mergeImportsWith(decoderFunctionFragment)
     .addImports('solanaAddresses', ['Address'])
