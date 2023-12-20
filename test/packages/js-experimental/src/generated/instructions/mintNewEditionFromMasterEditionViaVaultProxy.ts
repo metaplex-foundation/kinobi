@@ -843,8 +843,7 @@ export function parseMintNewEditionFromMasterEditionViaVaultProxyInstruction<
     return address;
   };
   const getNextOptionalAccount = (): Address | undefined => {
-    const address = instruction.accounts![accountIndex]!.address;
-    accountIndex += 1;
+    const address = getNextAccount();
     return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
       ? undefined
       : address;

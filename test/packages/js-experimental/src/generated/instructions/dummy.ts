@@ -834,8 +834,7 @@ export function parseDummyInstruction<
     return address;
   };
   const getNextOptionalAccount = (): Address | undefined => {
-    const address = instruction.accounts![accountIndex]!.address;
-    accountIndex += 1;
+    const address = getNextAccount();
     return address === 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
       ? undefined
       : address;

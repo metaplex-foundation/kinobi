@@ -870,13 +870,11 @@ export function parseValidateInstruction<
     accountIndex += 1;
     return address;
   };
-  // TODO
+  let optionalAccountsRemaining = instruction.accounts.length - 3;
   const getNextOptionalAccount = (): Address | undefined => {
-    const address = instruction.accounts![accountIndex]!.address;
-    accountIndex += 1;
-    return address === 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
-      ? undefined
-      : address;
+    if (optionalAccountsRemaining === 0) return undefined;
+    optionalAccountsRemaining -= 1;
+    return getNextAccount();
   };
   return {
     accounts: {

@@ -37,16 +37,15 @@ export function {{ instructionParseFunction }}<
     }
     {% if hasOptionalAccounts and instruction.optionalAccountStrategy === 'programId' %}
       const getNextOptionalAccount = (): Address | undefined => {
-        const address = instruction.accounts![accountIndex]!.address;
-        accountIndex += 1;
+        const address = getNextAccount();
         return address === '{{ programAddress }}' ? undefined : address;
       };
     {% elif hasOptionalAccounts and instruction.optionalAccountStrategy === 'omitted' %}
-      // TODO
+      let optionalAccountsRemaining = instruction.accounts.length - {{ minimumNumberOfAccounts }};
       const getNextOptionalAccount = (): Address | undefined => {
-        const address = instruction.accounts![accountIndex]!.address;
-        accountIndex += 1;
-        return address === '{{ programAddress }}' ? undefined : address;
+        if (optionalAccountsRemaining === 0) return undefined;
+        optionalAccountsRemaining -= 1;
+        return getNextAccount();
       };
     {% endif %}
   {% endif %}
