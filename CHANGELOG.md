@@ -1,5 +1,25 @@
 # @metaplex-foundation/kinobi
 
+## 0.16.13
+
+### Patch Changes
+
+- [`0a73ebd`](https://github.com/metaplex-foundation/kinobi/commit/0a73ebdb6a6ce494bd67ef06ec2e5e22d6972775) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Remove context from js-experimental renderer
+
+- [`eeff3b2`](https://github.com/metaplex-foundation/kinobi/commit/eeff3b2a78301e8cecdb093bd95ffc724ed6b2bd) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix optional sign for unsupported payer and identity defaults on js-experimental
+
+- [#114](https://github.com/metaplex-foundation/kinobi/pull/114) [`1da018e`](https://github.com/metaplex-foundation/kinobi/commit/1da018ebdcb91a5f697c0d282fa7e7d888a18257) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add support for API name transformers in js-experimental
+
+- [#115](https://github.com/metaplex-foundation/kinobi/pull/115) [`c473e83`](https://github.com/metaplex-foundation/kinobi/commit/c473e83d738ad6881d960f3918cd8d36cb83128f) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add parse instruction function in js-experimental
+
+- [`7bb49fb`](https://github.com/metaplex-foundation/kinobi/commit/7bb49fb8687b4237220c98c884380451c819bc14) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Rename options to config in js-experimental generated helpers
+
+- [#111](https://github.com/metaplex-foundation/kinobi/pull/111) [`5ec7625`](https://github.com/metaplex-foundation/kinobi/commit/5ec76252c30437bd1eb4eb2aa25c7f5ebda2fa10) Thanks [@febo](https://github.com/febo)! - Does not generate lifetime for empty account struct in Rust client
+
+- [`6c227c4`](https://github.com/metaplex-foundation/kinobi/commit/6c227c4d7f8a4004295c9ccef91c69e156aaf0a4) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Use AccountMetas instead of Addresses for parsed instructions in js-experimental
+
+- [#113](https://github.com/metaplex-foundation/kinobi/pull/113) [`c5efc7a`](https://github.com/metaplex-foundation/kinobi/commit/c5efc7a523fab216e474d5ea25685073fba5ea2f) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Update js-experimental resolvers and replace ContextMap with FragmentFeatures
+
 ## 0.16.12
 
 ### Patch Changes
