@@ -614,7 +614,30 @@ export function getUseAssetInstructionRaw<
 }
 
 export type ParsedUseAssetInstruction = {
-  accounts: {};
+  accounts: {
+    /** Metadata account */
+    metadata: Address;
+    /** Token Account Of NFT */
+    tokenAccount: Address;
+    /** Mint of the Metadata */
+    mint: Address;
+    /** Use authority or current owner of the asset */
+    useAuthority: Address;
+    /** Owner */
+    owner: Address;
+    /** SPL Token program */
+    splTokenProgram: Address;
+    /** Associated Token program */
+    ataProgram: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Use Authority Record PDA (if present the program assumes a delegated use authority) */
+    useAuthorityRecord: Address;
+    /** Token Authorization Rules account */
+    authorizationRules: Address;
+    /** Token Authorization Rules Program */
+    authorizationRulesProgram: Address;
+  };
   data: UseAssetInstructionData;
 };
 
@@ -629,7 +652,19 @@ export function parseUseAssetInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      metadata: instruction.accounts[accountIndex++]!.address,
+      tokenAccount: instruction.accounts[accountIndex++]!.address,
+      mint: instruction.accounts[accountIndex++]!.address,
+      useAuthority: instruction.accounts[accountIndex++]!.address,
+      owner: instruction.accounts[accountIndex++]!.address,
+      splTokenProgram: instruction.accounts[accountIndex++]!.address,
+      ataProgram: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+      useAuthorityRecord: instruction.accounts[accountIndex++]!.address,
+      authorizationRules: instruction.accounts[accountIndex++]!.address,
+      authorizationRulesProgram: instruction.accounts[accountIndex++]!.address,
+    },
     data: getUseAssetInstructionDataDecoder().decode(instruction.data),
   };
 }

@@ -213,7 +213,10 @@ export function getWithdrawInstructionRaw<
 }
 
 export type ParsedWithdrawInstruction = {
-  accounts: {};
+  accounts: {
+    candyMachine: Address;
+    authority: Address;
+  };
   data: WithdrawInstructionData;
 };
 
@@ -228,7 +231,10 @@ export function parseWithdrawInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      candyMachine: instruction.accounts[accountIndex++]!.address,
+      authority: instruction.accounts[accountIndex++]!.address,
+    },
     data: getWithdrawInstructionDataDecoder().decode(instruction.data),
   };
 }

@@ -584,7 +584,19 @@ export function getInitializeInstructionRaw<
 }
 
 export type ParsedInitializeInstruction = {
-  accounts: {};
+  accounts: {
+    candyMachine: Address;
+    authorityPda: Address;
+    authority: Address;
+    payer: Address;
+    collectionMetadata: Address;
+    collectionMint: Address;
+    collectionMasterEdition: Address;
+    collectionUpdateAuthority: Address;
+    collectionAuthorityRecord: Address;
+    tokenMetadataProgram: Address;
+    systemProgram: Address;
+  };
   data: InitializeInstructionData;
 };
 
@@ -599,7 +611,19 @@ export function parseInitializeInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      candyMachine: instruction.accounts[accountIndex++]!.address,
+      authorityPda: instruction.accounts[accountIndex++]!.address,
+      authority: instruction.accounts[accountIndex++]!.address,
+      payer: instruction.accounts[accountIndex++]!.address,
+      collectionMetadata: instruction.accounts[accountIndex++]!.address,
+      collectionMint: instruction.accounts[accountIndex++]!.address,
+      collectionMasterEdition: instruction.accounts[accountIndex++]!.address,
+      collectionUpdateAuthority: instruction.accounts[accountIndex++]!.address,
+      collectionAuthorityRecord: instruction.accounts[accountIndex++]!.address,
+      tokenMetadataProgram: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+    },
     data: getInitializeInstructionDataDecoder().decode(instruction.data),
   };
 }

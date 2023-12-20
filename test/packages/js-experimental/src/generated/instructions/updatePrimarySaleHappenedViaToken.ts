@@ -262,7 +262,14 @@ export function getUpdatePrimarySaleHappenedViaTokenInstructionRaw<
 }
 
 export type ParsedUpdatePrimarySaleHappenedViaTokenInstruction = {
-  accounts: {};
+  accounts: {
+    /** Metadata key (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** Owner on the token account */
+    owner: Address;
+    /** Account containing tokens from the metadata's mint */
+    token: Address;
+  };
   data: UpdatePrimarySaleHappenedViaTokenInstructionData;
 };
 
@@ -277,7 +284,11 @@ export function parseUpdatePrimarySaleHappenedViaTokenInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      metadata: instruction.accounts[accountIndex++]!.address,
+      owner: instruction.accounts[accountIndex++]!.address,
+      token: instruction.accounts[accountIndex++]!.address,
+    },
     data: getUpdatePrimarySaleHappenedViaTokenInstructionDataDecoder().decode(
       instruction.data
     ),

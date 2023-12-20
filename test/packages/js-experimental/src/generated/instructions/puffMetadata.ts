@@ -169,7 +169,10 @@ export function getPuffMetadataInstructionRaw<
 }
 
 export type ParsedPuffMetadataInstruction = {
-  accounts: {};
+  accounts: {
+    /** Metadata account */
+    metadata: Address;
+  };
   data: PuffMetadataInstructionData;
 };
 
@@ -184,7 +187,9 @@ export function parsePuffMetadataInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      metadata: instruction.accounts[accountIndex++]!.address,
+    },
     data: getPuffMetadataInstructionDataDecoder().decode(instruction.data),
   };
 }

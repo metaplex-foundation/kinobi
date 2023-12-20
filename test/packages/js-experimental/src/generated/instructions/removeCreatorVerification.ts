@@ -223,7 +223,12 @@ export function getRemoveCreatorVerificationInstructionRaw<
 }
 
 export type ParsedRemoveCreatorVerificationInstruction = {
-  accounts: {};
+  accounts: {
+    /** Metadata (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** Creator */
+    creator: Address;
+  };
   data: RemoveCreatorVerificationInstructionData;
 };
 
@@ -238,7 +243,10 @@ export function parseRemoveCreatorVerificationInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      metadata: instruction.accounts[accountIndex++]!.address,
+      creator: instruction.accounts[accountIndex++]!.address,
+    },
     data: getRemoveCreatorVerificationInstructionDataDecoder().decode(
       instruction.data
     ),

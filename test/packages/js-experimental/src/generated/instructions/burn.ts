@@ -516,7 +516,26 @@ export function getBurnInstructionRaw<
 }
 
 export type ParsedBurnInstruction = {
-  accounts: {};
+  accounts: {
+    /** Metadata (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** Asset owner */
+    owner: Address;
+    /** Mint of token asset */
+    mint: Address;
+    /** Token account to close */
+    tokenAccount: Address;
+    /** MasterEdition of the asset */
+    masterEditionAccount: Address;
+    /** SPL Token Program */
+    splTokenProgram: Address;
+    /** Metadata of the Collection */
+    collectionMetadata: Address;
+    /** Token Authorization Rules account */
+    authorizationRules: Address;
+    /** Token Authorization Rules Program */
+    authorizationRulesProgram: Address;
+  };
   data: BurnInstructionData;
 };
 
@@ -531,7 +550,17 @@ export function parseBurnInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      metadata: instruction.accounts[accountIndex++]!.address,
+      owner: instruction.accounts[accountIndex++]!.address,
+      mint: instruction.accounts[accountIndex++]!.address,
+      tokenAccount: instruction.accounts[accountIndex++]!.address,
+      masterEditionAccount: instruction.accounts[accountIndex++]!.address,
+      splTokenProgram: instruction.accounts[accountIndex++]!.address,
+      collectionMetadata: instruction.accounts[accountIndex++]!.address,
+      authorizationRules: instruction.accounts[accountIndex++]!.address,
+      authorizationRulesProgram: instruction.accounts[accountIndex++]!.address,
+    },
     data: getBurnInstructionDataDecoder().decode(instruction.data),
   };
 }

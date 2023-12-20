@@ -339,7 +339,12 @@ export function getUpdateMetadataAccountInstructionRaw<
 }
 
 export type ParsedUpdateMetadataAccountInstruction = {
-  accounts: {};
+  accounts: {
+    /** Metadata account */
+    metadata: Address;
+    /** Update authority key */
+    updateAuthority: Address;
+  };
   data: UpdateMetadataAccountInstructionData;
 };
 
@@ -354,7 +359,10 @@ export function parseUpdateMetadataAccountInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      metadata: instruction.accounts[accountIndex++]!.address,
+      updateAuthority: instruction.accounts[accountIndex++]!.address,
+    },
     data: getUpdateMetadataAccountInstructionDataDecoder().decode(
       instruction.data
     ),

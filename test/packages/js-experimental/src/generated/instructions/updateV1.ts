@@ -767,7 +767,28 @@ export function getUpdateV1InstructionRaw<
 }
 
 export type ParsedUpdateV1Instruction = {
-  accounts: {};
+  accounts: {
+    /** Update authority or delegate */
+    authority: Address;
+    /** Metadata account */
+    metadata: Address;
+    /** Master Edition account */
+    masterEdition: Address;
+    /** Mint account */
+    mint: Address;
+    /** System program */
+    systemProgram: Address;
+    /** System program */
+    sysvarInstructions: Address;
+    /** Token account */
+    token: Address;
+    /** Delegate record PDA */
+    delegateRecord: Address;
+    /** Token Authorization Rules Program */
+    authorizationRulesProgram: Address;
+    /** Token Authorization Rules account */
+    authorizationRules: Address;
+  };
   data: UpdateV1InstructionData;
 };
 
@@ -782,7 +803,18 @@ export function parseUpdateV1Instruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      authority: instruction.accounts[accountIndex++]!.address,
+      metadata: instruction.accounts[accountIndex++]!.address,
+      masterEdition: instruction.accounts[accountIndex++]!.address,
+      mint: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+      sysvarInstructions: instruction.accounts[accountIndex++]!.address,
+      token: instruction.accounts[accountIndex++]!.address,
+      delegateRecord: instruction.accounts[accountIndex++]!.address,
+      authorizationRulesProgram: instruction.accounts[accountIndex++]!.address,
+      authorizationRules: instruction.accounts[accountIndex++]!.address,
+    },
     data: getUpdateV1InstructionDataDecoder().decode(instruction.data),
   };
 }

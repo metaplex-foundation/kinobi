@@ -336,7 +336,18 @@ export function getThawDelegatedAccountInstructionRaw<
 }
 
 export type ParsedThawDelegatedAccountInstruction = {
-  accounts: {};
+  accounts: {
+    /** Delegate */
+    delegate: Address;
+    /** Token account to thaw */
+    tokenAccount: Address;
+    /** Edition */
+    edition: Address;
+    /** Token mint */
+    mint: Address;
+    /** Token Program */
+    tokenProgram: Address;
+  };
   data: ThawDelegatedAccountInstructionData;
 };
 
@@ -351,7 +362,13 @@ export function parseThawDelegatedAccountInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      delegate: instruction.accounts[accountIndex++]!.address,
+      tokenAccount: instruction.accounts[accountIndex++]!.address,
+      edition: instruction.accounts[accountIndex++]!.address,
+      mint: instruction.accounts[accountIndex++]!.address,
+      tokenProgram: instruction.accounts[accountIndex++]!.address,
+    },
     data: getThawDelegatedAccountInstructionDataDecoder().decode(
       instruction.data
     ),

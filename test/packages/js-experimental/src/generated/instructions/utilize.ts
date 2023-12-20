@@ -600,7 +600,30 @@ export function getUtilizeInstructionRaw<
 }
 
 export type ParsedUtilizeInstruction = {
-  accounts: {};
+  accounts: {
+    /** Metadata account */
+    metadata: Address;
+    /** Token Account Of NFT */
+    tokenAccount: Address;
+    /** Mint of the Metadata */
+    mint: Address;
+    /** A Use Authority / Can be the current Owner of the NFT */
+    useAuthority: Address;
+    /** Owner */
+    owner: Address;
+    /** Token program */
+    tokenProgram: Address;
+    /** Associated Token program */
+    ataProgram: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Rent info */
+    rent: Address;
+    /** Use Authority Record PDA If present the program Assumes a delegated use authority */
+    useAuthorityRecord: Address;
+    /** Program As Signer (Burner) */
+    burner: Address;
+  };
   data: UtilizeInstructionData;
 };
 
@@ -615,7 +638,19 @@ export function parseUtilizeInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      metadata: instruction.accounts[accountIndex++]!.address,
+      tokenAccount: instruction.accounts[accountIndex++]!.address,
+      mint: instruction.accounts[accountIndex++]!.address,
+      useAuthority: instruction.accounts[accountIndex++]!.address,
+      owner: instruction.accounts[accountIndex++]!.address,
+      tokenProgram: instruction.accounts[accountIndex++]!.address,
+      ataProgram: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+      rent: instruction.accounts[accountIndex++]!.address,
+      useAuthorityRecord: instruction.accounts[accountIndex++]!.address,
+      burner: instruction.accounts[accountIndex++]!.address,
+    },
     data: getUtilizeInstructionDataDecoder().decode(instruction.data),
   };
 }

@@ -441,7 +441,22 @@ export function getCreateMetadataAccountV2InstructionRaw<
 }
 
 export type ParsedCreateMetadataAccountV2Instruction = {
-  accounts: {};
+  accounts: {
+    /** Metadata key (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** Mint of token asset */
+    mint: Address;
+    /** Mint authority */
+    mintAuthority: Address;
+    /** payer */
+    payer: Address;
+    /** update authority info */
+    updateAuthority: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Rent info */
+    rent: Address;
+  };
   data: CreateMetadataAccountV2InstructionData;
 };
 
@@ -456,7 +471,15 @@ export function parseCreateMetadataAccountV2Instruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      metadata: instruction.accounts[accountIndex++]!.address,
+      mint: instruction.accounts[accountIndex++]!.address,
+      mintAuthority: instruction.accounts[accountIndex++]!.address,
+      payer: instruction.accounts[accountIndex++]!.address,
+      updateAuthority: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+      rent: instruction.accounts[accountIndex++]!.address,
+    },
     data: getCreateMetadataAccountV2InstructionDataDecoder().decode(
       instruction.data
     ),

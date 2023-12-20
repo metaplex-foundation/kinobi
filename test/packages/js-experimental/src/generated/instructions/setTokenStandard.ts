@@ -296,7 +296,16 @@ export function getSetTokenStandardInstructionRaw<
 }
 
 export type ParsedSetTokenStandardInstruction = {
-  accounts: {};
+  accounts: {
+    /** Metadata account */
+    metadata: Address;
+    /** Metadata update authority */
+    updateAuthority: Address;
+    /** Mint account */
+    mint: Address;
+    /** Edition account */
+    edition: Address;
+  };
   data: SetTokenStandardInstructionData;
 };
 
@@ -311,7 +320,12 @@ export function parseSetTokenStandardInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      metadata: instruction.accounts[accountIndex++]!.address,
+      updateAuthority: instruction.accounts[accountIndex++]!.address,
+      mint: instruction.accounts[accountIndex++]!.address,
+      edition: instruction.accounts[accountIndex++]!.address,
+    },
     data: getSetTokenStandardInstructionDataDecoder().decode(instruction.data),
   };
 }

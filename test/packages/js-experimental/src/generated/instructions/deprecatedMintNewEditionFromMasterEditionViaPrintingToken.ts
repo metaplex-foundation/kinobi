@@ -725,7 +725,40 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
 
 export type ParsedDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction =
   {
-    accounts: {};
+    accounts: {
+      /** New Metadata key (pda of ['metadata', program id, mint id]) */
+      metadata: Address;
+      /** New Edition V1 (pda of ['metadata', program id, mint id, 'edition']) */
+      edition: Address;
+      /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
+      masterEdition: Address;
+      /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
+      mint: Address;
+      /** Mint authority of new mint */
+      mintAuthority: Address;
+      /** Printing Mint of master record edition */
+      printingMint: Address;
+      /** Token account containing Printing mint token to be transferred */
+      masterTokenAccount: Address;
+      /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master mint id, edition_number]) */
+      editionMarker: Address;
+      /** Burn authority for this token */
+      burnAuthority: Address;
+      /** payer */
+      payer: Address;
+      /** update authority info for new metadata account */
+      masterUpdateAuthority: Address;
+      /** Master record metadata account */
+      masterMetadata: Address;
+      /** Token program */
+      tokenProgram: Address;
+      /** System program */
+      systemProgram: Address;
+      /** Rent info */
+      rent: Address;
+      /** Reservation List - If present, and you are on this list, you can get an edition number given by your position on the list. */
+      reservationList: Address;
+    };
     data: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData;
   };
 
@@ -740,7 +773,24 @@ export function parseDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenIn
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      metadata: instruction.accounts[accountIndex++]!.address,
+      edition: instruction.accounts[accountIndex++]!.address,
+      masterEdition: instruction.accounts[accountIndex++]!.address,
+      mint: instruction.accounts[accountIndex++]!.address,
+      mintAuthority: instruction.accounts[accountIndex++]!.address,
+      printingMint: instruction.accounts[accountIndex++]!.address,
+      masterTokenAccount: instruction.accounts[accountIndex++]!.address,
+      editionMarker: instruction.accounts[accountIndex++]!.address,
+      burnAuthority: instruction.accounts[accountIndex++]!.address,
+      payer: instruction.accounts[accountIndex++]!.address,
+      masterUpdateAuthority: instruction.accounts[accountIndex++]!.address,
+      masterMetadata: instruction.accounts[accountIndex++]!.address,
+      tokenProgram: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+      rent: instruction.accounts[accountIndex++]!.address,
+      reservationList: instruction.accounts[accountIndex++]!.address,
+    },
     data: getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataDecoder().decode(
       instruction.data
     ),

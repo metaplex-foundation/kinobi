@@ -825,7 +825,33 @@ export function getValidateInstructionRaw<
 }
 
 export type ParsedValidateInstruction = {
-  accounts: {};
+  accounts: {
+    /** Payer and creator of the RuleSet */
+    payer: Address;
+    /** The PDA account where the RuleSet is stored */
+    ruleSet: Address;
+    /** System program */
+    systemProgram: Address;
+    optRuleSigner1: Address;
+    /** Optional rule validation signer 2 */
+    optRuleSigner2: Address;
+    /** Optional rule validation signer 3 */
+    optRuleSigner3: Address;
+    /** Optional rule validation signer 4 */
+    optRuleSigner4: Address;
+    /** Optional rule validation signer 5 */
+    optRuleSigner5: Address;
+    /** Optional rule validation non-signer 1 */
+    optRuleNonsigner1: Address;
+    /** Optional rule validation non-signer 2 */
+    optRuleNonsigner2: Address;
+    /** Optional rule validation non-signer 3 */
+    optRuleNonsigner3: Address;
+    /** Optional rule validation non-signer 4 */
+    optRuleNonsigner4: Address;
+    /** Optional rule validation non-signer 5 */
+    optRuleNonsigner5: Address;
+  };
   data: ValidateInstructionData;
 };
 
@@ -840,7 +866,21 @@ export function parseValidateInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      payer: instruction.accounts[accountIndex++]!.address,
+      ruleSet: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+      optRuleSigner1: instruction.accounts[accountIndex++]!.address,
+      optRuleSigner2: instruction.accounts[accountIndex++]!.address,
+      optRuleSigner3: instruction.accounts[accountIndex++]!.address,
+      optRuleSigner4: instruction.accounts[accountIndex++]!.address,
+      optRuleSigner5: instruction.accounts[accountIndex++]!.address,
+      optRuleNonsigner1: instruction.accounts[accountIndex++]!.address,
+      optRuleNonsigner2: instruction.accounts[accountIndex++]!.address,
+      optRuleNonsigner3: instruction.accounts[accountIndex++]!.address,
+      optRuleNonsigner4: instruction.accounts[accountIndex++]!.address,
+      optRuleNonsigner5: instruction.accounts[accountIndex++]!.address,
+    },
     data: getValidateInstructionDataDecoder().decode(instruction.data),
   };
 }

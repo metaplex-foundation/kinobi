@@ -322,7 +322,14 @@ export function getCreateFrequencyRuleInstructionRaw<
 }
 
 export type ParsedCreateFrequencyRuleInstruction = {
-  accounts: {};
+  accounts: {
+    /** Payer and creator of the Frequency Rule */
+    payer: Address;
+    /** The PDA account where the Frequency Rule is stored */
+    frequencyPda: Address;
+    /** System program */
+    systemProgram: Address;
+  };
   data: CreateFrequencyRuleInstructionData;
 };
 
@@ -337,7 +344,11 @@ export function parseCreateFrequencyRuleInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      payer: instruction.accounts[accountIndex++]!.address,
+      frequencyPda: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+    },
     data: getCreateFrequencyRuleInstructionDataDecoder().decode(
       instruction.data
     ),

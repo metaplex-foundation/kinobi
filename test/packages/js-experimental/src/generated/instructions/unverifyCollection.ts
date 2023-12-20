@@ -382,7 +382,20 @@ export function getUnverifyCollectionInstructionRaw<
 }
 
 export type ParsedUnverifyCollectionInstruction = {
-  accounts: {};
+  accounts: {
+    /** Metadata account */
+    metadata: Address;
+    /** Collection Authority */
+    collectionAuthority: Address;
+    /** Mint of the Collection */
+    collectionMint: Address;
+    /** Metadata Account of the Collection */
+    collection: Address;
+    /** MasterEdition2 Account of the Collection Token */
+    collectionMasterEditionAccount: Address;
+    /** Collection Authority Record PDA */
+    collectionAuthorityRecord: Address;
+  };
   data: UnverifyCollectionInstructionData;
 };
 
@@ -397,7 +410,15 @@ export function parseUnverifyCollectionInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      metadata: instruction.accounts[accountIndex++]!.address,
+      collectionAuthority: instruction.accounts[accountIndex++]!.address,
+      collectionMint: instruction.accounts[accountIndex++]!.address,
+      collection: instruction.accounts[accountIndex++]!.address,
+      collectionMasterEditionAccount:
+        instruction.accounts[accountIndex++]!.address,
+      collectionAuthorityRecord: instruction.accounts[accountIndex++]!.address,
+    },
     data: getUnverifyCollectionInstructionDataDecoder().decode(
       instruction.data
     ),

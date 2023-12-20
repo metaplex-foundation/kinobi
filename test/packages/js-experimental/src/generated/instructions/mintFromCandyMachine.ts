@@ -767,7 +767,25 @@ export function getMintFromCandyMachineInstructionRaw<
 }
 
 export type ParsedMintFromCandyMachineInstruction = {
-  accounts: {};
+  accounts: {
+    candyMachine: Address;
+    authorityPda: Address;
+    mintAuthority: Address;
+    payer: Address;
+    nftMint: Address;
+    nftMintAuthority: Address;
+    nftMetadata: Address;
+    nftMasterEdition: Address;
+    collectionAuthorityRecord: Address;
+    collectionMint: Address;
+    collectionMetadata: Address;
+    collectionMasterEdition: Address;
+    collectionUpdateAuthority: Address;
+    tokenMetadataProgram: Address;
+    tokenProgram: Address;
+    systemProgram: Address;
+    recentSlothashes: Address;
+  };
   data: MintFromCandyMachineInstructionData;
 };
 
@@ -782,7 +800,25 @@ export function parseMintFromCandyMachineInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      candyMachine: instruction.accounts[accountIndex++]!.address,
+      authorityPda: instruction.accounts[accountIndex++]!.address,
+      mintAuthority: instruction.accounts[accountIndex++]!.address,
+      payer: instruction.accounts[accountIndex++]!.address,
+      nftMint: instruction.accounts[accountIndex++]!.address,
+      nftMintAuthority: instruction.accounts[accountIndex++]!.address,
+      nftMetadata: instruction.accounts[accountIndex++]!.address,
+      nftMasterEdition: instruction.accounts[accountIndex++]!.address,
+      collectionAuthorityRecord: instruction.accounts[accountIndex++]!.address,
+      collectionMint: instruction.accounts[accountIndex++]!.address,
+      collectionMetadata: instruction.accounts[accountIndex++]!.address,
+      collectionMasterEdition: instruction.accounts[accountIndex++]!.address,
+      collectionUpdateAuthority: instruction.accounts[accountIndex++]!.address,
+      tokenMetadataProgram: instruction.accounts[accountIndex++]!.address,
+      tokenProgram: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+      recentSlothashes: instruction.accounts[accountIndex++]!.address,
+    },
     data: getMintFromCandyMachineInstructionDataDecoder().decode(
       instruction.data
     ),

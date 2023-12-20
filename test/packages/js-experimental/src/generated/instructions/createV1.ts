@@ -563,7 +563,26 @@ export function getCreateV1InstructionRaw<
 }
 
 export type ParsedCreateV1Instruction = {
-  accounts: {};
+  accounts: {
+    /** Metadata account key (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition'] */
+    masterEdition: Address;
+    /** Mint of token asset */
+    mint: Address;
+    /** Mint authority */
+    mintAuthority: Address;
+    /** Payer */
+    payer: Address;
+    /** update authority info */
+    updateAuthority: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Instructions sysvar account */
+    sysvarInstructions: Address;
+    /** SPL Token program */
+    splTokenProgram: Address;
+  };
   data: CreateV1InstructionData;
 };
 
@@ -578,7 +597,17 @@ export function parseCreateV1Instruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      metadata: instruction.accounts[accountIndex++]!.address,
+      masterEdition: instruction.accounts[accountIndex++]!.address,
+      mint: instruction.accounts[accountIndex++]!.address,
+      mintAuthority: instruction.accounts[accountIndex++]!.address,
+      payer: instruction.accounts[accountIndex++]!.address,
+      updateAuthority: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+      sysvarInstructions: instruction.accounts[accountIndex++]!.address,
+      splTokenProgram: instruction.accounts[accountIndex++]!.address,
+    },
     data: getCreateV1InstructionDataDecoder().decode(instruction.data),
   };
 }

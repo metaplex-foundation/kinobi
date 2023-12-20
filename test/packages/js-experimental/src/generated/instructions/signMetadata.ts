@@ -212,7 +212,12 @@ export function getSignMetadataInstructionRaw<
 }
 
 export type ParsedSignMetadataInstruction = {
-  accounts: {};
+  accounts: {
+    /** Metadata (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** Creator */
+    creator: Address;
+  };
   data: SignMetadataInstructionData;
 };
 
@@ -227,7 +232,10 @@ export function parseSignMetadataInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      metadata: instruction.accounts[accountIndex++]!.address,
+      creator: instruction.accounts[accountIndex++]!.address,
+    },
     data: getSignMetadataInstructionDataDecoder().decode(instruction.data),
   };
 }

@@ -314,7 +314,14 @@ export function getDeprecatedSetReservationListInstructionRaw<
 }
 
 export type ParsedDeprecatedSetReservationListInstruction = {
-  accounts: {};
+  accounts: {
+    /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
+    masterEdition: Address;
+    /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
+    reservationList: Address;
+    /** The resource you tied the reservation list too */
+    resource: Address;
+  };
   data: DeprecatedSetReservationListInstructionData;
 };
 
@@ -329,7 +336,11 @@ export function parseDeprecatedSetReservationListInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      masterEdition: instruction.accounts[accountIndex++]!.address,
+      reservationList: instruction.accounts[accountIndex++]!.address,
+      resource: instruction.accounts[accountIndex++]!.address,
+    },
     data: getDeprecatedSetReservationListInstructionDataDecoder().decode(
       instruction.data
     ),

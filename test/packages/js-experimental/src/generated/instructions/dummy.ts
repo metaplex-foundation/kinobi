@@ -803,7 +803,18 @@ export function getDummyInstructionRaw<
 }
 
 export type ParsedDummyInstruction = {
-  accounts: {};
+  accounts: {
+    edition: Address;
+    mint: Address;
+    updateAuthority: Address;
+    mintAuthority: Address;
+    payer: Address;
+    foo: Address;
+    bar: Address;
+    delegate: Address;
+    delegateRecord: Address;
+    tokenOrAtaProgram: Address;
+  };
   data: DummyInstructionData;
 };
 
@@ -818,7 +829,18 @@ export function parseDummyInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      edition: instruction.accounts[accountIndex++]!.address,
+      mint: instruction.accounts[accountIndex++]!.address,
+      updateAuthority: instruction.accounts[accountIndex++]!.address,
+      mintAuthority: instruction.accounts[accountIndex++]!.address,
+      payer: instruction.accounts[accountIndex++]!.address,
+      foo: instruction.accounts[accountIndex++]!.address,
+      bar: instruction.accounts[accountIndex++]!.address,
+      delegate: instruction.accounts[accountIndex++]!.address,
+      delegateRecord: instruction.accounts[accountIndex++]!.address,
+      tokenOrAtaProgram: instruction.accounts[accountIndex++]!.address,
+    },
     data: getDummyInstructionDataDecoder().decode(instruction.data),
   };
 }

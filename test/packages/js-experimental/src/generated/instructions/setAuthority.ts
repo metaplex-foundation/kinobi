@@ -231,7 +231,10 @@ export function getSetAuthorityInstructionRaw<
 }
 
 export type ParsedSetAuthorityInstruction = {
-  accounts: {};
+  accounts: {
+    candyMachine: Address;
+    authority: Address;
+  };
   data: SetAuthorityInstructionData;
 };
 
@@ -246,7 +249,10 @@ export function parseSetAuthorityInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      candyMachine: instruction.accounts[accountIndex++]!.address,
+      authority: instruction.accounts[accountIndex++]!.address,
+    },
     data: getSetAuthorityInstructionDataDecoder().decode(instruction.data),
   };
 }

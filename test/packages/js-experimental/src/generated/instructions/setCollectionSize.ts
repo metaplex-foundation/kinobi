@@ -336,7 +336,16 @@ export function getSetCollectionSizeInstructionRaw<
 }
 
 export type ParsedSetCollectionSizeInstruction = {
-  accounts: {};
+  accounts: {
+    /** Collection Metadata account */
+    collectionMetadata: Address;
+    /** Collection Update authority */
+    collectionAuthority: Address;
+    /** Mint of the Collection */
+    collectionMint: Address;
+    /** Collection Authority Record PDA */
+    collectionAuthorityRecord: Address;
+  };
   data: SetCollectionSizeInstructionData;
 };
 
@@ -351,7 +360,12 @@ export function parseSetCollectionSizeInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      collectionMetadata: instruction.accounts[accountIndex++]!.address,
+      collectionAuthority: instruction.accounts[accountIndex++]!.address,
+      collectionMint: instruction.accounts[accountIndex++]!.address,
+      collectionAuthorityRecord: instruction.accounts[accountIndex++]!.address,
+    },
     data: getSetCollectionSizeInstructionDataDecoder().decode(instruction.data),
   };
 }

@@ -268,7 +268,10 @@ export function getAddConfigLinesInstructionRaw<
 }
 
 export type ParsedAddConfigLinesInstruction = {
-  accounts: {};
+  accounts: {
+    candyMachine: Address;
+    authority: Address;
+  };
   data: AddConfigLinesInstructionData;
 };
 
@@ -283,7 +286,10 @@ export function parseAddConfigLinesInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      candyMachine: instruction.accounts[accountIndex++]!.address,
+      authority: instruction.accounts[accountIndex++]!.address,
+    },
     data: getAddConfigLinesInstructionDataDecoder().decode(instruction.data),
   };
 }

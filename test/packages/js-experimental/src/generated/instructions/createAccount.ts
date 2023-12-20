@@ -248,7 +248,10 @@ export function getCreateAccountInstructionRaw<
 }
 
 export type ParsedCreateAccountInstruction = {
-  accounts: {};
+  accounts: {
+    payer: Address;
+    newAccount: Address;
+  };
   data: CreateAccountInstructionData;
 };
 
@@ -263,7 +266,10 @@ export function parseCreateAccountInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      payer: instruction.accounts[accountIndex++]!.address,
+      newAccount: instruction.accounts[accountIndex++]!.address,
+    },
     data: getCreateAccountInstructionDataDecoder().decode(instruction.data),
   };
 }

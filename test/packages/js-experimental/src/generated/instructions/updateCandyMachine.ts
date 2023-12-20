@@ -245,7 +245,10 @@ export function getUpdateCandyMachineInstructionRaw<
 }
 
 export type ParsedUpdateCandyMachineInstruction = {
-  accounts: {};
+  accounts: {
+    candyMachine: Address;
+    authority: Address;
+  };
   data: UpdateCandyMachineInstructionData;
 };
 
@@ -260,7 +263,10 @@ export function parseUpdateCandyMachineInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      candyMachine: instruction.accounts[accountIndex++]!.address,
+      authority: instruction.accounts[accountIndex++]!.address,
+    },
     data: getUpdateCandyMachineInstructionDataDecoder().decode(
       instruction.data
     ),

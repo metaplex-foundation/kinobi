@@ -558,7 +558,28 @@ export function getMigrateInstructionRaw<
 }
 
 export type ParsedMigrateInstruction = {
-  accounts: {};
+  accounts: {
+    /** Metadata account */
+    metadata: Address;
+    /** Master edition account */
+    masterEdition: Address;
+    /** Token account */
+    tokenAccount: Address;
+    /** Mint account */
+    mint: Address;
+    /** Update authority */
+    updateAuthority: Address;
+    /** Collection metadata account */
+    collectionMetadata: Address;
+    /** Token Program */
+    tokenProgram: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Instruction sysvar account */
+    sysvarInstructions: Address;
+    /** Token Authorization Rules account */
+    authorizationRules: Address;
+  };
   data: MigrateInstructionData;
 };
 
@@ -573,7 +594,18 @@ export function parseMigrateInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      metadata: instruction.accounts[accountIndex++]!.address,
+      masterEdition: instruction.accounts[accountIndex++]!.address,
+      tokenAccount: instruction.accounts[accountIndex++]!.address,
+      mint: instruction.accounts[accountIndex++]!.address,
+      updateAuthority: instruction.accounts[accountIndex++]!.address,
+      collectionMetadata: instruction.accounts[accountIndex++]!.address,
+      tokenProgram: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+      sysvarInstructions: instruction.accounts[accountIndex++]!.address,
+      authorizationRules: instruction.accounts[accountIndex++]!.address,
+    },
     data: getMigrateInstructionDataDecoder().decode(instruction.data),
   };
 }

@@ -374,7 +374,18 @@ export function getBubblegumSetCollectionSizeInstructionRaw<
 }
 
 export type ParsedBubblegumSetCollectionSizeInstruction = {
-  accounts: {};
+  accounts: {
+    /** Collection Metadata account */
+    collectionMetadata: Address;
+    /** Collection Update authority */
+    collectionAuthority: Address;
+    /** Mint of the Collection */
+    collectionMint: Address;
+    /** Signing PDA of Bubblegum program */
+    bubblegumSigner: Address;
+    /** Collection Authority Record PDA */
+    collectionAuthorityRecord: Address;
+  };
   data: BubblegumSetCollectionSizeInstructionData;
 };
 
@@ -389,7 +400,13 @@ export function parseBubblegumSetCollectionSizeInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      collectionMetadata: instruction.accounts[accountIndex++]!.address,
+      collectionAuthority: instruction.accounts[accountIndex++]!.address,
+      collectionMint: instruction.accounts[accountIndex++]!.address,
+      bubblegumSigner: instruction.accounts[accountIndex++]!.address,
+      collectionAuthorityRecord: instruction.accounts[accountIndex++]!.address,
+    },
     data: getBubblegumSetCollectionSizeInstructionDataDecoder().decode(
       instruction.data
     ),

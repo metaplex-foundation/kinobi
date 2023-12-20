@@ -260,7 +260,11 @@ export function getSetMintAuthorityInstructionRaw<
 }
 
 export type ParsedSetMintAuthorityInstruction = {
-  accounts: {};
+  accounts: {
+    candyMachine: Address;
+    authority: Address;
+    mintAuthority: Address;
+  };
   data: SetMintAuthorityInstructionData;
 };
 
@@ -275,7 +279,11 @@ export function parseSetMintAuthorityInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      candyMachine: instruction.accounts[accountIndex++]!.address,
+      authority: instruction.accounts[accountIndex++]!.address,
+      mintAuthority: instruction.accounts[accountIndex++]!.address,
+    },
     data: getSetMintAuthorityInstructionDataDecoder().decode(instruction.data),
   };
 }

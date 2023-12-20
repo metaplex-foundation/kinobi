@@ -669,7 +669,22 @@ export function getSetCollectionInstructionRaw<
 }
 
 export type ParsedSetCollectionInstruction = {
-  accounts: {};
+  accounts: {
+    candyMachine: Address;
+    authority: Address;
+    authorityPda: Address;
+    payer: Address;
+    collectionMint: Address;
+    collectionMetadata: Address;
+    collectionAuthorityRecord: Address;
+    newCollectionUpdateAuthority: Address;
+    newCollectionMetadata: Address;
+    newCollectionMint: Address;
+    newCollectionMasterEdition: Address;
+    newCollectionAuthorityRecord: Address;
+    tokenMetadataProgram: Address;
+    systemProgram: Address;
+  };
   data: SetCollectionInstructionData;
 };
 
@@ -684,7 +699,24 @@ export function parseSetCollectionInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      candyMachine: instruction.accounts[accountIndex++]!.address,
+      authority: instruction.accounts[accountIndex++]!.address,
+      authorityPda: instruction.accounts[accountIndex++]!.address,
+      payer: instruction.accounts[accountIndex++]!.address,
+      collectionMint: instruction.accounts[accountIndex++]!.address,
+      collectionMetadata: instruction.accounts[accountIndex++]!.address,
+      collectionAuthorityRecord: instruction.accounts[accountIndex++]!.address,
+      newCollectionUpdateAuthority:
+        instruction.accounts[accountIndex++]!.address,
+      newCollectionMetadata: instruction.accounts[accountIndex++]!.address,
+      newCollectionMint: instruction.accounts[accountIndex++]!.address,
+      newCollectionMasterEdition: instruction.accounts[accountIndex++]!.address,
+      newCollectionAuthorityRecord:
+        instruction.accounts[accountIndex++]!.address,
+      tokenMetadataProgram: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+    },
     data: getSetCollectionInstructionDataDecoder().decode(instruction.data),
   };
 }

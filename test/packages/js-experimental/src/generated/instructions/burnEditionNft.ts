@@ -539,7 +539,28 @@ export function getBurnEditionNftInstructionRaw<
 }
 
 export type ParsedBurnEditionNftInstruction = {
-  accounts: {};
+  accounts: {
+    /** Metadata (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** NFT owner */
+    owner: Address;
+    /** Mint of the print edition NFT */
+    printEditionMint: Address;
+    /** Mint of the original/master NFT */
+    masterEditionMint: Address;
+    /** Token account the print edition NFT is in */
+    printEditionTokenAccount: Address;
+    /** Token account the Master Edition NFT is in */
+    masterEditionTokenAccount: Address;
+    /** MasterEdition2 of the original NFT */
+    masterEditionAccount: Address;
+    /** Print Edition account of the NFT */
+    printEditionAccount: Address;
+    /** Edition Marker PDA of the NFT */
+    editionMarkerAccount: Address;
+    /** SPL Token Program */
+    splTokenProgram: Address;
+  };
   data: BurnEditionNftInstructionData;
 };
 
@@ -554,7 +575,18 @@ export function parseBurnEditionNftInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      metadata: instruction.accounts[accountIndex++]!.address,
+      owner: instruction.accounts[accountIndex++]!.address,
+      printEditionMint: instruction.accounts[accountIndex++]!.address,
+      masterEditionMint: instruction.accounts[accountIndex++]!.address,
+      printEditionTokenAccount: instruction.accounts[accountIndex++]!.address,
+      masterEditionTokenAccount: instruction.accounts[accountIndex++]!.address,
+      masterEditionAccount: instruction.accounts[accountIndex++]!.address,
+      printEditionAccount: instruction.accounts[accountIndex++]!.address,
+      editionMarkerAccount: instruction.accounts[accountIndex++]!.address,
+      splTokenProgram: instruction.accounts[accountIndex++]!.address,
+    },
     data: getBurnEditionNftInstructionDataDecoder().decode(instruction.data),
   };
 }

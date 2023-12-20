@@ -788,7 +788,42 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionRaw<
 }
 
 export type ParsedMintNewEditionFromMasterEditionViaVaultProxyInstruction = {
-  accounts: {};
+  accounts: {
+    /** New Metadata key (pda of ['metadata', program id, mint id]) */
+    newMetadata: Address;
+    /** New Edition (pda of ['metadata', program id, mint id, 'edition']) */
+    newEdition: Address;
+    /** Master Record Edition V2 (pda of ['metadata', program id, master metadata mint id, 'edition'] */
+    masterEdition: Address;
+    /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
+    newMint: Address;
+    /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE). */
+    editionMarkPda: Address;
+    /** Mint authority of new mint */
+    newMintAuthority: Address;
+    /** payer */
+    payer: Address;
+    /** Vault authority */
+    vaultAuthority: Address;
+    /** Safety deposit token store account */
+    safetyDepositStore: Address;
+    /** Safety deposit box */
+    safetyDepositBox: Address;
+    /** Vault */
+    vault: Address;
+    /** Update authority info for new metadata */
+    newMetadataUpdateAuthority: Address;
+    /** Master record metadata account */
+    metadata: Address;
+    /** Token program */
+    tokenProgram: Address;
+    /** Token vault program */
+    tokenVaultProgram: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Rent info */
+    rent: Address;
+  };
   data: MintNewEditionFromMasterEditionViaVaultProxyInstructionData;
 };
 
@@ -803,7 +838,25 @@ export function parseMintNewEditionFromMasterEditionViaVaultProxyInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      newMetadata: instruction.accounts[accountIndex++]!.address,
+      newEdition: instruction.accounts[accountIndex++]!.address,
+      masterEdition: instruction.accounts[accountIndex++]!.address,
+      newMint: instruction.accounts[accountIndex++]!.address,
+      editionMarkPda: instruction.accounts[accountIndex++]!.address,
+      newMintAuthority: instruction.accounts[accountIndex++]!.address,
+      payer: instruction.accounts[accountIndex++]!.address,
+      vaultAuthority: instruction.accounts[accountIndex++]!.address,
+      safetyDepositStore: instruction.accounts[accountIndex++]!.address,
+      safetyDepositBox: instruction.accounts[accountIndex++]!.address,
+      vault: instruction.accounts[accountIndex++]!.address,
+      newMetadataUpdateAuthority: instruction.accounts[accountIndex++]!.address,
+      metadata: instruction.accounts[accountIndex++]!.address,
+      tokenProgram: instruction.accounts[accountIndex++]!.address,
+      tokenVaultProgram: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+      rent: instruction.accounts[accountIndex++]!.address,
+    },
     data: getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataDecoder().decode(
       instruction.data
     ),

@@ -415,7 +415,22 @@ export function getBurnNftInstructionRaw<
 }
 
 export type ParsedBurnNftInstruction = {
-  accounts: {};
+  accounts: {
+    /** Metadata (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** NFT owner */
+    owner: Address;
+    /** Mint of the NFT */
+    mint: Address;
+    /** Token account to close */
+    tokenAccount: Address;
+    /** MasterEdition2 of the NFT */
+    masterEditionAccount: Address;
+    /** SPL Token Program */
+    splTokenProgram: Address;
+    /** Metadata of the Collection */
+    collectionMetadata: Address;
+  };
   data: BurnNftInstructionData;
 };
 
@@ -430,7 +445,15 @@ export function parseBurnNftInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      metadata: instruction.accounts[accountIndex++]!.address,
+      owner: instruction.accounts[accountIndex++]!.address,
+      mint: instruction.accounts[accountIndex++]!.address,
+      tokenAccount: instruction.accounts[accountIndex++]!.address,
+      masterEditionAccount: instruction.accounts[accountIndex++]!.address,
+      splTokenProgram: instruction.accounts[accountIndex++]!.address,
+      collectionMetadata: instruction.accounts[accountIndex++]!.address,
+    },
     data: getBurnNftInstructionDataDecoder().decode(instruction.data),
   };
 }

@@ -444,7 +444,22 @@ export function getDeprecatedMintPrintingTokensInstructionRaw<
 }
 
 export type ParsedDeprecatedMintPrintingTokensInstruction = {
-  accounts: {};
+  accounts: {
+    /** Destination account */
+    destination: Address;
+    /** Printing mint */
+    printingMint: Address;
+    /** Update authority */
+    updateAuthority: Address;
+    /** Metadata key (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
+    masterEdition: Address;
+    /** Token program */
+    tokenProgram: Address;
+    /** Rent */
+    rent: Address;
+  };
   data: DeprecatedMintPrintingTokensInstructionData;
 };
 
@@ -459,7 +474,15 @@ export function parseDeprecatedMintPrintingTokensInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      destination: instruction.accounts[accountIndex++]!.address,
+      printingMint: instruction.accounts[accountIndex++]!.address,
+      updateAuthority: instruction.accounts[accountIndex++]!.address,
+      metadata: instruction.accounts[accountIndex++]!.address,
+      masterEdition: instruction.accounts[accountIndex++]!.address,
+      tokenProgram: instruction.accounts[accountIndex++]!.address,
+      rent: instruction.accounts[accountIndex++]!.address,
+    },
     data: getDeprecatedMintPrintingTokensInstructionDataDecoder().decode(
       instruction.data
     ),

@@ -314,7 +314,14 @@ export function getCreateRuleSetInstructionRaw<
 }
 
 export type ParsedCreateRuleSetInstruction = {
-  accounts: {};
+  accounts: {
+    /** Payer and creator of the RuleSet */
+    payer: Address;
+    /** The PDA account where the RuleSet is stored */
+    ruleSetPda: Address;
+    /** System program */
+    systemProgram: Address;
+  };
   data: CreateRuleSetInstructionData;
 };
 
@@ -329,7 +336,11 @@ export function parseCreateRuleSetInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      payer: instruction.accounts[accountIndex++]!.address,
+      ruleSetPda: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+    },
     data: getCreateRuleSetInstructionDataDecoder().decode(instruction.data),
   };
 }

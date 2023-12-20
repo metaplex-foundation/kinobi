@@ -659,7 +659,34 @@ export function getTransferOutOfEscrowInstructionRaw<
 }
 
 export type ParsedTransferOutOfEscrowInstruction = {
-  accounts: {};
+  accounts: {
+    /** Escrow account */
+    escrow: Address;
+    /** Metadata account */
+    metadata: Address;
+    /** Wallet paying for the transaction and new account */
+    payer: Address;
+    /** Mint account for the new attribute */
+    attributeMint: Address;
+    /** Token account source for the new attribute */
+    attributeSrc: Address;
+    /** Token account, owned by TM, destination for the new attribute */
+    attributeDst: Address;
+    /** Mint account that the escrow is attached */
+    escrowMint: Address;
+    /** Token account that holds the token the escrow is attached to */
+    escrowAccount: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Associated Token program */
+    ataProgram: Address;
+    /** Token program */
+    tokenProgram: Address;
+    /** Instructions sysvar account */
+    sysvarInstructions: Address;
+    /** Authority/creator of the escrow account */
+    authority: Address;
+  };
   data: TransferOutOfEscrowInstructionData;
 };
 
@@ -674,7 +701,21 @@ export function parseTransferOutOfEscrowInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      escrow: instruction.accounts[accountIndex++]!.address,
+      metadata: instruction.accounts[accountIndex++]!.address,
+      payer: instruction.accounts[accountIndex++]!.address,
+      attributeMint: instruction.accounts[accountIndex++]!.address,
+      attributeSrc: instruction.accounts[accountIndex++]!.address,
+      attributeDst: instruction.accounts[accountIndex++]!.address,
+      escrowMint: instruction.accounts[accountIndex++]!.address,
+      escrowAccount: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+      ataProgram: instruction.accounts[accountIndex++]!.address,
+      tokenProgram: instruction.accounts[accountIndex++]!.address,
+      sysvarInstructions: instruction.accounts[accountIndex++]!.address,
+      authority: instruction.accounts[accountIndex++]!.address,
+    },
     data: getTransferOutOfEscrowInstructionDataDecoder().decode(
       instruction.data
     ),

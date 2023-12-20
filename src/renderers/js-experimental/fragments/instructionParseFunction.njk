@@ -4,7 +4,9 @@ export type {{ instructionParsedType }} = {
   {% if hasAccounts %}
     accounts: {
       {% for account in instruction.accounts %}
-        {{ macros.docblock(account.docs) }}
+        {% if account.docs.length > 0 %}
+          {{ macros.docblock(account.docs) }}
+        {% endif %}
         {{ account.name | camelCase }}: Address,
       {% endfor %}
     };

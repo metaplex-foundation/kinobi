@@ -369,7 +369,18 @@ export function getVerifyInstructionRaw<
 }
 
 export type ParsedVerifyInstruction = {
-  accounts: {};
+  accounts: {
+    /** Metadata account */
+    metadata: Address;
+    /** Collection Update authority */
+    collectionAuthority: Address;
+    /** payer */
+    payer: Address;
+    /** Token Authorization Rules account */
+    authorizationRules: Address;
+    /** Token Authorization Rules Program */
+    authorizationRulesProgram: Address;
+  };
   data: VerifyInstructionData;
 };
 
@@ -384,7 +395,13 @@ export function parseVerifyInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      metadata: instruction.accounts[accountIndex++]!.address,
+      collectionAuthority: instruction.accounts[accountIndex++]!.address,
+      payer: instruction.accounts[accountIndex++]!.address,
+      authorizationRules: instruction.accounts[accountIndex++]!.address,
+      authorizationRulesProgram: instruction.accounts[accountIndex++]!.address,
+    },
     data: getVerifyInstructionDataDecoder().decode(instruction.data),
   };
 }

@@ -520,7 +520,26 @@ export function getCreateMasterEditionInstructionRaw<
 }
 
 export type ParsedCreateMasterEditionInstruction = {
-  accounts: {};
+  accounts: {
+    /** Unallocated edition V2 account with address as pda of ['metadata', program id, mint, 'edition'] */
+    edition: Address;
+    /** Metadata mint */
+    mint: Address;
+    /** Update authority */
+    updateAuthority: Address;
+    /** Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
+    mintAuthority: Address;
+    /** payer */
+    payer: Address;
+    /** Metadata account */
+    metadata: Address;
+    /** Token program */
+    tokenProgram: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Rent info */
+    rent: Address;
+  };
   data: CreateMasterEditionInstructionData;
 };
 
@@ -535,7 +554,17 @@ export function parseCreateMasterEditionInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      edition: instruction.accounts[accountIndex++]!.address,
+      mint: instruction.accounts[accountIndex++]!.address,
+      updateAuthority: instruction.accounts[accountIndex++]!.address,
+      mintAuthority: instruction.accounts[accountIndex++]!.address,
+      payer: instruction.accounts[accountIndex++]!.address,
+      metadata: instruction.accounts[accountIndex++]!.address,
+      tokenProgram: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+      rent: instruction.accounts[accountIndex++]!.address,
+    },
     data: getCreateMasterEditionInstructionDataDecoder().decode(
       instruction.data
     ),

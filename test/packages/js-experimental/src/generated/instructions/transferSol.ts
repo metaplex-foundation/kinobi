@@ -225,7 +225,10 @@ export function getTransferSolInstructionRaw<
 }
 
 export type ParsedTransferSolInstruction = {
-  accounts: {};
+  accounts: {
+    source: Address;
+    destination: Address;
+  };
   data: TransferSolInstructionData;
 };
 
@@ -240,7 +243,10 @@ export function parseTransferSolInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      source: instruction.accounts[accountIndex++]!.address,
+      destination: instruction.accounts[accountIndex++]!.address,
+    },
     data: getTransferSolInstructionDataDecoder().decode(instruction.data),
   };
 }

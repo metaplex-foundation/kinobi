@@ -416,7 +416,24 @@ export function getCreateReservationListInstructionRaw<
 }
 
 export type ParsedCreateReservationListInstruction = {
-  accounts: {};
+  accounts: {
+    /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
+    reservationList: Address;
+    /** Payer */
+    payer: Address;
+    /** Update authority */
+    updateAuthority: Address;
+    /**  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
+    masterEdition: Address;
+    /** A resource you wish to tie the reservation list to. This is so your later visitors who come to redeem can derive your reservation list PDA with something they can easily get at. You choose what this should be. */
+    resource: Address;
+    /** Metadata key (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Rent info */
+    rent: Address;
+  };
   data: CreateReservationListInstructionData;
 };
 
@@ -431,7 +448,16 @@ export function parseCreateReservationListInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      reservationList: instruction.accounts[accountIndex++]!.address,
+      payer: instruction.accounts[accountIndex++]!.address,
+      updateAuthority: instruction.accounts[accountIndex++]!.address,
+      masterEdition: instruction.accounts[accountIndex++]!.address,
+      resource: instruction.accounts[accountIndex++]!.address,
+      metadata: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+      rent: instruction.accounts[accountIndex++]!.address,
+    },
     data: getCreateReservationListInstructionDataDecoder().decode(
       instruction.data
     ),

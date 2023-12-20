@@ -1123,7 +1123,38 @@ export function getTransferInstructionRaw<
 }
 
 export type ParsedTransferInstruction = {
-  accounts: {};
+  accounts: {
+    /** Transfer authority (token or delegate owner) */
+    authority: Address;
+    /** Delegate record PDA */
+    delegateRecord: Address;
+    /** Token account */
+    token: Address;
+    /** Token account owner */
+    tokenOwner: Address;
+    /** Destination token account */
+    destination: Address;
+    /** Destination token account owner */
+    destinationOwner: Address;
+    /** Mint of token asset */
+    mint: Address;
+    /** Metadata (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** Master Edition of token asset */
+    masterEdition: Address;
+    /** SPL Token Program */
+    splTokenProgram: Address;
+    /** SPL Associated Token Account program */
+    splAtaProgram: Address;
+    /** System Program */
+    systemProgram: Address;
+    /** Instructions sysvar account */
+    sysvarInstructions: Address;
+    /** Token Authorization Rules Program */
+    authorizationRulesProgram: Address;
+    /** Token Authorization Rules account */
+    authorizationRules: Address;
+  };
   data: TransferInstructionData;
 };
 
@@ -1138,7 +1169,23 @@ export function parseTransferInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      authority: instruction.accounts[accountIndex++]!.address,
+      delegateRecord: instruction.accounts[accountIndex++]!.address,
+      token: instruction.accounts[accountIndex++]!.address,
+      tokenOwner: instruction.accounts[accountIndex++]!.address,
+      destination: instruction.accounts[accountIndex++]!.address,
+      destinationOwner: instruction.accounts[accountIndex++]!.address,
+      mint: instruction.accounts[accountIndex++]!.address,
+      metadata: instruction.accounts[accountIndex++]!.address,
+      masterEdition: instruction.accounts[accountIndex++]!.address,
+      splTokenProgram: instruction.accounts[accountIndex++]!.address,
+      splAtaProgram: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+      sysvarInstructions: instruction.accounts[accountIndex++]!.address,
+      authorizationRulesProgram: instruction.accounts[accountIndex++]!.address,
+      authorizationRules: instruction.accounts[accountIndex++]!.address,
+    },
     data: getTransferInstructionDataDecoder().decode(instruction.data),
   };
 }

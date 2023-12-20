@@ -367,7 +367,20 @@ export function getVerifyCollectionInstructionRaw<
 }
 
 export type ParsedVerifyCollectionInstruction = {
-  accounts: {};
+  accounts: {
+    /** Metadata account */
+    metadata: Address;
+    /** Collection Update authority */
+    collectionAuthority: Address;
+    /** payer */
+    payer: Address;
+    /** Mint of the Collection */
+    collectionMint: Address;
+    /** Metadata Account of the Collection */
+    collection: Address;
+    /** MasterEdition2 Account of the Collection Token */
+    collectionMasterEditionAccount: Address;
+  };
   data: VerifyCollectionInstructionData;
 };
 
@@ -382,7 +395,15 @@ export function parseVerifyCollectionInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      metadata: instruction.accounts[accountIndex++]!.address,
+      collectionAuthority: instruction.accounts[accountIndex++]!.address,
+      payer: instruction.accounts[accountIndex++]!.address,
+      collectionMint: instruction.accounts[accountIndex++]!.address,
+      collection: instruction.accounts[accountIndex++]!.address,
+      collectionMasterEditionAccount:
+        instruction.accounts[accountIndex++]!.address,
+    },
     data: getVerifyCollectionInstructionDataDecoder().decode(instruction.data),
   };
 }

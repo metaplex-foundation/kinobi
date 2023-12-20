@@ -665,7 +665,34 @@ export function getDelegateInstructionRaw<
 }
 
 export type ParsedDelegateInstruction = {
-  accounts: {};
+  accounts: {
+    /** Delegate account key (pda of [mint id, delegate role, user id, authority id]) */
+    delegateRecord: Address;
+    /** Owner of the delegated account */
+    delegate: Address;
+    /** Metadata account */
+    metadata: Address;
+    /** Master Edition account */
+    masterEdition: Address;
+    /** Mint of metadata */
+    mint: Address;
+    /** Owned Token Account of mint */
+    token: Address;
+    /** Authority to approve the delegation */
+    authority: Address;
+    /** Payer */
+    payer: Address;
+    /** System Program */
+    systemProgram: Address;
+    /** Instructions sysvar account */
+    sysvarInstructions: Address;
+    /** SPL Token Program */
+    splTokenProgram: Address;
+    /** Token Authorization Rules Program */
+    authorizationRulesProgram: Address;
+    /** Token Authorization Rules account */
+    authorizationRules: Address;
+  };
   data: DelegateInstructionData;
 };
 
@@ -680,7 +707,21 @@ export function parseDelegateInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      delegateRecord: instruction.accounts[accountIndex++]!.address,
+      delegate: instruction.accounts[accountIndex++]!.address,
+      metadata: instruction.accounts[accountIndex++]!.address,
+      masterEdition: instruction.accounts[accountIndex++]!.address,
+      mint: instruction.accounts[accountIndex++]!.address,
+      token: instruction.accounts[accountIndex++]!.address,
+      authority: instruction.accounts[accountIndex++]!.address,
+      payer: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+      sysvarInstructions: instruction.accounts[accountIndex++]!.address,
+      splTokenProgram: instruction.accounts[accountIndex++]!.address,
+      authorizationRulesProgram: instruction.accounts[accountIndex++]!.address,
+      authorizationRules: instruction.accounts[accountIndex++]!.address,
+    },
     data: getDelegateInstructionDataDecoder().decode(instruction.data),
   };
 }

@@ -455,7 +455,24 @@ export function getApproveCollectionAuthorityInstructionRaw<
 }
 
 export type ParsedApproveCollectionAuthorityInstruction = {
-  accounts: {};
+  accounts: {
+    /** Collection Authority Record PDA */
+    collectionAuthorityRecord: Address;
+    /** A Collection Authority */
+    newCollectionAuthority: Address;
+    /** Update Authority of Collection NFT */
+    updateAuthority: Address;
+    /** Payer */
+    payer: Address;
+    /** Collection Metadata account */
+    metadata: Address;
+    /** Mint of Collection Metadata */
+    mint: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Rent info */
+    rent: Address;
+  };
   data: ApproveCollectionAuthorityInstructionData;
 };
 
@@ -470,7 +487,16 @@ export function parseApproveCollectionAuthorityInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      collectionAuthorityRecord: instruction.accounts[accountIndex++]!.address,
+      newCollectionAuthority: instruction.accounts[accountIndex++]!.address,
+      updateAuthority: instruction.accounts[accountIndex++]!.address,
+      payer: instruction.accounts[accountIndex++]!.address,
+      metadata: instruction.accounts[accountIndex++]!.address,
+      mint: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+      rent: instruction.accounts[accountIndex++]!.address,
+    },
     data: getApproveCollectionAuthorityInstructionDataDecoder().decode(
       instruction.data
     ),

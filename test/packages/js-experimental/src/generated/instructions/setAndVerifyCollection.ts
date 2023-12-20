@@ -446,7 +446,24 @@ export function getSetAndVerifyCollectionInstructionRaw<
 }
 
 export type ParsedSetAndVerifyCollectionInstruction = {
-  accounts: {};
+  accounts: {
+    /** Metadata account */
+    metadata: Address;
+    /** Collection Update authority */
+    collectionAuthority: Address;
+    /** Payer */
+    payer: Address;
+    /** Update Authority of Collection NFT and NFT */
+    updateAuthority: Address;
+    /** Mint of the Collection */
+    collectionMint: Address;
+    /** Metadata Account of the Collection */
+    collection: Address;
+    /** MasterEdition2 Account of the Collection Token */
+    collectionMasterEditionAccount: Address;
+    /** Collection Authority Record PDA */
+    collectionAuthorityRecord: Address;
+  };
   data: SetAndVerifyCollectionInstructionData;
 };
 
@@ -461,7 +478,17 @@ export function parseSetAndVerifyCollectionInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      metadata: instruction.accounts[accountIndex++]!.address,
+      collectionAuthority: instruction.accounts[accountIndex++]!.address,
+      payer: instruction.accounts[accountIndex++]!.address,
+      updateAuthority: instruction.accounts[accountIndex++]!.address,
+      collectionMint: instruction.accounts[accountIndex++]!.address,
+      collection: instruction.accounts[accountIndex++]!.address,
+      collectionMasterEditionAccount:
+        instruction.accounts[accountIndex++]!.address,
+      collectionAuthorityRecord: instruction.accounts[accountIndex++]!.address,
+    },
     data: getSetAndVerifyCollectionInstructionDataDecoder().decode(
       instruction.data
     ),

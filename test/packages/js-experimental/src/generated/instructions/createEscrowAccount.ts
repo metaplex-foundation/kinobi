@@ -482,7 +482,26 @@ export function getCreateEscrowAccountInstructionRaw<
 }
 
 export type ParsedCreateEscrowAccountInstruction = {
-  accounts: {};
+  accounts: {
+    /** Escrow account */
+    escrow: Address;
+    /** Metadata account */
+    metadata: Address;
+    /** Mint account */
+    mint: Address;
+    /** Token account of the token */
+    tokenAccount: Address;
+    /** Edition account */
+    edition: Address;
+    /** Wallet paying for the transaction and new account */
+    payer: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Instructions sysvar account */
+    sysvarInstructions: Address;
+    /** Authority/creator of the escrow account */
+    authority: Address;
+  };
   data: CreateEscrowAccountInstructionData;
 };
 
@@ -497,7 +516,17 @@ export function parseCreateEscrowAccountInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      escrow: instruction.accounts[accountIndex++]!.address,
+      metadata: instruction.accounts[accountIndex++]!.address,
+      mint: instruction.accounts[accountIndex++]!.address,
+      tokenAccount: instruction.accounts[accountIndex++]!.address,
+      edition: instruction.accounts[accountIndex++]!.address,
+      payer: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+      sysvarInstructions: instruction.accounts[accountIndex++]!.address,
+      authority: instruction.accounts[accountIndex++]!.address,
+    },
     data: getCreateEscrowAccountInstructionDataDecoder().decode(
       instruction.data
     ),

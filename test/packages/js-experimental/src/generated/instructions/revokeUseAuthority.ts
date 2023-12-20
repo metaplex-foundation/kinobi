@@ -483,7 +483,26 @@ export function getRevokeUseAuthorityInstructionRaw<
 }
 
 export type ParsedRevokeUseAuthorityInstruction = {
-  accounts: {};
+  accounts: {
+    /** Use Authority Record PDA */
+    useAuthorityRecord: Address;
+    /** Owner */
+    owner: Address;
+    /** A Use Authority */
+    user: Address;
+    /** Owned Token Account Of Mint */
+    ownerTokenAccount: Address;
+    /** Mint of Metadata */
+    mint: Address;
+    /** Metadata account */
+    metadata: Address;
+    /** Token program */
+    tokenProgram: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Rent info */
+    rent: Address;
+  };
   data: RevokeUseAuthorityInstructionData;
 };
 
@@ -498,7 +517,17 @@ export function parseRevokeUseAuthorityInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      useAuthorityRecord: instruction.accounts[accountIndex++]!.address,
+      owner: instruction.accounts[accountIndex++]!.address,
+      user: instruction.accounts[accountIndex++]!.address,
+      ownerTokenAccount: instruction.accounts[accountIndex++]!.address,
+      mint: instruction.accounts[accountIndex++]!.address,
+      metadata: instruction.accounts[accountIndex++]!.address,
+      tokenProgram: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+      rent: instruction.accounts[accountIndex++]!.address,
+    },
     data: getRevokeUseAuthorityInstructionDataDecoder().decode(
       instruction.data
     ),

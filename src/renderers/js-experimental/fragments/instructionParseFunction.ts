@@ -35,6 +35,7 @@ export function getInstructionParseFunctionFragment(scope: {
   }
 
   return fragmentFromTemplate('instructionParseFunction.njk', {
+    instruction: instructionNode,
     programAddress: programNode.publicKey,
     instructionParsedType: nameApi.instructionParsedType(instructionNode.name),
     instructionParseFunction: nameApi.instructionParseFunction(

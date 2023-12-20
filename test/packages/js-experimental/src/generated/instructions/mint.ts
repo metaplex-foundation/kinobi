@@ -652,7 +652,32 @@ export function getMintInstructionRaw<
 }
 
 export type ParsedMintInstruction = {
-  accounts: {};
+  accounts: {
+    /** Token account */
+    token: Address;
+    /** Metadata account key (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** Master Edition account */
+    masterEdition: Address;
+    /** Mint of token asset */
+    mint: Address;
+    /** Payer */
+    payer: Address;
+    /** (Mint or Update) authority */
+    authority: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Instructions sysvar account */
+    sysvarInstructions: Address;
+    /** SPL Token program */
+    splTokenProgram: Address;
+    /** SPL Associated Token Account program */
+    splAtaProgram: Address;
+    /** Token Authorization Rules program */
+    authorizationRulesProgram: Address;
+    /** Token Authorization Rules account */
+    authorizationRules: Address;
+  };
   data: MintInstructionData;
 };
 
@@ -667,7 +692,20 @@ export function parseMintInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      token: instruction.accounts[accountIndex++]!.address,
+      metadata: instruction.accounts[accountIndex++]!.address,
+      masterEdition: instruction.accounts[accountIndex++]!.address,
+      mint: instruction.accounts[accountIndex++]!.address,
+      payer: instruction.accounts[accountIndex++]!.address,
+      authority: instruction.accounts[accountIndex++]!.address,
+      systemProgram: instruction.accounts[accountIndex++]!.address,
+      sysvarInstructions: instruction.accounts[accountIndex++]!.address,
+      splTokenProgram: instruction.accounts[accountIndex++]!.address,
+      splAtaProgram: instruction.accounts[accountIndex++]!.address,
+      authorizationRulesProgram: instruction.accounts[accountIndex++]!.address,
+      authorizationRules: instruction.accounts[accountIndex++]!.address,
+    },
     data: getMintInstructionDataDecoder().decode(instruction.data),
   };
 }

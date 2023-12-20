@@ -256,7 +256,14 @@ export function getConvertMasterEditionV1ToV2InstructionRaw<
 }
 
 export type ParsedConvertMasterEditionV1ToV2Instruction = {
-  accounts: {};
+  accounts: {
+    /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
+    masterEdition: Address;
+    /** One time authorization mint */
+    oneTimeAuth: Address;
+    /** Printing mint */
+    printingMint: Address;
+  };
   data: ConvertMasterEditionV1ToV2InstructionData;
 };
 
@@ -271,7 +278,11 @@ export function parseConvertMasterEditionV1ToV2Instruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      masterEdition: instruction.accounts[accountIndex++]!.address,
+      oneTimeAuth: instruction.accounts[accountIndex++]!.address,
+      printingMint: instruction.accounts[accountIndex++]!.address,
+    },
     data: getConvertMasterEditionV1ToV2InstructionDataDecoder().decode(
       instruction.data
     ),

@@ -336,7 +336,18 @@ export function getRevokeCollectionAuthorityInstructionRaw<
 }
 
 export type ParsedRevokeCollectionAuthorityInstruction = {
-  accounts: {};
+  accounts: {
+    /** Collection Authority Record PDA */
+    collectionAuthorityRecord: Address;
+    /** Delegated Collection Authority */
+    delegateAuthority: Address;
+    /** Update Authority, or Delegated Authority, of Collection NFT */
+    revokeAuthority: Address;
+    /** Metadata account */
+    metadata: Address;
+    /** Mint of Metadata */
+    mint: Address;
+  };
   data: RevokeCollectionAuthorityInstructionData;
 };
 
@@ -351,7 +362,13 @@ export function parseRevokeCollectionAuthorityInstruction<
   }
   let accountIndex = 0;
   return {
-    accounts: {},
+    accounts: {
+      collectionAuthorityRecord: instruction.accounts[accountIndex++]!.address,
+      delegateAuthority: instruction.accounts[accountIndex++]!.address,
+      revokeAuthority: instruction.accounts[accountIndex++]!.address,
+      metadata: instruction.accounts[accountIndex++]!.address,
+      mint: instruction.accounts[accountIndex++]!.address,
+    },
     data: getRevokeCollectionAuthorityInstructionDataDecoder().decode(
       instruction.data
     ),
