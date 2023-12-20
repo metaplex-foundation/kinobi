@@ -414,48 +414,56 @@ export function getBurnNftInstructionRaw<
   >;
 }
 
-export type ParsedBurnNftInstruction = {
+export type ParsedBurnNftInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Metadata (pda of ['metadata', program id, mint id]) */
-    metadata: Address;
+    metadata: TAccountMetas[0];
     /** NFT owner */
-    owner: Address;
+    owner: TAccountMetas[1];
     /** Mint of the NFT */
-    mint: Address;
+    mint: TAccountMetas[2];
     /** Token account to close */
-    tokenAccount: Address;
+    tokenAccount: TAccountMetas[3];
     /** MasterEdition2 of the NFT */
-    masterEditionAccount: Address;
+    masterEditionAccount: TAccountMetas[4];
     /** SPL Token Program */
-    splTokenProgram: Address;
+    splTokenProgram: TAccountMetas[5];
     /** Metadata of the Collection */
-    collectionMetadata?: Address | undefined;
+    collectionMetadata?: TAccountMetas[6] | undefined;
   };
   data: BurnNftInstructionData;
 };
 
 export function parseBurnNftInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedBurnNftInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 7) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedBurnNftInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 7) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
-  const getNextOptionalAccount = (): Address | undefined => {
-    const address = getNextAccount();
-    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  const getNextOptionalAccount = () => {
+    const accountMeta = getNextAccount();
+    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
       ? undefined
-      : address;
+      : accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       metadata: getNextAccount(),
       owner: getNextAccount(),

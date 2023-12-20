@@ -443,42 +443,50 @@ export function getDeprecatedMintPrintingTokensInstructionRaw<
   >;
 }
 
-export type ParsedDeprecatedMintPrintingTokensInstruction = {
+export type ParsedDeprecatedMintPrintingTokensInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Destination account */
-    destination: Address;
+    destination: TAccountMetas[0];
     /** Printing mint */
-    printingMint: Address;
+    printingMint: TAccountMetas[1];
     /** Update authority */
-    updateAuthority: Address;
+    updateAuthority: TAccountMetas[2];
     /** Metadata key (pda of ['metadata', program id, mint id]) */
-    metadata: Address;
+    metadata: TAccountMetas[3];
     /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
-    masterEdition: Address;
+    masterEdition: TAccountMetas[4];
     /** Token program */
-    tokenProgram: Address;
+    tokenProgram: TAccountMetas[5];
     /** Rent */
-    rent: Address;
+    rent: TAccountMetas[6];
   };
   data: DeprecatedMintPrintingTokensInstructionData;
 };
 
 export function parseDeprecatedMintPrintingTokensInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedDeprecatedMintPrintingTokensInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 7) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedDeprecatedMintPrintingTokensInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 7) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       destination: getNextAccount(),
       printingMint: getNextAccount(),

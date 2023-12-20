@@ -247,30 +247,38 @@ export function getCreateAccountInstructionRaw<
   >;
 }
 
-export type ParsedCreateAccountInstruction = {
+export type ParsedCreateAccountInstruction<
+  TProgram extends string = '11111111111111111111111111111111',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
-    payer: Address;
-    newAccount: Address;
+    payer: TAccountMetas[0];
+    newAccount: TAccountMetas[1];
   };
   data: CreateAccountInstructionData;
 };
 
 export function parseCreateAccountInstruction<
-  TProgram extends string = '11111111111111111111111111111111'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedCreateAccountInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedCreateAccountInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 2) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       payer: getNextAccount(),
       newAccount: getNextAccount(),

@@ -555,52 +555,60 @@ export function getCreateV2InstructionRaw<
   >;
 }
 
-export type ParsedCreateV2Instruction = {
+export type ParsedCreateV2Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Metadata account key (pda of ['metadata', program id, mint id]) */
-    metadata: Address;
+    metadata: TAccountMetas[0];
     /** Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition'] */
-    masterEdition?: Address | undefined;
+    masterEdition?: TAccountMetas[1] | undefined;
     /** Mint of token asset */
-    mint: Address;
+    mint: TAccountMetas[2];
     /** Mint authority */
-    mintAuthority: Address;
+    mintAuthority: TAccountMetas[3];
     /** Payer */
-    payer: Address;
+    payer: TAccountMetas[4];
     /** update authority info */
-    updateAuthority: Address;
+    updateAuthority: TAccountMetas[5];
     /** System program */
-    systemProgram: Address;
+    systemProgram: TAccountMetas[6];
     /** Instructions sysvar account */
-    sysvarInstructions: Address;
+    sysvarInstructions: TAccountMetas[7];
     /** SPL Token program */
-    splTokenProgram: Address;
+    splTokenProgram: TAccountMetas[8];
   };
   data: CreateV2InstructionData;
 };
 
 export function parseCreateV2Instruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedCreateV2Instruction {
-  if (!instruction.accounts || instruction.accounts.length < 9) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedCreateV2Instruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 9) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
-  const getNextOptionalAccount = (): Address | undefined => {
-    const address = getNextAccount();
-    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  const getNextOptionalAccount = () => {
+    const accountMeta = getNextAccount();
+    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
       ? undefined
-      : address;
+      : accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       metadata: getNextAccount(),
       masterEdition: getNextOptionalAccount(),

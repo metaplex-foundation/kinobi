@@ -1122,64 +1122,72 @@ export function getTransferInstructionRaw<
   >;
 }
 
-export type ParsedTransferInstruction = {
+export type ParsedTransferInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Transfer authority (token or delegate owner) */
-    authority: Address;
+    authority: TAccountMetas[0];
     /** Delegate record PDA */
-    delegateRecord?: Address | undefined;
+    delegateRecord?: TAccountMetas[1] | undefined;
     /** Token account */
-    token: Address;
+    token: TAccountMetas[2];
     /** Token account owner */
-    tokenOwner: Address;
+    tokenOwner: TAccountMetas[3];
     /** Destination token account */
-    destination: Address;
+    destination: TAccountMetas[4];
     /** Destination token account owner */
-    destinationOwner: Address;
+    destinationOwner: TAccountMetas[5];
     /** Mint of token asset */
-    mint: Address;
+    mint: TAccountMetas[6];
     /** Metadata (pda of ['metadata', program id, mint id]) */
-    metadata: Address;
+    metadata: TAccountMetas[7];
     /** Master Edition of token asset */
-    masterEdition?: Address | undefined;
+    masterEdition?: TAccountMetas[8] | undefined;
     /** SPL Token Program */
-    splTokenProgram: Address;
+    splTokenProgram: TAccountMetas[9];
     /** SPL Associated Token Account program */
-    splAtaProgram: Address;
+    splAtaProgram: TAccountMetas[10];
     /** System Program */
-    systemProgram: Address;
+    systemProgram: TAccountMetas[11];
     /** Instructions sysvar account */
-    sysvarInstructions: Address;
+    sysvarInstructions: TAccountMetas[12];
     /** Token Authorization Rules Program */
-    authorizationRulesProgram?: Address | undefined;
+    authorizationRulesProgram?: TAccountMetas[13] | undefined;
     /** Token Authorization Rules account */
-    authorizationRules?: Address | undefined;
+    authorizationRules?: TAccountMetas[14] | undefined;
   };
   data: TransferInstructionData;
 };
 
 export function parseTransferInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedTransferInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 15) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedTransferInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 15) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
-  const getNextOptionalAccount = (): Address | undefined => {
-    const address = getNextAccount();
-    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  const getNextOptionalAccount = () => {
+    const accountMeta = getNextAccount();
+    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
       ? undefined
-      : address;
+      : accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       authority: getNextAccount(),
       delegateRecord: getNextOptionalAccount(),

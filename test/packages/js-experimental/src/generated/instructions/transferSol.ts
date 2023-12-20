@@ -224,30 +224,38 @@ export function getTransferSolInstructionRaw<
   >;
 }
 
-export type ParsedTransferSolInstruction = {
+export type ParsedTransferSolInstruction<
+  TProgram extends string = '11111111111111111111111111111111',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
-    source: Address;
-    destination: Address;
+    source: TAccountMetas[0];
+    destination: TAccountMetas[1];
   };
   data: TransferSolInstructionData;
 };
 
 export function parseTransferSolInstruction<
-  TProgram extends string = '11111111111111111111111111111111'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedTransferSolInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedTransferSolInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 2) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       source: getNextAccount(),
       destination: getNextAccount(),

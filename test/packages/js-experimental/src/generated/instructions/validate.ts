@@ -824,59 +824,67 @@ export function getValidateInstructionRaw<
   >;
 }
 
-export type ParsedValidateInstruction = {
+export type ParsedValidateInstruction<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Payer and creator of the RuleSet */
-    payer: Address;
+    payer: TAccountMetas[0];
     /** The PDA account where the RuleSet is stored */
-    ruleSet: Address;
+    ruleSet: TAccountMetas[1];
     /** System program */
-    systemProgram: Address;
-    optRuleSigner1?: Address | undefined;
+    systemProgram: TAccountMetas[2];
+    optRuleSigner1?: TAccountMetas[3] | undefined;
     /** Optional rule validation signer 2 */
-    optRuleSigner2?: Address | undefined;
+    optRuleSigner2?: TAccountMetas[4] | undefined;
     /** Optional rule validation signer 3 */
-    optRuleSigner3?: Address | undefined;
+    optRuleSigner3?: TAccountMetas[5] | undefined;
     /** Optional rule validation signer 4 */
-    optRuleSigner4?: Address | undefined;
+    optRuleSigner4?: TAccountMetas[6] | undefined;
     /** Optional rule validation signer 5 */
-    optRuleSigner5?: Address | undefined;
+    optRuleSigner5?: TAccountMetas[7] | undefined;
     /** Optional rule validation non-signer 1 */
-    optRuleNonsigner1?: Address | undefined;
+    optRuleNonsigner1?: TAccountMetas[8] | undefined;
     /** Optional rule validation non-signer 2 */
-    optRuleNonsigner2?: Address | undefined;
+    optRuleNonsigner2?: TAccountMetas[9] | undefined;
     /** Optional rule validation non-signer 3 */
-    optRuleNonsigner3?: Address | undefined;
+    optRuleNonsigner3?: TAccountMetas[10] | undefined;
     /** Optional rule validation non-signer 4 */
-    optRuleNonsigner4?: Address | undefined;
+    optRuleNonsigner4?: TAccountMetas[11] | undefined;
     /** Optional rule validation non-signer 5 */
-    optRuleNonsigner5?: Address | undefined;
+    optRuleNonsigner5?: TAccountMetas[12] | undefined;
   };
   data: ValidateInstructionData;
 };
 
 export function parseValidateInstruction<
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedValidateInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 3) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedValidateInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 3) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
   let optionalAccountsRemaining = instruction.accounts.length - 3;
-  const getNextOptionalAccount = (): Address | undefined => {
+  const getNextOptionalAccount = () => {
     if (optionalAccountsRemaining === 0) return undefined;
     optionalAccountsRemaining -= 1;
     return getNextAccount();
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       payer: getNextAccount(),
       ruleSet: getNextAccount(),

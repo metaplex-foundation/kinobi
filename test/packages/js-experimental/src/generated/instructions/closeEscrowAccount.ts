@@ -442,44 +442,52 @@ export function getCloseEscrowAccountInstructionRaw<
   >;
 }
 
-export type ParsedCloseEscrowAccountInstruction = {
+export type ParsedCloseEscrowAccountInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Escrow account */
-    escrow: Address;
+    escrow: TAccountMetas[0];
     /** Metadata account */
-    metadata: Address;
+    metadata: TAccountMetas[1];
     /** Mint account */
-    mint: Address;
+    mint: TAccountMetas[2];
     /** Token account */
-    tokenAccount: Address;
+    tokenAccount: TAccountMetas[3];
     /** Edition account */
-    edition: Address;
+    edition: TAccountMetas[4];
     /** Wallet paying for the transaction and new account */
-    payer: Address;
+    payer: TAccountMetas[5];
     /** System program */
-    systemProgram: Address;
+    systemProgram: TAccountMetas[6];
     /** Instructions sysvar account */
-    sysvarInstructions: Address;
+    sysvarInstructions: TAccountMetas[7];
   };
   data: CloseEscrowAccountInstructionData;
 };
 
 export function parseCloseEscrowAccountInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedCloseEscrowAccountInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 8) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedCloseEscrowAccountInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 8) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       escrow: getNextAccount(),
       metadata: getNextAccount(),

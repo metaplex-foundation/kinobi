@@ -515,52 +515,60 @@ export function getBurnInstructionRaw<
   >;
 }
 
-export type ParsedBurnInstruction = {
+export type ParsedBurnInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Metadata (pda of ['metadata', program id, mint id]) */
-    metadata: Address;
+    metadata: TAccountMetas[0];
     /** Asset owner */
-    owner: Address;
+    owner: TAccountMetas[1];
     /** Mint of token asset */
-    mint: Address;
+    mint: TAccountMetas[2];
     /** Token account to close */
-    tokenAccount: Address;
+    tokenAccount: TAccountMetas[3];
     /** MasterEdition of the asset */
-    masterEditionAccount: Address;
+    masterEditionAccount: TAccountMetas[4];
     /** SPL Token Program */
-    splTokenProgram: Address;
+    splTokenProgram: TAccountMetas[5];
     /** Metadata of the Collection */
-    collectionMetadata?: Address | undefined;
+    collectionMetadata?: TAccountMetas[6] | undefined;
     /** Token Authorization Rules account */
-    authorizationRules?: Address | undefined;
+    authorizationRules?: TAccountMetas[7] | undefined;
     /** Token Authorization Rules Program */
-    authorizationRulesProgram?: Address | undefined;
+    authorizationRulesProgram?: TAccountMetas[8] | undefined;
   };
   data: BurnInstructionData;
 };
 
 export function parseBurnInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedBurnInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 9) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedBurnInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 9) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
-  const getNextOptionalAccount = (): Address | undefined => {
-    const address = getNextAccount();
-    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  const getNextOptionalAccount = () => {
+    const accountMeta = getNextAccount();
+    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
       ? undefined
-      : address;
+      : accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       metadata: getNextAccount(),
       owner: getNextAccount(),

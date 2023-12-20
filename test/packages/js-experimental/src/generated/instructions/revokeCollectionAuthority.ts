@@ -335,38 +335,46 @@ export function getRevokeCollectionAuthorityInstructionRaw<
   >;
 }
 
-export type ParsedRevokeCollectionAuthorityInstruction = {
+export type ParsedRevokeCollectionAuthorityInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Collection Authority Record PDA */
-    collectionAuthorityRecord: Address;
+    collectionAuthorityRecord: TAccountMetas[0];
     /** Delegated Collection Authority */
-    delegateAuthority: Address;
+    delegateAuthority: TAccountMetas[1];
     /** Update Authority, or Delegated Authority, of Collection NFT */
-    revokeAuthority: Address;
+    revokeAuthority: TAccountMetas[2];
     /** Metadata account */
-    metadata: Address;
+    metadata: TAccountMetas[3];
     /** Mint of Metadata */
-    mint: Address;
+    mint: TAccountMetas[4];
   };
   data: RevokeCollectionAuthorityInstructionData;
 };
 
 export function parseRevokeCollectionAuthorityInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedRevokeCollectionAuthorityInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 5) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedRevokeCollectionAuthorityInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 5) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       collectionAuthorityRecord: getNextAccount(),
       delegateAuthority: getNextAccount(),

@@ -415,44 +415,52 @@ export function getCreateReservationListInstructionRaw<
   >;
 }
 
-export type ParsedCreateReservationListInstruction = {
+export type ParsedCreateReservationListInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
-    reservationList: Address;
+    reservationList: TAccountMetas[0];
     /** Payer */
-    payer: Address;
+    payer: TAccountMetas[1];
     /** Update authority */
-    updateAuthority: Address;
+    updateAuthority: TAccountMetas[2];
     /**  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
-    masterEdition: Address;
+    masterEdition: TAccountMetas[3];
     /** A resource you wish to tie the reservation list to. This is so your later visitors who come to redeem can derive your reservation list PDA with something they can easily get at. You choose what this should be. */
-    resource: Address;
+    resource: TAccountMetas[4];
     /** Metadata key (pda of ['metadata', program id, mint id]) */
-    metadata: Address;
+    metadata: TAccountMetas[5];
     /** System program */
-    systemProgram: Address;
+    systemProgram: TAccountMetas[6];
     /** Rent info */
-    rent: Address;
+    rent: TAccountMetas[7];
   };
   data: CreateReservationListInstructionData;
 };
 
 export function parseCreateReservationListInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedCreateReservationListInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 8) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedCreateReservationListInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 8) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       reservationList: getNextAccount(),
       payer: getNextAccount(),

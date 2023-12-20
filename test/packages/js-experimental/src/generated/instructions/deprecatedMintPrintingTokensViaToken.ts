@@ -514,46 +514,57 @@ export function getDeprecatedMintPrintingTokensViaTokenInstructionRaw<
   >;
 }
 
-export type ParsedDeprecatedMintPrintingTokensViaTokenInstruction = {
+export type ParsedDeprecatedMintPrintingTokensViaTokenInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Destination account */
-    destination: Address;
+    destination: TAccountMetas[0];
     /** Token account containing one time authorization token */
-    token: Address;
+    token: TAccountMetas[1];
     /** One time authorization mint */
-    oneTimePrintingAuthorizationMint: Address;
+    oneTimePrintingAuthorizationMint: TAccountMetas[2];
     /** Printing mint */
-    printingMint: Address;
+    printingMint: TAccountMetas[3];
     /** Burn authority */
-    burnAuthority: Address;
+    burnAuthority: TAccountMetas[4];
     /** Metadata key (pda of ['metadata', program id, mint id]) */
-    metadata: Address;
+    metadata: TAccountMetas[5];
     /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
-    masterEdition: Address;
+    masterEdition: TAccountMetas[6];
     /** Token program */
-    tokenProgram: Address;
+    tokenProgram: TAccountMetas[7];
     /** Rent */
-    rent: Address;
+    rent: TAccountMetas[8];
   };
   data: DeprecatedMintPrintingTokensViaTokenInstructionData;
 };
 
 export function parseDeprecatedMintPrintingTokensViaTokenInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedDeprecatedMintPrintingTokensViaTokenInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 9) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedDeprecatedMintPrintingTokensViaTokenInstruction<
+  TProgram,
+  TAccountMetas
+> {
+  if (instruction.accounts.length < 9) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       destination: getNextAccount(),
       token: getNextAccount(),

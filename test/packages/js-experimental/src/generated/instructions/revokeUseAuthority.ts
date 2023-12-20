@@ -482,52 +482,60 @@ export function getRevokeUseAuthorityInstructionRaw<
   >;
 }
 
-export type ParsedRevokeUseAuthorityInstruction = {
+export type ParsedRevokeUseAuthorityInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Use Authority Record PDA */
-    useAuthorityRecord: Address;
+    useAuthorityRecord: TAccountMetas[0];
     /** Owner */
-    owner: Address;
+    owner: TAccountMetas[1];
     /** A Use Authority */
-    user: Address;
+    user: TAccountMetas[2];
     /** Owned Token Account Of Mint */
-    ownerTokenAccount: Address;
+    ownerTokenAccount: TAccountMetas[3];
     /** Mint of Metadata */
-    mint: Address;
+    mint: TAccountMetas[4];
     /** Metadata account */
-    metadata: Address;
+    metadata: TAccountMetas[5];
     /** Token program */
-    tokenProgram: Address;
+    tokenProgram: TAccountMetas[6];
     /** System program */
-    systemProgram: Address;
+    systemProgram: TAccountMetas[7];
     /** Rent info */
-    rent?: Address | undefined;
+    rent?: TAccountMetas[8] | undefined;
   };
   data: RevokeUseAuthorityInstructionData;
 };
 
 export function parseRevokeUseAuthorityInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedRevokeUseAuthorityInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 9) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedRevokeUseAuthorityInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 9) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
-  const getNextOptionalAccount = (): Address | undefined => {
-    const address = getNextAccount();
-    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  const getNextOptionalAccount = () => {
+    const accountMeta = getNextAccount();
+    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
       ? undefined
-      : address;
+      : accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       useAuthorityRecord: getNextAccount(),
       owner: getNextAccount(),

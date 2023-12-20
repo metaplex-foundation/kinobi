@@ -538,48 +538,56 @@ export function getBurnEditionNftInstructionRaw<
   >;
 }
 
-export type ParsedBurnEditionNftInstruction = {
+export type ParsedBurnEditionNftInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Metadata (pda of ['metadata', program id, mint id]) */
-    metadata: Address;
+    metadata: TAccountMetas[0];
     /** NFT owner */
-    owner: Address;
+    owner: TAccountMetas[1];
     /** Mint of the print edition NFT */
-    printEditionMint: Address;
+    printEditionMint: TAccountMetas[2];
     /** Mint of the original/master NFT */
-    masterEditionMint: Address;
+    masterEditionMint: TAccountMetas[3];
     /** Token account the print edition NFT is in */
-    printEditionTokenAccount: Address;
+    printEditionTokenAccount: TAccountMetas[4];
     /** Token account the Master Edition NFT is in */
-    masterEditionTokenAccount: Address;
+    masterEditionTokenAccount: TAccountMetas[5];
     /** MasterEdition2 of the original NFT */
-    masterEditionAccount: Address;
+    masterEditionAccount: TAccountMetas[6];
     /** Print Edition account of the NFT */
-    printEditionAccount: Address;
+    printEditionAccount: TAccountMetas[7];
     /** Edition Marker PDA of the NFT */
-    editionMarkerAccount: Address;
+    editionMarkerAccount: TAccountMetas[8];
     /** SPL Token Program */
-    splTokenProgram: Address;
+    splTokenProgram: TAccountMetas[9];
   };
   data: BurnEditionNftInstructionData;
 };
 
 export function parseBurnEditionNftInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedBurnEditionNftInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 10) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedBurnEditionNftInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 10) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       metadata: getNextAccount(),
       owner: getNextAccount(),

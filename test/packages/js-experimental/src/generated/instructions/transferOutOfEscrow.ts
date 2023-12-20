@@ -658,60 +658,68 @@ export function getTransferOutOfEscrowInstructionRaw<
   >;
 }
 
-export type ParsedTransferOutOfEscrowInstruction = {
+export type ParsedTransferOutOfEscrowInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Escrow account */
-    escrow: Address;
+    escrow: TAccountMetas[0];
     /** Metadata account */
-    metadata: Address;
+    metadata: TAccountMetas[1];
     /** Wallet paying for the transaction and new account */
-    payer: Address;
+    payer: TAccountMetas[2];
     /** Mint account for the new attribute */
-    attributeMint: Address;
+    attributeMint: TAccountMetas[3];
     /** Token account source for the new attribute */
-    attributeSrc: Address;
+    attributeSrc: TAccountMetas[4];
     /** Token account, owned by TM, destination for the new attribute */
-    attributeDst: Address;
+    attributeDst: TAccountMetas[5];
     /** Mint account that the escrow is attached */
-    escrowMint: Address;
+    escrowMint: TAccountMetas[6];
     /** Token account that holds the token the escrow is attached to */
-    escrowAccount: Address;
+    escrowAccount: TAccountMetas[7];
     /** System program */
-    systemProgram: Address;
+    systemProgram: TAccountMetas[8];
     /** Associated Token program */
-    ataProgram: Address;
+    ataProgram: TAccountMetas[9];
     /** Token program */
-    tokenProgram: Address;
+    tokenProgram: TAccountMetas[10];
     /** Instructions sysvar account */
-    sysvarInstructions: Address;
+    sysvarInstructions: TAccountMetas[11];
     /** Authority/creator of the escrow account */
-    authority?: Address | undefined;
+    authority?: TAccountMetas[12] | undefined;
   };
   data: TransferOutOfEscrowInstructionData;
 };
 
 export function parseTransferOutOfEscrowInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedTransferOutOfEscrowInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 13) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedTransferOutOfEscrowInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 13) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
-  const getNextOptionalAccount = (): Address | undefined => {
-    const address = getNextAccount();
-    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  const getNextOptionalAccount = () => {
+    const accountMeta = getNextAccount();
+    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
       ? undefined
-      : address;
+      : accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       escrow: getNextAccount(),
       metadata: getNextAccount(),

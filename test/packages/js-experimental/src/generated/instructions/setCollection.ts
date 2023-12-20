@@ -668,42 +668,50 @@ export function getSetCollectionInstructionRaw<
   >;
 }
 
-export type ParsedSetCollectionInstruction = {
+export type ParsedSetCollectionInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
-    candyMachine: Address;
-    authority: Address;
-    authorityPda: Address;
-    payer: Address;
-    collectionMint: Address;
-    collectionMetadata: Address;
-    collectionAuthorityRecord: Address;
-    newCollectionUpdateAuthority: Address;
-    newCollectionMetadata: Address;
-    newCollectionMint: Address;
-    newCollectionMasterEdition: Address;
-    newCollectionAuthorityRecord: Address;
-    tokenMetadataProgram: Address;
-    systemProgram: Address;
+    candyMachine: TAccountMetas[0];
+    authority: TAccountMetas[1];
+    authorityPda: TAccountMetas[2];
+    payer: TAccountMetas[3];
+    collectionMint: TAccountMetas[4];
+    collectionMetadata: TAccountMetas[5];
+    collectionAuthorityRecord: TAccountMetas[6];
+    newCollectionUpdateAuthority: TAccountMetas[7];
+    newCollectionMetadata: TAccountMetas[8];
+    newCollectionMint: TAccountMetas[9];
+    newCollectionMasterEdition: TAccountMetas[10];
+    newCollectionAuthorityRecord: TAccountMetas[11];
+    tokenMetadataProgram: TAccountMetas[12];
+    systemProgram: TAccountMetas[13];
   };
   data: SetCollectionInstructionData;
 };
 
 export function parseSetCollectionInstruction<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedSetCollectionInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 14) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedSetCollectionInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 14) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       candyMachine: getNextAccount(),
       authority: getNextAccount(),

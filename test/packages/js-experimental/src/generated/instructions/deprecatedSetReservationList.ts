@@ -313,34 +313,42 @@ export function getDeprecatedSetReservationListInstructionRaw<
   >;
 }
 
-export type ParsedDeprecatedSetReservationListInstruction = {
+export type ParsedDeprecatedSetReservationListInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
-    masterEdition: Address;
+    masterEdition: TAccountMetas[0];
     /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
-    reservationList: Address;
+    reservationList: TAccountMetas[1];
     /** The resource you tied the reservation list too */
-    resource: Address;
+    resource: TAccountMetas[2];
   };
   data: DeprecatedSetReservationListInstructionData;
 };
 
 export function parseDeprecatedSetReservationListInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedDeprecatedSetReservationListInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 3) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedDeprecatedSetReservationListInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 3) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       masterEdition: getNextAccount(),
       reservationList: getNextAccount(),

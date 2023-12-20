@@ -670,54 +670,62 @@ export function getDeprecatedCreateMasterEditionInstructionRaw<
   >;
 }
 
-export type ParsedDeprecatedCreateMasterEditionInstruction = {
+export type ParsedDeprecatedCreateMasterEditionInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Unallocated edition V1 account with address as pda of ['metadata', program id, mint, 'edition'] */
-    edition: Address;
+    edition: TAccountMetas[0];
     /** Metadata mint */
-    mint: Address;
+    mint: TAccountMetas[1];
     /** Printing mint - A mint you control that can mint tokens that can be exchanged for limited editions of your master edition via the MintNewEditionFromMasterEditionViaToken endpoint */
-    printingMint: Address;
+    printingMint: TAccountMetas[2];
     /** One time authorization printing mint - A mint you control that prints tokens that gives the bearer permission to mint any number of tokens from the printing mint one time via an endpoint with the token-metadata program for your metadata. Also burns the token. */
-    oneTimePrintingAuthorizationMint: Address;
+    oneTimePrintingAuthorizationMint: TAccountMetas[3];
     /** Current Update authority key */
-    updateAuthority: Address;
+    updateAuthority: TAccountMetas[4];
     /** Printing mint authority - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY. */
-    printingMintAuthority: Address;
+    printingMintAuthority: TAccountMetas[5];
     /** Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
-    mintAuthority: Address;
+    mintAuthority: TAccountMetas[6];
     /** Metadata account */
-    metadata: Address;
+    metadata: TAccountMetas[7];
     /** payer */
-    payer: Address;
+    payer: TAccountMetas[8];
     /** Token program */
-    tokenProgram: Address;
+    tokenProgram: TAccountMetas[9];
     /** System program */
-    systemProgram: Address;
+    systemProgram: TAccountMetas[10];
     /** Rent info */
-    rent: Address;
+    rent: TAccountMetas[11];
     /** One time authorization printing mint authority - must be provided if using max supply. THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY. */
-    oneTimePrintingAuthorizationMintAuthority: Address;
+    oneTimePrintingAuthorizationMintAuthority: TAccountMetas[12];
   };
   data: DeprecatedCreateMasterEditionInstructionData;
 };
 
 export function parseDeprecatedCreateMasterEditionInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedDeprecatedCreateMasterEditionInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 13) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedDeprecatedCreateMasterEditionInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 13) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       edition: getNextAccount(),
       mint: getNextAccount(),

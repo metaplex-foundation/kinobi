@@ -261,34 +261,42 @@ export function getUpdatePrimarySaleHappenedViaTokenInstructionRaw<
   >;
 }
 
-export type ParsedUpdatePrimarySaleHappenedViaTokenInstruction = {
+export type ParsedUpdatePrimarySaleHappenedViaTokenInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Metadata key (pda of ['metadata', program id, mint id]) */
-    metadata: Address;
+    metadata: TAccountMetas[0];
     /** Owner on the token account */
-    owner: Address;
+    owner: TAccountMetas[1];
     /** Account containing tokens from the metadata's mint */
-    token: Address;
+    token: TAccountMetas[2];
   };
   data: UpdatePrimarySaleHappenedViaTokenInstructionData;
 };
 
 export function parseUpdatePrimarySaleHappenedViaTokenInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedUpdatePrimarySaleHappenedViaTokenInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 3) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedUpdatePrimarySaleHappenedViaTokenInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 3) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       metadata: getNextAccount(),
       owner: getNextAccount(),

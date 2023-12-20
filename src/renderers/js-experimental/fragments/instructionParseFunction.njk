@@ -1,13 +1,19 @@
 {% import "templates/macros.njk" as macros %}
 
-export type {{ instructionParsedType }} = {
+export type {{ instructionParsedType }}<
+  TProgram extends string = '{{ programAddress }}',
+  {% if hasAccounts %}
+    TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
+  {% endif %}
+> = {
+  programAddress: Address<TProgram>;
   {% if hasAccounts %}
     accounts: {
       {% for account in instruction.accounts %}
         {% if account.docs.length > 0 %}
           {{ macros.docblock(account.docs) }}
         {% endif %}
-        {{ account.name | camelCase }}{{ '?' if account.isOptional }}: Address{{ ' | undefined' if account.isOptional }},
+        {{ account.name | camelCase }}{{ '?' if account.isOptional }}: TAccountMetas[{{ loop.index0 }}]{{ ' | undefined' if account.isOptional }},
       {% endfor %}
     };
   {% endif %}
@@ -17,32 +23,38 @@ export type {{ instructionParsedType }} = {
 };
 
 export function {{ instructionParseFunction }}<
-  TProgram extends string = '{{ programAddress }}'
+  TProgram extends string,
+  {% if hasAccounts %}
+    TAccountMetas extends readonly IAccountMeta[],
+  {% endif %}
 >(
   instruction: IInstruction<TProgram>
+    {% if hasAccounts %}
+      & IInstructionWithAccounts<TAccountMetas>
+    {% endif %}
     {% if hasData %}
       & IInstructionWithData<Uint8Array>
     {% endif %}
-): {{ instructionParsedType }} {
+): {{ instructionParsedType }}<TProgram {{ ', TAccountMetas' if hasAccounts }}> {
   {% if hasAccounts %}
-    if (!instruction.accounts || instruction.accounts.length < {{ minimumNumberOfAccounts }}) {
+    if (instruction.accounts.length < {{ minimumNumberOfAccounts }}) {
       // TODO: Coded error.
       throw new Error('Not enough accounts');
     }
     let accountIndex = 0;
     const getNextAccount = () => {
-      const { address } = instruction.accounts![accountIndex]!;
+      const accountMeta = instruction.accounts![accountIndex]!;
       accountIndex += 1;
-      return address;
+      return accountMeta;
     }
     {% if hasOptionalAccounts and instruction.optionalAccountStrategy === 'programId' %}
-      const getNextOptionalAccount = (): Address | undefined => {
-        const address = getNextAccount();
-        return address === '{{ programAddress }}' ? undefined : address;
+      const getNextOptionalAccount = () => {
+        const accountMeta = getNextAccount();
+        return accountMeta.address === '{{ programAddress }}' ? undefined : accountMeta;
       };
     {% elif hasOptionalAccounts and instruction.optionalAccountStrategy === 'omitted' %}
       let optionalAccountsRemaining = instruction.accounts.length - {{ minimumNumberOfAccounts }};
-      const getNextOptionalAccount = (): Address | undefined => {
+      const getNextOptionalAccount = () => {
         if (optionalAccountsRemaining === 0) return undefined;
         optionalAccountsRemaining -= 1;
         return getNextAccount();
@@ -50,6 +62,7 @@ export function {{ instructionParseFunction }}<
     {% endif %}
   {% endif %}
   return {
+    programAddress: instruction.programAddress,
     {% if hasAccounts %}
       accounts: {
         {% for account in instruction.accounts %}

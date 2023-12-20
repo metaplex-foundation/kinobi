@@ -766,54 +766,62 @@ export function getUpdateV1InstructionRaw<
   >;
 }
 
-export type ParsedUpdateV1Instruction = {
+export type ParsedUpdateV1Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Update authority or delegate */
-    authority: Address;
+    authority: TAccountMetas[0];
     /** Metadata account */
-    metadata: Address;
+    metadata: TAccountMetas[1];
     /** Master Edition account */
-    masterEdition?: Address | undefined;
+    masterEdition?: TAccountMetas[2] | undefined;
     /** Mint account */
-    mint: Address;
+    mint: TAccountMetas[3];
     /** System program */
-    systemProgram: Address;
+    systemProgram: TAccountMetas[4];
     /** System program */
-    sysvarInstructions: Address;
+    sysvarInstructions: TAccountMetas[5];
     /** Token account */
-    token?: Address | undefined;
+    token?: TAccountMetas[6] | undefined;
     /** Delegate record PDA */
-    delegateRecord?: Address | undefined;
+    delegateRecord?: TAccountMetas[7] | undefined;
     /** Token Authorization Rules Program */
-    authorizationRulesProgram?: Address | undefined;
+    authorizationRulesProgram?: TAccountMetas[8] | undefined;
     /** Token Authorization Rules account */
-    authorizationRules?: Address | undefined;
+    authorizationRules?: TAccountMetas[9] | undefined;
   };
   data: UpdateV1InstructionData;
 };
 
 export function parseUpdateV1Instruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedUpdateV1Instruction {
-  if (!instruction.accounts || instruction.accounts.length < 10) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedUpdateV1Instruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 10) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
-  const getNextOptionalAccount = (): Address | undefined => {
-    const address = getNextAccount();
-    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  const getNextOptionalAccount = () => {
+    const accountMeta = getNextAccount();
+    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
       ? undefined
-      : address;
+      : accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       authority: getNextAccount(),
       metadata: getNextAccount(),

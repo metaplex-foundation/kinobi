@@ -583,39 +583,47 @@ export function getInitializeInstructionRaw<
   >;
 }
 
-export type ParsedInitializeInstruction = {
+export type ParsedInitializeInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
-    candyMachine: Address;
-    authorityPda: Address;
-    authority: Address;
-    payer: Address;
-    collectionMetadata: Address;
-    collectionMint: Address;
-    collectionMasterEdition: Address;
-    collectionUpdateAuthority: Address;
-    collectionAuthorityRecord: Address;
-    tokenMetadataProgram: Address;
-    systemProgram: Address;
+    candyMachine: TAccountMetas[0];
+    authorityPda: TAccountMetas[1];
+    authority: TAccountMetas[2];
+    payer: TAccountMetas[3];
+    collectionMetadata: TAccountMetas[4];
+    collectionMint: TAccountMetas[5];
+    collectionMasterEdition: TAccountMetas[6];
+    collectionUpdateAuthority: TAccountMetas[7];
+    collectionAuthorityRecord: TAccountMetas[8];
+    tokenMetadataProgram: TAccountMetas[9];
+    systemProgram: TAccountMetas[10];
   };
   data: InitializeInstructionData;
 };
 
 export function parseInitializeInstruction<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedInitializeInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 11) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedInitializeInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 11) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       candyMachine: getNextAccount(),
       authorityPda: getNextAccount(),

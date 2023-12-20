@@ -562,56 +562,64 @@ export function getApproveUseAuthorityInstructionRaw<
   >;
 }
 
-export type ParsedApproveUseAuthorityInstruction = {
+export type ParsedApproveUseAuthorityInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Use Authority Record PDA */
-    useAuthorityRecord: Address;
+    useAuthorityRecord: TAccountMetas[0];
     /** Owner */
-    owner: Address;
+    owner: TAccountMetas[1];
     /** Payer */
-    payer: Address;
+    payer: TAccountMetas[2];
     /** A Use Authority */
-    user: Address;
+    user: TAccountMetas[3];
     /** Owned Token Account Of Mint */
-    ownerTokenAccount: Address;
+    ownerTokenAccount: TAccountMetas[4];
     /** Metadata account */
-    metadata: Address;
+    metadata: TAccountMetas[5];
     /** Mint of Metadata */
-    mint: Address;
+    mint: TAccountMetas[6];
     /** Program As Signer (Burner) */
-    burner: Address;
+    burner: TAccountMetas[7];
     /** Token program */
-    tokenProgram: Address;
+    tokenProgram: TAccountMetas[8];
     /** System program */
-    systemProgram: Address;
+    systemProgram: TAccountMetas[9];
     /** Rent info */
-    rent?: Address | undefined;
+    rent?: TAccountMetas[10] | undefined;
   };
   data: ApproveUseAuthorityInstructionData;
 };
 
 export function parseApproveUseAuthorityInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedApproveUseAuthorityInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 11) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedApproveUseAuthorityInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 11) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
-  const getNextOptionalAccount = (): Address | undefined => {
-    const address = getNextAccount();
-    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  const getNextOptionalAccount = () => {
+    const accountMeta = getNextAccount();
+    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
       ? undefined
-      : address;
+      : accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       useAuthorityRecord: getNextAccount(),
       owner: getNextAccount(),

@@ -802,44 +802,53 @@ export function getDummyInstructionRaw<
   >;
 }
 
-export type ParsedDummyInstruction = {
+export type ParsedDummyInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
-    edition: Address;
-    mint?: Address | undefined;
-    updateAuthority: Address;
-    mintAuthority: Address;
-    payer: Address;
-    foo: Address;
-    bar?: Address | undefined;
-    delegate?: Address | undefined;
-    delegateRecord?: Address | undefined;
-    tokenOrAtaProgram: Address;
+    edition: TAccountMetas[0];
+    mint?: TAccountMetas[1] | undefined;
+    updateAuthority: TAccountMetas[2];
+    mintAuthority: TAccountMetas[3];
+    payer: TAccountMetas[4];
+    foo: TAccountMetas[5];
+    bar?: TAccountMetas[6] | undefined;
+    delegate?: TAccountMetas[7] | undefined;
+    delegateRecord?: TAccountMetas[8] | undefined;
+    tokenOrAtaProgram: TAccountMetas[9];
   };
   data: DummyInstructionData;
 };
 
 export function parseDummyInstruction<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedDummyInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 10) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedDummyInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 10) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
-  const getNextOptionalAccount = (): Address | undefined => {
-    const address = getNextAccount();
-    return address === 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  const getNextOptionalAccount = () => {
+    const accountMeta = getNextAccount();
+    return accountMeta.address ===
+      'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
       ? undefined
-      : address;
+      : accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       edition: getNextAccount(),
       mint: getNextOptionalAccount(),

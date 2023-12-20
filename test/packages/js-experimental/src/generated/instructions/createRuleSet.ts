@@ -313,34 +313,42 @@ export function getCreateRuleSetInstructionRaw<
   >;
 }
 
-export type ParsedCreateRuleSetInstruction = {
+export type ParsedCreateRuleSetInstruction<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Payer and creator of the RuleSet */
-    payer: Address;
+    payer: TAccountMetas[0];
     /** The PDA account where the RuleSet is stored */
-    ruleSetPda: Address;
+    ruleSetPda: TAccountMetas[1];
     /** System program */
-    systemProgram: Address;
+    systemProgram: TAccountMetas[2];
   };
   data: CreateRuleSetInstructionData;
 };
 
 export function parseCreateRuleSetInstruction<
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedCreateRuleSetInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 3) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedCreateRuleSetInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 3) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       payer: getNextAccount(),
       ruleSetPda: getNextAccount(),

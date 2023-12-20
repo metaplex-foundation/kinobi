@@ -244,30 +244,38 @@ export function getUpdateCandyMachineInstructionRaw<
   >;
 }
 
-export type ParsedUpdateCandyMachineInstruction = {
+export type ParsedUpdateCandyMachineInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
-    candyMachine: Address;
-    authority: Address;
+    candyMachine: TAccountMetas[0];
+    authority: TAccountMetas[1];
   };
   data: UpdateCandyMachineInstructionData;
 };
 
 export function parseUpdateCandyMachineInstruction<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedUpdateCandyMachineInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedUpdateCandyMachineInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 2) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       candyMachine: getNextAccount(),
       authority: getNextAccount(),

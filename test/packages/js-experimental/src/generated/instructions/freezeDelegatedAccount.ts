@@ -335,38 +335,46 @@ export function getFreezeDelegatedAccountInstructionRaw<
   >;
 }
 
-export type ParsedFreezeDelegatedAccountInstruction = {
+export type ParsedFreezeDelegatedAccountInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Delegate */
-    delegate: Address;
+    delegate: TAccountMetas[0];
     /** Token account to freeze */
-    tokenAccount: Address;
+    tokenAccount: TAccountMetas[1];
     /** Edition */
-    edition: Address;
+    edition: TAccountMetas[2];
     /** Token mint */
-    mint: Address;
+    mint: TAccountMetas[3];
     /** Token Program */
-    tokenProgram: Address;
+    tokenProgram: TAccountMetas[4];
   };
   data: FreezeDelegatedAccountInstructionData;
 };
 
 export function parseFreezeDelegatedAccountInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedFreezeDelegatedAccountInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 5) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedFreezeDelegatedAccountInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 5) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       delegate: getNextAccount(),
       tokenAccount: getNextAccount(),

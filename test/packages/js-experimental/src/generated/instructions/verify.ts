@@ -368,44 +368,52 @@ export function getVerifyInstructionRaw<
   >;
 }
 
-export type ParsedVerifyInstruction = {
+export type ParsedVerifyInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Metadata account */
-    metadata: Address;
+    metadata: TAccountMetas[0];
     /** Collection Update authority */
-    collectionAuthority: Address;
+    collectionAuthority: TAccountMetas[1];
     /** payer */
-    payer: Address;
+    payer: TAccountMetas[2];
     /** Token Authorization Rules account */
-    authorizationRules?: Address | undefined;
+    authorizationRules?: TAccountMetas[3] | undefined;
     /** Token Authorization Rules Program */
-    authorizationRulesProgram?: Address | undefined;
+    authorizationRulesProgram?: TAccountMetas[4] | undefined;
   };
   data: VerifyInstructionData;
 };
 
 export function parseVerifyInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedVerifyInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 5) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedVerifyInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 5) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
-  const getNextOptionalAccount = (): Address | undefined => {
-    const address = getNextAccount();
-    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  const getNextOptionalAccount = () => {
+    const accountMeta = getNextAccount();
+    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
       ? undefined
-      : address;
+      : accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       metadata: getNextAccount(),
       collectionAuthority: getNextAccount(),

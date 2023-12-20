@@ -766,45 +766,53 @@ export function getMintFromCandyMachineInstructionRaw<
   >;
 }
 
-export type ParsedMintFromCandyMachineInstruction = {
+export type ParsedMintFromCandyMachineInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
-    candyMachine: Address;
-    authorityPda: Address;
-    mintAuthority: Address;
-    payer: Address;
-    nftMint: Address;
-    nftMintAuthority: Address;
-    nftMetadata: Address;
-    nftMasterEdition: Address;
-    collectionAuthorityRecord: Address;
-    collectionMint: Address;
-    collectionMetadata: Address;
-    collectionMasterEdition: Address;
-    collectionUpdateAuthority: Address;
-    tokenMetadataProgram: Address;
-    tokenProgram: Address;
-    systemProgram: Address;
-    recentSlothashes: Address;
+    candyMachine: TAccountMetas[0];
+    authorityPda: TAccountMetas[1];
+    mintAuthority: TAccountMetas[2];
+    payer: TAccountMetas[3];
+    nftMint: TAccountMetas[4];
+    nftMintAuthority: TAccountMetas[5];
+    nftMetadata: TAccountMetas[6];
+    nftMasterEdition: TAccountMetas[7];
+    collectionAuthorityRecord: TAccountMetas[8];
+    collectionMint: TAccountMetas[9];
+    collectionMetadata: TAccountMetas[10];
+    collectionMasterEdition: TAccountMetas[11];
+    collectionUpdateAuthority: TAccountMetas[12];
+    tokenMetadataProgram: TAccountMetas[13];
+    tokenProgram: TAccountMetas[14];
+    systemProgram: TAccountMetas[15];
+    recentSlothashes: TAccountMetas[16];
   };
   data: MintFromCandyMachineInstructionData;
 };
 
 export function parseMintFromCandyMachineInstruction<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedMintFromCandyMachineInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 17) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedMintFromCandyMachineInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 17) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       candyMachine: getNextAccount(),
       authorityPda: getNextAccount(),

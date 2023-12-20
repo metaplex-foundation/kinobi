@@ -373,44 +373,52 @@ export function getBubblegumSetCollectionSizeInstructionRaw<
   >;
 }
 
-export type ParsedBubblegumSetCollectionSizeInstruction = {
+export type ParsedBubblegumSetCollectionSizeInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Collection Metadata account */
-    collectionMetadata: Address;
+    collectionMetadata: TAccountMetas[0];
     /** Collection Update authority */
-    collectionAuthority: Address;
+    collectionAuthority: TAccountMetas[1];
     /** Mint of the Collection */
-    collectionMint: Address;
+    collectionMint: TAccountMetas[2];
     /** Signing PDA of Bubblegum program */
-    bubblegumSigner: Address;
+    bubblegumSigner: TAccountMetas[3];
     /** Collection Authority Record PDA */
-    collectionAuthorityRecord?: Address | undefined;
+    collectionAuthorityRecord?: TAccountMetas[4] | undefined;
   };
   data: BubblegumSetCollectionSizeInstructionData;
 };
 
 export function parseBubblegumSetCollectionSizeInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedBubblegumSetCollectionSizeInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 5) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedBubblegumSetCollectionSizeInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 5) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
-  const getNextOptionalAccount = (): Address | undefined => {
-    const address = getNextAccount();
-    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  const getNextOptionalAccount = () => {
+    const accountMeta = getNextAccount();
+    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
       ? undefined
-      : address;
+      : accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       collectionMetadata: getNextAccount(),
       collectionAuthority: getNextAccount(),

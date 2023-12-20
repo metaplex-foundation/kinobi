@@ -739,42 +739,50 @@ export function getCreateMetadataAccountInstructionRaw<
   >;
 }
 
-export type ParsedCreateMetadataAccountInstruction = {
+export type ParsedCreateMetadataAccountInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Metadata key (pda of ['metadata', program id, mint id]) */
-    metadata: Address;
+    metadata: TAccountMetas[0];
     /** Mint of token asset */
-    mint: Address;
+    mint: TAccountMetas[1];
     /** Mint authority */
-    mintAuthority: Address;
+    mintAuthority: TAccountMetas[2];
     /** payer */
-    payer: Address;
+    payer: TAccountMetas[3];
     /** update authority info */
-    updateAuthority: Address;
+    updateAuthority: TAccountMetas[4];
     /** System program */
-    systemProgram: Address;
+    systemProgram: TAccountMetas[5];
     /** Rent info */
-    rent: Address;
+    rent: TAccountMetas[6];
   };
   data: CreateMetadataAccountInstructionData;
 };
 
 export function parseCreateMetadataAccountInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedCreateMetadataAccountInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 7) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedCreateMetadataAccountInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 7) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       metadata: getNextAccount(),
       mint: getNextAccount(),

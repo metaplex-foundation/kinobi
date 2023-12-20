@@ -723,67 +723,77 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
   >;
 }
 
-export type ParsedDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction =
-  {
-    accounts: {
-      /** New Metadata key (pda of ['metadata', program id, mint id]) */
-      metadata: Address;
-      /** New Edition V1 (pda of ['metadata', program id, mint id, 'edition']) */
-      edition: Address;
-      /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
-      masterEdition: Address;
-      /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
-      mint: Address;
-      /** Mint authority of new mint */
-      mintAuthority: Address;
-      /** Printing Mint of master record edition */
-      printingMint: Address;
-      /** Token account containing Printing mint token to be transferred */
-      masterTokenAccount: Address;
-      /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master mint id, edition_number]) */
-      editionMarker: Address;
-      /** Burn authority for this token */
-      burnAuthority: Address;
-      /** payer */
-      payer: Address;
-      /** update authority info for new metadata account */
-      masterUpdateAuthority: Address;
-      /** Master record metadata account */
-      masterMetadata: Address;
-      /** Token program */
-      tokenProgram: Address;
-      /** System program */
-      systemProgram: Address;
-      /** Rent info */
-      rent: Address;
-      /** Reservation List - If present, and you are on this list, you can get an edition number given by your position on the list. */
-      reservationList?: Address | undefined;
-    };
-    data: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData;
+export type ParsedDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
+  accounts: {
+    /** New Metadata key (pda of ['metadata', program id, mint id]) */
+    metadata: TAccountMetas[0];
+    /** New Edition V1 (pda of ['metadata', program id, mint id, 'edition']) */
+    edition: TAccountMetas[1];
+    /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
+    masterEdition: TAccountMetas[2];
+    /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
+    mint: TAccountMetas[3];
+    /** Mint authority of new mint */
+    mintAuthority: TAccountMetas[4];
+    /** Printing Mint of master record edition */
+    printingMint: TAccountMetas[5];
+    /** Token account containing Printing mint token to be transferred */
+    masterTokenAccount: TAccountMetas[6];
+    /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master mint id, edition_number]) */
+    editionMarker: TAccountMetas[7];
+    /** Burn authority for this token */
+    burnAuthority: TAccountMetas[8];
+    /** payer */
+    payer: TAccountMetas[9];
+    /** update authority info for new metadata account */
+    masterUpdateAuthority: TAccountMetas[10];
+    /** Master record metadata account */
+    masterMetadata: TAccountMetas[11];
+    /** Token program */
+    tokenProgram: TAccountMetas[12];
+    /** System program */
+    systemProgram: TAccountMetas[13];
+    /** Rent info */
+    rent: TAccountMetas[14];
+    /** Reservation List - If present, and you are on this list, you can get an edition number given by your position on the list. */
+    reservationList?: TAccountMetas[15] | undefined;
   };
+  data: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData;
+};
 
 export function parseDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 16) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
+  TProgram,
+  TAccountMetas
+> {
+  if (instruction.accounts.length < 16) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
-  const getNextOptionalAccount = (): Address | undefined => {
-    const address = getNextAccount();
-    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  const getNextOptionalAccount = () => {
+    const accountMeta = getNextAccount();
+    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
       ? undefined
-      : address;
+      : accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       metadata: getNextAccount(),
       edition: getNextAccount(),

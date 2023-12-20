@@ -57,5 +57,9 @@ export function getInstructionParseFunctionFragment(scope: {
   })
     .mergeImportsWith(dataTypeFragment)
     .addImports('solanaInstructions', ['IInstruction'])
+    .addImports(
+      'solanaInstructions',
+      hasAccounts ? ['IInstructionWithAccounts', 'IAccountMeta'] : []
+    )
     .addImports('solanaInstructions', hasData ? ['IInstructionWithData'] : []);
 }

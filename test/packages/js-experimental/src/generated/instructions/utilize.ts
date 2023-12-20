@@ -599,56 +599,64 @@ export function getUtilizeInstructionRaw<
   >;
 }
 
-export type ParsedUtilizeInstruction = {
+export type ParsedUtilizeInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Metadata account */
-    metadata: Address;
+    metadata: TAccountMetas[0];
     /** Token Account Of NFT */
-    tokenAccount: Address;
+    tokenAccount: TAccountMetas[1];
     /** Mint of the Metadata */
-    mint: Address;
+    mint: TAccountMetas[2];
     /** A Use Authority / Can be the current Owner of the NFT */
-    useAuthority: Address;
+    useAuthority: TAccountMetas[3];
     /** Owner */
-    owner: Address;
+    owner: TAccountMetas[4];
     /** Token program */
-    tokenProgram: Address;
+    tokenProgram: TAccountMetas[5];
     /** Associated Token program */
-    ataProgram: Address;
+    ataProgram: TAccountMetas[6];
     /** System program */
-    systemProgram: Address;
+    systemProgram: TAccountMetas[7];
     /** Rent info */
-    rent: Address;
+    rent: TAccountMetas[8];
     /** Use Authority Record PDA If present the program Assumes a delegated use authority */
-    useAuthorityRecord?: Address | undefined;
+    useAuthorityRecord?: TAccountMetas[9] | undefined;
     /** Program As Signer (Burner) */
-    burner?: Address | undefined;
+    burner?: TAccountMetas[10] | undefined;
   };
   data: UtilizeInstructionData;
 };
 
 export function parseUtilizeInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedUtilizeInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 11) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedUtilizeInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 11) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
-  const getNextOptionalAccount = (): Address | undefined => {
-    const address = getNextAccount();
-    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  const getNextOptionalAccount = () => {
+    const accountMeta = getNextAccount();
+    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
       ? undefined
-      : address;
+      : accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       metadata: getNextAccount(),
       tokenAccount: getNextAccount(),

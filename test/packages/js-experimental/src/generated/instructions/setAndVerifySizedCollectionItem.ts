@@ -448,50 +448,58 @@ export function getSetAndVerifySizedCollectionItemInstructionRaw<
   >;
 }
 
-export type ParsedSetAndVerifySizedCollectionItemInstruction = {
+export type ParsedSetAndVerifySizedCollectionItemInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Metadata account */
-    metadata: Address;
+    metadata: TAccountMetas[0];
     /** Collection Update authority */
-    collectionAuthority: Address;
+    collectionAuthority: TAccountMetas[1];
     /** payer */
-    payer: Address;
+    payer: TAccountMetas[2];
     /** Update Authority of Collection NFT and NFT */
-    updateAuthority: Address;
+    updateAuthority: TAccountMetas[3];
     /** Mint of the Collection */
-    collectionMint: Address;
+    collectionMint: TAccountMetas[4];
     /** Metadata Account of the Collection */
-    collection: Address;
+    collection: TAccountMetas[5];
     /** MasterEdition2 Account of the Collection Token */
-    collectionMasterEditionAccount: Address;
+    collectionMasterEditionAccount: TAccountMetas[6];
     /** Collection Authority Record PDA */
-    collectionAuthorityRecord?: Address | undefined;
+    collectionAuthorityRecord?: TAccountMetas[7] | undefined;
   };
   data: SetAndVerifySizedCollectionItemInstructionData;
 };
 
 export function parseSetAndVerifySizedCollectionItemInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedSetAndVerifySizedCollectionItemInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 8) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedSetAndVerifySizedCollectionItemInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 8) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
-  const getNextOptionalAccount = (): Address | undefined => {
-    const address = getNextAccount();
-    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  const getNextOptionalAccount = () => {
+    const accountMeta = getNextAccount();
+    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
       ? undefined
-      : address;
+      : accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       metadata: getNextAccount(),
       collectionAuthority: getNextAccount(),

@@ -690,62 +690,73 @@ export function getMintNewEditionFromMasterEditionViaTokenInstructionRaw<
   >;
 }
 
-export type ParsedMintNewEditionFromMasterEditionViaTokenInstruction = {
+export type ParsedMintNewEditionFromMasterEditionViaTokenInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** New Metadata key (pda of ['metadata', program id, mint id]) */
-    newMetadata: Address;
+    newMetadata: TAccountMetas[0];
     /** New Edition (pda of ['metadata', program id, mint id, 'edition']) */
-    newEdition: Address;
+    newEdition: TAccountMetas[1];
     /** Master Record Edition V2 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
-    masterEdition: Address;
+    masterEdition: TAccountMetas[2];
     /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
-    newMint: Address;
+    newMint: TAccountMetas[3];
     /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE). */
-    editionMarkPda: Address;
+    editionMarkPda: TAccountMetas[4];
     /** Mint authority of new mint */
-    newMintAuthority: Address;
+    newMintAuthority: TAccountMetas[5];
     /** payer */
-    payer: Address;
+    payer: TAccountMetas[6];
     /** owner of token account containing master token (#8) */
-    tokenAccountOwner: Address;
+    tokenAccountOwner: TAccountMetas[7];
     /** token account containing token from master metadata mint */
-    tokenAccount: Address;
+    tokenAccount: TAccountMetas[8];
     /** Update authority info for new metadata */
-    newMetadataUpdateAuthority: Address;
+    newMetadataUpdateAuthority: TAccountMetas[9];
     /** Master record metadata account */
-    metadata: Address;
+    metadata: TAccountMetas[10];
     /** Token program */
-    tokenProgram: Address;
+    tokenProgram: TAccountMetas[11];
     /** System program */
-    systemProgram: Address;
+    systemProgram: TAccountMetas[12];
     /** Rent info */
-    rent?: Address | undefined;
+    rent?: TAccountMetas[13] | undefined;
   };
   data: MintNewEditionFromMasterEditionViaTokenInstructionData;
 };
 
 export function parseMintNewEditionFromMasterEditionViaTokenInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedMintNewEditionFromMasterEditionViaTokenInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 14) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedMintNewEditionFromMasterEditionViaTokenInstruction<
+  TProgram,
+  TAccountMetas
+> {
+  if (instruction.accounts.length < 14) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
-  const getNextOptionalAccount = (): Address | undefined => {
-    const address = getNextAccount();
-    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  const getNextOptionalAccount = () => {
+    const accountMeta = getNextAccount();
+    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
       ? undefined
-      : address;
+      : accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       newMetadata: getNextAccount(),
       newEdition: getNextAccount(),

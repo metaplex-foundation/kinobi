@@ -255,34 +255,42 @@ export function getConvertMasterEditionV1ToV2InstructionRaw<
   >;
 }
 
-export type ParsedConvertMasterEditionV1ToV2Instruction = {
+export type ParsedConvertMasterEditionV1ToV2Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
-    masterEdition: Address;
+    masterEdition: TAccountMetas[0];
     /** One time authorization mint */
-    oneTimeAuth: Address;
+    oneTimeAuth: TAccountMetas[1];
     /** Printing mint */
-    printingMint: Address;
+    printingMint: TAccountMetas[2];
   };
   data: ConvertMasterEditionV1ToV2InstructionData;
 };
 
 export function parseConvertMasterEditionV1ToV2Instruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedConvertMasterEditionV1ToV2Instruction {
-  if (!instruction.accounts || instruction.accounts.length < 3) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedConvertMasterEditionV1ToV2Instruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 3) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       masterEdition: getNextAccount(),
       oneTimeAuth: getNextAccount(),

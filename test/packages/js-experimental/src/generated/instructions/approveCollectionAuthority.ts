@@ -454,50 +454,58 @@ export function getApproveCollectionAuthorityInstructionRaw<
   >;
 }
 
-export type ParsedApproveCollectionAuthorityInstruction = {
+export type ParsedApproveCollectionAuthorityInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+> = {
+  programAddress: Address<TProgram>;
   accounts: {
     /** Collection Authority Record PDA */
-    collectionAuthorityRecord: Address;
+    collectionAuthorityRecord: TAccountMetas[0];
     /** A Collection Authority */
-    newCollectionAuthority: Address;
+    newCollectionAuthority: TAccountMetas[1];
     /** Update Authority of Collection NFT */
-    updateAuthority: Address;
+    updateAuthority: TAccountMetas[2];
     /** Payer */
-    payer: Address;
+    payer: TAccountMetas[3];
     /** Collection Metadata account */
-    metadata: Address;
+    metadata: TAccountMetas[4];
     /** Mint of Collection Metadata */
-    mint: Address;
+    mint: TAccountMetas[5];
     /** System program */
-    systemProgram: Address;
+    systemProgram: TAccountMetas[6];
     /** Rent info */
-    rent?: Address | undefined;
+    rent?: TAccountMetas[7] | undefined;
   };
   data: ApproveCollectionAuthorityInstructionData;
 };
 
 export function parseApproveCollectionAuthorityInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string,
+  TAccountMetas extends readonly IAccountMeta[]
 >(
-  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
-): ParsedApproveCollectionAuthorityInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 8) {
+  instruction: IInstruction<TProgram> &
+    IInstructionWithAccounts<TAccountMetas> &
+    IInstructionWithData<Uint8Array>
+): ParsedApproveCollectionAuthorityInstruction<TProgram, TAccountMetas> {
+  if (instruction.accounts.length < 8) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const { address } = instruction.accounts![accountIndex]!;
+    const accountMeta = instruction.accounts![accountIndex]!;
     accountIndex += 1;
-    return address;
+    return accountMeta;
   };
-  const getNextOptionalAccount = (): Address | undefined => {
-    const address = getNextAccount();
-    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  const getNextOptionalAccount = () => {
+    const accountMeta = getNextAccount();
+    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
       ? undefined
-      : address;
+      : accountMeta;
   };
   return {
+    programAddress: instruction.programAddress,
     accounts: {
       collectionAuthorityRecord: getNextAccount(),
       newCollectionAuthority: getNextAccount(),
