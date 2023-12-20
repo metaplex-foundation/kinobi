@@ -520,3 +520,66 @@ export function getCreateMasterEditionV3InstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedCreateMasterEditionV3Instruction = {
+  accounts: {
+    /** Unallocated edition V2 account with address as pda of ['metadata', program id, mint, 'edition'] */
+    edition: Address;
+    /** Metadata mint */
+    mint: Address;
+    /** Update authority */
+    updateAuthority: Address;
+    /** Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
+    mintAuthority: Address;
+    /** payer */
+    payer: Address;
+    /** Metadata account */
+    metadata: Address;
+    /** Token program */
+    tokenProgram: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Rent info */
+    rent?: Address | undefined;
+  };
+  data: CreateMasterEditionV3InstructionData;
+};
+
+export function parseCreateMasterEditionV3Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedCreateMasterEditionV3Instruction {
+  if (!instruction.accounts || instruction.accounts.length < 9) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      edition: getNextAccount(),
+      mint: getNextAccount(),
+      updateAuthority: getNextAccount(),
+      mintAuthority: getNextAccount(),
+      payer: getNextAccount(),
+      metadata: getNextAccount(),
+      tokenProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
+      rent: getNextOptionalAccount(),
+    },
+    data: getCreateMasterEditionV3InstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

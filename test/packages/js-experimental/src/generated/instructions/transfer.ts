@@ -1121,3 +1121,82 @@ export function getTransferInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedTransferInstruction = {
+  accounts: {
+    /** Transfer authority (token or delegate owner) */
+    authority: Address;
+    /** Delegate record PDA */
+    delegateRecord?: Address | undefined;
+    /** Token account */
+    token: Address;
+    /** Token account owner */
+    tokenOwner: Address;
+    /** Destination token account */
+    destination: Address;
+    /** Destination token account owner */
+    destinationOwner: Address;
+    /** Mint of token asset */
+    mint: Address;
+    /** Metadata (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** Master Edition of token asset */
+    masterEdition?: Address | undefined;
+    /** SPL Token Program */
+    splTokenProgram: Address;
+    /** SPL Associated Token Account program */
+    splAtaProgram: Address;
+    /** System Program */
+    systemProgram: Address;
+    /** Instructions sysvar account */
+    sysvarInstructions: Address;
+    /** Token Authorization Rules Program */
+    authorizationRulesProgram?: Address | undefined;
+    /** Token Authorization Rules account */
+    authorizationRules?: Address | undefined;
+  };
+  data: TransferInstructionData;
+};
+
+export function parseTransferInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedTransferInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 15) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      authority: getNextAccount(),
+      delegateRecord: getNextOptionalAccount(),
+      token: getNextAccount(),
+      tokenOwner: getNextAccount(),
+      destination: getNextAccount(),
+      destinationOwner: getNextAccount(),
+      mint: getNextAccount(),
+      metadata: getNextAccount(),
+      masterEdition: getNextOptionalAccount(),
+      splTokenProgram: getNextAccount(),
+      splAtaProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
+      sysvarInstructions: getNextAccount(),
+      authorizationRulesProgram: getNextOptionalAccount(),
+      authorizationRules: getNextOptionalAccount(),
+    },
+    data: getTransferInstructionDataDecoder().decode(instruction.data),
+  };
+}

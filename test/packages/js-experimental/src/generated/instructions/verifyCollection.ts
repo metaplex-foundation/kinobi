@@ -365,3 +365,49 @@ export function getVerifyCollectionInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedVerifyCollectionInstruction = {
+  accounts: {
+    /** Metadata account */
+    metadata: Address;
+    /** Collection Update authority */
+    collectionAuthority: Address;
+    /** payer */
+    payer: Address;
+    /** Mint of the Collection */
+    collectionMint: Address;
+    /** Metadata Account of the Collection */
+    collection: Address;
+    /** MasterEdition2 Account of the Collection Token */
+    collectionMasterEditionAccount: Address;
+  };
+  data: VerifyCollectionInstructionData;
+};
+
+export function parseVerifyCollectionInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedVerifyCollectionInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 6) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      metadata: getNextAccount(),
+      collectionAuthority: getNextAccount(),
+      payer: getNextAccount(),
+      collectionMint: getNextAccount(),
+      collection: getNextAccount(),
+      collectionMasterEditionAccount: getNextAccount(),
+    },
+    data: getVerifyCollectionInstructionDataDecoder().decode(instruction.data),
+  };
+}

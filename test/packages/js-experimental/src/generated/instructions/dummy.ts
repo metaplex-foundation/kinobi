@@ -801,3 +801,57 @@ export function getDummyInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedDummyInstruction = {
+  accounts: {
+    edition: Address;
+    mint?: Address | undefined;
+    updateAuthority: Address;
+    mintAuthority: Address;
+    payer: Address;
+    foo: Address;
+    bar?: Address | undefined;
+    delegate?: Address | undefined;
+    delegateRecord?: Address | undefined;
+    tokenOrAtaProgram: Address;
+  };
+  data: DummyInstructionData;
+};
+
+export function parseDummyInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedDummyInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 10) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      edition: getNextAccount(),
+      mint: getNextOptionalAccount(),
+      updateAuthority: getNextAccount(),
+      mintAuthority: getNextAccount(),
+      payer: getNextAccount(),
+      foo: getNextAccount(),
+      bar: getNextOptionalAccount(),
+      delegate: getNextOptionalAccount(),
+      delegateRecord: getNextOptionalAccount(),
+      tokenOrAtaProgram: getNextAccount(),
+    },
+    data: getDummyInstructionDataDecoder().decode(instruction.data),
+  };
+}

@@ -1,0 +1,68 @@
+{% import "templates/macros.njk" as macros %}
+
+export type {{ instructionParsedType }} = {
+  {% if hasAccounts %}
+    accounts: {
+      {% for account in instruction.accounts %}
+        {% if account.docs.length > 0 %}
+          {{ macros.docblock(account.docs) }}
+        {% endif %}
+        {{ account.name | camelCase }}{{ '?' if account.isOptional }}: Address{{ ' | undefined' if account.isOptional }},
+      {% endfor %}
+    };
+  {% endif %}
+  {% if hasData %}
+    data: {{ dataTypeFragment }};
+  {% endif %}
+};
+
+export function {{ instructionParseFunction }}<
+  TProgram extends string = '{{ programAddress }}'
+>(
+  instruction: IInstruction<TProgram>
+    {% if hasData %}
+      & IInstructionWithData<Uint8Array>
+    {% endif %}
+): {{ instructionParsedType }} {
+  {% if hasAccounts %}
+    if (!instruction.accounts || instruction.accounts.length < {{ minimumNumberOfAccounts }}) {
+      // TODO: Coded error.
+      throw new Error('Not enough accounts');
+    }
+    let accountIndex = 0;
+    const getNextAccount = () => {
+      const { address } = instruction.accounts![accountIndex]!;
+      accountIndex += 1;
+      return address;
+    }
+    {% if hasOptionalAccounts and instruction.optionalAccountStrategy === 'programId' %}
+      const getNextOptionalAccount = (): Address | undefined => {
+        const address = getNextAccount();
+        return address === '{{ programAddress }}' ? undefined : address;
+      };
+    {% elif hasOptionalAccounts and instruction.optionalAccountStrategy === 'omitted' %}
+      let optionalAccountsRemaining = instruction.accounts.length - {{ minimumNumberOfAccounts }};
+      const getNextOptionalAccount = (): Address | undefined => {
+        if (optionalAccountsRemaining === 0) return undefined;
+        optionalAccountsRemaining -= 1;
+        return getNextAccount();
+      };
+    {% endif %}
+  {% endif %}
+  return {
+    {% if hasAccounts %}
+      accounts: {
+        {% for account in instruction.accounts %}
+          {% if account.isOptional %}
+            {{ account.name | camelCase }}: getNextOptionalAccount(),
+          {% else %}
+            {{ account.name | camelCase }}: getNextAccount(),
+          {% endif %}
+        {% endfor %}
+      },
+    {% endif %}
+    {% if hasData %}
+      data: {{ decoderFunction }}.decode(instruction.data),
+    {% endif %}
+  };
+}

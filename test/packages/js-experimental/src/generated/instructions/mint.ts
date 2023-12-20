@@ -650,3 +650,73 @@ export function getMintInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedMintInstruction = {
+  accounts: {
+    /** Token account */
+    token: Address;
+    /** Metadata account key (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** Master Edition account */
+    masterEdition?: Address | undefined;
+    /** Mint of token asset */
+    mint: Address;
+    /** Payer */
+    payer: Address;
+    /** (Mint or Update) authority */
+    authority: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Instructions sysvar account */
+    sysvarInstructions: Address;
+    /** SPL Token program */
+    splTokenProgram: Address;
+    /** SPL Associated Token Account program */
+    splAtaProgram: Address;
+    /** Token Authorization Rules program */
+    authorizationRulesProgram?: Address | undefined;
+    /** Token Authorization Rules account */
+    authorizationRules?: Address | undefined;
+  };
+  data: MintInstructionData;
+};
+
+export function parseMintInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedMintInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 12) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      token: getNextAccount(),
+      metadata: getNextAccount(),
+      masterEdition: getNextOptionalAccount(),
+      mint: getNextAccount(),
+      payer: getNextAccount(),
+      authority: getNextAccount(),
+      systemProgram: getNextAccount(),
+      sysvarInstructions: getNextAccount(),
+      splTokenProgram: getNextAccount(),
+      splAtaProgram: getNextAccount(),
+      authorizationRulesProgram: getNextOptionalAccount(),
+      authorizationRules: getNextOptionalAccount(),
+    },
+    data: getMintInstructionDataDecoder().decode(instruction.data),
+  };
+}

@@ -689,3 +689,81 @@ export function getMintNewEditionFromMasterEditionViaTokenInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedMintNewEditionFromMasterEditionViaTokenInstruction = {
+  accounts: {
+    /** New Metadata key (pda of ['metadata', program id, mint id]) */
+    newMetadata: Address;
+    /** New Edition (pda of ['metadata', program id, mint id, 'edition']) */
+    newEdition: Address;
+    /** Master Record Edition V2 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
+    masterEdition: Address;
+    /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
+    newMint: Address;
+    /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE). */
+    editionMarkPda: Address;
+    /** Mint authority of new mint */
+    newMintAuthority: Address;
+    /** payer */
+    payer: Address;
+    /** owner of token account containing master token (#8) */
+    tokenAccountOwner: Address;
+    /** token account containing token from master metadata mint */
+    tokenAccount: Address;
+    /** Update authority info for new metadata */
+    newMetadataUpdateAuthority: Address;
+    /** Master record metadata account */
+    metadata: Address;
+    /** Token program */
+    tokenProgram: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Rent info */
+    rent?: Address | undefined;
+  };
+  data: MintNewEditionFromMasterEditionViaTokenInstructionData;
+};
+
+export function parseMintNewEditionFromMasterEditionViaTokenInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedMintNewEditionFromMasterEditionViaTokenInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 14) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      newMetadata: getNextAccount(),
+      newEdition: getNextAccount(),
+      masterEdition: getNextAccount(),
+      newMint: getNextAccount(),
+      editionMarkPda: getNextAccount(),
+      newMintAuthority: getNextAccount(),
+      payer: getNextAccount(),
+      tokenAccountOwner: getNextAccount(),
+      tokenAccount: getNextAccount(),
+      newMetadataUpdateAuthority: getNextAccount(),
+      metadata: getNextAccount(),
+      tokenProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
+      rent: getNextOptionalAccount(),
+    },
+    data: getMintNewEditionFromMasterEditionViaTokenInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

@@ -657,3 +657,78 @@ export function getTransferOutOfEscrowInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedTransferOutOfEscrowInstruction = {
+  accounts: {
+    /** Escrow account */
+    escrow: Address;
+    /** Metadata account */
+    metadata: Address;
+    /** Wallet paying for the transaction and new account */
+    payer: Address;
+    /** Mint account for the new attribute */
+    attributeMint: Address;
+    /** Token account source for the new attribute */
+    attributeSrc: Address;
+    /** Token account, owned by TM, destination for the new attribute */
+    attributeDst: Address;
+    /** Mint account that the escrow is attached */
+    escrowMint: Address;
+    /** Token account that holds the token the escrow is attached to */
+    escrowAccount: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Associated Token program */
+    ataProgram: Address;
+    /** Token program */
+    tokenProgram: Address;
+    /** Instructions sysvar account */
+    sysvarInstructions: Address;
+    /** Authority/creator of the escrow account */
+    authority?: Address | undefined;
+  };
+  data: TransferOutOfEscrowInstructionData;
+};
+
+export function parseTransferOutOfEscrowInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedTransferOutOfEscrowInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 13) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      escrow: getNextAccount(),
+      metadata: getNextAccount(),
+      payer: getNextAccount(),
+      attributeMint: getNextAccount(),
+      attributeSrc: getNextAccount(),
+      attributeDst: getNextAccount(),
+      escrowMint: getNextAccount(),
+      escrowAccount: getNextAccount(),
+      systemProgram: getNextAccount(),
+      ataProgram: getNextAccount(),
+      tokenProgram: getNextAccount(),
+      sysvarInstructions: getNextAccount(),
+      authority: getNextOptionalAccount(),
+    },
+    data: getTransferOutOfEscrowInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

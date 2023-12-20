@@ -561,3 +561,64 @@ export function getCreateV1InstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedCreateV1Instruction = {
+  accounts: {
+    /** Metadata account key (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition'] */
+    masterEdition?: Address | undefined;
+    /** Mint of token asset */
+    mint: Address;
+    /** Mint authority */
+    mintAuthority: Address;
+    /** Payer */
+    payer: Address;
+    /** update authority info */
+    updateAuthority: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Instructions sysvar account */
+    sysvarInstructions: Address;
+    /** SPL Token program */
+    splTokenProgram: Address;
+  };
+  data: CreateV1InstructionData;
+};
+
+export function parseCreateV1Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedCreateV1Instruction {
+  if (!instruction.accounts || instruction.accounts.length < 9) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      metadata: getNextAccount(),
+      masterEdition: getNextOptionalAccount(),
+      mint: getNextAccount(),
+      mintAuthority: getNextAccount(),
+      payer: getNextAccount(),
+      updateAuthority: getNextAccount(),
+      systemProgram: getNextAccount(),
+      sysvarInstructions: getNextAccount(),
+      splTokenProgram: getNextAccount(),
+    },
+    data: getCreateV1InstructionDataDecoder().decode(instruction.data),
+  };
+}

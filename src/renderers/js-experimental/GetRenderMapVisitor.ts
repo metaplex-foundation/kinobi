@@ -22,6 +22,7 @@ import {
   getInstructionExtraArgsFragment,
   getInstructionFunctionHighLevelFragment,
   getInstructionFunctionLowLevelFragment,
+  getInstructionParseFunctionFragment,
   getInstructionTypeFragment,
   getProgramErrorsFragment,
   getProgramFragment,
@@ -284,6 +285,8 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       getInstructionFunctionHighLevelFragment({ ...scope, useAsync: false });
     const instructionFunctionLowLevelFragment =
       getInstructionFunctionLowLevelFragment(scope);
+    const instructionParseFunctionFragment =
+      getInstructionParseFunctionFragment(scope);
 
     // Imports and interfaces.
     const imports = new ImportMap().mergeWith(
@@ -293,7 +296,8 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       instructionExtraArgsFragment,
       instructionFunctionHighLevelAsyncFragment,
       instructionFunctionHighLevelSyncFragment,
-      instructionFunctionLowLevelFragment
+      instructionFunctionLowLevelFragment,
+      instructionParseFunctionFragment
     );
 
     return new RenderMap().add(
@@ -308,6 +312,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         instructionFunctionHighLevelAsyncFragment,
         instructionFunctionHighLevelSyncFragment,
         instructionFunctionLowLevelFragment,
+        instructionParseFunctionFragment,
       })
     );
   }

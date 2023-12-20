@@ -243,3 +243,37 @@ export function getUpdateCandyMachineInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedUpdateCandyMachineInstruction = {
+  accounts: {
+    candyMachine: Address;
+    authority: Address;
+  };
+  data: UpdateCandyMachineInstructionData;
+};
+
+export function parseUpdateCandyMachineInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedUpdateCandyMachineInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      candyMachine: getNextAccount(),
+      authority: getNextAccount(),
+    },
+    data: getUpdateCandyMachineInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

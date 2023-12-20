@@ -380,3 +380,57 @@ export function getUnverifyCollectionInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedUnverifyCollectionInstruction = {
+  accounts: {
+    /** Metadata account */
+    metadata: Address;
+    /** Collection Authority */
+    collectionAuthority: Address;
+    /** Mint of the Collection */
+    collectionMint: Address;
+    /** Metadata Account of the Collection */
+    collection: Address;
+    /** MasterEdition2 Account of the Collection Token */
+    collectionMasterEditionAccount: Address;
+    /** Collection Authority Record PDA */
+    collectionAuthorityRecord?: Address | undefined;
+  };
+  data: UnverifyCollectionInstructionData;
+};
+
+export function parseUnverifyCollectionInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedUnverifyCollectionInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 6) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      metadata: getNextAccount(),
+      collectionAuthority: getNextAccount(),
+      collectionMint: getNextAccount(),
+      collection: getNextAccount(),
+      collectionMasterEditionAccount: getNextAccount(),
+      collectionAuthorityRecord: getNextOptionalAccount(),
+    },
+    data: getUnverifyCollectionInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

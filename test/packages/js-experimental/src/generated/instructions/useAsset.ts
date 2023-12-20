@@ -612,3 +612,70 @@ export function getUseAssetInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedUseAssetInstruction = {
+  accounts: {
+    /** Metadata account */
+    metadata: Address;
+    /** Token Account Of NFT */
+    tokenAccount: Address;
+    /** Mint of the Metadata */
+    mint: Address;
+    /** Use authority or current owner of the asset */
+    useAuthority: Address;
+    /** Owner */
+    owner: Address;
+    /** SPL Token program */
+    splTokenProgram: Address;
+    /** Associated Token program */
+    ataProgram: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Use Authority Record PDA (if present the program assumes a delegated use authority) */
+    useAuthorityRecord?: Address | undefined;
+    /** Token Authorization Rules account */
+    authorizationRules?: Address | undefined;
+    /** Token Authorization Rules Program */
+    authorizationRulesProgram?: Address | undefined;
+  };
+  data: UseAssetInstructionData;
+};
+
+export function parseUseAssetInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedUseAssetInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 11) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      metadata: getNextAccount(),
+      tokenAccount: getNextAccount(),
+      mint: getNextAccount(),
+      useAuthority: getNextAccount(),
+      owner: getNextAccount(),
+      splTokenProgram: getNextAccount(),
+      ataProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
+      useAuthorityRecord: getNextOptionalAccount(),
+      authorizationRules: getNextOptionalAccount(),
+      authorizationRulesProgram: getNextOptionalAccount(),
+    },
+    data: getUseAssetInstructionDataDecoder().decode(instruction.data),
+  };
+}

@@ -823,3 +823,75 @@ export function getValidateInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedValidateInstruction = {
+  accounts: {
+    /** Payer and creator of the RuleSet */
+    payer: Address;
+    /** The PDA account where the RuleSet is stored */
+    ruleSet: Address;
+    /** System program */
+    systemProgram: Address;
+    optRuleSigner1?: Address | undefined;
+    /** Optional rule validation signer 2 */
+    optRuleSigner2?: Address | undefined;
+    /** Optional rule validation signer 3 */
+    optRuleSigner3?: Address | undefined;
+    /** Optional rule validation signer 4 */
+    optRuleSigner4?: Address | undefined;
+    /** Optional rule validation signer 5 */
+    optRuleSigner5?: Address | undefined;
+    /** Optional rule validation non-signer 1 */
+    optRuleNonsigner1?: Address | undefined;
+    /** Optional rule validation non-signer 2 */
+    optRuleNonsigner2?: Address | undefined;
+    /** Optional rule validation non-signer 3 */
+    optRuleNonsigner3?: Address | undefined;
+    /** Optional rule validation non-signer 4 */
+    optRuleNonsigner4?: Address | undefined;
+    /** Optional rule validation non-signer 5 */
+    optRuleNonsigner5?: Address | undefined;
+  };
+  data: ValidateInstructionData;
+};
+
+export function parseValidateInstruction<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedValidateInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 3) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  let optionalAccountsRemaining = instruction.accounts.length - 3;
+  const getNextOptionalAccount = (): Address | undefined => {
+    if (optionalAccountsRemaining === 0) return undefined;
+    optionalAccountsRemaining -= 1;
+    return getNextAccount();
+  };
+  return {
+    accounts: {
+      payer: getNextAccount(),
+      ruleSet: getNextAccount(),
+      systemProgram: getNextAccount(),
+      optRuleSigner1: getNextOptionalAccount(),
+      optRuleSigner2: getNextOptionalAccount(),
+      optRuleSigner3: getNextOptionalAccount(),
+      optRuleSigner4: getNextOptionalAccount(),
+      optRuleSigner5: getNextOptionalAccount(),
+      optRuleNonsigner1: getNextOptionalAccount(),
+      optRuleNonsigner2: getNextOptionalAccount(),
+      optRuleNonsigner3: getNextOptionalAccount(),
+      optRuleNonsigner4: getNextOptionalAccount(),
+      optRuleNonsigner5: getNextOptionalAccount(),
+    },
+    data: getValidateInstructionDataDecoder().decode(instruction.data),
+  };
+}

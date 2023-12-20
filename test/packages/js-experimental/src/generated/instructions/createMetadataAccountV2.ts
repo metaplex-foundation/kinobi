@@ -439,3 +439,60 @@ export function getCreateMetadataAccountV2InstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedCreateMetadataAccountV2Instruction = {
+  accounts: {
+    /** Metadata key (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** Mint of token asset */
+    mint: Address;
+    /** Mint authority */
+    mintAuthority: Address;
+    /** payer */
+    payer: Address;
+    /** update authority info */
+    updateAuthority: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Rent info */
+    rent?: Address | undefined;
+  };
+  data: CreateMetadataAccountV2InstructionData;
+};
+
+export function parseCreateMetadataAccountV2Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedCreateMetadataAccountV2Instruction {
+  if (!instruction.accounts || instruction.accounts.length < 7) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      metadata: getNextAccount(),
+      mint: getNextAccount(),
+      mintAuthority: getNextAccount(),
+      payer: getNextAccount(),
+      updateAuthority: getNextAccount(),
+      systemProgram: getNextAccount(),
+      rent: getNextOptionalAccount(),
+    },
+    data: getCreateMetadataAccountV2InstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

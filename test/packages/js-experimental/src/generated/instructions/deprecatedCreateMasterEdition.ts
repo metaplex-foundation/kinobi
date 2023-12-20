@@ -669,3 +669,72 @@ export function getDeprecatedCreateMasterEditionInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedDeprecatedCreateMasterEditionInstruction = {
+  accounts: {
+    /** Unallocated edition V1 account with address as pda of ['metadata', program id, mint, 'edition'] */
+    edition: Address;
+    /** Metadata mint */
+    mint: Address;
+    /** Printing mint - A mint you control that can mint tokens that can be exchanged for limited editions of your master edition via the MintNewEditionFromMasterEditionViaToken endpoint */
+    printingMint: Address;
+    /** One time authorization printing mint - A mint you control that prints tokens that gives the bearer permission to mint any number of tokens from the printing mint one time via an endpoint with the token-metadata program for your metadata. Also burns the token. */
+    oneTimePrintingAuthorizationMint: Address;
+    /** Current Update authority key */
+    updateAuthority: Address;
+    /** Printing mint authority - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY. */
+    printingMintAuthority: Address;
+    /** Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
+    mintAuthority: Address;
+    /** Metadata account */
+    metadata: Address;
+    /** payer */
+    payer: Address;
+    /** Token program */
+    tokenProgram: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Rent info */
+    rent: Address;
+    /** One time authorization printing mint authority - must be provided if using max supply. THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY. */
+    oneTimePrintingAuthorizationMintAuthority: Address;
+  };
+  data: DeprecatedCreateMasterEditionInstructionData;
+};
+
+export function parseDeprecatedCreateMasterEditionInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedDeprecatedCreateMasterEditionInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 13) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      edition: getNextAccount(),
+      mint: getNextAccount(),
+      printingMint: getNextAccount(),
+      oneTimePrintingAuthorizationMint: getNextAccount(),
+      updateAuthority: getNextAccount(),
+      printingMintAuthority: getNextAccount(),
+      mintAuthority: getNextAccount(),
+      metadata: getNextAccount(),
+      payer: getNextAccount(),
+      tokenProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
+      rent: getNextAccount(),
+      oneTimePrintingAuthorizationMintAuthority: getNextAccount(),
+    },
+    data: getDeprecatedCreateMasterEditionInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

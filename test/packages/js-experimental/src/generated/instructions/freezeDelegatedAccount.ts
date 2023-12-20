@@ -334,3 +334,48 @@ export function getFreezeDelegatedAccountInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedFreezeDelegatedAccountInstruction = {
+  accounts: {
+    /** Delegate */
+    delegate: Address;
+    /** Token account to freeze */
+    tokenAccount: Address;
+    /** Edition */
+    edition: Address;
+    /** Token mint */
+    mint: Address;
+    /** Token Program */
+    tokenProgram: Address;
+  };
+  data: FreezeDelegatedAccountInstructionData;
+};
+
+export function parseFreezeDelegatedAccountInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedFreezeDelegatedAccountInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 5) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      delegate: getNextAccount(),
+      tokenAccount: getNextAccount(),
+      edition: getNextAccount(),
+      mint: getNextAccount(),
+      tokenProgram: getNextAccount(),
+    },
+    data: getFreezeDelegatedAccountInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

@@ -513,3 +513,60 @@ export function getDeprecatedMintPrintingTokensViaTokenInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedDeprecatedMintPrintingTokensViaTokenInstruction = {
+  accounts: {
+    /** Destination account */
+    destination: Address;
+    /** Token account containing one time authorization token */
+    token: Address;
+    /** One time authorization mint */
+    oneTimePrintingAuthorizationMint: Address;
+    /** Printing mint */
+    printingMint: Address;
+    /** Burn authority */
+    burnAuthority: Address;
+    /** Metadata key (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
+    masterEdition: Address;
+    /** Token program */
+    tokenProgram: Address;
+    /** Rent */
+    rent: Address;
+  };
+  data: DeprecatedMintPrintingTokensViaTokenInstructionData;
+};
+
+export function parseDeprecatedMintPrintingTokensViaTokenInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedDeprecatedMintPrintingTokensViaTokenInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 9) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      destination: getNextAccount(),
+      token: getNextAccount(),
+      oneTimePrintingAuthorizationMint: getNextAccount(),
+      printingMint: getNextAccount(),
+      burnAuthority: getNextAccount(),
+      metadata: getNextAccount(),
+      masterEdition: getNextAccount(),
+      tokenProgram: getNextAccount(),
+      rent: getNextAccount(),
+    },
+    data: getDeprecatedMintPrintingTokensViaTokenInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

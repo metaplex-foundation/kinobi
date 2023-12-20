@@ -514,3 +514,64 @@ export function getBurnInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedBurnInstruction = {
+  accounts: {
+    /** Metadata (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** Asset owner */
+    owner: Address;
+    /** Mint of token asset */
+    mint: Address;
+    /** Token account to close */
+    tokenAccount: Address;
+    /** MasterEdition of the asset */
+    masterEditionAccount: Address;
+    /** SPL Token Program */
+    splTokenProgram: Address;
+    /** Metadata of the Collection */
+    collectionMetadata?: Address | undefined;
+    /** Token Authorization Rules account */
+    authorizationRules?: Address | undefined;
+    /** Token Authorization Rules Program */
+    authorizationRulesProgram?: Address | undefined;
+  };
+  data: BurnInstructionData;
+};
+
+export function parseBurnInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedBurnInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 9) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      metadata: getNextAccount(),
+      owner: getNextAccount(),
+      mint: getNextAccount(),
+      tokenAccount: getNextAccount(),
+      masterEditionAccount: getNextAccount(),
+      splTokenProgram: getNextAccount(),
+      collectionMetadata: getNextOptionalAccount(),
+      authorizationRules: getNextOptionalAccount(),
+      authorizationRulesProgram: getNextOptionalAccount(),
+    },
+    data: getBurnInstructionDataDecoder().decode(instruction.data),
+  };
+}

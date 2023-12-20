@@ -667,3 +667,59 @@ export function getSetCollectionInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedSetCollectionInstruction = {
+  accounts: {
+    candyMachine: Address;
+    authority: Address;
+    authorityPda: Address;
+    payer: Address;
+    collectionMint: Address;
+    collectionMetadata: Address;
+    collectionAuthorityRecord: Address;
+    newCollectionUpdateAuthority: Address;
+    newCollectionMetadata: Address;
+    newCollectionMint: Address;
+    newCollectionMasterEdition: Address;
+    newCollectionAuthorityRecord: Address;
+    tokenMetadataProgram: Address;
+    systemProgram: Address;
+  };
+  data: SetCollectionInstructionData;
+};
+
+export function parseSetCollectionInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedSetCollectionInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 14) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      candyMachine: getNextAccount(),
+      authority: getNextAccount(),
+      authorityPda: getNextAccount(),
+      payer: getNextAccount(),
+      collectionMint: getNextAccount(),
+      collectionMetadata: getNextAccount(),
+      collectionAuthorityRecord: getNextAccount(),
+      newCollectionUpdateAuthority: getNextAccount(),
+      newCollectionMetadata: getNextAccount(),
+      newCollectionMint: getNextAccount(),
+      newCollectionMasterEdition: getNextAccount(),
+      newCollectionAuthorityRecord: getNextAccount(),
+      tokenMetadataProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
+    },
+    data: getSetCollectionInstructionDataDecoder().decode(instruction.data),
+  };
+}

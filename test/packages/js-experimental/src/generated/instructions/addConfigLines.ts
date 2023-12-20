@@ -266,3 +266,35 @@ export function getAddConfigLinesInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedAddConfigLinesInstruction = {
+  accounts: {
+    candyMachine: Address;
+    authority: Address;
+  };
+  data: AddConfigLinesInstructionData;
+};
+
+export function parseAddConfigLinesInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedAddConfigLinesInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      candyMachine: getNextAccount(),
+      authority: getNextAccount(),
+    },
+    data: getAddConfigLinesInstructionDataDecoder().decode(instruction.data),
+  };
+}

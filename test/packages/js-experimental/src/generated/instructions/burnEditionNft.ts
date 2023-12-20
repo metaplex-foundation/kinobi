@@ -537,3 +537,61 @@ export function getBurnEditionNftInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedBurnEditionNftInstruction = {
+  accounts: {
+    /** Metadata (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** NFT owner */
+    owner: Address;
+    /** Mint of the print edition NFT */
+    printEditionMint: Address;
+    /** Mint of the original/master NFT */
+    masterEditionMint: Address;
+    /** Token account the print edition NFT is in */
+    printEditionTokenAccount: Address;
+    /** Token account the Master Edition NFT is in */
+    masterEditionTokenAccount: Address;
+    /** MasterEdition2 of the original NFT */
+    masterEditionAccount: Address;
+    /** Print Edition account of the NFT */
+    printEditionAccount: Address;
+    /** Edition Marker PDA of the NFT */
+    editionMarkerAccount: Address;
+    /** SPL Token Program */
+    splTokenProgram: Address;
+  };
+  data: BurnEditionNftInstructionData;
+};
+
+export function parseBurnEditionNftInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedBurnEditionNftInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 10) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      metadata: getNextAccount(),
+      owner: getNextAccount(),
+      printEditionMint: getNextAccount(),
+      masterEditionMint: getNextAccount(),
+      printEditionTokenAccount: getNextAccount(),
+      masterEditionTokenAccount: getNextAccount(),
+      masterEditionAccount: getNextAccount(),
+      printEditionAccount: getNextAccount(),
+      editionMarkerAccount: getNextAccount(),
+      splTokenProgram: getNextAccount(),
+    },
+    data: getBurnEditionNftInstructionDataDecoder().decode(instruction.data),
+  };
+}

@@ -738,3 +738,54 @@ export function getCreateMetadataAccountInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedCreateMetadataAccountInstruction = {
+  accounts: {
+    /** Metadata key (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** Mint of token asset */
+    mint: Address;
+    /** Mint authority */
+    mintAuthority: Address;
+    /** payer */
+    payer: Address;
+    /** update authority info */
+    updateAuthority: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Rent info */
+    rent: Address;
+  };
+  data: CreateMetadataAccountInstructionData;
+};
+
+export function parseCreateMetadataAccountInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedCreateMetadataAccountInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 7) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      metadata: getNextAccount(),
+      mint: getNextAccount(),
+      mintAuthority: getNextAccount(),
+      payer: getNextAccount(),
+      updateAuthority: getNextAccount(),
+      systemProgram: getNextAccount(),
+      rent: getNextAccount(),
+    },
+    data: getCreateMetadataAccountInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

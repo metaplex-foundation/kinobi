@@ -312,3 +312,42 @@ export function getDeprecatedSetReservationListInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedDeprecatedSetReservationListInstruction = {
+  accounts: {
+    /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
+    masterEdition: Address;
+    /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
+    reservationList: Address;
+    /** The resource you tied the reservation list too */
+    resource: Address;
+  };
+  data: DeprecatedSetReservationListInstructionData;
+};
+
+export function parseDeprecatedSetReservationListInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedDeprecatedSetReservationListInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 3) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      masterEdition: getNextAccount(),
+      reservationList: getNextAccount(),
+      resource: getNextAccount(),
+    },
+    data: getDeprecatedSetReservationListInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

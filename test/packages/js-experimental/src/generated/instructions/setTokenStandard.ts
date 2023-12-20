@@ -294,3 +294,49 @@ export function getSetTokenStandardInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedSetTokenStandardInstruction = {
+  accounts: {
+    /** Metadata account */
+    metadata: Address;
+    /** Metadata update authority */
+    updateAuthority: Address;
+    /** Mint account */
+    mint: Address;
+    /** Edition account */
+    edition?: Address | undefined;
+  };
+  data: SetTokenStandardInstructionData;
+};
+
+export function parseSetTokenStandardInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedSetTokenStandardInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 4) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      metadata: getNextAccount(),
+      updateAuthority: getNextAccount(),
+      mint: getNextAccount(),
+      edition: getNextOptionalAccount(),
+    },
+    data: getSetTokenStandardInstructionDataDecoder().decode(instruction.data),
+  };
+}

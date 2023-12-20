@@ -372,3 +372,54 @@ export function getBubblegumSetCollectionSizeInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedBubblegumSetCollectionSizeInstruction = {
+  accounts: {
+    /** Collection Metadata account */
+    collectionMetadata: Address;
+    /** Collection Update authority */
+    collectionAuthority: Address;
+    /** Mint of the Collection */
+    collectionMint: Address;
+    /** Signing PDA of Bubblegum program */
+    bubblegumSigner: Address;
+    /** Collection Authority Record PDA */
+    collectionAuthorityRecord?: Address | undefined;
+  };
+  data: BubblegumSetCollectionSizeInstructionData;
+};
+
+export function parseBubblegumSetCollectionSizeInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedBubblegumSetCollectionSizeInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 5) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      collectionMetadata: getNextAccount(),
+      collectionAuthority: getNextAccount(),
+      collectionMint: getNextAccount(),
+      bubblegumSigner: getNextAccount(),
+      collectionAuthorityRecord: getNextOptionalAccount(),
+    },
+    data: getBubblegumSetCollectionSizeInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

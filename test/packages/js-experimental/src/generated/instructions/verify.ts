@@ -367,3 +367,52 @@ export function getVerifyInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedVerifyInstruction = {
+  accounts: {
+    /** Metadata account */
+    metadata: Address;
+    /** Collection Update authority */
+    collectionAuthority: Address;
+    /** payer */
+    payer: Address;
+    /** Token Authorization Rules account */
+    authorizationRules?: Address | undefined;
+    /** Token Authorization Rules Program */
+    authorizationRulesProgram?: Address | undefined;
+  };
+  data: VerifyInstructionData;
+};
+
+export function parseVerifyInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedVerifyInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 5) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      metadata: getNextAccount(),
+      collectionAuthority: getNextAccount(),
+      payer: getNextAccount(),
+      authorizationRules: getNextOptionalAccount(),
+      authorizationRulesProgram: getNextOptionalAccount(),
+    },
+    data: getVerifyInstructionDataDecoder().decode(instruction.data),
+  };
+}

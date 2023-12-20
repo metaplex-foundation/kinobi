@@ -254,3 +254,42 @@ export function getConvertMasterEditionV1ToV2InstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedConvertMasterEditionV1ToV2Instruction = {
+  accounts: {
+    /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
+    masterEdition: Address;
+    /** One time authorization mint */
+    oneTimeAuth: Address;
+    /** Printing mint */
+    printingMint: Address;
+  };
+  data: ConvertMasterEditionV1ToV2InstructionData;
+};
+
+export function parseConvertMasterEditionV1ToV2Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedConvertMasterEditionV1ToV2Instruction {
+  if (!instruction.accounts || instruction.accounts.length < 3) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      masterEdition: getNextAccount(),
+      oneTimeAuth: getNextAccount(),
+      printingMint: getNextAccount(),
+    },
+    data: getConvertMasterEditionV1ToV2InstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

@@ -663,3 +663,76 @@ export function getDelegateInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedDelegateInstruction = {
+  accounts: {
+    /** Delegate account key (pda of [mint id, delegate role, user id, authority id]) */
+    delegateRecord: Address;
+    /** Owner of the delegated account */
+    delegate: Address;
+    /** Metadata account */
+    metadata: Address;
+    /** Master Edition account */
+    masterEdition?: Address | undefined;
+    /** Mint of metadata */
+    mint: Address;
+    /** Owned Token Account of mint */
+    token?: Address | undefined;
+    /** Authority to approve the delegation */
+    authority: Address;
+    /** Payer */
+    payer: Address;
+    /** System Program */
+    systemProgram: Address;
+    /** Instructions sysvar account */
+    sysvarInstructions: Address;
+    /** SPL Token Program */
+    splTokenProgram?: Address | undefined;
+    /** Token Authorization Rules Program */
+    authorizationRulesProgram?: Address | undefined;
+    /** Token Authorization Rules account */
+    authorizationRules?: Address | undefined;
+  };
+  data: DelegateInstructionData;
+};
+
+export function parseDelegateInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedDelegateInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 13) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      delegateRecord: getNextAccount(),
+      delegate: getNextAccount(),
+      metadata: getNextAccount(),
+      masterEdition: getNextOptionalAccount(),
+      mint: getNextAccount(),
+      token: getNextOptionalAccount(),
+      authority: getNextAccount(),
+      payer: getNextAccount(),
+      systemProgram: getNextAccount(),
+      sysvarInstructions: getNextAccount(),
+      splTokenProgram: getNextOptionalAccount(),
+      authorizationRulesProgram: getNextOptionalAccount(),
+      authorizationRules: getNextOptionalAccount(),
+    },
+    data: getDelegateInstructionDataDecoder().decode(instruction.data),
+  };
+}

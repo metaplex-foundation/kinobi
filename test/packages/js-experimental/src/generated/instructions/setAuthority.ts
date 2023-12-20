@@ -229,3 +229,35 @@ export function getSetAuthorityInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedSetAuthorityInstruction = {
+  accounts: {
+    candyMachine: Address;
+    authority: Address;
+  };
+  data: SetAuthorityInstructionData;
+};
+
+export function parseSetAuthorityInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedSetAuthorityInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      candyMachine: getNextAccount(),
+      authority: getNextAccount(),
+    },
+    data: getSetAuthorityInstructionDataDecoder().decode(instruction.data),
+  };
+}

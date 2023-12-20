@@ -441,3 +441,57 @@ export function getCloseEscrowAccountInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedCloseEscrowAccountInstruction = {
+  accounts: {
+    /** Escrow account */
+    escrow: Address;
+    /** Metadata account */
+    metadata: Address;
+    /** Mint account */
+    mint: Address;
+    /** Token account */
+    tokenAccount: Address;
+    /** Edition account */
+    edition: Address;
+    /** Wallet paying for the transaction and new account */
+    payer: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Instructions sysvar account */
+    sysvarInstructions: Address;
+  };
+  data: CloseEscrowAccountInstructionData;
+};
+
+export function parseCloseEscrowAccountInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedCloseEscrowAccountInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 8) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      escrow: getNextAccount(),
+      metadata: getNextAccount(),
+      mint: getNextAccount(),
+      tokenAccount: getNextAccount(),
+      edition: getNextAccount(),
+      payer: getNextAccount(),
+      systemProgram: getNextAccount(),
+      sysvarInstructions: getNextAccount(),
+    },
+    data: getCloseEscrowAccountInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

@@ -312,3 +312,40 @@ export function getCreateRuleSetInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedCreateRuleSetInstruction = {
+  accounts: {
+    /** Payer and creator of the RuleSet */
+    payer: Address;
+    /** The PDA account where the RuleSet is stored */
+    ruleSetPda: Address;
+    /** System program */
+    systemProgram: Address;
+  };
+  data: CreateRuleSetInstructionData;
+};
+
+export function parseCreateRuleSetInstruction<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedCreateRuleSetInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 3) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      payer: getNextAccount(),
+      ruleSetPda: getNextAccount(),
+      systemProgram: getNextAccount(),
+    },
+    data: getCreateRuleSetInstructionDataDecoder().decode(instruction.data),
+  };
+}

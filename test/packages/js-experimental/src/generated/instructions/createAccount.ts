@@ -246,3 +246,35 @@ export function getCreateAccountInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedCreateAccountInstruction = {
+  accounts: {
+    payer: Address;
+    newAccount: Address;
+  };
+  data: CreateAccountInstructionData;
+};
+
+export function parseCreateAccountInstruction<
+  TProgram extends string = '11111111111111111111111111111111'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedCreateAccountInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      payer: getNextAccount(),
+      newAccount: getNextAccount(),
+    },
+    data: getCreateAccountInstructionDataDecoder().decode(instruction.data),
+  };
+}

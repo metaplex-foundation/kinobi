@@ -211,3 +211,35 @@ export function getWithdrawInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedWithdrawInstruction = {
+  accounts: {
+    candyMachine: Address;
+    authority: Address;
+  };
+  data: WithdrawInstructionData;
+};
+
+export function parseWithdrawInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedWithdrawInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      candyMachine: getNextAccount(),
+      authority: getNextAccount(),
+    },
+    data: getWithdrawInstructionDataDecoder().decode(instruction.data),
+  };
+}

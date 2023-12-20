@@ -320,3 +320,42 @@ export function getCreateFrequencyRuleInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedCreateFrequencyRuleInstruction = {
+  accounts: {
+    /** Payer and creator of the Frequency Rule */
+    payer: Address;
+    /** The PDA account where the Frequency Rule is stored */
+    frequencyPda: Address;
+    /** System program */
+    systemProgram: Address;
+  };
+  data: CreateFrequencyRuleInstructionData;
+};
+
+export function parseCreateFrequencyRuleInstruction<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedCreateFrequencyRuleInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 3) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      payer: getNextAccount(),
+      frequencyPda: getNextAccount(),
+      systemProgram: getNextAccount(),
+    },
+    data: getCreateFrequencyRuleInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

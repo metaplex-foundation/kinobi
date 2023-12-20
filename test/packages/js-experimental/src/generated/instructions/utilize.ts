@@ -598,3 +598,70 @@ export function getUtilizeInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedUtilizeInstruction = {
+  accounts: {
+    /** Metadata account */
+    metadata: Address;
+    /** Token Account Of NFT */
+    tokenAccount: Address;
+    /** Mint of the Metadata */
+    mint: Address;
+    /** A Use Authority / Can be the current Owner of the NFT */
+    useAuthority: Address;
+    /** Owner */
+    owner: Address;
+    /** Token program */
+    tokenProgram: Address;
+    /** Associated Token program */
+    ataProgram: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Rent info */
+    rent: Address;
+    /** Use Authority Record PDA If present the program Assumes a delegated use authority */
+    useAuthorityRecord?: Address | undefined;
+    /** Program As Signer (Burner) */
+    burner?: Address | undefined;
+  };
+  data: UtilizeInstructionData;
+};
+
+export function parseUtilizeInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedUtilizeInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 11) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      metadata: getNextAccount(),
+      tokenAccount: getNextAccount(),
+      mint: getNextAccount(),
+      useAuthority: getNextAccount(),
+      owner: getNextAccount(),
+      tokenProgram: getNextAccount(),
+      ataProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
+      rent: getNextAccount(),
+      useAuthorityRecord: getNextOptionalAccount(),
+      burner: getNextOptionalAccount(),
+    },
+    data: getUtilizeInstructionDataDecoder().decode(instruction.data),
+  };
+}

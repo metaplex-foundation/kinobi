@@ -556,3 +556,67 @@ export function getMigrateInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedMigrateInstruction = {
+  accounts: {
+    /** Metadata account */
+    metadata: Address;
+    /** Master edition account */
+    masterEdition: Address;
+    /** Token account */
+    tokenAccount: Address;
+    /** Mint account */
+    mint: Address;
+    /** Update authority */
+    updateAuthority: Address;
+    /** Collection metadata account */
+    collectionMetadata: Address;
+    /** Token Program */
+    tokenProgram: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Instruction sysvar account */
+    sysvarInstructions: Address;
+    /** Token Authorization Rules account */
+    authorizationRules?: Address | undefined;
+  };
+  data: MigrateInstructionData;
+};
+
+export function parseMigrateInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedMigrateInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 10) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      metadata: getNextAccount(),
+      masterEdition: getNextAccount(),
+      tokenAccount: getNextAccount(),
+      mint: getNextAccount(),
+      updateAuthority: getNextAccount(),
+      collectionMetadata: getNextAccount(),
+      tokenProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
+      sysvarInstructions: getNextAccount(),
+      authorizationRules: getNextOptionalAccount(),
+    },
+    data: getMigrateInstructionDataDecoder().decode(instruction.data),
+  };
+}

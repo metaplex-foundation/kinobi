@@ -260,3 +260,42 @@ export function getUpdatePrimarySaleHappenedViaTokenInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedUpdatePrimarySaleHappenedViaTokenInstruction = {
+  accounts: {
+    /** Metadata key (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** Owner on the token account */
+    owner: Address;
+    /** Account containing tokens from the metadata's mint */
+    token: Address;
+  };
+  data: UpdatePrimarySaleHappenedViaTokenInstructionData;
+};
+
+export function parseUpdatePrimarySaleHappenedViaTokenInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedUpdatePrimarySaleHappenedViaTokenInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 3) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      metadata: getNextAccount(),
+      owner: getNextAccount(),
+      token: getNextAccount(),
+    },
+    data: getUpdatePrimarySaleHappenedViaTokenInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

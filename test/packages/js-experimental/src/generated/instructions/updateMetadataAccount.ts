@@ -337,3 +337,39 @@ export function getUpdateMetadataAccountInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedUpdateMetadataAccountInstruction = {
+  accounts: {
+    /** Metadata account */
+    metadata: Address;
+    /** Update authority key */
+    updateAuthority: Address;
+  };
+  data: UpdateMetadataAccountInstructionData;
+};
+
+export function parseUpdateMetadataAccountInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedUpdateMetadataAccountInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      metadata: getNextAccount(),
+      updateAuthority: getNextAccount(),
+    },
+    data: getUpdateMetadataAccountInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

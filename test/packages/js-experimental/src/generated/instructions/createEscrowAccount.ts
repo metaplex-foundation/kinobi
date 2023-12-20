@@ -480,3 +480,66 @@ export function getCreateEscrowAccountInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedCreateEscrowAccountInstruction = {
+  accounts: {
+    /** Escrow account */
+    escrow: Address;
+    /** Metadata account */
+    metadata: Address;
+    /** Mint account */
+    mint: Address;
+    /** Token account of the token */
+    tokenAccount: Address;
+    /** Edition account */
+    edition: Address;
+    /** Wallet paying for the transaction and new account */
+    payer: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Instructions sysvar account */
+    sysvarInstructions: Address;
+    /** Authority/creator of the escrow account */
+    authority?: Address | undefined;
+  };
+  data: CreateEscrowAccountInstructionData;
+};
+
+export function parseCreateEscrowAccountInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedCreateEscrowAccountInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 9) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      escrow: getNextAccount(),
+      metadata: getNextAccount(),
+      mint: getNextAccount(),
+      tokenAccount: getNextAccount(),
+      edition: getNextAccount(),
+      payer: getNextAccount(),
+      systemProgram: getNextAccount(),
+      sysvarInstructions: getNextAccount(),
+      authority: getNextOptionalAccount(),
+    },
+    data: getCreateEscrowAccountInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

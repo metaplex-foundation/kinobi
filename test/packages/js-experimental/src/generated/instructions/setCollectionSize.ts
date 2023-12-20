@@ -334,3 +334,49 @@ export function getSetCollectionSizeInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedSetCollectionSizeInstruction = {
+  accounts: {
+    /** Collection Metadata account */
+    collectionMetadata: Address;
+    /** Collection Update authority */
+    collectionAuthority: Address;
+    /** Mint of the Collection */
+    collectionMint: Address;
+    /** Collection Authority Record PDA */
+    collectionAuthorityRecord?: Address | undefined;
+  };
+  data: SetCollectionSizeInstructionData;
+};
+
+export function parseSetCollectionSizeInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedSetCollectionSizeInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 4) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      collectionMetadata: getNextAccount(),
+      collectionAuthority: getNextAccount(),
+      collectionMint: getNextAccount(),
+      collectionAuthorityRecord: getNextOptionalAccount(),
+    },
+    data: getSetCollectionSizeInstructionDataDecoder().decode(instruction.data),
+  };
+}

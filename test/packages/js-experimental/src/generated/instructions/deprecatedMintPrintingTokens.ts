@@ -442,3 +442,54 @@ export function getDeprecatedMintPrintingTokensInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedDeprecatedMintPrintingTokensInstruction = {
+  accounts: {
+    /** Destination account */
+    destination: Address;
+    /** Printing mint */
+    printingMint: Address;
+    /** Update authority */
+    updateAuthority: Address;
+    /** Metadata key (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
+    masterEdition: Address;
+    /** Token program */
+    tokenProgram: Address;
+    /** Rent */
+    rent: Address;
+  };
+  data: DeprecatedMintPrintingTokensInstructionData;
+};
+
+export function parseDeprecatedMintPrintingTokensInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedDeprecatedMintPrintingTokensInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 7) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      destination: getNextAccount(),
+      printingMint: getNextAccount(),
+      updateAuthority: getNextAccount(),
+      metadata: getNextAccount(),
+      masterEdition: getNextAccount(),
+      tokenProgram: getNextAccount(),
+      rent: getNextAccount(),
+    },
+    data: getDeprecatedMintPrintingTokensInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

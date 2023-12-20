@@ -582,3 +582,53 @@ export function getInitializeInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedInitializeInstruction = {
+  accounts: {
+    candyMachine: Address;
+    authorityPda: Address;
+    authority: Address;
+    payer: Address;
+    collectionMetadata: Address;
+    collectionMint: Address;
+    collectionMasterEdition: Address;
+    collectionUpdateAuthority: Address;
+    collectionAuthorityRecord: Address;
+    tokenMetadataProgram: Address;
+    systemProgram: Address;
+  };
+  data: InitializeInstructionData;
+};
+
+export function parseInitializeInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedInitializeInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 11) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      candyMachine: getNextAccount(),
+      authorityPda: getNextAccount(),
+      authority: getNextAccount(),
+      payer: getNextAccount(),
+      collectionMetadata: getNextAccount(),
+      collectionMint: getNextAccount(),
+      collectionMasterEdition: getNextAccount(),
+      collectionUpdateAuthority: getNextAccount(),
+      collectionAuthorityRecord: getNextAccount(),
+      tokenMetadataProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
+    },
+    data: getInitializeInstructionDataDecoder().decode(instruction.data),
+  };
+}

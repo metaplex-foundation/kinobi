@@ -786,3 +786,90 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedMintNewEditionFromMasterEditionViaVaultProxyInstruction = {
+  accounts: {
+    /** New Metadata key (pda of ['metadata', program id, mint id]) */
+    newMetadata: Address;
+    /** New Edition (pda of ['metadata', program id, mint id, 'edition']) */
+    newEdition: Address;
+    /** Master Record Edition V2 (pda of ['metadata', program id, master metadata mint id, 'edition'] */
+    masterEdition: Address;
+    /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
+    newMint: Address;
+    /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE). */
+    editionMarkPda: Address;
+    /** Mint authority of new mint */
+    newMintAuthority: Address;
+    /** payer */
+    payer: Address;
+    /** Vault authority */
+    vaultAuthority: Address;
+    /** Safety deposit token store account */
+    safetyDepositStore: Address;
+    /** Safety deposit box */
+    safetyDepositBox: Address;
+    /** Vault */
+    vault: Address;
+    /** Update authority info for new metadata */
+    newMetadataUpdateAuthority: Address;
+    /** Master record metadata account */
+    metadata: Address;
+    /** Token program */
+    tokenProgram: Address;
+    /** Token vault program */
+    tokenVaultProgram: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Rent info */
+    rent?: Address | undefined;
+  };
+  data: MintNewEditionFromMasterEditionViaVaultProxyInstructionData;
+};
+
+export function parseMintNewEditionFromMasterEditionViaVaultProxyInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedMintNewEditionFromMasterEditionViaVaultProxyInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 17) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      newMetadata: getNextAccount(),
+      newEdition: getNextAccount(),
+      masterEdition: getNextAccount(),
+      newMint: getNextAccount(),
+      editionMarkPda: getNextAccount(),
+      newMintAuthority: getNextAccount(),
+      payer: getNextAccount(),
+      vaultAuthority: getNextAccount(),
+      safetyDepositStore: getNextAccount(),
+      safetyDepositBox: getNextAccount(),
+      vault: getNextAccount(),
+      newMetadataUpdateAuthority: getNextAccount(),
+      metadata: getNextAccount(),
+      tokenProgram: getNextAccount(),
+      tokenVaultProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
+      rent: getNextOptionalAccount(),
+    },
+    data: getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

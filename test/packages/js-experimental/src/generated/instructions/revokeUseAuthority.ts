@@ -481,3 +481,66 @@ export function getRevokeUseAuthorityInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedRevokeUseAuthorityInstruction = {
+  accounts: {
+    /** Use Authority Record PDA */
+    useAuthorityRecord: Address;
+    /** Owner */
+    owner: Address;
+    /** A Use Authority */
+    user: Address;
+    /** Owned Token Account Of Mint */
+    ownerTokenAccount: Address;
+    /** Mint of Metadata */
+    mint: Address;
+    /** Metadata account */
+    metadata: Address;
+    /** Token program */
+    tokenProgram: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Rent info */
+    rent?: Address | undefined;
+  };
+  data: RevokeUseAuthorityInstructionData;
+};
+
+export function parseRevokeUseAuthorityInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedRevokeUseAuthorityInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 9) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      useAuthorityRecord: getNextAccount(),
+      owner: getNextAccount(),
+      user: getNextAccount(),
+      ownerTokenAccount: getNextAccount(),
+      mint: getNextAccount(),
+      metadata: getNextAccount(),
+      tokenProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
+      rent: getNextOptionalAccount(),
+    },
+    data: getRevokeUseAuthorityInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

@@ -334,3 +334,48 @@ export function getRevokeCollectionAuthorityInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedRevokeCollectionAuthorityInstruction = {
+  accounts: {
+    /** Collection Authority Record PDA */
+    collectionAuthorityRecord: Address;
+    /** Delegated Collection Authority */
+    delegateAuthority: Address;
+    /** Update Authority, or Delegated Authority, of Collection NFT */
+    revokeAuthority: Address;
+    /** Metadata account */
+    metadata: Address;
+    /** Mint of Metadata */
+    mint: Address;
+  };
+  data: RevokeCollectionAuthorityInstructionData;
+};
+
+export function parseRevokeCollectionAuthorityInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedRevokeCollectionAuthorityInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 5) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      collectionAuthorityRecord: getNextAccount(),
+      delegateAuthority: getNextAccount(),
+      revokeAuthority: getNextAccount(),
+      metadata: getNextAccount(),
+      mint: getNextAccount(),
+    },
+    data: getRevokeCollectionAuthorityInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

@@ -765,3 +765,67 @@ export function getUpdateV1InstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedUpdateV1Instruction = {
+  accounts: {
+    /** Update authority or delegate */
+    authority: Address;
+    /** Metadata account */
+    metadata: Address;
+    /** Master Edition account */
+    masterEdition?: Address | undefined;
+    /** Mint account */
+    mint: Address;
+    /** System program */
+    systemProgram: Address;
+    /** System program */
+    sysvarInstructions: Address;
+    /** Token account */
+    token?: Address | undefined;
+    /** Delegate record PDA */
+    delegateRecord?: Address | undefined;
+    /** Token Authorization Rules Program */
+    authorizationRulesProgram?: Address | undefined;
+    /** Token Authorization Rules account */
+    authorizationRules?: Address | undefined;
+  };
+  data: UpdateV1InstructionData;
+};
+
+export function parseUpdateV1Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedUpdateV1Instruction {
+  if (!instruction.accounts || instruction.accounts.length < 10) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = getNextAccount();
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
+  return {
+    accounts: {
+      authority: getNextAccount(),
+      metadata: getNextAccount(),
+      masterEdition: getNextOptionalAccount(),
+      mint: getNextAccount(),
+      systemProgram: getNextAccount(),
+      sysvarInstructions: getNextAccount(),
+      token: getNextOptionalAccount(),
+      delegateRecord: getNextOptionalAccount(),
+      authorizationRulesProgram: getNextOptionalAccount(),
+      authorizationRules: getNextOptionalAccount(),
+    },
+    data: getUpdateV1InstructionDataDecoder().decode(instruction.data),
+  };
+}

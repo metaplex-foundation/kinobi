@@ -223,3 +223,35 @@ export function getTransferSolInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedTransferSolInstruction = {
+  accounts: {
+    source: Address;
+    destination: Address;
+  };
+  data: TransferSolInstructionData;
+};
+
+export function parseTransferSolInstruction<
+  TProgram extends string = '11111111111111111111111111111111'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedTransferSolInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      source: getNextAccount(),
+      destination: getNextAccount(),
+    },
+    data: getTransferSolInstructionDataDecoder().decode(instruction.data),
+  };
+}

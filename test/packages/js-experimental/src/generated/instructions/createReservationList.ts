@@ -19,7 +19,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
+  CreateReservationListInstructionData,
   CreateReservationListInstructionDataArgs,
+  getCreateReservationListInstructionDataDecoder,
   getCreateReservationListInstructionDataEncoder,
 } from '../../hooked';
 import {
@@ -411,4 +413,58 @@ export function getCreateReservationListInstructionRaw<
     TAccountRent,
     TRemainingAccounts
   >;
+}
+
+export type ParsedCreateReservationListInstruction = {
+  accounts: {
+    /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
+    reservationList: Address;
+    /** Payer */
+    payer: Address;
+    /** Update authority */
+    updateAuthority: Address;
+    /**  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
+    masterEdition: Address;
+    /** A resource you wish to tie the reservation list to. This is so your later visitors who come to redeem can derive your reservation list PDA with something they can easily get at. You choose what this should be. */
+    resource: Address;
+    /** Metadata key (pda of ['metadata', program id, mint id]) */
+    metadata: Address;
+    /** System program */
+    systemProgram: Address;
+    /** Rent info */
+    rent: Address;
+  };
+  data: CreateReservationListInstructionData;
+};
+
+export function parseCreateReservationListInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedCreateReservationListInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 8) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      reservationList: getNextAccount(),
+      payer: getNextAccount(),
+      updateAuthority: getNextAccount(),
+      masterEdition: getNextAccount(),
+      resource: getNextAccount(),
+      metadata: getNextAccount(),
+      systemProgram: getNextAccount(),
+      rent: getNextAccount(),
+    },
+    data: getCreateReservationListInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
 }

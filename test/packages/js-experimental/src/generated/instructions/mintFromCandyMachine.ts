@@ -765,3 +765,67 @@ export function getMintFromCandyMachineInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedMintFromCandyMachineInstruction = {
+  accounts: {
+    candyMachine: Address;
+    authorityPda: Address;
+    mintAuthority: Address;
+    payer: Address;
+    nftMint: Address;
+    nftMintAuthority: Address;
+    nftMetadata: Address;
+    nftMasterEdition: Address;
+    collectionAuthorityRecord: Address;
+    collectionMint: Address;
+    collectionMetadata: Address;
+    collectionMasterEdition: Address;
+    collectionUpdateAuthority: Address;
+    tokenMetadataProgram: Address;
+    tokenProgram: Address;
+    systemProgram: Address;
+    recentSlothashes: Address;
+  };
+  data: MintFromCandyMachineInstructionData;
+};
+
+export function parseMintFromCandyMachineInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedMintFromCandyMachineInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 17) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  const getNextAccount = () => {
+    const { address } = instruction.accounts![accountIndex]!;
+    accountIndex += 1;
+    return address;
+  };
+  return {
+    accounts: {
+      candyMachine: getNextAccount(),
+      authorityPda: getNextAccount(),
+      mintAuthority: getNextAccount(),
+      payer: getNextAccount(),
+      nftMint: getNextAccount(),
+      nftMintAuthority: getNextAccount(),
+      nftMetadata: getNextAccount(),
+      nftMasterEdition: getNextAccount(),
+      collectionAuthorityRecord: getNextAccount(),
+      collectionMint: getNextAccount(),
+      collectionMetadata: getNextAccount(),
+      collectionMasterEdition: getNextAccount(),
+      collectionUpdateAuthority: getNextAccount(),
+      tokenMetadataProgram: getNextAccount(),
+      tokenProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
+      recentSlothashes: getNextAccount(),
+    },
+    data: getMintFromCandyMachineInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}
