@@ -254,3 +254,26 @@ export function getConvertMasterEditionV1ToV2InstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedConvertMasterEditionV1ToV2Instruction = {
+  accounts: {};
+  data: ConvertMasterEditionV1ToV2InstructionData;
+};
+
+export function parseConvertMasterEditionV1ToV2Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedConvertMasterEditionV1ToV2Instruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getConvertMasterEditionV1ToV2InstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

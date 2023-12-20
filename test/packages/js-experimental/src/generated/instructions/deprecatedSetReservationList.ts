@@ -312,3 +312,26 @@ export function getDeprecatedSetReservationListInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedDeprecatedSetReservationListInstruction = {
+  accounts: {};
+  data: DeprecatedSetReservationListInstructionData;
+};
+
+export function parseDeprecatedSetReservationListInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedDeprecatedSetReservationListInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getDeprecatedSetReservationListInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

@@ -19,7 +19,9 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
+  CreateReservationListInstructionData,
   CreateReservationListInstructionDataArgs,
+  getCreateReservationListInstructionDataDecoder,
   getCreateReservationListInstructionDataEncoder,
 } from '../../hooked';
 import {
@@ -411,4 +413,27 @@ export function getCreateReservationListInstructionRaw<
     TAccountRent,
     TRemainingAccounts
   >;
+}
+
+export type ParsedCreateReservationListInstruction = {
+  accounts: {};
+  data: CreateReservationListInstructionData;
+};
+
+export function parseCreateReservationListInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedCreateReservationListInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getCreateReservationListInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
 }

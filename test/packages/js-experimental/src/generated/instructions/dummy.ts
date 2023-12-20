@@ -801,3 +801,24 @@ export function getDummyInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedDummyInstruction = {
+  accounts: {};
+  data: DummyInstructionData;
+};
+
+export function parseDummyInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedDummyInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getDummyInstructionDataDecoder().decode(instruction.data),
+  };
+}

@@ -453,3 +453,26 @@ export function getApproveCollectionAuthorityInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedApproveCollectionAuthorityInstruction = {
+  accounts: {};
+  data: ApproveCollectionAuthorityInstructionData;
+};
+
+export function parseApproveCollectionAuthorityInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedApproveCollectionAuthorityInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getApproveCollectionAuthorityInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

@@ -320,3 +320,26 @@ export function getCreateFrequencyRuleInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedCreateFrequencyRuleInstruction = {
+  accounts: {};
+  data: CreateFrequencyRuleInstructionData;
+};
+
+export function parseCreateFrequencyRuleInstruction<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedCreateFrequencyRuleInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getCreateFrequencyRuleInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

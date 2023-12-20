@@ -258,3 +258,24 @@ export function getSetMintAuthorityInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedSetMintAuthorityInstruction = {
+  accounts: {};
+  data: SetMintAuthorityInstructionData;
+};
+
+export function parseSetMintAuthorityInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedSetMintAuthorityInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getSetMintAuthorityInstructionDataDecoder().decode(instruction.data),
+  };
+}

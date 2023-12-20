@@ -51,6 +51,8 @@ export type NameTransformerKey =
   | 'instructionAsyncFunction'
   | 'instructionSyncFunction'
   | 'instructionRawFunction'
+  | 'instructionParsedType'
+  | 'instructionParseFunction'
   | 'programType'
   | 'programAddressConstant'
   | 'programCreateFunction'
@@ -115,6 +117,8 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
   instructionAsyncFunction: (name) => `get${pascalCase(name)}InstructionAsync`,
   instructionSyncFunction: (name) => `get${pascalCase(name)}Instruction`,
   instructionRawFunction: (name) => `get${pascalCase(name)}InstructionRaw`,
+  instructionParsedType: (name) => `Parsed${pascalCase(name)}Instruction`,
+  instructionParseFunction: (name) => `parse${pascalCase(name)}Instruction`,
   programType: (name) => `${pascalCase(name)}Program`,
   programAddressConstant: (name) =>
     `${snakeCase(name).toUpperCase()}_PROGRAM_ADDRESS`,

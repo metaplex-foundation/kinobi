@@ -765,3 +765,26 @@ export function getMintFromCandyMachineInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedMintFromCandyMachineInstruction = {
+  accounts: {};
+  data: MintFromCandyMachineInstructionData;
+};
+
+export function parseMintFromCandyMachineInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedMintFromCandyMachineInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getMintFromCandyMachineInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

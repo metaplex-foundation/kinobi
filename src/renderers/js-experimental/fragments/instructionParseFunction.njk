@@ -1,0 +1,44 @@
+{% import "templates/macros.njk" as macros %}
+
+export type {{ instructionParsedType }} = {
+  {% if hasAccounts %}
+    accounts: {
+      {% for account in instruction.accounts %}
+        {{ macros.docblock(account.docs) }}
+        {{ account.name | camelCase }}: Address,
+      {% endfor %}
+    };
+  {% endif %}
+  {% if hasData %}
+    data: {{ dataTypeFragment }};
+  {% endif %}
+};
+
+export function {{ instructionParseFunction }}<
+  TProgram extends string = '{{ programAddress }}'
+>(
+  instruction: IInstruction<TProgram>
+    {% if hasData %}
+      & IInstructionWithData<Uint8Array>
+    {% endif %}
+): {{ instructionParsedType }} {
+  {% if hasAccounts %}
+    if (!instruction.accounts || instruction.accounts.length < 2) {
+      // TODO: Coded error.
+      throw new Error('Not enough accounts');
+    }
+    let accountIndex = 0;
+  {% endif %}
+  return {
+    {% if hasAccounts %}
+      accounts: {
+        {% for account in instruction.accounts %}
+          {{ account.name | camelCase }}: instruction.accounts[accountIndex++]!.address,
+        {% endfor %}
+      },
+    {% endif %}
+    {% if hasData %}
+      data: {{ decoderFunction }}.decode(instruction.data),
+    {% endif %}
+  };
+}

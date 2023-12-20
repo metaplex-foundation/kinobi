@@ -537,3 +537,24 @@ export function getBurnEditionNftInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedBurnEditionNftInstruction = {
+  accounts: {};
+  data: BurnEditionNftInstructionData;
+};
+
+export function parseBurnEditionNftInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedBurnEditionNftInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getBurnEditionNftInstructionDataDecoder().decode(instruction.data),
+  };
+}

@@ -520,3 +520,26 @@ export function getCreateMasterEditionV3InstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedCreateMasterEditionV3Instruction = {
+  accounts: {};
+  data: CreateMasterEditionV3InstructionData;
+};
+
+export function parseCreateMasterEditionV3Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedCreateMasterEditionV3Instruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getCreateMasterEditionV3InstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

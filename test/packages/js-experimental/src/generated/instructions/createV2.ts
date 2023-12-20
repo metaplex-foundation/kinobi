@@ -554,3 +554,24 @@ export function getCreateV2InstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedCreateV2Instruction = {
+  accounts: {};
+  data: CreateV2InstructionData;
+};
+
+export function parseCreateV2Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedCreateV2Instruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getCreateV2InstructionDataDecoder().decode(instruction.data),
+  };
+}

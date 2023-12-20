@@ -266,3 +266,24 @@ export function getAddConfigLinesInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedAddConfigLinesInstruction = {
+  accounts: {};
+  data: AddConfigLinesInstructionData;
+};
+
+export function parseAddConfigLinesInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedAddConfigLinesInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getAddConfigLinesInstructionDataDecoder().decode(instruction.data),
+  };
+}

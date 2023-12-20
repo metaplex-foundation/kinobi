@@ -823,3 +823,24 @@ export function getValidateInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedValidateInstruction = {
+  accounts: {};
+  data: ValidateInstructionData;
+};
+
+export function parseValidateInstruction<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedValidateInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getValidateInstructionDataDecoder().decode(instruction.data),
+  };
+}

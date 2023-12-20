@@ -312,3 +312,24 @@ export function getCreateRuleSetInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedCreateRuleSetInstruction = {
+  accounts: {};
+  data: CreateRuleSetInstructionData;
+};
+
+export function parseCreateRuleSetInstruction<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedCreateRuleSetInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getCreateRuleSetInstructionDataDecoder().decode(instruction.data),
+  };
+}

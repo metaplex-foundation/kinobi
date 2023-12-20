@@ -372,3 +372,26 @@ export function getBubblegumSetCollectionSizeInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedBubblegumSetCollectionSizeInstruction = {
+  accounts: {};
+  data: BubblegumSetCollectionSizeInstructionData;
+};
+
+export function parseBubblegumSetCollectionSizeInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedBubblegumSetCollectionSizeInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getBubblegumSetCollectionSizeInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

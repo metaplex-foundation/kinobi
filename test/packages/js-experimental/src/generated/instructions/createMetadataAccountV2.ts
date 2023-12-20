@@ -439,3 +439,26 @@ export function getCreateMetadataAccountV2InstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedCreateMetadataAccountV2Instruction = {
+  accounts: {};
+  data: CreateMetadataAccountV2InstructionData;
+};
+
+export function parseCreateMetadataAccountV2Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedCreateMetadataAccountV2Instruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getCreateMetadataAccountV2InstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

@@ -167,3 +167,24 @@ export function getPuffMetadataInstructionRaw<
     programAddress,
   } as PuffMetadataInstruction<TProgram, TAccountMetadata, TRemainingAccounts>;
 }
+
+export type ParsedPuffMetadataInstruction = {
+  accounts: {};
+  data: PuffMetadataInstructionData;
+};
+
+export function parsePuffMetadataInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedPuffMetadataInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getPuffMetadataInstructionDataDecoder().decode(instruction.data),
+  };
+}

@@ -765,3 +765,24 @@ export function getUpdateV1InstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedUpdateV1Instruction = {
+  accounts: {};
+  data: UpdateV1InstructionData;
+};
+
+export function parseUpdateV1Instruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedUpdateV1Instruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getUpdateV1InstructionDataDecoder().decode(instruction.data),
+  };
+}

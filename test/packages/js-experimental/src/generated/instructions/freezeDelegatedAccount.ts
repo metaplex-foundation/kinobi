@@ -334,3 +334,26 @@ export function getFreezeDelegatedAccountInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedFreezeDelegatedAccountInstruction = {
+  accounts: {};
+  data: FreezeDelegatedAccountInstructionData;
+};
+
+export function parseFreezeDelegatedAccountInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedFreezeDelegatedAccountInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getFreezeDelegatedAccountInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

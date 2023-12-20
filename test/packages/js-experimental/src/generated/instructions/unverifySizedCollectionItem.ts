@@ -414,3 +414,26 @@ export function getUnverifySizedCollectionItemInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedUnverifySizedCollectionItemInstruction = {
+  accounts: {};
+  data: UnverifySizedCollectionItemInstructionData;
+};
+
+export function parseUnverifySizedCollectionItemInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedUnverifySizedCollectionItemInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getUnverifySizedCollectionItemInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

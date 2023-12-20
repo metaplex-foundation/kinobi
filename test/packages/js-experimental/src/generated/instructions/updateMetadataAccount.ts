@@ -337,3 +337,26 @@ export function getUpdateMetadataAccountInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedUpdateMetadataAccountInstruction = {
+  accounts: {};
+  data: UpdateMetadataAccountInstructionData;
+};
+
+export function parseUpdateMetadataAccountInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedUpdateMetadataAccountInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getUpdateMetadataAccountInstructionDataDecoder().decode(
+      instruction.data
+    ),
+  };
+}

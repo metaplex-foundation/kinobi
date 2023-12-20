@@ -229,3 +229,24 @@ export function getSetAuthorityInstructionRaw<
     TRemainingAccounts
   >;
 }
+
+export type ParsedSetAuthorityInstruction = {
+  accounts: {};
+  data: SetAuthorityInstructionData;
+};
+
+export function parseSetAuthorityInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+>(
+  instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
+): ParsedSetAuthorityInstruction {
+  if (!instruction.accounts || instruction.accounts.length < 2) {
+    // TODO: Coded error.
+    throw new Error('Not enough accounts');
+  }
+  let accountIndex = 0;
+  return {
+    accounts: {},
+    data: getSetAuthorityInstructionDataDecoder().decode(instruction.data),
+  };
+}
