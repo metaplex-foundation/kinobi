@@ -770,7 +770,7 @@ export function parseCreateMetadataAccountInstruction<
   }
   let accountIndex = 0;
   const getNextAccount = () => {
-    const address = instruction.accounts![accountIndex]!.address;
+    const { address } = instruction.accounts![accountIndex]!;
     accountIndex += 1;
     return address;
   };
