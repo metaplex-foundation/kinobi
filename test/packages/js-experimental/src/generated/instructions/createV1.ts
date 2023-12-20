@@ -567,7 +567,7 @@ export type ParsedCreateV1Instruction = {
     /** Metadata account key (pda of ['metadata', program id, mint id]) */
     metadata: Address;
     /** Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition'] */
-    masterEdition: Address;
+    masterEdition?: Address | undefined;
     /** Mint of token asset */
     mint: Address;
     /** Mint authority */
@@ -591,22 +591,34 @@ export function parseCreateV1Instruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedCreateV1Instruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 9) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
   return {
     accounts: {
-      metadata: instruction.accounts[accountIndex++]!.address,
-      masterEdition: instruction.accounts[accountIndex++]!.address,
-      mint: instruction.accounts[accountIndex++]!.address,
-      mintAuthority: instruction.accounts[accountIndex++]!.address,
-      payer: instruction.accounts[accountIndex++]!.address,
-      updateAuthority: instruction.accounts[accountIndex++]!.address,
-      systemProgram: instruction.accounts[accountIndex++]!.address,
-      sysvarInstructions: instruction.accounts[accountIndex++]!.address,
-      splTokenProgram: instruction.accounts[accountIndex++]!.address,
+      metadata: getNextAccount(),
+      masterEdition: getNextOptionalAccount(),
+      mint: getNextAccount(),
+      mintAuthority: getNextAccount(),
+      payer: getNextAccount(),
+      updateAuthority: getNextAccount(),
+      systemProgram: getNextAccount(),
+      sysvarInstructions: getNextAccount(),
+      splTokenProgram: getNextAccount(),
     },
     data: getCreateV1InstructionDataDecoder().decode(instruction.data),
   };

@@ -272,16 +272,21 @@ export function parseConvertMasterEditionV1ToV2Instruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedConvertMasterEditionV1ToV2Instruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 3) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      masterEdition: instruction.accounts[accountIndex++]!.address,
-      oneTimeAuth: instruction.accounts[accountIndex++]!.address,
-      printingMint: instruction.accounts[accountIndex++]!.address,
+      masterEdition: getNextAccount(),
+      oneTimeAuth: getNextAccount(),
+      printingMint: getNextAccount(),
     },
     data: getConvertMasterEditionV1ToV2InstructionDataDecoder().decode(
       instruction.data

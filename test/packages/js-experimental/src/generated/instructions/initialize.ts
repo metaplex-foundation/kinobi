@@ -605,24 +605,29 @@ export function parseInitializeInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedInitializeInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 11) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      candyMachine: instruction.accounts[accountIndex++]!.address,
-      authorityPda: instruction.accounts[accountIndex++]!.address,
-      authority: instruction.accounts[accountIndex++]!.address,
-      payer: instruction.accounts[accountIndex++]!.address,
-      collectionMetadata: instruction.accounts[accountIndex++]!.address,
-      collectionMint: instruction.accounts[accountIndex++]!.address,
-      collectionMasterEdition: instruction.accounts[accountIndex++]!.address,
-      collectionUpdateAuthority: instruction.accounts[accountIndex++]!.address,
-      collectionAuthorityRecord: instruction.accounts[accountIndex++]!.address,
-      tokenMetadataProgram: instruction.accounts[accountIndex++]!.address,
-      systemProgram: instruction.accounts[accountIndex++]!.address,
+      candyMachine: getNextAccount(),
+      authorityPda: getNextAccount(),
+      authority: getNextAccount(),
+      payer: getNextAccount(),
+      collectionMetadata: getNextAccount(),
+      collectionMint: getNextAccount(),
+      collectionMasterEdition: getNextAccount(),
+      collectionUpdateAuthority: getNextAccount(),
+      collectionAuthorityRecord: getNextAccount(),
+      tokenMetadataProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
     },
     data: getInitializeInstructionDataDecoder().decode(instruction.data),
   };

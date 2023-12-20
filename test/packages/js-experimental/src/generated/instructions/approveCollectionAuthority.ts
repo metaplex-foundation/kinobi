@@ -471,7 +471,7 @@ export type ParsedApproveCollectionAuthorityInstruction = {
     /** System program */
     systemProgram: Address;
     /** Rent info */
-    rent: Address;
+    rent?: Address | undefined;
   };
   data: ApproveCollectionAuthorityInstructionData;
 };
@@ -481,21 +481,33 @@ export function parseApproveCollectionAuthorityInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedApproveCollectionAuthorityInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 8) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
   return {
     accounts: {
-      collectionAuthorityRecord: instruction.accounts[accountIndex++]!.address,
-      newCollectionAuthority: instruction.accounts[accountIndex++]!.address,
-      updateAuthority: instruction.accounts[accountIndex++]!.address,
-      payer: instruction.accounts[accountIndex++]!.address,
-      metadata: instruction.accounts[accountIndex++]!.address,
-      mint: instruction.accounts[accountIndex++]!.address,
-      systemProgram: instruction.accounts[accountIndex++]!.address,
-      rent: instruction.accounts[accountIndex++]!.address,
+      collectionAuthorityRecord: getNextAccount(),
+      newCollectionAuthority: getNextAccount(),
+      updateAuthority: getNextAccount(),
+      payer: getNextAccount(),
+      metadata: getNextAccount(),
+      mint: getNextAccount(),
+      systemProgram: getNextAccount(),
+      rent: getNextOptionalAccount(),
     },
     data: getApproveCollectionAuthorityInstructionDataDecoder().decode(
       instruction.data

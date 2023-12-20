@@ -578,7 +578,7 @@ export type ParsedMigrateInstruction = {
     /** Instruction sysvar account */
     sysvarInstructions: Address;
     /** Token Authorization Rules account */
-    authorizationRules: Address;
+    authorizationRules?: Address | undefined;
   };
   data: MigrateInstructionData;
 };
@@ -588,23 +588,35 @@ export function parseMigrateInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedMigrateInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 10) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
   return {
     accounts: {
-      metadata: instruction.accounts[accountIndex++]!.address,
-      masterEdition: instruction.accounts[accountIndex++]!.address,
-      tokenAccount: instruction.accounts[accountIndex++]!.address,
-      mint: instruction.accounts[accountIndex++]!.address,
-      updateAuthority: instruction.accounts[accountIndex++]!.address,
-      collectionMetadata: instruction.accounts[accountIndex++]!.address,
-      tokenProgram: instruction.accounts[accountIndex++]!.address,
-      systemProgram: instruction.accounts[accountIndex++]!.address,
-      sysvarInstructions: instruction.accounts[accountIndex++]!.address,
-      authorizationRules: instruction.accounts[accountIndex++]!.address,
+      metadata: getNextAccount(),
+      masterEdition: getNextAccount(),
+      tokenAccount: getNextAccount(),
+      mint: getNextAccount(),
+      updateAuthority: getNextAccount(),
+      collectionMetadata: getNextAccount(),
+      tokenProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
+      sysvarInstructions: getNextAccount(),
+      authorizationRules: getNextOptionalAccount(),
     },
     data: getMigrateInstructionDataDecoder().decode(instruction.data),
   };

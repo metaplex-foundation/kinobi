@@ -805,14 +805,14 @@ export function getDummyInstructionRaw<
 export type ParsedDummyInstruction = {
   accounts: {
     edition: Address;
-    mint: Address;
+    mint?: Address | undefined;
     updateAuthority: Address;
     mintAuthority: Address;
     payer: Address;
     foo: Address;
-    bar: Address;
-    delegate: Address;
-    delegateRecord: Address;
+    bar?: Address | undefined;
+    delegate?: Address | undefined;
+    delegateRecord?: Address | undefined;
     tokenOrAtaProgram: Address;
   };
   data: DummyInstructionData;
@@ -823,23 +823,35 @@ export function parseDummyInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedDummyInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 10) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address === 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+      ? undefined
+      : address;
+  };
   return {
     accounts: {
-      edition: instruction.accounts[accountIndex++]!.address,
-      mint: instruction.accounts[accountIndex++]!.address,
-      updateAuthority: instruction.accounts[accountIndex++]!.address,
-      mintAuthority: instruction.accounts[accountIndex++]!.address,
-      payer: instruction.accounts[accountIndex++]!.address,
-      foo: instruction.accounts[accountIndex++]!.address,
-      bar: instruction.accounts[accountIndex++]!.address,
-      delegate: instruction.accounts[accountIndex++]!.address,
-      delegateRecord: instruction.accounts[accountIndex++]!.address,
-      tokenOrAtaProgram: instruction.accounts[accountIndex++]!.address,
+      edition: getNextAccount(),
+      mint: getNextOptionalAccount(),
+      updateAuthority: getNextAccount(),
+      mintAuthority: getNextAccount(),
+      payer: getNextAccount(),
+      foo: getNextAccount(),
+      bar: getNextOptionalAccount(),
+      delegate: getNextOptionalAccount(),
+      delegateRecord: getNextOptionalAccount(),
+      tokenOrAtaProgram: getNextAccount(),
     },
     data: getDummyInstructionDataDecoder().decode(instruction.data),
   };

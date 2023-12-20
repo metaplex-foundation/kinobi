@@ -356,18 +356,23 @@ export function parseRevokeCollectionAuthorityInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedRevokeCollectionAuthorityInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 5) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      collectionAuthorityRecord: instruction.accounts[accountIndex++]!.address,
-      delegateAuthority: instruction.accounts[accountIndex++]!.address,
-      revokeAuthority: instruction.accounts[accountIndex++]!.address,
-      metadata: instruction.accounts[accountIndex++]!.address,
-      mint: instruction.accounts[accountIndex++]!.address,
+      collectionAuthorityRecord: getNextAccount(),
+      delegateAuthority: getNextAccount(),
+      revokeAuthority: getNextAccount(),
+      metadata: getNextAccount(),
+      mint: getNextAccount(),
     },
     data: getRevokeCollectionAuthorityInstructionDataDecoder().decode(
       instruction.data

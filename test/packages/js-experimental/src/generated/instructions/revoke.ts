@@ -671,11 +671,11 @@ export type ParsedRevokeInstruction = {
     /** Metadata account */
     metadata: Address;
     /** Master Edition account */
-    masterEdition: Address;
+    masterEdition?: Address | undefined;
     /** Mint of metadata */
     mint: Address;
     /** Owned Token Account of mint */
-    token: Address;
+    token?: Address | undefined;
     /** Authority to approve the delegation */
     authority: Address;
     /** Payer */
@@ -685,11 +685,11 @@ export type ParsedRevokeInstruction = {
     /** Instructions sysvar account */
     sysvarInstructions: Address;
     /** SPL Token Program */
-    splTokenProgram: Address;
+    splTokenProgram?: Address | undefined;
     /** Token Authorization Rules Program */
-    authorizationRulesProgram: Address;
+    authorizationRulesProgram?: Address | undefined;
     /** Token Authorization Rules account */
-    authorizationRules: Address;
+    authorizationRules?: Address | undefined;
   };
   data: RevokeInstructionData;
 };
@@ -699,26 +699,38 @@ export function parseRevokeInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedRevokeInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 13) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
   return {
     accounts: {
-      delegateRecord: instruction.accounts[accountIndex++]!.address,
-      delegate: instruction.accounts[accountIndex++]!.address,
-      metadata: instruction.accounts[accountIndex++]!.address,
-      masterEdition: instruction.accounts[accountIndex++]!.address,
-      mint: instruction.accounts[accountIndex++]!.address,
-      token: instruction.accounts[accountIndex++]!.address,
-      authority: instruction.accounts[accountIndex++]!.address,
-      payer: instruction.accounts[accountIndex++]!.address,
-      systemProgram: instruction.accounts[accountIndex++]!.address,
-      sysvarInstructions: instruction.accounts[accountIndex++]!.address,
-      splTokenProgram: instruction.accounts[accountIndex++]!.address,
-      authorizationRulesProgram: instruction.accounts[accountIndex++]!.address,
-      authorizationRules: instruction.accounts[accountIndex++]!.address,
+      delegateRecord: getNextAccount(),
+      delegate: getNextAccount(),
+      metadata: getNextAccount(),
+      masterEdition: getNextOptionalAccount(),
+      mint: getNextAccount(),
+      token: getNextOptionalAccount(),
+      authority: getNextAccount(),
+      payer: getNextAccount(),
+      systemProgram: getNextAccount(),
+      sysvarInstructions: getNextAccount(),
+      splTokenProgram: getNextOptionalAccount(),
+      authorizationRulesProgram: getNextOptionalAccount(),
+      authorizationRules: getNextOptionalAccount(),
     },
     data: getRevokeInstructionDataDecoder().decode(instruction.data),
   };

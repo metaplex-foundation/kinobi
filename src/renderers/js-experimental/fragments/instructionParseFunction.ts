@@ -11,6 +11,13 @@ export function getInstructionParseFunctionFragment(scope: {
 }): Fragment {
   const { instructionNode, programNode, dataArgsManifest, nameApi } = scope;
   const hasAccounts = instructionNode.accounts.length > 0;
+  const hasOptionalAccounts = instructionNode.accounts.some(
+    (account) => account.isOptional
+  );
+  const minimumNumberOfAccounts =
+    instructionNode.optionalAccountStrategy === 'omitted'
+      ? instructionNode.accounts.filter((account) => !account.isOptional).length
+      : instructionNode.accounts.length;
   const hasData =
     !!instructionNode.dataArgs.link ||
     instructionNode.dataArgs.struct.fields.length > 0;
@@ -44,6 +51,8 @@ export function getInstructionParseFunctionFragment(scope: {
     dataTypeFragment,
     decoderFunction,
     hasAccounts,
+    hasOptionalAccounts,
+    minimumNumberOfAccounts,
     hasData,
   })
     .mergeImportsWith(dataTypeFragment)

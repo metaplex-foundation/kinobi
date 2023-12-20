@@ -757,7 +757,7 @@ export type ParsedDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstr
       /** Rent info */
       rent: Address;
       /** Reservation List - If present, and you are on this list, you can get an edition number given by your position on the list. */
-      reservationList: Address;
+      reservationList?: Address | undefined;
     };
     data: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData;
   };
@@ -767,29 +767,41 @@ export function parseDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenIn
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 16) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
   return {
     accounts: {
-      metadata: instruction.accounts[accountIndex++]!.address,
-      edition: instruction.accounts[accountIndex++]!.address,
-      masterEdition: instruction.accounts[accountIndex++]!.address,
-      mint: instruction.accounts[accountIndex++]!.address,
-      mintAuthority: instruction.accounts[accountIndex++]!.address,
-      printingMint: instruction.accounts[accountIndex++]!.address,
-      masterTokenAccount: instruction.accounts[accountIndex++]!.address,
-      editionMarker: instruction.accounts[accountIndex++]!.address,
-      burnAuthority: instruction.accounts[accountIndex++]!.address,
-      payer: instruction.accounts[accountIndex++]!.address,
-      masterUpdateAuthority: instruction.accounts[accountIndex++]!.address,
-      masterMetadata: instruction.accounts[accountIndex++]!.address,
-      tokenProgram: instruction.accounts[accountIndex++]!.address,
-      systemProgram: instruction.accounts[accountIndex++]!.address,
-      rent: instruction.accounts[accountIndex++]!.address,
-      reservationList: instruction.accounts[accountIndex++]!.address,
+      metadata: getNextAccount(),
+      edition: getNextAccount(),
+      masterEdition: getNextAccount(),
+      mint: getNextAccount(),
+      mintAuthority: getNextAccount(),
+      printingMint: getNextAccount(),
+      masterTokenAccount: getNextAccount(),
+      editionMarker: getNextAccount(),
+      burnAuthority: getNextAccount(),
+      payer: getNextAccount(),
+      masterUpdateAuthority: getNextAccount(),
+      masterMetadata: getNextAccount(),
+      tokenProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
+      rent: getNextAccount(),
+      reservationList: getNextOptionalAccount(),
     },
     data: getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataDecoder().decode(
       instruction.data

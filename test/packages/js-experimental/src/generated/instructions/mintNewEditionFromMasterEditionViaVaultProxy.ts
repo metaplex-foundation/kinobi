@@ -822,7 +822,7 @@ export type ParsedMintNewEditionFromMasterEditionViaVaultProxyInstruction = {
     /** System program */
     systemProgram: Address;
     /** Rent info */
-    rent: Address;
+    rent?: Address | undefined;
   };
   data: MintNewEditionFromMasterEditionViaVaultProxyInstructionData;
 };
@@ -832,30 +832,42 @@ export function parseMintNewEditionFromMasterEditionViaVaultProxyInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedMintNewEditionFromMasterEditionViaVaultProxyInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 17) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
   return {
     accounts: {
-      newMetadata: instruction.accounts[accountIndex++]!.address,
-      newEdition: instruction.accounts[accountIndex++]!.address,
-      masterEdition: instruction.accounts[accountIndex++]!.address,
-      newMint: instruction.accounts[accountIndex++]!.address,
-      editionMarkPda: instruction.accounts[accountIndex++]!.address,
-      newMintAuthority: instruction.accounts[accountIndex++]!.address,
-      payer: instruction.accounts[accountIndex++]!.address,
-      vaultAuthority: instruction.accounts[accountIndex++]!.address,
-      safetyDepositStore: instruction.accounts[accountIndex++]!.address,
-      safetyDepositBox: instruction.accounts[accountIndex++]!.address,
-      vault: instruction.accounts[accountIndex++]!.address,
-      newMetadataUpdateAuthority: instruction.accounts[accountIndex++]!.address,
-      metadata: instruction.accounts[accountIndex++]!.address,
-      tokenProgram: instruction.accounts[accountIndex++]!.address,
-      tokenVaultProgram: instruction.accounts[accountIndex++]!.address,
-      systemProgram: instruction.accounts[accountIndex++]!.address,
-      rent: instruction.accounts[accountIndex++]!.address,
+      newMetadata: getNextAccount(),
+      newEdition: getNextAccount(),
+      masterEdition: getNextAccount(),
+      newMint: getNextAccount(),
+      editionMarkPda: getNextAccount(),
+      newMintAuthority: getNextAccount(),
+      payer: getNextAccount(),
+      vaultAuthority: getNextAccount(),
+      safetyDepositStore: getNextAccount(),
+      safetyDepositBox: getNextAccount(),
+      vault: getNextAccount(),
+      newMetadataUpdateAuthority: getNextAccount(),
+      metadata: getNextAccount(),
+      tokenProgram: getNextAccount(),
+      tokenVaultProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
+      rent: getNextOptionalAccount(),
     },
     data: getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataDecoder().decode(
       instruction.data

@@ -265,10 +265,15 @@ export function parseCreateAccountInstruction<
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      payer: instruction.accounts[accountIndex++]!.address,
-      newAccount: instruction.accounts[accountIndex++]!.address,
+      payer: getNextAccount(),
+      newAccount: getNextAccount(),
     },
     data: getCreateAccountInstructionDataDecoder().decode(instruction.data),
   };

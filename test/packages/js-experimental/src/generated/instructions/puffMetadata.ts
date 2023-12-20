@@ -181,14 +181,19 @@ export function parsePuffMetadataInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedPuffMetadataInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 1) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      metadata: instruction.accounts[accountIndex++]!.address,
+      metadata: getNextAccount(),
     },
     data: getPuffMetadataInstructionDataDecoder().decode(instruction.data),
   };

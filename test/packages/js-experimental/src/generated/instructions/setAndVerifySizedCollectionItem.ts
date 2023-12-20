@@ -465,7 +465,7 @@ export type ParsedSetAndVerifySizedCollectionItemInstruction = {
     /** MasterEdition2 Account of the Collection Token */
     collectionMasterEditionAccount: Address;
     /** Collection Authority Record PDA */
-    collectionAuthorityRecord: Address;
+    collectionAuthorityRecord?: Address | undefined;
   };
   data: SetAndVerifySizedCollectionItemInstructionData;
 };
@@ -475,22 +475,33 @@ export function parseSetAndVerifySizedCollectionItemInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedSetAndVerifySizedCollectionItemInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 8) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
   return {
     accounts: {
-      metadata: instruction.accounts[accountIndex++]!.address,
-      collectionAuthority: instruction.accounts[accountIndex++]!.address,
-      payer: instruction.accounts[accountIndex++]!.address,
-      updateAuthority: instruction.accounts[accountIndex++]!.address,
-      collectionMint: instruction.accounts[accountIndex++]!.address,
-      collection: instruction.accounts[accountIndex++]!.address,
-      collectionMasterEditionAccount:
-        instruction.accounts[accountIndex++]!.address,
-      collectionAuthorityRecord: instruction.accounts[accountIndex++]!.address,
+      metadata: getNextAccount(),
+      collectionAuthority: getNextAccount(),
+      payer: getNextAccount(),
+      updateAuthority: getNextAccount(),
+      collectionMint: getNextAccount(),
+      collection: getNextAccount(),
+      collectionMasterEditionAccount: getNextAccount(),
+      collectionAuthorityRecord: getNextOptionalAccount(),
     },
     data: getSetAndVerifySizedCollectionItemInstructionDataDecoder().decode(
       instruction.data

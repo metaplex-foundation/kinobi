@@ -569,23 +569,28 @@ export function parseBurnEditionNftInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedBurnEditionNftInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 10) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      metadata: instruction.accounts[accountIndex++]!.address,
-      owner: instruction.accounts[accountIndex++]!.address,
-      printEditionMint: instruction.accounts[accountIndex++]!.address,
-      masterEditionMint: instruction.accounts[accountIndex++]!.address,
-      printEditionTokenAccount: instruction.accounts[accountIndex++]!.address,
-      masterEditionTokenAccount: instruction.accounts[accountIndex++]!.address,
-      masterEditionAccount: instruction.accounts[accountIndex++]!.address,
-      printEditionAccount: instruction.accounts[accountIndex++]!.address,
-      editionMarkerAccount: instruction.accounts[accountIndex++]!.address,
-      splTokenProgram: instruction.accounts[accountIndex++]!.address,
+      metadata: getNextAccount(),
+      owner: getNextAccount(),
+      printEditionMint: getNextAccount(),
+      masterEditionMint: getNextAccount(),
+      printEditionTokenAccount: getNextAccount(),
+      masterEditionTokenAccount: getNextAccount(),
+      masterEditionAccount: getNextAccount(),
+      printEditionAccount: getNextAccount(),
+      editionMarkerAccount: getNextAccount(),
+      splTokenProgram: getNextAccount(),
     },
     data: getBurnEditionNftInstructionDataDecoder().decode(instruction.data),
   };

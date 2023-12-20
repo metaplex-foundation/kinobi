@@ -543,23 +543,27 @@ export function parseDeprecatedMintPrintingTokensViaTokenInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedDeprecatedMintPrintingTokensViaTokenInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 9) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      destination: instruction.accounts[accountIndex++]!.address,
-      token: instruction.accounts[accountIndex++]!.address,
-      oneTimePrintingAuthorizationMint:
-        instruction.accounts[accountIndex++]!.address,
-      printingMint: instruction.accounts[accountIndex++]!.address,
-      burnAuthority: instruction.accounts[accountIndex++]!.address,
-      metadata: instruction.accounts[accountIndex++]!.address,
-      masterEdition: instruction.accounts[accountIndex++]!.address,
-      tokenProgram: instruction.accounts[accountIndex++]!.address,
-      rent: instruction.accounts[accountIndex++]!.address,
+      destination: getNextAccount(),
+      token: getNextAccount(),
+      oneTimePrintingAuthorizationMint: getNextAccount(),
+      printingMint: getNextAccount(),
+      burnAuthority: getNextAccount(),
+      metadata: getNextAccount(),
+      masterEdition: getNextAccount(),
+      tokenProgram: getNextAccount(),
+      rent: getNextAccount(),
     },
     data: getDeprecatedMintPrintingTokensViaTokenInstructionDataDecoder().decode(
       instruction.data

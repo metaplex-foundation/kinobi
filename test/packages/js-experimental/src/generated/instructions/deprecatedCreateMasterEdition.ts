@@ -707,28 +707,31 @@ export function parseDeprecatedCreateMasterEditionInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedDeprecatedCreateMasterEditionInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 13) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      edition: instruction.accounts[accountIndex++]!.address,
-      mint: instruction.accounts[accountIndex++]!.address,
-      printingMint: instruction.accounts[accountIndex++]!.address,
-      oneTimePrintingAuthorizationMint:
-        instruction.accounts[accountIndex++]!.address,
-      updateAuthority: instruction.accounts[accountIndex++]!.address,
-      printingMintAuthority: instruction.accounts[accountIndex++]!.address,
-      mintAuthority: instruction.accounts[accountIndex++]!.address,
-      metadata: instruction.accounts[accountIndex++]!.address,
-      payer: instruction.accounts[accountIndex++]!.address,
-      tokenProgram: instruction.accounts[accountIndex++]!.address,
-      systemProgram: instruction.accounts[accountIndex++]!.address,
-      rent: instruction.accounts[accountIndex++]!.address,
-      oneTimePrintingAuthorizationMintAuthority:
-        instruction.accounts[accountIndex++]!.address,
+      edition: getNextAccount(),
+      mint: getNextAccount(),
+      printingMint: getNextAccount(),
+      oneTimePrintingAuthorizationMint: getNextAccount(),
+      updateAuthority: getNextAccount(),
+      printingMintAuthority: getNextAccount(),
+      mintAuthority: getNextAccount(),
+      metadata: getNextAccount(),
+      payer: getNextAccount(),
+      tokenProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
+      rent: getNextAccount(),
+      oneTimePrintingAuthorizationMintAuthority: getNextAccount(),
     },
     data: getDeprecatedCreateMasterEditionInstructionDataDecoder().decode(
       instruction.data

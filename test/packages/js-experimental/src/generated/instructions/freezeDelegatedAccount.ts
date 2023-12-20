@@ -356,18 +356,23 @@ export function parseFreezeDelegatedAccountInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedFreezeDelegatedAccountInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 5) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      delegate: instruction.accounts[accountIndex++]!.address,
-      tokenAccount: instruction.accounts[accountIndex++]!.address,
-      edition: instruction.accounts[accountIndex++]!.address,
-      mint: instruction.accounts[accountIndex++]!.address,
-      tokenProgram: instruction.accounts[accountIndex++]!.address,
+      delegate: getNextAccount(),
+      tokenAccount: getNextAccount(),
+      edition: getNextAccount(),
+      mint: getNextAccount(),
+      tokenProgram: getNextAccount(),
     },
     data: getFreezeDelegatedAccountInstructionDataDecoder().decode(
       instruction.data

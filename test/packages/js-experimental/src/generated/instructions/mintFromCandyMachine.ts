@@ -794,30 +794,35 @@ export function parseMintFromCandyMachineInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedMintFromCandyMachineInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 17) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      candyMachine: instruction.accounts[accountIndex++]!.address,
-      authorityPda: instruction.accounts[accountIndex++]!.address,
-      mintAuthority: instruction.accounts[accountIndex++]!.address,
-      payer: instruction.accounts[accountIndex++]!.address,
-      nftMint: instruction.accounts[accountIndex++]!.address,
-      nftMintAuthority: instruction.accounts[accountIndex++]!.address,
-      nftMetadata: instruction.accounts[accountIndex++]!.address,
-      nftMasterEdition: instruction.accounts[accountIndex++]!.address,
-      collectionAuthorityRecord: instruction.accounts[accountIndex++]!.address,
-      collectionMint: instruction.accounts[accountIndex++]!.address,
-      collectionMetadata: instruction.accounts[accountIndex++]!.address,
-      collectionMasterEdition: instruction.accounts[accountIndex++]!.address,
-      collectionUpdateAuthority: instruction.accounts[accountIndex++]!.address,
-      tokenMetadataProgram: instruction.accounts[accountIndex++]!.address,
-      tokenProgram: instruction.accounts[accountIndex++]!.address,
-      systemProgram: instruction.accounts[accountIndex++]!.address,
-      recentSlothashes: instruction.accounts[accountIndex++]!.address,
+      candyMachine: getNextAccount(),
+      authorityPda: getNextAccount(),
+      mintAuthority: getNextAccount(),
+      payer: getNextAccount(),
+      nftMint: getNextAccount(),
+      nftMintAuthority: getNextAccount(),
+      nftMetadata: getNextAccount(),
+      nftMasterEdition: getNextAccount(),
+      collectionAuthorityRecord: getNextAccount(),
+      collectionMint: getNextAccount(),
+      collectionMetadata: getNextAccount(),
+      collectionMasterEdition: getNextAccount(),
+      collectionUpdateAuthority: getNextAccount(),
+      tokenMetadataProgram: getNextAccount(),
+      tokenProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
+      recentSlothashes: getNextAccount(),
     },
     data: getMintFromCandyMachineInstructionDataDecoder().decode(
       instruction.data

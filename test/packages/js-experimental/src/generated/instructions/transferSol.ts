@@ -242,10 +242,15 @@ export function parseTransferSolInstruction<
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      source: instruction.accounts[accountIndex++]!.address,
-      destination: instruction.accounts[accountIndex++]!.address,
+      source: getNextAccount(),
+      destination: getNextAccount(),
     },
     data: getTransferSolInstructionDataDecoder().decode(instruction.data),
   };

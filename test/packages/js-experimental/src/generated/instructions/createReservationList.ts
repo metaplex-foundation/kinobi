@@ -442,21 +442,26 @@ export function parseCreateReservationListInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedCreateReservationListInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 8) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      reservationList: instruction.accounts[accountIndex++]!.address,
-      payer: instruction.accounts[accountIndex++]!.address,
-      updateAuthority: instruction.accounts[accountIndex++]!.address,
-      masterEdition: instruction.accounts[accountIndex++]!.address,
-      resource: instruction.accounts[accountIndex++]!.address,
-      metadata: instruction.accounts[accountIndex++]!.address,
-      systemProgram: instruction.accounts[accountIndex++]!.address,
-      rent: instruction.accounts[accountIndex++]!.address,
+      reservationList: getNextAccount(),
+      payer: getNextAccount(),
+      updateAuthority: getNextAccount(),
+      masterEdition: getNextAccount(),
+      resource: getNextAccount(),
+      metadata: getNextAccount(),
+      systemProgram: getNextAccount(),
+      rent: getNextAccount(),
     },
     data: getCreateReservationListInstructionDataDecoder().decode(
       instruction.data

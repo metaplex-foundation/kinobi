@@ -389,20 +389,24 @@ export function parseVerifyCollectionInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedVerifyCollectionInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 6) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      metadata: instruction.accounts[accountIndex++]!.address,
-      collectionAuthority: instruction.accounts[accountIndex++]!.address,
-      payer: instruction.accounts[accountIndex++]!.address,
-      collectionMint: instruction.accounts[accountIndex++]!.address,
-      collection: instruction.accounts[accountIndex++]!.address,
-      collectionMasterEditionAccount:
-        instruction.accounts[accountIndex++]!.address,
+      metadata: getNextAccount(),
+      collectionAuthority: getNextAccount(),
+      payer: getNextAccount(),
+      collectionMint: getNextAccount(),
+      collection: getNextAccount(),
+      collectionMasterEditionAccount: getNextAccount(),
     },
     data: getVerifyCollectionInstructionDataDecoder().decode(instruction.data),
   };

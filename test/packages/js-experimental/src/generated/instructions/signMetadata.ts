@@ -231,10 +231,15 @@ export function parseSignMetadataInstruction<
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      metadata: instruction.accounts[accountIndex++]!.address,
-      creator: instruction.accounts[accountIndex++]!.address,
+      metadata: getNextAccount(),
+      creator: getNextAccount(),
     },
     data: getSignMetadataInstructionDataDecoder().decode(instruction.data),
   };

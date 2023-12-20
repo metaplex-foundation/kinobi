@@ -330,16 +330,21 @@ export function parseCreateRuleSetInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedCreateRuleSetInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 3) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      payer: instruction.accounts[accountIndex++]!.address,
-      ruleSetPda: instruction.accounts[accountIndex++]!.address,
-      systemProgram: instruction.accounts[accountIndex++]!.address,
+      payer: getNextAccount(),
+      ruleSetPda: getNextAccount(),
+      systemProgram: getNextAccount(),
     },
     data: getCreateRuleSetInstructionDataDecoder().decode(instruction.data),
   };

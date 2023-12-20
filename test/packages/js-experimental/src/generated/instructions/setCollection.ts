@@ -693,29 +693,32 @@ export function parseSetCollectionInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedSetCollectionInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 14) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      candyMachine: instruction.accounts[accountIndex++]!.address,
-      authority: instruction.accounts[accountIndex++]!.address,
-      authorityPda: instruction.accounts[accountIndex++]!.address,
-      payer: instruction.accounts[accountIndex++]!.address,
-      collectionMint: instruction.accounts[accountIndex++]!.address,
-      collectionMetadata: instruction.accounts[accountIndex++]!.address,
-      collectionAuthorityRecord: instruction.accounts[accountIndex++]!.address,
-      newCollectionUpdateAuthority:
-        instruction.accounts[accountIndex++]!.address,
-      newCollectionMetadata: instruction.accounts[accountIndex++]!.address,
-      newCollectionMint: instruction.accounts[accountIndex++]!.address,
-      newCollectionMasterEdition: instruction.accounts[accountIndex++]!.address,
-      newCollectionAuthorityRecord:
-        instruction.accounts[accountIndex++]!.address,
-      tokenMetadataProgram: instruction.accounts[accountIndex++]!.address,
-      systemProgram: instruction.accounts[accountIndex++]!.address,
+      candyMachine: getNextAccount(),
+      authority: getNextAccount(),
+      authorityPda: getNextAccount(),
+      payer: getNextAccount(),
+      collectionMint: getNextAccount(),
+      collectionMetadata: getNextAccount(),
+      collectionAuthorityRecord: getNextAccount(),
+      newCollectionUpdateAuthority: getNextAccount(),
+      newCollectionMetadata: getNextAccount(),
+      newCollectionMint: getNextAccount(),
+      newCollectionMasterEdition: getNextAccount(),
+      newCollectionAuthorityRecord: getNextAccount(),
+      tokenMetadataProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
     },
     data: getSetCollectionInstructionDataDecoder().decode(instruction.data),
   };

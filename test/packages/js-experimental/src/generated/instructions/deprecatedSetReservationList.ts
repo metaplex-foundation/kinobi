@@ -330,16 +330,21 @@ export function parseDeprecatedSetReservationListInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedDeprecatedSetReservationListInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 3) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      masterEdition: instruction.accounts[accountIndex++]!.address,
-      reservationList: instruction.accounts[accountIndex++]!.address,
-      resource: instruction.accounts[accountIndex++]!.address,
+      masterEdition: getNextAccount(),
+      reservationList: getNextAccount(),
+      resource: getNextAccount(),
     },
     data: getDeprecatedSetReservationListInstructionDataDecoder().decode(
       instruction.data

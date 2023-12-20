@@ -302,10 +302,15 @@ export function parseUpdateMetadataAccountV2Instruction<
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      metadata: instruction.accounts[accountIndex++]!.address,
-      updateAuthority: instruction.accounts[accountIndex++]!.address,
+      metadata: getNextAccount(),
+      updateAuthority: getNextAccount(),
     },
     data: getUpdateMetadataAccountV2InstructionDataDecoder().decode(
       instruction.data

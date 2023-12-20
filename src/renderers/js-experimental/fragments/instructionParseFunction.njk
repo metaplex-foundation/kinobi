@@ -7,7 +7,7 @@ export type {{ instructionParsedType }} = {
         {% if account.docs.length > 0 %}
           {{ macros.docblock(account.docs) }}
         {% endif %}
-        {{ account.name | camelCase }}: Address,
+        {{ account.name | camelCase }}{{ '?' if account.isOptional }}: Address{{ ' | undefined' if account.isOptional }},
       {% endfor %}
     };
   {% endif %}
@@ -25,17 +25,40 @@ export function {{ instructionParseFunction }}<
     {% endif %}
 ): {{ instructionParsedType }} {
   {% if hasAccounts %}
-    if (!instruction.accounts || instruction.accounts.length < 2) {
+    if (!instruction.accounts || instruction.accounts.length < {{ minimumNumberOfAccounts }}) {
       // TODO: Coded error.
       throw new Error('Not enough accounts');
     }
     let accountIndex = 0;
+    const getNextAccount = () => {
+      const address = instruction.accounts![accountIndex]!.address;
+      accountIndex += 1;
+      return address;
+    }
+    {% if hasOptionalAccounts and instruction.optionalAccountStrategy === 'programId' %}
+      const getNextOptionalAccount = (): Address | undefined => {
+        const address = instruction.accounts![accountIndex]!.address;
+        accountIndex += 1;
+        return address === '{{ programAddress }}' ? undefined : address;
+      };
+    {% elif hasOptionalAccounts and instruction.optionalAccountStrategy === 'omitted' %}
+      // TODO
+      const getNextOptionalAccount = (): Address | undefined => {
+        const address = instruction.accounts![accountIndex]!.address;
+        accountIndex += 1;
+        return address === '{{ programAddress }}' ? undefined : address;
+      };
+    {% endif %}
   {% endif %}
   return {
     {% if hasAccounts %}
       accounts: {
         {% for account in instruction.accounts %}
-          {{ account.name | camelCase }}: instruction.accounts[accountIndex++]!.address,
+          {% if account.isOptional %}
+            {{ account.name | camelCase }}: getNextOptionalAccount(),
+          {% else %}
+            {{ account.name | camelCase }}: getNextAccount(),
+          {% endif %}
         {% endfor %}
       },
     {% endif %}

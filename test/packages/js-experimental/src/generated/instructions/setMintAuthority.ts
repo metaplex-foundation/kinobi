@@ -273,16 +273,21 @@ export function parseSetMintAuthorityInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedSetMintAuthorityInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 3) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      candyMachine: instruction.accounts[accountIndex++]!.address,
-      authority: instruction.accounts[accountIndex++]!.address,
-      mintAuthority: instruction.accounts[accountIndex++]!.address,
+      candyMachine: getNextAccount(),
+      authority: getNextAccount(),
+      mintAuthority: getNextAccount(),
     },
     data: getSetMintAuthorityInstructionDataDecoder().decode(instruction.data),
   };

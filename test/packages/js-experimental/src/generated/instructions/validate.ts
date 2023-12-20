@@ -832,25 +832,25 @@ export type ParsedValidateInstruction = {
     ruleSet: Address;
     /** System program */
     systemProgram: Address;
-    optRuleSigner1: Address;
+    optRuleSigner1?: Address | undefined;
     /** Optional rule validation signer 2 */
-    optRuleSigner2: Address;
+    optRuleSigner2?: Address | undefined;
     /** Optional rule validation signer 3 */
-    optRuleSigner3: Address;
+    optRuleSigner3?: Address | undefined;
     /** Optional rule validation signer 4 */
-    optRuleSigner4: Address;
+    optRuleSigner4?: Address | undefined;
     /** Optional rule validation signer 5 */
-    optRuleSigner5: Address;
+    optRuleSigner5?: Address | undefined;
     /** Optional rule validation non-signer 1 */
-    optRuleNonsigner1: Address;
+    optRuleNonsigner1?: Address | undefined;
     /** Optional rule validation non-signer 2 */
-    optRuleNonsigner2: Address;
+    optRuleNonsigner2?: Address | undefined;
     /** Optional rule validation non-signer 3 */
-    optRuleNonsigner3: Address;
+    optRuleNonsigner3?: Address | undefined;
     /** Optional rule validation non-signer 4 */
-    optRuleNonsigner4: Address;
+    optRuleNonsigner4?: Address | undefined;
     /** Optional rule validation non-signer 5 */
-    optRuleNonsigner5: Address;
+    optRuleNonsigner5?: Address | undefined;
   };
   data: ValidateInstructionData;
 };
@@ -860,26 +860,39 @@ export function parseValidateInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedValidateInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 3) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
+  // TODO
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address === 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+      ? undefined
+      : address;
+  };
   return {
     accounts: {
-      payer: instruction.accounts[accountIndex++]!.address,
-      ruleSet: instruction.accounts[accountIndex++]!.address,
-      systemProgram: instruction.accounts[accountIndex++]!.address,
-      optRuleSigner1: instruction.accounts[accountIndex++]!.address,
-      optRuleSigner2: instruction.accounts[accountIndex++]!.address,
-      optRuleSigner3: instruction.accounts[accountIndex++]!.address,
-      optRuleSigner4: instruction.accounts[accountIndex++]!.address,
-      optRuleSigner5: instruction.accounts[accountIndex++]!.address,
-      optRuleNonsigner1: instruction.accounts[accountIndex++]!.address,
-      optRuleNonsigner2: instruction.accounts[accountIndex++]!.address,
-      optRuleNonsigner3: instruction.accounts[accountIndex++]!.address,
-      optRuleNonsigner4: instruction.accounts[accountIndex++]!.address,
-      optRuleNonsigner5: instruction.accounts[accountIndex++]!.address,
+      payer: getNextAccount(),
+      ruleSet: getNextAccount(),
+      systemProgram: getNextAccount(),
+      optRuleSigner1: getNextOptionalAccount(),
+      optRuleSigner2: getNextOptionalAccount(),
+      optRuleSigner3: getNextOptionalAccount(),
+      optRuleSigner4: getNextOptionalAccount(),
+      optRuleSigner5: getNextOptionalAccount(),
+      optRuleNonsigner1: getNextOptionalAccount(),
+      optRuleNonsigner2: getNextOptionalAccount(),
+      optRuleNonsigner3: getNextOptionalAccount(),
+      optRuleNonsigner4: getNextOptionalAccount(),
+      optRuleNonsigner5: getNextOptionalAccount(),
     },
     data: getValidateInstructionDataDecoder().decode(instruction.data),
   };

@@ -469,21 +469,26 @@ export function parseCloseEscrowAccountInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedCloseEscrowAccountInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 8) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      escrow: instruction.accounts[accountIndex++]!.address,
-      metadata: instruction.accounts[accountIndex++]!.address,
-      mint: instruction.accounts[accountIndex++]!.address,
-      tokenAccount: instruction.accounts[accountIndex++]!.address,
-      edition: instruction.accounts[accountIndex++]!.address,
-      payer: instruction.accounts[accountIndex++]!.address,
-      systemProgram: instruction.accounts[accountIndex++]!.address,
-      sysvarInstructions: instruction.accounts[accountIndex++]!.address,
+      escrow: getNextAccount(),
+      metadata: getNextAccount(),
+      mint: getNextAccount(),
+      tokenAccount: getNextAccount(),
+      edition: getNextAccount(),
+      payer: getNextAccount(),
+      systemProgram: getNextAccount(),
+      sysvarInstructions: getNextAccount(),
     },
     data: getCloseEscrowAccountInstructionDataDecoder().decode(
       instruction.data

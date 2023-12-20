@@ -262,10 +262,15 @@ export function parseUpdateCandyMachineInstruction<
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      candyMachine: instruction.accounts[accountIndex++]!.address,
-      authority: instruction.accounts[accountIndex++]!.address,
+      candyMachine: getNextAccount(),
+      authority: getNextAccount(),
     },
     data: getUpdateCandyMachineInstructionDataDecoder().decode(
       instruction.data

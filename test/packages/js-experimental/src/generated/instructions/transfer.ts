@@ -1127,7 +1127,7 @@ export type ParsedTransferInstruction = {
     /** Transfer authority (token or delegate owner) */
     authority: Address;
     /** Delegate record PDA */
-    delegateRecord: Address;
+    delegateRecord?: Address | undefined;
     /** Token account */
     token: Address;
     /** Token account owner */
@@ -1141,7 +1141,7 @@ export type ParsedTransferInstruction = {
     /** Metadata (pda of ['metadata', program id, mint id]) */
     metadata: Address;
     /** Master Edition of token asset */
-    masterEdition: Address;
+    masterEdition?: Address | undefined;
     /** SPL Token Program */
     splTokenProgram: Address;
     /** SPL Associated Token Account program */
@@ -1151,9 +1151,9 @@ export type ParsedTransferInstruction = {
     /** Instructions sysvar account */
     sysvarInstructions: Address;
     /** Token Authorization Rules Program */
-    authorizationRulesProgram: Address;
+    authorizationRulesProgram?: Address | undefined;
     /** Token Authorization Rules account */
-    authorizationRules: Address;
+    authorizationRules?: Address | undefined;
   };
   data: TransferInstructionData;
 };
@@ -1163,28 +1163,40 @@ export function parseTransferInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedTransferInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 15) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
   return {
     accounts: {
-      authority: instruction.accounts[accountIndex++]!.address,
-      delegateRecord: instruction.accounts[accountIndex++]!.address,
-      token: instruction.accounts[accountIndex++]!.address,
-      tokenOwner: instruction.accounts[accountIndex++]!.address,
-      destination: instruction.accounts[accountIndex++]!.address,
-      destinationOwner: instruction.accounts[accountIndex++]!.address,
-      mint: instruction.accounts[accountIndex++]!.address,
-      metadata: instruction.accounts[accountIndex++]!.address,
-      masterEdition: instruction.accounts[accountIndex++]!.address,
-      splTokenProgram: instruction.accounts[accountIndex++]!.address,
-      splAtaProgram: instruction.accounts[accountIndex++]!.address,
-      systemProgram: instruction.accounts[accountIndex++]!.address,
-      sysvarInstructions: instruction.accounts[accountIndex++]!.address,
-      authorizationRulesProgram: instruction.accounts[accountIndex++]!.address,
-      authorizationRules: instruction.accounts[accountIndex++]!.address,
+      authority: getNextAccount(),
+      delegateRecord: getNextOptionalAccount(),
+      token: getNextAccount(),
+      tokenOwner: getNextAccount(),
+      destination: getNextAccount(),
+      destinationOwner: getNextAccount(),
+      mint: getNextAccount(),
+      metadata: getNextAccount(),
+      masterEdition: getNextOptionalAccount(),
+      splTokenProgram: getNextAccount(),
+      splAtaProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
+      sysvarInstructions: getNextAccount(),
+      authorizationRulesProgram: getNextOptionalAccount(),
+      authorizationRules: getNextOptionalAccount(),
     },
     data: getTransferInstructionDataDecoder().decode(instruction.data),
   };

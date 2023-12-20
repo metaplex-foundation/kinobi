@@ -429,7 +429,7 @@ export type ParsedBurnNftInstruction = {
     /** SPL Token Program */
     splTokenProgram: Address;
     /** Metadata of the Collection */
-    collectionMetadata: Address;
+    collectionMetadata?: Address | undefined;
   };
   data: BurnNftInstructionData;
 };
@@ -439,20 +439,32 @@ export function parseBurnNftInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedBurnNftInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 7) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
   return {
     accounts: {
-      metadata: instruction.accounts[accountIndex++]!.address,
-      owner: instruction.accounts[accountIndex++]!.address,
-      mint: instruction.accounts[accountIndex++]!.address,
-      tokenAccount: instruction.accounts[accountIndex++]!.address,
-      masterEditionAccount: instruction.accounts[accountIndex++]!.address,
-      splTokenProgram: instruction.accounts[accountIndex++]!.address,
-      collectionMetadata: instruction.accounts[accountIndex++]!.address,
+      metadata: getNextAccount(),
+      owner: getNextAccount(),
+      mint: getNextAccount(),
+      tokenAccount: getNextAccount(),
+      masterEditionAccount: getNextAccount(),
+      splTokenProgram: getNextAccount(),
+      collectionMetadata: getNextOptionalAccount(),
     },
     data: getBurnNftInstructionDataDecoder().decode(instruction.data),
   };

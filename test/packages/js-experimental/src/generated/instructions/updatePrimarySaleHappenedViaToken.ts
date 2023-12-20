@@ -278,16 +278,21 @@ export function parseUpdatePrimarySaleHappenedViaTokenInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedUpdatePrimarySaleHappenedViaTokenInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 3) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
   return {
     accounts: {
-      metadata: instruction.accounts[accountIndex++]!.address,
-      owner: instruction.accounts[accountIndex++]!.address,
-      token: instruction.accounts[accountIndex++]!.address,
+      metadata: getNextAccount(),
+      owner: getNextAccount(),
+      token: getNextAccount(),
     },
     data: getUpdatePrimarySaleHappenedViaTokenInstructionDataDecoder().decode(
       instruction.data

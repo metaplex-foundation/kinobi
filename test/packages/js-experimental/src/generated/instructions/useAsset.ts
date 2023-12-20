@@ -632,11 +632,11 @@ export type ParsedUseAssetInstruction = {
     /** System program */
     systemProgram: Address;
     /** Use Authority Record PDA (if present the program assumes a delegated use authority) */
-    useAuthorityRecord: Address;
+    useAuthorityRecord?: Address | undefined;
     /** Token Authorization Rules account */
-    authorizationRules: Address;
+    authorizationRules?: Address | undefined;
     /** Token Authorization Rules Program */
-    authorizationRulesProgram: Address;
+    authorizationRulesProgram?: Address | undefined;
   };
   data: UseAssetInstructionData;
 };
@@ -646,24 +646,36 @@ export function parseUseAssetInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedUseAssetInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 11) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
   return {
     accounts: {
-      metadata: instruction.accounts[accountIndex++]!.address,
-      tokenAccount: instruction.accounts[accountIndex++]!.address,
-      mint: instruction.accounts[accountIndex++]!.address,
-      useAuthority: instruction.accounts[accountIndex++]!.address,
-      owner: instruction.accounts[accountIndex++]!.address,
-      splTokenProgram: instruction.accounts[accountIndex++]!.address,
-      ataProgram: instruction.accounts[accountIndex++]!.address,
-      systemProgram: instruction.accounts[accountIndex++]!.address,
-      useAuthorityRecord: instruction.accounts[accountIndex++]!.address,
-      authorizationRules: instruction.accounts[accountIndex++]!.address,
-      authorizationRulesProgram: instruction.accounts[accountIndex++]!.address,
+      metadata: getNextAccount(),
+      tokenAccount: getNextAccount(),
+      mint: getNextAccount(),
+      useAuthority: getNextAccount(),
+      owner: getNextAccount(),
+      splTokenProgram: getNextAccount(),
+      ataProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
+      useAuthorityRecord: getNextOptionalAccount(),
+      authorizationRules: getNextOptionalAccount(),
+      authorizationRulesProgram: getNextOptionalAccount(),
     },
     data: getUseAssetInstructionDataDecoder().decode(instruction.data),
   };

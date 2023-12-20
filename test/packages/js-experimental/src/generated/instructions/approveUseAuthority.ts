@@ -585,7 +585,7 @@ export type ParsedApproveUseAuthorityInstruction = {
     /** System program */
     systemProgram: Address;
     /** Rent info */
-    rent: Address;
+    rent?: Address | undefined;
   };
   data: ApproveUseAuthorityInstructionData;
 };
@@ -595,24 +595,36 @@ export function parseApproveUseAuthorityInstruction<
 >(
   instruction: IInstruction<TProgram> & IInstructionWithData<Uint8Array>
 ): ParsedApproveUseAuthorityInstruction {
-  if (!instruction.accounts || instruction.accounts.length < 2) {
+  if (!instruction.accounts || instruction.accounts.length < 11) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
+  const getNextAccount = () => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address;
+  };
+  const getNextOptionalAccount = (): Address | undefined => {
+    const address = instruction.accounts![accountIndex]!.address;
+    accountIndex += 1;
+    return address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ? undefined
+      : address;
+  };
   return {
     accounts: {
-      useAuthorityRecord: instruction.accounts[accountIndex++]!.address,
-      owner: instruction.accounts[accountIndex++]!.address,
-      payer: instruction.accounts[accountIndex++]!.address,
-      user: instruction.accounts[accountIndex++]!.address,
-      ownerTokenAccount: instruction.accounts[accountIndex++]!.address,
-      metadata: instruction.accounts[accountIndex++]!.address,
-      mint: instruction.accounts[accountIndex++]!.address,
-      burner: instruction.accounts[accountIndex++]!.address,
-      tokenProgram: instruction.accounts[accountIndex++]!.address,
-      systemProgram: instruction.accounts[accountIndex++]!.address,
-      rent: instruction.accounts[accountIndex++]!.address,
+      useAuthorityRecord: getNextAccount(),
+      owner: getNextAccount(),
+      payer: getNextAccount(),
+      user: getNextAccount(),
+      ownerTokenAccount: getNextAccount(),
+      metadata: getNextAccount(),
+      mint: getNextAccount(),
+      burner: getNextAccount(),
+      tokenProgram: getNextAccount(),
+      systemProgram: getNextAccount(),
+      rent: getNextOptionalAccount(),
     },
     data: getApproveUseAuthorityInstructionDataDecoder().decode(
       instruction.data
