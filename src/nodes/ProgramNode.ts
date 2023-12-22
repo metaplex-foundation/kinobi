@@ -1,5 +1,5 @@
 import type { Idl } from '../idl';
-import { PartialExcept, mainCase } from '../shared';
+import { MainCaseString, PartialExcept, mainCase } from '../shared';
 import { AccountNode, accountNodeFromIdl } from './AccountNode';
 import { DefinedTypeNode, definedTypeNodeFromIdl } from './DefinedTypeNode';
 import { ErrorNode, errorNodeFromIdl } from './ErrorNode';
@@ -13,8 +13,8 @@ export type ProgramNode = {
   readonly instructions: InstructionNode[];
   readonly definedTypes: DefinedTypeNode[];
   readonly errors: ErrorNode[];
-  readonly name: string;
-  readonly prefix: string;
+  readonly name: MainCaseString;
+  readonly prefix: MainCaseString;
   readonly publicKey: string;
   readonly version: string;
   readonly origin?: 'shank' | 'anchor';
@@ -28,12 +28,14 @@ export type ProgramNodeInput = Omit<
     | 'instructions'
     | 'definedTypes'
     | 'errors'
-    | 'name'
     | 'publicKey'
     | 'version'
   >,
-  '__programNode' | 'kind'
->;
+  '__programNode' | 'kind' | 'name' | 'prefix'
+> & {
+  name: string;
+  prefix?: string;
+};
 
 export function programNode(input: ProgramNodeInput): ProgramNode {
   return {

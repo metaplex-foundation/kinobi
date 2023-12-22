@@ -1,12 +1,12 @@
 import type { IdlTypeEnumField, IdlTypeEnumVariant } from '../idl';
-import { InvalidKinobiTreeError, mainCase } from '../shared';
+import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
 import type { Node } from './Node';
 import { StructTypeNode, structTypeNodeFromIdl } from './StructTypeNode';
 
 export type EnumStructVariantTypeNode = {
   readonly __enumStructVariantTypeNode: unique symbol;
   readonly kind: 'enumStructVariantTypeNode';
-  readonly name: string;
+  readonly name: MainCaseString;
   readonly struct: StructTypeNode;
 };
 

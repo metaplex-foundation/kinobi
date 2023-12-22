@@ -3,6 +3,7 @@ import {
   InstructionArgDefault,
   InstructionDefault,
   InstructionDependency,
+  MainCaseString,
 } from '../../shared';
 import type * as nodes from '../../nodes';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
@@ -172,7 +173,7 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
         resolved.resolvedIsOptional = false;
         const { seeds } = resolved.defaultsTo;
         Object.keys(seeds).forEach((seedKey) => {
-          const seed = seeds[seedKey];
+          const seed = seeds[seedKey as MainCaseString];
           if (seed.kind !== 'account') return;
           const dependency = this.visitedAccounts.get(seed.name)!;
           if (dependency.resolvedIsOptional) {
@@ -274,8 +275,8 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
     }
 
     if (input.defaultsTo.kind === 'pda') {
-      const accounts = new Set<string>();
-      const args = new Set<string>();
+      const accounts = new Set<MainCaseString>();
+      const args = new Set<MainCaseString>();
       Object.values(input.defaultsTo.seeds).forEach((seed) => {
         if (seed.kind === 'account') {
           accounts.add(seed.name);

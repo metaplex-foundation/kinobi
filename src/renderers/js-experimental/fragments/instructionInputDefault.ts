@@ -2,6 +2,7 @@ import {
   InstructionAccountDefault,
   InstructionArgDefault,
   InstructionDefault,
+  MainCaseString,
   camelCase,
 } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
@@ -81,7 +82,7 @@ export function getInstructionInputDefaultFragment(scope: {
       const pdaArgs = [];
       const pdaSeeds = Object.keys(defaultsTo.seeds).map(
         (seed: string): Fragment => {
-          const seedValue = defaultsTo.seeds[seed];
+          const seedValue = defaultsTo.seeds[seed as MainCaseString];
           if (seedValue.kind === 'account') {
             return fragment(
               `${seed}: expectAddress(accounts.${camelCase(

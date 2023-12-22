@@ -1,11 +1,16 @@
 import type { IdlError } from '../idl';
-import { InvalidKinobiTreeError, PartialExcept, mainCase } from '../shared';
+import {
+  InvalidKinobiTreeError,
+  MainCaseString,
+  PartialExcept,
+  mainCase,
+} from '../shared';
 import type { Node } from './Node';
 
 export type ErrorNode = {
   readonly __errorNode: unique symbol;
   readonly kind: 'errorNode';
-  readonly name: string;
+  readonly name: MainCaseString;
   readonly idlName: string;
   readonly code: number;
   readonly message: string;
@@ -14,8 +19,10 @@ export type ErrorNode = {
 
 export type ErrorNodeInput = Omit<
   PartialExcept<ErrorNode, 'name' | 'code' | 'message'>,
-  '__errorNode' | 'kind'
->;
+  '__errorNode' | 'kind' | 'name'
+> & {
+  name: string;
+};
 
 export function errorNode(input: ErrorNodeInput): ErrorNode {
   if (!input.name) {

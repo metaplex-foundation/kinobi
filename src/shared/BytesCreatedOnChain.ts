@@ -1,12 +1,12 @@
 import { ImportFrom } from './ImportFrom';
-import { mainCase } from './utils';
+import { MainCaseString, mainCase } from './utils';
 
 export type BytesCreatedOnChain =
   | { kind: 'number'; value: number; includeHeader: boolean }
-  | { kind: 'arg'; name: string; includeHeader: boolean }
+  | { kind: 'arg'; name: MainCaseString; includeHeader: boolean }
   | {
       kind: 'account';
-      name: string;
+      name: MainCaseString;
       importFrom: ImportFrom;
       includeHeader: boolean;
     }

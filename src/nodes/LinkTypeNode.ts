@@ -1,10 +1,10 @@
-import { ImportFrom, mainCase } from '../shared';
+import { ImportFrom, MainCaseString, mainCase } from '../shared';
 import type { Node } from './Node';
 
 export type LinkTypeNode = {
   readonly __linkTypeNode: unique symbol;
   readonly kind: 'linkTypeNode';
-  readonly name: string;
+  readonly name: MainCaseString;
   readonly importFrom: ImportFrom;
   readonly size?: number;
 };

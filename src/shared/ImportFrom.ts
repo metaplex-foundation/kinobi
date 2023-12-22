@@ -3,7 +3,7 @@
  * This could be a recognized dependency, or any other string
  * as long as renderers know how to map them into real libraries.
  */
-export type ImportFrom = RelativeImportFrom | 'umi' | 'umiSerializers' | string;
+export type ImportFrom = RelativeImportFrom | string;
 
 /**
  * Tells Kinobi where a local dependency is located.

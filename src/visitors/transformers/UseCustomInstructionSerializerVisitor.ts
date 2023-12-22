@@ -88,5 +88,6 @@ function parseLink(
     ...options,
     name: mainCase(options.name),
     extractAs: mainCase(options.extractAs),
+    importFrom: mainCase(options.importFrom),
   };
 }

@@ -1,4 +1,4 @@
-import { InvalidKinobiTreeError, mainCase } from '../shared';
+import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
 import { LinkTypeNode } from './LinkTypeNode';
 import type { Node } from './Node';
 import { StructTypeNode } from './StructTypeNode';
@@ -6,15 +6,17 @@ import { StructTypeNode } from './StructTypeNode';
 export type InstructionExtraArgsNode = {
   readonly __instructionExtraArgsNode: unique symbol;
   readonly kind: 'instructionExtraArgsNode';
-  readonly name: string;
+  readonly name: MainCaseString;
   readonly struct: StructTypeNode;
   readonly link?: LinkTypeNode;
 };
 
 export type InstructionExtraArgsNodeInput = Omit<
   InstructionExtraArgsNode,
-  '__instructionExtraArgsNode' | 'kind'
->;
+  '__instructionExtraArgsNode' | 'kind' | 'name'
+> & {
+  name: string;
+};
 
 export function instructionExtraArgsNode(
   input: InstructionExtraArgsNodeInput

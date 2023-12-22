@@ -1,3 +1,4 @@
+import { MainCaseString } from 'src/shared';
 import * as nodes from '../../nodes';
 import { assertRootNode } from '../../nodes';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
@@ -14,8 +15,9 @@ export class UnwrapInstructionArgsDefinedTypesVisitor extends BaseThrowVisitor<n
       // Get all defined types used exactly once as an instruction argument.
       .filter(
         (name) =>
-          (histogram[name].total ?? 0) === 1 &&
-          (histogram[name].directlyAsInstructionArgs ?? 0) === 1
+          (histogram[name as MainCaseString].total ?? 0) === 1 &&
+          (histogram[name as MainCaseString].directlyAsInstructionArgs ?? 0) ===
+            1
       )
       // Filter out enums which are better defined as external types.
       .filter((name) => {

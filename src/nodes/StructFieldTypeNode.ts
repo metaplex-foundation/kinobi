@@ -1,5 +1,5 @@
 import type { IdlTypeStructField } from '../idl';
-import { InvalidKinobiTreeError, mainCase } from '../shared';
+import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
 import type { Node } from './Node';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 import { ValueNode, vScalar } from './ValueNode';
@@ -7,7 +7,7 @@ import { ValueNode, vScalar } from './ValueNode';
 export type StructFieldTypeNode = {
   readonly __structFieldTypeNode: unique symbol;
   readonly kind: 'structFieldTypeNode';
-  readonly name: string;
+  readonly name: MainCaseString;
   readonly child: TypeNode;
   readonly docs: string[];
   readonly defaultsTo: {

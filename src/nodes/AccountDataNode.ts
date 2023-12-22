@@ -1,4 +1,4 @@
-import { InvalidKinobiTreeError, mainCase } from '../shared';
+import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
 import { LinkTypeNode } from './LinkTypeNode';
 import type { Node } from './Node';
 import { StructTypeNode } from './StructTypeNode';
@@ -6,15 +6,17 @@ import { StructTypeNode } from './StructTypeNode';
 export type AccountDataNode = {
   readonly __accountDataNode: unique symbol;
   readonly kind: 'accountDataNode';
-  readonly name: string;
+  readonly name: MainCaseString;
   readonly struct: StructTypeNode;
   readonly link?: LinkTypeNode;
 };
 
 export type AccountDataNodeInput = Omit<
   AccountDataNode,
-  '__accountDataNode' | 'kind'
->;
+  '__accountDataNode' | 'kind' | 'name'
+> & {
+  name: string;
+};
 
 export function accountDataNode(input: AccountDataNodeInput): AccountDataNode {
   if (!input.name) {

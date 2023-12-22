@@ -1,4 +1,4 @@
-import { ImportFrom } from '../shared';
+import { ImportFrom, MainCaseString, mainCase } from '../shared';
 
 export type ValueNode =
   | ScalarValueNode
@@ -62,19 +62,21 @@ export const vSome = (value: ValueNode): OptionValueNode => ({
 
 export type StructValueNode = {
   kind: 'struct';
-  values: Record<string, ValueNode>;
+  values: Record<MainCaseString, ValueNode>;
 };
 export const vStruct = (
   values: Record<string, ValueNode>
 ): StructValueNode => ({
   kind: 'struct',
-  values,
+  values: Object.fromEntries(
+    Object.entries(values).map(([key, value]) => [mainCase(key), value])
+  ),
 });
 
 export type EnumValueNode = {
   kind: 'enum';
-  enumType: string;
-  variant: string;
+  enumType: MainCaseString;
+  variant: MainCaseString;
   value: StructValueNode | TupleValueNode | 'empty' | 'scalar';
   importFrom: ImportFrom | null;
 };
@@ -85,8 +87,8 @@ export const vEnum = (
   importFrom?: ImportFrom | null
 ): EnumValueNode => ({
   kind: 'enum',
-  enumType,
-  variant,
+  enumType: mainCase(enumType),
+  variant: mainCase(variant),
   value: value ?? 'scalar',
   importFrom: importFrom ?? null,
 });

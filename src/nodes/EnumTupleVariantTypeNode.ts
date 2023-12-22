@@ -1,12 +1,12 @@
 import type { IdlType, IdlTypeEnumVariant } from '../idl';
-import { InvalidKinobiTreeError, mainCase } from '../shared';
+import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
 import type { Node } from './Node';
 import { TupleTypeNode, tupleTypeNodeFromIdl } from './TupleTypeNode';
 
 export type EnumTupleVariantTypeNode = {
   readonly __enumTupleVariantTypeNode: unique symbol;
   readonly kind: 'enumTupleVariantTypeNode';
-  readonly name: string;
+  readonly name: MainCaseString;
   readonly tuple: TupleTypeNode;
 };
 

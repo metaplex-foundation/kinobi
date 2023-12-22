@@ -1,26 +1,26 @@
 import { AccountNode, ValueNode, isPublicKeyTypeNode } from '../nodes';
 import { ImportFrom } from './ImportFrom';
-import { mainCase } from './utils';
+import { MainCaseString, mainCase } from './utils';
 
 export type InstructionDefault =
   | { kind: 'identity' }
   | { kind: 'payer' }
   | { kind: 'programId' }
-  | { kind: 'program'; program: { name: string; publicKey: string } }
+  | { kind: 'program'; program: { name: MainCaseString; publicKey: string } }
   | { kind: 'publicKey'; publicKey: string }
-  | { kind: 'account'; name: string }
-  | { kind: 'accountBump'; name: string }
-  | { kind: 'arg'; name: string }
+  | { kind: 'account'; name: MainCaseString }
+  | { kind: 'accountBump'; name: MainCaseString }
+  | { kind: 'arg'; name: MainCaseString }
   | { kind: 'value'; value: ValueNode }
   | {
       kind: 'pda';
-      pdaAccount: string;
+      pdaAccount: MainCaseString;
       importFrom: ImportFrom;
-      seeds: Record<string, InstructionSeedDefault>;
+      seeds: Record<MainCaseString, InstructionSeedDefault>;
     }
   | {
       kind: 'resolver';
-      name: string;
+      name: MainCaseString;
       importFrom: ImportFrom;
       dependsOn: InstructionDependency[];
       resolvedIsSigner?: boolean | 'either';
@@ -169,7 +169,10 @@ export const conditionalResolverDefault = (
   ifFalse: options.ifFalse,
 });
 
-export type InstructionDependency = { kind: 'account' | 'arg'; name: string };
+export type InstructionDependency = {
+  kind: 'account' | 'arg';
+  name: MainCaseString;
+};
 
 export const dependsOnAccount = (account: string): InstructionDependency => ({
   kind: 'account',
@@ -183,7 +186,7 @@ export const dependsOnArg = (arg: string): InstructionDependency => ({
 
 export const getDefaultSeedsFromAccount = (
   node: AccountNode
-): Record<string, InstructionSeedDefault> =>
+): Record<MainCaseString, InstructionSeedDefault> =>
   node.seeds.reduce((acc, seed) => {
     if (seed.kind !== 'variable') return acc;
     if (isPublicKeyTypeNode(seed.type)) {
@@ -192,4 +195,4 @@ export const getDefaultSeedsFromAccount = (
       acc[seed.name] = { kind: 'arg', name: seed.name };
     }
     return acc;
-  }, {} as Record<string, InstructionSeedDefault>);
+  }, {} as Record<MainCaseString, InstructionSeedDefault>);

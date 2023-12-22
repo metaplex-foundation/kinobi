@@ -1,3 +1,4 @@
+import { MainCaseString } from 'src/shared';
 import * as nodes from '../../nodes';
 import { GetDefinedTypeHistogramVisitor } from '../aggregators';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
@@ -19,8 +20,8 @@ export class SetMissingDefinedTypesVisitor extends BaseThrowVisitor<nodes.RootNo
       .getAllDefinedTypes(root)
       .map((type) => type.name);
     const missingTypes = Object.keys(histogram).filter((name) => {
-      const { total } = histogram[name];
-      return total > 0 && !availableTypes.includes(name);
+      const { total } = histogram[name as MainCaseString];
+      return total > 0 && !availableTypes.includes(name as MainCaseString);
     });
 
     // If no missing types, abort.

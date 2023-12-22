@@ -6,12 +6,12 @@ import {
   vScalar,
 } from '../nodes';
 import { remainderSize } from './SizeStrategy';
-import { mainCase } from './utils';
+import { MainCaseString, mainCase } from './utils';
 
 export type AccountSeed =
   | { kind: 'programId' }
   | { kind: 'constant'; type: TypeNode; value: ValueNode }
-  | { kind: 'variable'; name: string; type: TypeNode; docs: string[] };
+  | { kind: 'variable'; name: MainCaseString; type: TypeNode; docs: string[] };
 
 export const programSeed = (): AccountSeed => ({ kind: 'programId' });
 

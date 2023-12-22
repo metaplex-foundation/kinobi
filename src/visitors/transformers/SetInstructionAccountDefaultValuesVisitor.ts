@@ -1,6 +1,7 @@
 import * as nodes from '../../nodes';
 import {
   InstructionAccountDefault,
+  MainCaseString,
   getDefaultSeedsFromAccount,
   mainCase,
 } from '../../shared';
@@ -37,7 +38,7 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
       kind: 'program',
       account: /^systemProgram|splSystemProgram$/,
       program: {
-        name: 'splSystem',
+        name: 'splSystem' as MainCaseString,
         publicKey: '11111111111111111111111111111111',
       },
       ignoreIfOptional: true,
@@ -46,7 +47,7 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
       kind: 'program',
       account: /^tokenProgram|splTokenProgram$/,
       program: {
-        name: 'splToken',
+        name: 'splToken' as MainCaseString,
         publicKey: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
       },
       ignoreIfOptional: true,
@@ -55,7 +56,7 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
       kind: 'program',
       account: /^ataProgram|splAtaProgram$/,
       program: {
-        name: 'splAssociatedToken',
+        name: 'splAssociatedToken' as MainCaseString,
         publicKey: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
       },
       ignoreIfOptional: true,
@@ -64,7 +65,7 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
       kind: 'program',
       account: /^tokenMetadataProgram|mplTokenMetadataProgram$/,
       program: {
-        name: 'mplTokenMetadata',
+        name: 'mplTokenMetadata' as MainCaseString,
         publicKey: 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
       },
       ignoreIfOptional: true,
@@ -74,7 +75,7 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
       account:
         /^(tokenAuth|mplTokenAuth|authorization|mplAuthorization|auth|mplAuth)RulesProgram$/,
       program: {
-        name: 'mplTokenAuthRules',
+        name: 'mplTokenAuthRules' as MainCaseString,
         publicKey: 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
       },
       ignoreIfOptional: true,
@@ -83,7 +84,7 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
       kind: 'program',
       account: /^candyMachineProgram|mplCandyMachineProgram$/,
       program: {
-        name: 'mplCandyMachine',
+        name: 'mplCandyMachine' as MainCaseString,
         publicKey: 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
       },
       ignoreIfOptional: true,
@@ -92,7 +93,7 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
       kind: 'program',
       account: /^candyGuardProgram|mplCandyGuardProgram$/,
       program: {
-        name: 'mplCandyGuard',
+        name: 'mplCandyGuard' as MainCaseString,
         publicKey: 'Guard1JwRhJkVH6XZhzoYxeBVQe872VH6QggF4BWmS9g',
       },
       ignoreIfOptional: true,

@@ -1,5 +1,9 @@
 import { readFileSync } from 'fs';
 
+export type MainCaseString = string & {
+  readonly __mainCaseString: unique symbol;
+};
+
 export type PickPartial<T, K extends keyof T> = Omit<T, K> &
   Partial<Pick<T, K>>;
 
@@ -42,6 +46,6 @@ export function snakeCase(str: string): string {
   return titleCase(str).split(' ').join('_').toLowerCase();
 }
 
-export function mainCase(str: string): string {
-  return camelCase(str);
+export function mainCase(str: string): MainCaseString {
+  return camelCase(str) as MainCaseString;
 }

@@ -3,6 +3,7 @@ import {
   BytesCreatedOnChain,
   InstructionArgDefault,
   InvalidKinobiTreeError,
+  MainCaseString,
   PartialExcept,
   RemainingAccounts,
   mainCase,
@@ -30,7 +31,7 @@ import { vScalar } from './ValueNode';
 export type InstructionNode = {
   readonly __instructionNode: unique symbol;
   readonly kind: 'instructionNode';
-  readonly name: string;
+  readonly name: MainCaseString;
   readonly accounts: InstructionAccountNode[];
   readonly dataArgs: InstructionDataArgsNode;
   readonly extraArgs: InstructionExtraArgsNode;
@@ -40,14 +41,17 @@ export type InstructionNode = {
   readonly internal: boolean;
   readonly bytesCreatedOnChain?: BytesCreatedOnChain;
   readonly remainingAccounts?: RemainingAccounts;
-  readonly argDefaults: Record<string, InstructionArgDefault>;
+  readonly argDefaults: Record<MainCaseString, InstructionArgDefault>;
   readonly optionalAccountStrategy: 'omitted' | 'programId';
 };
 
 export type InstructionNodeInput = Omit<
-  PartialExcept<InstructionNode, 'name' | 'accounts' | 'dataArgs'>,
-  '__instructionNode' | 'kind'
->;
+  PartialExcept<InstructionNode, 'accounts' | 'dataArgs'>,
+  '__instructionNode' | 'kind' | 'name' | 'argDefaults'
+> & {
+  name: string;
+  argDefaults?: Record<string, InstructionArgDefault>;
+};
 
 export function instructionNode(input: InstructionNodeInput): InstructionNode {
   if (!input.name) {

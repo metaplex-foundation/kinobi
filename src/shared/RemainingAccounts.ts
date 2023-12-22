@@ -1,9 +1,9 @@
 import { ImportFrom } from './ImportFrom';
-import { mainCase } from './utils';
+import { MainCaseString, mainCase } from './utils';
 
 export type RemainingAccounts =
-  | { kind: 'arg'; name: string; isWritable: boolean }
-  | { kind: 'resolver'; name: string; importFrom: ImportFrom };
+  | { kind: 'arg'; name: MainCaseString; isWritable: boolean }
+  | { kind: 'resolver'; name: MainCaseString; importFrom: ImportFrom };
 
 export const remainingAccountsFromArg = (
   arg: string,

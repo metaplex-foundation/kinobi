@@ -1,8 +1,9 @@
+import { MainCaseString } from 'src/shared';
 import * as nodes from '../../nodes';
 import { Visitor, visit } from '../Visitor';
 
 export type DefinedTypeHistogram = {
-  [key: string]: {
+  [key: MainCaseString]: {
     total: number;
     inAccounts: number;
     inDefinedTypes: number;
@@ -231,15 +232,18 @@ export class GetDefinedTypeHistogramVisitor
 
     histograms.forEach((histogram) => {
       Object.keys(histogram).forEach((key) => {
-        if (result[key] === undefined) {
-          result[key] = histogram[key];
+        const mainCaseKey = key as MainCaseString;
+        if (result[mainCaseKey] === undefined) {
+          result[mainCaseKey] = histogram[mainCaseKey];
         } else {
-          result[key].total += histogram[key].total;
-          result[key].inAccounts += histogram[key].inAccounts;
-          result[key].inDefinedTypes += histogram[key].inDefinedTypes;
-          result[key].inInstructionArgs += histogram[key].inInstructionArgs;
-          result[key].directlyAsInstructionArgs +=
-            histogram[key].directlyAsInstructionArgs;
+          result[mainCaseKey].total += histogram[mainCaseKey].total;
+          result[mainCaseKey].inAccounts += histogram[mainCaseKey].inAccounts;
+          result[mainCaseKey].inDefinedTypes +=
+            histogram[mainCaseKey].inDefinedTypes;
+          result[mainCaseKey].inInstructionArgs +=
+            histogram[mainCaseKey].inInstructionArgs;
+          result[mainCaseKey].directlyAsInstructionArgs +=
+            histogram[mainCaseKey].directlyAsInstructionArgs;
         }
       });
     });

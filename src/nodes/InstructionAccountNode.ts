@@ -1,11 +1,16 @@
 import { IdlInstructionAccount } from '../idl';
-import { InstructionAccountDefault, PartialExcept, mainCase } from '../shared';
+import {
+  InstructionAccountDefault,
+  MainCaseString,
+  PartialExcept,
+  mainCase,
+} from '../shared';
 import type { Node } from './Node';
 
 export type InstructionAccountNode = {
   readonly __instructionAccountNode: unique symbol;
   readonly kind: 'instructionAccountNode';
-  readonly name: string;
+  readonly name: MainCaseString;
   readonly isWritable: boolean;
   readonly isSigner: boolean | 'either';
   readonly isOptional: boolean;
@@ -14,9 +19,11 @@ export type InstructionAccountNode = {
 };
 
 export type InstructionAccountNodeInput = Omit<
-  PartialExcept<InstructionAccountNode, 'name' | 'isWritable' | 'isSigner'>,
-  '__instructionAccountNode' | 'kind'
->;
+  PartialExcept<InstructionAccountNode, 'isWritable' | 'isSigner'>,
+  '__instructionAccountNode' | 'kind' | 'name'
+> & {
+  name: string;
+};
 
 export function instructionAccountNode(
   input: InstructionAccountNodeInput

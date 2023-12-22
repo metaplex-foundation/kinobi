@@ -1,3 +1,4 @@
+import { MainCaseString } from 'src/shared';
 import * as nodes from '../../nodes';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
 import { NodeStack } from '../NodeStack';
@@ -59,7 +60,9 @@ export class UnwrapTupleEnumWithSingleStructVisitor extends BaseThrowVisitor<nod
 
     const histogram = visit(newRoot, new GetDefinedTypeHistogramVisitor());
     const typesToUnwrap = typesToPotentiallyUnwrap.filter(
-      (type) => !histogram[type] || histogram[type].total === 0
+      (type) =>
+        !histogram[type as MainCaseString] ||
+        histogram[type as MainCaseString].total === 0
     );
 
     newRoot = visit(newRoot, new UnwrapDefinedTypesVisitor(typesToUnwrap));

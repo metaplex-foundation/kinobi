@@ -2,6 +2,7 @@ import {
   InstructionAccountDefault,
   InstructionArgDefault,
   InstructionDefault,
+  MainCaseString,
   camelCase,
   pascalCase,
 } from '../../shared';
@@ -91,7 +92,7 @@ export function renderJavaScriptInstructionDefaults(
       const pdaArgs = ['context'];
       const pdaSeeds = Object.keys(defaultsTo.seeds).map(
         (seed: string): string => {
-          const seedValue = defaultsTo.seeds[seed];
+          const seedValue = defaultsTo.seeds[seed as MainCaseString];
           if (seedValue.kind === 'account') {
             imports.add('shared', 'expectPublicKey');
             return `${seed}: expectPublicKey(resolvedAccounts.${camelCase(

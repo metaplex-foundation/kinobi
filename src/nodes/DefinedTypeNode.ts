@@ -1,12 +1,12 @@
 import type { IdlDefinedType } from '../idl';
-import { InvalidKinobiTreeError, mainCase } from '../shared';
+import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
 import type { Node } from './Node';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type DefinedTypeNode = {
   readonly __definedTypeNode: unique symbol;
   readonly kind: 'definedTypeNode';
-  readonly name: string;
+  readonly name: MainCaseString;
   readonly data: TypeNode;
   readonly idlName: string;
   readonly docs: string[];

@@ -2,6 +2,7 @@ import * as nodes from '../../nodes';
 import {
   InstructionAccountDefault,
   InstructionArgDefault,
+  MainCaseString,
   getDefaultSeedsFromAccount,
   mainCase,
 } from '../../shared';
@@ -117,6 +118,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
       const foundAccount = this.allAccounts.get(pdaAccount);
       return {
         ...acountWithoutDefault,
+        name: mainCase(acountWithoutDefault.name),
         defaultsTo: {
           ...defaultsTo,
           seeds: {
@@ -199,9 +201,9 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
     Object.entries(argUpdates).forEach(([argName, argUpdate]) => {
       if (argUpdate?.defaultsTo === undefined) return;
       if (argUpdate.defaultsTo === null) {
-        delete newArgDefaults[argName];
+        delete newArgDefaults[argName as MainCaseString];
       } else {
-        newArgDefaults[argName] = argUpdate.defaultsTo;
+        newArgDefaults[argName as MainCaseString] = argUpdate.defaultsTo;
       }
     });
 

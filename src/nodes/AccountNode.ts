@@ -3,6 +3,7 @@ import {
   AccountDiscriminator,
   AccountSeed,
   InvalidKinobiTreeError,
+  MainCaseString,
   PartialExcept,
   mainCase,
   remainderSize,
@@ -18,7 +19,7 @@ import { vScalar } from './ValueNode';
 export type AccountNode = {
   readonly __accountNode: unique symbol;
   readonly kind: 'accountNode';
-  readonly name: string;
+  readonly name: MainCaseString;
   readonly data: AccountDataNode;
   readonly idlName: string;
   readonly docs: string[];
@@ -30,8 +31,10 @@ export type AccountNode = {
 
 export type AccountNodeInput = Omit<
   PartialExcept<AccountNode, 'name' | 'data'>,
-  '__accountNode' | 'kind'
->;
+  '__accountNode' | 'kind' | 'name'
+> & {
+  name: string;
+};
 
 export function accountNode(input: AccountNodeInput): AccountNode {
   if (!input.name) {
@@ -72,6 +75,7 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
     if (seed.kind === 'variable') {
       return {
         ...seed,
+        name: mainCase(seed.name),
         type: createTypeNodeFromIdl(seed.type),
         docs: seed.description ? [seed.description] : [],
       };
