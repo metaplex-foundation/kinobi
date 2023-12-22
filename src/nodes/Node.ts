@@ -41,7 +41,7 @@ export const assertNodeFilter =
 export const removeNullAndAssertNodeFilter =
   <T extends Node>(
     assertCallback: (node: Node | null) => asserts node is T
-  ): ((node: Node | null | null) => node is T) =>
+  ): ((node: Node | null) => node is T) =>
   (node): node is T => {
     if (node) assertCallback(node);
     return node !== null;
