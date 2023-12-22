@@ -244,13 +244,33 @@ export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
     return numberType;
   }
 
-  visitNumberWrapperType(
-    numberWrapperType: nodes.NumberWrapperTypeNode
+  visitAmountType(amountType: nodes.AmountTypeNode): nodes.Node | null {
+    const number = visit(amountType.number, this);
+    if (number === null) return null;
+    nodes.assertNumberTypeNode(number);
+    return nodes.amountTypeNode(
+      number,
+      amountType.identifier,
+      amountType.decimals
+    );
+  }
+
+  visitDateTimeType(
+    numberWrapperType: nodes.DateTimeTypeNode
   ): nodes.Node | null {
     const number = visit(numberWrapperType.number, this);
     if (number === null) return null;
     nodes.assertNumberTypeNode(number);
-    return nodes.numberWrapperTypeNode(number, numberWrapperType.wrapper);
+    return nodes.dateTimeTypeNode(number);
+  }
+
+  visitSolAmountType(
+    solAmountType: nodes.SolAmountTypeNode
+  ): nodes.Node | null {
+    const number = visit(solAmountType.number, this);
+    if (number === null) return null;
+    nodes.assertNumberTypeNode(number);
+    return nodes.solAmountTypeNode(number);
   }
 
   visitPublicKeyType(

@@ -135,8 +135,16 @@ export abstract class BaseVoidVisitor implements Visitor<void> {
     //
   }
 
-  visitNumberWrapperType(numberWrapperType: nodes.NumberWrapperTypeNode): void {
+  visitAmountType(amountType: nodes.AmountTypeNode): void {
+    visit(amountType.number, this);
+  }
+
+  visitDateTimeType(numberWrapperType: nodes.DateTimeTypeNode): void {
     visit(numberWrapperType.number, this);
+  }
+
+  visitSolAmountType(solAmountType: nodes.SolAmountTypeNode): void {
+    visit(solAmountType.number, this);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

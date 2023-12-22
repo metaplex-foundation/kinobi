@@ -1,7 +1,6 @@
 import type { AccountDataNode } from './AccountDataNode';
 import type { AccountNode } from './AccountNode';
 import type { DefinedTypeNode } from './DefinedTypeNode';
-import type { EnumVariantTypeNode } from './typeNodes/EnumVariantTypeNode';
 import type { ErrorNode } from './ErrorNode';
 import type { InstructionAccountNode } from './InstructionAccountNode';
 import type { InstructionDataArgsNode } from './InstructionDataArgsNode';
@@ -9,25 +8,44 @@ import type { InstructionExtraArgsNode } from './InstructionExtraArgsNode';
 import type { InstructionNode } from './InstructionNode';
 import type { ProgramNode } from './ProgramNode';
 import type { RootNode } from './RootNode';
-import type { StructFieldTypeNode } from './typeNodes/StructFieldTypeNode';
-import type { TypeNode } from './typeNodes/TypeNode';
+import {
+  EnumEmptyVariantTypeNode,
+  EnumStructVariantTypeNode,
+  EnumTupleVariantTypeNode,
+  REGISTERED_TYPE_NODES,
+  StructFieldTypeNode,
+} from './typeNodes';
 
-export type Node =
-  | RootNode
-  | ProgramNode
-  | AccountNode
-  | AccountDataNode
-  | InstructionNode
-  | InstructionAccountNode
-  | InstructionDataArgsNode
-  | InstructionExtraArgsNode
-  | ErrorNode
-  | DefinedTypeNode
-  | TypeNode
+const REGISTERED_NODES = {
+  rootNode: {} as RootNode,
+  programNode: {} as ProgramNode,
+  accountNode: {} as AccountNode,
+  accountDataNode: {} as AccountDataNode,
+  instructionNode: {} as InstructionNode,
+  instructionAccountNode: {} as InstructionAccountNode,
+  instructionDataArgsNode: {} as InstructionDataArgsNode,
+  instructionExtraArgsNode: {} as InstructionExtraArgsNode,
+  errorNode: {} as ErrorNode,
+  definedTypeNode: {} as DefinedTypeNode,
+
+  // Groups.
+  ...REGISTERED_TYPE_NODES,
+
   // The following are not in `TypeNode`
   // as they are not valid standalone types.
-  | StructFieldTypeNode
-  | EnumVariantTypeNode;
+  structFieldTypeNode: {} as StructFieldTypeNode,
+  enumEmptyVariantTypeNode: {} as EnumEmptyVariantTypeNode,
+  enumStructVariantTypeNode: {} as EnumStructVariantTypeNode,
+  enumTupleVariantTypeNode: {} as EnumTupleVariantTypeNode,
+};
+
+export const REGISTERED_NODES_KEYS = Object.keys(
+  REGISTERED_NODES
+) as unknown as keyof RegisteredNodes;
+
+export type RegisteredNodes = typeof REGISTERED_NODES;
+
+export type Node = RegisteredNodes[keyof RegisteredNodes];
 
 export const assertNodeFilter =
   <T extends Node>(

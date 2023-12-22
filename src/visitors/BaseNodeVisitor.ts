@@ -215,12 +215,26 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     return numberType;
   }
 
-  visitNumberWrapperType(
-    numberWrapperType: nodes.NumberWrapperTypeNode
-  ): nodes.Node {
+  visitAmountType(amountType: nodes.AmountTypeNode): nodes.Node {
+    const number = visit(amountType.number, this);
+    nodes.assertNumberTypeNode(number);
+    return nodes.amountTypeNode(
+      number,
+      amountType.identifier,
+      amountType.decimals
+    );
+  }
+
+  visitDateTimeType(numberWrapperType: nodes.DateTimeTypeNode): nodes.Node {
     const number = visit(numberWrapperType.number, this);
     nodes.assertNumberTypeNode(number);
-    return nodes.numberWrapperTypeNode(number, numberWrapperType.wrapper);
+    return nodes.dateTimeTypeNode(number);
+  }
+
+  visitSolAmountType(solAmountType: nodes.SolAmountTypeNode): nodes.Node {
+    const number = visit(solAmountType.number, this);
+    nodes.assertNumberTypeNode(number);
+    return nodes.solAmountTypeNode(number);
   }
 
   visitPublicKeyType(publicKeyType: nodes.PublicKeyTypeNode): nodes.Node {

@@ -57,24 +57,22 @@ export class BaseThrowVisitor<T> implements Visitor<T> {
   }
 
   visitArrayType(arrayType: nodes.ArrayTypeNode): T {
-    throw new KinobiError('This visitor does not support TypeArray nodes.');
+    throw new KinobiError('This visitor does not support ArrayType nodes.');
   }
 
   visitLinkType(linkType: nodes.LinkTypeNode): T {
-    throw new KinobiError(
-      'This visitor does not support TypeDefinedLink nodes.'
-    );
+    throw new KinobiError('This visitor does not support LinkType nodes.');
   }
 
   visitEnumType(enumType: nodes.EnumTypeNode): T {
-    throw new KinobiError('This visitor does not support TypeEnum nodes.');
+    throw new KinobiError('This visitor does not support EnumType nodes.');
   }
 
   visitEnumEmptyVariantType(
     enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
   ): T {
     throw new KinobiError(
-      'This visitor does not support TypeEnumEmptyVariant nodes.'
+      'This visitor does not support EnumEmptyVariantType nodes.'
     );
   }
 
@@ -82,7 +80,7 @@ export class BaseThrowVisitor<T> implements Visitor<T> {
     enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): T {
     throw new KinobiError(
-      'This visitor does not support TypeEnumStructVariant nodes.'
+      'This visitor does not support EnumStructVariantType nodes.'
     );
   }
 
@@ -90,59 +88,65 @@ export class BaseThrowVisitor<T> implements Visitor<T> {
     enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): T {
     throw new KinobiError(
-      'This visitor does not support TypeEnumTupleVariant nodes.'
+      'This visitor does not support EnumTupleVariantType nodes.'
     );
   }
 
   visitMapType(mapType: nodes.MapTypeNode): T {
-    throw new KinobiError('This visitor does not support TypeMap nodes.');
+    throw new KinobiError('This visitor does not support MapType nodes.');
   }
 
   visitOptionType(optionType: nodes.OptionTypeNode): T {
-    throw new KinobiError('This visitor does not support TypeOption nodes.');
+    throw new KinobiError('This visitor does not support OptionType nodes.');
   }
 
   visitSetType(setType: nodes.SetTypeNode): T {
-    throw new KinobiError('This visitor does not support TypeSet nodes.');
+    throw new KinobiError('This visitor does not support SetType nodes.');
   }
 
   visitStructType(structType: nodes.StructTypeNode): T {
-    throw new KinobiError('This visitor does not support TypeStruct nodes.');
+    throw new KinobiError('This visitor does not support StructType nodes.');
   }
 
   visitStructFieldType(structFieldType: nodes.StructFieldTypeNode): T {
     throw new KinobiError(
-      'This visitor does not support TypeStructField nodes.'
+      'This visitor does not support StructFieldType nodes.'
     );
   }
 
   visitTupleType(tupleType: nodes.TupleTypeNode): T {
-    throw new KinobiError('This visitor does not support TypeTuple nodes.');
+    throw new KinobiError('This visitor does not support TupleType nodes.');
   }
 
   visitBoolType(boolType: nodes.BoolTypeNode): T {
-    throw new KinobiError('This visitor does not support TypeBool nodes.');
+    throw new KinobiError('This visitor does not support BoolType nodes.');
   }
 
   visitBytesType(bytesType: nodes.BytesTypeNode): T {
-    throw new KinobiError('This visitor does not support TypeBytes nodes.');
+    throw new KinobiError('This visitor does not support BytesType nodes.');
   }
 
   visitNumberType(numberType: nodes.NumberTypeNode): T {
-    throw new KinobiError('This visitor does not support TypeNumber nodes.');
+    throw new KinobiError('This visitor does not support NumberType nodes.');
   }
 
-  visitNumberWrapperType(numberWrapperType: nodes.NumberWrapperTypeNode): T {
-    throw new KinobiError(
-      'This visitor does not support TypeNumberWrapper nodes.'
-    );
+  visitAmountType(amountType: nodes.AmountTypeNode): T {
+    throw new KinobiError('This visitor does not support AmountType nodes.');
+  }
+
+  visitDateTimeType(numberWrapperType: nodes.DateTimeTypeNode): T {
+    throw new KinobiError('This visitor does not support DateTimeType nodes.');
+  }
+
+  visitSolAmountType(solAmountType: nodes.SolAmountTypeNode): T {
+    throw new KinobiError('This visitor does not support SolAmountType nodes.');
   }
 
   visitPublicKeyType(publicKeyType: nodes.PublicKeyTypeNode): T {
-    throw new KinobiError('This visitor does not support TypePublicKey nodes.');
+    throw new KinobiError('This visitor does not support PublicKeyType nodes.');
   }
 
   visitStringType(stringType: nodes.StringTypeNode): T {
-    throw new KinobiError('This visitor does not support TypeString nodes.');
+    throw new KinobiError('This visitor does not support StringType nodes.');
   }
 }

@@ -116,8 +116,16 @@ export abstract class BaseDelegateVisitor<T, U> implements Visitor<U> {
     return this.map(visit(numberType, this.visitor));
   }
 
-  visitNumberWrapperType(numberWrapperType: nodes.NumberWrapperTypeNode): U {
+  visitAmountType(amountTypeNode: nodes.AmountTypeNode): U {
+    return this.map(visit(amountTypeNode, this.visitor));
+  }
+
+  visitDateTimeType(numberWrapperType: nodes.DateTimeTypeNode): U {
     return this.map(visit(numberWrapperType, this.visitor));
+  }
+
+  visitSolAmountType(solAmountTypeNode: nodes.SolAmountTypeNode): U {
+    return this.map(visit(solAmountTypeNode, this.visitor));
   }
 
   visitPublicKeyType(publicKeyType: nodes.PublicKeyTypeNode): U {

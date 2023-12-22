@@ -8,46 +8,42 @@ import { LinkTypeNode, linkTypeNode } from './LinkTypeNode';
 import { MapTypeNode, mapTypeNodeFromIdl } from './MapTypeNode';
 import type { Node } from '../Node';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
-import { NumberWrapperTypeNode } from './NumberWrapperTypeNode';
 import { OptionTypeNode, optionTypeNodeFromIdl } from './OptionTypeNode';
 import { PublicKeyTypeNode, publicKeyTypeNode } from './PublicKeyTypeNode';
 import { SetTypeNode, setTypeNodeFromIdl } from './SetTypeNode';
 import { StringTypeNode, stringTypeNode } from './StringTypeNode';
 import { StructTypeNode, structTypeNodeFromIdl } from './StructTypeNode';
 import { TupleTypeNode, tupleTypeNodeFromIdl } from './TupleTypeNode';
+import { DateTimeTypeNode } from './DateTimeTypeNode';
+import { SolAmountTypeNode } from './SolAmountTypeNode';
+import { AmountTypeNode } from './AmountTypeNode';
 
-export type TypeNode =
-  | ArrayTypeNode
-  | BoolTypeNode
-  | BytesTypeNode
-  | LinkTypeNode
-  | EnumTypeNode
-  | MapTypeNode
-  | NumberTypeNode
-  | NumberWrapperTypeNode
-  | OptionTypeNode
-  | PublicKeyTypeNode
-  | SetTypeNode
-  | StringTypeNode
-  | StructTypeNode
-  | TupleTypeNode;
+export const REGISTERED_TYPE_NODES = {
+  amountTypeNode: {} as AmountTypeNode,
+  arrayTypeNode: {} as ArrayTypeNode,
+  boolTypeNode: {} as BoolTypeNode,
+  bytesTypeNode: {} as BytesTypeNode,
+  dateTimeTypeNode: {} as DateTimeTypeNode,
+  enumTypeNode: {} as EnumTypeNode,
+  linkTypeNode: {} as LinkTypeNode,
+  mapTypeNode: {} as MapTypeNode,
+  numberTypeNode: {} as NumberTypeNode,
+  optionTypeNode: {} as OptionTypeNode,
+  publicKeyTypeNode: {} as PublicKeyTypeNode,
+  setTypeNode: {} as SetTypeNode,
+  solAmountTypeNode: {} as SolAmountTypeNode,
+  stringTypeNode: {} as StringTypeNode,
+  structTypeNode: {} as StructTypeNode,
+  tupleTypeNode: {} as TupleTypeNode,
+};
 
-const TYPE_NODE_CLASSES = [
-  'arrayTypeNode',
-  'boolTypeNode',
-  'bytesTypeNode',
-  'linkTypeNode',
-  'enumTypeNode',
-  'mapTypeNode',
-  'numberTypeNode',
-  'numberWrapperTypeNode',
-  'optionTypeNode',
-  'publicKeyTypeNode',
-  'setTypeNode',
-  'stringTypeNode',
-  'structTypeNode',
-  'tupleTypeNode',
-];
+export const REGISTERED_TYPE_NODE_KEYS = Object.keys(
+  REGISTERED_TYPE_NODES
+) as unknown as keyof RegisteredTypeNodes;
+
+export type RegisteredTypeNodes = typeof REGISTERED_TYPE_NODES;
+
+export type TypeNode = RegisteredTypeNodes[keyof RegisteredTypeNodes];
 
 function isArrayOfSize(array: any, size: number): boolean {
   return Array.isArray(array) && array.length === size;
@@ -121,7 +117,7 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
 };
 
 export function isTypeNode(node: Node | null): node is TypeNode {
-  return !!node && TYPE_NODE_CLASSES.includes(node.kind);
+  return !!node && REGISTERED_TYPE_NODE_KEYS.includes(node.kind);
 }
 
 export function assertTypeNode(node: Node | null): asserts node is TypeNode {
