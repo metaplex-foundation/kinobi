@@ -106,12 +106,10 @@ export default {
                   node: 'structFieldTypeNode',
                   name: 'discriminator',
                   type: { node: 'numberTypeNode', format: 'u32' },
+                  defaultStrategy: 'optional',
                   defaultsTo: {
-                    strategy: 'optional' | 'omitted', // TODO
-                    value: {
-                      node: 'numberValueNode',
-                      value: 0,
-                    },
+                    node: 'numberValueNode',
+                    value: 0,
                   },
                 },
                 {
