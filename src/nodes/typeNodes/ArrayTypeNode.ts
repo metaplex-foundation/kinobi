@@ -1,11 +1,11 @@
-import type { IdlTypeArray, IdlTypeVec } from '../idl';
+import type { IdlTypeArray, IdlTypeVec } from '../../idl';
 import {
   SizeStrategy,
   fixedSize,
   prefixedSize,
   remainderSize,
-} from '../shared/SizeStrategy';
-import type { Node } from './Node';
+} from '../../shared/SizeStrategy';
+import type { Node } from '../Node';
 import { numberTypeNode } from './NumberTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 

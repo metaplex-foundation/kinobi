@@ -2,8 +2,8 @@ import {
   SizeStrategy,
   displaySizeStrategy,
   remainderSize,
-} from '../shared/SizeStrategy';
-import type { Node } from './Node';
+} from '../../shared/SizeStrategy';
+import type { Node } from '../Node';
 
 export type BytesTypeNode = {
   readonly __bytesTypeNode: unique symbol;

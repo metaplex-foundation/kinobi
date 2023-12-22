@@ -1,5 +1,5 @@
-import type { IdlTypeTuple } from '../idl';
-import type { Node } from './Node';
+import type { IdlTypeTuple } from '../../idl';
+import type { Node } from '../Node';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type TupleTypeNode = {

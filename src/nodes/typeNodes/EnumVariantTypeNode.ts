@@ -1,4 +1,4 @@
-import type { Node } from './Node';
+import type { Node } from '../Node';
 import type { EnumEmptyVariantTypeNode } from './EnumEmptyVariantTypeNode';
 import type { EnumStructVariantTypeNode } from './EnumStructVariantTypeNode';
 import type { EnumTupleVariantTypeNode } from './EnumTupleVariantTypeNode';

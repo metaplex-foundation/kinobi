@@ -1,11 +1,11 @@
-import type { IdlTypeMap } from '../idl';
+import type { IdlTypeMap } from '../../idl';
 import {
   SizeStrategy,
   fixedSize,
   prefixedSize,
   remainderSize,
-} from '../shared';
-import type { Node } from './Node';
+} from '../../shared';
+import type { Node } from '../Node';
 import { numberTypeNode } from './NumberTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 

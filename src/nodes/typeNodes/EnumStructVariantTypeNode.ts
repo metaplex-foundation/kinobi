@@ -1,6 +1,6 @@
-import type { IdlTypeEnumField, IdlTypeEnumVariant } from '../idl';
-import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
-import type { Node } from './Node';
+import type { IdlTypeEnumField, IdlTypeEnumVariant } from '../../idl';
+import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../../shared';
+import type { Node } from '../Node';
 import { StructTypeNode, structTypeNodeFromIdl } from './StructTypeNode';
 
 export type EnumStructVariantTypeNode = {

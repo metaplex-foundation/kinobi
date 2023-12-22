@@ -1,5 +1,5 @@
-import type { IdlTypeOption } from '../idl';
-import type { Node } from './Node';
+import type { IdlTypeOption } from '../../idl';
+import type { Node } from '../Node';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 

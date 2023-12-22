@@ -23,9 +23,12 @@ import {
 import type { Node } from './Node';
 import { ProgramNode, isProgramNode } from './ProgramNode';
 import { RootNode } from './RootNode';
-import { structFieldTypeNode } from './StructFieldTypeNode';
-import { structTypeNode, structTypeNodeFromIdl } from './StructTypeNode';
-import { createTypeNodeFromIdl } from './TypeNode';
+import { structFieldTypeNode } from './typeNodes/StructFieldTypeNode';
+import {
+  structTypeNode,
+  structTypeNodeFromIdl,
+} from './typeNodes/StructTypeNode';
+import { createTypeNodeFromIdl } from './typeNodes/TypeNode';
 import { vScalar } from './ValueNode';
 
 export type InstructionNode = {

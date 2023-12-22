@@ -1,5 +1,5 @@
-import type { IdlTypeStruct } from '../idl';
-import type { Node } from './Node';
+import type { IdlTypeStruct } from '../../idl';
+import type { Node } from '../Node';
 import {
   StructFieldTypeNode,
   structFieldTypeNodeFromIdl,

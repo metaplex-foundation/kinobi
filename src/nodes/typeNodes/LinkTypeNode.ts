@@ -1,5 +1,5 @@
-import { ImportFrom, MainCaseString, mainCase } from '../shared';
-import type { Node } from './Node';
+import { ImportFrom, MainCaseString, mainCase } from '../../shared';
+import type { Node } from '../Node';
 
 export type LinkTypeNode = {
   readonly __linkTypeNode: unique symbol;

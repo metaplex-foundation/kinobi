@@ -1,12 +1,12 @@
-import { IDL_TYPE_LEAVES, IdlType } from '../idl';
-import { prefixedSize } from '../shared';
+import { IDL_TYPE_LEAVES, IdlType } from '../../idl';
+import { prefixedSize } from '../../shared';
 import { ArrayTypeNode, arrayTypeNodeFromIdl } from './ArrayTypeNode';
 import { BoolTypeNode, boolTypeNode } from './BoolTypeNode';
 import { BytesTypeNode, bytesTypeNode } from './BytesTypeNode';
 import { EnumTypeNode, enumTypeNodeFromIdl } from './EnumTypeNode';
 import { LinkTypeNode, linkTypeNode } from './LinkTypeNode';
 import { MapTypeNode, mapTypeNodeFromIdl } from './MapTypeNode';
-import type { Node } from './Node';
+import type { Node } from '../Node';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 import { NumberWrapperTypeNode } from './NumberWrapperTypeNode';
 import { OptionTypeNode, optionTypeNodeFromIdl } from './OptionTypeNode';

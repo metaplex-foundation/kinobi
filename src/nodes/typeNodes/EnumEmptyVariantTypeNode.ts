@@ -1,6 +1,6 @@
-import type { IdlTypeEnumVariant } from '../idl';
-import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
-import type { Node } from './Node';
+import type { IdlTypeEnumVariant } from '../../idl';
+import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../../shared';
+import type { Node } from '../Node';
 
 export type EnumEmptyVariantTypeNode = {
   readonly __enumEmptyVariantTypeNode: unique symbol;

@@ -1,6 +1,6 @@
-import type { IdlType, IdlTypeEnumVariant } from '../idl';
-import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
-import type { Node } from './Node';
+import type { IdlType, IdlTypeEnumVariant } from '../../idl';
+import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../../shared';
+import type { Node } from '../Node';
 import { TupleTypeNode, tupleTypeNodeFromIdl } from './TupleTypeNode';
 
 export type EnumTupleVariantTypeNode = {

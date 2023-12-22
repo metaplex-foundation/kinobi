@@ -1,4 +1,4 @@
-import type { Node } from './Node';
+import type { Node } from '../Node';
 
 export type PublicKeyTypeNode = {
   readonly __publicKeyTypeNode: unique symbol;

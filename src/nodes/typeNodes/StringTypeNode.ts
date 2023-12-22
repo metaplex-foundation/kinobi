@@ -2,8 +2,8 @@ import {
   SizeStrategy,
   displaySizeStrategy,
   prefixedSize,
-} from '../shared/SizeStrategy';
-import type { Node } from './Node';
+} from '../../shared/SizeStrategy';
+import type { Node } from '../Node';
 
 export type StringEncoding = 'utf8' | 'base16' | 'base58' | 'base64';
 

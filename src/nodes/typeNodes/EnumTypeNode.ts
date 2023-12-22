@@ -1,9 +1,9 @@
-import type { IdlTypeEnum } from '../idl';
+import type { IdlTypeEnum } from '../../idl';
 import { enumEmptyVariantTypeNodeFromIdl } from './EnumEmptyVariantTypeNode';
 import { enumStructVariantTypeNodeFromIdl } from './EnumStructVariantTypeNode';
 import { enumTupleVariantTypeNodeFromIdl } from './EnumTupleVariantTypeNode';
 import type { EnumVariantTypeNode } from './EnumVariantTypeNode';
-import type { Node } from './Node';
+import type { Node } from '../Node';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 
 export type EnumTypeNode = {
