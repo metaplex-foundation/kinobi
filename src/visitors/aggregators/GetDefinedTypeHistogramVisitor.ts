@@ -208,11 +208,27 @@ export class GetDefinedTypeHistogramVisitor
     return {};
   }
 
-  visitNumberWrapperType(
-    numberWrapperType: nodes.NumberWrapperTypeNode
+  visitAmountType(amountType: nodes.AmountTypeNode): DefinedTypeHistogram {
+    this.stackLevel += 1;
+    const histogram = visit(amountType.number, this);
+    this.stackLevel -= 1;
+    return histogram;
+  }
+
+  visitDateTimeType(
+    dateTimeType: nodes.DateTimeTypeNode
   ): DefinedTypeHistogram {
     this.stackLevel += 1;
-    const histogram = visit(numberWrapperType.number, this);
+    const histogram = visit(dateTimeType.number, this);
+    this.stackLevel -= 1;
+    return histogram;
+  }
+
+  visitSolAmountType(
+    solAmountType: nodes.SolAmountTypeNode
+  ): DefinedTypeHistogram {
+    this.stackLevel += 1;
+    const histogram = visit(solAmountType.number, this);
     this.stackLevel -= 1;
     return histogram;
   }

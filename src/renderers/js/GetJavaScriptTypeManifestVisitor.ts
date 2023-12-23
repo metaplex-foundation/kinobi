@@ -536,57 +536,73 @@ export class GetJavaScriptTypeManifestVisitor
     };
   }
 
-  visitNumberWrapperType(
-    numberWrapperType: nodes.NumberWrapperTypeNode
-  ): JavaScriptTypeManifest {
-    const { number, wrapper } = numberWrapperType;
-    const numberManifest = visit(number, this);
-    switch (wrapper.kind) {
-      case 'DateTime':
-        if (!nodes.isInteger(number)) {
-          throw new Error(
-            `DateTime wrappers can only be applied to integer ` +
-              `types. Got type [${number.toString()}].`
-          );
-        }
-        numberManifest.strictImports.add('umi', 'DateTime');
-        numberManifest.looseImports.add('umi', 'DateTimeInput');
-        numberManifest.serializerImports.add('umi', 'mapDateTimeSerializer');
-        return {
-          ...numberManifest,
-          strictType: `DateTime`,
-          looseType: `DateTimeInput`,
-          serializer: `mapDateTimeSerializer(${numberManifest.serializer})`,
-        };
-      case 'Amount':
-      case 'SolAmount':
-        if (!nodes.isUnsignedInteger(number)) {
-          throw new Error(
-            `Amount wrappers can only be applied to unsigned ` +
-              `integer types. Got type [${number.toString()}].`
-          );
-        }
-        const identifier =
-          wrapper.kind === 'SolAmount' ? 'SOL' : wrapper.identifier;
-        const decimals = wrapper.kind === 'SolAmount' ? 9 : wrapper.decimals;
-        const idAndDecimals = `'${identifier}', ${decimals}`;
-        const isSolAmount = identifier === 'SOL' && decimals === 9;
-        const amountType = isSolAmount
-          ? 'SolAmount'
-          : `Amount<${idAndDecimals}>`;
-        const amountImport = isSolAmount ? 'SolAmount' : 'Amount';
-        numberManifest.strictImports.add('umi', amountImport);
-        numberManifest.looseImports.add('umi', amountImport);
-        numberManifest.serializerImports.add('umi', 'mapAmountSerializer');
-        return {
-          ...numberManifest,
-          strictType: amountType,
-          looseType: amountType,
-          serializer: `mapAmountSerializer(${numberManifest.serializer}, ${idAndDecimals})`,
-        };
-      default:
-        return numberManifest;
+  visitAmountType(amountType: nodes.AmountTypeNode): JavaScriptTypeManifest {
+    const numberManifest = visit(amountType.number, this);
+    if (!nodes.isUnsignedInteger(amountType.number)) {
+      throw new Error(
+        `Amount wrappers can only be applied to unsigned ` +
+          `integer types. Got type [${amountType.number.toString()}].`
+      );
     }
+    const { identifier, decimals } = amountType;
+    const idAndDecimals = `'${identifier}', ${decimals}`;
+    const isSolAmount = identifier === 'SOL' && decimals === 9;
+    const amountTypeString = isSolAmount
+      ? 'SolAmount'
+      : `Amount<${idAndDecimals}>`;
+    const amountImport = isSolAmount ? 'SolAmount' : 'Amount';
+    numberManifest.strictImports.add('umi', amountImport);
+    numberManifest.looseImports.add('umi', amountImport);
+    numberManifest.serializerImports.add('umi', 'mapAmountSerializer');
+    return {
+      ...numberManifest,
+      strictType: amountTypeString,
+      looseType: amountTypeString,
+      serializer: `mapAmountSerializer(${numberManifest.serializer}, ${idAndDecimals})`,
+    };
+  }
+
+  visitDateTimeType(
+    dateTimeType: nodes.DateTimeTypeNode
+  ): JavaScriptTypeManifest {
+    const numberManifest = visit(dateTimeType.number, this);
+    if (!nodes.isInteger(dateTimeType.number)) {
+      throw new Error(
+        `DateTime wrappers can only be applied to integer ` +
+          `types. Got type [${dateTimeType.number.toString()}].`
+      );
+    }
+    numberManifest.strictImports.add('umi', 'DateTime');
+    numberManifest.looseImports.add('umi', 'DateTimeInput');
+    numberManifest.serializerImports.add('umi', 'mapDateTimeSerializer');
+    return {
+      ...numberManifest,
+      strictType: `DateTime`,
+      looseType: `DateTimeInput`,
+      serializer: `mapDateTimeSerializer(${numberManifest.serializer})`,
+    };
+  }
+
+  visitSolAmountType(
+    solAmountType: nodes.SolAmountTypeNode
+  ): JavaScriptTypeManifest {
+    const numberManifest = visit(solAmountType.number, this);
+    if (!nodes.isUnsignedInteger(solAmountType.number)) {
+      throw new Error(
+        `Amount wrappers can only be applied to unsigned ` +
+          `integer types. Got type [${solAmountType.number.toString()}].`
+      );
+    }
+    const idAndDecimals = `'SOL', 9`;
+    numberManifest.strictImports.add('umi', 'SolAmount');
+    numberManifest.looseImports.add('umi', 'SolAmount');
+    numberManifest.serializerImports.add('umi', 'mapAmountSerializer');
+    return {
+      ...numberManifest,
+      strictType: 'SolAmount',
+      looseType: 'SolAmount',
+      serializer: `mapAmountSerializer(${numberManifest.serializer}, ${idAndDecimals})`,
+    };
   }
 
   visitPublicKeyType(): JavaScriptTypeManifest {

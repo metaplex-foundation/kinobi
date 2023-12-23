@@ -1,7 +1,12 @@
 import * as nodes from '../../nodes';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
-type NumberWrapperMap = Record<string, nodes.NumberWrapper>;
+export type NumberWrapper =
+  | { kind: 'DateTime' }
+  | { kind: 'SolAmount' }
+  | { kind: 'Amount'; identifier: string; decimals: number };
+
+type NumberWrapperMap = Record<string, NumberWrapper>;
 
 export class SetNumberWrappersVisitor extends TransformNodesVisitor {
   constructor(readonly map: NumberWrapperMap) {
@@ -10,7 +15,20 @@ export class SetNumberWrappersVisitor extends TransformNodesVisitor {
         selector: { kind: 'numberTypeNode', stack: selectorStack },
         transformer: (node) => {
           nodes.assertNumberTypeNode(node);
-          return nodes.numberWrapperTypeNode(node, wrapper);
+          switch (wrapper.kind) {
+            case 'DateTime':
+              return nodes.dateTimeTypeNode(node);
+            case 'SolAmount':
+              return nodes.solAmountTypeNode(node);
+            case 'Amount':
+              return nodes.amountTypeNode(
+                node,
+                wrapper.identifier,
+                wrapper.decimals
+              );
+            default:
+              throw new Error(`Invalid number wrapper kind: ${wrapper}`);
+          }
         },
       })
     );

@@ -166,21 +166,19 @@ export class GetNodeInlineStringVisitor implements Visitor<string> {
     return numberType.toString();
   }
 
-  visitNumberWrapperType(
-    numberWrapperType: nodes.NumberWrapperTypeNode
-  ): string {
-    const item = visit(numberWrapperType.number, this);
-    const { wrapper } = numberWrapperType;
-    switch (wrapper.kind) {
-      case 'DateTime':
-        return `DateTime(${item})`;
-      case 'Amount':
-        return `Amount(${item},${wrapper.identifier},${wrapper.decimals})`;
-      case 'SolAmount':
-        return `SolAmount(${item})`;
-      default:
-        return item;
-    }
+  visitAmountType(amountType: nodes.AmountTypeNode): string {
+    const item = visit(amountType.number, this);
+    return `Amount(${item},${amountType.identifier},${amountType.decimals})`;
+  }
+
+  visitDateTimeType(dateTimeType: nodes.DateTimeTypeNode): string {
+    const item = visit(dateTimeType.number, this);
+    return `DateTime(${item})`;
+  }
+
+  visitSolAmountType(amountType: nodes.SolAmountTypeNode): string {
+    const item = visit(amountType.number, this);
+    return `SolAmount(${item})`;
   }
 
   visitPublicKeyType(): string {

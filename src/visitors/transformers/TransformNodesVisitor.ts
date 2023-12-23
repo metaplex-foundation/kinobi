@@ -236,15 +236,27 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
     return this.applyTransforms(visitedTypeNumber);
   }
 
-  visitNumberWrapperType(
-    numberWrapperType: nodes.NumberWrapperTypeNode
-  ): nodes.Node | null {
-    this.stack.push(numberWrapperType);
-    const visitedTypeNumberWrapper = super.visitNumberWrapperType(
-      numberWrapperType
-    );
+  visitAmountType(amountType: nodes.AmountTypeNode): nodes.Node | null {
+    this.stack.push(amountType);
+    const visitedTypeAmount = super.visitAmountType(amountType);
     this.stack.pop();
-    return this.applyTransforms(visitedTypeNumberWrapper);
+    return this.applyTransforms(visitedTypeAmount);
+  }
+
+  visitDateTimeType(dateTimeType: nodes.DateTimeTypeNode): nodes.Node | null {
+    this.stack.push(dateTimeType);
+    const visitedTypeDate = super.visitDateTimeType(dateTimeType);
+    this.stack.pop();
+    return this.applyTransforms(visitedTypeDate);
+  }
+
+  visitSolAmountType(
+    solAmountType: nodes.SolAmountTypeNode
+  ): nodes.Node | null {
+    this.stack.push(solAmountType);
+    const visitedTypeAmount = super.visitSolAmountType(solAmountType);
+    this.stack.pop();
+    return this.applyTransforms(visitedTypeAmount);
   }
 
   visitPublicKeyType(

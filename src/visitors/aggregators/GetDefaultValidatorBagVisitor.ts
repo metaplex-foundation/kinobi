@@ -382,11 +382,23 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
     return new ValidatorBag();
   }
 
-  visitNumberWrapperType(
-    numberWrapperType: nodes.NumberWrapperTypeNode
-  ): ValidatorBag {
-    this.pushNode(numberWrapperType);
-    const bag = visit(numberWrapperType.number, this);
+  visitAmountType(amountType: nodes.AmountTypeNode): ValidatorBag {
+    this.pushNode(amountType);
+    const bag = visit(amountType.number, this);
+    this.popNode();
+    return bag;
+  }
+
+  visitDateTimeType(dateTimeType: nodes.DateTimeTypeNode): ValidatorBag {
+    this.pushNode(dateTimeType);
+    const bag = visit(dateTimeType.number, this);
+    this.popNode();
+    return bag;
+  }
+
+  visitSolAmountType(solAmountType: nodes.SolAmountTypeNode): ValidatorBag {
+    this.pushNode(solAmountType);
+    const bag = visit(solAmountType.number, this);
     this.popNode();
     return bag;
   }

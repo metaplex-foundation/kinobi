@@ -138,40 +138,6 @@ export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisi
     return bag;
   }
 
-  visitNumberWrapperType(
-    numberWrapperType: nodes.NumberWrapperTypeNode
-  ): ValidatorBag {
-    const bag = super.visitNumberWrapperType(numberWrapperType);
-    this.pushNode(numberWrapperType);
-    const { wrapper, number } = numberWrapperType;
-    switch (wrapper.kind) {
-      case 'DateTime':
-        if (!nodes.isInteger(number)) {
-          bag.error(
-            `DateTime wrapper can only be applied to integer types. ` +
-              `Got type [${nodes.displayNumberTypeNode(number)}].`,
-            numberWrapperType,
-            this.stack
-          );
-        }
-        break;
-      case 'Amount':
-        if (!nodes.isUnsignedInteger(number)) {
-          bag.error(
-            `Amount wrapper can only be applied to unsigned integer types. ` +
-              `Got type [${nodes.displayNumberTypeNode(number)}].`,
-            numberWrapperType,
-            this.stack
-          );
-        }
-        break;
-      default:
-        break;
-    }
-    this.popNode();
-    return bag;
-  }
-
   protected checkExportConflicts(
     node: nodes.Node,
     exports: Record<string, string>

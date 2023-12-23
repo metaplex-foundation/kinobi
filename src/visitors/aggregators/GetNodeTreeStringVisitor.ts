@@ -291,27 +291,30 @@ export class GetNodeTreeStringVisitor implements Visitor<string> {
     return this.indented(`[NumberTypeNode] ${numberType.toString()}`);
   }
 
-  visitNumberWrapperType(
-    numberWrapperType: nodes.NumberWrapperTypeNode
-  ): string {
+  visitAmountType(amountType: nodes.AmountTypeNode): string {
     this.indent += 1;
-    const item = visit(numberWrapperType.number, this);
+    const item = visit(amountType.number, this);
     this.indent -= 1;
-    const { wrapper } = numberWrapperType;
-    const base = `[NumberWrapperTypeNode] ${wrapper.kind}`;
-    switch (wrapper.kind) {
-      case 'Amount':
-        return [
-          this.indented(
-            `${base} ` +
-              `identifier: ${wrapper.identifier}, ` +
-              `decimals: ${wrapper.decimals}`
-          ),
-          item,
-        ].join('\n');
-      default:
-        return [this.indented(`${base}`), item].join('\n');
-    }
+    return [
+      this.indented(
+        `[AmountTypeNode] identifier: ${amountType.identifier}, decimals: ${amountType.decimals}`
+      ),
+      item,
+    ].join('\n');
+  }
+
+  visitDateTimeType(dateTimeType: nodes.DateTimeTypeNode): string {
+    this.indent += 1;
+    const item = visit(dateTimeType.number, this);
+    this.indent -= 1;
+    return [this.indented(`[DateTimeTypeNode]`), item].join('\n');
+  }
+
+  visitSolAmountType(amountType: nodes.SolAmountTypeNode): string {
+    this.indent += 1;
+    const item = visit(amountType.number, this);
+    this.indent -= 1;
+    return [this.indented(`[SolAmountTypeNode]`), item].join('\n');
   }
 
   visitPublicKeyType(): string {

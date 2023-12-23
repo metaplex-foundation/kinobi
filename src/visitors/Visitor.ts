@@ -1,4 +1,4 @@
-import { KinobiError, capitalize } from '../shared';
+import { KinobiError, pascalCase } from '../shared';
 import * as nodes from '../nodes';
 
 export type Visitor<T = void> = {
@@ -12,8 +12,8 @@ export function visit<T>(node: nodes.Node, visitor: Visitor<T>): T {
     throw new KinobiError(`Unrecognized node [${node.kind}]`);
   }
 
-  const key = `visit${capitalize(
-    node.kind.substring(-4)
+  const key = `visit${pascalCase(
+    node.kind.slice(0, -4)
   )}` as typeof node.kind extends `${infer KWithoutNode}Node`
     ? `visit${Capitalize<KWithoutNode>}`
     : `visit${Capitalize<typeof node.kind>}`;

@@ -151,10 +151,16 @@ export class GetByteSizeVisitor extends BaseThrowVisitor<number | null> {
     return parseInt(numberType.format.slice(1), 10) / 8;
   }
 
-  visitNumberWrapperType(
-    numberWrapperType: nodes.NumberWrapperTypeNode
-  ): number | null {
-    return visit(numberWrapperType.number, this);
+  visitAmountType(amountType: nodes.AmountTypeNode): number | null {
+    return visit(amountType.number, this);
+  }
+
+  visitDateTimeType(dateTimeType: nodes.DateTimeTypeNode): number | null {
+    return visit(dateTimeType.number, this);
+  }
+
+  visitSolAmountType(solAmountType: nodes.SolAmountTypeNode): number | null {
+    return visit(solAmountType.number, this);
   }
 
   visitPublicKeyType(): number | null {

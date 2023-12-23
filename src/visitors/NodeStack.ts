@@ -63,8 +63,6 @@ export class NodeStack {
         case 'enumStructVariantTypeNode':
         case 'enumTupleVariantTypeNode':
           return node.name ? `Variant: ${node.name}` : 'Variant';
-        case 'numberWrapperTypeNode':
-          return `Number Wrapper: ${node.wrapper.kind}`;
         case 'structFieldTypeNode':
           return node.name ? `Field: ${node.name}` : 'Field';
         default:

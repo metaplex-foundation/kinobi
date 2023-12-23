@@ -397,10 +397,16 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     throw new Error('Number endianness not supported by Borsh');
   }
 
-  visitNumberWrapperType(
-    numberWrapperType: nodes.NumberWrapperTypeNode
-  ): RustTypeManifest {
-    return visit(numberWrapperType.number, this);
+  visitAmountType(amountType: nodes.AmountTypeNode): RustTypeManifest {
+    return visit(amountType.number, this);
+  }
+
+  visitDateTimeType(dateTimeType: nodes.DateTimeTypeNode): RustTypeManifest {
+    return visit(dateTimeType.number, this);
+  }
+
+  visitSolAmountType(solAmountType: nodes.SolAmountTypeNode): RustTypeManifest {
+    return visit(solAmountType.number, this);
   }
 
   visitPublicKeyType(): RustTypeManifest {

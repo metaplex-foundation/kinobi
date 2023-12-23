@@ -602,12 +602,16 @@ export class GetTypeManifestVisitor implements Visitor<TypeManifest> {
     };
   }
 
-  visitNumberWrapperType(
-    numberWrapperType: nodes.NumberWrapperTypeNode
-  ): TypeManifest {
-    // TODO: Support number wrapper types.
-    const { number } = numberWrapperType;
-    return visit(number, this);
+  visitAmountType(amountType: nodes.AmountTypeNode): TypeManifest {
+    return visit(amountType.number, this);
+  }
+
+  visitDateTimeType(dateTimeType: nodes.DateTimeTypeNode): TypeManifest {
+    return visit(dateTimeType.number, this);
+  }
+
+  visitSolAmountType(solAmountType: nodes.SolAmountTypeNode): TypeManifest {
+    return visit(solAmountType.number, this);
   }
 
   visitPublicKeyType(): TypeManifest {
