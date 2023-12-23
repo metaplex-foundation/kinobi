@@ -39,7 +39,7 @@ export const REGISTERED_TYPE_NODES = {
 
 export const REGISTERED_TYPE_NODE_KEYS = Object.keys(
   REGISTERED_TYPE_NODES
-) as unknown as keyof RegisteredTypeNodes;
+) as (keyof RegisteredTypeNodes)[];
 
 export type RegisteredTypeNodes = typeof REGISTERED_TYPE_NODES;
 
@@ -117,7 +117,7 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
 };
 
 export function isTypeNode(node: Node | null): node is TypeNode {
-  return !!node && REGISTERED_TYPE_NODE_KEYS.includes(node.kind);
+  return !!node && (REGISTERED_TYPE_NODE_KEYS as string[]).includes(node.kind);
 }
 
 export function assertTypeNode(node: Node | null): asserts node is TypeNode {

@@ -41,7 +41,7 @@ const REGISTERED_NODES = {
 
 export const REGISTERED_NODES_KEYS = Object.keys(
   REGISTERED_NODES
-) as unknown as keyof RegisteredNodes;
+) as (keyof RegisteredNodes)[];
 
 export type RegisteredNodes = typeof REGISTERED_NODES;
 

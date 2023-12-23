@@ -8,15 +8,17 @@ export type Visitor<T = void> = {
 };
 
 export function visit<T>(node: nodes.Node, visitor: Visitor<T>): T {
-  if (!nodes.REGISTERED_NODES_KEYS.includes(node.kind)) {
-    throw new KinobiError(`Unrecognized node [${node.kind}]`);
+  return visitor[getVisitFunctionName(node.kind)](node as any);
+}
+
+export function getVisitFunctionName(node: nodes.Node['kind']) {
+  if (!nodes.REGISTERED_NODES_KEYS.includes(node)) {
+    throw new KinobiError(`Unrecognized node [${node}]`);
   }
 
-  const key = `visit${pascalCase(
-    node.kind.slice(0, -4)
-  )}` as typeof node.kind extends `${infer KWithoutNode}Node`
+  return `visit${pascalCase(
+    node.slice(0, -4)
+  )}` as typeof node extends `${infer KWithoutNode}Node`
     ? `visit${Capitalize<KWithoutNode>}`
-    : `visit${Capitalize<typeof node.kind>}`;
-
-  return visitor[key](node as any);
+    : `visit${Capitalize<typeof node>}`;
 }
