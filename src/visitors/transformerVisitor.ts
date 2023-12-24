@@ -25,13 +25,14 @@ export function transformerVisitor<
     nodeKeys?: TNodeKeys[];
   } = {}
 ): Visitor<nodes.Node | null, TNodeKeys> {
-  // eslint-disable-next-line arrow-body-style
+  const stack = new NodeStack();
+
   const intercept: IdentityInterceptor = (fn) => (node) => {
-    return fn(node);
+    stack.push(node);
+    const newNode = fn(node);
+    stack.pop();
+    return newNode; // TODO: apply transform
   };
 
-  return identityVisitor({
-    ...options,
-    intercept,
-  });
+  return identityVisitor({ ...options, intercept });
 }
