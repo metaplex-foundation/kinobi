@@ -1,6 +1,7 @@
 import * as nodes from '../nodes';
 import { AccountSeed } from '../shared';
-import { Visitor, staticVisitor, visit } from './Visitor';
+import { Visitor, visit } from './Visitor';
+import { staticVisitor } from './staticVisitor';
 
 export function identityVisitor<
   TNodeKeys extends keyof nodes.RegisteredNodes = keyof nodes.RegisteredNodes
