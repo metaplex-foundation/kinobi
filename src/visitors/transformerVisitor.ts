@@ -3,24 +3,15 @@ import { NodeStack } from './NodeStack';
 import { Visitor } from './Visitor';
 import { IdentityInterceptor, identityVisitor } from './identityVisitor';
 
-export type NodeTransformer2 = {
-  select: NodeTransformerSelect;
-  transform: NodeTransformerTransform;
-};
-
-export type NodeTransformerSelect<TNode extends nodes.Node = nodes.Node> = (
+export type NodeTransformer<TNode extends nodes.Node = nodes.Node> = (
   node: TNode,
   stack: NodeStack
-) => boolean;
-
-export type NodeTransformerTransform<TNode extends nodes.Node = nodes.Node> = (
-  node: TNode,
-  stack: NodeStack
-) => TNode | null;
+) => nodes.Node | null;
 
 export function transformerVisitor<
   TNodeKeys extends keyof nodes.RegisteredNodes = keyof nodes.RegisteredNodes
 >(
+  transformers: NodeTransformer[],
   options: {
     nodeKeys?: TNodeKeys[];
   } = {}
@@ -31,8 +22,20 @@ export function transformerVisitor<
     stack.push(node);
     const newNode = fn(node);
     stack.pop();
-    return newNode; // TODO: apply transform
+    return applyTransformers(transformers, stack.clone(), newNode);
   };
 
   return identityVisitor({ ...options, intercept });
+}
+
+function applyTransformers(
+  transformers: NodeTransformer[],
+  stack: NodeStack,
+  node: nodes.Node | null
+): nodes.Node | null {
+  if (node === null) return null;
+  return transformers.reduce(
+    (acc, transformer) => (acc === null ? null : transformer(acc, stack)),
+    node as nodes.Node | null
+  );
 }

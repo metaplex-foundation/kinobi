@@ -7,15 +7,13 @@ import {
 } from '../NodeSelector';
 import { NodeStack } from '../NodeStack';
 
-export type NodeTransformer<T extends nodes.Node = nodes.Node> = (
-  node: T,
-  stack: NodeStack,
-  program: nodes.ProgramNode | null
-) => T | null;
-
 export type NodeTransform<T extends NodeSelector = NodeSelector> = {
   selector: T;
-  transformer: NodeTransformer;
+  transformer: (
+    node: nodes.Node,
+    stack: NodeStack,
+    program: nodes.ProgramNode | null
+  ) => nodes.Node | null;
 };
 
 export class TransformNodesVisitor extends BaseNodeOrNullVisitor {

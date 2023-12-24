@@ -6,11 +6,8 @@ import {
   getDefaultSeedsFromAccount,
   mainCase,
 } from '../../shared';
-import {
-  NodeTransform,
-  NodeTransformer,
-  TransformNodesVisitor,
-} from './TransformNodesVisitor';
+import { NodeTransformer } from '../transformerVisitor';
+import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
 export type InstructionUpdates =
   | NodeTransformer<nodes.InstructionNode>
@@ -54,10 +51,10 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
         const name = selectorStack.pop();
         return {
           selector: { kind: 'instructionNode', stack: selectorStack, name },
-          transformer: (node, stack, program) => {
+          transformer: (node, stack) => {
             nodes.assertInstructionNode(node);
             if (typeof updates === 'function') {
-              return updates(node, stack, program);
+              return updates(node, stack);
             }
             if ('delete' in updates) {
               return null;

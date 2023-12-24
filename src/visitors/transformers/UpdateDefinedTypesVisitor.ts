@@ -1,10 +1,7 @@
 import * as nodes from '../../nodes';
 import { mainCase } from '../../shared';
-import {
-  NodeTransform,
-  NodeTransformer,
-  TransformNodesVisitor,
-} from './TransformNodesVisitor';
+import { NodeTransformer } from '../transformerVisitor';
+import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 import { renameEnumNode, renameStructNode } from './_renameHelpers';
 
 export type DefinedTypeUpdates =
@@ -28,10 +25,10 @@ export class UpdateDefinedTypesVisitor extends TransformNodesVisitor {
         const transforms: NodeTransform[] = [
           {
             selector: { kind: 'definedTypeNode', stack: selectorStack, name },
-            transformer: (node, stack, program) => {
+            transformer: (node, stack) => {
               nodes.assertDefinedTypeNode(node);
               if (typeof updates === 'function') {
-                return updates(node, stack, program);
+                return updates(node, stack);
               }
               if ('delete' in updates) {
                 return null;

@@ -1,10 +1,7 @@
 import * as nodes from '../../nodes';
 import { mainCase } from '../../shared';
-import {
-  NodeTransform,
-  NodeTransformer,
-  TransformNodesVisitor,
-} from './TransformNodesVisitor';
+import { NodeTransformer } from '../transformerVisitor';
+import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 import { renameStructNode } from './_renameHelpers';
 
 export type AccountUpdates =
@@ -22,10 +19,10 @@ export class UpdateAccountsVisitor extends TransformNodesVisitor {
         const name = selectorStack.pop();
         return {
           selector: { kind: 'accountNode', stack: selectorStack, name },
-          transformer: (node, stack, program) => {
+          transformer: (node, stack) => {
             nodes.assertAccountNode(node);
             if (typeof updates === 'function') {
-              return updates(node, stack, program);
+              return updates(node, stack);
             }
             if ('delete' in updates) {
               return null;
