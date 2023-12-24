@@ -31,7 +31,7 @@ export function visit<TReturn, TNode extends nodes.Node>(
   const key = getVisitFunctionName(node.kind) as GetVisitorFunctionName<
     TNode['kind']
   >;
-  return (visitor[key] as any)(node);
+  return (visitor[key] as typeof visitor[typeof key] & Function)(node);
 }
 
 export function getVisitFunctionName<T extends nodes.Node['kind']>(node: T) {
