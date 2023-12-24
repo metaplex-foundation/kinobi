@@ -3,7 +3,7 @@ import { Visitor, visit } from './Visitor';
 import * as nodes from '../nodes';
 
 export class BaseNodeVisitor implements Visitor<nodes.Node> {
-  visitRoot(root: nodes.RootNode): nodes.Node {
+  visitRoot(this: Visitor<nodes.Node>, root: nodes.RootNode): nodes.Node {
     return nodes.rootNode(
       root.programs
         .map((program) => visit(program, this))
@@ -11,7 +11,10 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     );
   }
 
-  visitProgram(program: nodes.ProgramNode): nodes.Node {
+  visitProgram(
+    this: Visitor<nodes.Node>,
+    program: nodes.ProgramNode
+  ): nodes.Node {
     return nodes.programNode({
       ...program,
       accounts: program.accounts
@@ -29,7 +32,10 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     });
   }
 
-  visitAccount(account: nodes.AccountNode): nodes.Node {
+  visitAccount(
+    this: Visitor<nodes.Node>,
+    account: nodes.AccountNode
+  ): nodes.Node {
     const data = visit(account.data, this);
     nodes.assertAccountDataNode(data);
     const seeds = account.seeds
@@ -43,7 +49,10 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     return nodes.accountNode({ ...account, data, seeds });
   }
 
-  visitAccountData(accountData: nodes.AccountDataNode): nodes.Node {
+  visitAccountData(
+    this: Visitor<nodes.Node>,
+    accountData: nodes.AccountDataNode
+  ): nodes.Node {
     const struct = visit(accountData.struct, this);
     nodes.assertStructTypeNode(struct);
     const link = accountData.link ? visit(accountData.link, this) : undefined;
@@ -51,7 +60,10 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     return nodes.accountDataNode({ ...accountData, struct, link });
   }
 
-  visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
+  visitInstruction(
+    this: Visitor<nodes.Node>,
+    instruction: nodes.InstructionNode
+  ): nodes.Node {
     const dataArgs = visit(instruction.dataArgs, this);
     nodes.assertInstructionDataArgsNode(dataArgs);
     const extraArgs = visit(instruction.extraArgs, this);
@@ -70,12 +82,14 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
   }
 
   visitInstructionAccount(
+    this: Visitor<nodes.Node>,
     instructionAccount: nodes.InstructionAccountNode
   ): nodes.Node {
     return instructionAccount;
   }
 
   visitInstructionDataArgs(
+    this: Visitor<nodes.Node>,
     instructionDataArgs: nodes.InstructionDataArgsNode
   ): nodes.Node {
     const struct = visit(instructionDataArgs.struct, this);
@@ -92,6 +106,7 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
   }
 
   visitInstructionExtraArgs(
+    this: Visitor<nodes.Node>,
     instructionExtraArgs: nodes.InstructionExtraArgsNode
   ): nodes.Node {
     const struct = visit(instructionExtraArgs.struct, this);
@@ -107,27 +122,39 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     });
   }
 
-  visitDefinedType(definedType: nodes.DefinedTypeNode): nodes.Node {
+  visitDefinedType(
+    this: Visitor<nodes.Node>,
+    definedType: nodes.DefinedTypeNode
+  ): nodes.Node {
     const data = visit(definedType.data, this);
     nodes.assertTypeNode(data);
     return nodes.definedTypeNode({ ...definedType, data });
   }
 
-  visitError(error: nodes.ErrorNode): nodes.Node {
+  visitError(this: Visitor<nodes.Node>, error: nodes.ErrorNode): nodes.Node {
     return error;
   }
 
-  visitArrayType(arrayType: nodes.ArrayTypeNode): nodes.Node {
+  visitArrayType(
+    this: Visitor<nodes.Node>,
+    arrayType: nodes.ArrayTypeNode
+  ): nodes.Node {
     const child = visit(arrayType.child, this);
     nodes.assertTypeNode(child);
     return nodes.arrayTypeNode(child, { ...arrayType });
   }
 
-  visitLinkType(linkType: nodes.LinkTypeNode): nodes.Node {
+  visitLinkType(
+    this: Visitor<nodes.Node>,
+    linkType: nodes.LinkTypeNode
+  ): nodes.Node {
     return linkType;
   }
 
-  visitEnumType(enumType: nodes.EnumTypeNode): nodes.Node {
+  visitEnumType(
+    this: Visitor<nodes.Node>,
+    enumType: nodes.EnumTypeNode
+  ): nodes.Node {
     return nodes.enumTypeNode(
       enumType.variants
         .map((variant) => visit(variant, this))
@@ -137,12 +164,14 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
   }
 
   visitEnumEmptyVariantType(
+    this: Visitor<nodes.Node>,
     enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
   ): nodes.Node {
     return enumEmptyVariantType;
   }
 
   visitEnumStructVariantType(
+    this: Visitor<nodes.Node>,
     enumStructVariantType: nodes.EnumStructVariantTypeNode
   ): nodes.Node {
     const newStruct = visit(enumStructVariantType.struct, this);
@@ -154,6 +183,7 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
   }
 
   visitEnumTupleVariantType(
+    this: Visitor<nodes.Node>,
     enumTupleVariantType: nodes.EnumTupleVariantTypeNode
   ): nodes.Node {
     const newTuple = visit(enumTupleVariantType.tuple, this);
@@ -161,7 +191,10 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     return nodes.enumTupleVariantTypeNode(enumTupleVariantType.name, newTuple);
   }
 
-  visitMapType(mapType: nodes.MapTypeNode): nodes.Node {
+  visitMapType(
+    this: Visitor<nodes.Node>,
+    mapType: nodes.MapTypeNode
+  ): nodes.Node {
     const key = visit(mapType.key, this);
     const value = visit(mapType.value, this);
     nodes.assertTypeNode(key);
@@ -169,19 +202,28 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     return nodes.mapTypeNode(key, value, { ...mapType });
   }
 
-  visitOptionType(optionType: nodes.OptionTypeNode): nodes.Node {
+  visitOptionType(
+    this: Visitor<nodes.Node>,
+    optionType: nodes.OptionTypeNode
+  ): nodes.Node {
     const child = visit(optionType.child, this);
     nodes.assertTypeNode(child);
     return nodes.optionTypeNode(child, { ...optionType });
   }
 
-  visitSetType(setType: nodes.SetTypeNode): nodes.Node {
+  visitSetType(
+    this: Visitor<nodes.Node>,
+    setType: nodes.SetTypeNode
+  ): nodes.Node {
     const child = visit(setType.child, this);
     nodes.assertTypeNode(child);
     return nodes.setTypeNode(child, { ...setType });
   }
 
-  visitStructType(structType: nodes.StructTypeNode): nodes.Node {
+  visitStructType(
+    this: Visitor<nodes.Node>,
+    structType: nodes.StructTypeNode
+  ): nodes.Node {
     return nodes.structTypeNode(
       structType.fields
         .map((field) => visit(field, this))
@@ -189,13 +231,19 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     );
   }
 
-  visitStructFieldType(structFieldType: nodes.StructFieldTypeNode): nodes.Node {
+  visitStructFieldType(
+    this: Visitor<nodes.Node>,
+    structFieldType: nodes.StructFieldTypeNode
+  ): nodes.Node {
     const child = visit(structFieldType.child, this);
     nodes.assertTypeNode(child);
     return nodes.structFieldTypeNode({ ...structFieldType, child });
   }
 
-  visitTupleType(tupleType: nodes.TupleTypeNode): nodes.Node {
+  visitTupleType(
+    this: Visitor<nodes.Node>,
+    tupleType: nodes.TupleTypeNode
+  ): nodes.Node {
     return nodes.tupleTypeNode(
       tupleType.children
         .map((child) => visit(child, this))
@@ -203,19 +251,31 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     );
   }
 
-  visitBoolType(boolType: nodes.BoolTypeNode): nodes.Node {
+  visitBoolType(
+    this: Visitor<nodes.Node>,
+    boolType: nodes.BoolTypeNode
+  ): nodes.Node {
     return boolType;
   }
 
-  visitBytesType(bytesType: nodes.BytesTypeNode): nodes.Node {
+  visitBytesType(
+    this: Visitor<nodes.Node>,
+    bytesType: nodes.BytesTypeNode
+  ): nodes.Node {
     return bytesType;
   }
 
-  visitNumberType(numberType: nodes.NumberTypeNode): nodes.Node {
+  visitNumberType(
+    this: Visitor<nodes.Node>,
+    numberType: nodes.NumberTypeNode
+  ): nodes.Node {
     return numberType;
   }
 
-  visitAmountType(amountType: nodes.AmountTypeNode): nodes.Node {
+  visitAmountType(
+    this: Visitor<nodes.Node>,
+    amountType: nodes.AmountTypeNode
+  ): nodes.Node {
     const number = visit(amountType.number, this);
     nodes.assertNumberTypeNode(number);
     return nodes.amountTypeNode(
@@ -225,23 +285,35 @@ export class BaseNodeVisitor implements Visitor<nodes.Node> {
     );
   }
 
-  visitDateTimeType(numberWrapperType: nodes.DateTimeTypeNode): nodes.Node {
+  visitDateTimeType(
+    this: Visitor<nodes.Node>,
+    numberWrapperType: nodes.DateTimeTypeNode
+  ): nodes.Node {
     const number = visit(numberWrapperType.number, this);
     nodes.assertNumberTypeNode(number);
     return nodes.dateTimeTypeNode(number);
   }
 
-  visitSolAmountType(solAmountType: nodes.SolAmountTypeNode): nodes.Node {
+  visitSolAmountType(
+    this: Visitor<nodes.Node>,
+    solAmountType: nodes.SolAmountTypeNode
+  ): nodes.Node {
     const number = visit(solAmountType.number, this);
     nodes.assertNumberTypeNode(number);
     return nodes.solAmountTypeNode(number);
   }
 
-  visitPublicKeyType(publicKeyType: nodes.PublicKeyTypeNode): nodes.Node {
+  visitPublicKeyType(
+    this: Visitor<nodes.Node>,
+    publicKeyType: nodes.PublicKeyTypeNode
+  ): nodes.Node {
     return publicKeyType;
   }
 
-  visitStringType(stringType: nodes.StringTypeNode): nodes.Node {
+  visitStringType(
+    this: Visitor<nodes.Node>,
+    stringType: nodes.StringTypeNode
+  ): nodes.Node {
     return stringType;
   }
 }

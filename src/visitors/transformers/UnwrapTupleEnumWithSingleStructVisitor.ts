@@ -2,8 +2,11 @@ import { MainCaseString } from 'src/shared';
 import * as nodes from '../../nodes';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
 import { NodeStack } from '../NodeStack';
-import { visit } from '../Visitor';
-import { GetDefinedTypeHistogramVisitor } from '../aggregators';
+import { Visitor, visit } from '../Visitor';
+import {
+  DefinedTypeHistogram,
+  GetDefinedTypeHistogramVisitor,
+} from '../aggregators';
 import { TransformNodesVisitor } from './TransformNodesVisitor';
 import { UnwrapDefinedTypesVisitor } from './UnwrapDefinedTypesVisitor';
 
@@ -54,18 +57,26 @@ export class UnwrapTupleEnumWithSingleStructVisitor extends BaseThrowVisitor<nod
             return nodes.enumStructVariantTypeNode(node.name, child);
           },
         },
-      ])
+      ]) as Visitor<nodes.RootNode | null>
     );
     nodes.assertRootNode(newRoot);
 
-    const histogram = visit(newRoot, new GetDefinedTypeHistogramVisitor());
+    const histogram = visit(
+      newRoot,
+      new GetDefinedTypeHistogramVisitor() as Visitor<DefinedTypeHistogram>
+    );
     const typesToUnwrap = typesToPotentiallyUnwrap.filter(
       (type) =>
         !histogram[type as MainCaseString] ||
         histogram[type as MainCaseString].total === 0
     );
 
-    newRoot = visit(newRoot, new UnwrapDefinedTypesVisitor(typesToUnwrap));
+    newRoot = visit(
+      newRoot,
+      new UnwrapDefinedTypesVisitor(
+        typesToUnwrap
+      ) as Visitor<nodes.RootNode | null>
+    );
     nodes.assertRootNode(newRoot);
 
     return newRoot;

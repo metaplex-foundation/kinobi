@@ -19,7 +19,9 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
       .forEach((type) => this.definedTypes.add(type.name));
 
     this.pushNode(root);
-    const bags = root.programs.map((program) => visit(program, this));
+    const bags = root.programs.map((program) =>
+      visit(program, this as Visitor<ValidatorBag>)
+    );
     this.popNode();
     return new ValidatorBag().mergeWith(bags);
   }
@@ -40,10 +42,18 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
       bag.info('Program has no origin.', program, this.stack);
     }
     bag.mergeWith([
-      ...program.accounts.map((node) => visit(node, this)),
-      ...program.instructions.map((node) => visit(node, this)),
-      ...program.definedTypes.map((node) => visit(node, this)),
-      ...program.errors.map((node) => visit(node, this)),
+      ...program.accounts.map((node) =>
+        visit(node, this as Visitor<ValidatorBag>)
+      ),
+      ...program.instructions.map((node) =>
+        visit(node, this as Visitor<ValidatorBag>)
+      ),
+      ...program.definedTypes.map((node) =>
+        visit(node, this as Visitor<ValidatorBag>)
+      ),
+      ...program.errors.map((node) =>
+        visit(node, this as Visitor<ValidatorBag>)
+      ),
     ]);
     this.popNode();
     return bag;
@@ -214,7 +224,7 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
 
   visitArrayType(arrayType: nodes.ArrayTypeNode): ValidatorBag {
     this.pushNode(arrayType);
-    const bag = visit(arrayType.child, this);
+    const bag = visit(arrayType.child, this as Visitor<ValidatorBag>);
     this.popNode();
     return bag;
   }
@@ -306,14 +316,14 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
 
   visitOptionType(optionType: nodes.OptionTypeNode): ValidatorBag {
     this.pushNode(optionType);
-    const bag = visit(optionType.child, this);
+    const bag = visit(optionType.child, this as Visitor<ValidatorBag>);
     this.popNode();
     return bag;
   }
 
   visitSetType(setType: nodes.SetTypeNode): ValidatorBag {
     this.pushNode(setType);
-    const bag = visit(setType.child, this);
+    const bag = visit(setType.child, this as Visitor<ValidatorBag>);
     this.popNode();
     return bag;
   }
@@ -384,21 +394,21 @@ export class GetDefaultValidatorBagVisitor implements Visitor<ValidatorBag> {
 
   visitAmountType(amountType: nodes.AmountTypeNode): ValidatorBag {
     this.pushNode(amountType);
-    const bag = visit(amountType.number, this);
+    const bag = visit(amountType.number, this as Visitor<ValidatorBag>);
     this.popNode();
     return bag;
   }
 
   visitDateTimeType(dateTimeType: nodes.DateTimeTypeNode): ValidatorBag {
     this.pushNode(dateTimeType);
-    const bag = visit(dateTimeType.number, this);
+    const bag = visit(dateTimeType.number, this as Visitor<ValidatorBag>);
     this.popNode();
     return bag;
   }
 
   visitSolAmountType(solAmountType: nodes.SolAmountTypeNode): ValidatorBag {
     this.pushNode(solAmountType);
-    const bag = visit(solAmountType.number, this);
+    const bag = visit(solAmountType.number, this as Visitor<ValidatorBag>);
     this.popNode();
     return bag;
   }

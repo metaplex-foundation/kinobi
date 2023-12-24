@@ -15,8 +15,13 @@ export type GetVisitorFunctionName<T extends nodes.Node['kind']> =
     ? `visit${Capitalize<TWithoutNode>}`
     : never;
 
-export function visit<T>(node: nodes.Node, visitor: Visitor<T>): T {
-  return visitor[getVisitFunctionName(node.kind)](node as any);
+export function visit<TReturn, TNode extends nodes.Node>(
+  node: TNode,
+  visitor: Visitor<TReturn, TNode['kind']>
+): TReturn {
+  return visitor[
+    getVisitFunctionName(node.kind) as GetVisitorFunctionName<TNode['kind']>
+  ](node);
 }
 
 export function getVisitFunctionName<T extends nodes.Node['kind']>(node: T) {

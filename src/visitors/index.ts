@@ -12,3 +12,5 @@ export * from './NodeSelector';
 export * from './ValidatorBag';
 export * from './NodeStack';
 export * from './Visitor';
+
+export * from './identityVisitor';

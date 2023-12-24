@@ -2,13 +2,19 @@ import { MainCaseString } from 'src/shared';
 import * as nodes from '../../nodes';
 import { assertRootNode } from '../../nodes';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
-import { visit } from '../Visitor';
-import { GetDefinedTypeHistogramVisitor } from '../aggregators/GetDefinedTypeHistogramVisitor';
+import { Visitor, visit } from '../Visitor';
+import {
+  DefinedTypeHistogram,
+  GetDefinedTypeHistogramVisitor,
+} from '../aggregators/GetDefinedTypeHistogramVisitor';
 import { UnwrapDefinedTypesVisitor } from './UnwrapDefinedTypesVisitor';
 
 export class UnwrapInstructionArgsDefinedTypesVisitor extends BaseThrowVisitor<nodes.RootNode> {
   visitRoot(root: nodes.RootNode): nodes.RootNode {
-    const histogram = visit(root, new GetDefinedTypeHistogramVisitor());
+    const histogram = visit(
+      root,
+      new GetDefinedTypeHistogramVisitor() as Visitor<DefinedTypeHistogram>
+    );
     const allDefinedTypes = nodes.getAllDefinedTypes(root);
 
     const definedTypesToInline: string[] = Object.keys(histogram)
@@ -27,7 +33,9 @@ export class UnwrapInstructionArgsDefinedTypesVisitor extends BaseThrowVisitor<n
 
     // Inline the identified defined types if any.
     if (definedTypesToInline.length > 0) {
-      const inlineVisitor = new UnwrapDefinedTypesVisitor(definedTypesToInline);
+      const inlineVisitor = new UnwrapDefinedTypesVisitor(
+        definedTypesToInline
+      ) as Visitor<nodes.RootNode>;
       const newRoot = visit(root, inlineVisitor);
       assertRootNode(newRoot);
       return newRoot;

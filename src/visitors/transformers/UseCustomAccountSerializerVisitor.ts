@@ -2,7 +2,7 @@ import * as nodes from '../../nodes';
 import { mainCase } from '../../shared';
 import { ImportFrom } from '../../shared/ImportFrom';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
-import { visit } from '../Visitor';
+import { Visitor, visit } from '../Visitor';
 
 export type CustomAccountSerializerOptions = {
   name: string;
@@ -49,7 +49,7 @@ export class UseCustomAccountSerializerVisitor extends BaseNodeVisitor {
       ...program,
       definedTypes: newDefinedTypes,
       accounts: program.accounts
-        .map((account) => visit(account, this))
+        .map((account) => visit(account, this as Visitor<nodes.Node>))
         .filter(nodes.assertNodeFilter(nodes.assertAccountNode)),
     });
   }

@@ -1,7 +1,9 @@
 import * as nodes from '../../nodes';
 import { mainCase } from '../../shared';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
-import { visit } from '../Visitor';
+import { visit as baseVisit } from '../Visitor';
+
+const visit = baseVisit<nodes.Node, nodes.Node>;
 
 export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
   protected availableDefinedTypes = new Map<string, nodes.DefinedTypeNode>();
