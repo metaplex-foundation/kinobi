@@ -1,6 +1,6 @@
 import { displaySizeStrategy } from '../../shared';
 import * as nodes from '../../nodes';
-import { Visitor, visit as baseVisit } from '../Visitor';
+import { Visitor, visit } from '../Visitor';
 
 const ROOT_PREFIX = 'R';
 const PROGRAM_PREFIX = 'P';
@@ -8,7 +8,6 @@ const ACCOUNT_PREFIX = 'A';
 const INSTRUCTION_PREFIX = 'I';
 const TYPE_PREFIX = 'T';
 const ERROR_PREFIX = 'E';
-const visit = baseVisit<string, nodes.Node>;
 
 export class GetNodeInlineStringVisitor implements Visitor<string> {
   visitRoot(root: nodes.RootNode): string {

@@ -15,13 +15,14 @@ export type GetVisitorFunctionName<T extends nodes.Node['kind']> =
     ? `visit${Capitalize<TWithoutNode>}`
     : never;
 
-export function visit<TReturn, TNode extends nodes.Node>(
-  node: TNode,
-  visitor: Visitor<TReturn, TNode['kind']>
+export function visit<TReturn>(
+  node: nodes.Node,
+  visitor: Visitor<TReturn, typeof node['kind']>
 ): TReturn {
-  return visitor[
-    getVisitFunctionName(node.kind) as GetVisitorFunctionName<TNode['kind']>
-  ](node);
+  const key = getVisitFunctionName(node.kind) as GetVisitorFunctionName<
+    typeof node['kind']
+  >;
+  return visitor[key](node as any);
 }
 
 export function getVisitFunctionName<T extends nodes.Node['kind']>(node: T) {

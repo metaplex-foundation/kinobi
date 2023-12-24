@@ -1,8 +1,6 @@
 import { displaySizeStrategy } from '../../shared';
 import * as nodes from '../../nodes';
-import { Visitor, visit as baseVisit } from '../Visitor';
-
-const visit = baseVisit<string, nodes.Node>;
+import { Visitor, visit } from '../Visitor';
 
 export class GetNodeTreeStringVisitor implements Visitor<string> {
   indent = 0;
