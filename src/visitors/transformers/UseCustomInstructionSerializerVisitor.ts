@@ -2,7 +2,7 @@ import * as nodes from '../../nodes';
 import { mainCase } from '../../shared';
 import { ImportFrom } from '../../shared/ImportFrom';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
-import { Visitor, visit } from '../Visitor';
+import { visit } from '../Visitor';
 
 export type CustomInstructionSerializerOptions = {
   name: string;
@@ -49,7 +49,7 @@ export class UseCustomInstructionSerializerVisitor extends BaseNodeVisitor {
       ...program,
       definedTypes: newDefinedTypes,
       instructions: program.instructions
-        .map((instruction) => visit(instruction, this as Visitor<nodes.Node>))
+        .map((instruction) => visit(instruction, this))
         .filter(nodes.assertNodeFilter(nodes.assertInstructionNode)),
     });
   }

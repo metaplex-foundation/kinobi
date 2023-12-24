@@ -15,14 +15,23 @@ export type GetVisitorFunctionName<T extends nodes.Node['kind']> =
     ? `visit${Capitalize<TWithoutNode>}`
     : never;
 
+// This first overload enables class-based visitors.
 export function visit<TReturn>(
   node: nodes.Node,
-  visitor: Visitor<TReturn, typeof node['kind']>
+  visitor: Visitor<TReturn>
+): TReturn;
+export function visit<TReturn, TNode extends nodes.Node>(
+  node: TNode,
+  visitor: Visitor<TReturn, TNode['kind']>
+): TReturn;
+export function visit<TReturn, TNode extends nodes.Node>(
+  node: TNode,
+  visitor: Visitor<TReturn, TNode['kind']>
 ): TReturn {
   const key = getVisitFunctionName(node.kind) as GetVisitorFunctionName<
-    typeof node['kind']
+    TNode['kind']
   >;
-  return visitor[key](node as any);
+  return (visitor[key] as any)(node);
 }
 
 export function getVisitFunctionName<T extends nodes.Node['kind']>(node: T) {
