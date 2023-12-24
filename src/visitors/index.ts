@@ -14,3 +14,4 @@ export * from './NodeStack';
 export * from './Visitor';
 
 export * from './identityVisitor';
+export * from './mapVisitor';
