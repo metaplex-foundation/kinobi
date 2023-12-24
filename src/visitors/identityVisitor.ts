@@ -7,27 +7,14 @@ export function identityVisitor<
   TNodeKeys extends keyof nodes.RegisteredNodes = keyof nodes.RegisteredNodes
 >(
   options: {
-    beforeVisiting?: (node: nodes.Node) => void;
-    afterVisiting?: (node: nodes.Node | null) => void;
-    transform?: (node: nodes.Node | null) => nodes.Node | null;
+    wrap?: <TNode extends nodes.Node>(
+      fn: (node: TNode) => nodes.Node | null
+    ) => (node: TNode) => nodes.Node | null;
     nextVisitor?: Visitor<nodes.Node | null, TNodeKeys>;
     nodeKeys?: TNodeKeys[];
   } = {}
 ): Visitor<nodes.Node | null, TNodeKeys> {
-  const beforeVisiting = options.beforeVisiting ?? (() => {});
-  const afterVisiting = options.afterVisiting ?? (() => {});
-  const transform = options.transform ?? ((node) => node);
-  const wrap =
-    <TNode extends nodes.Node>(
-      fn: (node: TNode) => nodes.Node | null
-    ): ((node: TNode) => nodes.Node | null) =>
-    (node: TNode): nodes.Node | null => {
-      beforeVisiting(node);
-      const newNode = fn(node);
-      afterVisiting(newNode);
-      return transform(newNode);
-    };
-
+  const wrap = options.wrap ?? ((fn) => fn);
   const nodesKeys: (keyof nodes.RegisteredNodes)[] =
     options.nodeKeys ?? nodes.REGISTERED_NODES_KEYS;
   const visitor = staticVisitor(
