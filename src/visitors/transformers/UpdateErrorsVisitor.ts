@@ -1,9 +1,9 @@
 import * as nodes from '../../nodes';
-import { NodeTransformer } from '../transformerVisitor';
+import { BottomUpNodeTransformer } from '../bottomUpTransformerVisitor';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
 export type ErrorUpdates =
-  | NodeTransformer<nodes.ErrorNode>
+  | BottomUpNodeTransformer<nodes.ErrorNode>
   | { delete: true }
   | Partial<nodes.ErrorNodeInput>;
 

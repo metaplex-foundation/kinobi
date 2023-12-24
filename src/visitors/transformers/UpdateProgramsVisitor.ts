@@ -1,9 +1,9 @@
 import * as nodes from '../../nodes';
-import { NodeTransformer } from '../transformerVisitor';
+import { BottomUpNodeTransformer } from '../bottomUpTransformerVisitor';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
 export type ProgramUpdates =
-  | NodeTransformer<nodes.ProgramNode>
+  | BottomUpNodeTransformer<nodes.ProgramNode>
   | { delete: true }
   | Partial<
       Omit<

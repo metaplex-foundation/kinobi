@@ -1,11 +1,11 @@
 import * as nodes from '../../nodes';
 import { mainCase } from '../../shared';
-import { NodeTransformer } from '../transformerVisitor';
+import { BottomUpNodeTransformer } from '../bottomUpTransformerVisitor';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 import { renameStructNode } from './_renameHelpers';
 
 export type AccountUpdates =
-  | NodeTransformer<nodes.AccountNode>
+  | BottomUpNodeTransformer<nodes.AccountNode>
   | { delete: true }
   | (Partial<Omit<nodes.AccountNodeInput, 'data'>> & {
       data?: Record<string, string>;

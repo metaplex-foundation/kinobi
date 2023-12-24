@@ -6,11 +6,11 @@ import {
   getDefaultSeedsFromAccount,
   mainCase,
 } from '../../shared';
-import { NodeTransformer } from '../transformerVisitor';
+import { BottomUpNodeTransformer } from '../bottomUpTransformerVisitor';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 
 export type InstructionUpdates =
-  | NodeTransformer<nodes.InstructionNode>
+  | BottomUpNodeTransformer<nodes.InstructionNode>
   | { delete: true }
   | (InstructionMetadataUpdates & {
       accounts?: InstructionAccountUpdates;

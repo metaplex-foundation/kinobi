@@ -9,11 +9,12 @@ export * from './BaseThrowVisitor';
 export * from './BaseVoidVisitor';
 export * from './DefaultVisitor';
 export * from './NodeSelector';
-export * from './ValidatorBag';
 export * from './NodeStack';
+export * from './ValidatorBag';
 export * from './Visitor';
 
+export * from './bottomUpTransformerVisitor';
 export * from './identityVisitor';
 export * from './mapVisitor';
 export * from './staticVisitor';
-export * from './transformerVisitor';
+export * from './topDownTransformerVisitor';

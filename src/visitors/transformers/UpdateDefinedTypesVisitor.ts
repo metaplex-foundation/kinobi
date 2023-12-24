@@ -1,11 +1,11 @@
 import * as nodes from '../../nodes';
 import { mainCase } from '../../shared';
-import { NodeTransformer } from '../transformerVisitor';
+import { BottomUpNodeTransformer } from '../bottomUpTransformerVisitor';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
 import { renameEnumNode, renameStructNode } from './_renameHelpers';
 
 export type DefinedTypeUpdates =
-  | NodeTransformer<nodes.DefinedTypeNode>
+  | BottomUpNodeTransformer<nodes.DefinedTypeNode>
   | { delete: true }
   | (Partial<Omit<nodes.DefinedTypeNodeInput, 'data'>> & {
       data?: Record<string, string>;
