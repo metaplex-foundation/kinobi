@@ -1,9 +1,9 @@
 import * as nodes from '../nodes';
 import { AccountSeed } from '../shared';
-import { Visitor, visit } from './Visitor';
+import { Visitor, visit as baseVisit } from './Visitor';
 import { staticVisitor } from './staticVisitor';
 
-export type IdentityInterceptor = <TNode extends nodes.Node>(
+export type IdentityVisitorInterceptor = <TNode extends nodes.Node>(
   fn: (node: TNode) => nodes.Node | null
 ) => (node: TNode) => nodes.Node | null;
 
@@ -11,7 +11,7 @@ export function identityVisitor<
   TNodeKeys extends keyof nodes.RegisteredNodes = keyof nodes.RegisteredNodes
 >(
   options: {
-    intercept?: IdentityInterceptor;
+    intercept?: IdentityVisitorInterceptor;
     nextVisitor?: Visitor<nodes.Node | null, TNodeKeys>;
     nodeKeys?: TNodeKeys[];
   } = {}
@@ -25,14 +25,14 @@ export function identityVisitor<
   ) as Visitor<nodes.Node | null>;
   const nextVisitor = (options.nextVisitor ??
     visitor) as Visitor<nodes.Node | null>;
-  const safeVisit = (node: nodes.Node): nodes.Node | null =>
-    nodesKeys.includes(node.kind) ? visit(node, nextVisitor) : node;
+  const visit = (node: nodes.Node): nodes.Node | null =>
+    nodesKeys.includes(node.kind) ? baseVisit(node, nextVisitor) : node;
 
   if (nodesKeys.includes('rootNode')) {
     visitor.visitRoot = intercept((node) =>
       nodes.rootNode(
         node.programs
-          .map((program) => safeVisit(program))
+          .map((program) => visit(program))
           .filter(nodes.removeNullAndAssertNodeFilter(nodes.assertProgramNode))
       )
     );
@@ -43,20 +43,20 @@ export function identityVisitor<
       nodes.programNode({
         ...node,
         accounts: node.accounts
-          .map((account) => safeVisit(account))
+          .map((account) => visit(account))
           .filter(nodes.removeNullAndAssertNodeFilter(nodes.assertAccountNode)),
         instructions: node.instructions
-          .map((instruction) => safeVisit(instruction))
+          .map((instruction) => visit(instruction))
           .filter(
             nodes.removeNullAndAssertNodeFilter(nodes.assertInstructionNode)
           ),
         definedTypes: node.definedTypes
-          .map((type) => safeVisit(type))
+          .map((type) => visit(type))
           .filter(
             nodes.removeNullAndAssertNodeFilter(nodes.assertDefinedTypeNode)
           ),
         errors: node.errors
-          .map((error) => safeVisit(error))
+          .map((error) => visit(error))
           .filter(nodes.removeNullAndAssertNodeFilter(nodes.assertErrorNode)),
       })
     );
@@ -64,13 +64,13 @@ export function identityVisitor<
 
   if (nodesKeys.includes('accountNode')) {
     visitor.visitAccount = intercept((node) => {
-      const data = safeVisit(node.data);
+      const data = visit(node.data);
       if (data === null) return null;
       nodes.assertAccountDataNode(data);
       const seeds = node.seeds
         .map((seed) => {
           if (seed.kind !== 'variable') return seed;
-          const newType = safeVisit(seed.type);
+          const newType = visit(seed.type);
           if (newType === null) return null;
           nodes.assertTypeNode(newType);
           return { ...seed, type: newType };
@@ -82,10 +82,10 @@ export function identityVisitor<
 
   if (nodesKeys.includes('accountDataNode')) {
     visitor.visitAccountData = intercept((node) => {
-      const struct = safeVisit(node.struct);
+      const struct = visit(node.struct);
       if (struct === null) return null;
       nodes.assertStructTypeNode(struct);
-      const link = node.link ? safeVisit(node.link) : undefined;
+      const link = node.link ? visit(node.link) : undefined;
       if (link !== undefined) nodes.assertLinkTypeNode(link);
       return nodes.accountDataNode({ ...node, struct, link });
     });
@@ -93,23 +93,23 @@ export function identityVisitor<
 
   if (nodesKeys.includes('instructionNode')) {
     visitor.visitInstruction = intercept((node) => {
-      const dataArgs = safeVisit(node.dataArgs);
+      const dataArgs = visit(node.dataArgs);
       nodes.assertInstructionDataArgsNode(dataArgs);
-      const extraArgs = safeVisit(node.extraArgs);
+      const extraArgs = visit(node.extraArgs);
       nodes.assertInstructionExtraArgsNode(extraArgs);
       return nodes.instructionNode({
         ...node,
         dataArgs,
         extraArgs,
         accounts: node.accounts
-          .map((account) => safeVisit(account))
+          .map((account) => visit(account))
           .filter(
             nodes.removeNullAndAssertNodeFilter(
               nodes.assertInstructionAccountNode
             )
           ),
         subInstructions: node.subInstructions
-          .map((ix) => safeVisit(ix))
+          .map((ix) => visit(ix))
           .filter(
             nodes.removeNullAndAssertNodeFilter(nodes.assertInstructionNode)
           ),
@@ -119,10 +119,10 @@ export function identityVisitor<
 
   if (nodesKeys.includes('instructionDataArgsNode')) {
     visitor.visitInstructionDataArgs = intercept((node) => {
-      const struct = safeVisit(node.struct);
+      const struct = visit(node.struct);
       if (struct === null) return null;
       nodes.assertStructTypeNode(struct);
-      const link = node.link ? safeVisit(node.link) : undefined;
+      const link = node.link ? visit(node.link) : undefined;
       if (link !== undefined) nodes.assertLinkTypeNode(link);
       return nodes.instructionDataArgsNode({ ...node, struct, link });
     });
@@ -130,10 +130,10 @@ export function identityVisitor<
 
   if (nodesKeys.includes('instructionExtraArgsNode')) {
     visitor.visitInstructionExtraArgs = intercept((node) => {
-      const struct = safeVisit(node.struct);
+      const struct = visit(node.struct);
       if (struct === null) return null;
       nodes.assertStructTypeNode(struct);
-      const link = node.link ? safeVisit(node.link) : undefined;
+      const link = node.link ? visit(node.link) : undefined;
       if (link !== undefined) nodes.assertLinkTypeNode(link);
       return nodes.instructionExtraArgsNode({ ...node, struct, link });
     });
@@ -141,7 +141,7 @@ export function identityVisitor<
 
   if (nodesKeys.includes('definedTypeNode')) {
     visitor.visitDefinedType = intercept((node) => {
-      const data = safeVisit(node.data);
+      const data = visit(node.data);
       if (data === null) return null;
       nodes.assertTypeNode(data);
       return nodes.definedTypeNode({ ...node, data });
@@ -150,7 +150,7 @@ export function identityVisitor<
 
   if (nodesKeys.includes('arrayTypeNode')) {
     visitor.visitArrayType = intercept((node) => {
-      const child = safeVisit(node.child);
+      const child = visit(node.child);
       if (child === null) return null;
       nodes.assertTypeNode(child);
       return nodes.arrayTypeNode(child, { ...node });
@@ -161,7 +161,7 @@ export function identityVisitor<
     visitor.visitEnumType = intercept((node) =>
       nodes.enumTypeNode(
         node.variants
-          .map((variant) => safeVisit(variant))
+          .map((variant) => visit(variant))
           .filter(
             nodes.removeNullAndAssertNodeFilter(nodes.assertEnumVariantTypeNode)
           ),
@@ -172,7 +172,7 @@ export function identityVisitor<
 
   if (nodesKeys.includes('enumStructVariantTypeNode')) {
     visitor.visitEnumStructVariantType = intercept((node) => {
-      const newStruct = safeVisit(node.struct);
+      const newStruct = visit(node.struct);
       if (!newStruct) return null;
       nodes.assertStructTypeNode(newStruct);
       return nodes.enumStructVariantTypeNode(node.name, newStruct);
@@ -181,7 +181,7 @@ export function identityVisitor<
 
   if (nodesKeys.includes('enumTupleVariantTypeNode')) {
     visitor.visitEnumTupleVariantType = intercept((node) => {
-      const newTuple = safeVisit(node.tuple);
+      const newTuple = visit(node.tuple);
       if (!newTuple) return null;
       nodes.assertTupleTypeNode(newTuple);
       return nodes.enumTupleVariantTypeNode(node.name, newTuple);
@@ -190,8 +190,8 @@ export function identityVisitor<
 
   if (nodesKeys.includes('mapTypeNode')) {
     visitor.visitMapType = intercept((node) => {
-      const key = safeVisit(node.key);
-      const value = safeVisit(node.value);
+      const key = visit(node.key);
+      const value = visit(node.value);
       if (key === null || value === null) return null;
       nodes.assertTypeNode(key);
       nodes.assertTypeNode(value);
@@ -201,7 +201,7 @@ export function identityVisitor<
 
   if (nodesKeys.includes('optionTypeNode')) {
     visitor.visitOptionType = intercept((node) => {
-      const child = safeVisit(node.child);
+      const child = visit(node.child);
       if (child === null) return null;
       nodes.assertTypeNode(child);
       return nodes.optionTypeNode(child, { ...node });
@@ -210,7 +210,7 @@ export function identityVisitor<
 
   if (nodesKeys.includes('setTypeNode')) {
     visitor.visitSetType = intercept((node) => {
-      const child = safeVisit(node.child);
+      const child = visit(node.child);
       if (child === null) return null;
       nodes.assertTypeNode(child);
       return nodes.setTypeNode(child, { ...node });
@@ -221,7 +221,7 @@ export function identityVisitor<
     visitor.visitStructType = intercept((node) =>
       nodes.structTypeNode(
         node.fields
-          .map((field) => safeVisit(field))
+          .map((field) => visit(field))
           .filter(
             nodes.removeNullAndAssertNodeFilter(nodes.assertStructFieldTypeNode)
           )
@@ -231,7 +231,7 @@ export function identityVisitor<
 
   if (nodesKeys.includes('structFieldTypeNode')) {
     visitor.visitStructFieldType = intercept((node) => {
-      const child = safeVisit(node.child);
+      const child = visit(node.child);
       if (child === null) return null;
       nodes.assertTypeNode(child);
       return nodes.structFieldTypeNode({ ...node, child });
@@ -242,7 +242,7 @@ export function identityVisitor<
     visitor.visitTupleType = intercept((node) =>
       nodes.tupleTypeNode(
         node.children
-          .map((child) => safeVisit(child))
+          .map((child) => visit(child))
           .filter(nodes.removeNullAndAssertNodeFilter(nodes.assertTypeNode))
       )
     );
@@ -250,7 +250,7 @@ export function identityVisitor<
 
   if (nodesKeys.includes('amountTypeNode')) {
     visitor.visitAmountType = intercept((node) => {
-      const number = safeVisit(node.number);
+      const number = visit(node.number);
       if (number === null) return null;
       nodes.assertNumberTypeNode(number);
       return nodes.amountTypeNode(number, node.identifier, node.decimals);
@@ -259,7 +259,7 @@ export function identityVisitor<
 
   if (nodesKeys.includes('dateTimeTypeNode')) {
     visitor.visitDateTimeType = intercept((node) => {
-      const number = safeVisit(node.number);
+      const number = visit(node.number);
       if (number === null) return null;
       nodes.assertNumberTypeNode(number);
       return nodes.dateTimeTypeNode(number);
@@ -268,7 +268,7 @@ export function identityVisitor<
 
   if (nodesKeys.includes('solAmountTypeNode')) {
     visitor.visitSolAmountType = intercept((node) => {
-      const number = safeVisit(node.number);
+      const number = visit(node.number);
       if (number === null) return null;
       nodes.assertNumberTypeNode(number);
       return nodes.solAmountTypeNode(number);

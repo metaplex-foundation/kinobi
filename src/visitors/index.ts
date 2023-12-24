@@ -16,5 +16,6 @@ export * from './Visitor';
 export * from './bottomUpTransformerVisitor';
 export * from './identityVisitor';
 export * from './mapVisitor';
+export * from './mergeVisitor';
 export * from './staticVisitor';
 export * from './topDownTransformerVisitor';

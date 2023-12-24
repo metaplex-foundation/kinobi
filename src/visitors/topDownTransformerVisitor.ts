@@ -1,7 +1,7 @@
 import * as nodes from '../nodes';
 import { NodeStack } from './NodeStack';
 import { Visitor } from './Visitor';
-import { IdentityInterceptor, identityVisitor } from './identityVisitor';
+import { IdentityVisitorInterceptor, identityVisitor } from './identityVisitor';
 
 export type TopDownNodeTransformer<TNode extends nodes.Node = nodes.Node> = <
   T extends TNode = TNode
@@ -19,7 +19,7 @@ export function topDownTransformerVisitor<
   } = {}
 ): Visitor<nodes.Node | null, TNodeKeys> {
   const stack = new NodeStack();
-  const intercept: IdentityInterceptor = (fn) => (node) => {
+  const intercept: IdentityVisitorInterceptor = (fn) => (node) => {
     const appliedNode = transformers.reduce(
       (acc, transformer) => transformer(acc, stack.clone()),
       node
