@@ -20,6 +20,10 @@ export class NodeStack {
     return this.isEmpty() ? undefined : this.stack[this.stack.length - 1];
   }
 
+  public getProgram(): nodes.ProgramNode | undefined {
+    return this.stack.find(nodes.isProgramNode);
+  }
+
   public all(): nodes.Node[] {
     return [...this.stack];
   }
