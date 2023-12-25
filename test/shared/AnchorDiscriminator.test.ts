@@ -4,7 +4,7 @@ import {
   getAnchorInstructionDiscriminator,
 } from '../../src';
 
-test('it can compute the discriminator of an Anchor account', async (t) => {
+test('it can compute the discriminator of an Anchor account', (t) => {
   // Given an account named "StakeEntry" on the IDL.
   const idlName = 'StakeEntry';
 
@@ -21,7 +21,7 @@ test('it can compute the discriminator of an Anchor account', async (t) => {
   });
 });
 
-test('it can compute the discriminator of an Anchor instruction', async (t) => {
+test('it can compute the discriminator of an Anchor instruction', (t) => {
   // Given an instruction named "addConfigLines" on the IDL.
   const idlName = 'addConfigLines';
 

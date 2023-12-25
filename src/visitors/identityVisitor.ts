@@ -20,7 +20,7 @@ export function identityVisitor<
   const nodesKeys: (keyof nodes.RegisteredNodes)[] =
     options.nodeKeys ?? nodes.REGISTERED_NODES_KEYS;
   const visitor = staticVisitor(
-    intercept((node) => node),
+    intercept((node) => ({ ...node })),
     nodesKeys
   ) as Visitor<nodes.Node | null>;
   const nextVisitor = (options.nextVisitor ??

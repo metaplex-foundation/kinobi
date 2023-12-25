@@ -7,7 +7,7 @@ import {
   visit,
 } from '../../src';
 
-test('it sets a value for all leaves and merges node values together', async (t) => {
+test('it sets a value for all leaves and merges node values together', (t) => {
   // Given the following 3-nodes tree.
   const node = tupleTypeNode([numberTypeNode('u32'), publicKeyTypeNode()]);
 
@@ -25,7 +25,7 @@ test('it sets a value for all leaves and merges node values together', async (t)
   t.is(result, 'tupleTypeNode(numberTypeNode,publicKeyTypeNode)');
 });
 
-test('it can be used to count nodes', async (t) => {
+test('it can be used to count nodes', (t) => {
   // Given the following 3-nodes tree.
   const node = tupleTypeNode([numberTypeNode('u32'), publicKeyTypeNode()]);
 
@@ -40,7 +40,11 @@ test('it can be used to count nodes', async (t) => {
   t.is(result, 3);
 });
 
-test('it can create partial visitors', async (t) => {
+test.todo('it accepts an interceptor used for each node');
+
+test.todo('it accepts a next visitor to use for the next visits');
+
+test('it can create partial visitors', (t) => {
   // Given the following 3-nodes tree.
   const node = tupleTypeNode([numberTypeNode('u32'), publicKeyTypeNode()]);
 
