@@ -13,10 +13,8 @@ export class AutoSetFixedAccountSizesVisitor extends BaseThrowVisitor<nodes.Root
     // Prepare the visitor that transforms account nodes.
     const transformVisitor = new TransformNodesVisitor([
       {
-        selector: (stack) => {
-          const node = stack.peek() as nodes.Node;
-          return nodes.isAccountNode(node) && node.size === undefined;
-        },
+        selector: (node) =>
+          nodes.isAccountNode(node) && node.size === undefined,
         transformer: (node) => {
           nodes.assertAccountNode(node);
           const size = visit(node.data, byteSizeVisitor);

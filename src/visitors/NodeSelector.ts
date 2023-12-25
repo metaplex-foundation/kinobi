@@ -14,7 +14,10 @@ export type NodeSelector = NodeSelectorPath | NodeSelectorFunction;
  */
 export type NodeSelectorPath = string;
 
-export type NodeSelectorFunction = (stack: NodeStack) => boolean;
+export type NodeSelectorFunction = (
+  node: nodes.Node,
+  stack: NodeStack
+) => boolean;
 
 export const getNodeSelectorFunction = (
   selector: NodeSelector
@@ -48,12 +51,7 @@ export const getNodeSelectorFunction = (
   const nodeSelectors = selector.split('.');
   const lastNodeSelector = nodeSelectors.pop() as string;
 
-  return (stack) => {
-    const stackArray = stack.all();
-    const node = stackArray.pop() as nodes.Node;
-    return (
-      checkNode(node, lastNodeSelector) &&
-      checkStack(stackArray, [...nodeSelectors])
-    );
-  };
+  return (node, stack) =>
+    checkNode(node, lastNodeSelector) &&
+    checkStack(stack.all(), [...nodeSelectors]);
 };

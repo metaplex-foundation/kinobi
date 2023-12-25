@@ -276,11 +276,9 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
   protected applyTransforms(node: nodes.Node | null): nodes.Node | null {
     if (node === null) return null;
     const stack = this.stack.clone();
-    const stackWithNode = this.stack.clone();
-    stackWithNode.push(node);
     const { program } = this;
     return this.transforms
-      .filter(({ selector }) => selector(stackWithNode))
+      .filter(({ selector }) => selector(node, stack))
       .reduce(
         (acc, { transformer }) =>
           acc === null ? null : transformer(acc, stack, program),
