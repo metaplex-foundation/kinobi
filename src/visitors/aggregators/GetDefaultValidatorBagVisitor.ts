@@ -1,7 +1,5 @@
 import * as nodes from '../../nodes';
-import { mainCase } from '../../shared';
-import { NodeStack } from '../NodeStack';
-import { ValidatorBag } from '../ValidatorBag';
+import { NodeStack, ValidatorBag, mainCase } from '../../shared';
 import { Visitor, visit } from '../Visitor';
 import { GetResolvedInstructionInputsVisitor } from './GetResolvedInstructionInputsVisitor';
 

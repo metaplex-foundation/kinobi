@@ -1,7 +1,6 @@
-import { MainCaseString } from 'src/shared';
 import * as nodes from '../../nodes';
+import { MainCaseString, NodeStack } from '../../shared';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
-import { NodeStack } from '../NodeStack';
 import { visit } from '../Visitor';
 import { GetDefinedTypeHistogramVisitor } from '../aggregators';
 import { TransformNodesVisitor } from './TransformNodesVisitor';

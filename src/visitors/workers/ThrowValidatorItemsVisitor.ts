@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
 import chalk from 'chalk';
-import { getLevelIndex, LogLevel } from '../../shared/logs';
+import { getLevelIndex, LogLevel, ValidatorBag } from '../../shared';
 import { BaseDelegateVisitor } from '../BaseDelegateVisitor';
-import { ValidatorBag } from '../ValidatorBag';
 import { Visitor } from '../Visitor';
 
 export class ThrowValidatorItemsVisitor extends BaseDelegateVisitor<

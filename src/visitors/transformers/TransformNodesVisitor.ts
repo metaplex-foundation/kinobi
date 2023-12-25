@@ -1,11 +1,11 @@
 import * as nodes from '../../nodes';
-import { BaseNodeOrNullVisitor } from '../BaseNodeOrNullVisitor';
 import {
   NodeSelector,
   NodeSelectorFunction,
+  NodeStack,
   getNodeSelectorFunction,
-} from '../NodeSelector';
-import { NodeStack } from '../NodeStack';
+} from '../../shared';
+import { BaseNodeOrNullVisitor } from '../BaseNodeOrNullVisitor';
 
 export type NodeTransform<T extends NodeSelector = NodeSelector> = {
   selector: T;

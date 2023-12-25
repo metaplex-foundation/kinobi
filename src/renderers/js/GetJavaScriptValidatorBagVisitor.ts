@@ -1,10 +1,12 @@
-import { camelCase, pascalCase, titleCase } from '../../shared';
-import * as nodes from '../../nodes';
 import {
-  GetDefaultValidatorBagVisitor,
   NodeStack,
   ValidatorBag,
-} from '../../visitors';
+  camelCase,
+  pascalCase,
+  titleCase,
+} from '../../shared';
+import * as nodes from '../../nodes';
+import { GetDefaultValidatorBagVisitor } from '../../visitors';
 
 export class GetJavaScriptValidatorBagVisitor extends GetDefaultValidatorBagVisitor {
   protected exportMap: Map<

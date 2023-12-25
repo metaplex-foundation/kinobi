@@ -6,7 +6,7 @@ import {
   LogLevel,
   logTrace,
   logWarn,
-} from '../shared/logs';
+} from './logs';
 import * as nodes from '../nodes';
 import { NodeStack } from './NodeStack';
 

@@ -8,9 +8,6 @@ export * from './BaseNodeVisitor';
 export * from './BaseThrowVisitor';
 export * from './BaseVoidVisitor';
 export * from './DefaultVisitor';
-export * from './NodeSelector';
-export * from './NodeStack';
-export * from './ValidatorBag';
 export * from './Visitor';
 
 export * from './bottomUpTransformerVisitor';

@@ -1,4 +1,4 @@
-import { NodeSelector } from '../NodeSelector';
+import { NodeSelector } from '../../shared';
 import { TransformNodesVisitor } from './TransformNodesVisitor';
 
 export class DeleteNodesVisitor extends TransformNodesVisitor {

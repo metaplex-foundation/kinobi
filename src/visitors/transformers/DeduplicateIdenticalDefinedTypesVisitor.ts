@@ -1,7 +1,7 @@
 import * as nodes from '../../nodes';
 import { GetNodeInlineStringVisitor } from '../aggregators';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
-import { NodeSelector } from '../NodeSelector';
+import { NodeSelector } from '../../shared';
 import { visit } from '../Visitor';
 import { DeleteNodesVisitor } from './DeleteNodesVisitor';
 

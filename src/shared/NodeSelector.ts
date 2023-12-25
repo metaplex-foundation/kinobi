@@ -1,5 +1,5 @@
 import * as nodes from '../nodes';
-import { mainCase } from '../shared';
+import { mainCase } from './utils';
 import type { NodeStack } from './NodeStack';
 
 export type NodeSelector = NodeSelectorPath | NodeSelectorFunction;

@@ -1,5 +1,5 @@
 import * as nodes from '../nodes';
-import { NodeStack } from './NodeStack';
+import { NodeStack } from '../shared';
 import { Visitor } from './Visitor';
 import { IdentityVisitorInterceptor, identityVisitor } from './identityVisitor';
 
