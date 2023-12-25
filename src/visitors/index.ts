@@ -19,3 +19,4 @@ export * from './mapVisitor';
 export * from './mergeVisitor';
 export * from './staticVisitor';
 export * from './topDownTransformerVisitor';
+export * from './voidVisitor';
