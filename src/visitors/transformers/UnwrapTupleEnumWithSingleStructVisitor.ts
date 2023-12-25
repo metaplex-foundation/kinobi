@@ -36,7 +36,7 @@ export class UnwrapTupleEnumWithSingleStructVisitor extends BaseThrowVisitor<nod
       root,
       new TransformNodesVisitor([
         {
-          selector: { kind: 'enumTupleVariantTypeNode' },
+          selector: '[enumTupleVariantTypeNode]',
           transformer: (node, stack) => {
             nodes.assertEnumTupleVariantTypeNode(node);
             if (!this.shouldUnwrap(node, stack)) return node;

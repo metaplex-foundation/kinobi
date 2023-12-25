@@ -13,7 +13,7 @@ export class CreateSubInstructionsFromEnumArgsVisitor extends TransformNodesVisi
         const selectorStack = selector.split('.');
         const name = selectorStack.pop();
         return {
-          selector: { kind: 'instructionNode', stack: selectorStack, name },
+          selector: `${selectorStack.join('.')}.[instructionNode]${name}`,
           transformer: (node) => {
             nodes.assertInstructionNode(node);
 

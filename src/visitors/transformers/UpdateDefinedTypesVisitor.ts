@@ -24,7 +24,7 @@ export class UpdateDefinedTypesVisitor extends TransformNodesVisitor {
 
         const transforms: NodeTransform[] = [
           {
-            selector: { kind: 'definedTypeNode', stack: selectorStack, name },
+            selector: `${selectorStack.join('.')}.[definedTypeNode]${name}`,
             transformer: (node, stack) => {
               nodes.assertDefinedTypeNode(node);
               if (typeof updates === 'function') {
@@ -52,11 +52,7 @@ export class UpdateDefinedTypesVisitor extends TransformNodesVisitor {
 
         if (newName) {
           transforms.push({
-            selector: {
-              kind: 'linkTypeNode',
-              stack: selectorStack,
-              name,
-            },
+            selector: `${selectorStack.join('.')}.[linkTypeNode]${name}`,
             transformer: (node: nodes.Node) => {
               nodes.assertLinkTypeNode(node);
               if (node.importFrom !== 'generated') return node;

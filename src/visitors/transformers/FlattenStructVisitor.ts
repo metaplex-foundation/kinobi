@@ -9,7 +9,7 @@ export class FlattenStructVisitor extends TransformNodesVisitor {
   constructor(readonly map: Record<string, FlattenStructOptions>) {
     const transforms = Object.entries(map).map(
       ([stack, options]): NodeTransform => ({
-        selector: { kind: 'structTypeNode', stack },
+        selector: `${stack}.[structTypeNode]`,
         transformer: (node) => flattenStruct(node, options),
       })
     );

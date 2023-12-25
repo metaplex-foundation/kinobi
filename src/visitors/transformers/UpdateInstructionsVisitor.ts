@@ -50,7 +50,7 @@ export class UpdateInstructionsVisitor extends TransformNodesVisitor {
         const selectorStack = selector.split('.');
         const name = selectorStack.pop();
         return {
-          selector: { kind: 'instructionNode', stack: selectorStack, name },
+          selector: `${selectorStack.join('.')}.[instructionNode]${name}`,
           transformer: (node, stack) => {
             nodes.assertInstructionNode(node);
             if (typeof updates === 'function') {

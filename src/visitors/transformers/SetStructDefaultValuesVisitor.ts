@@ -10,7 +10,7 @@ export class SetStructDefaultValuesVisitor extends TransformNodesVisitor {
   constructor(readonly map: StructDefaultValueMap) {
     const transforms = Object.entries(map).map(
       ([stack, defaultValues]): NodeTransform => ({
-        selector: { kind: 'structTypeNode', stack },
+        selector: `${stack}.[structTypeNode]`,
         transformer: (node) => {
           nodes.assertStructTypeNode(node);
           const fields = node.fields.map((field): nodes.StructFieldTypeNode => {

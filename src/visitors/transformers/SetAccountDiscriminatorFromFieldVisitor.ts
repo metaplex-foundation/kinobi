@@ -12,7 +12,7 @@ export class SetAccountDiscriminatorFromFieldVisitor extends TransformNodesVisit
         const stack = selectorStack.split('.');
         const name = stack.pop();
         return {
-          selector: { kind: 'accountNode', stack, name },
+          selector: `${stack.join('.')}.[accountNode]${name}`,
           transformer: (node) => {
             nodes.assertAccountNode(node);
 

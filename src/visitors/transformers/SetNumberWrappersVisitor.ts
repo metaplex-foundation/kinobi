@@ -12,7 +12,7 @@ export class SetNumberWrappersVisitor extends TransformNodesVisitor {
   constructor(readonly map: NumberWrapperMap) {
     const transforms = Object.entries(map).map(
       ([selectorStack, wrapper]): NodeTransform => ({
-        selector: { kind: 'numberTypeNode', stack: selectorStack },
+        selector: `${selectorStack}.[numberTypeNode]`,
         transformer: (node) => {
           nodes.assertNumberTypeNode(node);
           switch (wrapper.kind) {

@@ -16,7 +16,7 @@ export class UpdateProgramsVisitor extends TransformNodesVisitor {
   constructor(readonly map: Record<string, ProgramUpdates>) {
     const transforms = Object.entries(map).map(
       ([name, updates]): NodeTransform => ({
-        selector: { kind: 'programNode', name },
+        selector: `[programNode]${name}`,
         transformer: (node, stack) => {
           nodes.assertProgramNode(node);
           if (typeof updates === 'function') {

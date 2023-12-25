@@ -3,7 +3,7 @@ import { BaseNodeOrNullVisitor } from '../BaseNodeOrNullVisitor';
 import {
   NodeSelector,
   NodeSelectorFunction,
-  toNodeSelectorFunction,
+  getNodeSelectorFunction,
 } from '../NodeSelector';
 import { NodeStack } from '../NodeStack';
 
@@ -27,7 +27,7 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
     super();
     this.transforms = transforms.map((transform) => ({
       ...transform,
-      selector: toNodeSelectorFunction(transform.selector),
+      selector: getNodeSelectorFunction(transform.selector),
     }));
   }
 
@@ -278,7 +278,7 @@ export class TransformNodesVisitor extends BaseNodeOrNullVisitor {
     const stack = this.stack.clone();
     const { program } = this;
     return this.transforms
-      .filter(({ selector }) => selector(node, stack, program))
+      .filter(({ selector }) => selector(node, stack))
       .reduce(
         (acc, { transformer }) =>
           acc === null ? null : transformer(acc, stack, program),
