@@ -8,7 +8,7 @@ import {
 } from '../../src';
 
 test('it visits all nodes and returns void', (t) => {
-  // Given the following 3-nodes tree.
+  // Given the following tree.
   const node = tupleTypeNode([
     numberTypeNode('u32'),
     tupleTypeNode([numberTypeNode('u32'), publicKeyTypeNode()]),
