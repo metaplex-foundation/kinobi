@@ -11,5 +11,9 @@ export function voidVisitor<
     nodeKeys?: TNodeKeys[];
   } = {}
 ): Visitor<void, TNodeKeys> {
-  return mergeVisitor(undefined, () => undefined, options);
+  return mergeVisitor(
+    () => undefined,
+    () => undefined,
+    options
+  );
 }

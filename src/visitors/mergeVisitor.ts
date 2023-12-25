@@ -10,8 +10,8 @@ export function mergeVisitor<
   TReturn,
   TNodeKeys extends keyof nodes.RegisteredNodes = keyof nodes.RegisteredNodes
 >(
-  leafValue: TReturn,
-  merge: (values: TReturn[]) => TReturn,
+  leafValue: (node: nodes.Node) => TReturn,
+  merge: (node: nodes.Node, values: TReturn[]) => TReturn,
   options: {
     intercept?: MergeVisitorInterceptor<TReturn>;
     nextVisitor?: Visitor<TReturn, TNodeKeys>;
@@ -22,7 +22,7 @@ export function mergeVisitor<
   const nodesKeys: (keyof nodes.RegisteredNodes)[] =
     options.nodeKeys ?? nodes.REGISTERED_NODES_KEYS;
   const visitor = staticVisitor(
-    intercept(() => leafValue),
+    intercept((node) => leafValue(node)),
     nodesKeys
   ) as Visitor<TReturn>;
   const nextVisitor = (options.nextVisitor ?? visitor) as Visitor<TReturn>;
@@ -31,13 +31,13 @@ export function mergeVisitor<
 
   if (nodesKeys.includes('rootNode')) {
     visitor.visitRoot = intercept((node) =>
-      merge(node.programs.flatMap(visit))
+      merge(node, node.programs.flatMap(visit))
     );
   }
 
   if (nodesKeys.includes('programNode')) {
     visitor.visitProgram = intercept((node) =>
-      merge([
+      merge(node, [
         ...node.accounts.flatMap(visit),
         ...node.instructions.flatMap(visit),
         ...node.definedTypes.flatMap(visit),
@@ -48,7 +48,7 @@ export function mergeVisitor<
 
   if (nodesKeys.includes('accountNode')) {
     visitor.visitAccount = intercept((node) =>
-      merge([
+      merge(node, [
         ...visit(node.data),
         ...node.seeds.flatMap((seed) => {
           if (seed.kind !== 'variable') return [];
@@ -60,13 +60,16 @@ export function mergeVisitor<
 
   if (nodesKeys.includes('accountDataNode')) {
     visitor.visitAccountData = intercept((node) =>
-      merge([...visit(node.struct), ...(node.link ? visit(node.link) : [])])
+      merge(node, [
+        ...visit(node.struct),
+        ...(node.link ? visit(node.link) : []),
+      ])
     );
   }
 
   if (nodesKeys.includes('instructionNode')) {
     visitor.visitInstruction = intercept((node) =>
-      merge([
+      merge(node, [
         ...node.accounts.flatMap(visit),
         ...visit(node.dataArgs),
         ...visit(node.extraArgs),
@@ -77,84 +80,102 @@ export function mergeVisitor<
 
   if (nodesKeys.includes('instructionDataArgsNode')) {
     visitor.visitInstructionDataArgs = intercept((node) =>
-      merge([...visit(node.struct), ...(node.link ? visit(node.link) : [])])
+      merge(node, [
+        ...visit(node.struct),
+        ...(node.link ? visit(node.link) : []),
+      ])
     );
   }
 
   if (nodesKeys.includes('instructionExtraArgsNode')) {
     visitor.visitInstructionExtraArgs = intercept((node) =>
-      merge([...visit(node.struct), ...(node.link ? visit(node.link) : [])])
+      merge(node, [
+        ...visit(node.struct),
+        ...(node.link ? visit(node.link) : []),
+      ])
     );
   }
 
   if (nodesKeys.includes('definedTypeNode')) {
-    visitor.visitDefinedType = intercept((node) => merge(visit(node.data)));
+    visitor.visitDefinedType = intercept((node) =>
+      merge(node, visit(node.data))
+    );
   }
 
   if (nodesKeys.includes('arrayTypeNode')) {
-    visitor.visitArrayType = intercept((node) => merge(visit(node.child)));
+    visitor.visitArrayType = intercept((node) =>
+      merge(node, visit(node.child))
+    );
   }
 
   if (nodesKeys.includes('enumTypeNode')) {
     visitor.visitEnumType = intercept((node) =>
-      merge(node.variants.flatMap(visit))
+      merge(node, node.variants.flatMap(visit))
     );
   }
 
   if (nodesKeys.includes('enumStructVariantTypeNode')) {
     visitor.visitEnumStructVariantType = intercept((node) =>
-      merge(visit(node.struct))
+      merge(node, visit(node.struct))
     );
   }
 
   if (nodesKeys.includes('enumTupleVariantTypeNode')) {
     visitor.visitEnumTupleVariantType = intercept((node) =>
-      merge(visit(node.tuple))
+      merge(node, visit(node.tuple))
     );
   }
 
   if (nodesKeys.includes('mapTypeNode')) {
     visitor.visitMapType = intercept((node) =>
-      merge([...visit(node.key), ...visit(node.value)])
+      merge(node, [...visit(node.key), ...visit(node.value)])
     );
   }
 
   if (nodesKeys.includes('optionTypeNode')) {
-    visitor.visitOptionType = intercept((node) => merge(visit(node.child)));
+    visitor.visitOptionType = intercept((node) =>
+      merge(node, visit(node.child))
+    );
   }
 
   if (nodesKeys.includes('setTypeNode')) {
-    visitor.visitSetType = intercept((node) => merge(visit(node.child)));
+    visitor.visitSetType = intercept((node) => merge(node, visit(node.child)));
   }
 
   if (nodesKeys.includes('structTypeNode')) {
     visitor.visitStructType = intercept((node) =>
-      merge(node.fields.flatMap(visit))
+      merge(node, node.fields.flatMap(visit))
     );
   }
 
   if (nodesKeys.includes('structFieldTypeNode')) {
     visitor.visitStructFieldType = intercept((node) =>
-      merge(visit(node.child))
+      merge(node, visit(node.child))
     );
   }
 
   if (nodesKeys.includes('tupleTypeNode')) {
     visitor.visitTupleType = intercept((node) =>
-      merge(node.children.flatMap(visit))
+      merge(node, node.children.flatMap(visit))
     );
   }
 
   if (nodesKeys.includes('amountTypeNode')) {
-    visitor.visitAmountType = intercept((node) => merge(visit(node.number)));
+    visitor.visitAmountType = intercept((node) =>
+      merge(node, visit(node.number))
+    );
   }
 
   if (nodesKeys.includes('dateTimeTypeNode')) {
-    visitor.visitAmountType = intercept((node) => merge(visit(node.number)));
+    visitor.visitAmountType = intercept((node) =>
+      merge(node, visit(node.number))
+    );
   }
 
   if (nodesKeys.includes('solAmountTypeNode')) {
-    visitor.visitAmountType = intercept((node) => merge(visit(node.number)));
+    visitor.visitAmountType = intercept((node) =>
+      merge(node, visit(node.number))
+    );
   }
 
   return visitor as Visitor<TReturn, TNodeKeys>;
