@@ -33,7 +33,7 @@ export function getHiddenSettingsSerializer(): Serializer<
     [
       ['name', string()],
       ['uri', string()],
-      ['hash', bytes({ size: 32 })],
+      ['hash', bytes({ size: 64 })],
     ],
     { description: 'HiddenSettings' }
   ) as Serializer<HiddenSettingsArgs, HiddenSettings>;

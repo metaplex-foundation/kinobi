@@ -31,7 +31,7 @@ export function getHiddenSettingsEncoder() {
   return getStructEncoder<HiddenSettingsArgs>([
     ['name', getStringEncoder()],
     ['uri', getStringEncoder()],
-    ['hash', getBytesEncoder({ size: 32 })],
+    ['hash', getBytesEncoder({ size: 64 })],
   ]) satisfies Encoder<HiddenSettingsArgs>;
 }
 
@@ -39,7 +39,7 @@ export function getHiddenSettingsDecoder() {
   return getStructDecoder<HiddenSettings>([
     ['name', getStringDecoder()],
     ['uri', getStringDecoder()],
-    ['hash', getBytesDecoder({ size: 32 })],
+    ['hash', getBytesDecoder({ size: 64 })],
   ]) satisfies Decoder<HiddenSettings>;
 }
 

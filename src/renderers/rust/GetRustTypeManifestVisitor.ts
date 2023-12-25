@@ -348,12 +348,14 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
       derive =
         '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::DisplayFromStr>"))]\n';
     } else if (
-      structFieldType.child.kind == 'arrayTypeNode' &&
-      structFieldType.child.size.kind == 'fixed' &&
+      (structFieldType.child.kind === 'arrayTypeNode' ||
+        structFieldType.child.kind === 'bytesTypeNode' ||
+        structFieldType.child.kind === 'stringTypeNode') &&
+      structFieldType.child.size.kind === 'fixed' &&
       structFieldType.child.size.value > 32
     ) {
       derive =
-        '#[cfg_attr(feature = "serde", serde_with::serde_as(as = "serde_with::Bytes"))]\n';
+        '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::Bytes>"))]\n';
     }
 
     return {
