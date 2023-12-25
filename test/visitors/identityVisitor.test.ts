@@ -81,7 +81,7 @@ test('it accepts a next visitor to use for the next visits', (t) => {
   const visitorA = identityVisitor();
   visitorA.visitTupleType = () => null;
 
-  // And a second identity visitor B delegate to visitor A after the first visit.
+  // And a second identity visitor B that delegates to visitor A after the first visit.
   const visitorB = identityVisitor({ nextVisitor: visitorA });
 
   // When we use visitor B to visit the tree.

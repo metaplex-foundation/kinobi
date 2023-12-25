@@ -73,7 +73,33 @@ test('it accepts an interceptor used for each node', (t) => {
   ]);
 });
 
-test.todo('it accepts a next visitor to use for the next visits');
+test('it accepts a next visitor to use for the next visits', (t) => {
+  // Given the following tree.
+  const node = tupleTypeNode([
+    numberTypeNode('u32'),
+    tupleTypeNode([publicKeyTypeNode()]),
+  ]);
+
+  // And given a visitor A that returns "node" regardless of the node.
+  const visitorA = mergeVisitor(
+    () => 'node',
+    (_, values) => `node(${values.join(',')})`
+  );
+
+  // And a second visitor B that returns the node kind of each node
+  // and then delegates to visitor A after the first visit.
+  const visitorB = mergeVisitor(
+    (node) => node.kind as string,
+    (node, values) => `${node.kind}(${values.join(',')})`,
+    { nextVisitor: visitorA }
+  );
+
+  // When we use visitor B to visit the tree.
+  const result = visit(node, visitorB);
+
+  // Then we expect the following result.
+  t.is(result, 'tupleTypeNode(node,node(node))');
+});
 
 test('it can create partial visitors', (t) => {
   // Given the following 3-nodes tree.
