@@ -8,8 +8,12 @@ export type TupleTypeNode = {
   readonly children: TypeNode[];
 };
 
-export function tupleTypeNode(children: TypeNode[]): TupleTypeNode {
-  return { kind: 'tupleTypeNode', children } as TupleTypeNode;
+export function tupleTypeNode<TItems extends TypeNode[] = TypeNode[]>(
+  children: [...TItems]
+): TupleTypeNode & { readonly children: [...TItems] } {
+  return { kind: 'tupleTypeNode', children } as TupleTypeNode & {
+    readonly children: [...TItems];
+  };
 }
 
 export function tupleTypeNodeFromIdl(idl: IdlTypeTuple): TupleTypeNode {
