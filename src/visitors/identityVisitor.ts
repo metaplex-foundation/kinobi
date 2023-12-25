@@ -26,7 +26,7 @@ export function identityVisitor<
   const nextVisitor = (options.nextVisitor ??
     visitor) as Visitor<nodes.Node | null>;
   const visit = (node: nodes.Node): nodes.Node | null =>
-    nodesKeys.includes(node.kind) ? baseVisit(node, nextVisitor) : node;
+    nodesKeys.includes(node.kind) ? baseVisit(node, nextVisitor) : { ...node };
 
   if (nodesKeys.includes('rootNode')) {
     visitor.visitRoot = intercept((node) =>

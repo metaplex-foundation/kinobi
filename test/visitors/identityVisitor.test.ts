@@ -70,6 +70,57 @@ test('it accepts an interceptor used for each node', (t) => {
   ]);
 });
 
-test.todo('it accepts a next visitor to use for the next visits');
+test('it accepts a next visitor to use for the next visits', (t) => {
+  // Given the following tree with two tuple nodes.
+  const node = tupleTypeNode([
+    numberTypeNode('u32'),
+    tupleTypeNode([publicKeyTypeNode()]),
+  ]);
 
-test.todo('it can create partial visitors');
+  // And given an identity visitor A that removes all tuple nodes.
+  const visitorA = identityVisitor();
+  visitorA.visitTupleType = () => null;
+
+  // And a second identity visitor B delegate to visitor A after the first visit.
+  const visitorB = identityVisitor({ nextVisitor: visitorA });
+
+  // When we use visitor B to visit the tree.
+  const result = visit(node, visitorB);
+
+  // Then we expect the second tuple node to have been removed.
+  t.deepEqual(result, tupleTypeNode([numberTypeNode('u32')]));
+});
+
+test('it can create partial visitors', (t) => {
+  // Given the following 3-nodes tree.
+  const node = tupleTypeNode([numberTypeNode('u32'), publicKeyTypeNode()]);
+
+  // And an identity visitor that only supports 2 of these nodes
+  // whilst using an interceptor to record the events that happened.
+  const events: string[] = [];
+  const intercept: IdentityVisitorInterceptor = (fn) => (node) => {
+    events.push(`visiting:${node.kind}`);
+    return fn(node);
+  };
+  const visitor = identityVisitor({
+    intercept,
+    nodeKeys: ['tupleTypeNode', 'numberTypeNode'],
+  });
+
+  // When we visit the tree using that visitor.
+  const result = visit(node, visitor);
+
+  // Then we still get the full tree back as different instances.
+  t.deepEqual(result, node);
+  t.not(result, node);
+  assertTupleTypeNode(result);
+  t.not(result.children[0], node.children[0]);
+  t.not(result.children[1], node.children[1]);
+
+  // But the unsupported node was not visited.
+  t.deepEqual(events, ['visiting:tupleTypeNode', 'visiting:numberTypeNode']);
+
+  // And the unsupported node cannot be visited.
+  // @ts-expect-error
+  t.throws(() => visit(publicKeyTypeNode(), visitor));
+});

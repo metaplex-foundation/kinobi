@@ -1,5 +1,6 @@
 import test from 'ava';
 import {
+  MergeVisitorInterceptor,
   mergeVisitor,
   numberTypeNode,
   publicKeyTypeNode,
@@ -40,7 +41,37 @@ test('it can be used to count nodes', (t) => {
   t.is(result, 3);
 });
 
-test.todo('it accepts an interceptor used for each node');
+test('it accepts an interceptor used for each node', (t) => {
+  // Given the following 3-nodes tree.
+  const node = tupleTypeNode([numberTypeNode('u32'), publicKeyTypeNode()]);
+
+  // And a visitor that intercepts all nodes such that it records the
+  // events that happened during the visit.
+  const events: string[] = [];
+  const intercept: MergeVisitorInterceptor<void> = (fn) => (node) => {
+    events.push(`down:${node.kind}`);
+    fn(node);
+    events.push(`up:${node.kind}`);
+  };
+  const visitor = mergeVisitor(
+    () => undefined,
+    () => undefined,
+    { intercept }
+  );
+
+  // When we visit the tree using that visitor.
+  visit(node, visitor);
+
+  // Then we expect the following events to have happened.
+  t.deepEqual(events, [
+    'down:tupleTypeNode',
+    'down:numberTypeNode',
+    'up:numberTypeNode',
+    'down:publicKeyTypeNode',
+    'up:publicKeyTypeNode',
+    'up:tupleTypeNode',
+  ]);
+});
 
 test.todo('it accepts a next visitor to use for the next visits');
 
