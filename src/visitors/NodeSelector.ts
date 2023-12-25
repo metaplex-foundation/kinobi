@@ -52,5 +52,6 @@ export const getNodeSelectorFunction = (
   const lastNodeSelector = nodeSelectors.pop() as string;
 
   return (node, stack) =>
-    checkNode(node, lastNodeSelector) && checkStack(stack.all(), nodeSelectors);
+    checkNode(node, lastNodeSelector) &&
+    checkStack(stack.all(), [...nodeSelectors]);
 };
