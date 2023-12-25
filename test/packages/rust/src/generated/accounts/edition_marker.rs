@@ -13,11 +13,12 @@ use borsh::BorshSerialize;
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct EditionMarker {
     pub key: TmKey,
-    pub ledger: [u8; 31],
+    #[cfg_attr(feature = "serde", serde_with::serde_as(as = "serde_with::Bytes"))]
+    pub ledger: [u8; 200],
 }
 
 impl EditionMarker {
-    pub const LEN: usize = 32;
+    pub const LEN: usize = 201;
 
     #[inline(always)]
     pub fn from_bytes(data: &[u8]) -> Result<Self, std::io::Error> {
