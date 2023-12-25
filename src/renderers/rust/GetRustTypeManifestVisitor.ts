@@ -92,7 +92,7 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
       nodes.isEnumTypeNode(definedType.data) &&
       nodes.isScalarEnum(definedType.data);
     if (isScalarEnum) {
-      traits.push('PartialOrd', 'Hash');
+      traits.push('Copy', 'PartialOrd', 'Hash');
     }
     return {
       ...manifest,
@@ -189,9 +189,16 @@ export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
     const variantNames = variants.map((variant) => variant.type).join('\n');
     const mergedManifest = this.mergeManifests(variants);
 
+    let representation = 'C';
+    if (enumType.size.format !== 'u8') {
+      representation = enumType.size.format;
+    }
+
     return {
       ...mergedManifest,
-      type: `pub enum ${pascalCase(parentName)} {\n${variantNames}\n}`,
+      type:
+        `#[repr(${representation})]\n` +
+        `pub enum ${pascalCase(parentName)} {\n${variantNames}\n}`,
     };
   }
 
