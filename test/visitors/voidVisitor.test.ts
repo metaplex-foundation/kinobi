@@ -14,19 +14,19 @@ test('it visits all nodes and returns void', (t) => {
     tupleTypeNode([numberTypeNode('u32'), publicKeyTypeNode()]),
   ]);
 
-  // And a void visitor overriden such that it counts the number nodes.
+  // And a void visitor overriden such that it counts the tuple nodes.
   const visitor = voidVisitor();
-  const parentVisitNumberType = visitor.visitNumberType;
+  const parentVisitTupleType = visitor.visitTupleType;
   let counter = 0;
-  visitor.visitNumberType = (node) => {
+  visitor.visitTupleType = (node) => {
     counter++;
-    return parentVisitNumberType(node);
+    return parentVisitTupleType(node);
   };
 
   // When we visit the tree using that visitor.
   const result = visit(node, visitor);
 
-  // Then we expect the counter to match the amount of number nodes.
+  // Then we expect the counter to match the amount of tuple nodes.
   t.is(counter, 2);
 
   // And a void result.
