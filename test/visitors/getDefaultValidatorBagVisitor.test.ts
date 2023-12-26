@@ -28,7 +28,7 @@ test('it validates program nodes', (t) => {
   const bag = visit(node, getDefaultValidatorBagVisitor());
 
   // Then we expect the following validation errors.
-  const stack = new NodeStack([node]);
+  const stack = new NodeStack([]);
   t.deepEqual(
     bag,
     new ValidatorBag()
@@ -58,11 +58,11 @@ test('it validates nested nodes', (t) => {
   t.deepEqual(
     bag,
     new ValidatorBag()
-      .warn('Tuple has no items.', tupleNode, new NodeStack([node, tupleNode]))
+      .warn('Tuple has no items.', tupleNode, new NodeStack([node]))
       .error(
         'Struct field name "owner" is not unique.',
         structNode.fields[0],
-        new NodeStack([node, structNode])
+        new NodeStack([node])
       )
   );
 });

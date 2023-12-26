@@ -65,7 +65,9 @@ export class ValidatorBag {
 
   log(): void {
     this.items.forEach((item): void => {
-      const hint = `Stack: ${item.stack.toString()}.`;
+      const stack = item.stack.clone();
+      stack.push(item.node);
+      const hint = `Stack: ${stack.toString()}.`;
 
       switch (item.level) {
         case 'error':
