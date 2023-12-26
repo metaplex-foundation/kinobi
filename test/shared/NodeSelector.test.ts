@@ -4,12 +4,10 @@ import {
   EnumStructVariantTypeNode,
   EnumTypeNode,
   IdentityVisitorInterceptor,
-  LinkTypeNode,
   Node,
   NodeSelector,
   NodeStack,
   OptionTypeNode,
-  PublicKeyTypeNode,
   accountDataNode,
   accountNode,
   boolTypeNode,
@@ -229,6 +227,7 @@ const macro = test.macro({
 
     // Then the selected nodes are as expected.
     t.deepEqual(expectedSelected, selected);
+    selected.forEach((node, index) => t.is(node, expectedSelected[index]));
   },
 });
 
