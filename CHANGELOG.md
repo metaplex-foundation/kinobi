@@ -1,5 +1,13 @@
 # @metaplex-foundation/kinobi
 
+## 0.16.14
+
+### Patch Changes
+
+- [`01ee0bd`](https://github.com/metaplex-foundation/kinobi/commit/01ee0bd4fec9c1ad430d398d61238bc41c6cc480) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add MainCaseString type to ensure strings are cased properly
+
+- [#117](https://github.com/metaplex-foundation/kinobi/pull/117) [`5f491bf`](https://github.com/metaplex-foundation/kinobi/commit/5f491bf512e1c5a00270835c24f0296e6b7bbe35) Thanks [@febo](https://github.com/febo)! - Add serde_as for large arrays in Rust client
+
 ## 0.16.13
 
 ### Patch Changes

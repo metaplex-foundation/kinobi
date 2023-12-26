@@ -46,7 +46,7 @@ export function getEditionMarkerAccountDataEncoder() {
   return mapEncoder(
     getStructEncoder<{ key: TmKeyArgs; ledger: Array<number> }>([
       ['key', getTmKeyEncoder()],
-      ['ledger', getArrayEncoder(getU8Encoder(), { size: 31 })],
+      ['ledger', getArrayEncoder(getU8Encoder(), { size: 200 })],
     ]),
     (value) => ({ ...value, key: TmKey.EditionMarker })
   ) satisfies Encoder<EditionMarkerAccountDataArgs>;
@@ -55,7 +55,7 @@ export function getEditionMarkerAccountDataEncoder() {
 export function getEditionMarkerAccountDataDecoder() {
   return getStructDecoder<EditionMarkerAccountData>([
     ['key', getTmKeyDecoder()],
-    ['ledger', getArrayDecoder(getU8Decoder(), { size: 31 })],
+    ['ledger', getArrayDecoder(getU8Decoder(), { size: 200 })],
   ]) satisfies Decoder<EditionMarkerAccountData>;
 }
 
@@ -118,5 +118,5 @@ export async function safeFetchAllEditionMarker(
 }
 
 export function getEditionMarkerSize(): number {
-  return 32;
+  return 201;
 }

@@ -46,7 +46,7 @@ export function getEditionMarkerAccountDataSerializer(): Serializer<
     struct<EditionMarkerAccountData>(
       [
         ['key', getTmKeySerializer()],
-        ['ledger', array(u8(), { size: 31 })],
+        ['ledger', array(u8(), { size: 200 })],
       ],
       { description: 'EditionMarkerAccountData' }
     ),
@@ -129,7 +129,7 @@ export function getEditionMarkerGpaBuilder(
   return gpaBuilder(context, programId)
     .registerFields<{ key: TmKeyArgs; ledger: Array<number> }>({
       key: [0, getTmKeySerializer()],
-      ledger: [1, array(u8(), { size: 31 })],
+      ledger: [1, array(u8(), { size: 200 })],
     })
     .deserializeUsing<EditionMarker>((account) =>
       deserializeEditionMarker(account)
@@ -138,5 +138,5 @@ export function getEditionMarkerGpaBuilder(
 }
 
 export function getEditionMarkerSize(): number {
-  return 32;
+  return 201;
 }
