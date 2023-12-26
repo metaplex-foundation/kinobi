@@ -12,6 +12,7 @@ export * from './Visitor';
 
 export * from './bottomUpTransformerVisitor';
 export * from './deleteNodesVisitor';
+export * from './getByteSizeVisitor';
 export * from './identityVisitor';
 export * from './mapVisitor';
 export * from './mergeVisitor';
