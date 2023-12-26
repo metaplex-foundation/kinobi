@@ -8,13 +8,7 @@ import type { InstructionExtraArgsNode } from './InstructionExtraArgsNode';
 import type { InstructionNode } from './InstructionNode';
 import type { ProgramNode } from './ProgramNode';
 import type { RootNode } from './RootNode';
-import {
-  EnumEmptyVariantTypeNode,
-  EnumStructVariantTypeNode,
-  EnumTupleVariantTypeNode,
-  REGISTERED_TYPE_NODES,
-  StructFieldTypeNode,
-} from './typeNodes';
+import { REGISTERED_TYPE_NODES } from './typeNodes';
 
 const REGISTERED_NODES = {
   rootNode: {} as RootNode,
@@ -30,13 +24,6 @@ const REGISTERED_NODES = {
 
   // Groups.
   ...REGISTERED_TYPE_NODES,
-
-  // The following are not in `TypeNode`
-  // as they are not valid standalone types.
-  structFieldTypeNode: {} as StructFieldTypeNode,
-  enumEmptyVariantTypeNode: {} as EnumEmptyVariantTypeNode,
-  enumStructVariantTypeNode: {} as EnumStructVariantTypeNode,
-  enumTupleVariantTypeNode: {} as EnumTupleVariantTypeNode,
 };
 
 export const REGISTERED_NODES_KEYS = Object.keys(

@@ -17,8 +17,12 @@ import { TupleTypeNode, tupleTypeNodeFromIdl } from './TupleTypeNode';
 import { DateTimeTypeNode } from './DateTimeTypeNode';
 import { SolAmountTypeNode } from './SolAmountTypeNode';
 import { AmountTypeNode } from './AmountTypeNode';
+import { StructFieldTypeNode } from './StructFieldTypeNode';
+import { EnumEmptyVariantTypeNode } from './EnumEmptyVariantTypeNode';
+import { EnumStructVariantTypeNode } from './EnumStructVariantTypeNode';
+import { EnumTupleVariantTypeNode } from './EnumTupleVariantTypeNode';
 
-export const REGISTERED_TYPE_NODES = {
+export const TYPE_NODES = {
   amountTypeNode: {} as AmountTypeNode,
   arrayTypeNode: {} as ArrayTypeNode,
   boolTypeNode: {} as BoolTypeNode,
@@ -37,13 +41,27 @@ export const REGISTERED_TYPE_NODES = {
   tupleTypeNode: {} as TupleTypeNode,
 };
 
+export const TYPE_NODE_KEYS = Object.keys(
+  TYPE_NODES
+) as (keyof typeof TYPE_NODES)[];
+
+export const REGISTERED_TYPE_NODES = {
+  ...TYPE_NODES,
+
+  // The following are not valid standalone types.
+  structFieldTypeNode: {} as StructFieldTypeNode,
+  enumEmptyVariantTypeNode: {} as EnumEmptyVariantTypeNode,
+  enumStructVariantTypeNode: {} as EnumStructVariantTypeNode,
+  enumTupleVariantTypeNode: {} as EnumTupleVariantTypeNode,
+};
+
 export const REGISTERED_TYPE_NODE_KEYS = Object.keys(
   REGISTERED_TYPE_NODES
-) as (keyof RegisteredTypeNodes)[];
+) as (keyof typeof REGISTERED_TYPE_NODES)[];
 
 export type RegisteredTypeNodes = typeof REGISTERED_TYPE_NODES;
 
-export type TypeNode = RegisteredTypeNodes[keyof RegisteredTypeNodes];
+export type TypeNode = typeof TYPE_NODES[keyof typeof TYPE_NODES];
 
 function isArrayOfSize(array: any, size: number): boolean {
   return Array.isArray(array) && array.length === size;
