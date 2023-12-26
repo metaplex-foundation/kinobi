@@ -1,30 +1,28 @@
-import * as nodes from '../nodes';
+import { Node, RegisteredNodes } from '../nodes';
 import { NodeSelector, NodeStack, getNodeSelectorFunction } from '../shared';
 import { Visitor } from './Visitor';
 import { IdentityVisitorInterceptor, identityVisitor } from './identityVisitor';
 
-export type TopDownNodeTransformer<TNode extends nodes.Node = nodes.Node> = <
+export type TopDownNodeTransformer<TNode extends Node = Node> = <
   T extends TNode = TNode
 >(
   node: T,
   stack: NodeStack
 ) => T | null;
 
-export type TopDownNodeTransformerWithSelector<
-  TNode extends nodes.Node = nodes.Node
-> = {
+export type TopDownNodeTransformerWithSelector<TNode extends Node = Node> = {
   select: NodeSelector;
   transform: TopDownNodeTransformer<TNode>;
 };
 
 export function topDownTransformerVisitor<
-  TNodeKeys extends keyof nodes.RegisteredNodes = keyof nodes.RegisteredNodes
+  TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
 >(
   transformers: (TopDownNodeTransformer | TopDownNodeTransformerWithSelector)[],
   options: {
     nodeKeys?: TNodeKeys[];
   } = {}
-): Visitor<nodes.Node | null, TNodeKeys> {
+): Visitor<Node | null, TNodeKeys> {
   const transformerFunctions = transformers.map(
     (transformer): TopDownNodeTransformer =>
       typeof transformer === 'function'

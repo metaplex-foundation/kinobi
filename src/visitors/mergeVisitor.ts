@@ -1,17 +1,17 @@
-import * as nodes from '../nodes';
+import { Node, REGISTERED_NODES_KEYS, RegisteredNodes } from '../nodes';
 import { Visitor, visit as baseVisit } from './Visitor';
 import { staticVisitor } from './staticVisitor';
 
-export type MergeVisitorInterceptor<TReturn> = <TNode extends nodes.Node>(
+export type MergeVisitorInterceptor<TReturn> = <TNode extends Node>(
   fn: (node: TNode) => TReturn
 ) => (node: TNode) => TReturn;
 
 export function mergeVisitor<
   TReturn,
-  TNodeKeys extends keyof nodes.RegisteredNodes = keyof nodes.RegisteredNodes
+  TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
 >(
-  leafValue: (node: nodes.Node) => TReturn,
-  merge: (node: nodes.Node, values: TReturn[]) => TReturn,
+  leafValue: (node: Node) => TReturn,
+  merge: (node: Node, values: TReturn[]) => TReturn,
   options: {
     intercept?: MergeVisitorInterceptor<TReturn>;
     nextVisitor?: Visitor<TReturn, TNodeKeys>;
@@ -19,14 +19,14 @@ export function mergeVisitor<
   } = {}
 ): Visitor<TReturn, TNodeKeys> {
   const intercept = options.intercept ?? ((fn) => fn);
-  const nodesKeys: (keyof nodes.RegisteredNodes)[] =
-    options.nodeKeys ?? nodes.REGISTERED_NODES_KEYS;
+  const nodesKeys: (keyof RegisteredNodes)[] =
+    options.nodeKeys ?? REGISTERED_NODES_KEYS;
   const visitor = staticVisitor(
     intercept((node) => leafValue(node)),
     nodesKeys
   ) as Visitor<TReturn>;
   const nextVisitor = (options.nextVisitor ?? visitor) as Visitor<TReturn>;
-  const visit = (node: nodes.Node): TReturn[] =>
+  const visit = (node: Node): TReturn[] =>
     nodesKeys.includes(node.kind) ? [baseVisit(node, nextVisitor)] : [];
 
   if (nodesKeys.includes('rootNode')) {

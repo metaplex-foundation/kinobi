@@ -1,9 +1,9 @@
-import * as nodes from '../nodes';
+import { RegisteredNodes } from '../nodes';
 import { Visitor } from './Visitor';
 import { MergeVisitorInterceptor, mergeVisitor } from './mergeVisitor';
 
 export function voidVisitor<
-  TNodeKeys extends keyof nodes.RegisteredNodes = keyof nodes.RegisteredNodes
+  TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
 >(
   options: {
     intercept?: MergeVisitorInterceptor<void>;

@@ -1,4 +1,4 @@
-import * as nodes from '../nodes';
+import { REGISTERED_NODES_KEYS, RegisteredNodes } from '../nodes';
 import {
   GetVisitorFunctionName,
   Visitor,
@@ -8,13 +8,13 @@ import {
 export function mapVisitor<
   TReturnFrom,
   TReturnTo,
-  TNodeKeys extends keyof nodes.RegisteredNodes = keyof nodes.RegisteredNodes
+  TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
 >(
   visitor: Visitor<TReturnFrom, TNodeKeys>,
   map: (from: TReturnFrom) => TReturnTo
 ): Visitor<TReturnTo, TNodeKeys> {
   const registeredVisitFunctions =
-    nodes.REGISTERED_NODES_KEYS.map(getVisitFunctionName);
+    REGISTERED_NODES_KEYS.map(getVisitFunctionName);
   return Object.fromEntries(
     Object.keys(visitor).flatMap((key) => {
       if (!(registeredVisitFunctions as string[]).includes(key)) {
@@ -24,7 +24,7 @@ export function mapVisitor<
       return [
         [
           key,
-          (node: nodes.RegisteredNodes[TNodeKeys]) =>
+          (node: RegisteredNodes[TNodeKeys]) =>
             map(
               (visitor[key as GetVisitorFunctionName<TNodeKeys>] as Function)(
                 node

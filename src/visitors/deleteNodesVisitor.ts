@@ -1,4 +1,4 @@
-import { NodeSelector } from 'src/shared';
+import { NodeSelector } from '../shared';
 import { RegisteredNodes } from '../nodes';
 import {
   TopDownNodeTransformerWithSelector,
