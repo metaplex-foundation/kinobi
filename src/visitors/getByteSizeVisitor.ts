@@ -15,8 +15,11 @@ type SupportedNodeKeys =
   | 'instructionExtraArgsNode';
 
 export function getByteSizeVisitor(
-  availableDefinedTypes: Map<string, DefinedTypeNode>
+  definedTypes: DefinedTypeNode[]
 ): Visitor<number | null, SupportedNodeKeys> {
+  const availableDefinedTypes = new Map<string, DefinedTypeNode>(
+    definedTypes.map((type) => [type.name, type])
+  );
   const visitedDefinedTypes = new Map<string, number | null>();
   const definedTypeStack: string[] = [];
 
