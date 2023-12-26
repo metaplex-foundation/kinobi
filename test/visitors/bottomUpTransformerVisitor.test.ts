@@ -80,7 +80,7 @@ test('it can create partial transformer visitors', (t) => {
   // When we visit the tree using that visitor.
   const result = visit(node, visitor);
 
-  // Then we expect the number nodes to have been transformed into string nodes.
+  // Then we expect the following tree.
   t.deepEqual(
     result,
     tupleTypeNode([
@@ -99,4 +99,23 @@ test('it can create partial transformer visitors', (t) => {
   // And the public key node cannot be visited.
   // @ts-expect-error
   t.throws(() => visit(publicKeyTypeNode(), visitor));
+});
+
+test('it can be used to delete nodes', (t) => {
+  // Given the following tree.
+  const node = tupleTypeNode([
+    numberTypeNode('u32'),
+    tupleTypeNode([numberTypeNode('u32'), publicKeyTypeNode()]),
+  ]);
+
+  // And a transformer visitor that deletes all number nodes.
+  const visitor = bottomUpTransformerVisitor([
+    { select: '[numberTypeNode]', transform: () => null },
+  ]);
+
+  // When we visit the tree using that visitor.
+  const result = visit(node, visitor);
+
+  // Then we expect the number nodes to have been deleted.
+  t.deepEqual(result, tupleTypeNode([tupleTypeNode([publicKeyTypeNode()])]));
 });
