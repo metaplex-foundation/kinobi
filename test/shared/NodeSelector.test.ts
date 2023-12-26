@@ -1,11 +1,14 @@
 import test from 'ava';
 import {
+  BoolTypeNode,
   EnumStructVariantTypeNode,
   EnumTypeNode,
   IdentityVisitorInterceptor,
+  LinkTypeNode,
   Node,
   NodeSelector,
   NodeStack,
+  OptionTypeNode,
   PublicKeyTypeNode,
   accountDataNode,
   accountNode,
@@ -21,6 +24,7 @@ import {
   instructionDataArgsNode,
   instructionExtraArgsNode,
   instructionNode,
+  isNumberTypeNode,
   linkTypeNode,
   numberTypeNode,
   optionTypeNode,
@@ -263,20 +267,22 @@ const macro = test.macro({
 const splTokenProgram = tree.programs[0];
 const christmasProgram = tree.programs[1];
 const tokenAccount = splTokenProgram.accounts[0];
+const tokenDelegatedAmountOption = tokenAccount.data.struct.fields[3]
+  .child as OptionTypeNode;
 const mintTokenInstruction = splTokenProgram.instructions[0];
 const giftAccount = christmasProgram.accounts[0];
 const openGiftInstruction = christmasProgram.instructions[0];
 const wrappingPaper = christmasProgram.definedTypes[0];
-const wrappingPaperEnum = christmasProgram.definedTypes[0].data as EnumTypeNode;
+const wrappingPaperEnum = wrappingPaper.data as EnumTypeNode;
 const wrappingPaperEnumGold = wrappingPaperEnum
   .variants[2] as EnumStructVariantTypeNode;
 
-// Selecting programs.
+// Select programs.
 test(macro, '[programNode]', [splTokenProgram, christmasProgram]);
 test(macro, '[programNode]splToken', [splTokenProgram]);
 test(macro, 'christmasProgram', [christmasProgram]);
 
-// Selecting owner nodes.
+// Select and filter owner nodes.
 test(macro, 'owner', [
   tokenAccount.data.struct.fields[0],
   giftAccount.data.struct.fields[0],
@@ -317,4 +323,41 @@ test(macro, 'wrappingPaper.*', [
   wrappingPaperEnumGold.struct,
   wrappingPaperEnumGold.struct.fields[0],
   wrappingPaperEnumGold.struct.fields[0].child,
+]);
+test(macro, 'wrappingPaper.[structFieldTypeNode]', [
+  wrappingPaperEnumGold.struct.fields[0],
+]);
+test(macro, 'wrappingPaper.blue', [wrappingPaperEnum.variants[0]]);
+test(macro, 'amount.*', [
+  tokenAccount.data.struct.fields[2].child,
+  mintTokenInstruction.dataArgs.struct.fields[0].child,
+  giftAccount.data.struct.fields[2].child,
+]);
+test(macro, '[instructionNode].amount.*', [
+  mintTokenInstruction.dataArgs.struct.fields[0].child,
+]);
+test(macro, '[structFieldTypeNode].*', [
+  tokenAccount.data.struct.fields[0].child,
+  tokenAccount.data.struct.fields[1].child,
+  tokenAccount.data.struct.fields[2].child,
+  tokenAccount.data.struct.fields[3].child,
+  tokenDelegatedAmountOption.prefix,
+  tokenDelegatedAmountOption.child,
+  mintTokenInstruction.dataArgs.struct.fields[0].child,
+  giftAccount.data.struct.fields[0].child,
+  giftAccount.data.struct.fields[1].child,
+  (giftAccount.data.struct.fields[1].child as BoolTypeNode).size,
+  giftAccount.data.struct.fields[2].child,
+  giftAccount.data.struct.fields[3].child,
+  wrappingPaperEnumGold.struct.fields[0].child,
+]);
+test(macro, '[structFieldTypeNode].*.*', [
+  tokenDelegatedAmountOption.prefix,
+  tokenDelegatedAmountOption.child,
+  (giftAccount.data.struct.fields[1].child as BoolTypeNode).size,
+]);
+
+// Select using functions.
+test(macro, (node) => isNumberTypeNode(node) && node.format === 'u32', [
+  tokenDelegatedAmountOption.prefix,
 ]);

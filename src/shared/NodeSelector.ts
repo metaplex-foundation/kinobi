@@ -6,11 +6,11 @@ export type NodeSelector = NodeSelectorPath | NodeSelectorFunction;
 
 /**
  * A string that can be used to select a node in a Kinobi tree.
+ * - `*` matches any node.
  * - `someText` matches the name of a node, if any.
  * - `[someNode]` matches a node of the given kind.
  * - `[someNode]someText` matches both the kind and the name of a node.
  * - `a.b.c` matches a node `c` such that its parent stack contains `a` and `b` in order (but not necessarily subsequent).
- * - `a.b.c.*` matches any node such that its parent stack contains `a`, `b` and `c` in order (but not necessarily subsequent).
  */
 export type NodeSelectorPath = string;
 

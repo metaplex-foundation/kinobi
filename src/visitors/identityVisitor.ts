@@ -201,10 +201,22 @@ export function identityVisitor<
 
   if (nodesKeys.includes('optionTypeNode')) {
     visitor.visitOptionType = intercept((node) => {
+      const prefix = visit(node.prefix);
+      if (prefix === null) return null;
+      nodes.assertNumberTypeNode(prefix);
       const child = visit(node.child);
       if (child === null) return null;
       nodes.assertTypeNode(child);
-      return nodes.optionTypeNode(child, { ...node });
+      return nodes.optionTypeNode(child, { ...node, prefix });
+    });
+  }
+
+  if (nodesKeys.includes('boolTypeNode')) {
+    visitor.visitBoolType = intercept((node) => {
+      const size = visit(node.size);
+      if (size === null) return null;
+      nodes.assertNumberTypeNode(size);
+      return nodes.boolTypeNode(size);
     });
   }
 
