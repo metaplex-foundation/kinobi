@@ -1,4 +1,3 @@
-export * from './GetByteSizeVisitor';
 export * from './GetDefaultValidatorBagVisitor';
 export * from './GetDefinedTypeHistogramVisitor';
 export * from './GetNodeInlineStringVisitor';

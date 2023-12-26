@@ -1,14 +1,13 @@
 import * as nodes from '../../nodes';
-import { GetByteSizeVisitor } from '../aggregators';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
 import { visit } from '../Visitor';
+import { getByteSizeVisitor } from '../getByteSizeVisitor';
 import { TransformNodesVisitor } from './TransformNodesVisitor';
 
 export class AutoSetFixedAccountSizesVisitor extends BaseThrowVisitor<nodes.RootNode> {
   visitRoot(root: nodes.RootNode): nodes.RootNode {
     // Prepare the visitor that gets the byte size of a type.
-    const byteSizeVisitor = new GetByteSizeVisitor();
-    byteSizeVisitor.registerDefinedTypes(nodes.getAllDefinedTypes(root));
+    const byteSizeVisitor = getByteSizeVisitor(nodes.getAllDefinedTypes(root));
 
     // Prepare the visitor that transforms account nodes.
     const transformVisitor = new TransformNodesVisitor([

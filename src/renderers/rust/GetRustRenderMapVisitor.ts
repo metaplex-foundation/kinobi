@@ -3,10 +3,11 @@ import * as nodes from '../../nodes';
 import { ImportFrom, logWarn, pascalCase, snakeCase } from '../../shared';
 import {
   BaseThrowVisitor,
-  GetByteSizeVisitor,
+  ByteSizeVisitorKeys,
   GetResolvedInstructionInputsVisitor,
   ResolvedInstructionInput,
   Visitor,
+  getByteSizeVisitor,
   visit,
 } from '../../visitors';
 import { RenderMap } from '../RenderMap';
@@ -25,9 +26,6 @@ export type GetRustRenderMapOptions = {
     parentName: string | null;
     nestedStruct: boolean;
   };
-  byteSizeVisitor?: Visitor<number | null> & {
-    registerDefinedTypes?: (definedTypes: nodes.DefinedTypeNode[]) => void;
-  };
   resolvedInstructionInputVisitor?: Visitor<ResolvedInstructionInput[]>;
 };
 
@@ -36,14 +34,16 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   private program: nodes.ProgramNode | null = null;
 
+  private byteSizeVisitor: Visitor<number | null, ByteSizeVisitorKeys>;
+
   constructor(options: GetRustRenderMapOptions = {}) {
     super();
+    this.byteSizeVisitor = getByteSizeVisitor([]);
     this.options = {
       renderParentInstructions: options.renderParentInstructions ?? false,
       dependencyMap: { ...options.dependencyMap },
       typeManifestVisitor:
         options.typeManifestVisitor ?? new GetRustTypeManifestVisitor(),
-      byteSizeVisitor: options.byteSizeVisitor ?? new GetByteSizeVisitor(),
       resolvedInstructionInputVisitor:
         options.resolvedInstructionInputVisitor ??
         new GetResolvedInstructionInputsVisitor(),
@@ -51,7 +51,7 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitRoot(root: nodes.RootNode): RenderMap {
-    this.byteSizeVisitor.registerDefinedTypes?.(nodes.getAllDefinedTypes(root));
+    this.byteSizeVisitor = getByteSizeVisitor(nodes.getAllDefinedTypes(root));
 
     const programsToExport = root.programs.filter((p) => !p.internal);
     const accountsToExport = nodes
@@ -290,10 +290,6 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   get typeManifestVisitor() {
     return this.options.typeManifestVisitor;
-  }
-
-  get byteSizeVisitor() {
-    return this.options.byteSizeVisitor;
   }
 
   get resolvedInstructionInputVisitor() {

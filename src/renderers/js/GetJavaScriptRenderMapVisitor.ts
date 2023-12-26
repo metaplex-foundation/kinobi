@@ -10,7 +10,8 @@ import {
 import { logWarn } from '../../shared/logs';
 import {
   BaseThrowVisitor,
-  GetByteSizeVisitor,
+  ByteSizeVisitorKeys,
+  getByteSizeVisitor,
   GetResolvedInstructionInputsVisitor,
   ResolvedInstructionAccount,
   ResolvedInstructionInput,
@@ -45,9 +46,6 @@ export type GetJavaScriptRenderMapOptions = {
   prettierOptions?: PrettierOptions;
   dependencyMap?: Record<ImportFrom, string>;
   typeManifestVisitor?: Visitor<JavaScriptTypeManifest>;
-  byteSizeVisitor?: Visitor<number | null> & {
-    registerDefinedTypes?: (definedTypes: nodes.DefinedTypeNode[]) => void;
-  };
   resolvedInstructionInputVisitor?: Visitor<ResolvedInstructionInput[]>;
 };
 
@@ -56,8 +54,11 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   private program: nodes.ProgramNode | null = null;
 
+  private byteSizeVisitor: Visitor<number | null, ByteSizeVisitorKeys>;
+
   constructor(options: GetJavaScriptRenderMapOptions = {}) {
     super();
+    this.byteSizeVisitor = getByteSizeVisitor([]);
     this.options = {
       renderParentInstructions: options.renderParentInstructions ?? false,
       formatCode: options.formatCode ?? true,
@@ -80,7 +81,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
       },
       typeManifestVisitor:
         options.typeManifestVisitor ?? new GetJavaScriptTypeManifestVisitor(),
-      byteSizeVisitor: options.byteSizeVisitor ?? new GetByteSizeVisitor(),
       resolvedInstructionInputVisitor:
         options.resolvedInstructionInputVisitor ??
         new GetResolvedInstructionInputsVisitor(),
@@ -88,7 +88,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
   }
 
   visitRoot(root: nodes.RootNode): RenderMap {
-    this.byteSizeVisitor.registerDefinedTypes?.(nodes.getAllDefinedTypes(root));
+    this.byteSizeVisitor = getByteSizeVisitor(nodes.getAllDefinedTypes(root));
 
     const programsToExport = root.programs.filter((p) => !p.internal);
     const accountsToExport = nodes
@@ -550,10 +550,6 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
 
   get typeManifestVisitor() {
     return this.options.typeManifestVisitor;
-  }
-
-  get byteSizeVisitor() {
-    return this.options.byteSizeVisitor;
   }
 
   get resolvedInstructionInputVisitor() {

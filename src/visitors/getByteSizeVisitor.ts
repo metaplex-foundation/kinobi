@@ -7,7 +7,7 @@ import {
 import { Visitor, visit } from './Visitor';
 import { mergeVisitor } from './mergeVisitor';
 
-type SupportedNodeKeys =
+export type ByteSizeVisitorKeys =
   | keyof RegisteredTypeNodes
   | 'definedTypeNode'
   | 'accountDataNode'
@@ -16,7 +16,7 @@ type SupportedNodeKeys =
 
 export function getByteSizeVisitor(
   definedTypes: DefinedTypeNode[]
-): Visitor<number | null, SupportedNodeKeys> {
+): Visitor<number | null, ByteSizeVisitorKeys> {
   const availableDefinedTypes = new Map<string, DefinedTypeNode>(
     definedTypes.map((type) => [type.name, type])
   );

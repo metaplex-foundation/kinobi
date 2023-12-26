@@ -1,5 +1,5 @@
 import { Visitor, visit } from '../visitors';
-import type { AccountNode, TypeNode } from '../nodes';
+import type { AccountNode, RegisteredTypeNodes, TypeNode } from '../nodes';
 
 export type GpaField = {
   name: string;
@@ -9,7 +9,7 @@ export type GpaField = {
 
 export function getGpaFieldsFromAccount(
   node: AccountNode,
-  sizeVisitor: Visitor<number | null>
+  sizeVisitor: Visitor<number | null, keyof RegisteredTypeNodes>
 ): GpaField[] {
   let offset: number | null = 0;
   return node.data.struct.fields.map((field): GpaField => {
