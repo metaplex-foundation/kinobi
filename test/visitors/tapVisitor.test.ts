@@ -37,4 +37,7 @@ test('it returns a new instance of the same visitor whilst tapping into one of i
 
   // And the tapped counter is also correct.
   t.is(numberOfNumberNodes, 2);
+
+  // And the tapped visitor is a new instance.
+  t.not(visitor, tappedVisitor);
 });
