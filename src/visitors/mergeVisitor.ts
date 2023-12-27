@@ -104,13 +104,16 @@ export function mergeVisitor<
 
   if (nodesKeys.includes('arrayTypeNode')) {
     visitor.visitArrayType = intercept((node) =>
-      merge(node, visit(node.child))
+      merge(node, [
+        ...(node.size.kind === 'prefixed' ? visit(node.size.prefix) : []),
+        ...visit(node.child),
+      ])
     );
   }
 
   if (nodesKeys.includes('enumTypeNode')) {
     visitor.visitEnumType = intercept((node) =>
-      merge(node, node.variants.flatMap(visit))
+      merge(node, [...visit(node.size), ...node.variants.flatMap(visit)])
     );
   }
 
@@ -128,18 +131,31 @@ export function mergeVisitor<
 
   if (nodesKeys.includes('mapTypeNode')) {
     visitor.visitMapType = intercept((node) =>
-      merge(node, [...visit(node.key), ...visit(node.value)])
+      merge(node, [
+        ...(node.size.kind === 'prefixed' ? visit(node.size.prefix) : []),
+        ...visit(node.key),
+        ...visit(node.value),
+      ])
     );
   }
 
   if (nodesKeys.includes('optionTypeNode')) {
     visitor.visitOptionType = intercept((node) =>
-      merge(node, visit(node.child))
+      merge(node, [...visit(node.prefix), ...visit(node.child)])
     );
   }
 
+  if (nodesKeys.includes('boolTypeNode')) {
+    visitor.visitBoolType = intercept((node) => merge(node, visit(node.size)));
+  }
+
   if (nodesKeys.includes('setTypeNode')) {
-    visitor.visitSetType = intercept((node) => merge(node, visit(node.child)));
+    visitor.visitSetType = intercept((node) =>
+      merge(node, [
+        ...(node.size.kind === 'prefixed' ? visit(node.size.prefix) : []),
+        ...visit(node.child),
+      ])
+    );
   }
 
   if (nodesKeys.includes('structTypeNode')) {
@@ -175,6 +191,14 @@ export function mergeVisitor<
   if (nodesKeys.includes('solAmountTypeNode')) {
     visitor.visitAmountType = intercept((node) =>
       merge(node, visit(node.number))
+    );
+  }
+
+  if (nodesKeys.includes('stringTypeNode')) {
+    visitor.visitStringType = intercept((node) =>
+      node.size.kind === 'prefixed'
+        ? merge(node, visit(node.size.prefix))
+        : leafValue(node)
     );
   }
 

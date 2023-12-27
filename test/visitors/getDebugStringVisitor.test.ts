@@ -49,7 +49,7 @@ test('it returns a string representing the main information of a node for debugg
   // Then we expect the following string.
   t.deepEqual(
     result,
-    'tupleTypeNode(numberTypeNode, structTypeNode(structFieldTypeNode(stringTypeNode), structFieldTypeNode(numberTypeNode), structFieldTypeNode(optionTypeNode(publicKeyTypeNode)), structFieldTypeNode(enumTypeNode(enumEmptyVariantTypeNode, enumEmptyVariantTypeNode, enumEmptyVariantTypeNode))))'
+    'tupleTypeNode(numberTypeNode, structTypeNode(structFieldTypeNode(stringTypeNode(numberTypeNode)), structFieldTypeNode(numberTypeNode), structFieldTypeNode(optionTypeNode(numberTypeNode, publicKeyTypeNode)), structFieldTypeNode(enumTypeNode(numberTypeNode, enumEmptyVariantTypeNode, enumEmptyVariantTypeNode, enumEmptyVariantTypeNode))))'
   );
 });
 
@@ -94,13 +94,16 @@ test('it can create indented strings', (t) => {
 |   [structTypeNode]
 |   |   [structFieldTypeNode]
 |   |   |   [stringTypeNode]
+|   |   |   |   [numberTypeNode]
 |   |   [structFieldTypeNode]
 |   |   |   [numberTypeNode]
 |   |   [structFieldTypeNode]
 |   |   |   [optionTypeNode]
+|   |   |   |   [numberTypeNode]
 |   |   |   |   [publicKeyTypeNode]
 |   |   [structFieldTypeNode]
 |   |   |   [enumTypeNode]
+|   |   |   |   [numberTypeNode]
 |   |   |   |   [enumEmptyVariantTypeNode]
 |   |   |   |   [enumEmptyVariantTypeNode]
 |   |   |   |   [enumEmptyVariantTypeNode]`
