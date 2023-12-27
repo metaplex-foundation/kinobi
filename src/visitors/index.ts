@@ -13,6 +13,7 @@ export * from './Visitor';
 export * from './bottomUpTransformerVisitor';
 export * from './deleteNodesVisitor';
 export * from './getByteSizeVisitor';
+export * from './getDebugStringVisitor';
 export * from './getDefaultValidatorBagVisitor';
 export * from './getDefinedTypeHistogramVisitor';
 export * from './getUniqueHashStringVisitor';
