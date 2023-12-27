@@ -10,14 +10,19 @@ import {
   InstructionNode,
   ProgramNode,
 } from '../../nodes';
-import { camelCase, ImportFrom, mainCase, RenderMap } from '../../shared';
-import { logWarn } from '../../shared/logs';
+import {
+  camelCase,
+  ImportFrom,
+  logWarn,
+  mainCase,
+  RenderMap,
+  resolveTemplate,
+} from '../../shared';
 import {
   getResolvedInstructionInputsVisitor,
   staticVisitor,
   visit,
 } from '../../visitors';
-import { resolveTemplate } from '../utils';
 import {
   getAccountFetchHelpersFragment,
   getAccountPdaHelpersFragment,

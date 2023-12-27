@@ -19,25 +19,25 @@ import {
   logWarn,
   pascalCase,
   RenderMap,
+  resolveTemplate,
 } from '../../shared';
 import {
-  ResolvedInstructionAccount,
-  ResolvedInstructionInput,
-  Visitor,
   getByteSizeVisitor,
   getResolvedInstructionInputsVisitor,
+  ResolvedInstructionAccount,
+  ResolvedInstructionInput,
   staticVisitor,
   visit,
+  Visitor,
 } from '../../visitors';
-import { resolveTemplate } from '../utils';
 import {
   GetJavaScriptTypeManifestVisitor,
   JavaScriptTypeManifest,
 } from './GetJavaScriptTypeManifestVisitor';
-import { JavaScriptImportMap } from './JavaScriptImportMap';
-import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode';
 import { JavaScriptContextMap } from './JavaScriptContextMap';
+import { JavaScriptImportMap } from './JavaScriptImportMap';
 import { renderJavaScriptInstructionDefaults } from './RenderJavaScriptInstructionDefaults';
+import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,

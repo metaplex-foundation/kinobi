@@ -1,4 +1,4 @@
-import { createFile } from '../renderers/utils';
+import { createFile } from './utils';
 
 export class RenderMap {
   protected readonly _map: Map<string, string> = new Map();

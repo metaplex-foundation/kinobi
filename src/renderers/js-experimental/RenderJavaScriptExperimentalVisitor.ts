@@ -1,7 +1,6 @@
-import { LogLevel } from '../../shared/logs';
 import * as nodes from '../../nodes';
+import { deleteFolder, LogLevel } from '../../shared';
 import { BaseThrowVisitor, visit, writeRenderMapVisitor } from '../../visitors';
-import { deleteFolder } from '../utils';
 import {
   GetRenderMapOptions,
   getRenderMapVisitor,

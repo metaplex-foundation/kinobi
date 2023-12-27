@@ -1,16 +1,15 @@
 import * as nodes from '../../nodes';
-import { LogLevel } from '../../shared/logs';
+import { LogLevel, deleteFolder } from '../../shared';
 import {
   BaseThrowVisitor,
   throwValidatorItemsVisitor,
   visit,
   writeRenderMapVisitor,
 } from '../../visitors';
-import { deleteFolder } from '../utils';
 import { getJavaScriptValidatorBagVisitor } from './getJavaScriptValidatorBagVisitor';
 import {
-  getRenderMapVisitor,
   GetJavaScriptRenderMapOptions,
+  getRenderMapVisitor,
 } from './getRenderMapVisitor';
 
 export type RenderJavaScriptOptions = GetJavaScriptRenderMapOptions & {

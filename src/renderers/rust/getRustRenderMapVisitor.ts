@@ -13,9 +13,9 @@ import {
   logWarn,
   pascalCase,
   snakeCase,
+  resolveTemplate,
 } from '../../shared';
 import { staticVisitor, visit } from '../../visitors';
-import { resolveTemplate } from '../utils';
 import { GetRustTypeManifestVisitor } from './GetRustTypeManifestVisitor';
 import { renderRustValueNode } from './RenderRustValueNode';
 import { RustImportMap } from './RustImportMap';

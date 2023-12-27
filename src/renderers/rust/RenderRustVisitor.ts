@@ -1,8 +1,7 @@
 import { spawnSync } from 'child_process';
 import * as nodes from '../../nodes';
-import { LogLevel, logError, logWarn } from '../../shared/logs';
+import { LogLevel, deleteFolder, logError, logWarn } from '../../shared';
 import { BaseThrowVisitor, visit, writeRenderMapVisitor } from '../../visitors';
-import { deleteFolder } from '../utils';
 import {
   GetRustRenderMapOptions,
   getRustRenderMapVisitor,
