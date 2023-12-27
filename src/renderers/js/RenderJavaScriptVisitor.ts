@@ -11,7 +11,7 @@ import {
   GetJavaScriptRenderMapOptions,
   GetJavaScriptRenderMapVisitor,
 } from './GetJavaScriptRenderMapVisitor';
-import { getJavaScriptValidatorBagVisitor } from './getJavaScriptValidatorBagVisitor2';
+import { getJavaScriptValidatorBagVisitor } from './getJavaScriptValidatorBagVisitor';
 
 export type RenderJavaScriptOptions = GetJavaScriptRenderMapOptions & {
   deleteFolderBeforeRendering?: boolean;
