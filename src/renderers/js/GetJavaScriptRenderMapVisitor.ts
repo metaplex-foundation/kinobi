@@ -12,7 +12,7 @@ import {
   BaseThrowVisitor,
   ByteSizeVisitorKeys,
   getByteSizeVisitor,
-  GetResolvedInstructionInputsVisitor,
+  getResolvedInstructionInputsVisitor,
   ResolvedInstructionAccount,
   ResolvedInstructionInput,
   visit,
@@ -46,7 +46,10 @@ export type GetJavaScriptRenderMapOptions = {
   prettierOptions?: PrettierOptions;
   dependencyMap?: Record<ImportFrom, string>;
   typeManifestVisitor?: Visitor<JavaScriptTypeManifest>;
-  resolvedInstructionInputVisitor?: Visitor<ResolvedInstructionInput[]>;
+  resolvedInstructionInputVisitor?: Visitor<
+    ResolvedInstructionInput[],
+    'instructionNode'
+  >;
 };
 
 export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
@@ -83,7 +86,7 @@ export class GetJavaScriptRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         options.typeManifestVisitor ?? new GetJavaScriptTypeManifestVisitor(),
       resolvedInstructionInputVisitor:
         options.resolvedInstructionInputVisitor ??
-        new GetResolvedInstructionInputsVisitor(),
+        getResolvedInstructionInputsVisitor(),
     };
   }
 

@@ -1,7 +1,7 @@
 import { DefinedTypeNode, getAllDefinedTypes } from '../nodes';
 import { NodeStack, ValidatorBag, mainCase } from '../shared';
 import { Visitor, visit } from './Visitor';
-import { GetResolvedInstructionInputsVisitor } from './aggregators';
+import { getResolvedInstructionInputsVisitor } from './getResolvedInstructionInputsVisitor';
 import { MergeVisitorInterceptor, mergeVisitor } from './mergeVisitor';
 
 export function getDefaultValidatorBagVisitor(
@@ -81,11 +81,11 @@ export function getDefaultValidatorBagVisitor(
     });
 
     // Check for cyclic dependencies in account defaults.
-    const cyclicCheckVisitor = new GetResolvedInstructionInputsVisitor();
+    const cyclicCheckVisitor = getResolvedInstructionInputsVisitor();
     try {
       visit(node, cyclicCheckVisitor);
     } catch (error) {
-      bag.error(cyclicCheckVisitor.getError() as string, node, stack);
+      bag.error((error as Error).message, node, stack);
     }
 
     // Check args.

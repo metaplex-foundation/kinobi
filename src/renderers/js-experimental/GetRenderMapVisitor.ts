@@ -7,7 +7,7 @@ import {
   BaseThrowVisitor,
   ByteSizeVisitorKeys,
   getByteSizeVisitor,
-  GetResolvedInstructionInputsVisitor,
+  getResolvedInstructionInputsVisitor,
   ResolvedInstructionInput,
   visit,
   Visitor,
@@ -32,13 +32,13 @@ import {
 } from './fragments';
 import { GetTypeManifestVisitor } from './GetTypeManifestVisitor';
 import { ImportMap } from './ImportMap';
-import { TypeManifest } from './TypeManifest';
 import {
-  NameTransformers,
   DEFAULT_NAME_TRANSFORMERS,
-  NameApi,
   getNameApi,
+  NameApi,
+  NameTransformers,
 } from './nameTransformers';
+import { TypeManifest } from './TypeManifest';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -57,7 +57,10 @@ export type GetRenderMapOptions = {
   prettierOptions?: PrettierOptions;
   dependencyMap?: Record<ImportFrom, string>;
   typeManifestVisitor?: Visitor<TypeManifest>;
-  resolvedInstructionInputVisitor?: Visitor<ResolvedInstructionInput[]>;
+  resolvedInstructionInputVisitor?: Visitor<
+    ResolvedInstructionInput[],
+    'instructionNode'
+  >;
   asyncResolvers?: string[];
   nameTransformers?: Partial<NameTransformers>;
 };
@@ -93,7 +96,7 @@ export class GetRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         options.typeManifestVisitor ?? new GetTypeManifestVisitor(this.nameApi),
       resolvedInstructionInputVisitor:
         options.resolvedInstructionInputVisitor ??
-        new GetResolvedInstructionInputsVisitor(),
+        getResolvedInstructionInputsVisitor(),
       asyncResolvers: options.asyncResolvers ?? [],
       nameTransformers,
     };

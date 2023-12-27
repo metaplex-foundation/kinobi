@@ -4,10 +4,10 @@ import { ImportFrom, logWarn, pascalCase, snakeCase } from '../../shared';
 import {
   BaseThrowVisitor,
   ByteSizeVisitorKeys,
-  GetResolvedInstructionInputsVisitor,
   ResolvedInstructionInput,
   Visitor,
   getByteSizeVisitor,
+  getResolvedInstructionInputsVisitor,
   visit,
 } from '../../visitors';
 import { RenderMap } from '../RenderMap';
@@ -26,7 +26,10 @@ export type GetRustRenderMapOptions = {
     parentName: string | null;
     nestedStruct: boolean;
   };
-  resolvedInstructionInputVisitor?: Visitor<ResolvedInstructionInput[]>;
+  resolvedInstructionInputVisitor?: Visitor<
+    ResolvedInstructionInput[],
+    'instructionNode'
+  >;
 };
 
 export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
@@ -46,7 +49,7 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         options.typeManifestVisitor ?? new GetRustTypeManifestVisitor(),
       resolvedInstructionInputVisitor:
         options.resolvedInstructionInputVisitor ??
-        new GetResolvedInstructionInputsVisitor(),
+        getResolvedInstructionInputsVisitor(),
     };
   }
 

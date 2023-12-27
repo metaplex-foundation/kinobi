@@ -1,12 +1,13 @@
+import { InstructionAccountNode, InstructionNode } from '../nodes';
 import {
   InstructionAccountDefault,
   InstructionArgDefault,
   InstructionDefault,
   InstructionDependency,
   MainCaseString,
-} from '../../shared';
-import type * as nodes from '../../nodes';
-import { BaseThrowVisitor } from '../BaseThrowVisitor';
+} from '../shared';
+import { Visitor } from './Visitor';
+import { singleNodeVisitor } from './singleNodeVisitor';
 
 type InstructionInput = InstructionArg | InstructionAccount;
 type InstructionArg = {
@@ -15,7 +16,7 @@ type InstructionArg = {
   defaultsTo: InstructionArgDefault;
 };
 type InstructionAccount = { kind: 'account' } & Omit<
-  nodes.InstructionAccountNode,
+  InstructionAccountNode,
   'kind'
 >;
 
@@ -32,108 +33,66 @@ export type ResolvedInstructionArg = InstructionArg & {
   dependsOn: InstructionDependency[];
 };
 
-export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
-  ResolvedInstructionInput[]
+export function getResolvedInstructionInputsVisitor(): Visitor<
+  ResolvedInstructionInput[],
+  'instructionNode'
 > {
-  protected stack: InstructionInput[] = [];
+  let stack: InstructionInput[] = [];
+  let resolved: ResolvedInstructionInput[] = [];
+  let visitedAccounts = new Map<string, ResolvedInstructionAccount>();
+  let visitedArgs = new Map<string, ResolvedInstructionArg>();
 
-  protected resolved: ResolvedInstructionInput[] = [];
-
-  protected visitedAccounts = new Map<string, ResolvedInstructionAccount>();
-
-  protected visitedArgs = new Map<string, ResolvedInstructionArg>();
-
-  protected error: string | null = null;
-
-  getError(): string | null {
-    return this.error;
-  }
-
-  visitInstruction(
-    instruction: nodes.InstructionNode
-  ): ResolvedInstructionInput[] {
-    // Ensure we always start with a clean slate.
-    this.error = null;
-    this.stack = [];
-    this.resolved = [];
-    this.visitedAccounts = new Map();
-    this.visitedArgs = new Map();
-
-    const inputs: InstructionInput[] = [
-      ...instruction.accounts.map((account) => ({
-        ...account,
-        kind: 'account' as const,
-      })),
-      ...Object.entries(instruction.argDefaults).map(
-        ([argName, argDefault]) => ({
-          kind: 'arg' as const,
-          name: argName,
-          defaultsTo: argDefault,
-        })
-      ),
-    ];
-
-    // Visit all instruction accounts.
-    inputs.forEach((input) => {
-      this.resolveInstructionInput(instruction, input);
-    });
-
-    return this.resolved;
-  }
-
-  resolveInstructionInput(
-    instruction: nodes.InstructionNode,
+  function resolveInstructionInput(
+    instruction: InstructionNode,
     input: InstructionInput
   ): void {
     // Ensure we don't visit the same input twice.
     if (
-      (input.kind === 'account' && this.visitedAccounts.has(input.name)) ||
-      (input.kind === 'arg' && this.visitedArgs.has(input.name))
+      (input.kind === 'account' && visitedAccounts.has(input.name)) ||
+      (input.kind === 'arg' && visitedArgs.has(input.name))
     ) {
       return;
     }
 
     // Ensure we don't have a circular dependency.
-    const isCircular = this.stack.some(
+    const isCircular = stack.some(
       ({ kind, name }) => kind === input.kind && name === input.name
     );
     if (isCircular) {
-      const cycle = [...this.stack.map(({ name }) => name), input.name].join(
-        ' -> '
-      );
-      this.error =
+      const cycle = [...stack.map(({ name }) => name), input.name].join(' -> ');
+      const error =
         `Circular dependency detected in the accounts and args of ` +
         `the "${instruction.name}" instruction. ` +
         `Got the following dependency cycle: ${cycle}.`;
-      throw new Error(this.error);
+      throw new Error(error);
     }
 
     // Resolve whilst keeping track of the stack.
-    this.stack.push(input);
-    const resolved =
+    stack.push(input);
+    const localResolved =
       input.kind === 'account'
-        ? this.resolveInstructionAccount(instruction, input)
-        : this.resolveInstructionArg(instruction, input);
-    this.stack.pop();
+        ? resolveInstructionAccount(instruction, input)
+        : resolveInstructionArg(instruction, input);
+    stack.pop();
 
     // Store the resolved input.
-    this.resolved.push(resolved);
-    if (resolved.kind === 'account') {
-      this.visitedAccounts.set(input.name, resolved);
+    resolved.push(localResolved);
+    if (localResolved.kind === 'account') {
+      visitedAccounts.set(input.name, localResolved);
     } else {
-      this.visitedArgs.set(input.name, resolved);
+      visitedArgs.set(input.name, localResolved);
     }
   }
 
-  resolveInstructionAccount(
-    instruction: nodes.InstructionNode,
+  function resolveInstructionAccount(
+    instruction: InstructionNode,
     account: InstructionAccount
   ): ResolvedInstructionAccount {
     // Find and visit dependencies first.
-    const dependsOn = this.getInstructionDependencies(account);
-    this.resolveInstructionDependencies(instruction, account, dependsOn);
+    const dependsOn = getInstructionDependencies(account);
+    resolveInstructionDependencies(instruction, account, dependsOn);
 
-    const resolved: ResolvedInstructionAccount = {
+    const localResolved: ResolvedInstructionAccount = {
       ...account,
       isPda: Object.values(instruction.argDefaults).some(
         (argDefault) =>
@@ -144,10 +103,10 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
       resolvedIsOptional: account.isOptional,
     };
 
-    switch (resolved.defaultsTo?.kind) {
+    switch (localResolved.defaultsTo?.kind) {
       case 'account':
-        const defaultAccount = this.visitedAccounts.get(
-          resolved.defaultsTo.name
+        const defaultAccount = visitedAccounts.get(
+          localResolved.defaultsTo.name
         )!;
         const resolvedIsPublicKey =
           account.isSigner === false && defaultAccount.isSigner === false;
@@ -155,65 +114,66 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
           account.isSigner === true && defaultAccount.isSigner === true;
         const resolvedIsOptionalSigner =
           !resolvedIsPublicKey && !resolvedIsSigner;
-        resolved.resolvedIsSigner = resolvedIsOptionalSigner
+        localResolved.resolvedIsSigner = resolvedIsOptionalSigner
           ? 'either'
           : resolvedIsSigner;
-        resolved.resolvedIsOptional = defaultAccount.isOptional;
+        localResolved.resolvedIsOptional = defaultAccount.isOptional;
         break;
       case 'publicKey':
       case 'program':
       case 'programId':
-        resolved.resolvedIsSigner =
+        localResolved.resolvedIsSigner =
           account.isSigner === false ? false : 'either';
-        resolved.resolvedIsOptional = false;
+        localResolved.resolvedIsOptional = false;
         break;
       case 'pda':
-        resolved.resolvedIsSigner =
+        localResolved.resolvedIsSigner =
           account.isSigner === false ? false : 'either';
-        resolved.resolvedIsOptional = false;
-        const { seeds } = resolved.defaultsTo;
+        localResolved.resolvedIsOptional = false;
+        const { seeds } = localResolved.defaultsTo;
         Object.keys(seeds).forEach((seedKey) => {
           const seed = seeds[seedKey as MainCaseString];
           if (seed.kind !== 'account') return;
-          const dependency = this.visitedAccounts.get(seed.name)!;
+          const dependency = visitedAccounts.get(seed.name)!;
           if (dependency.resolvedIsOptional) {
-            this.error =
+            const error =
               `Cannot use optional account "${seed.name}" as the "${seedKey}" PDA seed ` +
               `for the "${account.name}" account of the "${instruction.name}" instruction.`;
-            throw new Error(this.error);
+            throw new Error(error);
           }
         });
         break;
       case 'identity':
       case 'payer':
-        resolved.resolvedIsOptional = false;
+        localResolved.resolvedIsOptional = false;
         break;
       case 'resolver':
-        resolved.resolvedIsOptional =
-          resolved.defaultsTo.resolvedIsOptional ?? false;
-        resolved.resolvedIsSigner =
-          resolved.defaultsTo.resolvedIsSigner ?? resolved.resolvedIsSigner;
+        localResolved.resolvedIsOptional =
+          localResolved.defaultsTo.resolvedIsOptional ?? false;
+        localResolved.resolvedIsSigner =
+          localResolved.defaultsTo.resolvedIsSigner ??
+          localResolved.resolvedIsSigner;
         break;
       default:
         break;
     }
 
-    return resolved;
+    return localResolved;
   }
 
-  resolveInstructionArg(
-    instruction: nodes.InstructionNode,
+  function resolveInstructionArg(
+    instruction: InstructionNode,
     arg: InstructionArg & { kind: 'arg' }
   ): ResolvedInstructionArg {
     // Find and visit dependencies first.
-    const dependsOn = this.getInstructionDependencies(arg);
-    this.resolveInstructionDependencies(instruction, arg, dependsOn);
+    const dependsOn = getInstructionDependencies(arg);
+    resolveInstructionDependencies(instruction, arg, dependsOn);
 
     return { ...arg, dependsOn };
   }
 
-  resolveInstructionDependencies(
-    instruction: nodes.InstructionNode,
+  function resolveInstructionDependencies(
+    instruction: InstructionNode,
     parent: InstructionInput,
     dependencies: InstructionDependency[]
   ): void {
@@ -224,10 +184,10 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
           ({ name }) => name === dependency.name
         );
         if (!dependencyAccount) {
-          this.error =
+          const error =
             `Account "${dependency.name}" is not a valid dependency of ${parent.kind} ` +
             `"${parent.name}" in the "${instruction.name}" instruction.`;
-          throw new Error(this.error);
+          throw new Error(error);
         }
         input = { ...dependencyAccount, kind: 'account' };
       } else if (dependency.kind === 'arg') {
@@ -241,12 +201,14 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
         }
       }
       if (input) {
-        this.resolveInstructionInput(instruction, input);
+        resolveInstructionInput(instruction, input);
       }
     });
   }
 
-  getInstructionDependencies(input: InstructionInput): InstructionDependency[] {
+  function getInstructionDependencies(
+    input: InstructionInput
+  ): InstructionDependency[] {
     if (!input.defaultsTo) return [];
 
     const getNestedDependencies = (
@@ -255,13 +217,13 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
       if (!defaultsTo) return [];
 
       if (input.kind === 'account') {
-        return this.getInstructionDependencies({
+        return getInstructionDependencies({
           ...input,
           defaultsTo: defaultsTo as InstructionAccountDefault,
         });
       }
 
-      return this.getInstructionDependencies({
+      return getInstructionDependencies({
         ...input,
         defaultsTo: defaultsTo as InstructionArgDefault,
       });
@@ -310,4 +272,34 @@ export class GetResolvedInstructionInputsVisitor extends BaseThrowVisitor<
 
     return [];
   }
+
+  return singleNodeVisitor(
+    'instructionNode',
+    (node): ResolvedInstructionInput[] => {
+      // Ensure we always start with a clean slate.
+      stack = [];
+      resolved = [];
+      visitedAccounts = new Map();
+      visitedArgs = new Map();
+
+      const inputs: InstructionInput[] = [
+        ...node.accounts.map((account) => ({
+          ...account,
+          kind: 'account' as const,
+        })),
+        ...Object.entries(node.argDefaults).map(([argName, argDefault]) => ({
+          kind: 'arg' as const,
+          name: argName,
+          defaultsTo: argDefault,
+        })),
+      ];
+
+      // Visit all instruction accounts.
+      inputs.forEach((input) => {
+        resolveInstructionInput(node, input);
+      });
+
+      return resolved;
+    }
+  );
 }

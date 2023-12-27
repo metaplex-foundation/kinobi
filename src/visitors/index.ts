@@ -1,4 +1,3 @@
-export * from './aggregators';
 export * from './transformers';
 export * from './workers';
 
@@ -16,6 +15,7 @@ export * from './getByteSizeVisitor';
 export * from './getDebugStringVisitor';
 export * from './getDefaultValidatorBagVisitor';
 export * from './getDefinedTypeHistogramVisitor';
+export * from './getResolvedInstructionInputsVisitor';
 export * from './getUniqueHashStringVisitor';
 export * from './identityVisitor';
 export * from './mapVisitor';
