@@ -24,6 +24,7 @@ export * from './interceptVisitor';
 export * from './mapVisitor';
 export * from './mergeVisitor';
 export * from './removeDocsVisitor';
+export * from './setAccountDiscriminatorFromFieldVisitor';
 export * from './setAnchorDiscriminatorsVisitor';
 export * from './setFixedAccountSizesVisitor';
 export * from './singleNodeVisitor';

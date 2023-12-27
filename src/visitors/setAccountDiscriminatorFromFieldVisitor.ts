@@ -1,20 +1,32 @@
-import { fieldAccountDiscriminator } from '../../shared';
-import * as nodes from '../../nodes';
-import { ValueNode } from '../../nodes';
-import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
+import { fieldAccountDiscriminator } from '../shared';
+import {
+  ValueNode,
+  accountDataNode,
+  accountNode,
+  assertAccountNode,
+  structFieldTypeNode,
+  structTypeNode,
+} from '../nodes';
+import {
+  BottomUpNodeTransformerWithSelector,
+  bottomUpTransformerVisitor,
+} from './bottomUpTransformerVisitor';
 
-export class SetAccountDiscriminatorFromFieldVisitor extends TransformNodesVisitor {
-  constructor(
-    readonly map: Record<string, { field: string; value: ValueNode }>
-  ) {
-    const transforms = Object.entries(map).map(
-      ([selectorStack, { field, value }]): NodeTransform => {
+export function setAccountDiscriminatorFromFieldVisitor(
+  map: Record<string, { field: string; value: ValueNode }>
+) {
+  return bottomUpTransformerVisitor(
+    Object.entries(map).map(
+      ([
+        selectorStack,
+        { field, value },
+      ]): BottomUpNodeTransformerWithSelector => {
         const stack = selectorStack.split('.');
         const name = stack.pop();
         return {
-          selector: `${stack.join('.')}.[accountNode]${name}`,
-          transformer: (node) => {
-            nodes.assertAccountNode(node);
+          select: `${stack.join('.')}.[accountNode]${name}`,
+          transform: (node) => {
+            assertAccountNode(node);
 
             const fieldIndex = node.data.struct.fields.findIndex(
               (f) => f.name === field
@@ -26,14 +38,14 @@ export class SetAccountDiscriminatorFromFieldVisitor extends TransformNodesVisit
             }
 
             const fieldNode = node.data.struct.fields[fieldIndex];
-            return nodes.accountNode({
+            return accountNode({
               ...node,
               discriminator: fieldAccountDiscriminator(field),
-              data: nodes.accountDataNode({
+              data: accountDataNode({
                 ...node.data,
-                struct: nodes.structTypeNode([
+                struct: structTypeNode([
                   ...node.data.struct.fields.slice(0, fieldIndex),
-                  nodes.structFieldTypeNode({
+                  structFieldTypeNode({
                     ...fieldNode,
                     defaultsTo: { strategy: 'omitted', value },
                   }),
@@ -44,8 +56,6 @@ export class SetAccountDiscriminatorFromFieldVisitor extends TransformNodesVisit
           },
         };
       }
-    );
-
-    super(transforms);
-  }
+    )
+  );
 }

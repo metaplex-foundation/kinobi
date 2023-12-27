@@ -169,7 +169,7 @@ kinobi.update(
 const tmKey = (name) => ({ field: 'key', value: k.vEnum('TmKey', name) });
 const taKey = (name) => ({ field: 'key', value: k.vEnum('TaKey', name) });
 kinobi.update(
-  new k.SetAccountDiscriminatorFromFieldVisitor({
+  k.setAccountDiscriminatorFromFieldVisitor({
     'mplTokenMetadata.Edition': tmKey('EditionV1'),
     'mplTokenMetadata.MasterEditionV1': tmKey('MasterEditionV1'),
     'mplTokenMetadata.ReservationListV1': tmKey('ReservationListV1'),
