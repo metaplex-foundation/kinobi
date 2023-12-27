@@ -23,6 +23,7 @@ export * from './setAnchorDiscriminatorsVisitor';
 export * from './setFixedAccountSizesVisitor';
 export * from './singleNodeVisitor';
 export * from './staticVisitor';
+export * from './createSubInstructionsFromEnumArgsVisitor';
 export * from './throwValidatorItemsVisitor';
 export * from './topDownTransformerVisitor';
 export * from './visitor';

@@ -1,4 +1,4 @@
-import { MainCaseString } from 'src/shared';
+import { MainCaseString } from '../../shared';
 import * as nodes from '../../nodes';
 import { assertRootNode } from '../../nodes';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
