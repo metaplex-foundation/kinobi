@@ -2,7 +2,7 @@
 import chalk from 'chalk';
 import { getLevelIndex, LogLevel, ValidatorBag } from '../../shared';
 import { BaseDelegateVisitor } from '../BaseDelegateVisitor';
-import { Visitor } from '../visitor2';
+import { Visitor } from '../visitor';
 
 export class ThrowValidatorItemsVisitor extends BaseDelegateVisitor<
   ValidatorBag,

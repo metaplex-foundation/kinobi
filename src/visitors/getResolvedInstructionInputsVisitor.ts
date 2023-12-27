@@ -6,7 +6,7 @@ import {
   InstructionDependency,
   MainCaseString,
 } from '../shared';
-import { Visitor } from './visitor2';
+import { Visitor } from './visitor';
 import { singleNodeVisitor } from './singleNodeVisitor';
 
 type InstructionInput = InstructionArg | InstructionAccount;

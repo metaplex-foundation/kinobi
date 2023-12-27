@@ -1,7 +1,7 @@
 import { fixedSize } from '../../shared';
 import * as nodes from '../../nodes';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
-import { visit } from '../visitor2';
+import { visit } from '../visitor';
 
 export class TransformU8ArraysToBytesVisitor extends BaseNodeVisitor {
   constructor(readonly sizes: number[] | '*' = [32, 64]) {

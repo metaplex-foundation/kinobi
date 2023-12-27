@@ -1,7 +1,7 @@
 import * as nodes from '../../nodes';
 import { NodeSelector } from '../../shared';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
-import { visit } from '../visitor2';
+import { visit } from '../visitor';
 import { deleteNodesVisitor } from '../deleteNodesVisitor';
 import { getUniqueHashStringVisitor } from '../getUniqueHashStringVisitor';
 

@@ -3,7 +3,7 @@ import {
   GetVisitorFunctionName,
   Visitor,
   getVisitFunctionName,
-} from './visitor2';
+} from './visitor';
 
 export function mapVisitor<
   TReturnFrom,

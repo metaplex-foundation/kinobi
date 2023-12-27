@@ -6,7 +6,7 @@ import {
   mainCase,
 } from '../../shared';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
-import { visit } from '../visitor2';
+import { visit } from '../visitor';
 
 export type InstructionAccountDefaultRule = InstructionAccountDefault & {
   /** The name of the instruction account or a pattern to match on it. */

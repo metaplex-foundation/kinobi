@@ -1,5 +1,5 @@
 import type * as nodes from '../nodes';
-import { Visitor, visit } from './visitor2';
+import { Visitor, visit } from './visitor';
 
 export abstract class BaseDelegateVisitor<T, U> implements Visitor<U> {
   constructor(readonly visitor: Visitor<T>) {}

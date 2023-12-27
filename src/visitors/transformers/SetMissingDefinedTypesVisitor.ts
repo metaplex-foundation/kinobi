@@ -1,7 +1,7 @@
 import { MainCaseString } from 'src/shared';
 import * as nodes from '../../nodes';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
-import { visit } from '../visitor2';
+import { visit } from '../visitor';
 import { getDefinedTypeHistogramVisitor } from '../getDefinedTypeHistogramVisitor';
 
 export class SetMissingDefinedTypesVisitor extends BaseThrowVisitor<nodes.RootNode> {

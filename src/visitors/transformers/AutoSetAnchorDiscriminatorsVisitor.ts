@@ -6,7 +6,7 @@ import {
   getAnchorInstructionDiscriminator,
 } from '../../shared';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
-import { visit } from '../visitor2';
+import { visit } from '../visitor';
 
 export class AutoSetAnchorDiscriminatorsVisitor extends BaseNodeVisitor {
   protected program: nodes.ProgramNode | null = null;

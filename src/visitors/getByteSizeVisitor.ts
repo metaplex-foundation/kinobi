@@ -4,7 +4,7 @@ import {
   RegisteredTypeNodes,
   isScalarEnum,
 } from '../nodes';
-import { Visitor, visit } from './visitor2';
+import { Visitor, visit } from './visitor';
 import { mergeVisitor } from './mergeVisitor';
 
 export type ByteSizeVisitorKeys =

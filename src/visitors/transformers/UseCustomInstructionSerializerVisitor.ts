@@ -2,7 +2,7 @@ import * as nodes from '../../nodes';
 import { mainCase } from '../../shared';
 import { ImportFrom } from '../../shared/ImportFrom';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
-import { visit } from '../visitor2';
+import { visit } from '../visitor';
 
 export type CustomInstructionSerializerOptions = {
   name: string;

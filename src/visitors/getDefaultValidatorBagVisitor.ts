@@ -1,6 +1,6 @@
 import { DefinedTypeNode, getAllDefinedTypes } from '../nodes';
 import { NodeStack, ValidatorBag, mainCase } from '../shared';
-import { Visitor, visit } from './visitor2';
+import { Visitor, visit } from './visitor';
 import { getResolvedInstructionInputsVisitor } from './getResolvedInstructionInputsVisitor';
 import { MergeVisitorInterceptor, mergeVisitor } from './mergeVisitor';
 

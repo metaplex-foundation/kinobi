@@ -7,7 +7,7 @@ export * from './BaseNodeVisitor';
 export * from './BaseThrowVisitor';
 export * from './BaseVoidVisitor';
 export * from './DefaultVisitor';
-export * from './visitor2';
+export * from './visitor';
 
 export * from './bottomUpTransformerVisitor';
 export * from './deleteNodesVisitor';

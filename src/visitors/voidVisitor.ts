@@ -1,5 +1,5 @@
 import { RegisteredNodes } from '../nodes';
-import { Visitor } from './visitor2';
+import { Visitor } from './visitor';
 import { MergeVisitorInterceptor, mergeVisitor } from './mergeVisitor';
 
 export function voidVisitor<
