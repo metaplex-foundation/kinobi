@@ -1,7 +1,7 @@
 import * as nodes from '../nodes';
 import { BaseThrowVisitor } from './BaseThrowVisitor';
+import { setAnchorDiscriminatorsVisitor } from './setAnchorDiscriminatorsVisitor';
 import {
-  AutoSetAnchorDiscriminatorsVisitor,
   AutoSetFixedAccountSizesVisitor,
   DeduplicateIdenticalDefinedTypesVisitor,
   DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES,
@@ -14,8 +14,8 @@ import { visit, Visitor } from './visitor';
 
 export class DefaultVisitor extends BaseThrowVisitor<nodes.RootNode> {
   visitRoot(currentRoot: nodes.RootNode): nodes.RootNode {
-    let root: nodes.Node = currentRoot;
-    const updateRoot = (visitor: Visitor<nodes.Node | null>) => {
+    let root: nodes.RootNode = currentRoot;
+    const updateRoot = (visitor: Visitor<nodes.Node | null, 'rootNode'>) => {
       const newRoot = visit(root, visitor);
       nodes.assertRootNode(newRoot);
       root = newRoot;
@@ -25,7 +25,7 @@ export class DefaultVisitor extends BaseThrowVisitor<nodes.RootNode> {
     updateRoot(new DeduplicateIdenticalDefinedTypesVisitor());
 
     // Accounts.
-    updateRoot(new AutoSetAnchorDiscriminatorsVisitor());
+    updateRoot(setAnchorDiscriminatorsVisitor());
     updateRoot(new AutoSetFixedAccountSizesVisitor());
 
     // Instructions.

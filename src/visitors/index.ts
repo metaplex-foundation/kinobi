@@ -19,6 +19,7 @@ export * from './identityVisitor';
 export * from './mapVisitor';
 export * from './mergeVisitor';
 export * from './removeDocsVisitor';
+export * from './setAnchorDiscriminatorsVisitor';
 export * from './singleNodeVisitor';
 export * from './staticVisitor';
 export * from './throwValidatorItemsVisitor';
