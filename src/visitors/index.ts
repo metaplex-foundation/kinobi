@@ -18,6 +18,7 @@ export * from './getDefinedTypeHistogramVisitor';
 export * from './identityVisitor';
 export * from './mapVisitor';
 export * from './mergeVisitor';
+export * from './removeDocsVisitor';
 export * from './singleNodeVisitor';
 export * from './staticVisitor';
 export * from './topDownTransformerVisitor';
