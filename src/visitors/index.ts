@@ -1,6 +1,5 @@
 export * from './transformers';
 
-export * from './BaseDelegateVisitor';
 export * from './BaseNodeOrNullVisitor';
 export * from './BaseNodeVisitor';
 export * from './BaseThrowVisitor';
