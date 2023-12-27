@@ -1,6 +1,7 @@
 import { Node } from '../nodes';
 import { Visitor } from './visitor';
-import { MergeVisitorInterceptor, mergeVisitor } from './mergeVisitor';
+import { mergeVisitor } from './mergeVisitor';
+import { VisitorInterceptor, interceptVisitor } from './interceptVisitor';
 
 export function getDebugStringVisitor(
   options: { indent?: boolean; indentSeparator?: string } = {}
@@ -8,38 +9,40 @@ export function getDebugStringVisitor(
   const indent = options.indent ?? false;
   const indentSeparator = options.indentSeparator ?? '|   ';
   let stackLevel = -1;
-  const intercept: MergeVisitorInterceptor<string> = (fn) => (node) => {
+  const interceptor: VisitorInterceptor<string> = (fn) => (node) => {
     stackLevel += 1;
     const newNode = fn(node);
     stackLevel -= 1;
     return newNode;
   };
 
-  const visitor = mergeVisitor<string>(
-    (node) => {
-      const details = getNodeDetails(node).join('.');
-      if (indent) {
-        return `${indentSeparator.repeat(stackLevel)}${node.kind}${
-          details ? ` [${details}]` : ''
-        }`;
-      }
-      return `${node.kind}${details ? `[${details}]` : ''}`;
-    },
-    (node, values) => {
-      const details = getNodeDetails(node).join('.');
-      if (indent) {
-        return [
-          `${indentSeparator.repeat(stackLevel)}${node.kind}${
+  const visitor = interceptVisitor(
+    mergeVisitor<string>(
+      (node) => {
+        const details = getNodeDetails(node).join('.');
+        if (indent) {
+          return `${indentSeparator.repeat(stackLevel)}${node.kind}${
             details ? ` [${details}]` : ''
-          }`,
-          ...values,
-        ].join('\n');
+          }`;
+        }
+        return `${node.kind}${details ? `[${details}]` : ''}`;
+      },
+      (node, values) => {
+        const details = getNodeDetails(node).join('.');
+        if (indent) {
+          return [
+            `${indentSeparator.repeat(stackLevel)}${node.kind}${
+              details ? ` [${details}]` : ''
+            }`,
+            ...values,
+          ].join('\n');
+        }
+        return `${node.kind}${details ? `[${details}]` : ''}(${values.join(
+          ', '
+        )})`;
       }
-      return `${node.kind}${details ? `[${details}]` : ''}(${values.join(
-        ', '
-      )})`;
-    },
-    { intercept }
+    ),
+    interceptor
   );
 
   return visitor;

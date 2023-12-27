@@ -3,11 +3,11 @@ import {
   BoolTypeNode,
   EnumStructVariantTypeNode,
   EnumTypeNode,
-  IdentityVisitorInterceptor,
   Node,
   NodeSelector,
   NodeStack,
   OptionTypeNode,
+  VisitorInterceptor,
   accountDataNode,
   accountNode,
   boolTypeNode,
@@ -22,6 +22,7 @@ import {
   instructionDataArgsNode,
   instructionExtraArgsNode,
   instructionNode,
+  interceptVisitor,
   isNumberTypeNode,
   linkTypeNode,
   numberTypeNode,
@@ -213,14 +214,14 @@ const macro = test.macro({
     // And given a visitor that keeps track of selected nodes.
     const stack = new NodeStack();
     const selected = [] as Node[];
-    const intercept: IdentityVisitorInterceptor = (fn) => (node) => {
+    const interceptor: VisitorInterceptor<Node | null> = (fn) => (node) => {
       if (selectorFunction(node, stack.clone())) selected.push(node);
       stack.push(node);
       const newNode = fn(node);
       stack.pop();
       return newNode;
     };
-    const visitor = identityVisitor({ intercept });
+    const visitor = interceptVisitor(identityVisitor(), interceptor);
 
     // When we visit the tree.
     visit(tree, visitor);

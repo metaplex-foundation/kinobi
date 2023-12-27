@@ -19,9 +19,12 @@ import { identityVisitor } from './identityVisitor';
 
 export function setAnchorDiscriminatorsVisitor() {
   let program: ProgramNode | null = null;
-  const visitor = identityVisitor({
-    nodeKeys: ['rootNode', 'programNode', 'accountNode', 'instructionNode'],
-  });
+  const visitor = identityVisitor([
+    'rootNode',
+    'programNode',
+    'accountNode',
+    'instructionNode',
+  ]);
 
   const baseVisitor = { ...visitor };
 

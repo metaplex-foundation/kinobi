@@ -1,8 +1,9 @@
 import { DefinedTypeNode, getAllDefinedTypes } from '../nodes';
 import { NodeStack, ValidatorBag, mainCase } from '../shared';
-import { Visitor, visit } from './visitor';
 import { getResolvedInstructionInputsVisitor } from './getResolvedInstructionInputsVisitor';
-import { MergeVisitorInterceptor, mergeVisitor } from './mergeVisitor';
+import { VisitorInterceptor, interceptVisitor } from './interceptVisitor';
+import { mergeVisitor } from './mergeVisitor';
+import { Visitor, visit } from './visitor';
 
 export function getDefaultValidatorBagVisitor(
   definedTypes: DefinedTypeNode[] = []
@@ -11,23 +12,25 @@ export function getDefaultValidatorBagVisitor(
     definedTypes.map((type) => type.name)
   );
   const stack = new NodeStack();
-  const intercept: MergeVisitorInterceptor<ValidatorBag> = (fn) => (node) => {
+  const interceptor: VisitorInterceptor<ValidatorBag> = (fn) => (node) => {
     stack.push(node);
     const newNode = fn(node);
     stack.pop();
     return newNode;
   };
-  const visitor = mergeVisitor(
-    () => new ValidatorBag(),
-    (_, bags) => new ValidatorBag().mergeWith(bags),
-    { intercept }
+  const visitor = interceptVisitor(
+    mergeVisitor(
+      () => new ValidatorBag(),
+      (_, bags) => new ValidatorBag().mergeWith(bags)
+    ),
+    interceptor
   );
   const baseVisitor = { ...visitor };
 
   visitor.visitRoot = (node) => {
     // Register defined types to make sure links are valid.
     getAllDefinedTypes(node).forEach((type) => definedTypeNames.add(type.name));
-    return baseVisitor.visitRoot(node);
+    return baseVisitor.visitRoot.bind(visitor)(node);
   };
 
   visitor.visitProgram = (node) => {
@@ -44,7 +47,7 @@ export function getDefaultValidatorBagVisitor(
     if (!node.origin) {
       bag.info('Program has no origin.', node, stack);
     }
-    return bag.mergeWith([baseVisitor.visitProgram(node)]);
+    return bag.mergeWith([baseVisitor.visitProgram.bind(visitor)(node)]);
   };
 
   visitor.visitAccount = (node) => {
@@ -52,7 +55,7 @@ export function getDefaultValidatorBagVisitor(
     if (!node.name) {
       bag.error('Account has no name.', node, stack);
     }
-    return bag.mergeWith([baseVisitor.visitAccount(node)]);
+    return bag.mergeWith([baseVisitor.visitAccount.bind(visitor)(node)]);
   };
 
   visitor.visitInstruction = (node) => {
@@ -122,7 +125,7 @@ export function getDefaultValidatorBagVisitor(
       }
     });
 
-    return bag.mergeWith([baseVisitor.visitInstruction(node)]);
+    return bag.mergeWith([baseVisitor.visitInstruction.bind(visitor)(node)]);
   };
 
   visitor.visitDefinedType = (node) => {
@@ -130,7 +133,7 @@ export function getDefaultValidatorBagVisitor(
     if (!node.name) {
       bag.error('Defined type has no name.', node, stack);
     }
-    return bag.mergeWith([baseVisitor.visitDefinedType(node)]);
+    return bag.mergeWith([baseVisitor.visitDefinedType.bind(visitor)(node)]);
   };
 
   visitor.visitError = (node) => {
@@ -144,7 +147,7 @@ export function getDefaultValidatorBagVisitor(
     if (!node.message) {
       bag.warn('Error has no message.', node, stack);
     }
-    return bag;
+    return bag.mergeWith([baseVisitor.visitError.bind(visitor)(node)]);
   };
 
   visitor.visitLinkType = (node) => {
@@ -161,7 +164,7 @@ export function getDefaultValidatorBagVisitor(
         stack
       );
     }
-    return bag;
+    return bag.mergeWith([baseVisitor.visitLinkType.bind(visitor)(node)]);
   };
 
   visitor.visitEnumType = (node) => {
@@ -174,7 +177,7 @@ export function getDefaultValidatorBagVisitor(
         bag.error('Enum variant has no name.', node, stack);
       }
     });
-    return bag.mergeWith([baseVisitor.visitEnumType(node)]);
+    return bag.mergeWith([baseVisitor.visitEnumType.bind(visitor)(node)]);
   };
 
   visitor.visitEnumEmptyVariantType = (node) => {
@@ -182,7 +185,9 @@ export function getDefaultValidatorBagVisitor(
     if (!node.name) {
       bag.error('Enum variant has no name.', node, stack);
     }
-    return bag;
+    return bag.mergeWith([
+      baseVisitor.visitEnumEmptyVariantType.bind(visitor)(node),
+    ]);
   };
 
   visitor.visitEnumStructVariantType = (node) => {
@@ -190,7 +195,9 @@ export function getDefaultValidatorBagVisitor(
     if (!node.name) {
       bag.error('Enum variant has no name.', node, stack);
     }
-    return bag.mergeWith([baseVisitor.visitEnumStructVariantType(node)]);
+    return bag.mergeWith([
+      baseVisitor.visitEnumStructVariantType.bind(visitor)(node),
+    ]);
   };
 
   visitor.visitEnumTupleVariantType = (node) => {
@@ -198,7 +205,9 @@ export function getDefaultValidatorBagVisitor(
     if (!node.name) {
       bag.error('Enum variant has no name.', node, stack);
     }
-    return bag.mergeWith([baseVisitor.visitEnumTupleVariantType(node)]);
+    return bag.mergeWith([
+      baseVisitor.visitEnumTupleVariantType.bind(visitor)(node),
+    ]);
   };
 
   visitor.visitStructType = (node) => {
@@ -219,7 +228,7 @@ export function getDefaultValidatorBagVisitor(
         );
       }
     });
-    return bag.mergeWith([baseVisitor.visitStructType(node)]);
+    return bag.mergeWith([baseVisitor.visitStructType.bind(visitor)(node)]);
   };
 
   visitor.visitStructFieldType = (node) => {
@@ -227,7 +236,9 @@ export function getDefaultValidatorBagVisitor(
     if (!node.name) {
       bag.error('Struct field has no name.', node, stack);
     }
-    return bag.mergeWith([baseVisitor.visitStructFieldType(node)]);
+    return bag.mergeWith([
+      baseVisitor.visitStructFieldType.bind(visitor)(node),
+    ]);
   };
 
   visitor.visitTupleType = (node) => {
@@ -235,7 +246,7 @@ export function getDefaultValidatorBagVisitor(
     if (node.children.length === 0) {
       bag.warn('Tuple has no items.', node, stack);
     }
-    return bag.mergeWith([baseVisitor.visitTupleType(node)]);
+    return bag.mergeWith([baseVisitor.visitTupleType.bind(visitor)(node)]);
   };
 
   return visitor;

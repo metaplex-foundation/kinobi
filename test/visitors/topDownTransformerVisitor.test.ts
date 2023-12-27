@@ -84,7 +84,7 @@ test('it can create partial transformer visitors', (t) => {
         },
       },
     ],
-    { nodeKeys: ['tupleTypeNode'] }
+    ['tupleTypeNode']
   );
 
   // When we visit the tree using that visitor.

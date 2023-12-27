@@ -10,7 +10,7 @@ export function staticVisitor<
 ): Visitor<TReturn, TNodeKeys> {
   const visitor = {} as Visitor<TReturn>;
   nodeKeys.forEach((key) => {
-    visitor[getVisitFunctionName(key)] = fn;
+    visitor[getVisitFunctionName(key)] = fn.bind(visitor);
   });
   return visitor;
 }

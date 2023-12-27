@@ -1,4 +1,4 @@
-import { REGISTERED_NODES_KEYS, RegisteredNodes } from '../nodes';
+import { Node, REGISTERED_NODES_KEYS, RegisteredNodes } from '../nodes';
 import {
   GetVisitorFunctionName,
   Visitor,
@@ -18,6 +18,7 @@ export function interceptVisitor<
 ): Visitor<TReturn, TNodeKeys> {
   const registeredVisitFunctions =
     REGISTERED_NODES_KEYS.map(getVisitFunctionName);
+
   return Object.fromEntries(
     Object.keys(visitor).flatMap((key) => {
       if (!(registeredVisitFunctions as string[]).includes(key)) {
@@ -28,10 +29,15 @@ export function interceptVisitor<
       return [
         [
           castedKey,
-          <TNode extends Node>(node: TNode) =>
-            interceptor<TNode>(
-              visitor[castedKey] as unknown as (node: TNode) => TReturn
-            )(node),
+          function interceptedVisitNode<TNode extends Node>(
+            this: Visitor<TReturn, TNodeKeys>,
+            node: TNode
+          ) {
+            const baseFunction = visitor[castedKey] as unknown as (
+              node: TNode
+            ) => TReturn;
+            return interceptor<TNode>(baseFunction.bind(this))(node);
+          },
         ],
       ];
     })

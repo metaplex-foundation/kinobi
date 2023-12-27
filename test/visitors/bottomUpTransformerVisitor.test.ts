@@ -74,7 +74,7 @@ test('it can create partial transformer visitors', (t) => {
   // but that does not transform public key nodes.
   const visitor = bottomUpTransformerVisitor(
     [(node) => (isTypeNode(node) ? tupleTypeNode([node]) : node)],
-    { nodeKeys: ['tupleTypeNode', 'numberTypeNode'] }
+    ['tupleTypeNode', 'numberTypeNode']
   );
 
   // When we visit the tree using that visitor.

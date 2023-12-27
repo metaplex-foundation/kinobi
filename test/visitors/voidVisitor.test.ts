@@ -16,9 +16,9 @@ test('it visits all nodes and returns void', (t) => {
 
   // And a void visitor overriden such that it counts the tuple nodes.
   const visitor = voidVisitor();
-  const parentVisitTupleType = visitor.visitTupleType;
+  const parentVisitTupleType = visitor.visitTupleType.bind(visitor);
   let counter = 0;
-  visitor.visitTupleType = (node) => {
+  visitor.visitTupleType = function (node) {
     counter++;
     return parentVisitTupleType(node);
   };

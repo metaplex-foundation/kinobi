@@ -6,7 +6,12 @@ import {
   pascalCase,
   titleCase,
 } from '../../shared';
-import { MergeVisitorInterceptor, Visitor, mergeVisitor } from '../../visitors';
+import {
+  Visitor,
+  VisitorInterceptor,
+  interceptVisitor,
+  mergeVisitor,
+} from '../../visitors';
 
 export function getJavaScriptValidatorBagVisitor(): Visitor<ValidatorBag> {
   const exportMap: Map<
@@ -14,16 +19,18 @@ export function getJavaScriptValidatorBagVisitor(): Visitor<ValidatorBag> {
     { node: Node; stack: NodeStack; exportType: string }
   > = new Map();
   const stack = new NodeStack();
-  const intercept: MergeVisitorInterceptor<ValidatorBag> = (fn) => (node) => {
+  const interceptor: VisitorInterceptor<ValidatorBag> = (fn) => (node) => {
     stack.push(node);
     const newNode = fn(node);
     stack.pop();
     return newNode;
   };
-  const visitor = mergeVisitor(
-    () => new ValidatorBag(),
-    (_, bags) => new ValidatorBag().mergeWith(bags),
-    { intercept }
+  const visitor = interceptVisitor(
+    mergeVisitor(
+      () => new ValidatorBag(),
+      (_, bags) => new ValidatorBag().mergeWith(bags)
+    ),
+    interceptor
   );
   const baseVisitor = { ...visitor };
 

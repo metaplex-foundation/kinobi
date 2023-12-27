@@ -7,12 +7,7 @@ import {
 
 export function deleteNodesVisitor<
   TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
->(
-  selectors: NodeSelector[],
-  options: {
-    nodeKeys?: TNodeKeys[];
-  } = {}
-) {
+>(selectors: NodeSelector[], nodeKeys?: TNodeKeys[]) {
   return topDownTransformerVisitor<TNodeKeys>(
     selectors.map(
       (selector): TopDownNodeTransformerWithSelector => ({
@@ -20,6 +15,6 @@ export function deleteNodesVisitor<
         transform: () => null,
       })
     ),
-    options
+    nodeKeys
   );
 }

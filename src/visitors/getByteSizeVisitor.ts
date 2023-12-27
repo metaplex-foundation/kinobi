@@ -32,96 +32,110 @@ export function getByteSizeVisitor(
   const visitor = mergeVisitor(
     () => null as number | null,
     (_, values) => sumSizes(values),
-    {
-      nodeKeys: [
-        ...REGISTERED_TYPE_NODE_KEYS,
-        'definedTypeNode',
-        'accountDataNode',
-        'instructionDataArgsNode',
-        'instructionExtraArgsNode',
-      ],
-    }
+    [
+      ...REGISTERED_TYPE_NODE_KEYS,
+      'definedTypeNode',
+      'accountDataNode',
+      'instructionDataArgsNode',
+      'instructionExtraArgsNode',
+    ]
   );
 
-  visitor.visitAccountData = (node) => visit(node.struct, visitor);
-  visitor.visitInstructionDataArgs = (node) => visit(node.struct, visitor);
-  visitor.visitInstructionExtraArgs = (node) => visit(node.struct, visitor);
+  return {
+    ...visitor,
 
-  visitor.visitDefinedType = (node) => {
-    if (visitedDefinedTypes.has(node.name)) {
-      return visitedDefinedTypes.get(node.name)!;
-    }
-    definedTypeStack.push(node.name);
-    const child = visit(node.data, visitor);
-    definedTypeStack.pop();
-    visitedDefinedTypes.set(node.name, child);
-    return child;
+    visitAccountData(node) {
+      return visit(node.struct, this);
+    },
+
+    visitInstructionDataArgs(node) {
+      return visit(node.struct, this);
+    },
+
+    visitInstructionExtraArgs(node) {
+      return visit(node.struct, this);
+    },
+
+    visitDefinedType(node) {
+      if (visitedDefinedTypes.has(node.name)) {
+        return visitedDefinedTypes.get(node.name)!;
+      }
+      definedTypeStack.push(node.name);
+      const child = visit(node.data, this);
+      definedTypeStack.pop();
+      visitedDefinedTypes.set(node.name, child);
+      return child;
+    },
+
+    visitArrayType(node) {
+      if (node.size.kind !== 'fixed') return null;
+      const fixedSize = node.size.value;
+      const childSize = visit(node.child, this);
+      const arraySize = childSize !== null ? childSize * fixedSize : null;
+      return fixedSize === 0 ? 0 : arraySize;
+    },
+
+    visitLinkType(node) {
+      if (node.size !== undefined) return node.size;
+      if (node.importFrom !== 'generated') return null;
+
+      // Fetch the linked type and return null if not found.
+      // The validator visitor will throw a proper error later on.
+      const linkedDefinedType = availableDefinedTypes.get(node.name);
+      if (!linkedDefinedType) {
+        return null;
+      }
+
+      // This prevents infinite recursion by using assuming
+      // cyclic types don't have a fixed size.
+      if (definedTypeStack.includes(linkedDefinedType.name)) {
+        return null;
+      }
+
+      return visit(linkedDefinedType, this);
+    },
+
+    visitEnumType(node) {
+      const prefix = visit(node.size, this) ?? 1;
+      if (isScalarEnum(node)) return prefix;
+      const variantSizes = node.variants.map((v) => visit(v, this));
+      const allVariantHaveTheSameFixedSize = variantSizes.every(
+        (one, i, all) => one === all[0]
+      );
+      return allVariantHaveTheSameFixedSize &&
+        variantSizes.length > 0 &&
+        variantSizes[0] !== null
+        ? variantSizes[0] + prefix
+        : null;
+    },
+
+    visitEnumEmptyVariantType() {
+      return 0;
+    },
+
+    visitOptionType(node) {
+      if (!node.fixed) return null;
+      const prefixSize = visit(node.prefix, this) as number;
+      const childSize = visit(node.child, this);
+      return childSize !== null ? childSize + prefixSize : null;
+    },
+
+    visitBytesType(node) {
+      if (node.size.kind !== 'fixed') return null;
+      return node.size.value;
+    },
+
+    visitNumberType(node) {
+      return parseInt(node.format.slice(1), 10) / 8;
+    },
+
+    visitPublicKeyType() {
+      return 32;
+    },
+
+    visitStringType(node) {
+      if (node.size.kind !== 'fixed') return null;
+      return node.size.value;
+    },
   };
-
-  visitor.visitArrayType = (node) => {
-    if (node.size.kind !== 'fixed') return null;
-    const fixedSize = node.size.value;
-    const childSize = visit(node.child, visitor);
-    const arraySize = childSize !== null ? childSize * fixedSize : null;
-    return fixedSize === 0 ? 0 : arraySize;
-  };
-
-  visitor.visitLinkType = (node) => {
-    if (node.size !== undefined) return node.size;
-    if (node.importFrom !== 'generated') return null;
-
-    // Fetch the linked type and return null if not found.
-    // The validator visitor will throw a proper error later on.
-    const linkedDefinedType = availableDefinedTypes.get(node.name);
-    if (!linkedDefinedType) {
-      return null;
-    }
-
-    // This prevents infinite recursion by using assuming
-    // cyclic types don't have a fixed size.
-    if (definedTypeStack.includes(linkedDefinedType.name)) {
-      return null;
-    }
-
-    return visit(linkedDefinedType, visitor);
-  };
-
-  visitor.visitEnumType = (node) => {
-    const prefix = visit(node.size, visitor) ?? 1;
-    if (isScalarEnum(node)) return prefix;
-    const variantSizes = node.variants.map((v) => visit(v, visitor));
-    const allVariantHaveTheSameFixedSize = variantSizes.every(
-      (one, i, all) => one === all[0]
-    );
-    return allVariantHaveTheSameFixedSize &&
-      variantSizes.length > 0 &&
-      variantSizes[0] !== null
-      ? variantSizes[0] + prefix
-      : null;
-  };
-
-  visitor.visitEnumEmptyVariantType = () => 0;
-
-  visitor.visitOptionType = (node) => {
-    if (!node.fixed) return null;
-    const prefixSize = visit(node.prefix, visitor) as number;
-    const childSize = visit(node.child, visitor);
-    return childSize !== null ? childSize + prefixSize : null;
-  };
-
-  visitor.visitBytesType = (node) => {
-    if (node.size.kind !== 'fixed') return null;
-    return node.size.value;
-  };
-
-  visitor.visitNumberType = (node) => parseInt(node.format.slice(1), 10) / 8;
-
-  visitor.visitPublicKeyType = () => 32;
-
-  visitor.visitStringType = (node) => {
-    if (node.size.kind !== 'fixed') return null;
-    return node.size.value;
-  };
-
-  return visitor;
 }

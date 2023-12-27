@@ -1,18 +1,15 @@
-import { RegisteredNodes } from '../nodes';
-import { IdentityVisitorInterceptor, identityVisitor } from './identityVisitor';
+import { Node, RegisteredNodes } from '../nodes';
+import { identityVisitor } from './identityVisitor';
+import { VisitorInterceptor, interceptVisitor } from './interceptVisitor';
 
 export function removeDocsVisitor<
   TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
->(
-  options: {
-    nodeKeys?: TNodeKeys[];
-  } = {}
-) {
-  const intercept: IdentityVisitorInterceptor = (fn) => (node) => {
+>(nodeKeys?: TNodeKeys[]) {
+  const interceptor: VisitorInterceptor<Node | null> = (fn) => (node) => {
     if ('docs' in node) {
       return { ...node, docs: [] };
     }
     return fn(node);
   };
-  return identityVisitor({ ...options, intercept });
+  return interceptVisitor(identityVisitor(nodeKeys), interceptor);
 }

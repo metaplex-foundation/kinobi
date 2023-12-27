@@ -35,7 +35,7 @@ test('it can create partial visitors', (t) => {
   // but does not support public key nodes.
   const visitor = deleteNodesVisitor(
     ['[numberTypeNode]', '[publicKeyTypeNode]'],
-    { nodeKeys: ['tupleTypeNode', 'numberTypeNode'] }
+    ['tupleTypeNode', 'numberTypeNode']
   );
 
   // When we visit the tree using that visitor.

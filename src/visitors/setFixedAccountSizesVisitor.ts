@@ -23,7 +23,7 @@ export function setFixedAccountSizesVisitor() {
         },
       },
     ],
-    { nodeKeys: ['rootNode', 'programNode', 'accountNode'] }
+    ['rootNode', 'programNode', 'accountNode']
   );
 
   const baseVisitor = { ...visitor };

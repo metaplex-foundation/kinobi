@@ -1,6 +1,5 @@
 import test from 'ava';
 import {
-  MergeVisitorInterceptor,
   mergeVisitor,
   numberTypeNode,
   publicKeyTypeNode,
@@ -41,66 +40,6 @@ test('it can be used to count nodes', (t) => {
   t.is(result, 3);
 });
 
-test('it accepts an interceptor used for each node', (t) => {
-  // Given the following 3-nodes tree.
-  const node = tupleTypeNode([numberTypeNode('u32'), publicKeyTypeNode()]);
-
-  // And a visitor that intercepts all nodes such that it records the
-  // events that happened during the visit.
-  const events: string[] = [];
-  const intercept: MergeVisitorInterceptor<void> = (fn) => (node) => {
-    events.push(`down:${node.kind}`);
-    fn(node);
-    events.push(`up:${node.kind}`);
-  };
-  const visitor = mergeVisitor(
-    () => undefined,
-    () => undefined,
-    { intercept }
-  );
-
-  // When we visit the tree using that visitor.
-  visit(node, visitor);
-
-  // Then we expect the following events to have happened.
-  t.deepEqual(events, [
-    'down:tupleTypeNode',
-    'down:numberTypeNode',
-    'up:numberTypeNode',
-    'down:publicKeyTypeNode',
-    'up:publicKeyTypeNode',
-    'up:tupleTypeNode',
-  ]);
-});
-
-test('it accepts a next visitor to use for the next visits', (t) => {
-  // Given the following tree.
-  const node = tupleTypeNode([
-    numberTypeNode('u32'),
-    tupleTypeNode([publicKeyTypeNode()]),
-  ]);
-
-  // And given a visitor A that returns "node" regardless of the node.
-  const visitorA = mergeVisitor(
-    () => 'node',
-    (_, values) => `node(${values.join(',')})`
-  );
-
-  // And a second visitor B that returns the node kind of each node
-  // and then delegates to visitor A after the first visit.
-  const visitorB = mergeVisitor(
-    (node) => node.kind as string,
-    (node, values) => `${node.kind}(${values.join(',')})`,
-    { nextVisitor: visitorA }
-  );
-
-  // When we use visitor B to visit the tree.
-  const result = visit(node, visitorB);
-
-  // Then we expect the following result.
-  t.is(result, 'tupleTypeNode(node,node(node))');
-});
-
 test('it can create partial visitors', (t) => {
   // Given the following 3-nodes tree.
   const node = tupleTypeNode([numberTypeNode('u32'), publicKeyTypeNode()]);
@@ -109,7 +48,7 @@ test('it can create partial visitors', (t) => {
   const visitor = mergeVisitor(
     (node) => node.kind as string,
     (node, values) => `${node.kind}(${values.join(',')})`,
-    { nodeKeys: ['tupleTypeNode', 'numberTypeNode'] }
+    ['tupleTypeNode', 'numberTypeNode']
   );
 
   // When we visit the tree using that visitor.

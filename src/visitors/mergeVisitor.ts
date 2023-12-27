@@ -2,204 +2,206 @@ import { Node, REGISTERED_NODES_KEYS, RegisteredNodes } from '../nodes';
 import { Visitor, visit as baseVisit } from './visitor';
 import { staticVisitor } from './staticVisitor';
 
-export type MergeVisitorInterceptor<TReturn> = <TNode extends Node>(
-  fn: (node: TNode) => TReturn
-) => (node: TNode) => TReturn;
-
 export function mergeVisitor<
   TReturn,
   TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
 >(
   leafValue: (node: Node) => TReturn,
   merge: (node: Node, values: TReturn[]) => TReturn,
-  options: {
-    intercept?: MergeVisitorInterceptor<TReturn>;
-    nextVisitor?: Visitor<TReturn, TNodeKeys>;
-    nodeKeys?: TNodeKeys[];
-  } = {}
+  nodeKeys: TNodeKeys[] = REGISTERED_NODES_KEYS as TNodeKeys[]
 ): Visitor<TReturn, TNodeKeys> {
-  const intercept = options.intercept ?? ((fn) => fn);
-  const nodesKeys: (keyof RegisteredNodes)[] =
-    options.nodeKeys ?? REGISTERED_NODES_KEYS;
-  const visitor = staticVisitor(
-    intercept((node) => leafValue(node)),
-    nodesKeys
-  ) as Visitor<TReturn>;
-  const nextVisitor = (options.nextVisitor ?? visitor) as Visitor<TReturn>;
-  const visit = (node: Node): TReturn[] =>
-    nodesKeys.includes(node.kind) ? [baseVisit(node, nextVisitor)] : [];
+  const castedNodeKeys: (keyof RegisteredNodes)[] = nodeKeys;
+  const visitor = staticVisitor(leafValue, castedNodeKeys) as Visitor<TReturn>;
+  const visit =
+    (v: Visitor<TReturn>) =>
+    (node: Node): TReturn[] =>
+      castedNodeKeys.includes(node.kind) ? [baseVisit(node, v)] : [];
 
-  if (nodesKeys.includes('rootNode')) {
-    visitor.visitRoot = intercept((node) =>
-      merge(node, node.programs.flatMap(visit))
-    );
+  if (castedNodeKeys.includes('rootNode')) {
+    visitor.visitRoot = function visitRoot(node) {
+      return merge(node, node.programs.flatMap(visit(this)));
+    };
   }
 
-  if (nodesKeys.includes('programNode')) {
-    visitor.visitProgram = intercept((node) =>
-      merge(node, [
-        ...node.accounts.flatMap(visit),
-        ...node.instructions.flatMap(visit),
-        ...node.definedTypes.flatMap(visit),
-        ...node.errors.flatMap(visit),
-      ])
-    );
+  if (castedNodeKeys.includes('programNode')) {
+    visitor.visitProgram = function visitProgram(node) {
+      return merge(node, [
+        ...node.accounts.flatMap(visit(this)),
+        ...node.instructions.flatMap(visit(this)),
+        ...node.definedTypes.flatMap(visit(this)),
+        ...node.errors.flatMap(visit(this)),
+      ]);
+    };
   }
 
-  if (nodesKeys.includes('accountNode')) {
-    visitor.visitAccount = intercept((node) =>
-      merge(node, [
-        ...visit(node.data),
+  if (castedNodeKeys.includes('accountNode')) {
+    visitor.visitAccount = function visitAccount(node) {
+      return merge(node, [
+        ...visit(this)(node.data),
         ...node.seeds.flatMap((seed) => {
           if (seed.kind !== 'variable') return [];
-          return visit(seed.type);
+          return visit(this)(seed.type);
         }),
-      ])
-    );
+      ]);
+    };
   }
 
-  if (nodesKeys.includes('accountDataNode')) {
-    visitor.visitAccountData = intercept((node) =>
-      merge(node, [
-        ...visit(node.struct),
-        ...(node.link ? visit(node.link) : []),
-      ])
-    );
+  if (castedNodeKeys.includes('accountDataNode')) {
+    visitor.visitAccountData = function visitAccountData(node) {
+      return merge(node, [
+        ...visit(this)(node.struct),
+        ...(node.link ? visit(this)(node.link) : []),
+      ]);
+    };
   }
 
-  if (nodesKeys.includes('instructionNode')) {
-    visitor.visitInstruction = intercept((node) =>
-      merge(node, [
-        ...node.accounts.flatMap(visit),
-        ...visit(node.dataArgs),
-        ...visit(node.extraArgs),
-        ...node.subInstructions.flatMap(visit),
-      ])
-    );
+  if (castedNodeKeys.includes('instructionNode')) {
+    visitor.visitInstruction = function visitInstruction(node) {
+      return merge(node, [
+        ...node.accounts.flatMap(visit(this)),
+        ...visit(this)(node.dataArgs),
+        ...visit(this)(node.extraArgs),
+        ...node.subInstructions.flatMap(visit(this)),
+      ]);
+    };
   }
 
-  if (nodesKeys.includes('instructionDataArgsNode')) {
-    visitor.visitInstructionDataArgs = intercept((node) =>
-      merge(node, [
-        ...visit(node.struct),
-        ...(node.link ? visit(node.link) : []),
-      ])
-    );
+  if (castedNodeKeys.includes('instructionDataArgsNode')) {
+    visitor.visitInstructionDataArgs = function visitInstructionDataArgs(node) {
+      return merge(node, [
+        ...visit(this)(node.struct),
+        ...(node.link ? visit(this)(node.link) : []),
+      ]);
+    };
   }
 
-  if (nodesKeys.includes('instructionExtraArgsNode')) {
-    visitor.visitInstructionExtraArgs = intercept((node) =>
-      merge(node, [
-        ...visit(node.struct),
-        ...(node.link ? visit(node.link) : []),
-      ])
-    );
+  if (castedNodeKeys.includes('instructionExtraArgsNode')) {
+    visitor.visitInstructionExtraArgs = function visitInstructionExtraArgs(
+      node
+    ) {
+      return merge(node, [
+        ...visit(this)(node.struct),
+        ...(node.link ? visit(this)(node.link) : []),
+      ]);
+    };
   }
 
-  if (nodesKeys.includes('definedTypeNode')) {
-    visitor.visitDefinedType = intercept((node) =>
-      merge(node, visit(node.data))
-    );
+  if (castedNodeKeys.includes('definedTypeNode')) {
+    visitor.visitDefinedType = function visitDefinedType(node) {
+      return merge(node, visit(this)(node.data));
+    };
   }
 
-  if (nodesKeys.includes('arrayTypeNode')) {
-    visitor.visitArrayType = intercept((node) =>
-      merge(node, [
-        ...(node.size.kind === 'prefixed' ? visit(node.size.prefix) : []),
-        ...visit(node.child),
-      ])
-    );
+  if (castedNodeKeys.includes('arrayTypeNode')) {
+    visitor.visitArrayType = function visitArrayType(node) {
+      return merge(node, [
+        ...(node.size.kind === 'prefixed' ? visit(this)(node.size.prefix) : []),
+        ...visit(this)(node.child),
+      ]);
+    };
   }
 
-  if (nodesKeys.includes('enumTypeNode')) {
-    visitor.visitEnumType = intercept((node) =>
-      merge(node, [...visit(node.size), ...node.variants.flatMap(visit)])
-    );
+  if (castedNodeKeys.includes('enumTypeNode')) {
+    visitor.visitEnumType = function visitEnumType(node) {
+      return merge(node, [
+        ...visit(this)(node.size),
+        ...node.variants.flatMap(visit(this)),
+      ]);
+    };
   }
 
-  if (nodesKeys.includes('enumStructVariantTypeNode')) {
-    visitor.visitEnumStructVariantType = intercept((node) =>
-      merge(node, visit(node.struct))
-    );
+  if (castedNodeKeys.includes('enumStructVariantTypeNode')) {
+    visitor.visitEnumStructVariantType = function visitEnumStructVariantType(
+      node
+    ) {
+      return merge(node, visit(this)(node.struct));
+    };
   }
 
-  if (nodesKeys.includes('enumTupleVariantTypeNode')) {
-    visitor.visitEnumTupleVariantType = intercept((node) =>
-      merge(node, visit(node.tuple))
-    );
+  if (castedNodeKeys.includes('enumTupleVariantTypeNode')) {
+    visitor.visitEnumTupleVariantType = function visitEnumTupleVariantType(
+      node
+    ) {
+      return merge(node, visit(this)(node.tuple));
+    };
   }
 
-  if (nodesKeys.includes('mapTypeNode')) {
-    visitor.visitMapType = intercept((node) =>
-      merge(node, [
-        ...(node.size.kind === 'prefixed' ? visit(node.size.prefix) : []),
-        ...visit(node.key),
-        ...visit(node.value),
-      ])
-    );
+  if (castedNodeKeys.includes('mapTypeNode')) {
+    visitor.visitMapType = function visitMapType(node) {
+      return merge(node, [
+        ...(node.size.kind === 'prefixed' ? visit(this)(node.size.prefix) : []),
+        ...visit(this)(node.key),
+        ...visit(this)(node.value),
+      ]);
+    };
   }
 
-  if (nodesKeys.includes('optionTypeNode')) {
-    visitor.visitOptionType = intercept((node) =>
-      merge(node, [...visit(node.prefix), ...visit(node.child)])
-    );
+  if (castedNodeKeys.includes('optionTypeNode')) {
+    visitor.visitOptionType = function visitOptionType(node) {
+      return merge(node, [
+        ...visit(this)(node.prefix),
+        ...visit(this)(node.child),
+      ]);
+    };
   }
 
-  if (nodesKeys.includes('boolTypeNode')) {
-    visitor.visitBoolType = intercept((node) => merge(node, visit(node.size)));
+  if (castedNodeKeys.includes('boolTypeNode')) {
+    visitor.visitBoolType = function visitBoolType(node) {
+      return merge(node, visit(this)(node.size));
+    };
   }
 
-  if (nodesKeys.includes('setTypeNode')) {
-    visitor.visitSetType = intercept((node) =>
-      merge(node, [
-        ...(node.size.kind === 'prefixed' ? visit(node.size.prefix) : []),
-        ...visit(node.child),
-      ])
-    );
+  if (castedNodeKeys.includes('setTypeNode')) {
+    visitor.visitSetType = function visitSetType(node) {
+      return merge(node, [
+        ...(node.size.kind === 'prefixed' ? visit(this)(node.size.prefix) : []),
+        ...visit(this)(node.child),
+      ]);
+    };
   }
 
-  if (nodesKeys.includes('structTypeNode')) {
-    visitor.visitStructType = intercept((node) =>
-      merge(node, node.fields.flatMap(visit))
-    );
+  if (castedNodeKeys.includes('structTypeNode')) {
+    visitor.visitStructType = function visitStructType(node) {
+      return merge(node, node.fields.flatMap(visit(this)));
+    };
   }
 
-  if (nodesKeys.includes('structFieldTypeNode')) {
-    visitor.visitStructFieldType = intercept((node) =>
-      merge(node, visit(node.child))
-    );
+  if (castedNodeKeys.includes('structFieldTypeNode')) {
+    visitor.visitStructFieldType = function visitStructFieldType(node) {
+      return merge(node, visit(this)(node.child));
+    };
   }
 
-  if (nodesKeys.includes('tupleTypeNode')) {
-    visitor.visitTupleType = intercept((node) =>
-      merge(node, node.children.flatMap(visit))
-    );
+  if (castedNodeKeys.includes('tupleTypeNode')) {
+    visitor.visitTupleType = function visitTupleType(node) {
+      return merge(node, node.children.flatMap(visit(this)));
+    };
   }
 
-  if (nodesKeys.includes('amountTypeNode')) {
-    visitor.visitAmountType = intercept((node) =>
-      merge(node, visit(node.number))
-    );
+  if (castedNodeKeys.includes('amountTypeNode')) {
+    visitor.visitAmountType = function visitAmountType(node) {
+      return merge(node, visit(this)(node.number));
+    };
   }
 
-  if (nodesKeys.includes('dateTimeTypeNode')) {
-    visitor.visitAmountType = intercept((node) =>
-      merge(node, visit(node.number))
-    );
+  if (castedNodeKeys.includes('dateTimeTypeNode')) {
+    visitor.visitAmountType = function visitAmountType(node) {
+      return merge(node, visit(this)(node.number));
+    };
   }
 
-  if (nodesKeys.includes('solAmountTypeNode')) {
-    visitor.visitAmountType = intercept((node) =>
-      merge(node, visit(node.number))
-    );
+  if (castedNodeKeys.includes('solAmountTypeNode')) {
+    visitor.visitAmountType = function visitAmountType(node) {
+      return merge(node, visit(this)(node.number));
+    };
   }
 
-  if (nodesKeys.includes('stringTypeNode')) {
-    visitor.visitStringType = intercept((node) =>
-      node.size.kind === 'prefixed'
-        ? merge(node, visit(node.size.prefix))
-        : leafValue(node)
-    );
+  if (castedNodeKeys.includes('stringTypeNode')) {
+    visitor.visitStringType = function visitStringType(node) {
+      return node.size.kind === 'prefixed'
+        ? merge(node, visit(this)(node.size.prefix))
+        : leafValue(node);
+    };
   }
 
   return visitor as Visitor<TReturn, TNodeKeys>;
