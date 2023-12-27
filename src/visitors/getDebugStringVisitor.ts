@@ -17,7 +17,7 @@ export function getDebugStringVisitor(
 
   const visitor = mergeVisitor<string>(
     (node) => {
-      const details = getNodeDetails(node);
+      const details = getNodeDetails(node).join('.');
       if (indent) {
         return `${indentSeparator.repeat(stackLevel)}${node.kind}${
           details ? ` [${details}]` : ''
@@ -26,7 +26,7 @@ export function getDebugStringVisitor(
       return `${node.kind}${details ? `[${details}]` : ''}`;
     },
     (node, values) => {
-      const details = getNodeDetails(node);
+      const details = getNodeDetails(node).join('.');
       if (indent) {
         return [
           `${indentSeparator.repeat(stackLevel)}${node.kind}${
@@ -45,13 +45,21 @@ export function getDebugStringVisitor(
   return visitor;
 }
 
-function getNodeDetails(node: Node): string {
+function getNodeDetails(node: Node): string[] {
   switch (node.kind) {
+    case 'instructionAccountNode':
+      return [
+        node.name,
+        ...(node.isWritable ? ['writable'] : []),
+        ...(node.isSigner === true ? ['signer'] : []),
+        ...(node.isSigner === 'either' ? ['optionalSigner'] : []),
+        ...(node.isOptional ? ['optional'] : []),
+      ];
     case 'numberTypeNode':
-      return `${node.format}${node.endian === 'be' ? '.be' : ''}`;
+      return [node.format, ...(node.endian === 'be' ? ['be'] : [])];
     case 'stringTypeNode':
-      return `${node.encoding}.${node.size.kind}`;
+      return [node.encoding, node.size.kind];
     default:
-      return 'name' in node ? node.name : '';
+      return 'name' in node ? [node.name] : [];
   }
 }
