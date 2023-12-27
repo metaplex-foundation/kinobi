@@ -1,10 +1,6 @@
-import {
-  accountNode,
-  assertAccountNode,
-  getAllDefinedTypes,
-  isAccountNode,
-} from '../nodes';
+import { accountNode, assertAccountNode, isAccountNode } from '../nodes';
 import { getByteSizeVisitor } from './getByteSizeVisitor';
+import { tapDefinedTypesVisitor } from './tapVisitor';
 import { topDownTransformerVisitor } from './topDownTransformerVisitor';
 import { visit } from './visitor';
 
@@ -26,11 +22,7 @@ export function setFixedAccountSizesVisitor() {
     ['rootNode', 'programNode', 'accountNode']
   );
 
-  const baseVisitor = { ...visitor };
-  visitor.visitRoot = (node) => {
-    byteSizeVisitor = getByteSizeVisitor(getAllDefinedTypes(node));
-    return baseVisitor.visitRoot.bind(visitor)(node);
-  };
-
-  return visitor;
+  return tapDefinedTypesVisitor(visitor, (definedTypes) => {
+    byteSizeVisitor = getByteSizeVisitor(definedTypes);
+  });
 }

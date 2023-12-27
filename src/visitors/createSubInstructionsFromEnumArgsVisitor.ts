@@ -5,7 +5,6 @@ import {
   InstructionNode,
   assertEnumTypeNode,
   assertInstructionNode,
-  getAllDefinedTypes,
   instructionDataArgsNode,
   instructionExtraArgsNode,
   instructionNode,
@@ -23,6 +22,7 @@ import {
   bottomUpTransformerVisitor,
 } from './bottomUpTransformerVisitor';
 import { flattenStruct } from './transformers';
+import { tapDefinedTypesVisitor } from './tapVisitor';
 
 export function createSubInstructionsFromEnumArgsVisitor(
   map: Record<string, string>
@@ -127,13 +127,9 @@ export function createSubInstructionsFromEnumArgsVisitor(
     )
   );
 
-  const baseVisitor = { ...visitor };
-  visitor.visitRoot = (node) => {
+  return tapDefinedTypesVisitor(visitor, (definedTypes) => {
     definedTypesMap = new Map<string, DefinedTypeNode>(
-      getAllDefinedTypes(node).map((type) => [type.name, type])
+      definedTypes.map((type) => [type.name, type])
     );
-    return baseVisitor.visitRoot.bind(visitor)(node);
-  };
-
-  return visitor;
+  });
 }
