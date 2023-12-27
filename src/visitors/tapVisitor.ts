@@ -1,4 +1,9 @@
-import { RegisteredNodes } from '../nodes';
+import {
+  DefinedTypeNode,
+  RegisteredNodes,
+  RootNode,
+  getAllDefinedTypes,
+} from '../nodes';
 import {
   GetVisitorFunctionName,
   Visitor,
@@ -27,4 +32,13 @@ export function tapVisitor<
   } as TVisitor[GetVisitorFunctionName<TNodeKey>];
 
   return newVisitor;
+}
+
+export function tapDefinedTypesVisitor<
+  TReturn,
+  TVisitor extends Visitor<TReturn, 'rootNode'>
+>(visitor: TVisitor, tap: (definedTypes: DefinedTypeNode[]) => void): TVisitor {
+  return tapVisitor(visitor, 'rootNode', (rootNode: RootNode) =>
+    tap(getAllDefinedTypes(rootNode))
+  );
 }
