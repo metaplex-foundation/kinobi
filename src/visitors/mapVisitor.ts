@@ -8,7 +8,7 @@ import {
 export function mapVisitor<
   TReturnFrom,
   TReturnTo,
-  TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
+  TNodeKeys extends keyof RegisteredNodes
 >(
   visitor: Visitor<TReturnFrom, TNodeKeys>,
   map: (from: TReturnFrom) => TReturnTo
