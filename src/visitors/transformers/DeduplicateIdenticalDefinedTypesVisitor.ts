@@ -3,7 +3,7 @@ import { GetNodeInlineStringVisitor } from '../aggregators';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
 import { NodeSelector } from '../../shared';
 import { visit } from '../Visitor';
-import { DeleteNodesVisitor } from './DeleteNodesVisitor';
+import { deleteNodesVisitor } from '../deleteNodesVisitor';
 
 type DefinedTypeWithProgram = {
   program: nodes.ProgramNode;
@@ -60,7 +60,7 @@ export class DeduplicateIdenticalDefinedTypesVisitor extends BaseThrowVisitor<no
 
     // Delete the identified nodes if any.
     if (deleteSelectors.length > 0) {
-      const newRoot = visit(root, new DeleteNodesVisitor(deleteSelectors));
+      const newRoot = visit(root, deleteNodesVisitor(deleteSelectors));
       nodes.assertRootNode(newRoot);
       return newRoot;
     }

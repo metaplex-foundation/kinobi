@@ -2,7 +2,6 @@ export * from './AutoSetAnchorDiscriminatorsVisitor';
 export * from './AutoSetFixedAccountSizesVisitor';
 export * from './CreateSubInstructionsFromEnumArgsVisitor';
 export * from './DeduplicateIdenticalDefinedTypesVisitor';
-export * from './DeleteNodesVisitor';
 export * from './FlattenInstructionArgsStructVisitor';
 export * from './FlattenStructVisitor';
 export * from './SetAccountDiscriminatorFromFieldVisitor';
