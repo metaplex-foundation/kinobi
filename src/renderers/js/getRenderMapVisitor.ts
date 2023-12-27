@@ -210,10 +210,9 @@ export function getRenderMapVisitor(
 
     renderMap
       .mergeWith(
-        ...getAllInstructionsWithSubs(
-          node,
-          !options.renderParentInstructions
-        ).map((ix) => visit(ix, visitor))
+        ...getAllInstructionsWithSubs(node, !renderParentInstructions).map(
+          (ix) => visit(ix, visitor)
+        )
       )
       .add(
         `errors/${camelCase(node.name)}.ts`,

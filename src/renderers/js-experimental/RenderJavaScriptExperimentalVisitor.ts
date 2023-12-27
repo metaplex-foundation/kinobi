@@ -4,8 +4,8 @@ import { BaseThrowVisitor, visit, writeRenderMapVisitor } from '../../visitors';
 import { deleteFolder } from '../utils';
 import {
   GetRenderMapOptions,
-  GetRenderMapVisitor,
-} from './GetRenderMapVisitor';
+  getRenderMapVisitor,
+} from './getRenderMapVisitor2';
 
 export type RenderJavaScriptExperimentalOptions = GetRenderMapOptions & {
   deleteFolderBeforeRendering?: boolean;
@@ -29,7 +29,7 @@ export class RenderJavaScriptExperimentalVisitor extends BaseThrowVisitor<void> 
     // Render the new files.
     visit(
       root,
-      writeRenderMapVisitor(new GetRenderMapVisitor(this.options), this.path)
+      writeRenderMapVisitor(getRenderMapVisitor(this.options), this.path)
     );
   }
 }
