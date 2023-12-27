@@ -1,8 +1,7 @@
 import * as nodes from '../../nodes';
-import { mainCase } from '../../shared';
+import { mainCase, renameStructNode } from '../../shared';
 import { BottomUpNodeTransformer } from '../bottomUpTransformerVisitor';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
-import { renameStructNode } from './_renameHelpers';
 
 export type AccountUpdates =
   | BottomUpNodeTransformer<nodes.AccountNode>

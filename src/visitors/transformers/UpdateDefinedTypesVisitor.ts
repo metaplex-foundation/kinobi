@@ -1,8 +1,7 @@
 import * as nodes from '../../nodes';
-import { mainCase } from '../../shared';
+import { mainCase, renameEnumNode, renameStructNode } from '../../shared';
 import { BottomUpNodeTransformer } from '../bottomUpTransformerVisitor';
 import { NodeTransform, TransformNodesVisitor } from './TransformNodesVisitor';
-import { renameEnumNode, renameStructNode } from './_renameHelpers';
 
 export type DefinedTypeUpdates =
   | BottomUpNodeTransformer<nodes.DefinedTypeNode>
