@@ -1,4 +1,3 @@
-export * from './GetJavaScriptRenderMapVisitor';
 export * from './GetJavaScriptTypeManifestVisitor';
 export * from './getJavaScriptValidatorBagVisitor';
 export * from './RenderJavaScriptValueNode';
