@@ -1,10 +1,9 @@
-import stringify from 'json-stable-stringify';
 import * as nodes from '../../nodes';
 import { NodeSelector } from '../../shared';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
 import { visit } from '../Visitor';
-import { GetNodeInlineStringVisitor } from '../aggregators';
 import { deleteNodesVisitor } from '../deleteNodesVisitor';
+import { getUniqueHashStringVisitor } from '../getUniqueHashStringVisitor';
 
 type DefinedTypeWithProgram = {
   program: nodes.ProgramNode;
@@ -32,18 +31,11 @@ export class DeduplicateIdenticalDefinedTypesVisitor extends BaseThrowVisitor<no
     });
 
     // Remove duplicates whose types are not equal.
-    const strVisitor = new GetNodeInlineStringVisitor();
+    const hashVisitor = getUniqueHashStringVisitor({ removeDocs: true });
     typeMap.forEach((list, name) => {
-      const typesOld = list.map((item) => visit(item.type, strVisitor));
-      const types = list.map((item) => stringify(item.type));
-      const typesOldAreEqual = typesOld.every(
-        (type, i, arr) => type === arr[0]
-      );
+      const types = list.map((item) => visit(item.type, hashVisitor));
       const typesAreEqual = types.every((type, i, arr) => type === arr[0]);
-      if (typesAreEqual !== typesOldAreEqual) {
-        console.log({ name, types, typesOld, typesAreEqual, typesOldAreEqual });
-      }
-      if (!typesOldAreEqual) {
+      if (!typesAreEqual) {
         typeMap.delete(name);
       }
     });
