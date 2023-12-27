@@ -5,8 +5,8 @@ import { BaseThrowVisitor, visit, writeRenderMapVisitor } from '../../visitors';
 import { deleteFolder } from '../utils';
 import {
   GetRustRenderMapOptions,
-  GetRustRenderMapVisitor,
-} from './GetRustRenderMapVisitor';
+  getRustRenderMapVisitor,
+} from './getRustRenderMapVisitor2';
 
 export type RenderRustOptions = GetRustRenderMapOptions & {
   deleteFolderBeforeRendering?: boolean;
@@ -38,10 +38,7 @@ export class RenderRustVisitor extends BaseThrowVisitor<void> {
     // Render the new files.
     visit(
       root,
-      writeRenderMapVisitor(
-        new GetRustRenderMapVisitor(this.options),
-        this.path
-      )
+      writeRenderMapVisitor(getRustRenderMapVisitor(this.options), this.path)
     );
 
     // format the code
