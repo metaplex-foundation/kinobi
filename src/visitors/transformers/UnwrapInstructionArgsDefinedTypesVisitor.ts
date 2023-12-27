@@ -3,12 +3,12 @@ import * as nodes from '../../nodes';
 import { assertRootNode } from '../../nodes';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
 import { visit } from '../Visitor';
-import { GetDefinedTypeHistogramVisitor } from '../aggregators/GetDefinedTypeHistogramVisitor';
+import { getDefinedTypeHistogramVisitor } from '../getDefinedTypeHistogramVisitor';
 import { UnwrapDefinedTypesVisitor } from './UnwrapDefinedTypesVisitor';
 
 export class UnwrapInstructionArgsDefinedTypesVisitor extends BaseThrowVisitor<nodes.RootNode> {
   visitRoot(root: nodes.RootNode): nodes.RootNode {
-    const histogram = visit(root, new GetDefinedTypeHistogramVisitor());
+    const histogram = visit(root, getDefinedTypeHistogramVisitor());
     const allDefinedTypes = nodes.getAllDefinedTypes(root);
 
     const definedTypesToInline: string[] = Object.keys(histogram)

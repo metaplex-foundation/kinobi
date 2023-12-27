@@ -1,8 +1,8 @@
 import { MainCaseString } from 'src/shared';
 import * as nodes from '../../nodes';
-import { GetDefinedTypeHistogramVisitor } from '../aggregators';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
 import { visit } from '../Visitor';
+import { getDefinedTypeHistogramVisitor } from '../getDefinedTypeHistogramVisitor';
 
 export class SetMissingDefinedTypesVisitor extends BaseThrowVisitor<nodes.RootNode> {
   readonly programs: nodes.ProgramNode[] = [];
@@ -15,7 +15,7 @@ export class SetMissingDefinedTypesVisitor extends BaseThrowVisitor<nodes.RootNo
 
   visitRoot(root: nodes.RootNode): nodes.RootNode {
     // Get all linked defined types missing from the registered programs.
-    const histogram = visit(root, new GetDefinedTypeHistogramVisitor());
+    const histogram = visit(root, getDefinedTypeHistogramVisitor());
     const availableTypes = nodes
       .getAllDefinedTypes(root)
       .map((type) => type.name);

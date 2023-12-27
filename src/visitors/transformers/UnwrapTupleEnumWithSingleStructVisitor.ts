@@ -2,7 +2,7 @@ import * as nodes from '../../nodes';
 import { MainCaseString, NodeStack } from '../../shared';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
 import { visit } from '../Visitor';
-import { GetDefinedTypeHistogramVisitor } from '../aggregators';
+import { getDefinedTypeHistogramVisitor } from '../getDefinedTypeHistogramVisitor';
 import { TransformNodesVisitor } from './TransformNodesVisitor';
 import { UnwrapDefinedTypesVisitor } from './UnwrapDefinedTypesVisitor';
 
@@ -57,7 +57,7 @@ export class UnwrapTupleEnumWithSingleStructVisitor extends BaseThrowVisitor<nod
     );
     nodes.assertRootNode(newRoot);
 
-    const histogram = visit(newRoot, new GetDefinedTypeHistogramVisitor());
+    const histogram = visit(newRoot, getDefinedTypeHistogramVisitor());
     const typesToUnwrap = typesToPotentiallyUnwrap.filter(
       (type) =>
         !histogram[type as MainCaseString] ||

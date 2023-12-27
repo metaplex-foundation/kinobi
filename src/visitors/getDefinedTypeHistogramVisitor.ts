@@ -2,7 +2,7 @@ import { MainCaseString } from '../shared';
 import { Visitor, visit } from './Visitor';
 import { MergeVisitorInterceptor, mergeVisitor } from './mergeVisitor';
 
-type DefinedTypeHistogram = {
+export type DefinedTypeHistogram = {
   [key: MainCaseString]: {
     total: number;
     inAccounts: number;
@@ -38,7 +38,7 @@ function mergeHistograms(
   return result;
 }
 
-export function getDefinedTypeHistogramVisitor2(): Visitor<DefinedTypeHistogram> {
+export function getDefinedTypeHistogramVisitor(): Visitor<DefinedTypeHistogram> {
   let mode: 'account' | 'instruction' | 'definedType' | null = null;
   let stackLevel = 0;
   const intercept: MergeVisitorInterceptor<DefinedTypeHistogram> =

@@ -1,11 +1,10 @@
 import test from 'ava';
 import {
-  GetDefinedTypeHistogramVisitor,
   accountDataNode,
   accountNode,
   definedTypeNode,
   enumTypeNode,
-  getDefinedTypeHistogramVisitor2,
+  getDefinedTypeHistogramVisitor,
   instructionDataArgsNode,
   instructionNode,
   linkTypeNode,
@@ -68,7 +67,7 @@ test('it counts the amount of times defined types are used within the tree', (t)
   });
 
   // When we get its defined type histogram.
-  const histogram = visit(node, getDefinedTypeHistogramVisitor2());
+  const histogram = visit(node, getDefinedTypeHistogramVisitor());
 
   // Then we expect the following histogram.
   t.deepEqual(histogram, {
