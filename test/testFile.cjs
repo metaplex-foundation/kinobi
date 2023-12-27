@@ -232,7 +232,7 @@ kinobi.update(new k.UnwrapTupleEnumWithSingleStructVisitor(['payloadType']));
 
 kinobi.update(new k.UnwrapDefinedTypesVisitor(['Data']));
 kinobi.update(
-  new k.FlattenStructVisitor({
+  k.flattenStructVisitor({
     'mplTokenMetadata.Metadata': ['Data'],
   })
 );

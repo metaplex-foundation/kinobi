@@ -1,4 +1,3 @@
-import { logWarn, mainCase } from '../shared';
 import {
   DefinedTypeNode,
   EnumTypeNode,
@@ -17,11 +16,12 @@ import {
   structTypeNode,
   vScalar,
 } from '../nodes';
+import { logWarn, mainCase } from '../shared';
 import {
   BottomUpNodeTransformerWithSelector,
   bottomUpTransformerVisitor,
 } from './bottomUpTransformerVisitor';
-import { flattenStruct } from './transformers';
+import { flattenStruct } from './flattenStructVisitor';
 import { tapDefinedTypesVisitor } from './tapVisitor';
 
 export function createSubInstructionsFromEnumArgsVisitor(

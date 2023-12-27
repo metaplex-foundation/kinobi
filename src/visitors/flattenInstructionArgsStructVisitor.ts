@@ -4,7 +4,7 @@ import {
   instructionNode,
 } from '../nodes';
 import { bottomUpTransformerVisitor } from './bottomUpTransformerVisitor';
-import { flattenStruct } from './transformers';
+import { flattenStruct } from './flattenStructVisitor';
 
 export function flattenInstructionArgsStructVisitor() {
   return bottomUpTransformerVisitor([

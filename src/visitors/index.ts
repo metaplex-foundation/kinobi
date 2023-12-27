@@ -12,6 +12,7 @@ export * from './createSubInstructionsFromEnumArgsVisitor';
 export * from './deduplicateIdenticalDefinedTypesVisitor';
 export * from './deleteNodesVisitor';
 export * from './flattenInstructionArgsStructVisitor';
+export * from './flattenStructVisitor';
 export * from './getByteSizeVisitor';
 export * from './getDebugStringVisitor';
 export * from './getDefaultValidatorBagVisitor';

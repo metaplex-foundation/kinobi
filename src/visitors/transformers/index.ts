@@ -1,4 +1,3 @@
-export * from './FlattenStructVisitor';
 export * from './SetAccountDiscriminatorFromFieldVisitor';
 export * from './SetInstructionAccountDefaultValuesVisitor';
 export * from './SetInstructionDiscriminatorsVisitor';
