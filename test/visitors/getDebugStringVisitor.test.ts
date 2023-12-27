@@ -49,7 +49,7 @@ test('it returns a string representing the main information of a node for debugg
   // Then we expect the following string.
   t.deepEqual(
     result,
-    'tupleTypeNode(numberTypeNode, structTypeNode(structFieldTypeNode(stringTypeNode(numberTypeNode)), structFieldTypeNode(numberTypeNode), structFieldTypeNode(optionTypeNode(numberTypeNode, publicKeyTypeNode)), structFieldTypeNode(enumTypeNode(numberTypeNode, enumEmptyVariantTypeNode, enumEmptyVariantTypeNode, enumEmptyVariantTypeNode))))'
+    'tupleTypeNode(numberTypeNode[u32], structTypeNode(structFieldTypeNode[firstname](stringTypeNode[utf8.prefixed](numberTypeNode[u64])), structFieldTypeNode[age](numberTypeNode[u32]), structFieldTypeNode[wallet](optionTypeNode(numberTypeNode[u16], publicKeyTypeNode)), structFieldTypeNode[industry](enumTypeNode(numberTypeNode[u8], enumEmptyVariantTypeNode[programming], enumEmptyVariantTypeNode[crypto], enumEmptyVariantTypeNode[music]))))'
   );
 });
 
@@ -89,23 +89,23 @@ test('it can create indented strings', (t) => {
   // Then we expect the following string.
   t.deepEqual(
     result,
-    `[tupleTypeNode]
-|   [numberTypeNode]
-|   [structTypeNode]
-|   |   [structFieldTypeNode]
-|   |   |   [stringTypeNode]
-|   |   |   |   [numberTypeNode]
-|   |   [structFieldTypeNode]
-|   |   |   [numberTypeNode]
-|   |   [structFieldTypeNode]
-|   |   |   [optionTypeNode]
-|   |   |   |   [numberTypeNode]
-|   |   |   |   [publicKeyTypeNode]
-|   |   [structFieldTypeNode]
-|   |   |   [enumTypeNode]
-|   |   |   |   [numberTypeNode]
-|   |   |   |   [enumEmptyVariantTypeNode]
-|   |   |   |   [enumEmptyVariantTypeNode]
-|   |   |   |   [enumEmptyVariantTypeNode]`
+    `tupleTypeNode
+|   numberTypeNode [u32]
+|   structTypeNode
+|   |   structFieldTypeNode [firstname]
+|   |   |   stringTypeNode [utf8.prefixed]
+|   |   |   |   numberTypeNode [u64]
+|   |   structFieldTypeNode [age]
+|   |   |   numberTypeNode [u32]
+|   |   structFieldTypeNode [wallet]
+|   |   |   optionTypeNode
+|   |   |   |   numberTypeNode [u16]
+|   |   |   |   publicKeyTypeNode
+|   |   structFieldTypeNode [industry]
+|   |   |   enumTypeNode
+|   |   |   |   numberTypeNode [u8]
+|   |   |   |   enumEmptyVariantTypeNode [programming]
+|   |   |   |   enumEmptyVariantTypeNode [crypto]
+|   |   |   |   enumEmptyVariantTypeNode [music]`
   );
 });
