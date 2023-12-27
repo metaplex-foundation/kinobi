@@ -1,11 +1,11 @@
 import * as nodes from '../nodes';
 import { BaseThrowVisitor } from './BaseThrowVisitor';
 import { deduplicateIdenticalDefinedTypesVisitor } from './deduplicateIdenticalDefinedTypesVisitor';
+import { flattenInstructionArgsStructVisitor } from './flattenInstructionArgsStructVisitor';
 import { setAnchorDiscriminatorsVisitor } from './setAnchorDiscriminatorsVisitor';
 import { setFixedAccountSizesVisitor } from './setFixedAccountSizesVisitor';
 import {
   DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES,
-  FlattenInstructionArgsStructVisitor,
   SetInstructionAccountDefaultValuesVisitor,
   TransformU8ArraysToBytesVisitor,
   UnwrapInstructionArgsDefinedTypesVisitor,
@@ -35,7 +35,7 @@ export class DefaultVisitor extends BaseThrowVisitor<nodes.RootNode> {
       )
     );
     updateRoot(new UnwrapInstructionArgsDefinedTypesVisitor());
-    updateRoot(new FlattenInstructionArgsStructVisitor());
+    updateRoot(flattenInstructionArgsStructVisitor());
 
     // Extras.
     updateRoot(new TransformU8ArraysToBytesVisitor());
