@@ -5,7 +5,7 @@ import { deleteFolder } from '../utils';
 import {
   GetRenderMapOptions,
   getRenderMapVisitor,
-} from './getRenderMapVisitor2';
+} from './getRenderMapVisitor';
 
 export type RenderJavaScriptExperimentalOptions = GetRenderMapOptions & {
   deleteFolderBeforeRendering?: boolean;
