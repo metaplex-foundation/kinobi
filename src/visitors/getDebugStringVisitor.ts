@@ -47,6 +47,8 @@ export function getDebugStringVisitor(
 
 function getNodeDetails(node: Node): string[] {
   switch (node.kind) {
+    case 'programNode':
+      return [node.name, node.publicKey];
     case 'instructionAccountNode':
       return [
         node.name,
@@ -55,8 +57,17 @@ function getNodeDetails(node: Node): string[] {
         ...(node.isSigner === 'either' ? ['optionalSigner'] : []),
         ...(node.isOptional ? ['optional'] : []),
       ];
+    case 'errorNode':
+      return [node.code.toString(), node.name];
+    case 'linkTypeNode':
+      return [
+        node.name,
+        ...(node.importFrom === 'generated' ? [] : [`from:${node.importFrom}`]),
+      ];
     case 'numberTypeNode':
       return [node.format, ...(node.endian === 'be' ? ['be'] : [])];
+    case 'amountTypeNode':
+      return [node.identifier, node.decimals.toString()];
     case 'stringTypeNode':
       return [node.encoding, node.size.kind];
     default:
