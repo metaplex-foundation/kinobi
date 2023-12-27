@@ -1,4 +1,3 @@
-export * from './AutoSetFixedAccountSizesVisitor';
 export * from './CreateSubInstructionsFromEnumArgsVisitor';
 export * from './DeduplicateIdenticalDefinedTypesVisitor';
 export * from './FlattenInstructionArgsStructVisitor';
