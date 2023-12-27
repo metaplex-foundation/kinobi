@@ -7,11 +7,11 @@ import {
   writeRenderMapVisitor,
 } from '../../visitors';
 import { deleteFolder } from '../utils';
-import {
-  GetJavaScriptRenderMapOptions,
-  GetJavaScriptRenderMapVisitor,
-} from './GetJavaScriptRenderMapVisitor';
 import { getJavaScriptValidatorBagVisitor } from './getJavaScriptValidatorBagVisitor';
+import {
+  getRenderMapVisitor,
+  GetJavaScriptRenderMapOptions,
+} from './getRenderMapVisitor';
 
 export type RenderJavaScriptOptions = GetJavaScriptRenderMapOptions & {
   deleteFolderBeforeRendering?: boolean;
@@ -44,10 +44,7 @@ export class RenderJavaScriptVisitor extends BaseThrowVisitor<void> {
     // Render the new files.
     visit(
       root,
-      writeRenderMapVisitor(
-        new GetJavaScriptRenderMapVisitor(this.options),
-        this.path
-      )
+      writeRenderMapVisitor(getRenderMapVisitor(this.options), this.path)
     );
   }
 }
