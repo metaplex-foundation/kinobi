@@ -1,22 +1,18 @@
 import {
+  DefinedTypeNode,
   accountNode,
   assertAccountNode,
-  assertRootNode,
-  getAllDefinedTypes,
   isAccountNode,
 } from '../nodes';
 import { getByteSizeVisitor } from './getByteSizeVisitor';
-import { rootNodeVisitor } from './singleNodeVisitor';
 import { topDownTransformerVisitor } from './topDownTransformerVisitor';
 import { visit } from './visitor';
 
-export function setFixedAccountSizesVisitor() {
-  return rootNodeVisitor((root) => {
-    // Prepare the visitor that gets the byte size of a type.
-    const byteSizeVisitor = getByteSizeVisitor(getAllDefinedTypes(root));
+export function setFixedAccountSizesVisitor(definedTypes: DefinedTypeNode[]) {
+  const byteSizeVisitor = getByteSizeVisitor(definedTypes);
 
-    // Prepare the visitor that transforms account nodes.
-    const transformVisitor = topDownTransformerVisitor([
+  return topDownTransformerVisitor(
+    [
       {
         select: (node) => isAccountNode(node) && node.size === undefined,
         transform: (node) => {
@@ -26,11 +22,7 @@ export function setFixedAccountSizesVisitor() {
           return accountNode({ ...node, size }) as typeof node;
         },
       },
-    ]);
-
-    // Execute the transform visitor on the Root node.
-    const transformedRoot = visit(root, transformVisitor);
-    assertRootNode(transformedRoot);
-    return transformedRoot;
-  });
+    ],
+    { nodeKeys: ['rootNode', 'programNode', 'accountNode'] }
+  );
 }

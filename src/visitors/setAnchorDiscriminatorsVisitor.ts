@@ -1,11 +1,4 @@
 import {
-  fieldAccountDiscriminator,
-  fixedSize,
-  getAnchorAccountDiscriminator,
-  getAnchorInstructionDiscriminator,
-} from '../shared';
-import {
-  Node,
   ProgramNode,
   accountDataNode,
   accountNode,
@@ -16,8 +9,13 @@ import {
   structFieldTypeNode,
   structTypeNode,
 } from '../nodes';
+import {
+  fieldAccountDiscriminator,
+  fixedSize,
+  getAnchorAccountDiscriminator,
+  getAnchorInstructionDiscriminator,
+} from '../shared';
 import { identityVisitor } from './identityVisitor';
-import { Visitor } from './visitor';
 
 export function setAnchorDiscriminatorsVisitor() {
   let program: ProgramNode | null = null;
@@ -89,8 +87,5 @@ export function setAnchorDiscriminatorsVisitor() {
     });
   };
 
-  return visitor as Visitor<
-    Node,
-    'rootNode' | 'programNode' | 'accountNode' | 'instructionNode'
-  >;
+  return visitor;
 }

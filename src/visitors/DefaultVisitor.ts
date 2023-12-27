@@ -26,7 +26,7 @@ export class DefaultVisitor extends BaseThrowVisitor<nodes.RootNode> {
 
     // Accounts.
     updateRoot(setAnchorDiscriminatorsVisitor());
-    updateRoot(setFixedAccountSizesVisitor());
+    updateRoot(setFixedAccountSizesVisitor(nodes.getAllDefinedTypes(root)));
 
     // Instructions.
     updateRoot(
