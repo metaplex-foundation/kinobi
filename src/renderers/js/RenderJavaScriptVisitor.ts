@@ -1,17 +1,17 @@
-import { LogLevel } from '../../shared/logs';
 import * as nodes from '../../nodes';
+import { LogLevel } from '../../shared/logs';
 import {
   BaseThrowVisitor,
   ThrowValidatorItemsVisitor,
   visit,
 } from '../../visitors';
-import { deleteFolder } from '../utils';
 import { WriteRenderMapVisitor } from '../WriteRenderMapVisitor';
+import { deleteFolder } from '../utils';
 import {
   GetJavaScriptRenderMapOptions,
   GetJavaScriptRenderMapVisitor,
 } from './GetJavaScriptRenderMapVisitor';
-import { GetJavaScriptValidatorBagVisitor } from './GetJavaScriptValidatorBagVisitor';
+import { getJavaScriptValidatorBagVisitor } from './getJavaScriptValidatorBagVisitor2';
 
 export type RenderJavaScriptOptions = GetJavaScriptRenderMapOptions & {
   deleteFolderBeforeRendering?: boolean;
@@ -31,7 +31,7 @@ export class RenderJavaScriptVisitor extends BaseThrowVisitor<void> {
     visit(
       root,
       new ThrowValidatorItemsVisitor(
-        new GetJavaScriptValidatorBagVisitor(),
+        getJavaScriptValidatorBagVisitor(),
         this.options.throwLevel
       )
     );
