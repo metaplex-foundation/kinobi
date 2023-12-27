@@ -6,7 +6,9 @@ import { setAnchorDiscriminatorsVisitor } from './setAnchorDiscriminatorsVisitor
 import { setFixedAccountSizesVisitor } from './setFixedAccountSizesVisitor';
 import {
   DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES,
-  SetInstructionAccountDefaultValuesVisitor,
+  setInstructionAccountDefaultValuesVisitor,
+} from './setInstructionAccountDefaultValuesVisitor';
+import {
   TransformU8ArraysToBytesVisitor,
   UnwrapInstructionArgsDefinedTypesVisitor,
 } from './transformers';
@@ -30,7 +32,7 @@ export class DefaultVisitor extends BaseThrowVisitor<nodes.RootNode> {
 
     // Instructions.
     updateRoot(
-      new SetInstructionAccountDefaultValuesVisitor(
+      setInstructionAccountDefaultValuesVisitor(
         DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES
       )
     );

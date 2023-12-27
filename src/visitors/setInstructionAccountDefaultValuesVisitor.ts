@@ -1,12 +1,13 @@
-import * as nodes from '../../nodes';
+import { AccountNode } from '../nodes';
+import * as nodes from '../nodes';
 import {
   InstructionAccountDefault,
   MainCaseString,
   getDefaultSeedsFromAccount,
   mainCase,
-} from '../../shared';
-import { BaseNodeVisitor } from '../BaseNodeVisitor';
-import { visit } from '../visitor';
+} from '../shared';
+import { identityVisitor } from './identityVisitor';
+import { tapVisitor } from './tapVisitor';
 
 export type InstructionAccountDefaultRule = InstructionAccountDefault & {
   /** The name of the instruction account or a pattern to match on it. */
@@ -154,43 +155,51 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
     },
   ];
 
-export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
-  protected readonly rules: InstructionAccountDefaultRule[];
+export function setInstructionAccountDefaultValuesVisitor(
+  rules: InstructionAccountDefaultRule[]
+) {
+  let allAccounts = new Map<string, AccountNode>();
 
-  protected allAccounts = new Map<string, nodes.AccountNode>();
+  // Place the rules with instructions first.
+  const sortedRules = rules.sort((a, b) => {
+    const ia = 'instruction' in a;
+    const ib = 'instruction' in b;
+    if ((ia && ib) || (!a && !ib)) return 0;
+    return ia ? -1 : 1;
+  });
 
-  constructor(rules: InstructionAccountDefaultRule[]) {
-    super();
-
-    // Place the rules with instructions first.
-    this.rules = rules.sort((a, b) => {
-      const ia = 'instruction' in a;
-      const ib = 'instruction' in b;
-      if ((ia && ib) || (!a && !ib)) return 0;
-      return ia ? -1 : 1;
+  function matchRule(
+    instruction: nodes.InstructionNode,
+    account: nodes.InstructionAccountNode
+  ): InstructionAccountDefaultRule | undefined {
+    return sortedRules.find((rule) => {
+      if (
+        'instruction' in rule &&
+        rule.instruction &&
+        mainCase(rule.instruction) !== instruction.name
+      ) {
+        return false;
+      }
+      return typeof rule.account === 'string'
+        ? mainCase(rule.account) === account.name
+        : rule.account.test(account.name);
     });
   }
 
-  visitRoot(root: nodes.RootNode): nodes.Node {
-    nodes.getAllAccounts(root).forEach((account) => {
-      this.allAccounts.set(account.name, account);
-    });
-    return super.visitRoot(root);
-  }
+  const visitor = tapVisitor(
+    identityVisitor(['rootNode', 'programNode', 'instructionNode']),
+    'rootNode',
+    (root) => {
+      allAccounts = new Map(
+        nodes.getAllAccounts(root).map((account) => [account.name, account])
+      );
+    }
+  );
 
-  visitProgram(program: nodes.ProgramNode): nodes.Node {
-    return nodes.programNode({
-      ...program,
-      instructions: program.instructions
-        .map((instruction) => visit(instruction, this))
-        .filter(nodes.assertNodeFilter(nodes.assertInstructionNode)),
-    });
-  }
-
-  visitInstruction(instruction: nodes.InstructionNode): nodes.Node {
-    const instructionAccounts = instruction.accounts.map(
+  visitor.visitInstruction = (node) => {
+    const instructionAccounts = node.accounts.map(
       (account): nodes.InstructionAccountNode => {
-        const rule = this.matchRule(instruction, account);
+        const rule = matchRule(node, account);
         if (!rule) {
           return account;
         }
@@ -201,7 +210,7 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
           return account;
         }
         if (rule.kind === 'pda') {
-          const foundAccount = this.allAccounts.get(mainCase(rule.pdaAccount));
+          const foundAccount = allAccounts.get(mainCase(rule.pdaAccount));
           const defaultsTo = {
             ...rule,
             seeds: {
@@ -218,12 +227,12 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
             ([, seed]) => {
               if (seed.kind === 'value') return true;
               if (seed.kind === 'account') {
-                return instruction.accounts.some(
+                return node.accounts.some(
                   (a) => a.name === mainCase(seed.name)
                 );
               }
-              if (instruction.dataArgs.link) return true;
-              return instruction.dataArgs.struct.fields.some(
+              if (node.dataArgs.link) return true;
+              return node.dataArgs.struct.fields.some(
                 (f) => f.name === mainCase(seed.name)
               );
             }
@@ -240,26 +249,10 @@ export class SetInstructionAccountDefaultValuesVisitor extends BaseNodeVisitor {
     );
 
     return nodes.instructionNode({
-      ...instruction,
+      ...node,
       accounts: instructionAccounts,
     });
-  }
+  };
 
-  protected matchRule(
-    instruction: nodes.InstructionNode,
-    account: nodes.InstructionAccountNode
-  ): InstructionAccountDefaultRule | undefined {
-    return this.rules.find((rule) => {
-      if (
-        'instruction' in rule &&
-        rule.instruction &&
-        mainCase(rule.instruction) !== instruction.name
-      ) {
-        return false;
-      }
-      return typeof rule.account === 'string'
-        ? mainCase(rule.account) === account.name
-        : rule.account.test(account.name);
-    });
-  }
+  return visitor;
 }

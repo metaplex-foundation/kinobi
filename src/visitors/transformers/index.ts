@@ -1,4 +1,3 @@
-export * from './SetInstructionAccountDefaultValuesVisitor';
 export * from './SetInstructionDiscriminatorsVisitor';
 export * from './SetMissingDefinedTypesVisitor';
 export * from './SetNumberWrappersVisitor';

@@ -27,6 +27,7 @@ export * from './removeDocsVisitor';
 export * from './setAccountDiscriminatorFromFieldVisitor';
 export * from './setAnchorDiscriminatorsVisitor';
 export * from './setFixedAccountSizesVisitor';
+export * from './setInstructionAccountDefaultValuesVisitor';
 export * from './singleNodeVisitor';
 export * from './staticVisitor';
 export * from './tapVisitor';
