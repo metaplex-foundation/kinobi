@@ -16,7 +16,6 @@ import {
   getResolvedInstructionInputsVisitor,
   staticVisitor,
   visit,
-  Visitor,
 } from '../../visitors';
 import { resolveTemplate } from '../utils';
 import {
@@ -63,9 +62,7 @@ export type GetRenderMapOptions = {
   nameTransformers?: Partial<NameTransformers>;
 };
 
-export function getRenderMapVisitor(
-  options: GetRenderMapOptions = {}
-): Visitor<RenderMap> {
+export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
   let program: ProgramNode | null = null;
 
   const nameTransformers = {
@@ -99,7 +96,16 @@ export function getRenderMapVisitor(
     return formatCode ? formatCodeUsingPrettier(code, prettierOptions) : code;
   }
 
-  const visitor = staticVisitor(() => new RenderMap());
+  const visitor = staticVisitor(
+    () => new RenderMap(),
+    [
+      'rootNode',
+      'programNode',
+      'instructionNode',
+      'accountNode',
+      'definedTypeNode',
+    ]
+  );
 
   visitor.visitRoot = (node) => {
     const programsToExport = node.programs.filter((p) => !p.internal);
