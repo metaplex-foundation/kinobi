@@ -1,7 +1,7 @@
 import { MainCaseString } from '../shared';
-import { Visitor, visit } from './visitor';
+import { interceptVisitor } from './interceptVisitor';
 import { mergeVisitor } from './mergeVisitor';
-import { VisitorInterceptor, interceptVisitor } from './interceptVisitor';
+import { Visitor, visit } from './visitor';
 
 export type DefinedTypeHistogram = {
   [key: MainCaseString]: {
@@ -42,19 +42,17 @@ function mergeHistograms(
 export function getDefinedTypeHistogramVisitor(): Visitor<DefinedTypeHistogram> {
   let mode: 'account' | 'instruction' | 'definedType' | null = null;
   let stackLevel = 0;
-  const interceptor: VisitorInterceptor<DefinedTypeHistogram> =
-    (fn) => (node) => {
-      stackLevel += 1;
-      const newNode = fn(node);
-      stackLevel -= 1;
-      return newNode;
-    };
   const visitor = interceptVisitor(
     mergeVisitor(
       () => ({} as DefinedTypeHistogram),
       (_, histograms) => mergeHistograms(histograms)
     ),
-    interceptor
+    (node, next) => {
+      stackLevel += 1;
+      const newNode = next(node);
+      stackLevel -= 1;
+      return newNode;
+    }
   );
 
   visitor.visitAccount = (node) => {

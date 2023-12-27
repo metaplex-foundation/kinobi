@@ -50,13 +50,12 @@ test('it can create partial visitors', (t) => {
   // And an identity visitor that only supports 2 of these nodes
   // whilst using an interceptor to record the events that happened.
   const events: string[] = [];
-  const interceptor: VisitorInterceptor<Node | null> = (fn) => (node) => {
-    events.push(`visiting:${node.kind}`);
-    return fn(node);
-  };
   const visitor = interceptVisitor(
     identityVisitor(['tupleTypeNode', 'numberTypeNode']),
-    interceptor
+    (node, next) => {
+      events.push(`visiting:${node.kind}`);
+      return next(node);
+    }
   );
 
   // When we visit the tree using that visitor.

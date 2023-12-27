@@ -1,8 +1,8 @@
 import { Node, RegisteredNodes } from '../nodes';
 import { NodeSelector, NodeStack, getNodeSelectorFunction } from '../shared';
-import { Visitor } from './visitor';
 import { identityVisitor } from './identityVisitor';
-import { VisitorInterceptor, interceptVisitor } from './interceptVisitor';
+import { interceptVisitor } from './interceptVisitor';
+import { Visitor } from './visitor';
 
 export type BottomUpNodeTransformer<TNode extends Node = Node> = (
   node: TNode,
@@ -34,16 +34,14 @@ export function bottomUpTransformerVisitor<
   );
 
   const stack = new NodeStack();
-  const interceptor: VisitorInterceptor<Node | null> = (fn) => (node) => {
+  return interceptVisitor(identityVisitor(nodeKeys), (node, next) => {
     stack.push(node);
-    const newNode = fn(node);
+    const newNode = next(node);
     stack.pop();
     return transformerFunctions.reduce(
       (acc, transformer) =>
         acc === null ? null : transformer(acc, stack.clone()),
       newNode
     );
-  };
-
-  return interceptVisitor(identityVisitor(nodeKeys), interceptor);
+  });
 }

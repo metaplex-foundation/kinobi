@@ -6,8 +6,9 @@ import {
 } from './visitor';
 
 export type VisitorInterceptor<TReturn> = <TNode extends Node>(
-  fn: (node: TNode) => TReturn
-) => (node: TNode) => TReturn;
+  node: TNode,
+  next: (node: TNode) => TReturn
+) => TReturn;
 
 export function interceptVisitor<
   TReturn,
@@ -36,7 +37,7 @@ export function interceptVisitor<
             const baseFunction = visitor[castedKey] as unknown as (
               node: TNode
             ) => TReturn;
-            return interceptor<TNode>(baseFunction.bind(this))(node);
+            return interceptor<TNode>(node, baseFunction.bind(this));
           },
         ],
       ];

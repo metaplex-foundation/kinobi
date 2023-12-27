@@ -1,7 +1,7 @@
 import { Node } from '../nodes';
-import { Visitor } from './visitor';
+import { interceptVisitor } from './interceptVisitor';
 import { mergeVisitor } from './mergeVisitor';
-import { VisitorInterceptor, interceptVisitor } from './interceptVisitor';
+import { Visitor } from './visitor';
 
 export function getDebugStringVisitor(
   options: { indent?: boolean; indentSeparator?: string } = {}
@@ -9,12 +9,6 @@ export function getDebugStringVisitor(
   const indent = options.indent ?? false;
   const indentSeparator = options.indentSeparator ?? '|   ';
   let stackLevel = -1;
-  const interceptor: VisitorInterceptor<string> = (fn) => (node) => {
-    stackLevel += 1;
-    const newNode = fn(node);
-    stackLevel -= 1;
-    return newNode;
-  };
 
   const visitor = interceptVisitor(
     mergeVisitor<string>(
@@ -42,7 +36,12 @@ export function getDebugStringVisitor(
         )})`;
       }
     ),
-    interceptor
+    (node, next) => {
+      stackLevel += 1;
+      const newNode = next(node);
+      stackLevel -= 1;
+      return newNode;
+    }
   );
 
   return visitor;

@@ -1,7 +1,7 @@
 import { DefinedTypeNode, getAllDefinedTypes } from '../nodes';
 import { NodeStack, ValidatorBag, mainCase } from '../shared';
 import { getResolvedInstructionInputsVisitor } from './getResolvedInstructionInputsVisitor';
-import { VisitorInterceptor, interceptVisitor } from './interceptVisitor';
+import { interceptVisitor } from './interceptVisitor';
 import { mergeVisitor } from './mergeVisitor';
 import { Visitor, visit } from './visitor';
 
@@ -12,18 +12,17 @@ export function getDefaultValidatorBagVisitor(
     definedTypes.map((type) => type.name)
   );
   const stack = new NodeStack();
-  const interceptor: VisitorInterceptor<ValidatorBag> = (fn) => (node) => {
-    stack.push(node);
-    const newNode = fn(node);
-    stack.pop();
-    return newNode;
-  };
   const visitor = interceptVisitor(
     mergeVisitor(
       () => new ValidatorBag(),
       (_, bags) => new ValidatorBag().mergeWith(bags)
     ),
-    interceptor
+    (node, next) => {
+      stack.push(node);
+      const newNode = next(node);
+      stack.pop();
+      return newNode;
+    }
   );
   const baseVisitor = { ...visitor };
 

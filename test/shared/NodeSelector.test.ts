@@ -214,14 +214,13 @@ const macro = test.macro({
     // And given a visitor that keeps track of selected nodes.
     const stack = new NodeStack();
     const selected = [] as Node[];
-    const interceptor: VisitorInterceptor<Node | null> = (fn) => (node) => {
+    const visitor = interceptVisitor(identityVisitor(), (node, next) => {
       if (selectorFunction(node, stack.clone())) selected.push(node);
       stack.push(node);
-      const newNode = fn(node);
+      const newNode = next(node);
       stack.pop();
       return newNode;
-    };
-    const visitor = interceptVisitor(identityVisitor(), interceptor);
+    });
 
     // When we visit the tree.
     visit(tree, visitor);

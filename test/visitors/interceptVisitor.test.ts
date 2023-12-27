@@ -15,13 +15,12 @@ test('it returns a new visitor that intercepts all visits of a visitor', (t) => 
 
   // And an intercepted void visitor that records the events that happened during each visit.
   const events: string[] = [];
-  const interceptor: VisitorInterceptor<void> = (fn) => (node) => {
-    events.push(`down:${node.kind}`);
-    fn(node);
-    events.push(`up:${node.kind}`);
-  };
   const baseVisitor = voidVisitor();
-  const visitor = interceptVisitor(baseVisitor, interceptor);
+  const visitor = interceptVisitor(baseVisitor, (node, next) => {
+    events.push(`down:${node.kind}`);
+    next(node);
+    events.push(`up:${node.kind}`);
+  });
 
   // When we visit the tree using that visitor.
   visit(node, visitor);
