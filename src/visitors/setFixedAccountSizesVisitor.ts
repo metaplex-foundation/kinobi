@@ -29,7 +29,7 @@ export function setFixedAccountSizesVisitor() {
   const baseVisitor = { ...visitor };
   visitor.visitRoot = (node) => {
     byteSizeVisitor = getByteSizeVisitor(getAllDefinedTypes(node));
-    return baseVisitor.visitRoot(node);
+    return baseVisitor.visitRoot.bind(visitor)(node);
   };
 
   return visitor;

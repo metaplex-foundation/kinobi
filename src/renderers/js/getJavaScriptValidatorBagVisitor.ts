@@ -91,7 +91,7 @@ export function getJavaScriptValidatorBagVisitor(): Visitor<ValidatorBag> {
         [`get${pascalCaseName}ErrorFromName`]: 'function',
       }),
     ]);
-    return bag.mergeWith([baseVisitor.visitProgram(node)]);
+    return bag.mergeWith([baseVisitor.visitProgram.bind(visitor)(node)]);
   };
 
   visitor.visitAccount = (node) => {
@@ -131,7 +131,7 @@ export function getJavaScriptValidatorBagVisitor(): Visitor<ValidatorBag> {
         bag.error(message, node, stack);
       }
     }
-    return bag.mergeWith([baseVisitor.visitAccount(node)]);
+    return bag.mergeWith([baseVisitor.visitAccount.bind(visitor)(node)]);
   };
 
   visitor.visitInstruction = (node) => {
@@ -153,7 +153,7 @@ export function getJavaScriptValidatorBagVisitor(): Visitor<ValidatorBag> {
         }),
       ]);
     }
-    return bag.mergeWith([baseVisitor.visitInstruction(node)]);
+    return bag.mergeWith([baseVisitor.visitInstruction.bind(visitor)(node)]);
   };
 
   visitor.visitDefinedType = (node) => {
@@ -175,7 +175,7 @@ export function getJavaScriptValidatorBagVisitor(): Visitor<ValidatorBag> {
         }),
       ]);
     }
-    return bag.mergeWith([baseVisitor.visitDefinedType(node)]);
+    return bag.mergeWith([baseVisitor.visitDefinedType.bind(visitor)(node)]);
   };
 
   visitor.visitError = (node) => {
@@ -188,7 +188,7 @@ export function getJavaScriptValidatorBagVisitor(): Visitor<ValidatorBag> {
         [`${prefixedName}Error`]: 'class',
       }),
     ]);
-    return bag.mergeWith([baseVisitor.visitError(node)]);
+    return bag.mergeWith([baseVisitor.visitError.bind(visitor)(node)]);
   };
 
   return visitor;

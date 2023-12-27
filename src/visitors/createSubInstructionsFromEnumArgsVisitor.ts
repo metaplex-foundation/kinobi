@@ -132,7 +132,7 @@ export function createSubInstructionsFromEnumArgsVisitor(
     definedTypesMap = new Map<string, DefinedTypeNode>(
       getAllDefinedTypes(node).map((type) => [type.name, type])
     );
-    return baseVisitor.visitRoot(node);
+    return baseVisitor.visitRoot.bind(visitor)(node);
   };
 
   return visitor;
