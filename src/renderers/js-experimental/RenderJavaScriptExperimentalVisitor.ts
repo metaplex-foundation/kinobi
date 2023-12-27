@@ -1,8 +1,7 @@
 import { LogLevel } from '../../shared/logs';
 import * as nodes from '../../nodes';
-import { BaseThrowVisitor, visit } from '../../visitors';
+import { BaseThrowVisitor, visit, writeRenderMapVisitor } from '../../visitors';
 import { deleteFolder } from '../utils';
-import { WriteRenderMapVisitor } from '../WriteRenderMapVisitor';
 import {
   GetRenderMapOptions,
   GetRenderMapVisitor,
@@ -30,10 +29,7 @@ export class RenderJavaScriptExperimentalVisitor extends BaseThrowVisitor<void> 
     // Render the new files.
     visit(
       root,
-      new WriteRenderMapVisitor(
-        new GetRenderMapVisitor(this.options),
-        this.path
-      )
+      writeRenderMapVisitor(new GetRenderMapVisitor(this.options), this.path)
     );
   }
 }

@@ -1,6 +1,12 @@
 import type { ConfigureOptions } from 'nunjucks';
 import * as nodes from '../../nodes';
-import { ImportFrom, logWarn, pascalCase, snakeCase } from '../../shared';
+import {
+  ImportFrom,
+  RenderMap,
+  logWarn,
+  pascalCase,
+  snakeCase,
+} from '../../shared';
 import {
   BaseThrowVisitor,
   ByteSizeVisitorKeys,
@@ -10,7 +16,6 @@ import {
   getResolvedInstructionInputsVisitor,
   visit,
 } from '../../visitors';
-import { RenderMap } from '../RenderMap';
 import { resolveTemplate } from '../utils';
 import {
   GetRustTypeManifestVisitor,

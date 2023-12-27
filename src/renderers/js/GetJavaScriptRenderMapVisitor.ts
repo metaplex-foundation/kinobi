@@ -6,6 +6,7 @@ import {
   getGpaFieldsFromAccount,
   ImportFrom,
   pascalCase,
+  RenderMap,
 } from '../../shared';
 import { logWarn } from '../../shared/logs';
 import {
@@ -18,7 +19,6 @@ import {
   visit,
   Visitor,
 } from '../../visitors';
-import { RenderMap } from '../RenderMap';
 import { resolveTemplate } from '../utils';
 import {
   GetJavaScriptTypeManifestVisitor,

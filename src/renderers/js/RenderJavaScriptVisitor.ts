@@ -4,8 +4,8 @@ import {
   BaseThrowVisitor,
   throwValidatorItemsVisitor,
   visit,
+  writeRenderMapVisitor,
 } from '../../visitors';
-import { WriteRenderMapVisitor } from '../WriteRenderMapVisitor';
 import { deleteFolder } from '../utils';
 import {
   GetJavaScriptRenderMapOptions,
@@ -44,7 +44,7 @@ export class RenderJavaScriptVisitor extends BaseThrowVisitor<void> {
     // Render the new files.
     visit(
       root,
-      new WriteRenderMapVisitor(
+      writeRenderMapVisitor(
         new GetJavaScriptRenderMapVisitor(this.options),
         this.path
       )

@@ -1,8 +1,7 @@
 import { spawnSync } from 'child_process';
 import * as nodes from '../../nodes';
 import { LogLevel, logError, logWarn } from '../../shared/logs';
-import { BaseThrowVisitor, visit } from '../../visitors';
-import { WriteRenderMapVisitor } from '../WriteRenderMapVisitor';
+import { BaseThrowVisitor, visit, writeRenderMapVisitor } from '../../visitors';
 import { deleteFolder } from '../utils';
 import {
   GetRustRenderMapOptions,
@@ -39,7 +38,7 @@ export class RenderRustVisitor extends BaseThrowVisitor<void> {
     // Render the new files.
     visit(
       root,
-      new WriteRenderMapVisitor(
+      writeRenderMapVisitor(
         new GetRustRenderMapVisitor(this.options),
         this.path
       )

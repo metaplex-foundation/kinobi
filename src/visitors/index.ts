@@ -26,3 +26,4 @@ export * from './throwValidatorItemsVisitor';
 export * from './topDownTransformerVisitor';
 export * from './visitor';
 export * from './voidVisitor';
+export * from './writeRenderMapVisitor';

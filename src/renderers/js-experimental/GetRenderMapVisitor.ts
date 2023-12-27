@@ -1,7 +1,7 @@
 import type { ConfigureOptions } from 'nunjucks';
 import { format as formatCode, Options as PrettierOptions } from 'prettier';
 import * as nodes from '../../nodes';
-import { camelCase, ImportFrom, mainCase } from '../../shared';
+import { camelCase, ImportFrom, mainCase, RenderMap } from '../../shared';
 import { logWarn } from '../../shared/logs';
 import {
   BaseThrowVisitor,
@@ -12,7 +12,6 @@ import {
   visit,
   Visitor,
 } from '../../visitors';
-import { RenderMap } from '../RenderMap';
 import { resolveTemplate } from '../utils';
 import {
   getAccountFetchHelpersFragment,
