@@ -1,5 +1,4 @@
 export * from './transformers';
-export * from './workers';
 
 export * from './BaseDelegateVisitor';
 export * from './BaseNodeOrNullVisitor';
@@ -7,9 +6,9 @@ export * from './BaseNodeVisitor';
 export * from './BaseThrowVisitor';
 export * from './BaseVoidVisitor';
 export * from './DefaultVisitor';
-export * from './visitor';
 
 export * from './bottomUpTransformerVisitor';
+export * from './consoleLogVisitor';
 export * from './deleteNodesVisitor';
 export * from './getByteSizeVisitor';
 export * from './getDebugStringVisitor';
@@ -23,5 +22,7 @@ export * from './mergeVisitor';
 export * from './removeDocsVisitor';
 export * from './singleNodeVisitor';
 export * from './staticVisitor';
+export * from './throwValidatorItemsVisitor';
 export * from './topDownTransformerVisitor';
+export * from './visitor';
 export * from './voidVisitor';

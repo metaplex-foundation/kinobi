@@ -2,7 +2,7 @@ import * as nodes from '../../nodes';
 import { LogLevel } from '../../shared/logs';
 import {
   BaseThrowVisitor,
-  ThrowValidatorItemsVisitor,
+  throwValidatorItemsVisitor,
   visit,
 } from '../../visitors';
 import { WriteRenderMapVisitor } from '../WriteRenderMapVisitor';
@@ -30,7 +30,7 @@ export class RenderJavaScriptVisitor extends BaseThrowVisitor<void> {
     // Validate nodes.
     visit(
       root,
-      new ThrowValidatorItemsVisitor(
+      throwValidatorItemsVisitor(
         getJavaScriptValidatorBagVisitor(),
         this.options.throwLevel
       )

@@ -1,21 +1,17 @@
-/* eslint-disable no-console */
 import chalk from 'chalk';
-import { getLevelIndex, LogLevel, ValidatorBag } from '../../shared';
-import { BaseDelegateVisitor } from '../BaseDelegateVisitor';
-import { Visitor } from '../visitor';
+import { RegisteredNodes } from '../nodes';
+import { Visitor } from './visitor';
+import { mapVisitor } from './mapVisitor';
+import { LogLevel, ValidatorBag, getLevelIndex } from '../shared';
 
-export class ThrowValidatorItemsVisitor extends BaseDelegateVisitor<
-  ValidatorBag,
-  void
-> {
-  constructor(
-    validator: Visitor<ValidatorBag>,
-    readonly throwLevel: LogLevel = 'error'
-  ) {
-    super(validator);
-  }
-
-  map(validatorBag: ValidatorBag): void {
+export function throwValidatorItemsVisitor<
+  TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
+>(
+  visitor: Visitor<ValidatorBag, TNodeKeys>,
+  throwLevel: LogLevel = 'error'
+): Visitor<void, TNodeKeys> {
+  // eslint-disable-next-line no-console
+  return mapVisitor(visitor, (validatorBag) => {
     const bag = validatorBag.orderByLevel();
     bag.log();
 
@@ -27,15 +23,16 @@ export class ThrowValidatorItemsVisitor extends BaseDelegateVisitor<
       .map((level) => getLevelIndex(level as LogLevel))
       .sort((a, b) => b - a)[0];
 
-    if (maxLevel >= getLevelIndex(this.throwLevel)) {
+    if (maxLevel >= getLevelIndex(throwLevel)) {
       const histogramString = Object.keys(levelHistogram)
         .map((level) => `${level}s: ${levelHistogram[level as LogLevel]}`)
         .join(', ');
+      // eslint-disable-next-line no-console
       console.log(
         `${chalk.red(`Failed to validate the nodes.`)} ` +
           `${chalk.red.bold(`Found ${histogramString}.`)}\n`
       );
       process.exit(1);
     }
-  }
+  });
 }
