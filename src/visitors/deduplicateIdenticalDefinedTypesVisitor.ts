@@ -1,17 +1,17 @@
-import * as nodes from '../../nodes';
-import { NodeSelector } from '../../shared';
-import { BaseThrowVisitor } from '../BaseThrowVisitor';
-import { visit } from '../visitor';
-import { deleteNodesVisitor } from '../deleteNodesVisitor';
-import { getUniqueHashStringVisitor } from '../getUniqueHashStringVisitor';
+import { NodeSelector } from '../shared';
+import { DefinedTypeNode, ProgramNode, assertRootNode } from '../nodes';
+import { getUniqueHashStringVisitor } from './getUniqueHashStringVisitor';
+import { rootNodeVisitor } from './singleNodeVisitor';
+import { visit } from './visitor';
+import { deleteNodesVisitor } from './deleteNodesVisitor';
 
 type DefinedTypeWithProgram = {
-  program: nodes.ProgramNode;
-  type: nodes.DefinedTypeNode;
+  program: ProgramNode;
+  type: DefinedTypeNode;
 };
 
-export class DeduplicateIdenticalDefinedTypesVisitor extends BaseThrowVisitor<nodes.RootNode> {
-  visitRoot(root: nodes.RootNode): nodes.RootNode {
+export function deduplicateIdenticalDefinedTypesVisitor() {
+  return rootNodeVisitor((root) => {
     const typeMap = new Map<string, DefinedTypeWithProgram[]>();
 
     // Fill the type map with all defined types.
@@ -61,10 +61,10 @@ export class DeduplicateIdenticalDefinedTypesVisitor extends BaseThrowVisitor<no
     // Delete the identified nodes if any.
     if (deleteSelectors.length > 0) {
       const newRoot = visit(root, deleteNodesVisitor(deleteSelectors));
-      nodes.assertRootNode(newRoot);
+      assertRootNode(newRoot);
       return newRoot;
     }
 
     return root;
-  }
+  });
 }

@@ -1,10 +1,10 @@
 import * as nodes from '../nodes';
 import { BaseThrowVisitor } from './BaseThrowVisitor';
+import { deduplicateIdenticalDefinedTypesVisitor } from './deduplicateIdenticalDefinedTypesVisitor';
 import { setAnchorDiscriminatorsVisitor } from './setAnchorDiscriminatorsVisitor';
 import { setFixedAccountSizesVisitor } from './setFixedAccountSizesVisitor';
 import {
   DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES,
-  DeduplicateIdenticalDefinedTypesVisitor,
   FlattenInstructionArgsStructVisitor,
   SetInstructionAccountDefaultValuesVisitor,
   TransformU8ArraysToBytesVisitor,
@@ -22,7 +22,7 @@ export class DefaultVisitor extends BaseThrowVisitor<nodes.RootNode> {
     };
 
     // Defined types.
-    updateRoot(new DeduplicateIdenticalDefinedTypesVisitor());
+    updateRoot(deduplicateIdenticalDefinedTypesVisitor());
 
     // Accounts.
     updateRoot(setAnchorDiscriminatorsVisitor());

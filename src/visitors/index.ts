@@ -9,6 +9,7 @@ export * from './DefaultVisitor';
 export * from './bottomUpTransformerVisitor';
 export * from './consoleLogVisitor';
 export * from './createSubInstructionsFromEnumArgsVisitor';
+export * from './deduplicateIdenticalDefinedTypesVisitor';
 export * from './deleteNodesVisitor';
 export * from './getByteSizeVisitor';
 export * from './getDebugStringVisitor';
