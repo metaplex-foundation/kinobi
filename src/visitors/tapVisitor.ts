@@ -15,16 +15,16 @@ export function tapVisitor<
   tap: (node: RegisteredNodes[TNodeKey]) => void
 ): TVisitor {
   const newVisitor = { ...visitor };
-  newVisitor[getVisitFunctionName(key)] = ((
+  newVisitor[getVisitFunctionName(key)] = function tappedVisitNode(
+    this: TVisitor,
     node: RegisteredNodes[TNodeKey]
-  ): TReturn => {
+  ): TReturn {
     tap(node);
-    return (
-      visitor[getVisitFunctionName(key)] as (
-        node: RegisteredNodes[TNodeKey]
-      ) => TReturn
-    )(node);
-  }) as TVisitor[GetVisitorFunctionName<TNodeKey>];
+    const parentFunction = visitor[getVisitFunctionName(key)] as (
+      node: RegisteredNodes[TNodeKey]
+    ) => TReturn;
+    return parentFunction.bind(this)(node);
+  } as TVisitor[GetVisitorFunctionName<TNodeKey>];
 
   return newVisitor;
 }

@@ -1,5 +1,6 @@
 import test from 'ava';
 import {
+  NumberTypeNode,
   mergeVisitor,
   numberTypeNode,
   publicKeyTypeNode,
@@ -8,7 +9,7 @@ import {
   visit,
 } from '../../src';
 
-test.skip('it returns the same visitor whilst tapping into one of its visits', (t) => {
+test('it returns a new instance of the same visitor whilst tapping into one of its visits', (t) => {
   // Given the following tree.
   const node = tupleTypeNode([
     numberTypeNode('u32'),
@@ -23,8 +24,8 @@ test.skip('it returns the same visitor whilst tapping into one of its visits', (
 
   // And a tap visitor that taps into the numberTypeNode visit and counts them.
   let numberOfNumberNodes = 0;
-  const tappedVisitor = tapVisitor(visitor, 'numberTypeNode', () => {
-    console.log('here');
+  const tappedVisitor = tapVisitor(visitor, 'numberTypeNode', (node) => {
+    node satisfies NumberTypeNode;
     numberOfNumberNodes++;
   });
 
