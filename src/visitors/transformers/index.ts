@@ -1,4 +1,3 @@
-export * from './CreateSubInstructionsFromEnumArgsVisitor';
 export * from './DeduplicateIdenticalDefinedTypesVisitor';
 export * from './FlattenInstructionArgsStructVisitor';
 export * from './FlattenStructVisitor';

@@ -5,6 +5,7 @@ import {
   InstructionNode,
   assertEnumTypeNode,
   assertInstructionNode,
+  getAllDefinedTypes,
   instructionDataArgsNode,
   instructionExtraArgsNode,
   instructionNode,
@@ -24,14 +25,11 @@ import {
 import { flattenStruct } from './transformers';
 
 export function createSubInstructionsFromEnumArgsVisitor(
-  map: Record<string, string>,
-  definedTypes: DefinedTypeNode[]
+  map: Record<string, string>
 ) {
-  const definedTypesMap = new Map<string, DefinedTypeNode>(
-    definedTypes.map((t) => [t.name, t])
-  );
+  let definedTypesMap = new Map<string, DefinedTypeNode>();
 
-  return bottomUpTransformerVisitor(
+  const visitor = bottomUpTransformerVisitor(
     Object.entries(map).map(
       ([selector, argNameInput]): BottomUpNodeTransformerWithSelector => {
         const selectorStack = selector.split('.');
@@ -128,4 +126,14 @@ export function createSubInstructionsFromEnumArgsVisitor(
       }
     )
   );
+
+  const baseVisitor = { ...visitor };
+  visitor.visitRoot = (node) => {
+    definedTypesMap = new Map<string, DefinedTypeNode>(
+      getAllDefinedTypes(node).map((type) => [type.name, type])
+    );
+    return baseVisitor.visitRoot(node);
+  };
+
+  return visitor;
 }

@@ -1,17 +1,17 @@
 import {
-  DefinedTypeNode,
   accountNode,
   assertAccountNode,
+  getAllDefinedTypes,
   isAccountNode,
 } from '../nodes';
 import { getByteSizeVisitor } from './getByteSizeVisitor';
 import { topDownTransformerVisitor } from './topDownTransformerVisitor';
 import { visit } from './visitor';
 
-export function setFixedAccountSizesVisitor(definedTypes: DefinedTypeNode[]) {
-  const byteSizeVisitor = getByteSizeVisitor(definedTypes);
+export function setFixedAccountSizesVisitor() {
+  let byteSizeVisitor = getByteSizeVisitor([]);
 
-  return topDownTransformerVisitor(
+  const visitor = topDownTransformerVisitor(
     [
       {
         select: (node) => isAccountNode(node) && node.size === undefined,
@@ -25,4 +25,12 @@ export function setFixedAccountSizesVisitor(definedTypes: DefinedTypeNode[]) {
     ],
     { nodeKeys: ['rootNode', 'programNode', 'accountNode'] }
   );
+
+  const baseVisitor = { ...visitor };
+  visitor.visitRoot = (node) => {
+    byteSizeVisitor = getByteSizeVisitor(getAllDefinedTypes(node));
+    return baseVisitor.visitRoot(node);
+  };
+
+  return visitor;
 }
