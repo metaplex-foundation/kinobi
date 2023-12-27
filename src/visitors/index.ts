@@ -15,6 +15,7 @@ export * from './deleteNodesVisitor';
 export * from './getByteSizeVisitor';
 export * from './getDefaultValidatorBagVisitor';
 export * from './getDefinedTypeHistogramVisitor';
+export * from './getUniqueHashStringVisitor';
 export * from './identityVisitor';
 export * from './mapVisitor';
 export * from './mergeVisitor';
