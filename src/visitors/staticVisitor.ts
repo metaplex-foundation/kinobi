@@ -1,5 +1,5 @@
 import { Node, REGISTERED_NODES_KEYS, RegisteredNodes } from '../nodes';
-import { Visitor, getVisitFunctionName } from './Visitor';
+import { Visitor, getVisitFunctionName } from './visitor2';
 
 export function staticVisitor<
   TReturn,

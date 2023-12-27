@@ -1,5 +1,5 @@
 import { MainCaseString } from '../shared';
-import { Visitor, visit } from './Visitor';
+import { Visitor, visit } from './visitor2';
 import { MergeVisitorInterceptor, mergeVisitor } from './mergeVisitor';
 
 export type DefinedTypeHistogram = {

@@ -1,7 +1,7 @@
 import * as nodes from '../../nodes';
 import { MainCaseString, NodeStack } from '../../shared';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
-import { visit } from '../Visitor';
+import { visit } from '../visitor2';
 import { getDefinedTypeHistogramVisitor } from '../getDefinedTypeHistogramVisitor';
 import { TransformNodesVisitor } from './TransformNodesVisitor';
 import { UnwrapDefinedTypesVisitor } from './UnwrapDefinedTypesVisitor';

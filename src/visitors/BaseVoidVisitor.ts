@@ -1,5 +1,5 @@
 import * as nodes from '../nodes';
-import { Visitor, visit } from './Visitor';
+import { Visitor, visit } from './visitor2';
 
 export abstract class BaseVoidVisitor implements Visitor<void> {
   visitRoot(root: nodes.RootNode): void {

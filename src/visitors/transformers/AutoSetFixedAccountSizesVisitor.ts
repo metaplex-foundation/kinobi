@@ -1,6 +1,6 @@
 import * as nodes from '../../nodes';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
-import { visit } from '../Visitor';
+import { visit } from '../visitor2';
 import { getByteSizeVisitor } from '../getByteSizeVisitor';
 import { TransformNodesVisitor } from './TransformNodesVisitor';
 

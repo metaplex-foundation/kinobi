@@ -1,6 +1,6 @@
 import { Node, RegisteredNodes } from '../nodes';
 import { NodeSelector, NodeStack, getNodeSelectorFunction } from '../shared';
-import { Visitor } from './Visitor';
+import { Visitor } from './visitor2';
 import { IdentityVisitorInterceptor, identityVisitor } from './identityVisitor';
 
 export type TopDownNodeTransformer<TNode extends Node = Node> = <

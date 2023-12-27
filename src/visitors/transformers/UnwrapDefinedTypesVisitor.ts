@@ -1,7 +1,7 @@
 import * as nodes from '../../nodes';
 import { mainCase } from '../../shared';
 import { BaseNodeVisitor } from '../BaseNodeVisitor';
-import { visit } from '../Visitor';
+import { visit } from '../visitor2';
 
 export class UnwrapDefinedTypesVisitor extends BaseNodeVisitor {
   protected availableDefinedTypes = new Map<string, nodes.DefinedTypeNode>();

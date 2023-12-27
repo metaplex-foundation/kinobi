@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as nodes from '../nodes';
 import { KinobiError } from '../shared';
-import type { Visitor } from './Visitor';
+import type { Visitor } from './visitor2';
 
 export class BaseThrowVisitor<T> implements Visitor<T> {
   visitRoot(root: nodes.RootNode): T {

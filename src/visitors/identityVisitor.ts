@@ -1,6 +1,6 @@
 import * as nodes from '../nodes';
 import { AccountSeed } from '../shared';
-import { Visitor, visit as baseVisit } from './Visitor';
+import { Visitor, visit as baseVisit } from './visitor2';
 import { staticVisitor } from './staticVisitor';
 
 export type IdentityVisitorInterceptor = <TNode extends nodes.Node>(

@@ -2,7 +2,7 @@ import { MainCaseString } from 'src/shared';
 import * as nodes from '../../nodes';
 import { assertRootNode } from '../../nodes';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
-import { visit } from '../Visitor';
+import { visit } from '../visitor2';
 import { getDefinedTypeHistogramVisitor } from '../getDefinedTypeHistogramVisitor';
 import { UnwrapDefinedTypesVisitor } from './UnwrapDefinedTypesVisitor';
 

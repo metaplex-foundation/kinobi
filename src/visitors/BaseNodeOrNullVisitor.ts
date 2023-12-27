@@ -1,5 +1,5 @@
 import { AccountSeed } from '../shared';
-import { Visitor, visit } from './Visitor';
+import { Visitor, visit } from './visitor2';
 import * as nodes from '../nodes';
 
 export class BaseNodeOrNullVisitor implements Visitor<nodes.Node | null> {
