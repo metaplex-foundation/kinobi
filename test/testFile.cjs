@@ -240,7 +240,9 @@ kinobi.update(
 const kinobiJson = kinobi.getJson();
 const kinobiReconstructed = k.createFromJson(kinobiJson);
 
-// kinobi.accept(new k.ConsoleLogVisitor(new k.GetNodeTreeStringVisitor()));
+// kinobi.accept(
+//   new k.ConsoleLogVisitor(k.getDebugStringVisitor({ indent: true }))
+// );
 
 /**
  * Render clients.
