@@ -6,7 +6,7 @@ import { deleteFolder } from '../utils';
 import {
   GetRustRenderMapOptions,
   getRustRenderMapVisitor,
-} from './getRustRenderMapVisitor2';
+} from './getRustRenderMapVisitor';
 
 export type RenderRustOptions = GetRustRenderMapOptions & {
   deleteFolderBeforeRendering?: boolean;
