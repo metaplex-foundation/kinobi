@@ -1,5 +1,4 @@
-import * as nodes from '../nodes';
-import { BaseThrowVisitor } from './BaseThrowVisitor';
+import { Node, RootNode, assertRootNode } from '../nodes';
 import { deduplicateIdenticalDefinedTypesVisitor } from './deduplicateIdenticalDefinedTypesVisitor';
 import { flattenInstructionArgsStructVisitor } from './flattenInstructionArgsStructVisitor';
 import { setAnchorDiscriminatorsVisitor } from './setAnchorDiscriminatorsVisitor';
@@ -8,16 +7,17 @@ import {
   DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES,
   setInstructionAccountDefaultValuesVisitor,
 } from './setInstructionAccountDefaultValuesVisitor';
+import { rootNodeVisitor } from './singleNodeVisitor';
 import { transformU8ArraysToBytesVisitor } from './transformU8ArraysToBytesVisitor';
 import { unwrapInstructionArgsDefinedTypesVisitor } from './unwrapInstructionArgsDefinedTypesVisitor';
 import { Visitor, visit } from './visitor';
 
-export class DefaultVisitor extends BaseThrowVisitor<nodes.RootNode> {
-  visitRoot(currentRoot: nodes.RootNode): nodes.RootNode {
-    let root: nodes.RootNode = currentRoot;
-    const updateRoot = (visitor: Visitor<nodes.Node | null, 'rootNode'>) => {
+export function defaultVisitor() {
+  return rootNodeVisitor((currentRoot) => {
+    let root: RootNode = currentRoot;
+    const updateRoot = (visitor: Visitor<Node | null, 'rootNode'>) => {
       const newRoot = visit(root, visitor);
-      nodes.assertRootNode(newRoot);
+      assertRootNode(newRoot);
       root = newRoot;
     };
 
@@ -41,5 +41,5 @@ export class DefaultVisitor extends BaseThrowVisitor<nodes.RootNode> {
     updateRoot(transformU8ArraysToBytesVisitor());
 
     return root;
-  }
+  });
 }

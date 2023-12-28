@@ -1,10 +1,10 @@
 export * from './BaseThrowVisitor';
-export * from './DefaultVisitor2';
 
 export * from './bottomUpTransformerVisitor';
 export * from './consoleLogVisitor';
 export * from './createSubInstructionsFromEnumArgsVisitor';
 export * from './deduplicateIdenticalDefinedTypesVisitor';
+export * from './defaultVisitor';
 export * from './deleteNodesVisitor';
 export * from './extendVisitor';
 export * from './flattenInstructionArgsStructVisitor';
