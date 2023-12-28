@@ -16,7 +16,7 @@ kinobi.update(
 );
 
 kinobi.update(
-  new k.UpdateAccountsVisitor({
+  k.updateAccountsVisitor({
     Metadata: { size: 679 },
     MasterEditionV1: {
       seeds: [
