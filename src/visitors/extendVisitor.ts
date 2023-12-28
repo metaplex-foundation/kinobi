@@ -12,7 +12,8 @@ export type VisitorOverrides<
 > = {
   [K in TNodeKeys as GetVisitorFunctionName<K>]?: (
     node: RegisteredNodes[K],
-    next: (node: RegisteredNodes[K]) => TReturn
+    next: (node: RegisteredNodes[K]) => TReturn,
+    visitor: Visitor<TReturn, TNodeKeys>
   ) => TReturn;
 };
 
@@ -44,14 +45,19 @@ export function extendVisitor<TReturn, TNodeKeys extends keyof RegisteredNodes>(
             this: Visitor<TReturn, TNodeKeys>,
             node: TNode
           ) {
-            const baseFunction = visitor[castedKey] as unknown as (
+            const extendedFunction = overrides[castedKey] as (
+              node: TNode,
+              next: (node: TNode) => TReturn,
+              visitor: Visitor<TReturn, TNodeKeys>
+            ) => TReturn;
+            const nextFunction = visitor[castedKey] as unknown as (
               node: TNode
             ) => TReturn;
-            const extendedFunction = overrides[castedKey] as unknown as (
-              node: TNode,
-              next: (node: TNode) => TReturn
-            ) => TReturn;
-            return extendedFunction.bind(this)(node, baseFunction.bind(this));
+            return extendedFunction.bind(this)(
+              node,
+              nextFunction.bind(this),
+              this
+            );
           },
         ],
       ];

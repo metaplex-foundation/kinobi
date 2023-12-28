@@ -58,22 +58,22 @@ export function getDefinedTypeHistogramVisitor(): Visitor<DefinedTypeHistogram> 
       }),
     (v) =>
       extendVisitor(v, {
-        visitAccount(node) {
+        visitAccount(node, _, self) {
           mode = 'account';
           stackLevel = 0;
-          const histogram = visit(node.data, this as typeof v);
+          const histogram = visit(node.data, self);
           mode = null;
           return histogram;
         },
 
-        visitInstruction(node) {
+        visitInstruction(node, _, self) {
           mode = 'instruction';
           stackLevel = 0;
-          const dataHistogram = visit(node.dataArgs, this as typeof v);
-          const extraHistogram = visit(node.extraArgs, this as typeof v);
+          const dataHistogram = visit(node.dataArgs, self);
+          const extraHistogram = visit(node.extraArgs, self);
           mode = null;
           const subHistograms = node.subInstructions.map((ix) =>
-            visit(ix, this as typeof v)
+            visit(ix, self)
           );
           return mergeHistograms([
             dataHistogram,
@@ -82,10 +82,10 @@ export function getDefinedTypeHistogramVisitor(): Visitor<DefinedTypeHistogram> 
           ]);
         },
 
-        visitDefinedType(node) {
+        visitDefinedType(node, _, self) {
           mode = 'definedType';
           stackLevel = 0;
-          const histogram = visit(node.data, this as typeof v);
+          const histogram = visit(node.data, self);
           mode = null;
           return histogram;
         },
