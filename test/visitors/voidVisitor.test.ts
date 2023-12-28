@@ -1,5 +1,6 @@
 import test from 'ava';
 import {
+  extendVisitor,
   numberTypeNode,
   publicKeyTypeNode,
   tupleTypeNode,
@@ -14,14 +15,14 @@ test('it visits all nodes and returns void', (t) => {
     tupleTypeNode([numberTypeNode('u32'), publicKeyTypeNode()]),
   ]);
 
-  // And a void visitor overriden such that it counts the tuple nodes.
-  const visitor = voidVisitor();
-  const parentVisitTupleType = visitor.visitTupleType.bind(visitor);
+  // And a void visitor extended such that it counts the tuple nodes.
   let counter = 0;
-  visitor.visitTupleType = function (node) {
-    counter++;
-    return parentVisitTupleType(node);
-  };
+  const visitor = extendVisitor(voidVisitor(), {
+    visitTupleType: (node, next) => {
+      counter++;
+      return next(node);
+    },
+  });
 
   // When we visit the tree using that visitor.
   const result = visit(node, visitor);

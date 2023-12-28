@@ -15,6 +15,7 @@ import {
   getAnchorAccountDiscriminator,
   getAnchorInstructionDiscriminator,
 } from '../shared';
+import { extendVisitor } from './extendVisitor';
 import { identityVisitor } from './identityVisitor';
 
 export function setAnchorDiscriminatorsVisitor() {
@@ -26,69 +27,67 @@ export function setAnchorDiscriminatorsVisitor() {
     'instructionNode',
   ]);
 
-  const baseVisitor = { ...visitor };
+  return extendVisitor(visitor, {
+    visitProgram(node, next) {
+      program = node;
+      const newNode = next(node);
+      program = null;
+      return newNode;
+    },
 
-  visitor.visitProgram = (node) => {
-    program = node;
-    const newNode = baseVisitor.visitProgram.bind(visitor)(node);
-    program = null;
-    return newNode;
-  };
+    visitAccount(node) {
+      const shouldAddDiscriminator = program?.origin === 'anchor';
+      if (!shouldAddDiscriminator) return node;
 
-  visitor.visitAccount = (node) => {
-    const shouldAddDiscriminator = program?.origin === 'anchor';
-    if (!shouldAddDiscriminator) return node;
+      const discriminatorField = structFieldTypeNode({
+        name: 'discriminator',
+        child: arrayTypeNode(numberTypeNode('u8'), {
+          size: fixedSize(8),
+        }),
+        defaultsTo: {
+          strategy: 'omitted',
+          value: getAnchorAccountDiscriminator(node.idlName),
+        },
+      });
 
-    const discriminatorField = structFieldTypeNode({
-      name: 'discriminator',
-      child: arrayTypeNode(numberTypeNode('u8'), {
-        size: fixedSize(8),
-      }),
-      defaultsTo: {
-        strategy: 'omitted',
-        value: getAnchorAccountDiscriminator(node.idlName),
-      },
-    });
+      return accountNode({
+        ...node,
+        discriminator: fieldAccountDiscriminator('discriminator'),
+        data: accountDataNode({
+          ...node.data,
+          struct: structTypeNode([
+            discriminatorField,
+            ...node.data.struct.fields,
+          ]),
+        }),
+      });
+    },
 
-    return accountNode({
-      ...node,
-      discriminator: fieldAccountDiscriminator('discriminator'),
-      data: accountDataNode({
-        ...node.data,
-        struct: structTypeNode([
-          discriminatorField,
-          ...node.data.struct.fields,
-        ]),
-      }),
-    });
-  };
+    visitInstruction(node) {
+      const shouldAddDiscriminator = program?.origin === 'anchor';
+      if (!shouldAddDiscriminator) return node;
 
-  visitor.visitInstruction = (node) => {
-    const shouldAddDiscriminator = program?.origin === 'anchor';
-    if (!shouldAddDiscriminator) return node;
+      const discriminatorField = structFieldTypeNode({
+        name: 'discriminator',
+        child: arrayTypeNode(numberTypeNode('u8'), {
+          size: fixedSize(8),
+        }),
+        defaultsTo: {
+          strategy: 'omitted',
+          value: getAnchorInstructionDiscriminator(node.idlName),
+        },
+      });
 
-    const discriminatorField = structFieldTypeNode({
-      name: 'discriminator',
-      child: arrayTypeNode(numberTypeNode('u8'), {
-        size: fixedSize(8),
-      }),
-      defaultsTo: {
-        strategy: 'omitted',
-        value: getAnchorInstructionDiscriminator(node.idlName),
-      },
-    });
-
-    return instructionNode({
-      ...node,
-      dataArgs: instructionDataArgsNode({
-        ...node.dataArgs,
-        struct: structTypeNode([
-          discriminatorField,
-          ...node.dataArgs.struct.fields,
-        ]),
-      }),
-    });
-  };
-
-  return visitor;
+      return instructionNode({
+        ...node,
+        dataArgs: instructionDataArgsNode({
+          ...node.dataArgs,
+          struct: structTypeNode([
+            discriminatorField,
+            ...node.dataArgs.struct.fields,
+          ]),
+        }),
+      });
+    },
+  });
 }
