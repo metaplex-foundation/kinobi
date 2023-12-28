@@ -1,5 +1,4 @@
 export * from './TransformNodesVisitor';
-export * from './TransformU8ArraysToBytesVisitor';
 export * from './UnwrapDefinedTypesVisitor';
 export * from './UnwrapInstructionArgsDefinedTypesVisitor';
 export * from './UnwrapTupleEnumWithSingleStructVisitor';
