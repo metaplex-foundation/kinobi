@@ -5,7 +5,9 @@ import {
   MainCaseString,
   getDefaultSeedsFromAccount,
   mainCase,
+  pipe,
 } from '../shared';
+import { extendVisitor } from './extendVisitor';
 import { identityVisitor } from './identityVisitor';
 import { tapVisitor } from './tapVisitor';
 
@@ -186,73 +188,75 @@ export function setInstructionAccountDefaultValuesVisitor(
     });
   }
 
-  const visitor = tapVisitor(
+  return pipe(
     identityVisitor(['rootNode', 'programNode', 'instructionNode']),
-    'rootNode',
-    (root) => {
-      allAccounts = new Map(
-        nodes.getAllAccounts(root).map((account) => [account.name, account])
-      );
-    }
-  );
-
-  visitor.visitInstruction = (node) => {
-    const instructionAccounts = node.accounts.map(
-      (account): nodes.InstructionAccountNode => {
-        const rule = matchRule(node, account);
-        if (!rule) {
-          return account;
-        }
-        if (
-          (rule.ignoreIfOptional ?? false) &&
-          (account.isOptional || !!account.defaultsTo)
-        ) {
-          return account;
-        }
-        if (rule.kind === 'pda') {
-          const foundAccount = allAccounts.get(mainCase(rule.pdaAccount));
-          const defaultsTo = {
-            ...rule,
-            seeds: {
-              ...(foundAccount ? getDefaultSeedsFromAccount(foundAccount) : {}),
-              ...rule.seeds,
-            },
-          };
-
-          if (rule.instruction) {
-            return { ...account, defaultsTo };
-          }
-
-          const allSeedsAreValid = Object.entries(defaultsTo.seeds).every(
-            ([, seed]) => {
-              if (seed.kind === 'value') return true;
-              if (seed.kind === 'account') {
-                return node.accounts.some(
-                  (a) => a.name === mainCase(seed.name)
-                );
+    (v) =>
+      tapVisitor(v, 'rootNode', (root) => {
+        allAccounts = new Map(
+          nodes.getAllAccounts(root).map((account) => [account.name, account])
+        );
+      }),
+    (v) =>
+      extendVisitor(v, {
+        visitInstruction(node) {
+          const instructionAccounts = node.accounts.map(
+            (account): nodes.InstructionAccountNode => {
+              const rule = matchRule(node, account);
+              if (!rule) {
+                return account;
               }
-              if (node.dataArgs.link) return true;
-              return node.dataArgs.struct.fields.some(
-                (f) => f.name === mainCase(seed.name)
-              );
+              if (
+                (rule.ignoreIfOptional ?? false) &&
+                (account.isOptional || !!account.defaultsTo)
+              ) {
+                return account;
+              }
+              if (rule.kind === 'pda') {
+                const foundAccount = allAccounts.get(mainCase(rule.pdaAccount));
+                const defaultsTo = {
+                  ...rule,
+                  seeds: {
+                    ...(foundAccount
+                      ? getDefaultSeedsFromAccount(foundAccount)
+                      : {}),
+                    ...rule.seeds,
+                  },
+                };
+
+                if (rule.instruction) {
+                  return { ...account, defaultsTo };
+                }
+
+                const allSeedsAreValid = Object.entries(defaultsTo.seeds).every(
+                  ([, seed]) => {
+                    if (seed.kind === 'value') return true;
+                    if (seed.kind === 'account') {
+                      return node.accounts.some(
+                        (a) => a.name === mainCase(seed.name)
+                      );
+                    }
+                    if (node.dataArgs.link) return true;
+                    return node.dataArgs.struct.fields.some(
+                      (f) => f.name === mainCase(seed.name)
+                    );
+                  }
+                );
+
+                if (allSeedsAreValid) {
+                  return { ...account, defaultsTo };
+                }
+
+                return account;
+              }
+              return { ...account, defaultsTo: rule };
             }
           );
 
-          if (allSeedsAreValid) {
-            return { ...account, defaultsTo };
-          }
-
-          return account;
-        }
-        return { ...account, defaultsTo: rule };
-      }
-    );
-
-    return nodes.instructionNode({
-      ...node,
-      accounts: instructionAccounts,
-    });
-  };
-
-  return visitor;
+          return nodes.instructionNode({
+            ...node,
+            accounts: instructionAccounts,
+          });
+        },
+      })
+  );
 }

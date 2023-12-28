@@ -1,3 +1,4 @@
+import { pipe } from '../shared';
 import { Node } from '../nodes';
 import { interceptVisitor } from './interceptVisitor';
 import { mergeVisitor } from './mergeVisitor';
@@ -10,7 +11,7 @@ export function getDebugStringVisitor(
   const indentSeparator = options.indentSeparator ?? '|   ';
   let stackLevel = -1;
 
-  const visitor = interceptVisitor(
+  return pipe(
     mergeVisitor<string>(
       (node) => {
         const details = getNodeDetails(node).join('.');
@@ -36,15 +37,14 @@ export function getDebugStringVisitor(
         )})`;
       }
     ),
-    (node, next) => {
-      stackLevel += 1;
-      const newNode = next(node);
-      stackLevel -= 1;
-      return newNode;
-    }
+    (v) =>
+      interceptVisitor(v, (node, next) => {
+        stackLevel += 1;
+        const newNode = next(node);
+        stackLevel -= 1;
+        return newNode;
+      })
   );
-
-  return visitor;
 }
 
 function getNodeDetails(node: Node): string[] {
