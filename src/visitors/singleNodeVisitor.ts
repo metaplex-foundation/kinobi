@@ -21,6 +21,8 @@ export function singleNodeVisitor<
   return visitor;
 }
 
-export function rootNodeVisitor(fn: (node: RootNode) => RootNode) {
+export function rootNodeVisitor<TReturn = RootNode>(
+  fn: (node: RootNode) => TReturn
+) {
   return singleNodeVisitor('rootNode', fn);
 }

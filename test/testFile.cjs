@@ -247,7 +247,7 @@ const kinobiReconstructed = k.createFromJson(kinobiJson);
  */
 
 kinobiReconstructed.accept(
-  new k.RenderJavaScriptVisitor('./test/packages/js/src/generated')
+  k.renderJavaScriptVisitor('./test/packages/js/src/generated')
 );
 
 kinobiReconstructed.accept(
