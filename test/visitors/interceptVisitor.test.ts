@@ -1,6 +1,5 @@
 import test from 'ava';
 import {
-  VisitorInterceptor,
   interceptVisitor,
   numberTypeNode,
   publicKeyTypeNode,

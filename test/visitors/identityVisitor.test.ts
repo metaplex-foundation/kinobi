@@ -1,7 +1,5 @@
 import test from 'ava';
 import {
-  Node,
-  VisitorInterceptor,
   assertTupleTypeNode,
   identityVisitor,
   interceptVisitor,

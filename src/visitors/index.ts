@@ -11,6 +11,7 @@ export * from './consoleLogVisitor';
 export * from './createSubInstructionsFromEnumArgsVisitor';
 export * from './deduplicateIdenticalDefinedTypesVisitor';
 export * from './deleteNodesVisitor';
+export * from './extendVisitor';
 export * from './flattenInstructionArgsStructVisitor';
 export * from './flattenStructVisitor';
 export * from './getByteSizeVisitor';
