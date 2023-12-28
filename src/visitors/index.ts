@@ -1,5 +1,5 @@
 export * from './BaseThrowVisitor';
-export * from './DefaultVisitor';
+export * from './DefaultVisitor2';
 
 export * from './bottomUpTransformerVisitor';
 export * from './consoleLogVisitor';
