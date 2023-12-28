@@ -4,6 +4,7 @@ import {
   ValidatorBag,
   camelCase,
   pascalCase,
+  pipe,
   titleCase,
 } from '../../shared';
 import {
@@ -67,128 +68,129 @@ export function getJavaScriptValidatorBagVisitor(): Visitor<ValidatorBag> {
     return bag;
   };
 
-  const visitor = interceptVisitor(
+  return pipe(
     mergeVisitor(
       () => new ValidatorBag(),
       (_, bags) => new ValidatorBag().mergeWith(bags)
     ),
-    (node, next) => {
-      stack.push(node);
-      const newNode = next(node);
-      stack.pop();
-      return newNode;
-    }
-  );
+    (v) =>
+      interceptVisitor(v, (node, next) => {
+        stack.push(node);
+        const newNode = next(node);
+        stack.pop();
+        return newNode;
+      }),
+    (v) =>
+      extendVisitor(v, {
+        visitProgram(node, next) {
+          const bag = new ValidatorBag();
+          const pascalCaseName = pascalCase(node.name);
+          bag.mergeWith([
+            checkExportConflicts(node, {
+              [`get${pascalCaseName}Program`]: 'function',
+              [`get${pascalCaseName}ErrorFromCode`]: 'function',
+              [`get${pascalCaseName}ErrorFromName`]: 'function',
+            }),
+          ]);
+          return bag.mergeWith([next(node)]);
+        },
 
-  return extendVisitor(visitor, {
-    visitProgram(node, next) {
-      const bag = new ValidatorBag();
-      const pascalCaseName = pascalCase(node.name);
-      bag.mergeWith([
-        checkExportConflicts(node, {
-          [`get${pascalCaseName}Program`]: 'function',
-          [`get${pascalCaseName}ErrorFromCode`]: 'function',
-          [`get${pascalCaseName}ErrorFromName`]: 'function',
-        }),
-      ]);
-      return bag.mergeWith([next(node)]);
-    },
-
-    visitAccount(node, next) {
-      const bag = new ValidatorBag();
-      const pascalCaseName = pascalCase(node.name);
-      const exports = {
-        [pascalCaseName]: 'type',
-        [`${pascalCaseName}AccountData`]: 'type',
-        [`${pascalCaseName}AccountDataArgs`]: 'type',
-        [`fetch${pascalCaseName}`]: 'function',
-        [`safeFetch${pascalCaseName}`]: 'function',
-        [`deserialize${pascalCaseName}`]: 'function',
-        [`get${pascalCaseName}AccountDataSerializer`]: 'function',
-        [`get${pascalCaseName}GpaBuilder`]: 'function',
-        [`get${pascalCaseName}Size`]: 'function',
-      };
-      if (node.seeds.length > 0) {
-        exports[`find${pascalCaseName}Pda`] = 'function';
-        exports[`fetch${pascalCaseName}FromSeeds`] = 'function';
-        exports[`safeFetch${pascalCaseName}FromSeeds`] = 'function';
-      }
-      if (!node.internal) {
-        bag.mergeWith([checkExportConflicts(node, exports)]);
-      }
-
-      const reservedAccountFields = new Set(['publicKey', 'header']);
-      if (!node.data.link) {
-        const invalidFields = node.data.struct.fields
-          .map((field) => field.name)
-          .filter((name) => reservedAccountFields.has(name));
-        if (invalidFields.length > 0) {
-          const x = invalidFields.join(', ');
-          const message =
-            invalidFields.length === 1
-              ? `Account field [${x}] is reserved. Please rename it.`
-              : `Account fields [${x}] are reserved. Please rename them.`;
-          bag.error(message, node, stack);
-        }
-      }
-      return bag.mergeWith([next(node)]);
-    },
-
-    visitInstruction(node, next) {
-      const bag = new ValidatorBag();
-      const camelCaseName = camelCase(node.name);
-      const pascalCaseName = pascalCase(node.name);
-      const pascalCaseData = pascalCase(node.dataArgs.name);
-      const pascalCaseExtra = pascalCase(node.extraArgs.name);
-      if (!node.internal) {
-        bag.mergeWith([
-          checkExportConflicts(node, {
-            [camelCaseName]: 'function',
-            [`${pascalCaseName}InstructionAccounts`]: 'type',
-            [`${pascalCaseName}InstructionArgs`]: 'type',
-            [`${pascalCaseData}`]: 'type',
-            [`${pascalCaseData}Args`]: 'type',
-            [`get${pascalCaseData}Serializer`]: 'function',
-            [`${pascalCaseExtra}Args`]: 'type',
-          }),
-        ]);
-      }
-      return bag.mergeWith([next(node)]);
-    },
-
-    visitDefinedType(node, next) {
-      const bag = new ValidatorBag();
-      const camelCaseName = camelCase(node.name);
-      const pascalCaseName = pascalCase(node.name);
-      if (!node.internal) {
-        bag.mergeWith([
-          checkExportConflicts(node, {
+        visitAccount(node, next) {
+          const bag = new ValidatorBag();
+          const pascalCaseName = pascalCase(node.name);
+          const exports = {
             [pascalCaseName]: 'type',
-            [`${pascalCaseName}Args`]: 'type',
+            [`${pascalCaseName}AccountData`]: 'type',
+            [`${pascalCaseName}AccountDataArgs`]: 'type',
             [`fetch${pascalCaseName}`]: 'function',
-            ...(isEnumTypeNode(node.data) && isDataEnum(node.data)
-              ? {
-                  [camelCaseName]: 'function',
-                  [`is${pascalCaseName}`]: 'function',
-                }
-              : {}),
-          }),
-        ]);
-      }
-      return bag.mergeWith([next(node)]);
-    },
+            [`safeFetch${pascalCaseName}`]: 'function',
+            [`deserialize${pascalCaseName}`]: 'function',
+            [`get${pascalCaseName}AccountDataSerializer`]: 'function',
+            [`get${pascalCaseName}GpaBuilder`]: 'function',
+            [`get${pascalCaseName}Size`]: 'function',
+          };
+          if (node.seeds.length > 0) {
+            exports[`find${pascalCaseName}Pda`] = 'function';
+            exports[`fetch${pascalCaseName}FromSeeds`] = 'function';
+            exports[`safeFetch${pascalCaseName}FromSeeds`] = 'function';
+          }
+          if (!node.internal) {
+            bag.mergeWith([checkExportConflicts(node, exports)]);
+          }
 
-    visitError(node, next) {
-      const bag = new ValidatorBag();
-      const program = stack.getProgram();
-      const prefixedName =
-        pascalCase(program?.prefix ?? '') + pascalCase(node.name);
-      bag.mergeWith([
-        checkExportConflicts(node, {
-          [`${prefixedName}Error`]: 'class',
-        }),
-      ]);
-      return bag.mergeWith([next(node)]);
-    },
-  });
+          const reservedAccountFields = new Set(['publicKey', 'header']);
+          if (!node.data.link) {
+            const invalidFields = node.data.struct.fields
+              .map((field) => field.name)
+              .filter((name) => reservedAccountFields.has(name));
+            if (invalidFields.length > 0) {
+              const x = invalidFields.join(', ');
+              const message =
+                invalidFields.length === 1
+                  ? `Account field [${x}] is reserved. Please rename it.`
+                  : `Account fields [${x}] are reserved. Please rename them.`;
+              bag.error(message, node, stack);
+            }
+          }
+          return bag.mergeWith([next(node)]);
+        },
+
+        visitInstruction(node, next) {
+          const bag = new ValidatorBag();
+          const camelCaseName = camelCase(node.name);
+          const pascalCaseName = pascalCase(node.name);
+          const pascalCaseData = pascalCase(node.dataArgs.name);
+          const pascalCaseExtra = pascalCase(node.extraArgs.name);
+          if (!node.internal) {
+            bag.mergeWith([
+              checkExportConflicts(node, {
+                [camelCaseName]: 'function',
+                [`${pascalCaseName}InstructionAccounts`]: 'type',
+                [`${pascalCaseName}InstructionArgs`]: 'type',
+                [`${pascalCaseData}`]: 'type',
+                [`${pascalCaseData}Args`]: 'type',
+                [`get${pascalCaseData}Serializer`]: 'function',
+                [`${pascalCaseExtra}Args`]: 'type',
+              }),
+            ]);
+          }
+          return bag.mergeWith([next(node)]);
+        },
+
+        visitDefinedType(node, next) {
+          const bag = new ValidatorBag();
+          const camelCaseName = camelCase(node.name);
+          const pascalCaseName = pascalCase(node.name);
+          if (!node.internal) {
+            bag.mergeWith([
+              checkExportConflicts(node, {
+                [pascalCaseName]: 'type',
+                [`${pascalCaseName}Args`]: 'type',
+                [`fetch${pascalCaseName}`]: 'function',
+                ...(isEnumTypeNode(node.data) && isDataEnum(node.data)
+                  ? {
+                      [camelCaseName]: 'function',
+                      [`is${pascalCaseName}`]: 'function',
+                    }
+                  : {}),
+              }),
+            ]);
+          }
+          return bag.mergeWith([next(node)]);
+        },
+
+        visitError(node, next) {
+          const bag = new ValidatorBag();
+          const program = stack.getProgram();
+          const prefixedName =
+            pascalCase(program?.prefix ?? '') + pascalCase(node.name);
+          bag.mergeWith([
+            checkExportConflicts(node, {
+              [`${prefixedName}Error`]: 'class',
+            }),
+          ]);
+          return bag.mergeWith([next(node)]);
+        },
+      })
+  );
 }

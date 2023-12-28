@@ -13,5 +13,6 @@ export * from './SizeStrategy';
 export * from './ValidatorBag';
 export * from './errors';
 export * from './logs';
+export * from './pipe';
 export * from './renameHelpers';
 export * from './utils';
