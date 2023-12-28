@@ -7,7 +7,6 @@ import {
   NodeSelector,
   NodeStack,
   OptionTypeNode,
-  VisitorInterceptor,
   accountDataNode,
   accountNode,
   boolTypeNode,

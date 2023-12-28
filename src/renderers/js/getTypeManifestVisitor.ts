@@ -1,6 +1,6 @@
 import * as nodes from '../../nodes';
-import { camelCase, pascalCase } from '../../shared';
-import { Visitor, visit } from '../../visitors';
+import { camelCase, pascalCase, pipe } from '../../shared';
+import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 import { renderValueNode } from './renderValueNode';
 
@@ -14,701 +14,702 @@ export type JavaScriptTypeManifest = {
   serializerImports: JavaScriptImportMap;
 };
 
-export class GetJavaScriptTypeManifestVisitor
-  implements Visitor<JavaScriptTypeManifest>
-{
-  private parentName: { strict: string; loose: string } | null = null;
+export function getTypeManifestVisitor() {
+  let parentName: { strict: string; loose: string } | null = null;
 
-  constructor(readonly serializerVariable = 's') {}
+  return pipe(
+    staticVisitor(
+      () =>
+        ({
+          isEnum: false,
+          strictType: '',
+          strictImports: new JavaScriptImportMap(),
+          looseType: '',
+          looseImports: new JavaScriptImportMap(),
+          serializer: '',
+          serializerImports: new JavaScriptImportMap(),
+        } as JavaScriptTypeManifest),
+      [
+        ...nodes.REGISTERED_TYPE_NODE_KEYS,
+        'definedTypeNode',
+        'accountNode',
+        'accountDataNode',
+        'instructionDataArgsNode',
+        'instructionExtraArgsNode',
+      ]
+    ),
+    (v) =>
+      extendVisitor(v, {
+        visitAccount(account, _, self) {
+          return visit(account.data, self);
+        },
 
-  visitRoot(): JavaScriptTypeManifest {
-    throw new Error(
-      'Cannot get type manifest for root node. Please select a child node.'
-    );
-  }
+        visitAccountData(accountData, _, self) {
+          parentName = {
+            strict: pascalCase(accountData.name),
+            loose: `${pascalCase(accountData.name)}Args`,
+          };
+          const manifest = accountData.link
+            ? visit(accountData.link, self)
+            : visit(accountData.struct, self);
+          parentName = null;
+          return manifest;
+        },
 
-  visitProgram(): JavaScriptTypeManifest {
-    throw new Error(
-      'Cannot get type manifest for program node. Please select a child node.'
-    );
-  }
+        visitInstructionDataArgs(instructionDataArgs, _, self) {
+          parentName = {
+            strict: pascalCase(instructionDataArgs.name),
+            loose: `${pascalCase(instructionDataArgs.name)}Args`,
+          };
+          const manifest = instructionDataArgs.link
+            ? visit(instructionDataArgs.link, self)
+            : visit(instructionDataArgs.struct, self);
+          parentName = null;
+          return manifest;
+        },
 
-  visitAccount(account: nodes.AccountNode): JavaScriptTypeManifest {
-    return visit(account.data, this);
-  }
+        visitInstructionExtraArgs(instructionExtraArgs, _, self) {
+          parentName = {
+            strict: pascalCase(instructionExtraArgs.name),
+            loose: `${pascalCase(instructionExtraArgs.name)}Args`,
+          };
+          const manifest = instructionExtraArgs.link
+            ? visit(instructionExtraArgs.link, self)
+            : visit(instructionExtraArgs.struct, self);
+          parentName = null;
+          return manifest;
+        },
 
-  visitAccountData(accountData: nodes.AccountDataNode): JavaScriptTypeManifest {
-    this.parentName = {
-      strict: pascalCase(accountData.name),
-      loose: `${pascalCase(accountData.name)}Args`,
-    };
-    const manifest = accountData.link
-      ? visit(accountData.link, this)
-      : visit(accountData.struct, this);
-    this.parentName = null;
-    return manifest;
-  }
+        visitDefinedType(definedType, _, self) {
+          parentName = {
+            strict: pascalCase(definedType.name),
+            loose: `${pascalCase(definedType.name)}Args`,
+          };
+          const manifest = visit(definedType.data, self);
+          parentName = null;
+          return manifest;
+        },
 
-  visitInstruction(instruction: nodes.InstructionNode): JavaScriptTypeManifest {
-    return visit(instruction.dataArgs, this);
-  }
+        visitArrayType(arrayType, _, self) {
+          const childManifest = visit(arrayType.child, self);
+          childManifest.serializerImports.add('umiSerializers', 'array');
+          const sizeOption = getArrayLikeSizeOption(
+            arrayType.size,
+            childManifest,
+            self
+          );
+          const options = sizeOption ? `, { ${sizeOption} }` : '';
+          return {
+            ...childManifest,
+            strictType: `Array<${childManifest.strictType}>`,
+            looseType: `Array<${childManifest.looseType}>`,
+            serializer: `array(${childManifest.serializer + options})`,
+          };
+        },
 
-  visitInstructionAccount(): JavaScriptTypeManifest {
-    throw new Error(
-      'Cannot get type manifest for instruction account node. Please select a another node.'
-    );
-  }
+        visitLinkType(linkType) {
+          const pascalCaseDefinedType = pascalCase(linkType.name);
+          const serializerName = `get${pascalCaseDefinedType}Serializer`;
+          const importFrom =
+            linkType.importFrom === 'generated'
+              ? 'generatedTypes'
+              : linkType.importFrom;
 
-  visitInstructionDataArgs(
-    instructionDataArgs: nodes.InstructionDataArgsNode
-  ): JavaScriptTypeManifest {
-    this.parentName = {
-      strict: pascalCase(instructionDataArgs.name),
-      loose: `${pascalCase(instructionDataArgs.name)}Args`,
-    };
-    const manifest = instructionDataArgs.link
-      ? visit(instructionDataArgs.link, this)
-      : visit(instructionDataArgs.struct, this);
-    this.parentName = null;
-    return manifest;
-  }
+          return {
+            isEnum: false,
+            strictType: pascalCaseDefinedType,
+            strictImports: new JavaScriptImportMap().add(
+              importFrom,
+              pascalCaseDefinedType
+            ),
+            looseType: `${pascalCaseDefinedType}Args`,
+            looseImports: new JavaScriptImportMap().add(
+              importFrom,
+              `${pascalCaseDefinedType}Args`
+            ),
+            serializer: `${serializerName}()`,
+            serializerImports: new JavaScriptImportMap().add(
+              importFrom,
+              serializerName
+            ),
+          };
+        },
 
-  visitInstructionExtraArgs(
-    instructionExtraArgs: nodes.InstructionExtraArgsNode
-  ): JavaScriptTypeManifest {
-    this.parentName = {
-      strict: pascalCase(instructionExtraArgs.name),
-      loose: `${pascalCase(instructionExtraArgs.name)}Args`,
-    };
-    const manifest = instructionExtraArgs.link
-      ? visit(instructionExtraArgs.link, this)
-      : visit(instructionExtraArgs.struct, this);
-    this.parentName = null;
-    return manifest;
-  }
+        visitEnumType(enumType, _, self) {
+          const strictImports = new JavaScriptImportMap();
+          const looseImports = new JavaScriptImportMap();
+          const serializerImports = new JavaScriptImportMap().add(
+            'umiSerializers',
+            'scalarEnum'
+          );
 
-  visitDefinedType(definedType: nodes.DefinedTypeNode): JavaScriptTypeManifest {
-    this.parentName = {
-      strict: pascalCase(definedType.name),
-      loose: `${pascalCase(definedType.name)}Args`,
-    };
-    const manifest = visit(definedType.data, this);
-    this.parentName = null;
-    return manifest;
-  }
+          const variantNames = enumType.variants.map((variant) =>
+            pascalCase(variant.name)
+          );
+          const currentParentName = { ...parentName };
+          parentName = null;
+          const options: string[] = [];
 
-  visitError(): JavaScriptTypeManifest {
-    throw new Error('Cannot get type manifest for error node.');
-  }
+          if (enumType.size.format !== 'u8' || enumType.size.endian !== 'le') {
+            const sizeManifest = visit(enumType.size, self);
+            strictImports.mergeWith(sizeManifest.strictImports);
+            looseImports.mergeWith(sizeManifest.looseImports);
+            serializerImports.mergeWith(sizeManifest.serializerImports);
+            options.push(`size: ${sizeManifest.serializer}`);
+          }
 
-  visitArrayType(arrayType: nodes.ArrayTypeNode): JavaScriptTypeManifest {
-    const childManifest = visit(arrayType.child, this);
-    childManifest.serializerImports.add('umiSerializers', 'array');
-    const sizeOption = this.getArrayLikeSizeOption(
-      arrayType.size,
-      childManifest
-    );
-    const options = sizeOption ? `, { ${sizeOption} }` : '';
-    return {
-      ...childManifest,
-      strictType: `Array<${childManifest.strictType}>`,
-      looseType: `Array<${childManifest.looseType}>`,
-      serializer: `array(${childManifest.serializer + options})`,
-    };
-  }
-
-  visitLinkType(linkType: nodes.LinkTypeNode): JavaScriptTypeManifest {
-    const pascalCaseDefinedType = pascalCase(linkType.name);
-    const serializerName = `get${pascalCaseDefinedType}Serializer`;
-    const importFrom =
-      linkType.importFrom === 'generated'
-        ? 'generatedTypes'
-        : linkType.importFrom;
-
-    return {
-      isEnum: false,
-      strictType: pascalCaseDefinedType,
-      strictImports: new JavaScriptImportMap().add(
-        importFrom,
-        pascalCaseDefinedType
-      ),
-      looseType: `${pascalCaseDefinedType}Args`,
-      looseImports: new JavaScriptImportMap().add(
-        importFrom,
-        `${pascalCaseDefinedType}Args`
-      ),
-      serializer: `${serializerName}()`,
-      serializerImports: new JavaScriptImportMap().add(
-        importFrom,
-        serializerName
-      ),
-    };
-  }
-
-  visitEnumType(enumType: nodes.EnumTypeNode): JavaScriptTypeManifest {
-    const strictImports = new JavaScriptImportMap();
-    const looseImports = new JavaScriptImportMap();
-    const serializerImports = new JavaScriptImportMap().add(
-      'umiSerializers',
-      'scalarEnum'
-    );
-
-    const variantNames = enumType.variants.map((variant) =>
-      pascalCase(variant.name)
-    );
-    const { parentName } = this;
-    this.parentName = null;
-    const options: string[] = [];
-
-    if (enumType.size.format !== 'u8' || enumType.size.endian !== 'le') {
-      const sizeManifest = visit(enumType.size, this);
-      strictImports.mergeWith(sizeManifest.strictImports);
-      looseImports.mergeWith(sizeManifest.looseImports);
-      serializerImports.mergeWith(sizeManifest.serializerImports);
-      options.push(`size: ${sizeManifest.serializer}`);
-    }
-
-    if (nodes.isScalarEnum(enumType)) {
-      if (parentName === null) {
-        throw new Error(
-          'Scalar enums cannot be inlined and must be introduced ' +
-            'via a defined type. Ensure you are not inlining a ' +
-            'defined type that is a scalar enum through a visitor.'
-        );
-      }
-      options.push(`description: '${parentName.strict}'`);
-      const optionsAsString =
-        options.length > 0 ? `, { ${options.join(', ')} }` : '';
-      return {
-        isEnum: true,
-        strictType: `{ ${variantNames.join(', ')} }`,
-        strictImports,
-        looseType: `{ ${variantNames.join(', ')} }`,
-        looseImports,
-        serializer:
-          `scalarEnum<${parentName.strict}>` +
-          `(${parentName.strict + optionsAsString})`,
-        serializerImports,
-      };
-    }
-
-    const variants = enumType.variants.map(
-      (variant): JavaScriptTypeManifest => {
-        const variantName = pascalCase(variant.name);
-        this.parentName = parentName
-          ? {
-              strict: `GetDataEnumKindContent<${parentName.strict}, '${variantName}'>`,
-              loose: `GetDataEnumKindContent<${parentName.loose}, '${variantName}'>`,
+          if (nodes.isScalarEnum(enumType)) {
+            if (currentParentName === null) {
+              throw new Error(
+                'Scalar enums cannot be inlined and must be introduced ' +
+                  'via a defined type. Ensure you are not inlining a ' +
+                  'defined type that is a scalar enum through a visitor.'
+              );
             }
-          : null;
-        const variantManifest = visit(variant, this);
-        this.parentName = null;
-        return variantManifest;
-      }
-    );
+            options.push(`description: '${currentParentName.strict}'`);
+            const optionsAsString =
+              options.length > 0 ? `, { ${options.join(', ')} }` : '';
+            return {
+              isEnum: true,
+              strictType: `{ ${variantNames.join(', ')} }`,
+              strictImports,
+              looseType: `{ ${variantNames.join(', ')} }`,
+              looseImports,
+              serializer:
+                `scalarEnum<${currentParentName.strict}>` +
+                `(${currentParentName.strict + optionsAsString})`,
+              serializerImports,
+            };
+          }
 
-    const mergedManifest = this.mergeManifests(variants);
-    const variantSerializers = variants
-      .map((variant) => variant.serializer)
-      .join(', ');
-    const serializerTypeParams = parentName ? parentName.strict : 'any';
-    if (parentName?.strict) {
-      options.push(`description: '${pascalCase(parentName.strict)}'`);
-    }
-    const optionsAsString =
-      options.length > 0 ? `, { ${options.join(', ')} }` : '';
+          const variants = enumType.variants.map((variant) => {
+            const variantName = pascalCase(variant.name);
+            parentName = currentParentName
+              ? {
+                  strict: `GetDataEnumKindContent<${currentParentName.strict}, '${variantName}'>`,
+                  loose: `GetDataEnumKindContent<${currentParentName.loose}, '${variantName}'>`,
+                }
+              : null;
+            const variantManifest = visit(variant, self);
+            parentName = null;
+            return variantManifest;
+          });
 
-    return {
-      ...mergedManifest,
-      strictType: variants.map((v) => v.strictType).join(' | '),
-      looseType: variants.map((v) => v.looseType).join(' | '),
-      serializer:
-        `dataEnum<${serializerTypeParams}>` +
-        `([${variantSerializers}]${optionsAsString})`,
-      serializerImports: mergedManifest.serializerImports.add(
-        'umiSerializers',
-        ['GetDataEnumKindContent', 'GetDataEnumKind', 'dataEnum']
-      ),
-    };
-  }
+          const mergedManifest = mergeManifests(variants);
+          const variantSerializers = variants
+            .map((variant) => variant.serializer)
+            .join(', ');
+          const serializerTypeParams = currentParentName
+            ? currentParentName.strict
+            : 'any';
+          if (currentParentName?.strict) {
+            options.push(
+              `description: '${pascalCase(currentParentName.strict)}'`
+            );
+          }
+          const optionsAsString =
+            options.length > 0 ? `, { ${options.join(', ')} }` : '';
 
-  visitEnumEmptyVariantType(
-    enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
-  ): JavaScriptTypeManifest {
-    const name = pascalCase(enumEmptyVariantType.name);
-    const kindAttribute = `__kind: "${name}"`;
-    return {
-      isEnum: false,
-      strictType: `{ ${kindAttribute} }`,
-      strictImports: new JavaScriptImportMap(),
-      looseType: `{ ${kindAttribute} }`,
-      looseImports: new JavaScriptImportMap(),
-      serializer: `['${name}', unit()]`,
-      serializerImports: new JavaScriptImportMap().add(
-        'umiSerializers',
-        'unit'
-      ),
-    };
-  }
+          return {
+            ...mergedManifest,
+            strictType: variants
+              .map((variant) => variant.strictType)
+              .join(' | '),
+            looseType: variants.map((variant) => variant.looseType).join(' | '),
+            serializer:
+              `dataEnum<${serializerTypeParams}>` +
+              `([${variantSerializers}]${optionsAsString})`,
+            serializerImports: mergedManifest.serializerImports.add(
+              'umiSerializers',
+              ['GetDataEnumKindContent', 'GetDataEnumKind', 'dataEnum']
+            ),
+          };
+        },
 
-  visitEnumStructVariantType(
-    enumStructVariantType: nodes.EnumStructVariantTypeNode
-  ): JavaScriptTypeManifest {
-    const name = pascalCase(enumStructVariantType.name);
-    const kindAttribute = `__kind: "${name}"`;
-    const type = visit(enumStructVariantType.struct, this);
-    return {
-      ...type,
-      strictType: `{ ${kindAttribute},${type.strictType.slice(1, -1)}}`,
-      looseType: `{ ${kindAttribute},${type.looseType.slice(1, -1)}}`,
-      serializer: `['${name}', ${type.serializer}]`,
-    };
-  }
+        visitEnumEmptyVariantType(enumEmptyVariantType) {
+          const name = pascalCase(enumEmptyVariantType.name);
+          const kindAttribute = `__kind: "${name}"`;
+          return {
+            isEnum: false,
+            strictType: `{ ${kindAttribute} }`,
+            strictImports: new JavaScriptImportMap(),
+            looseType: `{ ${kindAttribute} }`,
+            looseImports: new JavaScriptImportMap(),
+            serializer: `['${name}', unit()]`,
+            serializerImports: new JavaScriptImportMap().add(
+              'umiSerializers',
+              'unit'
+            ),
+          };
+        },
 
-  visitEnumTupleVariantType(
-    enumTupleVariantType: nodes.EnumTupleVariantTypeNode
-  ): JavaScriptTypeManifest {
-    const name = pascalCase(enumTupleVariantType.name);
-    const kindAttribute = `__kind: "${name}"`;
-    const struct = nodes.structTypeNode([
-      nodes.structFieldTypeNode({
-        name: 'fields',
-        child: enumTupleVariantType.tuple,
-      }),
-    ]);
-    const type = visit(struct, this);
-    return {
-      ...type,
-      strictType: `{ ${kindAttribute},${type.strictType.slice(1, -1)}}`,
-      looseType: `{ ${kindAttribute},${type.looseType.slice(1, -1)}}`,
-      serializer: `['${name}', ${type.serializer}]`,
-    };
-  }
+        visitEnumStructVariantType(enumStructVariantType, _, self) {
+          const name = pascalCase(enumStructVariantType.name);
+          const kindAttribute = `__kind: "${name}"`;
+          const type = visit(enumStructVariantType.struct, self);
+          return {
+            ...type,
+            strictType: `{ ${kindAttribute},${type.strictType.slice(1, -1)}}`,
+            looseType: `{ ${kindAttribute},${type.looseType.slice(1, -1)}}`,
+            serializer: `['${name}', ${type.serializer}]`,
+          };
+        },
 
-  visitMapType(mapType: nodes.MapTypeNode): JavaScriptTypeManifest {
-    const key = visit(mapType.key, this);
-    const value = visit(mapType.value, this);
-    const mergedManifest = this.mergeManifests([key, value]);
-    mergedManifest.serializerImports.add('umiSerializers', 'map');
-    const sizeOption = this.getArrayLikeSizeOption(
-      mapType.size,
-      mergedManifest
-    );
-    const options = sizeOption ? `, { ${sizeOption} }` : '';
-    return {
-      ...mergedManifest,
-      strictType: `Map<${key.strictType}, ${value.strictType}>`,
-      looseType: `Map<${key.looseType}, ${value.looseType}>`,
-      serializer: `map(${key.serializer}, ${value.serializer}${options})`,
-    };
-  }
+        visitEnumTupleVariantType(enumTupleVariantType, _, self) {
+          const name = pascalCase(enumTupleVariantType.name);
+          const kindAttribute = `__kind: "${name}"`;
+          const struct = nodes.structTypeNode([
+            nodes.structFieldTypeNode({
+              name: 'fields',
+              child: enumTupleVariantType.tuple,
+            }),
+          ]);
+          const type = visit(struct, self);
+          return {
+            ...type,
+            strictType: `{ ${kindAttribute},${type.strictType.slice(1, -1)}}`,
+            looseType: `{ ${kindAttribute},${type.looseType.slice(1, -1)}}`,
+            serializer: `['${name}', ${type.serializer}]`,
+          };
+        },
 
-  visitOptionType(optionType: nodes.OptionTypeNode): JavaScriptTypeManifest {
-    const childManifest = visit(optionType.child, this);
-    childManifest.strictImports.add('umi', 'Option');
-    childManifest.looseImports.add('umi', 'OptionOrNullable');
-    childManifest.serializerImports.add('umiSerializers', 'option');
-    const options: string[] = [];
+        visitMapType(mapType, _, self) {
+          const key = visit(mapType.key, self);
+          const value = visit(mapType.value, self);
+          const mergedManifest = mergeManifests([key, value]);
+          mergedManifest.serializerImports.add('umiSerializers', 'map');
+          const sizeOption = getArrayLikeSizeOption(
+            mapType.size,
+            mergedManifest,
+            self
+          );
+          const options = sizeOption ? `, { ${sizeOption} }` : '';
+          return {
+            ...mergedManifest,
+            strictType: `Map<${key.strictType}, ${value.strictType}>`,
+            looseType: `Map<${key.looseType}, ${value.looseType}>`,
+            serializer: `map(${key.serializer}, ${value.serializer}${options})`,
+          };
+        },
 
-    // Prefix option.
-    if (
-      optionType.prefix.format !== 'u8' ||
-      optionType.prefix.endian !== 'le'
-    ) {
-      const prefixManifest = visit(optionType.prefix, this);
-      childManifest.strictImports.mergeWith(prefixManifest.strictImports);
-      childManifest.looseImports.mergeWith(prefixManifest.looseImports);
-      childManifest.serializerImports.mergeWith(
-        prefixManifest.serializerImports
-      );
-      options.push(`prefix: ${prefixManifest.serializer}`);
-    }
+        visitOptionType(optionType, _, self) {
+          const childManifest = visit(optionType.child, self);
+          childManifest.strictImports.add('umi', 'Option');
+          childManifest.looseImports.add('umi', 'OptionOrNullable');
+          childManifest.serializerImports.add('umiSerializers', 'option');
+          const options: string[] = [];
 
-    // Fixed option.
-    if (optionType.fixed) {
-      options.push(`fixed: true`);
-    }
+          // Prefix option.
+          if (
+            optionType.prefix.format !== 'u8' ||
+            optionType.prefix.endian !== 'le'
+          ) {
+            const prefixManifest = visit(optionType.prefix, self);
+            childManifest.strictImports.mergeWith(prefixManifest.strictImports);
+            childManifest.looseImports.mergeWith(prefixManifest.looseImports);
+            childManifest.serializerImports.mergeWith(
+              prefixManifest.serializerImports
+            );
+            options.push(`prefix: ${prefixManifest.serializer}`);
+          }
 
-    const optionsAsString =
-      options.length > 0 ? `, { ${options.join(', ')} }` : '';
+          // Fixed option.
+          if (optionType.fixed) {
+            options.push(`fixed: true`);
+          }
 
-    return {
-      ...childManifest,
-      strictType: `Option<${childManifest.strictType}>`,
-      looseType: `OptionOrNullable<${childManifest.looseType}>`,
-      serializer: `option(${childManifest.serializer}${optionsAsString})`,
-    };
-  }
+          const optionsAsString =
+            options.length > 0 ? `, { ${options.join(', ')} }` : '';
 
-  visitSetType(setType: nodes.SetTypeNode): JavaScriptTypeManifest {
-    const childManifest = visit(setType.child, this);
-    childManifest.serializerImports.add('umiSerializers', 'set');
-    const sizeOption = this.getArrayLikeSizeOption(setType.size, childManifest);
-    const options = sizeOption ? `, { ${sizeOption} }` : '';
-    return {
-      ...childManifest,
-      strictType: `Set<${childManifest.strictType}>`,
-      looseType: `Set<${childManifest.looseType}>`,
-      serializer: `set(${childManifest.serializer + options})`,
-    };
-  }
+          return {
+            ...childManifest,
+            strictType: `Option<${childManifest.strictType}>`,
+            looseType: `OptionOrNullable<${childManifest.looseType}>`,
+            serializer: `option(${childManifest.serializer}${optionsAsString})`,
+          };
+        },
 
-  visitStructType(structType: nodes.StructTypeNode): JavaScriptTypeManifest {
-    const { parentName } = this;
-    this.parentName = null;
+        visitSetType(setType, _, self) {
+          const childManifest = visit(setType.child, self);
+          childManifest.serializerImports.add('umiSerializers', 'set');
+          const sizeOption = getArrayLikeSizeOption(
+            setType.size,
+            childManifest,
+            self
+          );
+          const options = sizeOption ? `, { ${sizeOption} }` : '';
+          return {
+            ...childManifest,
+            strictType: `Set<${childManifest.strictType}>`,
+            looseType: `Set<${childManifest.looseType}>`,
+            serializer: `set(${childManifest.serializer + options})`,
+          };
+        },
 
-    const fields = structType.fields.map((field) => visit(field, this));
-    const mergedManifest = this.mergeManifests(fields);
-    mergedManifest.serializerImports.add('umiSerializers', 'struct');
-    const fieldSerializers = fields.map((field) => field.serializer).join(', ');
-    const structDescription =
-      parentName?.strict && !parentName.strict.match(/['"<>]/)
-        ? `, { description: '${pascalCase(parentName.strict)}' }`
-        : '';
-    const serializerTypeParams = parentName ? parentName.strict : 'any';
-    const baseManifest = {
-      ...mergedManifest,
-      strictType: `{ ${fields.map((field) => field.strictType).join('')} }`,
-      looseType: `{ ${fields.map((field) => field.looseType).join('')} }`,
-      serializer:
-        `struct<${serializerTypeParams}>` +
-        `([${fieldSerializers}]${structDescription})`,
-    };
+        visitStructType(structType, _, self) {
+          const currentParentName = parentName;
+          parentName = null;
 
-    const optionalFields = structType.fields.filter(
-      (f) => f.defaultsTo !== null
-    );
-    if (optionalFields.length === 0) {
-      return baseManifest;
-    }
+          const fields = structType.fields.map((field) => visit(field, self));
+          const mergedManifest = mergeManifests(fields);
+          mergedManifest.serializerImports.add('umiSerializers', 'struct');
+          const fieldSerializers = fields
+            .map((field) => field.serializer)
+            .join(', ');
+          const structDescription =
+            currentParentName?.strict &&
+            !currentParentName.strict.match(/['"<>]/)
+              ? `, { description: '${pascalCase(currentParentName.strict)}' }`
+              : '';
+          const serializerTypeParams = currentParentName
+            ? currentParentName.strict
+            : 'any';
+          const baseManifest = {
+            ...mergedManifest,
+            strictType: `{ ${fields
+              .map((field) => field.strictType)
+              .join('')} }`,
+            looseType: `{ ${fields.map((field) => field.looseType).join('')} }`,
+            serializer:
+              `struct<${serializerTypeParams}>` +
+              `([${fieldSerializers}]${structDescription})`,
+          };
 
-    const defaultValues = optionalFields
-      .map((f) => {
-        const key = camelCase(f.name);
-        const defaultsTo = f.defaultsTo as NonNullable<typeof f.defaultsTo>;
-        const { render: renderedValue, imports } = renderValueNode(
-          defaultsTo.value
-        );
-        baseManifest.serializerImports.mergeWith(imports);
-        if (defaultsTo.strategy === 'omitted') {
-          return `${key}: ${renderedValue}`;
-        }
-        return `${key}: value.${key} ?? ${renderedValue}`;
+          const optionalFields = structType.fields.filter(
+            (f) => f.defaultsTo !== null
+          );
+          if (optionalFields.length === 0) {
+            return baseManifest;
+          }
+
+          const defaultValues = optionalFields
+            .map((f) => {
+              const key = camelCase(f.name);
+              const defaultsTo = f.defaultsTo as NonNullable<
+                typeof f.defaultsTo
+              >;
+              const { render: renderedValue, imports } = renderValueNode(
+                defaultsTo.value
+              );
+              baseManifest.serializerImports.mergeWith(imports);
+              if (defaultsTo.strategy === 'omitted') {
+                return `${key}: ${renderedValue}`;
+              }
+              return `${key}: value.${key} ?? ${renderedValue}`;
+            })
+            .join(', ');
+          const mapSerializerTypeParams = currentParentName
+            ? `${currentParentName.loose}, any, ${currentParentName.strict}`
+            : 'any, any, any';
+          const mappedSerializer =
+            `mapSerializer<${mapSerializerTypeParams}>(` +
+            `${baseManifest.serializer}, ` +
+            `(value) => ({ ...value, ${defaultValues} }) ` +
+            `)`;
+          baseManifest.serializerImports.add('umiSerializers', 'mapSerializer');
+          return { ...baseManifest, serializer: mappedSerializer };
+        },
+
+        visitStructFieldType(structFieldType, _, self) {
+          const name = camelCase(structFieldType.name);
+          const fieldChild = visit(structFieldType.child, self);
+          const docblock = createDocblock(structFieldType.docs);
+          const baseField = {
+            ...fieldChild,
+            strictType: `${docblock}${name}: ${fieldChild.strictType}; `,
+            looseType: `${docblock}${name}: ${fieldChild.looseType}; `,
+            serializer: `['${name}', ${fieldChild.serializer}]`,
+          };
+          if (structFieldType.defaultsTo === null) {
+            return baseField;
+          }
+          if (structFieldType.defaultsTo.strategy === 'optional') {
+            return {
+              ...baseField,
+              looseType: `${docblock}${name}?: ${fieldChild.looseType}; `,
+            };
+          }
+          return {
+            ...baseField,
+            looseType: '',
+            looseImports: new JavaScriptImportMap(),
+          };
+        },
+
+        visitTupleType(tupleType, _, self) {
+          const children = tupleType.children.map((item) => visit(item, self));
+          const mergedManifest = mergeManifests(children);
+          mergedManifest.serializerImports.add('umiSerializers', 'tuple');
+          const childrenSerializers = children
+            .map((child) => child.serializer)
+            .join(', ');
+          return {
+            ...mergedManifest,
+            strictType: `[${children
+              .map((item) => item.strictType)
+              .join(', ')}]`,
+            looseType: `[${children.map((item) => item.looseType).join(', ')}]`,
+            serializer: `tuple([${childrenSerializers}])`,
+          };
+        },
+
+        visitBoolType(boolType, _, self) {
+          const looseImports = new JavaScriptImportMap();
+          const strictImports = new JavaScriptImportMap();
+          const serializerImports = new JavaScriptImportMap().add(
+            'umiSerializers',
+            'bool'
+          );
+          let sizeSerializer = '';
+          if (boolType.size.format !== 'u8' || boolType.size.endian !== 'le') {
+            const size = visit(boolType.size, self);
+            looseImports.mergeWith(size.looseImports);
+            strictImports.mergeWith(size.strictImports);
+            serializerImports.mergeWith(size.serializerImports);
+            sizeSerializer = `{ size: ${size.serializer} }`;
+          }
+
+          return {
+            isEnum: false,
+            strictType: 'boolean',
+            looseType: 'boolean',
+            serializer: `bool(${sizeSerializer})`,
+            looseImports,
+            strictImports,
+            serializerImports,
+          };
+        },
+
+        visitBytesType(bytesType, _, self) {
+          const strictImports = new JavaScriptImportMap();
+          const looseImports = new JavaScriptImportMap();
+          const serializerImports = new JavaScriptImportMap().add(
+            'umiSerializers',
+            'bytes'
+          );
+          const options: string[] = [];
+
+          // Size option.
+          if (bytesType.size.kind === 'prefixed') {
+            const prefix = visit(bytesType.size.prefix, self);
+            strictImports.mergeWith(prefix.strictImports);
+            looseImports.mergeWith(prefix.looseImports);
+            serializerImports.mergeWith(prefix.serializerImports);
+            options.push(`size: ${prefix.serializer}`);
+          } else if (bytesType.size.kind === 'fixed') {
+            options.push(`size: ${bytesType.size.value}`);
+          }
+
+          const optionsAsString =
+            options.length > 0 ? `{ ${options.join(', ')} }` : '';
+
+          return {
+            isEnum: false,
+            strictType: 'Uint8Array',
+            strictImports,
+            looseType: 'Uint8Array',
+            looseImports,
+            serializer: `bytes(${optionsAsString})`,
+            serializerImports,
+          };
+        },
+
+        visitNumberType(numberType) {
+          const isBigNumber = ['u64', 'u128', 'i64', 'i128'].includes(
+            numberType.format
+          );
+          const serializerImports = new JavaScriptImportMap().add(
+            'umiSerializers',
+            numberType.format
+          );
+          let endianness = '';
+          if (numberType.endian === 'be') {
+            serializerImports.add('umiSerializers', 'Endian');
+            endianness = '{ endian: Endian.Big }';
+          }
+          return {
+            isEnum: false,
+            strictType: isBigNumber ? 'bigint' : 'number',
+            strictImports: new JavaScriptImportMap(),
+            looseType: isBigNumber ? 'number | bigint' : 'number',
+            looseImports: new JavaScriptImportMap(),
+            serializer: `${numberType.format}(${endianness})`,
+            serializerImports,
+          };
+        },
+
+        visitAmountType(amountType, _, self) {
+          const numberManifest = visit(amountType.number, self);
+          if (!nodes.isUnsignedInteger(amountType.number)) {
+            throw new Error(
+              `Amount wrappers can only be applied to unsigned ` +
+                `integer types. Got type [${amountType.number.toString()}].`
+            );
+          }
+          const { identifier, decimals } = amountType;
+          const idAndDecimals = `'${identifier}', ${decimals}`;
+          const isSolAmount = identifier === 'SOL' && decimals === 9;
+          const amountTypeString = isSolAmount
+            ? 'SolAmount'
+            : `Amount<${idAndDecimals}>`;
+          const amountImport = isSolAmount ? 'SolAmount' : 'Amount';
+          numberManifest.strictImports.add('umi', amountImport);
+          numberManifest.looseImports.add('umi', amountImport);
+          numberManifest.serializerImports.add('umi', 'mapAmountSerializer');
+          return {
+            ...numberManifest,
+            strictType: amountTypeString,
+            looseType: amountTypeString,
+            serializer: `mapAmountSerializer(${numberManifest.serializer}, ${idAndDecimals})`,
+          };
+        },
+
+        visitDateTimeType(dateTimeType, _, self) {
+          const numberManifest = visit(dateTimeType.number, self);
+          if (!nodes.isInteger(dateTimeType.number)) {
+            throw new Error(
+              `DateTime wrappers can only be applied to integer ` +
+                `types. Got type [${dateTimeType.number.toString()}].`
+            );
+          }
+          numberManifest.strictImports.add('umi', 'DateTime');
+          numberManifest.looseImports.add('umi', 'DateTimeInput');
+          numberManifest.serializerImports.add('umi', 'mapDateTimeSerializer');
+          return {
+            ...numberManifest,
+            strictType: `DateTime`,
+            looseType: `DateTimeInput`,
+            serializer: `mapDateTimeSerializer(${numberManifest.serializer})`,
+          };
+        },
+
+        visitSolAmountType(solAmountType, _, self) {
+          const numberManifest = visit(solAmountType.number, self);
+          if (!nodes.isUnsignedInteger(solAmountType.number)) {
+            throw new Error(
+              `Amount wrappers can only be applied to unsigned ` +
+                `integer types. Got type [${solAmountType.number.toString()}].`
+            );
+          }
+          const idAndDecimals = `'SOL', 9`;
+          numberManifest.strictImports.add('umi', 'SolAmount');
+          numberManifest.looseImports.add('umi', 'SolAmount');
+          numberManifest.serializerImports.add('umi', 'mapAmountSerializer');
+          return {
+            ...numberManifest,
+            strictType: 'SolAmount',
+            looseType: 'SolAmount',
+            serializer: `mapAmountSerializer(${numberManifest.serializer}, ${idAndDecimals})`,
+          };
+        },
+
+        visitPublicKeyType() {
+          const imports = new JavaScriptImportMap().add('umi', 'PublicKey');
+          return {
+            isEnum: false,
+            strictType: 'PublicKey',
+            strictImports: imports,
+            looseType: 'PublicKey',
+            looseImports: imports,
+            serializer: `publicKeySerializer()`,
+            serializerImports: new JavaScriptImportMap()
+              .add('umiSerializers', 'publicKey')
+              .addAlias('umiSerializers', 'publicKey', 'publicKeySerializer'),
+          };
+        },
+
+        visitStringType(stringType, _, self) {
+          const looseImports = new JavaScriptImportMap();
+          const strictImports = new JavaScriptImportMap();
+          const serializerImports = new JavaScriptImportMap().add(
+            'umiSerializers',
+            'string'
+          );
+          const options: string[] = [];
+
+          // Encoding option.
+          if (stringType.encoding !== 'utf8') {
+            looseImports.add('umiSerializers', stringType.encoding);
+            strictImports.add('umiSerializers', stringType.encoding);
+            options.push(`encoding: ${stringType.encoding}`);
+          }
+
+          // Size option.
+          if (stringType.size.kind === 'remainder') {
+            options.push(`size: 'variable'`);
+          } else if (stringType.size.kind === 'fixed') {
+            options.push(`size: ${stringType.size.value}`);
+          } else if (
+            stringType.size.prefix.format !== 'u32' ||
+            stringType.size.prefix.endian !== 'le'
+          ) {
+            const prefix = visit(stringType.size.prefix, self);
+            looseImports.mergeWith(prefix.looseImports);
+            strictImports.mergeWith(prefix.strictImports);
+            serializerImports.mergeWith(prefix.serializerImports);
+            options.push(`size: ${prefix.serializer}`);
+          }
+
+          const optionsAsString =
+            options.length > 0 ? `{ ${options.join(', ')} }` : '';
+
+          return {
+            isEnum: false,
+            strictType: 'string',
+            strictImports,
+            looseType: 'string',
+            looseImports,
+            serializer: `string(${optionsAsString})`,
+            serializerImports,
+          };
+        },
       })
-      .join(', ');
-    const mapSerializerTypeParams = parentName
-      ? `${parentName.loose}, any, ${parentName.strict}`
-      : 'any, any, any';
-    const mappedSerializer =
-      `mapSerializer<${mapSerializerTypeParams}>(` +
-      `${baseManifest.serializer}, ` +
-      `(value) => ({ ...value, ${defaultValues} }) ` +
-      `)`;
-    baseManifest.serializerImports.add('umiSerializers', 'mapSerializer');
-    return { ...baseManifest, serializer: mappedSerializer };
-  }
+  );
+}
 
-  visitStructFieldType(
-    structFieldType: nodes.StructFieldTypeNode
-  ): JavaScriptTypeManifest {
-    const name = camelCase(structFieldType.name);
-    const fieldChild = visit(structFieldType.child, this);
-    const docblock = this.createDocblock(structFieldType.docs);
-    const baseField = {
-      ...fieldChild,
-      strictType: `${docblock}${name}: ${fieldChild.strictType}; `,
-      looseType: `${docblock}${name}: ${fieldChild.looseType}; `,
-      serializer: `['${name}', ${fieldChild.serializer}]`,
-    };
-    if (structFieldType.defaultsTo === null) {
-      return baseField;
-    }
-    if (structFieldType.defaultsTo.strategy === 'optional') {
-      return {
-        ...baseField,
-        looseType: `${docblock}${name}?: ${fieldChild.looseType}; `,
-      };
-    }
-    return {
-      ...baseField,
-      looseType: '',
-      looseImports: new JavaScriptImportMap(),
-    };
-  }
+function mergeManifests(
+  manifests: JavaScriptTypeManifest[]
+): Pick<
+  JavaScriptTypeManifest,
+  'strictImports' | 'looseImports' | 'serializerImports' | 'isEnum'
+> {
+  return {
+    strictImports: new JavaScriptImportMap().mergeWith(
+      ...manifests.map((td) => td.strictImports)
+    ),
+    looseImports: new JavaScriptImportMap().mergeWith(
+      ...manifests.map((td) => td.looseImports)
+    ),
+    serializerImports: new JavaScriptImportMap().mergeWith(
+      ...manifests.map((td) => td.serializerImports)
+    ),
+    isEnum: false,
+  };
+}
 
-  visitTupleType(tupleType: nodes.TupleTypeNode): JavaScriptTypeManifest {
-    const children = tupleType.children.map((item) => visit(item, this));
-    const mergedManifest = this.mergeManifests(children);
-    mergedManifest.serializerImports.add('umiSerializers', 'tuple');
-    const childrenSerializers = children
-      .map((child) => child.serializer)
-      .join(', ');
-    return {
-      ...mergedManifest,
-      strictType: `[${children.map((item) => item.strictType).join(', ')}]`,
-      looseType: `[${children.map((item) => item.looseType).join(', ')}]`,
-      serializer: `tuple([${childrenSerializers}])`,
-    };
-  }
+function createDocblock(docs: string[]): string {
+  if (docs.length <= 0) return '';
+  if (docs.length === 1) return `\n/** ${docs[0]} */\n`;
+  const lines = docs.map((doc) => ` * ${doc}`);
+  return `\n/**\n${lines.join('\n')}\n */\n`;
+}
 
-  visitBoolType(boolType: nodes.BoolTypeNode): JavaScriptTypeManifest {
-    const looseImports = new JavaScriptImportMap();
-    const strictImports = new JavaScriptImportMap();
-    const serializerImports = new JavaScriptImportMap().add(
-      'umiSerializers',
-      'bool'
-    );
-    let sizeSerializer = '';
-    if (boolType.size.format !== 'u8' || boolType.size.endian !== 'le') {
-      const size = visit(boolType.size, this);
-      looseImports.mergeWith(size.looseImports);
-      strictImports.mergeWith(size.strictImports);
-      serializerImports.mergeWith(size.serializerImports);
-      sizeSerializer = `{ size: ${size.serializer} }`;
-    }
-
-    return {
-      isEnum: false,
-      strictType: 'boolean',
-      looseType: 'boolean',
-      serializer: `bool(${sizeSerializer})`,
-      looseImports,
-      strictImports,
-      serializerImports,
-    };
-  }
-
-  visitBytesType(bytesType: nodes.BytesTypeNode): JavaScriptTypeManifest {
-    const strictImports = new JavaScriptImportMap();
-    const looseImports = new JavaScriptImportMap();
-    const serializerImports = new JavaScriptImportMap().add(
-      'umiSerializers',
-      'bytes'
-    );
-    const options: string[] = [];
-
-    // Size option.
-    if (bytesType.size.kind === 'prefixed') {
-      const prefix = visit(bytesType.size.prefix, this);
-      strictImports.mergeWith(prefix.strictImports);
-      looseImports.mergeWith(prefix.looseImports);
-      serializerImports.mergeWith(prefix.serializerImports);
-      options.push(`size: ${prefix.serializer}`);
-    } else if (bytesType.size.kind === 'fixed') {
-      options.push(`size: ${bytesType.size.value}`);
-    }
-
-    const optionsAsString =
-      options.length > 0 ? `{ ${options.join(', ')} }` : '';
-
-    return {
-      isEnum: false,
-      strictType: 'Uint8Array',
-      strictImports,
-      looseType: 'Uint8Array',
-      looseImports,
-      serializer: `bytes(${optionsAsString})`,
-      serializerImports,
-    };
-  }
-
-  visitNumberType(numberType: nodes.NumberTypeNode): JavaScriptTypeManifest {
-    const isBigNumber = ['u64', 'u128', 'i64', 'i128'].includes(
-      numberType.format
-    );
-    const serializerImports = new JavaScriptImportMap().add(
-      'umiSerializers',
-      numberType.format
-    );
-    let endianness = '';
-    if (numberType.endian === 'be') {
-      serializerImports.add('umiSerializers', 'Endian');
-      endianness = '{ endian: Endian.Big }';
-    }
-    return {
-      isEnum: false,
-      strictType: isBigNumber ? 'bigint' : 'number',
-      strictImports: new JavaScriptImportMap(),
-      looseType: isBigNumber ? 'number | bigint' : 'number',
-      looseImports: new JavaScriptImportMap(),
-      serializer: `${numberType.format}(${endianness})`,
-      serializerImports,
-    };
-  }
-
-  visitAmountType(amountType: nodes.AmountTypeNode): JavaScriptTypeManifest {
-    const numberManifest = visit(amountType.number, this);
-    if (!nodes.isUnsignedInteger(amountType.number)) {
-      throw new Error(
-        `Amount wrappers can only be applied to unsigned ` +
-          `integer types. Got type [${amountType.number.toString()}].`
-      );
-    }
-    const { identifier, decimals } = amountType;
-    const idAndDecimals = `'${identifier}', ${decimals}`;
-    const isSolAmount = identifier === 'SOL' && decimals === 9;
-    const amountTypeString = isSolAmount
-      ? 'SolAmount'
-      : `Amount<${idAndDecimals}>`;
-    const amountImport = isSolAmount ? 'SolAmount' : 'Amount';
-    numberManifest.strictImports.add('umi', amountImport);
-    numberManifest.looseImports.add('umi', amountImport);
-    numberManifest.serializerImports.add('umi', 'mapAmountSerializer');
-    return {
-      ...numberManifest,
-      strictType: amountTypeString,
-      looseType: amountTypeString,
-      serializer: `mapAmountSerializer(${numberManifest.serializer}, ${idAndDecimals})`,
-    };
-  }
-
-  visitDateTimeType(
-    dateTimeType: nodes.DateTimeTypeNode
-  ): JavaScriptTypeManifest {
-    const numberManifest = visit(dateTimeType.number, this);
-    if (!nodes.isInteger(dateTimeType.number)) {
-      throw new Error(
-        `DateTime wrappers can only be applied to integer ` +
-          `types. Got type [${dateTimeType.number.toString()}].`
-      );
-    }
-    numberManifest.strictImports.add('umi', 'DateTime');
-    numberManifest.looseImports.add('umi', 'DateTimeInput');
-    numberManifest.serializerImports.add('umi', 'mapDateTimeSerializer');
-    return {
-      ...numberManifest,
-      strictType: `DateTime`,
-      looseType: `DateTimeInput`,
-      serializer: `mapDateTimeSerializer(${numberManifest.serializer})`,
-    };
-  }
-
-  visitSolAmountType(
-    solAmountType: nodes.SolAmountTypeNode
-  ): JavaScriptTypeManifest {
-    const numberManifest = visit(solAmountType.number, this);
-    if (!nodes.isUnsignedInteger(solAmountType.number)) {
-      throw new Error(
-        `Amount wrappers can only be applied to unsigned ` +
-          `integer types. Got type [${solAmountType.number.toString()}].`
-      );
-    }
-    const idAndDecimals = `'SOL', 9`;
-    numberManifest.strictImports.add('umi', 'SolAmount');
-    numberManifest.looseImports.add('umi', 'SolAmount');
-    numberManifest.serializerImports.add('umi', 'mapAmountSerializer');
-    return {
-      ...numberManifest,
-      strictType: 'SolAmount',
-      looseType: 'SolAmount',
-      serializer: `mapAmountSerializer(${numberManifest.serializer}, ${idAndDecimals})`,
-    };
-  }
-
-  visitPublicKeyType(): JavaScriptTypeManifest {
-    const imports = new JavaScriptImportMap().add('umi', 'PublicKey');
-    return {
-      isEnum: false,
-      strictType: 'PublicKey',
-      strictImports: imports,
-      looseType: 'PublicKey',
-      looseImports: imports,
-      serializer: `publicKeySerializer()`,
-      serializerImports: new JavaScriptImportMap()
-        .add('umiSerializers', 'publicKey')
-        .addAlias('umiSerializers', 'publicKey', 'publicKeySerializer'),
-    };
-  }
-
-  visitStringType(stringType: nodes.StringTypeNode): JavaScriptTypeManifest {
-    const looseImports = new JavaScriptImportMap();
-    const strictImports = new JavaScriptImportMap();
-    const serializerImports = new JavaScriptImportMap().add(
-      'umiSerializers',
-      'string'
-    );
-    const options: string[] = [];
-
-    // Encoding option.
-    if (stringType.encoding !== 'utf8') {
-      looseImports.add('umiSerializers', stringType.encoding);
-      strictImports.add('umiSerializers', stringType.encoding);
-      options.push(`encoding: ${stringType.encoding}`);
-    }
-
-    // Size option.
-    if (stringType.size.kind === 'remainder') {
-      options.push(`size: 'variable'`);
-    } else if (stringType.size.kind === 'fixed') {
-      options.push(`size: ${stringType.size.value}`);
-    } else if (
-      stringType.size.prefix.format !== 'u32' ||
-      stringType.size.prefix.endian !== 'le'
-    ) {
-      const prefix = visit(stringType.size.prefix, this);
-      looseImports.mergeWith(prefix.looseImports);
-      strictImports.mergeWith(prefix.strictImports);
-      serializerImports.mergeWith(prefix.serializerImports);
-      options.push(`size: ${prefix.serializer}`);
-    }
-
-    const optionsAsString =
-      options.length > 0 ? `{ ${options.join(', ')} }` : '';
-
-    return {
-      isEnum: false,
-      strictType: 'string',
-      strictImports,
-      looseType: 'string',
-      looseImports,
-      serializer: `string(${optionsAsString})`,
-      serializerImports,
-    };
-  }
-
-  protected mergeManifests(
-    manifests: JavaScriptTypeManifest[]
-  ): Pick<
+function getArrayLikeSizeOption(
+  size: nodes.ArrayTypeNode['size'],
+  manifest: Pick<
     JavaScriptTypeManifest,
-    'strictImports' | 'looseImports' | 'serializerImports' | 'isEnum'
-  > {
-    return {
-      strictImports: new JavaScriptImportMap().mergeWith(
-        ...manifests.map((td) => td.strictImports)
-      ),
-      looseImports: new JavaScriptImportMap().mergeWith(
-        ...manifests.map((td) => td.looseImports)
-      ),
-      serializerImports: new JavaScriptImportMap().mergeWith(
-        ...manifests.map((td) => td.serializerImports)
-      ),
-      isEnum: false,
-    };
-  }
+    'strictImports' | 'looseImports' | 'serializerImports'
+  >,
+  self: Visitor<JavaScriptTypeManifest, 'numberTypeNode'>
+): string | null {
+  if (size.kind === 'fixed') return `size: ${size.value}`;
+  if (size.kind === 'remainder') return `size: 'remainder'`;
 
-  protected createDocblock(docs: string[]): string {
-    if (docs.length <= 0) return '';
-    if (docs.length === 1) return `\n/** ${docs[0]} */\n`;
-    const lines = docs.map((doc) => ` * ${doc}`);
-    return `\n/**\n${lines.join('\n')}\n */\n`;
-  }
+  const prefixManifest = visit(size.prefix, self);
+  if (prefixManifest.serializer === 'u32()') return null;
 
-  protected getArrayLikeSizeOption(
-    size: nodes.ArrayTypeNode['size'],
-    manifest: Pick<
-      JavaScriptTypeManifest,
-      'strictImports' | 'looseImports' | 'serializerImports'
-    >
-  ): string | null {
-    if (size.kind === 'fixed') return `size: ${size.value}`;
-    if (size.kind === 'remainder') return `size: 'remainder'`;
-
-    const prefixManifest = visit(size.prefix, this);
-    if (prefixManifest.serializer === 'u32()') return null;
-
-    manifest.strictImports.mergeWith(prefixManifest.strictImports);
-    manifest.looseImports.mergeWith(prefixManifest.looseImports);
-    manifest.serializerImports.mergeWith(prefixManifest.serializerImports);
-    return `size: ${prefixManifest.serializer}`;
-  }
+  manifest.strictImports.mergeWith(prefixManifest.strictImports);
+  manifest.looseImports.mergeWith(prefixManifest.looseImports);
+  manifest.serializerImports.mergeWith(prefixManifest.serializerImports);
+  return `size: ${prefixManifest.serializer}`;
 }

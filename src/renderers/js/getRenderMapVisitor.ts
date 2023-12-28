@@ -31,7 +31,7 @@ import {
   Visitor,
 } from '../../visitors';
 import {
-  GetJavaScriptTypeManifestVisitor,
+  getTypeManifestVisitor,
   JavaScriptTypeManifest,
 } from './getTypeManifestVisitor';
 import { JavaScriptContextMap } from './JavaScriptContextMap';
@@ -69,7 +69,7 @@ export function getRenderMapVisitor(
   let program: ProgramNode | null = null;
 
   const typeManifestVisitor =
-    options.typeManifestVisitor ?? new GetJavaScriptTypeManifestVisitor();
+    options.typeManifestVisitor ?? getTypeManifestVisitor();
   const resolvedInstructionInputVisitor =
     options.resolvedInstructionInputVisitor ??
     getResolvedInstructionInputsVisitor();
