@@ -41,6 +41,7 @@ export * from './topDownTransformerVisitor';
 export * from './transformDefinedTypesIntoAccountsVisitor';
 export * from './transformU8ArraysToBytesVisitor';
 export * from './unwrapDefinedTypesVisitor';
+export * from './unwrapInstructionArgsDefinedTypesVisitor';
 export * from './visitor';
 export * from './voidVisitor';
 export * from './writeRenderMapVisitor';

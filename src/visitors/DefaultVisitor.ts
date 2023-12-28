@@ -9,7 +9,7 @@ import {
   setInstructionAccountDefaultValuesVisitor,
 } from './setInstructionAccountDefaultValuesVisitor';
 import { transformU8ArraysToBytesVisitor } from './transformU8ArraysToBytesVisitor';
-import { UnwrapInstructionArgsDefinedTypesVisitor } from './transformers';
+import { unwrapInstructionArgsDefinedTypesVisitor } from './unwrapInstructionArgsDefinedTypesVisitor';
 import { Visitor, visit } from './visitor';
 
 export class DefaultVisitor extends BaseThrowVisitor<nodes.RootNode> {
@@ -34,7 +34,7 @@ export class DefaultVisitor extends BaseThrowVisitor<nodes.RootNode> {
         DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES
       )
     );
-    updateRoot(new UnwrapInstructionArgsDefinedTypesVisitor());
+    updateRoot(unwrapInstructionArgsDefinedTypesVisitor());
     updateRoot(flattenInstructionArgsStructVisitor());
 
     // Extras.
