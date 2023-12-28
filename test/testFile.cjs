@@ -211,7 +211,7 @@ kinobi.update(
 );
 
 kinobi.update(
-  new k.SetNumberWrappersVisitor({
+  k.setNumberWrappersVisitor({
     'DelegateArgs.SaleV1.amount': { kind: 'SolAmount' },
     'CandyMachineData.sellerFeeBasisPoints': {
       kind: 'Amount',

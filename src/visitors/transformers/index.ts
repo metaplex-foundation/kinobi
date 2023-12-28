@@ -1,4 +1,3 @@
-export * from './SetNumberWrappersVisitor';
 export * from './SetStructDefaultValuesVisitor';
 export * from './TransformDefinedTypesIntoAccountsVisitor';
 export * from './TransformNodesVisitor';
