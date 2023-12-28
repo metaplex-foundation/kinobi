@@ -228,7 +228,7 @@ kinobi.update(
   })
 );
 
-kinobi.update(k.unwrapTupleEnumWithSingleStructVisitor(['payloadType']));
+kinobi.update(k.unwrapTupleEnumWithSingleStructVisitor(['payloadType.*']));
 
 kinobi.update(k.unwrapDefinedTypesVisitor(['Data']));
 kinobi.update(

@@ -8,7 +8,12 @@ import {
   isLinkTypeNode,
   isStructTypeNode,
 } from '../nodes';
-import { MainCaseString, NodeStack } from '../shared';
+import {
+  MainCaseString,
+  NodeSelectorFunction,
+  NodeStack,
+  getNodeSelectorFunction,
+} from '../shared';
 import { bottomUpTransformerVisitor } from './bottomUpTransformerVisitor';
 import { getDefinedTypeHistogramVisitor } from './getDefinedTypeHistogramVisitor';
 import { rootNodeVisitor } from './singleNodeVisitor';
@@ -18,17 +23,17 @@ import { visit } from './visitor';
 export function unwrapTupleEnumWithSingleStructVisitor(
   enumsOrVariantsToUnwrap: string[] | '*' = '*'
 ) {
+  const selectorFunctions: NodeSelectorFunction[] =
+    enumsOrVariantsToUnwrap === '*'
+      ? [() => true]
+      : enumsOrVariantsToUnwrap.map((selector) =>
+          getNodeSelectorFunction(selector)
+        );
+
   const shouldUnwrap = (
     node: EnumTupleVariantTypeNode,
     stack: NodeStack
-  ): boolean => {
-    const stackWithNode = stack.clone();
-    stackWithNode.push(node);
-    if (enumsOrVariantsToUnwrap === '*') return true;
-    return enumsOrVariantsToUnwrap.some(
-      (selector) => stackWithNode.matchesWithNames(selector.split('.')) // TODO: use new NodeSelector
-    );
-  };
+  ): boolean => selectorFunctions.some((selector) => selector(node, stack));
 
   return rootNodeVisitor((root) => {
     const typesToPotentiallyUnwrap: string[] = [];
