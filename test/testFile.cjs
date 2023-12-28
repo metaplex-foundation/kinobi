@@ -57,7 +57,7 @@ kinobi.update(
 );
 
 kinobi.update(
-  new k.UpdateDefinedTypesVisitor({
+  k.updateDefinedTypesVisitor({
     'mplCandyMachineCore.Creator': { name: 'CmCreator' },
     'mplTokenAuthRules.Key': { name: 'TaKey' },
     'mplTokenMetadata.Key': { name: 'TmKey' },
