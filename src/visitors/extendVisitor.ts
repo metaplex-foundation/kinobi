@@ -1,3 +1,4 @@
+import { DontInfer } from '../shared';
 import { REGISTERED_NODES_KEYS, RegisteredNodes } from '../nodes';
 import {
   GetVisitorFunctionName,
@@ -17,7 +18,7 @@ export type VisitorOverrides<
 
 export function extendVisitor<TReturn, TNodeKeys extends keyof RegisteredNodes>(
   visitor: Visitor<TReturn, TNodeKeys>,
-  overrides: VisitorOverrides<TReturn, TNodeKeys>
+  overrides: DontInfer<VisitorOverrides<TReturn, TNodeKeys>>
 ): Visitor<TReturn, TNodeKeys> {
   const registeredVisitFunctions =
     REGISTERED_NODES_KEYS.map(getVisitFunctionName);
@@ -27,7 +28,14 @@ export function extendVisitor<TReturn, TNodeKeys extends keyof RegisteredNodes>(
       if (!(registeredVisitFunctions as string[]).includes(key)) {
         return [];
       }
+
       const castedKey = key as GetVisitorFunctionName<TNodeKeys>;
+
+      if (!visitor[castedKey]) {
+        throw new Error(
+          `Cannot extend visitor with function "${castedKey}" as the base visitor does not support it.`
+        );
+      }
 
       return [
         [

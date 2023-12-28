@@ -11,6 +11,8 @@ export type PickPartial<T, K extends keyof T> = Omit<T, K> &
 export type PartialExcept<T, K extends keyof T> = Pick<T, K> &
   Partial<Omit<T, K>>;
 
+export type DontInfer<T> = T extends any ? T : never;
+
 export function capitalize(str: string): string {
   if (str.length === 0) return str;
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
