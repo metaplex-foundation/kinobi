@@ -1,5 +1,4 @@
 export * from './TransformNodesVisitor';
-export * from './UnwrapTupleEnumWithSingleStructVisitor';
 export * from './UnwrapTypeDefinedLinksVisitor';
 export * from './UpdateAccountsVisitor';
 export * from './UpdateDefinedTypesVisitor';

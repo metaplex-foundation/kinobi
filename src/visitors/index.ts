@@ -42,6 +42,7 @@ export * from './transformDefinedTypesIntoAccountsVisitor';
 export * from './transformU8ArraysToBytesVisitor';
 export * from './unwrapDefinedTypesVisitor';
 export * from './unwrapInstructionArgsDefinedTypesVisitor';
+export * from './unwrapTupleEnumWithSingleStructVisitor';
 export * from './visitor';
 export * from './voidVisitor';
 export * from './writeRenderMapVisitor';
