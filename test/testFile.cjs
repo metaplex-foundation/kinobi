@@ -230,7 +230,7 @@ kinobi.update(
 
 kinobi.update(new k.UnwrapTupleEnumWithSingleStructVisitor(['payloadType']));
 
-kinobi.update(new k.UnwrapDefinedTypesVisitor(['Data']));
+kinobi.update(k.unwrapDefinedTypesVisitor(['Data']));
 kinobi.update(
   k.flattenStructVisitor({
     'mplTokenMetadata.Metadata': ['Data'],

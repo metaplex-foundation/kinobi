@@ -1,10 +1,10 @@
 import * as nodes from '../../nodes';
 import { MainCaseString, NodeStack } from '../../shared';
 import { BaseThrowVisitor } from '../BaseThrowVisitor';
-import { visit } from '../visitor';
 import { getDefinedTypeHistogramVisitor } from '../getDefinedTypeHistogramVisitor';
+import { unwrapDefinedTypesVisitor } from '../unwrapDefinedTypesVisitor';
+import { visit } from '../visitor';
 import { TransformNodesVisitor } from './TransformNodesVisitor';
-import { UnwrapDefinedTypesVisitor } from './UnwrapDefinedTypesVisitor';
 
 export class UnwrapTupleEnumWithSingleStructVisitor extends BaseThrowVisitor<nodes.RootNode> {
   constructor(readonly enumsOrVariantsToUnwrap: string[] | '*' = '*') {
@@ -64,7 +64,7 @@ export class UnwrapTupleEnumWithSingleStructVisitor extends BaseThrowVisitor<nod
         histogram[type as MainCaseString].total === 0
     );
 
-    newRoot = visit(newRoot, new UnwrapDefinedTypesVisitor(typesToUnwrap));
+    newRoot = visit(newRoot, unwrapDefinedTypesVisitor(typesToUnwrap));
     nodes.assertRootNode(newRoot);
 
     return newRoot;
