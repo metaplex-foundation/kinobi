@@ -41,7 +41,7 @@ import {
   getTypeDataEnumHelpersFragment,
   getTypeWithCodecFragment,
 } from './fragments';
-import { GetTypeManifestVisitor } from './GetTypeManifestVisitor';
+import { GetTypeManifestVisitor } from './getTypeManifestVisitor';
 import { ImportMap } from './ImportMap';
 import {
   DEFAULT_NAME_TRANSFORMERS,
