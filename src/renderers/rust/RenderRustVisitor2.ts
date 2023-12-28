@@ -5,7 +5,7 @@ import { BaseThrowVisitor, visit, writeRenderMapVisitor } from '../../visitors';
 import {
   GetRustRenderMapOptions,
   getRustRenderMapVisitor,
-} from './getRustRenderMapVisitor';
+} from './getRenderMapVisitor';
 
 export type RenderRustOptions = GetRustRenderMapOptions & {
   deleteFolderBeforeRendering?: boolean;

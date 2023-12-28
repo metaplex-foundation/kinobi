@@ -16,7 +16,7 @@ import {
   resolveTemplate,
 } from '../../shared';
 import { extendVisitor, staticVisitor, visit } from '../../visitors';
-import { GetRustTypeManifestVisitor } from './GetRustTypeManifestVisitor';
+import { GetRustTypeManifestVisitor } from './getTypeManifestVisitor';
 import { renderRustValueNode } from './RenderRustValueNode';
 import { RustImportMap } from './RustImportMap';
 
