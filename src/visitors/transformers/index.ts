@@ -1,5 +1,4 @@
 export * from './TransformNodesVisitor';
-export * from './UnwrapTypeDefinedLinksVisitor';
 export * from './UpdateAccountsVisitor';
 export * from './UpdateDefinedTypesVisitor';
 export * from './UpdateErrorsVisitor';
