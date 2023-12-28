@@ -194,7 +194,7 @@ kinobi.update(
   })
 );
 kinobi.update(
-  new k.UseCustomInstructionSerializerVisitor({
+  k.useCustomInstructionSerializerVisitor({
     CreateReservationList: true,
   })
 );
