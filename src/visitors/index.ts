@@ -46,6 +46,7 @@ export * from './unwrapTupleEnumWithSingleStructVisitor';
 export * from './unwrapTypeDefinedLinksVisitor';
 export * from './updateAccountsVisitor';
 export * from './updateDefinedTypesVisitor';
+export * from './updateErrorsVisitor';
 export * from './visitor';
 export * from './voidVisitor';
 export * from './writeRenderMapVisitor';
