@@ -67,7 +67,7 @@ kinobi.update(
 );
 
 kinobi.update(
-  new k.UpdateInstructionsVisitor({
+  k.updateInstructionsVisitor({
     'mplTokenAuthRules.Create': {
       name: 'CreateRuleSet',
       args: {

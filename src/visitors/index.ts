@@ -47,6 +47,7 @@ export * from './unwrapTypeDefinedLinksVisitor';
 export * from './updateAccountsVisitor';
 export * from './updateDefinedTypesVisitor';
 export * from './updateErrorsVisitor';
+export * from './updateInstructionsVisitor';
 export * from './visitor';
 export * from './voidVisitor';
 export * from './writeRenderMapVisitor';
