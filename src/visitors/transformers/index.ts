@@ -1,4 +1,3 @@
-export * from './TransformDefinedTypesIntoAccountsVisitor';
 export * from './TransformNodesVisitor';
 export * from './TransformU8ArraysToBytesVisitor';
 export * from './UnwrapDefinedTypesVisitor';

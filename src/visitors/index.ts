@@ -38,6 +38,7 @@ export * from './staticVisitor';
 export * from './tapVisitor';
 export * from './throwValidatorItemsVisitor';
 export * from './topDownTransformerVisitor';
+export * from './transformDefinedTypesIntoAccountsVisitor';
 export * from './visitor';
 export * from './voidVisitor';
 export * from './writeRenderMapVisitor';
