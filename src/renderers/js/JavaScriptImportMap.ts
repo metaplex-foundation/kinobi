@@ -1,5 +1,5 @@
 import type { ImportFrom } from '../../shared';
-import { JavaScriptTypeManifest } from './GetJavaScriptTypeManifestVisitor';
+import { JavaScriptTypeManifest } from './getTypeManifestVisitor';
 
 const DEFAULT_MODULE_MAP: Record<string, string> = {
   umi: '@metaplex-foundation/umi',

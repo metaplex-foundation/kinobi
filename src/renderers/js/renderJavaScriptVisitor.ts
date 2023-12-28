@@ -6,7 +6,7 @@ import {
   visit,
   writeRenderMapVisitor,
 } from '../../visitors';
-import { getJavaScriptValidatorBagVisitor } from './getJavaScriptValidatorBagVisitor';
+import { getValidatorBagVisitor } from './getValidatorBagVisitor';
 import {
   GetJavaScriptRenderMapOptions,
   getRenderMapVisitor,
@@ -30,7 +30,7 @@ export class RenderJavaScriptVisitor extends BaseThrowVisitor<void> {
     visit(
       root,
       throwValidatorItemsVisitor(
-        getJavaScriptValidatorBagVisitor(),
+        getValidatorBagVisitor(),
         this.options.throwLevel
       )
     );

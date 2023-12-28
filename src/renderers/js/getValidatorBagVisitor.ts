@@ -14,7 +14,7 @@ import {
   mergeVisitor,
 } from '../../visitors';
 
-export function getJavaScriptValidatorBagVisitor(): Visitor<ValidatorBag> {
+export function getValidatorBagVisitor(): Visitor<ValidatorBag> {
   const exportMap: Map<
     string,
     { node: Node; stack: NodeStack; exportType: string }

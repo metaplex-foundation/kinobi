@@ -33,11 +33,11 @@ import {
 import {
   GetJavaScriptTypeManifestVisitor,
   JavaScriptTypeManifest,
-} from './GetJavaScriptTypeManifestVisitor';
+} from './getTypeManifestVisitor';
 import { JavaScriptContextMap } from './JavaScriptContextMap';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
-import { renderJavaScriptInstructionDefaults } from './RenderJavaScriptInstructionDefaults2';
-import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode2';
+import { renderInstructionDefaults } from './renderInstructionDefaults';
+import { renderValueNode } from './renderValueNode';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -281,7 +281,7 @@ export function getRenderMapVisitor(
         (f) => f.name === discriminator.name
       );
       const discriminatorValue = discriminatorField?.defaultsTo?.value
-        ? renderJavaScriptValueNode(discriminatorField.defaultsTo.value)
+        ? renderValueNode(discriminatorField.defaultsTo.value)
         : undefined;
       if (discriminatorValue) {
         imports.mergeWith(discriminatorValue.imports);
@@ -331,7 +331,7 @@ export function getRenderMapVisitor(
         const seedManifest = visit(seed.type, typeManifestVisitor);
         imports.mergeWith(seedManifest.serializerImports);
         const seedValue = seed.value;
-        const valueManifest = renderJavaScriptValueNode(seedValue);
+        const valueManifest = renderValueNode(seedValue);
         (seedValue as any).render = valueManifest.render;
         imports.mergeWith(valueManifest.imports);
         return { ...seed, typeManifest: seedManifest };
@@ -441,7 +441,7 @@ export function getRenderMapVisitor(
     argObject = hasResolvedArgs ? 'resolvedArgs' : argObject;
     const resolvedInputs = visit(node, resolvedInstructionInputVisitor).map(
       (input: ResolvedInstructionInput) => {
-        const renderedInput = renderJavaScriptInstructionDefaults(
+        const renderedInput = renderInstructionDefaults(
           input,
           node.optionalAccountStrategy,
           argObject

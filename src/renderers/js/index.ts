@@ -1,5 +1,2 @@
-export * from './GetJavaScriptTypeManifestVisitor';
-export * from './getJavaScriptValidatorBagVisitor';
-export * from './RenderJavaScriptValueNode2';
-export * from './JavaScriptImportMap';
-export * from './RenderJavaScriptVisitor2';
+export { getValidatorBagVisitor as getJavaScriptValidatorBagVisitor } from './getValidatorBagVisitor';
+export * from './renderJavaScriptVisitor';

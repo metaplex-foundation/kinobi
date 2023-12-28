@@ -2,7 +2,7 @@ import * as nodes from '../../nodes';
 import { camelCase, pascalCase } from '../../shared';
 import { Visitor, visit } from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
-import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode2';
+import { renderValueNode } from './renderValueNode';
 
 export type JavaScriptTypeManifest = {
   isEnum: boolean;
@@ -386,7 +386,7 @@ export class GetJavaScriptTypeManifestVisitor
       .map((f) => {
         const key = camelCase(f.name);
         const defaultsTo = f.defaultsTo as NonNullable<typeof f.defaultsTo>;
-        const { render: renderedValue, imports } = renderJavaScriptValueNode(
+        const { render: renderedValue, imports } = renderValueNode(
           defaultsTo.value
         );
         baseManifest.serializerImports.mergeWith(imports);

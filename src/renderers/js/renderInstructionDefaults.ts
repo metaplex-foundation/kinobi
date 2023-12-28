@@ -9,9 +9,9 @@ import {
 import { ResolvedInstructionInput } from '../../visitors';
 import { JavaScriptContextMap } from './JavaScriptContextMap';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
-import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode2';
+import { renderValueNode } from './renderValueNode';
 
-export function renderJavaScriptInstructionDefaults(
+export function renderInstructionDefaults(
   input: ResolvedInstructionInput,
   optionalAccountStrategy: 'programId' | 'omitted',
   argObject: string
@@ -105,7 +105,7 @@ export function renderJavaScriptInstructionDefaults(
               seedValue.name
             )})`;
           }
-          const valueManifest = renderJavaScriptValueNode(seedValue.value);
+          const valueManifest = renderValueNode(seedValue.value);
           imports.mergeWith(valueManifest.imports);
           return `${seed}: ${valueManifest.render}`;
         }
@@ -152,7 +152,7 @@ export function renderJavaScriptInstructionDefaults(
       imports.add('shared', 'expectSome');
       return render(`expectSome(${argObject}.${camelCase(defaultsTo.name)})`);
     case 'value':
-      const valueManifest = renderJavaScriptValueNode(defaultsTo.value);
+      const valueManifest = renderValueNode(defaultsTo.value);
       imports.mergeWith(valueManifest.imports);
       return render(valueManifest.render);
     case 'resolver':
@@ -198,7 +198,7 @@ export function renderJavaScriptInstructionDefaults(
             ? `resolvedAccounts.${camelCase(defaultsTo.input.name)}.value`
             : `${argObject}.${camelCase(defaultsTo.input.name)}`;
         if (defaultsTo.value) {
-          const comparedValue = renderJavaScriptValueNode(defaultsTo.value);
+          const comparedValue = renderValueNode(defaultsTo.value);
           imports.mergeWith(comparedValue.imports);
           const operator = negatedCondition ? '!==' : '===';
           condition = `${comparedInputName} ${operator} ${comparedValue.render}`;
@@ -253,14 +253,14 @@ function renderNestedInstructionDefault(
   if (!defaultsTo) return undefined;
 
   if (input.kind === 'account') {
-    return renderJavaScriptInstructionDefaults(
+    return renderInstructionDefaults(
       { ...input, defaultsTo: defaultsTo as InstructionAccountDefault },
       optionalAccountStrategy,
       argObject
     );
   }
 
-  return renderJavaScriptInstructionDefaults(
+  return renderInstructionDefaults(
     { ...input, defaultsTo: defaultsTo as InstructionArgDefault },
     optionalAccountStrategy,
     argObject
