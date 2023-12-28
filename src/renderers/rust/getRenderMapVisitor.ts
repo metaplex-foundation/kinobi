@@ -17,7 +17,7 @@ import {
 } from '../../shared';
 import { extendVisitor, staticVisitor, visit } from '../../visitors';
 import { GetRustTypeManifestVisitor } from './getTypeManifestVisitor';
-import { renderRustValueNode } from './renderValueNode';
+import { renderValueNode } from './renderValueNode';
 import { RustImportMap } from './RustImportMap';
 
 export type GetRustRenderMapOptions = {
@@ -25,7 +25,7 @@ export type GetRustRenderMapOptions = {
   dependencyMap?: Record<ImportFrom, string>;
 };
 
-export function getRustRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
+export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
   let program: ProgramNode | null = null;
 
   const renderParentInstructions = options.renderParentInstructions ?? false;
@@ -138,7 +138,7 @@ export function getRustRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
         if (seed.kind === 'constant') {
           const seedManifest = visit(seed.type, typeManifestVisitor);
           const seedValue = seed.value;
-          const valueManifest = renderRustValueNode(seedValue, true);
+          const valueManifest = renderValueNode(seedValue, true);
           (seedValue as any).render = valueManifest.render;
           seedsImports.mergeWith(valueManifest.imports);
           return { ...seed, typeManifest: seedManifest };
@@ -219,7 +219,7 @@ export function getRustRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
 
         let renderValue: string | null = null;
         if (field.defaultsTo) {
-          const { imports: argImports, render: value } = renderRustValueNode(
+          const { imports: argImports, render: value } = renderValueNode(
             field.defaultsTo.value
           );
           imports.mergeWith(argImports);

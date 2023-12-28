@@ -4,7 +4,7 @@ import { LogLevel, deleteFolder, logError, logWarn } from '../../shared';
 import { BaseThrowVisitor, visit, writeRenderMapVisitor } from '../../visitors';
 import {
   GetRustRenderMapOptions,
-  getRustRenderMapVisitor,
+  getRenderMapVisitor,
 } from './getRenderMapVisitor';
 
 export type RenderRustOptions = GetRustRenderMapOptions & {
@@ -37,7 +37,7 @@ export class RenderRustVisitor extends BaseThrowVisitor<void> {
     // Render the new files.
     visit(
       root,
-      writeRenderMapVisitor(getRustRenderMapVisitor(this.options), this.path)
+      writeRenderMapVisitor(getRenderMapVisitor(this.options), this.path)
     );
 
     // format the code

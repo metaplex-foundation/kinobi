@@ -10,6 +10,10 @@ export type RustTypeManifest = {
   nestedStructs: string[];
 };
 
+// export function getTypeManifestVisitor() {
+//   //
+// }
+
 export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
   public parentName: string | null = null;
 

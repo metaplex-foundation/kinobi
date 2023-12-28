@@ -2,7 +2,7 @@ import * as nodes from '../../nodes';
 import { pascalCase } from '../../shared';
 import { RustImportMap } from './RustImportMap';
 
-export function renderRustValueNode(
+export function renderValueNode(
   value: nodes.ValueNode,
   useStr: boolean = false
 ): {
@@ -12,19 +12,19 @@ export function renderRustValueNode(
   const imports = new RustImportMap();
   switch (value.kind) {
     case 'list':
-      const list = value.values.map((v) => renderRustValueNode(v));
+      const list = value.values.map((v) => renderValueNode(v));
       return {
         imports: imports.mergeWith(...list.map((c) => c.imports)),
         render: `[${list.map((c) => c.render).join(', ')}]`,
       };
     case 'tuple':
-      const tuple = value.values.map((v) => renderRustValueNode(v));
+      const tuple = value.values.map((v) => renderValueNode(v));
       return {
         imports: imports.mergeWith(...tuple.map((c) => c.imports)),
         render: `(${tuple.map((c) => c.render).join(', ')})`,
       };
     case 'set':
-      const set = value.values.map((v) => renderRustValueNode(v));
+      const set = value.values.map((v) => renderValueNode(v));
       imports.add('std::collection::HashSet');
       return {
         imports: imports.mergeWith(...set.map((c) => c.imports)),
@@ -32,8 +32,8 @@ export function renderRustValueNode(
       };
     case 'map':
       const map = value.values.map(([k, v]) => {
-        const mapKey = renderRustValueNode(k);
-        const mapValue = renderRustValueNode(v);
+        const mapKey = renderValueNode(k);
+        const mapValue = renderValueNode(v);
         return {
           imports: mapKey.imports.mergeWith(mapValue.imports),
           render: `[${mapKey.render}, ${mapValue.render}]`,
@@ -46,7 +46,7 @@ export function renderRustValueNode(
       };
     case 'struct':
       const struct = Object.entries(value.values).map(([k, v]) => {
-        const structValue = renderRustValueNode(v);
+        const structValue = renderValueNode(v);
         return {
           imports: structValue.imports,
           render: `${k}: ${structValue.render}`,
@@ -66,14 +66,14 @@ export function renderRustValueNode(
       if (value.value === 'scalar' || value.value === 'empty') {
         return { imports, render: `${enumName}::${variantName}` };
       }
-      const enumValue = renderRustValueNode(value.value);
+      const enumValue = renderValueNode(value.value);
       const fields = enumValue.render;
       return {
         imports: imports.mergeWith(enumValue.imports),
         render: `${enumName}::${variantName} ${fields}`,
       };
     case 'optionSome':
-      const child = renderRustValueNode(value.value);
+      const child = renderValueNode(value.value);
       return {
         ...child,
         render: `Some(${child.render})`,
