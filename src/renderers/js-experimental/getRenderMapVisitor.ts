@@ -41,7 +41,7 @@ import {
   getTypeDataEnumHelpersFragment,
   getTypeWithCodecFragment,
 } from './fragments';
-import { GetTypeManifestVisitor } from './getTypeManifestVisitor';
+import { getTypeManifestVisitor } from './getTypeManifestVisitor';
 import { ImportMap } from './ImportMap';
 import {
   DEFAULT_NAME_TRANSFORMERS,
@@ -86,7 +86,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
   const dependencyMap = options.dependencyMap ?? {};
   const asyncResolvers = options.asyncResolvers ?? [];
 
-  const typeManifestVisitor = new GetTypeManifestVisitor(nameApi);
+  const typeManifestVisitor = getTypeManifestVisitor(nameApi);
   const resolvedInstructionInputVisitor = getResolvedInstructionInputsVisitor();
 
   const render = (

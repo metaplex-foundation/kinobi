@@ -1,4 +1,4 @@
-import * as nodes from '../../../nodes';
+import { AccountNode, ProgramNode, RegisteredTypeNodes } from '../../../nodes';
 import { Visitor, visit } from '../../../visitors';
 import { ImportMap } from '../ImportMap';
 import { TypeManifest } from '../TypeManifest';
@@ -7,9 +7,9 @@ import { Fragment, fragment, fragmentFromTemplate } from './common';
 import { getValueNodeFragment } from './valueNode';
 
 export function getAccountPdaHelpersFragment(scope: {
-  accountNode: nodes.AccountNode;
-  programNode: nodes.ProgramNode;
-  typeManifestVisitor: Visitor<TypeManifest>;
+  accountNode: AccountNode;
+  programNode: ProgramNode;
+  typeManifestVisitor: Visitor<TypeManifest, keyof RegisteredTypeNodes>;
   nameApi: NameApi;
 }): Fragment {
   const { accountNode, programNode, typeManifestVisitor, nameApi } = scope;
