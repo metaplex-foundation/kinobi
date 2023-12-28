@@ -8,7 +8,7 @@ const kinobi = k.createFromIdls([
 ]);
 
 kinobi.update(
-  new k.UpdateProgramsVisitor({
+  k.updateProgramsVisitor({
     candyMachineCore: { name: 'mplCandyMachineCore', prefix: 'Cm' },
     mplTokenAuthRules: { prefix: 'Ta' },
     mplTokenMetadata: { prefix: 'Tm' },
