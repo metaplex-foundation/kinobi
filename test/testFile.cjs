@@ -200,7 +200,7 @@ kinobi.update(
 );
 
 kinobi.update(
-  new k.SetStructDefaultValuesVisitor({
+  k.setStructDefaultValuesVisitor({
     'mplTokenMetadata.Collection': {
       verified: k.vScalar(false),
     },

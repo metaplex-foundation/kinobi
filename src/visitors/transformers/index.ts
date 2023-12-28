@@ -1,4 +1,3 @@
-export * from './SetStructDefaultValuesVisitor';
 export * from './TransformDefinedTypesIntoAccountsVisitor';
 export * from './TransformNodesVisitor';
 export * from './TransformU8ArraysToBytesVisitor';
