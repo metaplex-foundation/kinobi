@@ -51,7 +51,7 @@ export function extendVisitor<TReturn, TNodeKeys extends keyof RegisteredNodes>(
               node: TNode,
               next: (node: TNode) => TReturn
             ) => TReturn;
-            return extendedFunction(node, baseFunction.bind(this));
+            return extendedFunction.bind(this)(node, baseFunction.bind(this));
           },
         ],
       ];

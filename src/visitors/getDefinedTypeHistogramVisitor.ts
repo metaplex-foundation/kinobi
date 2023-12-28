@@ -1,4 +1,5 @@
-import { MainCaseString } from '../shared';
+import { MainCaseString, pipe } from '../shared';
+import { extendVisitor } from './extendVisitor';
 import { interceptVisitor } from './interceptVisitor';
 import { mergeVisitor } from './mergeVisitor';
 import { Visitor, visit } from './visitor';
@@ -42,62 +43,70 @@ function mergeHistograms(
 export function getDefinedTypeHistogramVisitor(): Visitor<DefinedTypeHistogram> {
   let mode: 'account' | 'instruction' | 'definedType' | null = null;
   let stackLevel = 0;
-  const visitor = interceptVisitor(
+
+  return pipe(
     mergeVisitor(
       () => ({} as DefinedTypeHistogram),
       (_, histograms) => mergeHistograms(histograms)
     ),
-    (node, next) => {
-      stackLevel += 1;
-      const newNode = next(node);
-      stackLevel -= 1;
-      return newNode;
-    }
+    (v) =>
+      interceptVisitor(v, (node, next) => {
+        stackLevel += 1;
+        const newNode = next(node);
+        stackLevel -= 1;
+        return newNode;
+      }),
+    (v) =>
+      extendVisitor(v, {
+        visitAccount(node) {
+          mode = 'account';
+          stackLevel = 0;
+          const histogram = visit(node.data, this as typeof v);
+          mode = null;
+          return histogram;
+        },
+
+        visitInstruction(node) {
+          mode = 'instruction';
+          stackLevel = 0;
+          const dataHistogram = visit(node.dataArgs, this as typeof v);
+          const extraHistogram = visit(node.extraArgs, this as typeof v);
+          mode = null;
+          const subHistograms = node.subInstructions.map((ix) =>
+            visit(ix, this as typeof v)
+          );
+          return mergeHistograms([
+            dataHistogram,
+            extraHistogram,
+            ...subHistograms,
+          ]);
+        },
+
+        visitDefinedType(node) {
+          mode = 'definedType';
+          stackLevel = 0;
+          const histogram = visit(node.data, this as typeof v);
+          mode = null;
+          return histogram;
+        },
+
+        visitLinkType(node) {
+          if (node.importFrom !== 'generated') {
+            return {};
+          }
+
+          return {
+            [node.name]: {
+              total: 1,
+              inAccounts: Number(mode === 'account'),
+              inDefinedTypes: Number(mode === 'definedType'),
+              inInstructionArgs: Number(mode === 'instruction'),
+              directlyAsInstructionArgs: Number(
+                mode === 'instruction' && stackLevel <= 3
+              ),
+            },
+          };
+        },
+      })
   );
-
-  visitor.visitAccount = (node) => {
-    mode = 'account';
-    stackLevel = 0;
-    const histogram = visit(node.data, visitor);
-    mode = null;
-    return histogram;
-  };
-
-  visitor.visitInstruction = (node) => {
-    mode = 'instruction';
-    stackLevel = 0;
-    const dataHistogram = visit(node.dataArgs, visitor);
-    const extraHistogram = visit(node.extraArgs, visitor);
-    mode = null;
-    const subHistograms = node.subInstructions.map((ix) => visit(ix, visitor));
-    return mergeHistograms([dataHistogram, extraHistogram, ...subHistograms]);
-  };
-
-  visitor.visitDefinedType = (node) => {
-    mode = 'definedType';
-    stackLevel = 0;
-    const histogram = visit(node.data, visitor);
-    mode = null;
-    return histogram;
-  };
-
-  visitor.visitLinkType = (node) => {
-    if (node.importFrom !== 'generated') {
-      return {};
-    }
-
-    return {
-      [node.name]: {
-        total: 1,
-        inAccounts: Number(mode === 'account'),
-        inDefinedTypes: Number(mode === 'definedType'),
-        inInstructionArgs: Number(mode === 'instruction'),
-        directlyAsInstructionArgs: Number(
-          mode === 'instruction' && stackLevel <= 3
-        ),
-      },
-    };
-  };
-
-  return visitor;
 }
