@@ -15,7 +15,7 @@ import {
   snakeCase,
   resolveTemplate,
 } from '../../shared';
-import { staticVisitor, visit } from '../../visitors';
+import { extendVisitor, staticVisitor, visit } from '../../visitors';
 import { GetRustTypeManifestVisitor } from './GetRustTypeManifestVisitor';
 import { renderRustValueNode } from './RenderRustValueNode';
 import { RustImportMap } from './RustImportMap';
@@ -32,7 +32,7 @@ export function getRustRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
   const dependencyMap = options.dependencyMap ?? {};
   const typeManifestVisitor = new GetRustTypeManifestVisitor();
 
-  const visitor = staticVisitor(
+  const baseVisitor = staticVisitor(
     () => new RenderMap(),
     [
       'rootNode',
@@ -43,238 +43,240 @@ export function getRustRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
     ]
   );
 
-  visitor.visitRoot = (node) => {
-    const programsToExport = node.programs.filter((p) => !p.internal);
-    const accountsToExport = getAllAccounts(node).filter((a) => !a.internal);
-    const instructionsToExport = getAllInstructionsWithSubs(
-      node,
-      !renderParentInstructions
-    ).filter((i) => !i.internal);
-    const definedTypesToExport = getAllDefinedTypes(node).filter(
-      (t) => !t.internal
-    );
-    const hasAnythingToExport =
-      programsToExport.length > 0 ||
-      accountsToExport.length > 0 ||
-      instructionsToExport.length > 0 ||
-      definedTypesToExport.length > 0;
+  return extendVisitor(baseVisitor, {
+    visitRoot(node, _, self) {
+      const programsToExport = node.programs.filter((p) => !p.internal);
+      const accountsToExport = getAllAccounts(node).filter((a) => !a.internal);
+      const instructionsToExport = getAllInstructionsWithSubs(
+        node,
+        !renderParentInstructions
+      ).filter((i) => !i.internal);
+      const definedTypesToExport = getAllDefinedTypes(node).filter(
+        (t) => !t.internal
+      );
+      const hasAnythingToExport =
+        programsToExport.length > 0 ||
+        accountsToExport.length > 0 ||
+        instructionsToExport.length > 0 ||
+        definedTypesToExport.length > 0;
 
-    const ctx = {
-      root: node,
-      programsToExport,
-      accountsToExport,
-      instructionsToExport,
-      definedTypesToExport,
-      hasAnythingToExport,
-    };
+      const ctx = {
+        root: node,
+        programsToExport,
+        accountsToExport,
+        instructionsToExport,
+        definedTypesToExport,
+        hasAnythingToExport,
+      };
 
-    const map = new RenderMap();
-    if (programsToExport.length > 0) {
-      map
-        .add('programs.rs', render('programsMod.njk', ctx))
-        .add('errors/mod.rs', render('errorsMod.njk', ctx));
-    }
-    if (accountsToExport.length > 0) {
-      map.add('accounts/mod.rs', render('accountsMod.njk', ctx));
-    }
-    if (instructionsToExport.length > 0) {
-      map.add('instructions/mod.rs', render('instructionsMod.njk', ctx));
-    }
-    if (definedTypesToExport.length > 0) {
-      map.add('types/mod.rs', render('definedTypesMod.njk', ctx));
-    }
+      const map = new RenderMap();
+      if (programsToExport.length > 0) {
+        map
+          .add('programs.rs', render('programsMod.njk', ctx))
+          .add('errors/mod.rs', render('errorsMod.njk', ctx));
+      }
+      if (accountsToExport.length > 0) {
+        map.add('accounts/mod.rs', render('accountsMod.njk', ctx));
+      }
+      if (instructionsToExport.length > 0) {
+        map.add('instructions/mod.rs', render('instructionsMod.njk', ctx));
+      }
+      if (definedTypesToExport.length > 0) {
+        map.add('types/mod.rs', render('definedTypesMod.njk', ctx));
+      }
 
-    return map
-      .add('mod.rs', render('rootMod.njk', ctx))
-      .mergeWith(...node.programs.map((p) => visit(p, visitor)));
-  };
+      return map
+        .add('mod.rs', render('rootMod.njk', ctx))
+        .mergeWith(...node.programs.map((p) => visit(p, self)));
+    },
 
-  visitor.visitProgram = (node) => {
-    program = node;
-    const renderMap = new RenderMap()
-      .mergeWith(...node.accounts.map((account) => visit(account, visitor)))
-      .mergeWith(...node.definedTypes.map((type) => visit(type, visitor)));
+    visitProgram(node, _, self) {
+      program = node;
+      const renderMap = new RenderMap()
+        .mergeWith(...node.accounts.map((account) => visit(account, self)))
+        .mergeWith(...node.definedTypes.map((type) => visit(type, self)));
 
-    // Internal programs are support programs that
-    // were added to fill missing types or accounts.
-    // They don't need to render anything else.
-    if (node.internal) {
+      // Internal programs are support programs that
+      // were added to fill missing types or accounts.
+      // They don't need to render anything else.
+      if (node.internal) {
+        program = null;
+        return renderMap;
+      }
+
+      renderMap.mergeWith(
+        ...getAllInstructionsWithSubs(node, !renderParentInstructions).map(
+          (ix) => visit(ix, self)
+        )
+      );
+
+      // Errors.
+      if (node.errors.length > 0) {
+        renderMap.add(
+          `errors/${snakeCase(node.name)}.rs`,
+          render('errorsPage.njk', {
+            imports: new RustImportMap().toString(dependencyMap),
+            program: node,
+            errors: node.errors.map((error) => ({
+              ...error,
+              prefixedName: pascalCase(node.prefix) + pascalCase(error.name),
+            })),
+          })
+        );
+      }
+
       program = null;
       return renderMap;
-    }
+    },
 
-    renderMap.mergeWith(
-      ...getAllInstructionsWithSubs(node, !renderParentInstructions).map((ix) =>
-        visit(ix, visitor)
-      )
-    );
+    visitAccount(node) {
+      const typeManifest = visit(node, typeManifestVisitor);
 
-    // Errors.
-    if (node.errors.length > 0) {
-      renderMap.add(
-        `errors/${snakeCase(node.name)}.rs`,
-        render('errorsPage.njk', {
-          imports: new RustImportMap().toString(dependencyMap),
-          program: node,
-          errors: node.errors.map((error) => ({
-            ...error,
-            prefixedName: pascalCase(node.prefix) + pascalCase(error.name),
-          })),
+      // Seeds.
+      const seedsImports = new RustImportMap();
+      const seeds = node.seeds.map((seed) => {
+        if (seed.kind === 'constant') {
+          const seedManifest = visit(seed.type, typeManifestVisitor);
+          const seedValue = seed.value;
+          const valueManifest = renderRustValueNode(seedValue, true);
+          (seedValue as any).render = valueManifest.render;
+          seedsImports.mergeWith(valueManifest.imports);
+          return { ...seed, typeManifest: seedManifest };
+        }
+        if (seed.kind === 'variable') {
+          const seedManifest = visit(seed.type, typeManifestVisitor);
+          seedsImports.mergeWith(seedManifest.imports);
+          return { ...seed, typeManifest: seedManifest };
+        }
+        return seed;
+      });
+      const hasVariableSeeds =
+        node.seeds.filter((seed) => seed.kind === 'variable').length > 0;
+
+      const { imports } = typeManifest;
+
+      if (hasVariableSeeds) {
+        imports.mergeWith(seedsImports);
+      }
+
+      return new RenderMap().add(
+        `accounts/${snakeCase(node.name)}.rs`,
+        render('accountsPage.njk', {
+          account: node,
+          imports: imports
+            .remove(`generatedAccounts::${pascalCase(node.name)}`)
+            .toString(dependencyMap),
+          program,
+          typeManifest,
+          seeds,
+          hasVariableSeeds,
         })
       );
-    }
+    },
 
-    program = null;
-    return renderMap;
-  };
+    visitInstruction(node) {
+      // Imports.
+      const imports = new RustImportMap();
+      imports.add(['borsh::BorshDeserialize', 'borsh::BorshSerialize']);
 
-  visitor.visitAccount = (node) => {
-    const typeManifest = visit(node, typeManifestVisitor);
-
-    // Seeds.
-    const seedsImports = new RustImportMap();
-    const seeds = node.seeds.map((seed) => {
-      if (seed.kind === 'constant') {
-        const seedManifest = visit(seed.type, typeManifestVisitor);
-        const seedValue = seed.value;
-        const valueManifest = renderRustValueNode(seedValue, true);
-        (seedValue as any).render = valueManifest.render;
-        seedsImports.mergeWith(valueManifest.imports);
-        return { ...seed, typeManifest: seedManifest };
-      }
-      if (seed.kind === 'variable') {
-        const seedManifest = visit(seed.type, typeManifestVisitor);
-        seedsImports.mergeWith(seedManifest.imports);
-        return { ...seed, typeManifest: seedManifest };
-      }
-      return seed;
-    });
-    const hasVariableSeeds =
-      node.seeds.filter((seed) => seed.kind === 'variable').length > 0;
-
-    const { imports } = typeManifest;
-
-    if (hasVariableSeeds) {
-      imports.mergeWith(seedsImports);
-    }
-
-    return new RenderMap().add(
-      `accounts/${snakeCase(node.name)}.rs`,
-      render('accountsPage.njk', {
-        account: node,
-        imports: imports
-          .remove(`generatedAccounts::${pascalCase(node.name)}`)
-          .toString(dependencyMap),
-        program,
-        typeManifest,
-        seeds,
-        hasVariableSeeds,
-      })
-    );
-  };
-
-  visitor.visitInstruction = (node) => {
-    // Imports.
-    const imports = new RustImportMap();
-    imports.add(['borsh::BorshDeserialize', 'borsh::BorshSerialize']);
-
-    // canMergeAccountsAndArgs
-    const accountsAndArgsConflicts =
-      getConflictsForInstructionAccountsAndArgs(node);
-    if (accountsAndArgsConflicts.length > 0) {
-      logWarn(
-        `[Rust] Accounts and args of instruction [${node.name}] have the following ` +
-          `conflicting attributes [${accountsAndArgsConflicts.join(', ')}]. ` +
-          `Thus, the conflicting arguments will be suffixed with "_arg". ` +
-          'You may want to rename the conflicting attributes.'
-      );
-    }
-
-    // Instruction args.
-    const instructionArgs: {
-      name: string;
-      type: string;
-      default: boolean;
-      optional: boolean;
-      innerOptionType: string | null;
-      value: string | null;
-    }[] = [];
-    let hasArgs = false;
-    let hasOptional = false;
-
-    node.dataArgs.struct.fields.forEach((field) => {
-      typeManifestVisitor.parentName =
-        pascalCase(node.dataArgs.name) + pascalCase(field.name);
-      typeManifestVisitor.nestedStruct = true;
-      const manifest = visit(field.child, typeManifestVisitor);
-      imports.mergeWith(manifest.imports);
-      const innerOptionType = isOptionTypeNode(field.child)
-        ? manifest.type.slice('Option<'.length, -1)
-        : null;
-      typeManifestVisitor.parentName = null;
-      typeManifestVisitor.nestedStruct = false;
-
-      let renderValue: string | null = null;
-      if (field.defaultsTo) {
-        const { imports: argImports, render: value } = renderRustValueNode(
-          field.defaultsTo.value
+      // canMergeAccountsAndArgs
+      const accountsAndArgsConflicts =
+        getConflictsForInstructionAccountsAndArgs(node);
+      if (accountsAndArgsConflicts.length > 0) {
+        logWarn(
+          `[Rust] Accounts and args of instruction [${node.name}] have the following ` +
+            `conflicting attributes [${accountsAndArgsConflicts.join(
+              ', '
+            )}]. ` +
+            `Thus, the conflicting arguments will be suffixed with "_arg". ` +
+            'You may want to rename the conflicting attributes.'
         );
-        imports.mergeWith(argImports);
-        renderValue = value;
       }
 
-      hasArgs = hasArgs || field.defaultsTo?.strategy !== 'omitted';
-      hasOptional = hasOptional || field.defaultsTo?.strategy === 'optional';
+      // Instruction args.
+      const instructionArgs: {
+        name: string;
+        type: string;
+        default: boolean;
+        optional: boolean;
+        innerOptionType: string | null;
+        value: string | null;
+      }[] = [];
+      let hasArgs = false;
+      let hasOptional = false;
 
-      const name = accountsAndArgsConflicts.includes(field.name)
-        ? `${field.name}_arg`
-        : field.name;
+      node.dataArgs.struct.fields.forEach((field) => {
+        typeManifestVisitor.parentName =
+          pascalCase(node.dataArgs.name) + pascalCase(field.name);
+        typeManifestVisitor.nestedStruct = true;
+        const manifest = visit(field.child, typeManifestVisitor);
+        imports.mergeWith(manifest.imports);
+        const innerOptionType = isOptionTypeNode(field.child)
+          ? manifest.type.slice('Option<'.length, -1)
+          : null;
+        typeManifestVisitor.parentName = null;
+        typeManifestVisitor.nestedStruct = false;
 
-      instructionArgs.push({
-        name,
-        type: manifest.type,
-        default: field.defaultsTo?.strategy === 'omitted',
-        optional: field.defaultsTo?.strategy === 'optional',
-        innerOptionType,
-        value: renderValue,
+        let renderValue: string | null = null;
+        if (field.defaultsTo) {
+          const { imports: argImports, render: value } = renderRustValueNode(
+            field.defaultsTo.value
+          );
+          imports.mergeWith(argImports);
+          renderValue = value;
+        }
+
+        hasArgs = hasArgs || field.defaultsTo?.strategy !== 'omitted';
+        hasOptional = hasOptional || field.defaultsTo?.strategy === 'optional';
+
+        const name = accountsAndArgsConflicts.includes(field.name)
+          ? `${field.name}_arg`
+          : field.name;
+
+        instructionArgs.push({
+          name,
+          type: manifest.type,
+          default: field.defaultsTo?.strategy === 'omitted',
+          optional: field.defaultsTo?.strategy === 'optional',
+          innerOptionType,
+          value: renderValue,
+        });
       });
-    });
 
-    const typeManifest = visit(node, typeManifestVisitor);
+      const typeManifest = visit(node, typeManifestVisitor);
 
-    return new RenderMap().add(
-      `instructions/${snakeCase(node.name)}.rs`,
-      render('instructionsPage.njk', {
-        instruction: node,
-        imports: imports
-          .remove(`generatedInstructions::${pascalCase(node.name)}`)
-          .toString(dependencyMap),
-        instructionArgs,
-        hasArgs,
-        hasOptional,
-        program,
-        typeManifest,
-      })
-    );
-  };
+      return new RenderMap().add(
+        `instructions/${snakeCase(node.name)}.rs`,
+        render('instructionsPage.njk', {
+          instruction: node,
+          imports: imports
+            .remove(`generatedInstructions::${pascalCase(node.name)}`)
+            .toString(dependencyMap),
+          instructionArgs,
+          hasArgs,
+          hasOptional,
+          program,
+          typeManifest,
+        })
+      );
+    },
 
-  visitor.visitDefinedType = (node) => {
-    const typeManifest = visit(node, typeManifestVisitor);
-    const imports = new RustImportMap().mergeWithManifest(typeManifest);
+    visitDefinedType(node) {
+      const typeManifest = visit(node, typeManifestVisitor);
+      const imports = new RustImportMap().mergeWithManifest(typeManifest);
 
-    return new RenderMap().add(
-      `types/${snakeCase(node.name)}.rs`,
-      render('definedTypesPage.njk', {
-        definedType: node,
-        imports: imports
-          .remove(`generatedTypes::${pascalCase(node.name)}`)
-          .toString(dependencyMap),
-        typeManifest,
-      })
-    );
-  };
-
-  return visitor;
+      return new RenderMap().add(
+        `types/${snakeCase(node.name)}.rs`,
+        render('definedTypesPage.njk', {
+          definedType: node,
+          imports: imports
+            .remove(`generatedTypes::${pascalCase(node.name)}`)
+            .toString(dependencyMap),
+          typeManifest,
+        })
+      );
+    },
+  });
 }
 
 function render(
