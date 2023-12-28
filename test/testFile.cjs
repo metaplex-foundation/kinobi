@@ -251,7 +251,7 @@ kinobiReconstructed.accept(
 );
 
 kinobiReconstructed.accept(
-  new k.RenderJavaScriptExperimentalVisitor(
+  k.renderJavaScriptExperimentalVisitor(
     './test/packages/js-experimental/src/generated',
     { asyncResolvers: ['resolveMasterEditionFromTokenStandard'] }
   )
