@@ -1,4 +1,9 @@
-import * as nodes from '../../nodes';
+import {
+  REGISTERED_TYPE_NODE_KEYS,
+  isScalarEnum,
+  structFieldTypeNode,
+  structTypeNode,
+} from '../../nodes';
 import { SizeStrategy, camelCase, pascalCase, pipe } from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
 import { ImportMap } from './ImportMap';
@@ -20,7 +25,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           decoder: fragment(''),
         } as TypeManifest),
       [
-        ...nodes.REGISTERED_TYPE_NODE_KEYS,
+        ...REGISTERED_TYPE_NODE_KEYS,
         'definedTypeNode',
         'accountNode',
         'accountDataNode',
@@ -156,7 +161,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
               ? `, { ${decoderOptions.join(', ')} }`
               : '';
 
-          if (nodes.isScalarEnum(enumType)) {
+          if (isScalarEnum(enumType)) {
             if (currentParentName === null) {
               throw new Error(
                 'Scalar enums cannot be inlined and must be introduced ' +
@@ -268,8 +273,8 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
         visitEnumTupleVariantType(enumTupleVariantType, _, self) {
           const name = pascalCase(enumTupleVariantType.name);
           const kindAttribute = `__kind: "${name}"`;
-          const struct = nodes.structTypeNode([
-            nodes.structFieldTypeNode({
+          const struct = structTypeNode([
+            structFieldTypeNode({
               name: 'fields',
               child: enumTupleVariantType.tuple,
             }),
