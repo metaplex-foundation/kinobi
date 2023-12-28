@@ -30,6 +30,7 @@ export * from './setAnchorDiscriminatorsVisitor';
 export * from './setFixedAccountSizesVisitor';
 export * from './setInstructionAccountDefaultValuesVisitor';
 export * from './setInstructionDiscriminatorsVisitor';
+export * from './setMissingDefinedTypesVisitor';
 export * from './singleNodeVisitor';
 export * from './staticVisitor';
 export * from './tapVisitor';
