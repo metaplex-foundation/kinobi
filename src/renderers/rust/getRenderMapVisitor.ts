@@ -17,7 +17,7 @@ import {
 } from '../../shared';
 import { extendVisitor, staticVisitor, visit } from '../../visitors';
 import { GetRustTypeManifestVisitor } from './getTypeManifestVisitor';
-import { renderRustValueNode } from './RenderRustValueNode';
+import { renderRustValueNode } from './renderValueNode';
 import { RustImportMap } from './RustImportMap';
 
 export type GetRustRenderMapOptions = {
