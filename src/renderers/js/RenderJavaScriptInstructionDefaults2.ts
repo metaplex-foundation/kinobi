@@ -9,7 +9,7 @@ import {
 import { ResolvedInstructionInput } from '../../visitors';
 import { JavaScriptContextMap } from './JavaScriptContextMap';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
-import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode';
+import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode2';
 
 export function renderJavaScriptInstructionDefaults(
   input: ResolvedInstructionInput,

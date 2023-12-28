@@ -36,8 +36,8 @@ import {
 } from './GetJavaScriptTypeManifestVisitor';
 import { JavaScriptContextMap } from './JavaScriptContextMap';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
-import { renderJavaScriptInstructionDefaults } from './RenderJavaScriptInstructionDefaults';
-import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode';
+import { renderJavaScriptInstructionDefaults } from './RenderJavaScriptInstructionDefaults2';
+import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode2';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,

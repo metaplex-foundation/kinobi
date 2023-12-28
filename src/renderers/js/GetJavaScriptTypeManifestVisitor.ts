@@ -2,7 +2,7 @@ import * as nodes from '../../nodes';
 import { camelCase, pascalCase } from '../../shared';
 import { Visitor, visit } from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
-import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode';
+import { renderJavaScriptValueNode } from './RenderJavaScriptValueNode2';
 
 export type JavaScriptTypeManifest = {
   isEnum: boolean;
