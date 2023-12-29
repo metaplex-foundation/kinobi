@@ -1,53 +1,92 @@
-import * as nodes from '../nodes';
+import {
+  Node,
+  REGISTERED_NODES_KEYS,
+  RegisteredNodes,
+  accountDataNode,
+  accountNode,
+  amountTypeNode,
+  arrayTypeNode,
+  assertAccountDataNode,
+  assertAccountNode,
+  assertDefinedTypeNode,
+  assertEnumVariantTypeNode,
+  assertErrorNode,
+  assertInstructionAccountNode,
+  assertInstructionDataArgsNode,
+  assertInstructionExtraArgsNode,
+  assertInstructionNode,
+  assertLinkTypeNode,
+  assertNumberTypeNode,
+  assertProgramNode,
+  assertStructFieldTypeNode,
+  assertStructTypeNode,
+  assertTupleTypeNode,
+  assertTypeNode,
+  boolTypeNode,
+  dateTimeTypeNode,
+  definedTypeNode,
+  enumStructVariantTypeNode,
+  enumTupleVariantTypeNode,
+  enumTypeNode,
+  instructionDataArgsNode,
+  instructionExtraArgsNode,
+  instructionNode,
+  mapTypeNode,
+  optionTypeNode,
+  programNode,
+  removeNullAndAssertNodeFilter,
+  rootNode,
+  setTypeNode,
+  solAmountTypeNode,
+  structFieldTypeNode,
+  structTypeNode,
+  tupleTypeNode,
+} from '../nodes';
 import { AccountSeed } from '../shared';
-import { Visitor, visit as baseVisit } from './visitor';
 import { staticVisitor } from './staticVisitor';
+import { Visitor, visit as baseVisit } from './visitor';
 
 export function identityVisitor<
-  TNodeKeys extends keyof nodes.RegisteredNodes = keyof nodes.RegisteredNodes
+  TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
 >(
-  nodeKeys: TNodeKeys[] = nodes.REGISTERED_NODES_KEYS as TNodeKeys[]
-): Visitor<nodes.Node | null, TNodeKeys> {
-  const castedNodeKeys: (keyof nodes.RegisteredNodes)[] = nodeKeys;
+  nodeKeys: TNodeKeys[] = REGISTERED_NODES_KEYS as TNodeKeys[]
+): Visitor<Node | null, TNodeKeys> {
+  const castedNodeKeys: (keyof RegisteredNodes)[] = nodeKeys;
   const visitor = staticVisitor(
     (node) => ({ ...node }),
     castedNodeKeys
-  ) as Visitor<nodes.Node | null>;
+  ) as Visitor<Node | null>;
   const visit =
-    (v: Visitor<nodes.Node | null>) =>
-    (node: nodes.Node): nodes.Node | null =>
+    (v: Visitor<Node | null>) =>
+    (node: Node): Node | null =>
       castedNodeKeys.includes(node.kind) ? baseVisit(node, v) : { ...node };
 
   if (castedNodeKeys.includes('rootNode')) {
     visitor.visitRoot = function visitRoot(node) {
-      return nodes.rootNode(
+      return rootNode(
         node.programs
           .map((program) => visit(this)(program))
-          .filter(nodes.removeNullAndAssertNodeFilter(nodes.assertProgramNode))
+          .filter(removeNullAndAssertNodeFilter(assertProgramNode))
       );
     };
   }
 
   if (castedNodeKeys.includes('programNode')) {
     visitor.visitProgram = function visitProgram(node) {
-      return nodes.programNode({
+      return programNode({
         ...node,
         accounts: node.accounts
           .map((account) => visit(this)(account))
-          .filter(nodes.removeNullAndAssertNodeFilter(nodes.assertAccountNode)),
+          .filter(removeNullAndAssertNodeFilter(assertAccountNode)),
         instructions: node.instructions
           .map((instruction) => visit(this)(instruction))
-          .filter(
-            nodes.removeNullAndAssertNodeFilter(nodes.assertInstructionNode)
-          ),
+          .filter(removeNullAndAssertNodeFilter(assertInstructionNode)),
         definedTypes: node.definedTypes
           .map((type) => visit(this)(type))
-          .filter(
-            nodes.removeNullAndAssertNodeFilter(nodes.assertDefinedTypeNode)
-          ),
+          .filter(removeNullAndAssertNodeFilter(assertDefinedTypeNode)),
         errors: node.errors
           .map((error) => visit(this)(error))
-          .filter(nodes.removeNullAndAssertNodeFilter(nodes.assertErrorNode)),
+          .filter(removeNullAndAssertNodeFilter(assertErrorNode)),
       });
     };
   }
@@ -56,17 +95,17 @@ export function identityVisitor<
     visitor.visitAccount = function visitAccount(node) {
       const data = visit(this)(node.data);
       if (data === null) return null;
-      nodes.assertAccountDataNode(data);
+      assertAccountDataNode(data);
       const seeds = node.seeds
         .map((seed) => {
           if (seed.kind !== 'variable') return seed;
           const newType = visit(this)(seed.type);
           if (newType === null) return null;
-          nodes.assertTypeNode(newType);
+          assertTypeNode(newType);
           return { ...seed, type: newType };
         })
         .filter((s): s is AccountSeed => s !== null);
-      return nodes.accountNode({ ...node, data, seeds });
+      return accountNode({ ...node, data, seeds });
     };
   }
 
@@ -74,35 +113,29 @@ export function identityVisitor<
     visitor.visitAccountData = function visitAccountData(node) {
       const struct = visit(this)(node.struct);
       if (struct === null) return null;
-      nodes.assertStructTypeNode(struct);
+      assertStructTypeNode(struct);
       const link = node.link ? visit(this)(node.link) : undefined;
-      if (link !== undefined) nodes.assertLinkTypeNode(link);
-      return nodes.accountDataNode({ ...node, struct, link });
+      if (link !== undefined) assertLinkTypeNode(link);
+      return accountDataNode({ ...node, struct, link });
     };
   }
 
   if (castedNodeKeys.includes('instructionNode')) {
     visitor.visitInstruction = function visitInstruction(node) {
       const dataArgs = visit(this)(node.dataArgs);
-      nodes.assertInstructionDataArgsNode(dataArgs);
+      assertInstructionDataArgsNode(dataArgs);
       const extraArgs = visit(this)(node.extraArgs);
-      nodes.assertInstructionExtraArgsNode(extraArgs);
-      return nodes.instructionNode({
+      assertInstructionExtraArgsNode(extraArgs);
+      return instructionNode({
         ...node,
         dataArgs,
         extraArgs,
         accounts: node.accounts
           .map((account) => visit(this)(account))
-          .filter(
-            nodes.removeNullAndAssertNodeFilter(
-              nodes.assertInstructionAccountNode
-            )
-          ),
+          .filter(removeNullAndAssertNodeFilter(assertInstructionAccountNode)),
         subInstructions: node.subInstructions
           .map((ix) => visit(this)(ix))
-          .filter(
-            nodes.removeNullAndAssertNodeFilter(nodes.assertInstructionNode)
-          ),
+          .filter(removeNullAndAssertNodeFilter(assertInstructionNode)),
       });
     };
   }
@@ -111,10 +144,10 @@ export function identityVisitor<
     visitor.visitInstructionDataArgs = function visitInstructionDataArgs(node) {
       const struct = visit(this)(node.struct);
       if (struct === null) return null;
-      nodes.assertStructTypeNode(struct);
+      assertStructTypeNode(struct);
       const link = node.link ? visit(this)(node.link) : undefined;
-      if (link !== undefined) nodes.assertLinkTypeNode(link);
-      return nodes.instructionDataArgsNode({ ...node, struct, link });
+      if (link !== undefined) assertLinkTypeNode(link);
+      return instructionDataArgsNode({ ...node, struct, link });
     };
   }
 
@@ -124,10 +157,10 @@ export function identityVisitor<
     ) {
       const struct = visit(this)(node.struct);
       if (struct === null) return null;
-      nodes.assertStructTypeNode(struct);
+      assertStructTypeNode(struct);
       const link = node.link ? visit(this)(node.link) : undefined;
-      if (link !== undefined) nodes.assertLinkTypeNode(link);
-      return nodes.instructionExtraArgsNode({ ...node, struct, link });
+      if (link !== undefined) assertLinkTypeNode(link);
+      return instructionExtraArgsNode({ ...node, struct, link });
     };
   }
 
@@ -135,8 +168,8 @@ export function identityVisitor<
     visitor.visitDefinedType = function visitDefinedType(node) {
       const data = visit(this)(node.data);
       if (data === null) return null;
-      nodes.assertTypeNode(data);
-      return nodes.definedTypeNode({ ...node, data });
+      assertTypeNode(data);
+      return definedTypeNode({ ...node, data });
     };
   }
 
@@ -144,19 +177,17 @@ export function identityVisitor<
     visitor.visitArrayType = function visitArrayType(node) {
       const child = visit(this)(node.child);
       if (child === null) return null;
-      nodes.assertTypeNode(child);
-      return nodes.arrayTypeNode(child, { ...node });
+      assertTypeNode(child);
+      return arrayTypeNode(child, { ...node });
     };
   }
 
   if (castedNodeKeys.includes('enumTypeNode')) {
     visitor.visitEnumType = function visitEnumType(node) {
-      return nodes.enumTypeNode(
+      return enumTypeNode(
         node.variants
           .map((variant) => visit(this)(variant))
-          .filter(
-            nodes.removeNullAndAssertNodeFilter(nodes.assertEnumVariantTypeNode)
-          ),
+          .filter(removeNullAndAssertNodeFilter(assertEnumVariantTypeNode)),
         { ...node }
       );
     };
@@ -168,8 +199,8 @@ export function identityVisitor<
     ) {
       const newStruct = visit(this)(node.struct);
       if (!newStruct) return null;
-      nodes.assertStructTypeNode(newStruct);
-      return nodes.enumStructVariantTypeNode(node.name, newStruct);
+      assertStructTypeNode(newStruct);
+      return enumStructVariantTypeNode(node.name, newStruct);
     };
   }
 
@@ -179,8 +210,8 @@ export function identityVisitor<
     ) {
       const newTuple = visit(this)(node.tuple);
       if (!newTuple) return null;
-      nodes.assertTupleTypeNode(newTuple);
-      return nodes.enumTupleVariantTypeNode(node.name, newTuple);
+      assertTupleTypeNode(newTuple);
+      return enumTupleVariantTypeNode(node.name, newTuple);
     };
   }
 
@@ -189,9 +220,9 @@ export function identityVisitor<
       const key = visit(this)(node.key);
       const value = visit(this)(node.value);
       if (key === null || value === null) return null;
-      nodes.assertTypeNode(key);
-      nodes.assertTypeNode(value);
-      return nodes.mapTypeNode(key, value, { ...node });
+      assertTypeNode(key);
+      assertTypeNode(value);
+      return mapTypeNode(key, value, { ...node });
     };
   }
 
@@ -199,11 +230,11 @@ export function identityVisitor<
     visitor.visitOptionType = function visitOptionType(node) {
       const prefix = visit(this)(node.prefix);
       if (prefix === null) return null;
-      nodes.assertNumberTypeNode(prefix);
+      assertNumberTypeNode(prefix);
       const child = visit(this)(node.child);
       if (child === null) return null;
-      nodes.assertTypeNode(child);
-      return nodes.optionTypeNode(child, { ...node, prefix });
+      assertTypeNode(child);
+      return optionTypeNode(child, { ...node, prefix });
     };
   }
 
@@ -211,8 +242,8 @@ export function identityVisitor<
     visitor.visitBoolType = function visitBoolType(node) {
       const size = visit(this)(node.size);
       if (size === null) return null;
-      nodes.assertNumberTypeNode(size);
-      return nodes.boolTypeNode(size);
+      assertNumberTypeNode(size);
+      return boolTypeNode(size);
     };
   }
 
@@ -220,19 +251,17 @@ export function identityVisitor<
     visitor.visitSetType = function visitSetType(node) {
       const child = visit(this)(node.child);
       if (child === null) return null;
-      nodes.assertTypeNode(child);
-      return nodes.setTypeNode(child, { ...node });
+      assertTypeNode(child);
+      return setTypeNode(child, { ...node });
     };
   }
 
   if (castedNodeKeys.includes('structTypeNode')) {
     visitor.visitStructType = function visitStructType(node) {
-      return nodes.structTypeNode(
+      return structTypeNode(
         node.fields
           .map((field) => visit(this)(field))
-          .filter(
-            nodes.removeNullAndAssertNodeFilter(nodes.assertStructFieldTypeNode)
-          )
+          .filter(removeNullAndAssertNodeFilter(assertStructFieldTypeNode))
       );
     };
   }
@@ -241,17 +270,17 @@ export function identityVisitor<
     visitor.visitStructFieldType = function visitStructFieldType(node) {
       const child = visit(this)(node.child);
       if (child === null) return null;
-      nodes.assertTypeNode(child);
-      return nodes.structFieldTypeNode({ ...node, child });
+      assertTypeNode(child);
+      return structFieldTypeNode({ ...node, child });
     };
   }
 
   if (castedNodeKeys.includes('tupleTypeNode')) {
     visitor.visitTupleType = function visitTupleType(node) {
-      return nodes.tupleTypeNode(
+      return tupleTypeNode(
         node.children
           .map((child) => visit(this)(child))
-          .filter(nodes.removeNullAndAssertNodeFilter(nodes.assertTypeNode))
+          .filter(removeNullAndAssertNodeFilter(assertTypeNode))
       );
     };
   }
@@ -260,8 +289,8 @@ export function identityVisitor<
     visitor.visitAmountType = function visitAmountType(node) {
       const number = visit(this)(node.number);
       if (number === null) return null;
-      nodes.assertNumberTypeNode(number);
-      return nodes.amountTypeNode(number, node.identifier, node.decimals);
+      assertNumberTypeNode(number);
+      return amountTypeNode(number, node.identifier, node.decimals);
     };
   }
 
@@ -269,8 +298,8 @@ export function identityVisitor<
     visitor.visitDateTimeType = function visitDateTimeType(node) {
       const number = visit(this)(node.number);
       if (number === null) return null;
-      nodes.assertNumberTypeNode(number);
-      return nodes.dateTimeTypeNode(number);
+      assertNumberTypeNode(number);
+      return dateTimeTypeNode(number);
     };
   }
 
@@ -278,10 +307,10 @@ export function identityVisitor<
     visitor.visitSolAmountType = function visitSolAmountType(node) {
       const number = visit(this)(node.number);
       if (number === null) return null;
-      nodes.assertNumberTypeNode(number);
-      return nodes.solAmountTypeNode(number);
+      assertNumberTypeNode(number);
+      return solAmountTypeNode(number);
     };
   }
 
-  return visitor as Visitor<nodes.Node, TNodeKeys>;
+  return visitor as Visitor<Node, TNodeKeys>;
 }
