@@ -165,6 +165,9 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
     });
     const hasVariableSeeds =
       account.seeds.filter((seed) => seed.kind === 'variable').length > 0;
+    const constantSeeds = account.seeds.filter(
+      (seed) => seed.kind === 'constant'
+    ).length;
 
     const { imports } = typeManifest;
 
@@ -183,6 +186,7 @@ export class GetRustRenderMapVisitor extends BaseThrowVisitor<RenderMap> {
         typeManifest,
         seeds,
         hasVariableSeeds,
+        constantSeeds,
       })
     );
   }

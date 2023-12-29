@@ -2,9 +2,9 @@ name: Main
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, v0.16 ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, v0.16 ]
 
 jobs:
   lint_fix:

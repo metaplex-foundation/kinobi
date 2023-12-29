@@ -17,6 +17,6 @@ pub struct HiddenSettings {
     /// Shared URI
     pub uri: String,
     /// Hash of the hidden settings file
-    #[cfg_attr(feature = "serde", serde_with::serde_as(as = "serde_with::Bytes"))]
+    #[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::Bytes>"))]
     pub hash: [u8; 64],
 }

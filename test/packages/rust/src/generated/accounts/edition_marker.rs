@@ -13,7 +13,7 @@ use borsh::BorshSerialize;
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct EditionMarker {
     pub key: TmKey,
-    #[cfg_attr(feature = "serde", serde_with::serde_as(as = "serde_with::Bytes"))]
+    #[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::Bytes>"))]
     pub ledger: [u8; 200],
 }
 

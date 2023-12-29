@@ -30,6 +30,15 @@ pub struct MasterEditionV1 {
 }
 
 impl MasterEditionV1 {
+    /// Prefix values used to generate a PDA for this account.
+    ///
+    /// Values are positional and appear in the following order:
+    ///
+    ///   0. `MasterEditionV1::PREFIX`
+    ///   1. `crate::MPL_TOKEN_METADATA_ID`
+    ///   2. delegate_role (`DelegateRole`)
+    pub const PREFIX: &'static [u8] = "metadata".as_bytes();
+
     pub fn create_pda(
         delegate_role: DelegateRole,
         bump: u8,
