@@ -1,7 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import * as nodes from '../../nodes';
-import { pascalCase, snakeCase } from '../../shared';
-import { Visitor, visit } from '../../visitors';
+import {
+  REGISTERED_TYPE_NODE_KEYS,
+  arrayTypeNode,
+  isEnumTypeNode,
+  isScalarEnum,
+  numberTypeNode,
+} from '../../nodes';
+import { pascalCase, pipe, snakeCase } from '../../shared';
+import { extendVisitor, mergeVisitor, visit } from '../../visitors';
 import { RustImportMap } from './RustImportMap';
 
 export type RustTypeManifest = {
@@ -10,473 +15,483 @@ export type RustTypeManifest = {
   nestedStructs: string[];
 };
 
-// export function getTypeManifestVisitor() {
-//   //
-// }
+export function getTypeManifestVisitor() {
+  let parentName: string | null = null;
+  let nestedStruct: boolean = false;
+  let inlineStruct: boolean = false;
 
-export class GetRustTypeManifestVisitor implements Visitor<RustTypeManifest> {
-  public parentName: string | null = null;
-
-  public nestedStruct: boolean = false;
-
-  private inlineStruct: boolean = false;
-
-  visitRoot(): RustTypeManifest {
-    throw new Error(
-      'Cannot get type manifest for root node. Please select a child node.'
-    );
-  }
-
-  visitProgram(): RustTypeManifest {
-    throw new Error(
-      'Cannot get type manifest for program node. Please select a child node.'
-    );
-  }
-
-  visitAccount(account: nodes.AccountNode): RustTypeManifest {
-    this.parentName = pascalCase(account.name);
-    const manifest = visit(account.data, this);
-    manifest.imports.add(['borsh::BorshSerialize', 'borsh::BorshDeserialize']);
-    this.parentName = null;
-    return {
-      ...manifest,
-      type:
-        '#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]\n' +
-        '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
-        `${manifest.type}`,
-    };
-  }
-
-  visitAccountData(accountData: nodes.AccountDataNode): RustTypeManifest {
-    return visit(accountData.struct, this);
-  }
-
-  visitInstruction(instruction: nodes.InstructionNode): RustTypeManifest {
-    return visit(instruction.dataArgs, this);
-  }
-
-  visitInstructionAccount(): RustTypeManifest {
-    throw new Error(
-      'Cannot get type manifest for instruction account node. Please select a another node.'
-    );
-  }
-
-  visitInstructionDataArgs(
-    instructionDataArgs: nodes.InstructionDataArgsNode
-  ): RustTypeManifest {
-    this.parentName = pascalCase(instructionDataArgs.name);
-    const manifest = visit(instructionDataArgs.struct, this);
-    this.parentName = null;
-    return manifest;
-  }
-
-  visitInstructionExtraArgs(
-    instructionExtraArgs: nodes.InstructionExtraArgsNode
-  ): RustTypeManifest {
-    this.parentName = pascalCase(instructionExtraArgs.name);
-    const manifest = visit(instructionExtraArgs.struct, this);
-    this.parentName = null;
-    return manifest;
-  }
-
-  visitDefinedType(definedType: nodes.DefinedTypeNode): RustTypeManifest {
-    this.parentName = pascalCase(definedType.name);
-    const manifest = visit(definedType.data, this);
-    this.parentName = null;
-    manifest.imports.add(['borsh::BorshSerialize', 'borsh::BorshDeserialize']);
-    const traits = [
-      'BorshSerialize',
-      'BorshDeserialize',
-      'Clone',
-      'Debug',
-      'Eq',
-      'PartialEq',
-    ];
-    const isScalarEnum =
-      nodes.isEnumTypeNode(definedType.data) &&
-      nodes.isScalarEnum(definedType.data);
-    if (isScalarEnum) {
-      traits.push('PartialOrd', 'Hash');
-    }
-    return {
-      ...manifest,
-      type:
-        `#[derive(${traits.join(', ')})]\n` +
-        '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
-        `${manifest.type}`,
-      nestedStructs: manifest.nestedStructs.map(
-        (struct) =>
-          `#[derive(${traits.join(', ')})]\n` +
-          '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
-          `${struct}`
-      ),
-    };
-  }
-
-  visitError(): RustTypeManifest {
-    throw new Error('Cannot get type manifest for error node.');
-  }
-
-  visitArrayType(arrayType: nodes.ArrayTypeNode): RustTypeManifest {
-    const childManifest = visit(arrayType.child, this);
-
-    if (arrayType.size.kind === 'fixed') {
-      return {
-        ...childManifest,
-        type: `[${childManifest.type}; ${arrayType.size.value}]`,
-      };
-    }
-
-    if (
-      arrayType.size.kind === 'prefixed' &&
-      arrayType.size.prefix.endian === 'le'
-    ) {
-      switch (arrayType.size.prefix.format) {
-        case 'u32':
+  const visitor = pipe(
+    mergeVisitor<RustTypeManifest>(
+      () => ({ type: '', imports: new RustImportMap(), nestedStructs: [] }),
+      (_, values) => ({
+        ...mergeManifests(values),
+        type: values.map((v) => v.type).join('\n'),
+      }),
+      [
+        ...REGISTERED_TYPE_NODE_KEYS,
+        'definedTypeNode',
+        'accountNode',
+        'accountDataNode',
+        'instructionNode',
+        'instructionDataArgsNode',
+        'instructionExtraArgsNode',
+      ]
+    ),
+    (v) =>
+      extendVisitor(v, {
+        visitAccount(account, _, self) {
+          parentName = pascalCase(account.name);
+          const manifest = visit(account.data, self);
+          manifest.imports.add([
+            'borsh::BorshSerialize',
+            'borsh::BorshDeserialize',
+          ]);
+          parentName = null;
           return {
-            ...childManifest,
-            type: `Vec<${childManifest.type}>`,
+            ...manifest,
+            type:
+              '#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]\n' +
+              '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
+              `${manifest.type}`,
           };
-        case 'u8':
-        case 'u16':
-        case 'u64': {
-          const prefix = arrayType.size.prefix.format.toUpperCase();
-          childManifest.imports.add(`kaigan::types::${prefix}PrefixVec`);
+        },
+
+        visitAccountData(accountData, _, self) {
+          return visit(accountData.struct, self);
+        },
+
+        visitInstructionDataArgs(instructionDataArgs, _, self) {
+          parentName = pascalCase(instructionDataArgs.name);
+          const manifest = visit(instructionDataArgs.struct, self);
+          parentName = null;
+          return manifest;
+        },
+
+        visitInstructionExtraArgs(instructionExtraArgs, _, self) {
+          parentName = pascalCase(instructionExtraArgs.name);
+          const manifest = visit(instructionExtraArgs.struct, self);
+          parentName = null;
+          return manifest;
+        },
+
+        visitDefinedType(definedType, _, self) {
+          parentName = pascalCase(definedType.name);
+          const manifest = visit(definedType.data, self);
+          parentName = null;
+          manifest.imports.add([
+            'borsh::BorshSerialize',
+            'borsh::BorshDeserialize',
+          ]);
+          const traits = [
+            'BorshSerialize',
+            'BorshDeserialize',
+            'Clone',
+            'Debug',
+            'Eq',
+            'PartialEq',
+          ];
+          if (
+            isEnumTypeNode(definedType.data) &&
+            isScalarEnum(definedType.data)
+          ) {
+            traits.push('PartialOrd', 'Hash');
+          }
           return {
-            ...childManifest,
-            type: `${prefix}PrefixVec<${childManifest.type}>`,
+            ...manifest,
+            type:
+              `#[derive(${traits.join(', ')})]\n` +
+              '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
+              `${manifest.type}`,
+            nestedStructs: manifest.nestedStructs.map(
+              (struct) =>
+                `#[derive(${traits.join(', ')})]\n` +
+                '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
+                `${struct}`
+            ),
           };
-        }
-        default:
-          throw new Error(
-            `Array prefix not supported: ${arrayType.size.prefix.format}`
+        },
+
+        visitArrayType(arrayType, _, self) {
+          const childManifest = visit(arrayType.child, self);
+
+          if (arrayType.size.kind === 'fixed') {
+            return {
+              ...childManifest,
+              type: `[${childManifest.type}; ${arrayType.size.value}]`,
+            };
+          }
+
+          if (
+            arrayType.size.kind === 'prefixed' &&
+            arrayType.size.prefix.endian === 'le'
+          ) {
+            switch (arrayType.size.prefix.format) {
+              case 'u32':
+                return {
+                  ...childManifest,
+                  type: `Vec<${childManifest.type}>`,
+                };
+              case 'u8':
+              case 'u16':
+              case 'u64': {
+                const prefix = arrayType.size.prefix.format.toUpperCase();
+                childManifest.imports.add(`kaigan::types::${prefix}PrefixVec`);
+                return {
+                  ...childManifest,
+                  type: `${prefix}PrefixVec<${childManifest.type}>`,
+                };
+              }
+              default:
+                throw new Error(
+                  `Array prefix not supported: ${arrayType.size.prefix.format}`
+                );
+            }
+          }
+
+          if (arrayType.size.kind === 'remainder') {
+            childManifest.imports.add('kaigan::types::RemainderVec');
+            return {
+              ...childManifest,
+              type: `RemainderVec<${childManifest.type}>`,
+            };
+          }
+
+          // TODO: Add to the Rust validator.
+          throw new Error('Array size not supported by Borsh');
+        },
+
+        visitLinkType(linkType) {
+          const pascalCaseDefinedType = pascalCase(linkType.name);
+          const importFrom =
+            linkType.importFrom === 'generated'
+              ? 'generatedTypes'
+              : linkType.importFrom;
+          return {
+            imports: new RustImportMap().add(
+              `${importFrom}::${pascalCaseDefinedType}`
+            ),
+            type: pascalCaseDefinedType,
+            nestedStructs: [],
+          };
+        },
+
+        visitEnumType(enumType, _, self) {
+          const originalParentName = parentName;
+          if (!originalParentName) {
+            // TODO: Add to the Rust validator.
+            throw new Error('Enum type must have a parent name.');
+          }
+
+          const variants = enumType.variants.map((variant) =>
+            visit(variant, self)
           );
-      }
-    }
+          const variantNames = variants
+            .map((variant) => variant.type)
+            .join('\n');
+          const mergedManifest = mergeManifests(variants);
 
-    if (arrayType.size.kind === 'remainder') {
-      childManifest.imports.add('kaigan::types::RemainderVec');
-      return {
-        ...childManifest,
-        type: `RemainderVec<${childManifest.type}>`,
-      };
-    }
+          return {
+            ...mergedManifest,
+            type: `pub enum ${pascalCase(
+              originalParentName
+            )} {\n${variantNames}\n}`,
+          };
+        },
 
-    // TODO: Add to the Rust validator.
-    throw new Error('Array size not supported by Borsh');
-  }
+        visitEnumEmptyVariantType(enumEmptyVariantType) {
+          const name = pascalCase(enumEmptyVariantType.name);
+          return {
+            type: `${name},`,
+            imports: new RustImportMap(),
+            nestedStructs: [],
+          };
+        },
 
-  visitLinkType(linkType: nodes.LinkTypeNode): RustTypeManifest {
-    const pascalCaseDefinedType = pascalCase(linkType.name);
-    const importFrom =
-      linkType.importFrom === 'generated'
-        ? 'generatedTypes'
-        : linkType.importFrom;
-    return {
-      imports: new RustImportMap().add(
-        `${importFrom}::${pascalCaseDefinedType}`
-      ),
-      type: pascalCaseDefinedType,
-      nestedStructs: [],
-    };
-  }
+        visitEnumStructVariantType(enumStructVariantType, _, self) {
+          const name = pascalCase(enumStructVariantType.name);
+          const originalParentName = parentName;
 
-  visitEnumType(enumType: nodes.EnumTypeNode): RustTypeManifest {
-    const { parentName } = this;
+          if (!originalParentName) {
+            throw new Error(
+              'Enum struct variant type must have a parent name.'
+            );
+          }
 
-    if (!parentName) {
-      // TODO: Add to the Rust validator.
-      throw new Error('Enum type must have a parent name.');
-    }
+          inlineStruct = true;
+          parentName = pascalCase(originalParentName) + name;
+          const typeManifest = visit(enumStructVariantType.struct, self);
+          inlineStruct = false;
+          parentName = originalParentName;
 
-    const variants = enumType.variants.map((variant) => visit(variant, this));
-    const variantNames = variants.map((variant) => variant.type).join('\n');
-    const mergedManifest = this.mergeManifests(variants);
+          return {
+            ...typeManifest,
+            type: `${name} ${typeManifest.type},`,
+          };
+        },
 
-    return {
-      ...mergedManifest,
-      type: `pub enum ${pascalCase(parentName)} {\n${variantNames}\n}`,
-    };
-  }
+        visitEnumTupleVariantType(enumTupleVariantType, _, self) {
+          const name = pascalCase(enumTupleVariantType.name);
+          const originalParentName = parentName;
 
-  visitEnumEmptyVariantType(
-    enumEmptyVariantType: nodes.EnumEmptyVariantTypeNode
-  ): RustTypeManifest {
-    const name = pascalCase(enumEmptyVariantType.name);
-    return {
-      type: `${name},`,
-      imports: new RustImportMap(),
-      nestedStructs: [],
-    };
-  }
+          if (!originalParentName) {
+            throw new Error(
+              'Enum struct variant type must have a parent name.'
+            );
+          }
 
-  visitEnumStructVariantType(
-    enumStructVariantType: nodes.EnumStructVariantTypeNode
-  ): RustTypeManifest {
-    const name = pascalCase(enumStructVariantType.name);
-    const originalParentName = this.parentName;
+          parentName = pascalCase(originalParentName) + name;
+          const childManifest = visit(enumTupleVariantType.tuple, self);
+          parentName = originalParentName;
 
-    if (!originalParentName) {
-      throw new Error('Enum struct variant type must have a parent name.');
-    }
+          return {
+            ...childManifest,
+            type: `${name}${childManifest.type},`,
+          };
+        },
 
-    this.inlineStruct = true;
-    this.parentName = pascalCase(originalParentName) + name;
-    const typeManifest = visit(enumStructVariantType.struct, this);
-    this.inlineStruct = false;
-    this.parentName = originalParentName;
+        visitMapType(mapType, _, self) {
+          const key = visit(mapType.key, self);
+          const value = visit(mapType.value, self);
+          const mergedManifest = mergeManifests([key, value]);
+          mergedManifest.imports.add('std::collections::HashMap');
+          return {
+            ...mergedManifest,
+            type: `HashMap<${key.type}, ${value.type}>`,
+          };
+        },
 
-    return {
-      ...typeManifest,
-      type: `${name} ${typeManifest.type},`,
-    };
-  }
+        visitOptionType(optionType, _, self) {
+          const childManifest = visit(optionType.child, self);
 
-  visitEnumTupleVariantType(
-    enumTupleVariantType: nodes.EnumTupleVariantTypeNode
-  ): RustTypeManifest {
-    const name = pascalCase(enumTupleVariantType.name);
-    const originalParentName = this.parentName;
+          if (
+            optionType.prefix.format === 'u8' &&
+            optionType.prefix.endian === 'le'
+          ) {
+            return {
+              ...childManifest,
+              type: `Option<${childManifest.type}>`,
+            };
+          }
 
-    if (!originalParentName) {
-      throw new Error('Enum struct variant type must have a parent name.');
-    }
+          // TODO: Add to the Rust validator.
+          throw new Error('Option size not supported by Borsh');
+        },
 
-    this.parentName = pascalCase(originalParentName) + name;
-    const childManifest = visit(enumTupleVariantType.tuple, this);
-    this.parentName = originalParentName;
+        visitSetType(setType, _, self) {
+          const childManifest = visit(setType.child, self);
+          childManifest.imports.add('std::collections::HashSet');
+          return {
+            ...childManifest,
+            type: `HashSet<${childManifest.type}>`,
+          };
+        },
 
-    return {
-      ...childManifest,
-      type: `${name}${childManifest.type},`,
-    };
-  }
+        visitStructType(structType, _, self) {
+          const originalParentName = parentName;
 
-  visitMapType(mapType: nodes.MapTypeNode): RustTypeManifest {
-    const key = visit(mapType.key, this);
-    const value = visit(mapType.value, this);
-    const mergedManifest = this.mergeManifests([key, value]);
-    mergedManifest.imports.add('std::collections::HashMap');
-    return {
-      ...mergedManifest,
-      type: `HashMap<${key.type}, ${value.type}>`,
-    };
-  }
+          if (!originalParentName) {
+            // TODO: Add to the Rust validator.
+            throw new Error('Struct type must have a parent name.');
+          }
 
-  visitOptionType(optionType: nodes.OptionTypeNode): RustTypeManifest {
-    const childManifest = visit(optionType.child, this);
+          const fields = structType.fields.map((field) => visit(field, self));
+          const fieldTypes = fields.map((field) => field.type).join('\n');
+          const mergedManifest = mergeManifests(fields);
 
-    if (
-      optionType.prefix.format === 'u8' &&
-      optionType.prefix.endian === 'le'
-    ) {
-      return {
-        ...childManifest,
-        type: `Option<${childManifest.type}>`,
-      };
-    }
+          if (nestedStruct) {
+            return {
+              ...mergedManifest,
+              type: pascalCase(originalParentName),
+              nestedStructs: [
+                ...mergedManifest.nestedStructs,
+                `pub struct ${pascalCase(
+                  originalParentName
+                )} {\n${fieldTypes}\n}`,
+              ],
+            };
+          }
 
-    // TODO: Add to the Rust validator.
-    throw new Error('Option size not supported by Borsh');
-  }
+          if (inlineStruct) {
+            return { ...mergedManifest, type: `{\n${fieldTypes}\n}` };
+          }
 
-  visitSetType(setType: nodes.SetTypeNode): RustTypeManifest {
-    const childManifest = visit(setType.child, this);
-    childManifest.imports.add('std::collections::HashSet');
-    return {
-      ...childManifest,
-      type: `HashSet<${childManifest.type}>`,
-    };
-  }
+          return {
+            ...mergedManifest,
+            type: `pub struct ${pascalCase(
+              originalParentName
+            )} {\n${fieldTypes}\n}`,
+          };
+        },
 
-  visitStructType(structType: nodes.StructTypeNode): RustTypeManifest {
-    const { parentName } = this;
+        visitStructFieldType(structFieldType, _, self) {
+          const originalParentName = parentName;
+          const originalInlineStruct = inlineStruct;
+          const originalNestedStruct = nestedStruct;
 
-    if (!parentName) {
-      // TODO: Add to the Rust validator.
-      throw new Error('Struct type must have a parent name.');
-    }
+          if (!originalParentName) {
+            throw new Error('Struct field type must have a parent name.');
+          }
 
-    const fields = structType.fields.map((field) => visit(field, this));
-    const fieldTypes = fields.map((field) => field.type).join('\n');
-    const mergedManifest = this.mergeManifests(fields);
+          parentName =
+            pascalCase(originalParentName) + pascalCase(structFieldType.name);
+          nestedStruct = true;
+          inlineStruct = false;
 
-    if (this.nestedStruct) {
-      return {
-        ...mergedManifest,
-        type: pascalCase(parentName),
-        nestedStructs: [
-          ...mergedManifest.nestedStructs,
-          `pub struct ${pascalCase(parentName)} {\n${fieldTypes}\n}`,
-        ],
-      };
-    }
+          const fieldManifest = visit(structFieldType.child, self);
 
-    if (this.inlineStruct) {
-      return { ...mergedManifest, type: `{\n${fieldTypes}\n}` };
-    }
+          parentName = originalParentName;
+          inlineStruct = originalInlineStruct;
+          nestedStruct = originalNestedStruct;
 
-    return {
-      ...mergedManifest,
-      type: `pub struct ${pascalCase(parentName)} {\n${fieldTypes}\n}`,
-    };
-  }
+          const fieldName = snakeCase(structFieldType.name);
+          const docblock = createDocblock(structFieldType.docs);
 
-  visitStructFieldType(
-    structFieldType: nodes.StructFieldTypeNode
-  ): RustTypeManifest {
-    const originalParentName = this.parentName;
-    const originalInlineStruct = this.inlineStruct;
-    const originalNestedStruct = this.nestedStruct;
+          let derive = '';
+          if (fieldManifest.type === 'Pubkey') {
+            derive =
+              '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::DisplayFromStr>"))]\n';
+          } else if (
+            (structFieldType.child.kind === 'arrayTypeNode' ||
+              structFieldType.child.kind === 'bytesTypeNode' ||
+              structFieldType.child.kind === 'stringTypeNode') &&
+            structFieldType.child.size.kind === 'fixed' &&
+            structFieldType.child.size.value > 32
+          ) {
+            derive =
+              '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::Bytes>"))]\n';
+          }
 
-    if (!originalParentName) {
-      throw new Error('Struct field type must have a parent name.');
-    }
+          return {
+            ...fieldManifest,
+            type: inlineStruct
+              ? `${docblock}${derive}${fieldName}: ${fieldManifest.type},`
+              : `${docblock}${derive}pub ${fieldName}: ${fieldManifest.type},`,
+          };
+        },
 
-    this.parentName =
-      pascalCase(originalParentName) + pascalCase(structFieldType.name);
-    this.nestedStruct = true;
-    this.inlineStruct = false;
+        visitTupleType(tupleType, _, self) {
+          const children = tupleType.children.map((item) => visit(item, self));
+          const mergedManifest = mergeManifests(children);
 
-    const fieldManifest = visit(structFieldType.child, this);
+          return {
+            ...mergedManifest,
+            type: `(${children.map((item) => item.type).join(', ')})`,
+          };
+        },
 
-    this.parentName = originalParentName;
-    this.inlineStruct = originalInlineStruct;
-    this.nestedStruct = originalNestedStruct;
+        visitBoolType(boolType) {
+          if (boolType.size.format === 'u8' && boolType.size.endian === 'le') {
+            return {
+              type: 'bool',
+              imports: new RustImportMap(),
+              nestedStructs: [],
+            };
+          }
 
-    const fieldName = snakeCase(structFieldType.name);
-    const docblock = this.createDocblock(structFieldType.docs);
+          // TODO: Add to the Rust validator.
+          throw new Error('Bool size not supported by Borsh');
+        },
 
-    let derive = '';
-    if (fieldManifest.type === 'Pubkey') {
-      derive =
-        '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::DisplayFromStr>"))]\n';
-    } else if (
-      (structFieldType.child.kind === 'arrayTypeNode' ||
-        structFieldType.child.kind === 'bytesTypeNode' ||
-        structFieldType.child.kind === 'stringTypeNode') &&
-      structFieldType.child.size.kind === 'fixed' &&
-      structFieldType.child.size.value > 32
-    ) {
-      derive =
-        '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::Bytes>"))]\n';
-    }
+        visitBytesType(bytesType, _, self) {
+          const arrayType = arrayTypeNode(numberTypeNode('u8'), {
+            size: bytesType.size,
+          });
 
-    return {
-      ...fieldManifest,
-      type: this.inlineStruct
-        ? `${docblock}${derive}${fieldName}: ${fieldManifest.type},`
-        : `${docblock}${derive}pub ${fieldName}: ${fieldManifest.type},`,
-    };
-  }
+          return visit(arrayType, self);
+        },
 
-  visitTupleType(tupleType: nodes.TupleTypeNode): RustTypeManifest {
-    const children = tupleType.children.map((item) => visit(item, this));
-    const mergedManifest = this.mergeManifests(children);
+        visitNumberType(numberType) {
+          if (numberType.endian === 'le') {
+            return {
+              type: numberType.format,
+              imports: new RustImportMap(),
+              nestedStructs: [],
+            };
+          }
 
-    return {
-      ...mergedManifest,
-      type: `(${children.map((item) => item.type).join(', ')})`,
-    };
-  }
+          // TODO: Add to the Rust validator.
+          throw new Error('Number endianness not supported by Borsh');
+        },
 
-  visitBoolType(boolType: nodes.BoolTypeNode): RustTypeManifest {
-    if (boolType.size.format === 'u8' && boolType.size.endian === 'le') {
-      return { type: 'bool', imports: new RustImportMap(), nestedStructs: [] };
-    }
+        visitAmountType(node, _, self) {
+          return visit(node.number, self);
+        },
 
-    // TODO: Add to the Rust validator.
-    throw new Error('Bool size not supported by Borsh');
-  }
+        visitDateTimeType(node, _, self) {
+          return visit(node.number, self);
+        },
 
-  visitBytesType(bytesType: nodes.BytesTypeNode): RustTypeManifest {
-    const arrayType = nodes.arrayTypeNode(nodes.numberTypeNode('u8'), {
-      size: bytesType.size,
-    });
+        visitSolAmountType(node, _, self) {
+          return visit(node.number, self);
+        },
 
-    return visit(arrayType, this);
-  }
+        visitPublicKeyType() {
+          return {
+            type: 'Pubkey',
+            imports: new RustImportMap().add('solana_program::pubkey::Pubkey'),
+            nestedStructs: [],
+          };
+        },
 
-  visitNumberType(numberType: nodes.NumberTypeNode): RustTypeManifest {
-    if (numberType.endian === 'le') {
-      return {
-        type: numberType.format,
-        imports: new RustImportMap(),
-        nestedStructs: [],
-      };
-    }
+        visitStringType(stringType) {
+          if (
+            stringType.size.kind === 'prefixed' &&
+            stringType.size.prefix.format === 'u32' &&
+            stringType.size.prefix.endian === 'le'
+          ) {
+            return {
+              type: 'String',
+              imports: new RustImportMap(),
+              nestedStructs: [],
+            };
+          }
 
-    // TODO: Add to the Rust validator.
-    throw new Error('Number endianness not supported by Borsh');
-  }
+          if (stringType.size.kind === 'fixed') {
+            return {
+              type: `[u8; ${stringType.size.value}]`,
+              imports: new RustImportMap(),
+              nestedStructs: [],
+            };
+          }
 
-  visitAmountType(amountType: nodes.AmountTypeNode): RustTypeManifest {
-    return visit(amountType.number, this);
-  }
+          if (stringType.size.kind === 'remainder') {
+            return {
+              type: `&str`,
+              imports: new RustImportMap(),
+              nestedStructs: [],
+            };
+          }
 
-  visitDateTimeType(dateTimeType: nodes.DateTimeTypeNode): RustTypeManifest {
-    return visit(dateTimeType.number, this);
-  }
+          // TODO: Add to the Rust validator.
+          throw new Error('String size not supported by Borsh');
+        },
+      })
+  );
 
-  visitSolAmountType(solAmountType: nodes.SolAmountTypeNode): RustTypeManifest {
-    return visit(solAmountType.number, this);
-  }
+  return {
+    ...visitor,
+    setParentName: (name: string | null) => {
+      parentName = name;
+    },
+    setNestedStruct: (value: boolean) => {
+      nestedStruct = value;
+    },
+  };
+}
 
-  visitPublicKeyType(): RustTypeManifest {
-    return {
-      type: 'Pubkey',
-      imports: new RustImportMap().add('solana_program::pubkey::Pubkey'),
-      nestedStructs: [],
-    };
-  }
+function mergeManifests(
+  manifests: RustTypeManifest[]
+): Pick<RustTypeManifest, 'imports' | 'nestedStructs'> {
+  return {
+    imports: new RustImportMap().mergeWith(
+      ...manifests.map((td) => td.imports)
+    ),
+    nestedStructs: manifests.flatMap((m) => m.nestedStructs),
+  };
+}
 
-  visitStringType(stringType: nodes.StringTypeNode): RustTypeManifest {
-    if (
-      stringType.size.kind === 'prefixed' &&
-      stringType.size.prefix.format === 'u32' &&
-      stringType.size.prefix.endian === 'le'
-    ) {
-      return {
-        type: 'String',
-        imports: new RustImportMap(),
-        nestedStructs: [],
-      };
-    }
-
-    if (stringType.size.kind === 'fixed') {
-      return {
-        type: `[u8; ${stringType.size.value}]`,
-        imports: new RustImportMap(),
-        nestedStructs: [],
-      };
-    }
-
-    if (stringType.size.kind === 'remainder') {
-      return {
-        type: `&str`,
-        imports: new RustImportMap(),
-        nestedStructs: [],
-      };
-    }
-
-    // TODO: Add to the Rust validator.
-    throw new Error('String size not supported by Borsh');
-  }
-
-  protected mergeManifests(
-    manifests: RustTypeManifest[]
-  ): Pick<RustTypeManifest, 'imports' | 'nestedStructs'> {
-    return {
-      imports: new RustImportMap().mergeWith(
-        ...manifests.map((td) => td.imports)
-      ),
-      nestedStructs: manifests.flatMap((m) => m.nestedStructs),
-    };
-  }
-
-  protected createDocblock(docs: string[]): string {
-    if (docs.length <= 0) return '';
-    const lines = docs.map((doc) => `/// ${doc}`);
-    return `${lines.join('\n')}\n`;
-  }
+function createDocblock(docs: string[]): string {
+  if (docs.length <= 0) return '';
+  const lines = docs.map((doc) => `/// ${doc}`);
+  return `${lines.join('\n')}\n`;
 }

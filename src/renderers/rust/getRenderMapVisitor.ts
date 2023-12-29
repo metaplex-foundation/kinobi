@@ -12,13 +12,13 @@ import {
   RenderMap,
   logWarn,
   pascalCase,
-  snakeCase,
   resolveTemplate,
+  snakeCase,
 } from '../../shared';
 import { extendVisitor, staticVisitor, visit } from '../../visitors';
-import { GetRustTypeManifestVisitor } from './getTypeManifestVisitor';
-import { renderValueNode } from './renderValueNode';
 import { RustImportMap } from './RustImportMap';
+import { getTypeManifestVisitor } from './getTypeManifestVisitor';
+import { renderValueNode } from './renderValueNode';
 
 export type GetRustRenderMapOptions = {
   renderParentInstructions?: boolean;
@@ -30,7 +30,7 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
 
   const renderParentInstructions = options.renderParentInstructions ?? false;
   const dependencyMap = options.dependencyMap ?? {};
-  const typeManifestVisitor = new GetRustTypeManifestVisitor();
+  const typeManifestVisitor = getTypeManifestVisitor();
 
   const baseVisitor = staticVisitor(
     () => new RenderMap(),
@@ -206,16 +206,17 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
       let hasOptional = false;
 
       node.dataArgs.struct.fields.forEach((field) => {
-        typeManifestVisitor.parentName =
-          pascalCase(node.dataArgs.name) + pascalCase(field.name);
-        typeManifestVisitor.nestedStruct = true;
+        typeManifestVisitor.setParentName(
+          pascalCase(node.dataArgs.name) + pascalCase(field.name)
+        );
+        typeManifestVisitor.setNestedStruct(true);
         const manifest = visit(field.child, typeManifestVisitor);
         imports.mergeWith(manifest.imports);
         const innerOptionType = isOptionTypeNode(field.child)
           ? manifest.type.slice('Option<'.length, -1)
           : null;
-        typeManifestVisitor.parentName = null;
-        typeManifestVisitor.nestedStruct = false;
+        typeManifestVisitor.setParentName(null);
+        typeManifestVisitor.setNestedStruct(false);
 
         let renderValue: string | null = null;
         if (field.defaultsTo) {
