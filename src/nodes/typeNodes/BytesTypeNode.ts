@@ -1,21 +1,13 @@
-import {
-  SizeStrategy,
-  displaySizeStrategy,
-  remainderSize,
-} from '../../shared/SizeStrategy';
 import type { Node } from '../Node';
+import { SizeNode, remainderSizeNode } from '../sizeNodes';
 
 export type BytesTypeNode = {
   readonly kind: 'bytesTypeNode';
-  readonly size: SizeStrategy;
+  readonly size: SizeNode;
 };
 
-export function bytesTypeNode(size?: SizeStrategy): BytesTypeNode {
-  return { kind: 'bytesTypeNode', size: size ?? remainderSize() };
-}
-
-export function displayBytesTypeNode(node: BytesTypeNode): string {
-  return `bytes(${displaySizeStrategy(node.size)})`;
+export function bytesTypeNode(size?: SizeNode): BytesTypeNode {
+  return { kind: 'bytesTypeNode', size: size ?? remainderSizeNode() };
 }
 
 export function isBytesTypeNode(node: Node | null): node is BytesTypeNode {

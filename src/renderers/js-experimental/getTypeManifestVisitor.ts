@@ -4,7 +4,7 @@ import {
   structFieldTypeNode,
   structTypeNode,
 } from '../../nodes';
-import { SizeStrategy, camelCase, pascalCase, pipe } from '../../shared';
+import { camelCase, pascalCase, pipe } from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
 import { ImportMap } from './ImportMap';
 import { TypeManifest, mergeManifests } from './TypeManifest';
