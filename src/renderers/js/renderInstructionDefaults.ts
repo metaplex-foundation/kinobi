@@ -6,10 +6,10 @@ import {
   camelCase,
   pascalCase,
 } from '../../shared';
-import { ResolvedInstructionInput } from '../../visitors';
+import { ResolvedInstructionInput, visit } from '../../visitors';
 import { JavaScriptContextMap } from './JavaScriptContextMap';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
-import { renderValueNode } from './renderValueNode';
+import { renderValueNodeVisitor } from './renderValueNodeVisitor';
 
 export function renderInstructionDefaults(
   input: ResolvedInstructionInput,
@@ -20,6 +20,7 @@ export function renderInstructionDefaults(
   interfaces: JavaScriptContextMap;
   render: string;
 } {
+  const valueNodeVisitor = renderValueNodeVisitor();
   const imports = new JavaScriptImportMap();
   const interfaces = new JavaScriptContextMap();
 
@@ -105,7 +106,7 @@ export function renderInstructionDefaults(
               seedValue.name
             )})`;
           }
-          const valueManifest = renderValueNode(seedValue.value);
+          const valueManifest = visit(seedValue.value, valueNodeVisitor);
           imports.mergeWith(valueManifest.imports);
           return `${seed}: ${valueManifest.render}`;
         }
@@ -152,7 +153,7 @@ export function renderInstructionDefaults(
       imports.add('shared', 'expectSome');
       return render(`expectSome(${argObject}.${camelCase(defaultsTo.name)})`);
     case 'value':
-      const valueManifest = renderValueNode(defaultsTo.value);
+      const valueManifest = visit(defaultsTo.value, valueNodeVisitor);
       imports.mergeWith(valueManifest.imports);
       return render(valueManifest.render);
     case 'resolver':
@@ -198,7 +199,7 @@ export function renderInstructionDefaults(
             ? `resolvedAccounts.${camelCase(defaultsTo.input.name)}.value`
             : `${argObject}.${camelCase(defaultsTo.input.name)}`;
         if (defaultsTo.value) {
-          const comparedValue = renderValueNode(defaultsTo.value);
+          const comparedValue = visit(defaultsTo.value, valueNodeVisitor);
           imports.mergeWith(comparedValue.imports);
           const operator = negatedCondition ? '!==' : '===';
           condition = `${comparedInputName} ${operator} ${comparedValue.render}`;

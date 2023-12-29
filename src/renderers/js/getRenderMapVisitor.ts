@@ -37,7 +37,7 @@ import {
 import { JavaScriptContextMap } from './JavaScriptContextMap';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 import { renderInstructionDefaults } from './renderInstructionDefaults';
-import { renderValueNode } from './renderValueNode';
+import { renderValueNodeVisitor } from './renderValueNodeVisitor';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -68,6 +68,7 @@ export function getRenderMapVisitor(
   let byteSizeVisitor = getByteSizeVisitor([]);
   let program: ProgramNode | null = null;
 
+  const valueNodeVisitor = renderValueNodeVisitor();
   const typeManifestVisitor =
     options.typeManifestVisitor ?? getTypeManifestVisitor();
   const resolvedInstructionInputVisitor =
@@ -281,7 +282,7 @@ export function getRenderMapVisitor(
         (f) => f.name === discriminator.name
       );
       const discriminatorValue = discriminatorField?.defaultsTo?.value
-        ? renderValueNode(discriminatorField.defaultsTo.value)
+        ? visit(discriminatorField.defaultsTo.value, valueNodeVisitor)
         : undefined;
       if (discriminatorValue) {
         imports.mergeWith(discriminatorValue.imports);
@@ -331,7 +332,7 @@ export function getRenderMapVisitor(
         const seedManifest = visit(seed.type, typeManifestVisitor);
         imports.mergeWith(seedManifest.serializerImports);
         const seedValue = seed.value;
-        const valueManifest = renderValueNode(seedValue);
+        const valueManifest = visit(seedValue, valueNodeVisitor);
         (seedValue as any).render = valueManifest.render;
         imports.mergeWith(valueManifest.imports);
         return { ...seed, typeManifest: seedManifest };

@@ -13,7 +13,7 @@ import {
 import { camelCase, pascalCase, pipe } from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
-import { renderValueNode } from './renderValueNode';
+import { renderValueNodeVisitor } from './renderValueNodeVisitor';
 
 export type JavaScriptTypeManifest = {
   isEnum: boolean;
@@ -27,6 +27,7 @@ export type JavaScriptTypeManifest = {
 
 export function getTypeManifestVisitor() {
   let parentName: { strict: string; loose: string } | null = null;
+  const valueNodeVisitor = renderValueNodeVisitor();
 
   return pipe(
     staticVisitor(
@@ -399,8 +400,9 @@ export function getTypeManifestVisitor() {
               const defaultsTo = f.defaultsTo as NonNullable<
                 typeof f.defaultsTo
               >;
-              const { render: renderedValue, imports } = renderValueNode(
-                defaultsTo.value
+              const { render: renderedValue, imports } = visit(
+                defaultsTo.value,
+                valueNodeVisitor
               );
               baseManifest.serializerImports.mergeWith(imports);
               if (defaultsTo.strategy === 'omitted') {
