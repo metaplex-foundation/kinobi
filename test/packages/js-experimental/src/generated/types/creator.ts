@@ -11,13 +11,7 @@ import {
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
-import {
-  Codec,
-  Decoder,
-  Encoder,
-  combineCodec,
-  mapEncoder,
-} from '@solana/codecs-core';
+import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
 import {
   getBooleanDecoder,
   getBooleanEncoder,
@@ -28,25 +22,14 @@ import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 
 export type Creator = { address: Address; verified: boolean; share: number };
 
-export type CreatorArgs = {
-  address: Address;
-  verified?: boolean;
-  share?: number;
-};
+export type CreatorArgs = Creator;
 
 export function getCreatorEncoder() {
-  return mapEncoder(
-    getStructEncoder<{ address: Address; verified: boolean; share: number }>([
-      ['address', getAddressEncoder()],
-      ['verified', getBooleanEncoder()],
-      ['share', getU8Encoder()],
-    ]),
-    (value) => ({
-      ...value,
-      verified: value.verified ?? false,
-      share: value.share ?? 42,
-    })
-  ) satisfies Encoder<CreatorArgs>;
+  return getStructEncoder<CreatorArgs>([
+    ['address', getAddressEncoder()],
+    ['verified', getBooleanEncoder()],
+    ['share', getU8Encoder()],
+  ]) satisfies Encoder<CreatorArgs>;
 }
 
 export function getCreatorDecoder() {
