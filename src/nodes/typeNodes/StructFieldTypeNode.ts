@@ -1,8 +1,8 @@
 import type { IdlTypeStructField } from '../../idl';
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../../shared';
 import type { Node } from '../Node';
+import { ValueNode } from '../valueNodes';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
-import { ValueNode, vScalar } from '../ValueNode';
 
 export type StructFieldTypeNode = {
   readonly kind: 'structFieldTypeNode';
@@ -44,10 +44,7 @@ export function structFieldTypeNodeFromIdl(
     name: idl.name ?? '',
     child: createTypeNodeFromIdl(idl.type),
     docs: idl.docs ?? [],
-    defaultsTo:
-      idl.defaultsValue !== undefined
-        ? { strategy: 'optional', value: vScalar(idl.defaultsValue) }
-        : null,
+    defaultsTo: null,
   });
 }
 

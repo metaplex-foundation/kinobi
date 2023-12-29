@@ -12,9 +12,9 @@ import {
   isEnumTypeNode,
   isLinkTypeNode,
   numberTypeNode,
+  numberValueNode,
   structFieldTypeNode,
   structTypeNode,
-  vScalar,
 } from '../nodes';
 import { logWarn, mainCase } from '../shared';
 import {
@@ -80,7 +80,7 @@ export function createSubInstructionsFromEnumArgsVisitor(
                     child: numberTypeNode('u8'),
                     defaultsTo: {
                       strategy: 'omitted',
-                      value: vScalar(index),
+                      value: numberValueNode(index),
                     },
                   })
                 );

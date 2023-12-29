@@ -4,7 +4,7 @@ import {
   publicKeyTypeNode,
   remainderSizeNode,
   stringTypeNode,
-  vScalar,
+  stringValueNode,
 } from '../nodes';
 import { MainCaseString, mainCase } from './utils';
 
@@ -21,7 +21,10 @@ export const constantSeed = (
 ): AccountSeed => ({ kind: 'constant', type, value });
 
 export const stringConstantSeed = (value: string): AccountSeed =>
-  constantSeed(stringTypeNode({ size: remainderSizeNode() }), vScalar(value));
+  constantSeed(
+    stringTypeNode({ size: remainderSizeNode() }),
+    stringValueNode(value)
+  );
 
 export const variableSeed = (
   name: string,
