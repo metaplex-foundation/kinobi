@@ -1,7 +1,7 @@
 import type { IdlDefinedType } from '../idl';
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
 import type { Node } from './Node';
-import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
+import { TypeNode, createTypeNodeFromIdl } from './typeNodes/TypeNode';
 
 export type DefinedTypeNode = {
   readonly __definedTypeNode: unique symbol;

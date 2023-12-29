@@ -1,4 +1,5 @@
-import { readFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import nunjucks, { ConfigureOptions } from 'nunjucks';
 
 export type MainCaseString = string & {
   readonly __mainCaseString: unique symbol;
@@ -10,9 +11,7 @@ export type PickPartial<T, K extends keyof T> = Omit<T, K> &
 export type PartialExcept<T, K extends keyof T> = Pick<T, K> &
   Partial<Omit<T, K>>;
 
-export function readJson<T extends object>(value: string): T {
-  return JSON.parse(readFileSync(value, 'utf-8')) as T;
-}
+export type DontInfer<T> = T extends any ? T : never;
 
 export function capitalize(str: string): string {
   if (str.length === 0) return str;
@@ -49,3 +48,44 @@ export function snakeCase(str: string): string {
 export function mainCase(str: string): MainCaseString {
   return camelCase(str) as MainCaseString;
 }
+
+export function readJson<T extends object>(value: string): T {
+  return JSON.parse(readFileSync(value, 'utf-8')) as T;
+}
+
+export const createDirectory = (path: string): void => {
+  mkdirSync(path, { recursive: true });
+};
+
+export const createFile = (path: string, content: string): void => {
+  const directory = path.substring(0, path.lastIndexOf('/'));
+  if (!existsSync(directory)) {
+    createDirectory(directory);
+  }
+  writeFileSync(path, content);
+};
+
+export const resolveTemplate = (
+  directory: string,
+  file: string,
+  context?: object,
+  options?: ConfigureOptions
+): string => {
+  const env = nunjucks.configure(directory, {
+    trimBlocks: true,
+    autoescape: false,
+    ...options,
+  });
+  env.addFilter('pascalCase', pascalCase);
+  env.addFilter('camelCase', camelCase);
+  env.addFilter('snakeCase', snakeCase);
+  env.addFilter('kebabCase', kebabCase);
+  env.addFilter('titleCase', titleCase);
+  return env.render(file, context);
+};
+
+export const deleteFolder = (path: string): void => {
+  if (existsSync(path)) {
+    rmSync(path, { recursive: true });
+  }
+};

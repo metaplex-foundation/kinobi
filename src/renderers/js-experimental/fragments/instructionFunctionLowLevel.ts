@@ -1,4 +1,8 @@
-import * as nodes from '../../../nodes';
+import {
+  InstructionAccountNode,
+  InstructionNode,
+  ProgramNode,
+} from '../../../nodes';
 import { pascalCase } from '../../../shared';
 import { ImportMap } from '../ImportMap';
 import { TypeManifest } from '../TypeManifest';
@@ -7,8 +11,8 @@ import { Fragment, fragmentFromTemplate, mergeFragments } from './common';
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
 
 export function getInstructionFunctionLowLevelFragment(scope: {
-  instructionNode: nodes.InstructionNode;
-  programNode: nodes.ProgramNode;
+  instructionNode: InstructionNode;
+  programNode: ProgramNode;
   dataArgsManifest: TypeManifest;
   nameApi: NameApi;
 }): Fragment {
@@ -93,7 +97,7 @@ export function getInstructionFunctionLowLevelFragment(scope: {
   return fragment;
 }
 
-function getDefaultRole(account: nodes.InstructionAccountNode): string {
+function getDefaultRole(account: InstructionAccountNode): string {
   if (account.isSigner === true && account.isWritable) {
     return 'AccountRole.WRITABLE_SIGNER';
   }
@@ -107,8 +111,8 @@ function getDefaultRole(account: nodes.InstructionAccountNode): string {
 }
 
 function getDefaultValue(
-  account: nodes.InstructionAccountNode,
-  program: nodes.ProgramNode,
+  account: InstructionAccountNode,
+  program: ProgramNode,
   usesLegacyOptionalAccounts: boolean
 ): string | null {
   if (account.isOptional && usesLegacyOptionalAccounts) {

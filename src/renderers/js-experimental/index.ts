@@ -1,1 +1,1 @@
-export * from './RenderJavaScriptExperimentalVisitor';
+export * from './renderJavaScriptExperimentalVisitor';

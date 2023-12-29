@@ -1,11 +1,11 @@
-import * as nodes from '../../../nodes';
+import { InstructionNode } from '../../../nodes';
 import { TypeManifest } from '../TypeManifest';
 import { NameApi } from '../nameTransformers';
 import { Fragment, fragment } from './common';
 import { getTypeWithCodecFragment } from './typeWithCodec';
 
 export function getInstructionDataFragment(scope: {
-  instructionNode: nodes.InstructionNode;
+  instructionNode: InstructionNode;
   dataArgsManifest: TypeManifest;
   nameApi: NameApi;
 }): Fragment {

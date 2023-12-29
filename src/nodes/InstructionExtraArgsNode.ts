@@ -1,7 +1,7 @@
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
-import { LinkTypeNode } from './LinkTypeNode';
+import { LinkTypeNode } from './typeNodes/LinkTypeNode';
 import type { Node } from './Node';
-import { StructTypeNode } from './StructTypeNode';
+import { StructTypeNode } from './typeNodes/StructTypeNode';
 
 export type InstructionExtraArgsNode = {
   readonly __instructionExtraArgsNode: unique symbol;

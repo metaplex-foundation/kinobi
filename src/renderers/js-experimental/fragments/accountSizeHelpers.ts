@@ -1,9 +1,9 @@
-import * as nodes from '../../../nodes';
+import { AccountNode } from '../../../nodes';
 import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getAccountSizeHelpersFragment(scope: {
-  accountNode: nodes.AccountNode;
+  accountNode: AccountNode;
   nameApi: NameApi;
 }): Fragment {
   const { accountNode, nameApi } = scope;

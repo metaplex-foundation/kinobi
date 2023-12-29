@@ -2,7 +2,7 @@ import {
   NumberTypeNode,
   displayNumberTypeNode,
   numberTypeNode,
-} from '../nodes/NumberTypeNode';
+} from '../nodes/typeNodes/NumberTypeNode';
 
 export type SizeStrategy =
   | { kind: 'fixed'; value: number }

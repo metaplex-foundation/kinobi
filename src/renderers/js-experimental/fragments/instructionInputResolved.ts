@@ -1,4 +1,4 @@
-import * as nodes from '../../../nodes';
+import { InstructionNode } from '../../../nodes';
 import { camelCase } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import { NameApi } from '../nameTransformers';
@@ -6,7 +6,7 @@ import { Fragment, fragment, mergeFragments } from './common';
 import { getInstructionInputDefaultFragment } from './instructionInputDefault';
 
 export function getInstructionInputResolvedFragment(scope: {
-  instructionNode: nodes.InstructionNode;
+  instructionNode: InstructionNode;
   resolvedInputs: ResolvedInstructionInput[];
   asyncResolvers: string[];
   useAsync: boolean;

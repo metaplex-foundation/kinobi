@@ -1,5 +1,5 @@
 import type { ImportFrom } from '../../shared';
-import { RustTypeManifest } from './GetRustTypeManifestVisitor';
+import { RustTypeManifest } from './getTypeManifestVisitor';
 
 const DEFAULT_MODULE_MAP: Record<string, string> = {
   generated: 'crate::generated',

@@ -6,7 +6,7 @@ import {
   RootNode,
   rootNodeFromIdls,
 } from './nodes';
-import { DefaultVisitor, visit, Visitor } from './visitors';
+import { defaultVisitor, visit, Visitor } from './visitors';
 
 export interface Kinobi {
   getRoot(): RootNode;
@@ -22,7 +22,7 @@ export function createFromRoot(
 ): Kinobi {
   let currentRoot = root;
   if (useDefaultVisitor) {
-    currentRoot = visit(currentRoot, new DefaultVisitor());
+    currentRoot = visit(currentRoot, defaultVisitor());
   }
   return {
     getRoot(): RootNode {

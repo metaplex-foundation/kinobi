@@ -1,11 +1,11 @@
-import * as nodes from '../../../nodes';
+import { AccountNode } from '../../../nodes';
 import { TypeManifest } from '../TypeManifest';
 import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 import { getTypeWithCodecFragment } from './typeWithCodec';
 
 export function getAccountTypeFragment(scope: {
-  accountNode: nodes.AccountNode;
+  accountNode: AccountNode;
   typeManifest: TypeManifest;
   nameApi: NameApi;
 }): Fragment {

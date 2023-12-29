@@ -1,6 +1,5 @@
 import { ConfigureOptions } from 'nunjucks';
-import { ImportFrom } from '../../../shared';
-import { resolveTemplate } from '../../utils';
+import { ImportFrom, resolveTemplate } from '../../../shared';
 import { ImportMap } from '../ImportMap';
 
 export function fragment(render: string, imports?: ImportMap): Fragment {

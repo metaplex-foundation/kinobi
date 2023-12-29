@@ -9,11 +9,11 @@ import {
   remainderSize,
 } from '../shared';
 import { AccountDataNode, accountDataNode } from './AccountDataNode';
-import { bytesTypeNode } from './BytesTypeNode';
+import { bytesTypeNode } from './typeNodes/BytesTypeNode';
 import type { Node } from './Node';
-import { stringTypeNode } from './StringTypeNode';
-import { assertStructTypeNode } from './StructTypeNode';
-import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
+import { stringTypeNode } from './typeNodes/StringTypeNode';
+import { assertStructTypeNode } from './typeNodes/StructTypeNode';
+import { TypeNode, createTypeNodeFromIdl } from './typeNodes/TypeNode';
 import { vScalar } from './ValueNode';
 
 export type AccountNode = {
