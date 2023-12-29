@@ -20,6 +20,14 @@ pub struct DelegateRecord {
 
 impl DelegateRecord {
     pub const LEN: usize = 282;
+    /// Prefix values used to generate a PDA for this account.
+    ///
+    /// Values are positional and appear in the following order:
+    ///
+    ///   0. `DelegateRecord::PREFIX`
+    ///   1. `crate::MPL_TOKEN_METADATA_ID`
+    ///   2. role (`DelegateRole`)
+    pub const PREFIX: &'static [u8] = "delegate_record".as_bytes();
 
     pub fn create_pda(
         role: DelegateRole,

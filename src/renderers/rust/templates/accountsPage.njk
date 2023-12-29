@@ -16,6 +16,47 @@ impl {{ account.name | pascalCase }} {
   {% if account.size != null %}
     pub const LEN: usize = {{ account.size }};
   {% endif %}
+  {% if constantSeeds > 0 %}
+    {% set index = 0 %}
+    /// Prefix values used to generate a PDA for this account.
+    ///
+    /// Values are positional and appear in the following order:
+    ///
+    {% for seed in seeds %}
+      {% if seed.kind === 'programId' %}
+        ///   {{ loop.index0 }}. `crate::{{ program.name | snakeCase | upper }}_ID`
+      {% elif seed.kind === 'constant' %}
+        ///   {{ loop.index0 }}. `{{ account.name | pascalCase }}::PREFIX{{ '.' + index if constantSeeds > 1 }}`
+        {% set index = index + 1 %}
+      {% else %}
+        ///   {{ loop.index0 }}. {{ seed.name | snakeCase }} (`{{ seed.typeManifest.type }}`)
+      {% endif %}
+    {% endfor %}
+    {% if constantSeeds > 1 %}
+      pub const PREFIX: (
+      {% for seed in seeds %}
+        {% if seed.kind === 'constant' %}
+          &'static [u8],
+        {% endif %}
+      {% endfor %}
+      ) = (
+      {% for seed in seeds %}
+        {% if seed.kind === 'constant' %}
+          {{ seed.value.render }}.as_bytes(),
+        {% endif %}
+      {% endfor %}
+      );
+    {% endif %}
+    {% if constantSeeds === 1 %}
+      pub const PREFIX: &'static [u8] =
+      {% for seed in seeds %}
+        {% if seed.kind === 'constant' %}
+          {{ seed.value.render }}.as_bytes()
+        {% endif %}
+      {% endfor %}
+      ;
+    {% endif %}
+  {% endif %}
 
   {% if seeds.length > 0 %}
     pub fn create_pda(
