@@ -111,7 +111,9 @@ kinobi.update(
           defaultsTo: k.conditionalDefault('account', 'delegate', {
             ifTrue: k.pdaDefault('delegateRecord', {
               seeds: {
-                role: k.valueDefault(k.vEnum('delegateRole', 'Collection')),
+                role: k.valueDefault(
+                  k.enumValueNode('delegateRole', 'Collection')
+                ),
               },
             }),
           }),
@@ -141,7 +143,7 @@ kinobi.update(
           type: k.arrayTypeNode(k.publicKeyTypeNode(), {
             size: k.remainderSizeNode(),
           }),
-          defaultsTo: k.valueDefault(k.vList([])),
+          defaultsTo: k.valueDefault(k.arrayValueNode([])),
         },
       },
       remainingAccounts: k.remainingAccountsFromArg('proof'),
@@ -159,15 +161,23 @@ kinobi.update(
       args: {
         tokenStandard: {
           type: k.linkTypeNode('tokenStandard'),
-          defaultsTo: k.valueDefault(k.vEnum('tokenStandard', 'NonFungible')),
+          defaultsTo: k.valueDefault(
+            k.enumValueNode('tokenStandard', 'NonFungible')
+          ),
         },
       },
     },
   })
 );
 
-const tmKey = (name) => ({ field: 'key', value: k.vEnum('TmKey', name) });
-const taKey = (name) => ({ field: 'key', value: k.vEnum('TaKey', name) });
+const tmKey = (name) => ({
+  field: 'key',
+  value: k.enumValueNode('TmKey', name),
+});
+const taKey = (name) => ({
+  field: 'key',
+  value: k.enumValueNode('TaKey', name),
+});
 kinobi.update(
   k.setAccountDiscriminatorFromFieldVisitor({
     'mplTokenMetadata.Edition': tmKey('EditionV1'),
@@ -202,10 +212,12 @@ kinobi.update(
 kinobi.update(
   k.setStructDefaultValuesVisitor({
     'mplTokenMetadata.Collection': {
-      verified: k.vScalar(false),
+      verified: k.booleanValueNode(false),
     },
     'mplTokenMetadata.UpdateArgs.V1': {
-      tokenStandard: k.vSome(k.vEnum('TokenStandard', 'NonFungible')),
+      tokenStandard: k.someValueNode(
+        k.enumValueNode('TokenStandard', 'NonFungible')
+      ),
     },
   })
 );
