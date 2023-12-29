@@ -1,5 +1,5 @@
 import { Node } from '../Node';
-import { ValueNode } from '../ValueNode';
+import { ValueNode } from './ValueNode';
 
 export type ArrayValueNode = {
   readonly kind: 'arrayValueNode';

@@ -3,11 +3,11 @@ import { ValueNode } from './ValueNode';
 
 export type MapValueNode = {
   readonly kind: 'mapValueNode';
-  readonly map: [ValueNode, ValueNode][];
+  readonly entries: [ValueNode, ValueNode][];
 };
 
-export function mapValueNode(map: [ValueNode, ValueNode][]): MapValueNode {
-  return { kind: 'mapValueNode', map };
+export function mapValueNode(entries: [ValueNode, ValueNode][]): MapValueNode {
+  return { kind: 'mapValueNode', entries };
 }
 
 export function isMapValueNode(node: Node | null): node is MapValueNode {

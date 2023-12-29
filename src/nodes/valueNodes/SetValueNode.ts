@@ -3,11 +3,11 @@ import { ValueNode } from './ValueNode';
 
 export type SetValueNode = {
   readonly kind: 'setValueNode';
-  readonly set: ValueNode[];
+  readonly items: ValueNode[];
 };
 
-export function setValueNode(set: ValueNode[]): SetValueNode {
-  return { kind: 'setValueNode', set };
+export function setValueNode(items: ValueNode[]): SetValueNode {
+  return { kind: 'setValueNode', items };
 }
 
 export function isSetValueNode(node: Node | null): node is SetValueNode {

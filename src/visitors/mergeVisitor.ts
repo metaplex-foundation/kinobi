@@ -214,5 +214,52 @@ export function mergeVisitor<
     };
   }
 
+  if (castedNodeKeys.includes('arrayValueNode')) {
+    visitor.visitArrayValue = function visitArrayValue(node) {
+      return merge(node, node.items.flatMap(visit(this)));
+    };
+  }
+
+  if (castedNodeKeys.includes('enumValueNode')) {
+    visitor.visitEnumValue = function visitEnumValue(node) {
+      return typeof node.value === 'string'
+        ? leafValue(node)
+        : merge(node, visit(this)(node.value));
+    };
+  }
+
+  if (castedNodeKeys.includes('mapValueNode')) {
+    visitor.visitMapValue = function visitMapValue(node) {
+      return merge(
+        node,
+        node.entries.flatMap(([k, v]) => [...visit(this)(k), ...visit(this)(v)])
+      );
+    };
+  }
+
+  if (castedNodeKeys.includes('setValueNode')) {
+    visitor.visitSetValue = function visitSetValue(node) {
+      return merge(node, node.items.flatMap(visit(this)));
+    };
+  }
+
+  if (castedNodeKeys.includes('someValueNode')) {
+    visitor.visitSomeValue = function visitSomeValue(node) {
+      return merge(node, visit(this)(node.value));
+    };
+  }
+
+  if (castedNodeKeys.includes('structValueNode')) {
+    visitor.visitStructValue = function visitStructValue(node) {
+      return merge(node, Object.values(node.fields).flatMap(visit(this)));
+    };
+  }
+
+  if (castedNodeKeys.includes('tupleValueNode')) {
+    visitor.visitTupleValue = function visitTupleValue(node) {
+      return merge(node, node.items.flatMap(visit(this)));
+    };
+  }
+
   return visitor as Visitor<TReturn, TNodeKeys>;
 }
