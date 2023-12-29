@@ -1,30 +1,30 @@
-import * as nodes from '../nodes';
+import { Node, ProgramNode, isProgramNode } from '../nodes';
 import { mainCase, titleCase } from './utils';
 
 export class NodeStack {
-  private readonly stack: nodes.Node[];
+  private readonly stack: Node[];
 
-  constructor(stack: nodes.Node[] = []) {
+  constructor(stack: Node[] = []) {
     this.stack = [...stack];
   }
 
-  public push(node: nodes.Node): void {
+  public push(node: Node): void {
     this.stack.push(node);
   }
 
-  public pop(): nodes.Node | undefined {
+  public pop(): Node | undefined {
     return this.stack.pop();
   }
 
-  public peek(): nodes.Node | undefined {
+  public peek(): Node | undefined {
     return this.isEmpty() ? undefined : this.stack[this.stack.length - 1];
   }
 
-  public getProgram(): nodes.ProgramNode | undefined {
-    return this.stack.find(nodes.isProgramNode);
+  public getProgram(): ProgramNode | undefined {
+    return this.stack.find(isProgramNode);
   }
 
-  public all(): nodes.Node[] {
+  public all(): Node[] {
     return [...this.stack];
   }
 

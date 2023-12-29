@@ -1,17 +1,16 @@
-import * as nodes from '../../../nodes';
+import { TypeNode, isDataEnum, isEnumTypeNode } from '../../../nodes';
 import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getTypeDataEnumHelpersFragment(scope: {
   name: string;
-  typeNode: nodes.TypeNode;
+  typeNode: TypeNode;
   nameApi: NameApi;
 }): Fragment {
   const { name, typeNode, nameApi } = scope;
-  const isDataEnum =
-    nodes.isEnumTypeNode(typeNode) && nodes.isDataEnum(typeNode);
+  const isDataEnumNode = isEnumTypeNode(typeNode) && isDataEnum(typeNode);
 
-  if (!isDataEnum) {
+  if (!isDataEnumNode) {
     return fragment('');
   }
 

@@ -1,5 +1,10 @@
-import { AccountNode } from '../nodes';
-import * as nodes from '../nodes';
+import {
+  AccountNode,
+  InstructionAccountNode,
+  InstructionNode,
+  getAllAccounts,
+  instructionNode,
+} from '../nodes';
 import {
   InstructionAccountDefault,
   MainCaseString,
@@ -171,8 +176,8 @@ export function setInstructionAccountDefaultValuesVisitor(
   });
 
   function matchRule(
-    instruction: nodes.InstructionNode,
-    account: nodes.InstructionAccountNode
+    instruction: InstructionNode,
+    account: InstructionAccountNode
   ): InstructionAccountDefaultRule | undefined {
     return sortedRules.find((rule) => {
       if (
@@ -193,14 +198,14 @@ export function setInstructionAccountDefaultValuesVisitor(
     (v) =>
       tapVisitor(v, 'rootNode', (root) => {
         allAccounts = new Map(
-          nodes.getAllAccounts(root).map((account) => [account.name, account])
+          getAllAccounts(root).map((account) => [account.name, account])
         );
       }),
     (v) =>
       extendVisitor(v, {
         visitInstruction(node) {
           const instructionAccounts = node.accounts.map(
-            (account): nodes.InstructionAccountNode => {
+            (account): InstructionAccountNode => {
               const rule = matchRule(node, account);
               if (!rule) {
                 return account;
@@ -252,7 +257,7 @@ export function setInstructionAccountDefaultValuesVisitor(
             }
           );
 
-          return nodes.instructionNode({
+          return instructionNode({
             ...node,
             accounts: instructionAccounts,
           });

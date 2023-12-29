@@ -1,8 +1,8 @@
-import * as nodes from '../../nodes';
+import { ValueNode } from 'src/nodes';
 import { camelCase, pascalCase } from '../../shared';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 
-export function renderValueNode(value: nodes.ValueNode): {
+export function renderValueNode(value: ValueNode): {
   imports: JavaScriptImportMap;
   render: string;
 } {

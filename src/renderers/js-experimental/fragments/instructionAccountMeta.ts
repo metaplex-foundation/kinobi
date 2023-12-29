@@ -1,9 +1,9 @@
-import * as nodes from '../../../nodes';
+import { InstructionAccountNode } from '../../../nodes';
 import { pascalCase } from '../../../shared';
 import { Fragment, fragment } from './common';
 
 export function getInstructionAccountMetaFragment(
-  instructionAccountNode: nodes.InstructionAccountNode,
+  instructionAccountNode: InstructionAccountNode,
   withSigners: boolean
 ): Fragment {
   const typeParam = `TAccount${pascalCase(instructionAccountNode.name)}`;

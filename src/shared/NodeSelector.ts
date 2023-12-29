@@ -1,4 +1,4 @@
-import * as nodes from '../nodes';
+import { Node } from '../nodes';
 import { mainCase } from './utils';
 import type { NodeStack } from './NodeStack';
 
@@ -14,17 +14,14 @@ export type NodeSelector = NodeSelectorPath | NodeSelectorFunction;
  */
 export type NodeSelectorPath = string;
 
-export type NodeSelectorFunction = (
-  node: nodes.Node,
-  stack: NodeStack
-) => boolean;
+export type NodeSelectorFunction = (node: Node, stack: NodeStack) => boolean;
 
 export const getNodeSelectorFunction = (
   selector: NodeSelector
 ): NodeSelectorFunction => {
   if (typeof selector === 'function') return selector;
 
-  const checkNode = (node: nodes.Node, nodeSelector: string): boolean => {
+  const checkNode = (node: Node, nodeSelector: string): boolean => {
     if (nodeSelector === '*') return true;
     const matches = nodeSelector.match(/^(?:\[([^\]]+)\])?(.*)?$/);
     if (!matches) return false;
@@ -35,13 +32,10 @@ export const getNodeSelectorFunction = (
     return true;
   };
 
-  const checkStack = (
-    nodeStack: nodes.Node[],
-    nodeSelectors: string[]
-  ): boolean => {
+  const checkStack = (nodeStack: Node[], nodeSelectors: string[]): boolean => {
     if (nodeSelectors.length === 0) return true;
     if (nodeStack.length === 0) return false;
-    const lastNode = nodeStack.pop() as nodes.Node;
+    const lastNode = nodeStack.pop() as Node;
     const lastNodeSelector = nodeSelectors.pop() as string;
     return checkNode(lastNode, lastNodeSelector)
       ? checkStack(nodeStack, nodeSelectors)

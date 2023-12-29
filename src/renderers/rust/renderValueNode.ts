@@ -1,9 +1,9 @@
-import * as nodes from '../../nodes';
+import { ValueNode } from '../../nodes';
 import { pascalCase } from '../../shared';
 import { RustImportMap } from './RustImportMap';
 
 export function renderValueNode(
-  value: nodes.ValueNode,
+  value: ValueNode,
   useStr: boolean = false
 ): {
   imports: RustImportMap;

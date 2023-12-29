@@ -1,10 +1,10 @@
-import * as nodes from '../../../nodes';
+import { AccountNode } from '../../../nodes';
 import { TypeManifest } from '../TypeManifest';
 import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getAccountFetchHelpersFragment(scope: {
-  accountNode: nodes.AccountNode;
+  accountNode: AccountNode;
   typeManifest: TypeManifest;
   nameApi: NameApi;
 }): Fragment {

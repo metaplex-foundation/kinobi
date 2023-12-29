@@ -1,4 +1,4 @@
-import * as nodes from '../../../nodes';
+import { InstructionNode, ProgramNode } from '../../../nodes';
 import { pascalCase } from '../../../shared';
 import { NameApi } from '../nameTransformers';
 import { Fragment, fragmentFromTemplate, mergeFragments } from './common';
@@ -6,8 +6,8 @@ import { getInstructionAccountMetaFragment } from './instructionAccountMeta';
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
 
 export function getInstructionTypeFragment(scope: {
-  instructionNode: nodes.InstructionNode;
-  programNode: nodes.ProgramNode;
+  instructionNode: InstructionNode;
+  programNode: ProgramNode;
   withSigners: boolean;
   nameApi: NameApi;
 }): Fragment {

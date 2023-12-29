@@ -1,12 +1,16 @@
-import * as nodes from '../../../nodes';
+import {
+  InstructionAccountNode,
+  InstructionNode,
+  ProgramNode,
+} from '../../../nodes';
 import { InstructionAccountDefault, pascalCase } from '../../../shared';
 import { ImportMap } from '../ImportMap';
 import { Fragment, fragment } from './common';
 
 export function getInstructionAccountTypeParamFragment(scope: {
-  instructionNode: nodes.InstructionNode;
-  instructionAccountNode: nodes.InstructionAccountNode;
-  programNode: nodes.ProgramNode;
+  instructionNode: InstructionNode;
+  instructionAccountNode: InstructionAccountNode;
+  programNode: ProgramNode;
   allowAccountMeta: boolean;
 }): Fragment {
   const {

@@ -1,4 +1,12 @@
-import * as nodes from '../../nodes';
+import {
+  ArrayTypeNode,
+  REGISTERED_TYPE_NODE_KEYS,
+  isInteger,
+  isScalarEnum,
+  isUnsignedInteger,
+  structFieldTypeNode,
+  structTypeNode,
+} from '../../nodes';
 import { camelCase, pascalCase, pipe } from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
@@ -30,7 +38,7 @@ export function getTypeManifestVisitor() {
           serializerImports: new JavaScriptImportMap(),
         } as JavaScriptTypeManifest),
       [
-        ...nodes.REGISTERED_TYPE_NODE_KEYS,
+        ...REGISTERED_TYPE_NODE_KEYS,
         'definedTypeNode',
         'accountNode',
         'accountDataNode',
@@ -158,7 +166,7 @@ export function getTypeManifestVisitor() {
             options.push(`size: ${sizeManifest.serializer}`);
           }
 
-          if (nodes.isScalarEnum(enumType)) {
+          if (isScalarEnum(enumType)) {
             if (currentParentName === null) {
               throw new Error(
                 'Scalar enums cannot be inlined and must be introduced ' +
@@ -258,8 +266,8 @@ export function getTypeManifestVisitor() {
         visitEnumTupleVariantType(enumTupleVariantType, _, self) {
           const name = pascalCase(enumTupleVariantType.name);
           const kindAttribute = `__kind: "${name}"`;
-          const struct = nodes.structTypeNode([
-            nodes.structFieldTypeNode({
+          const struct = structTypeNode([
+            structFieldTypeNode({
               name: 'fields',
               child: enumTupleVariantType.tuple,
             }),
@@ -540,7 +548,7 @@ export function getTypeManifestVisitor() {
 
         visitAmountType(amountType, _, self) {
           const numberManifest = visit(amountType.number, self);
-          if (!nodes.isUnsignedInteger(amountType.number)) {
+          if (!isUnsignedInteger(amountType.number)) {
             throw new Error(
               `Amount wrappers can only be applied to unsigned ` +
                 `integer types. Got type [${amountType.number.toString()}].`
@@ -566,7 +574,7 @@ export function getTypeManifestVisitor() {
 
         visitDateTimeType(dateTimeType, _, self) {
           const numberManifest = visit(dateTimeType.number, self);
-          if (!nodes.isInteger(dateTimeType.number)) {
+          if (!isInteger(dateTimeType.number)) {
             throw new Error(
               `DateTime wrappers can only be applied to integer ` +
                 `types. Got type [${dateTimeType.number.toString()}].`
@@ -585,7 +593,7 @@ export function getTypeManifestVisitor() {
 
         visitSolAmountType(solAmountType, _, self) {
           const numberManifest = visit(solAmountType.number, self);
-          if (!nodes.isUnsignedInteger(solAmountType.number)) {
+          if (!isUnsignedInteger(solAmountType.number)) {
             throw new Error(
               `Amount wrappers can only be applied to unsigned ` +
                 `integer types. Got type [${solAmountType.number.toString()}].`
@@ -695,7 +703,7 @@ function createDocblock(docs: string[]): string {
 }
 
 function getArrayLikeSizeOption(
-  size: nodes.ArrayTypeNode['size'],
+  size: ArrayTypeNode['size'],
   manifest: Pick<
     JavaScriptTypeManifest,
     'strictImports' | 'looseImports' | 'serializerImports'

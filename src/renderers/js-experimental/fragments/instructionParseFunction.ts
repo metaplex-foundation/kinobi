@@ -1,11 +1,11 @@
-import * as nodes from '../../../nodes';
+import { InstructionNode, ProgramNode } from '../../../nodes';
 import { TypeManifest } from '../TypeManifest';
 import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getInstructionParseFunctionFragment(scope: {
-  instructionNode: nodes.InstructionNode;
-  programNode: nodes.ProgramNode;
+  instructionNode: InstructionNode;
+  programNode: ProgramNode;
   dataArgsManifest: TypeManifest;
   nameApi: NameApi;
 }): Fragment {

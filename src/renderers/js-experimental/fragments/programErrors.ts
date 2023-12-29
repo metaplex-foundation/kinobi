@@ -1,9 +1,9 @@
-import * as nodes from '../../../nodes';
+import { ProgramNode } from '../../../nodes';
 import { NameApi } from '../nameTransformers';
 import { Fragment, fragmentFromTemplate } from './common';
 
 export function getProgramErrorsFragment(scope: {
-  programNode: nodes.ProgramNode;
+  programNode: ProgramNode;
   nameApi: NameApi;
 }): Fragment {
   const { programNode, nameApi } = scope;

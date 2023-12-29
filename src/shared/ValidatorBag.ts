@@ -1,3 +1,4 @@
+import { Node } from '../nodes';
 import {
   getLevelIndex,
   logDebug,
@@ -7,13 +8,12 @@ import {
   logTrace,
   logWarn,
 } from './logs';
-import * as nodes from '../nodes';
 import { NodeStack } from './NodeStack';
 
 export type ValidatorItem = {
   message: string;
   level: LogLevel;
-  node: nodes.Node;
+  node: Node;
   stack: NodeStack;
 };
 
@@ -36,23 +36,23 @@ export class ValidatorBag {
     return this;
   }
 
-  error(message: string, node: nodes.Node, stack: NodeStack): ValidatorBag {
+  error(message: string, node: Node, stack: NodeStack): ValidatorBag {
     return this.add({ message, level: 'error', node, stack: stack.clone() });
   }
 
-  warn(message: string, node: nodes.Node, stack: NodeStack): ValidatorBag {
+  warn(message: string, node: Node, stack: NodeStack): ValidatorBag {
     return this.add({ message, level: 'warn', node, stack: stack.clone() });
   }
 
-  info(message: string, node: nodes.Node, stack: NodeStack): ValidatorBag {
+  info(message: string, node: Node, stack: NodeStack): ValidatorBag {
     return this.add({ message, level: 'info', node, stack: stack.clone() });
   }
 
-  trace(message: string, node: nodes.Node, stack: NodeStack): ValidatorBag {
+  trace(message: string, node: Node, stack: NodeStack): ValidatorBag {
     return this.add({ message, level: 'trace', node, stack: stack.clone() });
   }
 
-  debug(message: string, node: nodes.Node, stack: NodeStack): ValidatorBag {
+  debug(message: string, node: Node, stack: NodeStack): ValidatorBag {
     return this.add({ message, level: 'debug', node, stack: stack.clone() });
   }
 

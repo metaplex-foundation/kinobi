@@ -1,10 +1,10 @@
-import * as nodes from '../../../nodes';
+import { ValueNode } from '../../../nodes';
 import { pascalCase } from '../../../shared';
 import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, mergeFragments } from './common';
 
 export function getValueNodeFragment(
-  value: nodes.ValueNode,
+  value: ValueNode,
   nameApi: NameApi
 ): Fragment {
   switch (value.kind) {

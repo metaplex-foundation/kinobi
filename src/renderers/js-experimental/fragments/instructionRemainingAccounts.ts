@@ -1,9 +1,9 @@
-import * as nodes from '../../../nodes';
+import { InstructionNode } from '../../../nodes';
 import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getInstructionRemainingAccountsFragment(scope: {
-  instructionNode: nodes.InstructionNode;
+  instructionNode: InstructionNode;
   asyncResolvers: string[];
   useAsync: boolean;
   nameApi: NameApi;

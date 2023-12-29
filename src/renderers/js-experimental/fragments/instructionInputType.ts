@@ -1,4 +1,8 @@
-import * as nodes from '../../../nodes';
+import {
+  InstructionNode,
+  ProgramNode,
+  StructFieldTypeNode,
+} from '../../../nodes';
 import { pascalCase } from '../../../shared';
 import {
   ResolvedInstructionAccount,
@@ -12,12 +16,12 @@ import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getInstructionInputTypeFragment(scope: {
-  instructionNode: nodes.InstructionNode;
+  instructionNode: InstructionNode;
   resolvedInputs: ResolvedInstructionInput[];
   renamedArgs: Map<string, string>;
   dataArgsManifest: TypeManifest;
   extraArgsManifest: TypeManifest;
-  programNode: nodes.ProgramNode;
+  programNode: ProgramNode;
   withSigners: boolean;
   asyncResolvers: string[];
   useAsync: boolean;
@@ -68,7 +72,7 @@ export function getInstructionInputTypeFragment(scope: {
   }
 
   // Arguments.
-  const resolveArg = (arg: nodes.StructFieldTypeNode) => {
+  const resolveArg = (arg: StructFieldTypeNode) => {
     const resolvedArg = resolvedInputs.find(
       (input) => input.kind === 'arg' && input.name === arg.name
     ) as ResolvedInstructionArg | undefined;

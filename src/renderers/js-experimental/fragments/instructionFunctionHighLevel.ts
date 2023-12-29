@@ -1,4 +1,4 @@
-import * as nodes from '../../../nodes';
+import { InstructionNode, ProgramNode } from '../../../nodes';
 import { camelCase, pascalCase } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import { TypeManifest } from '../TypeManifest';
@@ -16,8 +16,8 @@ import { getInstructionInputTypeFragment } from './instructionInputType';
 import { getInstructionRemainingAccountsFragment } from './instructionRemainingAccounts';
 
 export function getInstructionFunctionHighLevelFragment(scope: {
-  instructionNode: nodes.InstructionNode;
-  programNode: nodes.ProgramNode;
+  instructionNode: InstructionNode;
+  programNode: ProgramNode;
   renamedArgs: Map<string, string>;
   dataArgsManifest: TypeManifest;
   extraArgsManifest: TypeManifest;
@@ -185,8 +185,8 @@ export function getInstructionFunctionHighLevelFragment(scope: {
 }
 
 function getTypeParams(
-  instructionNode: nodes.InstructionNode,
-  programNode: nodes.ProgramNode
+  instructionNode: InstructionNode,
+  programNode: ProgramNode
 ): Fragment {
   const typeParams = [
     ...instructionNode.accounts.map(
@@ -198,7 +198,7 @@ function getTypeParams(
 }
 
 function getInstructionType(scope: {
-  instructionNode: nodes.InstructionNode;
+  instructionNode: InstructionNode;
   withSigners: boolean;
   nameApi: NameApi;
 }): Fragment {
@@ -233,7 +233,7 @@ function getInstructionType(scope: {
 }
 
 function getInputTypeCall(scope: {
-  instructionNode: nodes.InstructionNode;
+  instructionNode: InstructionNode;
   withSigners: boolean;
   useAsync: boolean;
   nameApi: NameApi;

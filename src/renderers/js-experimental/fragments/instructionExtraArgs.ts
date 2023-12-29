@@ -1,10 +1,10 @@
-import * as nodes from '../../../nodes';
+import { InstructionNode } from '../../../nodes';
 import { TypeManifest } from '../TypeManifest';
 import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getInstructionExtraArgsFragment(scope: {
-  instructionNode: nodes.InstructionNode;
+  instructionNode: InstructionNode;
   extraArgsManifest: TypeManifest;
   nameApi: NameApi;
 }): Fragment {
