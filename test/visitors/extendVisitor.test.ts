@@ -9,7 +9,7 @@ import {
   voidVisitor,
 } from '../../src';
 
-test('it returns a new visitor that extends a subset of visits', (t) => {
+test('it returns a new visitor that extends a subset of visits with a next function', (t) => {
   // Given the following 3-nodes tree.
   const node = tupleTypeNode([
     numberTypeNode('u32'),
@@ -34,6 +34,30 @@ test('it returns a new visitor that extends a subset of visits', (t) => {
 
   // And the extended visitor is a new instance.
   t.not(baseVisitor, visitor);
+});
+
+test('it can visit itself using the exposed self argument', (t) => {
+  // Given the following 3-nodes tree.
+  const node = tupleTypeNode([
+    numberTypeNode('u32'),
+    tupleTypeNode([numberTypeNode('u64'), publicKeyTypeNode()]),
+  ]);
+
+  // And an extended sum visitor that only visit the first item of tuple nodes.
+  const baseVisitor = mergeVisitor(
+    () => 1,
+    (_, values) => values.reduce((a, b) => a + b, 1)
+  );
+  const visitor = extendVisitor(baseVisitor, {
+    visitTupleType: (node, _, self) =>
+      (node.children.length > 1 ? visit(node.children[0], self) : 0) + 1,
+  });
+
+  // When we visit the tree using that visitor.
+  const result = visit(node, visitor);
+
+  // Then we expect the following count.
+  t.is(result, 2);
 });
 
 test('it cannot extends nodes that are not supported by the base visitor', (t) => {
