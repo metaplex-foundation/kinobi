@@ -44,7 +44,7 @@ test('it can create visitors as plain objects', (t) => {
   // When we visit the tree using that visitor.
   const result = visit(node, visitor);
 
-  // Then we expect the count.
+  // Then we expect the following count.
   t.is(result, 24);
 });
 
@@ -52,20 +52,15 @@ test('it can use visitOrElse to fallback if a nested node is not supported by th
   // Given the following tree.
   const node = tupleTypeNode([numberTypeNode('u32'), publicKeyTypeNode()]);
 
-  // And a plain object visitor that counts the nodes.
-  const visitor: Visitor<
-    number,
-    'tupleTypeNode' | 'numberTypeNode' | 'publicKeyTypeNode'
-  > = {
+  // And a plain object visitor that counts the tuples and numbers nodes only
+  // Such that it falls back to 42 for any other node.
+  const visitor: Visitor<number, 'tupleTypeNode' | 'numberTypeNode'> = {
     visitTupleType(node) {
       return node.children
-        .map((child) => visitOrElse(child, this, () => 0))
+        .map((child) => visitOrElse(child, this, () => 42))
         .reduce((a, b) => a + b, 1);
     },
     visitNumberType() {
-      return 1;
-    },
-    visitPublicKeyType() {
       return 1;
     },
   };
@@ -73,6 +68,6 @@ test('it can use visitOrElse to fallback if a nested node is not supported by th
   // When we visit the tree using that visitor.
   const result = visit(node, visitor);
 
-  // Then we expect the count.
-  t.is(result, 3);
+  // Then we expect the following count.
+  t.is(result, 44);
 });
