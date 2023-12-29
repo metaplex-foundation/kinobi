@@ -1,7 +1,10 @@
 import {
   ArrayTypeNode,
   REGISTERED_TYPE_NODE_KEYS,
+  isFixedSizeNode,
   isInteger,
+  isPrefixedSizeNode,
+  isRemainderSizeNode,
   isScalarEnum,
   isUnsignedInteger,
   structFieldTypeNode,
@@ -498,14 +501,14 @@ export function getTypeManifestVisitor() {
           const options: string[] = [];
 
           // Size option.
-          if (bytesType.size.kind === 'prefixed') {
+          if (isPrefixedSizeNode(bytesType.size)) {
             const prefix = visit(bytesType.size.prefix, self);
             strictImports.mergeWith(prefix.strictImports);
             looseImports.mergeWith(prefix.looseImports);
             serializerImports.mergeWith(prefix.serializerImports);
             options.push(`size: ${prefix.serializer}`);
-          } else if (bytesType.size.kind === 'fixed') {
-            options.push(`size: ${bytesType.size.value}`);
+          } else if (isFixedSizeNode(bytesType.size)) {
+            options.push(`size: ${bytesType.size.size}`);
           }
 
           const optionsAsString =
@@ -643,10 +646,10 @@ export function getTypeManifestVisitor() {
           }
 
           // Size option.
-          if (stringType.size.kind === 'remainder') {
+          if (isRemainderSizeNode(stringType.size)) {
             options.push(`size: 'variable'`);
-          } else if (stringType.size.kind === 'fixed') {
-            options.push(`size: ${stringType.size.value}`);
+          } else if (isFixedSizeNode(stringType.size)) {
+            options.push(`size: ${stringType.size.size}`);
           } else if (
             stringType.size.prefix.format !== 'u32' ||
             stringType.size.prefix.endian !== 'le'
@@ -710,8 +713,8 @@ function getArrayLikeSizeOption(
   >,
   self: Visitor<JavaScriptTypeManifest, 'numberTypeNode'>
 ): string | null {
-  if (size.kind === 'fixed') return `size: ${size.value}`;
-  if (size.kind === 'remainder') return `size: 'remainder'`;
+  if (isFixedSizeNode(size)) return `size: ${size.size}`;
+  if (isRemainderSizeNode(size)) return `size: 'remainder'`;
 
   const prefixManifest = visit(size.prefix, self);
   if (prefixManifest.serializer === 'u32()') return null;

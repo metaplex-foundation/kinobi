@@ -95,7 +95,7 @@ export function mergeVisitor<
   if (castedNodeKeys.includes('arrayTypeNode')) {
     visitor.visitArrayType = function visitArrayType(node) {
       return merge(node, [
-        ...(node.size.kind === 'prefixed' ? visit(this)(node.size.prefix) : []),
+        ...visit(this)(node.size),
         ...visit(this)(node.child),
       ]);
     };
@@ -129,7 +129,7 @@ export function mergeVisitor<
   if (castedNodeKeys.includes('mapTypeNode')) {
     visitor.visitMapType = function visitMapType(node) {
       return merge(node, [
-        ...(node.size.kind === 'prefixed' ? visit(this)(node.size.prefix) : []),
+        ...visit(this)(node.size),
         ...visit(this)(node.key),
         ...visit(this)(node.value),
       ]);
@@ -154,7 +154,7 @@ export function mergeVisitor<
   if (castedNodeKeys.includes('setTypeNode')) {
     visitor.visitSetType = function visitSetType(node) {
       return merge(node, [
-        ...(node.size.kind === 'prefixed' ? visit(this)(node.size.prefix) : []),
+        ...visit(this)(node.size),
         ...visit(this)(node.child),
       ]);
     };
@@ -198,9 +198,19 @@ export function mergeVisitor<
 
   if (castedNodeKeys.includes('stringTypeNode')) {
     visitor.visitStringType = function visitStringType(node) {
-      return node.size.kind === 'prefixed'
-        ? merge(node, visit(this)(node.size.prefix))
-        : leafValue(node);
+      return merge(node, visit(this)(node.size));
+    };
+  }
+
+  if (castedNodeKeys.includes('bytesTypeNode')) {
+    visitor.visitBytesType = function visitBytesType(node) {
+      return merge(node, visit(this)(node.size));
+    };
+  }
+
+  if (castedNodeKeys.includes('prefixedSizeNode')) {
+    visitor.visitPrefixedSize = function visitPrefixedSize(node) {
+      return merge(node, visit(this)(node.prefix));
     };
   }
 

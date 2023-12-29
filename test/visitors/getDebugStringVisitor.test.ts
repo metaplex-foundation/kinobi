@@ -5,6 +5,7 @@ import {
   getDebugStringVisitor,
   numberTypeNode,
   optionTypeNode,
+  prefixedSizeNode,
   publicKeyTypeNode,
   stringTypeNode,
   structFieldTypeNode,
@@ -21,7 +22,7 @@ test('it returns a string representing the main information of a node for debugg
       structFieldTypeNode({
         name: 'firstname',
         child: stringTypeNode({
-          size: { kind: 'prefixed', prefix: numberTypeNode('u64') },
+          size: prefixedSizeNode(numberTypeNode('u64')),
           encoding: 'utf8',
         }),
       }),
@@ -49,7 +50,7 @@ test('it returns a string representing the main information of a node for debugg
   // Then we expect the following string.
   t.deepEqual(
     result,
-    'tupleTypeNode(numberTypeNode[u32], structTypeNode(structFieldTypeNode[firstname](stringTypeNode[utf8.prefixed](numberTypeNode[u64])), structFieldTypeNode[age](numberTypeNode[u32]), structFieldTypeNode[wallet](optionTypeNode(numberTypeNode[u16], publicKeyTypeNode)), structFieldTypeNode[industry](enumTypeNode(numberTypeNode[u8], enumEmptyVariantTypeNode[programming], enumEmptyVariantTypeNode[crypto], enumEmptyVariantTypeNode[music]))))'
+    'tupleTypeNode(numberTypeNode[u32], structTypeNode(structFieldTypeNode[firstname](stringTypeNode[utf8](prefixedSizeNode(numberTypeNode[u64]))), structFieldTypeNode[age](numberTypeNode[u32]), structFieldTypeNode[wallet](optionTypeNode(numberTypeNode[u16], publicKeyTypeNode)), structFieldTypeNode[industry](enumTypeNode(numberTypeNode[u8], enumEmptyVariantTypeNode[programming], enumEmptyVariantTypeNode[crypto], enumEmptyVariantTypeNode[music]))))'
   );
 });
 
@@ -61,7 +62,7 @@ test('it can create indented strings', (t) => {
       structFieldTypeNode({
         name: 'firstname',
         child: stringTypeNode({
-          size: { kind: 'prefixed', prefix: numberTypeNode('u64') },
+          size: prefixedSizeNode(numberTypeNode('u64')),
           encoding: 'utf8',
         }),
       }),
@@ -93,8 +94,9 @@ test('it can create indented strings', (t) => {
 |   numberTypeNode [u32]
 |   structTypeNode
 |   |   structFieldTypeNode [firstname]
-|   |   |   stringTypeNode [utf8.prefixed]
-|   |   |   |   numberTypeNode [u64]
+|   |   |   stringTypeNode [utf8]
+|   |   |   |   prefixedSizeNode
+|   |   |   |   |   numberTypeNode [u64]
 |   |   structFieldTypeNode [age]
 |   |   |   numberTypeNode [u32]
 |   |   structFieldTypeNode [wallet]

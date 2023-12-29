@@ -3,6 +3,7 @@ import {
   accountDataNode,
   accountNode,
   arrayTypeNode,
+  fixedSizeNode,
   instructionDataArgsNode,
   instructionNode,
   numberTypeNode,
@@ -11,7 +12,6 @@ import {
 } from '../nodes';
 import {
   fieldAccountDiscriminator,
-  fixedSize,
   getAnchorAccountDiscriminator,
   getAnchorInstructionDiscriminator,
   pipe,
@@ -44,7 +44,7 @@ export function setAnchorDiscriminatorsVisitor() {
           const discriminatorField = structFieldTypeNode({
             name: 'discriminator',
             child: arrayTypeNode(numberTypeNode('u8'), {
-              size: fixedSize(8),
+              size: fixedSizeNode(8),
             }),
             defaultsTo: {
               strategy: 'omitted',
@@ -72,7 +72,7 @@ export function setAnchorDiscriminatorsVisitor() {
           const discriminatorField = structFieldTypeNode({
             name: 'discriminator',
             child: arrayTypeNode(numberTypeNode('u8'), {
-              size: fixedSize(8),
+              size: fixedSizeNode(8),
             }),
             defaultsTo: {
               strategy: 'omitted',

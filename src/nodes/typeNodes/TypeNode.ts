@@ -1,5 +1,4 @@
 import { IDL_TYPE_LEAVES, IdlType } from '../../idl';
-import { prefixedSize } from '../../shared';
 import { ArrayTypeNode, arrayTypeNodeFromIdl } from './ArrayTypeNode';
 import { BoolTypeNode, boolTypeNode } from './BoolTypeNode';
 import { BytesTypeNode, bytesTypeNode } from './BytesTypeNode';
@@ -21,6 +20,7 @@ import { StructFieldTypeNode } from './StructFieldTypeNode';
 import { EnumEmptyVariantTypeNode } from './EnumEmptyVariantTypeNode';
 import { EnumStructVariantTypeNode } from './EnumStructVariantTypeNode';
 import { EnumTupleVariantTypeNode } from './EnumTupleVariantTypeNode';
+import { prefixedSizeNode } from '../sizeNodes';
 
 export const TYPE_NODES = {
   amountTypeNode: {} as AmountTypeNode,
@@ -73,7 +73,8 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
     if (idlType === 'bool') return boolTypeNode();
     if (idlType === 'string') return stringTypeNode();
     if (idlType === 'publicKey') return publicKeyTypeNode();
-    if (idlType === 'bytes') return bytesTypeNode(prefixedSize());
+    if (idlType === 'bytes')
+      return bytesTypeNode(prefixedSizeNode(numberTypeNode('u32')));
     return numberTypeNode(idlType);
   }
 

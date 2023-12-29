@@ -8,6 +8,7 @@ import type { InstructionExtraArgsNode } from './InstructionExtraArgsNode';
 import type { InstructionNode } from './InstructionNode';
 import type { ProgramNode } from './ProgramNode';
 import type { RootNode } from './RootNode';
+import { REGISTERED_SIZE_NODES } from './sizeNodes';
 import { REGISTERED_TYPE_NODES } from './typeNodes';
 
 const REGISTERED_NODES = {
@@ -24,6 +25,7 @@ const REGISTERED_NODES = {
 
   // Groups.
   ...REGISTERED_TYPE_NODES,
+  ...REGISTERED_SIZE_NODES,
 };
 
 export const REGISTERED_NODES_KEYS = Object.keys(

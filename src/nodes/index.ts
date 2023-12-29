@@ -11,4 +11,5 @@ export * from './ProgramNode';
 export * from './RootNode';
 export * from './ValueNode';
 
+export * from './sizeNodes';
 export * from './typeNodes';
