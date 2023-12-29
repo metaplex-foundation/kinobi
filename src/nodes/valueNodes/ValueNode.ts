@@ -1,5 +1,5 @@
 import { Node } from '../Node';
-import type { PublicKeyValueNode } from '../ValueNode';
+import type { PublicKeyValueNode } from './PublicKeyValueNode';
 import type { ArrayValueNode } from './ArrayValueNode';
 import type { BooleanValueNode } from './BooleanValueNode';
 import type { NumberValueNode } from './NumberValueNode';
