@@ -18,11 +18,13 @@ import {
   assertLinkTypeNode,
   assertNumberTypeNode,
   assertProgramNode,
+  assertSizeNode,
   assertStructFieldTypeNode,
   assertStructTypeNode,
   assertTupleTypeNode,
   assertTypeNode,
   boolTypeNode,
+  bytesTypeNode,
   dateTimeTypeNode,
   definedTypeNode,
   enumStructVariantTypeNode,
@@ -33,11 +35,13 @@ import {
   instructionNode,
   mapTypeNode,
   optionTypeNode,
+  prefixedSizeNode,
   programNode,
   removeNullAndAssertNodeFilter,
   rootNode,
   setTypeNode,
   solAmountTypeNode,
+  stringTypeNode,
   structFieldTypeNode,
   structTypeNode,
   tupleTypeNode,
@@ -175,10 +179,13 @@ export function identityVisitor<
 
   if (castedNodeKeys.includes('arrayTypeNode')) {
     visitor.visitArrayType = function visitArrayType(node) {
+      const size = visit(this)(node.size);
+      if (size === null) return null;
+      assertSizeNode(size);
       const child = visit(this)(node.child);
       if (child === null) return null;
       assertTypeNode(child);
-      return arrayTypeNode(child, { ...node });
+      return arrayTypeNode(child, { size });
     };
   }
 
@@ -217,12 +224,16 @@ export function identityVisitor<
 
   if (castedNodeKeys.includes('mapTypeNode')) {
     visitor.visitMapType = function visitMapType(node) {
+      const size = visit(this)(node.size);
+      if (size === null) return null;
+      assertSizeNode(size);
       const key = visit(this)(node.key);
-      const value = visit(this)(node.value);
-      if (key === null || value === null) return null;
+      if (key === null) return null;
       assertTypeNode(key);
+      const value = visit(this)(node.value);
+      if (value === null) return null;
       assertTypeNode(value);
-      return mapTypeNode(key, value, { ...node });
+      return mapTypeNode(key, value, { ...node, size });
     };
   }
 
@@ -249,10 +260,13 @@ export function identityVisitor<
 
   if (castedNodeKeys.includes('setTypeNode')) {
     visitor.visitSetType = function visitSetType(node) {
+      const size = visit(this)(node.size);
+      if (size === null) return null;
+      assertSizeNode(size);
       const child = visit(this)(node.child);
       if (child === null) return null;
       assertTypeNode(child);
-      return setTypeNode(child, { ...node });
+      return setTypeNode(child, { ...node, size });
     };
   }
 
@@ -285,6 +299,24 @@ export function identityVisitor<
     };
   }
 
+  if (castedNodeKeys.includes('stringTypeNode')) {
+    visitor.visitStringType = function visitStringType(node) {
+      const size = visit(this)(node.size);
+      if (size === null) return null;
+      assertSizeNode(size);
+      return stringTypeNode({ ...node, size });
+    };
+  }
+
+  if (castedNodeKeys.includes('bytesTypeNode')) {
+    visitor.visitBytesType = function visitBytesType(node) {
+      const size = visit(this)(node.size);
+      if (size === null) return null;
+      assertSizeNode(size);
+      return bytesTypeNode(size);
+    };
+  }
+
   if (castedNodeKeys.includes('amountTypeNode')) {
     visitor.visitAmountType = function visitAmountType(node) {
       const number = visit(this)(node.number);
@@ -309,6 +341,15 @@ export function identityVisitor<
       if (number === null) return null;
       assertNumberTypeNode(number);
       return solAmountTypeNode(number);
+    };
+  }
+
+  if (castedNodeKeys.includes('prefixedSizeNode')) {
+    visitor.visitPrefixedSize = function visitPrefixedSize(node) {
+      const prefix = visit(this)(node.prefix);
+      if (prefix === null) return null;
+      assertNumberTypeNode(prefix);
+      return prefixedSizeNode(prefix);
     };
   }
 

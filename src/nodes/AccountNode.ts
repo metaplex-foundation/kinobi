@@ -6,7 +6,6 @@ import {
   MainCaseString,
   PartialExcept,
   mainCase,
-  remainderSize,
 } from '../shared';
 import { AccountDataNode, accountDataNode } from './AccountDataNode';
 import { bytesTypeNode } from './typeNodes/BytesTypeNode';
@@ -15,6 +14,7 @@ import { stringTypeNode } from './typeNodes/StringTypeNode';
 import { assertStructTypeNode } from './typeNodes/StructTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './typeNodes/TypeNode';
 import { vScalar } from './ValueNode';
+import { remainderSizeNode } from './sizeNodes';
 
 export type AccountNode = {
   readonly kind: 'accountNode';
@@ -63,9 +63,9 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
       const value = vScalar(seed.value);
       let type: TypeNode;
       if (seed.type === 'string') {
-        type = stringTypeNode({ size: remainderSize() });
+        type = stringTypeNode({ size: remainderSizeNode() });
       } else if (seed.type === 'bytes') {
-        type = bytesTypeNode(remainderSize());
+        type = bytesTypeNode(remainderSizeNode());
       } else {
         type = createTypeNodeFromIdl(seed.type);
       }
