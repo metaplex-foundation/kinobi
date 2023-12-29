@@ -258,7 +258,7 @@ kinobiReconstructed.accept(
 );
 
 kinobiReconstructed.accept(
-  new k.RenderRustVisitor('./test/packages/rust/src/generated', {
+  k.renderRustVisitor('./test/packages/rust/src/generated', {
     crateFolder: './test/packages/rust',
     formatCode: true,
   })

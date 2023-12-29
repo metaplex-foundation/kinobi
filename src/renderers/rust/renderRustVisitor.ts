@@ -1,7 +1,6 @@
 import { spawnSync } from 'child_process';
-import * as nodes from '../../nodes';
 import { LogLevel, deleteFolder, logError, logWarn } from '../../shared';
-import { BaseThrowVisitor, visit, writeRenderMapVisitor } from '../../visitors';
+import { rootNodeVisitor, visit, writeRenderMapVisitor } from '../../visitors';
 import {
   GetRustRenderMapOptions,
   getRenderMapVisitor,
@@ -14,44 +13,31 @@ export type RenderRustOptions = GetRustRenderMapOptions & {
   formatCode?: boolean;
 };
 
-export class RenderRustVisitor extends BaseThrowVisitor<void> {
-  constructor(readonly path: string, readonly options: RenderRustOptions = {}) {
-    super();
-  }
-
-  visitRoot(root: nodes.RootNode): void {
-    // Validate nodes.
-    // visit(
-    //   root,
-    //   new ThrowValidatorItemsVisitor(
-    //     new GetRustValidatorBagVisitor(),
-    //     this.options.throwLevel
-    //   )
-    // );
-
+export function renderRustVisitor(
+  path: string,
+  options: RenderRustOptions = {}
+) {
+  return rootNodeVisitor((root) => {
     // Delete existing generated folder.
-    if (this.options.deleteFolderBeforeRendering ?? true) {
-      deleteFolder(this.path);
+    if (options.deleteFolderBeforeRendering ?? true) {
+      deleteFolder(path);
     }
 
     // Render the new files.
-    visit(
-      root,
-      writeRenderMapVisitor(getRenderMapVisitor(this.options), this.path)
-    );
+    visit(root, writeRenderMapVisitor(getRenderMapVisitor(options), path));
 
     // format the code
-    if (this.options.formatCode) {
-      if (this.options.crateFolder) {
+    if (options.formatCode) {
+      if (options.crateFolder) {
         runFormatter('cargo-fmt', [
           '--manifest-path',
-          `${this.options.crateFolder}/Cargo.toml`,
+          `${options.crateFolder}/Cargo.toml`,
         ]);
       } else {
         logWarn('No crate folder specified, skipping formatting.');
       }
     }
-  }
+  });
 }
 
 function runFormatter(cmd: string, args: string[]) {
