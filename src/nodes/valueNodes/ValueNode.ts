@@ -4,11 +4,25 @@ import type { ArrayValueNode } from './ArrayValueNode';
 import type { BooleanValueNode } from './BooleanValueNode';
 import type { NumberValueNode } from './NumberValueNode';
 import type { StringValueNode } from './StringValueNode';
+import type { SomeValueNode } from './SomeValueNode';
+import type { NoneValueNode } from './NoneValueNode';
+import type { EnumValueNode } from './EnumValueNode';
+import type { MapValueNode } from './MapValueNode';
+import type { SetValueNode } from './SetValueNode';
+import type { StructValueNode } from './StructValueNode';
+import type { TupleValueNode } from './TupleValueNode';
 
 export const REGISTERED_VALUE_NODES = {
   arrayValueNode: {} as ArrayValueNode,
   booleanValueNode: {} as BooleanValueNode,
+  enumValueNode: {} as EnumValueNode,
+  mapValueNode: {} as MapValueNode,
+  noneValueNode: {} as NoneValueNode,
   numberValueNode: {} as NumberValueNode,
+  setValueNode: {} as SetValueNode,
+  someValueNode: {} as SomeValueNode,
+  structValueNode: {} as StructValueNode,
+  tupleValueNode: {} as TupleValueNode,
   publicKeyValueNode: {} as PublicKeyValueNode,
   stringValueNode: {} as StringValueNode,
 };
