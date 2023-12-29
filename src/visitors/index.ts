@@ -1,5 +1,3 @@
-export * from './BaseThrowVisitor';
-
 export * from './bottomUpTransformerVisitor';
 export * from './consoleLogVisitor';
 export * from './createSubInstructionsFromEnumArgsVisitor';
