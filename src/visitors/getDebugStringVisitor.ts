@@ -71,7 +71,9 @@ function getNodeDetails(node: Node): string[] {
     case 'amountTypeNode':
       return [node.identifier, node.decimals.toString()];
     case 'stringTypeNode':
-      return [node.encoding, node.size.kind];
+      return [node.encoding];
+    case 'fixedSizeNode':
+      return [node.size.toString()];
     default:
       return 'name' in node ? [node.name] : [];
   }

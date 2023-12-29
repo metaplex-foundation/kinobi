@@ -2,6 +2,9 @@ import {
   REGISTERED_TYPE_NODE_KEYS,
   arrayTypeNode,
   isEnumTypeNode,
+  isFixedSizeNode,
+  isPrefixedSizeNode,
+  isRemainderSizeNode,
   isScalarEnum,
   numberTypeNode,
 } from '../../nodes';
@@ -118,15 +121,15 @@ export function getTypeManifestVisitor() {
         visitArrayType(arrayType, { self }) {
           const childManifest = visit(arrayType.child, self);
 
-          if (arrayType.size.kind === 'fixed') {
+          if (isFixedSizeNode(arrayType.size)) {
             return {
               ...childManifest,
-              type: `[${childManifest.type}; ${arrayType.size.value}]`,
+              type: `[${childManifest.type}; ${arrayType.size.size}]`,
             };
           }
 
           if (
-            arrayType.size.kind === 'prefixed' &&
+            isPrefixedSizeNode(arrayType.size) &&
             arrayType.size.prefix.endian === 'le'
           ) {
             switch (arrayType.size.prefix.format) {
@@ -152,7 +155,7 @@ export function getTypeManifestVisitor() {
             }
           }
 
-          if (arrayType.size.kind === 'remainder') {
+          if (isRemainderSizeNode(arrayType.size)) {
             childManifest.imports.add('kaigan::types::RemainderVec');
             return {
               ...childManifest,
@@ -358,8 +361,8 @@ export function getTypeManifestVisitor() {
             (structFieldType.child.kind === 'arrayTypeNode' ||
               structFieldType.child.kind === 'bytesTypeNode' ||
               structFieldType.child.kind === 'stringTypeNode') &&
-            structFieldType.child.size.kind === 'fixed' &&
-            structFieldType.child.size.value > 32
+            isFixedSizeNode(structFieldType.child.size) &&
+            structFieldType.child.size.size > 32
           ) {
             derive =
               '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::Bytes>"))]\n';
@@ -427,7 +430,7 @@ export function getTypeManifestVisitor() {
 
         visitStringType(stringType) {
           if (
-            stringType.size.kind === 'prefixed' &&
+            isPrefixedSizeNode(stringType.size) &&
             stringType.size.prefix.format === 'u32' &&
             stringType.size.prefix.endian === 'le'
           ) {
@@ -438,15 +441,15 @@ export function getTypeManifestVisitor() {
             };
           }
 
-          if (stringType.size.kind === 'fixed') {
+          if (isFixedSizeNode(stringType.size)) {
             return {
-              type: `[u8; ${stringType.size.value}]`,
+              type: `[u8; ${stringType.size.size}]`,
               imports: new RustImportMap(),
               nestedStructs: [],
             };
           }
 
-          if (stringType.size.kind === 'remainder') {
+          if (isRemainderSizeNode(stringType.size)) {
             return {
               type: `&str`,
               imports: new RustImportMap(),

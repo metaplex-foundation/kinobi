@@ -139,7 +139,7 @@ kinobi.update(
         },
         proof: {
           type: k.arrayTypeNode(k.publicKeyTypeNode(), {
-            size: k.remainderSize(),
+            size: k.remainderSizeNode(),
           }),
           defaultsTo: k.valueDefault(k.vList([])),
         },

@@ -1,5 +1,9 @@
 import {
   REGISTERED_TYPE_NODE_KEYS,
+  SizeNode,
+  isFixedSizeNode,
+  isPrefixedSizeNode,
+  isRemainderSizeNode,
   isScalarEnum,
   structFieldTypeNode,
   structTypeNode,
@@ -551,15 +555,15 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           const decoderOptions: string[] = [];
 
           // Size option.
-          if (bytesType.size.kind === 'prefixed') {
+          if (isPrefixedSizeNode(bytesType.size)) {
             const prefix = visit(bytesType.size.prefix, self);
             encoderImports.mergeWith(prefix.encoder);
             decoderImports.mergeWith(prefix.decoder);
             encoderOptions.push(`size: ${prefix.encoder.render}`);
             decoderOptions.push(`size: ${prefix.decoder.render}`);
-          } else if (bytesType.size.kind === 'fixed') {
-            encoderOptions.push(`size: ${bytesType.size.value}`);
-            decoderOptions.push(`size: ${bytesType.size.value}`);
+          } else if (isFixedSizeNode(bytesType.size)) {
+            encoderOptions.push(`size: ${bytesType.size.size}`);
+            decoderOptions.push(`size: ${bytesType.size.size}`);
           }
 
           const encoderOptionsAsString =
@@ -673,12 +677,12 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           }
 
           // Size option.
-          if (stringType.size.kind === 'remainder') {
+          if (isRemainderSizeNode(stringType.size)) {
             encoderOptions.push(`size: 'variable'`);
             decoderOptions.push(`size: 'variable'`);
-          } else if (stringType.size.kind === 'fixed') {
-            encoderOptions.push(`size: ${stringType.size.value}`);
-            decoderOptions.push(`size: ${stringType.size.value}`);
+          } else if (isFixedSizeNode(stringType.size)) {
+            encoderOptions.push(`size: ${stringType.size.size}`);
+            decoderOptions.push(`size: ${stringType.size.size}`);
           } else if (
             stringType.size.prefix.format !== 'u32' ||
             stringType.size.prefix.endian !== 'le'
@@ -721,19 +725,19 @@ function createDocblock(docs: string[]): string {
 }
 
 function getArrayLikeSizeOption(
-  size: SizeStrategy,
+  size: SizeNode,
   visitor: Visitor<TypeManifest, 'numberTypeNode'>
 ): {
   encoder: Fragment;
   decoder: Fragment;
 } {
-  if (size.kind === 'fixed') {
+  if (isFixedSizeNode(size)) {
     return {
-      encoder: fragment(`size: ${size.value}`),
-      decoder: fragment(`size: ${size.value}`),
+      encoder: fragment(`size: ${size.size}`),
+      decoder: fragment(`size: ${size.size}`),
     };
   }
-  if (size.kind === 'remainder') {
+  if (isRemainderSizeNode(size)) {
     return {
       encoder: fragment(`size: 'remainder'`),
       decoder: fragment(`size: 'remainder'`),
