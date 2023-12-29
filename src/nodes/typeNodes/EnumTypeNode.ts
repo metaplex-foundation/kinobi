@@ -7,7 +7,6 @@ import type { Node } from '../Node';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 
 export type EnumTypeNode = {
-  readonly __enumTypeNode: unique symbol;
   readonly kind: 'enumTypeNode';
   readonly variants: EnumVariantTypeNode[];
   readonly size: NumberTypeNode;
@@ -21,7 +20,7 @@ export function enumTypeNode(
     kind: 'enumTypeNode',
     variants,
     size: options.size ?? numberTypeNode('u8'),
-  } as EnumTypeNode;
+  };
 }
 
 export function enumTypeNodeFromIdl(idl: IdlTypeEnum): EnumTypeNode {

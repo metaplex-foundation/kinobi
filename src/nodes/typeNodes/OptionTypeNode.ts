@@ -4,7 +4,6 @@ import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type OptionTypeNode = {
-  readonly __optionTypeNode: unique symbol;
   readonly kind: 'optionTypeNode';
   readonly child: TypeNode;
   readonly prefix: NumberTypeNode;
@@ -26,7 +25,7 @@ export function optionTypeNode(
     prefix: options.prefix ?? numberTypeNode('u8'),
     fixed: options.fixed ?? false,
     idlOption: options.idlOption ?? 'option',
-  } as OptionTypeNode;
+  };
 }
 
 export function optionTypeNodeFromIdl(idl: IdlTypeOption): OptionTypeNode {

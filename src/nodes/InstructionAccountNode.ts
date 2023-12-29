@@ -8,7 +8,6 @@ import {
 import type { Node } from './Node';
 
 export type InstructionAccountNode = {
-  readonly __instructionAccountNode: unique symbol;
   readonly kind: 'instructionAccountNode';
   readonly name: MainCaseString;
   readonly isWritable: boolean;
@@ -20,9 +19,9 @@ export type InstructionAccountNode = {
 
 export type InstructionAccountNodeInput = Omit<
   PartialExcept<InstructionAccountNode, 'isWritable' | 'isSigner'>,
-  '__instructionAccountNode' | 'kind' | 'name'
+  'kind' | 'name'
 > & {
-  name: string;
+  readonly name: string;
 };
 
 export function instructionAccountNode(
@@ -36,7 +35,7 @@ export function instructionAccountNode(
     isOptional: input.isOptional ?? false,
     docs: input.docs ?? [],
     defaultsTo: input.defaultsTo,
-  } as InstructionAccountNode;
+  };
 }
 
 export function instructionAccountNodeFromIdl(

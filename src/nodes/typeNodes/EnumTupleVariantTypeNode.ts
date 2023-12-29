@@ -4,7 +4,6 @@ import type { Node } from '../Node';
 import { TupleTypeNode, tupleTypeNodeFromIdl } from './TupleTypeNode';
 
 export type EnumTupleVariantTypeNode = {
-  readonly __enumTupleVariantTypeNode: unique symbol;
   readonly kind: 'enumTupleVariantTypeNode';
   readonly name: MainCaseString;
   readonly tuple: TupleTypeNode;
@@ -19,11 +18,7 @@ export function enumTupleVariantTypeNode(
       'EnumTupleVariantTypeNode must have a name.'
     );
   }
-  return {
-    kind: 'enumTupleVariantTypeNode',
-    name: mainCase(name),
-    tuple,
-  } as EnumTupleVariantTypeNode;
+  return { kind: 'enumTupleVariantTypeNode', name: mainCase(name), tuple };
 }
 
 export function enumTupleVariantTypeNodeFromIdl(

@@ -10,7 +10,6 @@ import { numberTypeNode } from './NumberTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type ArrayTypeNode = {
-  readonly __arrayTypeNode: unique symbol;
   readonly kind: 'arrayTypeNode';
   readonly child: TypeNode;
   readonly size: SizeStrategy;
@@ -22,11 +21,7 @@ export function arrayTypeNode(
     readonly size?: ArrayTypeNode['size'];
   } = {}
 ): ArrayTypeNode {
-  return {
-    kind: 'arrayTypeNode',
-    child,
-    size: options.size ?? prefixedSize(),
-  } as ArrayTypeNode;
+  return { kind: 'arrayTypeNode', child, size: options.size ?? prefixedSize() };
 }
 
 export function arrayTypeNodeFromIdl(

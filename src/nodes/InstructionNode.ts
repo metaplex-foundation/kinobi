@@ -32,7 +32,6 @@ import { createTypeNodeFromIdl } from './typeNodes/TypeNode';
 import { vScalar } from './ValueNode';
 
 export type InstructionNode = {
-  readonly __instructionNode: unique symbol;
   readonly kind: 'instructionNode';
   readonly name: MainCaseString;
   readonly accounts: InstructionAccountNode[];
@@ -50,10 +49,10 @@ export type InstructionNode = {
 
 export type InstructionNodeInput = Omit<
   PartialExcept<InstructionNode, 'accounts' | 'dataArgs'>,
-  '__instructionNode' | 'kind' | 'name' | 'argDefaults'
+  'kind' | 'name' | 'argDefaults'
 > & {
-  name: string;
-  argDefaults?: Record<string, InstructionArgDefault>;
+  readonly name: string;
+  readonly argDefaults?: Record<string, InstructionArgDefault>;
 };
 
 export function instructionNode(input: InstructionNodeInput): InstructionNode {
@@ -85,7 +84,7 @@ export function instructionNode(input: InstructionNodeInput): InstructionNode {
       ])
     ),
     optionalAccountStrategy: input.optionalAccountStrategy ?? 'programId',
-  } as InstructionNode;
+  };
 }
 
 export function instructionNodeFromIdl(

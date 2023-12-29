@@ -4,18 +4,16 @@ import type { Node } from './Node';
 import { StructTypeNode } from './typeNodes/StructTypeNode';
 
 export type AccountDataNode = {
-  readonly __accountDataNode: unique symbol;
   readonly kind: 'accountDataNode';
   readonly name: MainCaseString;
   readonly struct: StructTypeNode;
   readonly link?: LinkTypeNode;
 };
 
-export type AccountDataNodeInput = Omit<
-  AccountDataNode,
-  '__accountDataNode' | 'kind' | 'name'
-> & {
-  name: string;
+export type AccountDataNodeInput = {
+  readonly name: string;
+  readonly struct: StructTypeNode;
+  readonly link?: LinkTypeNode;
 };
 
 export function accountDataNode(input: AccountDataNodeInput): AccountDataNode {
@@ -27,7 +25,7 @@ export function accountDataNode(input: AccountDataNodeInput): AccountDataNode {
     name: mainCase(input.name),
     struct: input.struct,
     link: input.link,
-  } as AccountDataNode;
+  };
 }
 
 export function isAccountDataNode(node: Node | null): node is AccountDataNode {

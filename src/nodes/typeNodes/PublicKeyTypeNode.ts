@@ -1,12 +1,11 @@
 import type { Node } from '../Node';
 
 export type PublicKeyTypeNode = {
-  readonly __publicKeyTypeNode: unique symbol;
   readonly kind: 'publicKeyTypeNode';
 };
 
 export function publicKeyTypeNode(): PublicKeyTypeNode {
-  return { kind: 'publicKeyTypeNode' } as PublicKeyTypeNode;
+  return { kind: 'publicKeyTypeNode' };
 }
 
 export function isPublicKeyTypeNode(

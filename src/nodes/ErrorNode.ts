@@ -8,7 +8,6 @@ import {
 import type { Node } from './Node';
 
 export type ErrorNode = {
-  readonly __errorNode: unique symbol;
   readonly kind: 'errorNode';
   readonly name: MainCaseString;
   readonly idlName: string;
@@ -19,9 +18,9 @@ export type ErrorNode = {
 
 export type ErrorNodeInput = Omit<
   PartialExcept<ErrorNode, 'name' | 'code' | 'message'>,
-  '__errorNode' | 'kind' | 'name'
+  'kind' | 'name'
 > & {
-  name: string;
+  readonly name: string;
 };
 
 export function errorNode(input: ErrorNodeInput): ErrorNode {
@@ -38,7 +37,7 @@ export function errorNode(input: ErrorNodeInput): ErrorNode {
     code: input.code,
     message: input.message,
     docs: input.docs ?? [],
-  } as ErrorNode;
+  };
 }
 
 export function errorNodeFromIdl(idl: Partial<IdlError>): ErrorNode {

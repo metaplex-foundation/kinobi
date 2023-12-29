@@ -8,7 +8,6 @@ import type { Node } from '../Node';
 export type StringEncoding = 'utf8' | 'base16' | 'base58' | 'base64';
 
 export type StringTypeNode = {
-  readonly __stringTypeNode: unique symbol;
   readonly kind: 'stringTypeNode';
   readonly encoding: StringEncoding;
   readonly size: SizeStrategy;
@@ -24,7 +23,7 @@ export function stringTypeNode(
     kind: 'stringTypeNode',
     encoding: options.encoding ?? 'utf8',
     size: options.size ?? prefixedSize(),
-  } as StringTypeNode;
+  };
 }
 
 export function displayStringTypeNode(node: StringTypeNode): string {

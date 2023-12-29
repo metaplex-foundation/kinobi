@@ -10,7 +10,6 @@ import { numberTypeNode } from './NumberTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type SetTypeNode = {
-  readonly __setTypeNode: unique symbol;
   readonly kind: 'setTypeNode';
   readonly child: TypeNode;
   readonly size: SizeStrategy;
@@ -29,7 +28,7 @@ export function setTypeNode(
     child,
     size: options.size ?? prefixedSize(),
     idlSet: options.idlSet ?? 'hashSet',
-  } as SetTypeNode;
+  };
 }
 
 export function setTypeNodeFromIdl(idl: IdlTypeSet): SetTypeNode {

@@ -4,7 +4,6 @@ import type { Node } from './Node';
 import { StructTypeNode } from './typeNodes/StructTypeNode';
 
 export type InstructionExtraArgsNode = {
-  readonly __instructionExtraArgsNode: unique symbol;
   readonly kind: 'instructionExtraArgsNode';
   readonly name: MainCaseString;
   readonly struct: StructTypeNode;
@@ -13,9 +12,9 @@ export type InstructionExtraArgsNode = {
 
 export type InstructionExtraArgsNodeInput = Omit<
   InstructionExtraArgsNode,
-  '__instructionExtraArgsNode' | 'kind' | 'name'
+  'kind' | 'name'
 > & {
-  name: string;
+  readonly name: string;
 };
 
 export function instructionExtraArgsNode(
@@ -31,7 +30,7 @@ export function instructionExtraArgsNode(
     name: mainCase(input.name),
     struct: input.struct,
     link: input.link,
-  } as InstructionExtraArgsNode;
+  };
 }
 
 export function isInstructionExtraArgsNode(

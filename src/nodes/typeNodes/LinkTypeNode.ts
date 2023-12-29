@@ -2,7 +2,6 @@ import { ImportFrom, MainCaseString, mainCase } from '../../shared';
 import type { Node } from '../Node';
 
 export type LinkTypeNode = {
-  readonly __linkTypeNode: unique symbol;
   readonly kind: 'linkTypeNode';
   readonly name: MainCaseString;
   readonly importFrom: ImportFrom;
@@ -21,7 +20,7 @@ export function linkTypeNode(
     name: mainCase(name),
     importFrom: options.importFrom ?? 'generated',
     size: options.size,
-  } as LinkTypeNode;
+  };
 }
 
 export function isLinkTypeNode(node: Node | null): node is LinkTypeNode {

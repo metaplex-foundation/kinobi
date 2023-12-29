@@ -17,7 +17,6 @@ import { TypeNode, createTypeNodeFromIdl } from './typeNodes/TypeNode';
 import { vScalar } from './ValueNode';
 
 export type AccountNode = {
-  readonly __accountNode: unique symbol;
   readonly kind: 'accountNode';
   readonly name: MainCaseString;
   readonly data: AccountDataNode;
@@ -31,9 +30,9 @@ export type AccountNode = {
 
 export type AccountNodeInput = Omit<
   PartialExcept<AccountNode, 'name' | 'data'>,
-  '__accountNode' | 'kind' | 'name'
+  'kind' | 'name'
 > & {
-  name: string;
+  readonly name: string;
 };
 
 export function accountNode(input: AccountNodeInput): AccountNode {
@@ -50,7 +49,7 @@ export function accountNode(input: AccountNodeInput): AccountNode {
     size: input.size,
     seeds: input.seeds ?? [],
     discriminator: input.discriminator,
-  } as AccountNode;
+  };
 }
 
 export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {

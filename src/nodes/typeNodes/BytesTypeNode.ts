@@ -6,16 +6,12 @@ import {
 import type { Node } from '../Node';
 
 export type BytesTypeNode = {
-  readonly __bytesTypeNode: unique symbol;
   readonly kind: 'bytesTypeNode';
   readonly size: SizeStrategy;
 };
 
 export function bytesTypeNode(size?: SizeStrategy): BytesTypeNode {
-  return {
-    kind: 'bytesTypeNode',
-    size: size ?? remainderSize(),
-  } as BytesTypeNode;
+  return { kind: 'bytesTypeNode', size: size ?? remainderSize() };
 }
 
 export function displayBytesTypeNode(node: BytesTypeNode): string {

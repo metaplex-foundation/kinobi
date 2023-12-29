@@ -3,7 +3,6 @@ import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../../shared';
 import type { Node } from '../Node';
 
 export type EnumEmptyVariantTypeNode = {
-  readonly __enumEmptyVariantTypeNode: unique symbol;
   readonly kind: 'enumEmptyVariantTypeNode';
   readonly name: MainCaseString;
 };
@@ -16,10 +15,7 @@ export function enumEmptyVariantTypeNode(
       'EnumEmptyVariantTypeNode must have a name.'
     );
   }
-  return {
-    kind: 'enumEmptyVariantTypeNode',
-    name: mainCase(name),
-  } as EnumEmptyVariantTypeNode;
+  return { kind: 'enumEmptyVariantTypeNode', name: mainCase(name) };
 }
 
 export function enumEmptyVariantTypeNodeFromIdl(

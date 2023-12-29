@@ -5,7 +5,6 @@ import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 import { ValueNode, vScalar } from '../ValueNode';
 
 export type StructFieldTypeNode = {
-  readonly __structFieldTypeNode: unique symbol;
   readonly kind: 'structFieldTypeNode';
   readonly name: MainCaseString;
   readonly child: TypeNode;
@@ -35,7 +34,7 @@ export function structFieldTypeNode(
     child: input.child,
     docs: input.docs ?? [],
     defaultsTo: input.defaultsTo ?? null,
-  } as StructFieldTypeNode;
+  };
 }
 
 export function structFieldTypeNodeFromIdl(

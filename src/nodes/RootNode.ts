@@ -10,13 +10,12 @@ import { ProgramNode, programNodeFromIdl } from './ProgramNode';
 export type IdlInputs = string | Partial<Idl> | (string | Partial<Idl>)[];
 
 export type RootNode = {
-  readonly __rootNode: unique symbol;
   readonly kind: 'rootNode';
   readonly programs: ProgramNode[];
 };
 
 export function rootNode(programs: ProgramNode[]): RootNode {
-  return { kind: 'rootNode', programs } as RootNode;
+  return { kind: 'rootNode', programs };
 }
 
 export function rootNodeFromIdls(idls: IdlInputs): RootNode {

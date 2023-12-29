@@ -6,16 +6,12 @@ import {
 } from './NumberTypeNode';
 
 export type BoolTypeNode = {
-  readonly __boolTypeNode: unique symbol;
   readonly kind: 'boolTypeNode';
   readonly size: NumberTypeNode;
 };
 
 export function boolTypeNode(size?: NumberTypeNode): BoolTypeNode {
-  return {
-    kind: 'boolTypeNode',
-    size: size ?? numberTypeNode('u8'),
-  } as BoolTypeNode;
+  return { kind: 'boolTypeNode', size: size ?? numberTypeNode('u8') };
 }
 
 export function displayBoolTypeNode(node: BoolTypeNode): string {

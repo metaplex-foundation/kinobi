@@ -10,7 +10,6 @@ import { numberTypeNode } from './NumberTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type MapTypeNode = {
-  readonly __mapTypeNode: unique symbol;
   readonly kind: 'mapTypeNode';
   readonly key: TypeNode;
   readonly value: TypeNode;
@@ -32,7 +31,7 @@ export function mapTypeNode(
     value,
     size: options.size ?? prefixedSize(),
     idlMap: options.idlMap ?? 'hashMap',
-  } as MapTypeNode;
+  };
 }
 
 export function mapTypeNodeFromIdl(idl: IdlTypeMap): MapTypeNode {

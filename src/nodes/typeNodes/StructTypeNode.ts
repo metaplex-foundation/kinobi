@@ -6,13 +6,12 @@ import {
 } from './StructFieldTypeNode';
 
 export type StructTypeNode = {
-  readonly __structTypeNode: unique symbol;
   readonly kind: 'structTypeNode';
   readonly fields: StructFieldTypeNode[];
 };
 
 export function structTypeNode(fields: StructFieldTypeNode[]): StructTypeNode {
-  return { kind: 'structTypeNode', fields } as StructTypeNode;
+  return { kind: 'structTypeNode', fields };
 }
 
 export function structTypeNodeFromIdl(idl: IdlTypeStruct): StructTypeNode {

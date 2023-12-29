@@ -4,7 +4,6 @@ import type { Node } from './Node';
 import { TypeNode, createTypeNodeFromIdl } from './typeNodes/TypeNode';
 
 export type DefinedTypeNode = {
-  readonly __definedTypeNode: unique symbol;
   readonly kind: 'definedTypeNode';
   readonly name: MainCaseString;
   readonly data: TypeNode;
@@ -32,7 +31,7 @@ export function definedTypeNode(input: DefinedTypeNodeInput): DefinedTypeNode {
     idlName: input.idlName ?? input.name,
     docs: input.docs ?? [],
     internal: input.internal ?? false,
-  } as DefinedTypeNode;
+  };
 }
 
 export function definedTypeNodeFromIdl(

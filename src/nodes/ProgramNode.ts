@@ -7,7 +7,6 @@ import { InstructionNode, instructionNodeFromIdl } from './InstructionNode';
 import type { Node } from './Node';
 
 export type ProgramNode = {
-  readonly __programNode: unique symbol;
   readonly kind: 'programNode';
   readonly accounts: AccountNode[];
   readonly instructions: InstructionNode[];
@@ -31,10 +30,10 @@ export type ProgramNodeInput = Omit<
     | 'publicKey'
     | 'version'
   >,
-  '__programNode' | 'kind' | 'name' | 'prefix'
+  'kind' | 'name' | 'prefix'
 > & {
-  name: string;
-  prefix?: string;
+  readonly name: string;
+  readonly prefix?: string;
 };
 
 export function programNode(input: ProgramNodeInput): ProgramNode {
@@ -50,7 +49,7 @@ export function programNode(input: ProgramNodeInput): ProgramNode {
     version: input.version,
     origin: input.origin,
     internal: input.internal ?? false,
-  } as ProgramNode;
+  };
 }
 
 export function programNodeFromIdl(idl: Partial<Idl>): ProgramNode {

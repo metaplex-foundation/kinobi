@@ -4,7 +4,6 @@ import type { Node } from '../Node';
 import { StructTypeNode, structTypeNodeFromIdl } from './StructTypeNode';
 
 export type EnumStructVariantTypeNode = {
-  readonly __enumStructVariantTypeNode: unique symbol;
   readonly kind: 'enumStructVariantTypeNode';
   readonly name: MainCaseString;
   readonly struct: StructTypeNode;
@@ -19,11 +18,7 @@ export function enumStructVariantTypeNode(
       'EnumStructVariantTypeNode must have a name.'
     );
   }
-  return {
-    kind: 'enumStructVariantTypeNode',
-    name: mainCase(name),
-    struct,
-  } as EnumStructVariantTypeNode;
+  return { kind: 'enumStructVariantTypeNode', name: mainCase(name), struct };
 }
 
 export function enumStructVariantTypeNodeFromIdl(
