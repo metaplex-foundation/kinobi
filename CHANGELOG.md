@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.16.15
+
+### Patch Changes
+
+- [#118](https://github.com/metaplex-foundation/kinobi/pull/118) [`7b2f489`](https://github.com/metaplex-foundation/kinobi/commit/7b2f4897ed8a5a4d9c6a21b9ddef556ee79b35ad) Thanks [@febo](https://github.com/febo)! - Add constant seeds in Rust client
+
 ## 0.16.14
 
 ### Patch Changes
