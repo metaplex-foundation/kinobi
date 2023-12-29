@@ -60,6 +60,10 @@ export function getTypeManifestVisitor() {
           return visit(accountData.struct, self);
         },
 
+        visitInstruction(instruction, _, self) {
+          return visit(instruction.dataArgs, self);
+        },
+
         visitInstructionDataArgs(instructionDataArgs, _, self) {
           parentName = pascalCase(instructionDataArgs.name);
           const manifest = visit(instructionDataArgs.struct, self);
@@ -411,18 +415,6 @@ export function getTypeManifestVisitor() {
 
           // TODO: Add to the Rust validator.
           throw new Error('Number endianness not supported by Borsh');
-        },
-
-        visitAmountType(node, _, self) {
-          return visit(node.number, self);
-        },
-
-        visitDateTimeType(node, _, self) {
-          return visit(node.number, self);
-        },
-
-        visitSolAmountType(node, _, self) {
-          return visit(node.number, self);
         },
 
         visitPublicKeyType() {

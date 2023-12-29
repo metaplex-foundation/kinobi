@@ -185,13 +185,13 @@ export function mergeVisitor<
   }
 
   if (castedNodeKeys.includes('dateTimeTypeNode')) {
-    visitor.visitAmountType = function visitAmountType(node) {
+    visitor.visitDateTimeType = function visitDateTimeType(node) {
       return merge(node, visit(this)(node.number));
     };
   }
 
   if (castedNodeKeys.includes('solAmountTypeNode')) {
-    visitor.visitAmountType = function visitAmountType(node) {
+    visitor.visitSolAmountType = function visitSolAmountType(node) {
       return merge(node, visit(this)(node.number));
     };
   }
