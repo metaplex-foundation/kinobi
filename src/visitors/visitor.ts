@@ -28,7 +28,18 @@ export function visit<TReturn, TNode extends Node>(
   const key = getVisitFunctionName(node.kind) as GetVisitorFunctionName<
     TNode['kind']
   >;
-  return (visitor[key] as typeof visitor[typeof key] & Function)(node);
+  return (
+    visitor[key] as typeof visitor[typeof key] & ((node: TNode) => TReturn)
+  )(node);
+}
+
+export function visitOrElse<TReturn>(
+  node: Node,
+  visitor: Visitor<TReturn, any>,
+  fallback: (node: Node) => TReturn
+): TReturn {
+  const key = getVisitFunctionName(node.kind);
+  return (key in visitor ? visitor[key] : fallback)(node);
 }
 
 export function getVisitFunctionName<T extends Node['kind']>(node: T) {
