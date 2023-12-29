@@ -22,8 +22,8 @@ test('it returns a new visitor that extends a subset of visits with a next funct
     (_, values) => values.reduce((a, b) => a + b, 1)
   );
   const visitor = extendVisitor(baseVisitor, {
-    visitTupleType: (node, next) => next(node) + 10,
-    visitPublicKeyType: (node, next) => next(node) + 10,
+    visitTupleType: (node, { next }) => next(node) + 10,
+    visitPublicKeyType: (node, { next }) => next(node) + 10,
   });
 
   // When we visit the tree using that visitor.
@@ -49,7 +49,7 @@ test('it can visit itself using the exposed self argument', (t) => {
     (_, values) => values.reduce((a, b) => a + b, 1)
   );
   const visitor = extendVisitor(baseVisitor, {
-    visitTupleType: (node, _, self) =>
+    visitTupleType: (node, { self }) =>
       (node.children.length > 1 ? visit(node.children[0], self) : 0) + 1,
   });
 

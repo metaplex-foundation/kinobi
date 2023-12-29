@@ -36,7 +36,7 @@ export function useCustomAccountSerializerVisitor(
     identityVisitor(['rootNode', 'programNode', 'accountNode']),
     (v) =>
       extendVisitor(v, {
-        visitProgram(program, _, self) {
+        visitProgram(program, { self }) {
           const newDefinedTypes = program.definedTypes;
 
           program.accounts.forEach((account) => {

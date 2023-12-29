@@ -30,7 +30,7 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
       }),
     (v) =>
       extendVisitor(v, {
-        visitProgram(node, next) {
+        visitProgram(node, { next }) {
           const bag = new ValidatorBag();
           if (!node.name) {
             bag.error('Program has no name.', node, stack);
@@ -47,7 +47,7 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
           return bag.mergeWith([next(node)]);
         },
 
-        visitAccount(node, next) {
+        visitAccount(node, { next }) {
           const bag = new ValidatorBag();
           if (!node.name) {
             bag.error('Account has no name.', node, stack);
@@ -55,7 +55,7 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
           return bag.mergeWith([next(node)]);
         },
 
-        visitInstruction(node, next) {
+        visitInstruction(node, { next }) {
           const bag = new ValidatorBag();
           if (!node.name) {
             bag.error('Instruction has no name.', node, stack);
@@ -125,7 +125,7 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
           return bag.mergeWith([next(node)]);
         },
 
-        visitDefinedType(node, next) {
+        visitDefinedType(node, { next }) {
           const bag = new ValidatorBag();
           if (!node.name) {
             bag.error('Defined type has no name.', node, stack);
@@ -133,7 +133,7 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
           return bag.mergeWith([next(node)]);
         },
 
-        visitError(node, next) {
+        visitError(node, { next }) {
           const bag = new ValidatorBag();
           if (!node.name) {
             bag.error('Error has no name.', node, stack);
@@ -147,7 +147,7 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
           return bag.mergeWith([next(node)]);
         },
 
-        visitLinkType(node, next) {
+        visitLinkType(node, { next }) {
           const bag = new ValidatorBag();
           if (!node.name) {
             bag.error('Pointing to a defined type with no name.', node, stack);
@@ -164,7 +164,7 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
           return bag.mergeWith([next(node)]);
         },
 
-        visitEnumType(node, next) {
+        visitEnumType(node, { next }) {
           const bag = new ValidatorBag();
           if (node.variants.length === 0) {
             bag.warn('Enum has no variants.', node, stack);
@@ -177,7 +177,7 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
           return bag.mergeWith([next(node)]);
         },
 
-        visitEnumEmptyVariantType(node, next) {
+        visitEnumEmptyVariantType(node, { next }) {
           const bag = new ValidatorBag();
           if (!node.name) {
             bag.error('Enum variant has no name.', node, stack);
@@ -185,7 +185,7 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
           return bag.mergeWith([next(node)]);
         },
 
-        visitEnumStructVariantType(node, next) {
+        visitEnumStructVariantType(node, { next }) {
           const bag = new ValidatorBag();
           if (!node.name) {
             bag.error('Enum variant has no name.', node, stack);
@@ -193,7 +193,7 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
           return bag.mergeWith([next(node)]);
         },
 
-        visitEnumTupleVariantType(node, next) {
+        visitEnumTupleVariantType(node, { next }) {
           const bag = new ValidatorBag();
           if (!node.name) {
             bag.error('Enum variant has no name.', node, stack);
@@ -201,7 +201,7 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
           return bag.mergeWith([next(node)]);
         },
 
-        visitStructType(node, next) {
+        visitStructType(node, { next }) {
           const bag = new ValidatorBag();
 
           // Check for duplicate field names.
@@ -222,7 +222,7 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
           return bag.mergeWith([next(node)]);
         },
 
-        visitStructFieldType(node, next) {
+        visitStructFieldType(node, { next }) {
           const bag = new ValidatorBag();
           if (!node.name) {
             bag.error('Struct field has no name.', node, stack);
@@ -230,7 +230,7 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
           return bag.mergeWith([next(node)]);
         },
 
-        visitTupleType(node, next) {
+        visitTupleType(node, { next }) {
           const bag = new ValidatorBag();
           if (node.children.length === 0) {
             bag.warn('Tuple has no items.', node, stack);

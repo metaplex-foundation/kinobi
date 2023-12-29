@@ -18,7 +18,7 @@ test('it visits all nodes and returns void', (t) => {
   // And a void visitor extended such that it counts the tuple nodes.
   let counter = 0;
   const visitor = extendVisitor(voidVisitor(), {
-    visitTupleType: (node, next) => {
+    visitTupleType: (node, { next }) => {
       counter++;
       return next(node);
     },

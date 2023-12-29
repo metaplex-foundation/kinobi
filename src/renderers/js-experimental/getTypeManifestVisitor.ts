@@ -35,11 +35,11 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
     ),
     (visitor) =>
       extendVisitor(visitor, {
-        visitAccount(account, _, self) {
+        visitAccount(account, { self }) {
           return visit(account.data, self);
         },
 
-        visitAccountData(accountData, _, self) {
+        visitAccountData(accountData, { self }) {
           parentName = {
             strict: nameApi.dataType(accountData.name),
             loose: nameApi.dataArgsType(accountData.name),
@@ -51,7 +51,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           return manifest;
         },
 
-        visitInstructionDataArgs(instructionDataArgs, _, self) {
+        visitInstructionDataArgs(instructionDataArgs, { self }) {
           parentName = {
             strict: nameApi.dataType(instructionDataArgs.name),
             loose: nameApi.dataArgsType(instructionDataArgs.name),
@@ -63,7 +63,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           return manifest;
         },
 
-        visitInstructionExtraArgs(instructionExtraArgs, _, self) {
+        visitInstructionExtraArgs(instructionExtraArgs, { self }) {
           parentName = {
             strict: nameApi.dataType(instructionExtraArgs.name),
             loose: nameApi.dataArgsType(instructionExtraArgs.name),
@@ -75,7 +75,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           return manifest;
         },
 
-        visitDefinedType(definedType, _, self) {
+        visitDefinedType(definedType, { self }) {
           parentName = {
             strict: nameApi.dataType(definedType.name),
             loose: nameApi.dataArgsType(definedType.name),
@@ -85,7 +85,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           return manifest;
         },
 
-        visitArrayType(arrayType, _, self) {
+        visitArrayType(arrayType, { self }) {
           const childManifest = visit(arrayType.child, self);
           childManifest.looseType.mapRender((r) => `Array<${r}>`);
           childManifest.strictType.mapRender((r) => `Array<${r}>`);
@@ -132,7 +132,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           };
         },
 
-        visitEnumType(enumType, _, self) {
+        visitEnumType(enumType, { self }) {
           const currentParentName = parentName;
           parentName = null;
 
@@ -255,7 +255,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           };
         },
 
-        visitEnumStructVariantType(enumStructVariantType, _, self) {
+        visitEnumStructVariantType(enumStructVariantType, { self }) {
           const name = pascalCase(enumStructVariantType.name);
           const kindAttribute = `__kind: "${name}"`;
           const structManifest = visit(enumStructVariantType.struct, self);
@@ -270,7 +270,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           return structManifest;
         },
 
-        visitEnumTupleVariantType(enumTupleVariantType, _, self) {
+        visitEnumTupleVariantType(enumTupleVariantType, { self }) {
           const name = pascalCase(enumTupleVariantType.name);
           const kindAttribute = `__kind: "${name}"`;
           const struct = structTypeNode([
@@ -291,7 +291,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           return structManifest;
         },
 
-        visitMapType(mapType, _, self) {
+        visitMapType(mapType, { self }) {
           const key = visit(mapType.key, self);
           const value = visit(mapType.value, self);
           const mergedManifest = mergeManifests(
@@ -315,7 +315,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           return mergedManifest;
         },
 
-        visitOptionType(optionType, _, self) {
+        visitOptionType(optionType, { self }) {
           const childManifest = visit(optionType.child, self);
           childManifest.strictType
             .mapRender((r) => `Option<${r}>`)
@@ -361,7 +361,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           return childManifest;
         },
 
-        visitSetType(setType, _, self) {
+        visitSetType(setType, { self }) {
           const childManifest = visit(setType.child, self);
           childManifest.strictType.mapRender((r) => `Set<${r}>`);
           childManifest.looseType.mapRender((r) => `Set<${r}>`);
@@ -385,7 +385,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           return childManifest;
         },
 
-        visitStructType(structType, _, self) {
+        visitStructType(structType, { self }) {
           const currentParentName = parentName;
           parentName = null;
           const optionalFields = structType.fields.filter(
@@ -455,7 +455,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           return mergedManifest;
         },
 
-        visitStructFieldType(structFieldType, _, self) {
+        visitStructFieldType(structFieldType, { self }) {
           const name = camelCase(structFieldType.name);
           const childManifest = visit(structFieldType.child, self);
           const docblock = createDocblock(structFieldType.docs);
@@ -487,7 +487,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           return childManifest;
         },
 
-        visitTupleType(tupleType, _, self) {
+        visitTupleType(tupleType, { self }) {
           const children = tupleType.children.map((item) => visit(item, self));
           const mergedManifest = mergeManifests(
             children,
@@ -503,7 +503,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           return mergedManifest;
         },
 
-        visitBoolType(boolType, _, self) {
+        visitBoolType(boolType, { self }) {
           const encoderImports = new ImportMap().add(
             'solanaCodecsDataStructures',
             'getBooleanEncoder'
@@ -538,7 +538,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           };
         },
 
-        visitBytesType(bytesType, _, self) {
+        visitBytesType(bytesType, { self }) {
           const encoderImports = new ImportMap().add(
             'solanaCodecsDataStructures',
             'getBytesEncoder'
@@ -617,15 +617,15 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           };
         },
 
-        visitAmountType(amountType, _, self) {
+        visitAmountType(amountType, { self }) {
           return visit(amountType.number, self);
         },
 
-        visitDateTimeType(dateTimeType, _, self) {
+        visitDateTimeType(dateTimeType, { self }) {
           return visit(dateTimeType.number, self);
         },
 
-        visitSolAmountType(solAmountType, _, self) {
+        visitSolAmountType(solAmountType, { self }) {
           return visit(solAmountType.number, self);
         },
 
@@ -646,7 +646,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           };
         },
 
-        visitStringType(stringType, _, self) {
+        visitStringType(stringType, { self }) {
           const encoderImports = new ImportMap().add(
             'solanaCodecsStrings',
             'getStringEncoder'

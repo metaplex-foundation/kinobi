@@ -44,7 +44,7 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
   );
 
   return extendVisitor(baseVisitor, {
-    visitRoot(node, _, self) {
+    visitRoot(node, { self }) {
       const programsToExport = node.programs.filter((p) => !p.internal);
       const accountsToExport = getAllAccounts(node).filter((a) => !a.internal);
       const instructionsToExport = getAllInstructionsWithSubs(
@@ -90,7 +90,7 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
         .mergeWith(...node.programs.map((p) => visit(p, self)));
     },
 
-    visitProgram(node, _, self) {
+    visitProgram(node, { self }) {
       program = node;
       const renderMap = new RenderMap()
         .mergeWith(...node.accounts.map((account) => visit(account, self)))

@@ -30,7 +30,7 @@ export function unwrapDefinedTypesVisitor(typesToInline: string[] | '*' = '*') {
       }),
     (v) =>
       extendVisitor(v, {
-        visitProgram(program, _, self) {
+        visitProgram(program, { self }) {
           return programNode({
             ...program,
             accounts: program.accounts
@@ -46,7 +46,7 @@ export function unwrapDefinedTypesVisitor(typesToInline: string[] | '*' = '*') {
           });
         },
 
-        visitLinkType(linkType, _, self) {
+        visitLinkType(linkType, { self }) {
           if (
             !shouldInline(linkType.name) ||
             linkType.importFrom !== 'generated'

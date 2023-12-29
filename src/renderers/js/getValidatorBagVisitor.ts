@@ -82,7 +82,7 @@ export function getValidatorBagVisitor(): Visitor<ValidatorBag> {
       }),
     (v) =>
       extendVisitor(v, {
-        visitProgram(node, next) {
+        visitProgram(node, { next }) {
           const bag = new ValidatorBag();
           const pascalCaseName = pascalCase(node.name);
           bag.mergeWith([
@@ -95,7 +95,7 @@ export function getValidatorBagVisitor(): Visitor<ValidatorBag> {
           return bag.mergeWith([next(node)]);
         },
 
-        visitAccount(node, next) {
+        visitAccount(node, { next }) {
           const bag = new ValidatorBag();
           const pascalCaseName = pascalCase(node.name);
           const exports = {
@@ -135,7 +135,7 @@ export function getValidatorBagVisitor(): Visitor<ValidatorBag> {
           return bag.mergeWith([next(node)]);
         },
 
-        visitInstruction(node, next) {
+        visitInstruction(node, { next }) {
           const bag = new ValidatorBag();
           const camelCaseName = camelCase(node.name);
           const pascalCaseName = pascalCase(node.name);
@@ -157,7 +157,7 @@ export function getValidatorBagVisitor(): Visitor<ValidatorBag> {
           return bag.mergeWith([next(node)]);
         },
 
-        visitDefinedType(node, next) {
+        visitDefinedType(node, { next }) {
           const bag = new ValidatorBag();
           const camelCaseName = camelCase(node.name);
           const pascalCaseName = pascalCase(node.name);
@@ -179,7 +179,7 @@ export function getValidatorBagVisitor(): Visitor<ValidatorBag> {
           return bag.mergeWith([next(node)]);
         },
 
-        visitError(node, next) {
+        visitError(node, { next }) {
           const bag = new ValidatorBag();
           const program = stack.getProgram();
           const prefixedName =

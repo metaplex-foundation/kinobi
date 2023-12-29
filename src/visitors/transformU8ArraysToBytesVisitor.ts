@@ -20,7 +20,7 @@ export function transformU8ArraysToBytesVisitor(
 
   return pipe(identityVisitor(), (v) =>
     extendVisitor(v, {
-      visitArrayType(node, _, self) {
+      visitArrayType(node, { self }) {
         const child = visit(node.child, self);
         assertTypeNode(child);
 

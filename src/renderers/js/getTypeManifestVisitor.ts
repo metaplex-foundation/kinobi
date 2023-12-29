@@ -48,11 +48,11 @@ export function getTypeManifestVisitor() {
     ),
     (v) =>
       extendVisitor(v, {
-        visitAccount(account, _, self) {
+        visitAccount(account, { self }) {
           return visit(account.data, self);
         },
 
-        visitAccountData(accountData, _, self) {
+        visitAccountData(accountData, { self }) {
           parentName = {
             strict: pascalCase(accountData.name),
             loose: `${pascalCase(accountData.name)}Args`,
@@ -64,7 +64,7 @@ export function getTypeManifestVisitor() {
           return manifest;
         },
 
-        visitInstructionDataArgs(instructionDataArgs, _, self) {
+        visitInstructionDataArgs(instructionDataArgs, { self }) {
           parentName = {
             strict: pascalCase(instructionDataArgs.name),
             loose: `${pascalCase(instructionDataArgs.name)}Args`,
@@ -76,7 +76,7 @@ export function getTypeManifestVisitor() {
           return manifest;
         },
 
-        visitInstructionExtraArgs(instructionExtraArgs, _, self) {
+        visitInstructionExtraArgs(instructionExtraArgs, { self }) {
           parentName = {
             strict: pascalCase(instructionExtraArgs.name),
             loose: `${pascalCase(instructionExtraArgs.name)}Args`,
@@ -88,7 +88,7 @@ export function getTypeManifestVisitor() {
           return manifest;
         },
 
-        visitDefinedType(definedType, _, self) {
+        visitDefinedType(definedType, { self }) {
           parentName = {
             strict: pascalCase(definedType.name),
             loose: `${pascalCase(definedType.name)}Args`,
@@ -98,7 +98,7 @@ export function getTypeManifestVisitor() {
           return manifest;
         },
 
-        visitArrayType(arrayType, _, self) {
+        visitArrayType(arrayType, { self }) {
           const childManifest = visit(arrayType.child, self);
           childManifest.serializerImports.add('umiSerializers', 'array');
           const sizeOption = getArrayLikeSizeOption(
@@ -143,7 +143,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitEnumType(enumType, _, self) {
+        visitEnumType(enumType, { self }) {
           const strictImports = new JavaScriptImportMap();
           const looseImports = new JavaScriptImportMap();
           const serializerImports = new JavaScriptImportMap().add(
@@ -251,7 +251,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitEnumStructVariantType(enumStructVariantType, _, self) {
+        visitEnumStructVariantType(enumStructVariantType, { self }) {
           const name = pascalCase(enumStructVariantType.name);
           const kindAttribute = `__kind: "${name}"`;
           const type = visit(enumStructVariantType.struct, self);
@@ -263,7 +263,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitEnumTupleVariantType(enumTupleVariantType, _, self) {
+        visitEnumTupleVariantType(enumTupleVariantType, { self }) {
           const name = pascalCase(enumTupleVariantType.name);
           const kindAttribute = `__kind: "${name}"`;
           const struct = structTypeNode([
@@ -281,7 +281,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitMapType(mapType, _, self) {
+        visitMapType(mapType, { self }) {
           const key = visit(mapType.key, self);
           const value = visit(mapType.value, self);
           const mergedManifest = mergeManifests([key, value]);
@@ -300,7 +300,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitOptionType(optionType, _, self) {
+        visitOptionType(optionType, { self }) {
           const childManifest = visit(optionType.child, self);
           childManifest.strictImports.add('umi', 'Option');
           childManifest.looseImports.add('umi', 'OptionOrNullable');
@@ -337,7 +337,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitSetType(setType, _, self) {
+        visitSetType(setType, { self }) {
           const childManifest = visit(setType.child, self);
           childManifest.serializerImports.add('umiSerializers', 'set');
           const sizeOption = getArrayLikeSizeOption(
@@ -354,7 +354,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitStructType(structType, _, self) {
+        visitStructType(structType, { self }) {
           const currentParentName = parentName;
           parentName = null;
 
@@ -418,7 +418,7 @@ export function getTypeManifestVisitor() {
           return { ...baseManifest, serializer: mappedSerializer };
         },
 
-        visitStructFieldType(structFieldType, _, self) {
+        visitStructFieldType(structFieldType, { self }) {
           const name = camelCase(structFieldType.name);
           const fieldChild = visit(structFieldType.child, self);
           const docblock = createDocblock(structFieldType.docs);
@@ -444,7 +444,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitTupleType(tupleType, _, self) {
+        visitTupleType(tupleType, { self }) {
           const children = tupleType.children.map((item) => visit(item, self));
           const mergedManifest = mergeManifests(children);
           mergedManifest.serializerImports.add('umiSerializers', 'tuple');
@@ -461,7 +461,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitBoolType(boolType, _, self) {
+        visitBoolType(boolType, { self }) {
           const looseImports = new JavaScriptImportMap();
           const strictImports = new JavaScriptImportMap();
           const serializerImports = new JavaScriptImportMap().add(
@@ -488,7 +488,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitBytesType(bytesType, _, self) {
+        visitBytesType(bytesType, { self }) {
           const strictImports = new JavaScriptImportMap();
           const looseImports = new JavaScriptImportMap();
           const serializerImports = new JavaScriptImportMap().add(
@@ -546,7 +546,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitAmountType(amountType, _, self) {
+        visitAmountType(amountType, { self }) {
           const numberManifest = visit(amountType.number, self);
           if (!isUnsignedInteger(amountType.number)) {
             throw new Error(
@@ -572,7 +572,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitDateTimeType(dateTimeType, _, self) {
+        visitDateTimeType(dateTimeType, { self }) {
           const numberManifest = visit(dateTimeType.number, self);
           if (!isInteger(dateTimeType.number)) {
             throw new Error(
@@ -591,7 +591,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitSolAmountType(solAmountType, _, self) {
+        visitSolAmountType(solAmountType, { self }) {
           const numberManifest = visit(solAmountType.number, self);
           if (!isUnsignedInteger(solAmountType.number)) {
             throw new Error(
@@ -626,7 +626,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitStringType(stringType, _, self) {
+        visitStringType(stringType, { self }) {
           const looseImports = new JavaScriptImportMap();
           const strictImports = new JavaScriptImportMap();
           const serializerImports = new JavaScriptImportMap().add(

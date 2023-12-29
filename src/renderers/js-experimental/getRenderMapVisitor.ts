@@ -116,7 +116,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
     ),
     (v) =>
       extendVisitor(v, {
-        visitRoot(node, _, self) {
+        visitRoot(node, { self }) {
           const programsToExport = node.programs.filter((p) => !p.internal);
           const programsWithErrorsToExport = programsToExport.filter(
             (p) => p.errors.length > 0
@@ -176,7 +176,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             .mergeWith(...node.programs.map((p) => visit(p, self)));
         },
 
-        visitProgram(node, _, self) {
+        visitProgram(node, { self }) {
           program = node;
           const renderMap = new RenderMap()
             .mergeWith(...node.accounts.map((account) => visit(account, self)))

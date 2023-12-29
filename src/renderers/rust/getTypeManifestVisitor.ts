@@ -39,7 +39,7 @@ export function getTypeManifestVisitor() {
     ),
     (v) =>
       extendVisitor(v, {
-        visitAccount(account, _, self) {
+        visitAccount(account, { self }) {
           parentName = pascalCase(account.name);
           const manifest = visit(account.data, self);
           manifest.imports.add([
@@ -56,29 +56,29 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitAccountData(accountData, _, self) {
+        visitAccountData(accountData, { self }) {
           return visit(accountData.struct, self);
         },
 
-        visitInstruction(instruction, _, self) {
+        visitInstruction(instruction, { self }) {
           return visit(instruction.dataArgs, self);
         },
 
-        visitInstructionDataArgs(instructionDataArgs, _, self) {
+        visitInstructionDataArgs(instructionDataArgs, { self }) {
           parentName = pascalCase(instructionDataArgs.name);
           const manifest = visit(instructionDataArgs.struct, self);
           parentName = null;
           return manifest;
         },
 
-        visitInstructionExtraArgs(instructionExtraArgs, _, self) {
+        visitInstructionExtraArgs(instructionExtraArgs, { self }) {
           parentName = pascalCase(instructionExtraArgs.name);
           const manifest = visit(instructionExtraArgs.struct, self);
           parentName = null;
           return manifest;
         },
 
-        visitDefinedType(definedType, _, self) {
+        visitDefinedType(definedType, { self }) {
           parentName = pascalCase(definedType.name);
           const manifest = visit(definedType.data, self);
           parentName = null;
@@ -115,7 +115,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitArrayType(arrayType, _, self) {
+        visitArrayType(arrayType, { self }) {
           const childManifest = visit(arrayType.child, self);
 
           if (arrayType.size.kind === 'fixed') {
@@ -179,7 +179,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitEnumType(enumType, _, self) {
+        visitEnumType(enumType, { self }) {
           const originalParentName = parentName;
           if (!originalParentName) {
             // TODO: Add to the Rust validator.
@@ -211,7 +211,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitEnumStructVariantType(enumStructVariantType, _, self) {
+        visitEnumStructVariantType(enumStructVariantType, { self }) {
           const name = pascalCase(enumStructVariantType.name);
           const originalParentName = parentName;
 
@@ -233,7 +233,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitEnumTupleVariantType(enumTupleVariantType, _, self) {
+        visitEnumTupleVariantType(enumTupleVariantType, { self }) {
           const name = pascalCase(enumTupleVariantType.name);
           const originalParentName = parentName;
 
@@ -253,7 +253,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitMapType(mapType, _, self) {
+        visitMapType(mapType, { self }) {
           const key = visit(mapType.key, self);
           const value = visit(mapType.value, self);
           const mergedManifest = mergeManifests([key, value]);
@@ -264,7 +264,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitOptionType(optionType, _, self) {
+        visitOptionType(optionType, { self }) {
           const childManifest = visit(optionType.child, self);
 
           if (
@@ -281,7 +281,7 @@ export function getTypeManifestVisitor() {
           throw new Error('Option size not supported by Borsh');
         },
 
-        visitSetType(setType, _, self) {
+        visitSetType(setType, { self }) {
           const childManifest = visit(setType.child, self);
           childManifest.imports.add('std::collections::HashSet');
           return {
@@ -290,7 +290,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitStructType(structType, _, self) {
+        visitStructType(structType, { self }) {
           const originalParentName = parentName;
 
           if (!originalParentName) {
@@ -327,7 +327,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitStructFieldType(structFieldType, _, self) {
+        visitStructFieldType(structFieldType, { self }) {
           const originalParentName = parentName;
           const originalInlineStruct = inlineStruct;
           const originalNestedStruct = nestedStruct;
@@ -373,7 +373,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitTupleType(tupleType, _, self) {
+        visitTupleType(tupleType, { self }) {
           const children = tupleType.children.map((item) => visit(item, self));
           const mergedManifest = mergeManifests(children);
 
@@ -396,7 +396,7 @@ export function getTypeManifestVisitor() {
           throw new Error('Bool size not supported by Borsh');
         },
 
-        visitBytesType(bytesType, _, self) {
+        visitBytesType(bytesType, { self }) {
           const arrayType = arrayTypeNode(numberTypeNode('u8'), {
             size: bytesType.size,
           });

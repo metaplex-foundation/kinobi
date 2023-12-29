@@ -36,7 +36,7 @@ export function useCustomInstructionSerializerVisitor(
     identityVisitor(['rootNode', 'programNode', 'instructionNode']),
     (v) =>
       extendVisitor(v, {
-        visitProgram(program, _, self) {
+        visitProgram(program, { self }) {
           const newDefinedTypes = program.definedTypes;
 
           program.instructions.forEach((instruction) => {

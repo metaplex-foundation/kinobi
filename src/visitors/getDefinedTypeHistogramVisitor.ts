@@ -58,7 +58,7 @@ export function getDefinedTypeHistogramVisitor(): Visitor<DefinedTypeHistogram> 
       }),
     (v) =>
       extendVisitor(v, {
-        visitAccount(node, _, self) {
+        visitAccount(node, { self }) {
           mode = 'account';
           stackLevel = 0;
           const histogram = visit(node.data, self);
@@ -66,7 +66,7 @@ export function getDefinedTypeHistogramVisitor(): Visitor<DefinedTypeHistogram> 
           return histogram;
         },
 
-        visitInstruction(node, _, self) {
+        visitInstruction(node, { self }) {
           mode = 'instruction';
           stackLevel = 0;
           const dataHistogram = visit(node.dataArgs, self);
@@ -82,7 +82,7 @@ export function getDefinedTypeHistogramVisitor(): Visitor<DefinedTypeHistogram> 
           ]);
         },
 
-        visitDefinedType(node, _, self) {
+        visitDefinedType(node, { self }) {
           mode = 'definedType';
           stackLevel = 0;
           const histogram = visit(node.data, self);

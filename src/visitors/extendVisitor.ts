@@ -1,20 +1,32 @@
 import { DontInfer } from '../shared';
-import { REGISTERED_NODES_KEYS, RegisteredNodes } from '../nodes';
+import { REGISTERED_NODES_KEYS, RegisteredNodes, Node } from '../nodes';
 import {
   GetVisitorFunctionName,
   Visitor,
   getVisitFunctionName,
 } from './visitor';
 
+export type VisitorOverrideFunction<
+  TReturn,
+  TNodeKeys extends keyof RegisteredNodes,
+  TNode extends Node
+> = (
+  node: TNode,
+  scope: {
+    next: (node: TNode) => TReturn;
+    self: Visitor<TReturn, TNodeKeys>;
+  }
+) => TReturn;
+
 export type VisitorOverrides<
   TReturn,
   TNodeKeys extends keyof RegisteredNodes
 > = {
-  [K in TNodeKeys as GetVisitorFunctionName<K>]?: (
-    node: RegisteredNodes[K],
-    next: (node: RegisteredNodes[K]) => TReturn,
-    visitor: Visitor<TReturn, TNodeKeys>
-  ) => TReturn;
+  [K in TNodeKeys as GetVisitorFunctionName<K>]?: VisitorOverrideFunction<
+    TReturn,
+    TNodeKeys,
+    RegisteredNodes[K]
+  >;
 };
 
 export function extendVisitor<TReturn, TNodeKeys extends keyof RegisteredNodes>(
@@ -45,19 +57,16 @@ export function extendVisitor<TReturn, TNodeKeys extends keyof RegisteredNodes>(
             this: Visitor<TReturn, TNodeKeys>,
             node: TNode
           ) {
-            const extendedFunction = overrides[castedKey] as (
-              node: TNode,
-              next: (node: TNode) => TReturn,
-              visitor: Visitor<TReturn, TNodeKeys>
-            ) => TReturn;
+            const extendedFunction = overrides[
+              castedKey
+            ] as VisitorOverrideFunction<TReturn, TNodeKeys, TNode>;
             const nextFunction = visitor[castedKey] as unknown as (
               node: TNode
             ) => TReturn;
-            return extendedFunction.bind(this)(
-              node,
-              nextFunction.bind(this),
-              this
-            );
+            return extendedFunction.bind(this)(node, {
+              next: nextFunction.bind(this),
+              self: this,
+            });
           },
         ],
       ];

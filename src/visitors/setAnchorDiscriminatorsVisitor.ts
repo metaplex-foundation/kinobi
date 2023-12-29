@@ -30,7 +30,7 @@ export function setAnchorDiscriminatorsVisitor() {
     ]),
     (v) =>
       extendVisitor(v, {
-        visitProgram(node, next) {
+        visitProgram(node, { next }) {
           program = node;
           const newNode = next(node);
           program = null;
