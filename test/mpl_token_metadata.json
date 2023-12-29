@@ -3984,13 +3984,11 @@
           },
           {
             "name": "verified",
-            "type": "bool",
-            "defaultsValue": false
+            "type": "bool"
           },
           {
             "name": "share",
-            "type": "u8",
-            "defaultsValue": 42
+            "type": "u8"
           }
         ]
       }

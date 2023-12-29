@@ -29,7 +29,7 @@ import {
   structTypeNodeFromIdl,
 } from './typeNodes/StructTypeNode';
 import { createTypeNodeFromIdl } from './typeNodes/TypeNode';
-import { vScalar } from './ValueNode';
+import { numberValueNode } from './valueNodes';
 
 export type InstructionNode = {
   readonly kind: 'instructionNode';
@@ -102,7 +102,7 @@ export function instructionNodeFromIdl(
       child: createTypeNodeFromIdl(idl.discriminant.type),
       defaultsTo: {
         strategy: 'omitted',
-        value: vScalar(idl.discriminant.value),
+        value: numberValueNode(idl.discriminant.value),
       },
     });
     dataArgs = structTypeNode([discriminatorField, ...dataArgs.fields]);

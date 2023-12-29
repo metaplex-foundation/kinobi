@@ -6,6 +6,7 @@ import {
   accountNode,
   amountTypeNode,
   arrayTypeNode,
+  arrayValueNode,
   assertAccountDataNode,
   assertAccountNode,
   assertDefinedTypeNode,
@@ -23,6 +24,7 @@ import {
   assertStructTypeNode,
   assertTupleTypeNode,
   assertTypeNode,
+  assertValueNode,
   boolTypeNode,
   bytesTypeNode,
   dateTimeTypeNode,
@@ -30,21 +32,29 @@ import {
   enumStructVariantTypeNode,
   enumTupleVariantTypeNode,
   enumTypeNode,
+  enumValueNode,
   instructionDataArgsNode,
   instructionExtraArgsNode,
   instructionNode,
+  isStructValueNode,
+  isTupleValueNode,
   mapTypeNode,
+  mapValueNode,
   optionTypeNode,
   prefixedSizeNode,
   programNode,
   removeNullAndAssertNodeFilter,
   rootNode,
   setTypeNode,
+  setValueNode,
   solAmountTypeNode,
+  someValueNode,
   stringTypeNode,
   structFieldTypeNode,
   structTypeNode,
+  structValueNode,
   tupleTypeNode,
+  tupleValueNode,
 } from '../nodes';
 import { AccountSeed } from '../shared';
 import { staticVisitor } from './staticVisitor';
@@ -350,6 +360,90 @@ export function identityVisitor<
       if (prefix === null) return null;
       assertNumberTypeNode(prefix);
       return prefixedSizeNode(prefix);
+    };
+  }
+
+  if (castedNodeKeys.includes('arrayValueNode')) {
+    visitor.visitArrayValue = function visitArrayValue(node) {
+      return arrayValueNode(
+        node.items
+          .map(visit(this))
+          .filter(removeNullAndAssertNodeFilter(assertValueNode))
+      );
+    };
+  }
+
+  if (castedNodeKeys.includes('enumValueNode')) {
+    visitor.visitEnumValue = function visitEnumValue(node) {
+      if (typeof node.value === 'string') return { ...node };
+      const value = visit(this)(node.value);
+      if (value === null) return null;
+      if (!isStructValueNode(value) && !isTupleValueNode(value)) {
+        throw new Error(
+          `Expected structValueNode | tupleValueNode, got ${value.kind}.`
+        );
+      }
+      return enumValueNode(node.enumType, node.variant, value, node.importFrom);
+    };
+  }
+
+  if (castedNodeKeys.includes('mapValueNode')) {
+    visitor.visitMapValue = function visitMapValue(node) {
+      return mapValueNode(
+        node.entries.flatMap(([k, v]) => {
+          const key = visit(this)(k);
+          if (key === null) return [];
+          assertValueNode(key);
+          const value = visit(this)(v);
+          if (value === null) return [];
+          assertValueNode(value);
+          return [[key, value]];
+        })
+      );
+    };
+  }
+
+  if (castedNodeKeys.includes('setValueNode')) {
+    visitor.visitSetValue = function visitSetValue(node) {
+      return setValueNode(
+        node.items
+          .map(visit(this))
+          .filter(removeNullAndAssertNodeFilter(assertValueNode))
+      );
+    };
+  }
+
+  if (castedNodeKeys.includes('someValueNode')) {
+    visitor.visitSomeValue = function visitSomeValue(node) {
+      const value = visit(this)(node.value);
+      if (value === null) return null;
+      assertValueNode(value);
+      return someValueNode(value);
+    };
+  }
+
+  if (castedNodeKeys.includes('structValueNode')) {
+    visitor.visitStructValue = function visitStructValue(node) {
+      return structValueNode(
+        Object.fromEntries(
+          Object.entries(node.fields).flatMap(([k, v]) => {
+            const value = visit(this)(v);
+            if (value === null) return [];
+            assertValueNode(value);
+            return [[k, value]];
+          })
+        )
+      );
+    };
+  }
+
+  if (castedNodeKeys.includes('tupleValueNode')) {
+    visitor.visitTupleValue = function visitTupleValue(node) {
+      return tupleValueNode(
+        node.items
+          .map(visit(this))
+          .filter(removeNullAndAssertNodeFilter(assertValueNode))
+      );
     };
   }
 

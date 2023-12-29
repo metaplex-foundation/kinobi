@@ -10,6 +10,7 @@ import type { ProgramNode } from './ProgramNode';
 import type { RootNode } from './RootNode';
 import { REGISTERED_SIZE_NODES } from './sizeNodes';
 import { REGISTERED_TYPE_NODES } from './typeNodes';
+import { REGISTERED_VALUE_NODES } from './valueNodes';
 
 const REGISTERED_NODES = {
   rootNode: {} as RootNode,
@@ -24,8 +25,9 @@ const REGISTERED_NODES = {
   definedTypeNode: {} as DefinedTypeNode,
 
   // Groups.
-  ...REGISTERED_TYPE_NODES,
   ...REGISTERED_SIZE_NODES,
+  ...REGISTERED_TYPE_NODES,
+  ...REGISTERED_VALUE_NODES,
 };
 
 export const REGISTERED_NODES_KEYS = Object.keys(

@@ -8,13 +8,17 @@ import {
   mainCase,
 } from '../shared';
 import { AccountDataNode, accountDataNode } from './AccountDataNode';
-import { bytesTypeNode } from './typeNodes/BytesTypeNode';
 import type { Node } from './Node';
+import { remainderSizeNode } from './sizeNodes';
+import { bytesTypeNode } from './typeNodes/BytesTypeNode';
 import { stringTypeNode } from './typeNodes/StringTypeNode';
 import { assertStructTypeNode } from './typeNodes/StructTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './typeNodes/TypeNode';
-import { vScalar } from './ValueNode';
-import { remainderSizeNode } from './sizeNodes';
+import {
+  booleanValueNode,
+  numberValueNode,
+  stringValueNode,
+} from './valueNodes';
 
 export type AccountNode = {
   readonly kind: 'accountNode';
@@ -60,7 +64,11 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
   assertStructTypeNode(struct);
   const seeds = (idl.seeds ?? []).map((seed): AccountSeed => {
     if (seed.kind === 'constant') {
-      const value = vScalar(seed.value);
+      const value = (() => {
+        if (typeof seed.value === 'string') return stringValueNode(seed.value);
+        if (typeof seed.value === 'number') return numberValueNode(seed.value);
+        return booleanValueNode(seed.value);
+      })();
       let type: TypeNode;
       if (seed.type === 'string') {
         type = stringTypeNode({ size: remainderSizeNode() });

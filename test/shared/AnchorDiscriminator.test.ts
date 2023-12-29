@@ -1,7 +1,9 @@
 import test from 'ava';
 import {
+  arrayValueNode,
   getAnchorAccountDiscriminator,
   getAnchorInstructionDiscriminator,
+  numberValueNode,
 } from '../../src';
 
 test('it can compute the discriminator of an Anchor account', (t) => {
@@ -12,13 +14,12 @@ test('it can compute the discriminator of an Anchor account', (t) => {
   const discriminator = getAnchorAccountDiscriminator(idlName);
 
   // Then we get the expected value.
-  t.like(discriminator, {
-    kind: 'list',
-    values: [187, 127, 9, 35, 155, 68, 86, 40].map((byte) => ({
-      kind: 'number',
-      value: byte,
-    })),
-  });
+  t.deepEqual(
+    discriminator,
+    arrayValueNode(
+      [187, 127, 9, 35, 155, 68, 86, 40].map((byte) => numberValueNode(byte))
+    )
+  );
 });
 
 test('it can compute the discriminator of an Anchor instruction', (t) => {
@@ -29,11 +30,10 @@ test('it can compute the discriminator of an Anchor instruction', (t) => {
   const discriminator = getAnchorInstructionDiscriminator(idlName);
 
   // Then we get the expected value.
-  t.like(discriminator, {
-    kind: 'list',
-    values: [223, 50, 224, 227, 151, 8, 115, 106].map((byte) => ({
-      kind: 'number',
-      value: byte,
-    })),
-  });
+  t.deepEqual(
+    discriminator,
+    arrayValueNode(
+      [223, 50, 224, 227, 151, 8, 115, 106].map((byte) => numberValueNode(byte))
+    )
+  );
 });

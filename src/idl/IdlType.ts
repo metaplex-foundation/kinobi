@@ -47,7 +47,6 @@ export type IdlTypeStructField = {
   name: string;
   type: IdlType;
   docs?: string[];
-  defaultsValue?: any;
 };
 
 // Enums.

@@ -18,7 +18,7 @@ import {
 import { extendVisitor, staticVisitor, visit } from '../../visitors';
 import { RustImportMap } from './RustImportMap';
 import { getTypeManifestVisitor } from './getTypeManifestVisitor';
-import { renderValueNode } from './renderValueNode';
+import { renderValueNode } from './renderValueNodeVisitor';
 
 export type GetRustRenderMapOptions = {
   renderParentInstructions?: boolean;
