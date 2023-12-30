@@ -8,6 +8,7 @@ import type { InstructionExtraArgsNode } from './InstructionExtraArgsNode';
 import type { InstructionNode } from './InstructionNode';
 import type { ProgramNode } from './ProgramNode';
 import type { RootNode } from './RootNode';
+import { REGISTERED_PDA_SEED_NODES } from './pdaSeedNodes';
 import { REGISTERED_SIZE_NODES } from './sizeNodes';
 import { REGISTERED_TYPE_NODES } from './typeNodes';
 import { REGISTERED_VALUE_NODES } from './valueNodes';
@@ -25,6 +26,7 @@ const REGISTERED_NODES = {
   definedTypeNode: {} as DefinedTypeNode,
 
   // Groups.
+  ...REGISTERED_PDA_SEED_NODES,
   ...REGISTERED_SIZE_NODES,
   ...REGISTERED_TYPE_NODES,
   ...REGISTERED_VALUE_NODES,

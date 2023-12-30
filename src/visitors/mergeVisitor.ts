@@ -38,10 +38,7 @@ export function mergeVisitor<
     visitor.visitAccount = function visitAccount(node) {
       return merge(node, [
         ...visit(this)(node.data),
-        ...node.seeds.flatMap((seed) => {
-          if (seed.kind !== 'variable') return [];
-          return visit(this)(seed.type);
-        }),
+        ...node.seeds.flatMap(visit(this)),
       ]);
     };
   }
@@ -258,6 +255,21 @@ export function mergeVisitor<
   if (castedNodeKeys.includes('tupleValueNode')) {
     visitor.visitTupleValue = function visitTupleValue(node) {
       return merge(node, node.items.flatMap(visit(this)));
+    };
+  }
+
+  if (castedNodeKeys.includes('constantPdaSeedNode')) {
+    visitor.visitConstantPdaSeed = function visitConstantPdaSeed(node) {
+      return merge(node, [
+        ...visit(this)(node.type),
+        ...visit(this)(node.value),
+      ]);
+    };
+  }
+
+  if (castedNodeKeys.includes('variablePdaSeedNode')) {
+    visitor.visitVariablePdaSeed = function visitVariablePdaSeed(node) {
+      return merge(node, visit(this)(node.type));
     };
   }
 

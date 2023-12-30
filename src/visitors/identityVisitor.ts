@@ -18,6 +18,7 @@ import {
   assertInstructionNode,
   assertLinkTypeNode,
   assertNumberTypeNode,
+  assertPdaSeedNode,
   assertProgramNode,
   assertSizeNode,
   assertStructFieldTypeNode,
@@ -27,6 +28,7 @@ import {
   assertValueNode,
   booleanTypeNode,
   bytesTypeNode,
+  constantPdaSeedNode,
   dateTimeTypeNode,
   definedTypeNode,
   enumStructVariantTypeNode,
@@ -55,8 +57,8 @@ import {
   structValueNode,
   tupleTypeNode,
   tupleValueNode,
+  variablePdaSeedNode,
 } from '../nodes';
-import { AccountSeed } from '../shared';
 import { staticVisitor } from './staticVisitor';
 import { Visitor, visit as baseVisit } from './visitor';
 
@@ -111,14 +113,8 @@ export function identityVisitor<
       if (data === null) return null;
       assertAccountDataNode(data);
       const seeds = node.seeds
-        .map((seed) => {
-          if (seed.kind !== 'variable') return seed;
-          const newType = visit(this)(seed.type);
-          if (newType === null) return null;
-          assertTypeNode(newType);
-          return { ...seed, type: newType };
-        })
-        .filter((s): s is AccountSeed => s !== null);
+        .map((type) => visit(this)(type))
+        .filter(removeNullAndAssertNodeFilter(assertPdaSeedNode));
       return accountNode({ ...node, data, seeds });
     };
   }
@@ -444,6 +440,27 @@ export function identityVisitor<
           .map(visit(this))
           .filter(removeNullAndAssertNodeFilter(assertValueNode))
       );
+    };
+  }
+
+  if (castedNodeKeys.includes('constantPdaSeedNode')) {
+    visitor.visitConstantPdaSeed = function visitConstantPdaSeed(node) {
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertTypeNode(type);
+      const value = visit(this)(node.value);
+      if (value === null) return null;
+      assertValueNode(value);
+      return constantPdaSeedNode(type, value);
+    };
+  }
+
+  if (castedNodeKeys.includes('variablePdaSeedNode')) {
+    visitor.visitVariablePdaSeed = function visitVariablePdaSeed(node) {
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertTypeNode(type);
+      return variablePdaSeedNode(node.name, type, node.docs);
     };
   }
 

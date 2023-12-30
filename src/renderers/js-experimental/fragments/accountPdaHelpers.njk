@@ -3,7 +3,7 @@
 {% if hasVariableSeeds %}
 export type {{ accountSeedsType }} = {
   {% for seed in seeds %}
-    {% if seed.kind === 'variable' %}
+    {% if seed.kind === 'variablePdaSeedNode' %}
       {{ macros.docblock(seed.docs) }}
       {{ seed.name | camelCase }}: {{ seed.typeManifest.looseType.render }};
     {% endif %}
@@ -20,9 +20,9 @@ export async function {{ findPdaFunction }}(
   const { programAddress = '{{ program.publicKey }}' as Address<'{{ program.publicKey }}'> } = config;
   return getProgramDerivedAddress({ programAddress, seeds: [
     {% for seed in seeds %}
-      {% if seed.kind === 'programId' %}
+      {% if seed.kind === 'programIdPdaSeedNode' %}
         getAddressEncoder().encode(programAddress),
-      {% elif seed.kind === 'constant' %}
+      {% elif seed.kind === 'constantPdaSeedNode' %}
         {{ seed.typeManifest.encoder.render }}.encode({{ seed.value.render }}),
       {% else %}
         {{ seed.typeManifest.encoder.render }}.encode(seeds.{{ seed.name | camelCase }}),

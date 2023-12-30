@@ -1,4 +1,9 @@
-import { AccountNode, ValueNode, isPublicKeyTypeNode } from '../nodes';
+import {
+  AccountNode,
+  ValueNode,
+  isPublicKeyTypeNode,
+  isVariablePdaSeedNode,
+} from '../nodes';
 import { ImportFrom } from './ImportFrom';
 import { MainCaseString, mainCase } from './utils';
 
@@ -188,7 +193,7 @@ export const getDefaultSeedsFromAccount = (
   node: AccountNode
 ): Record<MainCaseString, InstructionSeedDefault> =>
   node.seeds.reduce((acc, seed) => {
-    if (seed.kind !== 'variable') return acc;
+    if (!isVariablePdaSeedNode(seed)) return acc;
     if (isPublicKeyTypeNode(seed.type)) {
       acc[seed.name] = { kind: 'account', name: seed.name };
     } else {
