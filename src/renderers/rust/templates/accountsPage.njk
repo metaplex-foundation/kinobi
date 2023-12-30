@@ -21,7 +21,7 @@ impl {{ account.name | pascalCase }} {
     pub fn create_pda(
       {% if hasVariableSeeds %}
           {% for seed in seeds %}
-            {% if seed.kind === 'variable' %}
+            {% if seed.kind === 'variablePdaSeedNode' %}
               {{ seed.name | snakeCase }}: {{ seed.typeManifest.type }},
             {% endif %}
           {% endfor %}
@@ -31,11 +31,11 @@ impl {{ account.name | pascalCase }} {
       solana_program::pubkey::Pubkey::create_program_address(
         &[
           {% for seed in seeds %}
-            {% if seed.kind === 'programId' %}
+            {% if seed.kind === 'programIdPdaSeedNode' %}
               crate::{{ program.name | snakeCase | upper }}_ID.as_ref(),
-            {% elif seed.kind === 'constant' %}
+            {% elif seed.kind === 'constantPdaSeedNode' %}
               {{ seed.value.render }}.as_bytes(),
-            {% elif seed.kind == 'variable' and seed.type.kind == 'publicKeyTypeNode' %}
+            {% elif seed.kind == 'variablePdaSeedNode' and seed.type.kind == 'publicKeyTypeNode' %}
               {{ seed.name | snakeCase }}.as_ref(),
             {% else %}
               {{ seed.name | snakeCase }}.to_string().as_ref(),
@@ -50,9 +50,9 @@ impl {{ account.name | pascalCase }} {
     pub fn find_pda(
     {% if hasVariableSeeds %}
         {% for seed in seeds %}
-          {% if seed.kind == 'variable' and seed.type.kind == 'publicKeyTypeNode' %}
+          {% if seed.kind == 'variablePdaSeedNode' and seed.type.kind == 'publicKeyTypeNode' %}
             {{ seed.name | snakeCase }}: &{{ seed.typeManifest.type }},
-          {% elif seed.kind === 'variable' %}
+          {% elif seed.kind === 'variablePdaSeedNode' %}
             {{ seed.name | snakeCase }}: {{ seed.typeManifest.type }},
           {% endif %}
         {% endfor %}
@@ -61,11 +61,11 @@ impl {{ account.name | pascalCase }} {
       solana_program::pubkey::Pubkey::find_program_address(
         &[
           {% for seed in seeds %}
-            {% if seed.kind === 'programId' %}
+            {% if seed.kind === 'programIdPdaSeedNode' %}
               crate::{{ program.name | snakeCase | upper }}_ID.as_ref(),
-            {% elif seed.kind === 'constant' %}
+            {% elif seed.kind === 'constantPdaSeedNode' %}
               {{ seed.value.render }}.as_bytes(),
-            {% elif seed.kind == 'variable' and seed.type.kind == 'publicKeyTypeNode' %}
+            {% elif seed.kind == 'variablePdaSeedNode' and seed.type.kind == 'publicKeyTypeNode' %}
               {{ seed.name | snakeCase }}.as_ref(),
             {% else %}
               {{ seed.name | snakeCase }}.to_string().as_ref(),
