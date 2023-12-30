@@ -1,6 +1,7 @@
 import { Node } from '../Node';
-import { TypeNode } from '../typeNodes';
-import { ValueNode } from '../valueNodes';
+import { remainderSizeNode } from '../sizeNodes';
+import { TypeNode, stringTypeNode } from '../typeNodes';
+import { ValueNode, stringValueNode } from '../valueNodes';
 
 export type ConstantPdaSeedNode = {
   readonly kind: 'constantPdaSeedNode';
@@ -13,6 +14,16 @@ export function constantPdaSeedNode(
   value: ValueNode
 ): ConstantPdaSeedNode {
   return { kind: 'constantPdaSeedNode', type, value };
+}
+
+export function constantPdaSeedNodeFromString(
+  value: string
+): ConstantPdaSeedNode {
+  return {
+    kind: 'constantPdaSeedNode',
+    type: stringTypeNode({ size: remainderSizeNode() }),
+    value: stringValueNode(value),
+  };
 }
 
 export function isConstantPdaSeedNode(

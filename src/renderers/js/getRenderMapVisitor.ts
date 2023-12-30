@@ -8,8 +8,10 @@ import {
   getAllDefinedTypes,
   getAllInstructionsWithSubs,
   InstructionNode,
+  isConstantPdaSeedNode,
   isDataEnum,
   isEnumTypeNode,
+  isVariablePdaSeedNode,
   ProgramNode,
 } from '../../nodes';
 import {
@@ -328,7 +330,7 @@ export function getRenderMapVisitor(
 
     // Seeds.
     const seeds = node.seeds.map((seed) => {
-      if (seed.kind === 'constant') {
+      if (isConstantPdaSeedNode(seed)) {
         const seedManifest = visit(seed.type, typeManifestVisitor);
         imports.mergeWith(seedManifest.serializerImports);
         const seedValue = seed.value;
@@ -337,7 +339,7 @@ export function getRenderMapVisitor(
         imports.mergeWith(valueManifest.imports);
         return { ...seed, typeManifest: seedManifest };
       }
-      if (seed.kind === 'variable') {
+      if (isVariablePdaSeedNode(seed)) {
         const seedManifest = visit(seed.type, typeManifestVisitor);
         imports.mergeWith(
           seedManifest.looseImports,
@@ -354,7 +356,7 @@ export function getRenderMapVisitor(
       imports.add('umi', ['Pda']);
     }
     const hasVariableSeeds =
-      node.seeds.filter((seed) => seed.kind === 'variable').length > 0;
+      node.seeds.filter(isVariablePdaSeedNode).length > 0;
 
     return new RenderMap().add(
       `accounts/${camelCase(node.name)}.ts`,

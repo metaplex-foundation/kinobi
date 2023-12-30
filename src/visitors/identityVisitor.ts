@@ -18,6 +18,7 @@ import {
   assertInstructionNode,
   assertLinkTypeNode,
   assertNumberTypeNode,
+  assertPdaSeedNode,
   assertProgramNode,
   assertSizeNode,
   assertStructFieldTypeNode,
@@ -58,7 +59,6 @@ import {
   tupleValueNode,
   variablePdaSeedNode,
 } from '../nodes';
-import { AccountSeed } from '../shared';
 import { staticVisitor } from './staticVisitor';
 import { Visitor, visit as baseVisit } from './visitor';
 
@@ -113,14 +113,8 @@ export function identityVisitor<
       if (data === null) return null;
       assertAccountDataNode(data);
       const seeds = node.seeds
-        .map((seed) => {
-          if (seed.kind !== 'variable') return seed;
-          const newType = visit(this)(seed.type);
-          if (newType === null) return null;
-          assertTypeNode(newType);
-          return { ...seed, type: newType };
-        })
-        .filter((s): s is AccountSeed => s !== null);
+        .map((type) => visit(this)(type))
+        .filter(removeNullAndAssertNodeFilter(assertPdaSeedNode));
       return accountNode({ ...node, data, seeds });
     };
   }

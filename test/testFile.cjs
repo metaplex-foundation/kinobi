@@ -1,4 +1,7 @@
 const k = require('../dist/cjs/index.js');
+const {
+  publicKeyTypeNode,
+} = require('../dist/cjs/nodes/typeNodes/PublicKeyTypeNode.js');
 
 const kinobi = k.createFromIdls([
   __dirname + '/spl_system.json',
@@ -20,9 +23,9 @@ kinobi.update(
     Metadata: { size: 679 },
     MasterEditionV1: {
       seeds: [
-        k.stringConstantSeed('metadata'),
-        k.programSeed(),
-        k.variableSeed(
+        k.constantPdaSeedNodeFromString('metadata'),
+        k.programIdPdaSeedNode(),
+        k.variablePdaSeedNode(
           'delegateRole',
           k.linkTypeNode('delegateRole'),
           'The role of the delegate'
@@ -32,18 +35,22 @@ kinobi.update(
     MasterEditionV2: {
       size: 282,
       seeds: [
-        k.stringConstantSeed('metadata'),
-        k.programSeed(),
-        k.publicKeySeed('mint', 'The address of the mint account'),
-        k.stringConstantSeed('edition'),
+        k.constantPdaSeedNodeFromString('metadata'),
+        k.programIdPdaSeedNode(),
+        k.variablePdaSeedNode(
+          'mint',
+          publicKeyTypeNode(),
+          'The address of the mint account'
+        ),
+        k.constantPdaSeedNodeFromString('edition'),
       ],
     },
     delegateRecord: {
       size: 282,
       seeds: [
-        k.stringConstantSeed('delegate_record'),
-        k.programSeed(),
-        k.variableSeed(
+        k.constantPdaSeedNodeFromString('delegate_record'),
+        k.programIdPdaSeedNode(),
+        k.variablePdaSeedNode(
           'role',
           k.linkTypeNode('delegateRole'),
           'The delegate role'
@@ -51,7 +58,10 @@ kinobi.update(
       ],
     },
     FrequencyAccount: {
-      seeds: [k.stringConstantSeed('frequency_pda'), k.programSeed()],
+      seeds: [
+        k.constantPdaSeedNodeFromString('frequency_pda'),
+        k.programIdPdaSeedNode(),
+      ],
     },
   })
 );

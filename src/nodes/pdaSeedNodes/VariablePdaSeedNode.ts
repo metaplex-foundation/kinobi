@@ -12,9 +12,14 @@ export type VariablePdaSeedNode = {
 export function variablePdaSeedNode(
   name: string,
   type: TypeNode,
-  docs: string[] = []
+  docs: string | string[] = []
 ): VariablePdaSeedNode {
-  return { kind: 'variablePdaSeedNode', name: mainCase(name), type, docs };
+  return {
+    kind: 'variablePdaSeedNode',
+    name: mainCase(name),
+    type,
+    docs: Array.isArray(docs) ? docs : [docs],
+  };
 }
 
 export function isVariablePdaSeedNode(

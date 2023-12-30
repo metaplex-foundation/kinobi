@@ -38,10 +38,7 @@ export function mergeVisitor<
     visitor.visitAccount = function visitAccount(node) {
       return merge(node, [
         ...visit(this)(node.data),
-        ...node.seeds.flatMap((seed) => {
-          if (seed.kind !== 'variable') return [];
-          return visit(this)(seed.type);
-        }),
+        ...node.seeds.flatMap(visit(this)),
       ]);
     };
   }

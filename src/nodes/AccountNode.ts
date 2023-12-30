@@ -1,7 +1,6 @@
 import type { IdlAccount } from '../idl';
 import {
   AccountDiscriminator,
-  AccountSeed,
   InvalidKinobiTreeError,
   MainCaseString,
   PartialExcept,
@@ -9,6 +8,12 @@ import {
 } from '../shared';
 import { AccountDataNode, accountDataNode } from './AccountDataNode';
 import type { Node } from './Node';
+import {
+  PdaSeedNode,
+  constantPdaSeedNode,
+  programIdPdaSeedNode,
+  variablePdaSeedNode,
+} from './pdaSeedNodes';
 import { remainderSizeNode } from './sizeNodes';
 import { bytesTypeNode } from './typeNodes/BytesTypeNode';
 import { stringTypeNode } from './typeNodes/StringTypeNode';
@@ -28,7 +33,7 @@ export type AccountNode = {
   readonly docs: string[];
   readonly internal: boolean;
   readonly size?: number | null;
-  readonly seeds: AccountSeed[];
+  readonly seeds: PdaSeedNode[];
   readonly discriminator?: AccountDiscriminator;
 };
 
@@ -62,7 +67,7 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
   const idlStruct = idl.type ?? { kind: 'struct', fields: [] };
   const struct = createTypeNodeFromIdl(idlStruct);
   assertStructTypeNode(struct);
-  const seeds = (idl.seeds ?? []).map((seed): AccountSeed => {
+  const seeds = (idl.seeds ?? []).map((seed): PdaSeedNode => {
     if (seed.kind === 'constant') {
       const value = (() => {
         if (typeof seed.value === 'string') return stringValueNode(seed.value);
@@ -77,17 +82,16 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
       } else {
         type = createTypeNodeFromIdl(seed.type);
       }
-      return { ...seed, type, value };
+      return constantPdaSeedNode(type, value);
     }
     if (seed.kind === 'variable') {
-      return {
-        ...seed,
-        name: mainCase(seed.name),
-        type: createTypeNodeFromIdl(seed.type),
-        docs: seed.description ? [seed.description] : [],
-      };
+      return variablePdaSeedNode(
+        seed.name,
+        createTypeNodeFromIdl(seed.type),
+        seed.description ? [seed.description] : []
+      );
     }
-    return { kind: 'programId' };
+    return programIdPdaSeedNode();
   });
   return accountNode({
     name,
