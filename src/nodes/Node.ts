@@ -40,6 +40,14 @@ export type RegisteredNodes = typeof REGISTERED_NODES;
 
 export type Node = RegisteredNodes[keyof RegisteredNodes];
 
+export function isNode<TKeys extends keyof RegisteredNodes>(
+  node: Node | null,
+  key: TKeys | TKeys[]
+): node is RegisteredNodes[TKeys] {
+  const keys = Array.isArray(key) ? key : [key];
+  return !!node && (keys as (keyof RegisteredNodes)[]).includes(node.kind);
+}
+
 export const assertNodeFilter =
   <T extends Node>(
     assertCallback: (node: Node | null) => asserts node is T
