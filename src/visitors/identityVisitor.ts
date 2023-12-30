@@ -27,6 +27,7 @@ import {
   assertValueNode,
   booleanTypeNode,
   bytesTypeNode,
+  constantPdaSeedNode,
   dateTimeTypeNode,
   definedTypeNode,
   enumStructVariantTypeNode,
@@ -55,6 +56,7 @@ import {
   structValueNode,
   tupleTypeNode,
   tupleValueNode,
+  variablePdaSeedNode,
 } from '../nodes';
 import { AccountSeed } from '../shared';
 import { staticVisitor } from './staticVisitor';
@@ -444,6 +446,27 @@ export function identityVisitor<
           .map(visit(this))
           .filter(removeNullAndAssertNodeFilter(assertValueNode))
       );
+    };
+  }
+
+  if (castedNodeKeys.includes('constantPdaSeedNode')) {
+    visitor.visitConstantPdaSeed = function visitConstantPdaSeed(node) {
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertTypeNode(type);
+      const value = visit(this)(node.value);
+      if (value === null) return null;
+      assertValueNode(value);
+      return constantPdaSeedNode(type, value);
+    };
+  }
+
+  if (castedNodeKeys.includes('variablePdaSeedNode')) {
+    visitor.visitVariablePdaSeed = function visitVariablePdaSeed(node) {
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertTypeNode(type);
+      return variablePdaSeedNode(node.name, type, node.docs);
     };
   }
 

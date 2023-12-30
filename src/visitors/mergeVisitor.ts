@@ -261,5 +261,20 @@ export function mergeVisitor<
     };
   }
 
+  if (castedNodeKeys.includes('constantPdaSeedNode')) {
+    visitor.visitConstantPdaSeed = function visitConstantPdaSeed(node) {
+      return merge(node, [
+        ...visit(this)(node.type),
+        ...visit(this)(node.value),
+      ]);
+    };
+  }
+
+  if (castedNodeKeys.includes('variablePdaSeedNode')) {
+    visitor.visitVariablePdaSeed = function visitVariablePdaSeed(node) {
+      return merge(node, visit(this)(node.type));
+    };
+  }
+
   return visitor as Visitor<TReturn, TNodeKeys>;
 }
