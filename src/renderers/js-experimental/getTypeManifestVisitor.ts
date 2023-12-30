@@ -507,7 +507,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           return mergedManifest;
         },
 
-        visitBoolType(boolType, { self }) {
+        visitBooleanType(booleanType, { self }) {
           const encoderImports = new ImportMap().add(
             'solanaCodecsDataStructures',
             'getBooleanEncoder'
@@ -519,8 +519,11 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
 
           let sizeEncoder = '';
           let sizeDecoder = '';
-          if (boolType.size.format !== 'u8' || boolType.size.endian !== 'le') {
-            const size = visit(boolType.size, self);
+          if (
+            booleanType.size.format !== 'u8' ||
+            booleanType.size.endian !== 'le'
+          ) {
+            const size = visit(booleanType.size, self);
             encoderImports.mergeWith(size.encoder);
             decoderImports.mergeWith(size.decoder);
             sizeEncoder = `{ size: ${size.encoder.render} }`;

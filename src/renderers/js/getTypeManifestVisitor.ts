@@ -466,7 +466,7 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitBoolType(boolType, { self }) {
+        visitBooleanType(booleanType, { self }) {
           const looseImports = new JavaScriptImportMap();
           const strictImports = new JavaScriptImportMap();
           const serializerImports = new JavaScriptImportMap().add(
@@ -474,8 +474,11 @@ export function getTypeManifestVisitor() {
             'bool'
           );
           let sizeSerializer = '';
-          if (boolType.size.format !== 'u8' || boolType.size.endian !== 'le') {
-            const size = visit(boolType.size, self);
+          if (
+            booleanType.size.format !== 'u8' ||
+            booleanType.size.endian !== 'le'
+          ) {
+            const size = visit(booleanType.size, self);
             looseImports.mergeWith(size.looseImports);
             strictImports.mergeWith(size.strictImports);
             serializerImports.mergeWith(size.serializerImports);

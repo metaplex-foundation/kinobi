@@ -386,8 +386,11 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitBoolType(boolType) {
-          if (boolType.size.format === 'u8' && boolType.size.endian === 'le') {
+        visitBooleanType(booleanType) {
+          if (
+            booleanType.size.format === 'u8' &&
+            booleanType.size.endian === 'le'
+          ) {
             return {
               type: 'bool',
               imports: new RustImportMap(),

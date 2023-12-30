@@ -145,8 +145,8 @@ export function mergeVisitor<
     };
   }
 
-  if (castedNodeKeys.includes('boolTypeNode')) {
-    visitor.visitBoolType = function visitBoolType(node) {
+  if (castedNodeKeys.includes('booleanTypeNode')) {
+    visitor.visitBooleanType = function visitBooleanType(node) {
       return merge(node, visit(this)(node.size));
     };
   }

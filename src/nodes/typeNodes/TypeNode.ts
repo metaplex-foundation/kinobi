@@ -1,6 +1,6 @@
 import { IDL_TYPE_LEAVES, IdlType } from '../../idl';
 import { ArrayTypeNode, arrayTypeNodeFromIdl } from './ArrayTypeNode';
-import { BoolTypeNode, boolTypeNode } from './BoolTypeNode';
+import { BooleanTypeNode, booleanTypeNode } from './BooleanTypeNode';
 import { BytesTypeNode, bytesTypeNode } from './BytesTypeNode';
 import { EnumTypeNode, enumTypeNodeFromIdl } from './EnumTypeNode';
 import { LinkTypeNode, linkTypeNode } from './LinkTypeNode';
@@ -25,7 +25,7 @@ import { prefixedSizeNode } from '../sizeNodes';
 export const TYPE_NODES = {
   amountTypeNode: {} as AmountTypeNode,
   arrayTypeNode: {} as ArrayTypeNode,
-  boolTypeNode: {} as BoolTypeNode,
+  booleanTypeNode: {} as BooleanTypeNode,
   bytesTypeNode: {} as BytesTypeNode,
   dateTimeTypeNode: {} as DateTimeTypeNode,
   enumTypeNode: {} as EnumTypeNode,
@@ -70,7 +70,7 @@ function isArrayOfSize(array: any, size: number): boolean {
 export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
   // Leaf.
   if (typeof idlType === 'string' && IDL_TYPE_LEAVES.includes(idlType)) {
-    if (idlType === 'bool') return boolTypeNode();
+    if (idlType === 'bool') return booleanTypeNode();
     if (idlType === 'string') return stringTypeNode();
     if (idlType === 'publicKey') return publicKeyTypeNode();
     if (idlType === 'bytes')

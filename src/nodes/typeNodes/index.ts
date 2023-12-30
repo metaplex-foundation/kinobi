@@ -1,6 +1,6 @@
 export * from './AmountTypeNode';
 export * from './ArrayTypeNode';
-export * from './BoolTypeNode';
+export * from './BooleanTypeNode';
 export * from './BytesTypeNode';
 export * from './DateTimeTypeNode';
 export * from './EnumEmptyVariantTypeNode';

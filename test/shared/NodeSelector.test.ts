@@ -1,6 +1,6 @@
 import test from 'ava';
 import {
-  BoolTypeNode,
+  BooleanTypeNode,
   EnumStructVariantTypeNode,
   EnumTypeNode,
   Node,
@@ -9,7 +9,7 @@ import {
   OptionTypeNode,
   accountDataNode,
   accountNode,
-  boolTypeNode,
+  booleanTypeNode,
   definedTypeNode,
   enumEmptyVariantTypeNode,
   enumStructVariantTypeNode,
@@ -133,7 +133,7 @@ const tree = rootNode([
             }),
             structFieldTypeNode({
               name: 'opened',
-              child: boolTypeNode(numberTypeNode('u64')),
+              child: booleanTypeNode(numberTypeNode('u64')),
             }),
             structFieldTypeNode({
               name: 'amount',
@@ -248,7 +248,7 @@ const macro = test.macro({
  * [programNode] christmasProgram
  *     [accountNode] gift > [accountDataNode] giftAccountData > [structTypeNode]
  *         [structFieldTypeNode] owner > [publicKeyTypeNode]
- *         [structFieldTypeNode] opened > [boolTypeNode] > [numberTypeNode] (u64)
+ *         [structFieldTypeNode] opened > [booleanTypeNode] > [numberTypeNode] (u64)
  *         [structFieldTypeNode] amount > [numberTypeNode] (u64)
  *         [structFieldTypeNode] wrappingPaper > [linkTypeNode] wrappingPaper
  *     [instructionNode] openGift
@@ -344,7 +344,7 @@ test(macro, '[structFieldTypeNode].*', [
   mintTokenInstruction.dataArgs.struct.fields[0].child,
   giftAccount.data.struct.fields[0].child,
   giftAccount.data.struct.fields[1].child,
-  (giftAccount.data.struct.fields[1].child as BoolTypeNode).size,
+  (giftAccount.data.struct.fields[1].child as BooleanTypeNode).size,
   giftAccount.data.struct.fields[2].child,
   giftAccount.data.struct.fields[3].child,
   wrappingPaperEnumGold.struct.fields[0].child,
@@ -352,7 +352,7 @@ test(macro, '[structFieldTypeNode].*', [
 test(macro, '[structFieldTypeNode].*.*', [
   tokenDelegatedAmountOption.prefix,
   tokenDelegatedAmountOption.child,
-  (giftAccount.data.struct.fields[1].child as BoolTypeNode).size,
+  (giftAccount.data.struct.fields[1].child as BooleanTypeNode).size,
 ]);
 
 // Select using functions.

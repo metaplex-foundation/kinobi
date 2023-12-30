@@ -25,7 +25,7 @@ import {
   assertTupleTypeNode,
   assertTypeNode,
   assertValueNode,
-  boolTypeNode,
+  booleanTypeNode,
   bytesTypeNode,
   dateTimeTypeNode,
   definedTypeNode,
@@ -259,12 +259,12 @@ export function identityVisitor<
     };
   }
 
-  if (castedNodeKeys.includes('boolTypeNode')) {
-    visitor.visitBoolType = function visitBoolType(node) {
+  if (castedNodeKeys.includes('booleanTypeNode')) {
+    visitor.visitBooleanType = function visitBooleanType(node) {
       const size = visit(this)(node.size);
       if (size === null) return null;
       assertNumberTypeNode(size);
-      return boolTypeNode(size);
+      return booleanTypeNode(size);
     };
   }
 
