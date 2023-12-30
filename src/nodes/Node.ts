@@ -48,6 +48,18 @@ export function isNode<TKeys extends keyof RegisteredNodes>(
   return !!node && (keys as (keyof RegisteredNodes)[]).includes(node.kind);
 }
 
+export function assertIsNode<TKeys extends keyof RegisteredNodes>(
+  node: Node | null,
+  key: TKeys | TKeys[]
+): asserts node is RegisteredNodes[TKeys] {
+  const keys = Array.isArray(key) ? key : [key];
+  if (!isNode(node, keys)) {
+    throw new Error(
+      `Expected ${keys.join(' | ')}, got ${node?.kind ?? 'null'}.`
+    );
+  }
+}
+
 export const assertNodeFilter =
   <T extends Node>(
     assertCallback: (node: Node | null) => asserts node is T
