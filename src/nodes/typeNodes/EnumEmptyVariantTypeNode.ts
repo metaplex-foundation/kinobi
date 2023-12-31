@@ -1,6 +1,5 @@
 import type { IdlTypeEnumVariant } from '../../idl';
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../../shared';
-import type { Node } from '../Node';
 
 export type EnumEmptyVariantTypeNode = {
   readonly kind: 'enumEmptyVariantTypeNode';
@@ -22,20 +21,4 @@ export function enumEmptyVariantTypeNodeFromIdl(
   idl: IdlTypeEnumVariant
 ): EnumEmptyVariantTypeNode {
   return enumEmptyVariantTypeNode(idl.name ?? '');
-}
-
-export function isEnumEmptyVariantTypeNode(
-  node: Node | null
-): node is EnumEmptyVariantTypeNode {
-  return !!node && node.kind === 'enumEmptyVariantTypeNode';
-}
-
-export function assertEnumEmptyVariantTypeNode(
-  node: Node | null
-): asserts node is EnumEmptyVariantTypeNode {
-  if (!isEnumEmptyVariantTypeNode(node)) {
-    throw new Error(
-      `Expected enumEmptyVariantTypeNode, got ${node?.kind ?? 'null'}.`
-    );
-  }
 }

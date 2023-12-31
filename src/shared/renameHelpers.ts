@@ -6,8 +6,7 @@ import {
   enumStructVariantTypeNode,
   enumTupleVariantTypeNode,
   enumTypeNode,
-  isEnumStructVariantTypeNode,
-  isEnumTupleVariantTypeNode,
+  isNode,
   structFieldTypeNode,
   structTypeNode,
 } from '../nodes';
@@ -40,10 +39,10 @@ export function renameEnumNode(
 }
 
 function renameEnumVariant(variant: EnumVariantTypeNode, newName: string) {
-  if (isEnumStructVariantTypeNode(variant)) {
+  if (isNode(variant, 'enumStructVariantTypeNode')) {
     return enumStructVariantTypeNode(newName, variant.struct);
   }
-  if (isEnumTupleVariantTypeNode(variant)) {
+  if (isNode(variant, 'enumTupleVariantTypeNode')) {
     return enumTupleVariantTypeNode(newName, variant.tuple);
   }
   return enumEmptyVariantTypeNode(newName);

@@ -1,10 +1,8 @@
 import {
   ArrayTypeNode,
   REGISTERED_TYPE_NODE_KEYS,
-  isFixedSizeNode,
   isInteger,
-  isPrefixedSizeNode,
-  isRemainderSizeNode,
+  isNode,
   isScalarEnum,
   isUnsignedInteger,
   structFieldTypeNode,
@@ -506,13 +504,13 @@ export function getTypeManifestVisitor() {
           const options: string[] = [];
 
           // Size option.
-          if (isPrefixedSizeNode(bytesType.size)) {
+          if (isNode(bytesType.size, 'prefixedSizeNode')) {
             const prefix = visit(bytesType.size.prefix, self);
             strictImports.mergeWith(prefix.strictImports);
             looseImports.mergeWith(prefix.looseImports);
             serializerImports.mergeWith(prefix.serializerImports);
             options.push(`size: ${prefix.serializer}`);
-          } else if (isFixedSizeNode(bytesType.size)) {
+          } else if (isNode(bytesType.size, 'fixedSizeNode')) {
             options.push(`size: ${bytesType.size.size}`);
           }
 
@@ -651,9 +649,9 @@ export function getTypeManifestVisitor() {
           }
 
           // Size option.
-          if (isRemainderSizeNode(stringType.size)) {
+          if (isNode(stringType.size, 'remainderSizeNode')) {
             options.push(`size: 'variable'`);
-          } else if (isFixedSizeNode(stringType.size)) {
+          } else if (isNode(stringType.size, 'fixedSizeNode')) {
             options.push(`size: ${stringType.size.size}`);
           } else if (
             stringType.size.prefix.format !== 'u32' ||
@@ -718,8 +716,8 @@ function getArrayLikeSizeOption(
   >,
   self: Visitor<JavaScriptTypeManifest, 'numberTypeNode'>
 ): string | null {
-  if (isFixedSizeNode(size)) return `size: ${size.size}`;
-  if (isRemainderSizeNode(size)) return `size: 'remainder'`;
+  if (isNode(size, 'fixedSizeNode')) return `size: ${size.size}`;
+  if (isNode(size, 'remainderSizeNode')) return `size: 'remainder'`;
 
   const prefixManifest = visit(size.prefix, self);
   if (prefixManifest.serializer === 'u32()') return null;

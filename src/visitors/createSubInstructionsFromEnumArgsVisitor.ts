@@ -2,15 +2,11 @@ import {
   DefinedTypeNode,
   EnumTypeNode,
   InstructionNode,
-  assertEnumTypeNode,
-  assertInstructionNode,
+  assertIsNode,
   instructionDataArgsNode,
   instructionExtraArgsNode,
   instructionNode,
-  isEnumStructVariantTypeNode,
-  isEnumTupleVariantTypeNode,
-  isEnumTypeNode,
-  isLinkTypeNode,
+  isNode,
   numberTypeNode,
   numberValueNode,
   structFieldTypeNode,
@@ -37,7 +33,7 @@ export function createSubInstructionsFromEnumArgsVisitor(
         return {
           select: `${selectorStack.join('.')}.[instructionNode]${name}`,
           transform: (node) => {
-            assertInstructionNode(node);
+            assertIsNode(node, 'instructionNode');
 
             const argFields = node.dataArgs.struct.fields;
             const argName = mainCase(argNameInput);
@@ -52,15 +48,15 @@ export function createSubInstructionsFromEnumArgsVisitor(
             }
 
             let argType: EnumTypeNode;
-            if (isEnumTypeNode(argField.child)) {
+            if (isNode(argField.child, 'enumTypeNode')) {
               argType = argField.child;
             } else if (
-              isLinkTypeNode(argField.child) &&
+              isNode(argField.child, 'linkTypeNode') &&
               definedTypesMap.has(argField.child.name)
             ) {
               const linkedType =
                 definedTypesMap.get(argField.child.name)?.data ?? null;
-              assertEnumTypeNode(linkedType);
+              assertIsNode(linkedType, 'enumTypeNode');
               argType = linkedType;
             } else {
               logWarn(
@@ -84,14 +80,14 @@ export function createSubInstructionsFromEnumArgsVisitor(
                     },
                   })
                 );
-                if (isEnumStructVariantTypeNode(variant)) {
+                if (isNode(variant, 'enumStructVariantTypeNode')) {
                   subFields.push(
                     structFieldTypeNode({
                       ...argField,
                       child: variant.struct,
                     })
                   );
-                } else if (isEnumTupleVariantTypeNode(variant)) {
+                } else if (isNode(variant, 'enumTupleVariantTypeNode')) {
                   subFields.push(
                     structFieldTypeNode({
                       ...argField,

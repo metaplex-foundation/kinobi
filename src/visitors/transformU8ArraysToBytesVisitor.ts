@@ -1,11 +1,11 @@
 import {
   ArrayTypeNode,
+  TYPE_NODES,
   arrayTypeNode,
-  assertTypeNode,
+  assertIsNode,
   bytesTypeNode,
   fixedSizeNode,
-  isFixedSizeNode,
-  isNumberTypeNode,
+  isNode,
 } from '../nodes';
 import { pipe } from '../shared';
 import { extendVisitor } from './extendVisitor';
@@ -16,7 +16,7 @@ export function transformU8ArraysToBytesVisitor(
   sizes: number[] | '*' = [32, 64]
 ) {
   const hasRequiredSize = (size: ArrayTypeNode['size']): boolean => {
-    if (!isFixedSizeNode(size)) return false;
+    if (!isNode(size, 'fixedSizeNode')) return false;
     return sizes === '*' || sizes.includes(size.size);
   };
 
@@ -24,12 +24,12 @@ export function transformU8ArraysToBytesVisitor(
     extendVisitor(v, {
       visitArrayType(node, { self }) {
         const child = visit(node.child, self);
-        assertTypeNode(child);
+        assertIsNode(child, TYPE_NODES);
 
         if (
-          isNumberTypeNode(child) &&
+          isNode(child, 'numberTypeNode') &&
           child.format === 'u8' &&
-          isFixedSizeNode(node.size) &&
+          isNode(node.size, 'fixedSizeNode') &&
           hasRequiredSize(node.size)
         ) {
           return bytesTypeNode(fixedSizeNode(node.size.size));

@@ -1,5 +1,4 @@
 import type { IdlTypeArray, IdlTypeVec } from '../../idl';
-import type { Node } from '../Node';
 import {
   SizeNode,
   fixedSizeNode,
@@ -44,16 +43,4 @@ export function arrayTypeNodeFromIdl(
   return arrayTypeNode(child, {
     size: prefixedSizeNode(numberTypeNode(idl.size)),
   });
-}
-
-export function isArrayTypeNode(node: Node | null): node is ArrayTypeNode {
-  return !!node && node.kind === 'arrayTypeNode';
-}
-
-export function assertArrayTypeNode(
-  node: Node | null
-): asserts node is ArrayTypeNode {
-  if (!isArrayTypeNode(node)) {
-    throw new Error(`Expected arrayTypeNode, got ${node?.kind ?? 'null'}.`);
-  }
 }

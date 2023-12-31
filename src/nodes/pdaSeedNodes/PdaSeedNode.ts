@@ -1,7 +1,8 @@
-import { Node } from '../Node';
 import type { ConstantPdaSeedNode } from './ConstantPdaSeedNode';
 import type { ProgramIdPdaSeedNode } from './ProgramIdPdaSeedNode';
 import type { VariablePdaSeedNode } from './VariablePdaSeedNode';
+
+// Node Group Registration.
 
 export const REGISTERED_PDA_SEED_NODES = {
   constantPdaSeedNode: {} as ConstantPdaSeedNode,
@@ -15,18 +16,8 @@ export const REGISTERED_PDA_SEED_NODE_KEYS = Object.keys(
 
 export type RegisteredPdaSeedNodes = typeof REGISTERED_PDA_SEED_NODES;
 
+// Node Group Helpers.
+
 export type PdaSeedNode = RegisteredPdaSeedNodes[keyof RegisteredPdaSeedNodes];
 
-export function isPdaSeedNode(node: Node | null): node is PdaSeedNode {
-  return (
-    !!node && (REGISTERED_PDA_SEED_NODE_KEYS as string[]).includes(node.kind)
-  );
-}
-
-export function assertPdaSeedNode(
-  node: Node | null
-): asserts node is PdaSeedNode {
-  if (!isPdaSeedNode(node)) {
-    throw new Error(`Expected typeNode, got ${node?.kind ?? 'null'}.`);
-  }
-}
+export const PDA_SEED_NODES = REGISTERED_PDA_SEED_NODE_KEYS;

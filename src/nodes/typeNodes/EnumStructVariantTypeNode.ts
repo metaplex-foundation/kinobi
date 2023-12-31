@@ -1,6 +1,5 @@
 import type { IdlTypeEnumField, IdlTypeEnumVariant } from '../../idl';
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../../shared';
-import type { Node } from '../Node';
 import { StructTypeNode, structTypeNodeFromIdl } from './StructTypeNode';
 
 export type EnumStructVariantTypeNode = {
@@ -32,20 +31,4 @@ export function enumStructVariantTypeNodeFromIdl(
       fields: idl.fields as IdlTypeEnumField[],
     })
   );
-}
-
-export function isEnumStructVariantTypeNode(
-  node: Node | null
-): node is EnumStructVariantTypeNode {
-  return !!node && node.kind === 'enumStructVariantTypeNode';
-}
-
-export function assertEnumStructVariantTypeNode(
-  node: Node | null
-): asserts node is EnumStructVariantTypeNode {
-  if (!isEnumStructVariantTypeNode(node)) {
-    throw new Error(
-      `Expected enumStructVariantTypeNode, got ${node?.kind ?? 'null'}.`
-    );
-  }
 }

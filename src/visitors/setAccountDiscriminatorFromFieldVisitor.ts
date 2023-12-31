@@ -3,7 +3,7 @@ import {
   ValueNode,
   accountDataNode,
   accountNode,
-  assertAccountNode,
+  assertIsNode,
   structFieldTypeNode,
   structTypeNode,
 } from '../nodes';
@@ -26,7 +26,7 @@ export function setAccountDiscriminatorFromFieldVisitor(
         return {
           select: `${stack.join('.')}.[accountNode]${name}`,
           transform: (node) => {
-            assertAccountNode(node);
+            assertIsNode(node, 'accountNode');
 
             const fieldIndex = node.data.struct.fields.findIndex(
               (f) => f.name === field

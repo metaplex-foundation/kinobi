@@ -1,4 +1,3 @@
-import type { Node } from '../Node';
 import { NumberTypeNode } from './NumberTypeNode';
 
 export type AmountTypeNode = {
@@ -14,16 +13,4 @@ export function amountTypeNode(
   decimals: number
 ): AmountTypeNode {
   return { kind: 'amountTypeNode', number, identifier, decimals };
-}
-
-export function isAmountTypeNode(node: Node | null): node is AmountTypeNode {
-  return !!node && node.kind === 'amountTypeNode';
-}
-
-export function assertAmountTypeNode(
-  node: Node | null
-): asserts node is AmountTypeNode {
-  if (!isAmountTypeNode(node)) {
-    throw new Error(`Expected amountTypeNode, got ${node?.kind ?? 'null'}.`);
-  }
 }

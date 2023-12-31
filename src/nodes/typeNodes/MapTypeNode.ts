@@ -1,5 +1,4 @@
 import type { IdlTypeMap } from '../../idl';
-import type { Node } from '../Node';
 import {
   SizeNode,
   fixedSizeNode,
@@ -48,16 +47,4 @@ export function mapTypeNodeFromIdl(idl: IdlTypeMap): MapTypeNode {
     size,
     idlMap: 'hashMap' in idl ? 'hashMap' : 'bTreeMap',
   });
-}
-
-export function isMapTypeNode(node: Node | null): node is MapTypeNode {
-  return !!node && node.kind === 'mapTypeNode';
-}
-
-export function assertMapTypeNode(
-  node: Node | null
-): asserts node is MapTypeNode {
-  if (!isMapTypeNode(node)) {
-    throw new Error(`Expected mapTypeNode, got ${node?.kind ?? 'null'}.`);
-  }
 }

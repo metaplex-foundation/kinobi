@@ -5,7 +5,6 @@ import {
   PartialExcept,
   mainCase,
 } from '../shared';
-import type { Node } from './Node';
 
 export type InstructionAccountNode = {
   readonly kind: 'instructionAccountNode';
@@ -50,20 +49,4 @@ export function instructionAccountNodeFromIdl(
     isOptional,
     docs: idl.docs ?? desc ?? [],
   });
-}
-
-export function isInstructionAccountNode(
-  node: Node | null
-): node is InstructionAccountNode {
-  return !!node && node.kind === 'instructionAccountNode';
-}
-
-export function assertInstructionAccountNode(
-  node: Node | null
-): asserts node is InstructionAccountNode {
-  if (!isInstructionAccountNode(node)) {
-    throw new Error(
-      `Expected instructionAccountNode, got ${node?.kind ?? 'null'}.`
-    );
-  }
 }

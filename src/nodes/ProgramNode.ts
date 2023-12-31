@@ -4,7 +4,6 @@ import { AccountNode, accountNodeFromIdl } from './AccountNode';
 import { DefinedTypeNode, definedTypeNodeFromIdl } from './DefinedTypeNode';
 import { ErrorNode, errorNodeFromIdl } from './ErrorNode';
 import { InstructionNode, instructionNodeFromIdl } from './InstructionNode';
-import type { Node } from './Node';
 
 export type ProgramNode = {
   readonly kind: 'programNode';
@@ -73,16 +72,4 @@ export function programNodeFromIdl(idl: Partial<Idl>): ProgramNode {
     version: idl.version ?? '',
     origin,
   });
-}
-
-export function isProgramNode(node: Node | null): node is ProgramNode {
-  return !!node && node.kind === 'programNode';
-}
-
-export function assertProgramNode(
-  node: Node | null
-): asserts node is ProgramNode {
-  if (!isProgramNode(node)) {
-    throw new Error(`Expected programNode, got ${node?.kind ?? 'null'}.`);
-  }
 }

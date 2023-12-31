@@ -1,4 +1,4 @@
-import { Node, ProgramNode, isProgramNode } from '../nodes';
+import { Node, ProgramNode, isNodeFilter } from '../nodes';
 import { mainCase, titleCase } from './utils';
 
 export class NodeStack {
@@ -21,7 +21,7 @@ export class NodeStack {
   }
 
   public getProgram(): ProgramNode | undefined {
-    return this.stack.find(isProgramNode);
+    return this.stack.find(isNodeFilter('programNode'));
   }
 
   public all(): Node[] {

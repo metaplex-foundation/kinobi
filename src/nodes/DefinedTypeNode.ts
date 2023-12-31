@@ -1,6 +1,5 @@
 import type { IdlDefinedType } from '../idl';
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
-import type { Node } from './Node';
 import { TypeNode, createTypeNodeFromIdl } from './typeNodes/TypeNode';
 
 export type DefinedTypeNode = {
@@ -41,16 +40,4 @@ export function definedTypeNodeFromIdl(
   const idlType = idl.type ?? { kind: 'struct', fields: [] };
   const data = createTypeNodeFromIdl(idlType);
   return definedTypeNode({ name, data, idlName: name, docs: idl.docs });
-}
-
-export function isDefinedTypeNode(node: Node | null): node is DefinedTypeNode {
-  return !!node && node.kind === 'definedTypeNode';
-}
-
-export function assertDefinedTypeNode(
-  node: Node | null
-): asserts node is DefinedTypeNode {
-  if (!isDefinedTypeNode(node)) {
-    throw new Error(`Expected definedTypeNode, got ${node?.kind ?? 'null'}.`);
-  }
 }

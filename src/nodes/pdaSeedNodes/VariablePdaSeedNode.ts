@@ -1,5 +1,4 @@
 import { MainCaseString, mainCase } from '../../shared';
-import { Node } from '../Node';
 import { TypeNode } from '../typeNodes';
 
 export type VariablePdaSeedNode = {
@@ -20,20 +19,4 @@ export function variablePdaSeedNode(
     type,
     docs: Array.isArray(docs) ? docs : [docs],
   };
-}
-
-export function isVariablePdaSeedNode(
-  node: Node | null
-): node is VariablePdaSeedNode {
-  return !!node && node.kind === 'variablePdaSeedNode';
-}
-
-export function assertVariablePdaSeedNode(
-  node: Node | null
-): asserts node is VariablePdaSeedNode {
-  if (!isVariablePdaSeedNode(node)) {
-    throw new Error(
-      `Expected variablePdaSeedNode, got ${node?.kind ?? 'null'}.`
-    );
-  }
 }

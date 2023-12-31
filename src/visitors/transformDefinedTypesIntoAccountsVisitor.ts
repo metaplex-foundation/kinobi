@@ -1,7 +1,7 @@
 import {
   accountDataNode,
   accountNode,
-  assertStructTypeNode,
+  assertIsNode,
   programNode,
 } from '../nodes';
 import { pipe } from '../shared';
@@ -23,7 +23,7 @@ export function transformDefinedTypesIntoAccountsVisitor(
         );
 
         const newAccounts = typesToExtract.map((node) => {
-          assertStructTypeNode(node.data);
+          assertIsNode(node.data, 'structTypeNode');
           return accountNode({
             ...node,
             data: accountDataNode({

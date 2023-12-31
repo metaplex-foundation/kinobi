@@ -1,4 +1,4 @@
-import { Node, RootNode, assertRootNode } from '../nodes';
+import { Node, RootNode, assertIsNode } from '../nodes';
 import { deduplicateIdenticalDefinedTypesVisitor } from './deduplicateIdenticalDefinedTypesVisitor';
 import { flattenInstructionArgsStructVisitor } from './flattenInstructionArgsStructVisitor';
 import { setAnchorDiscriminatorsVisitor } from './setAnchorDiscriminatorsVisitor';
@@ -17,7 +17,7 @@ export function defaultVisitor() {
     let root: RootNode = currentRoot;
     const updateRoot = (visitor: Visitor<Node | null, 'rootNode'>) => {
       const newRoot = visit(root, visitor);
-      assertRootNode(newRoot);
+      assertIsNode(newRoot, 'rootNode');
       root = newRoot;
     };
 

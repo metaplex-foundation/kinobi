@@ -1,6 +1,5 @@
 import type { IdlTypeStructField } from '../../idl';
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../../shared';
-import type { Node } from '../Node';
 import { ValueNode } from '../valueNodes';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
@@ -46,20 +45,4 @@ export function structFieldTypeNodeFromIdl(
     docs: idl.docs ?? [],
     defaultsTo: null,
   });
-}
-
-export function isStructFieldTypeNode(
-  node: Node | null
-): node is StructFieldTypeNode {
-  return !!node && node.kind === 'structFieldTypeNode';
-}
-
-export function assertStructFieldTypeNode(
-  node: Node | null
-): asserts node is StructFieldTypeNode {
-  if (!isStructFieldTypeNode(node)) {
-    throw new Error(
-      `Expected structFieldTypeNode, got ${node?.kind ?? 'null'}.`
-    );
-  }
 }

@@ -1,4 +1,4 @@
-import { DefinedTypeNode, assertLinkTypeNode } from '../nodes';
+import { DefinedTypeNode, assertIsNode } from '../nodes';
 import { pipe } from '../shared';
 import {
   BottomUpNodeTransformerWithSelector,
@@ -16,7 +16,7 @@ export function unwrapTypeDefinedLinksVisitor(definedLinksType: string[]) {
       return {
         select: `${stack.join('.')}.[linkTypeNode]${name}`,
         transform: (node) => {
-          assertLinkTypeNode(node);
+          assertIsNode(node, 'linkTypeNode');
           if (node.importFrom !== 'generated') return node;
           const definedType = availableDefinedTypes.get(node.name);
           if (definedType === undefined) {

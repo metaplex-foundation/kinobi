@@ -1,5 +1,4 @@
 import { ImportFrom, MainCaseString, mainCase } from '../../shared';
-import type { Node } from '../Node';
 
 export type LinkTypeNode = {
   readonly kind: 'linkTypeNode';
@@ -21,16 +20,4 @@ export function linkTypeNode(
     importFrom: options.importFrom ?? 'generated',
     size: options.size,
   };
-}
-
-export function isLinkTypeNode(node: Node | null): node is LinkTypeNode {
-  return !!node && node.kind === 'linkTypeNode';
-}
-
-export function assertLinkTypeNode(
-  node: Node | null
-): asserts node is LinkTypeNode {
-  if (!isLinkTypeNode(node)) {
-    throw new Error(`Expected linkTypeNode, got ${node?.kind ?? 'null'}.`);
-  }
 }

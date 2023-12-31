@@ -1,4 +1,3 @@
-import { Node } from '../Node';
 import { remainderSizeNode } from '../sizeNodes';
 import { TypeNode, stringTypeNode } from '../typeNodes';
 import { ValueNode, stringValueNode } from '../valueNodes';
@@ -24,20 +23,4 @@ export function constantPdaSeedNodeFromString(
     type: stringTypeNode({ size: remainderSizeNode() }),
     value: stringValueNode(value),
   };
-}
-
-export function isConstantPdaSeedNode(
-  node: Node | null
-): node is ConstantPdaSeedNode {
-  return !!node && node.kind === 'constantPdaSeedNode';
-}
-
-export function assertConstantPdaSeedNode(
-  node: Node | null
-): asserts node is ConstantPdaSeedNode {
-  if (!isConstantPdaSeedNode(node)) {
-    throw new Error(
-      `Expected constantPdaSeedNode, got ${node?.kind ?? 'null'}.`
-    );
-  }
 }

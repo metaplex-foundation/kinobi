@@ -1,5 +1,5 @@
 import {
-  assertRootNode,
+  assertIsNode,
   IdlInputs,
   Node,
   rootNode,
@@ -36,7 +36,7 @@ export function createFromRoot(
     },
     update(visitor: Visitor<Node | null>): void {
       const newRoot = visit(currentRoot, visitor);
-      assertRootNode(newRoot);
+      assertIsNode(newRoot, 'rootNode');
       currentRoot = newRoot;
     },
     clone(): Kinobi {

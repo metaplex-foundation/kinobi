@@ -1,11 +1,4 @@
-import {
-  DefinedTypeNode,
-  assertAccountNode,
-  assertDefinedTypeNode,
-  assertInstructionNode,
-  assertNodeFilter,
-  programNode,
-} from '../nodes';
+import { DefinedTypeNode, assertIsNodeFilter, programNode } from '../nodes';
 import { MainCaseString, mainCase, pipe } from '../shared';
 import { extendVisitor } from './extendVisitor';
 import { identityVisitor } from './identityVisitor';
@@ -35,14 +28,14 @@ export function unwrapDefinedTypesVisitor(typesToInline: string[] | '*' = '*') {
             ...program,
             accounts: program.accounts
               .map((account) => visit(account, self))
-              .filter(assertNodeFilter(assertAccountNode)),
+              .filter(assertIsNodeFilter('accountNode')),
             instructions: program.instructions
               .map((instruction) => visit(instruction, self))
-              .filter(assertNodeFilter(assertInstructionNode)),
+              .filter(assertIsNodeFilter('instructionNode')),
             definedTypes: program.definedTypes
               .filter((definedType) => !shouldInline(definedType.name))
               .map((type) => visit(type, self))
-              .filter(assertNodeFilter(assertDefinedTypeNode)),
+              .filter(assertIsNodeFilter('definedTypeNode')),
           });
         },
 

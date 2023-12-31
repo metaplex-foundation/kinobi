@@ -1,5 +1,4 @@
 import type { IdlTypeOption } from '../../idl';
-import type { Node } from '../Node';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
@@ -37,16 +36,4 @@ export function optionTypeNodeFromIdl(idl: IdlTypeOption): OptionTypeNode {
     fixed: idl.fixed !== undefined ? idl.fixed : defaultFixed,
     idlOption: 'option' in idl ? 'option' : 'coption',
   });
-}
-
-export function isOptionTypeNode(node: Node | null): node is OptionTypeNode {
-  return !!node && node.kind === 'optionTypeNode';
-}
-
-export function assertOptionTypeNode(
-  node: Node | null
-): asserts node is OptionTypeNode {
-  if (!isOptionTypeNode(node)) {
-    throw new Error(`Expected optionTypeNode, got ${node?.kind ?? 'null'}.`);
-  }
 }

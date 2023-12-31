@@ -2,8 +2,8 @@ import {
   AccountNode,
   ProgramNode,
   RegisteredTypeNodes,
-  isConstantPdaSeedNode,
-  isVariablePdaSeedNode,
+  isNode,
+  isNodeFilter,
 } from '../../../nodes';
 import { Visitor, visit } from '../../../visitors';
 import { ImportMap } from '../ImportMap';
@@ -26,7 +26,7 @@ export function getAccountPdaHelpersFragment(scope: {
   // Seeds.
   const imports = new ImportMap();
   const seeds = accountNode.seeds.map((seed) => {
-    if (isConstantPdaSeedNode(seed)) {
+    if (isNode(seed, 'constantPdaSeedNode')) {
       const seedManifest = visit(seed.type, typeManifestVisitor);
       imports.mergeWith(seedManifest.encoder);
       const seedValue = seed.value;
@@ -35,7 +35,7 @@ export function getAccountPdaHelpersFragment(scope: {
       imports.mergeWith(valueManifest.imports);
       return { ...seed, typeManifest: seedManifest };
     }
-    if (isVariablePdaSeedNode(seed)) {
+    if (isNode(seed, 'variablePdaSeedNode')) {
       const seedManifest = visit(seed.type, typeManifestVisitor);
       imports.mergeWith(seedManifest.looseType, seedManifest.encoder);
       return { ...seed, typeManifest: seedManifest };
@@ -44,7 +44,7 @@ export function getAccountPdaHelpersFragment(scope: {
     return seed;
   });
   const hasVariableSeeds =
-    accountNode.seeds.filter(isVariablePdaSeedNode).length > 0;
+    accountNode.seeds.filter(isNodeFilter('variablePdaSeedNode')).length > 0;
 
   return fragmentFromTemplate('accountPdaHelpers.njk', {
     accountType: nameApi.accountType(accountNode.name),

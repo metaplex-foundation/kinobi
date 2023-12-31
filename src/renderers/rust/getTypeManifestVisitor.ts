@@ -1,10 +1,7 @@
 import {
   REGISTERED_TYPE_NODE_KEYS,
   arrayTypeNode,
-  isEnumTypeNode,
-  isFixedSizeNode,
-  isPrefixedSizeNode,
-  isRemainderSizeNode,
+  isNode,
   isScalarEnum,
   numberTypeNode,
 } from '../../nodes';
@@ -98,7 +95,7 @@ export function getTypeManifestVisitor() {
             'PartialEq',
           ];
           if (
-            isEnumTypeNode(definedType.data) &&
+            isNode(definedType.data, 'enumTypeNode') &&
             isScalarEnum(definedType.data)
           ) {
             traits.push('PartialOrd', 'Hash');
@@ -121,7 +118,7 @@ export function getTypeManifestVisitor() {
         visitArrayType(arrayType, { self }) {
           const childManifest = visit(arrayType.child, self);
 
-          if (isFixedSizeNode(arrayType.size)) {
+          if (isNode(arrayType.size, 'fixedSizeNode')) {
             return {
               ...childManifest,
               type: `[${childManifest.type}; ${arrayType.size.size}]`,
@@ -129,7 +126,7 @@ export function getTypeManifestVisitor() {
           }
 
           if (
-            isPrefixedSizeNode(arrayType.size) &&
+            isNode(arrayType.size, 'prefixedSizeNode') &&
             arrayType.size.prefix.endian === 'le'
           ) {
             switch (arrayType.size.prefix.format) {
@@ -155,7 +152,7 @@ export function getTypeManifestVisitor() {
             }
           }
 
-          if (isRemainderSizeNode(arrayType.size)) {
+          if (isNode(arrayType.size, 'remainderSizeNode')) {
             childManifest.imports.add('kaigan::types::RemainderVec');
             return {
               ...childManifest,
@@ -361,7 +358,7 @@ export function getTypeManifestVisitor() {
             (structFieldType.child.kind === 'arrayTypeNode' ||
               structFieldType.child.kind === 'bytesTypeNode' ||
               structFieldType.child.kind === 'stringTypeNode') &&
-            isFixedSizeNode(structFieldType.child.size) &&
+            isNode(structFieldType.child.size, 'fixedSizeNode') &&
             structFieldType.child.size.size > 32
           ) {
             derive =
@@ -433,7 +430,7 @@ export function getTypeManifestVisitor() {
 
         visitStringType(stringType) {
           if (
-            isPrefixedSizeNode(stringType.size) &&
+            isNode(stringType.size, 'prefixedSizeNode') &&
             stringType.size.prefix.format === 'u32' &&
             stringType.size.prefix.endian === 'le'
           ) {
@@ -444,7 +441,7 @@ export function getTypeManifestVisitor() {
             };
           }
 
-          if (isFixedSizeNode(stringType.size)) {
+          if (isNode(stringType.size, 'fixedSizeNode')) {
             return {
               type: `[u8; ${stringType.size.size}]`,
               imports: new RustImportMap(),
@@ -452,7 +449,7 @@ export function getTypeManifestVisitor() {
             };
           }
 
-          if (isRemainderSizeNode(stringType.size)) {
+          if (isNode(stringType.size, 'remainderSizeNode')) {
             return {
               type: `&str`,
               imports: new RustImportMap(),

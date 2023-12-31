@@ -6,9 +6,9 @@ import {
   InstructionExtraArgsNode,
   InstructionNode,
   InstructionNodeInput,
+  TYPE_NODES,
   TypeNode,
-  assertInstructionNode,
-  assertTypeNode,
+  assertIsNode,
   getAllAccounts,
   instructionAccountNode,
   instructionDataArgsNode,
@@ -76,7 +76,7 @@ export function updateInstructionsVisitor(
       return {
         select: `${selectorStack.join('.')}.[instructionNode]${name}`,
         transform: (node, stack) => {
-          assertInstructionNode(node);
+          assertIsNode(node, 'instructionNode');
           if (typeof updates === 'function') {
             return updates(node, stack);
           }
@@ -204,7 +204,7 @@ function handleInstructionArgs(
     .filter(([argName]) => !usedArgs.has(argName))
     .map(([argName, argUpdate]) => {
       const child = argUpdate.type ?? null;
-      assertTypeNode(child);
+      assertIsNode(child, TYPE_NODES);
       return structFieldTypeNode({
         name: argUpdate.name ?? argName,
         child,

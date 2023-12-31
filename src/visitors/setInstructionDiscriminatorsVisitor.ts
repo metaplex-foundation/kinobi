@@ -1,7 +1,7 @@
 import {
   TypeNode,
   ValueNode,
-  assertInstructionNode,
+  assertIsNode,
   instructionDataArgsNode,
   instructionNode,
   numberTypeNode,
@@ -36,7 +36,7 @@ export function setInstructionDiscriminatorsVisitor(
         return {
           select: `${stack.join('.')}.[instructionNode]${name}`,
           transform: (node) => {
-            assertInstructionNode(node);
+            assertIsNode(node, 'instructionNode');
             const discriminatorField = structFieldTypeNode({
               name: discriminator.name ?? 'discriminator',
               child: discriminator.type ?? numberTypeNode('u8'),
