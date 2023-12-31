@@ -4,9 +4,11 @@ import { AccountNode, accountNodeFromIdl } from './AccountNode';
 import { DefinedTypeNode, definedTypeNodeFromIdl } from './DefinedTypeNode';
 import { ErrorNode, errorNodeFromIdl } from './ErrorNode';
 import { InstructionNode, instructionNodeFromIdl } from './InstructionNode';
+import { PdaNode } from './PdaNode';
 
 export type ProgramNode = {
   readonly kind: 'programNode';
+  readonly pdas: PdaNode[];
   readonly accounts: AccountNode[];
   readonly instructions: InstructionNode[];
   readonly definedTypes: DefinedTypeNode[];
@@ -38,6 +40,7 @@ export type ProgramNodeInput = Omit<
 export function programNode(input: ProgramNodeInput): ProgramNode {
   return {
     kind: 'programNode',
+    pdas: input.pdas ?? [],
     accounts: input.accounts,
     instructions: input.instructions,
     definedTypes: input.definedTypes,
