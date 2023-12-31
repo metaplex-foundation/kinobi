@@ -1,17 +1,10 @@
+import { ProgramNodeInput, assertIsNode, programNode } from '../nodes';
 import {
-  ProgramNode,
-  ProgramNodeInput,
-  assertIsNode,
-  programNode,
-} from '../nodes';
-import {
-  BottomUpNodeTransformer,
   BottomUpNodeTransformerWithSelector,
   bottomUpTransformerVisitor,
 } from './bottomUpTransformerVisitor';
 
 export type ProgramUpdates =
-  | BottomUpNodeTransformer<ProgramNode>
   | { delete: true }
   | Partial<
       Omit<
@@ -25,14 +18,9 @@ export function updateProgramsVisitor(map: Record<string, ProgramUpdates>) {
     Object.entries(map).map(
       ([name, updates]): BottomUpNodeTransformerWithSelector => ({
         select: `[programNode]${name}`,
-        transform: (node, stack) => {
+        transform: (node) => {
           assertIsNode(node, 'programNode');
-          if (typeof updates === 'function') {
-            return updates(node, stack);
-          }
-          if ('delete' in updates) {
-            return null;
-          }
+          if ('delete' in updates) return null;
           return programNode({ ...node, ...updates });
         },
       })

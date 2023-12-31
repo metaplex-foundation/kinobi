@@ -1,5 +1,4 @@
 import {
-  DefinedTypeNode,
   DefinedTypeNodeInput,
   assertIsNode,
   definedTypeLinkNode,
@@ -8,13 +7,11 @@ import {
 } from '../nodes';
 import { mainCase, renameEnumNode, renameStructNode } from '../shared';
 import {
-  BottomUpNodeTransformer,
   BottomUpNodeTransformerWithSelector,
   bottomUpTransformerVisitor,
 } from './bottomUpTransformerVisitor';
 
 export type DefinedTypeUpdates =
-  | BottomUpNodeTransformer<DefinedTypeNode>
   | { delete: true }
   | (Partial<Omit<DefinedTypeNodeInput, 'data'>> & {
       data?: Record<string, string>;
@@ -36,11 +33,8 @@ export function updateDefinedTypesVisitor(
         const transforms: BottomUpNodeTransformerWithSelector[] = [
           {
             select: `${selectorStack.join('.')}.[definedTypeNode]${name}`,
-            transform: (node, stack) => {
+            transform: (node) => {
               assertIsNode(node, 'definedTypeNode');
-              if (typeof updates === 'function') {
-                return updates(node, stack);
-              }
               if ('delete' in updates) {
                 return null;
               }

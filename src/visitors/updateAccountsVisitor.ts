@@ -1,5 +1,4 @@
 import {
-  AccountNode,
   AccountNodeInput,
   accountDataNode,
   accountNode,
@@ -7,13 +6,11 @@ import {
 } from '../nodes';
 import { mainCase, renameStructNode } from '../shared';
 import {
-  BottomUpNodeTransformer,
   BottomUpNodeTransformerWithSelector,
   bottomUpTransformerVisitor,
 } from './bottomUpTransformerVisitor';
 
 export type AccountUpdates =
-  | BottomUpNodeTransformer<AccountNode>
   | { delete: true }
   | (Partial<Omit<AccountNodeInput, 'data'>> & {
       data?: Record<string, string>;
@@ -27,11 +24,8 @@ export function updateAccountsVisitor(map: Record<string, AccountUpdates>) {
         const name = selectorStack.pop();
         return {
           select: `${selectorStack.join('.')}.[accountNode]${name}`,
-          transform: (node, stack) => {
+          transform: (node) => {
             assertIsNode(node, 'accountNode');
-            if (typeof updates === 'function') {
-              return updates(node, stack);
-            }
             if ('delete' in updates) {
               return null;
             }

@@ -26,14 +26,12 @@ import {
   pipe,
 } from '../shared';
 import {
-  BottomUpNodeTransformer,
   BottomUpNodeTransformerWithSelector,
   bottomUpTransformerVisitor,
 } from './bottomUpTransformerVisitor';
 import { tapVisitor } from './tapVisitor';
 
 export type InstructionUpdates =
-  | BottomUpNodeTransformer<InstructionNode>
   | { delete: true }
   | (InstructionMetadataUpdates & {
       accounts?: InstructionAccountUpdates;
@@ -75,11 +73,8 @@ export function updateInstructionsVisitor(
       const name = selectorStack.pop();
       return {
         select: `${selectorStack.join('.')}.[instructionNode]${name}`,
-        transform: (node, stack) => {
+        transform: (node) => {
           assertIsNode(node, 'instructionNode');
-          if (typeof updates === 'function') {
-            return updates(node, stack);
-          }
           if ('delete' in updates) {
             return null;
           }
