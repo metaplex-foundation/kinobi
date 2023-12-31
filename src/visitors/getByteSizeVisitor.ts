@@ -2,7 +2,7 @@ import {
   DefinedTypeNode,
   REGISTERED_TYPE_NODE_KEYS,
   RegisteredTypeNodes,
-  isFixedSizeNode,
+  isNode,
   isScalarEnum,
 } from '../nodes';
 import { mergeVisitor } from './mergeVisitor';
@@ -69,7 +69,7 @@ export function getByteSizeVisitor(
     },
 
     visitArrayType(node) {
-      if (!isFixedSizeNode(node.size)) return null;
+      if (!isNode(node.size, 'fixedSizeNode')) return null;
       const fixedSize = node.size.size;
       const childSize = visit(node.child, this);
       const arraySize = childSize !== null ? childSize * fixedSize : null;
@@ -122,7 +122,7 @@ export function getByteSizeVisitor(
     },
 
     visitBytesType(node) {
-      if (!isFixedSizeNode(node.size)) return null;
+      if (!isNode(node.size, 'fixedSizeNode')) return null;
       return node.size.size;
     },
 
@@ -135,7 +135,7 @@ export function getByteSizeVisitor(
     },
 
     visitStringType(node) {
-      if (!isFixedSizeNode(node.size)) return null;
+      if (!isNode(node.size, 'fixedSizeNode')) return null;
       return node.size.size;
     },
   };

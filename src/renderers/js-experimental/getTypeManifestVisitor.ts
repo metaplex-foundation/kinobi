@@ -1,9 +1,7 @@
 import {
   REGISTERED_TYPE_NODE_KEYS,
   SizeNode,
-  isFixedSizeNode,
-  isPrefixedSizeNode,
-  isRemainderSizeNode,
+  isNode,
   isScalarEnum,
   structFieldTypeNode,
   structTypeNode,
@@ -558,13 +556,13 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           const decoderOptions: string[] = [];
 
           // Size option.
-          if (isPrefixedSizeNode(bytesType.size)) {
+          if (isNode(bytesType.size, 'prefixedSizeNode')) {
             const prefix = visit(bytesType.size.prefix, self);
             encoderImports.mergeWith(prefix.encoder);
             decoderImports.mergeWith(prefix.decoder);
             encoderOptions.push(`size: ${prefix.encoder.render}`);
             decoderOptions.push(`size: ${prefix.decoder.render}`);
-          } else if (isFixedSizeNode(bytesType.size)) {
+          } else if (isNode(bytesType.size, 'fixedSizeNode')) {
             encoderOptions.push(`size: ${bytesType.size.size}`);
             decoderOptions.push(`size: ${bytesType.size.size}`);
           }
@@ -680,10 +678,10 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           }
 
           // Size option.
-          if (isRemainderSizeNode(stringType.size)) {
+          if (isNode(stringType.size, 'remainderSizeNode')) {
             encoderOptions.push(`size: 'variable'`);
             decoderOptions.push(`size: 'variable'`);
-          } else if (isFixedSizeNode(stringType.size)) {
+          } else if (isNode(stringType.size, 'fixedSizeNode')) {
             encoderOptions.push(`size: ${stringType.size.size}`);
             decoderOptions.push(`size: ${stringType.size.size}`);
           } else if (
@@ -734,13 +732,13 @@ function getArrayLikeSizeOption(
   encoder: Fragment;
   decoder: Fragment;
 } {
-  if (isFixedSizeNode(size)) {
+  if (isNode(size, 'fixedSizeNode')) {
     return {
       encoder: fragment(`size: ${size.size}`),
       decoder: fragment(`size: ${size.size}`),
     };
   }
-  if (isRemainderSizeNode(size)) {
+  if (isNode(size, 'remainderSizeNode')) {
     return {
       encoder: fragment(`size: 'remainder'`),
       decoder: fragment(`size: 'remainder'`),

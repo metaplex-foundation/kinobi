@@ -3,6 +3,7 @@ import {
   PDA_SEED_NODES,
   REGISTERED_NODES_KEYS,
   RegisteredNodes,
+  SIZE_NODES,
   accountDataNode,
   accountNode,
   amountTypeNode,
@@ -17,10 +18,10 @@ import {
   assertInstructionDataArgsNode,
   assertInstructionExtraArgsNode,
   assertInstructionNode,
+  assertIsNode,
   assertLinkTypeNode,
   assertNumberTypeNode,
   assertProgramNode,
-  assertSizeNode,
   assertStructFieldTypeNode,
   assertStructTypeNode,
   assertTupleTypeNode,
@@ -188,7 +189,7 @@ export function identityVisitor<
     visitor.visitArrayType = function visitArrayType(node) {
       const size = visit(this)(node.size);
       if (size === null) return null;
-      assertSizeNode(size);
+      assertIsNode(size, SIZE_NODES);
       const child = visit(this)(node.child);
       if (child === null) return null;
       assertTypeNode(child);
@@ -233,7 +234,7 @@ export function identityVisitor<
     visitor.visitMapType = function visitMapType(node) {
       const size = visit(this)(node.size);
       if (size === null) return null;
-      assertSizeNode(size);
+      assertIsNode(size, SIZE_NODES);
       const key = visit(this)(node.key);
       if (key === null) return null;
       assertTypeNode(key);
@@ -269,7 +270,7 @@ export function identityVisitor<
     visitor.visitSetType = function visitSetType(node) {
       const size = visit(this)(node.size);
       if (size === null) return null;
-      assertSizeNode(size);
+      assertIsNode(size, SIZE_NODES);
       const child = visit(this)(node.child);
       if (child === null) return null;
       assertTypeNode(child);
@@ -310,7 +311,7 @@ export function identityVisitor<
     visitor.visitStringType = function visitStringType(node) {
       const size = visit(this)(node.size);
       if (size === null) return null;
-      assertSizeNode(size);
+      assertIsNode(size, SIZE_NODES);
       return stringTypeNode({ ...node, size });
     };
   }
@@ -319,7 +320,7 @@ export function identityVisitor<
     visitor.visitBytesType = function visitBytesType(node) {
       const size = visit(this)(node.size);
       if (size === null) return null;
-      assertSizeNode(size);
+      assertIsNode(size, SIZE_NODES);
       return bytesTypeNode(size);
     };
   }
