@@ -1,5 +1,5 @@
 import { NodeSelector } from '../shared';
-import { DefinedTypeNode, ProgramNode, assertRootNode } from '../nodes';
+import { DefinedTypeNode, ProgramNode, assertIsNode } from '../nodes';
 import { getUniqueHashStringVisitor } from './getUniqueHashStringVisitor';
 import { rootNodeVisitor } from './singleNodeVisitor';
 import { visit } from './visitor';
@@ -61,7 +61,7 @@ export function deduplicateIdenticalDefinedTypesVisitor() {
     // Delete the identified nodes if any.
     if (deleteSelectors.length > 0) {
       const newRoot = visit(root, deleteNodesVisitor(deleteSelectors));
-      assertRootNode(newRoot);
+      assertIsNode(newRoot, 'rootNode');
       return newRoot;
     }
 

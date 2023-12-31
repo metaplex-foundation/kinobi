@@ -1,9 +1,4 @@
-import {
-  ErrorNode,
-  ErrorNodeInput,
-  assertErrorNode,
-  errorNode,
-} from '../nodes';
+import { ErrorNode, ErrorNodeInput, assertIsNode, errorNode } from '../nodes';
 import {
   BottomUpNodeTransformer,
   BottomUpNodeTransformerWithSelector,
@@ -21,7 +16,7 @@ export function updateErrorsVisitor(map: Record<string, ErrorUpdates>) {
       ([name, updates]): BottomUpNodeTransformerWithSelector => ({
         select: `[errorNode]${name}`,
         transform: (node, stack) => {
-          assertErrorNode(node);
+          assertIsNode(node, 'errorNode');
           if (typeof updates === 'function') {
             return updates(node, stack);
           }

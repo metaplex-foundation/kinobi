@@ -20,8 +20,8 @@ import {
   InstructionExtraArgsNode,
   instructionExtraArgsNode,
 } from './InstructionExtraArgsNode';
-import type { Node } from './Node';
-import { ProgramNode, isProgramNode } from './ProgramNode';
+import { isNode } from './Node';
+import { ProgramNode } from './ProgramNode';
 import { RootNode } from './RootNode';
 import { structFieldTypeNode } from './typeNodes/StructFieldTypeNode';
 import {
@@ -128,7 +128,7 @@ export function getAllInstructionsWithSubs(
   node: ProgramNode | RootNode | InstructionNode,
   leavesOnly = false
 ): InstructionNode[] {
-  if (isInstructionNode(node)) {
+  if (isNode(node, 'instructionNode')) {
     if (node.subInstructions.length === 0) return [node];
     const subInstructions = node.subInstructions.flatMap((sub) =>
       getAllInstructionsWithSubs(sub, leavesOnly)
@@ -136,23 +136,11 @@ export function getAllInstructionsWithSubs(
     return leavesOnly ? subInstructions : [node, ...subInstructions];
   }
 
-  const instructions = isProgramNode(node)
+  const instructions = isNode(node, 'programNode')
     ? node.instructions
     : node.programs.flatMap((program) => program.instructions);
 
   return instructions.flatMap((instruction) =>
     getAllInstructionsWithSubs(instruction, leavesOnly)
   );
-}
-
-export function isInstructionNode(node: Node | null): node is InstructionNode {
-  return !!node && node.kind === 'instructionNode';
-}
-
-export function assertInstructionNode(
-  node: Node | null
-): asserts node is InstructionNode {
-  if (!isInstructionNode(node)) {
-    throw new Error(`Expected instructionNode, got ${node?.kind ?? 'null'}.`);
-  }
 }

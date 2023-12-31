@@ -2,7 +2,6 @@ import {
   DefinedTypeNode,
   EnumTupleVariantTypeNode,
   assertIsNode,
-  assertRootNode,
   enumStructVariantTypeNode,
   getAllDefinedTypes,
   isNode,
@@ -67,7 +66,7 @@ export function unwrapTupleEnumWithSingleStructVisitor(
         },
       ])
     );
-    assertRootNode(newRoot);
+    assertIsNode(newRoot, 'rootNode');
 
     const histogram = visit(newRoot, getDefinedTypeHistogramVisitor());
     const typesToUnwrap = typesToPotentiallyUnwrap.filter(
@@ -77,7 +76,7 @@ export function unwrapTupleEnumWithSingleStructVisitor(
     );
 
     newRoot = visit(newRoot, unwrapDefinedTypesVisitor(typesToUnwrap));
-    assertRootNode(newRoot);
+    assertIsNode(newRoot, 'rootNode');
 
     return newRoot;
   });

@@ -8,7 +8,6 @@ import {
   InstructionNodeInput,
   TYPE_NODES,
   TypeNode,
-  assertInstructionNode,
   assertIsNode,
   getAllAccounts,
   instructionAccountNode,
@@ -77,7 +76,7 @@ export function updateInstructionsVisitor(
       return {
         select: `${selectorStack.join('.')}.[instructionNode]${name}`,
         transform: (node, stack) => {
-          assertInstructionNode(node);
+          assertIsNode(node, 'instructionNode');
           if (typeof updates === 'function') {
             return updates(node, stack);
           }

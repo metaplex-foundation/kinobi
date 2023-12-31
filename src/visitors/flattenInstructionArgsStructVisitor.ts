@@ -1,5 +1,5 @@
 import {
-  assertInstructionNode,
+  assertIsNode,
   instructionDataArgsNode,
   instructionNode,
 } from '../nodes';
@@ -11,7 +11,7 @@ export function flattenInstructionArgsStructVisitor() {
     {
       select: '[instructionNode]',
       transform: (instruction) => {
-        assertInstructionNode(instruction);
+        assertIsNode(instruction, 'instructionNode');
         return instructionNode({
           ...instruction,
           dataArgs: instructionDataArgsNode({

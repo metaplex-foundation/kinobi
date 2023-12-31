@@ -1,4 +1,4 @@
-import { accountNode, assertAccountNode, isAccountNode } from '../nodes';
+import { accountNode, assertIsNode, isNode } from '../nodes';
 import { getByteSizeVisitor } from './getByteSizeVisitor';
 import { tapDefinedTypesVisitor } from './tapVisitor';
 import { topDownTransformerVisitor } from './topDownTransformerVisitor';
@@ -10,9 +10,10 @@ export function setFixedAccountSizesVisitor() {
   const visitor = topDownTransformerVisitor(
     [
       {
-        select: (node) => isAccountNode(node) && node.size === undefined,
+        select: (node) =>
+          isNode(node, 'accountNode') && node.size === undefined,
         transform: (node) => {
-          assertAccountNode(node);
+          assertIsNode(node, 'accountNode');
           const size = visit(node.data, byteSizeVisitor);
           if (size === null) return node;
           return accountNode({ ...node, size }) as typeof node;

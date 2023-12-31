@@ -1,6 +1,5 @@
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
 import { LinkTypeNode } from './typeNodes/LinkTypeNode';
-import type { Node } from './Node';
 import { StructTypeNode } from './typeNodes/StructTypeNode';
 
 export type InstructionExtraArgsNode = {
@@ -31,20 +30,4 @@ export function instructionExtraArgsNode(
     struct: input.struct,
     link: input.link,
   };
-}
-
-export function isInstructionExtraArgsNode(
-  node: Node | null
-): node is InstructionExtraArgsNode {
-  return !!node && node.kind === 'instructionExtraArgsNode';
-}
-
-export function assertInstructionExtraArgsNode(
-  node: Node | null
-): asserts node is InstructionExtraArgsNode {
-  if (!isInstructionExtraArgsNode(node)) {
-    throw new Error(
-      `Expected instructionExtraArgsNode, got ${node?.kind ?? 'null'}.`
-    );
-  }
 }

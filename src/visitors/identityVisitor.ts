@@ -12,9 +12,6 @@ import {
   amountTypeNode,
   arrayTypeNode,
   arrayValueNode,
-  assertAccountDataNode,
-  assertInstructionDataArgsNode,
-  assertInstructionExtraArgsNode,
   assertIsNode,
   booleanTypeNode,
   bytesTypeNode,
@@ -99,7 +96,7 @@ export function identityVisitor<
     visitor.visitAccount = function visitAccount(node) {
       const data = visit(this)(node.data);
       if (data === null) return null;
-      assertAccountDataNode(data);
+      assertIsNode(data, 'accountDataNode');
       const seeds = node.seeds
         .map((type) => visit(this)(type))
         .filter(removeNullAndAssertIsNodeFilter(PDA_SEED_NODES));
@@ -121,9 +118,9 @@ export function identityVisitor<
   if (castedNodeKeys.includes('instructionNode')) {
     visitor.visitInstruction = function visitInstruction(node) {
       const dataArgs = visit(this)(node.dataArgs);
-      assertInstructionDataArgsNode(dataArgs);
+      assertIsNode(dataArgs, 'instructionDataArgsNode');
       const extraArgs = visit(this)(node.extraArgs);
-      assertInstructionExtraArgsNode(extraArgs);
+      assertIsNode(extraArgs, 'instructionExtraArgsNode');
       return instructionNode({
         ...node,
         dataArgs,

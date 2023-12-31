@@ -1,7 +1,6 @@
 import {
   DefinedTypeNode,
   DefinedTypeNodeInput,
-  assertDefinedTypeNode,
   assertIsNode,
   definedTypeNode,
   isNode,
@@ -38,7 +37,7 @@ export function updateDefinedTypesVisitor(
           {
             select: `${selectorStack.join('.')}.[definedTypeNode]${name}`,
             transform: (node, stack) => {
-              assertDefinedTypeNode(node);
+              assertIsNode(node, 'definedTypeNode');
               if (typeof updates === 'function') {
                 return updates(node, stack);
               }

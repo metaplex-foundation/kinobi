@@ -1,7 +1,7 @@
 import {
   ProgramNode,
   ProgramNodeInput,
-  assertProgramNode,
+  assertIsNode,
   programNode,
 } from '../nodes';
 import {
@@ -26,7 +26,7 @@ export function updateProgramsVisitor(map: Record<string, ProgramUpdates>) {
       ([name, updates]): BottomUpNodeTransformerWithSelector => ({
         select: `[programNode]${name}`,
         transform: (node, stack) => {
-          assertProgramNode(node);
+          assertIsNode(node, 'programNode');
           if (typeof updates === 'function') {
             return updates(node, stack);
           }

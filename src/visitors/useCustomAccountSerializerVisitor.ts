@@ -1,8 +1,7 @@
 import {
   accountDataNode,
   accountNode,
-  assertAccountNode,
-  assertNodeFilter,
+  assertIsNodeFilter,
   definedTypeNode,
   linkTypeNode,
   programNode,
@@ -58,7 +57,7 @@ export function useCustomAccountSerializerVisitor(
             definedTypes: newDefinedTypes,
             accounts: program.accounts
               .map((account) => visit(account, self))
-              .filter(assertNodeFilter(assertAccountNode)),
+              .filter(assertIsNodeFilter('accountNode')),
           });
         },
 

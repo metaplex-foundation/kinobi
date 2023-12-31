@@ -7,7 +7,7 @@ import {
   mainCase,
 } from '../shared';
 import { AccountDataNode, accountDataNode } from './AccountDataNode';
-import { assertIsNode, type Node } from './Node';
+import { assertIsNode } from './Node';
 import {
   PdaSeedNode,
   constantPdaSeedNode,
@@ -100,16 +100,4 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
     size: idl.size,
     seeds,
   });
-}
-
-export function isAccountNode(node: Node | null): node is AccountNode {
-  return !!node && node.kind === 'accountNode';
-}
-
-export function assertAccountNode(
-  node: Node | null
-): asserts node is AccountNode {
-  if (!isAccountNode(node)) {
-    throw new Error(`Expected accountNode, got ${node?.kind ?? 'null'}.`);
-  }
 }

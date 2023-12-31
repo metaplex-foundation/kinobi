@@ -1,6 +1,5 @@
 import {
-  assertInstructionNode,
-  assertNodeFilter,
+  assertIsNodeFilter,
   definedTypeNode,
   instructionDataArgsNode,
   instructionNode,
@@ -58,7 +57,7 @@ export function useCustomInstructionSerializerVisitor(
             definedTypes: newDefinedTypes,
             instructions: program.instructions
               .map((instruction) => visit(instruction, self))
-              .filter(assertNodeFilter(assertInstructionNode)),
+              .filter(assertIsNodeFilter('instructionNode')),
           });
         },
 

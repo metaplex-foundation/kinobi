@@ -5,7 +5,6 @@ import {
   PartialExcept,
   mainCase,
 } from '../shared';
-import type { Node } from './Node';
 
 export type ErrorNode = {
   readonly kind: 'errorNode';
@@ -50,14 +49,4 @@ export function errorNodeFromIdl(idl: Partial<IdlError>): ErrorNode {
     message: msg,
     docs: idl.docs ?? [msg ? `${name}: ${msg}` : `${name}`],
   });
-}
-
-export function isErrorNode(node: Node | null): node is ErrorNode {
-  return !!node && node.kind === 'errorNode';
-}
-
-export function assertErrorNode(node: Node | null): asserts node is ErrorNode {
-  if (!isErrorNode(node)) {
-    throw new Error(`Expected errorNode, got ${node?.kind ?? 'null'}.`);
-  }
 }

@@ -3,7 +3,7 @@ import {
   AccountNodeInput,
   accountDataNode,
   accountNode,
-  assertAccountNode,
+  assertIsNode,
 } from '../nodes';
 import { mainCase, renameStructNode } from '../shared';
 import {
@@ -28,7 +28,7 @@ export function updateAccountsVisitor(map: Record<string, AccountUpdates>) {
         return {
           select: `${selectorStack.join('.')}.[accountNode]${name}`,
           transform: (node, stack) => {
-            assertAccountNode(node);
+            assertIsNode(node, 'accountNode');
             if (typeof updates === 'function') {
               return updates(node, stack);
             }

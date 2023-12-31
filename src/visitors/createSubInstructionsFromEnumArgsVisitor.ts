@@ -2,7 +2,6 @@ import {
   DefinedTypeNode,
   EnumTypeNode,
   InstructionNode,
-  assertInstructionNode,
   assertIsNode,
   instructionDataArgsNode,
   instructionExtraArgsNode,
@@ -34,7 +33,7 @@ export function createSubInstructionsFromEnumArgsVisitor(
         return {
           select: `${selectorStack.join('.')}.[instructionNode]${name}`,
           transform: (node) => {
-            assertInstructionNode(node);
+            assertIsNode(node, 'instructionNode');
 
             const argFields = node.dataArgs.struct.fields;
             const argName = mainCase(argNameInput);

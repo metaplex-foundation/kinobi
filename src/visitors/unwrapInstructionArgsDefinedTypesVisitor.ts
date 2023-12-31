@@ -1,4 +1,4 @@
-import { assertRootNode, getAllDefinedTypes, isNode } from '../nodes';
+import { assertIsNode, getAllDefinedTypes, isNode } from '../nodes';
 import { MainCaseString } from '../shared';
 import { getDefinedTypeHistogramVisitor } from './getDefinedTypeHistogramVisitor';
 import { rootNodeVisitor } from './singleNodeVisitor';
@@ -28,7 +28,7 @@ export function unwrapInstructionArgsDefinedTypesVisitor() {
     if (definedTypesToInline.length > 0) {
       const inlineVisitor = unwrapDefinedTypesVisitor(definedTypesToInline);
       const newRoot = visit(root, inlineVisitor);
-      assertRootNode(newRoot);
+      assertIsNode(newRoot, 'rootNode');
       return newRoot;
     }
 

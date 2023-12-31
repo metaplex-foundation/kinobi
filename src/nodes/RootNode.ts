@@ -4,7 +4,6 @@ import type { AccountNode } from './AccountNode';
 import type { DefinedTypeNode } from './DefinedTypeNode';
 import type { ErrorNode } from './ErrorNode';
 import type { InstructionNode } from './InstructionNode';
-import type { Node } from './Node';
 import { ProgramNode, programNodeFromIdl } from './ProgramNode';
 
 export type IdlInputs = string | Partial<Idl> | (string | Partial<Idl>)[];
@@ -40,14 +39,4 @@ export function getAllInstructions(node: RootNode): InstructionNode[] {
 
 export function getAllErrors(node: RootNode): ErrorNode[] {
   return node.programs.flatMap((program) => program.errors);
-}
-
-export function isRootNode(node: Node | null): node is RootNode {
-  return !!node && node.kind === 'rootNode';
-}
-
-export function assertRootNode(node: Node | null): asserts node is RootNode {
-  if (!isRootNode(node)) {
-    throw new Error(`Expected rootNode, got ${node?.kind ?? 'null'}.`);
-  }
 }
