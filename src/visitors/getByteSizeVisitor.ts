@@ -79,7 +79,6 @@ export function getByteSizeVisitor(
     },
 
     visitDefinedTypeLink(node) {
-      if (node.size !== undefined) return node.size;
       if (node.importFrom) return null;
 
       // Fetch the linked type and return null if not found.

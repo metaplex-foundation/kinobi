@@ -4,18 +4,15 @@ export type DefinedTypeLinkNode = {
   readonly kind: 'definedTypeLinkNode';
   readonly name: MainCaseString;
   readonly importFrom?: ImportFrom;
-  readonly size?: number;
 };
 
 export function definedTypeLinkNode(
   name: string,
-  importFrom?: ImportFrom,
-  size?: number
+  importFrom?: ImportFrom
 ): DefinedTypeLinkNode {
   return {
     kind: 'definedTypeLinkNode',
     name: mainCase(name),
     importFrom,
-    size,
   };
 }

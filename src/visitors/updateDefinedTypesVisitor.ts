@@ -67,7 +67,7 @@ export function updateDefinedTypesVisitor(
             transform: (node) => {
               assertIsNode(node, 'definedTypeLinkNode');
               if (node.importFrom) return node;
-              return definedTypeLinkNode(newName, undefined, node.size);
+              return definedTypeLinkNode(newName);
             },
           });
         }
