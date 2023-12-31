@@ -90,8 +90,8 @@ export function getDefinedTypeHistogramVisitor(): Visitor<DefinedTypeHistogram> 
           return histogram;
         },
 
-        visitLinkType(node) {
-          if (node.importFrom !== 'generated') {
+        visitDefinedTypeLink(node) {
+          if (node.importFrom) {
             return {};
           }
 

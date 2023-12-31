@@ -8,7 +8,6 @@ export * from './EnumStructVariantTypeNode';
 export * from './EnumTupleVariantTypeNode';
 export * from './EnumTypeNode';
 export * from './EnumVariantTypeNode';
-export * from './LinkTypeNode';
 export * from './MapTypeNode';
 export * from './NumberTypeNode';
 export * from './OptionTypeNode';

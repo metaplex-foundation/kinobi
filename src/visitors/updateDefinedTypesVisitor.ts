@@ -2,9 +2,9 @@ import {
   DefinedTypeNode,
   DefinedTypeNodeInput,
   assertIsNode,
+  definedTypeLinkNode,
   definedTypeNode,
   isNode,
-  linkTypeNode,
 } from '../nodes';
 import { mainCase, renameEnumNode, renameStructNode } from '../shared';
 import {
@@ -63,11 +63,11 @@ export function updateDefinedTypesVisitor(
 
         if (newName) {
           transforms.push({
-            select: `${selectorStack.join('.')}.[linkTypeNode]${name}`,
+            select: `${selectorStack.join('.')}.[definedTypeLinkNode]${name}`,
             transform: (node) => {
-              assertIsNode(node, 'linkTypeNode');
-              if (node.importFrom !== 'generated') return node;
-              return linkTypeNode(newName, { ...node });
+              assertIsNode(node, 'definedTypeLinkNode');
+              if (node.importFrom) return node;
+              return definedTypeLinkNode(newName);
             },
           });
         }

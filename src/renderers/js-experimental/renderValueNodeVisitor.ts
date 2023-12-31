@@ -21,9 +21,7 @@ export function renderValueNodeVisitor(
       const enumName = nameApi.dataType(node.enumType);
       const enumFunction = nameApi.dataEnumFunction(node.enumType);
       const variantName = pascalCase(node.variant);
-      const rawImportFrom = node.importFrom ?? 'generated';
-      const importFrom =
-        rawImportFrom === 'generated' ? 'generatedTypes' : rawImportFrom;
+      const importFrom = node.importFrom ?? 'generatedTypes';
 
       if (node.value === 'scalar') {
         return fragment(`${enumName}.${variantName}`).addImports(

@@ -39,11 +39,8 @@ export function unwrapDefinedTypesVisitor(typesToInline: string[] | '*' = '*') {
           });
         },
 
-        visitLinkType(linkType, { self }) {
-          if (
-            !shouldInline(linkType.name) ||
-            linkType.importFrom !== 'generated'
-          ) {
+        visitDefinedTypeLink(linkType, { self }) {
+          if (!shouldInline(linkType.name) || linkType.importFrom) {
             return linkType;
           }
 

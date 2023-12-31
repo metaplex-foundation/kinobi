@@ -125,7 +125,7 @@ export function identityVisitor<
       if (struct === null) return null;
       assertIsNode(struct, 'structTypeNode');
       const link = node.link ? visit(this)(node.link) : undefined;
-      if (link !== undefined) assertIsNode(link, 'linkTypeNode');
+      if (link !== undefined) assertIsNode(link, 'definedTypeLinkNode');
       return accountDataNode({ ...node, struct, link });
     };
   }
@@ -156,7 +156,7 @@ export function identityVisitor<
       if (struct === null) return null;
       assertIsNode(struct, 'structTypeNode');
       const link = node.link ? visit(this)(node.link) : undefined;
-      if (link !== undefined) assertIsNode(link, 'linkTypeNode');
+      if (link !== undefined) assertIsNode(link, 'definedTypeLinkNode');
       return instructionDataArgsNode({ ...node, struct, link });
     };
   }
@@ -169,7 +169,7 @@ export function identityVisitor<
       if (struct === null) return null;
       assertIsNode(struct, 'structTypeNode');
       const link = node.link ? visit(this)(node.link) : undefined;
-      if (link !== undefined) assertIsNode(link, 'linkTypeNode');
+      if (link !== undefined) assertIsNode(link, 'definedTypeLinkNode');
       return instructionExtraArgsNode({ ...node, struct, link });
     };
   }

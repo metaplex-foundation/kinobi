@@ -147,14 +147,11 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
           return bag.mergeWith([next(node)]);
         },
 
-        visitLinkType(node, { next }) {
+        visitDefinedTypeLink(node, { next }) {
           const bag = new ValidatorBag();
           if (!node.name) {
             bag.error('Pointing to a defined type with no name.', node, stack);
-          } else if (
-            node.importFrom === 'generated' &&
-            !definedTypeNames.has(node.name)
-          ) {
+          } else if (!node.importFrom && !definedTypeNames.has(node.name)) {
             bag.error(
               `Pointing to a missing defined type named "${node.name}"`,
               node,

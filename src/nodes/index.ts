@@ -11,6 +11,7 @@ export * from './PdaNode';
 export * from './ProgramNode';
 export * from './RootNode';
 
+export * from './linkNodes';
 export * from './pdaSeedNodes';
 export * from './sizeNodes';
 export * from './typeNodes';

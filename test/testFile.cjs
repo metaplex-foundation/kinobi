@@ -27,7 +27,7 @@ kinobi.update(
         k.programIdPdaSeedNode(),
         k.variablePdaSeedNode(
           'delegateRole',
-          k.linkTypeNode('delegateRole'),
+          k.definedTypeLinkNode('delegateRole'),
           'The role of the delegate'
         ),
       ],
@@ -52,7 +52,7 @@ kinobi.update(
         k.programIdPdaSeedNode(),
         k.variablePdaSeedNode(
           'role',
-          k.linkTypeNode('delegateRole'),
+          k.definedTypeLinkNode('delegateRole'),
           'The delegate role'
         ),
       ],
@@ -170,7 +170,7 @@ kinobi.update(
       },
       args: {
         tokenStandard: {
-          type: k.linkTypeNode('tokenStandard'),
+          type: k.definedTypeLinkNode('tokenStandard'),
           defaultsTo: k.valueDefault(
             k.enumValueNode('tokenStandard', 'NonFungible')
           ),

@@ -10,6 +10,7 @@ import { Visitor, visit } from './visitor';
 
 export type ByteSizeVisitorKeys =
   | keyof RegisteredTypeNodes
+  | 'definedTypeLinkNode'
   | 'definedTypeNode'
   | 'accountDataNode'
   | 'instructionDataArgsNode'
@@ -35,6 +36,7 @@ export function getByteSizeVisitor(
     (_, values) => sumSizes(values),
     [
       ...REGISTERED_TYPE_NODE_KEYS,
+      'definedTypeLinkNode',
       'definedTypeNode',
       'accountDataNode',
       'instructionDataArgsNode',
@@ -76,9 +78,8 @@ export function getByteSizeVisitor(
       return fixedSize === 0 ? 0 : arraySize;
     },
 
-    visitLinkType(node) {
-      if (node.size !== undefined) return node.size;
-      if (node.importFrom !== 'generated') return null;
+    visitDefinedTypeLink(node) {
+      if (node.importFrom) return null;
 
       // Fetch the linked type and return null if not found.
       // The validator visitor will throw a proper error later on.

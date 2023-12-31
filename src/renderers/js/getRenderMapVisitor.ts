@@ -31,10 +31,7 @@ import {
   visit,
   Visitor,
 } from '../../visitors';
-import {
-  getTypeManifestVisitor,
-  JavaScriptTypeManifest,
-} from './getTypeManifestVisitor';
+import { getTypeManifestVisitor } from './getTypeManifestVisitor';
 import { JavaScriptContextMap } from './JavaScriptContextMap';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 import { renderInstructionDefaults } from './renderInstructionDefaults';
@@ -56,11 +53,6 @@ export type GetJavaScriptRenderMapOptions = {
   formatCode?: boolean;
   prettierOptions?: PrettierOptions;
   dependencyMap?: Record<ImportFrom, string>;
-  typeManifestVisitor?: Visitor<JavaScriptTypeManifest>;
-  resolvedInstructionInputVisitor?: Visitor<
-    ResolvedInstructionInput[],
-    'instructionNode'
-  >;
 };
 
 export function getRenderMapVisitor(
@@ -70,11 +62,8 @@ export function getRenderMapVisitor(
   let program: ProgramNode | null = null;
 
   const valueNodeVisitor = renderValueNodeVisitor();
-  const typeManifestVisitor =
-    options.typeManifestVisitor ?? getTypeManifestVisitor();
-  const resolvedInstructionInputVisitor =
-    options.resolvedInstructionInputVisitor ??
-    getResolvedInstructionInputsVisitor();
+  const typeManifestVisitor = getTypeManifestVisitor();
+  const resolvedInstructionInputVisitor = getResolvedInstructionInputsVisitor();
   const renderParentInstructions = options.renderParentInstructions ?? false;
   const formatCode = options.formatCode ?? true;
   const prettierOptions = {
@@ -497,7 +486,10 @@ export function getRenderMapVisitor(
     // Arg defaults.
     Object.values(node.argDefaults).forEach((argDefault) => {
       if (argDefault.kind === 'resolver') {
-        imports.add(argDefault.importFrom, camelCase(argDefault.name));
+        imports.add(
+          argDefault.importFrom ?? 'hooked',
+          camelCase(argDefault.name)
+        );
       }
     });
     if (argsWithDefaults.length > 0) {
@@ -511,10 +503,7 @@ export function getRenderMapVisitor(
     }
     if (bytes?.kind === 'account') {
       const accountName = pascalCase(bytes.name);
-      const importFrom =
-        bytes.importFrom === 'generated'
-          ? 'generatedAccounts'
-          : bytes.importFrom;
+      const importFrom = bytes.importFrom ?? 'generatedAccounts';
       imports.add(importFrom, `get${accountName}Size`);
     } else if (bytes?.kind === 'resolver') {
       imports.add(bytes.importFrom, camelCase(bytes.name));

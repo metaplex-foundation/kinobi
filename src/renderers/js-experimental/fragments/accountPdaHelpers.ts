@@ -15,7 +15,10 @@ import { getValueNodeFragment } from './valueNode';
 export function getAccountPdaHelpersFragment(scope: {
   accountNode: AccountNode;
   programNode: ProgramNode;
-  typeManifestVisitor: Visitor<TypeManifest, keyof RegisteredTypeNodes>;
+  typeManifestVisitor: Visitor<
+    TypeManifest,
+    keyof RegisteredTypeNodes | 'definedTypeLinkNode'
+  >;
   nameApi: NameApi;
 }): Fragment {
   const { accountNode, programNode, typeManifestVisitor, nameApi } = scope;

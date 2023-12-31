@@ -52,8 +52,8 @@ export function unwrapTupleEnumWithSingleStructVisitor(
             if (!shouldUnwrap(node, stack)) return node;
             if (node.tuple.children.length !== 1) return node;
             let child = node.tuple.children[0];
-            if (isNode(child, 'linkTypeNode')) {
-              if (child.importFrom !== 'generated') return node;
+            if (isNode(child, 'definedTypeLinkNode')) {
+              if (child.importFrom) return node;
               const definedType = definedTypes.get(child.name);
               if (!definedType) return node;
               if (!isNode(definedType.data, 'structTypeNode')) return node;
