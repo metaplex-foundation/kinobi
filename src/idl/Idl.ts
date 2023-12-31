@@ -1,3 +1,4 @@
+import type { IdlPda } from './IdlPda';
 import type { IdlAccount } from './IdlAccount';
 import type { IdlDefinedType } from './IdlDefinedType';
 import type { IdlError } from './IdlError';
@@ -7,6 +8,7 @@ export type Idl = {
   version: string;
   name: string;
   instructions: IdlInstruction[];
+  pdas?: IdlPda[];
   accounts?: IdlAccount[];
   errors?: IdlError[];
   types?: IdlDefinedType[];

@@ -8,31 +8,18 @@ import {
 } from '../shared';
 import { AccountDataNode, accountDataNode } from './AccountDataNode';
 import { assertIsNode } from './Node';
-import {
-  PdaSeedNode,
-  constantPdaSeedNode,
-  programIdPdaSeedNode,
-  variablePdaSeedNode,
-} from './pdaSeedNodes';
-import { remainderSizeNode } from './sizeNodes';
-import { bytesTypeNode } from './typeNodes/BytesTypeNode';
-import { stringTypeNode } from './typeNodes/StringTypeNode';
-import { TypeNode, createTypeNodeFromIdl } from './typeNodes/TypeNode';
-import {
-  booleanValueNode,
-  numberValueNode,
-  stringValueNode,
-} from './valueNodes';
+import { PdaLinkNode, pdaLinkNode } from './linkNodes';
+import { createTypeNodeFromIdl } from './typeNodes/TypeNode';
 
 export type AccountNode = {
   readonly kind: 'accountNode';
-  readonly name: MainCaseString;
   readonly data: AccountDataNode;
+  readonly pda?: PdaLinkNode;
+  readonly name: MainCaseString;
   readonly idlName: string;
   readonly docs: string[];
   readonly internal: boolean;
   readonly size?: number | null;
-  readonly seeds: PdaSeedNode[];
   readonly discriminator?: AccountDiscriminator;
 };
 
@@ -49,13 +36,13 @@ export function accountNode(input: AccountNodeInput): AccountNode {
   }
   return {
     kind: 'accountNode',
-    name: mainCase(input.name),
     data: input.data,
+    pda: input.pda,
+    name: mainCase(input.name),
     idlName: input.idlName ?? input.name,
     docs: input.docs ?? [],
     internal: input.internal ?? false,
     size: input.size,
-    seeds: input.seeds ?? [],
     discriminator: input.discriminator,
   };
 }
@@ -66,38 +53,13 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
   const idlStruct = idl.type ?? { kind: 'struct', fields: [] };
   const struct = createTypeNodeFromIdl(idlStruct);
   assertIsNode(struct, 'structTypeNode');
-  const seeds = (idl.seeds ?? []).map((seed): PdaSeedNode => {
-    if (seed.kind === 'constant') {
-      const value = (() => {
-        if (typeof seed.value === 'string') return stringValueNode(seed.value);
-        if (typeof seed.value === 'number') return numberValueNode(seed.value);
-        return booleanValueNode(seed.value);
-      })();
-      let type: TypeNode;
-      if (seed.type === 'string') {
-        type = stringTypeNode({ size: remainderSizeNode() });
-      } else if (seed.type === 'bytes') {
-        type = bytesTypeNode(remainderSizeNode());
-      } else {
-        type = createTypeNodeFromIdl(seed.type);
-      }
-      return constantPdaSeedNode(type, value);
-    }
-    if (seed.kind === 'variable') {
-      return variablePdaSeedNode(
-        seed.name,
-        createTypeNodeFromIdl(seed.type),
-        seed.description ? [seed.description] : []
-      );
-    }
-    return programIdPdaSeedNode();
-  });
+  const hasSeeds = (idl.seeds ?? []).length > 0;
   return accountNode({
     name,
     data: accountDataNode({ name: `${name}AccountData`, struct }),
+    pda: hasSeeds ? pdaLinkNode(name) : undefined,
     idlName,
     docs: idl.docs ?? [],
     size: idl.size,
-    seeds,
   });
 }

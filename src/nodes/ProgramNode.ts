@@ -4,15 +4,19 @@ import { AccountNode, accountNodeFromIdl } from './AccountNode';
 import { DefinedTypeNode, definedTypeNodeFromIdl } from './DefinedTypeNode';
 import { ErrorNode, errorNodeFromIdl } from './ErrorNode';
 import { InstructionNode, instructionNodeFromIdl } from './InstructionNode';
-import { PdaNode } from './PdaNode';
+import { PdaNode, pdaNodeFromIdl } from './PdaNode';
 
 export type ProgramNode = {
   readonly kind: 'programNode';
+
+  // Children.
   readonly pdas: PdaNode[];
   readonly accounts: AccountNode[];
   readonly instructions: InstructionNode[];
   readonly definedTypes: DefinedTypeNode[];
   readonly errors: ErrorNode[];
+
+  // Data.
   readonly name: MainCaseString;
   readonly prefix: MainCaseString;
   readonly publicKey: string;
@@ -56,6 +60,7 @@ export function programNode(input: ProgramNodeInput): ProgramNode {
 
 export function programNodeFromIdl(idl: Partial<Idl>): ProgramNode {
   const origin = idl.metadata?.origin;
+  const pdas = (idl.accounts ?? []).map(pdaNodeFromIdl);
   const accounts = (idl.accounts ?? []).map(accountNodeFromIdl);
   const instructions = (idl.instructions ?? []).map((ix) =>
     origin === 'anchor'
@@ -66,6 +71,7 @@ export function programNodeFromIdl(idl: Partial<Idl>): ProgramNode {
       : instructionNodeFromIdl(ix)
   );
   return programNode({
+    pdas,
     accounts,
     instructions,
     definedTypes: (idl.types ?? []).map(definedTypeNodeFromIdl),
