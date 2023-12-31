@@ -16,7 +16,6 @@ import {
   assertInstructionDataArgsNode,
   assertInstructionExtraArgsNode,
   assertIsNode,
-  assertValueNode,
   booleanTypeNode,
   bytesTypeNode,
   constantPdaSeedNode,
@@ -29,8 +28,6 @@ import {
   instructionDataArgsNode,
   instructionExtraArgsNode,
   instructionNode,
-  isStructValueNode,
-  isTupleValueNode,
   mapTypeNode,
   mapValueNode,
   optionTypeNode,
@@ -365,11 +362,7 @@ export function identityVisitor<
       if (typeof node.value === 'string') return { ...node };
       const value = visit(this)(node.value);
       if (value === null) return null;
-      if (!isStructValueNode(value) && !isTupleValueNode(value)) {
-        throw new Error(
-          `Expected structValueNode | tupleValueNode, got ${value.kind}.`
-        );
-      }
+      assertIsNode(value, ['structValueNode', 'tupleValueNode']);
       return enumValueNode(node.enumType, node.variant, value, node.importFrom);
     };
   }
@@ -380,10 +373,10 @@ export function identityVisitor<
         node.entries.flatMap(([k, v]) => {
           const key = visit(this)(k);
           if (key === null) return [];
-          assertValueNode(key);
+          assertIsNode(key, VALUE_NODES);
           const value = visit(this)(v);
           if (value === null) return [];
-          assertValueNode(value);
+          assertIsNode(value, VALUE_NODES);
           return [[key, value]];
         })
       );
@@ -404,7 +397,7 @@ export function identityVisitor<
     visitor.visitSomeValue = function visitSomeValue(node) {
       const value = visit(this)(node.value);
       if (value === null) return null;
-      assertValueNode(value);
+      assertIsNode(value, VALUE_NODES);
       return someValueNode(value);
     };
   }
@@ -416,7 +409,7 @@ export function identityVisitor<
           Object.entries(node.fields).flatMap(([k, v]) => {
             const value = visit(this)(v);
             if (value === null) return [];
-            assertValueNode(value);
+            assertIsNode(value, VALUE_NODES);
             return [[k, value]];
           })
         )
@@ -441,7 +434,7 @@ export function identityVisitor<
       assertIsNode(type, TYPE_NODES);
       const value = visit(this)(node.value);
       if (value === null) return null;
-      assertValueNode(value);
+      assertIsNode(value, VALUE_NODES);
       return constantPdaSeedNode(type, value);
     };
   }

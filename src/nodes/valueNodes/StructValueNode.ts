@@ -1,5 +1,4 @@
 import { MainCaseString, mainCase } from '../../shared';
-import { Node } from '../Node';
 import { ValueNode } from './ValueNode';
 
 export type StructValueNode = {
@@ -16,16 +15,4 @@ export function structValueNode(
       Object.entries(fields).map(([key, value]) => [mainCase(key), value])
     ),
   };
-}
-
-export function isStructValueNode(node: Node | null): node is StructValueNode {
-  return !!node && node.kind === 'structValueNode';
-}
-
-export function assertStructValueNode(
-  node: Node | null
-): asserts node is StructValueNode {
-  if (!isStructValueNode(node)) {
-    throw new Error(`Expected structValueNode, got ${node?.kind ?? 'null'}.`);
-  }
 }
