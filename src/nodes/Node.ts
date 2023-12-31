@@ -68,9 +68,11 @@ export function isNodeFilter<TKeys extends keyof RegisteredNodes>(
 
 export function assertIsNodeFilter<TKeys extends keyof RegisteredNodes>(
   key: TKeys | TKeys[]
-): (node: Node | null) => asserts node is RegisteredNodes[TKeys] {
-  return (node): asserts node is RegisteredNodes[TKeys] =>
+): (node: Node | null) => node is RegisteredNodes[TKeys] {
+  return (node): node is RegisteredNodes[TKeys] => {
     assertIsNode(node, key);
+    return true;
+  };
 }
 
 export function removeNullAndAssertIsNodeFilter<
