@@ -29,6 +29,7 @@ export function getTypeManifestVisitor() {
       }),
       [
         ...REGISTERED_TYPE_NODE_KEYS,
+        'definedTypeLinkNode',
         'definedTypeNode',
         'accountNode',
         'accountDataNode',
@@ -164,12 +165,9 @@ export function getTypeManifestVisitor() {
           throw new Error('Array size not supported by Borsh');
         },
 
-        visitLinkType(linkType) {
-          const pascalCaseDefinedType = pascalCase(linkType.name);
-          const importFrom =
-            linkType.importFrom === 'generated'
-              ? 'generatedTypes'
-              : linkType.importFrom;
+        visitDefinedTypeLink(node) {
+          const pascalCaseDefinedType = pascalCase(node.name);
+          const importFrom = node.importFrom ?? 'generatedTypes';
           return {
             imports: new RustImportMap().add(
               `${importFrom}::${pascalCaseDefinedType}`

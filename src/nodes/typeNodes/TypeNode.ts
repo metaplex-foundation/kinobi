@@ -1,4 +1,7 @@
+import type { Mutable } from '../../shared';
 import { IDL_TYPE_LEAVES, IdlType } from '../../idl';
+import { RegisteredNodes } from '../Node';
+import { definedTypeLinkNode } from '../linkNodes';
 import { prefixedSizeNode } from '../sizeNodes';
 import { AmountTypeNode } from './AmountTypeNode';
 import { ArrayTypeNode, arrayTypeNodeFromIdl } from './ArrayTypeNode';
@@ -9,7 +12,6 @@ import { EnumEmptyVariantTypeNode } from './EnumEmptyVariantTypeNode';
 import { EnumStructVariantTypeNode } from './EnumStructVariantTypeNode';
 import { EnumTupleVariantTypeNode } from './EnumTupleVariantTypeNode';
 import { EnumTypeNode, enumTypeNodeFromIdl } from './EnumTypeNode';
-import { LinkTypeNode, linkTypeNode } from './LinkTypeNode';
 import { MapTypeNode, mapTypeNodeFromIdl } from './MapTypeNode';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 import { OptionTypeNode, optionTypeNodeFromIdl } from './OptionTypeNode';
@@ -21,18 +23,15 @@ import { StructFieldTypeNode } from './StructFieldTypeNode';
 import { StructTypeNode, structTypeNodeFromIdl } from './StructTypeNode';
 import { TupleTypeNode, tupleTypeNodeFromIdl } from './TupleTypeNode';
 
-// Type Node Registration.
-// This only includes type nodes that can be used as standalone types.
-// E.g. this excludes structFieldTypeNode, enumEmptyVariantTypeNode, etc.
+// Node Group Registration.
 
-export const STANDALONE_TYPE_NODES = {
+export const REGISTERED_TYPE_NODES = {
   amountTypeNode: {} as AmountTypeNode,
   arrayTypeNode: {} as ArrayTypeNode,
   booleanTypeNode: {} as BooleanTypeNode,
   bytesTypeNode: {} as BytesTypeNode,
   dateTimeTypeNode: {} as DateTimeTypeNode,
   enumTypeNode: {} as EnumTypeNode,
-  linkTypeNode: {} as LinkTypeNode,
   mapTypeNode: {} as MapTypeNode,
   numberTypeNode: {} as NumberTypeNode,
   optionTypeNode: {} as OptionTypeNode,
@@ -42,20 +41,6 @@ export const STANDALONE_TYPE_NODES = {
   stringTypeNode: {} as StringTypeNode,
   structTypeNode: {} as StructTypeNode,
   tupleTypeNode: {} as TupleTypeNode,
-};
-
-export const TYPE_NODES = Object.keys(
-  STANDALONE_TYPE_NODES
-) as (keyof typeof STANDALONE_TYPE_NODES)[];
-
-export type TypeNode =
-  typeof STANDALONE_TYPE_NODES[keyof typeof STANDALONE_TYPE_NODES];
-
-// Node Group Registration.
-// This includes all type nodes.
-
-export const REGISTERED_TYPE_NODES = {
-  ...STANDALONE_TYPE_NODES,
 
   // The following are not valid standalone types.
   structFieldTypeNode: {} as StructFieldTypeNode,
@@ -69,6 +54,39 @@ export const REGISTERED_TYPE_NODE_KEYS = Object.keys(
 ) as (keyof typeof REGISTERED_TYPE_NODES)[];
 
 export type RegisteredTypeNodes = typeof REGISTERED_TYPE_NODES;
+
+// Type Node Helpers.
+// This only includes type nodes that can be used as standalone types.
+// E.g. this excludes structFieldTypeNode, enumEmptyVariantTypeNode, etc.
+// It also includes the definedTypeLinkNode to compose types.
+
+const TYPE_NODES_INTERNAL = [
+  // Standalone types.
+  'amountTypeNode',
+  'arrayTypeNode',
+  'booleanTypeNode',
+  'bytesTypeNode',
+  'dateTimeTypeNode',
+  'enumTypeNode',
+  'mapTypeNode',
+  'numberTypeNode',
+  'optionTypeNode',
+  'publicKeyTypeNode',
+  'setTypeNode',
+  'solAmountTypeNode',
+  'stringTypeNode',
+  'structTypeNode',
+  'tupleTypeNode',
+
+  // Link types.
+  'definedTypeLinkNode',
+] as const;
+
+export const TYPE_NODES = TYPE_NODES_INTERNAL as Mutable<
+  typeof TYPE_NODES_INTERNAL
+>;
+
+export type TypeNode = RegisteredNodes[typeof TYPE_NODES[number]];
 
 // Node Group Helpers.
 
@@ -104,7 +122,7 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
 
   // Defined link.
   if ('defined' in idlType && typeof idlType.defined === 'string') {
-    return linkTypeNode(idlType.defined);
+    return definedTypeLinkNode(idlType.defined);
   }
 
   // Enum.

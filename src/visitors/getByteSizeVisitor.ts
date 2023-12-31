@@ -10,6 +10,7 @@ import { Visitor, visit } from './visitor';
 
 export type ByteSizeVisitorKeys =
   | keyof RegisteredTypeNodes
+  | 'definedTypeLinkNode'
   | 'definedTypeNode'
   | 'accountDataNode'
   | 'instructionDataArgsNode'
@@ -76,8 +77,7 @@ export function getByteSizeVisitor(
       return fixedSize === 0 ? 0 : arraySize;
     },
 
-    visitLinkType(node) {
-      if (node.size !== undefined) return node.size;
+    visitDefinedTypeLink(node) {
       if (node.importFrom !== 'generated') return null;
 
       // Fetch the linked type and return null if not found.

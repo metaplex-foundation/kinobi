@@ -28,6 +28,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
         } as TypeManifest),
       [
         ...REGISTERED_TYPE_NODE_KEYS,
+        'definedTypeLinkNode',
         'definedTypeNode',
         'accountNode',
         'accountDataNode',
@@ -109,15 +110,12 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           return childManifest;
         },
 
-        visitLinkType(linkType) {
-          const strictName = nameApi.dataType(linkType.name);
-          const looseName = nameApi.dataArgsType(linkType.name);
-          const encoderFunction = nameApi.encoderFunction(linkType.name);
-          const decoderFunction = nameApi.decoderFunction(linkType.name);
-          const importFrom =
-            linkType.importFrom === 'generated'
-              ? 'generatedTypes'
-              : linkType.importFrom;
+        visitDefinedTypeLink(node) {
+          const strictName = nameApi.dataType(node.name);
+          const looseName = nameApi.dataArgsType(node.name);
+          const encoderFunction = nameApi.encoderFunction(node.name);
+          const decoderFunction = nameApi.decoderFunction(node.name);
+          const importFrom = node.importFrom ?? 'generatedTypes';
 
           return {
             isEnum: false,

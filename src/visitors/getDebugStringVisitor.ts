@@ -61,10 +61,13 @@ function getNodeDetails(node: Node): string[] {
       ];
     case 'errorNode':
       return [node.code.toString(), node.name];
-    case 'linkTypeNode':
+    case 'programLinkNode':
+    case 'pdaLinkNode':
+    case 'accountLinkNode':
+    case 'definedTypeLinkNode':
       return [
         node.name,
-        ...(node.importFrom === 'generated' ? [] : [`from:${node.importFrom}`]),
+        ...(node.importFrom ? [`from:${node.importFrom}`] : []),
       ];
     case 'numberTypeNode':
       return [node.format, ...(node.endian === 'be' ? ['be'] : [])];

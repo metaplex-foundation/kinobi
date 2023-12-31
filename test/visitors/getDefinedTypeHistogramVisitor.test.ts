@@ -7,7 +7,7 @@ import {
   getDefinedTypeHistogramVisitor,
   instructionDataArgsNode,
   instructionNode,
-  linkTypeNode,
+  definedTypeLinkNode,
   programNode,
   structFieldTypeNode,
   structTypeNode,
@@ -38,11 +38,11 @@ test('it counts the amount of times defined types are used within the tree', (t)
           struct: structTypeNode([
             structFieldTypeNode({
               name: 'field1',
-              child: linkTypeNode('myStruct'),
+              child: definedTypeLinkNode('myStruct'),
             }),
             structFieldTypeNode({
               name: 'field2',
-              child: linkTypeNode('myEnum'),
+              child: definedTypeLinkNode('myEnum'),
             }),
           ]),
         }),
@@ -57,7 +57,7 @@ test('it counts the amount of times defined types are used within the tree', (t)
           struct: structTypeNode([
             structFieldTypeNode({
               name: 'arg1',
-              child: linkTypeNode('myStruct'),
+              child: definedTypeLinkNode('myStruct'),
             }),
           ]),
         }),

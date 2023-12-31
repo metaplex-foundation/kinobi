@@ -2,8 +2,8 @@ import {
   accountDataNode,
   accountNode,
   assertIsNodeFilter,
+  definedTypeLinkNode,
   definedTypeNode,
-  linkTypeNode,
   programNode,
 } from '../nodes';
 import { mainCase, pipe } from '../shared';
@@ -69,9 +69,7 @@ export function useCustomAccountSerializerVisitor(
             ...account,
             data: accountDataNode({
               ...account.data,
-              link: linkTypeNode(options.name, {
-                importFrom: options.importFrom,
-              }),
+              link: definedTypeLinkNode(options.name, options.importFrom),
             }),
           });
         },

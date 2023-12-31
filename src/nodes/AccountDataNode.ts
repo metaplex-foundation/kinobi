@@ -1,18 +1,18 @@
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
-import { LinkTypeNode } from './typeNodes/LinkTypeNode';
-import { StructTypeNode } from './typeNodes/StructTypeNode';
+import { DefinedTypeLinkNode } from './linkNodes';
+import { StructTypeNode } from './typeNodes';
 
 export type AccountDataNode = {
   readonly kind: 'accountDataNode';
   readonly name: MainCaseString;
   readonly struct: StructTypeNode;
-  readonly link?: LinkTypeNode;
+  readonly link?: DefinedTypeLinkNode;
 };
 
 export type AccountDataNodeInput = {
   readonly name: string;
   readonly struct: StructTypeNode;
-  readonly link?: LinkTypeNode;
+  readonly link?: DefinedTypeLinkNode;
 };
 
 export function accountDataNode(input: AccountDataNodeInput): AccountDataNode {

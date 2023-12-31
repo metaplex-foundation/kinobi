@@ -51,7 +51,7 @@ export function createSubInstructionsFromEnumArgsVisitor(
             if (isNode(argField.child, 'enumTypeNode')) {
               argType = argField.child;
             } else if (
-              isNode(argField.child, 'linkTypeNode') &&
+              isNode(argField.child, 'definedTypeLinkNode') &&
               definedTypesMap.has(argField.child.name)
             ) {
               const linkedType =

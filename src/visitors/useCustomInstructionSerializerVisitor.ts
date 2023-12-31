@@ -1,9 +1,9 @@
 import {
   assertIsNodeFilter,
+  definedTypeLinkNode,
   definedTypeNode,
   instructionDataArgsNode,
   instructionNode,
-  linkTypeNode,
   programNode,
 } from '../nodes';
 import { mainCase, pipe } from '../shared';
@@ -69,9 +69,7 @@ export function useCustomInstructionSerializerVisitor(
             ...instruction,
             dataArgs: instructionDataArgsNode({
               ...instruction.dataArgs,
-              link: linkTypeNode(options.name, {
-                importFrom: options.importFrom,
-              }),
+              link: definedTypeLinkNode(options.name, options.importFrom),
             }),
           });
         },

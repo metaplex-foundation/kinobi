@@ -23,7 +23,7 @@ import {
   instructionNode,
   interceptVisitor,
   isNode,
-  linkTypeNode,
+  definedTypeLinkNode,
   numberTypeNode,
   optionTypeNode,
   programNode,
@@ -141,7 +141,7 @@ const tree = rootNode([
             }),
             structFieldTypeNode({
               name: 'wrappingPaper',
-              child: linkTypeNode('wrappingPaper'),
+              child: definedTypeLinkNode('wrappingPaper'),
             }),
           ]),
         }),
@@ -250,7 +250,7 @@ const macro = test.macro({
  *         [structFieldTypeNode] owner > [publicKeyTypeNode]
  *         [structFieldTypeNode] opened > [booleanTypeNode] > [numberTypeNode] (u64)
  *         [structFieldTypeNode] amount > [numberTypeNode] (u64)
- *         [structFieldTypeNode] wrappingPaper > [linkTypeNode] wrappingPaper
+ *         [structFieldTypeNode] wrappingPaper > [definedTypeLinkNode] wrappingPaper
  *     [instructionNode] openGift
  *         [instructionAccountNode] gift
  *         [instructionAccountNode] owner

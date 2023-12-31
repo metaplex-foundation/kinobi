@@ -1,12 +1,12 @@
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
-import { LinkTypeNode } from './typeNodes/LinkTypeNode';
-import { StructTypeNode } from './typeNodes/StructTypeNode';
+import { DefinedTypeLinkNode } from './linkNodes';
+import { StructTypeNode } from './typeNodes';
 
 export type InstructionExtraArgsNode = {
   readonly kind: 'instructionExtraArgsNode';
   readonly name: MainCaseString;
   readonly struct: StructTypeNode;
-  readonly link?: LinkTypeNode;
+  readonly link?: DefinedTypeLinkNode;
 };
 
 export type InstructionExtraArgsNodeInput = Omit<

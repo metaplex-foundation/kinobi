@@ -41,6 +41,7 @@ export function getTypeManifestVisitor() {
         } as JavaScriptTypeManifest),
       [
         ...REGISTERED_TYPE_NODE_KEYS,
+        'definedTypeLinkNode',
         'definedTypeNode',
         'accountNode',
         'accountDataNode',
@@ -117,13 +118,10 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitLinkType(linkType) {
-          const pascalCaseDefinedType = pascalCase(linkType.name);
+        visitDefinedTypeLink(node) {
+          const pascalCaseDefinedType = pascalCase(node.name);
           const serializerName = `get${pascalCaseDefinedType}Serializer`;
-          const importFrom =
-            linkType.importFrom === 'generated'
-              ? 'generatedTypes'
-              : linkType.importFrom;
+          const importFrom = node.importFrom ?? 'generatedTypes';
 
           return {
             isEnum: false,

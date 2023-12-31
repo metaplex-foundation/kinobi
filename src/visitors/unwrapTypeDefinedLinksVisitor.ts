@@ -14,10 +14,10 @@ export function unwrapTypeDefinedLinksVisitor(definedLinksType: string[]) {
       const stack = selectorStack.split('.');
       const name = stack.pop();
       return {
-        select: `${stack.join('.')}.[linkTypeNode]${name}`,
+        select: `${stack.join('.')}.[definedTypeLinkNode]${name}`,
         transform: (node) => {
-          assertIsNode(node, 'linkTypeNode');
-          if (node.importFrom !== 'generated') return node;
+          assertIsNode(node, 'definedTypeLinkNode');
+          if (node.importFrom) return node;
           const definedType = availableDefinedTypes.get(node.name);
           if (definedType === undefined) {
             throw new Error(
