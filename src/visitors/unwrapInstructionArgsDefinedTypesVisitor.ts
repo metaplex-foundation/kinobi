@@ -1,4 +1,4 @@
-import { assertRootNode, getAllDefinedTypes, isEnumTypeNode } from '../nodes';
+import { assertRootNode, getAllDefinedTypes, isNode } from '../nodes';
 import { MainCaseString } from '../shared';
 import { getDefinedTypeHistogramVisitor } from './getDefinedTypeHistogramVisitor';
 import { rootNodeVisitor } from './singleNodeVisitor';
@@ -21,7 +21,7 @@ export function unwrapInstructionArgsDefinedTypesVisitor() {
       // Filter out enums which are better defined as external types.
       .filter((name) => {
         const found = allDefinedTypes.find((type) => type.name === name);
-        return found && !isEnumTypeNode(found.data);
+        return found && !isNode(found.data, 'enumTypeNode');
       });
 
     // Inline the identified defined types if any.

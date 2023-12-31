@@ -2,10 +2,9 @@ import {
   DefinedTypeNode,
   DefinedTypeNodeInput,
   assertDefinedTypeNode,
-  assertLinkTypeNode,
+  assertIsNode,
   definedTypeNode,
-  isEnumTypeNode,
-  isStructTypeNode,
+  isNode,
   linkTypeNode,
 } from '../nodes';
 import { mainCase, renameEnumNode, renameStructNode } from '../shared';
@@ -48,9 +47,9 @@ export function updateDefinedTypesVisitor(
               }
               const { data: dataUpdates, ...otherUpdates } = updates;
               let newData = node.data;
-              if (isStructTypeNode(node.data)) {
+              if (isNode(node.data, 'structTypeNode')) {
                 newData = renameStructNode(node.data, dataUpdates ?? {});
-              } else if (isEnumTypeNode(node.data)) {
+              } else if (isNode(node.data, 'enumTypeNode')) {
                 newData = renameEnumNode(node.data, dataUpdates ?? {});
               }
               return definedTypeNode({
@@ -67,7 +66,7 @@ export function updateDefinedTypesVisitor(
           transforms.push({
             select: `${selectorStack.join('.')}.[linkTypeNode]${name}`,
             transform: (node) => {
-              assertLinkTypeNode(node);
+              assertIsNode(node, 'linkTypeNode');
               if (node.importFrom !== 'generated') return node;
               return linkTypeNode(newName, { ...node });
             },

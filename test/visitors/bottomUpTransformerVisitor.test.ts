@@ -1,8 +1,8 @@
 import test from 'ava';
 import {
+  TYPE_NODES,
   bottomUpTransformerVisitor,
-  isNumberTypeNode,
-  isTypeNode,
+  isNode,
   numberTypeNode,
   publicKeyTypeNode,
   stringTypeNode,
@@ -19,7 +19,7 @@ test('it can transform nodes into other nodes', (t) => {
 
   // And a transformer visitor that transforms all number nodes into string nodes.
   const visitor = bottomUpTransformerVisitor([
-    (node) => (isNumberTypeNode(node) ? stringTypeNode() : node),
+    (node) => (isNode(node, 'numberTypeNode') ? stringTypeNode() : node),
   ]);
 
   // When we visit the tree using that visitor.
@@ -73,7 +73,7 @@ test('it can create partial transformer visitors', (t) => {
   // And a transformer visitor that wraps every node into another tuple node
   // but that does not transform public key nodes.
   const visitor = bottomUpTransformerVisitor(
-    [(node) => (isTypeNode(node) ? tupleTypeNode([node]) : node)],
+    [(node) => (isNode(node, TYPE_NODES) ? tupleTypeNode([node]) : node)],
     ['tupleTypeNode', 'numberTypeNode']
   );
 

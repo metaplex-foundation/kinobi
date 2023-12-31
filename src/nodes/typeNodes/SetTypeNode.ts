@@ -1,5 +1,4 @@
 import type { IdlTypeSet } from '../../idl';
-import type { Node } from '../Node';
 import {
   SizeNode,
   fixedSizeNode,
@@ -45,16 +44,4 @@ export function setTypeNodeFromIdl(idl: IdlTypeSet): SetTypeNode {
     size,
     idlSet: 'hashSet' in idl ? 'hashSet' : 'bTreeSet',
   });
-}
-
-export function isSetTypeNode(node: Node | null): node is SetTypeNode {
-  return !!node && node.kind === 'setTypeNode';
-}
-
-export function assertSetTypeNode(
-  node: Node | null
-): asserts node is SetTypeNode {
-  if (!isSetTypeNode(node)) {
-    throw new Error(`Expected setTypeNode, got ${node?.kind ?? 'null'}.`);
-  }
 }

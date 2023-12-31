@@ -3,7 +3,6 @@ import { enumEmptyVariantTypeNodeFromIdl } from './EnumEmptyVariantTypeNode';
 import { enumStructVariantTypeNodeFromIdl } from './EnumStructVariantTypeNode';
 import { enumTupleVariantTypeNodeFromIdl } from './EnumTupleVariantTypeNode';
 import type { EnumVariantTypeNode } from './EnumVariantTypeNode';
-import type { Node } from '../Node';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 
 export type EnumTypeNode = {
@@ -46,18 +45,6 @@ export function isScalarEnum(node: EnumTypeNode): boolean {
 
 export function isDataEnum(node: EnumTypeNode): boolean {
   return !isScalarEnum(node);
-}
-
-export function isEnumTypeNode(node: Node | null): node is EnumTypeNode {
-  return !!node && node.kind === 'enumTypeNode';
-}
-
-export function assertEnumTypeNode(
-  node: Node | null
-): asserts node is EnumTypeNode {
-  if (!isEnumTypeNode(node)) {
-    throw new Error(`Expected enumTypeNode, got ${node?.kind ?? 'null'}.`);
-  }
 }
 
 function isStructField(field: any): boolean {

@@ -1,7 +1,6 @@
 import {
   REGISTERED_TYPE_NODE_KEYS,
   arrayTypeNode,
-  isEnumTypeNode,
   isNode,
   isScalarEnum,
   numberTypeNode,
@@ -96,7 +95,7 @@ export function getTypeManifestVisitor() {
             'PartialEq',
           ];
           if (
-            isEnumTypeNode(definedType.data) &&
+            isNode(definedType.data, 'enumTypeNode') &&
             isScalarEnum(definedType.data)
           ) {
             traits.push('PartialOrd', 'Hash');

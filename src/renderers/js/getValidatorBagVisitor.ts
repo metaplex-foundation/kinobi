@@ -1,4 +1,4 @@
-import { Node, isDataEnum, isEnumTypeNode } from '../../nodes';
+import { Node, isDataEnum, isNode } from '../../nodes';
 import {
   NodeStack,
   ValidatorBag,
@@ -167,7 +167,7 @@ export function getValidatorBagVisitor(): Visitor<ValidatorBag> {
                 [pascalCaseName]: 'type',
                 [`${pascalCaseName}Args`]: 'type',
                 [`fetch${pascalCaseName}`]: 'function',
-                ...(isEnumTypeNode(node.data) && isDataEnum(node.data)
+                ...(isNode(node.data, 'enumTypeNode') && isDataEnum(node.data)
                   ? {
                       [camelCaseName]: 'function',
                       [`is${pascalCaseName}`]: 'function',

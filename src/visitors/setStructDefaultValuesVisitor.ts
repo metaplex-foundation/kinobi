@@ -1,7 +1,7 @@
 import {
   StructFieldTypeNode,
   ValueNode,
-  assertStructTypeNode,
+  assertIsNode,
   structFieldTypeNode,
   structTypeNode,
 } from '../nodes';
@@ -21,7 +21,7 @@ export function setStructDefaultValuesVisitor(map: StructDefaultValueMap) {
       ([stack, defaultValues]): BottomUpNodeTransformerWithSelector => ({
         select: `${stack}.[structTypeNode]`,
         transform: (node) => {
-          assertStructTypeNode(node);
+          assertIsNode(node, 'structTypeNode');
           const fields = node.fields.map((field): StructFieldTypeNode => {
             const defaultValue = defaultValues[field.name];
             if (defaultValue === undefined) return field;

@@ -1,5 +1,3 @@
-import type { Node } from '../Node';
-
 export type NumberFormat =
   | 'u8'
   | 'u16'
@@ -41,20 +39,4 @@ export function isInteger(node: NumberTypeNode): boolean {
 
 export function isDecimal(node: NumberTypeNode): boolean {
   return node.format.startsWith('f');
-}
-
-export function displayNumberTypeNode(node: NumberTypeNode): string {
-  return `${node.format}(${node.endian})`;
-}
-
-export function isNumberTypeNode(node: Node | null): node is NumberTypeNode {
-  return !!node && node.kind === 'numberTypeNode';
-}
-
-export function assertNumberTypeNode(
-  node: Node | null
-): asserts node is NumberTypeNode {
-  if (!isNumberTypeNode(node)) {
-    throw new Error(`Expected numberTypeNode, got ${node?.kind ?? 'null'}.`);
-  }
 }

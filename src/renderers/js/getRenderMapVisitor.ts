@@ -9,7 +9,6 @@ import {
   getAllInstructionsWithSubs,
   InstructionNode,
   isDataEnum,
-  isEnumTypeNode,
   isNode,
   isNodeFilter,
   ProgramNode,
@@ -581,7 +580,7 @@ export function getRenderMapVisitor(
           generatedTypes: '.',
         }),
         typeManifest,
-        isDataEnum: isEnumTypeNode(node.data) && isDataEnum(node.data),
+        isDataEnum: isNode(node.data, 'enumTypeNode') && isDataEnum(node.data),
       })
     );
   };

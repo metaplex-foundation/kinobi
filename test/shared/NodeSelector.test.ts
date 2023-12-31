@@ -22,7 +22,7 @@ import {
   instructionExtraArgsNode,
   instructionNode,
   interceptVisitor,
-  isNumberTypeNode,
+  isNode,
   linkTypeNode,
   numberTypeNode,
   optionTypeNode,
@@ -356,6 +356,6 @@ test(macro, '[structFieldTypeNode].*.*', [
 ]);
 
 // Select using functions.
-test(macro, (node) => isNumberTypeNode(node) && node.format === 'u32', [
+test(macro, (node) => isNode(node, 'numberTypeNode') && node.format === 'u32', [
   tokenDelegatedAmountOption.prefix,
 ]);

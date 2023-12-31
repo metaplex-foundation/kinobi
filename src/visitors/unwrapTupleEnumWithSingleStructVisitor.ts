@@ -1,12 +1,11 @@
 import {
   DefinedTypeNode,
   EnumTupleVariantTypeNode,
-  assertEnumTupleVariantTypeNode,
+  assertIsNode,
   assertRootNode,
   enumStructVariantTypeNode,
   getAllDefinedTypes,
-  isLinkTypeNode,
-  isStructTypeNode,
+  isNode,
 } from '../nodes';
 import {
   MainCaseString,
@@ -50,19 +49,19 @@ export function unwrapTupleEnumWithSingleStructVisitor(
         {
           select: '[enumTupleVariantTypeNode]',
           transform: (node, stack) => {
-            assertEnumTupleVariantTypeNode(node);
+            assertIsNode(node, 'enumTupleVariantTypeNode');
             if (!shouldUnwrap(node, stack)) return node;
             if (node.tuple.children.length !== 1) return node;
             let child = node.tuple.children[0];
-            if (isLinkTypeNode(child)) {
+            if (isNode(child, 'linkTypeNode')) {
               if (child.importFrom !== 'generated') return node;
               const definedType = definedTypes.get(child.name);
               if (!definedType) return node;
-              if (!isStructTypeNode(definedType.data)) return node;
+              if (!isNode(definedType.data, 'structTypeNode')) return node;
               typesToPotentiallyUnwrap.push(child.name);
               child = definedType.data;
             }
-            if (!isStructTypeNode(child)) return node;
+            if (!isNode(child, 'structTypeNode')) return node;
             return enumStructVariantTypeNode(node.name, child);
           },
         },

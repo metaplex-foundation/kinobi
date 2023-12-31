@@ -7,7 +7,7 @@ import {
   mainCase,
 } from '../shared';
 import { AccountDataNode, accountDataNode } from './AccountDataNode';
-import type { Node } from './Node';
+import { assertIsNode, type Node } from './Node';
 import {
   PdaSeedNode,
   constantPdaSeedNode,
@@ -17,7 +17,6 @@ import {
 import { remainderSizeNode } from './sizeNodes';
 import { bytesTypeNode } from './typeNodes/BytesTypeNode';
 import { stringTypeNode } from './typeNodes/StringTypeNode';
-import { assertStructTypeNode } from './typeNodes/StructTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './typeNodes/TypeNode';
 import {
   booleanValueNode,
@@ -66,7 +65,7 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
   const name = mainCase(idlName);
   const idlStruct = idl.type ?? { kind: 'struct', fields: [] };
   const struct = createTypeNodeFromIdl(idlStruct);
-  assertStructTypeNode(struct);
+  assertIsNode(struct, 'structTypeNode');
   const seeds = (idl.seeds ?? []).map((seed): PdaSeedNode => {
     if (seed.kind === 'constant') {
       const value = (() => {

@@ -3,8 +3,8 @@ import {
   Node,
   StructFieldTypeNode,
   StructTypeNode,
-  assertStructTypeNode,
-  isStructTypeNode,
+  assertIsNode,
+  isNode,
   structTypeNode,
 } from '../nodes';
 import { camelCase } from '../shared';
@@ -32,13 +32,13 @@ export const flattenStruct = (
   node: Node,
   options: FlattenStructOptions = '*'
 ): StructTypeNode => {
-  assertStructTypeNode(node);
+  assertIsNode(node, 'structTypeNode');
   const camelCaseOptions = options === '*' ? options : options.map(camelCase);
   const shouldInline = (field: StructFieldTypeNode): boolean =>
     options === '*' || camelCaseOptions.includes(camelCase(field.name));
   const inlinedFields = node.fields.reduce<StructFieldTypeNode[]>(
     (all, one) => {
-      if (isStructTypeNode(one.child) && shouldInline(one)) {
+      if (isNode(one.child, 'structTypeNode') && shouldInline(one)) {
         all.push(...one.child.fields);
       } else {
         all.push(one);

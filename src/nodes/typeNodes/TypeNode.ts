@@ -1,26 +1,25 @@
 import { IDL_TYPE_LEAVES, IdlType } from '../../idl';
+import { prefixedSizeNode } from '../sizeNodes';
+import { AmountTypeNode } from './AmountTypeNode';
 import { ArrayTypeNode, arrayTypeNodeFromIdl } from './ArrayTypeNode';
 import { BooleanTypeNode, booleanTypeNode } from './BooleanTypeNode';
 import { BytesTypeNode, bytesTypeNode } from './BytesTypeNode';
+import { DateTimeTypeNode } from './DateTimeTypeNode';
+import { EnumEmptyVariantTypeNode } from './EnumEmptyVariantTypeNode';
+import { EnumStructVariantTypeNode } from './EnumStructVariantTypeNode';
+import { EnumTupleVariantTypeNode } from './EnumTupleVariantTypeNode';
 import { EnumTypeNode, enumTypeNodeFromIdl } from './EnumTypeNode';
 import { LinkTypeNode, linkTypeNode } from './LinkTypeNode';
 import { MapTypeNode, mapTypeNodeFromIdl } from './MapTypeNode';
-import type { Node } from '../Node';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 import { OptionTypeNode, optionTypeNodeFromIdl } from './OptionTypeNode';
 import { PublicKeyTypeNode, publicKeyTypeNode } from './PublicKeyTypeNode';
 import { SetTypeNode, setTypeNodeFromIdl } from './SetTypeNode';
+import { SolAmountTypeNode } from './SolAmountTypeNode';
 import { StringTypeNode, stringTypeNode } from './StringTypeNode';
+import { StructFieldTypeNode } from './StructFieldTypeNode';
 import { StructTypeNode, structTypeNodeFromIdl } from './StructTypeNode';
 import { TupleTypeNode, tupleTypeNodeFromIdl } from './TupleTypeNode';
-import { DateTimeTypeNode } from './DateTimeTypeNode';
-import { SolAmountTypeNode } from './SolAmountTypeNode';
-import { AmountTypeNode } from './AmountTypeNode';
-import { StructFieldTypeNode } from './StructFieldTypeNode';
-import { EnumEmptyVariantTypeNode } from './EnumEmptyVariantTypeNode';
-import { EnumStructVariantTypeNode } from './EnumStructVariantTypeNode';
-import { EnumTupleVariantTypeNode } from './EnumTupleVariantTypeNode';
-import { prefixedSizeNode } from '../sizeNodes';
 
 // Type Node Registration.
 // This only includes type nodes that can be used as standalone types.
@@ -144,31 +143,3 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
   // Throw an error for unsupported types.
   throw new Error(`TypeNode: Unsupported type ${JSON.stringify(idlType)}`);
 };
-
-export function isTypeNode(node: Node | null): node is TypeNode {
-  return !!node && (REGISTERED_TYPE_NODE_KEYS as string[]).includes(node.kind);
-}
-
-export function assertTypeNode(node: Node | null): asserts node is TypeNode {
-  if (!isTypeNode(node)) {
-    throw new Error(`Expected typeNode, got ${node?.kind ?? 'null'}.`);
-  }
-}
-
-export function isStructOrLinkTypeNode(
-  node: Node | null
-): node is StructTypeNode | LinkTypeNode {
-  return (
-    !!node && (node.kind === 'structTypeNode' || node.kind === 'linkTypeNode')
-  );
-}
-
-export function assertStructOrLinkTypeNode(
-  node: Node | null
-): asserts node is StructTypeNode | LinkTypeNode {
-  if (!isStructOrLinkTypeNode(node)) {
-    throw new Error(
-      `Expected structTypeNode | LinkTypeNode, got ${node?.kind ?? 'null'}.`
-    );
-  }
-}

@@ -1,6 +1,6 @@
 import test from 'ava';
 import {
-  assertTupleTypeNode,
+  assertIsNode,
   identityVisitor,
   interceptVisitor,
   numberTypeNode,
@@ -21,7 +21,7 @@ test('it visits all nodes and returns different instances of the same nodes', (t
 
   // But the nodes are different instances.
   t.not(result, node);
-  assertTupleTypeNode(result);
+  assertIsNode(result, 'tupleTypeNode');
   t.not(result.children[0], node.children[0]);
   t.not(result.children[1], node.children[1]);
 });
@@ -62,7 +62,7 @@ test('it can create partial visitors', (t) => {
   // Then we still get the full tree back as different instances.
   t.deepEqual(result, node);
   t.not(result, node);
-  assertTupleTypeNode(result);
+  assertIsNode(result, 'tupleTypeNode');
   t.not(result.children[0], node.children[0]);
   t.not(result.children[1], node.children[1]);
 

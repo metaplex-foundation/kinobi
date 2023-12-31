@@ -7,7 +7,6 @@ import {
   getAllInstructionsWithSubs,
   isNode,
   isNodeFilter,
-  isOptionTypeNode,
 } from '../../nodes';
 import {
   ImportFrom,
@@ -214,7 +213,7 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
         typeManifestVisitor.setNestedStruct(true);
         const manifest = visit(field.child, typeManifestVisitor);
         imports.mergeWith(manifest.imports);
-        const innerOptionType = isOptionTypeNode(field.child)
+        const innerOptionType = isNode(field.child, 'optionTypeNode')
           ? manifest.type.slice('Option<'.length, -1)
           : null;
         typeManifestVisitor.setParentName(null);

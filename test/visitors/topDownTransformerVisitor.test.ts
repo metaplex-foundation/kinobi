@@ -1,7 +1,7 @@
 import test from 'ava';
 import {
-  assertTupleTypeNode,
-  isNumberTypeNode,
+  assertIsNode,
+  isNode,
   numberTypeNode,
   publicKeyTypeNode,
   topDownTransformerVisitor,
@@ -19,7 +19,9 @@ test('it can transform nodes to the same kind of node', (t) => {
   // And a transformer visitor that transforms all number nodes into u64 number nodes.
   const visitor = topDownTransformerVisitor([
     (node) =>
-      isNumberTypeNode(node) ? (numberTypeNode('u64') as typeof node) : node,
+      isNode(node, 'numberTypeNode')
+        ? (numberTypeNode('u64') as typeof node)
+        : node,
   ]);
 
   // When we visit the tree using that visitor.
@@ -76,7 +78,7 @@ test('it can create partial transformer visitors', (t) => {
       {
         select: '[tupleTypeNode]',
         transform: (node) => {
-          assertTupleTypeNode(node);
+          assertIsNode(node, 'tupleTypeNode');
           return tupleTypeNode([
             numberTypeNode('u64'),
             ...node.children,

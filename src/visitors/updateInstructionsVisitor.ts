@@ -6,9 +6,10 @@ import {
   InstructionExtraArgsNode,
   InstructionNode,
   InstructionNodeInput,
+  TYPE_NODES,
   TypeNode,
   assertInstructionNode,
-  assertTypeNode,
+  assertIsNode,
   getAllAccounts,
   instructionAccountNode,
   instructionDataArgsNode,
@@ -204,7 +205,7 @@ function handleInstructionArgs(
     .filter(([argName]) => !usedArgs.has(argName))
     .map(([argName, argUpdate]) => {
       const child = argUpdate.type ?? null;
-      assertTypeNode(child);
+      assertIsNode(child, TYPE_NODES);
       return structFieldTypeNode({
         name: argUpdate.name ?? argName,
         child,
