@@ -30,9 +30,7 @@ export function renderValueNodeVisitor(): Visitor<
       const imports = new JavaScriptImportMap();
       const enumName = pascalCase(node.enumType);
       const variantName = pascalCase(node.variant);
-      const rawImportFrom = node.importFrom ?? 'generated';
-      const importFrom =
-        rawImportFrom === 'generated' ? 'generatedTypes' : rawImportFrom;
+      const importFrom = node.importFrom ?? 'generatedTypes';
 
       if (node.value === 'scalar') {
         return {

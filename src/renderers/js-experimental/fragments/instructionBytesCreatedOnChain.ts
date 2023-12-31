@@ -27,8 +27,7 @@ export function getInstructionBytesCreatedOnChainFragment(scope: {
 
   if (bytes?.kind === 'account') {
     const functionName = scope.nameApi.accountGetSizeFunction(bytes.name);
-    const importFrom =
-      bytes.importFrom === 'generated' ? 'generatedAccounts' : bytes.importFrom;
+    const importFrom = bytes.importFrom ?? 'generatedAccounts';
     bytesFragment.addImports(importFrom, functionName);
   } else if (bytes?.kind === 'resolver') {
     const functionName = scope.nameApi.resolverFunction(bytes.name);

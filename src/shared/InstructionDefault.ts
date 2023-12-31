@@ -15,13 +15,13 @@ export type InstructionDefault =
   | {
       kind: 'pda';
       pdaAccount: MainCaseString;
-      importFrom: ImportFrom;
+      importFrom?: ImportFrom;
       seeds: Record<MainCaseString, InstructionSeedDefault>;
     }
   | {
       kind: 'resolver';
       name: MainCaseString;
-      importFrom: ImportFrom;
+      importFrom?: ImportFrom;
       dependsOn: InstructionDependency[];
       resolvedIsSigner?: boolean | 'either';
       resolvedIsOptional?: boolean;
@@ -119,7 +119,7 @@ export const pdaDefault = (
 ): ExtractInstructionDefault<'pda'> => ({
   kind: 'pda',
   pdaAccount: mainCase(pdaAccount),
-  importFrom: options.importFrom ?? 'generated',
+  importFrom: options.importFrom,
   seeds: options.seeds ?? {},
 });
 
@@ -134,7 +134,7 @@ export const resolverDefault = (
 ): ExtractInstructionDefault<'resolver'> => ({
   kind: 'resolver',
   name: mainCase(name),
-  importFrom: options.importFrom ?? 'hooked',
+  importFrom: options.importFrom,
   dependsOn,
   resolvedIsSigner: options.resolvedIsSigner,
   resolvedIsOptional: options.resolvedIsOptional,

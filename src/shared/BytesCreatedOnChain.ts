@@ -7,7 +7,7 @@ export type BytesCreatedOnChain =
   | {
       kind: 'account';
       name: MainCaseString;
-      importFrom: ImportFrom;
+      importFrom?: ImportFrom;
       includeHeader: boolean;
     }
   | { kind: 'resolver'; name: string; importFrom: ImportFrom };
@@ -24,7 +24,7 @@ export const bytesFromArg = (
 
 export const bytesFromAccount = (
   account: string,
-  importFrom: ImportFrom = 'generated',
+  importFrom?: ImportFrom,
   includeHeader: boolean = true
 ): BytesCreatedOnChain => ({
   kind: 'account',

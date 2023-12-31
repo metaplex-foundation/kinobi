@@ -75,10 +75,7 @@ export function getInstructionInputDefaultFragment(scope: {
 
     case 'pda':
       const pdaFunction = nameApi.accountFindPdaFunction(defaultsTo.pdaAccount);
-      const pdaImportFrom =
-        defaultsTo.importFrom === 'generated'
-          ? 'generatedAccounts'
-          : defaultsTo.importFrom;
+      const pdaImportFrom = defaultsTo.importFrom ?? 'generatedAccounts';
       const pdaArgs = [];
       const pdaSeeds = Object.keys(defaultsTo.seeds).map(
         (seed: string): Fragment => {
@@ -161,7 +158,7 @@ export function getInstructionInputDefaultFragment(scope: {
       return defaultFragment(
         `${resolverAwait}${resolverFunction}(resolverScope)`
       )
-        .addImports(defaultsTo.importFrom, resolverFunction)
+        .addImports(defaultsTo.importFrom ?? 'hooked', resolverFunction)
         .addFeatures(['instruction:resolverScopeVariable']);
 
     case 'conditional':
@@ -214,7 +211,7 @@ export function getInstructionInputDefaultFragment(scope: {
         );
         conditionalFragment
           .addImports(
-            defaultsTo.resolver.importFrom,
+            defaultsTo.resolver.importFrom ?? 'hooked',
             conditionalResolverFunction
           )
           .addFeatures(['instruction:resolverScopeVariable']);

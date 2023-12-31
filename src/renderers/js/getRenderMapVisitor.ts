@@ -486,7 +486,10 @@ export function getRenderMapVisitor(
     // Arg defaults.
     Object.values(node.argDefaults).forEach((argDefault) => {
       if (argDefault.kind === 'resolver') {
-        imports.add(argDefault.importFrom, camelCase(argDefault.name));
+        imports.add(
+          argDefault.importFrom ?? 'hooked',
+          camelCase(argDefault.name)
+        );
       }
     });
     if (argsWithDefaults.length > 0) {
@@ -500,10 +503,7 @@ export function getRenderMapVisitor(
     }
     if (bytes?.kind === 'account') {
       const accountName = pascalCase(bytes.name);
-      const importFrom =
-        bytes.importFrom === 'generated'
-          ? 'generatedAccounts'
-          : bytes.importFrom;
+      const importFrom = bytes.importFrom ?? 'generatedAccounts';
       imports.add(importFrom, `get${accountName}Size`);
     } else if (bytes?.kind === 'resolver') {
       imports.add(bytes.importFrom, camelCase(bytes.name));

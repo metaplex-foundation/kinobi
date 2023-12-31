@@ -84,10 +84,7 @@ export function renderInstructionDefaults(
       return render(`expectPublicKey(resolvedAccounts.${name}.value)`);
     case 'pda':
       const pdaFunction = `find${pascalCase(defaultsTo.pdaAccount)}Pda`;
-      const pdaImportFrom =
-        defaultsTo.importFrom === 'generated'
-          ? 'generatedAccounts'
-          : defaultsTo.importFrom;
+      const pdaImportFrom = defaultsTo.importFrom ?? 'generatedAccounts';
       imports.add(pdaImportFrom, pdaFunction);
       interfaces.add('eddsa');
       const pdaArgs = ['context'];
@@ -160,7 +157,7 @@ export function renderInstructionDefaults(
       const resolverName = camelCase(defaultsTo.name);
       const isWritable =
         input.kind === 'account' && input.isWritable ? 'true' : 'false';
-      imports.add(defaultsTo.importFrom, resolverName);
+      imports.add(defaultsTo.importFrom ?? 'hooked', resolverName);
       interfaces.add(['eddsa', 'identity', 'payer']);
       return render(
         `${resolverName}(context, resolvedAccounts, ${argObject}, programId, ${isWritable})`
@@ -212,7 +209,10 @@ export function renderInstructionDefaults(
         const conditionalResolverName = camelCase(defaultsTo.resolver.name);
         const conditionalIsWritable =
           input.kind === 'account' && input.isWritable ? 'true' : 'false';
-        imports.add(defaultsTo.resolver.importFrom, conditionalResolverName);
+        imports.add(
+          defaultsTo.resolver.importFrom ?? 'hooked',
+          conditionalResolverName
+        );
         interfaces.add(['eddsa', 'identity', 'payer']);
         condition = `${conditionalResolverName}(context, resolvedAccounts, ${argObject}, programId, ${conditionalIsWritable})`;
         condition = negatedCondition ? `!${condition}` : condition;
