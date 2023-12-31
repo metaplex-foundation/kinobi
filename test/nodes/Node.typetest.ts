@@ -1,6 +1,7 @@
 import {
   assertIsNode,
   isNode,
+  isNodeFilter,
   Node,
   PublicKeyTypeNode,
   TupleTypeNode,
@@ -46,4 +47,26 @@ import {
   node satisfies TupleTypeNode;
   // @ts-expect-error
   node satisfies PublicKeyTypeNode;
+}
+
+{
+  // [isNodeFilter]: It narrows the type of a node to the given kind.
+  const node = {} as Node | null;
+  if (isNodeFilter('tupleTypeNode')(node)) {
+    node satisfies TupleTypeNode;
+    // @ts-expect-error
+    node satisfies PublicKeyTypeNode;
+  }
+}
+
+{
+  // [isNodeFilter]: It narrows the type of a node to union of the given kinds.
+  const node = {} as Node | null;
+  if (isNodeFilter(['tupleTypeNode', 'publicKeyTypeNode'])(node)) {
+    node satisfies TupleTypeNode | PublicKeyTypeNode;
+    // @ts-expect-error
+    node satisfies TupleTypeNode;
+    // @ts-expect-error
+    node satisfies PublicKeyTypeNode;
+  }
 }

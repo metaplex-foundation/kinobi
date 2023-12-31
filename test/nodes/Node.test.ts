@@ -6,6 +6,7 @@ import {
   isNodeFilter,
   numberTypeNode,
   publicKeyTypeNode,
+  removeNullAndAssertIsNodeFilter,
   tupleTypeNode,
 } from '../../src';
 
@@ -91,4 +92,33 @@ test('it returns a callback that asserts the node is part of the given kinds', (
   t.throws(() => filter(null), {
     message: 'Expected tupleTypeNode | publicKeyTypeNode, got null.',
   });
+});
+
+test('it returns a callback that filters out null values and asserts the node is of the given kind', (t) => {
+  const filter = removeNullAndAssertIsNodeFilter('tupleTypeNode');
+  t.deepEqual([tupleTypeNode([]), null].filter(filter), [tupleTypeNode([])]);
+  t.throws(
+    () => [tupleTypeNode([]), publicKeyTypeNode(), null].filter(filter),
+    {
+      message: 'Expected tupleTypeNode, got publicKeyTypeNode.',
+    }
+  );
+});
+
+test('it returns a callback that filters out null values and asserts the node is part of the given kinds', (t) => {
+  const filter = removeNullAndAssertIsNodeFilter([
+    'tupleTypeNode',
+    'publicKeyTypeNode',
+  ]);
+  t.deepEqual([tupleTypeNode([]), publicKeyTypeNode(), null].filter(filter), [
+    tupleTypeNode([]),
+    publicKeyTypeNode(),
+  ]);
+  t.throws(
+    () => [tupleTypeNode([]), numberTypeNode('u8'), null].filter(filter),
+    {
+      message:
+        'Expected tupleTypeNode | publicKeyTypeNode, got numberTypeNode.',
+    }
+  );
 });
