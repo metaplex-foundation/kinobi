@@ -36,6 +36,7 @@ export function getByteSizeVisitor(
     (_, values) => sumSizes(values),
     [
       ...REGISTERED_TYPE_NODE_KEYS,
+      'definedTypeLinkNode',
       'definedTypeNode',
       'accountDataNode',
       'instructionDataArgsNode',
