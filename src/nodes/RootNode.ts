@@ -4,6 +4,7 @@ import type { AccountNode } from './AccountNode';
 import type { DefinedTypeNode } from './DefinedTypeNode';
 import type { ErrorNode } from './ErrorNode';
 import type { InstructionNode } from './InstructionNode';
+import { PdaNode } from './PdaNode';
 import { ProgramNode, programNodeFromIdl } from './ProgramNode';
 
 export type IdlInputs = string | Partial<Idl> | (string | Partial<Idl>)[];
@@ -23,6 +24,10 @@ export function rootNodeFromIdls(idls: IdlInputs): RootNode {
     .map((idl) => (typeof idl === 'string' ? readJson<Partial<Idl>>(idl) : idl))
     .map((idl) => programNodeFromIdl(idl));
   return rootNode(programs);
+}
+
+export function getAllPdas(node: RootNode): PdaNode[] {
+  return node.programs.flatMap((program) => program.pdas);
 }
 
 export function getAllAccounts(node: RootNode): AccountNode[] {

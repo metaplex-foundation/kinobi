@@ -1,36 +1,5 @@
 {% import "templates/macros.njk" as macros %}
 
-{% if hasVariableSeeds %}
-export type {{ accountSeedsType }} = {
-  {% for seed in seeds %}
-    {% if seed.kind === 'variablePdaSeedNode' %}
-      {{ macros.docblock(seed.docs) }}
-      {{ seed.name | camelCase }}: {{ seed.typeManifest.looseType.render }};
-    {% endif %}
-  {% endfor %}
-}
-{% endif %}
-
-export async function {{ findPdaFunction }}(
-  {% if hasVariableSeeds %}
-    seeds: {{ accountSeedsType }},
-  {% endif %}
-  config: { programAddress?: Address | undefined } = {},
-): Promise<ProgramDerivedAddress> {
-  const { programAddress = '{{ program.publicKey }}' as Address<'{{ program.publicKey }}'> } = config;
-  return getProgramDerivedAddress({ programAddress, seeds: [
-    {% for seed in seeds %}
-      {% if seed.kind === 'programIdPdaSeedNode' %}
-        getAddressEncoder().encode(programAddress),
-      {% elif seed.kind === 'constantPdaSeedNode' %}
-        {{ seed.typeManifest.encoder.render }}.encode({{ seed.value.render }}),
-      {% else %}
-        {{ seed.typeManifest.encoder.render }}.encode(seeds.{{ seed.name | camelCase }}),
-      {% endif %}
-    {% endfor %}
-  ]});
-}
-
 export async function {{ fetchFromSeedsFunction }}(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   {% if hasVariableSeeds %}

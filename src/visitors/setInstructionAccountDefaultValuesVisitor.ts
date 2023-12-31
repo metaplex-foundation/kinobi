@@ -1,14 +1,14 @@
 import {
-  AccountNode,
   InstructionAccountNode,
   InstructionNode,
-  getAllAccounts,
+  PdaNode,
+  getAllPdas,
   instructionNode,
 } from '../nodes';
 import {
   InstructionAccountDefault,
   MainCaseString,
-  getDefaultSeedsFromAccount,
+  getDefaultSeedsFromPda,
   mainCase,
   pipe,
 } from '../shared';
@@ -165,7 +165,7 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
 export function setInstructionAccountDefaultValuesVisitor(
   rules: InstructionAccountDefaultRule[]
 ) {
-  let allAccounts = new Map<string, AccountNode>();
+  let allPdas = new Map<string, PdaNode>();
 
   // Place the rules with instructions first.
   const sortedRules = rules.sort((a, b) => {
@@ -197,9 +197,7 @@ export function setInstructionAccountDefaultValuesVisitor(
     identityVisitor(['rootNode', 'programNode', 'instructionNode']),
     (v) =>
       tapVisitor(v, 'rootNode', (root) => {
-        allAccounts = new Map(
-          getAllAccounts(root).map((account) => [account.name, account])
-        );
+        allPdas = new Map(getAllPdas(root).map((pda) => [pda.name, pda]));
       }),
     (v) =>
       extendVisitor(v, {
@@ -217,12 +215,12 @@ export function setInstructionAccountDefaultValuesVisitor(
                 return account;
               }
               if (rule.kind === 'pda') {
-                const foundAccount = allAccounts.get(mainCase(rule.pdaAccount));
+                const foundAccount = allPdas.get(mainCase(rule.pdaAccount));
                 const defaultsTo = {
                   ...rule,
                   seeds: {
                     ...(foundAccount
-                      ? getDefaultSeedsFromAccount(foundAccount)
+                      ? getDefaultSeedsFromPda(foundAccount)
                       : {}),
                     ...rule.seeds,
                   },

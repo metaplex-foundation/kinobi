@@ -7,6 +7,7 @@ import {
   getAllAccounts,
   getAllDefinedTypes,
   getAllInstructionsWithSubs,
+  getAllPdas,
   InstructionNode,
   ProgramNode,
 } from '../../nodes';
@@ -36,6 +37,7 @@ import {
   getInstructionFunctionLowLevelFragment,
   getInstructionParseFunctionFragment,
   getInstructionTypeFragment,
+  getPdaFunctionFragment,
   getProgramErrorsFragment,
   getProgramFragment,
   getTypeDataEnumHelpersFragment,
@@ -109,9 +111,10 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
       [
         'rootNode',
         'programNode',
-        'instructionNode',
+        'pdaNode',
         'accountNode',
         'definedTypeNode',
+        'instructionNode',
       ]
     ),
     (v) =>
@@ -121,6 +124,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
           const programsWithErrorsToExport = programsToExport.filter(
             (p) => p.errors.length > 0
           );
+          const pdasToExport = getAllPdas(node);
           const accountsToExport = getAllAccounts(node).filter(
             (a) => !a.internal
           );
@@ -141,6 +145,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             root: node,
             programsToExport,
             programsWithErrorsToExport,
+            pdasToExport,
             accountsToExport,
             instructionsToExport,
             definedTypesToExport,
@@ -159,6 +164,9 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
           }
           if (accountsToExport.length > 0) {
             map.add('accounts/index.ts', render('accountsIndex.njk', ctx));
+          }
+          if (pdasToExport.length > 0) {
+            map.add('pdas/index.ts', render('pdasIndex.njk', ctx));
           }
           if (instructionsToExport.length > 0) {
             map.add(
@@ -179,6 +187,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
         visitProgram(node, { self }) {
           program = node;
           const renderMap = new RenderMap()
+            .mergeWith(...node.pdas.map((pda) => visit(pda, self)))
             .mergeWith(...node.accounts.map((account) => visit(account, self)))
             .mergeWith(...node.definedTypes.map((type) => visit(type, self)));
 
@@ -230,6 +239,30 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
           return renderMap;
         },
 
+        visitPda(node) {
+          if (!program) {
+            throw new Error('Account must be visited inside a program.');
+          }
+
+          const scope = {
+            pdaNode: node,
+            programNode: program,
+            typeManifestVisitor,
+            nameApi,
+          };
+
+          const pdaFunctionFragment = getPdaFunctionFragment(scope);
+          const imports = new ImportMap().mergeWith(pdaFunctionFragment);
+
+          return new RenderMap().add(
+            `accounts/${camelCase(node.name)}.ts`,
+            render('accountsPage.njk', {
+              imports: imports.toString(dependencyMap),
+              pdaFunctionFragment,
+            })
+          );
+        },
+
         visitAccount(node) {
           if (!program) {
             throw new Error('Account must be visited inside a program.');
@@ -239,7 +272,6 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             accountNode: node,
             programNode: program,
             typeManifest: visit(node, typeManifestVisitor),
-            typeManifestVisitor,
             nameApi,
           };
 

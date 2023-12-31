@@ -32,7 +32,6 @@ export function transformDefinedTypesIntoAccountsVisitor(
             }),
             size: undefined,
             discriminator: undefined,
-            seeds: [],
           });
         });
 

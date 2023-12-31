@@ -7,10 +7,12 @@ import {
   getAllAccounts,
   getAllDefinedTypes,
   getAllInstructionsWithSubs,
+  getAllPdas,
   InstructionNode,
   isDataEnum,
   isNode,
   isNodeFilter,
+  PdaNode,
   ProgramNode,
 } from '../../nodes';
 import {
@@ -60,6 +62,7 @@ export function getRenderMapVisitor(
 ): Visitor<RenderMap> {
   let byteSizeVisitor = getByteSizeVisitor([]);
   let program: ProgramNode | null = null;
+  let allPdas = new Map<string, PdaNode>();
 
   const valueNodeVisitor = renderValueNodeVisitor();
   const typeManifestVisitor = getTypeManifestVisitor();
@@ -135,6 +138,7 @@ export function getRenderMapVisitor(
 
   visitor.visitRoot = (node) => {
     byteSizeVisitor = getByteSizeVisitor(getAllDefinedTypes(node));
+    allPdas = new Map(getAllPdas(node).map((pda) => [pda.name, pda]));
 
     const programsToExport = node.programs.filter((p) => !p.internal);
     const accountsToExport = getAllAccounts(node).filter((a) => !a.internal);
@@ -317,7 +321,9 @@ export function getRenderMapVisitor(
     }
 
     // Seeds.
-    const seeds = node.seeds.map((seed) => {
+    const pda = node.pda ? allPdas.get(node.pda.name) : undefined;
+    const pdaSeeds = pda?.seeds ?? [];
+    const seeds = pdaSeeds.map((seed) => {
       if (isNode(seed, 'constantPdaSeedNode')) {
         const seedManifest = visit(seed.type, typeManifestVisitor);
         imports.mergeWith(seedManifest.serializerImports);
@@ -344,7 +350,7 @@ export function getRenderMapVisitor(
       imports.add('umi', ['Pda']);
     }
     const hasVariableSeeds =
-      node.seeds.filter(isNodeFilter('variablePdaSeedNode')).length > 0;
+      pdaSeeds.filter(isNodeFilter('variablePdaSeedNode')).length > 0;
 
     return new RenderMap().add(
       `accounts/${camelCase(node.name)}.ts`,

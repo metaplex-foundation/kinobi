@@ -1,15 +1,15 @@
 import {
-  AccountNode,
   InstructionAccountNode,
   InstructionAccountNodeInput,
   InstructionDataArgsNode,
   InstructionExtraArgsNode,
   InstructionNode,
   InstructionNodeInput,
+  PdaNode,
   TYPE_NODES,
   TypeNode,
   assertIsNode,
-  getAllAccounts,
+  getAllPdas,
   instructionAccountNode,
   instructionDataArgsNode,
   instructionExtraArgsNode,
@@ -21,7 +21,7 @@ import {
   InstructionAccountDefault,
   InstructionArgDefault,
   MainCaseString,
-  getDefaultSeedsFromAccount,
+  getDefaultSeedsFromPda,
   mainCase,
   pipe,
 } from '../shared';
@@ -67,7 +67,7 @@ export type InstructionArgUpdates = Record<
 export function updateInstructionsVisitor(
   map: Record<string, InstructionUpdates>
 ) {
-  let allAccounts = new Map<string, AccountNode>();
+  let allPdas = new Map<string, PdaNode>();
 
   const transformers = Object.entries(map).map(
     ([selector, updates]): BottomUpNodeTransformerWithSelector => {
@@ -93,7 +93,7 @@ export function updateInstructionsVisitor(
           const { newDataArgs, newExtraArgs, newArgDefaults } =
             handleInstructionArgs(node, newName, argsUpdates ?? {});
           const newAccounts = node.accounts.map((account) =>
-            handleInstructionAccount(account, accountUpdates ?? {}, allAccounts)
+            handleInstructionAccount(account, accountUpdates ?? {}, allPdas)
           );
 
           return instructionNode({
@@ -111,9 +111,7 @@ export function updateInstructionsVisitor(
 
   return pipe(bottomUpTransformerVisitor(transformers), (v) =>
     tapVisitor(v, 'rootNode', (root) => {
-      allAccounts = new Map(
-        getAllAccounts(root).map((account) => [account.name, account])
-      );
+      allPdas = new Map(getAllPdas(root).map((pda) => [pda.name, pda]));
     })
   );
 }
@@ -121,7 +119,7 @@ export function updateInstructionsVisitor(
 function handleInstructionAccount(
   account: InstructionAccountNode,
   accountUpdates: InstructionAccountUpdates,
-  allAccounts: Map<string, AccountNode>
+  allPdas: Map<string, PdaNode>
 ): InstructionAccountNode {
   const accountUpdate = accountUpdates?.[account.name];
   if (!accountUpdate) return account;
@@ -136,14 +134,14 @@ function handleInstructionAccount(
 
   if (defaultsTo?.kind === 'pda') {
     const pdaAccount = mainCase(defaultsTo.pdaAccount);
-    const foundAccount = allAccounts.get(pdaAccount);
+    const foundPda = allPdas.get(pdaAccount);
     return {
       ...acountWithoutDefault,
       name: mainCase(acountWithoutDefault.name),
       defaultsTo: {
         ...defaultsTo,
         seeds: {
-          ...(foundAccount ? getDefaultSeedsFromAccount(foundAccount) : {}),
+          ...(foundPda ? getDefaultSeedsFromPda(foundPda) : {}),
           ...defaultsTo.seeds,
         },
       },

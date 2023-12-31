@@ -1,10 +1,12 @@
 import type { ConfigureOptions } from 'nunjucks';
 import {
   InstructionNode,
+  PdaNode,
   ProgramNode,
   getAllAccounts,
   getAllDefinedTypes,
   getAllInstructionsWithSubs,
+  getAllPdas,
   isNode,
   isNodeFilter,
 } from '../../nodes';
@@ -28,6 +30,7 @@ export type GetRustRenderMapOptions = {
 
 export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
   let program: ProgramNode | null = null;
+  let allPdas = new Map<string, PdaNode>();
 
   const renderParentInstructions = options.renderParentInstructions ?? false;
   const dependencyMap = options.dependencyMap ?? {};
@@ -46,6 +49,10 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
 
   return extendVisitor(baseVisitor, {
     visitRoot(node, { self }) {
+      allPdas = new Map(
+        getAllPdas(node).map((pda) => [pda.name, pda] as const)
+      );
+
       const programsToExport = node.programs.filter((p) => !p.internal);
       const accountsToExport = getAllAccounts(node).filter((a) => !a.internal);
       const instructionsToExport = getAllInstructionsWithSubs(
@@ -135,7 +142,9 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
 
       // Seeds.
       const seedsImports = new RustImportMap();
-      const seeds = node.seeds.map((seed) => {
+      const pda = node.pda ? allPdas.get(node.pda.name) : undefined;
+      const pdaSeeds = pda?.seeds ?? [];
+      const seeds = pdaSeeds.map((seed) => {
         if (isNode(seed, 'constantPdaSeedNode')) {
           const seedManifest = visit(seed.type, typeManifestVisitor);
           const seedValue = seed.value;
@@ -152,7 +161,7 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
         return seed;
       });
       const hasVariableSeeds =
-        node.seeds.filter(isNodeFilter('variablePdaSeedNode')).length > 0;
+        pdaSeeds.filter(isNodeFilter('variablePdaSeedNode')).length > 0;
 
       const { imports } = typeManifest;
 
