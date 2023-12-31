@@ -1,5 +1,6 @@
 import {
   Node,
+  PDA_SEED_NODES,
   REGISTERED_NODES_KEYS,
   RegisteredNodes,
   accountDataNode,
@@ -18,7 +19,6 @@ import {
   assertInstructionNode,
   assertLinkTypeNode,
   assertNumberTypeNode,
-  assertPdaSeedNode,
   assertProgramNode,
   assertSizeNode,
   assertStructFieldTypeNode,
@@ -45,6 +45,7 @@ import {
   optionTypeNode,
   prefixedSizeNode,
   programNode,
+  removeNullAndAssertIsNodeFilter,
   removeNullAndAssertNodeFilter,
   rootNode,
   setTypeNode,
@@ -114,7 +115,7 @@ export function identityVisitor<
       assertAccountDataNode(data);
       const seeds = node.seeds
         .map((type) => visit(this)(type))
-        .filter(removeNullAndAssertNodeFilter(assertPdaSeedNode));
+        .filter(removeNullAndAssertIsNodeFilter(PDA_SEED_NODES));
       return accountNode({ ...node, data, seeds });
     };
   }

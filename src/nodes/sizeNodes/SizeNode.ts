@@ -3,6 +3,8 @@ import type { FixedSizeNode } from './FixedSizeNode';
 import type { PrefixedSizeNode } from './PrefixedSizeNode';
 import type { RemainderSizeNode } from './RemainderSizeNode';
 
+// Node Group Registration.
+
 export const REGISTERED_SIZE_NODES = {
   fixedSizeNode: {} as FixedSizeNode,
   remainderSizeNode: {} as RemainderSizeNode,
@@ -15,7 +17,11 @@ export const REGISTERED_SIZE_NODE_KEYS = Object.keys(
 
 export type RegisteredSizeNodes = typeof REGISTERED_SIZE_NODES;
 
+// Node Group Helpers.
+
 export type SizeNode = RegisteredSizeNodes[keyof RegisteredSizeNodes];
+
+export const SIZE_NODES = REGISTERED_SIZE_NODE_KEYS;
 
 export function isSizeNode(node: Node | null): node is SizeNode {
   return !!node && (REGISTERED_SIZE_NODE_KEYS as string[]).includes(node.kind);

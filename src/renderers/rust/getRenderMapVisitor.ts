@@ -5,9 +5,9 @@ import {
   getAllAccounts,
   getAllDefinedTypes,
   getAllInstructionsWithSubs,
-  isConstantPdaSeedNode,
+  isNode,
+  isNodeFilter,
   isOptionTypeNode,
-  isVariablePdaSeedNode,
 } from '../../nodes';
 import {
   ImportFrom,
@@ -137,7 +137,7 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
       // Seeds.
       const seedsImports = new RustImportMap();
       const seeds = node.seeds.map((seed) => {
-        if (isConstantPdaSeedNode(seed)) {
+        if (isNode(seed, 'constantPdaSeedNode')) {
           const seedManifest = visit(seed.type, typeManifestVisitor);
           const seedValue = seed.value;
           const valueManifest = renderValueNode(seedValue, true);
@@ -145,7 +145,7 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
           seedsImports.mergeWith(valueManifest.imports);
           return { ...seed, typeManifest: seedManifest };
         }
-        if (isVariablePdaSeedNode(seed)) {
+        if (isNode(seed, 'variablePdaSeedNode')) {
           const seedManifest = visit(seed.type, typeManifestVisitor);
           seedsImports.mergeWith(seedManifest.imports);
           return { ...seed, typeManifest: seedManifest };
@@ -153,7 +153,7 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
         return seed;
       });
       const hasVariableSeeds =
-        node.seeds.filter(isVariablePdaSeedNode).length > 0;
+        node.seeds.filter(isNodeFilter('variablePdaSeedNode')).length > 0;
 
       const { imports } = typeManifest;
 

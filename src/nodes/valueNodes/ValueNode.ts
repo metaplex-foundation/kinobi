@@ -12,6 +12,8 @@ import type { SetValueNode } from './SetValueNode';
 import type { StructValueNode } from './StructValueNode';
 import type { TupleValueNode } from './TupleValueNode';
 
+// Node Group Registration.
+
 export const REGISTERED_VALUE_NODES = {
   arrayValueNode: {} as ArrayValueNode,
   booleanValueNode: {} as BooleanValueNode,
@@ -33,7 +35,11 @@ export const REGISTERED_VALUE_NODE_KEYS = Object.keys(
 
 export type RegisteredValueNodes = typeof REGISTERED_VALUE_NODES;
 
+// Node Group Helpers.
+
 export type ValueNode = RegisteredValueNodes[keyof RegisteredValueNodes];
+
+export const VALUE_NODES = REGISTERED_VALUE_NODE_KEYS;
 
 export function isValueNode(node: Node | null): node is ValueNode {
   return !!node && (REGISTERED_VALUE_NODE_KEYS as string[]).includes(node.kind);

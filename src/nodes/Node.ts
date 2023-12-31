@@ -13,6 +13,8 @@ import { REGISTERED_SIZE_NODES } from './sizeNodes';
 import { REGISTERED_TYPE_NODES } from './typeNodes';
 import { REGISTERED_VALUE_NODES } from './valueNodes';
 
+// Node Registration.
+
 const REGISTERED_NODES = {
   rootNode: {} as RootNode,
   programNode: {} as ProgramNode,
@@ -37,6 +39,8 @@ export const REGISTERED_NODES_KEYS = Object.keys(
 ) as (keyof RegisteredNodes)[];
 
 export type RegisteredNodes = typeof REGISTERED_NODES;
+
+// Node Helpers.
 
 export type Node = RegisteredNodes[keyof RegisteredNodes];
 
