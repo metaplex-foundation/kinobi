@@ -28,6 +28,7 @@ import {
   mapTypeNode,
   mapValueNode,
   optionTypeNode,
+  pdaNode,
   prefixedSizeNode,
   programNode,
   removeNullAndAssertIsNodeFilter,
@@ -76,6 +77,9 @@ export function identityVisitor<
     visitor.visitProgram = function visitProgram(node) {
       return programNode({
         ...node,
+        pdas: node.pdas
+          .map((account) => visit(this)(account))
+          .filter(removeNullAndAssertIsNodeFilter('pdaNode')),
         accounts: node.accounts
           .map((account) => visit(this)(account))
           .filter(removeNullAndAssertIsNodeFilter('accountNode')),
@@ -89,6 +93,17 @@ export function identityVisitor<
           .map((error) => visit(this)(error))
           .filter(removeNullAndAssertIsNodeFilter('errorNode')),
       });
+    };
+  }
+
+  if (castedNodeKeys.includes('pdaNode')) {
+    visitor.visitPda = function visitPda(node) {
+      return pdaNode(
+        node.name,
+        node.seeds
+          .map((type) => visit(this)(type))
+          .filter(removeNullAndAssertIsNodeFilter(PDA_SEED_NODES))
+      );
     };
   }
 

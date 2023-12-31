@@ -7,6 +7,7 @@ export * from './InstructionDataArgsNode';
 export * from './InstructionExtraArgsNode';
 export * from './InstructionNode';
 export * from './Node';
+export * from './PdaNode';
 export * from './ProgramNode';
 export * from './RootNode';
 

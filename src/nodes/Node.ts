@@ -6,6 +6,7 @@ import type { InstructionAccountNode } from './InstructionAccountNode';
 import type { InstructionDataArgsNode } from './InstructionDataArgsNode';
 import type { InstructionExtraArgsNode } from './InstructionExtraArgsNode';
 import type { InstructionNode } from './InstructionNode';
+import type { PdaNode } from './PdaNode';
 import type { ProgramNode } from './ProgramNode';
 import type { RootNode } from './RootNode';
 import { REGISTERED_PDA_SEED_NODES } from './pdaSeedNodes';
@@ -18,6 +19,7 @@ import { REGISTERED_VALUE_NODES } from './valueNodes';
 const REGISTERED_NODES = {
   rootNode: {} as RootNode,
   programNode: {} as ProgramNode,
+  pdaNode: {} as PdaNode,
   accountNode: {} as AccountNode,
   accountDataNode: {} as AccountDataNode,
   instructionNode: {} as InstructionNode,

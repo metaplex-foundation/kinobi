@@ -26,11 +26,18 @@ export function mergeVisitor<
   if (castedNodeKeys.includes('programNode')) {
     visitor.visitProgram = function visitProgram(node) {
       return merge(node, [
+        ...node.pdas.flatMap(visit(this)),
         ...node.accounts.flatMap(visit(this)),
         ...node.instructions.flatMap(visit(this)),
         ...node.definedTypes.flatMap(visit(this)),
         ...node.errors.flatMap(visit(this)),
       ]);
+    };
+  }
+
+  if (castedNodeKeys.includes('pdaNode')) {
+    visitor.visitPda = function visitPda(node) {
+      return merge(node, node.seeds.flatMap(visit(this)));
     };
   }
 
