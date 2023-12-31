@@ -9,6 +9,7 @@ import type { InstructionNode } from './InstructionNode';
 import type { PdaNode } from './PdaNode';
 import type { ProgramNode } from './ProgramNode';
 import type { RootNode } from './RootNode';
+import { REGISTERED_LINK_NODES } from './linkNodes';
 import { REGISTERED_PDA_SEED_NODES } from './pdaSeedNodes';
 import { REGISTERED_SIZE_NODES } from './sizeNodes';
 import { REGISTERED_TYPE_NODES } from './typeNodes';
@@ -30,6 +31,7 @@ const REGISTERED_NODES = {
   definedTypeNode: {} as DefinedTypeNode,
 
   // Groups.
+  ...REGISTERED_LINK_NODES,
   ...REGISTERED_PDA_SEED_NODES,
   ...REGISTERED_SIZE_NODES,
   ...REGISTERED_TYPE_NODES,
