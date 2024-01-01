@@ -8,12 +8,16 @@ import {
 
 export type InstructionAccountNode = {
   readonly kind: 'instructionAccountNode';
+
+  // Children to-be.
+  readonly defaultsTo?: InstructionAccountDefault;
+
+  // Data.
   readonly name: MainCaseString;
   readonly isWritable: boolean;
   readonly isSigner: boolean | 'either';
   readonly isOptional: boolean;
   readonly docs: string[];
-  readonly defaultsTo?: InstructionAccountDefault;
 };
 
 export type InstructionAccountNodeInput = Omit<
