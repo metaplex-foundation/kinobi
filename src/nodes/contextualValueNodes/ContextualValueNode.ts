@@ -1,6 +1,7 @@
 import type { IdentityValueNode } from './IdentityValueNode';
 import type { PayerValueNode } from './PayerValueNode';
 import type { ProgramIdValueNode } from './ProgramIdValueNode';
+import type { ResolverValueNode } from './ResolverValueNode';
 
 // Node Group Registration.
 
@@ -8,6 +9,7 @@ export const REGISTERED_CONTEXTUAL_VALUE_NODES = {
   identityValueNode: {} as IdentityValueNode,
   payerValueNode: {} as PayerValueNode,
   programIdValueNode: {} as ProgramIdValueNode,
+  resolverValueNode: {} as ResolverValueNode,
 };
 
 export const REGISTERED_CONTEXTUAL_VALUE_NODE_KEYS = Object.keys(
