@@ -1,4 +1,4 @@
-import { InstructionInputValueNode, isNode } from 'src/nodes';
+import { InstructionInputValueNode, isNode } from '../../nodes';
 import { MainCaseString, camelCase, pascalCase } from '../../shared';
 import { ResolvedInstructionInput, visit } from '../../visitors';
 import { JavaScriptContextMap } from './JavaScriptContextMap';

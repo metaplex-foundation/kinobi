@@ -1,15 +1,17 @@
 import {
   InstructionAccountNode,
-  InstructionInputValueNode,
   InstructionNode,
   VALUE_NODES,
   getDefaultSeedValuesFromPda,
   instructionNode,
   isNode,
+} from '../nodes';
+import {
+  InstructionInputValueNode,
   payerValueNode,
   programIdValueNode,
-  publicKeyValueNode,
-} from '../nodes';
+} from '../nodes/contextualValueNodes';
+import { publicKeyValueNode } from '../nodes/valueNodes';
 import { LinkableDictionary, mainCase, pipe } from '../shared';
 import { extendVisitor } from './extendVisitor';
 import { identityVisitor } from './identityVisitor';
