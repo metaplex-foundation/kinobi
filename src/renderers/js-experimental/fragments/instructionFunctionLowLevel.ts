@@ -60,13 +60,14 @@ export function getInstructionFunctionLowLevelFragment(scope: {
 
   const accounts = instructionNode.accounts.map((account) => {
     const typeParam = `TAccount${pascalCase(account.name)}`;
-    const defaultValue = getDefaultValue(
+    const defaultValueFragment = getDefaultValue(
       account,
       programNode,
       nameApi,
       instructionNode.optionalAccountStrategy === 'omitted'
     );
-    imports.mergeWith(defaultValue);
+    imports.mergeWith(defaultValueFragment);
+    const defaultValue = defaultValueFragment.render || null;
     const isOptionalOrHasLowLevelDefaultValues =
       account.isOptional || defaultValue !== null;
 
@@ -74,7 +75,7 @@ export function getInstructionFunctionLowLevelFragment(scope: {
       ...account,
       typeParam,
       defaultRole: getDefaultRole(account),
-      defaultValue: defaultValue.render ? defaultValue.render : null,
+      defaultValue,
       isOptionalOrHasLowLevelDefaultValues,
     };
   });
