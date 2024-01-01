@@ -16,12 +16,7 @@ import {
   fetchEncodedAccount,
   fetchEncodedAccounts,
 } from '@solana/accounts';
-import {
-  Address,
-  ProgramDerivedAddress,
-  getAddressEncoder,
-  getProgramDerivedAddress,
-} from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -34,7 +29,7 @@ import {
   getStructEncoder,
 } from '@solana/codecs-data-structures';
 import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
-import { getStringEncoder } from '@solana/codecs-strings';
+import { DelegateRecordSeeds, findDelegateRecordPda } from '../pdas';
 import {
   DelegateRole,
   DelegateRoleArgs,
@@ -143,28 +138,6 @@ export async function safeFetchAllDelegateRecord(
 
 export function getDelegateRecordSize(): number {
   return 282;
-}
-
-export type DelegateRecordSeeds = {
-  /** The delegate role */
-  role: DelegateRoleArgs;
-};
-
-export async function findDelegateRecordPda(
-  seeds: DelegateRecordSeeds,
-  config: { programAddress?: Address | undefined } = {}
-): Promise<ProgramDerivedAddress> {
-  const {
-    programAddress = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-  } = config;
-  return getProgramDerivedAddress({
-    programAddress,
-    seeds: [
-      getStringEncoder({ size: 'variable' }).encode('delegate_record'),
-      getAddressEncoder().encode(programAddress),
-      getDelegateRoleEncoder().encode(seeds.role),
-    ],
-  });
 }
 
 export async function fetchDelegateRecordFromSeeds(

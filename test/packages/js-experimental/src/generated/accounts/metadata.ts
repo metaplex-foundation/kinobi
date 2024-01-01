@@ -18,10 +18,8 @@ import {
 } from '@solana/accounts';
 import {
   Address,
-  ProgramDerivedAddress,
   getAddressDecoder,
   getAddressEncoder,
-  getProgramDerivedAddress,
 } from '@solana/addresses';
 import {
   Codec,
@@ -51,6 +49,7 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
+import { MetadataSeeds, findMetadataPda } from '../pdas';
 import {
   Collection,
   CollectionArgs,
@@ -255,28 +254,6 @@ export async function safeFetchAllMetadata(
 
 export function getMetadataSize(): number {
   return 679;
-}
-
-export type MetadataSeeds = {
-  /** The address of the mint account */
-  mint: Address;
-};
-
-export async function findMetadataPda(
-  seeds: MetadataSeeds,
-  config: { programAddress?: Address | undefined } = {}
-): Promise<ProgramDerivedAddress> {
-  const {
-    programAddress = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-  } = config;
-  return getProgramDerivedAddress({
-    programAddress,
-    seeds: [
-      getStringEncoder({ size: 'variable' }).encode('metadata'),
-      getAddressEncoder().encode(programAddress),
-      getAddressEncoder().encode(seeds.mint),
-    ],
-  });
 }
 
 export async function fetchMetadataFromSeeds(

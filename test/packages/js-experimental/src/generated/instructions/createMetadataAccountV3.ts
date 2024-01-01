@@ -39,7 +39,7 @@ import {
   getOptionEncoder,
 } from '@solana/options';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import { findMetadataPda } from '../accounts';
+import { findMetadataPda } from '../pdas';
 import {
   ResolvedAccount,
   accountMetaWithDefault,

@@ -16,12 +16,7 @@ import {
   fetchEncodedAccount,
   fetchEncodedAccounts,
 } from '@solana/accounts';
-import {
-  Address,
-  ProgramDerivedAddress,
-  getAddressEncoder,
-  getProgramDerivedAddress,
-} from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -39,7 +34,7 @@ import {
   getU64Decoder,
   getU64Encoder,
 } from '@solana/codecs-numbers';
-import { getStringEncoder } from '@solana/codecs-strings';
+import { FrequencyAccountSeeds, findFrequencyAccountPda } from '../pdas';
 import { TaKey } from '../types';
 
 export type FrequencyAccount<TAddress extends string = string> = Account<
@@ -161,35 +156,22 @@ export function getFrequencyAccountSize(): number {
   return 24;
 }
 
-export async function findFrequencyAccountPda(
-  config: { programAddress?: Address | undefined } = {}
-): Promise<ProgramDerivedAddress> {
-  const {
-    programAddress = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>,
-  } = config;
-  return getProgramDerivedAddress({
-    programAddress,
-    seeds: [
-      getStringEncoder({ size: 'variable' }).encode('frequency_pda'),
-      getAddressEncoder().encode(programAddress),
-    ],
-  });
-}
-
 export async function fetchFrequencyAccountFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
+  seeds: FrequencyAccountSeeds,
   config: FetchAccountConfig & { programAddress?: Address } = {}
 ): Promise<FrequencyAccount> {
   const { programAddress, ...fetchConfig } = config;
-  const [address] = await findFrequencyAccountPda({ programAddress });
+  const [address] = await findFrequencyAccountPda(seeds, { programAddress });
   return fetchFrequencyAccount(rpc, address, fetchConfig);
 }
 
 export async function safeFetchFrequencyAccountFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
+  seeds: FrequencyAccountSeeds,
   config: FetchAccountConfig & { programAddress?: Address } = {}
 ): Promise<FrequencyAccount | null> {
   const { programAddress, ...fetchConfig } = config;
-  const [address] = await findFrequencyAccountPda({ programAddress });
+  const [address] = await findFrequencyAccountPda(seeds, { programAddress });
   return safeFetchFrequencyAccount(rpc, address, fetchConfig);
 }

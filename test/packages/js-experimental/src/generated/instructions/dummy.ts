@@ -34,7 +34,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { resolveTokenOrAta } from '../../hooked';
-import { findDelegateRecordPda } from '../accounts';
+import { findDelegateRecordPda } from '../pdas';
 import {
   ResolvedAccount,
   accountMetaWithDefault,

@@ -16,12 +16,7 @@ import {
   fetchEncodedAccount,
   fetchEncodedAccounts,
 } from '@solana/accounts';
-import {
-  Address,
-  ProgramDerivedAddress,
-  getAddressEncoder,
-  getProgramDerivedAddress,
-} from '@solana/addresses';
+import { Address } from '@solana/addresses';
 import {
   Codec,
   Decoder,
@@ -34,13 +29,13 @@ import {
   getStructEncoder,
 } from '@solana/codecs-data-structures';
 import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
-import { getStringEncoder } from '@solana/codecs-strings';
 import {
   Option,
   OptionOrNullable,
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
+import { MasterEditionV2Seeds, findMasterEditionV2Pda } from '../pdas';
 import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type MasterEditionV2<TAddress extends string = string> = Account<
@@ -146,29 +141,6 @@ export async function safeFetchAllMasterEditionV2(
 
 export function getMasterEditionV2Size(): number {
   return 282;
-}
-
-export type MasterEditionV2Seeds = {
-  /** The address of the mint account */
-  mint: Address;
-};
-
-export async function findMasterEditionV2Pda(
-  seeds: MasterEditionV2Seeds,
-  config: { programAddress?: Address | undefined } = {}
-): Promise<ProgramDerivedAddress> {
-  const {
-    programAddress = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-  } = config;
-  return getProgramDerivedAddress({
-    programAddress,
-    seeds: [
-      getStringEncoder({ size: 'variable' }).encode('metadata'),
-      getAddressEncoder().encode(programAddress),
-      getAddressEncoder().encode(seeds.mint),
-      getStringEncoder({ size: 'variable' }).encode('edition'),
-    ],
-  });
 }
 
 export async function fetchMasterEditionV2FromSeeds(
