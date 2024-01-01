@@ -49,7 +49,7 @@ export function getPdaFunctionFragment(scope: {
   const hasVariableSeeds =
     pdaNode.seeds.filter(isNodeFilter('variablePdaSeedNode')).length > 0;
 
-  return fragmentFromTemplate('accountPdaHelpers.njk', {
+  return fragmentFromTemplate('pdaFunction.njk', {
     accountType: nameApi.accountType(pdaNode.name),
     accountSeedsType: nameApi.accountSeedsType(pdaNode.name),
     findPdaFunction: nameApi.accountFindPdaFunction(pdaNode.name),

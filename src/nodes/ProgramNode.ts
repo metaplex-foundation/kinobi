@@ -52,7 +52,9 @@ export function programNode(input: ProgramNodeInput): ProgramNode {
 
 export function programNodeFromIdl(idl: Partial<Idl>): ProgramNode {
   const origin = idl.metadata?.origin;
-  const pdas = (idl.accounts ?? []).map(pdaNodeFromIdl);
+  const pdas = (idl.accounts ?? [])
+    .filter((account) => (account.seeds ?? []).length > 0)
+    .map(pdaNodeFromIdl);
   const accounts = (idl.accounts ?? []).map(accountNodeFromIdl);
   const instructions = (idl.instructions ?? []).map((ix) =>
     origin === 'anchor'
