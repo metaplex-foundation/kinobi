@@ -131,8 +131,149 @@ test('it creates a new PDA node when providing seeds to an account with no linke
   t.deepEqual(result.programs[0].accounts[0].pda, pdaLinkNode('myAccount'));
 });
 
-// It updates the PDA node when the updated account name matches an existing PDA node.
+test('it updates the PDA node when the updated account name matches an existing PDA node', (t) => {
+  // Given an account node and a PDA node with the same name
+  // such that the account is not linked to the PDA.
+  const node = programNode({
+    name: 'myProgram',
+    publicKey: '1111',
+    accounts: [accountNode({ name: 'myAccount' })],
+    pdas: [pdaNode('myAccount', [])],
+  });
 
-// It updates the PDA node with the provided seeds when an account is linked to a PDA.
+  // When we update the account with PDA seeds.
+  const seeds = [constantPdaSeedNodeFromString('myAccount')];
+  const result = visit(
+    node,
+    updateAccountsVisitor({
+      myAccount: { seeds },
+    })
+  );
+  assertIsNode(result, 'programNode');
 
-// It creates a new PDA node when updating an account with a new linked PDA that does not exist.
+  // Then we expect the PDA node with the same name to have been updated.
+  t.is(result.pdas.length, 1);
+  t.deepEqual(result.pdas[0], pdaNode('myAccount', seeds));
+
+  // And the account now links to this PDA node.
+  t.deepEqual(result.accounts[0].pda, pdaLinkNode('myAccount'));
+});
+
+test('it updates the PDA node with the provided seeds when an account is linked to a PDA', (t) => {
+  // Given an account node and a PDA node with a different name
+  // such that the account is linked to the PDA.
+  const node = programNode({
+    name: 'myProgram',
+    publicKey: '1111',
+    accounts: [accountNode({ name: 'myAccount', pda: pdaLinkNode('myPda') })],
+    pdas: [pdaNode('myPda', [])],
+  });
+
+  // When we update the account with PDA seeds.
+  const seeds = [constantPdaSeedNodeFromString('myAccount')];
+  const result = visit(
+    node,
+    updateAccountsVisitor({
+      myAccount: { seeds },
+    })
+  );
+  assertIsNode(result, 'programNode');
+
+  // Then we expect the linked PDA node to have been updated.
+  t.is(result.pdas.length, 1);
+  t.deepEqual(result.pdas[0], pdaNode('myPda', seeds));
+
+  // And the account still links to the PDA node.
+  t.deepEqual(result.accounts[0].pda, pdaLinkNode('myPda'));
+});
+
+test('it creates a new PDA node when updating an account with seeds and a new linked PDA that does not exist', (t) => {
+  // Given an account node with no linked PDA.
+  const node = programNode({
+    name: 'myProgram',
+    publicKey: '1111',
+    accounts: [accountNode({ name: 'myAccount' })],
+  });
+
+  // When we update the account with PDA seeds and a new linked PDA node.
+  const seeds = [constantPdaSeedNodeFromString('myAccount')];
+  const result = visit(
+    node,
+    updateAccountsVisitor({
+      myAccount: {
+        pda: pdaLinkNode('myPda'),
+        seeds,
+      },
+    })
+  );
+  assertIsNode(result, 'programNode');
+
+  // Then we expect the linked PDA node to have been created.
+  t.is(result.pdas.length, 1);
+  t.deepEqual(result.pdas[0], pdaNode('myPda', seeds));
+
+  // And the account now links to the PDA node.
+  t.deepEqual(result.accounts[0].pda, pdaLinkNode('myPda'));
+});
+
+test('it updates a PDA node when updating an account with seeds and a new linked PDA that exists', (t) => {
+  // Given an account node with no linked PDA and an existing PDA node.
+  const node = programNode({
+    name: 'myProgram',
+    publicKey: '1111',
+    accounts: [accountNode({ name: 'myAccount' })],
+    pdas: [pdaNode('myPda', [])],
+  });
+
+  // When we update the account with PDA seeds and a linked PDA node that points to the existing PDA.
+  const seeds = [constantPdaSeedNodeFromString('myAccount')];
+  const result = visit(
+    node,
+    updateAccountsVisitor({
+      myAccount: {
+        pda: pdaLinkNode('myPda'),
+        seeds,
+      },
+    })
+  );
+  assertIsNode(result, 'programNode');
+
+  // Then we expect the existing PDA node to have been updated.
+  t.is(result.pdas.length, 1);
+  t.deepEqual(result.pdas[0], pdaNode('myPda', seeds));
+
+  // And the account now links to this PDA node.
+  t.deepEqual(result.accounts[0].pda, pdaLinkNode('myPda'));
+});
+
+test('it can update the seeds and name of an account at the same time', (t) => {
+  // Given an account node with no linked PDA.
+  const node = programNode({
+    name: 'myProgram',
+    publicKey: '1111',
+    accounts: [accountNode({ name: 'myAccount' })],
+  });
+
+  // When we update the name and seeds of the account.
+  const seeds = [constantPdaSeedNodeFromString('myAccount')];
+  const result = visit(
+    node,
+    updateAccountsVisitor({
+      myAccount: {
+        name: 'myNewAccount',
+        seeds,
+      },
+    })
+  );
+  assertIsNode(result, 'programNode');
+
+  // Then we expect the account name to have been updated.
+  t.is(result.accounts[0].name, 'myNewAccount' as MainCaseString);
+
+  // And a new PDA node to have been created with that new name and the provided seeds.
+  t.is(result.pdas.length, 1);
+  t.deepEqual(result.pdas[0], pdaNode('myNewAccount', seeds));
+
+  // And the account to now link to the PDA node.
+  t.deepEqual(result.accounts[0].pda, pdaLinkNode('myNewAccount'));
+});
