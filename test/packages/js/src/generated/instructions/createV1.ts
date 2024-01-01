@@ -159,11 +159,9 @@ export function createV1(
     resolvedAccounts.payer.value = context.payer;
   }
   if (!resolvedAccounts.systemProgram.value) {
-    resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
-      'splSystem',
+    resolvedAccounts.systemProgram.value = publicKey(
       '11111111111111111111111111111111'
     );
-    resolvedAccounts.systemProgram.isWritable = false;
   }
   if (!resolvedAccounts.sysvarInstructions.value) {
     resolvedAccounts.sysvarInstructions.value = publicKey(
@@ -171,11 +169,9 @@ export function createV1(
     );
   }
   if (!resolvedAccounts.splTokenProgram.value) {
-    resolvedAccounts.splTokenProgram.value = context.programs.getPublicKey(
-      'splToken',
+    resolvedAccounts.splTokenProgram.value = publicKey(
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
     );
-    resolvedAccounts.splTokenProgram.isWritable = false;
   }
 
   // Accounts in order.

@@ -259,7 +259,6 @@ export function getFreezeDelegatedAccountInstruction<
   if (!accounts.tokenProgram.value) {
     accounts.tokenProgram.value =
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
-    accounts.tokenProgram.isWritable = false;
   }
 
   // Get account metas and signers.
@@ -313,11 +312,8 @@ export function getFreezeDelegatedAccountInstructionRaw<
       accountMetaWithDefault(accounts.edition, AccountRole.READONLY),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
       accountMetaWithDefault(
-        accounts.tokenProgram ?? {
-          address:
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
-          role: AccountRole.READONLY,
-        },
+        accounts.tokenProgram ??
+          ('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>),
         AccountRole.READONLY
       ),
       ...(remainingAccounts ?? []),

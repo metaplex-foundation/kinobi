@@ -240,7 +240,6 @@ export function getCreateRuleSetInstruction<
   if (!accounts.systemProgram.value) {
     accounts.systemProgram.value =
       '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
-    accounts.systemProgram.isWritable = false;
   }
   if (!args.ruleSetBump) {
     args.ruleSetBump = expectProgramDerivedAddress(
@@ -293,11 +292,8 @@ export function getCreateRuleSetInstructionRaw<
       accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
       accountMetaWithDefault(accounts.ruleSetPda, AccountRole.WRITABLE),
       accountMetaWithDefault(
-        accounts.systemProgram ?? {
-          address:
-            '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>,
-          role: AccountRole.READONLY,
-        },
+        accounts.systemProgram ??
+          ('11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>),
         AccountRole.READONLY
       ),
       ...(remainingAccounts ?? []),

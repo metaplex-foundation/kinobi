@@ -408,19 +408,17 @@ export async function getDummyInstructionAsync<
       });
     }
   }
-  if (!args.proof) {
-    args.proof = [];
-  }
   if (!accounts.tokenOrAtaProgram.value) {
     if (resolveTokenOrAta(resolverScope)) {
       accounts.tokenOrAtaProgram.value =
         'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
-      accounts.tokenOrAtaProgram.isWritable = false;
     } else {
       accounts.tokenOrAtaProgram.value =
         'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>;
-      accounts.tokenOrAtaProgram.isWritable = false;
     }
+  }
+  if (!args.proof) {
+    args.proof = [];
   }
 
   // Remaining accounts.
@@ -654,19 +652,17 @@ export function getDummyInstruction<
   if (!accounts.foo.value) {
     accounts.foo.value = expectTransactionSigner(accounts.bar.value).address;
   }
-  if (!args.proof) {
-    args.proof = [];
-  }
   if (!accounts.tokenOrAtaProgram.value) {
     if (resolveTokenOrAta(resolverScope)) {
       accounts.tokenOrAtaProgram.value =
         'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
-      accounts.tokenOrAtaProgram.isWritable = false;
     } else {
       accounts.tokenOrAtaProgram.value =
         'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>;
-      accounts.tokenOrAtaProgram.isWritable = false;
     }
+  }
+  if (!args.proof) {
+    args.proof = [];
   }
 
   // Remaining accounts.

@@ -344,7 +344,6 @@ export function getApproveCollectionAuthorityInstruction<
   if (!accounts.systemProgram.value) {
     accounts.systemProgram.value =
       '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
-    accounts.systemProgram.isWritable = false;
   }
 
   // Get account metas and signers.
@@ -421,11 +420,8 @@ export function getApproveCollectionAuthorityInstructionRaw<
       accountMetaWithDefault(accounts.metadata, AccountRole.READONLY),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
       accountMetaWithDefault(
-        accounts.systemProgram ?? {
-          address:
-            '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>,
-          role: AccountRole.READONLY,
-        },
+        accounts.systemProgram ??
+          ('11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>),
         AccountRole.READONLY
       ),
       accountMetaWithDefault(

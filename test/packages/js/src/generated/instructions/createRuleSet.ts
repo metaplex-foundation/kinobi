@@ -12,6 +12,7 @@ import {
   PublicKey,
   Signer,
   TransactionBuilder,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import {
@@ -123,11 +124,9 @@ export function createRuleSet(
     resolvedAccounts.payer.value = context.payer;
   }
   if (!resolvedAccounts.systemProgram.value) {
-    resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
-      'splSystem',
+    resolvedAccounts.systemProgram.value = publicKey(
       '11111111111111111111111111111111'
     );
-    resolvedAccounts.systemProgram.isWritable = false;
   }
   if (!resolvedArgs.ruleSetBump) {
     resolvedArgs.ruleSetBump = expectPda(resolvedAccounts.ruleSetPda.value)[1];
