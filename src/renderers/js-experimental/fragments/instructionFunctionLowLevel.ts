@@ -130,7 +130,9 @@ function getDefaultValue(
     );
   }
   if (isNode(defaultsTo, 'publicKeyValueNode')) {
-    return fragment(`"${defaultsTo.publicKey}"`);
+    return fragment(
+      `"${defaultsTo.publicKey}" as Address<"${defaultsTo.publicKey}">`
+    );
   }
   if (isNode(defaultsTo, 'programLinkNode')) {
     const programAddress = nameApi.programAddressConstant(defaultsTo.name);
