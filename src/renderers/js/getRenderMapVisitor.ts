@@ -84,6 +84,7 @@ export function getRenderMapVisitor(
     mplToolbox: '@metaplex-foundation/mpl-toolbox',
     ...options.dependencyMap,
     // Custom relative dependencies to link generated files together.
+    generatedPrograms: '../programs',
     generatedAccounts: '../accounts',
     generatedErrors: '../errors',
     generatedTypes: '../types',

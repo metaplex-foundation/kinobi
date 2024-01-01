@@ -293,6 +293,7 @@ export function mergeVisitor<
     visitor.visitConditionalValue = function visitConditionalValue(node) {
       return merge(node, [
         ...visit(this)(node.condition),
+        ...(node.value ? visit(this)(node.value) : []),
         ...(node.ifTrue ? visit(this)(node.ifTrue) : []),
         ...(node.ifFalse ? visit(this)(node.ifFalse) : []),
       ]);

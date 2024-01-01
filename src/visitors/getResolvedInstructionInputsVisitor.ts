@@ -1,29 +1,34 @@
-import { InstructionAccountNode, InstructionNode } from '../nodes';
-import { MainCaseString } from '../shared';
-import { Visitor } from './visitor';
-import { singleNodeVisitor } from './singleNodeVisitor';
-
-type InstructionInput = InstructionArg | InstructionAccount;
-type InstructionArg = {
-  kind: 'arg';
-  name: string;
-  defaultsTo: InstructionArgDefault;
-};
-type InstructionAccount = { kind: 'account' } & Omit<
+import {
+  AccountValueNode,
+  ArgumentValueNode,
   InstructionAccountNode,
-  'kind'
->;
+  InstructionInputValueNode,
+  InstructionNode,
+  accountValueNode,
+  isNode,
+} from '../nodes';
+import { MainCaseString } from '../shared';
+import { singleNodeVisitor } from './singleNodeVisitor';
+import { Visitor } from './visitor';
+
+type InstructionInput = InstructionArgument | InstructionAccountNode;
+type InstructionArgument = {
+  kind: 'argument';
+  name: string;
+  defaultsTo: InstructionInputValueNode;
+};
+type InstructionDependency = ArgumentValueNode | AccountValueNode;
 
 export type ResolvedInstructionInput =
   | ResolvedInstructionAccount
-  | ResolvedInstructionArg;
-export type ResolvedInstructionAccount = InstructionAccount & {
+  | ResolvedInstructionArgument;
+export type ResolvedInstructionAccount = InstructionAccountNode & {
   isPda: boolean;
   dependsOn: InstructionDependency[];
   resolvedIsSigner: boolean | 'either';
   resolvedIsOptional: boolean;
 };
-export type ResolvedInstructionArg = InstructionArg & {
+export type ResolvedInstructionArgument = InstructionArgument & {
   dependsOn: InstructionDependency[];
 };
 
@@ -34,7 +39,7 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
   let stack: InstructionInput[] = [];
   let resolved: ResolvedInstructionInput[] = [];
   let visitedAccounts = new Map<string, ResolvedInstructionAccount>();
-  let visitedArgs = new Map<string, ResolvedInstructionArg>();
+  let visitedArgs = new Map<string, ResolvedInstructionArgument>();
 
   function resolveInstructionInput(
     instruction: InstructionNode,
@@ -42,8 +47,9 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
   ): void {
     // Ensure we don't visit the same input twice.
     if (
-      (input.kind === 'account' && visitedAccounts.has(input.name)) ||
-      (input.kind === 'arg' && visitedArgs.has(input.name))
+      (input.kind === 'instructionAccountNode' &&
+        visitedAccounts.has(input.name)) ||
+      (input.kind === 'argument' && visitedArgs.has(input.name))
     ) {
       return;
     }
@@ -64,14 +70,14 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
     // Resolve whilst keeping track of the stack.
     stack.push(input);
     const localResolved =
-      input.kind === 'account'
+      input.kind === 'instructionAccountNode'
         ? resolveInstructionAccount(instruction, input)
         : resolveInstructionArg(instruction, input);
     stack.pop();
 
     // Store the resolved input.
     resolved.push(localResolved);
-    if (localResolved.kind === 'account') {
+    if (localResolved.kind === 'instructionAccountNode') {
       visitedAccounts.set(input.name, localResolved);
     } else {
       visitedArgs.set(input.name, localResolved);
@@ -80,7 +86,7 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
 
   function resolveInstructionAccount(
     instruction: InstructionNode,
-    account: InstructionAccount
+    account: InstructionAccountNode
   ): ResolvedInstructionAccount {
     // Find and visit dependencies first.
     const dependsOn = getInstructionDependencies(account);
@@ -90,7 +96,8 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
       ...account,
       isPda: Object.values(instruction.argDefaults).some(
         (argDefault) =>
-          argDefault.kind === 'accountBump' && argDefault.name === account.name
+          isNode(argDefault, 'accountBumpValueNode') &&
+          argDefault.name === account.name
       ),
       dependsOn,
       resolvedIsSigner: account.isSigner,
@@ -98,7 +105,7 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
     };
 
     switch (localResolved.defaultsTo?.kind) {
-      case 'account':
+      case 'accountValueNode':
         const defaultAccount = visitedAccounts.get(
           localResolved.defaultsTo.name
         )!;
@@ -113,21 +120,21 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
           : resolvedIsSigner;
         localResolved.resolvedIsOptional = defaultAccount.isOptional;
         break;
-      case 'publicKey':
-      case 'program':
-      case 'programId':
+      case 'publicKeyValueNode':
+      case 'programLinkNode':
+      case 'programIdValueNode':
         localResolved.resolvedIsSigner =
           account.isSigner === false ? false : 'either';
         localResolved.resolvedIsOptional = false;
         break;
-      case 'pda':
+      case 'pdaValueNode':
         localResolved.resolvedIsSigner =
           account.isSigner === false ? false : 'either';
         localResolved.resolvedIsOptional = false;
         const { seeds } = localResolved.defaultsTo;
         Object.keys(seeds).forEach((seedKey) => {
           const seed = seeds[seedKey as MainCaseString];
-          if (seed.kind !== 'account') return;
+          if (!isNode(seed, 'accountValueNode')) return;
           const dependency = visitedAccounts.get(seed.name)!;
           if (dependency.resolvedIsOptional) {
             const error =
@@ -137,11 +144,9 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
           }
         });
         break;
-      case 'identity':
-      case 'payer':
-        localResolved.resolvedIsOptional = false;
-        break;
-      case 'resolver':
+      case 'identityValueNode':
+      case 'payerValueNode':
+      case 'resolverValueNode':
         localResolved.resolvedIsOptional = false;
         break;
       default:
@@ -153,8 +158,8 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
 
   function resolveInstructionArg(
     instruction: InstructionNode,
-    arg: InstructionArg & { kind: 'arg' }
-  ): ResolvedInstructionArg {
+    arg: InstructionArgument & { kind: 'argument' }
+  ): ResolvedInstructionArgument {
     // Find and visit dependencies first.
     const dependsOn = getInstructionDependencies(arg);
     resolveInstructionDependencies(instruction, arg, dependsOn);
@@ -169,7 +174,7 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
   ): void {
     dependencies.forEach((dependency) => {
       let input: InstructionInput | null = null;
-      if (dependency.kind === 'account') {
+      if (isNode(dependency, 'accountValueNode')) {
         const dependencyAccount = instruction.accounts.find(
           ({ name }) => name === dependency.name
         );
@@ -179,12 +184,12 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
             `"${parent.name}" in the "${instruction.name}" instruction.`;
           throw new Error(error);
         }
-        input = { ...dependencyAccount, kind: 'account' };
-      } else if (dependency.kind === 'arg') {
+        input = { ...dependencyAccount };
+      } else if (isNode(dependency, 'argumentValueNode')) {
         const dependencyArg = instruction.argDefaults[dependency.name] ?? null;
         if (dependencyArg) {
           input = {
-            kind: 'arg',
+            kind: 'argument',
             name: dependency.name,
             defaultsTo: dependencyArg,
           };
@@ -202,62 +207,38 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
     if (!input.defaultsTo) return [];
 
     const getNestedDependencies = (
-      defaultsTo: InstructionDefault | undefined
+      defaultsTo: InstructionInputValueNode | undefined
     ): InstructionDependency[] => {
       if (!defaultsTo) return [];
-
-      if (input.kind === 'account') {
-        return getInstructionDependencies({
-          ...input,
-          defaultsTo: defaultsTo as InstructionAccountDefault,
-        });
-      }
-
-      return getInstructionDependencies({
-        ...input,
-        defaultsTo: defaultsTo as InstructionArgDefault,
-      });
+      return getInstructionDependencies({ ...input, defaultsTo });
     };
 
     if (
-      input.defaultsTo.kind === 'account' ||
-      input.defaultsTo.kind === 'accountBump'
+      isNode(input.defaultsTo, ['accountValueNode', 'accountBumpValueNode'])
     ) {
-      return [{ kind: 'account', name: input.defaultsTo.name }];
+      return [accountValueNode(input.defaultsTo.name)];
     }
 
-    if (input.defaultsTo.kind === 'pda') {
-      const accounts = new Set<MainCaseString>();
-      const args = new Set<MainCaseString>();
+    if (isNode(input.defaultsTo, 'pdaValueNode')) {
+      const dependencies = new Map<MainCaseString, InstructionDependency>();
       Object.values(input.defaultsTo.seeds).forEach((seed) => {
-        if (seed.kind === 'account') {
-          accounts.add(seed.name);
-        } else if (seed.kind === 'arg') {
-          args.add(seed.name);
+        if (isNode(seed, ['accountValueNode', 'argumentValueNode'])) {
+          dependencies.set(seed.name, { ...seed });
         }
       });
+      return [...dependencies.values()];
+    }
+
+    if (isNode(input.defaultsTo, 'resolverValueNode')) {
+      return input.defaultsTo.dependsOn ?? [];
+    }
+
+    if (isNode(input.defaultsTo, 'conditionalValueNode')) {
       return [
-        ...[...accounts].map((name) => ({ kind: 'account' as const, name })),
-        ...[...args].map((name) => ({ kind: 'arg' as const, name })),
+        ...getNestedDependencies(input.defaultsTo.condition),
+        ...getNestedDependencies(input.defaultsTo.ifTrue),
+        ...getNestedDependencies(input.defaultsTo.ifFalse),
       ];
-    }
-
-    if (input.defaultsTo.kind === 'resolver') {
-      return input.defaultsTo.dependsOn;
-    }
-
-    if (
-      input.defaultsTo.kind === 'conditional' ||
-      input.defaultsTo.kind === 'conditionalResolver'
-    ) {
-      const dependencies: InstructionDependency[] =
-        input.defaultsTo.kind === 'conditional'
-          ? [input.defaultsTo.input]
-          : input.defaultsTo.resolver.dependsOn ?? [];
-
-      dependencies.push(...getNestedDependencies(input.defaultsTo.ifTrue));
-      dependencies.push(...getNestedDependencies(input.defaultsTo.ifFalse));
-      return dependencies;
     }
 
     return [];
@@ -273,12 +254,9 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
       visitedArgs = new Map();
 
       const inputs: InstructionInput[] = [
-        ...node.accounts.map((account) => ({
-          ...account,
-          kind: 'account' as const,
-        })),
+        ...node.accounts,
         ...Object.entries(node.argDefaults).map(([argName, argDefault]) => ({
-          kind: 'arg' as const,
+          kind: 'argument' as const,
           name: argName,
           defaultsTo: argDefault,
         })),

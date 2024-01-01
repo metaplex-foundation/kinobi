@@ -501,12 +501,15 @@ export function identityVisitor<
         'accountValueNode',
         'argumentValueNode',
       ]);
+      const value = node.value ? visit(this)(node.value) : null;
+      if (value) assertIsNode(value, VALUE_NODES);
       const ifTrue = node.ifTrue ? visit(this)(node.ifTrue) : null;
       if (ifTrue) assertIsNode(ifTrue, CONDITIONAL_VALUE_BRANCH_NODES);
       const ifFalse = node.ifFalse ? visit(this)(node.ifFalse) : null;
       if (ifFalse) assertIsNode(ifFalse, CONDITIONAL_VALUE_BRANCH_NODES);
       return conditionalValueNode({
         condition,
+        value: value ?? undefined,
         ifTrue: ifTrue ?? undefined,
         ifFalse: ifFalse ?? undefined,
       });

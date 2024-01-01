@@ -1,3 +1,4 @@
+import { InstructionInputValueNode, isNode } from 'src/nodes';
 import { MainCaseString, camelCase, pascalCase } from '../../shared';
 import { ResolvedInstructionInput, visit } from '../../visitors';
 import { JavaScriptContextMap } from './JavaScriptContextMap';
@@ -31,21 +32,24 @@ export function renderInstructionDefaults(
     render: string;
   } => {
     const inputName = camelCase(input.name);
-    if (input.kind === 'account' && defaultsTo.kind === 'resolver') {
+    if (
+      input.kind === 'instructionAccountNode' &&
+      isNode(defaultsTo, 'resolverValueNode')
+    ) {
       return {
         imports,
         interfaces,
         render: `resolvedAccounts.${inputName} = { ...resolvedAccounts.${inputName}, ...${defaultValue} };`,
       };
     }
-    if (input.kind === 'account' && isWritable === undefined) {
+    if (input.kind === 'instructionAccountNode' && isWritable === undefined) {
       return {
         imports,
         interfaces,
         render: `resolvedAccounts.${inputName}.value = ${defaultValue};`,
       };
     }
-    if (input.kind === 'account') {
+    if (input.kind === 'instructionAccountNode') {
       return {
         imports,
         interfaces,
@@ -64,9 +68,9 @@ export function renderInstructionDefaults(
   };
 
   switch (defaultsTo.kind) {
-    case 'account':
+    case 'accountValueNode':
       const name = camelCase(defaultsTo.name);
-      if (input.kind === 'account') {
+      if (input.kind === 'instructionAccountNode') {
         imports.add('shared', 'expectSome');
         if (input.resolvedIsSigner && !input.isSigner) {
           return render(`expectSome(resolvedAccounts.${name}.value).publicKey`);
@@ -75,28 +79,28 @@ export function renderInstructionDefaults(
       }
       imports.add('shared', 'expectPublicKey');
       return render(`expectPublicKey(resolvedAccounts.${name}.value)`);
-    case 'pda':
-      const pdaFunction = `find${pascalCase(defaultsTo.pdaAccount)}Pda`;
-      const pdaImportFrom = defaultsTo.importFrom ?? 'generatedAccounts';
+    case 'pdaValueNode':
+      const pdaFunction = `find${pascalCase(defaultsTo.pda.name)}Pda`;
+      const pdaImportFrom = defaultsTo.pda.importFrom ?? 'generatedAccounts';
       imports.add(pdaImportFrom, pdaFunction);
       interfaces.add('eddsa');
       const pdaArgs = ['context'];
       const pdaSeeds = Object.keys(defaultsTo.seeds).map(
         (seed: string): string => {
           const seedValue = defaultsTo.seeds[seed as MainCaseString];
-          if (seedValue.kind === 'account') {
+          if (isNode(seedValue, 'accountValueNode')) {
             imports.add('shared', 'expectPublicKey');
             return `${seed}: expectPublicKey(resolvedAccounts.${camelCase(
               seedValue.name
             )}.value)`;
           }
-          if (seedValue.kind === 'arg') {
+          if (isNode(seedValue, 'argumentValueNode')) {
             imports.add('shared', 'expectSome');
             return `${seed}: expectSome(${argObject}.${camelCase(
               seedValue.name
             )})`;
           }
-          const valueManifest = visit(seedValue.value, valueNodeVisitor);
+          const valueManifest = visit(seedValue, valueNodeVisitor);
           imports.mergeWith(valueManifest.imports);
           return `${seed}: ${valueManifest.render}`;
         }
@@ -105,58 +109,55 @@ export function renderInstructionDefaults(
         pdaArgs.push(`{ ${pdaSeeds.join(', ')} }`);
       }
       return render(`${pdaFunction}(${pdaArgs.join(', ')})`);
-    case 'publicKey':
+    case 'publicKeyValueNode':
       imports.add('umi', 'publicKey');
       return render(`publicKey('${defaultsTo.publicKey}')`);
-    case 'program':
-      return render(
-        `context.programs.getPublicKey('${defaultsTo.program.name}', '${defaultsTo.program.publicKey}')`,
-        false
-      );
-    case 'programId':
+    case 'programLinkNode':
+      const importFrom = defaultsTo.importFrom ?? 'generatedPrograms';
+      const functionName = `get${pascalCase(defaultsTo.name)}ProgramId`;
+      imports.add(importFrom, functionName);
+      return render(`${functionName}(context)`, false);
+    case 'programIdValueNode':
       if (
         optionalAccountStrategy === 'programId' &&
-        input.kind === 'account' &&
+        input.kind === 'instructionAccountNode' &&
         input.isOptional
       ) {
         return { imports, interfaces, render: '' };
       }
       return render('programId', false);
-    case 'identity':
+    case 'identityValueNode':
       interfaces.add('identity');
-      if (input.kind === 'account' && input.isSigner !== false) {
+      if (input.kind === 'instructionAccountNode' && input.isSigner !== false) {
         return render('context.identity');
       }
       return render('context.identity.publicKey');
-    case 'payer':
+    case 'payerValueNode':
       interfaces.add('payer');
-      if (input.kind === 'account' && input.isSigner !== false) {
+      if (input.kind === 'instructionAccountNode' && input.isSigner !== false) {
         return render('context.payer');
       }
       return render('context.payer.publicKey');
-    case 'accountBump':
+    case 'accountBumpValueNode':
       imports.add('shared', 'expectPda');
       return render(
         `expectPda(resolvedAccounts.${camelCase(defaultsTo.name)}.value)[1]`
       );
-    case 'arg':
+    case 'argumentValueNode':
       imports.add('shared', 'expectSome');
       return render(`expectSome(${argObject}.${camelCase(defaultsTo.name)})`);
-    case 'value':
-      const valueManifest = visit(defaultsTo.value, valueNodeVisitor);
-      imports.mergeWith(valueManifest.imports);
-      return render(valueManifest.render);
-    case 'resolver':
+    case 'resolverValueNode':
       const resolverName = camelCase(defaultsTo.name);
       const isWritable =
-        input.kind === 'account' && input.isWritable ? 'true' : 'false';
+        input.kind === 'instructionAccountNode' && input.isWritable
+          ? 'true'
+          : 'false';
       imports.add(defaultsTo.importFrom ?? 'hooked', resolverName);
       interfaces.add(['eddsa', 'identity', 'payer']);
       return render(
         `${resolverName}(context, resolvedAccounts, ${argObject}, programId, ${isWritable})`
       );
-    case 'conditional':
-    case 'conditionalResolver':
+    case 'conditionalValueNode':
       const ifTrueRenderer = renderNestedInstructionDefault(
         input,
         optionalAccountStrategy,
@@ -183,11 +184,26 @@ export function renderInstructionDefaults(
       const negatedCondition = !ifTrueRenderer;
       let condition = 'true';
 
-      if (defaultsTo.kind === 'conditional') {
-        const comparedInputName =
-          defaultsTo.input.kind === 'account'
-            ? `resolvedAccounts.${camelCase(defaultsTo.input.name)}.value`
-            : `${argObject}.${camelCase(defaultsTo.input.name)}`;
+      if (isNode(defaultsTo.condition, 'resolverValueNode')) {
+        const conditionalResolverName = camelCase(defaultsTo.condition.name);
+        const conditionalIsWritable =
+          input.kind === 'instructionAccountNode' && input.isWritable
+            ? 'true'
+            : 'false';
+        imports.add(
+          defaultsTo.condition.importFrom ?? 'hooked',
+          conditionalResolverName
+        );
+        interfaces.add(['eddsa', 'identity', 'payer']);
+        condition = `${conditionalResolverName}(context, resolvedAccounts, ${argObject}, programId, ${conditionalIsWritable})`;
+        condition = negatedCondition ? `!${condition}` : condition;
+      } else {
+        const comparedInputName = isNode(
+          defaultsTo.condition,
+          'accountValueNode'
+        )
+          ? `resolvedAccounts.${camelCase(defaultsTo.condition.name)}.value`
+          : `${argObject}.${camelCase(defaultsTo.condition.name)}`;
         if (defaultsTo.value) {
           const comparedValue = visit(defaultsTo.value, valueNodeVisitor);
           imports.mergeWith(comparedValue.imports);
@@ -198,17 +214,6 @@ export function renderInstructionDefaults(
             ? `!${comparedInputName}`
             : comparedInputName;
         }
-      } else {
-        const conditionalResolverName = camelCase(defaultsTo.resolver.name);
-        const conditionalIsWritable =
-          input.kind === 'account' && input.isWritable ? 'true' : 'false';
-        imports.add(
-          defaultsTo.resolver.importFrom ?? 'hooked',
-          conditionalResolverName
-        );
-        interfaces.add(['eddsa', 'identity', 'payer']);
-        condition = `${conditionalResolverName}(context, resolvedAccounts, ${argObject}, programId, ${conditionalIsWritable})`;
-        condition = negatedCondition ? `!${condition}` : condition;
       }
 
       if (ifTrueRenderer && ifFalseRenderer) {
@@ -227,15 +232,16 @@ export function renderInstructionDefaults(
         }\n}`,
       };
     default:
-      const neverDefault: never = defaultsTo;
-      throw new Error(`Unexpected value type ${(neverDefault as any).kind}`);
+      const valueManifest = visit(defaultsTo, valueNodeVisitor);
+      imports.mergeWith(valueManifest.imports);
+      return render(valueManifest.render);
   }
 }
 
 function renderNestedInstructionDefault(
   input: ResolvedInstructionInput,
   optionalAccountStrategy: 'programId' | 'omitted',
-  defaultsTo: InstructionDefault | undefined,
+  defaultsTo: InstructionInputValueNode | undefined,
   argObject: string
 ):
   | {
@@ -245,17 +251,8 @@ function renderNestedInstructionDefault(
     }
   | undefined {
   if (!defaultsTo) return undefined;
-
-  if (input.kind === 'account') {
-    return renderInstructionDefaults(
-      { ...input, defaultsTo: defaultsTo as InstructionAccountDefault },
-      optionalAccountStrategy,
-      argObject
-    );
-  }
-
   return renderInstructionDefaults(
-    { ...input, defaultsTo: defaultsTo as InstructionArgDefault },
+    { ...input, defaultsTo },
     optionalAccountStrategy,
     argObject
   );

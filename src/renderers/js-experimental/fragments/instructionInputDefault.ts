@@ -1,10 +1,5 @@
-import {
-  InstructionAccountDefault,
-  InstructionArgDefault,
-  InstructionDefault,
-  MainCaseString,
-  camelCase,
-} from '../../../shared';
+import { InstructionInputValueNode, isNode } from '../../../nodes';
+import { MainCaseString, camelCase } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import { isAsyncDefaultValue } from '../asyncHelpers';
 import { NameApi } from '../nameTransformers';
@@ -34,15 +29,18 @@ export function getInstructionInputDefaultFragment(scope: {
     isWritable?: boolean
   ): Fragment => {
     const inputName = camelCase(input.name);
-    if (input.kind === 'account' && defaultsTo.kind === 'resolver') {
+    if (
+      input.kind === 'instructionAccountNode' &&
+      isNode(defaultsTo, 'resolverValueNode')
+    ) {
       return fragment(
         `accounts.${inputName} = { ...accounts.${inputName}, ...${defaultValue} };`
       );
     }
-    if (input.kind === 'account' && isWritable === undefined) {
+    if (input.kind === 'instructionAccountNode' && isWritable === undefined) {
       return fragment(`accounts.${inputName}.value = ${defaultValue};`);
     }
-    if (input.kind === 'account') {
+    if (input.kind === 'instructionAccountNode') {
       return fragment(
         `accounts.${inputName}.value = ${defaultValue};\n` +
           `accounts.${inputName}.isWritable = ${isWritable ? 'true' : 'false'}`
@@ -52,10 +50,10 @@ export function getInstructionInputDefaultFragment(scope: {
   };
 
   switch (defaultsTo.kind) {
-    case 'account':
+    case 'accountValueNode':
       const name = camelCase(defaultsTo.name);
       if (
-        input.kind === 'account' &&
+        input.kind === 'instructionAccountNode' &&
         input.resolvedIsSigner &&
         !input.isSigner
       ) {
@@ -63,7 +61,7 @@ export function getInstructionInputDefaultFragment(scope: {
           `expectTransactionSigner(accounts.${name}.value).address`
         ).addImports('shared', 'expectTransactionSigner');
       }
-      if (input.kind === 'account') {
+      if (input.kind === 'instructionAccountNode') {
         return defaultFragment(`expectSome(accounts.${name}.value)`).addImports(
           'shared',
           'expectSome'
@@ -73,26 +71,26 @@ export function getInstructionInputDefaultFragment(scope: {
         `expectAddress(accounts.${name}.value)`
       ).addImports('shared', 'expectAddress');
 
-    case 'pda':
-      const pdaFunction = nameApi.pdaFindFunction(defaultsTo.pdaAccount);
-      const pdaImportFrom = defaultsTo.importFrom ?? 'generatedPdas';
+    case 'pdaValueNode':
+      const pdaFunction = nameApi.pdaFindFunction(defaultsTo.pda.name);
+      const pdaImportFrom = defaultsTo.pda.importFrom ?? 'generatedPdas';
       const pdaArgs = [];
       const pdaSeeds = Object.keys(defaultsTo.seeds).map(
         (seed: string): Fragment => {
           const seedValue = defaultsTo.seeds[seed as MainCaseString];
-          if (seedValue.kind === 'account') {
+          if (isNode(seedValue, 'accountValueNode')) {
             return fragment(
               `${seed}: expectAddress(accounts.${camelCase(
                 seedValue.name
               )}.value)`
             ).addImports('shared', 'expectAddress');
           }
-          if (seedValue.kind === 'arg') {
+          if (isNode(seedValue, 'argumentValueNode')) {
             return fragment(
               `${seed}: expectSome(args.${camelCase(seedValue.name)})`
             ).addImports('shared', 'expectSome');
           }
-          return getValueNodeFragment(seedValue.value, nameApi).mapRender(
+          return getValueNodeFragment(seedValue, nameApi).mapRender(
             (r) => `${seed}: ${r}`
           );
         }
@@ -107,51 +105,46 @@ export function getInstructionInputDefaultFragment(scope: {
         .mergeImportsWith(pdaSeedsFragment)
         .addImports(pdaImportFrom, pdaFunction);
 
-    case 'publicKey':
+    case 'publicKeyValueNode':
       return defaultFragment(
         `'${defaultsTo.publicKey}' as Address<'${defaultsTo.publicKey}'>`
       ).addImports('solanaAddresses', 'Address');
 
-    case 'program':
-      return defaultFragment(
-        `'${defaultsTo.program.publicKey}' as Address<'${defaultsTo.program.publicKey}'>`,
-        false
-      ).addImports('solanaAddresses', ['Address']);
+    case 'programLinkNode':
+      const programAddress = nameApi.programAddressConstant(defaultsTo.name);
+      const importFrom = defaultsTo.importFrom ?? 'generatedPrograms';
+      return defaultFragment(programAddress, false).addImports(
+        importFrom,
+        programAddress
+      );
 
-    case 'programId':
+    case 'programIdValueNode':
       if (
         optionalAccountStrategy === 'programId' &&
-        input.kind === 'account' &&
+        input.kind === 'instructionAccountNode' &&
         input.isOptional
       ) {
         return fragment('');
       }
       return defaultFragment('programAddress', false);
 
-    // Deprecated
-    case 'identity':
-    case 'payer':
+    case 'identityValueNode':
+    case 'payerValueNode':
       return fragment('');
 
-    case 'accountBump':
+    case 'accountBumpValueNode':
       return defaultFragment(
         `expectProgramDerivedAddress(accounts.${camelCase(
           defaultsTo.name
         )}.value)[1]`
       ).addImports('shared', 'expectProgramDerivedAddress');
 
-    case 'arg':
+    case 'argumentValueNode':
       return defaultFragment(
         `expectSome(args.${camelCase(defaultsTo.name)})`
       ).addImports('shared', 'expectSome');
 
-    case 'value':
-      const valueManifest = getValueNodeFragment(defaultsTo.value, nameApi);
-      return defaultFragment(valueManifest.render).mergeImportsWith(
-        valueManifest
-      );
-
-    case 'resolver':
+    case 'resolverValueNode':
       const resolverFunction = nameApi.resolverFunction(defaultsTo.name);
       const resolverAwait =
         useAsync && asyncResolvers.includes(defaultsTo.name) ? 'await ' : '';
@@ -161,8 +154,7 @@ export function getInstructionInputDefaultFragment(scope: {
         .addImports(defaultsTo.importFrom ?? 'hooked', resolverFunction)
         .addFeatures(['instruction:resolverScopeVariable']);
 
-    case 'conditional':
-    case 'conditionalResolver':
+    case 'conditionalValueNode':
       const ifTrueRenderer = renderNestedInstructionDefault({
         ...scope,
         defaultsTo: defaultsTo.ifTrue,
@@ -188,11 +180,29 @@ export function getInstructionInputDefaultFragment(scope: {
       const negatedCondition = !ifTrueRenderer;
       let condition = 'true';
 
-      if (defaultsTo.kind === 'conditional') {
-        const comparedInputName =
-          defaultsTo.input.kind === 'account'
-            ? `accounts.${camelCase(defaultsTo.input.name)}.value`
-            : `args.${camelCase(defaultsTo.input.name)}`;
+      if (isNode(defaultsTo.condition, 'resolverValueNode')) {
+        const conditionalResolverFunction = nameApi.resolverFunction(
+          defaultsTo.condition.name
+        );
+        conditionalFragment
+          .addImports(
+            defaultsTo.condition.importFrom ?? 'hooked',
+            conditionalResolverFunction
+          )
+          .addFeatures(['instruction:resolverScopeVariable']);
+        const conditionalResolverAwait =
+          useAsync && asyncResolvers.includes(defaultsTo.condition.name)
+            ? 'await '
+            : '';
+        condition = `${conditionalResolverAwait}${conditionalResolverFunction}(resolverScope)`;
+        condition = negatedCondition ? `!${condition}` : condition;
+      } else {
+        const comparedInputName = isNode(
+          defaultsTo.condition,
+          'accountValueNode'
+        )
+          ? `accounts.${camelCase(defaultsTo.condition.name)}.value`
+          : `args.${camelCase(defaultsTo.condition.name)}`;
         if (defaultsTo.value) {
           const comparedValue = getValueNodeFragment(defaultsTo.value, nameApi);
           conditionalFragment
@@ -205,22 +215,6 @@ export function getInstructionInputDefaultFragment(scope: {
             ? `!${comparedInputName}`
             : comparedInputName;
         }
-      } else {
-        const conditionalResolverFunction = nameApi.resolverFunction(
-          defaultsTo.resolver.name
-        );
-        conditionalFragment
-          .addImports(
-            defaultsTo.resolver.importFrom ?? 'hooked',
-            conditionalResolverFunction
-          )
-          .addFeatures(['instruction:resolverScopeVariable']);
-        const conditionalResolverAwait =
-          useAsync && asyncResolvers.includes(defaultsTo.resolver.name)
-            ? 'await '
-            : '';
-        condition = `${conditionalResolverAwait}${conditionalResolverFunction}(resolverScope)`;
-        condition = negatedCondition ? `!${condition}` : condition;
       }
 
       if (ifTrueRenderer && ifFalseRenderer) {
@@ -234,29 +228,24 @@ export function getInstructionInputDefaultFragment(scope: {
           ifTrueRenderer ? ifTrueRenderer.render : ifFalseRenderer?.render
         }\n}`
       );
+
     default:
-      const neverDefault: never = defaultsTo;
-      throw new Error(`Unexpected value type ${(neverDefault as any).kind}`);
+      const valueManifest = getValueNodeFragment(defaultsTo, nameApi);
+      return defaultFragment(valueManifest.render).mergeImportsWith(
+        valueManifest
+      );
   }
 }
 
 function renderNestedInstructionDefault(
   scope: Parameters<typeof getInstructionInputDefaultFragment>[0] & {
-    defaultsTo: InstructionDefault | undefined;
+    defaultsTo: InstructionInputValueNode | undefined;
   }
 ): Fragment | undefined {
   const { input, defaultsTo } = scope;
   if (!defaultsTo) return undefined;
-
-  if (input.kind === 'account') {
-    return getInstructionInputDefaultFragment({
-      ...scope,
-      input: { ...input, defaultsTo: defaultsTo as InstructionAccountDefault },
-    });
-  }
-
   return getInstructionInputDefaultFragment({
     ...scope,
-    input: { ...input, defaultsTo: defaultsTo as InstructionArgDefault },
+    input: { ...input, defaultsTo },
   });
 }
