@@ -52,6 +52,9 @@ export class LinkableDictionary {
   get(linkNode: AccountLinkNode): AccountNode | undefined;
   get(linkNode: DefinedTypeLinkNode): DefinedTypeNode | undefined;
   get(linkNode: LinkNode): LinkableNode | undefined {
+    if (linkNode.importFrom) {
+      return undefined;
+    }
     if (isNode(linkNode, 'programLinkNode')) {
       return this.programs.get(linkNode.name);
     }
@@ -68,6 +71,9 @@ export class LinkableDictionary {
   }
 
   has(linkNode: LinkNode): boolean {
+    if (linkNode.importFrom) {
+      return false;
+    }
     if (isNode(linkNode, 'programLinkNode')) {
       return this.programs.has(linkNode.name);
     }

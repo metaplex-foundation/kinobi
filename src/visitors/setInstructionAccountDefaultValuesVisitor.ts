@@ -1,12 +1,12 @@
 import {
   InstructionAccountNode,
   InstructionNode,
-  PdaNode,
-  getAllPdas,
   instructionNode,
+  pdaLinkNode,
 } from '../nodes';
 import {
   InstructionAccountDefault,
+  LinkableDictionary,
   MainCaseString,
   getDefaultSeedsFromPda,
   mainCase,
@@ -14,7 +14,7 @@ import {
 } from '../shared';
 import { extendVisitor } from './extendVisitor';
 import { identityVisitor } from './identityVisitor';
-import { tapVisitor } from './tapVisitor';
+import { recordLinkablesVisitor } from './recordLinkablesVisitor';
 
 export type InstructionAccountDefaultRule = InstructionAccountDefault & {
   /** The name of the instruction account or a pattern to match on it. */
@@ -165,7 +165,7 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
 export function setInstructionAccountDefaultValuesVisitor(
   rules: InstructionAccountDefaultRule[]
 ) {
-  let allPdas = new Map<string, PdaNode>();
+  const linkables = new LinkableDictionary();
 
   // Place the rules with instructions first.
   const sortedRules = rules.sort((a, b) => {
@@ -195,10 +195,7 @@ export function setInstructionAccountDefaultValuesVisitor(
 
   return pipe(
     identityVisitor(['rootNode', 'programNode', 'instructionNode']),
-    (v) =>
-      tapVisitor(v, 'rootNode', (root) => {
-        allPdas = new Map(getAllPdas(root).map((pda) => [pda.name, pda]));
-      }),
+    (v) => recordLinkablesVisitor(v, linkables),
     (v) =>
       extendVisitor(v, {
         visitInstruction(node) {
@@ -215,7 +212,9 @@ export function setInstructionAccountDefaultValuesVisitor(
                 return account;
               }
               if (rule.kind === 'pda') {
-                const foundAccount = allPdas.get(mainCase(rule.pdaAccount));
+                const foundAccount = linkables.get(
+                  pdaLinkNode(rule.pdaAccount, rule.importFrom)
+                );
                 const defaultsTo = {
                   ...rule,
                   seeds: {
