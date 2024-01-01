@@ -43,7 +43,6 @@ test('it returns all instruction accounts in order of resolution', (t) => {
   t.deepEqual(result, [
     {
       ...node.accounts[1],
-      kind: 'account',
       isPda: false,
       dependsOn: [],
       resolvedIsOptional: false,
@@ -51,9 +50,8 @@ test('it returns all instruction accounts in order of resolution', (t) => {
     },
     {
       ...node.accounts[0],
-      kind: 'account',
       isPda: false,
-      dependsOn: [{ kind: 'account', name: 'authority' }],
+      dependsOn: [accountValueNode('authority')],
       resolvedIsOptional: false,
       resolvedIsSigner: true,
     },
@@ -89,9 +87,8 @@ test('it sets the resolved signer to either when a non signer defaults to a sign
   // Then we expect the resolved signer to be either for the non signer account.
   t.deepEqual(result[1], {
     ...node.accounts[0],
-    kind: 'account',
     isPda: false,
-    dependsOn: [{ kind: 'account', name: 'authority' }],
+    dependsOn: [accountValueNode('authority')],
     resolvedIsOptional: false,
     resolvedIsSigner: 'either',
   });
@@ -126,9 +123,8 @@ test('it sets the resolved signer to either when a signer defaults to a non sign
   // Then we expect the resolved signer to be either for the signer account.
   t.deepEqual(result[1], {
     ...node.accounts[0],
-    kind: 'account',
     isPda: false,
-    dependsOn: [{ kind: 'account', name: 'authority' }],
+    dependsOn: [accountValueNode('authority')],
     resolvedIsOptional: false,
     resolvedIsSigner: 'either',
   });
@@ -169,17 +165,16 @@ test('it includes instruction data arguments with default values', (t) => {
   t.deepEqual(result, [
     {
       ...node.accounts[0],
-      kind: 'account',
       isPda: false,
       dependsOn: [],
       resolvedIsOptional: false,
       resolvedIsSigner: true,
     },
     {
-      kind: 'arg',
+      kind: 'argument',
       name: 'ownerArg',
-      defaultsTo: { kind: 'account', name: 'owner' },
-      dependsOn: [{ kind: 'account', name: 'owner' }],
+      defaultsTo: accountValueNode('owner'),
+      dependsOn: [accountValueNode('owner')],
     },
   ]);
 
@@ -226,17 +221,16 @@ test('it includes instruction extra arguments with default values', (t) => {
   t.deepEqual(result, [
     {
       ...node.accounts[0],
-      kind: 'account',
       isPda: false,
       dependsOn: [],
       resolvedIsOptional: false,
       resolvedIsSigner: true,
     },
     {
-      kind: 'arg',
+      kind: 'argument',
       name: 'ownerArg',
-      defaultsTo: { kind: 'account', name: 'owner' },
-      dependsOn: [{ kind: 'account', name: 'owner' }],
+      defaultsTo: accountValueNode('owner'),
+      dependsOn: [accountValueNode('owner')],
     },
   ]);
 
