@@ -13,14 +13,20 @@ import { createTypeNodeFromIdl } from './typeNodes/TypeNode';
 
 export type AccountNode = {
   readonly kind: 'accountNode';
+
+  // Children.
   readonly data: AccountDataNode;
   readonly pda?: PdaLinkNode;
+
+  // Children to-be.
+  readonly discriminator?: AccountDiscriminator;
+
+  // Data.
   readonly name: MainCaseString;
   readonly idlName: string;
   readonly docs: string[];
   readonly internal: boolean;
   readonly size?: number | null;
-  readonly discriminator?: AccountDiscriminator;
 };
 
 export type AccountNodeInput = Omit<Partial<AccountNode>, 'kind' | 'name'> & {

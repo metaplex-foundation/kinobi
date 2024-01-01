@@ -33,17 +33,23 @@ import { numberValueNode } from './valueNodes';
 
 export type InstructionNode = {
   readonly kind: 'instructionNode';
-  readonly name: MainCaseString;
+
+  // Children.
   readonly accounts: InstructionAccountNode[];
   readonly dataArgs: InstructionDataArgsNode;
   readonly extraArgs: InstructionExtraArgsNode;
   readonly subInstructions: InstructionNode[];
-  readonly idlName: string;
-  readonly docs: string[];
-  readonly internal: boolean;
+
+  // Children to-be.
   readonly bytesCreatedOnChain?: BytesCreatedOnChain;
   readonly remainingAccounts?: RemainingAccounts;
   readonly argDefaults: Record<MainCaseString, InstructionArgDefault>;
+
+  // Data.
+  readonly name: MainCaseString;
+  readonly idlName: string;
+  readonly docs: string[];
+  readonly internal: boolean;
   readonly optionalAccountStrategy: 'omitted' | 'programId';
 };
 

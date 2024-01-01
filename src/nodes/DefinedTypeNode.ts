@@ -4,8 +4,12 @@ import { TypeNode, createTypeNodeFromIdl } from './typeNodes/TypeNode';
 
 export type DefinedTypeNode = {
   readonly kind: 'definedTypeNode';
-  readonly name: MainCaseString;
+
+  // Children.
   readonly data: TypeNode;
+
+  // Data.
+  readonly name: MainCaseString;
   readonly idlName: string;
   readonly docs: string[];
   readonly internal: boolean;
