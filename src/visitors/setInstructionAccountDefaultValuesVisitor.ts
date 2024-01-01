@@ -8,6 +8,7 @@ import {
 } from '../nodes';
 import {
   InstructionInputValueNode,
+  identityValueNode,
   payerValueNode,
   programIdValueNode,
 } from '../nodes/contextualValueNodes';
@@ -37,7 +38,7 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
     },
     {
       account: /^authority$/,
-      defaultsTo: payerValueNode(),
+      defaultsTo: identityValueNode(),
       ignoreIfOptional: true,
     },
     {
