@@ -36,7 +36,10 @@ export function getAccountPdaHelpersFragment(scope: {
     program: programNode,
     hasVariableSeeds,
   })
-    .addImports(importFrom, [pdaSeedsType, findPdaFunction])
+    .addImports(
+      importFrom,
+      hasVariableSeeds ? [pdaSeedsType, findPdaFunction] : [findPdaFunction]
+    )
     .addImports('solanaAddresses', ['Address'])
     .addImports('solanaAccounts', ['FetchAccountConfig']);
 }

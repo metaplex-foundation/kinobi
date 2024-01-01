@@ -34,7 +34,7 @@ import {
   getU64Decoder,
   getU64Encoder,
 } from '@solana/codecs-numbers';
-import { FrequencyAccountSeeds, findFrequencyAccountPda } from '../pdas';
+import { findFrequencyAccountPda } from '../pdas';
 import { TaKey } from '../types';
 
 export type FrequencyAccount<TAddress extends string = string> = Account<
