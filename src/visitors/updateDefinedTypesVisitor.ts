@@ -57,7 +57,7 @@ export function updateDefinedTypesVisitor(
 
         if (newName) {
           transforms.push({
-            select: `[definedTypeLinkNode]${name}`,
+            select: `${selectorStack.join('.')}.[definedTypeLinkNode]${name}`,
             transform: (node) => {
               assertIsNode(node, 'definedTypeLinkNode');
               if (node.importFrom) return node;
