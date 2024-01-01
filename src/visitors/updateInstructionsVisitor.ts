@@ -5,21 +5,21 @@ import {
   InstructionExtraArgsNode,
   InstructionNode,
   InstructionNodeInput,
-  PdaNode,
   TYPE_NODES,
   TypeNode,
   assertIsNode,
-  getAllPdas,
   instructionAccountNode,
   instructionDataArgsNode,
   instructionExtraArgsNode,
   instructionNode,
+  pdaLinkNode,
   structFieldTypeNode,
   structTypeNode,
 } from '../nodes';
 import {
   InstructionAccountDefault,
   InstructionArgDefault,
+  LinkableDictionary,
   MainCaseString,
   getDefaultSeedsFromPda,
   mainCase,
@@ -29,7 +29,7 @@ import {
   BottomUpNodeTransformerWithSelector,
   bottomUpTransformerVisitor,
 } from './bottomUpTransformerVisitor';
-import { tapVisitor } from './tapVisitor';
+import { recordLinkablesVisitor } from './recordLinkablesVisitor';
 
 export type InstructionUpdates =
   | { delete: true }
@@ -65,7 +65,7 @@ export type InstructionArgUpdates = Record<
 export function updateInstructionsVisitor(
   map: Record<string, InstructionUpdates>
 ) {
-  let allPdas = new Map<string, PdaNode>();
+  const linkables = new LinkableDictionary();
 
   const transformers = Object.entries(map).map(
     ([selector, updates]): BottomUpNodeTransformerWithSelector => {
@@ -88,7 +88,7 @@ export function updateInstructionsVisitor(
           const { newDataArgs, newExtraArgs, newArgDefaults } =
             handleInstructionArgs(node, newName, argsUpdates ?? {});
           const newAccounts = node.accounts.map((account) =>
-            handleInstructionAccount(account, accountUpdates ?? {}, allPdas)
+            handleInstructionAccount(account, accountUpdates ?? {}, linkables)
           );
 
           return instructionNode({
@@ -105,16 +105,14 @@ export function updateInstructionsVisitor(
   );
 
   return pipe(bottomUpTransformerVisitor(transformers), (v) =>
-    tapVisitor(v, 'rootNode', (root) => {
-      allPdas = new Map(getAllPdas(root).map((pda) => [pda.name, pda]));
-    })
+    recordLinkablesVisitor(v, linkables)
   );
 }
 
 function handleInstructionAccount(
   account: InstructionAccountNode,
   accountUpdates: InstructionAccountUpdates,
-  allPdas: Map<string, PdaNode>
+  linkables: LinkableDictionary
 ): InstructionAccountNode {
   const accountUpdate = accountUpdates?.[account.name];
   if (!accountUpdate) return account;
@@ -128,8 +126,9 @@ function handleInstructionAccount(
   }
 
   if (defaultsTo?.kind === 'pda') {
-    const pdaAccount = mainCase(defaultsTo.pdaAccount);
-    const foundPda = allPdas.get(pdaAccount);
+    const foundPda = linkables.get(
+      pdaLinkNode(defaultsTo.pdaAccount, defaultsTo.importFrom)
+    );
     return {
       ...acountWithoutDefault,
       name: mainCase(acountWithoutDefault.name),
