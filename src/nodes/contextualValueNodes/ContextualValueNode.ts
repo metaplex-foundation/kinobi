@@ -1,3 +1,6 @@
+import type { Mutable } from '../../shared';
+import type { ProgramLinkNode } from '../linkNodes';
+import { VALUE_NODES, ValueNode } from '../valueNodes';
 import type { AccountBumpValueNode } from './AccountBumpValueNode';
 import type { AccountValueNode } from './AccountValueNode';
 import type { ArgumentValueNode } from './ArgumentValueNode';
@@ -36,6 +39,18 @@ export type ContextualValueNode =
 
 export const CONTEXTUAL_VALUE_NODES = REGISTERED_CONTEXTUAL_VALUE_NODE_KEYS;
 
-export type InstructionAccountValueNode = {}; // TODO
+export type InstructionInputValueNode =
+  | ValueNode
+  | ContextualValueNode
+  | ProgramLinkNode;
 
-export type InstructionArgumentValueNode = {}; // TODO
+const INSTRUCTION_INPUT_VALUE_NODE_INTERNAL = [
+  ...VALUE_NODES,
+  ...CONTEXTUAL_VALUE_NODES,
+  'programLinkNode',
+] as const;
+
+export const INSTRUCTION_INPUT_VALUE_NODE =
+  INSTRUCTION_INPUT_VALUE_NODE_INTERNAL as Mutable<
+    typeof INSTRUCTION_INPUT_VALUE_NODE_INTERNAL
+  >;

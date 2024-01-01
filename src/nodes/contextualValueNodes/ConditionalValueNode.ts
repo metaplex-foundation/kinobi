@@ -1,29 +1,14 @@
-import { Mutable } from '../../shared';
-import { ProgramLinkNode } from '../linkNodes';
-import { VALUE_NODES, ValueNode } from '../valueNodes';
 import { AccountValueNode } from './AccountValueNode';
 import { ArgumentValueNode } from './ArgumentValueNode';
 import {
-  CONTEXTUAL_VALUE_NODES,
-  ContextualValueNode,
+  INSTRUCTION_INPUT_VALUE_NODE,
+  InstructionInputValueNode,
 } from './ContextualValueNode';
 import { ResolverValueNode } from './ResolverValueNode';
 
-export type ConditionalValueBranch =
-  | ValueNode
-  | ContextualValueNode
-  | ProgramLinkNode;
+export type ConditionalValueBranch = InstructionInputValueNode;
 
-const CONDITIONAL_VALUE_BRANCH_NODES_INTERNAL = [
-  ...VALUE_NODES,
-  ...CONTEXTUAL_VALUE_NODES,
-  'programLinkNode',
-] as const;
-
-export const CONDITIONAL_VALUE_BRANCH_NODES =
-  CONDITIONAL_VALUE_BRANCH_NODES_INTERNAL as Mutable<
-    typeof CONDITIONAL_VALUE_BRANCH_NODES_INTERNAL
-  >;
+export const CONDITIONAL_VALUE_BRANCH_NODES = INSTRUCTION_INPUT_VALUE_NODE;
 
 export type ConditionalValueNode = {
   readonly kind: 'conditionalValueNode';
