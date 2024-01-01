@@ -1,7 +1,7 @@
 {% import "templates/macros.njk" as macros %}
 
 {% if hasVariableSeeds %}
-export type {{ accountSeedsType }} = {
+export type {{ pdaSeedsType }} = {
   {% for seed in seeds %}
     {% if seed.kind === 'variablePdaSeedNode' %}
       {{ macros.docblock(seed.docs) }}
@@ -13,7 +13,7 @@ export type {{ accountSeedsType }} = {
 
 export async function {{ findPdaFunction }}(
   {% if hasVariableSeeds %}
-    seeds: {{ accountSeedsType }},
+    seeds: {{ pdaSeedsType }},
   {% endif %}
   config: { programAddress?: Address | undefined } = {},
 ): Promise<ProgramDerivedAddress> {

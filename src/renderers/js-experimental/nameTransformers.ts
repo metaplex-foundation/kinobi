@@ -27,15 +27,15 @@ export type NameTransformerKey =
   | 'encoderFunction'
   | 'decoderFunction'
   | 'codecFunction'
+  | 'pdaSeedsType'
+  | 'pdaFindFunction'
   | 'accountType'
-  | 'accountSeedsType'
   // | 'accountData'
   | 'accountDecodeFunction'
   | 'accountFetchFunction'
   | 'accountFetchAllFunction'
   | 'accountSafeFetchFunction'
   | 'accountSafeFetchAllFunction'
-  | 'accountFindPdaFunction'
   | 'accountFetchFromSeedsFunction'
   | 'accountSafeFetchFromSeedsFunction'
   | 'accountGetSizeFunction'
@@ -89,15 +89,15 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
   encoderFunction: (name) => `get${pascalCase(name)}Encoder`,
   decoderFunction: (name) => `get${pascalCase(name)}Decoder`,
   codecFunction: (name) => `get${pascalCase(name)}Codec`,
+  pdaSeedsType: (name) => `${pascalCase(name)}Seeds`,
+  pdaFindFunction: (name) => `find${pascalCase(name)}Pda`,
   accountType: (name) => `${pascalCase(name)}`,
-  accountSeedsType: (name) => `${pascalCase(name)}Seeds`,
   // accountData: (name) => `${pascalCase(name)}AccountData`,
   accountDecodeFunction: (name) => `decode${pascalCase(name)}`,
   accountFetchFunction: (name) => `fetch${pascalCase(name)}`,
   accountFetchAllFunction: (name) => `fetchAll${pascalCase(name)}`,
   accountSafeFetchFunction: (name) => `safeFetch${pascalCase(name)}`,
   accountSafeFetchAllFunction: (name) => `safeFetchAll${pascalCase(name)}`,
-  accountFindPdaFunction: (name) => `find${pascalCase(name)}Pda`,
   accountFetchFromSeedsFunction: (name) => `fetch${pascalCase(name)}FromSeeds`,
   accountSafeFetchFromSeedsFunction: (name) =>
     `safeFetch${pascalCase(name)}FromSeeds`,

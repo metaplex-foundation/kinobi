@@ -51,8 +51,8 @@ export function getPdaFunctionFragment(scope: {
 
   return fragmentFromTemplate('pdaFunction.njk', {
     accountType: nameApi.accountType(pdaNode.name),
-    accountSeedsType: nameApi.accountSeedsType(pdaNode.name),
-    findPdaFunction: nameApi.accountFindPdaFunction(pdaNode.name),
+    pdaSeedsType: nameApi.pdaSeedsType(pdaNode.name),
+    findPdaFunction: nameApi.pdaFindFunction(pdaNode.name),
     program: programNode,
     seeds,
     hasVariableSeeds,

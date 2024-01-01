@@ -13,12 +13,12 @@ export function getAccountPdaHelpersFragment(scope: {
   }
 
   const importFrom = accountNode.pda.importFrom ?? 'generatedPdas';
-  const accountSeedsType = nameApi.accountSeedsType(accountNode.pda.name);
-  const findPdaFunction = nameApi.accountFindPdaFunction(accountNode.pda.name);
+  const pdaSeedsType = nameApi.pdaSeedsType(accountNode.pda.name);
+  const findPdaFunction = nameApi.pdaFindFunction(accountNode.pda.name);
 
   return fragmentFromTemplate('accountPdaHelpers.njk', {
     accountType: nameApi.accountType(accountNode.name),
-    accountSeedsType,
+    pdaSeedsType,
     findPdaFunction,
     fetchFunction: nameApi.accountFetchFunction(accountNode.name),
     safeFetchFunction: nameApi.accountSafeFetchFunction(accountNode.name),
@@ -31,11 +31,7 @@ export function getAccountPdaHelpersFragment(scope: {
     program: programNode,
     hasVariableSeeds: true, // TODO: fetch information from PdaNode or fallback to true.
   })
-    .addImports(importFrom, [accountSeedsType, findPdaFunction])
-    .addImports('solanaAddresses', [
-      'Address',
-      'getProgramDerivedAddress',
-      'ProgramDerivedAddress',
-    ])
+    .addImports(importFrom, [pdaSeedsType, findPdaFunction])
+    .addImports('solanaAddresses', ['Address'])
     .addImports('solanaAccounts', ['FetchAccountConfig']);
 }

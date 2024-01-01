@@ -74,8 +74,8 @@ export function getInstructionInputDefaultFragment(scope: {
       ).addImports('shared', 'expectAddress');
 
     case 'pda':
-      const pdaFunction = nameApi.accountFindPdaFunction(defaultsTo.pdaAccount);
-      const pdaImportFrom = defaultsTo.importFrom ?? 'generatedAccounts';
+      const pdaFunction = nameApi.pdaFindFunction(defaultsTo.pdaAccount);
+      const pdaImportFrom = defaultsTo.importFrom ?? 'generatedPdas';
       const pdaArgs = [];
       const pdaSeeds = Object.keys(defaultsTo.seeds).map(
         (seed: string): Fragment => {

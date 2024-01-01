@@ -3,7 +3,7 @@
 export async function {{ fetchFromSeedsFunction }}(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   {% if hasVariableSeeds %}
-    seeds: {{ accountSeedsType }},
+    seeds: {{ pdaSeedsType }},
   {% endif %}
   config: FetchAccountConfig & { programAddress?: Address } = {},
 ): Promise<{{ accountType }}> {
@@ -15,7 +15,7 @@ export async function {{ fetchFromSeedsFunction }}(
 export async function {{ safeFetchFromSeedsFunction }}(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   {% if hasVariableSeeds %}
-    seeds: {{ accountSeedsType }},
+    seeds: {{ pdaSeedsType }},
   {% endif %}
   config: FetchAccountConfig & { programAddress?: Address } = {},
 ): Promise<{{ accountType }} | null> {
