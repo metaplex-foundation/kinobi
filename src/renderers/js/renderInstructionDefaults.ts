@@ -1,11 +1,4 @@
-import {
-  InstructionAccountDefault,
-  InstructionArgDefault,
-  InstructionDefault,
-  MainCaseString,
-  camelCase,
-  pascalCase,
-} from '../../shared';
+import { MainCaseString, camelCase, pascalCase } from '../../shared';
 import { ResolvedInstructionInput, visit } from '../../visitors';
 import { JavaScriptContextMap } from './JavaScriptContextMap';
 import { JavaScriptImportMap } from './JavaScriptImportMap';

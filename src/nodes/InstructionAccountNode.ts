@@ -1,16 +1,12 @@
 import { IdlInstructionAccount } from '../idl';
-import {
-  InstructionAccountDefault,
-  MainCaseString,
-  PartialExcept,
-  mainCase,
-} from '../shared';
+import { MainCaseString, PartialExcept, mainCase } from '../shared';
+import { InstructionInputValueNode } from './contextualValueNodes';
 
 export type InstructionAccountNode = {
   readonly kind: 'instructionAccountNode';
 
-  // Children to-be.
-  readonly defaultsTo?: InstructionAccountDefault;
+  // Children.
+  readonly defaultsTo?: InstructionInputValueNode;
 
   // Data.
   readonly name: MainCaseString;

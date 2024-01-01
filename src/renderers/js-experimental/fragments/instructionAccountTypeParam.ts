@@ -1,9 +1,10 @@
 import {
   InstructionAccountNode,
+  InstructionInputValueNode,
   InstructionNode,
   ProgramNode,
 } from '../../../nodes';
-import { InstructionAccountDefault, pascalCase } from '../../../shared';
+import { pascalCase } from '../../../shared';
 import { ImportMap } from '../ImportMap';
 import { Fragment, fragment } from './common';
 
@@ -48,15 +49,15 @@ export function getInstructionAccountTypeParamFragment(scope: {
 }
 
 function getDefaultAddress(
-  defaultsTo: InstructionAccountDefault | undefined,
+  defaultsTo: InstructionInputValueNode | undefined,
   programId: string
 ): string {
   switch (defaultsTo?.kind) {
-    case 'publicKey':
+    case 'publicKeyValueNode':
       return `"${defaultsTo.publicKey}"`;
     case 'program':
       return `"${defaultsTo.program.publicKey}"`;
-    case 'programId':
+    case 'programIdValueNode':
       return `"${programId}"`;
     default:
       return `string`;

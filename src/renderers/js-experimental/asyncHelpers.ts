@@ -1,5 +1,4 @@
-import { InstructionNode } from '../../nodes';
-import { InstructionDefault } from '../../shared';
+import { InstructionInputValueNode, InstructionNode } from '../../nodes';
 import { ResolvedInstructionInput } from '../../visitors';
 
 export function hasAsyncFunction(
@@ -33,23 +32,17 @@ export function hasAsyncDefaultValues(
 }
 
 export function isAsyncDefaultValue(
-  defaultsTo: InstructionDefault,
+  defaultsTo: InstructionInputValueNode,
   asyncResolvers: string[]
 ): boolean {
   switch (defaultsTo.kind) {
-    case 'pda':
+    case 'pdaValueNode':
       return true;
-    case 'resolver':
+    case 'resolverValueNode':
       return asyncResolvers.includes(defaultsTo.name);
-    case 'conditional':
-    case 'conditionalResolver':
-      if (
-        defaultsTo.kind === 'conditionalResolver' &&
-        asyncResolvers.includes(defaultsTo.resolver.name)
-      ) {
-        return true;
-      }
+    case 'conditionalValueNode':
       return (
+        isAsyncDefaultValue(defaultsTo.condition, asyncResolvers) ||
         (defaultsTo.ifFalse == null
           ? false
           : isAsyncDefaultValue(defaultsTo.ifFalse, asyncResolvers)) ||

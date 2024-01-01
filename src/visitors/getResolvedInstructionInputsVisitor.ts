@@ -1,11 +1,5 @@
 import { InstructionAccountNode, InstructionNode } from '../nodes';
-import {
-  InstructionAccountDefault,
-  InstructionArgDefault,
-  InstructionDefault,
-  InstructionDependency,
-  MainCaseString,
-} from '../shared';
+import { MainCaseString } from '../shared';
 import { Visitor } from './visitor';
 import { singleNodeVisitor } from './singleNodeVisitor';
 

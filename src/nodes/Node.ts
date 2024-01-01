@@ -51,7 +51,7 @@ export type RegisteredNodes = typeof REGISTERED_NODES;
 export type Node = RegisteredNodes[keyof RegisteredNodes];
 
 export function isNode<TKeys extends keyof RegisteredNodes>(
-  node: Node | null,
+  node: Node | null | undefined,
   key: TKeys | TKeys[]
 ): node is RegisteredNodes[TKeys] {
   const keys = Array.isArray(key) ? key : [key];
@@ -59,7 +59,7 @@ export function isNode<TKeys extends keyof RegisteredNodes>(
 }
 
 export function assertIsNode<TKeys extends keyof RegisteredNodes>(
-  node: Node | null,
+  node: Node | null | undefined,
   key: TKeys | TKeys[]
 ): asserts node is RegisteredNodes[TKeys] {
   const keys = Array.isArray(key) ? key : [key];
@@ -72,13 +72,13 @@ export function assertIsNode<TKeys extends keyof RegisteredNodes>(
 
 export function isNodeFilter<TKeys extends keyof RegisteredNodes>(
   key: TKeys | TKeys[]
-): (node: Node | null) => node is RegisteredNodes[TKeys] {
+): (node: Node | null | undefined) => node is RegisteredNodes[TKeys] {
   return (node): node is RegisteredNodes[TKeys] => isNode(node, key);
 }
 
 export function assertIsNodeFilter<TKeys extends keyof RegisteredNodes>(
   key: TKeys | TKeys[]
-): (node: Node | null) => node is RegisteredNodes[TKeys] {
+): (node: Node | null | undefined) => node is RegisteredNodes[TKeys] {
   return (node): node is RegisteredNodes[TKeys] => {
     assertIsNode(node, key);
     return true;
@@ -87,9 +87,11 @@ export function assertIsNodeFilter<TKeys extends keyof RegisteredNodes>(
 
 export function removeNullAndAssertIsNodeFilter<
   TKeys extends keyof RegisteredNodes
->(key: TKeys | TKeys[]): (node: Node | null) => node is RegisteredNodes[TKeys] {
+>(
+  key: TKeys | TKeys[]
+): (node: Node | null | undefined) => node is RegisteredNodes[TKeys] {
   return (node): node is RegisteredNodes[TKeys] => {
     if (node) assertIsNode(node, key);
-    return node !== null;
+    return node != null;
   };
 }

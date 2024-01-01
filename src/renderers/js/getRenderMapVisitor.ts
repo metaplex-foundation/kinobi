@@ -412,10 +412,10 @@ export function getRenderMapVisitor(
           const hasAnyArgs = hasDataArgs || hasExtraArgs;
           const hasArgDefaults = Object.keys(node.argDefaults).length > 0;
           const hasArgResolvers = Object.values(node.argDefaults).some(
-            ({ kind }) => kind === 'resolver'
+            isNodeFilter('resolverValueNode')
           );
-          const hasAccountResolvers = node.accounts.some(
-            ({ defaultsTo }) => defaultsTo?.kind === 'resolver'
+          const hasAccountResolvers = node.accounts.some(({ defaultsTo }) =>
+            isNode(defaultsTo, 'resolverValueNode')
           );
           const hasByteResolver = node.bytesCreatedOnChain?.kind === 'resolver';
           const hasRemainingAccountsResolver =
@@ -509,7 +509,7 @@ export function getRenderMapVisitor(
 
           // Arg defaults.
           Object.values(node.argDefaults).forEach((argDefault) => {
-            if (argDefault.kind === 'resolver') {
+            if (isNode(argDefault, 'resolverValueNode')) {
               imports.add(
                 argDefault.importFrom ?? 'hooked',
                 camelCase(argDefault.name)

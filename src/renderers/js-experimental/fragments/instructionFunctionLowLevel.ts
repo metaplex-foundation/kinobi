@@ -2,6 +2,7 @@ import {
   InstructionAccountNode,
   InstructionNode,
   ProgramNode,
+  isNode,
 } from '../../../nodes';
 import { pascalCase } from '../../../shared';
 import { ImportMap } from '../ImportMap';
@@ -118,14 +119,15 @@ function getDefaultValue(
   if (account.isOptional && usesLegacyOptionalAccounts) {
     return null;
   }
-  if (account.isOptional || account.defaultsTo?.kind === 'programId') {
+  const defaultsTo = account.defaultsTo ?? null;
+  if (account.isOptional || isNode(defaultsTo, 'programIdValueNode')) {
     return `{ address: "${program.publicKey}" as Address<"${program.publicKey}">, role: AccountRole.READONLY }`;
   }
-  if (account.defaultsTo?.kind === 'program') {
-    return `{ address: "${account.defaultsTo.program.publicKey}" as Address<"${account.defaultsTo.program.publicKey}">, role: AccountRole.READONLY }`;
+  if (isNode(defaultsTo, 'publicKeyValueNode')) {
+    return `"${defaultsTo.publicKey}"`;
   }
-  if (account.defaultsTo?.kind === 'publicKey') {
-    return `"${account.defaultsTo.publicKey}"`;
+  if (isNode(defaultsTo, 'program')) {
+    return `{ address: "${defaultsTo.program.publicKey}" as Address<"${defaultsTo.program.publicKey}">, role: AccountRole.READONLY }`;
   }
   return null;
 }

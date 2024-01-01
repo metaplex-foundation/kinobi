@@ -4,14 +4,7 @@ import {
   instructionNode,
   pdaLinkNode,
 } from '../nodes';
-import {
-  InstructionAccountDefault,
-  LinkableDictionary,
-  MainCaseString,
-  getDefaultSeedsFromPda,
-  mainCase,
-  pipe,
-} from '../shared';
+import { LinkableDictionary, MainCaseString, mainCase, pipe } from '../shared';
 import { extendVisitor } from './extendVisitor';
 import { identityVisitor } from './identityVisitor';
 import { recordLinkablesVisitor } from './recordLinkablesVisitor';
