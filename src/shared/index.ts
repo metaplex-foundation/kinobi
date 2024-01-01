@@ -4,6 +4,7 @@ export * from './BytesCreatedOnChain';
 export * from './GpaField';
 export * from './ImportFrom';
 export * from './InstructionDefault';
+export * from './LinkableDictionary';
 export * from './NodeSelector';
 export * from './NodeStack';
 export * from './RemainingAccounts';

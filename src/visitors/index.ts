@@ -17,6 +17,7 @@ export * from './identityVisitor';
 export * from './interceptVisitor';
 export * from './mapVisitor';
 export * from './mergeVisitor';
+export * from './recordLinkablesVisitor';
 export * from './removeDocsVisitor';
 export * from './setAccountDiscriminatorFromFieldVisitor';
 export * from './setAnchorDiscriminatorsVisitor';
