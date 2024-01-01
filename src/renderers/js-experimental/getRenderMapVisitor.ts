@@ -255,8 +255,8 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
           const imports = new ImportMap().mergeWith(pdaFunctionFragment);
 
           return new RenderMap().add(
-            `accounts/${camelCase(node.name)}.ts`,
-            render('accountsPage.njk', {
+            `pdas/${camelCase(node.name)}.ts`,
+            render('pdasPage.njk', {
               imports: imports.toString(dependencyMap),
               pdaFunctionFragment,
             })
