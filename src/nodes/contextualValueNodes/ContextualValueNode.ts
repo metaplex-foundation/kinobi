@@ -1,6 +1,6 @@
 import type { Mutable } from '../../shared';
-import type { ProgramLinkNode } from '../linkNodes';
-import { VALUE_NODES, ValueNode } from '../valueNodes';
+import type { ProgramLinkNode } from '../linkNodes/ProgramLinkNode';
+import { VALUE_NODES, ValueNode } from '../valueNodes/ValueNode';
 import type { AccountBumpValueNode } from './AccountBumpValueNode';
 import type { AccountValueNode } from './AccountValueNode';
 import type { ArgumentValueNode } from './ArgumentValueNode';

@@ -9,12 +9,12 @@ import type { InstructionNode } from './InstructionNode';
 import type { PdaNode } from './PdaNode';
 import type { ProgramNode } from './ProgramNode';
 import type { RootNode } from './RootNode';
-import { REGISTERED_CONTEXTUAL_VALUE_NODES } from './contextualValueNodes';
-import { REGISTERED_LINK_NODES } from './linkNodes';
-import { REGISTERED_PDA_SEED_NODES } from './pdaSeedNodes';
-import { REGISTERED_SIZE_NODES } from './sizeNodes';
-import { REGISTERED_TYPE_NODES } from './typeNodes';
-import { REGISTERED_VALUE_NODES } from './valueNodes';
+import { REGISTERED_CONTEXTUAL_VALUE_NODES } from './contextualValueNodes/ContextualValueNode';
+import { REGISTERED_LINK_NODES } from './linkNodes/LinkNode';
+import { REGISTERED_PDA_SEED_NODES } from './pdaSeedNodes/PdaSeedNode';
+import { REGISTERED_SIZE_NODES } from './sizeNodes/SizeNode';
+import { REGISTERED_TYPE_NODES } from './typeNodes/TypeNode';
+import { REGISTERED_VALUE_NODES } from './valueNodes/ValueNode';
 
 // Node Registration.
 

@@ -1,8 +1,8 @@
 import type { Mutable } from '../../shared';
 import { IDL_TYPE_LEAVES, IdlType } from '../../idl';
-import { RegisteredNodes } from '../Node';
-import { definedTypeLinkNode } from '../linkNodes';
-import { prefixedSizeNode } from '../sizeNodes';
+import type { RegisteredNodes } from '../Node';
+import { definedTypeLinkNode } from '../linkNodes/DefinedTypeLinkNode';
+import { prefixedSizeNode } from '../sizeNodes/PrefixedSizeNode';
 import { AmountTypeNode } from './AmountTypeNode';
 import { ArrayTypeNode, arrayTypeNodeFromIdl } from './ArrayTypeNode';
 import { BooleanTypeNode, booleanTypeNode } from './BooleanTypeNode';
