@@ -121,9 +121,7 @@ kinobi.update(
           defaultsTo: k.conditionalValueNode({
             condition: k.accountValueNode('delegate'),
             ifTrue: k.pdaValueNode('delegateRecord', {
-              seeds: {
-                role: k.enumValueNode('delegateRole', 'Collection'),
-              },
+              role: k.enumValueNode('delegateRole', 'Collection'),
             }),
           }),
         },

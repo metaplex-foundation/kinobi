@@ -1,7 +1,7 @@
-import { MainCaseString } from '../../shared';
+import { MainCaseString, mainCase } from '../../shared';
 import { isNode } from '../Node';
 import { PdaNode } from '../PdaNode';
-import { PdaLinkNode } from '../linkNodes';
+import { PdaLinkNode, pdaLinkNode } from '../linkNodes';
 import { ValueNode } from '../valueNodes';
 import { AccountValueNode, accountValueNode } from './AccountValueNode';
 import { ArgumentValueNode, argumentValueNode } from './ArgumentValueNode';
@@ -16,10 +16,17 @@ export type PdaValueNode = {
 };
 
 export function pdaValueNode(
-  pda: PdaLinkNode,
-  seeds: PdaValueNode['seeds'] = {}
+  pda: PdaLinkNode | string,
+  seeds: Record<string, ValueNode | AccountValueNode | ArgumentValueNode> = {}
 ): PdaValueNode {
-  return { kind: 'pdaValueNode', pda, seeds };
+  return {
+    kind: 'pdaValueNode',
+    pda: typeof pda === 'string' ? pdaLinkNode(pda) : pda,
+    seeds: Object.entries(seeds).reduce((acc, [name, seedValue]) => {
+      acc[mainCase(name)] = seedValue;
+      return acc;
+    }, {} as PdaValueNode['seeds']),
+  };
 }
 
 export function getDefaultSeedValuesFromPda(
