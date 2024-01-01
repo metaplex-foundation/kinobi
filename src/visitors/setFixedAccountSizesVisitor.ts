@@ -1,11 +1,13 @@
 import { accountNode, assertIsNode, isNode } from '../nodes';
+import { LinkableDictionary } from '../shared';
 import { getByteSizeVisitor } from './getByteSizeVisitor';
-import { tapDefinedTypesVisitor } from './tapVisitor';
+import { recordLinkablesVisitor } from './recordLinkablesVisitor';
 import { topDownTransformerVisitor } from './topDownTransformerVisitor';
 import { visit } from './visitor';
 
 export function setFixedAccountSizesVisitor() {
-  let byteSizeVisitor = getByteSizeVisitor([]);
+  const linkables = new LinkableDictionary();
+  const byteSizeVisitor = getByteSizeVisitor(linkables);
 
   const visitor = topDownTransformerVisitor(
     [
@@ -23,7 +25,5 @@ export function setFixedAccountSizesVisitor() {
     ['rootNode', 'programNode', 'accountNode']
   );
 
-  return tapDefinedTypesVisitor(visitor, (definedTypes) => {
-    byteSizeVisitor = getByteSizeVisitor(definedTypes);
-  });
+  return recordLinkablesVisitor(visitor, linkables);
 }

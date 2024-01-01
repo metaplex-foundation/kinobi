@@ -1,5 +1,4 @@
 import {
-  DefinedTypeNode,
   DefinedTypeNodeInput,
   assertIsNode,
   definedTypeLinkNode,
@@ -8,13 +7,11 @@ import {
 } from '../nodes';
 import { mainCase, renameEnumNode, renameStructNode } from '../shared';
 import {
-  BottomUpNodeTransformer,
   BottomUpNodeTransformerWithSelector,
   bottomUpTransformerVisitor,
 } from './bottomUpTransformerVisitor';
 
 export type DefinedTypeUpdates =
-  | BottomUpNodeTransformer<DefinedTypeNode>
   | { delete: true }
   | (Partial<Omit<DefinedTypeNodeInput, 'data'>> & {
       data?: Record<string, string>;
@@ -33,14 +30,11 @@ export function updateDefinedTypesVisitor(
             ? mainCase(updates.name)
             : undefined;
 
-        const transforms: BottomUpNodeTransformerWithSelector[] = [
+        const transformers: BottomUpNodeTransformerWithSelector[] = [
           {
             select: `${selectorStack.join('.')}.[definedTypeNode]${name}`,
-            transform: (node, stack) => {
+            transform: (node) => {
               assertIsNode(node, 'definedTypeNode');
-              if (typeof updates === 'function') {
-                return updates(node, stack);
-              }
               if ('delete' in updates) {
                 return null;
               }
@@ -62,7 +56,7 @@ export function updateDefinedTypesVisitor(
         ];
 
         if (newName) {
-          transforms.push({
+          transformers.push({
             select: `${selectorStack.join('.')}.[definedTypeLinkNode]${name}`,
             transform: (node) => {
               assertIsNode(node, 'definedTypeLinkNode');
@@ -72,7 +66,7 @@ export function updateDefinedTypesVisitor(
           });
         }
 
-        return transforms;
+        return transformers;
       }
     )
   );

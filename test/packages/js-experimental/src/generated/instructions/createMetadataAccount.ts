@@ -48,7 +48,8 @@ import {
   getOptionEncoder,
 } from '@solana/options';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import { findMetadataPda, getMetadataSize } from '../accounts';
+import { getMetadataSize } from '../accounts';
+import { findMetadataPda } from '../pdas';
 import {
   IInstructionWithBytesCreatedOnChain,
   ResolvedAccount,

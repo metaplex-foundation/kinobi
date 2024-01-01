@@ -112,10 +112,11 @@ export function identityVisitor<
       const data = visit(this)(node.data);
       if (data === null) return null;
       assertIsNode(data, 'accountDataNode');
-      const seeds = node.seeds
-        .map((type) => visit(this)(type))
-        .filter(removeNullAndAssertIsNodeFilter(PDA_SEED_NODES));
-      return accountNode({ ...node, data, seeds });
+      const pda = node.pda ? visit(this)(node.pda) : null;
+      if (pda !== null) {
+        assertIsNode(pda, 'pdaLinkNode');
+      }
+      return accountNode({ ...node, data, pda: pda ?? undefined });
     };
   }
 

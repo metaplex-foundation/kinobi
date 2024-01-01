@@ -17,14 +17,18 @@ import {
   camelCase,
   getGpaFieldsFromAccount,
   ImportFrom,
+  LinkableDictionary,
   logWarn,
   pascalCase,
+  pipe,
   RenderMap,
   resolveTemplate,
 } from '../../shared';
 import {
+  extendVisitor,
   getByteSizeVisitor,
   getResolvedInstructionInputsVisitor,
+  recordLinkablesVisitor,
   ResolvedInstructionAccount,
   ResolvedInstructionInput,
   staticVisitor,
@@ -58,7 +62,8 @@ export type GetJavaScriptRenderMapOptions = {
 export function getRenderMapVisitor(
   options: GetJavaScriptRenderMapOptions = {}
 ): Visitor<RenderMap> {
-  let byteSizeVisitor = getByteSizeVisitor([]);
+  const linkables = new LinkableDictionary();
+  const byteSizeVisitor = getByteSizeVisitor(linkables);
   let program: ProgramNode | null = null;
 
   const valueNodeVisitor = renderValueNodeVisitor();
@@ -131,448 +136,469 @@ export function getRenderMapVisitor(
     return formatCode ? formatCodeUsingPrettier(code, prettierOptions) : code;
   }
 
-  const visitor = staticVisitor(() => new RenderMap());
+  return pipe(
+    staticVisitor(() => new RenderMap()),
+    (v) =>
+      extendVisitor(v, {
+        visitRoot(node, { self }) {
+          const programsToExport = node.programs.filter((p) => !p.internal);
+          const accountsToExport = getAllAccounts(node).filter(
+            (a) => !a.internal
+          );
+          const instructionsToExport = getAllInstructionsWithSubs(
+            node,
+            !renderParentInstructions
+          ).filter((i) => !i.internal);
+          const definedTypesToExport = getAllDefinedTypes(node).filter(
+            (t) => !t.internal
+          );
+          const hasAnythingToExport =
+            programsToExport.length > 0 ||
+            accountsToExport.length > 0 ||
+            instructionsToExport.length > 0 ||
+            definedTypesToExport.length > 0;
 
-  visitor.visitRoot = (node) => {
-    byteSizeVisitor = getByteSizeVisitor(getAllDefinedTypes(node));
+          const ctx = {
+            root: node,
+            programsToExport,
+            accountsToExport,
+            instructionsToExport,
+            definedTypesToExport,
+            hasAnythingToExport,
+          };
 
-    const programsToExport = node.programs.filter((p) => !p.internal);
-    const accountsToExport = getAllAccounts(node).filter((a) => !a.internal);
-    const instructionsToExport = getAllInstructionsWithSubs(
-      node,
-      !renderParentInstructions
-    ).filter((i) => !i.internal);
-    const definedTypesToExport = getAllDefinedTypes(node).filter(
-      (t) => !t.internal
-    );
-    const hasAnythingToExport =
-      programsToExport.length > 0 ||
-      accountsToExport.length > 0 ||
-      instructionsToExport.length > 0 ||
-      definedTypesToExport.length > 0;
+          const map = new RenderMap();
+          if (hasAnythingToExport) {
+            map.add('shared/index.ts', render('sharedPage.njk', ctx));
+          }
+          if (programsToExport.length > 0) {
+            map
+              .add('programs/index.ts', render('programsIndex.njk', ctx))
+              .add('errors/index.ts', render('errorsIndex.njk', ctx));
+          }
+          if (accountsToExport.length > 0) {
+            map.add('accounts/index.ts', render('accountsIndex.njk', ctx));
+          }
+          if (instructionsToExport.length > 0) {
+            map.add(
+              'instructions/index.ts',
+              render('instructionsIndex.njk', ctx)
+            );
+          }
+          if (definedTypesToExport.length > 0) {
+            map.add('types/index.ts', render('definedTypesIndex.njk', ctx));
+          }
 
-    const ctx = {
-      root: node,
-      programsToExport,
-      accountsToExport,
-      instructionsToExport,
-      definedTypesToExport,
-      hasAnythingToExport,
-    };
+          return map
+            .add('index.ts', render('rootIndex.njk', ctx))
+            .mergeWith(...node.programs.map((p) => visit(p, self)));
+        },
 
-    const map = new RenderMap();
-    if (hasAnythingToExport) {
-      map.add('shared/index.ts', render('sharedPage.njk', ctx));
-    }
-    if (programsToExport.length > 0) {
-      map
-        .add('programs/index.ts', render('programsIndex.njk', ctx))
-        .add('errors/index.ts', render('errorsIndex.njk', ctx));
-    }
-    if (accountsToExport.length > 0) {
-      map.add('accounts/index.ts', render('accountsIndex.njk', ctx));
-    }
-    if (instructionsToExport.length > 0) {
-      map.add('instructions/index.ts', render('instructionsIndex.njk', ctx));
-    }
-    if (definedTypesToExport.length > 0) {
-      map.add('types/index.ts', render('definedTypesIndex.njk', ctx));
-    }
+        visitProgram(node, { self }) {
+          program = node;
+          const pascalCaseName = pascalCase(node.name);
+          const renderMap = new RenderMap()
+            .mergeWith(...node.accounts.map((account) => visit(account, self)))
+            .mergeWith(...node.definedTypes.map((type) => visit(type, self)));
 
-    return map
-      .add('index.ts', render('rootIndex.njk', ctx))
-      .mergeWith(...node.programs.map((p) => visit(p, visitor)));
-  };
+          // Internal programs are support programs that
+          // were added to fill missing types or accounts.
+          // They don't need to render anything else.
+          if (node.internal) {
+            program = null;
+            return renderMap;
+          }
 
-  visitor.visitProgram = (node) => {
-    program = node;
-    const pascalCaseName = pascalCase(node.name);
-    const renderMap = new RenderMap()
-      .mergeWith(...node.accounts.map((account) => visit(account, visitor)))
-      .mergeWith(...node.definedTypes.map((type) => visit(type, visitor)));
+          renderMap
+            .mergeWith(
+              ...getAllInstructionsWithSubs(
+                node,
+                !renderParentInstructions
+              ).map((ix) => visit(ix, self))
+            )
+            .add(
+              `errors/${camelCase(node.name)}.ts`,
+              render('errorsPage.njk', {
+                imports: new JavaScriptImportMap()
+                  .add('umi', ['ProgramError', 'Program'])
+                  .toString(dependencyMap),
+                program: node,
+                errors: node.errors.map((error) => ({
+                  ...error,
+                  prefixedName:
+                    pascalCase(node.prefix) + pascalCase(error.name),
+                })),
+              })
+            )
+            .add(
+              `programs/${camelCase(node.name)}.ts`,
+              render('programsPage.njk', {
+                imports: new JavaScriptImportMap()
+                  .add('umi', [
+                    'ClusterFilter',
+                    'Context',
+                    'Program',
+                    'PublicKey',
+                  ])
+                  .add('errors', [
+                    `get${pascalCaseName}ErrorFromCode`,
+                    `get${pascalCaseName}ErrorFromName`,
+                  ])
+                  .toString(dependencyMap),
+                program: node,
+              })
+            );
+          program = null;
+          return renderMap;
+        },
 
-    // Internal programs are support programs that
-    // were added to fill missing types or accounts.
-    // They don't need to render anything else.
-    if (node.internal) {
-      program = null;
-      return renderMap;
-    }
-
-    renderMap
-      .mergeWith(
-        ...getAllInstructionsWithSubs(node, !renderParentInstructions).map(
-          (ix) => visit(ix, visitor)
-        )
-      )
-      .add(
-        `errors/${camelCase(node.name)}.ts`,
-        render('errorsPage.njk', {
-          imports: new JavaScriptImportMap()
-            .add('umi', ['ProgramError', 'Program'])
-            .toString(dependencyMap),
-          program: node,
-          errors: node.errors.map((error) => ({
-            ...error,
-            prefixedName: pascalCase(node.prefix) + pascalCase(error.name),
-          })),
-        })
-      )
-      .add(
-        `programs/${camelCase(node.name)}.ts`,
-        render('programsPage.njk', {
-          imports: new JavaScriptImportMap()
-            .add('umi', ['ClusterFilter', 'Context', 'Program', 'PublicKey'])
-            .add('errors', [
-              `get${pascalCaseName}ErrorFromCode`,
-              `get${pascalCaseName}ErrorFromName`,
+        visitAccount(node) {
+          const isLinked = !!node.data.link;
+          const typeManifest = visit(node, typeManifestVisitor);
+          const imports = new JavaScriptImportMap().mergeWith(
+            typeManifest.strictImports,
+            typeManifest.serializerImports
+          );
+          if (!isLinked) {
+            imports.mergeWith(typeManifest.looseImports);
+          }
+          imports
+            .add('umi', [
+              'Account',
+              'assertAccountExists',
+              'Context',
+              'deserializeAccount',
+              'Pda',
+              'PublicKey',
+              'publicKey',
+              'RpcAccount',
+              'RpcGetAccountOptions',
+              'RpcGetAccountsOptions',
             ])
-            .toString(dependencyMap),
-          program: node,
-        })
-      );
-    program = null;
-    return renderMap;
-  };
+            .add('umiSerializers', !isLinked ? ['Serializer'] : [])
+            .addAlias('umi', 'publicKey', 'toPublicKey');
 
-  visitor.visitAccount = (node) => {
-    const isLinked = !!node.data.link;
-    const typeManifest = visit(node, typeManifestVisitor);
-    const imports = new JavaScriptImportMap().mergeWith(
-      typeManifest.strictImports,
-      typeManifest.serializerImports
-    );
-    if (!isLinked) {
-      imports.mergeWith(typeManifest.looseImports);
-    }
-    imports
-      .add('umi', [
-        'Account',
-        'assertAccountExists',
-        'Context',
-        'deserializeAccount',
-        'Pda',
-        'PublicKey',
-        'publicKey',
-        'RpcAccount',
-        'RpcGetAccountOptions',
-        'RpcGetAccountsOptions',
-      ])
-      .add('umiSerializers', !isLinked ? ['Serializer'] : [])
-      .addAlias('umi', 'publicKey', 'toPublicKey');
+          // Discriminator.
+          const { discriminator } = node;
+          let resolvedDiscriminator:
+            | { kind: 'size'; value: string }
+            | { kind: 'field'; name: string; value: string }
+            | null = null;
+          if (discriminator?.kind === 'field') {
+            const discriminatorField = node.data.struct.fields.find(
+              (f) => f.name === discriminator.name
+            );
+            const discriminatorValue = discriminatorField?.defaultsTo?.value
+              ? visit(discriminatorField.defaultsTo.value, valueNodeVisitor)
+              : undefined;
+            if (discriminatorValue) {
+              imports.mergeWith(discriminatorValue.imports);
+              resolvedDiscriminator = {
+                kind: 'field',
+                name: discriminator.name,
+                value: discriminatorValue.render,
+              };
+            }
+          } else if (discriminator?.kind === 'size') {
+            resolvedDiscriminator =
+              node.size !== undefined
+                ? { kind: 'size', value: `${node.size}` }
+                : null;
+          }
 
-    // Discriminator.
-    const { discriminator } = node;
-    let resolvedDiscriminator:
-      | { kind: 'size'; value: string }
-      | { kind: 'field'; name: string; value: string }
-      | null = null;
-    if (discriminator?.kind === 'field') {
-      const discriminatorField = node.data.struct.fields.find(
-        (f) => f.name === discriminator.name
-      );
-      const discriminatorValue = discriminatorField?.defaultsTo?.value
-        ? visit(discriminatorField.defaultsTo.value, valueNodeVisitor)
-        : undefined;
-      if (discriminatorValue) {
-        imports.mergeWith(discriminatorValue.imports);
-        resolvedDiscriminator = {
-          kind: 'field',
-          name: discriminator.name,
-          value: discriminatorValue.render,
-        };
-      }
-    } else if (discriminator?.kind === 'size') {
-      resolvedDiscriminator =
-        node.size !== undefined
-          ? { kind: 'size', value: `${node.size}` }
-          : null;
-    }
+          // GPA Fields.
+          const gpaFields = getGpaFieldsFromAccount(node, byteSizeVisitor).map(
+            (gpaField) => {
+              const gpaFieldManifest = visit(
+                gpaField.type,
+                typeManifestVisitor
+              );
+              imports.mergeWith(
+                gpaFieldManifest.looseImports,
+                gpaFieldManifest.serializerImports
+              );
+              return { ...gpaField, manifest: gpaFieldManifest };
+            }
+          );
+          let resolvedGpaFields: { type: string; argument: string } | null =
+            null;
+          if (gpaFields.length > 0) {
+            imports.add('umi', ['gpaBuilder']);
+            resolvedGpaFields = {
+              type: `{ ${gpaFields
+                .map((f) => `'${f.name}': ${f.manifest.looseType}`)
+                .join(', ')} }`,
+              argument: `{ ${gpaFields
+                .map((f) => {
+                  const offset = f.offset === null ? 'null' : `${f.offset}`;
+                  return `'${f.name}': [${offset}, ${f.manifest.serializer}]`;
+                })
+                .join(', ')} }`,
+            };
+          }
 
-    // GPA Fields.
-    const gpaFields = getGpaFieldsFromAccount(node, byteSizeVisitor).map(
-      (gpaField) => {
-        const gpaFieldManifest = visit(gpaField.type, typeManifestVisitor);
-        imports.mergeWith(
-          gpaFieldManifest.looseImports,
-          gpaFieldManifest.serializerImports
-        );
-        return { ...gpaField, manifest: gpaFieldManifest };
-      }
-    );
-    let resolvedGpaFields: { type: string; argument: string } | null = null;
-    if (gpaFields.length > 0) {
-      imports.add('umi', ['gpaBuilder']);
-      resolvedGpaFields = {
-        type: `{ ${gpaFields
-          .map((f) => `'${f.name}': ${f.manifest.looseType}`)
-          .join(', ')} }`,
-        argument: `{ ${gpaFields
-          .map((f) => {
-            const offset = f.offset === null ? 'null' : `${f.offset}`;
-            return `'${f.name}': [${offset}, ${f.manifest.serializer}]`;
-          })
-          .join(', ')} }`,
-      };
-    }
+          // Seeds.
+          const pda = node.pda ? linkables.get(node.pda) : undefined;
+          const pdaSeeds = pda?.seeds ?? [];
+          const seeds = pdaSeeds.map((seed) => {
+            if (isNode(seed, 'constantPdaSeedNode')) {
+              const seedManifest = visit(seed.type, typeManifestVisitor);
+              imports.mergeWith(seedManifest.serializerImports);
+              const seedValue = seed.value;
+              const valueManifest = visit(seedValue, valueNodeVisitor);
+              (seedValue as any).render = valueManifest.render;
+              imports.mergeWith(valueManifest.imports);
+              return { ...seed, typeManifest: seedManifest };
+            }
+            if (isNode(seed, 'variablePdaSeedNode')) {
+              const seedManifest = visit(seed.type, typeManifestVisitor);
+              imports.mergeWith(
+                seedManifest.looseImports,
+                seedManifest.serializerImports
+              );
+              return { ...seed, typeManifest: seedManifest };
+            }
+            imports
+              .add('umiSerializers', 'publicKey')
+              .addAlias('umiSerializers', 'publicKey', 'publicKeySerializer');
+            return seed;
+          });
+          if (seeds.length > 0) {
+            imports.add('umi', ['Pda']);
+          }
+          const hasVariableSeeds =
+            pdaSeeds.filter(isNodeFilter('variablePdaSeedNode')).length > 0;
 
-    // Seeds.
-    const seeds = node.seeds.map((seed) => {
-      if (isNode(seed, 'constantPdaSeedNode')) {
-        const seedManifest = visit(seed.type, typeManifestVisitor);
-        imports.mergeWith(seedManifest.serializerImports);
-        const seedValue = seed.value;
-        const valueManifest = visit(seedValue, valueNodeVisitor);
-        (seedValue as any).render = valueManifest.render;
-        imports.mergeWith(valueManifest.imports);
-        return { ...seed, typeManifest: seedManifest };
-      }
-      if (isNode(seed, 'variablePdaSeedNode')) {
-        const seedManifest = visit(seed.type, typeManifestVisitor);
-        imports.mergeWith(
-          seedManifest.looseImports,
-          seedManifest.serializerImports
-        );
-        return { ...seed, typeManifest: seedManifest };
-      }
-      imports
-        .add('umiSerializers', 'publicKey')
-        .addAlias('umiSerializers', 'publicKey', 'publicKeySerializer');
-      return seed;
-    });
-    if (seeds.length > 0) {
-      imports.add('umi', ['Pda']);
-    }
-    const hasVariableSeeds =
-      node.seeds.filter(isNodeFilter('variablePdaSeedNode')).length > 0;
+          return new RenderMap().add(
+            `accounts/${camelCase(node.name)}.ts`,
+            render('accountsPage.njk', {
+              account: node,
+              imports: imports.toString(dependencyMap),
+              program,
+              typeManifest,
+              discriminator: resolvedDiscriminator,
+              gpaFields: resolvedGpaFields,
+              seeds,
+              hasVariableSeeds,
+            })
+          );
+        },
 
-    return new RenderMap().add(
-      `accounts/${camelCase(node.name)}.ts`,
-      render('accountsPage.njk', {
-        account: node,
-        imports: imports.toString(dependencyMap),
-        program,
-        typeManifest,
-        discriminator: resolvedDiscriminator,
-        gpaFields: resolvedGpaFields,
-        seeds,
-        hasVariableSeeds,
-      })
-    );
-  };
+        visitInstruction(node) {
+          // Imports and interfaces.
+          const interfaces = new JavaScriptContextMap().add('programs');
+          const imports = new JavaScriptImportMap()
+            .add('umi', ['Context', 'TransactionBuilder', 'transactionBuilder'])
+            .add('shared', [
+              'ResolvedAccount',
+              'ResolvedAccountsWithIndices',
+              'getAccountMetasAndSigners',
+            ]);
 
-  visitor.visitInstruction = (node) => {
-    // Imports and interfaces.
-    const interfaces = new JavaScriptContextMap().add('programs');
-    const imports = new JavaScriptImportMap()
-      .add('umi', ['Context', 'TransactionBuilder', 'transactionBuilder'])
-      .add('shared', [
-        'ResolvedAccount',
-        'ResolvedAccountsWithIndices',
-        'getAccountMetasAndSigners',
-      ]);
+          // Instruction helpers.
+          const hasAccounts = node.accounts.length > 0;
+          const hasData =
+            !!node.dataArgs.link || node.dataArgs.struct.fields.length > 0;
+          const hasDataArgs =
+            !!node.dataArgs.link ||
+            node.dataArgs.struct.fields.filter(
+              (field) => field.defaultsTo?.strategy !== 'omitted'
+            ).length > 0;
+          const hasExtraArgs =
+            !!node.extraArgs.link ||
+            node.extraArgs.struct.fields.filter(
+              (field) => field.defaultsTo?.strategy !== 'omitted'
+            ).length > 0;
+          const hasAnyArgs = hasDataArgs || hasExtraArgs;
+          const hasArgDefaults = Object.keys(node.argDefaults).length > 0;
+          const hasArgResolvers = Object.values(node.argDefaults).some(
+            ({ kind }) => kind === 'resolver'
+          );
+          const hasAccountResolvers = node.accounts.some(
+            ({ defaultsTo }) => defaultsTo?.kind === 'resolver'
+          );
+          const hasByteResolver = node.bytesCreatedOnChain?.kind === 'resolver';
+          const hasRemainingAccountsResolver =
+            node.remainingAccounts?.kind === 'resolver';
+          const hasResolvers =
+            hasArgResolvers ||
+            hasAccountResolvers ||
+            hasByteResolver ||
+            hasRemainingAccountsResolver;
+          const hasResolvedArgs = hasDataArgs || hasArgDefaults || hasResolvers;
+          if (hasResolvers) {
+            interfaces.add(['eddsa', 'identity', 'payer']);
+          }
 
-    // Instruction helpers.
-    const hasAccounts = node.accounts.length > 0;
-    const hasData =
-      !!node.dataArgs.link || node.dataArgs.struct.fields.length > 0;
-    const hasDataArgs =
-      !!node.dataArgs.link ||
-      node.dataArgs.struct.fields.filter(
-        (field) => field.defaultsTo?.strategy !== 'omitted'
-      ).length > 0;
-    const hasExtraArgs =
-      !!node.extraArgs.link ||
-      node.extraArgs.struct.fields.filter(
-        (field) => field.defaultsTo?.strategy !== 'omitted'
-      ).length > 0;
-    const hasAnyArgs = hasDataArgs || hasExtraArgs;
-    const hasArgDefaults = Object.keys(node.argDefaults).length > 0;
-    const hasArgResolvers = Object.values(node.argDefaults).some(
-      ({ kind }) => kind === 'resolver'
-    );
-    const hasAccountResolvers = node.accounts.some(
-      ({ defaultsTo }) => defaultsTo?.kind === 'resolver'
-    );
-    const hasByteResolver = node.bytesCreatedOnChain?.kind === 'resolver';
-    const hasRemainingAccountsResolver =
-      node.remainingAccounts?.kind === 'resolver';
-    const hasResolvers =
-      hasArgResolvers ||
-      hasAccountResolvers ||
-      hasByteResolver ||
-      hasRemainingAccountsResolver;
-    const hasResolvedArgs = hasDataArgs || hasArgDefaults || hasResolvers;
-    if (hasResolvers) {
-      interfaces.add(['eddsa', 'identity', 'payer']);
-    }
+          // canMergeAccountsAndArgs
+          const linkedDataArgs = !!node.dataArgs.link;
+          const linkedExtraArgs = !!node.extraArgs.link;
+          let canMergeAccountsAndArgs = false;
+          if (!linkedDataArgs && !linkedExtraArgs) {
+            const accountsAndArgsConflicts =
+              getMergeConflictsForInstructionAccountsAndArgs(node);
+            if (accountsAndArgsConflicts.length > 0) {
+              logWarn(
+                `[JavaScript] Accounts and args of instruction [${node.name}] have the following ` +
+                  `conflicting attributes [${accountsAndArgsConflicts.join(
+                    ', '
+                  )}]. ` +
+                  `Thus, they could not be merged into a single input object. ` +
+                  'You may want to rename the conflicting attributes.'
+              );
+            }
+            canMergeAccountsAndArgs = accountsAndArgsConflicts.length === 0;
+          }
 
-    // canMergeAccountsAndArgs
-    const linkedDataArgs = !!node.dataArgs.link;
-    const linkedExtraArgs = !!node.extraArgs.link;
-    let canMergeAccountsAndArgs = false;
-    if (!linkedDataArgs && !linkedExtraArgs) {
-      const accountsAndArgsConflicts =
-        getMergeConflictsForInstructionAccountsAndArgs(node);
-      if (accountsAndArgsConflicts.length > 0) {
-        logWarn(
-          `[JavaScript] Accounts and args of instruction [${node.name}] have the following ` +
-            `conflicting attributes [${accountsAndArgsConflicts.join(
-              ', '
-            )}]. ` +
-            `Thus, they could not be merged into a single input object. ` +
-            'You may want to rename the conflicting attributes.'
-        );
-      }
-      canMergeAccountsAndArgs = accountsAndArgsConflicts.length === 0;
-    }
+          // Resolved inputs.
+          let argObject = canMergeAccountsAndArgs ? 'input' : 'args';
+          argObject = hasResolvedArgs ? 'resolvedArgs' : argObject;
+          const resolvedInputs = visit(
+            node,
+            resolvedInstructionInputVisitor
+          ).map((input: ResolvedInstructionInput) => {
+            const renderedInput = renderInstructionDefaults(
+              input,
+              node.optionalAccountStrategy,
+              argObject
+            );
+            imports.mergeWith(renderedInput.imports);
+            interfaces.mergeWith(renderedInput.interfaces);
+            return { ...input, render: renderedInput.render };
+          });
+          const resolvedInputsWithDefaults = resolvedInputs.filter(
+            (input) => input.defaultsTo !== undefined && input.render !== ''
+          );
+          const argsWithDefaults = resolvedInputsWithDefaults
+            .filter((input) => input.kind === 'arg')
+            .map((input) => input.name);
 
-    // Resolved inputs.
-    let argObject = canMergeAccountsAndArgs ? 'input' : 'args';
-    argObject = hasResolvedArgs ? 'resolvedArgs' : argObject;
-    const resolvedInputs = visit(node, resolvedInstructionInputVisitor).map(
-      (input: ResolvedInstructionInput) => {
-        const renderedInput = renderInstructionDefaults(
-          input,
-          node.optionalAccountStrategy,
-          argObject
-        );
-        imports.mergeWith(renderedInput.imports);
-        interfaces.mergeWith(renderedInput.interfaces);
-        return { ...input, render: renderedInput.render };
-      }
-    );
-    const resolvedInputsWithDefaults = resolvedInputs.filter(
-      (input) => input.defaultsTo !== undefined && input.render !== ''
-    );
-    const argsWithDefaults = resolvedInputsWithDefaults
-      .filter((input) => input.kind === 'arg')
-      .map((input) => input.name);
+          // Accounts.
+          const accounts = node.accounts.map((account) => {
+            const hasDefaultValue = !!account.defaultsTo;
+            const resolvedAccount = resolvedInputs.find(
+              (input) => input.kind === 'account' && input.name === account.name
+            ) as ResolvedInstructionAccount;
+            return {
+              ...resolvedAccount,
+              type: getInstructionAccountType(resolvedAccount),
+              optionalSign: hasDefaultValue || account.isOptional ? '?' : '',
+              hasDefaultValue,
+            };
+          });
+          imports.mergeWith(getInstructionAccountImports(accounts));
 
-    // Accounts.
-    const accounts = node.accounts.map((account) => {
-      const hasDefaultValue = !!account.defaultsTo;
-      const resolvedAccount = resolvedInputs.find(
-        (input) => input.kind === 'account' && input.name === account.name
-      ) as ResolvedInstructionAccount;
-      return {
-        ...resolvedAccount,
-        type: getInstructionAccountType(resolvedAccount),
-        optionalSign: hasDefaultValue || account.isOptional ? '?' : '',
-        hasDefaultValue,
-      };
-    });
-    imports.mergeWith(getInstructionAccountImports(accounts));
+          // Data Args.
+          const dataArgManifest = visit(node.dataArgs, typeManifestVisitor);
+          if (linkedDataArgs || hasData) {
+            imports.mergeWith(
+              dataArgManifest.looseImports,
+              dataArgManifest.serializerImports
+            );
+          }
+          if (!linkedDataArgs) {
+            imports.mergeWith(dataArgManifest.strictImports);
+          }
+          if (!linkedDataArgs && hasData) {
+            imports.add('umiSerializers', ['Serializer']);
+          }
 
-    // Data Args.
-    const dataArgManifest = visit(node.dataArgs, typeManifestVisitor);
-    if (linkedDataArgs || hasData) {
-      imports.mergeWith(
-        dataArgManifest.looseImports,
-        dataArgManifest.serializerImports
-      );
-    }
-    if (!linkedDataArgs) {
-      imports.mergeWith(dataArgManifest.strictImports);
-    }
-    if (!linkedDataArgs && hasData) {
-      imports.add('umiSerializers', ['Serializer']);
-    }
+          // Extra args.
+          const extraArgManifest = visit(node.extraArgs, typeManifestVisitor);
+          imports.mergeWith(extraArgManifest.looseImports);
 
-    // Extra args.
-    const extraArgManifest = visit(node.extraArgs, typeManifestVisitor);
-    imports.mergeWith(extraArgManifest.looseImports);
+          // Arg defaults.
+          Object.values(node.argDefaults).forEach((argDefault) => {
+            if (argDefault.kind === 'resolver') {
+              imports.add(
+                argDefault.importFrom ?? 'hooked',
+                camelCase(argDefault.name)
+              );
+            }
+          });
+          if (argsWithDefaults.length > 0) {
+            imports.add('shared', ['PickPartial']);
+          }
 
-    // Arg defaults.
-    Object.values(node.argDefaults).forEach((argDefault) => {
-      if (argDefault.kind === 'resolver') {
-        imports.add(
-          argDefault.importFrom ?? 'hooked',
-          camelCase(argDefault.name)
-        );
-      }
-    });
-    if (argsWithDefaults.length > 0) {
-      imports.add('shared', ['PickPartial']);
-    }
+          // Bytes created on chain.
+          const bytes = node.bytesCreatedOnChain;
+          if (bytes && 'includeHeader' in bytes && bytes.includeHeader) {
+            imports.add('umi', 'ACCOUNT_HEADER_SIZE');
+          }
+          if (bytes?.kind === 'account') {
+            const accountName = pascalCase(bytes.name);
+            const importFrom = bytes.importFrom ?? 'generatedAccounts';
+            imports.add(importFrom, `get${accountName}Size`);
+          } else if (bytes?.kind === 'resolver') {
+            imports.add(bytes.importFrom, camelCase(bytes.name));
+          }
 
-    // Bytes created on chain.
-    const bytes = node.bytesCreatedOnChain;
-    if (bytes && 'includeHeader' in bytes && bytes.includeHeader) {
-      imports.add('umi', 'ACCOUNT_HEADER_SIZE');
-    }
-    if (bytes?.kind === 'account') {
-      const accountName = pascalCase(bytes.name);
-      const importFrom = bytes.importFrom ?? 'generatedAccounts';
-      imports.add(importFrom, `get${accountName}Size`);
-    } else if (bytes?.kind === 'resolver') {
-      imports.add(bytes.importFrom, camelCase(bytes.name));
-    }
+          // Remaining accounts.
+          const { remainingAccounts } = node;
+          if (remainingAccounts?.kind === 'resolver') {
+            imports.add(
+              remainingAccounts.importFrom,
+              camelCase(remainingAccounts.name)
+            );
+          }
 
-    // Remaining accounts.
-    const { remainingAccounts } = node;
-    if (remainingAccounts?.kind === 'resolver') {
-      imports.add(
-        remainingAccounts.importFrom,
-        camelCase(remainingAccounts.name)
-      );
-    }
+          return new RenderMap().add(
+            `instructions/${camelCase(node.name)}.ts`,
+            render('instructionsPage.njk', {
+              instruction: node,
+              imports: imports.toString(dependencyMap),
+              interfaces: interfaces.toString(),
+              program,
+              resolvedInputs,
+              resolvedInputsWithDefaults,
+              argsWithDefaults,
+              accounts,
+              dataArgManifest,
+              extraArgManifest,
+              canMergeAccountsAndArgs,
+              hasAccounts,
+              hasData,
+              hasDataArgs,
+              hasExtraArgs,
+              hasAnyArgs,
+              hasArgDefaults,
+              hasArgResolvers,
+              hasAccountResolvers,
+              hasByteResolver,
+              hasRemainingAccountsResolver,
+              hasResolvers,
+              hasResolvedArgs,
+            })
+          );
+        },
 
-    return new RenderMap().add(
-      `instructions/${camelCase(node.name)}.ts`,
-      render('instructionsPage.njk', {
-        instruction: node,
-        imports: imports.toString(dependencyMap),
-        interfaces: interfaces.toString(),
-        program,
-        resolvedInputs,
-        resolvedInputsWithDefaults,
-        argsWithDefaults,
-        accounts,
-        dataArgManifest,
-        extraArgManifest,
-        canMergeAccountsAndArgs,
-        hasAccounts,
-        hasData,
-        hasDataArgs,
-        hasExtraArgs,
-        hasAnyArgs,
-        hasArgDefaults,
-        hasArgResolvers,
-        hasAccountResolvers,
-        hasByteResolver,
-        hasRemainingAccountsResolver,
-        hasResolvers,
-        hasResolvedArgs,
-      })
-    );
-  };
+        visitDefinedType(node) {
+          const pascalCaseName = pascalCase(node.name);
+          const typeManifest = visit(node, typeManifestVisitor);
+          const imports = new JavaScriptImportMap()
+            .mergeWithManifest(typeManifest)
+            .add('umiSerializers', ['Serializer'])
+            .remove('generatedTypes', [
+              pascalCaseName,
+              `${pascalCaseName}Args`,
+              `get${pascalCaseName}Serializer`,
+            ]);
 
-  visitor.visitDefinedType = (node) => {
-    const pascalCaseName = pascalCase(node.name);
-    const typeManifest = visit(node, typeManifestVisitor);
-    const imports = new JavaScriptImportMap()
-      .mergeWithManifest(typeManifest)
-      .add('umiSerializers', ['Serializer'])
-      .remove('generatedTypes', [
-        pascalCaseName,
-        `${pascalCaseName}Args`,
-        `get${pascalCaseName}Serializer`,
-      ]);
-
-    return new RenderMap().add(
-      `types/${camelCase(node.name)}.ts`,
-      render('definedTypesPage.njk', {
-        definedType: node,
-        imports: imports.toString({
-          ...dependencyMap,
-          generatedTypes: '.',
-        }),
-        typeManifest,
-        isDataEnum: isNode(node.data, 'enumTypeNode') && isDataEnum(node.data),
-      })
-    );
-  };
-
-  return visitor;
+          return new RenderMap().add(
+            `types/${camelCase(node.name)}.ts`,
+            render('definedTypesPage.njk', {
+              definedType: node,
+              imports: imports.toString({
+                ...dependencyMap,
+                generatedTypes: '.',
+              }),
+              typeManifest,
+              isDataEnum:
+                isNode(node.data, 'enumTypeNode') && isDataEnum(node.data),
+            })
+          );
+        },
+      }),
+    (v) => recordLinkablesVisitor(v, linkables)
+  );
 }

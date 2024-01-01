@@ -1,13 +1,13 @@
-import { DefinedTypeNode, assertIsNode } from '../nodes';
-import { pipe } from '../shared';
+import { assertIsNode } from '../nodes';
+import { LinkableDictionary, pipe } from '../shared';
 import {
   BottomUpNodeTransformerWithSelector,
   bottomUpTransformerVisitor,
 } from './bottomUpTransformerVisitor';
-import { tapDefinedTypesVisitor } from './tapVisitor';
+import { recordLinkablesVisitor } from './recordLinkablesVisitor';
 
 export function unwrapTypeDefinedLinksVisitor(definedLinksType: string[]) {
-  let availableDefinedTypes = new Map<string, DefinedTypeNode>();
+  const linkables = new LinkableDictionary();
 
   const transformers: BottomUpNodeTransformerWithSelector[] =
     definedLinksType.map((selectorStack) => {
@@ -18,7 +18,7 @@ export function unwrapTypeDefinedLinksVisitor(definedLinksType: string[]) {
         transform: (node) => {
           assertIsNode(node, 'definedTypeLinkNode');
           if (node.importFrom) return node;
-          const definedType = availableDefinedTypes.get(node.name);
+          const definedType = linkables.get(node);
           if (definedType === undefined) {
             throw new Error(
               `Trying to inline missing defined type [${node.name}]. ` +
@@ -31,10 +31,6 @@ export function unwrapTypeDefinedLinksVisitor(definedLinksType: string[]) {
     });
 
   return pipe(bottomUpTransformerVisitor(transformers), (v) =>
-    tapDefinedTypesVisitor(v, (definedTypes) => {
-      availableDefinedTypes = new Map(
-        definedTypes.map((definedType) => [definedType.name, definedType])
-      );
-    })
+    recordLinkablesVisitor(v, linkables)
   );
 }

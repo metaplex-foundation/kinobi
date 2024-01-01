@@ -11,6 +11,9 @@
   {% if instructionsToExport.length > 0 %}
     export * from './instructions';
   {% endif %}
+  {% if pdasToExport.length > 0 %}
+    export * from './pdas';
+  {% endif %}
   {% if programsToExport.length > 0 %}
     export * from './programs';
   {% endif %}

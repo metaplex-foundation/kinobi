@@ -1,20 +1,20 @@
 import {
-  AccountNode,
   InstructionAccountNode,
   InstructionNode,
-  getAllAccounts,
   instructionNode,
+  pdaLinkNode,
 } from '../nodes';
 import {
   InstructionAccountDefault,
+  LinkableDictionary,
   MainCaseString,
-  getDefaultSeedsFromAccount,
+  getDefaultSeedsFromPda,
   mainCase,
   pipe,
 } from '../shared';
 import { extendVisitor } from './extendVisitor';
 import { identityVisitor } from './identityVisitor';
-import { tapVisitor } from './tapVisitor';
+import { recordLinkablesVisitor } from './recordLinkablesVisitor';
 
 export type InstructionAccountDefaultRule = InstructionAccountDefault & {
   /** The name of the instruction account or a pattern to match on it. */
@@ -165,7 +165,7 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
 export function setInstructionAccountDefaultValuesVisitor(
   rules: InstructionAccountDefaultRule[]
 ) {
-  let allAccounts = new Map<string, AccountNode>();
+  const linkables = new LinkableDictionary();
 
   // Place the rules with instructions first.
   const sortedRules = rules.sort((a, b) => {
@@ -195,12 +195,7 @@ export function setInstructionAccountDefaultValuesVisitor(
 
   return pipe(
     identityVisitor(['rootNode', 'programNode', 'instructionNode']),
-    (v) =>
-      tapVisitor(v, 'rootNode', (root) => {
-        allAccounts = new Map(
-          getAllAccounts(root).map((account) => [account.name, account])
-        );
-      }),
+    (v) => recordLinkablesVisitor(v, linkables),
     (v) =>
       extendVisitor(v, {
         visitInstruction(node) {
@@ -217,12 +212,14 @@ export function setInstructionAccountDefaultValuesVisitor(
                 return account;
               }
               if (rule.kind === 'pda') {
-                const foundAccount = allAccounts.get(mainCase(rule.pdaAccount));
+                const foundAccount = linkables.get(
+                  pdaLinkNode(rule.pdaAccount, rule.importFrom)
+                );
                 const defaultsTo = {
                   ...rule,
                   seeds: {
                     ...(foundAccount
-                      ? getDefaultSeedsFromAccount(foundAccount)
+                      ? getDefaultSeedsFromPda(foundAccount)
                       : {}),
                     ...rule.seeds,
                   },

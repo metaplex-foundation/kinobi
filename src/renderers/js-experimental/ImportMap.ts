@@ -21,6 +21,7 @@ const DEFAULT_MODULE_MAP: Record<string, string> = {
   shared: '../shared',
   generated: '..',
   hooked: '../../hooked',
+  generatedPdas: '../pdas',
   generatedAccounts: '../accounts',
   generatedErrors: '../errors',
   generatedTypes: '../types',

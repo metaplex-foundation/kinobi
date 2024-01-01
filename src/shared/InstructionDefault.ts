@@ -1,4 +1,4 @@
-import { AccountNode, ValueNode, isNode } from '../nodes';
+import { PdaNode, ValueNode, isNode } from '../nodes';
 import { ImportFrom } from './ImportFrom';
 import { MainCaseString, mainCase } from './utils';
 
@@ -184,8 +184,8 @@ export const dependsOnArg = (arg: string): InstructionDependency => ({
   name: mainCase(arg),
 });
 
-export const getDefaultSeedsFromAccount = (
-  node: AccountNode
+export const getDefaultSeedsFromPda = (
+  node: PdaNode
 ): Record<MainCaseString, InstructionSeedDefault> =>
   node.seeds.reduce((acc, seed) => {
     if (!isNode(seed, 'variablePdaSeedNode')) return acc;

@@ -1,6 +1,6 @@
 import test from 'ava';
 import {
-  DefinedTypeNode,
+  LinkableDictionary,
   Node,
   Visitor,
   enumEmptyVariantTypeNode,
@@ -18,19 +18,15 @@ import {
   visit,
 } from '../../src';
 
-const macro = test.macro(
-  (
-    t,
-    node: Node,
-    expectedSize: number | null,
-    definedTypes: DefinedTypeNode[] = []
-  ) => {
-    t.is(
-      visit(node, getByteSizeVisitor(definedTypes) as Visitor<number | null>),
-      expectedSize
-    );
-  }
-);
+const macro = test.macro((t, node: Node, expectedSize: number | null) => {
+  t.is(
+    visit(
+      node,
+      getByteSizeVisitor(new LinkableDictionary()) as Visitor<number | null>
+    ),
+    expectedSize
+  );
+});
 
 test('it gets the size of public keys', macro, publicKeyTypeNode(), 32);
 test('it gets the size of u8 numbers', macro, numberTypeNode('u8'), 1);

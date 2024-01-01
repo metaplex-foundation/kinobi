@@ -1,13 +1,19 @@
-import { NodeStack, ValidatorBag, mainCase, pipe } from '../shared';
+import {
+  LinkableDictionary,
+  NodeStack,
+  ValidatorBag,
+  mainCase,
+  pipe,
+} from '../shared';
 import { extendVisitor } from './extendVisitor';
 import { getResolvedInstructionInputsVisitor } from './getResolvedInstructionInputsVisitor';
-import { interceptVisitor } from './interceptVisitor';
 import { mergeVisitor } from './mergeVisitor';
-import { tapDefinedTypesVisitor } from './tapVisitor';
+import { recordLinkablesVisitor } from './recordLinkablesVisitor';
+import { recordNodeStackVisitor } from './recordNodeStackVisitor';
 import { Visitor, visit } from './visitor';
 
 export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
-  let definedTypeNames = new Set<string>();
+  const linkables = new LinkableDictionary();
   const stack = new NodeStack();
 
   return pipe(
@@ -15,19 +21,8 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
       () => new ValidatorBag(),
       (_, bags) => new ValidatorBag().mergeWith(bags)
     ),
-    (v) =>
-      tapDefinedTypesVisitor(v, (definedTypes) => {
-        definedTypeNames = new Set<string>(
-          definedTypes.map((type) => type.name)
-        );
-      }),
-    (v) =>
-      interceptVisitor(v, (node, next) => {
-        stack.push(node);
-        const newNode = next(node);
-        stack.pop();
-        return newNode;
-      }),
+    (v) => recordLinkablesVisitor(v, linkables),
+    (v) => recordNodeStackVisitor(v, stack),
     (v) =>
       extendVisitor(v, {
         visitProgram(node, { next }) {
@@ -151,7 +146,7 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
           const bag = new ValidatorBag();
           if (!node.name) {
             bag.error('Pointing to a defined type with no name.', node, stack);
-          } else if (!node.importFrom && !definedTypeNames.has(node.name)) {
+          } else if (!node.importFrom && !linkables.has(node)) {
             bag.error(
               `Pointing to a missing defined type named "${node.name}"`,
               node,

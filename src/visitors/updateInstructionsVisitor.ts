@@ -1,5 +1,4 @@
 import {
-  AccountNode,
   InstructionAccountNode,
   InstructionAccountNodeInput,
   InstructionDataArgsNode,
@@ -9,31 +8,30 @@ import {
   TYPE_NODES,
   TypeNode,
   assertIsNode,
-  getAllAccounts,
   instructionAccountNode,
   instructionDataArgsNode,
   instructionExtraArgsNode,
   instructionNode,
+  pdaLinkNode,
   structFieldTypeNode,
   structTypeNode,
 } from '../nodes';
 import {
   InstructionAccountDefault,
   InstructionArgDefault,
+  LinkableDictionary,
   MainCaseString,
-  getDefaultSeedsFromAccount,
+  getDefaultSeedsFromPda,
   mainCase,
   pipe,
 } from '../shared';
 import {
-  BottomUpNodeTransformer,
   BottomUpNodeTransformerWithSelector,
   bottomUpTransformerVisitor,
 } from './bottomUpTransformerVisitor';
-import { tapVisitor } from './tapVisitor';
+import { recordLinkablesVisitor } from './recordLinkablesVisitor';
 
 export type InstructionUpdates =
-  | BottomUpNodeTransformer<InstructionNode>
   | { delete: true }
   | (InstructionMetadataUpdates & {
       accounts?: InstructionAccountUpdates;
@@ -67,7 +65,7 @@ export type InstructionArgUpdates = Record<
 export function updateInstructionsVisitor(
   map: Record<string, InstructionUpdates>
 ) {
-  let allAccounts = new Map<string, AccountNode>();
+  const linkables = new LinkableDictionary();
 
   const transformers = Object.entries(map).map(
     ([selector, updates]): BottomUpNodeTransformerWithSelector => {
@@ -75,11 +73,8 @@ export function updateInstructionsVisitor(
       const name = selectorStack.pop();
       return {
         select: `${selectorStack.join('.')}.[instructionNode]${name}`,
-        transform: (node, stack) => {
+        transform: (node) => {
           assertIsNode(node, 'instructionNode');
-          if (typeof updates === 'function') {
-            return updates(node, stack);
-          }
           if ('delete' in updates) {
             return null;
           }
@@ -93,7 +88,7 @@ export function updateInstructionsVisitor(
           const { newDataArgs, newExtraArgs, newArgDefaults } =
             handleInstructionArgs(node, newName, argsUpdates ?? {});
           const newAccounts = node.accounts.map((account) =>
-            handleInstructionAccount(account, accountUpdates ?? {}, allAccounts)
+            handleInstructionAccount(account, accountUpdates ?? {}, linkables)
           );
 
           return instructionNode({
@@ -110,18 +105,14 @@ export function updateInstructionsVisitor(
   );
 
   return pipe(bottomUpTransformerVisitor(transformers), (v) =>
-    tapVisitor(v, 'rootNode', (root) => {
-      allAccounts = new Map(
-        getAllAccounts(root).map((account) => [account.name, account])
-      );
-    })
+    recordLinkablesVisitor(v, linkables)
   );
 }
 
 function handleInstructionAccount(
   account: InstructionAccountNode,
   accountUpdates: InstructionAccountUpdates,
-  allAccounts: Map<string, AccountNode>
+  linkables: LinkableDictionary
 ): InstructionAccountNode {
   const accountUpdate = accountUpdates?.[account.name];
   if (!accountUpdate) return account;
@@ -135,15 +126,16 @@ function handleInstructionAccount(
   }
 
   if (defaultsTo?.kind === 'pda') {
-    const pdaAccount = mainCase(defaultsTo.pdaAccount);
-    const foundAccount = allAccounts.get(pdaAccount);
+    const foundPda = linkables.get(
+      pdaLinkNode(defaultsTo.pdaAccount, defaultsTo.importFrom)
+    );
     return {
       ...acountWithoutDefault,
       name: mainCase(acountWithoutDefault.name),
       defaultsTo: {
         ...defaultsTo,
         seeds: {
-          ...(foundAccount ? getDefaultSeedsFromAccount(foundAccount) : {}),
+          ...(foundPda ? getDefaultSeedsFromPda(foundPda) : {}),
           ...defaultsTo.seeds,
         },
       },

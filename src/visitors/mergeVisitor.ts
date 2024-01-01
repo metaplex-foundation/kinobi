@@ -45,7 +45,7 @@ export function mergeVisitor<
     visitor.visitAccount = function visitAccount(node) {
       return merge(node, [
         ...visit(this)(node.data),
-        ...node.seeds.flatMap(visit(this)),
+        ...(node.pda ? visit(this)(node.pda) : []),
       ]);
     };
   }

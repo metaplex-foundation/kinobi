@@ -1,60 +1,32 @@
-import {
-  AccountNode,
-  ProgramNode,
-  RegisteredTypeNodes,
-  isNode,
-  isNodeFilter,
-} from '../../../nodes';
-import { Visitor, visit } from '../../../visitors';
-import { ImportMap } from '../ImportMap';
-import { TypeManifest } from '../TypeManifest';
+import { AccountNode, ProgramNode, isNodeFilter } from '../../../nodes';
+import { LinkableDictionary } from '../../../shared';
 import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
-import { getValueNodeFragment } from './valueNode';
 
 export function getAccountPdaHelpersFragment(scope: {
   accountNode: AccountNode;
   programNode: ProgramNode;
-  typeManifestVisitor: Visitor<
-    TypeManifest,
-    keyof RegisteredTypeNodes | 'definedTypeLinkNode'
-  >;
   nameApi: NameApi;
+  linkables: LinkableDictionary;
 }): Fragment {
-  const { accountNode, programNode, typeManifestVisitor, nameApi } = scope;
-  if (accountNode.seeds.length === 0) {
+  const { accountNode, programNode, nameApi, linkables } = scope;
+  const pdaNode = accountNode.pda ? linkables.get(accountNode.pda) : undefined;
+  if (!pdaNode) {
     return fragment('');
   }
 
-  // Seeds.
-  const imports = new ImportMap();
-  const seeds = accountNode.seeds.map((seed) => {
-    if (isNode(seed, 'constantPdaSeedNode')) {
-      const seedManifest = visit(seed.type, typeManifestVisitor);
-      imports.mergeWith(seedManifest.encoder);
-      const seedValue = seed.value;
-      const valueManifest = getValueNodeFragment(seedValue, nameApi);
-      (seedValue as any).render = valueManifest.render;
-      imports.mergeWith(valueManifest.imports);
-      return { ...seed, typeManifest: seedManifest };
-    }
-    if (isNode(seed, 'variablePdaSeedNode')) {
-      const seedManifest = visit(seed.type, typeManifestVisitor);
-      imports.mergeWith(seedManifest.looseType, seedManifest.encoder);
-      return { ...seed, typeManifest: seedManifest };
-    }
-    imports.add('solanaAddresses', 'getAddressEncoder');
-    return seed;
-  });
+  const importFrom = 'generatedPdas';
+  const pdaSeedsType = nameApi.pdaSeedsType(pdaNode.name);
+  const findPdaFunction = nameApi.pdaFindFunction(pdaNode.name);
   const hasVariableSeeds =
-    accountNode.seeds.filter(isNodeFilter('variablePdaSeedNode')).length > 0;
+    pdaNode.seeds.filter(isNodeFilter('variablePdaSeedNode')).length > 0;
 
   return fragmentFromTemplate('accountPdaHelpers.njk', {
     accountType: nameApi.accountType(accountNode.name),
+    pdaSeedsType,
+    findPdaFunction,
     fetchFunction: nameApi.accountFetchFunction(accountNode.name),
     safeFetchFunction: nameApi.accountSafeFetchFunction(accountNode.name),
-    accountSeedsType: nameApi.accountSeedsType(accountNode.name),
-    findPdaFunction: nameApi.accountFindPdaFunction(accountNode.name),
     fetchFromSeedsFunction: nameApi.accountFetchFromSeedsFunction(
       accountNode.name
     ),
@@ -62,14 +34,12 @@ export function getAccountPdaHelpersFragment(scope: {
       accountNode.name
     ),
     program: programNode,
-    seeds,
     hasVariableSeeds,
   })
-    .mergeImportsWith(imports)
-    .addImports('solanaAddresses', [
-      'Address',
-      'getProgramDerivedAddress',
-      'ProgramDerivedAddress',
-    ])
+    .addImports(
+      importFrom,
+      hasVariableSeeds ? [pdaSeedsType, findPdaFunction] : [findPdaFunction]
+    )
+    .addImports('solanaAddresses', ['Address'])
     .addImports('solanaAccounts', ['FetchAccountConfig']);
 }

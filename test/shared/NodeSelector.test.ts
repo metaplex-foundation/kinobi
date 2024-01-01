@@ -10,6 +10,7 @@ import {
   accountDataNode,
   accountNode,
   booleanTypeNode,
+  definedTypeLinkNode,
   definedTypeNode,
   enumEmptyVariantTypeNode,
   enumStructVariantTypeNode,
@@ -23,11 +24,12 @@ import {
   instructionNode,
   interceptVisitor,
   isNode,
-  definedTypeLinkNode,
   numberTypeNode,
   optionTypeNode,
+  pipe,
   programNode,
   publicKeyTypeNode,
+  recordNodeStackVisitor,
   rootNode,
   structFieldTypeNode,
   structTypeNode,
@@ -213,13 +215,15 @@ const macro = test.macro({
     // And given a visitor that keeps track of selected nodes.
     const stack = new NodeStack();
     const selected = [] as Node[];
-    const visitor = interceptVisitor(identityVisitor(), (node, next) => {
-      if (selectorFunction(node, stack.clone())) selected.push(node);
-      stack.push(node);
-      const newNode = next(node);
-      stack.pop();
-      return newNode;
-    });
+    const visitor = pipe(
+      identityVisitor(),
+      (v) => recordNodeStackVisitor(v, stack),
+      (v) =>
+        interceptVisitor(v, (node, next) => {
+          if (selectorFunction(node, stack.clone())) selected.push(node);
+          return next(node);
+        })
+    );
 
     // When we visit the tree.
     visit(tree, visitor);

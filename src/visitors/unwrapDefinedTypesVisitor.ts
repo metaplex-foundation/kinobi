@@ -1,12 +1,12 @@
-import { DefinedTypeNode, assertIsNodeFilter, programNode } from '../nodes';
-import { MainCaseString, mainCase, pipe } from '../shared';
+import { assertIsNodeFilter, programNode } from '../nodes';
+import { LinkableDictionary, MainCaseString, mainCase, pipe } from '../shared';
 import { extendVisitor } from './extendVisitor';
 import { identityVisitor } from './identityVisitor';
-import { tapDefinedTypesVisitor } from './tapVisitor';
+import { recordLinkablesVisitor } from './recordLinkablesVisitor';
 import { visit } from './visitor';
 
 export function unwrapDefinedTypesVisitor(typesToInline: string[] | '*' = '*') {
-  let availableDefinedTypes = new Map<string, DefinedTypeNode>();
+  const linkables = new LinkableDictionary();
   const typesToInlineMainCased =
     typesToInline === '*' ? '*' : typesToInline.map(mainCase);
   const shouldInline = (definedType: MainCaseString): boolean =>
@@ -15,12 +15,7 @@ export function unwrapDefinedTypesVisitor(typesToInline: string[] | '*' = '*') {
 
   return pipe(
     identityVisitor(),
-    (v) =>
-      tapDefinedTypesVisitor(v, (definedTypes) => {
-        availableDefinedTypes = new Map(
-          definedTypes.map((definedType) => [definedType.name, definedType])
-        );
-      }),
+    (v) => recordLinkablesVisitor(v, linkables),
     (v) =>
       extendVisitor(v, {
         visitProgram(program, { self }) {
@@ -44,8 +39,7 @@ export function unwrapDefinedTypesVisitor(typesToInline: string[] | '*' = '*') {
             return linkType;
           }
 
-          const definedType = availableDefinedTypes.get(linkType.name);
-
+          const definedType = linkables.get(linkType);
           if (definedType === undefined) {
             throw new Error(
               `Trying to inline missing defined type [${linkType.name}]. ` +

@@ -1,10 +1,10 @@
 import {
-  DefinedTypeNode,
   REGISTERED_TYPE_NODE_KEYS,
   RegisteredTypeNodes,
   isNode,
   isScalarEnum,
 } from '../nodes';
+import { LinkableDictionary } from '../shared';
 import { mergeVisitor } from './mergeVisitor';
 import { Visitor, visit } from './visitor';
 
@@ -17,11 +17,8 @@ export type ByteSizeVisitorKeys =
   | 'instructionExtraArgsNode';
 
 export function getByteSizeVisitor(
-  definedTypes: DefinedTypeNode[]
+  linkables: LinkableDictionary
 ): Visitor<number | null, ByteSizeVisitorKeys> {
-  const availableDefinedTypes = new Map<string, DefinedTypeNode>(
-    definedTypes.map((type) => [type.name, type])
-  );
   const visitedDefinedTypes = new Map<string, number | null>();
   const definedTypeStack: string[] = [];
 
@@ -83,7 +80,7 @@ export function getByteSizeVisitor(
 
       // Fetch the linked type and return null if not found.
       // The validator visitor will throw a proper error later on.
-      const linkedDefinedType = availableDefinedTypes.get(node.name);
+      const linkedDefinedType = linkables.get(node);
       if (!linkedDefinedType) {
         return null;
       }

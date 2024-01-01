@@ -18,10 +18,8 @@ import {
 } from '@solana/accounts';
 import {
   Address,
-  ProgramDerivedAddress,
   getAddressDecoder,
   getAddressEncoder,
-  getProgramDerivedAddress,
 } from '@solana/addresses';
 import {
   Codec,
@@ -35,21 +33,14 @@ import {
   getStructEncoder,
 } from '@solana/codecs-data-structures';
 import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
-import { getStringEncoder } from '@solana/codecs-strings';
 import {
   Option,
   OptionOrNullable,
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import {
-  DelegateRoleArgs,
-  TmKey,
-  TmKeyArgs,
-  getDelegateRoleEncoder,
-  getTmKeyDecoder,
-  getTmKeyEncoder,
-} from '../types';
+import { MasterEditionV1Seeds, findMasterEditionV1Pda } from '../pdas';
+import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type MasterEditionV1<TAddress extends string = string> = Account<
   MasterEditionV1AccountData,
@@ -160,28 +151,6 @@ export async function safeFetchAllMasterEditionV1(
     .map((maybeAccount) =>
       decodeMasterEditionV1(maybeAccount as EncodedAccount)
     );
-}
-
-export type MasterEditionV1Seeds = {
-  /** The role of the delegate */
-  delegateRole: DelegateRoleArgs;
-};
-
-export async function findMasterEditionV1Pda(
-  seeds: MasterEditionV1Seeds,
-  config: { programAddress?: Address | undefined } = {}
-): Promise<ProgramDerivedAddress> {
-  const {
-    programAddress = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-  } = config;
-  return getProgramDerivedAddress({
-    programAddress,
-    seeds: [
-      getStringEncoder({ size: 'variable' }).encode('metadata'),
-      getAddressEncoder().encode(programAddress),
-      getDelegateRoleEncoder().encode(seeds.delegateRole),
-    ],
-  });
 }
 
 export async function fetchMasterEditionV1FromSeeds(
