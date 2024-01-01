@@ -158,20 +158,18 @@ export function getFrequencyAccountSize(): number {
 
 export async function fetchFrequencyAccountFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
-  seeds: FrequencyAccountSeeds,
   config: FetchAccountConfig & { programAddress?: Address } = {}
 ): Promise<FrequencyAccount> {
   const { programAddress, ...fetchConfig } = config;
-  const [address] = await findFrequencyAccountPda(seeds, { programAddress });
+  const [address] = await findFrequencyAccountPda({ programAddress });
   return fetchFrequencyAccount(rpc, address, fetchConfig);
 }
 
 export async function safeFetchFrequencyAccountFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
-  seeds: FrequencyAccountSeeds,
   config: FetchAccountConfig & { programAddress?: Address } = {}
 ): Promise<FrequencyAccount | null> {
   const { programAddress, ...fetchConfig } = config;
-  const [address] = await findFrequencyAccountPda(seeds, { programAddress });
+  const [address] = await findFrequencyAccountPda({ programAddress });
   return safeFetchFrequencyAccount(rpc, address, fetchConfig);
 }

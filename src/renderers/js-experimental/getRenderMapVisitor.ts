@@ -14,6 +14,7 @@ import {
 import {
   camelCase,
   ImportFrom,
+  LinkableDictionary,
   logWarn,
   mainCase,
   pipe,
@@ -23,6 +24,7 @@ import {
 import {
   extendVisitor,
   getResolvedInstructionInputsVisitor,
+  recordLinkablesVisitor,
   staticVisitor,
   visit,
 } from '../../visitors';
@@ -72,6 +74,7 @@ export type GetRenderMapOptions = {
 };
 
 export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
+  const linkables = new LinkableDictionary();
   let program: ProgramNode | null = null;
 
   const nameTransformers = {
@@ -273,6 +276,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             programNode: program,
             typeManifest: visit(node, typeManifestVisitor),
             nameApi,
+            linkables,
           };
 
           const accountTypeFragment = getAccountTypeFragment(scope);
@@ -411,7 +415,8 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             })
           );
         },
-      })
+      }),
+    (v) => recordLinkablesVisitor(v, linkables)
   );
 }
 
