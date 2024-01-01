@@ -18,6 +18,7 @@ export * from './interceptVisitor';
 export * from './mapVisitor';
 export * from './mergeVisitor';
 export * from './recordLinkablesVisitor';
+export * from './recordNodeStackVisitor';
 export * from './removeDocsVisitor';
 export * from './setAccountDiscriminatorFromFieldVisitor';
 export * from './setAnchorDiscriminatorsVisitor';
