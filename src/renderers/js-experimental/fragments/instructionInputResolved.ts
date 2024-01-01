@@ -23,7 +23,7 @@ export function getInstructionInputResolvedFragment(scope: {
       const camelName = camelCase(input.name);
       return [
         inputFragment.mapRender((r) =>
-          input.kind === 'arg'
+          input.kind === 'argument'
             ? `if (!args.${camelName}) {\n${r}\n}`
             : `if (!accounts.${camelName}.value) {\n${r}\n}`
         ),

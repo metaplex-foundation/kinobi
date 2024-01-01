@@ -318,6 +318,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             resolvedInputs: visit(node, resolvedInstructionInputVisitor),
             asyncResolvers,
             nameApi,
+            linkables,
           };
 
           // Fragments.

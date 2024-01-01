@@ -1,6 +1,6 @@
 import test from 'ava';
 import {
-  accountDefault,
+  accountValueNode,
   getResolvedInstructionInputsVisitor,
   instructionAccountNode,
   instructionDataArgsNode,
@@ -22,7 +22,7 @@ test('it returns all instruction accounts in order of resolution', (t) => {
         name: 'owner',
         isSigner: true,
         isWritable: false,
-        defaultsTo: accountDefault('authority'),
+        defaultsTo: accountValueNode('authority'),
       }),
       instructionAccountNode({
         name: 'authority',
@@ -69,7 +69,7 @@ test('it sets the resolved signer to either when a non signer defaults to a sign
         name: 'owner',
         isSigner: false,
         isWritable: false,
-        defaultsTo: accountDefault('authority'),
+        defaultsTo: accountValueNode('authority'),
       }),
       instructionAccountNode({
         name: 'authority',
@@ -106,7 +106,7 @@ test('it sets the resolved signer to either when a signer defaults to a non sign
         name: 'owner',
         isSigner: true,
         isWritable: false,
-        defaultsTo: accountDefault('authority'),
+        defaultsTo: accountValueNode('authority'),
       }),
       instructionAccountNode({
         name: 'authority',
@@ -158,7 +158,7 @@ test('it includes instruction data arguments with default values', (t) => {
       ]),
     }),
     argDefaults: {
-      ownerArg: accountDefault('owner'),
+      ownerArg: accountValueNode('owner'),
     },
   });
 
@@ -215,7 +215,7 @@ test('it includes instruction extra arguments with default values', (t) => {
       ]),
     }),
     argDefaults: {
-      ownerArg: accountDefault('owner'),
+      ownerArg: accountValueNode('owner'),
     },
   });
 

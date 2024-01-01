@@ -4,7 +4,7 @@ import {
   InstructionNode,
   ProgramNode,
 } from '../../../nodes';
-import { pascalCase } from '../../../shared';
+import { LinkableDictionary, pascalCase } from '../../../shared';
 import { ImportMap } from '../ImportMap';
 import { Fragment, fragment } from './common';
 
@@ -13,12 +13,14 @@ export function getInstructionAccountTypeParamFragment(scope: {
   instructionAccountNode: InstructionAccountNode;
   programNode: ProgramNode;
   allowAccountMeta: boolean;
+  linkables: LinkableDictionary;
 }): Fragment {
   const {
     instructionNode,
     instructionAccountNode,
     programNode,
     allowAccountMeta,
+    linkables,
   } = scope;
   const typeParam = `TAccount${pascalCase(instructionAccountNode.name)}`;
   const accountMeta = allowAccountMeta ? ' | IAccountMeta<string>' : '';
@@ -39,7 +41,8 @@ export function getInstructionAccountTypeParamFragment(scope: {
 
   const defaultAddress = getDefaultAddress(
     instructionAccountNode.defaultsTo,
-    programNode.publicKey
+    programNode.publicKey,
+    linkables
   );
 
   return fragment(
@@ -50,16 +53,18 @@ export function getInstructionAccountTypeParamFragment(scope: {
 
 function getDefaultAddress(
   defaultsTo: InstructionInputValueNode | undefined,
-  programId: string
+  programId: string,
+  linkables: LinkableDictionary
 ): string {
   switch (defaultsTo?.kind) {
     case 'publicKeyValueNode':
       return `"${defaultsTo.publicKey}"`;
-    case 'program':
-      return `"${defaultsTo.program.publicKey}"`;
+    case 'programLinkNode':
+      const programNode = linkables.get(defaultsTo);
+      return programNode ? `"${programNode.publicKey}"` : 'string';
     case 'programIdValueNode':
       return `"${programId}"`;
     default:
-      return `string`;
+      return 'string';
   }
 }

@@ -6,7 +6,7 @@ import {
 import { pascalCase } from '../../../shared';
 import {
   ResolvedInstructionAccount,
-  ResolvedInstructionArg,
+  ResolvedInstructionArgument,
   ResolvedInstructionInput,
 } from '../../../visitors';
 import { ImportMap } from '../ImportMap';
@@ -45,7 +45,8 @@ export function getInstructionInputTypeFragment(scope: {
   const accounts = instructionNode.accounts.map((account) => {
     const typeParam = `TAccount${pascalCase(account.name)}`;
     const resolvedAccount = resolvedInputs.find(
-      (input) => input.kind === 'account' && input.name === account.name
+      (input) =>
+        input.kind === 'instructionAccountNode' && input.name === account.name
     ) as ResolvedInstructionAccount;
     const hasDefaultValue =
       !!resolvedAccount.defaultsTo &&
@@ -74,8 +75,8 @@ export function getInstructionInputTypeFragment(scope: {
   // Arguments.
   const resolveArg = (arg: StructFieldTypeNode) => {
     const resolvedArg = resolvedInputs.find(
-      (input) => input.kind === 'arg' && input.name === arg.name
-    ) as ResolvedInstructionArg | undefined;
+      (input) => input.kind === 'argument' && input.name === arg.name
+    ) as ResolvedInstructionArgument | undefined;
     if (arg.defaultsTo?.strategy === 'omitted') return [];
     const renamedName = renamedArgs.get(arg.name) ?? arg.name;
     const optionalSign = arg.defaultsTo || resolvedArg ? '?' : '';

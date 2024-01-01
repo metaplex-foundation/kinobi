@@ -4,11 +4,16 @@ import {
   ProgramNode,
   isNode,
 } from '../../../nodes';
-import { pascalCase } from '../../../shared';
+import { LinkableDictionary, pascalCase } from '../../../shared';
 import { ImportMap } from '../ImportMap';
 import { TypeManifest } from '../TypeManifest';
 import { NameApi } from '../nameTransformers';
-import { Fragment, fragmentFromTemplate, mergeFragments } from './common';
+import {
+  Fragment,
+  fragment,
+  fragmentFromTemplate,
+  mergeFragments,
+} from './common';
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
 
 export function getInstructionFunctionLowLevelFragment(scope: {
@@ -16,6 +21,7 @@ export function getInstructionFunctionLowLevelFragment(scope: {
   programNode: ProgramNode;
   dataArgsManifest: TypeManifest;
   nameApi: NameApi;
+  linkables: LinkableDictionary;
 }): Fragment {
   const { instructionNode, programNode, dataArgsManifest, nameApi } = scope;
   const imports = new ImportMap();
@@ -57,8 +63,10 @@ export function getInstructionFunctionLowLevelFragment(scope: {
     const defaultValue = getDefaultValue(
       account,
       programNode,
+      nameApi,
       instructionNode.optionalAccountStrategy === 'omitted'
     );
+    imports.mergeWith(defaultValue);
     const isOptionalOrHasLowLevelDefaultValues =
       account.isOptional || defaultValue !== null;
 
@@ -66,12 +74,12 @@ export function getInstructionFunctionLowLevelFragment(scope: {
       ...account,
       typeParam,
       defaultRole: getDefaultRole(account),
-      defaultValue,
+      defaultValue: defaultValue.render ? defaultValue.render : null,
       isOptionalOrHasLowLevelDefaultValues,
     };
   });
 
-  const fragment = fragmentFromTemplate('instructionFunctionLowLevel.njk', {
+  return fragmentFromTemplate('instructionFunctionLowLevel.njk', {
     instruction: instructionNode,
     program: programNode,
     functionName: nameApi.instructionRawFunction(instructionNode.name),
@@ -87,15 +95,9 @@ export function getInstructionFunctionLowLevelFragment(scope: {
   })
     .mergeImportsWith(imports, accountTypeParamsFragment)
     .addImports('solanaAddresses', ['Address'])
-    .addImports('solanaInstructions', ['IAccountMeta']);
-
-  if (hasAccounts) {
-    fragment
-      .addImports('shared', ['accountMetaWithDefault'])
-      .addImports('solanaInstructions', ['AccountRole']);
-  }
-
-  return fragment;
+    .addImports('solanaInstructions', ['IAccountMeta'])
+    .addImports('shared', hasAccounts ? ['accountMetaWithDefault'] : [])
+    .addImports('solanaInstructions', hasAccounts ? ['AccountRole'] : []);
 }
 
 function getDefaultRole(account: InstructionAccountNode): string {
@@ -114,20 +116,27 @@ function getDefaultRole(account: InstructionAccountNode): string {
 function getDefaultValue(
   account: InstructionAccountNode,
   program: ProgramNode,
+  nameApi: NameApi,
   usesLegacyOptionalAccounts: boolean
-): string | null {
+): Fragment {
   if (account.isOptional && usesLegacyOptionalAccounts) {
-    return null;
+    return fragment('');
   }
   const defaultsTo = account.defaultsTo ?? null;
   if (account.isOptional || isNode(defaultsTo, 'programIdValueNode')) {
-    return `{ address: "${program.publicKey}" as Address<"${program.publicKey}">, role: AccountRole.READONLY }`;
+    return fragment(
+      `{ address: "${program.publicKey}" as Address<"${program.publicKey}">, role: AccountRole.READONLY }`
+    );
   }
   if (isNode(defaultsTo, 'publicKeyValueNode')) {
-    return `"${defaultsTo.publicKey}"`;
+    return fragment(`"${defaultsTo.publicKey}"`);
   }
-  if (isNode(defaultsTo, 'program')) {
-    return `{ address: "${defaultsTo.program.publicKey}" as Address<"${defaultsTo.program.publicKey}">, role: AccountRole.READONLY }`;
+  if (isNode(defaultsTo, 'programLinkNode')) {
+    const programAddress = nameApi.programAddressConstant(defaultsTo.name);
+    const importFrom = defaultsTo.importFrom ?? 'generatedPrograms';
+    return fragment(
+      `{ address: ${programAddress}, role: AccountRole.READONLY }`
+    ).addImports(importFrom, programAddress);
   }
-  return null;
+  return fragment('');
 }

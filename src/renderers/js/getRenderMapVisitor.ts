@@ -471,14 +471,16 @@ export function getRenderMapVisitor(
             (input) => input.defaultsTo !== undefined && input.render !== ''
           );
           const argsWithDefaults = resolvedInputsWithDefaults
-            .filter((input) => input.kind === 'arg')
+            .filter((input) => input.kind === 'argument')
             .map((input) => input.name);
 
           // Accounts.
           const accounts = node.accounts.map((account) => {
             const hasDefaultValue = !!account.defaultsTo;
             const resolvedAccount = resolvedInputs.find(
-              (input) => input.kind === 'account' && input.name === account.name
+              (input) =>
+                input.kind === 'instructionAccountNode' &&
+                input.name === account.name
             ) as ResolvedInstructionAccount;
             return {
               ...resolvedAccount,
