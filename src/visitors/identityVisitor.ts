@@ -1,4 +1,5 @@
 import {
+  CONDITIONAL_VALUE_BRANCH_NODES,
   ENUM_VARIANT_TYPE_NODES,
   Node,
   PDA_SEED_NODES,
@@ -15,6 +16,7 @@ import {
   assertIsNode,
   booleanTypeNode,
   bytesTypeNode,
+  conditionalValueNode,
   constantPdaSeedNode,
   dateTimeTypeNode,
   definedTypeNode,
@@ -29,9 +31,11 @@ import {
   mapValueNode,
   optionTypeNode,
   pdaNode,
+  pdaValueNode,
   prefixedSizeNode,
   programNode,
   removeNullAndAssertIsNodeFilter,
+  resolverValueNode,
   rootNode,
   setTypeNode,
   setValueNode,
@@ -458,6 +462,67 @@ export function identityVisitor<
       if (type === null) return null;
       assertIsNode(type, TYPE_NODES);
       return variablePdaSeedNode(node.name, type, node.docs);
+    };
+  }
+
+  if (castedNodeKeys.includes('resolverValueNode')) {
+    visitor.visitResolverValue = function visitResolverValue(node) {
+      const dependsOn = (node.dependsOn ?? [])
+        .map(visit(this))
+        .filter(
+          removeNullAndAssertIsNodeFilter([
+            'accountValueNode',
+            'argumentValueNode',
+          ])
+        );
+      return resolverValueNode(node.name, {
+        ...node,
+        dependsOn: dependsOn.length === 0 ? undefined : dependsOn,
+      });
+    };
+  }
+
+  if (castedNodeKeys.includes('conditionalValueNode')) {
+    visitor.visitConditionalValue = function visitConditionalValue(node) {
+      const condition = visit(this)(node.condition);
+      if (condition === null) return null;
+      assertIsNode(condition, [
+        'resolverValueNode',
+        'accountValueNode',
+        'argumentValueNode',
+      ]);
+      const ifTrue = node.ifTrue ? visit(this)(node.ifTrue) : null;
+      if (ifTrue) assertIsNode(ifTrue, CONDITIONAL_VALUE_BRANCH_NODES);
+      const ifFalse = node.ifFalse ? visit(this)(node.ifFalse) : null;
+      if (ifFalse) assertIsNode(ifFalse, CONDITIONAL_VALUE_BRANCH_NODES);
+      return conditionalValueNode({
+        condition,
+        ifTrue: ifTrue ?? undefined,
+        ifFalse: ifFalse ?? undefined,
+      });
+    };
+  }
+
+  if (castedNodeKeys.includes('pdaValueNode')) {
+    visitor.visitPdaValue = function visitPdaValue(node) {
+      const pda = visit(this)(node.pda);
+      if (pda === null) return null;
+      assertIsNode(pda, 'pdaLinkNode');
+      return pdaValueNode(
+        pda,
+        Object.fromEntries(
+          Object.entries(node.seeds).flatMap(([k, v]) => {
+            const value = visit(this)(v);
+            if (value === null) return [];
+            assertIsNode(value, [
+              ...VALUE_NODES,
+              'accountValueNode',
+              'argumentValueNode',
+            ]);
+            return [[k, value]];
+          })
+        )
+      );
     };
   }
 
