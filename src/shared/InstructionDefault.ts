@@ -126,18 +126,12 @@ export const pdaDefault = (
 export const resolverDefault = (
   name: string,
   dependsOn: InstructionDependency[],
-  options: {
-    importFrom?: ImportFrom;
-    resolvedIsSigner?: boolean | 'either';
-    resolvedIsOptional?: boolean;
-  } = {}
+  options: { importFrom?: ImportFrom } = {}
 ): ExtractInstructionDefault<'resolver'> => ({
   kind: 'resolver',
   name: mainCase(name),
   importFrom: options.importFrom,
   dependsOn,
-  resolvedIsSigner: options.resolvedIsSigner,
-  resolvedIsOptional: options.resolvedIsOptional,
 });
 
 export const conditionalDefault = (

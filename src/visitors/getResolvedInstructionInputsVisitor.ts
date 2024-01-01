@@ -148,11 +148,7 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
         localResolved.resolvedIsOptional = false;
         break;
       case 'resolver':
-        localResolved.resolvedIsOptional =
-          localResolved.defaultsTo.resolvedIsOptional ?? false;
-        localResolved.resolvedIsSigner =
-          localResolved.defaultsTo.resolvedIsSigner ??
-          localResolved.resolvedIsSigner;
+        localResolved.resolvedIsOptional = false;
         break;
       default:
         break;
