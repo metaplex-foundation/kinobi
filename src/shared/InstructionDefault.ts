@@ -23,8 +23,6 @@ export type InstructionDefault =
       name: MainCaseString;
       importFrom?: ImportFrom;
       dependsOn: InstructionDependency[];
-      resolvedIsSigner?: boolean | 'either';
-      resolvedIsOptional?: boolean;
     }
   | {
       kind: 'conditional';
