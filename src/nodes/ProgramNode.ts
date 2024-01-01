@@ -26,15 +26,7 @@ export type ProgramNode = {
 };
 
 export type ProgramNodeInput = Omit<
-  PartialExcept<
-    ProgramNode,
-    | 'accounts'
-    | 'instructions'
-    | 'definedTypes'
-    | 'errors'
-    | 'publicKey'
-    | 'version'
-  >,
+  PartialExcept<ProgramNode, 'publicKey'>,
   'kind' | 'name' | 'prefix'
 > & {
   readonly name: string;
@@ -45,14 +37,14 @@ export function programNode(input: ProgramNodeInput): ProgramNode {
   return {
     kind: 'programNode',
     pdas: input.pdas ?? [],
-    accounts: input.accounts,
-    instructions: input.instructions,
-    definedTypes: input.definedTypes,
-    errors: input.errors,
+    accounts: input.accounts ?? [],
+    instructions: input.instructions ?? [],
+    definedTypes: input.definedTypes ?? [],
+    errors: input.errors ?? [],
     name: mainCase(input.name),
     prefix: mainCase(input.prefix ?? ''),
     publicKey: input.publicKey,
-    version: input.version,
+    version: input.version ?? '',
     origin: input.origin,
     internal: input.internal ?? false,
   };

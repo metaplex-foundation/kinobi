@@ -3,12 +3,12 @@ import {
   AccountDiscriminator,
   InvalidKinobiTreeError,
   MainCaseString,
-  PartialExcept,
   mainCase,
 } from '../shared';
 import { AccountDataNode, accountDataNode } from './AccountDataNode';
 import { assertIsNode } from './Node';
 import { PdaLinkNode, pdaLinkNode } from './linkNodes';
+import { structTypeNode } from './typeNodes';
 import { createTypeNodeFromIdl } from './typeNodes/TypeNode';
 
 export type AccountNode = {
@@ -23,10 +23,7 @@ export type AccountNode = {
   readonly discriminator?: AccountDiscriminator;
 };
 
-export type AccountNodeInput = Omit<
-  PartialExcept<AccountNode, 'name' | 'data'>,
-  'kind' | 'name'
-> & {
+export type AccountNodeInput = Omit<Partial<AccountNode>, 'kind' | 'name'> & {
   readonly name: string;
 };
 
@@ -36,7 +33,12 @@ export function accountNode(input: AccountNodeInput): AccountNode {
   }
   return {
     kind: 'accountNode',
-    data: input.data,
+    data:
+      input.data ??
+      accountDataNode({
+        name: `${mainCase(input.name)}AccountData`,
+        struct: structTypeNode([]),
+      }),
     pda: input.pda,
     name: mainCase(input.name),
     idlName: input.idlName ?? input.name,

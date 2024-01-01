@@ -76,38 +76,7 @@ export function updateAccountsVisitor(map: Record<string, AccountUpdates>) {
             });
           },
         },
-      ];
-
-      if (newName) {
-        transformers.push(
-          {
-            select: `[accountLinkNode]${name}`,
-            transform: (node) => {
-              assertIsNode(node, 'accountLinkNode');
-              if (node.importFrom) return node;
-              return accountLinkNode(newName);
-            },
-          },
-          {
-            select: `[pdaNode]${name}`,
-            transform: (node) => {
-              assertIsNode(node, 'pdaNode');
-              return pdaNode(newName, node.seeds);
-            },
-          },
-          {
-            select: `[pdaLinkNode]${name}`,
-            transform: (node) => {
-              assertIsNode(node, 'pdaLinkNode');
-              if (node.importFrom) return node;
-              return pdaLinkNode(newName);
-            },
-          }
-        );
-      }
-
-      if (pdasToUpsert.length > 0) {
-        transformers.push({
+        {
           select: `[programNode]`,
           transform: (node) => {
             assertIsNode(node, 'programNode');
@@ -130,7 +99,35 @@ export function updateAccountsVisitor(map: Record<string, AccountUpdates>) {
             ];
             return programNode({ ...node, pdas: newPdas });
           },
-        });
+        },
+      ];
+
+      if (newName) {
+        transformers.push(
+          {
+            select: `${selectorStack.join('.')}.[accountLinkNode]${name}`,
+            transform: (node) => {
+              assertIsNode(node, 'accountLinkNode');
+              if (node.importFrom) return node;
+              return accountLinkNode(newName);
+            },
+          },
+          {
+            select: `${selectorStack.join('.')}.[pdaNode]${name}`,
+            transform: (node) => {
+              assertIsNode(node, 'pdaNode');
+              return pdaNode(newName, node.seeds);
+            },
+          },
+          {
+            select: `${selectorStack.join('.')}.[pdaLinkNode]${name}`,
+            transform: (node) => {
+              assertIsNode(node, 'pdaLinkNode');
+              if (node.importFrom) return node;
+              return pdaLinkNode(newName);
+            },
+          }
+        );
       }
 
       return transformers;
