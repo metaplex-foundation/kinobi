@@ -296,7 +296,17 @@ export function identityVisitor<
       const child = visit(this)(node.child);
       if (child === null) return null;
       assertIsNode(child, TYPE_NODES);
-      return structFieldTypeNode({ ...node, child });
+      const defaultsToValue = node.defaultsTo?.value
+        ? visit(this)(node.defaultsTo.value)
+        : null;
+      if (defaultsToValue) assertIsNode(defaultsToValue, VALUE_NODES);
+      const defaultsTo = defaultsToValue
+        ? {
+            strategy: node.defaultsTo?.strategy ?? 'optional',
+            value: defaultsToValue,
+          }
+        : undefined;
+      return structFieldTypeNode({ ...node, child, defaultsTo });
     };
   }
 
