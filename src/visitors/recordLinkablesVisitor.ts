@@ -1,12 +1,12 @@
-import { LinkableDictionary } from '../shared';
 import {
   RegisteredNodes,
   getAllAccounts,
   getAllDefinedTypes,
   getAllPdas,
 } from '../nodes';
-import { Visitor } from './visitor';
+import { LinkableDictionary } from '../shared';
 import { VisitorOverrides, extendVisitor } from './extendVisitor';
+import { Visitor } from './visitor';
 
 export function recordLinkablesVisitor<
   TReturn,
@@ -18,8 +18,9 @@ export function recordLinkablesVisitor<
   const overriddenFunctions: VisitorOverrides<
     TReturn,
     'rootNode' | 'programNode' | 'pdaNode' | 'accountNode' | 'definedTypeNode'
-  > = {
-    visitRoot(node, { next }) {
+  > = {};
+  if ('visitRoot' in visitor) {
+    overriddenFunctions.visitRoot = function visitRoot(node, { next }) {
       linkables.recordAll([
         ...node.programs,
         ...getAllPdas(node),
@@ -27,8 +28,10 @@ export function recordLinkablesVisitor<
         ...getAllDefinedTypes(node),
       ]);
       return next(node);
-    },
-    visitProgram(node, { next }) {
+    };
+  }
+  if ('visitProgram' in visitor) {
+    overriddenFunctions.visitProgram = function visitProgram(node, { next }) {
       linkables.recordAll([
         node,
         ...node.pdas,
@@ -36,20 +39,29 @@ export function recordLinkablesVisitor<
         ...node.definedTypes,
       ]);
       return next(node);
-    },
-    visitPda(node, { next }) {
+    };
+  }
+  if ('visitPda' in visitor) {
+    overriddenFunctions.visitPda = function visitPda(node, { next }) {
       linkables.record(node);
       return next(node);
-    },
-    visitAccount(node, { next }) {
+    };
+  }
+  if ('visitAccount' in visitor) {
+    overriddenFunctions.visitAccount = function visitAccount(node, { next }) {
       linkables.record(node);
       return next(node);
-    },
-    visitDefinedType(node, { next }) {
+    };
+  }
+  if ('visitDefinedType' in visitor) {
+    overriddenFunctions.visitDefinedType = function visitDefinedType(
+      node,
+      { next }
+    ) {
       linkables.record(node);
       return next(node);
-    },
-  };
+    };
+  }
   return extendVisitor(
     visitor,
     overriddenFunctions as VisitorOverrides<TReturn, TNodeKeys>

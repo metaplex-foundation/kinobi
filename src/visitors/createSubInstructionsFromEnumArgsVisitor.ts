@@ -1,5 +1,4 @@
 import {
-  DefinedTypeNode,
   EnumTypeNode,
   InstructionNode,
   assertIsNode,
@@ -12,18 +11,18 @@ import {
   structFieldTypeNode,
   structTypeNode,
 } from '../nodes';
-import { logWarn, mainCase } from '../shared';
+import { LinkableDictionary, logWarn, mainCase } from '../shared';
 import {
   BottomUpNodeTransformerWithSelector,
   bottomUpTransformerVisitor,
 } from './bottomUpTransformerVisitor';
 import { flattenStruct } from './flattenStructVisitor';
-import { tapDefinedTypesVisitor } from './tapVisitor';
+import { recordLinkablesVisitor } from './recordLinkablesVisitor';
 
 export function createSubInstructionsFromEnumArgsVisitor(
   map: Record<string, string>
 ) {
-  let definedTypesMap = new Map<string, DefinedTypeNode>();
+  const linkables = new LinkableDictionary();
 
   const visitor = bottomUpTransformerVisitor(
     Object.entries(map).map(
@@ -52,10 +51,9 @@ export function createSubInstructionsFromEnumArgsVisitor(
               argType = argField.child;
             } else if (
               isNode(argField.child, 'definedTypeLinkNode') &&
-              definedTypesMap.has(argField.child.name)
+              linkables.has(argField.child)
             ) {
-              const linkedType =
-                definedTypesMap.get(argField.child.name)?.data ?? null;
+              const linkedType = linkables.get(argField.child)?.data ?? null;
               assertIsNode(linkedType, 'enumTypeNode');
               argType = linkedType;
             } else {
@@ -123,9 +121,5 @@ export function createSubInstructionsFromEnumArgsVisitor(
     )
   );
 
-  return tapDefinedTypesVisitor(visitor, (definedTypes) => {
-    definedTypesMap = new Map<string, DefinedTypeNode>(
-      definedTypes.map((type) => [type.name, type])
-    );
-  });
+  return recordLinkablesVisitor(visitor, linkables);
 }

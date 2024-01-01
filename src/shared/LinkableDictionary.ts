@@ -66,4 +66,20 @@ export class LinkableDictionary {
     }
     return undefined;
   }
+
+  has(linkNode: LinkNode): boolean {
+    if (isNode(linkNode, 'programLinkNode')) {
+      return this.programs.has(linkNode.name);
+    }
+    if (isNode(linkNode, 'pdaLinkNode')) {
+      return this.pdas.has(linkNode.name);
+    }
+    if (isNode(linkNode, 'accountLinkNode')) {
+      return this.accounts.has(linkNode.name);
+    }
+    if (isNode(linkNode, 'definedTypeLinkNode')) {
+      return this.definedTypes.has(linkNode.name);
+    }
+    return false;
+  }
 }
