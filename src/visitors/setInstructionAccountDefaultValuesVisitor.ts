@@ -1,24 +1,28 @@
 import {
   InstructionAccountNode,
   InstructionNode,
+  VALUE_NODES,
+  getDefaultSeedValuesFromPda,
   instructionNode,
-  pdaLinkNode,
+  isNode,
 } from '../nodes';
 import {
-  InstructionAccountDefault,
-  LinkableDictionary,
-  MainCaseString,
-  getDefaultSeedsFromPda,
-  mainCase,
-  pipe,
-} from '../shared';
+  InstructionInputValueNode,
+  identityValueNode,
+  payerValueNode,
+  programIdValueNode,
+} from '../nodes/contextualValueNodes';
+import { publicKeyValueNode } from '../nodes/valueNodes';
+import { LinkableDictionary, mainCase, pipe } from '../shared';
 import { extendVisitor } from './extendVisitor';
 import { identityVisitor } from './identityVisitor';
 import { recordLinkablesVisitor } from './recordLinkablesVisitor';
 
-export type InstructionAccountDefaultRule = InstructionAccountDefault & {
+export type InstructionAccountDefaultRule = {
   /** The name of the instruction account or a pattern to match on it. */
   account: string | RegExp;
+  /** The default value to assign to it. */
+  defaultsTo: InstructionInputValueNode;
   /** @defaultValue Defaults to searching accounts on all instructions. */
   instruction?: string;
   /** @defaultValue `false`. */
@@ -28,136 +32,129 @@ export type InstructionAccountDefaultRule = InstructionAccountDefault & {
 export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaultRule[] =
   [
     {
-      kind: 'payer',
       account: /^payer|feePayer$/,
+      defaultsTo: payerValueNode(),
       ignoreIfOptional: true,
     },
     {
-      kind: 'identity',
       account: /^authority$/,
+      defaultsTo: identityValueNode(),
       ignoreIfOptional: true,
     },
     {
-      kind: 'programId',
       account: /^programId$/,
+      defaultsTo: programIdValueNode(),
       ignoreIfOptional: true,
     },
     {
-      kind: 'program',
       account: /^systemProgram|splSystemProgram$/,
-      program: {
-        name: 'splSystem' as MainCaseString,
-        publicKey: '11111111111111111111111111111111',
-      },
+      defaultsTo: publicKeyValueNode('11111111111111111111111111111111'),
       ignoreIfOptional: true,
     },
     {
-      kind: 'program',
       account: /^tokenProgram|splTokenProgram$/,
-      program: {
-        name: 'splToken' as MainCaseString,
-        publicKey: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-      },
+      defaultsTo: publicKeyValueNode(
+        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+      ),
       ignoreIfOptional: true,
     },
     {
-      kind: 'program',
       account: /^ataProgram|splAtaProgram$/,
-      program: {
-        name: 'splAssociatedToken' as MainCaseString,
-        publicKey: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-      },
+      defaultsTo: publicKeyValueNode(
+        'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+      ),
       ignoreIfOptional: true,
     },
     {
-      kind: 'program',
       account: /^tokenMetadataProgram|mplTokenMetadataProgram$/,
-      program: {
-        name: 'mplTokenMetadata' as MainCaseString,
-        publicKey: 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-      },
+      defaultsTo: publicKeyValueNode(
+        'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+      ),
       ignoreIfOptional: true,
     },
     {
-      kind: 'program',
       account:
         /^(tokenAuth|mplTokenAuth|authorization|mplAuthorization|auth|mplAuth)RulesProgram$/,
-      program: {
-        name: 'mplTokenAuthRules' as MainCaseString,
-        publicKey: 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-      },
+      defaultsTo: publicKeyValueNode(
+        'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+      ),
       ignoreIfOptional: true,
     },
     {
-      kind: 'program',
       account: /^candyMachineProgram|mplCandyMachineProgram$/,
-      program: {
-        name: 'mplCandyMachine' as MainCaseString,
-        publicKey: 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-      },
+      defaultsTo: publicKeyValueNode(
+        'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+      ),
       ignoreIfOptional: true,
     },
     {
-      kind: 'program',
       account: /^candyGuardProgram|mplCandyGuardProgram$/,
-      program: {
-        name: 'mplCandyGuard' as MainCaseString,
-        publicKey: 'Guard1JwRhJkVH6XZhzoYxeBVQe872VH6QggF4BWmS9g',
-      },
+      defaultsTo: publicKeyValueNode(
+        'Guard1JwRhJkVH6XZhzoYxeBVQe872VH6QggF4BWmS9g'
+      ),
       ignoreIfOptional: true,
     },
     {
-      kind: 'publicKey',
-      account: /^clockSysvar|sysvarClockSysvar$/,
-      publicKey: 'SysvarC1ock11111111111111111111111111111111',
+      account: /^clockSysvar|sysvarClock$/,
+      defaultsTo: publicKeyValueNode(
+        'SysvarC1ock11111111111111111111111111111111'
+      ),
       ignoreIfOptional: true,
     },
     {
-      kind: 'publicKey',
       account: /^epochScheduleSysvar|sysvarEpochSchedule$/,
-      publicKey: 'SysvarEpochSchedu1e111111111111111111111111',
+      defaultsTo: publicKeyValueNode(
+        'SysvarEpochSchedu1e111111111111111111111111'
+      ),
       ignoreIfOptional: true,
     },
     {
-      kind: 'publicKey',
       account: /^(instructions?Sysvar|sysvarInstructions?)(Account)?$/,
-      publicKey: 'Sysvar1nstructions1111111111111111111111111',
+      defaultsTo: publicKeyValueNode(
+        'Sysvar1nstructions1111111111111111111111111'
+      ),
       ignoreIfOptional: true,
     },
     {
-      kind: 'publicKey',
       account: /^recentBlockhashesSysvar|sysvarRecentBlockhashes$/,
-      publicKey: 'SysvarRecentB1ockHashes11111111111111111111',
+      defaultsTo: publicKeyValueNode(
+        'SysvarRecentB1ockHashes11111111111111111111'
+      ),
       ignoreIfOptional: true,
     },
     {
-      kind: 'publicKey',
       account: /^rent|rentSysvar|sysvarRent$/,
-      publicKey: 'SysvarRent111111111111111111111111111111111',
+      defaultsTo: publicKeyValueNode(
+        'SysvarRent111111111111111111111111111111111'
+      ),
       ignoreIfOptional: true,
     },
     {
-      kind: 'publicKey',
       account: /^rewardsSysvar|sysvarRewards$/,
-      publicKey: 'SysvarRewards111111111111111111111111111111',
+      defaultsTo: publicKeyValueNode(
+        'SysvarRewards111111111111111111111111111111'
+      ),
       ignoreIfOptional: true,
     },
     {
-      kind: 'publicKey',
       account: /^slotHashesSysvar|sysvarSlotHashes$/,
-      publicKey: 'SysvarS1otHashes111111111111111111111111111',
+      defaultsTo: publicKeyValueNode(
+        'SysvarS1otHashes111111111111111111111111111'
+      ),
       ignoreIfOptional: true,
     },
     {
-      kind: 'publicKey',
       account: /^slotHistorySysvar|sysvarSlotHistory$/,
-      publicKey: 'SysvarS1otHistory11111111111111111111111111',
+      defaultsTo: publicKeyValueNode(
+        'SysvarS1otHistory11111111111111111111111111'
+      ),
       ignoreIfOptional: true,
     },
     {
-      kind: 'publicKey',
       account: /^stakeHistorySysvar|sysvarStakeHistory$/,
-      publicKey: 'SysvarStakeHistory1111111111111111111111111',
+      defaultsTo: publicKeyValueNode(
+        'SysvarStakeHistory1111111111111111111111111'
+      ),
       ignoreIfOptional: true,
     },
   ];
@@ -211,17 +208,15 @@ export function setInstructionAccountDefaultValuesVisitor(
               ) {
                 return account;
               }
-              if (rule.kind === 'pda') {
-                const foundAccount = linkables.get(
-                  pdaLinkNode(rule.pdaAccount, rule.importFrom)
-                );
+              if (isNode(rule.defaultsTo, 'pdaValueNode')) {
+                const foundAccount = linkables.get(rule.defaultsTo.pda);
                 const defaultsTo = {
-                  ...rule,
+                  ...rule.defaultsTo,
                   seeds: {
                     ...(foundAccount
-                      ? getDefaultSeedsFromPda(foundAccount)
+                      ? getDefaultSeedValuesFromPda(foundAccount)
                       : {}),
-                    ...rule.seeds,
+                    ...rule.defaultsTo.seeds,
                   },
                 };
 
@@ -231,8 +226,8 @@ export function setInstructionAccountDefaultValuesVisitor(
 
                 const allSeedsAreValid = Object.entries(defaultsTo.seeds).every(
                   ([, seed]) => {
-                    if (seed.kind === 'value') return true;
-                    if (seed.kind === 'account') {
+                    if (isNode(seed, VALUE_NODES)) return true;
+                    if (isNode(seed, 'accountValueNode')) {
                       return node.accounts.some(
                         (a) => a.name === mainCase(seed.name)
                       );
@@ -250,7 +245,7 @@ export function setInstructionAccountDefaultValuesVisitor(
 
                 return account;
               }
-              return { ...account, defaultsTo: rule };
+              return { ...account, defaultsTo: rule.defaultsTo };
             }
           );
 

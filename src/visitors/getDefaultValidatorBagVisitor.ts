@@ -1,3 +1,4 @@
+import { isNode } from '../nodes';
 import {
   LinkableDictionary,
   NodeStack,
@@ -102,7 +103,7 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
 
           // Check arg defaults.
           Object.entries(node.argDefaults).forEach(([name, defaultsTo]) => {
-            if (defaultsTo.kind === 'accountBump') {
+            if (isNode(defaultsTo, 'accountBumpValueNode')) {
               const defaultAccount = node.accounts.find(
                 (account) => account.name === defaultsTo.name
               );

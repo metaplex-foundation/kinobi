@@ -433,17 +433,14 @@ export function getUtilizeInstruction<
   if (!accounts.tokenProgram.value) {
     accounts.tokenProgram.value =
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
-    accounts.tokenProgram.isWritable = false;
   }
   if (!accounts.ataProgram.value) {
     accounts.ataProgram.value =
       'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>;
-    accounts.ataProgram.isWritable = false;
   }
   if (!accounts.systemProgram.value) {
     accounts.systemProgram.value =
       '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
-    accounts.systemProgram.isWritable = false;
   }
   if (!accounts.rent.value) {
     accounts.rent.value =
@@ -535,31 +532,23 @@ export function getUtilizeInstructionRaw<
       ),
       accountMetaWithDefault(accounts.owner, AccountRole.READONLY),
       accountMetaWithDefault(
-        accounts.tokenProgram ?? {
-          address:
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
-          role: AccountRole.READONLY,
-        },
+        accounts.tokenProgram ??
+          ('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>),
         AccountRole.READONLY
       ),
       accountMetaWithDefault(
-        accounts.ataProgram ?? {
-          address:
-            'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>,
-          role: AccountRole.READONLY,
-        },
+        accounts.ataProgram ??
+          ('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>),
         AccountRole.READONLY
       ),
       accountMetaWithDefault(
-        accounts.systemProgram ?? {
-          address:
-            '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>,
-          role: AccountRole.READONLY,
-        },
+        accounts.systemProgram ??
+          ('11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>),
         AccountRole.READONLY
       ),
       accountMetaWithDefault(
-        accounts.rent ?? 'SysvarRent111111111111111111111111111111111',
+        accounts.rent ??
+          ('SysvarRent111111111111111111111111111111111' as Address<'SysvarRent111111111111111111111111111111111'>),
         AccountRole.READONLY
       ),
       accountMetaWithDefault(

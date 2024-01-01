@@ -393,7 +393,6 @@ export function getDeprecatedMintPrintingTokensViaTokenInstruction<
   if (!accounts.tokenProgram.value) {
     accounts.tokenProgram.value =
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
-    accounts.tokenProgram.isWritable = false;
   }
   if (!accounts.rent.value) {
     accounts.rent.value =
@@ -482,15 +481,13 @@ export function getDeprecatedMintPrintingTokensViaTokenInstructionRaw<
       accountMetaWithDefault(accounts.metadata, AccountRole.READONLY),
       accountMetaWithDefault(accounts.masterEdition, AccountRole.READONLY),
       accountMetaWithDefault(
-        accounts.tokenProgram ?? {
-          address:
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
-          role: AccountRole.READONLY,
-        },
+        accounts.tokenProgram ??
+          ('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>),
         AccountRole.READONLY
       ),
       accountMetaWithDefault(
-        accounts.rent ?? 'SysvarRent111111111111111111111111111111111',
+        accounts.rent ??
+          ('SysvarRent111111111111111111111111111111111' as Address<'SysvarRent111111111111111111111111111111111'>),
         AccountRole.READONLY
       ),
       ...(remainingAccounts ?? []),

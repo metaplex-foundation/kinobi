@@ -12,6 +12,7 @@ import {
   PublicKey,
   Signer,
   TransactionBuilder,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import {
@@ -186,25 +187,19 @@ export function mintFromCandyMachine(
     resolvedAccounts.nftMintAuthority.value = context.identity;
   }
   if (!resolvedAccounts.tokenMetadataProgram.value) {
-    resolvedAccounts.tokenMetadataProgram.value = context.programs.getPublicKey(
-      'mplTokenMetadata',
+    resolvedAccounts.tokenMetadataProgram.value = publicKey(
       'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
     );
-    resolvedAccounts.tokenMetadataProgram.isWritable = false;
   }
   if (!resolvedAccounts.tokenProgram.value) {
-    resolvedAccounts.tokenProgram.value = context.programs.getPublicKey(
-      'splToken',
+    resolvedAccounts.tokenProgram.value = publicKey(
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
     );
-    resolvedAccounts.tokenProgram.isWritable = false;
   }
   if (!resolvedAccounts.systemProgram.value) {
-    resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
-      'splSystem',
+    resolvedAccounts.systemProgram.value = publicKey(
       '11111111111111111111111111111111'
     );
-    resolvedAccounts.systemProgram.isWritable = false;
   }
 
   // Accounts in order.

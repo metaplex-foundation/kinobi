@@ -470,7 +470,6 @@ export function getMintInstruction<
   if (!accounts.systemProgram.value) {
     accounts.systemProgram.value =
       '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
-    accounts.systemProgram.isWritable = false;
   }
   if (!accounts.sysvarInstructions.value) {
     accounts.sysvarInstructions.value =
@@ -479,12 +478,10 @@ export function getMintInstruction<
   if (!accounts.splTokenProgram.value) {
     accounts.splTokenProgram.value =
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
-    accounts.splTokenProgram.isWritable = false;
   }
   if (!accounts.splAtaProgram.value) {
     accounts.splAtaProgram.value =
       'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>;
-    accounts.splAtaProgram.isWritable = false;
   }
 
   // Get account metas and signers.
@@ -585,32 +582,23 @@ export function getMintInstructionRaw<
       accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
       accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
       accountMetaWithDefault(
-        accounts.systemProgram ?? {
-          address:
-            '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>,
-          role: AccountRole.READONLY,
-        },
+        accounts.systemProgram ??
+          ('11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>),
         AccountRole.READONLY
       ),
       accountMetaWithDefault(
         accounts.sysvarInstructions ??
-          'Sysvar1nstructions1111111111111111111111111',
+          ('Sysvar1nstructions1111111111111111111111111' as Address<'Sysvar1nstructions1111111111111111111111111'>),
         AccountRole.READONLY
       ),
       accountMetaWithDefault(
-        accounts.splTokenProgram ?? {
-          address:
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
-          role: AccountRole.READONLY,
-        },
+        accounts.splTokenProgram ??
+          ('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>),
         AccountRole.READONLY
       ),
       accountMetaWithDefault(
-        accounts.splAtaProgram ?? {
-          address:
-            'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>,
-          role: AccountRole.READONLY,
-        },
+        accounts.splAtaProgram ??
+          ('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>),
         AccountRole.READONLY
       ),
       accountMetaWithDefault(

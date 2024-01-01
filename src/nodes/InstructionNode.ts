@@ -1,7 +1,6 @@
 import type { IdlInstruction } from '../idl';
 import {
   BytesCreatedOnChain,
-  InstructionArgDefault,
   InvalidKinobiTreeError,
   MainCaseString,
   PartialExcept,
@@ -23,6 +22,7 @@ import {
 import { isNode } from './Node';
 import { ProgramNode } from './ProgramNode';
 import { RootNode } from './RootNode';
+import { InstructionInputValueNode } from './contextualValueNodes';
 import { structFieldTypeNode } from './typeNodes/StructFieldTypeNode';
 import {
   structTypeNode,
@@ -33,17 +33,23 @@ import { numberValueNode } from './valueNodes';
 
 export type InstructionNode = {
   readonly kind: 'instructionNode';
-  readonly name: MainCaseString;
+
+  // Children.
   readonly accounts: InstructionAccountNode[];
   readonly dataArgs: InstructionDataArgsNode;
   readonly extraArgs: InstructionExtraArgsNode;
   readonly subInstructions: InstructionNode[];
+  readonly argDefaults: Record<MainCaseString, InstructionInputValueNode>;
+
+  // Children to-be.
+  readonly bytesCreatedOnChain?: BytesCreatedOnChain;
+  readonly remainingAccounts?: RemainingAccounts;
+
+  // Data.
+  readonly name: MainCaseString;
   readonly idlName: string;
   readonly docs: string[];
   readonly internal: boolean;
-  readonly bytesCreatedOnChain?: BytesCreatedOnChain;
-  readonly remainingAccounts?: RemainingAccounts;
-  readonly argDefaults: Record<MainCaseString, InstructionArgDefault>;
   readonly optionalAccountStrategy: 'omitted' | 'programId';
 };
 
@@ -52,7 +58,7 @@ export type InstructionNodeInput = Omit<
   'kind' | 'name' | 'argDefaults'
 > & {
   readonly name: string;
-  readonly argDefaults?: Record<string, InstructionArgDefault>;
+  readonly argDefaults?: Record<string, InstructionInputValueNode>;
 };
 
 export function instructionNode(input: InstructionNodeInput): InstructionNode {

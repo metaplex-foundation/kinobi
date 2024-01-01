@@ -316,7 +316,6 @@ export function getBurnNftInstruction<
   if (!accounts.splTokenProgram.value) {
     accounts.splTokenProgram.value =
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
-    accounts.splTokenProgram.isWritable = false;
   }
 
   // Get account metas and signers.
@@ -382,11 +381,8 @@ export function getBurnNftInstructionRaw<
         AccountRole.WRITABLE
       ),
       accountMetaWithDefault(
-        accounts.splTokenProgram ?? {
-          address:
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>,
-          role: AccountRole.READONLY,
-        },
+        accounts.splTokenProgram ??
+          ('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>),
         AccountRole.READONLY
       ),
       accountMetaWithDefault(

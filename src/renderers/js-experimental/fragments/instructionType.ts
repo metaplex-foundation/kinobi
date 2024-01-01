@@ -1,5 +1,5 @@
 import { InstructionNode, ProgramNode } from '../../../nodes';
-import { pascalCase } from '../../../shared';
+import { LinkableDictionary, pascalCase } from '../../../shared';
 import { NameApi } from '../nameTransformers';
 import { Fragment, fragmentFromTemplate, mergeFragments } from './common';
 import { getInstructionAccountMetaFragment } from './instructionAccountMeta';
@@ -10,6 +10,7 @@ export function getInstructionTypeFragment(scope: {
   programNode: ProgramNode;
   withSigners: boolean;
   nameApi: NameApi;
+  linkables: LinkableDictionary;
 }): Fragment {
   const { instructionNode, programNode, withSigners, nameApi } = scope;
   const hasAccounts = instructionNode.accounts.length > 0;

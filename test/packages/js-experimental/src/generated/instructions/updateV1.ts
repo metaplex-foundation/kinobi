@@ -611,7 +611,6 @@ export function getUpdateV1Instruction<
   if (!accounts.systemProgram.value) {
     accounts.systemProgram.value =
       '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
-    accounts.systemProgram.isWritable = false;
   }
   if (!accounts.sysvarInstructions.value) {
     accounts.sysvarInstructions.value =
@@ -702,16 +701,13 @@ export function getUpdateV1InstructionRaw<
       ),
       accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
       accountMetaWithDefault(
-        accounts.systemProgram ?? {
-          address:
-            '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>,
-          role: AccountRole.READONLY,
-        },
+        accounts.systemProgram ??
+          ('11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>),
         AccountRole.READONLY
       ),
       accountMetaWithDefault(
         accounts.sysvarInstructions ??
-          'Sysvar1nstructions1111111111111111111111111',
+          ('Sysvar1nstructions1111111111111111111111111' as Address<'Sysvar1nstructions1111111111111111111111111'>),
         AccountRole.READONLY
       ),
       accountMetaWithDefault(

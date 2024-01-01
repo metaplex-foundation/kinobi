@@ -172,7 +172,10 @@ export function mergeVisitor<
 
   if (castedNodeKeys.includes('structFieldTypeNode')) {
     visitor.visitStructFieldType = function visitStructFieldType(node) {
-      return merge(node, visit(this)(node.child));
+      return merge(node, [
+        ...visit(this)(node.child),
+        ...(node.defaultsTo ? visit(this)(node.defaultsTo.value) : []),
+      ]);
     };
   }
 
@@ -277,6 +280,32 @@ export function mergeVisitor<
   if (castedNodeKeys.includes('variablePdaSeedNode')) {
     visitor.visitVariablePdaSeed = function visitVariablePdaSeed(node) {
       return merge(node, visit(this)(node.type));
+    };
+  }
+
+  if (castedNodeKeys.includes('resolverValueNode')) {
+    visitor.visitResolverValue = function visitResolverValue(node) {
+      return merge(node, (node.dependsOn ?? []).flatMap(visit(this)));
+    };
+  }
+
+  if (castedNodeKeys.includes('conditionalValueNode')) {
+    visitor.visitConditionalValue = function visitConditionalValue(node) {
+      return merge(node, [
+        ...visit(this)(node.condition),
+        ...(node.value ? visit(this)(node.value) : []),
+        ...(node.ifTrue ? visit(this)(node.ifTrue) : []),
+        ...(node.ifFalse ? visit(this)(node.ifFalse) : []),
+      ]);
+    };
+  }
+
+  if (castedNodeKeys.includes('pdaValueNode')) {
+    visitor.visitPdaValue = function visitPdaValue(node) {
+      return merge(node, [
+        ...visit(this)(node.pda),
+        ...Object.values(node.seeds).flatMap(visit(this)),
+      ]);
     };
   }
 

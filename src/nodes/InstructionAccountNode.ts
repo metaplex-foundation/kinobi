@@ -1,19 +1,19 @@
 import { IdlInstructionAccount } from '../idl';
-import {
-  InstructionAccountDefault,
-  MainCaseString,
-  PartialExcept,
-  mainCase,
-} from '../shared';
+import { MainCaseString, PartialExcept, mainCase } from '../shared';
+import { InstructionInputValueNode } from './contextualValueNodes';
 
 export type InstructionAccountNode = {
   readonly kind: 'instructionAccountNode';
+
+  // Children.
+  readonly defaultsTo?: InstructionInputValueNode;
+
+  // Data.
   readonly name: MainCaseString;
   readonly isWritable: boolean;
   readonly isSigner: boolean | 'either';
   readonly isOptional: boolean;
   readonly docs: string[];
-  readonly defaultsTo?: InstructionAccountDefault;
 };
 
 export type InstructionAccountNodeInput = Omit<

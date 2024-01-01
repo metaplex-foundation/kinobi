@@ -10,12 +10,11 @@
   {% if account.isSigner %}
     {% set modifiers = modifiers + ', signer' if modifiers.length > 0 else 'signer' %}
   {% endif %}
-  {% if account.isOptional or account.defaultsTo.kind === 'program' or account.defaultsTo.kind === 'publicKey' %}
+  {% if account.isOptional or account.defaultsTo.kind === 'publicKeyValueNode' %}
     {% set modifiers = modifiers + ', optional' if modifiers.length > 0 else 'optional' %}
   {% endif %}
   {{ '///   ' + loop.index0 + '. `[' + modifiers + ']` ' + account.name | snakeCase }}
-  {{- " (default to `" + account.defaultsTo.program.publicKey + "`)" if account.defaultsTo.kind === 'program' }}
-  {{- " (default to `" + account.defaultsTo.publicKey + "`)" if account.defaultsTo.kind === 'publicKey' }}
+  {{- " (default to `" + account.defaultsTo.publicKey + "`)" if account.defaultsTo.kind === 'publicKeyValueNode' }}
 {% endfor %}
 #[derive(Default)]
 pub struct {{ instruction.name | pascalCase }}Builder {
@@ -42,8 +41,7 @@ impl {{ instruction.name | pascalCase }}Builder {
     {% if account.isOptional %}
       {{ '/// `[optional account]`\n' -}}
     {% else %}
-      {{ "/// `[optional account, default to '" + account.defaultsTo.program.publicKey + "']`\n" if account.defaultsTo.kind === 'program' -}}
-      {{ "/// `[optional account, default to '" + account.defaultsTo.publicKey + "']`\n" if account.defaultsTo.kind === 'publicKey' -}}
+      {{ "/// `[optional account, default to '" + account.defaultsTo.publicKey + "']`\n" if account.defaultsTo.kind === 'publicKeyValueNode' -}}
     {% endif %}
     {{- macros.docblock(account.docs) -}}
     #[inline(always)]
@@ -100,9 +98,7 @@ impl {{ instruction.name | pascalCase }}Builder {
             {{ account.name | snakeCase }}: self.{{ account.name | snakeCase }},
           {% elif account.defaultsTo.kind === 'programId' %}
             {{ account.name | snakeCase }}: self.{{ account.name | snakeCase }}, {# Program ID set on the instruction creation. #}
-          {% elif account.defaultsTo.kind === 'program' %}
-            {{ account.name | snakeCase }}: self.{{ account.name | snakeCase }}.unwrap_or(solana_program::pubkey!("{{ account.defaultsTo.program.publicKey }}")),
-          {% elif account.defaultsTo.kind === 'publicKey' %}
+          {% elif account.defaultsTo.kind === 'publicKeyValueNode' %}
             {{ account.name | snakeCase }}: self.{{ account.name | snakeCase }}.unwrap_or(solana_program::pubkey!("{{ account.defaultsTo.publicKey }}")),
           {% else %}
             {{ account.name | snakeCase }}: self.{{ account.name | snakeCase }}.expect("{{ account.name | snakeCase }} is not set"),

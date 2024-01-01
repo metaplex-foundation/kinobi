@@ -12,6 +12,7 @@ import {
   PublicKey,
   Signer,
   TransactionBuilder,
+  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import {
@@ -76,7 +77,7 @@ export type DummyInstructionExtraArgs = {
 // Args.
 export type DummyInstructionArgs = PickPartial<
   DummyInstructionExtraArgs,
-  'proof' | 'identityArg'
+  'identityArg' | 'proof'
 >;
 
 // Instruction.
@@ -159,9 +160,6 @@ export function dummy(
       });
     }
   }
-  if (!resolvedArgs.proof) {
-    resolvedArgs.proof = [];
-  }
   if (!resolvedAccounts.tokenOrAtaProgram.value) {
     if (
       resolveTokenOrAta(
@@ -172,21 +170,20 @@ export function dummy(
         false
       )
     ) {
-      resolvedAccounts.tokenOrAtaProgram.value = context.programs.getPublicKey(
-        'splToken',
+      resolvedAccounts.tokenOrAtaProgram.value = publicKey(
         'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
       );
-      resolvedAccounts.tokenOrAtaProgram.isWritable = false;
     } else {
-      resolvedAccounts.tokenOrAtaProgram.value = context.programs.getPublicKey(
-        'splAssociatedToken',
+      resolvedAccounts.tokenOrAtaProgram.value = publicKey(
         'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
       );
-      resolvedAccounts.tokenOrAtaProgram.isWritable = false;
     }
   }
   if (!resolvedArgs.identityArg) {
     resolvedArgs.identityArg = context.identity.publicKey;
+  }
+  if (!resolvedArgs.proof) {
+    resolvedArgs.proof = [];
   }
 
   // Accounts in order.

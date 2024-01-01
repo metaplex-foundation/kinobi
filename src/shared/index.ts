@@ -3,7 +3,6 @@ export * from './AnchorDiscriminator';
 export * from './BytesCreatedOnChain';
 export * from './GpaField';
 export * from './ImportFrom';
-export * from './InstructionDefault';
 export * from './LinkableDictionary';
 export * from './NodeSelector';
 export * from './NodeStack';

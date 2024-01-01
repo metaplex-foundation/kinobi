@@ -2,12 +2,18 @@ import {
   InstructionAccountNode,
   InstructionNode,
   ProgramNode,
+  isNode,
 } from '../../../nodes';
-import { pascalCase } from '../../../shared';
+import { LinkableDictionary, pascalCase } from '../../../shared';
 import { ImportMap } from '../ImportMap';
 import { TypeManifest } from '../TypeManifest';
 import { NameApi } from '../nameTransformers';
-import { Fragment, fragmentFromTemplate, mergeFragments } from './common';
+import {
+  Fragment,
+  fragment,
+  fragmentFromTemplate,
+  mergeFragments,
+} from './common';
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
 
 export function getInstructionFunctionLowLevelFragment(scope: {
@@ -15,6 +21,7 @@ export function getInstructionFunctionLowLevelFragment(scope: {
   programNode: ProgramNode;
   dataArgsManifest: TypeManifest;
   nameApi: NameApi;
+  linkables: LinkableDictionary;
 }): Fragment {
   const { instructionNode, programNode, dataArgsManifest, nameApi } = scope;
   const imports = new ImportMap();
@@ -53,11 +60,14 @@ export function getInstructionFunctionLowLevelFragment(scope: {
 
   const accounts = instructionNode.accounts.map((account) => {
     const typeParam = `TAccount${pascalCase(account.name)}`;
-    const defaultValue = getDefaultValue(
+    const defaultValueFragment = getDefaultValue(
       account,
       programNode,
+      nameApi,
       instructionNode.optionalAccountStrategy === 'omitted'
     );
+    imports.mergeWith(defaultValueFragment);
+    const defaultValue = defaultValueFragment.render || null;
     const isOptionalOrHasLowLevelDefaultValues =
       account.isOptional || defaultValue !== null;
 
@@ -70,7 +80,7 @@ export function getInstructionFunctionLowLevelFragment(scope: {
     };
   });
 
-  const fragment = fragmentFromTemplate('instructionFunctionLowLevel.njk', {
+  return fragmentFromTemplate('instructionFunctionLowLevel.njk', {
     instruction: instructionNode,
     program: programNode,
     functionName: nameApi.instructionRawFunction(instructionNode.name),
@@ -86,15 +96,9 @@ export function getInstructionFunctionLowLevelFragment(scope: {
   })
     .mergeImportsWith(imports, accountTypeParamsFragment)
     .addImports('solanaAddresses', ['Address'])
-    .addImports('solanaInstructions', ['IAccountMeta']);
-
-  if (hasAccounts) {
-    fragment
-      .addImports('shared', ['accountMetaWithDefault'])
-      .addImports('solanaInstructions', ['AccountRole']);
-  }
-
-  return fragment;
+    .addImports('solanaInstructions', ['IAccountMeta'])
+    .addImports('shared', hasAccounts ? ['accountMetaWithDefault'] : [])
+    .addImports('solanaInstructions', hasAccounts ? ['AccountRole'] : []);
 }
 
 function getDefaultRole(account: InstructionAccountNode): string {
@@ -113,19 +117,29 @@ function getDefaultRole(account: InstructionAccountNode): string {
 function getDefaultValue(
   account: InstructionAccountNode,
   program: ProgramNode,
+  nameApi: NameApi,
   usesLegacyOptionalAccounts: boolean
-): string | null {
+): Fragment {
   if (account.isOptional && usesLegacyOptionalAccounts) {
-    return null;
+    return fragment('');
   }
-  if (account.isOptional || account.defaultsTo?.kind === 'programId') {
-    return `{ address: "${program.publicKey}" as Address<"${program.publicKey}">, role: AccountRole.READONLY }`;
+  const defaultsTo = account.defaultsTo ?? null;
+  if (account.isOptional || isNode(defaultsTo, 'programIdValueNode')) {
+    return fragment(
+      `{ address: "${program.publicKey}" as Address<"${program.publicKey}">, role: AccountRole.READONLY }`
+    );
   }
-  if (account.defaultsTo?.kind === 'program') {
-    return `{ address: "${account.defaultsTo.program.publicKey}" as Address<"${account.defaultsTo.program.publicKey}">, role: AccountRole.READONLY }`;
+  if (isNode(defaultsTo, 'publicKeyValueNode')) {
+    return fragment(
+      `"${defaultsTo.publicKey}" as Address<"${defaultsTo.publicKey}">`
+    );
   }
-  if (account.defaultsTo?.kind === 'publicKey') {
-    return `"${account.defaultsTo.publicKey}"`;
+  if (isNode(defaultsTo, 'programLinkNode')) {
+    const programAddress = nameApi.programAddressConstant(defaultsTo.name);
+    const importFrom = defaultsTo.importFrom ?? 'generatedPrograms';
+    return fragment(
+      `{ address: ${programAddress}, role: AccountRole.READONLY }`
+    ).addImports(importFrom, programAddress);
   }
-  return null;
+  return fragment('');
 }

@@ -3,28 +3,22 @@ import {
   InstructionAccountNodeInput,
   InstructionDataArgsNode,
   InstructionExtraArgsNode,
+  InstructionInputValueNode,
   InstructionNode,
   InstructionNodeInput,
   TYPE_NODES,
   TypeNode,
   assertIsNode,
+  getDefaultSeedValuesFromPda,
   instructionAccountNode,
   instructionDataArgsNode,
   instructionExtraArgsNode,
   instructionNode,
-  pdaLinkNode,
+  isNode,
   structFieldTypeNode,
   structTypeNode,
 } from '../nodes';
-import {
-  InstructionAccountDefault,
-  InstructionArgDefault,
-  LinkableDictionary,
-  MainCaseString,
-  getDefaultSeedsFromPda,
-  mainCase,
-  pipe,
-} from '../shared';
+import { LinkableDictionary, MainCaseString, mainCase, pipe } from '../shared';
 import {
   BottomUpNodeTransformerWithSelector,
   bottomUpTransformerVisitor,
@@ -48,7 +42,7 @@ export type InstructionMetadataUpdates = Partial<
 export type InstructionAccountUpdates = Record<
   string,
   Partial<Omit<InstructionAccountNodeInput, 'defaultsTo'>> & {
-    defaultsTo?: InstructionAccountDefault | null;
+    defaultsTo?: InstructionInputValueNode | null;
   }
 >;
 
@@ -58,7 +52,7 @@ export type InstructionArgUpdates = Record<
     name?: string;
     docs?: string[];
     type?: TypeNode;
-    defaultsTo?: InstructionArgDefault | null;
+    defaultsTo?: InstructionInputValueNode | null;
   }
 >;
 
@@ -125,27 +119,22 @@ function handleInstructionAccount(
     return instructionAccountNode(acountWithoutDefault);
   }
 
-  if (defaultsTo?.kind === 'pda') {
-    const foundPda = linkables.get(
-      pdaLinkNode(defaultsTo.pdaAccount, defaultsTo.importFrom)
-    );
+  if (isNode(defaultsTo, 'pdaValueNode')) {
+    const foundPda = linkables.get(defaultsTo.pda);
     return {
       ...acountWithoutDefault,
       name: mainCase(acountWithoutDefault.name),
       defaultsTo: {
         ...defaultsTo,
         seeds: {
-          ...(foundPda ? getDefaultSeedsFromPda(foundPda) : {}),
+          ...(foundPda ? getDefaultSeedValuesFromPda(foundPda) : {}),
           ...defaultsTo.seeds,
         },
       },
     };
   }
 
-  return instructionAccountNode({
-    ...acountWithoutDefault,
-    defaultsTo,
-  });
+  return instructionAccountNode({ ...acountWithoutDefault, defaultsTo });
 }
 
 function handleInstructionArgs(
@@ -155,7 +144,7 @@ function handleInstructionArgs(
 ): {
   newDataArgs: InstructionDataArgsNode;
   newExtraArgs: InstructionExtraArgsNode;
-  newArgDefaults: Record<string, InstructionArgDefault>;
+  newArgDefaults: Record<string, InstructionInputValueNode>;
 } {
   const usedArgs = new Set<string>();
 

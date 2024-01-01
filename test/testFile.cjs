@@ -81,22 +81,22 @@ kinobi.update(
     'mplTokenAuthRules.Create': {
       name: 'CreateRuleSet',
       args: {
-        ruleSetBump: { defaultsTo: k.accountBumpDefault('ruleSetPda') },
+        ruleSetBump: { defaultsTo: k.accountBumpValueNode('ruleSetPda') },
       },
     },
     'mplCandyMachineCore.Update': { name: 'UpdateCandyMachine' },
     CreateMetadataAccount: {
       bytesCreatedOnChain: k.bytesFromAccount('Metadata'),
       accounts: {
-        metadata: { defaultsTo: k.pdaDefault('metadata') },
+        metadata: { defaultsTo: k.pdaValueNode('metadata') },
       },
       args: {
-        metadataBump: { defaultsTo: k.accountBumpDefault('metadata') },
+        metadataBump: { defaultsTo: k.accountBumpValueNode('metadata') },
       },
     },
     CreateMetadataAccountV3: {
       accounts: {
-        metadata: { defaultsTo: k.pdaDefault('metadata') },
+        metadata: { defaultsTo: k.pdaValueNode('metadata') },
       },
     },
     CreateMasterEditionV3: {
@@ -105,55 +105,50 @@ kinobi.update(
     'mplCandyMachineCore.Mint': {
       name: 'MintFromCandyMachine',
       accounts: {
-        nftMintAuthority: { defaultsTo: k.identityDefault() },
+        nftMintAuthority: { defaultsTo: k.identityValueNode() },
       },
     },
     Dummy: {
       accounts: {
-        mintAuthority: { defaultsTo: k.accountDefault('updateAuthority') },
-        edition: { defaultsTo: k.accountDefault('payer') },
-        foo: { defaultsTo: k.accountDefault('bar') },
+        mintAuthority: { defaultsTo: k.accountValueNode('updateAuthority') },
+        edition: { defaultsTo: k.accountValueNode('payer') },
+        foo: { defaultsTo: k.accountValueNode('bar') },
         bar: {
-          defaultsTo: k.programIdDefault(),
+          defaultsTo: k.programIdValueNode(),
           isOptional: true,
         },
         delegateRecord: {
-          defaultsTo: k.conditionalDefault('account', 'delegate', {
-            ifTrue: k.pdaDefault('delegateRecord', {
-              seeds: {
-                role: k.valueDefault(
-                  k.enumValueNode('delegateRole', 'Collection')
-                ),
-              },
+          defaultsTo: k.conditionalValueNode({
+            condition: k.accountValueNode('delegate'),
+            ifTrue: k.pdaValueNode('delegateRecord', {
+              role: k.enumValueNode('delegateRole', 'Collection'),
             }),
           }),
         },
         tokenOrAtaProgram: {
-          defaultsTo: k.conditionalResolverDefault(
-            k.resolverDefault('resolveTokenOrAta', [k.dependsOnArg('proof')]),
-            {
-              ifTrue: k.programDefault(
-                'splToken',
-                'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-              ),
-              ifFalse: k.programDefault(
-                'splAssociatedToken',
-                'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
-              ),
-            }
-          ),
+          defaultsTo: k.conditionalValueNode({
+            condition: k.resolverValueNode('resolveTokenOrAta', [
+              k.argumentValueNode('proof'),
+            ]),
+            ifTrue: k.publicKeyValueNode(
+              'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+            ),
+            ifFalse: k.publicKeyValueNode(
+              'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+            ),
+          }),
         },
       },
       args: {
         identityArg: {
           type: k.publicKeyTypeNode(),
-          defaultsTo: k.identityDefault(),
+          defaultsTo: k.identityValueNode(),
         },
         proof: {
           type: k.arrayTypeNode(k.publicKeyTypeNode(), {
             size: k.remainderSizeNode(),
           }),
-          defaultsTo: k.valueDefault(k.arrayValueNode([])),
+          defaultsTo: k.arrayValueNode([]),
         },
       },
       remainingAccounts: k.remainingAccountsFromArg('proof'),
@@ -162,18 +157,16 @@ kinobi.update(
     Transfer: {
       accounts: {
         masterEdition: {
-          defaultsTo: k.resolverDefault(
+          defaultsTo: k.resolverValueNode(
             'resolveMasterEditionFromTokenStandard',
-            [k.dependsOnAccount('mint'), k.dependsOnArg('tokenStandard')]
+            [k.accountValueNode('mint'), k.argumentValueNode('tokenStandard')]
           ),
         },
       },
       args: {
         tokenStandard: {
           type: k.definedTypeLinkNode('tokenStandard'),
-          defaultsTo: k.valueDefault(
-            k.enumValueNode('tokenStandard', 'NonFungible')
-          ),
+          defaultsTo: k.enumValueNode('tokenStandard', 'NonFungible'),
         },
       },
     },
