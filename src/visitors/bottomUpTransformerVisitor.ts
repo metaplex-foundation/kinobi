@@ -1,7 +1,13 @@
 import { Node, RegisteredNodes } from '../nodes';
-import { NodeSelector, NodeStack, getNodeSelectorFunction } from '../shared';
+import {
+  NodeSelector,
+  NodeStack,
+  getNodeSelectorFunction,
+  pipe,
+} from '../shared';
 import { identityVisitor } from './identityVisitor';
 import { interceptVisitor } from './interceptVisitor';
+import { recordNodeStackVisitor } from './recordNodeStackVisitor';
 import { Visitor } from './visitor';
 
 export type BottomUpNodeTransformer<TNode extends Node = Node> = (
@@ -34,14 +40,17 @@ export function bottomUpTransformerVisitor<
   );
 
   const stack = new NodeStack();
-  return interceptVisitor(identityVisitor(nodeKeys), (node, next) => {
-    stack.push(node);
-    const newNode = next(node);
-    stack.pop();
-    return transformerFunctions.reduce(
-      (acc, transformer) =>
-        acc === null ? null : transformer(acc, stack.clone()),
-      newNode
-    );
-  });
+  return pipe(
+    identityVisitor(nodeKeys),
+    (v) => recordNodeStackVisitor(v, stack),
+    (v) =>
+      interceptVisitor(v, (node, next) => {
+        const newNode = next(node);
+        return transformerFunctions.reduce(
+          (acc, transformer) =>
+            acc === null ? null : transformer(acc, stack.clone()),
+          newNode
+        );
+      })
+  );
 }

@@ -10,8 +10,8 @@ import {
 import {
   Visitor,
   extendVisitor,
-  interceptVisitor,
   mergeVisitor,
+  recordNodeStackVisitor,
 } from '../../visitors';
 
 export function getValidatorBagVisitor(): Visitor<ValidatorBag> {
@@ -73,13 +73,7 @@ export function getValidatorBagVisitor(): Visitor<ValidatorBag> {
       () => new ValidatorBag(),
       (_, bags) => new ValidatorBag().mergeWith(bags)
     ),
-    (v) =>
-      interceptVisitor(v, (node, next) => {
-        stack.push(node);
-        const newNode = next(node);
-        stack.pop();
-        return newNode;
-      }),
+    (v) => recordNodeStackVisitor(v, stack),
     (v) =>
       extendVisitor(v, {
         visitProgram(node, { next }) {
