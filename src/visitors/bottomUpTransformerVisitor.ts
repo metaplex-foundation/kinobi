@@ -44,13 +44,12 @@ export function bottomUpTransformerVisitor<
     identityVisitor(nodeKeys),
     (v) => recordNodeStackVisitor(v, stack),
     (v) =>
-      interceptVisitor(v, (node, next) => {
-        const newNode = next(node);
-        return transformerFunctions.reduce(
+      interceptVisitor(v, (node, next) =>
+        transformerFunctions.reduce(
           (acc, transformer) =>
             acc === null ? null : transformer(acc, stack.clone()),
-          newNode
-        );
-      })
+          next(node)
+        )
+      )
   );
 }
