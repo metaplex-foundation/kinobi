@@ -2,6 +2,7 @@ import {
   InstructionNode,
   ProgramNode,
   StructFieldTypeNode,
+  isNode,
 } from '../../../nodes';
 import { pascalCase } from '../../../shared';
 import {
@@ -50,7 +51,10 @@ export function getInstructionInputTypeFragment(scope: {
     ) as ResolvedInstructionAccount;
     const hasDefaultValue =
       !!resolvedAccount.defaultsTo &&
-      !['identity', 'payer'].includes(resolvedAccount.defaultsTo.kind) &&
+      !isNode(resolvedAccount.defaultsTo, [
+        'identityValueNode',
+        'payerValueNode',
+      ]) &&
       (useAsync ||
         !isAsyncDefaultValue(resolvedAccount.defaultsTo, asyncResolvers));
     const type = getAccountType(resolvedAccount, withSigners);
