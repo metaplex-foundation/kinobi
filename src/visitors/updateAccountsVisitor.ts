@@ -69,7 +69,7 @@ export function updateAccountsVisitor(map: Record<string, AccountUpdates>) {
               ...assignableUpdates,
               data: accountDataNode({
                 ...node.data,
-                name: `${newName}AccountData`,
+                name: `${newName ?? node.name}AccountData`,
                 struct: renameStructNode(node.data.struct, updates.data ?? {}),
               }),
               pda: newPda,
