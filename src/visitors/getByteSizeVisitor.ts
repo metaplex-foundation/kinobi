@@ -1,10 +1,10 @@
-import { LinkableDictionary } from 'src/shared';
 import {
   REGISTERED_TYPE_NODE_KEYS,
   RegisteredTypeNodes,
   isNode,
   isScalarEnum,
 } from '../nodes';
+import { LinkableDictionary } from '../shared';
 import { mergeVisitor } from './mergeVisitor';
 import { Visitor, visit } from './visitor';
 

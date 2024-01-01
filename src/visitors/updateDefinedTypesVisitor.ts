@@ -30,7 +30,7 @@ export function updateDefinedTypesVisitor(
             ? mainCase(updates.name)
             : undefined;
 
-        const transforms: BottomUpNodeTransformerWithSelector[] = [
+        const transformers: BottomUpNodeTransformerWithSelector[] = [
           {
             select: `${selectorStack.join('.')}.[definedTypeNode]${name}`,
             transform: (node) => {
@@ -56,7 +56,7 @@ export function updateDefinedTypesVisitor(
         ];
 
         if (newName) {
-          transforms.push({
+          transformers.push({
             select: `${selectorStack.join('.')}.[definedTypeLinkNode]${name}`,
             transform: (node) => {
               assertIsNode(node, 'definedTypeLinkNode');
@@ -66,7 +66,7 @@ export function updateDefinedTypesVisitor(
           });
         }
 
-        return transforms;
+        return transformers;
       }
     )
   );

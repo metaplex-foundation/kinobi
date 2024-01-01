@@ -1,5 +1,5 @@
-import { LinkableDictionary } from 'src/shared';
 import { AccountNode, ProgramNode, isNodeFilter } from '../../../nodes';
+import { LinkableDictionary } from '../../../shared';
 import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
