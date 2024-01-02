@@ -10,8 +10,12 @@ import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type SetTypeNode = {
   readonly kind: 'setTypeNode';
+
+  // Children.
   readonly item: TypeNode;
   readonly size: SizeNode;
+
+  // Data.
   readonly idlSet: 'hashSet' | 'bTreeSet';
 };
 

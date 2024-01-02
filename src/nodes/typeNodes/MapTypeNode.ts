@@ -10,9 +10,13 @@ import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type MapTypeNode = {
   readonly kind: 'mapTypeNode';
+
+  // Children.
   readonly key: TypeNode;
   readonly value: TypeNode;
   readonly size: SizeNode;
+
+  // Data.
   readonly idlMap: 'hashMap' | 'bTreeMap';
 };
 

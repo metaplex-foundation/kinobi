@@ -3,6 +3,8 @@ import { ValueNode } from './ValueNode';
 
 export type StructValueNode = {
   readonly kind: 'structValueNode';
+
+  // Children.
   readonly fields: Record<MainCaseString, ValueNode>;
 };
 

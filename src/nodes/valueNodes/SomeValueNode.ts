@@ -2,6 +2,8 @@ import { ValueNode } from './ValueNode';
 
 export type SomeValueNode = {
   readonly kind: 'someValueNode';
+
+  // Children.
   readonly value: ValueNode;
 };
 

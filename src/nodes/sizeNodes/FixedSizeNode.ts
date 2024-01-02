@@ -1,5 +1,7 @@
 export type FixedSizeNode = {
   readonly kind: 'fixedSizeNode';
+
+  // Data.
   readonly size: number;
 };
 

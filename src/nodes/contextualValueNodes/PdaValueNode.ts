@@ -8,6 +8,8 @@ import { ArgumentValueNode, argumentValueNode } from './ArgumentValueNode';
 
 export type PdaValueNode = {
   readonly kind: 'pdaValueNode';
+
+  // Children.
   readonly pda: PdaLinkNode;
   readonly seeds: Record<
     MainCaseString,

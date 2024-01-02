@@ -2,6 +2,8 @@ import { MainCaseString, mainCase } from '../../shared';
 
 export type AccountBumpValueNode = {
   readonly kind: 'accountBumpValueNode';
+
+  // Data.
   readonly name: MainCaseString;
 };
 

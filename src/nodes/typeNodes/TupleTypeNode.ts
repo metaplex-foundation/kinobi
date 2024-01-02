@@ -3,6 +3,8 @@ import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type TupleTypeNode = {
   readonly kind: 'tupleTypeNode';
+
+  // Children.
   readonly items: TypeNode[];
 };
 

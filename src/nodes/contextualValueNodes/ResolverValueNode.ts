@@ -4,9 +4,13 @@ import { ArgumentValueNode } from './ArgumentValueNode';
 
 export type ResolverValueNode = {
   readonly kind: 'resolverValueNode';
+
+  // Children.
+  readonly dependsOn?: (AccountValueNode | ArgumentValueNode)[];
+
+  // Data.
   readonly name: MainCaseString;
   readonly importFrom?: ImportFrom;
-  readonly dependsOn?: (AccountValueNode | ArgumentValueNode)[];
 };
 
 export function resolverValueNode(

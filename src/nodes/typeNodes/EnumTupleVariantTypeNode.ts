@@ -4,8 +4,12 @@ import { TupleTypeNode, tupleTypeNodeFromIdl } from './TupleTypeNode';
 
 export type EnumTupleVariantTypeNode = {
   readonly kind: 'enumTupleVariantTypeNode';
-  readonly name: MainCaseString;
+
+  // Children.
   readonly tuple: TupleTypeNode;
+
+  // Data.
+  readonly name: MainCaseString;
 };
 
 export function enumTupleVariantTypeNode(

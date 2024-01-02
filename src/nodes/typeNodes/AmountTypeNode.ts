@@ -2,7 +2,11 @@ import { NumberTypeNode } from './NumberTypeNode';
 
 export type AmountTypeNode = {
   readonly kind: 'amountTypeNode';
+
+  // Children.
   readonly number: NumberTypeNode;
+
+  // Data.
   readonly decimals: number;
   readonly unit?: string;
 };

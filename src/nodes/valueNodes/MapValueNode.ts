@@ -2,6 +2,8 @@ import { ValueNode } from './ValueNode';
 
 export type MapValueNode = {
   readonly kind: 'mapValueNode';
+
+  // Children.
   readonly entries: [ValueNode, ValueNode][];
 };
 

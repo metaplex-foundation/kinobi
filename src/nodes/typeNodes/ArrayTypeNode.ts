@@ -10,6 +10,8 @@ import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type ArrayTypeNode = {
   readonly kind: 'arrayTypeNode';
+
+  // Children.
   readonly item: TypeNode;
   readonly size: SizeNode;
 };

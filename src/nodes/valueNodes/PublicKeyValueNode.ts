@@ -1,5 +1,7 @@
 export type PublicKeyValueNode = {
   readonly kind: 'publicKeyValueNode';
+
+  // Data.
   readonly publicKey: string;
 };
 

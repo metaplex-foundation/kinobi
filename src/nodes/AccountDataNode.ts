@@ -4,9 +4,13 @@ import { StructTypeNode } from './typeNodes';
 
 export type AccountDataNode = {
   readonly kind: 'accountDataNode';
-  readonly name: MainCaseString;
+
+  // Children.
   readonly struct: StructTypeNode;
   readonly link?: DefinedTypeLinkNode;
+
+  // Data.
+  readonly name: MainCaseString;
 };
 
 export type AccountDataNodeInput = {

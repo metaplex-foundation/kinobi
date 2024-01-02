@@ -2,6 +2,8 @@ import { ImportFrom, MainCaseString, mainCase } from '../../shared';
 
 export type ProgramLinkNode = {
   readonly kind: 'programLinkNode';
+
+  // Data.
   readonly name: MainCaseString;
   readonly importFrom?: ImportFrom;
 };

@@ -6,6 +6,8 @@ import {
 
 export type StructTypeNode = {
   readonly kind: 'structTypeNode';
+
+  // Children.
   readonly fields: StructFieldTypeNode[];
 };
 

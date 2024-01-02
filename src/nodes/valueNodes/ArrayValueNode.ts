@@ -2,6 +2,8 @@ import { ValueNode } from './ValueNode';
 
 export type ArrayValueNode = {
   readonly kind: 'arrayValueNode';
+
+  // Children.
   readonly items: ValueNode[];
 };
 
