@@ -12,7 +12,7 @@ import {
 export type NumberWrapper =
   | { kind: 'DateTime' }
   | { kind: 'SolAmount' }
-  | { kind: 'Amount'; identifier: string; decimals: number };
+  | { kind: 'Amount'; decimals: number; unit?: string };
 
 type NumberWrapperMap = Record<string, NumberWrapper>;
 
@@ -29,7 +29,7 @@ export function setNumberWrappersVisitor(map: NumberWrapperMap) {
             case 'SolAmount':
               return solAmountTypeNode(node);
             case 'Amount':
-              return amountTypeNode(node, wrapper.identifier, wrapper.decimals);
+              return amountTypeNode(node, wrapper.decimals, wrapper.unit);
             default:
               throw new Error(`Invalid number wrapper kind: ${wrapper}`);
           }

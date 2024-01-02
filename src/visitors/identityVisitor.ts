@@ -337,7 +337,7 @@ export function identityVisitor<
       const number = visit(this)(node.number);
       if (number === null) return null;
       assertIsNode(number, 'numberTypeNode');
-      return amountTypeNode(number, node.identifier, node.decimals);
+      return amountTypeNode(number, node.decimals, node.unit);
     };
   }
 

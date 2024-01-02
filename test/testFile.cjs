@@ -230,8 +230,8 @@ kinobi.update(
     'DelegateArgs.SaleV1.amount': { kind: 'SolAmount' },
     'CandyMachineData.sellerFeeBasisPoints': {
       kind: 'Amount',
-      identifier: '%',
       decimals: 2,
+      unit: '%',
     },
   })
 );

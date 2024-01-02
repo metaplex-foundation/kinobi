@@ -558,9 +558,9 @@ export function getTypeManifestVisitor() {
                 `integer types. Got type [${amountType.number.toString()}].`
             );
           }
-          const { identifier, decimals } = amountType;
-          const idAndDecimals = `'${identifier}', ${decimals}`;
-          const isSolAmount = identifier === 'SOL' && decimals === 9;
+          const { unit, decimals } = amountType;
+          const idAndDecimals = `'${unit ?? 'Unknown'}', ${decimals}`;
+          const isSolAmount = unit === 'SOL' && decimals === 9;
           const amountTypeString = isSolAmount
             ? 'SolAmount'
             : `Amount<${idAndDecimals}>`;
