@@ -124,20 +124,20 @@ function getDefaultValue(
   if (account.isOptional && usesLegacyOptionalAccounts) {
     return fragment('');
   }
-  const defaultsTo = account.defaultsTo ?? null;
-  if (account.isOptional || isNode(defaultsTo, 'programIdValueNode')) {
+  const defaultValue = account.defaultValue ?? null;
+  if (account.isOptional || isNode(defaultValue, 'programIdValueNode')) {
     return fragment(
       `{ address: "${program.publicKey}" as Address<"${program.publicKey}">, role: AccountRole.READONLY }`
     );
   }
-  if (isNode(defaultsTo, 'publicKeyValueNode')) {
+  if (isNode(defaultValue, 'publicKeyValueNode')) {
     return fragment(
-      `"${defaultsTo.publicKey}" as Address<"${defaultsTo.publicKey}">`
+      `"${defaultValue.publicKey}" as Address<"${defaultValue.publicKey}">`
     );
   }
-  if (isNode(defaultsTo, 'programLinkNode')) {
-    const programAddress = nameApi.programAddressConstant(defaultsTo.name);
-    const importFrom = defaultsTo.importFrom ?? 'generatedPrograms';
+  if (isNode(defaultValue, 'programLinkNode')) {
+    const programAddress = nameApi.programAddressConstant(defaultValue.name);
+    const importFrom = defaultValue.importFrom ?? 'generatedPrograms';
     return fragment(
       `{ address: ${programAddress}, role: AccountRole.READONLY }`
     ).addImports(importFrom, programAddress);

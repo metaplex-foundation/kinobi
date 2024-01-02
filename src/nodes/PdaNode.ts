@@ -20,8 +20,12 @@ import {
 
 export type PdaNode = {
   readonly kind: 'pdaNode';
-  readonly name: MainCaseString;
+
+  // Children.
   readonly seeds: PdaSeedNode[];
+
+  // Data.
+  readonly name: MainCaseString;
 };
 
 export function pdaNode(name: string, seeds: PdaSeedNode[]): PdaNode {

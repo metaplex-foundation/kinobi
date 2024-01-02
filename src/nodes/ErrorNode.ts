@@ -8,6 +8,8 @@ import {
 
 export type ErrorNode = {
   readonly kind: 'errorNode';
+
+  // Data.
   readonly name: MainCaseString;
   readonly idlName: string;
   readonly code: number;

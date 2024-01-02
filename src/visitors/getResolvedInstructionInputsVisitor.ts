@@ -15,7 +15,7 @@ type InstructionInput = InstructionArgument | InstructionAccountNode;
 type InstructionArgument = {
   kind: 'argument';
   name: string;
-  defaultsTo: InstructionInputValueNode;
+  defaultValue: InstructionInputValueNode;
 };
 type InstructionDependency = ArgumentValueNode | AccountValueNode;
 
@@ -104,10 +104,10 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
       resolvedIsOptional: account.isOptional,
     };
 
-    switch (localResolved.defaultsTo?.kind) {
+    switch (localResolved.defaultValue?.kind) {
       case 'accountValueNode':
         const defaultAccount = visitedAccounts.get(
-          localResolved.defaultsTo.name
+          localResolved.defaultValue.name
         )!;
         const resolvedIsPublicKey =
           account.isSigner === false && defaultAccount.isSigner === false;
@@ -131,7 +131,7 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
         localResolved.resolvedIsSigner =
           account.isSigner === false ? false : 'either';
         localResolved.resolvedIsOptional = false;
-        const { seeds } = localResolved.defaultsTo;
+        const { seeds } = localResolved.defaultValue;
         Object.keys(seeds).forEach((seedKey) => {
           const seed = seeds[seedKey as MainCaseString];
           if (!isNode(seed, 'accountValueNode')) return;
@@ -191,7 +191,7 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
           input = {
             kind: 'argument',
             name: dependency.name,
-            defaultsTo: dependencyArg,
+            defaultValue: dependencyArg,
           };
         }
       }
@@ -204,24 +204,24 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
   function getInstructionDependencies(
     input: InstructionInput
   ): InstructionDependency[] {
-    if (!input.defaultsTo) return [];
+    if (!input.defaultValue) return [];
 
     const getNestedDependencies = (
-      defaultsTo: InstructionInputValueNode | undefined
+      defaultValue: InstructionInputValueNode | undefined
     ): InstructionDependency[] => {
-      if (!defaultsTo) return [];
-      return getInstructionDependencies({ ...input, defaultsTo });
+      if (!defaultValue) return [];
+      return getInstructionDependencies({ ...input, defaultValue });
     };
 
     if (
-      isNode(input.defaultsTo, ['accountValueNode', 'accountBumpValueNode'])
+      isNode(input.defaultValue, ['accountValueNode', 'accountBumpValueNode'])
     ) {
-      return [accountValueNode(input.defaultsTo.name)];
+      return [accountValueNode(input.defaultValue.name)];
     }
 
-    if (isNode(input.defaultsTo, 'pdaValueNode')) {
+    if (isNode(input.defaultValue, 'pdaValueNode')) {
       const dependencies = new Map<MainCaseString, InstructionDependency>();
-      Object.values(input.defaultsTo.seeds).forEach((seed) => {
+      Object.values(input.defaultValue.seeds).forEach((seed) => {
         if (isNode(seed, ['accountValueNode', 'argumentValueNode'])) {
           dependencies.set(seed.name, { ...seed });
         }
@@ -229,15 +229,15 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
       return [...dependencies.values()];
     }
 
-    if (isNode(input.defaultsTo, 'resolverValueNode')) {
-      return input.defaultsTo.dependsOn ?? [];
+    if (isNode(input.defaultValue, 'resolverValueNode')) {
+      return input.defaultValue.dependsOn ?? [];
     }
 
-    if (isNode(input.defaultsTo, 'conditionalValueNode')) {
+    if (isNode(input.defaultValue, 'conditionalValueNode')) {
       return [
-        ...getNestedDependencies(input.defaultsTo.condition),
-        ...getNestedDependencies(input.defaultsTo.ifTrue),
-        ...getNestedDependencies(input.defaultsTo.ifFalse),
+        ...getNestedDependencies(input.defaultValue.condition),
+        ...getNestedDependencies(input.defaultValue.ifTrue),
+        ...getNestedDependencies(input.defaultValue.ifFalse),
       ];
     }
 
@@ -258,7 +258,7 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
         ...Object.entries(node.argDefaults).map(([argName, argDefault]) => ({
           kind: 'argument' as const,
           name: argName,
-          defaultsTo: argDefault,
+          defaultValue: argDefault,
         })),
       ];
 

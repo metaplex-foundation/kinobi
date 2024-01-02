@@ -41,8 +41,8 @@ export type InstructionMetadataUpdates = Partial<
 
 export type InstructionAccountUpdates = Record<
   string,
-  Partial<Omit<InstructionAccountNodeInput, 'defaultsTo'>> & {
-    defaultsTo?: InstructionInputValueNode | null;
+  Partial<Omit<InstructionAccountNodeInput, 'defaultValue'>> & {
+    defaultValue?: InstructionInputValueNode | null;
   }
 >;
 
@@ -52,7 +52,7 @@ export type InstructionArgUpdates = Record<
     name?: string;
     docs?: string[];
     type?: TypeNode;
-    defaultsTo?: InstructionInputValueNode | null;
+    defaultValue?: InstructionInputValueNode | null;
   }
 >;
 
@@ -110,31 +110,34 @@ function handleInstructionAccount(
 ): InstructionAccountNode {
   const accountUpdate = accountUpdates?.[account.name];
   if (!accountUpdate) return account;
-  const { defaultsTo, ...acountWithoutDefault } = {
+  const { defaultValue, ...acountWithoutDefault } = {
     ...account,
     ...accountUpdate,
   };
 
-  if (defaultsTo === null) {
+  if (defaultValue === null) {
     return instructionAccountNode(acountWithoutDefault);
   }
 
-  if (isNode(defaultsTo, 'pdaValueNode')) {
-    const foundPda = linkables.get(defaultsTo.pda);
+  if (isNode(defaultValue, 'pdaValueNode')) {
+    const foundPda = linkables.get(defaultValue.pda);
     return {
       ...acountWithoutDefault,
       name: mainCase(acountWithoutDefault.name),
-      defaultsTo: {
-        ...defaultsTo,
+      defaultValue: {
+        ...defaultValue,
         seeds: {
           ...(foundPda ? getDefaultSeedValuesFromPda(foundPda) : {}),
-          ...defaultsTo.seeds,
+          ...defaultValue.seeds,
         },
       },
     };
   }
 
-  return instructionAccountNode({ ...acountWithoutDefault, defaultsTo });
+  return instructionAccountNode({
+    ...acountWithoutDefault,
+    defaultValue: defaultValue,
+  });
 }
 
 function handleInstructionArgs(
@@ -201,11 +204,11 @@ function handleInstructionArgs(
 
   const newArgDefaults = instruction.argDefaults;
   Object.entries(argUpdates).forEach(([argName, argUpdate]) => {
-    if (argUpdate?.defaultsTo === undefined) return;
-    if (argUpdate.defaultsTo === null) {
+    if (argUpdate?.defaultValue === undefined) return;
+    if (argUpdate.defaultValue === null) {
       delete newArgDefaults[argName as MainCaseString];
     } else {
-      newArgDefaults[argName as MainCaseString] = argUpdate.defaultsTo;
+      newArgDefaults[argName as MainCaseString] = argUpdate.defaultValue;
     }
   });
 

@@ -422,8 +422,8 @@ export function getRenderMapVisitor(
           const hasArgResolvers = Object.values(node.argDefaults).some(
             isNodeFilter('resolverValueNode')
           );
-          const hasAccountResolvers = node.accounts.some(({ defaultsTo }) =>
-            isNode(defaultsTo, 'resolverValueNode')
+          const hasAccountResolvers = node.accounts.some(({ defaultValue }) =>
+            isNode(defaultValue, 'resolverValueNode')
           );
           const hasByteResolver = node.bytesCreatedOnChain?.kind === 'resolver';
           const hasRemainingAccountsResolver =
@@ -476,7 +476,7 @@ export function getRenderMapVisitor(
             return { ...input, render: renderedInput.render };
           });
           const resolvedInputsWithDefaults = resolvedInputs.filter(
-            (input) => input.defaultsTo !== undefined && input.render !== ''
+            (input) => input.defaultValue !== undefined && input.render !== ''
           );
           const argsWithDefaults = resolvedInputsWithDefaults
             .filter((input) => input.kind === 'argument')
@@ -484,7 +484,7 @@ export function getRenderMapVisitor(
 
           // Accounts.
           const accounts = node.accounts.map((account) => {
-            const hasDefaultValue = !!account.defaultsTo;
+            const hasDefaultValue = !!account.defaultValue;
             const resolvedAccount = resolvedInputs.find(
               (input) =>
                 input.kind === 'instructionAccountNode' &&

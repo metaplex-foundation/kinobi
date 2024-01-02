@@ -26,29 +26,29 @@ export function hasAsyncDefaultValues(
 ): boolean {
   return resolvedInputs.some(
     (input) =>
-      !!input.defaultsTo &&
-      isAsyncDefaultValue(input.defaultsTo, asyncResolvers)
+      !!input.defaultValue &&
+      isAsyncDefaultValue(input.defaultValue, asyncResolvers)
   );
 }
 
 export function isAsyncDefaultValue(
-  defaultsTo: InstructionInputValueNode,
+  defaultValue: InstructionInputValueNode,
   asyncResolvers: string[]
 ): boolean {
-  switch (defaultsTo.kind) {
+  switch (defaultValue.kind) {
     case 'pdaValueNode':
       return true;
     case 'resolverValueNode':
-      return asyncResolvers.includes(defaultsTo.name);
+      return asyncResolvers.includes(defaultValue.name);
     case 'conditionalValueNode':
       return (
-        isAsyncDefaultValue(defaultsTo.condition, asyncResolvers) ||
-        (defaultsTo.ifFalse == null
+        isAsyncDefaultValue(defaultValue.condition, asyncResolvers) ||
+        (defaultValue.ifFalse == null
           ? false
-          : isAsyncDefaultValue(defaultsTo.ifFalse, asyncResolvers)) ||
-        (defaultsTo.ifTrue == null
+          : isAsyncDefaultValue(defaultValue.ifFalse, asyncResolvers)) ||
+        (defaultValue.ifTrue == null
           ? false
-          : isAsyncDefaultValue(defaultsTo.ifTrue, asyncResolvers))
+          : isAsyncDefaultValue(defaultValue.ifTrue, asyncResolvers))
       );
     default:
       return false;

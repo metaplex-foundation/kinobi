@@ -50,13 +50,13 @@ export function getInstructionInputTypeFragment(
         input.kind === 'instructionAccountNode' && input.name === account.name
     ) as ResolvedInstructionAccount;
     const hasDefaultValue =
-      !!resolvedAccount.defaultsTo &&
-      !isNode(resolvedAccount.defaultsTo, [
+      !!resolvedAccount.defaultValue &&
+      !isNode(resolvedAccount.defaultValue, [
         'identityValueNode',
         'payerValueNode',
       ]) &&
       (useAsync ||
-        !isAsyncDefaultValue(resolvedAccount.defaultsTo, asyncResolvers));
+        !isAsyncDefaultValue(resolvedAccount.defaultValue, asyncResolvers));
     const type = getAccountType(resolvedAccount, withSigners);
     accountImports.mergeWith(type);
     return {

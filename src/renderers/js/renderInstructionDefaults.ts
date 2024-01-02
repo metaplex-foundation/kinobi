@@ -18,13 +18,13 @@ export function renderInstructionDefaults(
   const imports = new JavaScriptImportMap();
   const interfaces = new JavaScriptContextMap();
 
-  if (!input.defaultsTo) {
+  if (!input.defaultValue) {
     return { imports, interfaces, render: '' };
   }
 
-  const { defaultsTo } = input;
+  const { defaultValue } = input;
   const render = (
-    defaultValue: string,
+    renderedValue: string,
     isWritable?: boolean
   ): {
     imports: JavaScriptImportMap;
@@ -34,19 +34,19 @@ export function renderInstructionDefaults(
     const inputName = camelCase(input.name);
     if (
       input.kind === 'instructionAccountNode' &&
-      isNode(defaultsTo, 'resolverValueNode')
+      isNode(defaultValue, 'resolverValueNode')
     ) {
       return {
         imports,
         interfaces,
-        render: `resolvedAccounts.${inputName} = { ...resolvedAccounts.${inputName}, ...${defaultValue} };`,
+        render: `resolvedAccounts.${inputName} = { ...resolvedAccounts.${inputName}, ...${renderedValue} };`,
       };
     }
     if (input.kind === 'instructionAccountNode' && isWritable === undefined) {
       return {
         imports,
         interfaces,
-        render: `resolvedAccounts.${inputName}.value = ${defaultValue};`,
+        render: `resolvedAccounts.${inputName}.value = ${renderedValue};`,
       };
     }
     if (input.kind === 'instructionAccountNode') {
@@ -54,7 +54,7 @@ export function renderInstructionDefaults(
         imports,
         interfaces,
         render:
-          `resolvedAccounts.${inputName}.value = ${defaultValue};\n` +
+          `resolvedAccounts.${inputName}.value = ${renderedValue};\n` +
           `resolvedAccounts.${inputName}.isWritable = ${
             isWritable ? 'true' : 'false'
           }`,
@@ -63,13 +63,13 @@ export function renderInstructionDefaults(
     return {
       imports,
       interfaces,
-      render: `${argObject}.${inputName} = ${defaultValue};`,
+      render: `${argObject}.${inputName} = ${renderedValue};`,
     };
   };
 
-  switch (defaultsTo.kind) {
+  switch (defaultValue.kind) {
     case 'accountValueNode':
-      const name = camelCase(defaultsTo.name);
+      const name = camelCase(defaultValue.name);
       if (input.kind === 'instructionAccountNode') {
         imports.add('shared', 'expectSome');
         if (input.resolvedIsSigner && !input.isSigner) {
@@ -80,14 +80,14 @@ export function renderInstructionDefaults(
       imports.add('shared', 'expectPublicKey');
       return render(`expectPublicKey(resolvedAccounts.${name}.value)`);
     case 'pdaValueNode':
-      const pdaFunction = `find${pascalCase(defaultsTo.pda.name)}Pda`;
-      const pdaImportFrom = defaultsTo.pda.importFrom ?? 'generatedAccounts';
+      const pdaFunction = `find${pascalCase(defaultValue.pda.name)}Pda`;
+      const pdaImportFrom = defaultValue.pda.importFrom ?? 'generatedAccounts';
       imports.add(pdaImportFrom, pdaFunction);
       interfaces.add('eddsa');
       const pdaArgs = ['context'];
-      const pdaSeeds = Object.keys(defaultsTo.seeds).map(
+      const pdaSeeds = Object.keys(defaultValue.seeds).map(
         (seed: string): string => {
-          const seedValue = defaultsTo.seeds[seed as MainCaseString];
+          const seedValue = defaultValue.seeds[seed as MainCaseString];
           if (isNode(seedValue, 'accountValueNode')) {
             imports.add('shared', 'expectPublicKey');
             return `${seed}: expectPublicKey(resolvedAccounts.${camelCase(
@@ -111,10 +111,10 @@ export function renderInstructionDefaults(
       return render(`${pdaFunction}(${pdaArgs.join(', ')})`);
     case 'publicKeyValueNode':
       imports.add('umi', 'publicKey');
-      return render(`publicKey('${defaultsTo.publicKey}')`);
+      return render(`publicKey('${defaultValue.publicKey}')`);
     case 'programLinkNode':
-      const importFrom = defaultsTo.importFrom ?? 'generatedPrograms';
-      const functionName = `get${pascalCase(defaultsTo.name)}ProgramId`;
+      const importFrom = defaultValue.importFrom ?? 'generatedPrograms';
+      const functionName = `get${pascalCase(defaultValue.name)}ProgramId`;
       imports.add(importFrom, functionName);
       return render(`${functionName}(context)`, false);
     case 'programIdValueNode':
@@ -141,18 +141,18 @@ export function renderInstructionDefaults(
     case 'accountBumpValueNode':
       imports.add('shared', 'expectPda');
       return render(
-        `expectPda(resolvedAccounts.${camelCase(defaultsTo.name)}.value)[1]`
+        `expectPda(resolvedAccounts.${camelCase(defaultValue.name)}.value)[1]`
       );
     case 'argumentValueNode':
       imports.add('shared', 'expectSome');
-      return render(`expectSome(${argObject}.${camelCase(defaultsTo.name)})`);
+      return render(`expectSome(${argObject}.${camelCase(defaultValue.name)})`);
     case 'resolverValueNode':
-      const resolverName = camelCase(defaultsTo.name);
+      const resolverName = camelCase(defaultValue.name);
       const isWritable =
         input.kind === 'instructionAccountNode' && input.isWritable
           ? 'true'
           : 'false';
-      imports.add(defaultsTo.importFrom ?? 'hooked', resolverName);
+      imports.add(defaultValue.importFrom ?? 'hooked', resolverName);
       interfaces.add(['eddsa', 'identity', 'payer']);
       return render(
         `${resolverName}(context, resolvedAccounts, ${argObject}, programId, ${isWritable})`
@@ -162,14 +162,14 @@ export function renderInstructionDefaults(
         input,
         valueNodeVisitor,
         optionalAccountStrategy,
-        defaultsTo.ifTrue,
+        defaultValue.ifTrue,
         argObject
       );
       const ifFalseRenderer = renderNestedInstructionDefault(
         input,
         valueNodeVisitor,
         optionalAccountStrategy,
-        defaultsTo.ifFalse,
+        defaultValue.ifFalse,
         argObject
       );
       if (!ifTrueRenderer && !ifFalseRenderer) {
@@ -186,14 +186,14 @@ export function renderInstructionDefaults(
       const negatedCondition = !ifTrueRenderer;
       let condition = 'true';
 
-      if (isNode(defaultsTo.condition, 'resolverValueNode')) {
-        const conditionalResolverName = camelCase(defaultsTo.condition.name);
+      if (isNode(defaultValue.condition, 'resolverValueNode')) {
+        const conditionalResolverName = camelCase(defaultValue.condition.name);
         const conditionalIsWritable =
           input.kind === 'instructionAccountNode' && input.isWritable
             ? 'true'
             : 'false';
         imports.add(
-          defaultsTo.condition.importFrom ?? 'hooked',
+          defaultValue.condition.importFrom ?? 'hooked',
           conditionalResolverName
         );
         interfaces.add(['eddsa', 'identity', 'payer']);
@@ -201,13 +201,13 @@ export function renderInstructionDefaults(
         condition = negatedCondition ? `!${condition}` : condition;
       } else {
         const comparedInputName = isNode(
-          defaultsTo.condition,
+          defaultValue.condition,
           'accountValueNode'
         )
-          ? `resolvedAccounts.${camelCase(defaultsTo.condition.name)}.value`
-          : `${argObject}.${camelCase(defaultsTo.condition.name)}`;
-        if (defaultsTo.value) {
-          const comparedValue = visit(defaultsTo.value, valueNodeVisitor);
+          ? `resolvedAccounts.${camelCase(defaultValue.condition.name)}.value`
+          : `${argObject}.${camelCase(defaultValue.condition.name)}`;
+        if (defaultValue.value) {
+          const comparedValue = visit(defaultValue.value, valueNodeVisitor);
           imports.mergeWith(comparedValue.imports);
           const operator = negatedCondition ? '!==' : '===';
           condition = `${comparedInputName} ${operator} ${comparedValue.render}`;
@@ -234,7 +234,7 @@ export function renderInstructionDefaults(
         }\n}`,
       };
     default:
-      const valueManifest = visit(defaultsTo, valueNodeVisitor);
+      const valueManifest = visit(defaultValue, valueNodeVisitor);
       imports.mergeWith(valueManifest.imports);
       return render(valueManifest.render);
   }
@@ -244,7 +244,7 @@ function renderNestedInstructionDefault(
   input: ResolvedInstructionInput,
   valueNodeVisitor: ReturnType<typeof renderValueNodeVisitor>,
   optionalAccountStrategy: 'programId' | 'omitted',
-  defaultsTo: InstructionInputValueNode | undefined,
+  defaultValue: InstructionInputValueNode | undefined,
   argObject: string
 ):
   | {
@@ -253,9 +253,9 @@ function renderNestedInstructionDefault(
       render: string;
     }
   | undefined {
-  if (!defaultsTo) return undefined;
+  if (!defaultValue) return undefined;
   return renderInstructionDefaults(
-    { ...input, defaultsTo },
+    { ...input, defaultValue },
     valueNodeVisitor,
     optionalAccountStrategy,
     argObject

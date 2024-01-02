@@ -42,7 +42,7 @@ export function getInstructionAccountTypeParamFragment(
   }
 
   const defaultAddress = getDefaultAddress(
-    instructionAccountNode.defaultsTo,
+    instructionAccountNode.defaultValue,
     programNode.publicKey,
     linkables
   );
@@ -54,15 +54,15 @@ export function getInstructionAccountTypeParamFragment(
 }
 
 function getDefaultAddress(
-  defaultsTo: InstructionInputValueNode | undefined,
+  defaultValue: InstructionInputValueNode | undefined,
   programId: string,
   linkables: LinkableDictionary
 ): string {
-  switch (defaultsTo?.kind) {
+  switch (defaultValue?.kind) {
     case 'publicKeyValueNode':
-      return `"${defaultsTo.publicKey}"`;
+      return `"${defaultValue.publicKey}"`;
     case 'programLinkNode':
-      const programNode = linkables.get(defaultsTo);
+      const programNode = linkables.get(defaultValue);
       return programNode ? `"${programNode.publicKey}"` : 'string';
     case 'programIdValueNode':
       return `"${programId}"`;

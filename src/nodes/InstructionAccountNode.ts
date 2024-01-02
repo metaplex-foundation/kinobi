@@ -6,7 +6,7 @@ export type InstructionAccountNode = {
   readonly kind: 'instructionAccountNode';
 
   // Children.
-  readonly defaultsTo?: InstructionInputValueNode;
+  readonly defaultValue?: InstructionInputValueNode;
 
   // Data.
   readonly name: MainCaseString;
@@ -33,7 +33,7 @@ export function instructionAccountNode(
     isSigner: input.isSigner,
     isOptional: input.isOptional ?? false,
     docs: input.docs ?? [],
-    defaultsTo: input.defaultsTo,
+    defaultValue: input.defaultValue,
   };
 }
 
