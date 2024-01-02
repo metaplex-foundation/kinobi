@@ -1,11 +1,13 @@
-import { Node, REGISTERED_NODE_KINDS, NodeDictionary } from '../nodes';
+import {
+  Node,
+  NodeDictionary,
+  NodeKind,
+  REGISTERED_NODE_KINDS,
+} from '../nodes';
 import { KinobiError, pascalCase } from '../shared';
 
-export type Visitor<
-  TReturn,
-  TNodeKeys extends keyof NodeDictionary = keyof NodeDictionary
-> = {
-  [K in TNodeKeys as GetVisitorFunctionName<K>]: (
+export type Visitor<TReturn, TNodeKind extends NodeKind = NodeKind> = {
+  [K in TNodeKind as GetVisitorFunctionName<K>]: (
     node: NodeDictionary[K]
   ) => TReturn;
 };

@@ -1,10 +1,10 @@
-import { NodeDictionary } from '../nodes';
+import { NodeKind } from '../nodes';
 import { identityVisitor } from './identityVisitor';
 import { interceptVisitor } from './interceptVisitor';
 
-export function removeDocsVisitor<
-  TNodeKeys extends keyof NodeDictionary = keyof NodeDictionary
->(nodeKeys?: TNodeKeys[]) {
+export function removeDocsVisitor<TNodeKind extends NodeKind = NodeKind>(
+  nodeKeys?: TNodeKind[]
+) {
   return interceptVisitor(identityVisitor(nodeKeys), (node, next) => {
     if ('docs' in node) {
       return { ...node, docs: [] };

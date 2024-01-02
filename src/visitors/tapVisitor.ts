@@ -1,4 +1,4 @@
-import { NodeDictionary } from '../nodes';
+import { NodeDictionary, NodeKind } from '../nodes';
 import {
   GetVisitorFunctionName,
   Visitor,
@@ -7,7 +7,7 @@ import {
 
 export function tapVisitor<
   TReturn,
-  TNodeKey extends keyof NodeDictionary,
+  TNodeKey extends NodeKind,
   TVisitor extends Visitor<TReturn, TNodeKey>
 >(
   visitor: TVisitor,

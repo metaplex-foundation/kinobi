@@ -1,18 +1,14 @@
-import { REGISTERED_NODE_KINDS, NodeDictionary } from '../nodes';
+import { NodeDictionary, NodeKind, REGISTERED_NODE_KINDS } from '../nodes';
 import {
   GetVisitorFunctionName,
   Visitor,
   getVisitFunctionName,
 } from './visitor';
 
-export function mapVisitor<
-  TReturnFrom,
-  TReturnTo,
-  TNodeKeys extends keyof NodeDictionary
->(
-  visitor: Visitor<TReturnFrom, TNodeKeys>,
+export function mapVisitor<TReturnFrom, TReturnTo, TNodeKind extends NodeKind>(
+  visitor: Visitor<TReturnFrom, TNodeKind>,
   map: (from: TReturnFrom) => TReturnTo
-): Visitor<TReturnTo, TNodeKeys> {
+): Visitor<TReturnTo, TNodeKind> {
   const registeredVisitFunctions =
     REGISTERED_NODE_KINDS.map(getVisitFunctionName);
   return Object.fromEntries(
@@ -24,14 +20,14 @@ export function mapVisitor<
       return [
         [
           key,
-          (node: NodeDictionary[TNodeKeys]) =>
+          (node: NodeDictionary[TNodeKind]) =>
             map(
-              (visitor[key as GetVisitorFunctionName<TNodeKeys>] as Function)(
+              (visitor[key as GetVisitorFunctionName<TNodeKind>] as Function)(
                 node
               )
             ),
         ],
       ];
     })
-  ) as unknown as Visitor<TReturnTo, TNodeKeys>;
+  ) as unknown as Visitor<TReturnTo, TNodeKind>;
 }

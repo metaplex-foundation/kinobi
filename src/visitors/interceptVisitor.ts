@@ -1,4 +1,4 @@
-import { Node, REGISTERED_NODE_KINDS, NodeDictionary } from '../nodes';
+import { Node, NodeKind, REGISTERED_NODE_KINDS } from '../nodes';
 import {
   GetVisitorFunctionName,
   Visitor,
@@ -10,13 +10,10 @@ export type VisitorInterceptor<TReturn> = <TNode extends Node>(
   next: (node: TNode) => TReturn
 ) => TReturn;
 
-export function interceptVisitor<
-  TReturn,
-  TNodeKeys extends keyof NodeDictionary
->(
-  visitor: Visitor<TReturn, TNodeKeys>,
+export function interceptVisitor<TReturn, TNodeKind extends NodeKind>(
+  visitor: Visitor<TReturn, TNodeKind>,
   interceptor: VisitorInterceptor<TReturn>
-): Visitor<TReturn, TNodeKeys> {
+): Visitor<TReturn, TNodeKind> {
   const registeredVisitFunctions =
     REGISTERED_NODE_KINDS.map(getVisitFunctionName);
 
@@ -25,13 +22,13 @@ export function interceptVisitor<
       if (!(registeredVisitFunctions as string[]).includes(key)) {
         return [];
       }
-      const castedKey = key as GetVisitorFunctionName<TNodeKeys>;
+      const castedKey = key as GetVisitorFunctionName<TNodeKind>;
 
       return [
         [
           castedKey,
           function interceptedVisitNode<TNode extends Node>(
-            this: Visitor<TReturn, TNodeKeys>,
+            this: Visitor<TReturn, TNodeKind>,
             node: TNode
           ) {
             const baseFunction = visitor[castedKey] as unknown as (
@@ -42,5 +39,5 @@ export function interceptVisitor<
         ],
       ];
     })
-  ) as Visitor<TReturn, TNodeKeys>;
+  ) as Visitor<TReturn, TNodeKind>;
 }

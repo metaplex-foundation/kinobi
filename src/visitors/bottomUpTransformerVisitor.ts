@@ -1,4 +1,4 @@
-import { Node, NodeDictionary } from '../nodes';
+import { Node, NodeKind } from '../nodes';
 import {
   NodeSelector,
   NodeStack,
@@ -21,14 +21,14 @@ export type BottomUpNodeTransformerWithSelector<TNode extends Node = Node> = {
 };
 
 export function bottomUpTransformerVisitor<
-  TNodeKeys extends keyof NodeDictionary = keyof NodeDictionary
+  TNodeKind extends NodeKind = NodeKind
 >(
   transformers: (
     | BottomUpNodeTransformer
     | BottomUpNodeTransformerWithSelector
   )[],
-  nodeKeys?: TNodeKeys[]
-): Visitor<Node | null, TNodeKeys> {
+  nodeKeys?: TNodeKind[]
+): Visitor<Node | null, TNodeKind> {
   const transformerFunctions = transformers.map(
     (transformer): BottomUpNodeTransformer =>
       typeof transformer === 'function'

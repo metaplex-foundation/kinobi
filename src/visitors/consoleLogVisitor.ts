@@ -1,10 +1,10 @@
-import { NodeDictionary } from '../nodes';
-import { Visitor } from './visitor';
+import { NodeKind } from '../nodes';
 import { mapVisitor } from './mapVisitor';
+import { Visitor } from './visitor';
 
-export function consoleLogVisitor<
-  TNodeKeys extends keyof NodeDictionary = keyof NodeDictionary
->(visitor: Visitor<string, TNodeKeys>): Visitor<void, TNodeKeys> {
+export function consoleLogVisitor<TNodeKind extends NodeKind = NodeKind>(
+  visitor: Visitor<string, TNodeKind>
+): Visitor<void, TNodeKind> {
   // eslint-disable-next-line no-console
   return mapVisitor(visitor, (value) => console.log(value));
 }

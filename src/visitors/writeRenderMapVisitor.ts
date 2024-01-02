@@ -1,13 +1,11 @@
-import { NodeDictionary } from '../nodes';
+import { NodeKind } from '../nodes';
 import { RenderMap } from '../shared';
 import { mapVisitor } from './mapVisitor';
 import { Visitor } from './visitor';
 
-export function writeRenderMapVisitor<
-  TNodeKeys extends keyof NodeDictionary = keyof NodeDictionary
->(
-  visitor: Visitor<RenderMap, TNodeKeys>,
+export function writeRenderMapVisitor<TNodeKind extends NodeKind = NodeKind>(
+  visitor: Visitor<RenderMap, TNodeKind>,
   path: string
-): Visitor<void, TNodeKeys> {
+): Visitor<void, TNodeKind> {
   return mapVisitor(visitor, (renderMap) => renderMap.write(path));
 }

@@ -1,5 +1,10 @@
+import {
+  Node,
+  NodeDictionary,
+  NodeKind,
+  REGISTERED_NODE_KINDS,
+} from '../nodes';
 import { DontInfer } from '../shared';
-import { REGISTERED_NODE_KINDS, NodeDictionary, Node } from '../nodes';
 import {
   GetVisitorFunctionName,
   Visitor,
@@ -8,31 +13,28 @@ import {
 
 export type VisitorOverrideFunction<
   TReturn,
-  TNodeKeys extends keyof NodeDictionary,
+  TNodeKind extends NodeKind,
   TNode extends Node
 > = (
   node: TNode,
   scope: {
     next: (node: TNode) => TReturn;
-    self: Visitor<TReturn, TNodeKeys>;
+    self: Visitor<TReturn, TNodeKind>;
   }
 ) => TReturn;
 
-export type VisitorOverrides<
-  TReturn,
-  TNodeKeys extends keyof NodeDictionary
-> = {
-  [K in TNodeKeys as GetVisitorFunctionName<K>]?: VisitorOverrideFunction<
+export type VisitorOverrides<TReturn, TNodeKind extends NodeKind> = {
+  [K in TNodeKind as GetVisitorFunctionName<K>]?: VisitorOverrideFunction<
     TReturn,
-    TNodeKeys,
+    TNodeKind,
     NodeDictionary[K]
   >;
 };
 
-export function extendVisitor<TReturn, TNodeKeys extends keyof NodeDictionary>(
-  visitor: Visitor<TReturn, TNodeKeys>,
-  overrides: DontInfer<VisitorOverrides<TReturn, TNodeKeys>>
-): Visitor<TReturn, TNodeKeys> {
+export function extendVisitor<TReturn, TNodeKind extends NodeKind>(
+  visitor: Visitor<TReturn, TNodeKind>,
+  overrides: DontInfer<VisitorOverrides<TReturn, TNodeKind>>
+): Visitor<TReturn, TNodeKind> {
   const registeredVisitFunctions =
     REGISTERED_NODE_KINDS.map(getVisitFunctionName);
 
@@ -42,7 +44,7 @@ export function extendVisitor<TReturn, TNodeKeys extends keyof NodeDictionary>(
         return [];
       }
 
-      const castedKey = key as GetVisitorFunctionName<TNodeKeys>;
+      const castedKey = key as GetVisitorFunctionName<TNodeKind>;
 
       if (!visitor[castedKey]) {
         throw new Error(
@@ -54,12 +56,12 @@ export function extendVisitor<TReturn, TNodeKeys extends keyof NodeDictionary>(
         [
           castedKey,
           function extendedVisitNode<TNode extends Node>(
-            this: Visitor<TReturn, TNodeKeys>,
+            this: Visitor<TReturn, TNodeKind>,
             node: TNode
           ) {
             const extendedFunction = overrides[
               castedKey
-            ] as VisitorOverrideFunction<TReturn, TNodeKeys, TNode>;
+            ] as VisitorOverrideFunction<TReturn, TNodeKind, TNode>;
             const nextFunction = visitor[castedKey] as unknown as (
               node: TNode
             ) => TReturn;
@@ -71,7 +73,7 @@ export function extendVisitor<TReturn, TNodeKeys extends keyof NodeDictionary>(
         ],
       ];
     })
-  ) as Partial<Visitor<TReturn, TNodeKeys>>;
+  ) as Partial<Visitor<TReturn, TNodeKind>>;
 
   return {
     ...visitor,

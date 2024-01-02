@@ -43,7 +43,7 @@ const REGISTERED_NODES = {
 
 export const REGISTERED_NODE_KINDS = getNodeKinds(REGISTERED_NODES);
 export type NodeDictionary = typeof REGISTERED_NODES;
-export type NodeKind = typeof REGISTERED_NODE_KINDS[number];
+export type NodeKind = keyof NodeDictionary;
 export type Node = NodeDictionary[NodeKind];
 
 // Node Helpers.

@@ -2,9 +2,9 @@ import {
   CONDITIONAL_VALUE_BRANCH_NODES,
   ENUM_VARIANT_TYPE_NODES,
   Node,
+  NodeKind,
   PDA_SEED_NODES,
   REGISTERED_NODE_KINDS,
-  NodeDictionary,
   SIZE_NODES,
   TYPE_NODES,
   VALUE_NODES,
@@ -52,12 +52,10 @@ import {
 import { staticVisitor } from './staticVisitor';
 import { Visitor, visit as baseVisit } from './visitor';
 
-export function identityVisitor<
-  TNodeKeys extends keyof NodeDictionary = keyof NodeDictionary
->(
-  nodeKeys: TNodeKeys[] = REGISTERED_NODE_KINDS as TNodeKeys[]
-): Visitor<Node | null, TNodeKeys> {
-  const castedNodeKeys: (keyof NodeDictionary)[] = nodeKeys;
+export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
+  nodeKeys: TNodeKind[] = REGISTERED_NODE_KINDS as TNodeKind[]
+): Visitor<Node | null, TNodeKind> {
+  const castedNodeKeys: NodeKind[] = nodeKeys;
   const visitor = staticVisitor(
     (node) => ({ ...node }),
     castedNodeKeys
@@ -537,5 +535,5 @@ export function identityVisitor<
     };
   }
 
-  return visitor as Visitor<Node, TNodeKeys>;
+  return visitor as Visitor<Node, TNodeKind>;
 }

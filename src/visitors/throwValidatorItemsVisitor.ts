@@ -1,15 +1,15 @@
 import chalk from 'chalk';
-import { NodeDictionary } from '../nodes';
-import { Visitor } from './visitor';
-import { mapVisitor } from './mapVisitor';
+import { NodeKind } from '../nodes';
 import { LogLevel, ValidatorBag, getLevelIndex } from '../shared';
+import { mapVisitor } from './mapVisitor';
+import { Visitor } from './visitor';
 
 export function throwValidatorItemsVisitor<
-  TNodeKeys extends keyof NodeDictionary = keyof NodeDictionary
+  TNodeKind extends NodeKind = NodeKind
 >(
-  visitor: Visitor<ValidatorBag, TNodeKeys>,
+  visitor: Visitor<ValidatorBag, TNodeKind>,
   throwLevel: LogLevel = 'error'
-): Visitor<void, TNodeKeys> {
+): Visitor<void, TNodeKind> {
   // eslint-disable-next-line no-console
   return mapVisitor(visitor, (validatorBag) => {
     const bag = validatorBag.orderByLevel();
