@@ -225,9 +225,9 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
               pascalCase(node.dataArgs.name) + pascalCase(field.name)
             );
             typeManifestVisitor.setNestedStruct(true);
-            const manifest = visit(field.child, typeManifestVisitor);
+            const manifest = visit(field.type, typeManifestVisitor);
             imports.mergeWith(manifest.imports);
-            const innerOptionType = isNode(field.child, 'optionTypeNode')
+            const innerOptionType = isNode(field.type, 'optionTypeNode')
               ? manifest.type.slice('Option<'.length, -1)
               : null;
             typeManifestVisitor.setParentName(null);

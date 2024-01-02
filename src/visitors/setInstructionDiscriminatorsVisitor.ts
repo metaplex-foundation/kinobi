@@ -39,7 +39,7 @@ export function setInstructionDiscriminatorsVisitor(
             assertIsNode(node, 'instructionNode');
             const discriminatorField = structFieldTypeNode({
               name: discriminator.name ?? 'discriminator',
-              child: discriminator.type ?? numberTypeNode('u8'),
+              type: discriminator.type ?? numberTypeNode('u8'),
               docs: discriminator.docs ?? [],
               defaultsTo: {
                 strategy: discriminator.strategy ?? 'omitted',

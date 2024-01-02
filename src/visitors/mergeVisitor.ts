@@ -173,7 +173,7 @@ export function mergeVisitor<
   if (castedNodeKeys.includes('structFieldTypeNode')) {
     visitor.visitStructFieldType = function visitStructFieldType(node) {
       return merge(node, [
-        ...visit(this)(node.child),
+        ...visit(this)(node.type),
         ...(node.defaultsTo ? visit(this)(node.defaultsTo.value) : []),
       ]);
     };

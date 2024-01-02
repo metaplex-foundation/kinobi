@@ -34,7 +34,7 @@ test('it returns a unique string whilst discard docs', (t) => {
   const node = structTypeNode([
     structFieldTypeNode({
       name: 'owner',
-      child: publicKeyTypeNode(),
+      type: publicKeyTypeNode(),
       docs: ['The owner of the account.'],
     }),
   ]);
@@ -46,7 +46,7 @@ test('it returns a unique string whilst discard docs', (t) => {
   t.deepEqual(
     result,
     '{"fields":[' +
-      '{"child":{"kind":"publicKeyTypeNode"},"defaultsTo":null,"docs":[],"kind":"structFieldTypeNode","name":"owner"}' +
+      '{"defaultsTo":null,"docs":[],"kind":"structFieldTypeNode","name":"owner","type":{"kind":"publicKeyTypeNode"}}' +
       '],"kind":"structTypeNode"}'
   );
 });

@@ -269,7 +269,7 @@ export function getTypeManifestVisitor() {
           const struct = structTypeNode([
             structFieldTypeNode({
               name: 'fields',
-              child: enumTupleVariantType.tuple,
+              type: enumTupleVariantType.tuple,
             }),
           ]);
           const type = visit(struct, self);
@@ -421,7 +421,7 @@ export function getTypeManifestVisitor() {
 
         visitStructFieldType(structFieldType, { self }) {
           const name = camelCase(structFieldType.name);
-          const fieldChild = visit(structFieldType.child, self);
+          const fieldChild = visit(structFieldType.type, self);
           const docblock = createDocblock(structFieldType.docs);
           const baseField = {
             ...fieldChild,

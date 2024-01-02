@@ -158,7 +158,7 @@ function handleInstructionArgs(
         usedArgs.add(field.name);
         return structFieldTypeNode({
           ...field,
-          child: argUpdate.type ?? field.child,
+          type: argUpdate.type ?? field.type,
           name: argUpdate.name ?? field.name,
           docs: argUpdate.docs ?? field.docs,
         });
@@ -174,7 +174,7 @@ function handleInstructionArgs(
       usedArgs.add(field.name);
       return structFieldTypeNode({
         ...field,
-        child: argUpdate.type ?? field.child,
+        type: argUpdate.type ?? field.type,
         name: argUpdate.name ?? field.name,
         docs: argUpdate.docs ?? field.docs,
       });
@@ -188,7 +188,7 @@ function handleInstructionArgs(
       assertIsNode(child, TYPE_NODES);
       return structFieldTypeNode({
         name: argUpdate.name ?? argName,
-        child,
+        type: child,
         docs: argUpdate.docs ?? [],
       });
     });

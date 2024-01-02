@@ -105,7 +105,7 @@ export function instructionNodeFromIdl(
   if (idl.discriminant) {
     const discriminatorField = structFieldTypeNode({
       name: 'discriminator',
-      child: createTypeNodeFromIdl(idl.discriminant.type),
+      type: createTypeNodeFromIdl(idl.discriminant.type),
       defaultsTo: {
         strategy: 'omitted',
         value: numberValueNode(idl.discriminant.value),

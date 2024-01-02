@@ -43,7 +43,7 @@ export function setAnchorDiscriminatorsVisitor() {
 
           const discriminatorField = structFieldTypeNode({
             name: 'discriminator',
-            child: arrayTypeNode(numberTypeNode('u8'), {
+            type: arrayTypeNode(numberTypeNode('u8'), {
               size: fixedSizeNode(8),
             }),
             defaultsTo: {
@@ -71,7 +71,7 @@ export function setAnchorDiscriminatorsVisitor() {
 
           const discriminatorField = structFieldTypeNode({
             name: 'discriminator',
-            child: arrayTypeNode(numberTypeNode('u8'), {
+            type: arrayTypeNode(numberTypeNode('u8'), {
               size: fixedSizeNode(8),
             }),
             defaultsTo: {

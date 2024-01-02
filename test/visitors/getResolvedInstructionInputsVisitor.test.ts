@@ -146,10 +146,10 @@ test('it includes instruction data arguments with default values', (t) => {
     dataArgs: instructionDataArgsNode({
       name: 'myInstructionData',
       struct: structTypeNode([
-        structFieldTypeNode({ name: 'ownerArg', child: publicKeyTypeNode() }),
+        structFieldTypeNode({ name: 'ownerArg', type: publicKeyTypeNode() }),
         structFieldTypeNode({
           name: 'argWithoutDefaults',
-          child: numberTypeNode('u8'),
+          type: numberTypeNode('u8'),
         }),
       ]),
     }),
@@ -202,10 +202,10 @@ test('it includes instruction extra arguments with default values', (t) => {
     extraArgs: instructionExtraArgsNode({
       name: 'myInstructionExtra',
       struct: structTypeNode([
-        structFieldTypeNode({ name: 'ownerArg', child: publicKeyTypeNode() }),
+        structFieldTypeNode({ name: 'ownerArg', type: publicKeyTypeNode() }),
         structFieldTypeNode({
           name: 'argWithoutDefaults',
-          child: numberTypeNode('u8'),
+          type: numberTypeNode('u8'),
         }),
       ]),
     }),

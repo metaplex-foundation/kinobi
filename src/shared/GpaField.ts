@@ -18,9 +18,9 @@ export function getGpaFieldsFromAccount(
   return node.data.struct.fields.map((field): GpaField => {
     const fieldOffset = offset;
     if (offset !== null) {
-      const newOffset = visit(field.child, sizeVisitor);
+      const newOffset = visit(field.type, sizeVisitor);
       offset = newOffset !== null ? offset + newOffset : null;
     }
-    return { name: field.name, offset: fieldOffset, type: field.child };
+    return { name: field.name, offset: fieldOffset, type: field.type };
   });
 }

@@ -46,10 +46,10 @@ test(
   'it gets the size of fixed structs',
   macro,
   structTypeNode([
-    structFieldTypeNode({ name: 'age', child: numberTypeNode('u32') }),
+    structFieldTypeNode({ name: 'age', type: numberTypeNode('u32') }),
     structFieldTypeNode({
       name: 'firstname',
-      child: stringTypeNode({ size: fixedSizeNode(42) }),
+      type: stringTypeNode({ size: fixedSizeNode(42) }),
     }),
   ]),
   4 + 42
@@ -58,8 +58,8 @@ test(
   'it gets the size of variable structs',
   macro,
   structTypeNode([
-    structFieldTypeNode({ name: 'age', child: numberTypeNode('u32') }),
-    structFieldTypeNode({ name: 'firstname', child: stringTypeNode() }),
+    structFieldTypeNode({ name: 'age', type: numberTypeNode('u32') }),
+    structFieldTypeNode({ name: 'firstname', type: stringTypeNode() }),
   ]),
   null
 );
@@ -85,8 +85,8 @@ test(
       enumStructVariantTypeNode(
         'B',
         structTypeNode([
-          structFieldTypeNode({ name: 'x', child: numberTypeNode('u16') }),
-          structFieldTypeNode({ name: 'y', child: numberTypeNode('u16') }),
+          structFieldTypeNode({ name: 'x', type: numberTypeNode('u16') }),
+          structFieldTypeNode({ name: 'y', type: numberTypeNode('u16') }),
         ])
       ),
     ],

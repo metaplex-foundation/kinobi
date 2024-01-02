@@ -339,7 +339,7 @@ export function getTypeManifestVisitor() {
           nestedStruct = true;
           inlineStruct = false;
 
-          const fieldManifest = visit(structFieldType.child, self);
+          const fieldManifest = visit(structFieldType.type, self);
 
           parentName = originalParentName;
           inlineStruct = originalInlineStruct;
@@ -353,11 +353,11 @@ export function getTypeManifestVisitor() {
             derive =
               '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::DisplayFromStr>"))]\n';
           } else if (
-            (structFieldType.child.kind === 'arrayTypeNode' ||
-              structFieldType.child.kind === 'bytesTypeNode' ||
-              structFieldType.child.kind === 'stringTypeNode') &&
-            isNode(structFieldType.child.size, 'fixedSizeNode') &&
-            structFieldType.child.size.size > 32
+            (structFieldType.type.kind === 'arrayTypeNode' ||
+              structFieldType.type.kind === 'bytesTypeNode' ||
+              structFieldType.type.kind === 'stringTypeNode') &&
+            isNode(structFieldType.type.size, 'fixedSizeNode') &&
+            structFieldType.type.size.size > 32
           ) {
             derive =
               '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::Bytes>"))]\n';

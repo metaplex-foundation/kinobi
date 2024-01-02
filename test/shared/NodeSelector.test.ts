@@ -50,19 +50,19 @@ const tree = rootNode([
           struct: structTypeNode([
             structFieldTypeNode({
               name: 'owner',
-              child: publicKeyTypeNode(),
+              type: publicKeyTypeNode(),
             }),
             structFieldTypeNode({
               name: 'mint',
-              child: publicKeyTypeNode(),
+              type: publicKeyTypeNode(),
             }),
             structFieldTypeNode({
               name: 'amount',
-              child: numberTypeNode('u64'),
+              type: numberTypeNode('u64'),
             }),
             structFieldTypeNode({
               name: 'delegatedAmount',
-              child: optionTypeNode(numberTypeNode('u64'), {
+              type: optionTypeNode(numberTypeNode('u64'), {
                 prefix: numberTypeNode('u32'),
               }),
             }),
@@ -95,7 +95,7 @@ const tree = rootNode([
           struct: structTypeNode([
             structFieldTypeNode({
               name: 'amount',
-              child: numberTypeNode('u64'),
+              type: numberTypeNode('u64'),
             }),
           ]),
         }),
@@ -131,19 +131,19 @@ const tree = rootNode([
           struct: structTypeNode([
             structFieldTypeNode({
               name: 'owner',
-              child: publicKeyTypeNode(),
+              type: publicKeyTypeNode(),
             }),
             structFieldTypeNode({
               name: 'opened',
-              child: booleanTypeNode(numberTypeNode('u64')),
+              type: booleanTypeNode(numberTypeNode('u64')),
             }),
             structFieldTypeNode({
               name: 'amount',
-              child: numberTypeNode('u64'),
+              type: numberTypeNode('u64'),
             }),
             structFieldTypeNode({
               name: 'wrappingPaper',
-              child: definedTypeLinkNode('wrappingPaper'),
+              type: definedTypeLinkNode('wrappingPaper'),
             }),
           ]),
         }),
@@ -185,7 +185,7 @@ const tree = rootNode([
             structTypeNode([
               structFieldTypeNode({
                 name: 'owner',
-                child: publicKeyTypeNode(),
+                type: publicKeyTypeNode(),
               }),
             ])
           ),
@@ -270,7 +270,7 @@ const splTokenProgram = tree.programs[0];
 const christmasProgram = tree.programs[1];
 const tokenAccount = splTokenProgram.accounts[0];
 const tokenDelegatedAmountOption = tokenAccount.data.struct.fields[3]
-  .child as OptionTypeNode;
+  .type as OptionTypeNode;
 const mintTokenInstruction = splTokenProgram.instructions[0];
 const giftAccount = christmasProgram.accounts[0];
 const openGiftInstruction = christmasProgram.instructions[0];
@@ -317,46 +317,46 @@ test(macro, 'christmasProgram.wrappingPaper.gold.owner', [
 
 // Select all descendants of a node.
 test(macro, 'wrappingPaper.*', [
-  giftAccount.data.struct.fields[3].child,
+  giftAccount.data.struct.fields[3].type,
   wrappingPaperEnum,
   wrappingPaperEnum.variants[0],
   wrappingPaperEnum.variants[1],
   wrappingPaperEnum.variants[2],
   wrappingPaperEnumGold.struct,
   wrappingPaperEnumGold.struct.fields[0],
-  wrappingPaperEnumGold.struct.fields[0].child,
+  wrappingPaperEnumGold.struct.fields[0].type,
 ]);
 test(macro, 'wrappingPaper.[structFieldTypeNode]', [
   wrappingPaperEnumGold.struct.fields[0],
 ]);
 test(macro, 'wrappingPaper.blue', [wrappingPaperEnum.variants[0]]);
 test(macro, 'amount.*', [
-  tokenAccount.data.struct.fields[2].child,
-  mintTokenInstruction.dataArgs.struct.fields[0].child,
-  giftAccount.data.struct.fields[2].child,
+  tokenAccount.data.struct.fields[2].type,
+  mintTokenInstruction.dataArgs.struct.fields[0].type,
+  giftAccount.data.struct.fields[2].type,
 ]);
 test(macro, '[instructionNode].amount.*', [
-  mintTokenInstruction.dataArgs.struct.fields[0].child,
+  mintTokenInstruction.dataArgs.struct.fields[0].type,
 ]);
 test(macro, '[structFieldTypeNode].*', [
-  tokenAccount.data.struct.fields[0].child,
-  tokenAccount.data.struct.fields[1].child,
-  tokenAccount.data.struct.fields[2].child,
-  tokenAccount.data.struct.fields[3].child,
+  tokenAccount.data.struct.fields[0].type,
+  tokenAccount.data.struct.fields[1].type,
+  tokenAccount.data.struct.fields[2].type,
+  tokenAccount.data.struct.fields[3].type,
   tokenDelegatedAmountOption.prefix,
   tokenDelegatedAmountOption.child,
-  mintTokenInstruction.dataArgs.struct.fields[0].child,
-  giftAccount.data.struct.fields[0].child,
-  giftAccount.data.struct.fields[1].child,
-  (giftAccount.data.struct.fields[1].child as BooleanTypeNode).size,
-  giftAccount.data.struct.fields[2].child,
-  giftAccount.data.struct.fields[3].child,
-  wrappingPaperEnumGold.struct.fields[0].child,
+  mintTokenInstruction.dataArgs.struct.fields[0].type,
+  giftAccount.data.struct.fields[0].type,
+  giftAccount.data.struct.fields[1].type,
+  (giftAccount.data.struct.fields[1].type as BooleanTypeNode).size,
+  giftAccount.data.struct.fields[2].type,
+  giftAccount.data.struct.fields[3].type,
+  wrappingPaperEnumGold.struct.fields[0].type,
 ]);
 test(macro, '[structFieldTypeNode].*.*', [
   tokenDelegatedAmountOption.prefix,
   tokenDelegatedAmountOption.child,
-  (giftAccount.data.struct.fields[1].child as BooleanTypeNode).size,
+  (giftAccount.data.struct.fields[1].type as BooleanTypeNode).size,
 ]);
 
 // Select using functions.

@@ -21,21 +21,21 @@ test('it returns a string representing the main information of a node for debugg
     structTypeNode([
       structFieldTypeNode({
         name: 'firstname',
-        child: stringTypeNode({
+        type: stringTypeNode({
           size: prefixedSizeNode(numberTypeNode('u64')),
           encoding: 'utf8',
         }),
       }),
-      structFieldTypeNode({ name: 'age', child: numberTypeNode('u32') }),
+      structFieldTypeNode({ name: 'age', type: numberTypeNode('u32') }),
       structFieldTypeNode({
         name: 'wallet',
-        child: optionTypeNode(publicKeyTypeNode(), {
+        type: optionTypeNode(publicKeyTypeNode(), {
           prefix: numberTypeNode('u16'),
         }),
       }),
       structFieldTypeNode({
         name: 'industry',
-        child: enumTypeNode([
+        type: enumTypeNode([
           enumEmptyVariantTypeNode('programming'),
           enumEmptyVariantTypeNode('crypto'),
           enumEmptyVariantTypeNode('music'),
@@ -61,21 +61,21 @@ test('it can create indented strings', (t) => {
     structTypeNode([
       structFieldTypeNode({
         name: 'firstname',
-        child: stringTypeNode({
+        type: stringTypeNode({
           size: prefixedSizeNode(numberTypeNode('u64')),
           encoding: 'utf8',
         }),
       }),
-      structFieldTypeNode({ name: 'age', child: numberTypeNode('u32') }),
+      structFieldTypeNode({ name: 'age', type: numberTypeNode('u32') }),
       structFieldTypeNode({
         name: 'wallet',
-        child: optionTypeNode(publicKeyTypeNode(), {
+        type: optionTypeNode(publicKeyTypeNode(), {
           prefix: numberTypeNode('u16'),
         }),
       }),
       structFieldTypeNode({
         name: 'industry',
-        child: enumTypeNode([
+        type: enumTypeNode([
           enumEmptyVariantTypeNode('programming'),
           enumEmptyVariantTypeNode('crypto'),
           enumEmptyVariantTypeNode('music'),

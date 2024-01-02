@@ -47,13 +47,13 @@ export function createSubInstructionsFromEnumArgsVisitor(
             }
 
             let argType: EnumTypeNode;
-            if (isNode(argField.child, 'enumTypeNode')) {
-              argType = argField.child;
+            if (isNode(argField.type, 'enumTypeNode')) {
+              argType = argField.type;
             } else if (
-              isNode(argField.child, 'definedTypeLinkNode') &&
-              linkables.has(argField.child)
+              isNode(argField.type, 'definedTypeLinkNode') &&
+              linkables.has(argField.type)
             ) {
-              const linkedType = linkables.get(argField.child)?.data ?? null;
+              const linkedType = linkables.get(argField.type)?.data ?? null;
               assertIsNode(linkedType, 'enumTypeNode');
               argType = linkedType;
             } else {
@@ -71,7 +71,7 @@ export function createSubInstructionsFromEnumArgsVisitor(
                 subFields.push(
                   structFieldTypeNode({
                     name: `${subName}Discriminator`,
-                    child: numberTypeNode('u8'),
+                    type: numberTypeNode('u8'),
                     defaultsTo: {
                       strategy: 'omitted',
                       value: numberValueNode(index),
@@ -82,14 +82,14 @@ export function createSubInstructionsFromEnumArgsVisitor(
                   subFields.push(
                     structFieldTypeNode({
                       ...argField,
-                      child: variant.struct,
+                      type: variant.struct,
                     })
                   );
                 } else if (isNode(variant, 'enumTupleVariantTypeNode')) {
                   subFields.push(
                     structFieldTypeNode({
                       ...argField,
-                      child: variant.tuple,
+                      type: variant.tuple,
                     })
                   );
                 }
