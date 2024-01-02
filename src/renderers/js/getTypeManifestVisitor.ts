@@ -338,7 +338,7 @@ export function getTypeManifestVisitor() {
         },
 
         visitSetType(setType, { self }) {
-          const childManifest = visit(setType.child, self);
+          const childManifest = visit(setType.item, self);
           childManifest.serializerImports.add('umiSerializers', 'set');
           const sizeOption = getArrayLikeSizeOption(
             setType.size,

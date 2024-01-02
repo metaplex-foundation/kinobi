@@ -362,7 +362,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
         },
 
         visitSetType(setType, { self }) {
-          const childManifest = visit(setType.child, self);
+          const childManifest = visit(setType.item, self);
           childManifest.strictType.mapRender((r) => `Set<${r}>`);
           childManifest.looseType.mapRender((r) => `Set<${r}>`);
 

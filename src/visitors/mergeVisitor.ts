@@ -159,7 +159,7 @@ export function mergeVisitor<
     visitor.visitSetType = function visitSetType(node) {
       return merge(node, [
         ...visit(this)(node.size),
-        ...visit(this)(node.child),
+        ...visit(this)(node.item),
       ]);
     };
   }

@@ -280,7 +280,7 @@ export function getTypeManifestVisitor() {
         },
 
         visitSetType(setType, { self }) {
-          const childManifest = visit(setType.child, self);
+          const childManifest = visit(setType.item, self);
           childManifest.imports.add('std::collections::HashSet');
           return {
             ...childManifest,
