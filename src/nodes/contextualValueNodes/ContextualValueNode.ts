@@ -1,4 +1,4 @@
-import type { Mutable } from '../../shared';
+import { getNodeKinds } from '../../shared/utils';
 import type { ProgramLinkNode } from '../linkNodes/ProgramLinkNode';
 import { VALUE_NODES, ValueNode } from '../valueNodes/ValueNode';
 import type { AccountBumpValueNode } from './AccountBumpValueNode';
@@ -11,9 +11,9 @@ import type { PdaValueNode } from './PdaValueNode';
 import type { ProgramIdValueNode } from './ProgramIdValueNode';
 import type { ResolverValueNode } from './ResolverValueNode';
 
-// Node Group Registration.
+// Standalone Contextual Value Node Registration.
 
-export const REGISTERED_CONTEXTUAL_VALUE_NODES = {
+export const STANDALONE_CONTEXTUAL_VALUE_NODES = {
   accountBumpValueNode: {} as AccountBumpValueNode,
   accountValueNode: {} as AccountValueNode,
   argumentValueNode: {} as ArgumentValueNode,
@@ -25,32 +25,40 @@ export const REGISTERED_CONTEXTUAL_VALUE_NODES = {
   resolverValueNode: {} as ResolverValueNode,
 };
 
-export const REGISTERED_CONTEXTUAL_VALUE_NODE_KEYS = Object.keys(
+export const STANDALONE_CONTEXTUAL_VALUE_NODE_KINDS = getNodeKinds(
+  STANDALONE_CONTEXTUAL_VALUE_NODES
+);
+export type StandaloneContextualValueNodeKind =
+  typeof STANDALONE_CONTEXTUAL_VALUE_NODE_KINDS[number];
+export type StandaloneContextualValueNode =
+  typeof STANDALONE_CONTEXTUAL_VALUE_NODES[StandaloneContextualValueNodeKind];
+
+// Contextual Value Node Registration.
+
+export const REGISTERED_CONTEXTUAL_VALUE_NODES = {
+  ...STANDALONE_CONTEXTUAL_VALUE_NODES,
+};
+
+export const REGISTERED_CONTEXTUAL_VALUE_NODE_KINDS = getNodeKinds(
   REGISTERED_CONTEXTUAL_VALUE_NODES
-) as (keyof typeof REGISTERED_CONTEXTUAL_VALUE_NODES)[];
+);
+export type RegisteredContextualValueNodeKind =
+  typeof REGISTERED_CONTEXTUAL_VALUE_NODE_KINDS[number];
+export type RegisteredContextualValueNode =
+  typeof REGISTERED_CONTEXTUAL_VALUE_NODES[RegisteredContextualValueNodeKind];
 
-export type RegisteredContextualValueNodes =
-  typeof REGISTERED_CONTEXTUAL_VALUE_NODES;
+// Contextual Value Node Helpers.
 
-// Node Group Helpers.
-
-export type ContextualValueNode =
-  RegisteredContextualValueNodes[keyof RegisteredContextualValueNodes];
-
-export const CONTEXTUAL_VALUE_NODES = REGISTERED_CONTEXTUAL_VALUE_NODE_KEYS;
+export type ContextualValueNode = StandaloneContextualValueNode;
+export const CONTEXTUAL_VALUE_NODES = STANDALONE_CONTEXTUAL_VALUE_NODE_KINDS;
 
 export type InstructionInputValueNode =
   | ValueNode
   | ContextualValueNode
   | ProgramLinkNode;
 
-const INSTRUCTION_INPUT_VALUE_NODE_INTERNAL = [
+export const INSTRUCTION_INPUT_VALUE_NODE = [
   ...VALUE_NODES,
   ...CONTEXTUAL_VALUE_NODES,
-  'programLinkNode',
-] as const;
-
-export const INSTRUCTION_INPUT_VALUE_NODE =
-  INSTRUCTION_INPUT_VALUE_NODE_INTERNAL as Mutable<
-    typeof INSTRUCTION_INPUT_VALUE_NODE_INTERNAL
-  >;
+  'programLinkNode' as const,
+];
