@@ -19,6 +19,7 @@ import {
   getNodeSelectorFunction,
   identityVisitor,
   instructionAccountNode,
+  instructionArgumentNode,
   instructionDataArgsNode,
   instructionExtraArgsNode,
   instructionNode,
@@ -92,16 +93,16 @@ const tree = rootNode([
         ],
         dataArgs: instructionDataArgsNode({
           name: 'mintTokenInstructionData',
-          struct: structTypeNode([
-            structFieldTypeNode({
+          dataArguments: [
+            instructionArgumentNode({
               name: 'amount',
               type: numberTypeNode('u64'),
             }),
-          ]),
+          ],
         }),
         extraArgs: instructionExtraArgsNode({
           name: 'mintTokenInstructionExtra',
-          struct: structTypeNode([]),
+          extraArguments: [],
         }),
       }),
     ],
@@ -166,11 +167,11 @@ const tree = rootNode([
         ],
         dataArgs: instructionDataArgsNode({
           name: 'openGiftInstructionData',
-          struct: structTypeNode([]),
+          dataArguments: [],
         }),
         extraArgs: instructionExtraArgsNode({
           name: 'openGiftInstructionExtra',
-          struct: structTypeNode([]),
+          extraArguments: [],
         }),
       }),
     ],
@@ -332,11 +333,11 @@ test(macro, 'wrappingPaper.[structFieldTypeNode]', [
 test(macro, 'wrappingPaper.blue', [wrappingPaperEnum.variants[0]]);
 test(macro, 'amount.*', [
   tokenAccount.data.struct.fields[2].type,
-  mintTokenInstruction.dataArgs.struct.fields[0].type,
+  mintTokenInstruction.dataArgs.dataArguments[0].type,
   giftAccount.data.struct.fields[2].type,
 ]);
 test(macro, '[instructionNode].amount.*', [
-  mintTokenInstruction.dataArgs.struct.fields[0].type,
+  mintTokenInstruction.dataArgs.dataArguments[0].type,
 ]);
 test(macro, '[structFieldTypeNode].*', [
   tokenAccount.data.struct.fields[0].type,
@@ -345,7 +346,7 @@ test(macro, '[structFieldTypeNode].*', [
   tokenAccount.data.struct.fields[3].type,
   tokenDelegatedAmountOption.prefix,
   tokenDelegatedAmountOption.item,
-  mintTokenInstruction.dataArgs.struct.fields[0].type,
+  mintTokenInstruction.dataArgs.dataArguments[0].type,
   giftAccount.data.struct.fields[0].type,
   giftAccount.data.struct.fields[1].type,
   (giftAccount.data.struct.fields[1].type as BooleanTypeNode).size,

@@ -3,6 +3,7 @@ import {
   accountValueNode,
   getResolvedInstructionInputsVisitor,
   instructionAccountNode,
+  instructionArgumentNode,
   instructionDataArgsNode,
   instructionExtraArgsNode,
   instructionNode,
@@ -32,7 +33,7 @@ test('it returns all instruction accounts in order of resolution', (t) => {
     ],
     dataArgs: instructionDataArgsNode({
       name: 'myInstructionData',
-      struct: structTypeNode([]),
+      dataArguments: [],
     }),
   });
 
@@ -77,7 +78,7 @@ test('it sets the resolved signer to either when a non signer defaults to a sign
     ],
     dataArgs: instructionDataArgsNode({
       name: 'myInstructionData',
-      struct: structTypeNode([]),
+      dataArguments: [],
     }),
   });
 
@@ -113,7 +114,7 @@ test('it sets the resolved signer to either when a signer defaults to a non sign
     ],
     dataArgs: instructionDataArgsNode({
       name: 'myInstructionData',
-      struct: structTypeNode([]),
+      dataArguments: [],
     }),
   });
 
@@ -145,13 +146,16 @@ test('it includes instruction data arguments with default values', (t) => {
     ],
     dataArgs: instructionDataArgsNode({
       name: 'myInstructionData',
-      struct: structTypeNode([
-        structFieldTypeNode({ name: 'ownerArg', type: publicKeyTypeNode() }),
-        structFieldTypeNode({
+      dataArguments: [
+        instructionArgumentNode({
+          name: 'ownerArg',
+          type: publicKeyTypeNode(),
+        }),
+        instructionArgumentNode({
           name: 'argWithoutDefaults',
           type: numberTypeNode('u8'),
         }),
-      ]),
+      ],
     }),
     argDefaults: {
       ownerArg: accountValueNode('owner'),
@@ -197,17 +201,20 @@ test('it includes instruction extra arguments with default values', (t) => {
     ],
     dataArgs: instructionDataArgsNode({
       name: 'myInstructionData',
-      struct: structTypeNode([]),
+      dataArguments: [],
     }),
     extraArgs: instructionExtraArgsNode({
       name: 'myInstructionExtra',
-      struct: structTypeNode([
-        structFieldTypeNode({ name: 'ownerArg', type: publicKeyTypeNode() }),
-        structFieldTypeNode({
+      extraArguments: [
+        instructionArgumentNode({
+          name: 'ownerArg',
+          type: publicKeyTypeNode(),
+        }),
+        instructionArgumentNode({
           name: 'argWithoutDefaults',
           type: numberTypeNode('u8'),
         }),
-      ]),
+      ],
     }),
     argDefaults: {
       ownerArg: accountValueNode('owner'),
@@ -245,7 +252,7 @@ test('it returns an empty array for empty instructions', (t) => {
     accounts: [],
     dataArgs: instructionDataArgsNode({
       name: 'myInstructionData',
-      struct: structTypeNode([]),
+      dataArguments: [],
     }),
   });
 
