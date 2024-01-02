@@ -1,14 +1,15 @@
 import { InstructionNode, ProgramNode } from '../../../nodes';
 import { TypeManifest } from '../TypeManifest';
-import { NameApi } from '../nameTransformers';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
-export function getInstructionParseFunctionFragment(scope: {
-  instructionNode: InstructionNode;
-  programNode: ProgramNode;
-  dataArgsManifest: TypeManifest;
-  nameApi: NameApi;
-}): Fragment {
+export function getInstructionParseFunctionFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi'> & {
+    instructionNode: InstructionNode;
+    programNode: ProgramNode;
+    dataArgsManifest: TypeManifest;
+  }
+): Fragment {
   const { instructionNode, programNode, dataArgsManifest, nameApi } = scope;
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasOptionalAccounts = instructionNode.accounts.some(

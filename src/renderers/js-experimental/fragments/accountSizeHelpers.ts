@@ -1,11 +1,10 @@
 import { AccountNode } from '../../../nodes';
-import { NameApi } from '../nameTransformers';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
-export function getAccountSizeHelpersFragment(scope: {
-  accountNode: AccountNode;
-  nameApi: NameApi;
-}): Fragment {
+export function getAccountSizeHelpersFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi'> & { accountNode: AccountNode }
+): Fragment {
   const { accountNode, nameApi } = scope;
   if (accountNode.size == null) {
     return fragment('');

@@ -1,19 +1,20 @@
 import { InstructionNode } from '../../../nodes';
 import { camelCase } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
-import { NameApi } from '../nameTransformers';
-import { ValueNodeVisitor } from '../renderValueNodeVisitor';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, mergeFragments } from './common';
 import { getInstructionInputDefaultFragment } from './instructionInputDefault';
 
-export function getInstructionInputResolvedFragment(scope: {
-  instructionNode: InstructionNode;
-  resolvedInputs: ResolvedInstructionInput[];
-  asyncResolvers: string[];
-  useAsync: boolean;
-  nameApi: NameApi;
-  valueNodeVisitor: ValueNodeVisitor;
-}): Fragment {
+export function getInstructionInputResolvedFragment(
+  scope: Pick<
+    GlobalFragmentScope,
+    'nameApi' | 'asyncResolvers' | 'valueNodeVisitor'
+  > & {
+    instructionNode: InstructionNode;
+    resolvedInputs: ResolvedInstructionInput[];
+    useAsync: boolean;
+  }
+): Fragment {
   const resolvedInputFragments = scope.resolvedInputs.flatMap(
     (input: ResolvedInstructionInput): Fragment[] => {
       const inputFragment = getInstructionInputDefaultFragment({

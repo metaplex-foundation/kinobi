@@ -1,13 +1,13 @@
 import { InstructionNode } from '../../../nodes';
-import { NameApi } from '../nameTransformers';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
-export function getInstructionRemainingAccountsFragment(scope: {
-  instructionNode: InstructionNode;
-  asyncResolvers: string[];
-  useAsync: boolean;
-  nameApi: NameApi;
-}): Fragment {
+export function getInstructionRemainingAccountsFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi' | 'asyncResolvers'> & {
+    instructionNode: InstructionNode;
+    useAsync: boolean;
+  }
+): Fragment {
   const { remainingAccounts } = scope.instructionNode;
   if (!remainingAccounts) return fragment('');
 

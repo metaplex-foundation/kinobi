@@ -1,11 +1,12 @@
 import { ProgramNode } from '../../../nodes';
-import { NameApi } from '../nameTransformers';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragmentFromTemplate } from './common';
 
-export function getProgramErrorsFragment(scope: {
-  programNode: ProgramNode;
-  nameApi: NameApi;
-}): Fragment {
+export function getProgramErrorsFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi'> & {
+    programNode: ProgramNode;
+  }
+): Fragment {
   const { programNode, nameApi } = scope;
   return fragmentFromTemplate('programErrors.njk', {
     errors: programNode.errors,

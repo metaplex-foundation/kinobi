@@ -6,15 +6,17 @@ import {
 } from '../../../nodes';
 import { LinkableDictionary, pascalCase } from '../../../shared';
 import { ImportMap } from '../ImportMap';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment } from './common';
 
-export function getInstructionAccountTypeParamFragment(scope: {
-  instructionNode: InstructionNode;
-  instructionAccountNode: InstructionAccountNode;
-  programNode: ProgramNode;
-  allowAccountMeta: boolean;
-  linkables: LinkableDictionary;
-}): Fragment {
+export function getInstructionAccountTypeParamFragment(
+  scope: Pick<GlobalFragmentScope, 'linkables'> & {
+    instructionNode: InstructionNode;
+    instructionAccountNode: InstructionAccountNode;
+    programNode: ProgramNode;
+    allowAccountMeta: boolean;
+  }
+): Fragment {
   const {
     instructionNode,
     instructionAccountNode,

@@ -2,18 +2,19 @@ import { InstructionInputValueNode, isNode } from '../../../nodes';
 import { MainCaseString, camelCase } from '../../../shared';
 import { ResolvedInstructionInput, visit } from '../../../visitors';
 import { isAsyncDefaultValue } from '../asyncHelpers';
-import { NameApi } from '../nameTransformers';
-import { ValueNodeVisitor } from '../renderValueNodeVisitor';
+import { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, mergeFragments } from './common';
 
-export function getInstructionInputDefaultFragment(scope: {
-  input: ResolvedInstructionInput;
-  optionalAccountStrategy: 'programId' | 'omitted';
-  asyncResolvers: string[];
-  useAsync: boolean;
-  nameApi: NameApi;
-  valueNodeVisitor: ValueNodeVisitor;
-}): Fragment {
+export function getInstructionInputDefaultFragment(
+  scope: Pick<
+    GlobalFragmentScope,
+    'nameApi' | 'asyncResolvers' | 'valueNodeVisitor'
+  > & {
+    input: ResolvedInstructionInput;
+    optionalAccountStrategy: 'programId' | 'omitted';
+    useAsync: boolean;
+  }
+): Fragment {
   const {
     input,
     optionalAccountStrategy,

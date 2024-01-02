@@ -1,18 +1,20 @@
+import { MainCaseString } from 'src/shared';
 import { InstructionNode } from '../../../nodes';
-import { NameApi } from '../nameTransformers';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
-export function getInstructionBytesCreatedOnChainFragment(scope: {
-  instructionNode: InstructionNode;
-  asyncResolvers: string[];
-  useAsync: boolean;
-  nameApi: NameApi;
-}): Fragment {
+export function getInstructionBytesCreatedOnChainFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi' | 'asyncResolvers'> & {
+    instructionNode: InstructionNode;
+    useAsync: boolean;
+  }
+): Fragment {
   const bytes = scope.instructionNode.bytesCreatedOnChain;
   if (!bytes) return fragment('');
 
   const isAsync =
-    bytes?.kind === 'resolver' && scope.asyncResolvers.includes(bytes.name);
+    bytes?.kind === 'resolver' &&
+    scope.asyncResolvers.includes(bytes.name as MainCaseString);
   if (!scope.useAsync && isAsync) return fragment('');
 
   const awaitKeyword = scope.useAsync && isAsync ? 'await ' : '';

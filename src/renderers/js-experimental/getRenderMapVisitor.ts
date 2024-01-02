@@ -17,6 +17,7 @@ import {
   LinkableDictionary,
   logWarn,
   mainCase,
+  MainCaseString,
   pipe,
   RenderMap,
   resolveTemplate,
@@ -45,14 +46,21 @@ import {
   getTypeDataEnumHelpersFragment,
   getTypeWithCodecFragment,
 } from './fragments';
-import { getTypeManifestVisitor } from './getTypeManifestVisitor';
+import {
+  getTypeManifestVisitor,
+  TypeManifestVisitor,
+} from './getTypeManifestVisitor';
 import { ImportMap } from './ImportMap';
 import {
   DEFAULT_NAME_TRANSFORMERS,
   getNameApi,
+  NameApi,
   NameTransformers,
 } from './nameTransformers';
-import { renderValueNodeVisitor } from './renderValueNodeVisitor';
+import {
+  renderValueNodeVisitor,
+  ValueNodeVisitor,
+} from './renderValueNodeVisitor';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -75,6 +83,16 @@ export type GetRenderMapOptions = {
   nonScalarEnums?: string[];
 };
 
+export type GlobalFragmentScope = {
+  nameApi: NameApi;
+  linkables: LinkableDictionary;
+  typeManifestVisitor: TypeManifestVisitor;
+  valueNodeVisitor: ValueNodeVisitor;
+  asyncResolvers: MainCaseString[];
+  nonScalarEnums: MainCaseString[];
+  renderParentInstructions: boolean;
+};
+
 export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
   const linkables = new LinkableDictionary();
   let program: ProgramNode | null = null;
@@ -91,7 +109,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
     ...options.prettierOptions,
   };
   const dependencyMap = options.dependencyMap ?? {};
-  const asyncResolvers = options.asyncResolvers ?? [];
+  const asyncResolvers = (options.asyncResolvers ?? []).map(mainCase);
   const nonScalarEnums = (options.nonScalarEnums ?? []).map(mainCase);
 
   const valueNodeVisitor = renderValueNodeVisitor({
@@ -104,6 +122,16 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
     valueNodeVisitor,
   });
   const resolvedInstructionInputVisitor = getResolvedInstructionInputsVisitor();
+
+  const globalScope: GlobalFragmentScope = {
+    nameApi,
+    linkables,
+    typeManifestVisitor,
+    valueNodeVisitor,
+    asyncResolvers,
+    nonScalarEnums,
+    renderParentInstructions,
+  };
 
   const render = (
     template: string,
@@ -258,14 +286,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             throw new Error('Account must be visited inside a program.');
           }
 
-          const scope = {
-            pdaNode: node,
-            programNode: program,
-            typeManifestVisitor,
-            valueNodeVisitor,
-            nameApi,
-          };
-
+          const scope = { ...globalScope, pdaNode: node, programNode: program };
           const pdaFunctionFragment = getPdaFunctionFragment(scope);
           const imports = new ImportMap().mergeWith(pdaFunctionFragment);
 
@@ -284,11 +305,10 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
           }
 
           const scope = {
+            ...globalScope,
             accountNode: node,
             programNode: program,
             typeManifest: visit(node, typeManifestVisitor),
-            nameApi,
-            linkables,
           };
 
           const accountTypeFragment = getAccountTypeFragment(scope);
@@ -322,16 +342,13 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
           }
 
           const scope = {
+            ...globalScope,
             instructionNode: node,
             programNode: program,
             renamedArgs: getRenamedArgsMap(node),
             dataArgsManifest: visit(node.dataArgs, typeManifestVisitor),
             extraArgsManifest: visit(node.extraArgs, typeManifestVisitor),
             resolvedInputs: visit(node, resolvedInstructionInputVisitor),
-            asyncResolvers,
-            nameApi,
-            valueNodeVisitor,
-            linkables,
           };
 
           // Fragments.
@@ -394,6 +411,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
 
         visitDefinedType(node) {
           const scope = {
+            ...globalScope,
             typeNode: node.data,
             name: node.name,
             manifest: visit(node, typeManifestVisitor),
@@ -401,7 +419,6 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             encoderDocs: [],
             decoderDocs: [],
             codecDocs: [],
-            nameApi,
           };
 
           const typeWithCodecFragment = getTypeWithCodecFragment(scope);

@@ -1,14 +1,13 @@
 import { AccountNode, ProgramNode, isNodeFilter } from '../../../nodes';
-import { LinkableDictionary } from '../../../shared';
-import { NameApi } from '../nameTransformers';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
-export function getAccountPdaHelpersFragment(scope: {
-  accountNode: AccountNode;
-  programNode: ProgramNode;
-  nameApi: NameApi;
-  linkables: LinkableDictionary;
-}): Fragment {
+export function getAccountPdaHelpersFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi' | 'linkables'> & {
+    accountNode: AccountNode;
+    programNode: ProgramNode;
+  }
+): Fragment {
   const { accountNode, programNode, nameApi, linkables } = scope;
   const pdaNode = accountNode.pda ? linkables.get(accountNode.pda) : undefined;
   if (!pdaNode) {

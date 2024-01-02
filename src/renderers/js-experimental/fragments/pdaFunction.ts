@@ -1,18 +1,18 @@
 import { PdaNode, ProgramNode, isNode, isNodeFilter } from '../../../nodes';
 import { visit } from '../../../visitors';
 import { ImportMap } from '../ImportMap';
-import { TypeManifestVisitor } from '../getTypeManifestVisitor';
-import { NameApi } from '../nameTransformers';
-import { ValueNodeVisitor } from '../renderValueNodeVisitor';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
-export function getPdaFunctionFragment(scope: {
-  pdaNode: PdaNode;
-  programNode: ProgramNode;
-  typeManifestVisitor: TypeManifestVisitor;
-  valueNodeVisitor: ValueNodeVisitor;
-  nameApi: NameApi;
-}): Fragment {
+export function getPdaFunctionFragment(
+  scope: Pick<
+    GlobalFragmentScope,
+    'nameApi' | 'typeManifestVisitor' | 'valueNodeVisitor'
+  > & {
+    pdaNode: PdaNode;
+    programNode: ProgramNode;
+  }
+): Fragment {
   const {
     pdaNode,
     programNode,

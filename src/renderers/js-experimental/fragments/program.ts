@@ -1,11 +1,12 @@
 import { ProgramNode } from '../../../nodes';
-import { NameApi } from '../nameTransformers';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragmentFromTemplate } from './common';
 
-export function getProgramFragment(scope: {
-  programNode: ProgramNode;
-  nameApi: NameApi;
-}): Fragment {
+export function getProgramFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi'> & {
+    programNode: ProgramNode;
+  }
+): Fragment {
   const { programNode, nameApi } = scope;
   const programErrorClass = nameApi.programErrorClass(programNode.name);
   const programErrorCode = nameApi.programErrorCodeEnum(programNode.name);

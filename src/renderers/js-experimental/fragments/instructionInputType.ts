@@ -13,21 +13,21 @@ import {
 import { ImportMap } from '../ImportMap';
 import { TypeManifest } from '../TypeManifest';
 import { isAsyncDefaultValue } from '../asyncHelpers';
-import { NameApi } from '../nameTransformers';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
-export function getInstructionInputTypeFragment(scope: {
-  instructionNode: InstructionNode;
-  resolvedInputs: ResolvedInstructionInput[];
-  renamedArgs: Map<string, string>;
-  dataArgsManifest: TypeManifest;
-  extraArgsManifest: TypeManifest;
-  programNode: ProgramNode;
-  withSigners: boolean;
-  asyncResolvers: string[];
-  useAsync: boolean;
-  nameApi: NameApi;
-}): Fragment {
+export function getInstructionInputTypeFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi' | 'asyncResolvers'> & {
+    instructionNode: InstructionNode;
+    resolvedInputs: ResolvedInstructionInput[];
+    renamedArgs: Map<string, string>;
+    dataArgsManifest: TypeManifest;
+    extraArgsManifest: TypeManifest;
+    programNode: ProgramNode;
+    withSigners: boolean;
+    useAsync: boolean;
+  }
+): Fragment {
   const {
     instructionNode,
     resolvedInputs,

@@ -1,13 +1,14 @@
 import { TypeManifest } from '../TypeManifest';
-import { NameApi } from '../nameTransformers';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragmentFromTemplate } from './common';
 
-export function getTypeFragment(scope: {
-  name: string;
-  manifest: TypeManifest;
-  nameApi: NameApi;
-  docs?: string[];
-}): Fragment {
+export function getTypeFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi'> & {
+    name: string;
+    manifest: TypeManifest;
+    docs?: string[];
+  }
+): Fragment {
   const { name, manifest, nameApi, docs = [] } = scope;
   const typeFragment = fragmentFromTemplate('type.njk', {
     strictName: nameApi.dataType(name),

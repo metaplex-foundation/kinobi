@@ -3,8 +3,8 @@ import { camelCase, pascalCase } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import { TypeManifest } from '../TypeManifest';
 import { hasAsyncFunction } from '../asyncHelpers';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { NameApi } from '../nameTransformers';
-import { ValueNodeVisitor } from '../renderValueNodeVisitor';
 import {
   Fragment,
   fragment,
@@ -16,18 +16,20 @@ import { getInstructionInputResolvedFragment } from './instructionInputResolved'
 import { getInstructionInputTypeFragment } from './instructionInputType';
 import { getInstructionRemainingAccountsFragment } from './instructionRemainingAccounts';
 
-export function getInstructionFunctionHighLevelFragment(scope: {
-  instructionNode: InstructionNode;
-  programNode: ProgramNode;
-  renamedArgs: Map<string, string>;
-  dataArgsManifest: TypeManifest;
-  extraArgsManifest: TypeManifest;
-  resolvedInputs: ResolvedInstructionInput[];
-  asyncResolvers: string[];
-  useAsync: boolean;
-  nameApi: NameApi;
-  valueNodeVisitor: ValueNodeVisitor;
-}): Fragment {
+export function getInstructionFunctionHighLevelFragment(
+  scope: Pick<
+    GlobalFragmentScope,
+    'nameApi' | 'asyncResolvers' | 'valueNodeVisitor'
+  > & {
+    instructionNode: InstructionNode;
+    programNode: ProgramNode;
+    renamedArgs: Map<string, string>;
+    dataArgsManifest: TypeManifest;
+    extraArgsManifest: TypeManifest;
+    resolvedInputs: ResolvedInstructionInput[];
+    useAsync: boolean;
+  }
+): Fragment {
   const {
     useAsync,
     instructionNode,

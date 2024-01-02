@@ -4,9 +4,10 @@ import {
   ProgramNode,
   isNode,
 } from '../../../nodes';
-import { LinkableDictionary, pascalCase } from '../../../shared';
+import { pascalCase } from '../../../shared';
 import { ImportMap } from '../ImportMap';
 import { TypeManifest } from '../TypeManifest';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { NameApi } from '../nameTransformers';
 import {
   Fragment,
@@ -16,13 +17,13 @@ import {
 } from './common';
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
 
-export function getInstructionFunctionLowLevelFragment(scope: {
-  instructionNode: InstructionNode;
-  programNode: ProgramNode;
-  dataArgsManifest: TypeManifest;
-  nameApi: NameApi;
-  linkables: LinkableDictionary;
-}): Fragment {
+export function getInstructionFunctionLowLevelFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi' | 'linkables'> & {
+    instructionNode: InstructionNode;
+    programNode: ProgramNode;
+    dataArgsManifest: TypeManifest;
+  }
+): Fragment {
   const { instructionNode, programNode, dataArgsManifest, nameApi } = scope;
   const imports = new ImportMap();
   const hasAccounts = instructionNode.accounts.length > 0;
