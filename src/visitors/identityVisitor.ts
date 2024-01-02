@@ -3,7 +3,7 @@ import {
   ENUM_VARIANT_TYPE_NODES,
   Node,
   PDA_SEED_NODES,
-  REGISTERED_NODES_KEYS,
+  REGISTERED_NODE_KEYS,
   RegisteredNodes,
   SIZE_NODES,
   TYPE_NODES,
@@ -55,7 +55,7 @@ import { Visitor, visit as baseVisit } from './visitor';
 export function identityVisitor<
   TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
 >(
-  nodeKeys: TNodeKeys[] = REGISTERED_NODES_KEYS as TNodeKeys[]
+  nodeKeys: TNodeKeys[] = REGISTERED_NODE_KEYS as TNodeKeys[]
 ): Visitor<Node | null, TNodeKeys> {
   const castedNodeKeys: (keyof RegisteredNodes)[] = nodeKeys;
   const visitor = staticVisitor(

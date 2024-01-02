@@ -1,3 +1,4 @@
+import { getNodeKeys } from '../shared/utils';
 import type { AccountDataNode } from './AccountDataNode';
 import type { AccountNode } from './AccountNode';
 import type { DefinedTypeNode } from './DefinedTypeNode';
@@ -40,25 +41,22 @@ const REGISTERED_NODES = {
   ...REGISTERED_VALUE_NODES,
 };
 
-export const REGISTERED_NODES_KEYS = Object.keys(
-  REGISTERED_NODES
-) as (keyof RegisteredNodes)[];
-
+export const REGISTERED_NODE_KEYS = getNodeKeys(REGISTERED_NODES);
 export type RegisteredNodes = typeof REGISTERED_NODES;
+export type NodeKey = typeof REGISTERED_NODE_KEYS[number];
+export type Node = RegisteredNodes[NodeKey];
 
 // Node Helpers.
 
-export type Node = RegisteredNodes[keyof RegisteredNodes];
-
-export function isNode<TKeys extends keyof RegisteredNodes>(
+export function isNode<TKeys extends NodeKey>(
   node: Node | null | undefined,
   key: TKeys | TKeys[]
 ): node is RegisteredNodes[TKeys] {
   const keys = Array.isArray(key) ? key : [key];
-  return !!node && (keys as (keyof RegisteredNodes)[]).includes(node.kind);
+  return !!node && (keys as NodeKey[]).includes(node.kind);
 }
 
-export function assertIsNode<TKeys extends keyof RegisteredNodes>(
+export function assertIsNode<TKeys extends NodeKey>(
   node: Node | null | undefined,
   key: TKeys | TKeys[]
 ): asserts node is RegisteredNodes[TKeys] {
@@ -70,13 +68,13 @@ export function assertIsNode<TKeys extends keyof RegisteredNodes>(
   }
 }
 
-export function isNodeFilter<TKeys extends keyof RegisteredNodes>(
+export function isNodeFilter<TKeys extends NodeKey>(
   key: TKeys | TKeys[]
 ): (node: Node | null | undefined) => node is RegisteredNodes[TKeys] {
   return (node): node is RegisteredNodes[TKeys] => isNode(node, key);
 }
 
-export function assertIsNodeFilter<TKeys extends keyof RegisteredNodes>(
+export function assertIsNodeFilter<TKeys extends NodeKey>(
   key: TKeys | TKeys[]
 ): (node: Node | null | undefined) => node is RegisteredNodes[TKeys] {
   return (node): node is RegisteredNodes[TKeys] => {
@@ -85,9 +83,7 @@ export function assertIsNodeFilter<TKeys extends keyof RegisteredNodes>(
   };
 }
 
-export function removeNullAndAssertIsNodeFilter<
-  TKeys extends keyof RegisteredNodes
->(
+export function removeNullAndAssertIsNodeFilter<TKeys extends NodeKey>(
   key: TKeys | TKeys[]
 ): (node: Node | null | undefined) => node is RegisteredNodes[TKeys] {
   return (node): node is RegisteredNodes[TKeys] => {

@@ -1,4 +1,4 @@
-import { Node, REGISTERED_NODES_KEYS, RegisteredNodes } from '../nodes';
+import { Node, REGISTERED_NODE_KEYS, RegisteredNodes } from '../nodes';
 import {
   GetVisitorFunctionName,
   Visitor,
@@ -18,7 +18,7 @@ export function interceptVisitor<
   interceptor: VisitorInterceptor<TReturn>
 ): Visitor<TReturn, TNodeKeys> {
   const registeredVisitFunctions =
-    REGISTERED_NODES_KEYS.map(getVisitFunctionName);
+    REGISTERED_NODE_KEYS.map(getVisitFunctionName);
 
   return Object.fromEntries(
     Object.keys(visitor).flatMap((key) => {
