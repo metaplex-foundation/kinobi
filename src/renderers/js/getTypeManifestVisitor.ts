@@ -384,7 +384,7 @@ export function getTypeManifestVisitor() {
           };
 
           const optionalFields = structType.fields.filter(
-            (f) => f.defaultsTo !== null
+            (f) => !!f.defaultValue
           );
           if (optionalFields.length === 0) {
             return baseManifest;
@@ -393,15 +393,15 @@ export function getTypeManifestVisitor() {
           const defaultValues = optionalFields
             .map((f) => {
               const key = camelCase(f.name);
-              const defaultsTo = f.defaultsTo as NonNullable<
-                typeof f.defaultsTo
+              const defaultValue = f.defaultValue as NonNullable<
+                typeof f.defaultValue
               >;
               const { render: renderedValue, imports } = visit(
-                defaultsTo.value,
+                defaultValue,
                 valueNodeVisitor
               );
               baseManifest.serializerImports.mergeWith(imports);
-              if (defaultsTo.strategy === 'omitted') {
+              if (f.defaultValueStrategy === 'omitted') {
                 return `${key}: ${renderedValue}`;
               }
               return `${key}: value.${key} ?? ${renderedValue}`;
@@ -429,10 +429,10 @@ export function getTypeManifestVisitor() {
             looseType: `${docblock}${name}: ${fieldChild.looseType}; `,
             serializer: `['${name}', ${fieldChild.serializer}]`,
           };
-          if (structFieldType.defaultsTo === null) {
+          if (!structFieldType.defaultValue) {
             return baseField;
           }
-          if (structFieldType.defaultsTo.strategy === 'optional') {
+          if (structFieldType.defaultValueStrategy !== 'omitted') {
             return {
               ...baseField,
               looseType: `${docblock}${name}?: ${fieldChild.looseType}; `,

@@ -293,20 +293,14 @@ export function identityVisitor<
 
   if (castedNodeKeys.includes('structFieldTypeNode')) {
     visitor.visitStructFieldType = function visitStructFieldType(node) {
-      const child = visit(this)(node.type);
-      if (child === null) return null;
-      assertIsNode(child, TYPE_NODES);
-      const defaultsToValue = node.defaultsTo?.value
-        ? visit(this)(node.defaultsTo.value)
-        : null;
-      if (defaultsToValue) assertIsNode(defaultsToValue, VALUE_NODES);
-      const defaultsTo = defaultsToValue
-        ? {
-            strategy: node.defaultsTo?.strategy ?? 'optional',
-            value: defaultsToValue,
-          }
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertIsNode(type, TYPE_NODES);
+      const defaultValue = node.defaultValue
+        ? visit(this)(node.defaultValue) ?? undefined
         : undefined;
-      return structFieldTypeNode({ ...node, type: child, defaultsTo });
+      if (defaultValue) assertIsNode(defaultValue, VALUE_NODES);
+      return structFieldTypeNode({ ...node, type, defaultValue });
     };
   }
 

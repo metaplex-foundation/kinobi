@@ -41,10 +41,8 @@ export function setInstructionDiscriminatorsVisitor(
               name: discriminator.name ?? 'discriminator',
               type: discriminator.type ?? numberTypeNode('u8'),
               docs: discriminator.docs ?? [],
-              defaultsTo: {
-                strategy: discriminator.strategy ?? 'omitted',
-                value: discriminator.value,
-              },
+              defaultValue: discriminator.value,
+              defaultValueStrategy: discriminator.strategy ?? 'omitted',
             });
 
             return instructionNode({

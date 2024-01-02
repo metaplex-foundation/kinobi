@@ -81,9 +81,9 @@ export function getInstructionInputTypeFragment(scope: {
     const resolvedArg = resolvedInputs.find(
       (input) => input.kind === 'argument' && input.name === arg.name
     ) as ResolvedInstructionArgument | undefined;
-    if (arg.defaultsTo?.strategy === 'omitted') return [];
+    if (arg.defaultValue && arg.defaultValueStrategy === 'omitted') return [];
     const renamedName = renamedArgs.get(arg.name) ?? arg.name;
-    const optionalSign = arg.defaultsTo || resolvedArg ? '?' : '';
+    const optionalSign = arg.defaultValue || resolvedArg ? '?' : '';
     return [
       {
         ...arg,

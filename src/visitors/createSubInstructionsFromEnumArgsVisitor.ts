@@ -72,10 +72,8 @@ export function createSubInstructionsFromEnumArgsVisitor(
                   structFieldTypeNode({
                     name: `${subName}Discriminator`,
                     type: numberTypeNode('u8'),
-                    defaultsTo: {
-                      strategy: 'omitted',
-                      value: numberValueNode(index),
-                    },
+                    defaultValue: numberValueNode(index),
+                    defaultValueStrategy: 'omitted',
                   })
                 );
                 if (isNode(variant, 'enumStructVariantTypeNode')) {

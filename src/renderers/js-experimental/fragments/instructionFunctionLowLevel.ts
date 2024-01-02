@@ -35,7 +35,7 @@ export function getInstructionFunctionLowLevelFragment(scope: {
   const hasArgs =
     !!instructionNode.dataArgs.link ||
     instructionNode.dataArgs.struct.fields.filter(
-      (field) => field.defaultsTo?.strategy !== 'omitted'
+      (field) => !field.defaultValue || field.defaultValueStrategy !== 'omitted'
     ).length > 0;
   const argsType = instructionNode.dataArgs.link
     ? dataArgsManifest.looseType.render

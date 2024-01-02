@@ -46,10 +46,8 @@ export function setAnchorDiscriminatorsVisitor() {
             type: arrayTypeNode(numberTypeNode('u8'), {
               size: fixedSizeNode(8),
             }),
-            defaultsTo: {
-              strategy: 'omitted',
-              value: getAnchorAccountDiscriminator(node.idlName),
-            },
+            defaultValue: getAnchorAccountDiscriminator(node.idlName),
+            defaultValueStrategy: 'omitted',
           });
 
           return accountNode({
@@ -74,10 +72,8 @@ export function setAnchorDiscriminatorsVisitor() {
             type: arrayTypeNode(numberTypeNode('u8'), {
               size: fixedSizeNode(8),
             }),
-            defaultsTo: {
-              strategy: 'omitted',
-              value: getAnchorInstructionDiscriminator(node.idlName),
-            },
+            defaultValue: getAnchorInstructionDiscriminator(node.idlName),
+            defaultValueStrategy: 'omitted',
           });
 
           return instructionNode({

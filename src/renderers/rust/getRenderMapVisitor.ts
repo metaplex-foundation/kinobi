@@ -234,17 +234,19 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
             typeManifestVisitor.setNestedStruct(false);
 
             let renderValue: string | null = null;
-            if (field.defaultsTo) {
+            if (field.defaultValue) {
               const { imports: argImports, render: value } = renderValueNode(
-                field.defaultsTo.value
+                field.defaultValue
               );
               imports.mergeWith(argImports);
               renderValue = value;
             }
 
-            hasArgs = hasArgs || field.defaultsTo?.strategy !== 'omitted';
+            const hasDefaultValue = !!field.defaultValue;
+            hasArgs = hasArgs || field.defaultValueStrategy !== 'omitted';
             hasOptional =
-              hasOptional || field.defaultsTo?.strategy === 'optional';
+              hasOptional ||
+              (hasDefaultValue && field.defaultValueStrategy !== 'omitted');
 
             const name = accountsAndArgsConflicts.includes(field.name)
               ? `${field.name}_arg`
@@ -253,8 +255,10 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
             instructionArgs.push({
               name,
               type: manifest.type,
-              default: field.defaultsTo?.strategy === 'omitted',
-              optional: field.defaultsTo?.strategy === 'optional',
+              default:
+                hasDefaultValue && field.defaultValueStrategy === 'omitted',
+              optional:
+                hasDefaultValue && field.defaultValueStrategy !== 'omitted',
               innerOptionType,
               value: renderValue,
             });

@@ -184,11 +184,11 @@ function handleInstructionArgs(
   const newExtraFields = Object.entries(argUpdates)
     .filter(([argName]) => !usedArgs.has(argName))
     .map(([argName, argUpdate]) => {
-      const child = argUpdate.type ?? null;
-      assertIsNode(child, TYPE_NODES);
+      const { type } = argUpdate;
+      assertIsNode(type, TYPE_NODES);
       return structFieldTypeNode({
         name: argUpdate.name ?? argName,
-        type: child,
+        type,
         docs: argUpdate.docs ?? [],
       });
     });

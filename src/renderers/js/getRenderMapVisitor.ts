@@ -289,8 +289,8 @@ export function getRenderMapVisitor(
             const discriminatorField = node.data.struct.fields.find(
               (f) => f.name === discriminator.name
             );
-            const discriminatorValue = discriminatorField?.defaultsTo?.value
-              ? visit(discriminatorField.defaultsTo.value, valueNodeVisitor)
+            const discriminatorValue = discriminatorField?.defaultValue
+              ? visit(discriminatorField.defaultValue, valueNodeVisitor)
               : undefined;
             if (discriminatorValue) {
               imports.mergeWith(discriminatorValue.imports);
@@ -403,12 +403,12 @@ export function getRenderMapVisitor(
           const hasDataArgs =
             !!node.dataArgs.link ||
             node.dataArgs.struct.fields.filter(
-              (field) => field.defaultsTo?.strategy !== 'omitted'
+              (field) => field.defaultValueStrategy !== 'omitted'
             ).length > 0;
           const hasExtraArgs =
             !!node.extraArgs.link ||
             node.extraArgs.struct.fields.filter(
-              (field) => field.defaultsTo?.strategy !== 'omitted'
+              (field) => field.defaultValueStrategy !== 'omitted'
             ).length > 0;
           const hasAnyArgs = hasDataArgs || hasExtraArgs;
           const hasArgDefaults = Object.keys(node.argDefaults).length > 0;

@@ -47,12 +47,12 @@ export function getInstructionFunctionHighLevelFragment(scope: {
   const hasDataArgs =
     !!instructionNode.dataArgs.link ||
     instructionNode.dataArgs.struct.fields.filter(
-      (field) => field.defaultsTo?.strategy !== 'omitted'
+      (field) => !field.defaultValue || field.defaultValueStrategy !== 'omitted'
     ).length > 0;
   const hasExtraArgs =
     !!instructionNode.extraArgs.link ||
     instructionNode.extraArgs.struct.fields.filter(
-      (field) => field.defaultsTo?.strategy !== 'omitted'
+      (field) => !field.defaultValue || field.defaultValueStrategy !== 'omitted'
     ).length > 0;
   const hasAnyArgs = hasDataArgs || hasExtraArgs;
   const argsTypeFragment = fragment(

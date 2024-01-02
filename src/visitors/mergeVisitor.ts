@@ -174,7 +174,7 @@ export function mergeVisitor<
     visitor.visitStructFieldType = function visitStructFieldType(node) {
       return merge(node, [
         ...visit(this)(node.type),
-        ...(node.defaultsTo ? visit(this)(node.defaultsTo.value) : []),
+        ...(node.defaultValue ? visit(this)(node.defaultValue) : []),
       ]);
     };
   }

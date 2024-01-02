@@ -46,7 +46,7 @@ test('it returns a unique string whilst discard docs', (t) => {
   t.deepEqual(
     result,
     '{"fields":[' +
-      '{"defaultsTo":null,"docs":[],"kind":"structFieldTypeNode","name":"owner","type":{"kind":"publicKeyTypeNode"}}' +
+      '{"docs":[],"kind":"structFieldTypeNode","name":"owner","type":{"kind":"publicKeyTypeNode"}}' +
       '],"kind":"structTypeNode"}'
   );
 });

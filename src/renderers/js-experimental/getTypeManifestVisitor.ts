@@ -389,7 +389,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           const currentParentName = parentName;
           parentName = null;
           const optionalFields = structType.fields.filter(
-            (f) => f.defaultsTo !== null
+            (f) => !!f.defaultValue
           );
 
           const mergedManifest = mergeManifests(
@@ -408,7 +408,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           if (!encoderType || optionalFields.length > 0) {
             const nonDefaultsMergedManifest = mergeManifests(
               structType.fields.map((field) =>
-                visit({ ...field, defaultsTo: null }, self)
+                visit({ ...field, defaultValue: undefined }, self)
               ),
               (renders) => `{ ${renders.join('')} }`,
               (renders) => `([${renders.join(', ')}])`
@@ -433,15 +433,15 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           const defaultValues = optionalFields
             .map((f) => {
               const key = camelCase(f.name);
-              const defaultsTo = f.defaultsTo as NonNullable<
-                typeof f.defaultsTo
+              const defaultValue = f.defaultValue as NonNullable<
+                typeof f.defaultValue
               >;
               const { render: renderedValue, imports } = getValueNodeFragment(
-                defaultsTo.value,
+                defaultValue,
                 nameApi
               );
               mergedManifest.encoder.mergeImportsWith(imports);
-              return defaultsTo.strategy === 'omitted'
+              return f.defaultValueStrategy === 'omitted'
                 ? `${key}: ${renderedValue}`
                 : `${key}: value.${key} ?? ${renderedValue}`;
             })
@@ -470,12 +470,12 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           childManifest.decoder.mapRender((r) => `['${name}', ${r}]`);
 
           // No default value.
-          if (structFieldType.defaultsTo === null) {
+          if (!structFieldType.defaultValue) {
             return childManifest;
           }
 
           // Optional default value.
-          if (structFieldType.defaultsTo.strategy === 'optional') {
+          if (structFieldType.defaultValueStrategy !== 'omitted') {
             childManifest.looseType.setRender(
               `${docblock}${name}?: ${originalLooseType}; `
             );
