@@ -1,6 +1,7 @@
 export * from './ArrayValueNode';
 export * from './BooleanValueNode';
 export * from './EnumValueNode';
+export * from './MapEntryValueNode';
 export * from './MapValueNode';
 export * from './NumberValueNode';
 export * from './PublicKeyValueNode';

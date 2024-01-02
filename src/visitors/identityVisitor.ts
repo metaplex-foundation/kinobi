@@ -27,6 +27,7 @@ import {
   instructionDataArgsNode,
   instructionExtraArgsNode,
   instructionNode,
+  mapEntryValueNode,
   mapTypeNode,
   mapValueNode,
   optionTypeNode,
@@ -394,16 +395,22 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
   if (castedNodeKeys.includes('mapValueNode')) {
     visitor.visitMapValue = function visitMapValue(node) {
       return mapValueNode(
-        node.entries.flatMap(([k, v]) => {
-          const key = visit(this)(k);
-          if (key === null) return [];
-          assertIsNode(key, VALUE_NODES);
-          const value = visit(this)(v);
-          if (value === null) return [];
-          assertIsNode(value, VALUE_NODES);
-          return [[key, value]];
-        })
+        node.entries
+          .map(visit(this))
+          .filter(removeNullAndAssertIsNodeFilter('mapEntryValueNode'))
       );
+    };
+  }
+
+  if (castedNodeKeys.includes('mapEntryValueNode')) {
+    visitor.visitMapEntryValue = function visitMapEntryValue(node) {
+      const key = visit(this)(node.key);
+      if (key === null) return null;
+      assertIsNode(key, VALUE_NODES);
+      const value = visit(this)(node.value);
+      if (value === null) return null;
+      assertIsNode(value, VALUE_NODES);
+      return mapEntryValueNode(key, value);
     };
   }
 

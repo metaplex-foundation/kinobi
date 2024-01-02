@@ -53,15 +53,16 @@ export function renderValueNodeVisitor(input: {
         .addImports(importFrom, enumFunction);
     },
     visitMapValue(node) {
-      const entryFragments = node.entries.map(([k, v]) =>
-        mergeFragments(
-          [visit(k, this), visit(v, this)],
-          (renders) => `[${renders.join(', ')}]`
-        )
-      );
+      const entryFragments = node.entries.map((entry) => visit(entry, this));
       return mergeFragments(
         entryFragments,
         (renders) => `new Map([${renders.join(', ')}])`
+      );
+    },
+    visitMapEntryValue(node) {
+      return mergeFragments(
+        [visit(node.key, this), visit(node.value, this)],
+        (renders) => `[${renders.join(', ')}]`
       );
     },
     visitNoneValue() {

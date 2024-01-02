@@ -2,6 +2,7 @@ import { getNodeKinds } from '../../shared/utils';
 import type { ArrayValueNode } from './ArrayValueNode';
 import type { BooleanValueNode } from './BooleanValueNode';
 import type { EnumValueNode } from './EnumValueNode';
+import type { MapEntryValueNode } from './MapEntryValueNode';
 import type { MapValueNode } from './MapValueNode';
 import type { NoneValueNode } from './NoneValueNode';
 import type { NumberValueNode } from './NumberValueNode';
@@ -39,6 +40,9 @@ export type StandaloneValueNode =
 
 export const REGISTERED_VALUE_NODES = {
   ...STANDALONE_VALUE_NODES,
+
+  // The following are not valid standalone nodes.
+  mapEntryValueNode: {} as MapEntryValueNode,
 };
 
 export const REGISTERED_VALUE_NODE_KINDS = getNodeKinds(REGISTERED_VALUE_NODES);

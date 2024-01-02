@@ -235,10 +235,16 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
 
   if (castedNodeKeys.includes('mapValueNode')) {
     visitor.visitMapValue = function visitMapValue(node) {
-      return merge(
-        node,
-        node.entries.flatMap(([k, v]) => [...visit(this)(k), ...visit(this)(v)])
-      );
+      return merge(node, node.entries.flatMap(visit(this)));
+    };
+  }
+
+  if (castedNodeKeys.includes('mapEntryValueNode')) {
+    visitor.visitMapEntryValue = function visitMapEntryValue(node) {
+      return merge(node, [
+        ...visit(this)(node.key),
+        ...visit(this)(node.value),
+      ]);
     };
   }
 

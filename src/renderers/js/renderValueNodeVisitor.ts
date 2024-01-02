@@ -71,19 +71,20 @@ export function renderValueNodeVisitor(input: {
       };
     },
     visitMapValue(node) {
-      const map = node.entries.map(([k, v]) => {
-        const mapKey = visit(k, this);
-        const mapValue = visit(v, this);
-        return {
-          imports: mapKey.imports.mergeWith(mapValue.imports),
-          render: `[${mapKey.render}, ${mapValue.render}]`,
-        };
-      });
+      const map = node.entries.map((entry) => visit(entry, this));
       return {
         imports: new JavaScriptImportMap().mergeWith(
           ...map.map((c) => c.imports)
         ),
         render: `new Map([${map.map((c) => c.render).join(', ')}])`,
+      };
+    },
+    visitMapEntryValue(node) {
+      const mapKey = visit(node.key, this);
+      const mapValue = visit(node.value, this);
+      return {
+        imports: mapKey.imports.mergeWith(mapValue.imports),
+        render: `[${mapKey.render}, ${mapValue.render}]`,
       };
     },
     visitNoneValue() {
