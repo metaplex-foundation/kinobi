@@ -1,5 +1,5 @@
 import { DontInfer } from '../shared';
-import { REGISTERED_NODE_KINDS, RegisteredNodes, Node } from '../nodes';
+import { REGISTERED_NODE_KINDS, NodeDictionary, Node } from '../nodes';
 import {
   GetVisitorFunctionName,
   Visitor,
@@ -8,7 +8,7 @@ import {
 
 export type VisitorOverrideFunction<
   TReturn,
-  TNodeKeys extends keyof RegisteredNodes,
+  TNodeKeys extends keyof NodeDictionary,
   TNode extends Node
 > = (
   node: TNode,
@@ -20,16 +20,16 @@ export type VisitorOverrideFunction<
 
 export type VisitorOverrides<
   TReturn,
-  TNodeKeys extends keyof RegisteredNodes
+  TNodeKeys extends keyof NodeDictionary
 > = {
   [K in TNodeKeys as GetVisitorFunctionName<K>]?: VisitorOverrideFunction<
     TReturn,
     TNodeKeys,
-    RegisteredNodes[K]
+    NodeDictionary[K]
   >;
 };
 
-export function extendVisitor<TReturn, TNodeKeys extends keyof RegisteredNodes>(
+export function extendVisitor<TReturn, TNodeKeys extends keyof NodeDictionary>(
   visitor: Visitor<TReturn, TNodeKeys>,
   overrides: DontInfer<VisitorOverrides<TReturn, TNodeKeys>>
 ): Visitor<TReturn, TNodeKeys> {

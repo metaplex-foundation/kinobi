@@ -1,10 +1,10 @@
-import { RegisteredNodes } from '../nodes';
+import { NodeDictionary } from '../nodes';
 import { RenderMap } from '../shared';
 import { mapVisitor } from './mapVisitor';
 import { Visitor } from './visitor';
 
 export function writeRenderMapVisitor<
-  TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
+  TNodeKeys extends keyof NodeDictionary = keyof NodeDictionary
 >(
   visitor: Visitor<RenderMap, TNodeKeys>,
   path: string

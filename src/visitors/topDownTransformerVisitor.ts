@@ -1,4 +1,4 @@
-import { Node, RegisteredNodes } from '../nodes';
+import { Node, NodeDictionary } from '../nodes';
 import {
   NodeSelector,
   NodeStack,
@@ -23,7 +23,7 @@ export type TopDownNodeTransformerWithSelector<TNode extends Node = Node> = {
 };
 
 export function topDownTransformerVisitor<
-  TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
+  TNodeKeys extends keyof NodeDictionary = keyof NodeDictionary
 >(
   transformers: (TopDownNodeTransformer | TopDownNodeTransformerWithSelector)[],
   nodeKeys?: TNodeKeys[]

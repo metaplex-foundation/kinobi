@@ -1,9 +1,9 @@
-import { RegisteredNodes } from '../nodes';
+import { NodeDictionary } from '../nodes';
 import { identityVisitor } from './identityVisitor';
 import { interceptVisitor } from './interceptVisitor';
 
 export function removeDocsVisitor<
-  TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
+  TNodeKeys extends keyof NodeDictionary = keyof NodeDictionary
 >(nodeKeys?: TNodeKeys[]) {
   return interceptVisitor(identityVisitor(nodeKeys), (node, next) => {
     if ('docs' in node) {

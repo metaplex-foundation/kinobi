@@ -1,4 +1,4 @@
-import { Node, REGISTERED_NODE_KINDS, RegisteredNodes } from '../nodes';
+import { Node, REGISTERED_NODE_KINDS, NodeDictionary } from '../nodes';
 import {
   GetVisitorFunctionName,
   Visitor,
@@ -12,7 +12,7 @@ export type VisitorInterceptor<TReturn> = <TNode extends Node>(
 
 export function interceptVisitor<
   TReturn,
-  TNodeKeys extends keyof RegisteredNodes
+  TNodeKeys extends keyof NodeDictionary
 >(
   visitor: Visitor<TReturn, TNodeKeys>,
   interceptor: VisitorInterceptor<TReturn>

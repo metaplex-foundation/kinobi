@@ -4,7 +4,7 @@ import {
   Node,
   PDA_SEED_NODES,
   REGISTERED_NODE_KINDS,
-  RegisteredNodes,
+  NodeDictionary,
   SIZE_NODES,
   TYPE_NODES,
   VALUE_NODES,
@@ -53,11 +53,11 @@ import { staticVisitor } from './staticVisitor';
 import { Visitor, visit as baseVisit } from './visitor';
 
 export function identityVisitor<
-  TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
+  TNodeKeys extends keyof NodeDictionary = keyof NodeDictionary
 >(
   nodeKeys: TNodeKeys[] = REGISTERED_NODE_KINDS as TNodeKeys[]
 ): Visitor<Node | null, TNodeKeys> {
-  const castedNodeKeys: (keyof RegisteredNodes)[] = nodeKeys;
+  const castedNodeKeys: (keyof NodeDictionary)[] = nodeKeys;
   const visitor = staticVisitor(
     (node) => ({ ...node }),
     castedNodeKeys

@@ -1,11 +1,11 @@
 import chalk from 'chalk';
-import { RegisteredNodes } from '../nodes';
+import { NodeDictionary } from '../nodes';
 import { Visitor } from './visitor';
 import { mapVisitor } from './mapVisitor';
 import { LogLevel, ValidatorBag, getLevelIndex } from '../shared';
 
 export function throwValidatorItemsVisitor<
-  TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
+  TNodeKeys extends keyof NodeDictionary = keyof NodeDictionary
 >(
   visitor: Visitor<ValidatorBag, TNodeKeys>,
   throwLevel: LogLevel = 'error'

@@ -1,5 +1,5 @@
 import {
-  RegisteredNodes,
+  NodeDictionary,
   getAllAccounts,
   getAllDefinedTypes,
   getAllPdas,
@@ -10,7 +10,7 @@ import { Visitor } from './visitor';
 
 export function recordLinkablesVisitor<
   TReturn,
-  TNodeKeys extends keyof RegisteredNodes
+  TNodeKeys extends keyof NodeDictionary
 >(
   visitor: Visitor<TReturn, TNodeKeys>,
   linkables: LinkableDictionary

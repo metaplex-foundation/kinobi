@@ -1,9 +1,9 @@
-import { Node, REGISTERED_NODE_KINDS, RegisteredNodes } from '../nodes';
+import { Node, REGISTERED_NODE_KINDS, NodeDictionary } from '../nodes';
 import { Visitor, getVisitFunctionName } from './visitor';
 
 export function staticVisitor<
   TReturn,
-  TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
+  TNodeKeys extends keyof NodeDictionary = keyof NodeDictionary
 >(
   fn: (node: Node) => TReturn,
   nodeKeys: TNodeKeys[] = REGISTERED_NODE_KINDS as TNodeKeys[]

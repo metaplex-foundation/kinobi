@@ -13,10 +13,10 @@ export const REGISTERED_SIZE_NODES = {
 
 export const REGISTERED_SIZE_NODE_KINDS = getNodeKinds(REGISTERED_SIZE_NODES);
 export type RegisteredSizeNodeKind = typeof REGISTERED_SIZE_NODE_KINDS[number];
-export type RegisteredSizeNodes =
+export type RegisteredSizeNode =
   typeof REGISTERED_SIZE_NODES[RegisteredSizeNodeKind];
 
 // Size Node Helpers.
 
-export type SizeNode = RegisteredSizeNodes;
+export type SizeNode = RegisteredSizeNode;
 export const SIZE_NODES = REGISTERED_SIZE_NODE_KINDS;

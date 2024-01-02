@@ -16,10 +16,10 @@ export const REGISTERED_PDA_SEED_NODE_KINDS = getNodeKinds(
 );
 export type RegisteredPdaSeedNodeKind =
   typeof REGISTERED_PDA_SEED_NODE_KINDS[number];
-export type RegisteredPdaSeedNodes =
+export type RegisteredPdaSeedNode =
   typeof REGISTERED_PDA_SEED_NODES[RegisteredPdaSeedNodeKind];
 
 // Pda Seed Node Helpers.
 
-export type PdaSeedNode = RegisteredPdaSeedNodes;
+export type PdaSeedNode = RegisteredPdaSeedNode;
 export const PDA_SEED_NODES = REGISTERED_PDA_SEED_NODE_KINDS;

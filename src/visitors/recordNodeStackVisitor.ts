@@ -1,11 +1,11 @@
-import { RegisteredNodes } from '../nodes';
+import { NodeDictionary } from '../nodes';
 import { NodeStack } from '../shared';
 import { interceptVisitor } from './interceptVisitor';
 import { Visitor } from './visitor';
 
 export function recordNodeStackVisitor<
   TReturn,
-  TNodeKeys extends keyof RegisteredNodes
+  TNodeKeys extends keyof NodeDictionary
 >(
   visitor: Visitor<TReturn, TNodeKeys>,
   stack: NodeStack

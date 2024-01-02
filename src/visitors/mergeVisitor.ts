@@ -1,16 +1,16 @@
-import { Node, REGISTERED_NODE_KINDS, RegisteredNodes } from '../nodes';
+import { Node, REGISTERED_NODE_KINDS, NodeDictionary } from '../nodes';
 import { Visitor, visit as baseVisit } from './visitor';
 import { staticVisitor } from './staticVisitor';
 
 export function mergeVisitor<
   TReturn,
-  TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
+  TNodeKeys extends keyof NodeDictionary = keyof NodeDictionary
 >(
   leafValue: (node: Node) => TReturn,
   merge: (node: Node, values: TReturn[]) => TReturn,
   nodeKeys: TNodeKeys[] = REGISTERED_NODE_KINDS as TNodeKeys[]
 ): Visitor<TReturn, TNodeKeys> {
-  const castedNodeKeys: (keyof RegisteredNodes)[] = nodeKeys;
+  const castedNodeKeys: (keyof NodeDictionary)[] = nodeKeys;
   const visitor = staticVisitor(leafValue, castedNodeKeys) as Visitor<TReturn>;
   const visit =
     (v: Visitor<TReturn>) =>
