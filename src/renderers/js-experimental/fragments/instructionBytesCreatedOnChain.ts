@@ -1,5 +1,5 @@
-import { MainCaseString } from 'src/shared';
 import { InstructionNode } from '../../../nodes';
+import { MainCaseString } from '../../../shared';
 import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
