@@ -1,4 +1,4 @@
-import { RegisteredValueNodeKinds, isNode, isScalarEnum } from '../../nodes';
+import { RegisteredValueNodeKind, isNode, isScalarEnum } from '../../nodes';
 import { LinkableDictionary, MainCaseString, pascalCase } from '../../shared';
 import { Visitor, visit } from '../../visitors';
 import { Fragment, fragment, mergeFragments } from './fragments';
@@ -10,7 +10,7 @@ export function renderValueNodeVisitor(input: {
   nameApi: NameApi;
   linkables: LinkableDictionary;
   nonScalarEnums: MainCaseString[];
-}): Visitor<Fragment, RegisteredValueNodeKinds> {
+}): Visitor<Fragment, RegisteredValueNodeKind> {
   const { nameApi, linkables, nonScalarEnums } = input;
   return {
     visitArrayValue(node) {

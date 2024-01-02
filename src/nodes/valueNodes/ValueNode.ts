@@ -30,10 +30,10 @@ export const STANDALONE_VALUE_NODES = {
 };
 
 export const STANDALONE_VALUE_NODE_KINDS = getNodeKinds(STANDALONE_VALUE_NODES);
-export type StandaloneValueNodeKinds =
+export type StandaloneValueNodeKind =
   typeof STANDALONE_VALUE_NODE_KINDS[number];
 export type StandaloneValueNodes =
-  typeof STANDALONE_VALUE_NODES[StandaloneValueNodeKinds];
+  typeof STANDALONE_VALUE_NODES[StandaloneValueNodeKind];
 
 // Value Node Registration.
 
@@ -42,10 +42,10 @@ export const REGISTERED_VALUE_NODES = {
 };
 
 export const REGISTERED_VALUE_NODE_KINDS = getNodeKinds(REGISTERED_VALUE_NODES);
-export type RegisteredValueNodeKinds =
+export type RegisteredValueNodeKind =
   typeof REGISTERED_VALUE_NODE_KINDS[number];
 export type RegisteredValueNodes =
-  typeof REGISTERED_VALUE_NODES[RegisteredValueNodeKinds];
+  typeof REGISTERED_VALUE_NODES[RegisteredValueNodeKind];
 
 // Value Node Helpers.
 

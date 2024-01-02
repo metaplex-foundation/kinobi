@@ -1,4 +1,4 @@
-import { RegisteredValueNodeKinds, isNode, isScalarEnum } from '../../nodes';
+import { RegisteredValueNodeKind, isNode, isScalarEnum } from '../../nodes';
 import {
   LinkableDictionary,
   MainCaseString,
@@ -16,7 +16,7 @@ export function renderValueNodeVisitor(input: {
     imports: JavaScriptImportMap;
     render: string;
   },
-  RegisteredValueNodeKinds
+  RegisteredValueNodeKind
 > {
   const { linkables, nonScalarEnums } = input;
   return {
