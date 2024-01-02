@@ -2,11 +2,10 @@ import {
   TypeNode,
   ValueNode,
   assertIsNode,
+  instructionArgumentNode,
   instructionDataArgsNode,
   instructionNode,
   numberTypeNode,
-  structFieldTypeNode,
-  structTypeNode,
 } from '../nodes';
 import {
   BottomUpNodeTransformerWithSelector,
@@ -37,7 +36,7 @@ export function setInstructionDiscriminatorsVisitor(
           select: `${stack.join('.')}.[instructionNode]${name}`,
           transform: (node) => {
             assertIsNode(node, 'instructionNode');
-            const discriminatorField = structFieldTypeNode({
+            const discriminatorArgument = instructionArgumentNode({
               name: discriminator.name ?? 'discriminator',
               type: discriminator.type ?? numberTypeNode('u8'),
               docs: discriminator.docs ?? [],
@@ -49,10 +48,10 @@ export function setInstructionDiscriminatorsVisitor(
               ...node,
               dataArgs: instructionDataArgsNode({
                 ...node.dataArgs,
-                struct: structTypeNode([
-                  discriminatorField,
-                  ...node.dataArgs.struct.fields,
-                ]),
+                dataArguments: [
+                  discriminatorArgument,
+                  ...node.dataArgs.dataArguments,
+                ],
               }),
             });
           },

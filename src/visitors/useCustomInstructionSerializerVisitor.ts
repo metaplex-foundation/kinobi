@@ -5,6 +5,7 @@ import {
   instructionDataArgsNode,
   instructionNode,
   programNode,
+  structTypeNodeFromInstructionArgumentNodes,
 } from '../nodes';
 import { mainCase, pipe } from '../shared';
 import { ImportFrom } from '../shared/ImportFrom';
@@ -44,7 +45,9 @@ export function useCustomInstructionSerializerVisitor(
             if (!options || !options.extract) return;
             const newType = definedTypeNode({
               name: options.extractAs,
-              type: instruction.dataArgs.struct,
+              type: structTypeNodeFromInstructionArgumentNodes(
+                instruction.dataArgs.dataArguments
+              ),
               idlName: instruction.idlName,
               docs: instruction.docs,
               internal: options.extractedTypeShouldBeInternal,

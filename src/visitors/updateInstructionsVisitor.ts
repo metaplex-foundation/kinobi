@@ -11,12 +11,11 @@ import {
   addDefaultSeedValuesFromPdaWhenMissing,
   assertIsNode,
   instructionAccountNode,
+  instructionArgumentNode,
   instructionDataArgsNode,
   instructionExtraArgsNode,
   instructionNode,
   isNode,
-  structFieldTypeNode,
-  structTypeNode,
 } from '../nodes';
 import { LinkableDictionary, MainCaseString, mainCase, pipe } from '../shared';
 import {
@@ -150,42 +149,40 @@ function handleInstructionArgs(
   const newDataArgs = instructionDataArgsNode({
     ...instruction.dataArgs,
     name: `${newInstructionName}InstructionData`,
-    struct: structTypeNode(
-      instruction.dataArgs.struct.fields.map((field) => {
-        const argUpdate = argUpdates[field.name];
-        if (!argUpdate) return field;
-        usedArgs.add(field.name);
-        return structFieldTypeNode({
-          ...field,
-          type: argUpdate.type ?? field.type,
-          name: argUpdate.name ?? field.name,
-          docs: argUpdate.docs ?? field.docs,
-        });
-      })
-    ),
+    dataArguments: instruction.dataArgs.dataArguments.map((node) => {
+      const argUpdate = argUpdates[node.name];
+      if (!argUpdate) return node;
+      usedArgs.add(node.name);
+      return instructionArgumentNode({
+        ...node,
+        type: argUpdate.type ?? node.type,
+        name: argUpdate.name ?? node.name,
+        docs: argUpdate.docs ?? node.docs,
+      });
+    }),
   });
 
-  const updatedExtraFields = instruction.extraArgs.struct.fields.map(
-    (field) => {
-      if (usedArgs.has(field.name)) return field;
-      const argUpdate = argUpdates[field.name];
-      if (!argUpdate) return field;
-      usedArgs.add(field.name);
-      return structFieldTypeNode({
-        ...field,
-        type: argUpdate.type ?? field.type,
-        name: argUpdate.name ?? field.name,
-        docs: argUpdate.docs ?? field.docs,
+  const updatedExtraArguments = instruction.extraArgs.extraArguments.map(
+    (node) => {
+      if (usedArgs.has(node.name)) return node;
+      const argUpdate = argUpdates[node.name];
+      if (!argUpdate) return node;
+      usedArgs.add(node.name);
+      return instructionArgumentNode({
+        ...node,
+        type: argUpdate.type ?? node.type,
+        name: argUpdate.name ?? node.name,
+        docs: argUpdate.docs ?? node.docs,
       });
     }
   );
 
-  const newExtraFields = Object.entries(argUpdates)
+  const newExtraArguments = Object.entries(argUpdates)
     .filter(([argName]) => !usedArgs.has(argName))
     .map(([argName, argUpdate]) => {
       const { type } = argUpdate;
       assertIsNode(type, TYPE_NODES);
-      return structFieldTypeNode({
+      return instructionArgumentNode({
         name: argUpdate.name ?? argName,
         type,
         docs: argUpdate.docs ?? [],
@@ -195,7 +192,7 @@ function handleInstructionArgs(
   const newExtraArgs = instructionExtraArgsNode({
     ...instruction.extraArgs,
     name: `${newInstructionName}InstructionExtra`,
-    struct: structTypeNode([...updatedExtraFields, ...newExtraFields]),
+    extraArguments: [...updatedExtraArguments, ...newExtraArguments],
   });
 
   const newArgDefaults = instruction.argDefaults;

@@ -1,7 +1,14 @@
 import { IdlInstructionArg } from '../idl';
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
+import { isNode } from './Node';
 import { InstructionInputValueNode } from './contextualValueNodes';
-import { TypeNode, createTypeNodeFromIdl } from './typeNodes';
+import {
+  TypeNode,
+  createTypeNodeFromIdl,
+  structFieldTypeNode,
+  structTypeNode,
+} from './typeNodes';
+import { VALUE_NODES } from './valueNodes';
 
 export type InstructionArgumentNode = {
   readonly kind: 'instructionArgumentNode';
@@ -49,5 +56,26 @@ export function instructionArgumentNodeFromIdl(
     name: idl.name ?? '',
     type: createTypeNodeFromIdl(idl.type),
     docs: idl.docs ?? [],
+  });
+}
+
+export function structTypeNodeFromInstructionArgumentNodes(
+  nodes: InstructionArgumentNode[]
+) {
+  return structTypeNode(
+    nodes.map(structFieldTypeNodeFromInstructionArgumentNode)
+  );
+}
+
+export function structFieldTypeNodeFromInstructionArgumentNode(
+  node: InstructionArgumentNode
+) {
+  if (isNode(node.defaultValue, VALUE_NODES)) {
+    return structFieldTypeNode({ ...node, defaultValue: node.defaultValue });
+  }
+  return structFieldTypeNode({
+    ...node,
+    defaultValue: undefined,
+    defaultValueStrategy: undefined,
   });
 }

@@ -5,7 +5,7 @@ export * from './deduplicateIdenticalDefinedTypesVisitor';
 export * from './defaultVisitor';
 export * from './deleteNodesVisitor';
 export * from './extendVisitor';
-export * from './flattenInstructionArgsStructVisitor';
+export * from './flattenInstructionDataArgumentsVisitor';
 export * from './flattenStructVisitor';
 export * from './getByteSizeVisitor';
 export * from './getDebugStringVisitor';

@@ -4,6 +4,7 @@ import {
   accountNode,
   arrayTypeNode,
   fixedSizeNode,
+  instructionArgumentNode,
   instructionDataArgsNode,
   instructionNode,
   numberTypeNode,
@@ -41,7 +42,7 @@ export function setAnchorDiscriminatorsVisitor() {
           const shouldAddDiscriminator = program?.origin === 'anchor';
           if (!shouldAddDiscriminator) return node;
 
-          const discriminatorField = structFieldTypeNode({
+          const discriminatorArgument = structFieldTypeNode({
             name: 'discriminator',
             type: arrayTypeNode(numberTypeNode('u8'), fixedSizeNode(8)),
             defaultValue: getAnchorAccountDiscriminator(node.idlName),
@@ -54,7 +55,7 @@ export function setAnchorDiscriminatorsVisitor() {
             data: accountDataNode({
               ...node.data,
               struct: structTypeNode([
-                discriminatorField,
+                discriminatorArgument,
                 ...node.data.struct.fields,
               ]),
             }),
@@ -65,7 +66,7 @@ export function setAnchorDiscriminatorsVisitor() {
           const shouldAddDiscriminator = program?.origin === 'anchor';
           if (!shouldAddDiscriminator) return node;
 
-          const discriminatorField = structFieldTypeNode({
+          const discriminatorArgument = instructionArgumentNode({
             name: 'discriminator',
             type: arrayTypeNode(numberTypeNode('u8'), fixedSizeNode(8)),
             defaultValue: getAnchorInstructionDiscriminator(node.idlName),
@@ -76,10 +77,10 @@ export function setAnchorDiscriminatorsVisitor() {
             ...node,
             dataArgs: instructionDataArgsNode({
               ...node.dataArgs,
-              struct: structTypeNode([
-                discriminatorField,
-                ...node.dataArgs.struct.fields,
-              ]),
+              dataArguments: [
+                discriminatorArgument,
+                ...node.dataArgs.dataArguments,
+              ],
             }),
           });
         },
