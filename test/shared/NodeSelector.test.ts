@@ -346,7 +346,6 @@ test(macro, '[structFieldTypeNode].*', [
   tokenAccount.data.struct.fields[3].type,
   tokenDelegatedAmountOption.prefix,
   tokenDelegatedAmountOption.item,
-  mintTokenInstruction.dataArgs.dataArguments[0].type,
   giftAccount.data.struct.fields[0].type,
   giftAccount.data.struct.fields[1].type,
   (giftAccount.data.struct.fields[1].type as BooleanTypeNode).size,
