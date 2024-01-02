@@ -7,6 +7,7 @@ import { renderValueNodeVisitor } from './renderValueNodeVisitor';
 
 export function renderInstructionDefaults(
   input: ResolvedInstructionInput,
+  valueNodeVisitor: ReturnType<typeof renderValueNodeVisitor>,
   optionalAccountStrategy: 'programId' | 'omitted',
   argObject: string
 ): {
@@ -14,7 +15,6 @@ export function renderInstructionDefaults(
   interfaces: JavaScriptContextMap;
   render: string;
 } {
-  const valueNodeVisitor = renderValueNodeVisitor();
   const imports = new JavaScriptImportMap();
   const interfaces = new JavaScriptContextMap();
 
@@ -160,12 +160,14 @@ export function renderInstructionDefaults(
     case 'conditionalValueNode':
       const ifTrueRenderer = renderNestedInstructionDefault(
         input,
+        valueNodeVisitor,
         optionalAccountStrategy,
         defaultsTo.ifTrue,
         argObject
       );
       const ifFalseRenderer = renderNestedInstructionDefault(
         input,
+        valueNodeVisitor,
         optionalAccountStrategy,
         defaultsTo.ifFalse,
         argObject
@@ -240,6 +242,7 @@ export function renderInstructionDefaults(
 
 function renderNestedInstructionDefault(
   input: ResolvedInstructionInput,
+  valueNodeVisitor: ReturnType<typeof renderValueNodeVisitor>,
   optionalAccountStrategy: 'programId' | 'omitted',
   defaultsTo: InstructionInputValueNode | undefined,
   argObject: string
@@ -253,6 +256,7 @@ function renderNestedInstructionDefault(
   if (!defaultsTo) return undefined;
   return renderInstructionDefaults(
     { ...input, defaultsTo },
+    valueNodeVisitor,
     optionalAccountStrategy,
     argObject
   );

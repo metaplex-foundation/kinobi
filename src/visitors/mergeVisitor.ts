@@ -229,9 +229,10 @@ export function mergeVisitor<
 
   if (castedNodeKeys.includes('enumValueNode')) {
     visitor.visitEnumValue = function visitEnumValue(node) {
-      return typeof node.value === 'string'
-        ? leafValue(node)
-        : merge(node, visit(this)(node.value));
+      return merge(node, [
+        ...visit(this)(node.enum),
+        ...(node.value ? visit(this)(node.value) : []),
+      ]);
     };
   }
 

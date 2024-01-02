@@ -1,5 +1,5 @@
 import { InstructionInputValueNode, isNode } from '../../../nodes';
-import { MainCaseString, camelCase } from '../../../shared';
+import { LinkableDictionary, MainCaseString, camelCase } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import { isAsyncDefaultValue } from '../asyncHelpers';
 import { NameApi } from '../nameTransformers';
@@ -12,9 +12,18 @@ export function getInstructionInputDefaultFragment(scope: {
   asyncResolvers: string[];
   useAsync: boolean;
   nameApi: NameApi;
+  linkables: LinkableDictionary;
+  nonScalarEnums: MainCaseString[];
 }): Fragment {
-  const { input, optionalAccountStrategy, asyncResolvers, useAsync, nameApi } =
-    scope;
+  const {
+    input,
+    optionalAccountStrategy,
+    asyncResolvers,
+    useAsync,
+    nameApi,
+    linkables,
+    nonScalarEnums,
+  } = scope;
   if (!input.defaultsTo) {
     return fragment('');
   }
@@ -90,9 +99,12 @@ export function getInstructionInputDefaultFragment(scope: {
               `${seed}: expectSome(args.${camelCase(seedValue.name)})`
             ).addImports('shared', 'expectSome');
           }
-          return getValueNodeFragment(seedValue, nameApi).mapRender(
-            (r) => `${seed}: ${r}`
-          );
+          return getValueNodeFragment(
+            seedValue,
+            nameApi,
+            linkables,
+            nonScalarEnums
+          ).mapRender((r) => `${seed}: ${r}`);
         }
       );
       const pdaSeedsFragment = mergeFragments(pdaSeeds, (renders) =>
@@ -204,7 +216,12 @@ export function getInstructionInputDefaultFragment(scope: {
           ? `accounts.${camelCase(defaultsTo.condition.name)}.value`
           : `args.${camelCase(defaultsTo.condition.name)}`;
         if (defaultsTo.value) {
-          const comparedValue = getValueNodeFragment(defaultsTo.value, nameApi);
+          const comparedValue = getValueNodeFragment(
+            defaultsTo.value,
+            nameApi,
+            linkables,
+            nonScalarEnums
+          );
           conditionalFragment
             .mergeImportsWith(comparedValue)
             .mergeFeaturesWith(comparedValue);
@@ -230,7 +247,12 @@ export function getInstructionInputDefaultFragment(scope: {
       );
 
     default:
-      const valueManifest = getValueNodeFragment(defaultsTo, nameApi);
+      const valueManifest = getValueNodeFragment(
+        defaultsTo,
+        nameApi,
+        linkables,
+        nonScalarEnums
+      );
       return defaultFragment(valueManifest.render).mergeImportsWith(
         valueManifest
       );

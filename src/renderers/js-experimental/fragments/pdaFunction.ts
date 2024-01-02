@@ -1,3 +1,4 @@
+import { LinkableDictionary, MainCaseString } from 'src/shared';
 import {
   PdaNode,
   ProgramNode,
@@ -20,8 +21,17 @@ export function getPdaFunctionFragment(scope: {
     keyof RegisteredTypeNodes | 'definedTypeLinkNode'
   >;
   nameApi: NameApi;
+  linkables: LinkableDictionary;
+  nonScalarEnums: MainCaseString[];
 }): Fragment {
-  const { pdaNode, programNode, typeManifestVisitor, nameApi } = scope;
+  const {
+    pdaNode,
+    programNode,
+    typeManifestVisitor,
+    nameApi,
+    linkables,
+    nonScalarEnums,
+  } = scope;
   if (pdaNode.seeds.length === 0) {
     return fragment('');
   }
@@ -33,7 +43,12 @@ export function getPdaFunctionFragment(scope: {
       const seedManifest = visit(seed.type, typeManifestVisitor);
       imports.mergeWith(seedManifest.encoder);
       const seedValue = seed.value;
-      const valueManifest = getValueNodeFragment(seedValue, nameApi);
+      const valueManifest = getValueNodeFragment(
+        seedValue,
+        nameApi,
+        linkables,
+        nonScalarEnums
+      );
       (seedValue as any).render = valueManifest.render;
       imports.mergeWith(valueManifest.imports);
       return { ...seed, typeManifest: seedManifest };

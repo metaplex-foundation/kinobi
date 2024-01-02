@@ -1,11 +1,13 @@
-import { RegisteredValueNodes } from '../../nodes';
-import { pascalCase } from '../../shared';
+import { RegisteredValueNodes, isNode, isScalarEnum } from '../../nodes';
+import { LinkableDictionary, MainCaseString, pascalCase } from '../../shared';
 import { Visitor, visit } from '../../visitors';
 import { Fragment, fragment, mergeFragments } from './fragments';
 import { NameApi } from './nameTransformers';
 
 export function renderValueNodeVisitor(
-  nameApi: NameApi
+  nameApi: NameApi,
+  linkables: LinkableDictionary,
+  nonScalarEnums: MainCaseString[]
 ): Visitor<Fragment, keyof RegisteredValueNodes> {
   return {
     visitArrayValue(node) {
@@ -18,19 +20,25 @@ export function renderValueNodeVisitor(
       return fragment(JSON.stringify(node.boolean));
     },
     visitEnumValue(node) {
-      const enumName = nameApi.dataType(node.enumType);
-      const enumFunction = nameApi.dataEnumFunction(node.enumType);
+      const enumName = nameApi.dataType(node.enum.name);
+      const enumFunction = nameApi.dataEnumFunction(node.enum.name);
       const variantName = pascalCase(node.variant);
-      const importFrom = node.importFrom ?? 'generatedTypes';
+      const importFrom = node.enum.importFrom ?? 'generatedTypes';
 
-      if (node.value === 'scalar') {
+      const enumNode = linkables.get(node.enum);
+      const isScalar =
+        enumNode && isNode(enumNode, 'enumTypeNode')
+          ? isScalarEnum(enumNode)
+          : !nonScalarEnums.includes(node.enum.name);
+
+      if (!node.value && isScalar) {
         return fragment(`${enumName}.${variantName}`).addImports(
           importFrom,
           enumName
         );
       }
 
-      if (node.value === 'empty') {
+      if (!node.value) {
         return fragment(`${enumFunction}('${variantName}')`).addImports(
           importFrom,
           enumFunction

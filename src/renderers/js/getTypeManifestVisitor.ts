@@ -23,9 +23,10 @@ export type JavaScriptTypeManifest = {
   serializerImports: JavaScriptImportMap;
 };
 
-export function getTypeManifestVisitor() {
+export function getTypeManifestVisitor(
+  valueNodeVisitor: ReturnType<typeof renderValueNodeVisitor>
+) {
   let parentName: { strict: string; loose: string } | null = null;
-  const valueNodeVisitor = renderValueNodeVisitor();
 
   return pipe(
     staticVisitor(

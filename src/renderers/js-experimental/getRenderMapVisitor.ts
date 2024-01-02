@@ -71,6 +71,7 @@ export type GetRenderMapOptions = {
   dependencyMap?: Record<ImportFrom, string>;
   asyncResolvers?: string[];
   nameTransformers?: Partial<NameTransformers>;
+  nonScalarEnums?: string[];
 };
 
 export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
@@ -90,8 +91,13 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
   };
   const dependencyMap = options.dependencyMap ?? {};
   const asyncResolvers = options.asyncResolvers ?? [];
+  const nonScalarEnums = (options.nonScalarEnums ?? []).map(mainCase);
 
-  const typeManifestVisitor = getTypeManifestVisitor(nameApi);
+  const typeManifestVisitor = getTypeManifestVisitor(
+    nameApi,
+    linkables,
+    nonScalarEnums
+  );
   const resolvedInstructionInputVisitor = getResolvedInstructionInputsVisitor();
 
   const render = (
@@ -252,6 +258,8 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             programNode: program,
             typeManifestVisitor,
             nameApi,
+            linkables,
+            nonScalarEnums,
           };
 
           const pdaFunctionFragment = getPdaFunctionFragment(scope);
@@ -319,6 +327,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             asyncResolvers,
             nameApi,
             linkables,
+            nonScalarEnums,
           };
 
           // Fragments.

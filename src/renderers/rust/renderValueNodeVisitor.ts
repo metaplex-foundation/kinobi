@@ -36,11 +36,11 @@ export function renderValueNodeVisitor(useStr: boolean = false): Visitor<
     },
     visitEnumValue(node) {
       const imports = new RustImportMap();
-      const enumName = pascalCase(node.enumType);
+      const enumName = pascalCase(node.enum.name);
       const variantName = pascalCase(node.variant);
-      const importFrom = node.importFrom ?? 'generatedTypes';
+      const importFrom = node.enum.importFrom ?? 'generatedTypes';
       imports.add(`${importFrom}::${enumName}`);
-      if (node.value === 'scalar' || node.value === 'empty') {
+      if (!node.value) {
         return { imports, render: `${enumName}::${variantName}` };
       }
       const enumValue = visit(node.value, this);

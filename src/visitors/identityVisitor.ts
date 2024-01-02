@@ -380,11 +380,15 @@ export function identityVisitor<
 
   if (castedNodeKeys.includes('enumValueNode')) {
     visitor.visitEnumValue = function visitEnumValue(node) {
+      const enumLink = visit(this)(node.enum);
+      if (enumLink === null) return null;
+      assertIsNode(enumLink, ['definedTypeLinkNode']);
       if (typeof node.value === 'string') return { ...node };
-      const value = visit(this)(node.value);
-      if (value === null) return null;
-      assertIsNode(value, ['structValueNode', 'tupleValueNode']);
-      return enumValueNode(node.enumType, node.variant, value, node.importFrom);
+      const value = node.value ? visit(this)(node.value) : null;
+      if (value !== null) {
+        assertIsNode(value, ['structValueNode', 'tupleValueNode']);
+      }
+      return enumValueNode(enumLink, node.variant, value ?? undefined);
     };
   }
 

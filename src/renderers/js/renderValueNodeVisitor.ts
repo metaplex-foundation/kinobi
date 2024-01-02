@@ -1,15 +1,24 @@
 import { Visitor, visit } from '../../visitors';
-import { RegisteredValueNodes } from '../../nodes';
-import { camelCase, pascalCase } from '../../shared';
+import { RegisteredValueNodes, isNode, isScalarEnum } from '../../nodes';
+import {
+  LinkableDictionary,
+  MainCaseString,
+  camelCase,
+  pascalCase,
+} from '../../shared';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 
-export function renderValueNodeVisitor(): Visitor<
+export function renderValueNodeVisitor(input: {
+  linkables: LinkableDictionary;
+  nonScalarEnums: MainCaseString[];
+}): Visitor<
   {
     imports: JavaScriptImportMap;
     render: string;
   },
   keyof RegisteredValueNodes
 > {
+  const { linkables, nonScalarEnums } = input;
   return {
     visitArrayValue(node) {
       const list = node.items.map((v) => visit(v, this));
@@ -28,21 +37,27 @@ export function renderValueNodeVisitor(): Visitor<
     },
     visitEnumValue(node) {
       const imports = new JavaScriptImportMap();
-      const enumName = pascalCase(node.enumType);
+      const enumName = pascalCase(node.enum.name);
       const variantName = pascalCase(node.variant);
-      const importFrom = node.importFrom ?? 'generatedTypes';
+      const importFrom = node.enum.importFrom ?? 'generatedTypes';
 
-      if (node.value === 'scalar') {
+      const enumNode = linkables.get(node.enum);
+      const isScalar =
+        enumNode && isNode(enumNode, 'enumTypeNode')
+          ? isScalarEnum(enumNode)
+          : !nonScalarEnums.includes(node.enum.name);
+
+      if (!node.value && isScalar) {
         return {
           imports: imports.add(importFrom, enumName),
           render: `${enumName}.${variantName}`,
         };
       }
 
-      const enumFn = camelCase(node.enumType);
+      const enumFn = camelCase(node.enum.name);
       imports.add(importFrom, enumFn);
 
-      if (node.value === 'empty') {
+      if (!node.value) {
         return { imports, render: `${enumFn}('${variantName}')` };
       }
 

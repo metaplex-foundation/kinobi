@@ -1,5 +1,5 @@
 import { InstructionNode } from '../../../nodes';
-import { camelCase } from '../../../shared';
+import { LinkableDictionary, MainCaseString, camelCase } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import { NameApi } from '../nameTransformers';
 import { Fragment, fragment, mergeFragments } from './common';
@@ -11,6 +11,8 @@ export function getInstructionInputResolvedFragment(scope: {
   asyncResolvers: string[];
   useAsync: boolean;
   nameApi: NameApi;
+  linkables: LinkableDictionary;
+  nonScalarEnums: MainCaseString[];
 }): Fragment {
   const resolvedInputFragments = scope.resolvedInputs.flatMap(
     (input: ResolvedInstructionInput): Fragment[] => {

@@ -6,14 +6,24 @@ import {
   structFieldTypeNode,
   structTypeNode,
 } from '../../nodes';
-import { camelCase, pascalCase, pipe } from '../../shared';
+import {
+  LinkableDictionary,
+  MainCaseString,
+  camelCase,
+  pascalCase,
+  pipe,
+} from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
 import { ImportMap } from './ImportMap';
 import { TypeManifest, mergeManifests } from './TypeManifest';
 import { Fragment, fragment, getValueNodeFragment } from './fragments';
 import { NameApi } from './nameTransformers';
 
-export function getTypeManifestVisitor(nameApi: NameApi) {
+export function getTypeManifestVisitor(
+  nameApi: NameApi,
+  linkables: LinkableDictionary,
+  nonScalarEnums: MainCaseString[]
+) {
   let parentName: { strict: string; loose: string } | null = null;
 
   return pipe(
@@ -438,7 +448,9 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
               >;
               const { render: renderedValue, imports } = getValueNodeFragment(
                 defaultValue,
-                nameApi
+                nameApi,
+                linkables,
+                nonScalarEnums
               );
               mergedManifest.encoder.mergeImportsWith(imports);
               return f.defaultValueStrategy === 'omitted'

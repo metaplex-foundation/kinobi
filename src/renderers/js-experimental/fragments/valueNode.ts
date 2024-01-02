@@ -1,3 +1,4 @@
+import { LinkableDictionary, MainCaseString } from '../../../shared';
 import { ValueNode } from '../../../nodes';
 import { visit } from '../../../visitors';
 import { NameApi } from '../nameTransformers';
@@ -6,7 +7,12 @@ import { Fragment } from './common';
 
 export function getValueNodeFragment(
   value: ValueNode,
-  nameApi: NameApi
+  nameApi: NameApi,
+  linkables: LinkableDictionary,
+  nonScalarEnums: MainCaseString[]
 ): Fragment {
-  return visit(value, renderValueNodeVisitor(nameApi));
+  return visit(
+    value,
+    renderValueNodeVisitor(nameApi, linkables, nonScalarEnums)
+  );
 }

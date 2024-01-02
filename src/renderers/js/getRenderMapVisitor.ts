@@ -19,6 +19,7 @@ import {
   ImportFrom,
   LinkableDictionary,
   logWarn,
+  mainCase,
   pascalCase,
   pipe,
   RenderMap,
@@ -57,6 +58,7 @@ export type GetJavaScriptRenderMapOptions = {
   formatCode?: boolean;
   prettierOptions?: PrettierOptions;
   dependencyMap?: Record<ImportFrom, string>;
+  nonScalarEnums?: string[];
 };
 
 export function getRenderMapVisitor(
@@ -66,9 +68,6 @@ export function getRenderMapVisitor(
   const byteSizeVisitor = getByteSizeVisitor(linkables);
   let program: ProgramNode | null = null;
 
-  const valueNodeVisitor = renderValueNodeVisitor();
-  const typeManifestVisitor = getTypeManifestVisitor();
-  const resolvedInstructionInputVisitor = getResolvedInstructionInputsVisitor();
   const renderParentInstructions = options.renderParentInstructions ?? false;
   const formatCode = options.formatCode ?? true;
   const prettierOptions = {
@@ -89,6 +88,14 @@ export function getRenderMapVisitor(
     generatedErrors: '../errors',
     generatedTypes: '../types',
   };
+  const nonScalarEnums = (options.nonScalarEnums ?? []).map(mainCase);
+
+  const valueNodeVisitor = renderValueNodeVisitor({
+    linkables,
+    nonScalarEnums,
+  });
+  const typeManifestVisitor = getTypeManifestVisitor(valueNodeVisitor);
+  const resolvedInstructionInputVisitor = getResolvedInstructionInputsVisitor();
 
   function getInstructionAccountType(
     account: ResolvedInstructionAccount
@@ -460,6 +467,7 @@ export function getRenderMapVisitor(
           ).map((input: ResolvedInstructionInput) => {
             const renderedInput = renderInstructionDefaults(
               input,
+              valueNodeVisitor,
               node.optionalAccountStrategy,
               argObject
             );
