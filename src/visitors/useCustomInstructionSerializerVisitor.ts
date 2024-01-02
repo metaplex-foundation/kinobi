@@ -44,7 +44,7 @@ export function useCustomInstructionSerializerVisitor(
             if (!options || !options.extract) return;
             const newType = definedTypeNode({
               name: options.extractAs,
-              data: instruction.dataArgs.struct,
+              type: instruction.dataArgs.struct,
               idlName: instruction.idlName,
               docs: instruction.docs,
               internal: options.extractedTypeShouldBeInternal,

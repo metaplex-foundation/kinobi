@@ -181,10 +181,10 @@ export function identityVisitor<
 
   if (castedNodeKeys.includes('definedTypeNode')) {
     visitor.visitDefinedType = function visitDefinedType(node) {
-      const data = visit(this)(node.data);
-      if (data === null) return null;
-      assertIsNode(data, TYPE_NODES);
-      return definedTypeNode({ ...node, data });
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertIsNode(type, TYPE_NODES);
+      return definedTypeNode({ ...node, type });
     };
   }
 

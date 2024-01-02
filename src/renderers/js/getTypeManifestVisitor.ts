@@ -97,7 +97,7 @@ export function getTypeManifestVisitor(
             strict: pascalCase(definedType.name),
             loose: `${pascalCase(definedType.name)}Args`,
           };
-          const manifest = visit(definedType.data, self);
+          const manifest = visit(definedType.type, self);
           parentName = null;
           return manifest;
         },

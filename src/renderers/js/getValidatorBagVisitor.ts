@@ -156,7 +156,7 @@ export function getValidatorBagVisitor(): Visitor<ValidatorBag> {
                 [pascalCaseName]: 'type',
                 [`${pascalCaseName}Args`]: 'type',
                 [`fetch${pascalCaseName}`]: 'function',
-                ...(isNode(node.data, 'enumTypeNode') && isDataEnum(node.data)
+                ...(isNode(node.type, 'enumTypeNode') && isDataEnum(node.type)
                   ? {
                       [camelCaseName]: 'function',
                       [`is${pascalCaseName}`]: 'function',

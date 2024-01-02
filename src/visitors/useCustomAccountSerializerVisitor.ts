@@ -44,7 +44,7 @@ export function useCustomAccountSerializerVisitor(
             if (!options || !options.extract) return;
             const newType = definedTypeNode({
               name: options.extractAs,
-              data: account.data.struct,
+              type: account.data.struct,
               idlName: account.idlName,
               docs: account.docs,
               internal: options.extractedTypeShouldBeInternal,

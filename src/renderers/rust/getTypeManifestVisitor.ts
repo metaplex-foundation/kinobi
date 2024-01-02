@@ -81,7 +81,7 @@ export function getTypeManifestVisitor() {
 
         visitDefinedType(definedType, { self }) {
           parentName = pascalCase(definedType.name);
-          const manifest = visit(definedType.data, self);
+          const manifest = visit(definedType.type, self);
           parentName = null;
           manifest.imports.add([
             'borsh::BorshSerialize',
@@ -96,8 +96,8 @@ export function getTypeManifestVisitor() {
             'PartialEq',
           ];
           if (
-            isNode(definedType.data, 'enumTypeNode') &&
-            isScalarEnum(definedType.data)
+            isNode(definedType.type, 'enumTypeNode') &&
+            isScalarEnum(definedType.type)
           ) {
             traits.push('PartialOrd', 'Hash');
           }

@@ -23,11 +23,11 @@ test('it counts the amount of times defined types are used within the tree', (t)
     definedTypes: [
       definedTypeNode({
         name: 'myStruct',
-        data: structTypeNode([]),
+        type: structTypeNode([]),
       }),
       definedTypeNode({
         name: 'myEnum',
-        data: enumTypeNode([]),
+        type: enumTypeNode([]),
       }),
     ],
     accounts: [

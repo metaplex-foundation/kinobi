@@ -56,9 +56,9 @@ export function unwrapTupleEnumWithSingleStructVisitor(
               if (item.importFrom) return node;
               const definedType = definedTypes.get(item.name);
               if (!definedType) return node;
-              if (!isNode(definedType.data, 'structTypeNode')) return node;
+              if (!isNode(definedType.type, 'structTypeNode')) return node;
               typesToPotentiallyUnwrap.push(item.name);
-              item = definedType.data;
+              item = definedType.type;
             }
             if (!isNode(item, 'structTypeNode')) return node;
             return enumStructVariantTypeNode(node.name, item);

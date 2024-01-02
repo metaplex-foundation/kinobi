@@ -61,7 +61,7 @@ export function getByteSizeVisitor(
         return visitedDefinedTypes.get(node.name)!;
       }
       definedTypeStack.push(node.name);
-      const child = visit(node.data, this);
+      const child = visit(node.type, this);
       definedTypeStack.pop();
       visitedDefinedTypes.set(node.name, child);
       return child;

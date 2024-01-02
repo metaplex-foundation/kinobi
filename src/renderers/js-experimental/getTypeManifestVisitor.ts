@@ -90,7 +90,7 @@ export function getTypeManifestVisitor(input: {
             strict: nameApi.dataType(definedType.name),
             loose: nameApi.dataArgsType(definedType.name),
           };
-          const manifest = visit(definedType.data, self);
+          const manifest = visit(definedType.type, self);
           parentName = null;
           return manifest;
         },

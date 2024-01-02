@@ -39,17 +39,17 @@ export function updateDefinedTypesVisitor(
                 return null;
               }
               const { data: dataUpdates, ...otherUpdates } = updates;
-              let newData = node.data;
-              if (isNode(node.data, 'structTypeNode')) {
-                newData = renameStructNode(node.data, dataUpdates ?? {});
-              } else if (isNode(node.data, 'enumTypeNode')) {
-                newData = renameEnumNode(node.data, dataUpdates ?? {});
+              let newType = node.type;
+              if (isNode(node.type, 'structTypeNode')) {
+                newType = renameStructNode(node.type, dataUpdates ?? {});
+              } else if (isNode(node.type, 'enumTypeNode')) {
+                newType = renameEnumNode(node.type, dataUpdates ?? {});
               }
               return definedTypeNode({
                 ...node,
                 ...otherUpdates,
                 name: newName ?? node.name,
-                data: newData,
+                type: newType,
               });
             },
           },

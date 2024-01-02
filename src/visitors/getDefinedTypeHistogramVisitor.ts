@@ -85,7 +85,7 @@ export function getDefinedTypeHistogramVisitor(): Visitor<DefinedTypeHistogram> 
         visitDefinedType(node, { self }) {
           mode = 'definedType';
           stackLevel = 0;
-          const histogram = visit(node.data, self);
+          const histogram = visit(node.type, self);
           mode = null;
           return histogram;
         },

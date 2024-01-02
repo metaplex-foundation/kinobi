@@ -53,7 +53,7 @@ export function createSubInstructionsFromEnumArgsVisitor(
               isNode(argField.type, 'definedTypeLinkNode') &&
               linkables.has(argField.type)
             ) {
-              const linkedType = linkables.get(argField.type)?.data ?? null;
+              const linkedType = linkables.get(argField.type)?.type ?? null;
               assertIsNode(linkedType, 'enumTypeNode');
               argType = linkedType;
             } else {

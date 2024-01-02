@@ -412,7 +412,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
         visitDefinedType(node) {
           const scope = {
             ...globalScope,
-            typeNode: node.data,
+            typeNode: node.type,
             name: node.name,
             manifest: visit(node, typeManifestVisitor),
             typeDocs: node.docs,

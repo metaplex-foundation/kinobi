@@ -21,7 +21,7 @@ export function unwrapInstructionArgsDefinedTypesVisitor() {
       // Filter out enums which are better defined as external types.
       .filter((name) => {
         const found = allDefinedTypes.find((type) => type.name === name);
-        return found && !isNode(found.data, 'enumTypeNode');
+        return found && !isNode(found.type, 'enumTypeNode');
       });
 
     // Inline the identified defined types if any.

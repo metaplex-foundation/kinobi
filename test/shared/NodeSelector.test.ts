@@ -177,7 +177,7 @@ const tree = rootNode([
     definedTypes: [
       definedTypeNode({
         name: 'wrappingPaper',
-        data: enumTypeNode([
+        type: enumTypeNode([
           enumEmptyVariantTypeNode('blue'),
           enumEmptyVariantTypeNode('red'),
           enumStructVariantTypeNode(
@@ -275,7 +275,7 @@ const mintTokenInstruction = splTokenProgram.instructions[0];
 const giftAccount = christmasProgram.accounts[0];
 const openGiftInstruction = christmasProgram.instructions[0];
 const wrappingPaper = christmasProgram.definedTypes[0];
-const wrappingPaperEnum = wrappingPaper.data as EnumTypeNode;
+const wrappingPaperEnum = wrappingPaper.type as EnumTypeNode;
 const wrappingPaperEnumGold = wrappingPaperEnum
   .variants[2] as EnumStructVariantTypeNode;
 

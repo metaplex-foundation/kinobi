@@ -92,7 +92,7 @@ export function mergeVisitor<
 
   if (castedNodeKeys.includes('definedTypeNode')) {
     visitor.visitDefinedType = function visitDefinedType(node) {
-      return merge(node, visit(this)(node.data));
+      return merge(node, visit(this)(node.type));
     };
   }
 

@@ -605,7 +605,7 @@ export function getRenderMapVisitor(
               }),
               typeManifest,
               isDataEnum:
-                isNode(node.data, 'enumTypeNode') && isDataEnum(node.data),
+                isNode(node.type, 'enumTypeNode') && isDataEnum(node.type),
             })
           );
         },
