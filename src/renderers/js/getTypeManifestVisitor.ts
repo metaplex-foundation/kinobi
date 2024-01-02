@@ -1,6 +1,6 @@
 import {
   ArrayTypeNode,
-  REGISTERED_TYPE_NODE_KEYS,
+  REGISTERED_TYPE_NODE_KINDS,
   isInteger,
   isNode,
   isScalarEnum,
@@ -41,7 +41,7 @@ export function getTypeManifestVisitor(
           serializerImports: new JavaScriptImportMap(),
         } as JavaScriptTypeManifest),
       [
-        ...REGISTERED_TYPE_NODE_KEYS,
+        ...REGISTERED_TYPE_NODE_KINDS,
         'definedTypeLinkNode',
         'definedTypeNode',
         'accountNode',

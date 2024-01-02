@@ -1,6 +1,6 @@
 import {
-  REGISTERED_TYPE_NODE_KEYS,
-  RegisteredTypeNodeKeys,
+  REGISTERED_TYPE_NODE_KINDS,
+  RegisteredTypeNodeKinds,
   isNode,
   isScalarEnum,
 } from '../nodes';
@@ -9,7 +9,7 @@ import { mergeVisitor } from './mergeVisitor';
 import { Visitor, visit } from './visitor';
 
 export type ByteSizeVisitorKeys =
-  | RegisteredTypeNodeKeys
+  | RegisteredTypeNodeKinds
   | 'definedTypeLinkNode'
   | 'definedTypeNode'
   | 'accountDataNode'
@@ -32,7 +32,7 @@ export function getByteSizeVisitor(
     () => null as number | null,
     (_, values) => sumSizes(values),
     [
-      ...REGISTERED_TYPE_NODE_KEYS,
+      ...REGISTERED_TYPE_NODE_KINDS,
       'definedTypeLinkNode',
       'definedTypeNode',
       'accountDataNode',

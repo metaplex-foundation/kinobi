@@ -1,5 +1,5 @@
 import { IDL_TYPE_LEAVES, IdlType } from '../../idl';
-import { getNodeKeys } from '../../shared/utils';
+import { getNodeKinds } from '../../shared/utils';
 import {
   DefinedTypeLinkNode,
   definedTypeLinkNode,
@@ -45,10 +45,10 @@ export const STANDALONE_TYPE_NODES = {
   tupleTypeNode: {} as TupleTypeNode,
 };
 
-export const STANDALONE_TYPE_NODE_KEYS = getNodeKeys(STANDALONE_TYPE_NODES);
-export type StandaloneTypeNodeKeys = typeof STANDALONE_TYPE_NODE_KEYS[number];
+export const STANDALONE_TYPE_NODE_KINDS = getNodeKinds(STANDALONE_TYPE_NODES);
+export type StandaloneTypeNodeKinds = typeof STANDALONE_TYPE_NODE_KINDS[number];
 export type StandaloneTypeNodes =
-  typeof STANDALONE_TYPE_NODES[StandaloneTypeNodeKeys];
+  typeof STANDALONE_TYPE_NODES[StandaloneTypeNodeKinds];
 
 // Type Node Registration.
 
@@ -62,10 +62,10 @@ export const REGISTERED_TYPE_NODES = {
   enumTupleVariantTypeNode: {} as EnumTupleVariantTypeNode,
 };
 
-export const REGISTERED_TYPE_NODE_KEYS = getNodeKeys(REGISTERED_TYPE_NODES);
-export type RegisteredTypeNodeKeys = typeof REGISTERED_TYPE_NODE_KEYS[number];
+export const REGISTERED_TYPE_NODE_KINDS = getNodeKinds(REGISTERED_TYPE_NODES);
+export type RegisteredTypeNodeKinds = typeof REGISTERED_TYPE_NODE_KINDS[number];
 export type RegisteredTypeNodes =
-  typeof REGISTERED_TYPE_NODES[RegisteredTypeNodeKeys];
+  typeof REGISTERED_TYPE_NODES[RegisteredTypeNodeKinds];
 
 // Type Node Helpers.
 // This only includes type nodes that can be used as standalone types.
@@ -73,10 +73,10 @@ export type RegisteredTypeNodes =
 // It also includes the definedTypeLinkNode to compose types.
 
 export const TYPE_NODES = [
-  ...STANDALONE_TYPE_NODE_KEYS,
+  ...STANDALONE_TYPE_NODE_KINDS,
   'definedTypeLinkNode' as const,
 ];
-export type TypeNodeKeys = typeof TYPE_NODES[number];
+export type TypeNodeKinds = typeof TYPE_NODES[number];
 export type TypeNode = StandaloneTypeNodes | DefinedTypeLinkNode;
 
 function isArrayOfSize(array: any, size: number): boolean {

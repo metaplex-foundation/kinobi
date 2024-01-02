@@ -1,4 +1,4 @@
-import { REGISTERED_NODE_KEYS, RegisteredNodes } from '../nodes';
+import { REGISTERED_NODE_KINDS, RegisteredNodes } from '../nodes';
 import {
   GetVisitorFunctionName,
   Visitor,
@@ -14,7 +14,7 @@ export function mapVisitor<
   map: (from: TReturnFrom) => TReturnTo
 ): Visitor<TReturnTo, TNodeKeys> {
   const registeredVisitFunctions =
-    REGISTERED_NODE_KEYS.map(getVisitFunctionName);
+    REGISTERED_NODE_KINDS.map(getVisitFunctionName);
   return Object.fromEntries(
     Object.keys(visitor).flatMap((key) => {
       if (!(registeredVisitFunctions as string[]).includes(key)) {

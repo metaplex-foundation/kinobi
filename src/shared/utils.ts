@@ -17,7 +17,7 @@ export type Mutable<T> = {
 
 export type DontInfer<T> = T extends any ? T : never;
 
-export function getNodeKeys<TNode, TObj extends Record<string, TNode>>(
+export function getNodeKinds<TNode, TObj extends Record<string, TNode>>(
   obj: TObj
 ): (keyof TObj)[] {
   return Object.keys(obj) as (keyof TObj)[];

@@ -1,5 +1,5 @@
 import {
-  REGISTERED_TYPE_NODE_KEYS,
+  REGISTERED_TYPE_NODE_KINDS,
   SizeNode,
   isNode,
   isScalarEnum,
@@ -34,7 +34,7 @@ export function getTypeManifestVisitor(input: {
           decoder: fragment(''),
         } as TypeManifest),
       [
-        ...REGISTERED_TYPE_NODE_KEYS,
+        ...REGISTERED_TYPE_NODE_KINDS,
         'definedTypeLinkNode',
         'definedTypeNode',
         'accountNode',

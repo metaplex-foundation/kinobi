@@ -1,5 +1,5 @@
 import { DontInfer } from '../shared';
-import { REGISTERED_NODE_KEYS, RegisteredNodes, Node } from '../nodes';
+import { REGISTERED_NODE_KINDS, RegisteredNodes, Node } from '../nodes';
 import {
   GetVisitorFunctionName,
   Visitor,
@@ -34,7 +34,7 @@ export function extendVisitor<TReturn, TNodeKeys extends keyof RegisteredNodes>(
   overrides: DontInfer<VisitorOverrides<TReturn, TNodeKeys>>
 ): Visitor<TReturn, TNodeKeys> {
   const registeredVisitFunctions =
-    REGISTERED_NODE_KEYS.map(getVisitFunctionName);
+    REGISTERED_NODE_KINDS.map(getVisitFunctionName);
 
   const overriddenFunctions = Object.fromEntries(
     Object.keys(overrides).flatMap((key) => {

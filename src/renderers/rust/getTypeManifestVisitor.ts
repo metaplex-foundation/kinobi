@@ -1,5 +1,5 @@
 import {
-  REGISTERED_TYPE_NODE_KEYS,
+  REGISTERED_TYPE_NODE_KINDS,
   arrayTypeNode,
   isNode,
   isScalarEnum,
@@ -28,7 +28,7 @@ export function getTypeManifestVisitor() {
         type: values.map((v) => v.type).join('\n'),
       }),
       [
-        ...REGISTERED_TYPE_NODE_KEYS,
+        ...REGISTERED_TYPE_NODE_KINDS,
         'definedTypeLinkNode',
         'definedTypeNode',
         'accountNode',
