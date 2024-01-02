@@ -253,10 +253,10 @@ export function identityVisitor<
       const prefix = visit(this)(node.prefix);
       if (prefix === null) return null;
       assertIsNode(prefix, 'numberTypeNode');
-      const child = visit(this)(node.child);
-      if (child === null) return null;
-      assertIsNode(child, TYPE_NODES);
-      return optionTypeNode(child, { ...node, prefix });
+      const item = visit(this)(node.item);
+      if (item === null) return null;
+      assertIsNode(item, TYPE_NODES);
+      return optionTypeNode(item, { ...node, prefix });
     };
   }
 

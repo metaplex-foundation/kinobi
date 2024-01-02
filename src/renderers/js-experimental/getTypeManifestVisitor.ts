@@ -316,7 +316,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
         },
 
         visitOptionType(optionType, { self }) {
-          const childManifest = visit(optionType.child, self);
+          const childManifest = visit(optionType.item, self);
           childManifest.strictType
             .mapRender((r) => `Option<${r}>`)
             .addImports('solanaOptions', 'Option');

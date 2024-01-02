@@ -301,7 +301,7 @@ export function getTypeManifestVisitor() {
         },
 
         visitOptionType(optionType, { self }) {
-          const childManifest = visit(optionType.child, self);
+          const childManifest = visit(optionType.item, self);
           childManifest.strictImports.add('umi', 'Option');
           childManifest.looseImports.add('umi', 'OptionOrNullable');
           childManifest.serializerImports.add('umiSerializers', 'option');

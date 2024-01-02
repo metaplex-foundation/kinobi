@@ -70,8 +70,8 @@ export function getByteSizeVisitor(
     visitArrayType(node) {
       if (!isNode(node.size, 'fixedSizeNode')) return null;
       const fixedSize = node.size.size;
-      const childSize = visit(node.item, this);
-      const arraySize = childSize !== null ? childSize * fixedSize : null;
+      const itemSize = visit(node.item, this);
+      const arraySize = itemSize !== null ? itemSize * fixedSize : null;
       return fixedSize === 0 ? 0 : arraySize;
     },
 
@@ -115,8 +115,8 @@ export function getByteSizeVisitor(
     visitOptionType(node) {
       if (!node.fixed) return null;
       const prefixSize = visit(node.prefix, this) as number;
-      const childSize = visit(node.child, this);
-      return childSize !== null ? childSize + prefixSize : null;
+      const itemSize = visit(node.item, this);
+      return itemSize !== null ? itemSize + prefixSize : null;
     },
 
     visitBytesType(node) {

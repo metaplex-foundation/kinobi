@@ -263,7 +263,7 @@ export function getTypeManifestVisitor() {
         },
 
         visitOptionType(optionType, { self }) {
-          const childManifest = visit(optionType.child, self);
+          const childManifest = visit(optionType.item, self);
 
           if (
             optionType.prefix.format === 'u8' &&

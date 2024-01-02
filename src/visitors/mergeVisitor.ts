@@ -144,7 +144,7 @@ export function mergeVisitor<
     visitor.visitOptionType = function visitOptionType(node) {
       return merge(node, [
         ...visit(this)(node.prefix),
-        ...visit(this)(node.child),
+        ...visit(this)(node.item),
       ]);
     };
   }
