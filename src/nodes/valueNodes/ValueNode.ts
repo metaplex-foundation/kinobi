@@ -49,5 +49,5 @@ export type RegisteredValueNodes =
 
 // Value Node Helpers.
 
-export type ValueNode = RegisteredValueNodes;
+export type ValueNode = StandaloneValueNodes;
 export const VALUE_NODES = STANDALONE_VALUE_NODE_KINDS;
