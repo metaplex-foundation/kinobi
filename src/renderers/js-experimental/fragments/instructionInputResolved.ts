@@ -1,7 +1,8 @@
 import { InstructionNode } from '../../../nodes';
-import { LinkableDictionary, MainCaseString, camelCase } from '../../../shared';
+import { camelCase } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import { NameApi } from '../nameTransformers';
+import { ValueNodeVisitor } from '../renderValueNodeVisitor';
 import { Fragment, fragment, mergeFragments } from './common';
 import { getInstructionInputDefaultFragment } from './instructionInputDefault';
 
@@ -11,8 +12,7 @@ export function getInstructionInputResolvedFragment(scope: {
   asyncResolvers: string[];
   useAsync: boolean;
   nameApi: NameApi;
-  linkables: LinkableDictionary;
-  nonScalarEnums: MainCaseString[];
+  valueNodeVisitor: ValueNodeVisitor;
 }): Fragment {
   const resolvedInputFragments = scope.resolvedInputs.flatMap(
     (input: ResolvedInstructionInput): Fragment[] => {

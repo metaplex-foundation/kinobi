@@ -4,11 +4,14 @@ import { Visitor, visit } from '../../visitors';
 import { Fragment, fragment, mergeFragments } from './fragments';
 import { NameApi } from './nameTransformers';
 
-export function renderValueNodeVisitor(
-  nameApi: NameApi,
-  linkables: LinkableDictionary,
-  nonScalarEnums: MainCaseString[]
-): Visitor<Fragment, keyof RegisteredValueNodes> {
+export type ValueNodeVisitor = ReturnType<typeof renderValueNodeVisitor>;
+
+export function renderValueNodeVisitor(input: {
+  nameApi: NameApi;
+  linkables: LinkableDictionary;
+  nonScalarEnums: MainCaseString[];
+}): Visitor<Fragment, keyof RegisteredValueNodes> {
+  const { nameApi, linkables, nonScalarEnums } = input;
   return {
     visitArrayValue(node) {
       return mergeFragments(

@@ -6,24 +6,21 @@ import {
   structFieldTypeNode,
   structTypeNode,
 } from '../../nodes';
-import {
-  LinkableDictionary,
-  MainCaseString,
-  camelCase,
-  pascalCase,
-  pipe,
-} from '../../shared';
+import { camelCase, pascalCase, pipe } from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
 import { ImportMap } from './ImportMap';
 import { TypeManifest, mergeManifests } from './TypeManifest';
-import { Fragment, fragment, getValueNodeFragment } from './fragments';
+import { Fragment, fragment } from './fragments';
 import { NameApi } from './nameTransformers';
+import { ValueNodeVisitor } from './renderValueNodeVisitor';
 
-export function getTypeManifestVisitor(
-  nameApi: NameApi,
-  linkables: LinkableDictionary,
-  nonScalarEnums: MainCaseString[]
-) {
+export type TypeManifestVisitor = ReturnType<typeof getTypeManifestVisitor>;
+
+export function getTypeManifestVisitor(input: {
+  nameApi: NameApi;
+  valueNodeVisitor: ValueNodeVisitor;
+}) {
+  const { nameApi, valueNodeVisitor } = input;
   let parentName: { strict: string; loose: string } | null = null;
 
   return pipe(
@@ -446,11 +443,9 @@ export function getTypeManifestVisitor(
               const defaultValue = f.defaultValue as NonNullable<
                 typeof f.defaultValue
               >;
-              const { render: renderedValue, imports } = getValueNodeFragment(
+              const { render: renderedValue, imports } = visit(
                 defaultValue,
-                nameApi,
-                linkables,
-                nonScalarEnums
+                valueNodeVisitor
               );
               mergedManifest.encoder.mergeImportsWith(imports);
               return f.defaultValueStrategy === 'omitted'

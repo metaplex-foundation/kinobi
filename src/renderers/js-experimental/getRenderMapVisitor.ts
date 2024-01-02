@@ -52,6 +52,7 @@ import {
   getNameApi,
   NameTransformers,
 } from './nameTransformers';
+import { renderValueNodeVisitor } from './renderValueNodeVisitor';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -93,11 +94,15 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
   const asyncResolvers = options.asyncResolvers ?? [];
   const nonScalarEnums = (options.nonScalarEnums ?? []).map(mainCase);
 
-  const typeManifestVisitor = getTypeManifestVisitor(
+  const valueNodeVisitor = renderValueNodeVisitor({
     nameApi,
     linkables,
-    nonScalarEnums
-  );
+    nonScalarEnums,
+  });
+  const typeManifestVisitor = getTypeManifestVisitor({
+    nameApi,
+    valueNodeVisitor,
+  });
   const resolvedInstructionInputVisitor = getResolvedInstructionInputsVisitor();
 
   const render = (
@@ -257,9 +262,8 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             pdaNode: node,
             programNode: program,
             typeManifestVisitor,
+            valueNodeVisitor,
             nameApi,
-            linkables,
-            nonScalarEnums,
           };
 
           const pdaFunctionFragment = getPdaFunctionFragment(scope);
@@ -326,8 +330,8 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             resolvedInputs: visit(node, resolvedInstructionInputVisitor),
             asyncResolvers,
             nameApi,
+            valueNodeVisitor,
             linkables,
-            nonScalarEnums,
           };
 
           // Fragments.

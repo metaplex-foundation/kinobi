@@ -1,14 +1,10 @@
 import { InstructionNode, ProgramNode } from '../../../nodes';
-import {
-  LinkableDictionary,
-  MainCaseString,
-  camelCase,
-  pascalCase,
-} from '../../../shared';
+import { camelCase, pascalCase } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import { TypeManifest } from '../TypeManifest';
 import { hasAsyncFunction } from '../asyncHelpers';
 import { NameApi } from '../nameTransformers';
+import { ValueNodeVisitor } from '../renderValueNodeVisitor';
 import {
   Fragment,
   fragment,
@@ -30,8 +26,7 @@ export function getInstructionFunctionHighLevelFragment(scope: {
   asyncResolvers: string[];
   useAsync: boolean;
   nameApi: NameApi;
-  linkables: LinkableDictionary;
-  nonScalarEnums: MainCaseString[];
+  valueNodeVisitor: ValueNodeVisitor;
 }): Fragment {
   const {
     useAsync,
