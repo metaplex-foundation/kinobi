@@ -25,4 +25,3 @@ export * from './typeDataEnumHelpers';
 export * from './typeDecoder';
 export * from './typeEncoder';
 export * from './typeWithCodec';
-export * from './valueNode';

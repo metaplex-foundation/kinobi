@@ -4,6 +4,8 @@ import { ValueNode, stringValueNode } from '../valueNodes';
 
 export type ConstantPdaSeedNode = {
   readonly kind: 'constantPdaSeedNode';
+
+  // Children.
   readonly type: TypeNode;
   readonly value: ValueNode;
 };

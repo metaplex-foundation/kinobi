@@ -1,5 +1,7 @@
 export type StringValueNode = {
   readonly kind: 'stringValueNode';
+
+  // Data.
   readonly string: string;
 };
 

@@ -1,5 +1,7 @@
 export type NumberValueNode = {
   readonly kind: 'numberValueNode';
+
+  // Data.
   readonly number: number;
 };
 

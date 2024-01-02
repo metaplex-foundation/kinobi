@@ -23,12 +23,12 @@ export function transformDefinedTypesIntoAccountsVisitor(
         );
 
         const newAccounts = typesToExtract.map((node) => {
-          assertIsNode(node.data, 'structTypeNode');
+          assertIsNode(node.type, 'structTypeNode');
           return accountNode({
             ...node,
             data: accountDataNode({
               name: `${node.name}AccountData`,
-              struct: node.data,
+              struct: node.type,
             }),
             size: undefined,
             discriminator: undefined,

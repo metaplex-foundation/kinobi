@@ -17,7 +17,7 @@ test('it records the current node stack of a visit', (t) => {
   // Given the following tree.
   const node = definedTypeNode({
     name: 'myType',
-    data: tupleTypeNode([numberTypeNode('u32'), publicKeyTypeNode()]),
+    type: tupleTypeNode([numberTypeNode('u32'), publicKeyTypeNode()]),
   });
 
   // And a visitor that records the current node stack and stores the number stacks in an array.
@@ -35,7 +35,7 @@ test('it records the current node stack of a visit', (t) => {
 
   // Then we expect the number stacks to have been recorded.
   t.is(numberStacks.length, 1);
-  t.deepEqual(numberStacks[0].all(), [node, node.data]);
+  t.deepEqual(numberStacks[0].all(), [node, node.type]);
 
   // And the current node stack to be empty.
   t.true(stack.isEmpty());
@@ -45,7 +45,7 @@ test('it includes the current node when applied last', (t) => {
   // Given the following tree.
   const node = definedTypeNode({
     name: 'myType',
-    data: tupleTypeNode([numberTypeNode('u32'), publicKeyTypeNode()]),
+    type: tupleTypeNode([numberTypeNode('u32'), publicKeyTypeNode()]),
   });
 
   // And a visitor that records the current node stack as the last visitor modifier.
@@ -66,7 +66,7 @@ test('it includes the current node when applied last', (t) => {
   t.is(numberStacks.length, 1);
   t.deepEqual(numberStacks[0].all(), [
     node,
-    node.data,
-    (node.data as TupleTypeNode).children[0],
+    node.type,
+    (node.type as TupleTypeNode).items[0],
   ]);
 });

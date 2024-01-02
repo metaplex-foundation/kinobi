@@ -1,27 +1,25 @@
-import {
-  PdaNode,
-  ProgramNode,
-  RegisteredTypeNodes,
-  isNode,
-  isNodeFilter,
-} from '../../../nodes';
-import { Visitor, visit } from '../../../visitors';
+import { PdaNode, ProgramNode, isNode, isNodeFilter } from '../../../nodes';
+import { visit } from '../../../visitors';
 import { ImportMap } from '../ImportMap';
-import { TypeManifest } from '../TypeManifest';
-import { NameApi } from '../nameTransformers';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
-import { getValueNodeFragment } from './valueNode';
 
-export function getPdaFunctionFragment(scope: {
-  pdaNode: PdaNode;
-  programNode: ProgramNode;
-  typeManifestVisitor: Visitor<
-    TypeManifest,
-    keyof RegisteredTypeNodes | 'definedTypeLinkNode'
-  >;
-  nameApi: NameApi;
-}): Fragment {
-  const { pdaNode, programNode, typeManifestVisitor, nameApi } = scope;
+export function getPdaFunctionFragment(
+  scope: Pick<
+    GlobalFragmentScope,
+    'nameApi' | 'typeManifestVisitor' | 'valueNodeVisitor'
+  > & {
+    pdaNode: PdaNode;
+    programNode: ProgramNode;
+  }
+): Fragment {
+  const {
+    pdaNode,
+    programNode,
+    typeManifestVisitor,
+    valueNodeVisitor,
+    nameApi,
+  } = scope;
   if (pdaNode.seeds.length === 0) {
     return fragment('');
   }
@@ -33,7 +31,7 @@ export function getPdaFunctionFragment(scope: {
       const seedManifest = visit(seed.type, typeManifestVisitor);
       imports.mergeWith(seedManifest.encoder);
       const seedValue = seed.value;
-      const valueManifest = getValueNodeFragment(seedValue, nameApi);
+      const valueManifest = visit(seedValue, valueNodeVisitor);
       (seedValue as any).render = valueManifest.render;
       imports.mergeWith(valueManifest.imports);
       return { ...seed, typeManifest: seedManifest };

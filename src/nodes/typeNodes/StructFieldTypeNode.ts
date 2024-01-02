@@ -5,20 +5,23 @@ import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type StructFieldTypeNode = {
   readonly kind: 'structFieldTypeNode';
+
+  // Children.
+  readonly type: TypeNode;
+  readonly defaultValue?: ValueNode;
+
+  // Data.
   readonly name: MainCaseString;
-  readonly child: TypeNode;
   readonly docs: string[];
-  readonly defaultsTo: {
-    strategy: 'optional' | 'omitted';
-    value: ValueNode;
-  } | null;
+  readonly defaultValueStrategy?: 'optional' | 'omitted';
 };
 
 export type StructFieldTypeNodeInput = {
   readonly name: string;
-  readonly child: TypeNode;
+  readonly type: TypeNode;
   readonly docs?: string[];
-  readonly defaultsTo?: StructFieldTypeNode['defaultsTo'];
+  readonly defaultValue?: ValueNode;
+  readonly defaultValueStrategy?: 'optional' | 'omitted';
 };
 
 export function structFieldTypeNode(
@@ -30,9 +33,10 @@ export function structFieldTypeNode(
   return {
     kind: 'structFieldTypeNode',
     name: mainCase(input.name),
-    child: input.child,
+    type: input.type,
     docs: input.docs ?? [],
-    defaultsTo: input.defaultsTo ?? null,
+    defaultValue: input.defaultValue,
+    defaultValueStrategy: input.defaultValueStrategy,
   };
 }
 
@@ -41,8 +45,7 @@ export function structFieldTypeNodeFromIdl(
 ): StructFieldTypeNode {
   return structFieldTypeNode({
     name: idl.name ?? '',
-    child: createTypeNodeFromIdl(idl.type),
+    type: createTypeNodeFromIdl(idl.type),
     docs: idl.docs ?? [],
-    defaultsTo: null,
   });
 }

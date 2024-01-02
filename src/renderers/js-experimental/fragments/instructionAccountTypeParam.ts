@@ -6,15 +6,17 @@ import {
 } from '../../../nodes';
 import { LinkableDictionary, pascalCase } from '../../../shared';
 import { ImportMap } from '../ImportMap';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment } from './common';
 
-export function getInstructionAccountTypeParamFragment(scope: {
-  instructionNode: InstructionNode;
-  instructionAccountNode: InstructionAccountNode;
-  programNode: ProgramNode;
-  allowAccountMeta: boolean;
-  linkables: LinkableDictionary;
-}): Fragment {
+export function getInstructionAccountTypeParamFragment(
+  scope: Pick<GlobalFragmentScope, 'linkables'> & {
+    instructionNode: InstructionNode;
+    instructionAccountNode: InstructionAccountNode;
+    programNode: ProgramNode;
+    allowAccountMeta: boolean;
+  }
+): Fragment {
   const {
     instructionNode,
     instructionAccountNode,
@@ -40,7 +42,7 @@ export function getInstructionAccountTypeParamFragment(scope: {
   }
 
   const defaultAddress = getDefaultAddress(
-    instructionAccountNode.defaultsTo,
+    instructionAccountNode.defaultValue,
     programNode.publicKey,
     linkables
   );
@@ -52,15 +54,15 @@ export function getInstructionAccountTypeParamFragment(scope: {
 }
 
 function getDefaultAddress(
-  defaultsTo: InstructionInputValueNode | undefined,
+  defaultValue: InstructionInputValueNode | undefined,
   programId: string,
   linkables: LinkableDictionary
 ): string {
-  switch (defaultsTo?.kind) {
+  switch (defaultValue?.kind) {
     case 'publicKeyValueNode':
-      return `"${defaultsTo.publicKey}"`;
+      return `"${defaultValue.publicKey}"`;
     case 'programLinkNode':
-      const programNode = linkables.get(defaultsTo);
+      const programNode = linkables.get(defaultValue);
       return programNode ? `"${programNode.publicKey}"` : 'string';
     case 'programIdValueNode':
       return `"${programId}"`;

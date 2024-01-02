@@ -1,12 +1,17 @@
-import { RegisteredValueNodes } from '../../nodes';
-import { pascalCase } from '../../shared';
+import { RegisteredValueNodeKind, isNode, isScalarEnum } from '../../nodes';
+import { LinkableDictionary, MainCaseString, pascalCase } from '../../shared';
 import { Visitor, visit } from '../../visitors';
 import { Fragment, fragment, mergeFragments } from './fragments';
 import { NameApi } from './nameTransformers';
 
-export function renderValueNodeVisitor(
-  nameApi: NameApi
-): Visitor<Fragment, keyof RegisteredValueNodes> {
+export type ValueNodeVisitor = ReturnType<typeof renderValueNodeVisitor>;
+
+export function renderValueNodeVisitor(input: {
+  nameApi: NameApi;
+  linkables: LinkableDictionary;
+  nonScalarEnums: MainCaseString[];
+}): Visitor<Fragment, RegisteredValueNodeKind> {
+  const { nameApi, linkables, nonScalarEnums } = input;
   return {
     visitArrayValue(node) {
       return mergeFragments(
@@ -18,19 +23,25 @@ export function renderValueNodeVisitor(
       return fragment(JSON.stringify(node.boolean));
     },
     visitEnumValue(node) {
-      const enumName = nameApi.dataType(node.enumType);
-      const enumFunction = nameApi.dataEnumFunction(node.enumType);
+      const enumName = nameApi.dataType(node.enum.name);
+      const enumFunction = nameApi.dataEnumFunction(node.enum.name);
       const variantName = pascalCase(node.variant);
-      const importFrom = node.importFrom ?? 'generatedTypes';
+      const importFrom = node.enum.importFrom ?? 'generatedTypes';
 
-      if (node.value === 'scalar') {
+      const enumNode = linkables.get(node.enum);
+      const isScalar =
+        enumNode && isNode(enumNode, 'enumTypeNode')
+          ? isScalarEnum(enumNode)
+          : !nonScalarEnums.includes(node.enum.name);
+
+      if (!node.value && isScalar) {
         return fragment(`${enumName}.${variantName}`).addImports(
           importFrom,
           enumName
         );
       }
 
-      if (node.value === 'empty') {
+      if (!node.value) {
         return fragment(`${enumFunction}('${variantName}')`).addImports(
           importFrom,
           enumFunction
@@ -42,15 +53,16 @@ export function renderValueNodeVisitor(
         .addImports(importFrom, enumFunction);
     },
     visitMapValue(node) {
-      const entryFragments = node.entries.map(([k, v]) =>
-        mergeFragments(
-          [visit(k, this), visit(v, this)],
-          (renders) => `[${renders.join(', ')}]`
-        )
-      );
+      const entryFragments = node.entries.map((entry) => visit(entry, this));
       return mergeFragments(
         entryFragments,
         (renders) => `new Map([${renders.join(', ')}])`
+      );
+    },
+    visitMapEntryValue(node) {
+      return mergeFragments(
+        [visit(node.key, this), visit(node.value, this)],
+        (renders) => `[${renders.join(', ')}]`
       );
     },
     visitNoneValue() {
@@ -80,13 +92,13 @@ export function renderValueNodeVisitor(
       return fragment(JSON.stringify(node.string));
     },
     visitStructValue(node) {
-      const fieldFragments = Object.entries(node.fields).map(([k, v]) =>
-        visit(v, this).mapRender((r) => `${k}: ${r}`)
-      );
       return mergeFragments(
-        fieldFragments,
+        node.fields.map((field) => visit(field, this)),
         (renders) => `{ ${renders.join(', ')} }`
       );
+    },
+    visitStructFieldValue(node) {
+      return visit(node.value, this).mapRender((r) => `${node.name}: ${r}`);
     },
     visitTupleValue(node) {
       return mergeFragments(

@@ -14,6 +14,8 @@ export type NumberFormat =
 
 export type NumberTypeNode = {
   readonly kind: 'numberTypeNode';
+
+  // Data.
   readonly format: NumberFormat;
   readonly endian: 'le' | 'be';
 };

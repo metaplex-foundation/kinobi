@@ -2,15 +2,19 @@ import { NumberTypeNode } from './NumberTypeNode';
 
 export type AmountTypeNode = {
   readonly kind: 'amountTypeNode';
+
+  // Children.
   readonly number: NumberTypeNode;
-  readonly identifier: string;
+
+  // Data.
   readonly decimals: number;
+  readonly unit?: string;
 };
 
 export function amountTypeNode(
   number: NumberTypeNode,
-  identifier: string,
-  decimals: number
+  decimals: number,
+  unit?: string
 ): AmountTypeNode {
-  return { kind: 'amountTypeNode', number, identifier, decimals };
+  return { kind: 'amountTypeNode', number, decimals, unit };
 }

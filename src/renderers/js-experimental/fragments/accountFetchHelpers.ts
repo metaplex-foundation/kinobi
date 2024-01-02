@@ -1,13 +1,14 @@
 import { AccountNode } from '../../../nodes';
 import { TypeManifest } from '../TypeManifest';
-import { NameApi } from '../nameTransformers';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
-export function getAccountFetchHelpersFragment(scope: {
-  accountNode: AccountNode;
-  typeManifest: TypeManifest;
-  nameApi: NameApi;
-}): Fragment {
+export function getAccountFetchHelpersFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi'> & {
+    accountNode: AccountNode;
+    typeManifest: TypeManifest;
+  }
+): Fragment {
   const { accountNode, typeManifest, nameApi } = scope;
   const decoderFunctionFragment = accountNode.data.link
     ? typeManifest.decoder.clone()

@@ -3,6 +3,8 @@ import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../../shared';
 
 export type EnumEmptyVariantTypeNode = {
   readonly kind: 'enumEmptyVariantTypeNode';
+
+  // Data.
   readonly name: MainCaseString;
 };
 

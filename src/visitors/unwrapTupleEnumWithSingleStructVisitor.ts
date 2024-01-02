@@ -50,18 +50,18 @@ export function unwrapTupleEnumWithSingleStructVisitor(
           transform: (node, stack) => {
             assertIsNode(node, 'enumTupleVariantTypeNode');
             if (!shouldUnwrap(node, stack)) return node;
-            if (node.tuple.children.length !== 1) return node;
-            let child = node.tuple.children[0];
-            if (isNode(child, 'definedTypeLinkNode')) {
-              if (child.importFrom) return node;
-              const definedType = definedTypes.get(child.name);
+            if (node.tuple.items.length !== 1) return node;
+            let item = node.tuple.items[0];
+            if (isNode(item, 'definedTypeLinkNode')) {
+              if (item.importFrom) return node;
+              const definedType = definedTypes.get(item.name);
               if (!definedType) return node;
-              if (!isNode(definedType.data, 'structTypeNode')) return node;
-              typesToPotentiallyUnwrap.push(child.name);
-              child = definedType.data;
+              if (!isNode(definedType.type, 'structTypeNode')) return node;
+              typesToPotentiallyUnwrap.push(item.name);
+              item = definedType.type;
             }
-            if (!isNode(child, 'structTypeNode')) return node;
-            return enumStructVariantTypeNode(node.name, child);
+            if (!isNode(item, 'structTypeNode')) return node;
+            return enumStructVariantTypeNode(node.name, item);
           },
         },
       ])

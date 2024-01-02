@@ -1,5 +1,5 @@
 import {
-  REGISTERED_TYPE_NODE_KEYS,
+  REGISTERED_TYPE_NODE_KINDS,
   arrayTypeNode,
   isNode,
   isScalarEnum,
@@ -28,7 +28,7 @@ export function getTypeManifestVisitor() {
         type: values.map((v) => v.type).join('\n'),
       }),
       [
-        ...REGISTERED_TYPE_NODE_KEYS,
+        ...REGISTERED_TYPE_NODE_KINDS,
         'definedTypeLinkNode',
         'definedTypeNode',
         'accountNode',
@@ -81,7 +81,7 @@ export function getTypeManifestVisitor() {
 
         visitDefinedType(definedType, { self }) {
           parentName = pascalCase(definedType.name);
-          const manifest = visit(definedType.data, self);
+          const manifest = visit(definedType.type, self);
           parentName = null;
           manifest.imports.add([
             'borsh::BorshSerialize',
@@ -96,8 +96,8 @@ export function getTypeManifestVisitor() {
             'PartialEq',
           ];
           if (
-            isNode(definedType.data, 'enumTypeNode') &&
-            isScalarEnum(definedType.data)
+            isNode(definedType.type, 'enumTypeNode') &&
+            isScalarEnum(definedType.type)
           ) {
             traits.push('PartialOrd', 'Hash');
           }
@@ -117,7 +117,7 @@ export function getTypeManifestVisitor() {
         },
 
         visitArrayType(arrayType, { self }) {
-          const childManifest = visit(arrayType.child, self);
+          const childManifest = visit(arrayType.item, self);
 
           if (isNode(arrayType.size, 'fixedSizeNode')) {
             return {
@@ -263,7 +263,7 @@ export function getTypeManifestVisitor() {
         },
 
         visitOptionType(optionType, { self }) {
-          const childManifest = visit(optionType.child, self);
+          const childManifest = visit(optionType.item, self);
 
           if (
             optionType.prefix.format === 'u8' &&
@@ -280,7 +280,7 @@ export function getTypeManifestVisitor() {
         },
 
         visitSetType(setType, { self }) {
-          const childManifest = visit(setType.child, self);
+          const childManifest = visit(setType.item, self);
           childManifest.imports.add('std::collections::HashSet');
           return {
             ...childManifest,
@@ -339,7 +339,7 @@ export function getTypeManifestVisitor() {
           nestedStruct = true;
           inlineStruct = false;
 
-          const fieldManifest = visit(structFieldType.child, self);
+          const fieldManifest = visit(structFieldType.type, self);
 
           parentName = originalParentName;
           inlineStruct = originalInlineStruct;
@@ -353,11 +353,11 @@ export function getTypeManifestVisitor() {
             derive =
               '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::DisplayFromStr>"))]\n';
           } else if (
-            (structFieldType.child.kind === 'arrayTypeNode' ||
-              structFieldType.child.kind === 'bytesTypeNode' ||
-              structFieldType.child.kind === 'stringTypeNode') &&
-            isNode(structFieldType.child.size, 'fixedSizeNode') &&
-            structFieldType.child.size.size > 32
+            (structFieldType.type.kind === 'arrayTypeNode' ||
+              structFieldType.type.kind === 'bytesTypeNode' ||
+              structFieldType.type.kind === 'stringTypeNode') &&
+            isNode(structFieldType.type.size, 'fixedSizeNode') &&
+            structFieldType.type.size.size > 32
           ) {
             derive =
               '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::Bytes>"))]\n';
@@ -372,12 +372,12 @@ export function getTypeManifestVisitor() {
         },
 
         visitTupleType(tupleType, { self }) {
-          const children = tupleType.children.map((item) => visit(item, self));
-          const mergedManifest = mergeManifests(children);
+          const items = tupleType.items.map((item) => visit(item, self));
+          const mergedManifest = mergeManifests(items);
 
           return {
             ...mergedManifest,
-            type: `(${children.map((item) => item.type).join(', ')})`,
+            type: `(${items.map((item) => item.type).join(', ')})`,
           };
         },
 
@@ -398,10 +398,7 @@ export function getTypeManifestVisitor() {
         },
 
         visitBytesType(bytesType, { self }) {
-          const arrayType = arrayTypeNode(numberTypeNode('u8'), {
-            size: bytesType.size,
-          });
-
+          const arrayType = arrayTypeNode(numberTypeNode('u8'), bytesType.size);
           return visit(arrayType, self);
         },
 

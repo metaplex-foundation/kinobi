@@ -11,6 +11,8 @@ export type IdlInputs = string | Partial<Idl> | (string | Partial<Idl>)[];
 
 export type RootNode = {
   readonly kind: 'rootNode';
+
+  // Children.
   readonly programs: ProgramNode[];
 };
 

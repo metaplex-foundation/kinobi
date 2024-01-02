@@ -50,7 +50,7 @@ test('it can visit itself using the exposed self argument', (t) => {
   );
   const visitor = extendVisitor(baseVisitor, {
     visitTupleType: (node, { self }) =>
-      (node.children.length > 1 ? visit(node.children[0], self) : 0) + 1,
+      (node.items.length > 1 ? visit(node.items[0], self) : 0) + 1,
   });
 
   // When we visit the tree using that visitor.

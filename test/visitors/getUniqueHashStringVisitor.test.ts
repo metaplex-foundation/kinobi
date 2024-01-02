@@ -22,9 +22,9 @@ test('it returns a unique string representing the whole node', (t) => {
   // Then we expect the following string.
   t.deepEqual(
     result,
-    '{"children":[' +
+    '{"items":[' +
       '{"endian":"le","format":"u32","kind":"numberTypeNode"},' +
-      '{"children":[{"endian":"le","format":"u32","kind":"numberTypeNode"},{"kind":"publicKeyTypeNode"}],"kind":"tupleTypeNode"}' +
+      '{"items":[{"endian":"le","format":"u32","kind":"numberTypeNode"},{"kind":"publicKeyTypeNode"}],"kind":"tupleTypeNode"}' +
       '],"kind":"tupleTypeNode"}'
   );
 });
@@ -34,7 +34,7 @@ test('it returns a unique string whilst discard docs', (t) => {
   const node = structTypeNode([
     structFieldTypeNode({
       name: 'owner',
-      child: publicKeyTypeNode(),
+      type: publicKeyTypeNode(),
       docs: ['The owner of the account.'],
     }),
   ]);
@@ -46,7 +46,7 @@ test('it returns a unique string whilst discard docs', (t) => {
   t.deepEqual(
     result,
     '{"fields":[' +
-      '{"child":{"kind":"publicKeyTypeNode"},"defaultsTo":null,"docs":[],"kind":"structFieldTypeNode","name":"owner"}' +
+      '{"docs":[],"kind":"structFieldTypeNode","name":"owner","type":{"kind":"publicKeyTypeNode"}}' +
       '],"kind":"structTypeNode"}'
   );
 });

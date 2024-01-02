@@ -1,8 +1,9 @@
+import { getNodeKinds } from '../../shared/utils';
 import type { ConstantPdaSeedNode } from './ConstantPdaSeedNode';
 import type { ProgramIdPdaSeedNode } from './ProgramIdPdaSeedNode';
 import type { VariablePdaSeedNode } from './VariablePdaSeedNode';
 
-// Node Group Registration.
+// Pda Seed Node Registration.
 
 export const REGISTERED_PDA_SEED_NODES = {
   constantPdaSeedNode: {} as ConstantPdaSeedNode,
@@ -10,14 +11,15 @@ export const REGISTERED_PDA_SEED_NODES = {
   variablePdaSeedNode: {} as VariablePdaSeedNode,
 };
 
-export const REGISTERED_PDA_SEED_NODE_KEYS = Object.keys(
+export const REGISTERED_PDA_SEED_NODE_KINDS = getNodeKinds(
   REGISTERED_PDA_SEED_NODES
-) as (keyof typeof REGISTERED_PDA_SEED_NODES)[];
+);
+export type RegisteredPdaSeedNodeKind =
+  typeof REGISTERED_PDA_SEED_NODE_KINDS[number];
+export type RegisteredPdaSeedNode =
+  typeof REGISTERED_PDA_SEED_NODES[RegisteredPdaSeedNodeKind];
 
-export type RegisteredPdaSeedNodes = typeof REGISTERED_PDA_SEED_NODES;
+// Pda Seed Node Helpers.
 
-// Node Group Helpers.
-
-export type PdaSeedNode = RegisteredPdaSeedNodes[keyof RegisteredPdaSeedNodes];
-
-export const PDA_SEED_NODES = REGISTERED_PDA_SEED_NODE_KEYS;
+export type PdaSeedNode = RegisteredPdaSeedNode;
+export const PDA_SEED_NODES = REGISTERED_PDA_SEED_NODE_KINDS;

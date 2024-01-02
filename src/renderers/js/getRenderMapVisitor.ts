@@ -19,6 +19,7 @@ import {
   ImportFrom,
   LinkableDictionary,
   logWarn,
+  mainCase,
   pascalCase,
   pipe,
   RenderMap,
@@ -57,6 +58,7 @@ export type GetJavaScriptRenderMapOptions = {
   formatCode?: boolean;
   prettierOptions?: PrettierOptions;
   dependencyMap?: Record<ImportFrom, string>;
+  nonScalarEnums?: string[];
 };
 
 export function getRenderMapVisitor(
@@ -66,9 +68,6 @@ export function getRenderMapVisitor(
   const byteSizeVisitor = getByteSizeVisitor(linkables);
   let program: ProgramNode | null = null;
 
-  const valueNodeVisitor = renderValueNodeVisitor();
-  const typeManifestVisitor = getTypeManifestVisitor();
-  const resolvedInstructionInputVisitor = getResolvedInstructionInputsVisitor();
   const renderParentInstructions = options.renderParentInstructions ?? false;
   const formatCode = options.formatCode ?? true;
   const prettierOptions = {
@@ -89,6 +88,14 @@ export function getRenderMapVisitor(
     generatedErrors: '../errors',
     generatedTypes: '../types',
   };
+  const nonScalarEnums = (options.nonScalarEnums ?? []).map(mainCase);
+
+  const valueNodeVisitor = renderValueNodeVisitor({
+    linkables,
+    nonScalarEnums,
+  });
+  const typeManifestVisitor = getTypeManifestVisitor(valueNodeVisitor);
+  const resolvedInstructionInputVisitor = getResolvedInstructionInputsVisitor();
 
   function getInstructionAccountType(
     account: ResolvedInstructionAccount
@@ -289,8 +296,8 @@ export function getRenderMapVisitor(
             const discriminatorField = node.data.struct.fields.find(
               (f) => f.name === discriminator.name
             );
-            const discriminatorValue = discriminatorField?.defaultsTo?.value
-              ? visit(discriminatorField.defaultsTo.value, valueNodeVisitor)
+            const discriminatorValue = discriminatorField?.defaultValue
+              ? visit(discriminatorField.defaultValue, valueNodeVisitor)
               : undefined;
             if (discriminatorValue) {
               imports.mergeWith(discriminatorValue.imports);
@@ -403,20 +410,20 @@ export function getRenderMapVisitor(
           const hasDataArgs =
             !!node.dataArgs.link ||
             node.dataArgs.struct.fields.filter(
-              (field) => field.defaultsTo?.strategy !== 'omitted'
+              (field) => field.defaultValueStrategy !== 'omitted'
             ).length > 0;
           const hasExtraArgs =
             !!node.extraArgs.link ||
             node.extraArgs.struct.fields.filter(
-              (field) => field.defaultsTo?.strategy !== 'omitted'
+              (field) => field.defaultValueStrategy !== 'omitted'
             ).length > 0;
           const hasAnyArgs = hasDataArgs || hasExtraArgs;
           const hasArgDefaults = Object.keys(node.argDefaults).length > 0;
           const hasArgResolvers = Object.values(node.argDefaults).some(
             isNodeFilter('resolverValueNode')
           );
-          const hasAccountResolvers = node.accounts.some(({ defaultsTo }) =>
-            isNode(defaultsTo, 'resolverValueNode')
+          const hasAccountResolvers = node.accounts.some(({ defaultValue }) =>
+            isNode(defaultValue, 'resolverValueNode')
           );
           const hasByteResolver = node.bytesCreatedOnChain?.kind === 'resolver';
           const hasRemainingAccountsResolver =
@@ -460,6 +467,7 @@ export function getRenderMapVisitor(
           ).map((input: ResolvedInstructionInput) => {
             const renderedInput = renderInstructionDefaults(
               input,
+              valueNodeVisitor,
               node.optionalAccountStrategy,
               argObject
             );
@@ -468,7 +476,7 @@ export function getRenderMapVisitor(
             return { ...input, render: renderedInput.render };
           });
           const resolvedInputsWithDefaults = resolvedInputs.filter(
-            (input) => input.defaultsTo !== undefined && input.render !== ''
+            (input) => input.defaultValue !== undefined && input.render !== ''
           );
           const argsWithDefaults = resolvedInputsWithDefaults
             .filter((input) => input.kind === 'argument')
@@ -476,7 +484,7 @@ export function getRenderMapVisitor(
 
           // Accounts.
           const accounts = node.accounts.map((account) => {
-            const hasDefaultValue = !!account.defaultsTo;
+            const hasDefaultValue = !!account.defaultValue;
             const resolvedAccount = resolvedInputs.find(
               (input) =>
                 input.kind === 'instructionAccountNode' &&
@@ -597,7 +605,7 @@ export function getRenderMapVisitor(
               }),
               typeManifest,
               isDataEnum:
-                isNode(node.data, 'enumTypeNode') && isDataEnum(node.data),
+                isNode(node.type, 'enumTypeNode') && isDataEnum(node.type),
             })
           );
         },

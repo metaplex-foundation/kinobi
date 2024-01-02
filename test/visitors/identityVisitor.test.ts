@@ -22,8 +22,8 @@ test('it visits all nodes and returns different instances of the same nodes', (t
   // But the nodes are different instances.
   t.not(result, node);
   assertIsNode(result, 'tupleTypeNode');
-  t.not(result.children[0], node.children[0]);
-  t.not(result.children[1], node.children[1]);
+  t.not(result.items[0], node.items[0]);
+  t.not(result.items[1], node.items[1]);
 });
 
 test('it can remove nodes by returning null', (t) => {
@@ -63,8 +63,8 @@ test('it can create partial visitors', (t) => {
   t.deepEqual(result, node);
   t.not(result, node);
   assertIsNode(result, 'tupleTypeNode');
-  t.not(result.children[0], node.children[0]);
-  t.not(result.children[1], node.children[1]);
+  t.not(result.items[0], node.items[0]);
+  t.not(result.items[1], node.items[1]);
 
   // But the unsupported node was not visited.
   t.deepEqual(events, ['visiting:tupleTypeNode', 'visiting:numberTypeNode']);

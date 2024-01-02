@@ -43,13 +43,9 @@ export function setAnchorDiscriminatorsVisitor() {
 
           const discriminatorField = structFieldTypeNode({
             name: 'discriminator',
-            child: arrayTypeNode(numberTypeNode('u8'), {
-              size: fixedSizeNode(8),
-            }),
-            defaultsTo: {
-              strategy: 'omitted',
-              value: getAnchorAccountDiscriminator(node.idlName),
-            },
+            type: arrayTypeNode(numberTypeNode('u8'), fixedSizeNode(8)),
+            defaultValue: getAnchorAccountDiscriminator(node.idlName),
+            defaultValueStrategy: 'omitted',
           });
 
           return accountNode({
@@ -71,13 +67,9 @@ export function setAnchorDiscriminatorsVisitor() {
 
           const discriminatorField = structFieldTypeNode({
             name: 'discriminator',
-            child: arrayTypeNode(numberTypeNode('u8'), {
-              size: fixedSizeNode(8),
-            }),
-            defaultsTo: {
-              strategy: 'omitted',
-              value: getAnchorInstructionDiscriminator(node.idlName),
-            },
+            type: arrayTypeNode(numberTypeNode('u8'), fixedSizeNode(8)),
+            defaultValue: getAnchorInstructionDiscriminator(node.idlName),
+            defaultValueStrategy: 'omitted',
           });
 
           return instructionNode({

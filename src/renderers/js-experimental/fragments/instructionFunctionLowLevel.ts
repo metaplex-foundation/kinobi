@@ -4,9 +4,10 @@ import {
   ProgramNode,
   isNode,
 } from '../../../nodes';
-import { LinkableDictionary, pascalCase } from '../../../shared';
+import { pascalCase } from '../../../shared';
 import { ImportMap } from '../ImportMap';
 import { TypeManifest } from '../TypeManifest';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { NameApi } from '../nameTransformers';
 import {
   Fragment,
@@ -16,13 +17,13 @@ import {
 } from './common';
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
 
-export function getInstructionFunctionLowLevelFragment(scope: {
-  instructionNode: InstructionNode;
-  programNode: ProgramNode;
-  dataArgsManifest: TypeManifest;
-  nameApi: NameApi;
-  linkables: LinkableDictionary;
-}): Fragment {
+export function getInstructionFunctionLowLevelFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi' | 'linkables'> & {
+    instructionNode: InstructionNode;
+    programNode: ProgramNode;
+    dataArgsManifest: TypeManifest;
+  }
+): Fragment {
   const { instructionNode, programNode, dataArgsManifest, nameApi } = scope;
   const imports = new ImportMap();
   const hasAccounts = instructionNode.accounts.length > 0;
@@ -35,7 +36,7 @@ export function getInstructionFunctionLowLevelFragment(scope: {
   const hasArgs =
     !!instructionNode.dataArgs.link ||
     instructionNode.dataArgs.struct.fields.filter(
-      (field) => field.defaultsTo?.strategy !== 'omitted'
+      (field) => !field.defaultValue || field.defaultValueStrategy !== 'omitted'
     ).length > 0;
   const argsType = instructionNode.dataArgs.link
     ? dataArgsManifest.looseType.render
@@ -123,20 +124,20 @@ function getDefaultValue(
   if (account.isOptional && usesLegacyOptionalAccounts) {
     return fragment('');
   }
-  const defaultsTo = account.defaultsTo ?? null;
-  if (account.isOptional || isNode(defaultsTo, 'programIdValueNode')) {
+  const defaultValue = account.defaultValue ?? null;
+  if (account.isOptional || isNode(defaultValue, 'programIdValueNode')) {
     return fragment(
       `{ address: "${program.publicKey}" as Address<"${program.publicKey}">, role: AccountRole.READONLY }`
     );
   }
-  if (isNode(defaultsTo, 'publicKeyValueNode')) {
+  if (isNode(defaultValue, 'publicKeyValueNode')) {
     return fragment(
-      `"${defaultsTo.publicKey}" as Address<"${defaultsTo.publicKey}">`
+      `"${defaultValue.publicKey}" as Address<"${defaultValue.publicKey}">`
     );
   }
-  if (isNode(defaultsTo, 'programLinkNode')) {
-    const programAddress = nameApi.programAddressConstant(defaultsTo.name);
-    const importFrom = defaultsTo.importFrom ?? 'generatedPrograms';
+  if (isNode(defaultValue, 'programLinkNode')) {
+    const programAddress = nameApi.programAddressConstant(defaultValue.name);
+    const importFrom = defaultValue.importFrom ?? 'generatedPrograms';
     return fragment(
       `{ address: ${programAddress}, role: AccountRole.READONLY }`
     ).addImports(importFrom, programAddress);

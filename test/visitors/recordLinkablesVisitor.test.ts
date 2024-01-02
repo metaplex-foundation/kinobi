@@ -25,7 +25,7 @@ test('it record all linkable nodes it finds when traversing the tree', (t) => {
       pdas: [pdaNode('pdaA', [])],
       accounts: [accountNode({ name: 'accountA' })],
       definedTypes: [
-        definedTypeNode({ name: 'typeA', data: structTypeNode([]) }),
+        definedTypeNode({ name: 'typeA', type: structTypeNode([]) }),
       ],
     }),
     programNode({
@@ -34,7 +34,7 @@ test('it record all linkable nodes it finds when traversing the tree', (t) => {
       pdas: [pdaNode('pdaB', [])],
       accounts: [accountNode({ name: 'accountB' })],
       definedTypes: [
-        definedTypeNode({ name: 'typeB', data: structTypeNode([]) }),
+        definedTypeNode({ name: 'typeB', type: structTypeNode([]) }),
       ],
     }),
   ]);

@@ -81,7 +81,7 @@ test('it can create partial transformer visitors', (t) => {
           assertIsNode(node, 'tupleTypeNode');
           return tupleTypeNode([
             numberTypeNode('u64'),
-            ...node.children,
+            ...node.items,
           ]) as unknown as typeof node;
         },
       },

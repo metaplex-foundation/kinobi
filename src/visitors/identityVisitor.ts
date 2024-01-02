@@ -2,9 +2,9 @@ import {
   CONDITIONAL_VALUE_BRANCH_NODES,
   ENUM_VARIANT_TYPE_NODES,
   Node,
+  NodeKind,
   PDA_SEED_NODES,
-  REGISTERED_NODES_KEYS,
-  RegisteredNodes,
+  REGISTERED_NODE_KINDS,
   SIZE_NODES,
   TYPE_NODES,
   VALUE_NODES,
@@ -27,10 +27,12 @@ import {
   instructionDataArgsNode,
   instructionExtraArgsNode,
   instructionNode,
+  mapEntryValueNode,
   mapTypeNode,
   mapValueNode,
   optionTypeNode,
   pdaNode,
+  pdaSeedValueNode,
   pdaValueNode,
   prefixedSizeNode,
   programNode,
@@ -43,6 +45,7 @@ import {
   someValueNode,
   stringTypeNode,
   structFieldTypeNode,
+  structFieldValueNode,
   structTypeNode,
   structValueNode,
   tupleTypeNode,
@@ -52,12 +55,10 @@ import {
 import { staticVisitor } from './staticVisitor';
 import { Visitor, visit as baseVisit } from './visitor';
 
-export function identityVisitor<
-  TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
->(
-  nodeKeys: TNodeKeys[] = REGISTERED_NODES_KEYS as TNodeKeys[]
-): Visitor<Node | null, TNodeKeys> {
-  const castedNodeKeys: (keyof RegisteredNodes)[] = nodeKeys;
+export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
+  nodeKeys: TNodeKind[] = REGISTERED_NODE_KINDS as TNodeKind[]
+): Visitor<Node | null, TNodeKind> {
+  const castedNodeKeys: NodeKind[] = nodeKeys;
   const visitor = staticVisitor(
     (node) => ({ ...node }),
     castedNodeKeys
@@ -181,10 +182,10 @@ export function identityVisitor<
 
   if (castedNodeKeys.includes('definedTypeNode')) {
     visitor.visitDefinedType = function visitDefinedType(node) {
-      const data = visit(this)(node.data);
-      if (data === null) return null;
-      assertIsNode(data, TYPE_NODES);
-      return definedTypeNode({ ...node, data });
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertIsNode(type, TYPE_NODES);
+      return definedTypeNode({ ...node, type });
     };
   }
 
@@ -193,10 +194,10 @@ export function identityVisitor<
       const size = visit(this)(node.size);
       if (size === null) return null;
       assertIsNode(size, SIZE_NODES);
-      const child = visit(this)(node.child);
-      if (child === null) return null;
-      assertIsNode(child, TYPE_NODES);
-      return arrayTypeNode(child, { size });
+      const item = visit(this)(node.item);
+      if (item === null) return null;
+      assertIsNode(item, TYPE_NODES);
+      return arrayTypeNode(item, size);
     };
   }
 
@@ -244,7 +245,7 @@ export function identityVisitor<
       const value = visit(this)(node.value);
       if (value === null) return null;
       assertIsNode(value, TYPE_NODES);
-      return mapTypeNode(key, value, { ...node, size });
+      return mapTypeNode(key, value, size, node.idlMap);
     };
   }
 
@@ -253,10 +254,10 @@ export function identityVisitor<
       const prefix = visit(this)(node.prefix);
       if (prefix === null) return null;
       assertIsNode(prefix, 'numberTypeNode');
-      const child = visit(this)(node.child);
-      if (child === null) return null;
-      assertIsNode(child, TYPE_NODES);
-      return optionTypeNode(child, { ...node, prefix });
+      const item = visit(this)(node.item);
+      if (item === null) return null;
+      assertIsNode(item, TYPE_NODES);
+      return optionTypeNode(item, { ...node, prefix });
     };
   }
 
@@ -274,10 +275,10 @@ export function identityVisitor<
       const size = visit(this)(node.size);
       if (size === null) return null;
       assertIsNode(size, SIZE_NODES);
-      const child = visit(this)(node.child);
-      if (child === null) return null;
-      assertIsNode(child, TYPE_NODES);
-      return setTypeNode(child, { ...node, size });
+      const item = visit(this)(node.item);
+      if (item === null) return null;
+      assertIsNode(item, TYPE_NODES);
+      return setTypeNode(item, size, node.idlSet);
     };
   }
 
@@ -293,27 +294,21 @@ export function identityVisitor<
 
   if (castedNodeKeys.includes('structFieldTypeNode')) {
     visitor.visitStructFieldType = function visitStructFieldType(node) {
-      const child = visit(this)(node.child);
-      if (child === null) return null;
-      assertIsNode(child, TYPE_NODES);
-      const defaultsToValue = node.defaultsTo?.value
-        ? visit(this)(node.defaultsTo.value)
-        : null;
-      if (defaultsToValue) assertIsNode(defaultsToValue, VALUE_NODES);
-      const defaultsTo = defaultsToValue
-        ? {
-            strategy: node.defaultsTo?.strategy ?? 'optional',
-            value: defaultsToValue,
-          }
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertIsNode(type, TYPE_NODES);
+      const defaultValue = node.defaultValue
+        ? visit(this)(node.defaultValue) ?? undefined
         : undefined;
-      return structFieldTypeNode({ ...node, child, defaultsTo });
+      if (defaultValue) assertIsNode(defaultValue, VALUE_NODES);
+      return structFieldTypeNode({ ...node, type, defaultValue });
     };
   }
 
   if (castedNodeKeys.includes('tupleTypeNode')) {
     visitor.visitTupleType = function visitTupleType(node) {
       return tupleTypeNode(
-        node.children
+        node.items
           .map((child) => visit(this)(child))
           .filter(removeNullAndAssertIsNodeFilter(TYPE_NODES))
       );
@@ -343,7 +338,7 @@ export function identityVisitor<
       const number = visit(this)(node.number);
       if (number === null) return null;
       assertIsNode(number, 'numberTypeNode');
-      return amountTypeNode(number, node.identifier, node.decimals);
+      return amountTypeNode(number, node.decimals, node.unit);
     };
   }
 
@@ -386,27 +381,37 @@ export function identityVisitor<
 
   if (castedNodeKeys.includes('enumValueNode')) {
     visitor.visitEnumValue = function visitEnumValue(node) {
+      const enumLink = visit(this)(node.enum);
+      if (enumLink === null) return null;
+      assertIsNode(enumLink, ['definedTypeLinkNode']);
       if (typeof node.value === 'string') return { ...node };
-      const value = visit(this)(node.value);
-      if (value === null) return null;
-      assertIsNode(value, ['structValueNode', 'tupleValueNode']);
-      return enumValueNode(node.enumType, node.variant, value, node.importFrom);
+      const value = node.value ? visit(this)(node.value) : null;
+      if (value !== null) {
+        assertIsNode(value, ['structValueNode', 'tupleValueNode']);
+      }
+      return enumValueNode(enumLink, node.variant, value ?? undefined);
     };
   }
 
   if (castedNodeKeys.includes('mapValueNode')) {
     visitor.visitMapValue = function visitMapValue(node) {
       return mapValueNode(
-        node.entries.flatMap(([k, v]) => {
-          const key = visit(this)(k);
-          if (key === null) return [];
-          assertIsNode(key, VALUE_NODES);
-          const value = visit(this)(v);
-          if (value === null) return [];
-          assertIsNode(value, VALUE_NODES);
-          return [[key, value]];
-        })
+        node.entries
+          .map(visit(this))
+          .filter(removeNullAndAssertIsNodeFilter('mapEntryValueNode'))
       );
+    };
+  }
+
+  if (castedNodeKeys.includes('mapEntryValueNode')) {
+    visitor.visitMapEntryValue = function visitMapEntryValue(node) {
+      const key = visit(this)(node.key);
+      if (key === null) return null;
+      assertIsNode(key, VALUE_NODES);
+      const value = visit(this)(node.value);
+      if (value === null) return null;
+      assertIsNode(value, VALUE_NODES);
+      return mapEntryValueNode(key, value);
     };
   }
 
@@ -432,15 +437,19 @@ export function identityVisitor<
   if (castedNodeKeys.includes('structValueNode')) {
     visitor.visitStructValue = function visitStructValue(node) {
       return structValueNode(
-        Object.fromEntries(
-          Object.entries(node.fields).flatMap(([k, v]) => {
-            const value = visit(this)(v);
-            if (value === null) return [];
-            assertIsNode(value, VALUE_NODES);
-            return [[k, value]];
-          })
-        )
+        node.fields
+          .map(visit(this))
+          .filter(removeNullAndAssertIsNodeFilter('structFieldValueNode'))
       );
+    };
+  }
+
+  if (castedNodeKeys.includes('structFieldValueNode')) {
+    visitor.visitStructFieldValue = function visitStructFieldValue(node) {
+      const value = visit(this)(node.value);
+      if (value === null) return null;
+      assertIsNode(value, VALUE_NODES);
+      return structFieldValueNode(node.name, value);
     };
   }
 
@@ -521,23 +530,25 @@ export function identityVisitor<
       const pda = visit(this)(node.pda);
       if (pda === null) return null;
       assertIsNode(pda, 'pdaLinkNode');
-      return pdaValueNode(
-        pda,
-        Object.fromEntries(
-          Object.entries(node.seeds).flatMap(([k, v]) => {
-            const value = visit(this)(v);
-            if (value === null) return [];
-            assertIsNode(value, [
-              ...VALUE_NODES,
-              'accountValueNode',
-              'argumentValueNode',
-            ]);
-            return [[k, value]];
-          })
-        )
-      );
+      const seeds = node.seeds
+        .map(visit(this))
+        .filter(removeNullAndAssertIsNodeFilter('pdaSeedValueNode'));
+      return pdaValueNode(pda, seeds);
     };
   }
 
-  return visitor as Visitor<Node, TNodeKeys>;
+  if (castedNodeKeys.includes('pdaSeedValueNode')) {
+    visitor.visitPdaSeedValue = function visitPdaSeedValue(node) {
+      const value = visit(this)(node.value);
+      if (value === null) return null;
+      assertIsNode(value, [
+        ...VALUE_NODES,
+        'accountValueNode',
+        'argumentValueNode',
+      ]);
+      return pdaSeedValueNode(node.name, value);
+    };
+  }
+
+  return visitor as Visitor<Node, TNodeKind>;
 }

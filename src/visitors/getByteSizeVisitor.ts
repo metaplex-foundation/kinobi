@@ -1,6 +1,6 @@
 import {
-  REGISTERED_TYPE_NODE_KEYS,
-  RegisteredTypeNodes,
+  REGISTERED_TYPE_NODE_KINDS,
+  RegisteredTypeNodeKind,
   isNode,
   isScalarEnum,
 } from '../nodes';
@@ -9,7 +9,7 @@ import { mergeVisitor } from './mergeVisitor';
 import { Visitor, visit } from './visitor';
 
 export type ByteSizeVisitorKeys =
-  | keyof RegisteredTypeNodes
+  | RegisteredTypeNodeKind
   | 'definedTypeLinkNode'
   | 'definedTypeNode'
   | 'accountDataNode'
@@ -32,7 +32,7 @@ export function getByteSizeVisitor(
     () => null as number | null,
     (_, values) => sumSizes(values),
     [
-      ...REGISTERED_TYPE_NODE_KEYS,
+      ...REGISTERED_TYPE_NODE_KINDS,
       'definedTypeLinkNode',
       'definedTypeNode',
       'accountDataNode',
@@ -61,7 +61,7 @@ export function getByteSizeVisitor(
         return visitedDefinedTypes.get(node.name)!;
       }
       definedTypeStack.push(node.name);
-      const child = visit(node.data, this);
+      const child = visit(node.type, this);
       definedTypeStack.pop();
       visitedDefinedTypes.set(node.name, child);
       return child;
@@ -70,8 +70,8 @@ export function getByteSizeVisitor(
     visitArrayType(node) {
       if (!isNode(node.size, 'fixedSizeNode')) return null;
       const fixedSize = node.size.size;
-      const childSize = visit(node.child, this);
-      const arraySize = childSize !== null ? childSize * fixedSize : null;
+      const itemSize = visit(node.item, this);
+      const arraySize = itemSize !== null ? itemSize * fixedSize : null;
       return fixedSize === 0 ? 0 : arraySize;
     },
 
@@ -115,8 +115,8 @@ export function getByteSizeVisitor(
     visitOptionType(node) {
       if (!node.fixed) return null;
       const prefixSize = visit(node.prefix, this) as number;
-      const childSize = visit(node.child, this);
-      return childSize !== null ? childSize + prefixSize : null;
+      const itemSize = visit(node.item, this);
+      return itemSize !== null ? itemSize + prefixSize : null;
     },
 
     visitBytesType(node) {

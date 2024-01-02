@@ -5,6 +5,7 @@ export * from './ConditionalValueNode';
 export * from './ContextualValueNode';
 export * from './IdentityValueNode';
 export * from './PayerValueNode';
+export * from './PdaSeedValueNode';
 export * from './PdaValueNode';
 export * from './ProgramIdValueNode';
 export * from './ResolverValueNode';

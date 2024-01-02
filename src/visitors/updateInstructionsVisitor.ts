@@ -8,8 +8,8 @@ import {
   InstructionNodeInput,
   TYPE_NODES,
   TypeNode,
+  addDefaultSeedValuesFromPdaWhenMissing,
   assertIsNode,
-  getDefaultSeedValuesFromPda,
   instructionAccountNode,
   instructionDataArgsNode,
   instructionExtraArgsNode,
@@ -41,8 +41,8 @@ export type InstructionMetadataUpdates = Partial<
 
 export type InstructionAccountUpdates = Record<
   string,
-  Partial<Omit<InstructionAccountNodeInput, 'defaultsTo'>> & {
-    defaultsTo?: InstructionInputValueNode | null;
+  Partial<Omit<InstructionAccountNodeInput, 'defaultValue'>> & {
+    defaultValue?: InstructionInputValueNode | null;
   }
 >;
 
@@ -52,7 +52,7 @@ export type InstructionArgUpdates = Record<
     name?: string;
     docs?: string[];
     type?: TypeNode;
-    defaultsTo?: InstructionInputValueNode | null;
+    defaultValue?: InstructionInputValueNode | null;
   }
 >;
 
@@ -110,31 +110,30 @@ function handleInstructionAccount(
 ): InstructionAccountNode {
   const accountUpdate = accountUpdates?.[account.name];
   if (!accountUpdate) return account;
-  const { defaultsTo, ...acountWithoutDefault } = {
+  const { defaultValue, ...acountWithoutDefault } = {
     ...account,
     ...accountUpdate,
   };
 
-  if (defaultsTo === null) {
+  if (defaultValue === null) {
     return instructionAccountNode(acountWithoutDefault);
   }
 
-  if (isNode(defaultsTo, 'pdaValueNode')) {
-    const foundPda = linkables.get(defaultsTo.pda);
+  if (isNode(defaultValue, 'pdaValueNode')) {
+    const foundPda = linkables.get(defaultValue.pda);
     return {
       ...acountWithoutDefault,
       name: mainCase(acountWithoutDefault.name),
-      defaultsTo: {
-        ...defaultsTo,
-        seeds: {
-          ...(foundPda ? getDefaultSeedValuesFromPda(foundPda) : {}),
-          ...defaultsTo.seeds,
-        },
+      defaultValue: {
+        ...defaultValue,
+        seeds: foundPda
+          ? addDefaultSeedValuesFromPdaWhenMissing(foundPda, defaultValue.seeds)
+          : defaultValue.seeds,
       },
     };
   }
 
-  return instructionAccountNode({ ...acountWithoutDefault, defaultsTo });
+  return instructionAccountNode({ ...acountWithoutDefault, defaultValue });
 }
 
 function handleInstructionArgs(
@@ -158,7 +157,7 @@ function handleInstructionArgs(
         usedArgs.add(field.name);
         return structFieldTypeNode({
           ...field,
-          child: argUpdate.type ?? field.child,
+          type: argUpdate.type ?? field.type,
           name: argUpdate.name ?? field.name,
           docs: argUpdate.docs ?? field.docs,
         });
@@ -174,7 +173,7 @@ function handleInstructionArgs(
       usedArgs.add(field.name);
       return structFieldTypeNode({
         ...field,
-        child: argUpdate.type ?? field.child,
+        type: argUpdate.type ?? field.type,
         name: argUpdate.name ?? field.name,
         docs: argUpdate.docs ?? field.docs,
       });
@@ -184,11 +183,11 @@ function handleInstructionArgs(
   const newExtraFields = Object.entries(argUpdates)
     .filter(([argName]) => !usedArgs.has(argName))
     .map(([argName, argUpdate]) => {
-      const child = argUpdate.type ?? null;
-      assertIsNode(child, TYPE_NODES);
+      const { type } = argUpdate;
+      assertIsNode(type, TYPE_NODES);
       return structFieldTypeNode({
         name: argUpdate.name ?? argName,
-        child,
+        type,
         docs: argUpdate.docs ?? [],
       });
     });
@@ -201,11 +200,11 @@ function handleInstructionArgs(
 
   const newArgDefaults = instruction.argDefaults;
   Object.entries(argUpdates).forEach(([argName, argUpdate]) => {
-    if (argUpdate?.defaultsTo === undefined) return;
-    if (argUpdate.defaultsTo === null) {
+    if (argUpdate?.defaultValue === undefined) return;
+    if (argUpdate.defaultValue === null) {
       delete newArgDefaults[argName as MainCaseString];
     } else {
-      newArgDefaults[argName as MainCaseString] = argUpdate.defaultsTo;
+      newArgDefaults[argName as MainCaseString] = argUpdate.defaultValue;
     }
   });
 

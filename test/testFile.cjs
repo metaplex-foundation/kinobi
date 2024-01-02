@@ -81,22 +81,22 @@ kinobi.update(
     'mplTokenAuthRules.Create': {
       name: 'CreateRuleSet',
       args: {
-        ruleSetBump: { defaultsTo: k.accountBumpValueNode('ruleSetPda') },
+        ruleSetBump: { defaultValue: k.accountBumpValueNode('ruleSetPda') },
       },
     },
     'mplCandyMachineCore.Update': { name: 'UpdateCandyMachine' },
     CreateMetadataAccount: {
       bytesCreatedOnChain: k.bytesFromAccount('Metadata'),
       accounts: {
-        metadata: { defaultsTo: k.pdaValueNode('metadata') },
+        metadata: { defaultValue: k.pdaValueNode('metadata') },
       },
       args: {
-        metadataBump: { defaultsTo: k.accountBumpValueNode('metadata') },
+        metadataBump: { defaultValue: k.accountBumpValueNode('metadata') },
       },
     },
     CreateMetadataAccountV3: {
       accounts: {
-        metadata: { defaultsTo: k.pdaValueNode('metadata') },
+        metadata: { defaultValue: k.pdaValueNode('metadata') },
       },
     },
     CreateMasterEditionV3: {
@@ -105,28 +105,31 @@ kinobi.update(
     'mplCandyMachineCore.Mint': {
       name: 'MintFromCandyMachine',
       accounts: {
-        nftMintAuthority: { defaultsTo: k.identityValueNode() },
+        nftMintAuthority: { defaultValue: k.identityValueNode() },
       },
     },
     Dummy: {
       accounts: {
-        mintAuthority: { defaultsTo: k.accountValueNode('updateAuthority') },
-        edition: { defaultsTo: k.accountValueNode('payer') },
-        foo: { defaultsTo: k.accountValueNode('bar') },
+        mintAuthority: { defaultValue: k.accountValueNode('updateAuthority') },
+        edition: { defaultValue: k.accountValueNode('payer') },
+        foo: { defaultValue: k.accountValueNode('bar') },
         bar: {
-          defaultsTo: k.programIdValueNode(),
+          defaultValue: k.programIdValueNode(),
           isOptional: true,
         },
         delegateRecord: {
-          defaultsTo: k.conditionalValueNode({
+          defaultValue: k.conditionalValueNode({
             condition: k.accountValueNode('delegate'),
-            ifTrue: k.pdaValueNode('delegateRecord', {
-              role: k.enumValueNode('delegateRole', 'Collection'),
-            }),
+            ifTrue: k.pdaValueNode('delegateRecord', [
+              k.pdaSeedValueNode(
+                'role',
+                k.enumValueNode('delegateRole', 'Collection')
+              ),
+            ]),
           }),
         },
         tokenOrAtaProgram: {
-          defaultsTo: k.conditionalValueNode({
+          defaultValue: k.conditionalValueNode({
             condition: k.resolverValueNode('resolveTokenOrAta', [
               k.argumentValueNode('proof'),
             ]),
@@ -142,13 +145,11 @@ kinobi.update(
       args: {
         identityArg: {
           type: k.publicKeyTypeNode(),
-          defaultsTo: k.identityValueNode(),
+          defaultValue: k.identityValueNode(),
         },
         proof: {
-          type: k.arrayTypeNode(k.publicKeyTypeNode(), {
-            size: k.remainderSizeNode(),
-          }),
-          defaultsTo: k.arrayValueNode([]),
+          type: k.arrayTypeNode(k.publicKeyTypeNode(), k.remainderSizeNode()),
+          defaultValue: k.arrayValueNode([]),
         },
       },
       remainingAccounts: k.remainingAccountsFromArg('proof'),
@@ -157,7 +158,7 @@ kinobi.update(
     Transfer: {
       accounts: {
         masterEdition: {
-          defaultsTo: k.resolverValueNode(
+          defaultValue: k.resolverValueNode(
             'resolveMasterEditionFromTokenStandard',
             [k.accountValueNode('mint'), k.argumentValueNode('tokenStandard')]
           ),
@@ -166,7 +167,7 @@ kinobi.update(
       args: {
         tokenStandard: {
           type: k.definedTypeLinkNode('tokenStandard'),
-          defaultsTo: k.enumValueNode('tokenStandard', 'NonFungible'),
+          defaultValue: k.enumValueNode('tokenStandard', 'NonFungible'),
         },
       },
     },
@@ -230,8 +231,8 @@ kinobi.update(
     'DelegateArgs.SaleV1.amount': { kind: 'SolAmount' },
     'CandyMachineData.sellerFeeBasisPoints': {
       kind: 'Amount',
-      identifier: '%',
       decimals: 2,
+      unit: '%',
     },
   })
 );

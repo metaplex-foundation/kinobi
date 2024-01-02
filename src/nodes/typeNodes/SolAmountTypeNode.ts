@@ -2,6 +2,8 @@ import { NumberTypeNode } from './NumberTypeNode';
 
 export type SolAmountTypeNode = {
   readonly kind: 'solAmountTypeNode';
+
+  // Children.
   readonly number: NumberTypeNode;
 };
 

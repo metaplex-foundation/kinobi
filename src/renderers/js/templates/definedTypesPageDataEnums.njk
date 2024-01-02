@@ -2,7 +2,7 @@
   {% set strictName = definedType.name | pascalCase %}
   {% set looseName = definedType.name | pascalCase + 'Args' %}
   // Data Enum Helpers.
-  {% for variant in definedType.data.variants %}
+  {% for variant in definedType.type.variants %}
     {% if variant.kind === 'enumStructVariantTypeNode' %}
       export function {{ definedType.name | camelCase }}(kind: '{{ variant.name | pascalCase }}', data: GetDataEnumKindContent<{{ looseName }}, '{{ variant.name | pascalCase }}'>): GetDataEnumKind<{{ looseName }}, '{{ variant.name | pascalCase }}'>;
     {% elif variant.kind === 'enumTupleVariantTypeNode' %}

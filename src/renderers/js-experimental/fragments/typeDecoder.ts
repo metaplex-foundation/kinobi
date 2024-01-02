@@ -1,13 +1,14 @@
 import { TypeManifest } from '../TypeManifest';
-import { NameApi } from '../nameTransformers';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragmentFromTemplate } from './common';
 
-export function getTypeDecoderFragment(scope: {
-  name: string;
-  manifest: Pick<TypeManifest, 'decoder'>;
-  nameApi: NameApi;
-  docs?: string[];
-}): Fragment {
+export function getTypeDecoderFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi'> & {
+    name: string;
+    manifest: Pick<TypeManifest, 'decoder'>;
+    docs?: string[];
+  }
+): Fragment {
   const { name, manifest, nameApi, docs = [] } = scope;
   return fragmentFromTemplate('typeDecoder.njk', {
     strictName: nameApi.dataType(name),

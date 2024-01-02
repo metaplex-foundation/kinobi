@@ -24,7 +24,7 @@ test('it can create visitors as plain objects', (t) => {
     'tupleTypeNode' | 'numberTypeNode' | 'publicKeyTypeNode'
   > = {
     visitTupleType(node) {
-      const castedChildren = node.children as (
+      const castedChildren = node.items as (
         | TupleTypeNode
         | NumberTypeNode
         | PublicKeyTypeNode
@@ -56,7 +56,7 @@ test('it can use visitOrElse to fallback if a nested node is not supported by th
   // Such that it falls back to 42 for any other node.
   const visitor: Visitor<number, 'tupleTypeNode' | 'numberTypeNode'> = {
     visitTupleType(node) {
-      return node.children
+      return node.items
         .map((child) => visitOrElse(child, this, () => 42))
         .reduce((a, b) => a + b, 1);
     },

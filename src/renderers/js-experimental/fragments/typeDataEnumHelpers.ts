@@ -1,12 +1,13 @@
 import { TypeNode, isDataEnum, isNode } from '../../../nodes';
-import { NameApi } from '../nameTransformers';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
-export function getTypeDataEnumHelpersFragment(scope: {
-  name: string;
-  typeNode: TypeNode;
-  nameApi: NameApi;
-}): Fragment {
+export function getTypeDataEnumHelpersFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi'> & {
+    name: string;
+    typeNode: TypeNode;
+  }
+): Fragment {
   const { name, typeNode, nameApi } = scope;
   const isDataEnumNode =
     isNode(typeNode, 'enumTypeNode') && isDataEnum(typeNode);

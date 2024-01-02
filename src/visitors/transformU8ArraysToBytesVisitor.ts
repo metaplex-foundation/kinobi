@@ -23,7 +23,7 @@ export function transformU8ArraysToBytesVisitor(
   return pipe(identityVisitor(), (v) =>
     extendVisitor(v, {
       visitArrayType(node, { self }) {
-        const child = visit(node.child, self);
+        const child = visit(node.item, self);
         assertIsNode(child, TYPE_NODES);
 
         if (
@@ -35,7 +35,7 @@ export function transformU8ArraysToBytesVisitor(
           return bytesTypeNode(fixedSizeNode(node.size.size));
         }
 
-        return arrayTypeNode(child, { ...node });
+        return arrayTypeNode(child, node.size);
       },
     })
   );

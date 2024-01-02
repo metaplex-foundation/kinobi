@@ -1,26 +1,29 @@
-import { ImportFrom, MainCaseString, mainCase } from '../../shared';
+import { MainCaseString, mainCase } from '../../shared';
+import { DefinedTypeLinkNode, definedTypeLinkNode } from '../linkNodes';
 import { StructValueNode } from './StructValueNode';
 import { TupleValueNode } from './TupleValueNode';
 
 export type EnumValueNode = {
   readonly kind: 'enumValueNode';
-  readonly enumType: MainCaseString;
+
+  // Children.
+  readonly enum: DefinedTypeLinkNode;
+  readonly value?: StructValueNode | TupleValueNode;
+
+  // Data.
   readonly variant: MainCaseString;
-  readonly value: StructValueNode | TupleValueNode | 'empty' | 'scalar';
-  readonly importFrom: ImportFrom | null;
 };
 
 export function enumValueNode(
-  enumType: string,
+  enumLink: DefinedTypeLinkNode | string,
   variant: string,
-  value?: StructValueNode | TupleValueNode | 'empty' | 'scalar',
-  importFrom?: ImportFrom | null
+  value?: StructValueNode | TupleValueNode
 ): EnumValueNode {
   return {
     kind: 'enumValueNode',
-    enumType: mainCase(enumType),
+    enum:
+      typeof enumLink === 'string' ? definedTypeLinkNode(enumLink) : enumLink,
     variant: mainCase(variant),
-    value: value ?? 'scalar',
-    importFrom: importFrom ?? null,
+    value,
   };
 }

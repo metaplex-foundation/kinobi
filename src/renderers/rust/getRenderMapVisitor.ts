@@ -225,26 +225,28 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
               pascalCase(node.dataArgs.name) + pascalCase(field.name)
             );
             typeManifestVisitor.setNestedStruct(true);
-            const manifest = visit(field.child, typeManifestVisitor);
+            const manifest = visit(field.type, typeManifestVisitor);
             imports.mergeWith(manifest.imports);
-            const innerOptionType = isNode(field.child, 'optionTypeNode')
+            const innerOptionType = isNode(field.type, 'optionTypeNode')
               ? manifest.type.slice('Option<'.length, -1)
               : null;
             typeManifestVisitor.setParentName(null);
             typeManifestVisitor.setNestedStruct(false);
 
             let renderValue: string | null = null;
-            if (field.defaultsTo) {
+            if (field.defaultValue) {
               const { imports: argImports, render: value } = renderValueNode(
-                field.defaultsTo.value
+                field.defaultValue
               );
               imports.mergeWith(argImports);
               renderValue = value;
             }
 
-            hasArgs = hasArgs || field.defaultsTo?.strategy !== 'omitted';
+            const hasDefaultValue = !!field.defaultValue;
+            hasArgs = hasArgs || field.defaultValueStrategy !== 'omitted';
             hasOptional =
-              hasOptional || field.defaultsTo?.strategy === 'optional';
+              hasOptional ||
+              (hasDefaultValue && field.defaultValueStrategy !== 'omitted');
 
             const name = accountsAndArgsConflicts.includes(field.name)
               ? `${field.name}_arg`
@@ -253,8 +255,10 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
             instructionArgs.push({
               name,
               type: manifest.type,
-              default: field.defaultsTo?.strategy === 'omitted',
-              optional: field.defaultsTo?.strategy === 'optional',
+              default:
+                hasDefaultValue && field.defaultValueStrategy === 'omitted',
+              optional:
+                hasDefaultValue && field.defaultValueStrategy !== 'omitted',
               innerOptionType,
               value: renderValue,
             });

@@ -1,10 +1,12 @@
-import { ValueNode } from './ValueNode';
+import { MapEntryValueNode } from './MapEntryValueNode';
 
 export type MapValueNode = {
   readonly kind: 'mapValueNode';
-  readonly entries: [ValueNode, ValueNode][];
+
+  // Children.
+  readonly entries: MapEntryValueNode[];
 };
 
-export function mapValueNode(entries: [ValueNode, ValueNode][]): MapValueNode {
+export function mapValueNode(entries: MapEntryValueNode[]): MapValueNode {
   return { kind: 'mapValueNode', entries };
 }

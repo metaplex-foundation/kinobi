@@ -3,8 +3,12 @@ import { TypeNode } from '../typeNodes';
 
 export type VariablePdaSeedNode = {
   readonly kind: 'variablePdaSeedNode';
-  readonly name: MainCaseString;
+
+  // Children.
   readonly type: TypeNode;
+
+  // Data.
+  readonly name: MainCaseString;
   readonly docs: string[];
 };
 

@@ -38,8 +38,8 @@ export const flattenStruct = (
     options === '*' || camelCaseOptions.includes(camelCase(field.name));
   const inlinedFields = node.fields.reduce<StructFieldTypeNode[]>(
     (all, one) => {
-      if (isNode(one.child, 'structTypeNode') && shouldInline(one)) {
-        all.push(...one.child.fields);
+      if (isNode(one.type, 'structTypeNode') && shouldInline(one)) {
+        all.push(...one.type.fields);
       } else {
         all.push(one);
       }

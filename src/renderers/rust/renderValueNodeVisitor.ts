@@ -1,7 +1,7 @@
-import { RustImportMap } from './RustImportMap';
-import { Visitor, visit } from '../../visitors';
-import { RegisteredValueNodes, ValueNode } from '../../nodes';
+import { RegisteredValueNodeKind, ValueNode } from '../../nodes';
 import { pascalCase } from '../../shared';
+import { Visitor, visit } from '../../visitors';
+import { RustImportMap } from './RustImportMap';
 
 export function renderValueNode(
   value: ValueNode,
@@ -18,7 +18,7 @@ export function renderValueNodeVisitor(useStr: boolean = false): Visitor<
     imports: RustImportMap;
     render: string;
   },
-  keyof RegisteredValueNodes
+  RegisteredValueNodeKind
 > {
   return {
     visitArrayValue(node) {
@@ -36,11 +36,11 @@ export function renderValueNodeVisitor(useStr: boolean = false): Visitor<
     },
     visitEnumValue(node) {
       const imports = new RustImportMap();
-      const enumName = pascalCase(node.enumType);
+      const enumName = pascalCase(node.enum.name);
       const variantName = pascalCase(node.variant);
-      const importFrom = node.importFrom ?? 'generatedTypes';
+      const importFrom = node.enum.importFrom ?? 'generatedTypes';
       imports.add(`${importFrom}::${enumName}`);
-      if (node.value === 'scalar' || node.value === 'empty') {
+      if (!node.value) {
         return { imports, render: `${enumName}::${variantName}` };
       }
       const enumValue = visit(node.value, this);
@@ -51,18 +51,19 @@ export function renderValueNodeVisitor(useStr: boolean = false): Visitor<
       };
     },
     visitMapValue(node) {
-      const map = node.entries.map(([k, v]) => {
-        const mapKey = visit(k, this);
-        const mapValue = visit(v, this);
-        return {
-          imports: mapKey.imports.mergeWith(mapValue.imports),
-          render: `[${mapKey.render}, ${mapValue.render}]`,
-        };
-      });
+      const map = node.entries.map((entry) => visit(entry, this));
       const imports = new RustImportMap().add('std::collection::HashMap');
       return {
         imports: imports.mergeWith(...map.map((c) => c.imports)),
         render: `HashMap::from([${map.map((c) => c.render).join(', ')}])`,
+      };
+    },
+    visitMapEntryValue(node) {
+      const mapKey = visit(node.key, this);
+      const mapValue = visit(node.value, this);
+      return {
+        imports: mapKey.imports.mergeWith(mapValue.imports),
+        render: `[${mapKey.render}, ${mapValue.render}]`,
       };
     },
     visitNoneValue() {
@@ -107,16 +108,17 @@ export function renderValueNodeVisitor(useStr: boolean = false): Visitor<
       };
     },
     visitStructValue(node) {
-      const struct = Object.entries(node.fields).map(([k, v]) => {
-        const structValue = visit(v, this);
-        return {
-          imports: structValue.imports,
-          render: `${k}: ${structValue.render}`,
-        };
-      });
+      const struct = node.fields.map((field) => visit(field, this));
       return {
         imports: new RustImportMap().mergeWith(...struct.map((c) => c.imports)),
         render: `{ ${struct.map((c) => c.render).join(', ')} }`,
+      };
+    },
+    visitStructFieldValue(node) {
+      const structValue = visit(node.value, this);
+      return {
+        imports: structValue.imports,
+        render: `${node.name}: ${structValue.render}`,
       };
     },
     visitTupleValue(node) {

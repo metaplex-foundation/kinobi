@@ -47,7 +47,8 @@ export function setAccountDiscriminatorFromFieldVisitor(
                   ...node.data.struct.fields.slice(0, fieldIndex),
                   structFieldTypeNode({
                     ...fieldNode,
-                    defaultsTo: { strategy: 'omitted', value },
+                    defaultValue: value,
+                    defaultValueStrategy: 'omitted',
                   }),
                   ...node.data.struct.fields.slice(fieldIndex + 1),
                 ]),

@@ -23,11 +23,11 @@ test('it counts the amount of times defined types are used within the tree', (t)
     definedTypes: [
       definedTypeNode({
         name: 'myStruct',
-        data: structTypeNode([]),
+        type: structTypeNode([]),
       }),
       definedTypeNode({
         name: 'myEnum',
-        data: enumTypeNode([]),
+        type: enumTypeNode([]),
       }),
     ],
     accounts: [
@@ -38,11 +38,11 @@ test('it counts the amount of times defined types are used within the tree', (t)
           struct: structTypeNode([
             structFieldTypeNode({
               name: 'field1',
-              child: definedTypeLinkNode('myStruct'),
+              type: definedTypeLinkNode('myStruct'),
             }),
             structFieldTypeNode({
               name: 'field2',
-              child: definedTypeLinkNode('myEnum'),
+              type: definedTypeLinkNode('myEnum'),
             }),
           ]),
         }),
@@ -57,7 +57,7 @@ test('it counts the amount of times defined types are used within the tree', (t)
           struct: structTypeNode([
             structFieldTypeNode({
               name: 'arg1',
-              child: definedTypeLinkNode('myStruct'),
+              type: definedTypeLinkNode('myStruct'),
             }),
           ]),
         }),

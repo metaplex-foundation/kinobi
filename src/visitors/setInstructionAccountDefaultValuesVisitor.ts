@@ -2,12 +2,12 @@ import {
   InstructionAccountNode,
   InstructionNode,
   VALUE_NODES,
-  getDefaultSeedValuesFromPda,
   instructionNode,
   isNode,
 } from '../nodes';
 import {
   InstructionInputValueNode,
+  addDefaultSeedValuesFromPdaWhenMissing,
   identityValueNode,
   payerValueNode,
   programIdValueNode,
@@ -22,7 +22,7 @@ export type InstructionAccountDefaultRule = {
   /** The name of the instruction account or a pattern to match on it. */
   account: string | RegExp;
   /** The default value to assign to it. */
-  defaultsTo: InstructionInputValueNode;
+  defaultValue: InstructionInputValueNode;
   /** @defaultValue Defaults to searching accounts on all instructions. */
   instruction?: string;
   /** @defaultValue `false`. */
@@ -33,41 +33,41 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
   [
     {
       account: /^payer|feePayer$/,
-      defaultsTo: payerValueNode(),
+      defaultValue: payerValueNode(),
       ignoreIfOptional: true,
     },
     {
       account: /^authority$/,
-      defaultsTo: identityValueNode(),
+      defaultValue: identityValueNode(),
       ignoreIfOptional: true,
     },
     {
       account: /^programId$/,
-      defaultsTo: programIdValueNode(),
+      defaultValue: programIdValueNode(),
       ignoreIfOptional: true,
     },
     {
       account: /^systemProgram|splSystemProgram$/,
-      defaultsTo: publicKeyValueNode('11111111111111111111111111111111'),
+      defaultValue: publicKeyValueNode('11111111111111111111111111111111'),
       ignoreIfOptional: true,
     },
     {
       account: /^tokenProgram|splTokenProgram$/,
-      defaultsTo: publicKeyValueNode(
+      defaultValue: publicKeyValueNode(
         'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
       ),
       ignoreIfOptional: true,
     },
     {
       account: /^ataProgram|splAtaProgram$/,
-      defaultsTo: publicKeyValueNode(
+      defaultValue: publicKeyValueNode(
         'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
       ),
       ignoreIfOptional: true,
     },
     {
       account: /^tokenMetadataProgram|mplTokenMetadataProgram$/,
-      defaultsTo: publicKeyValueNode(
+      defaultValue: publicKeyValueNode(
         'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
       ),
       ignoreIfOptional: true,
@@ -75,84 +75,84 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
     {
       account:
         /^(tokenAuth|mplTokenAuth|authorization|mplAuthorization|auth|mplAuth)RulesProgram$/,
-      defaultsTo: publicKeyValueNode(
+      defaultValue: publicKeyValueNode(
         'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
       ),
       ignoreIfOptional: true,
     },
     {
       account: /^candyMachineProgram|mplCandyMachineProgram$/,
-      defaultsTo: publicKeyValueNode(
+      defaultValue: publicKeyValueNode(
         'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
       ),
       ignoreIfOptional: true,
     },
     {
       account: /^candyGuardProgram|mplCandyGuardProgram$/,
-      defaultsTo: publicKeyValueNode(
+      defaultValue: publicKeyValueNode(
         'Guard1JwRhJkVH6XZhzoYxeBVQe872VH6QggF4BWmS9g'
       ),
       ignoreIfOptional: true,
     },
     {
       account: /^clockSysvar|sysvarClock$/,
-      defaultsTo: publicKeyValueNode(
+      defaultValue: publicKeyValueNode(
         'SysvarC1ock11111111111111111111111111111111'
       ),
       ignoreIfOptional: true,
     },
     {
       account: /^epochScheduleSysvar|sysvarEpochSchedule$/,
-      defaultsTo: publicKeyValueNode(
+      defaultValue: publicKeyValueNode(
         'SysvarEpochSchedu1e111111111111111111111111'
       ),
       ignoreIfOptional: true,
     },
     {
       account: /^(instructions?Sysvar|sysvarInstructions?)(Account)?$/,
-      defaultsTo: publicKeyValueNode(
+      defaultValue: publicKeyValueNode(
         'Sysvar1nstructions1111111111111111111111111'
       ),
       ignoreIfOptional: true,
     },
     {
       account: /^recentBlockhashesSysvar|sysvarRecentBlockhashes$/,
-      defaultsTo: publicKeyValueNode(
+      defaultValue: publicKeyValueNode(
         'SysvarRecentB1ockHashes11111111111111111111'
       ),
       ignoreIfOptional: true,
     },
     {
       account: /^rent|rentSysvar|sysvarRent$/,
-      defaultsTo: publicKeyValueNode(
+      defaultValue: publicKeyValueNode(
         'SysvarRent111111111111111111111111111111111'
       ),
       ignoreIfOptional: true,
     },
     {
       account: /^rewardsSysvar|sysvarRewards$/,
-      defaultsTo: publicKeyValueNode(
+      defaultValue: publicKeyValueNode(
         'SysvarRewards111111111111111111111111111111'
       ),
       ignoreIfOptional: true,
     },
     {
       account: /^slotHashesSysvar|sysvarSlotHashes$/,
-      defaultsTo: publicKeyValueNode(
+      defaultValue: publicKeyValueNode(
         'SysvarS1otHashes111111111111111111111111111'
       ),
       ignoreIfOptional: true,
     },
     {
       account: /^slotHistorySysvar|sysvarSlotHistory$/,
-      defaultsTo: publicKeyValueNode(
+      defaultValue: publicKeyValueNode(
         'SysvarS1otHistory11111111111111111111111111'
       ),
       ignoreIfOptional: true,
     },
     {
       account: /^stakeHistorySysvar|sysvarStakeHistory$/,
-      defaultsTo: publicKeyValueNode(
+      defaultValue: publicKeyValueNode(
         'SysvarStakeHistory1111111111111111111111111'
       ),
       ignoreIfOptional: true,
@@ -204,48 +204,46 @@ export function setInstructionAccountDefaultValuesVisitor(
               }
               if (
                 (rule.ignoreIfOptional ?? false) &&
-                (account.isOptional || !!account.defaultsTo)
+                (account.isOptional || !!account.defaultValue)
               ) {
                 return account;
               }
-              if (isNode(rule.defaultsTo, 'pdaValueNode')) {
-                const foundAccount = linkables.get(rule.defaultsTo.pda);
-                const defaultsTo = {
-                  ...rule.defaultsTo,
-                  seeds: {
-                    ...(foundAccount
-                      ? getDefaultSeedValuesFromPda(foundAccount)
-                      : {}),
-                    ...rule.defaultsTo.seeds,
-                  },
+              if (isNode(rule.defaultValue, 'pdaValueNode')) {
+                const foundPda = linkables.get(rule.defaultValue.pda);
+                const defaultValue = {
+                  ...rule.defaultValue,
+                  seeds: foundPda
+                    ? addDefaultSeedValuesFromPdaWhenMissing(
+                        foundPda,
+                        rule.defaultValue.seeds
+                      )
+                    : rule.defaultValue.seeds,
                 };
 
                 if (rule.instruction) {
-                  return { ...account, defaultsTo };
+                  return { ...account, defaultValue };
                 }
 
-                const allSeedsAreValid = Object.entries(defaultsTo.seeds).every(
-                  ([, seed]) => {
-                    if (isNode(seed, VALUE_NODES)) return true;
-                    if (isNode(seed, 'accountValueNode')) {
-                      return node.accounts.some(
-                        (a) => a.name === mainCase(seed.name)
-                      );
-                    }
-                    if (node.dataArgs.link) return true;
-                    return node.dataArgs.struct.fields.some(
-                      (f) => f.name === mainCase(seed.name)
+                const allSeedsAreValid = defaultValue.seeds.every((seed) => {
+                  if (isNode(seed.value, VALUE_NODES)) return true;
+                  if (isNode(seed.value, 'accountValueNode')) {
+                    return node.accounts.some(
+                      (a) => a.name === mainCase(seed.name)
                     );
                   }
-                );
+                  if (node.dataArgs.link) return true;
+                  return node.dataArgs.struct.fields.some(
+                    (f) => f.name === mainCase(seed.name)
+                  );
+                });
 
                 if (allSeedsAreValid) {
-                  return { ...account, defaultsTo };
+                  return { ...account, defaultValue };
                 }
 
                 return account;
               }
-              return { ...account, defaultsTo: rule.defaultsTo };
+              return { ...account, defaultValue: rule.defaultValue };
             }
           );
 

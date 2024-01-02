@@ -1,18 +1,14 @@
-import { MainCaseString, mainCase } from '../../shared';
-import { ValueNode } from './ValueNode';
+import { StructFieldValueNode } from './StructFieldValueNode';
 
 export type StructValueNode = {
   readonly kind: 'structValueNode';
-  readonly fields: Record<MainCaseString, ValueNode>;
+
+  // Children.
+  readonly fields: StructFieldValueNode[];
 };
 
 export function structValueNode(
-  fields: Record<string, ValueNode>
+  fields: StructFieldValueNode[]
 ): StructValueNode {
-  return {
-    kind: 'structValueNode',
-    fields: Object.fromEntries(
-      Object.entries(fields).map(([key, value]) => [mainCase(key), value])
-    ),
-  };
+  return { kind: 'structValueNode', fields };
 }

@@ -1,10 +1,10 @@
-import { RegisteredNodes } from '../nodes';
-import { Visitor } from './visitor';
+import { NodeKind } from '../nodes';
 import { mergeVisitor } from './mergeVisitor';
+import { Visitor } from './visitor';
 
-export function voidVisitor<
-  TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
->(nodeKeys?: TNodeKeys[]): Visitor<void, TNodeKeys> {
+export function voidVisitor<TNodeKind extends NodeKind = NodeKind>(
+  nodeKeys?: TNodeKind[]
+): Visitor<void, TNodeKind> {
   return mergeVisitor(
     () => undefined,
     () => undefined,

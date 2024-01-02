@@ -2,6 +2,8 @@ import { NumberTypeNode } from '../typeNodes';
 
 export type PrefixedSizeNode = {
   readonly kind: 'prefixedSizeNode';
+
+  // Children.
   readonly prefix: NumberTypeNode;
 };
 

@@ -1,5 +1,5 @@
 import {
-  RegisteredNodes,
+  NodeKind,
   getAllAccounts,
   getAllDefinedTypes,
   getAllPdas,
@@ -8,13 +8,10 @@ import { LinkableDictionary } from '../shared';
 import { VisitorOverrides, extendVisitor } from './extendVisitor';
 import { Visitor } from './visitor';
 
-export function recordLinkablesVisitor<
-  TReturn,
-  TNodeKeys extends keyof RegisteredNodes
->(
-  visitor: Visitor<TReturn, TNodeKeys>,
+export function recordLinkablesVisitor<TReturn, TNodeKind extends NodeKind>(
+  visitor: Visitor<TReturn, TNodeKind>,
   linkables: LinkableDictionary
-): Visitor<TReturn, TNodeKeys> {
+): Visitor<TReturn, TNodeKind> {
   const overriddenFunctions: VisitorOverrides<
     TReturn,
     'rootNode' | 'programNode' | 'pdaNode' | 'accountNode' | 'definedTypeNode'
@@ -64,6 +61,6 @@ export function recordLinkablesVisitor<
   }
   return extendVisitor(
     visitor,
-    overriddenFunctions as VisitorOverrides<TReturn, TNodeKeys>
+    overriddenFunctions as VisitorOverrides<TReturn, TNodeKind>
   );
 }

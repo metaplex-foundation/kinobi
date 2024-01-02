@@ -13,17 +13,17 @@ test('it empties the docs array of any node that contains docs', (t) => {
   const node = structTypeNode([
     structFieldTypeNode({
       name: 'owner',
-      child: publicKeyTypeNode(),
+      type: publicKeyTypeNode(),
       docs: ['The owner of the account.'],
     }),
     structFieldTypeNode({
       name: 'authority',
-      child: publicKeyTypeNode(),
+      type: publicKeyTypeNode(),
       docs: ['The wallet allowed to modify the account.'],
     }),
     structFieldTypeNode({
       name: 'amount',
-      child: numberTypeNode('u64'),
+      type: numberTypeNode('u64'),
       docs: ['The amount of tokens in basis points.'],
     }),
   ]);
@@ -37,17 +37,17 @@ test('it empties the docs array of any node that contains docs', (t) => {
     structTypeNode([
       structFieldTypeNode({
         name: 'owner',
-        child: publicKeyTypeNode(),
+        type: publicKeyTypeNode(),
         docs: [],
       }),
       structFieldTypeNode({
         name: 'authority',
-        child: publicKeyTypeNode(),
+        type: publicKeyTypeNode(),
         docs: [],
       }),
       structFieldTypeNode({
         name: 'amount',
-        child: numberTypeNode('u64'),
+        type: numberTypeNode('u64'),
         docs: [],
       }),
     ])
@@ -59,7 +59,7 @@ test('it can create partial visitors', (t) => {
   const node = structTypeNode([
     structFieldTypeNode({
       name: 'owner',
-      child: publicKeyTypeNode(),
+      type: publicKeyTypeNode(),
       docs: ['The owner of the account.'],
     }),
   ]);

@@ -13,6 +13,8 @@ export const CONDITIONAL_VALUE_BRANCH_NODES = INSTRUCTION_INPUT_VALUE_NODE;
 
 export type ConditionalValueNode = {
   readonly kind: 'conditionalValueNode';
+
+  // Children.
   readonly condition: ResolverValueNode | AccountValueNode | ArgumentValueNode;
   readonly value?: ValueNode;
   readonly ifTrue?: ConditionalValueBranch;

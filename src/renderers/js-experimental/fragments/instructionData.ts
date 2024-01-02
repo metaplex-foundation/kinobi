@@ -1,14 +1,15 @@
 import { InstructionNode } from '../../../nodes';
 import { TypeManifest } from '../TypeManifest';
-import { NameApi } from '../nameTransformers';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment } from './common';
 import { getTypeWithCodecFragment } from './typeWithCodec';
 
-export function getInstructionDataFragment(scope: {
-  instructionNode: InstructionNode;
-  dataArgsManifest: TypeManifest;
-  nameApi: NameApi;
-}): Fragment {
+export function getInstructionDataFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi'> & {
+    instructionNode: InstructionNode;
+    dataArgsManifest: TypeManifest;
+  }
+): Fragment {
   const { instructionNode, dataArgsManifest, nameApi } = scope;
   if (
     instructionNode.dataArgs.struct.fields.length === 0 ||

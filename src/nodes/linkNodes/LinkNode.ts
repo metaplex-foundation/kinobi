@@ -1,9 +1,10 @@
-import type { ProgramLinkNode } from './ProgramLinkNode';
-import type { PdaLinkNode } from './PdaLinkNode';
+import { getNodeKinds } from '../../shared/utils';
 import type { AccountLinkNode } from './AccountLinkNode';
 import type { DefinedTypeLinkNode } from './DefinedTypeLinkNode';
+import type { PdaLinkNode } from './PdaLinkNode';
+import type { ProgramLinkNode } from './ProgramLinkNode';
 
-// Node Group Registration.
+// Link Node Registration.
 
 export const REGISTERED_LINK_NODES = {
   programLinkNode: {} as ProgramLinkNode,
@@ -12,14 +13,12 @@ export const REGISTERED_LINK_NODES = {
   definedTypeLinkNode: {} as DefinedTypeLinkNode,
 };
 
-export const REGISTERED_LINK_NODE_KEYS = Object.keys(
-  REGISTERED_LINK_NODES
-) as (keyof typeof REGISTERED_LINK_NODES)[];
+export const REGISTERED_LINK_NODE_KINDS = getNodeKinds(REGISTERED_LINK_NODES);
+export type RegisteredLinkNodeKind = typeof REGISTERED_LINK_NODE_KINDS[number];
+export type RegisteredLinkNode =
+  typeof REGISTERED_LINK_NODES[RegisteredLinkNodeKind];
 
-export type RegisteredLinkNodes = typeof REGISTERED_LINK_NODES;
+// Link Node Helpers.
 
-// Node Group Helpers.
-
-export type LinkNode = RegisteredLinkNodes[keyof RegisteredLinkNodes];
-
-export const LINK_NODES = REGISTERED_LINK_NODE_KEYS;
+export type LinkNode = RegisteredLinkNode;
+export const LINK_NODES = REGISTERED_LINK_NODE_KINDS;

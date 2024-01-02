@@ -47,7 +47,7 @@ export function unwrapDefinedTypesVisitor(typesToInline: string[] | '*' = '*') {
             );
           }
 
-          return visit(definedType.data, self);
+          return visit(definedType.type, self);
         },
       })
   );

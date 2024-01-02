@@ -102,15 +102,15 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
           }
 
           // Check arg defaults.
-          Object.entries(node.argDefaults).forEach(([name, defaultsTo]) => {
-            if (isNode(defaultsTo, 'accountBumpValueNode')) {
+          Object.entries(node.argDefaults).forEach(([name, defaultValue]) => {
+            if (isNode(defaultValue, 'accountBumpValueNode')) {
               const defaultAccount = node.accounts.find(
-                (account) => account.name === defaultsTo.name
+                (account) => account.name === defaultValue.name
               );
               if (defaultAccount && defaultAccount.isSigner !== false) {
                 bag.error(
                   `Argument ${name} cannot default to the bump attribute of ` +
-                    `the [${defaultsTo.name}] account as it may be a Signer.`,
+                    `the [${defaultValue.name}] account as it may be a Signer.`,
                   node,
                   stack
                 );
@@ -225,7 +225,7 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
 
         visitTupleType(node, { next }) {
           const bag = new ValidatorBag();
-          if (node.children.length === 0) {
+          if (node.items.length === 0) {
             bag.warn('Tuple has no items.', node, stack);
           }
           return bag.mergeWith([next(node)]);

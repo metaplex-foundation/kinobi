@@ -1,16 +1,13 @@
-import { Node, REGISTERED_NODES_KEYS, RegisteredNodes } from '../nodes';
-import { Visitor, visit as baseVisit } from './visitor';
+import { Node, NodeKind, REGISTERED_NODE_KINDS } from '../nodes';
 import { staticVisitor } from './staticVisitor';
+import { Visitor, visit as baseVisit } from './visitor';
 
-export function mergeVisitor<
-  TReturn,
-  TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
->(
+export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
   leafValue: (node: Node) => TReturn,
   merge: (node: Node, values: TReturn[]) => TReturn,
-  nodeKeys: TNodeKeys[] = REGISTERED_NODES_KEYS as TNodeKeys[]
-): Visitor<TReturn, TNodeKeys> {
-  const castedNodeKeys: (keyof RegisteredNodes)[] = nodeKeys;
+  nodeKeys: TNodeKind[] = REGISTERED_NODE_KINDS as TNodeKind[]
+): Visitor<TReturn, TNodeKind> {
+  const castedNodeKeys: NodeKind[] = nodeKeys;
   const visitor = staticVisitor(leafValue, castedNodeKeys) as Visitor<TReturn>;
   const visit =
     (v: Visitor<TReturn>) =>
@@ -92,7 +89,7 @@ export function mergeVisitor<
 
   if (castedNodeKeys.includes('definedTypeNode')) {
     visitor.visitDefinedType = function visitDefinedType(node) {
-      return merge(node, visit(this)(node.data));
+      return merge(node, visit(this)(node.type));
     };
   }
 
@@ -100,7 +97,7 @@ export function mergeVisitor<
     visitor.visitArrayType = function visitArrayType(node) {
       return merge(node, [
         ...visit(this)(node.size),
-        ...visit(this)(node.child),
+        ...visit(this)(node.item),
       ]);
     };
   }
@@ -144,7 +141,7 @@ export function mergeVisitor<
     visitor.visitOptionType = function visitOptionType(node) {
       return merge(node, [
         ...visit(this)(node.prefix),
-        ...visit(this)(node.child),
+        ...visit(this)(node.item),
       ]);
     };
   }
@@ -159,7 +156,7 @@ export function mergeVisitor<
     visitor.visitSetType = function visitSetType(node) {
       return merge(node, [
         ...visit(this)(node.size),
-        ...visit(this)(node.child),
+        ...visit(this)(node.item),
       ]);
     };
   }
@@ -173,15 +170,15 @@ export function mergeVisitor<
   if (castedNodeKeys.includes('structFieldTypeNode')) {
     visitor.visitStructFieldType = function visitStructFieldType(node) {
       return merge(node, [
-        ...visit(this)(node.child),
-        ...(node.defaultsTo ? visit(this)(node.defaultsTo.value) : []),
+        ...visit(this)(node.type),
+        ...(node.defaultValue ? visit(this)(node.defaultValue) : []),
       ]);
     };
   }
 
   if (castedNodeKeys.includes('tupleTypeNode')) {
     visitor.visitTupleType = function visitTupleType(node) {
-      return merge(node, node.children.flatMap(visit(this)));
+      return merge(node, node.items.flatMap(visit(this)));
     };
   }
 
@@ -229,18 +226,25 @@ export function mergeVisitor<
 
   if (castedNodeKeys.includes('enumValueNode')) {
     visitor.visitEnumValue = function visitEnumValue(node) {
-      return typeof node.value === 'string'
-        ? leafValue(node)
-        : merge(node, visit(this)(node.value));
+      return merge(node, [
+        ...visit(this)(node.enum),
+        ...(node.value ? visit(this)(node.value) : []),
+      ]);
     };
   }
 
   if (castedNodeKeys.includes('mapValueNode')) {
     visitor.visitMapValue = function visitMapValue(node) {
-      return merge(
-        node,
-        node.entries.flatMap(([k, v]) => [...visit(this)(k), ...visit(this)(v)])
-      );
+      return merge(node, node.entries.flatMap(visit(this)));
+    };
+  }
+
+  if (castedNodeKeys.includes('mapEntryValueNode')) {
+    visitor.visitMapEntryValue = function visitMapEntryValue(node) {
+      return merge(node, [
+        ...visit(this)(node.key),
+        ...visit(this)(node.value),
+      ]);
     };
   }
 
@@ -258,7 +262,13 @@ export function mergeVisitor<
 
   if (castedNodeKeys.includes('structValueNode')) {
     visitor.visitStructValue = function visitStructValue(node) {
-      return merge(node, Object.values(node.fields).flatMap(visit(this)));
+      return merge(node, node.fields.flatMap(visit(this)));
+    };
+  }
+
+  if (castedNodeKeys.includes('structFieldValueNode')) {
+    visitor.visitStructFieldValue = function visitStructFieldValue(node) {
+      return merge(node, visit(this)(node.value));
     };
   }
 
@@ -304,10 +314,16 @@ export function mergeVisitor<
     visitor.visitPdaValue = function visitPdaValue(node) {
       return merge(node, [
         ...visit(this)(node.pda),
-        ...Object.values(node.seeds).flatMap(visit(this)),
+        ...node.seeds.flatMap(visit(this)),
       ]);
     };
   }
 
-  return visitor as Visitor<TReturn, TNodeKeys>;
+  if (castedNodeKeys.includes('pdaSeedValueNode')) {
+    visitor.visitPdaSeedValue = function visitPdaSeedValue(node) {
+      return merge(node, visit(this)(node.value));
+    };
+  }
+
+  return visitor as Visitor<TReturn, TNodeKind>;
 }

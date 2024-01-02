@@ -25,7 +25,7 @@ export function unwrapTypeDefinedLinksVisitor(definedLinksType: string[]) {
                 `Ensure this visitor starts from the root node to access all defined types.`
             );
           }
-          return definedType.data;
+          return definedType.type;
         },
       };
     });

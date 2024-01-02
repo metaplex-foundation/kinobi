@@ -13,21 +13,21 @@ import {
 import { ImportMap } from '../ImportMap';
 import { TypeManifest } from '../TypeManifest';
 import { isAsyncDefaultValue } from '../asyncHelpers';
-import { NameApi } from '../nameTransformers';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
-export function getInstructionInputTypeFragment(scope: {
-  instructionNode: InstructionNode;
-  resolvedInputs: ResolvedInstructionInput[];
-  renamedArgs: Map<string, string>;
-  dataArgsManifest: TypeManifest;
-  extraArgsManifest: TypeManifest;
-  programNode: ProgramNode;
-  withSigners: boolean;
-  asyncResolvers: string[];
-  useAsync: boolean;
-  nameApi: NameApi;
-}): Fragment {
+export function getInstructionInputTypeFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi' | 'asyncResolvers'> & {
+    instructionNode: InstructionNode;
+    resolvedInputs: ResolvedInstructionInput[];
+    renamedArgs: Map<string, string>;
+    dataArgsManifest: TypeManifest;
+    extraArgsManifest: TypeManifest;
+    programNode: ProgramNode;
+    withSigners: boolean;
+    useAsync: boolean;
+  }
+): Fragment {
   const {
     instructionNode,
     resolvedInputs,
@@ -50,13 +50,13 @@ export function getInstructionInputTypeFragment(scope: {
         input.kind === 'instructionAccountNode' && input.name === account.name
     ) as ResolvedInstructionAccount;
     const hasDefaultValue =
-      !!resolvedAccount.defaultsTo &&
-      !isNode(resolvedAccount.defaultsTo, [
+      !!resolvedAccount.defaultValue &&
+      !isNode(resolvedAccount.defaultValue, [
         'identityValueNode',
         'payerValueNode',
       ]) &&
       (useAsync ||
-        !isAsyncDefaultValue(resolvedAccount.defaultsTo, asyncResolvers));
+        !isAsyncDefaultValue(resolvedAccount.defaultValue, asyncResolvers));
     const type = getAccountType(resolvedAccount, withSigners);
     accountImports.mergeWith(type);
     return {
@@ -81,9 +81,9 @@ export function getInstructionInputTypeFragment(scope: {
     const resolvedArg = resolvedInputs.find(
       (input) => input.kind === 'argument' && input.name === arg.name
     ) as ResolvedInstructionArgument | undefined;
-    if (arg.defaultsTo?.strategy === 'omitted') return [];
+    if (arg.defaultValue && arg.defaultValueStrategy === 'omitted') return [];
     const renamedName = renamedArgs.get(arg.name) ?? arg.name;
-    const optionalSign = arg.defaultsTo || resolvedArg ? '?' : '';
+    const optionalSign = arg.defaultValue || resolvedArg ? '?' : '';
     return [
       {
         ...arg,

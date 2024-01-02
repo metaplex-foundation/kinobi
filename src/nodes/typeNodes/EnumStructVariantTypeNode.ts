@@ -4,8 +4,12 @@ import { StructTypeNode, structTypeNodeFromIdl } from './StructTypeNode';
 
 export type EnumStructVariantTypeNode = {
   readonly kind: 'enumStructVariantTypeNode';
-  readonly name: MainCaseString;
+
+  // Children.
   readonly struct: StructTypeNode;
+
+  // Data.
+  readonly name: MainCaseString;
 };
 
 export function enumStructVariantTypeNode(

@@ -1,13 +1,10 @@
-import { Node, REGISTERED_NODES_KEYS, RegisteredNodes } from '../nodes';
+import { Node, NodeKind, REGISTERED_NODE_KINDS } from '../nodes';
 import { Visitor, getVisitFunctionName } from './visitor';
 
-export function staticVisitor<
-  TReturn,
-  TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
->(
+export function staticVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
   fn: (node: Node) => TReturn,
-  nodeKeys: TNodeKeys[] = REGISTERED_NODES_KEYS as TNodeKeys[]
-): Visitor<TReturn, TNodeKeys> {
+  nodeKeys: TNodeKind[] = REGISTERED_NODE_KINDS as TNodeKind[]
+): Visitor<TReturn, TNodeKind> {
   const visitor = {} as Visitor<TReturn>;
   nodeKeys.forEach((key) => {
     visitor[getVisitFunctionName(key)] = fn.bind(visitor);

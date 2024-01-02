@@ -1,15 +1,24 @@
+import { RegisteredValueNodeKind, isNode, isScalarEnum } from '../../nodes';
+import {
+  LinkableDictionary,
+  MainCaseString,
+  camelCase,
+  pascalCase,
+} from '../../shared';
 import { Visitor, visit } from '../../visitors';
-import { RegisteredValueNodes } from '../../nodes';
-import { camelCase, pascalCase } from '../../shared';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 
-export function renderValueNodeVisitor(): Visitor<
+export function renderValueNodeVisitor(input: {
+  linkables: LinkableDictionary;
+  nonScalarEnums: MainCaseString[];
+}): Visitor<
   {
     imports: JavaScriptImportMap;
     render: string;
   },
-  keyof RegisteredValueNodes
+  RegisteredValueNodeKind
 > {
+  const { linkables, nonScalarEnums } = input;
   return {
     visitArrayValue(node) {
       const list = node.items.map((v) => visit(v, this));
@@ -28,21 +37,27 @@ export function renderValueNodeVisitor(): Visitor<
     },
     visitEnumValue(node) {
       const imports = new JavaScriptImportMap();
-      const enumName = pascalCase(node.enumType);
+      const enumName = pascalCase(node.enum.name);
       const variantName = pascalCase(node.variant);
-      const importFrom = node.importFrom ?? 'generatedTypes';
+      const importFrom = node.enum.importFrom ?? 'generatedTypes';
 
-      if (node.value === 'scalar') {
+      const enumNode = linkables.get(node.enum);
+      const isScalar =
+        enumNode && isNode(enumNode, 'enumTypeNode')
+          ? isScalarEnum(enumNode)
+          : !nonScalarEnums.includes(node.enum.name);
+
+      if (!node.value && isScalar) {
         return {
           imports: imports.add(importFrom, enumName),
           render: `${enumName}.${variantName}`,
         };
       }
 
-      const enumFn = camelCase(node.enumType);
+      const enumFn = camelCase(node.enum.name);
       imports.add(importFrom, enumFn);
 
-      if (node.value === 'empty') {
+      if (!node.value) {
         return { imports, render: `${enumFn}('${variantName}')` };
       }
 
@@ -56,19 +71,20 @@ export function renderValueNodeVisitor(): Visitor<
       };
     },
     visitMapValue(node) {
-      const map = node.entries.map(([k, v]) => {
-        const mapKey = visit(k, this);
-        const mapValue = visit(v, this);
-        return {
-          imports: mapKey.imports.mergeWith(mapValue.imports),
-          render: `[${mapKey.render}, ${mapValue.render}]`,
-        };
-      });
+      const map = node.entries.map((entry) => visit(entry, this));
       return {
         imports: new JavaScriptImportMap().mergeWith(
           ...map.map((c) => c.imports)
         ),
         render: `new Map([${map.map((c) => c.render).join(', ')}])`,
+      };
+    },
+    visitMapEntryValue(node) {
+      const mapKey = visit(node.key, this);
+      const mapValue = visit(node.value, this);
+      return {
+        imports: mapKey.imports.mergeWith(mapValue.imports),
+        render: `[${mapKey.render}, ${mapValue.render}]`,
       };
     },
     visitNoneValue() {
@@ -112,18 +128,19 @@ export function renderValueNodeVisitor(): Visitor<
       };
     },
     visitStructValue(node) {
-      const struct = Object.entries(node.fields).map(([k, v]) => {
-        const structValue = visit(v, this);
-        return {
-          imports: structValue.imports,
-          render: `${k}: ${structValue.render}`,
-        };
-      });
+      const struct = node.fields.map((field) => visit(field, this));
       return {
         imports: new JavaScriptImportMap().mergeWith(
           ...struct.map((c) => c.imports)
         ),
         render: `{ ${struct.map((c) => c.render).join(', ')} }`,
+      };
+    },
+    visitStructFieldValue(node) {
+      const structValue = visit(node.value, this);
+      return {
+        imports: structValue.imports,
+        render: `${node.name}: ${structValue.render}`,
       };
     },
     visitTupleValue(node) {

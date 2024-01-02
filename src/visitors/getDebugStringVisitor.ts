@@ -72,7 +72,7 @@ function getNodeDetails(node: Node): string[] {
     case 'numberTypeNode':
       return [node.format, ...(node.endian === 'be' ? ['be'] : [])];
     case 'amountTypeNode':
-      return [node.identifier, node.decimals.toString()];
+      return [node.decimals.toString(), ...(node.unit ? [node.unit] : [])];
     case 'stringTypeNode':
       return [node.encoding];
     case 'fixedSizeNode':

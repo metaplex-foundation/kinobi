@@ -3,6 +3,7 @@ import { camelCase, pascalCase } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import { TypeManifest } from '../TypeManifest';
 import { hasAsyncFunction } from '../asyncHelpers';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { NameApi } from '../nameTransformers';
 import {
   Fragment,
@@ -15,17 +16,20 @@ import { getInstructionInputResolvedFragment } from './instructionInputResolved'
 import { getInstructionInputTypeFragment } from './instructionInputType';
 import { getInstructionRemainingAccountsFragment } from './instructionRemainingAccounts';
 
-export function getInstructionFunctionHighLevelFragment(scope: {
-  instructionNode: InstructionNode;
-  programNode: ProgramNode;
-  renamedArgs: Map<string, string>;
-  dataArgsManifest: TypeManifest;
-  extraArgsManifest: TypeManifest;
-  resolvedInputs: ResolvedInstructionInput[];
-  asyncResolvers: string[];
-  useAsync: boolean;
-  nameApi: NameApi;
-}): Fragment {
+export function getInstructionFunctionHighLevelFragment(
+  scope: Pick<
+    GlobalFragmentScope,
+    'nameApi' | 'asyncResolvers' | 'valueNodeVisitor'
+  > & {
+    instructionNode: InstructionNode;
+    programNode: ProgramNode;
+    renamedArgs: Map<string, string>;
+    dataArgsManifest: TypeManifest;
+    extraArgsManifest: TypeManifest;
+    resolvedInputs: ResolvedInstructionInput[];
+    useAsync: boolean;
+  }
+): Fragment {
   const {
     useAsync,
     instructionNode,
@@ -47,12 +51,12 @@ export function getInstructionFunctionHighLevelFragment(scope: {
   const hasDataArgs =
     !!instructionNode.dataArgs.link ||
     instructionNode.dataArgs.struct.fields.filter(
-      (field) => field.defaultsTo?.strategy !== 'omitted'
+      (field) => !field.defaultValue || field.defaultValueStrategy !== 'omitted'
     ).length > 0;
   const hasExtraArgs =
     !!instructionNode.extraArgs.link ||
     instructionNode.extraArgs.struct.fields.filter(
-      (field) => field.defaultsTo?.strategy !== 'omitted'
+      (field) => !field.defaultValue || field.defaultValueStrategy !== 'omitted'
     ).length > 0;
   const hasAnyArgs = hasDataArgs || hasExtraArgs;
   const argsTypeFragment = fragment(

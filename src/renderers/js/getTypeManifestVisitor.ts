@@ -1,6 +1,6 @@
 import {
   ArrayTypeNode,
-  REGISTERED_TYPE_NODE_KEYS,
+  REGISTERED_TYPE_NODE_KINDS,
   isInteger,
   isNode,
   isScalarEnum,
@@ -23,9 +23,10 @@ export type JavaScriptTypeManifest = {
   serializerImports: JavaScriptImportMap;
 };
 
-export function getTypeManifestVisitor() {
+export function getTypeManifestVisitor(
+  valueNodeVisitor: ReturnType<typeof renderValueNodeVisitor>
+) {
   let parentName: { strict: string; loose: string } | null = null;
-  const valueNodeVisitor = renderValueNodeVisitor();
 
   return pipe(
     staticVisitor(
@@ -40,7 +41,7 @@ export function getTypeManifestVisitor() {
           serializerImports: new JavaScriptImportMap(),
         } as JavaScriptTypeManifest),
       [
-        ...REGISTERED_TYPE_NODE_KEYS,
+        ...REGISTERED_TYPE_NODE_KINDS,
         'definedTypeLinkNode',
         'definedTypeNode',
         'accountNode',
@@ -96,13 +97,13 @@ export function getTypeManifestVisitor() {
             strict: pascalCase(definedType.name),
             loose: `${pascalCase(definedType.name)}Args`,
           };
-          const manifest = visit(definedType.data, self);
+          const manifest = visit(definedType.type, self);
           parentName = null;
           return manifest;
         },
 
         visitArrayType(arrayType, { self }) {
-          const childManifest = visit(arrayType.child, self);
+          const childManifest = visit(arrayType.item, self);
           childManifest.serializerImports.add('umiSerializers', 'array');
           const sizeOption = getArrayLikeSizeOption(
             arrayType.size,
@@ -269,7 +270,7 @@ export function getTypeManifestVisitor() {
           const struct = structTypeNode([
             structFieldTypeNode({
               name: 'fields',
-              child: enumTupleVariantType.tuple,
+              type: enumTupleVariantType.tuple,
             }),
           ]);
           const type = visit(struct, self);
@@ -301,7 +302,7 @@ export function getTypeManifestVisitor() {
         },
 
         visitOptionType(optionType, { self }) {
-          const childManifest = visit(optionType.child, self);
+          const childManifest = visit(optionType.item, self);
           childManifest.strictImports.add('umi', 'Option');
           childManifest.looseImports.add('umi', 'OptionOrNullable');
           childManifest.serializerImports.add('umiSerializers', 'option');
@@ -338,7 +339,7 @@ export function getTypeManifestVisitor() {
         },
 
         visitSetType(setType, { self }) {
-          const childManifest = visit(setType.child, self);
+          const childManifest = visit(setType.item, self);
           childManifest.serializerImports.add('umiSerializers', 'set');
           const sizeOption = getArrayLikeSizeOption(
             setType.size,
@@ -384,7 +385,7 @@ export function getTypeManifestVisitor() {
           };
 
           const optionalFields = structType.fields.filter(
-            (f) => f.defaultsTo !== null
+            (f) => !!f.defaultValue
           );
           if (optionalFields.length === 0) {
             return baseManifest;
@@ -393,15 +394,15 @@ export function getTypeManifestVisitor() {
           const defaultValues = optionalFields
             .map((f) => {
               const key = camelCase(f.name);
-              const defaultsTo = f.defaultsTo as NonNullable<
-                typeof f.defaultsTo
+              const defaultValue = f.defaultValue as NonNullable<
+                typeof f.defaultValue
               >;
               const { render: renderedValue, imports } = visit(
-                defaultsTo.value,
+                defaultValue,
                 valueNodeVisitor
               );
               baseManifest.serializerImports.mergeWith(imports);
-              if (defaultsTo.strategy === 'omitted') {
+              if (f.defaultValueStrategy === 'omitted') {
                 return `${key}: ${renderedValue}`;
               }
               return `${key}: value.${key} ?? ${renderedValue}`;
@@ -421,7 +422,7 @@ export function getTypeManifestVisitor() {
 
         visitStructFieldType(structFieldType, { self }) {
           const name = camelCase(structFieldType.name);
-          const fieldChild = visit(structFieldType.child, self);
+          const fieldChild = visit(structFieldType.type, self);
           const docblock = createDocblock(structFieldType.docs);
           const baseField = {
             ...fieldChild,
@@ -429,10 +430,10 @@ export function getTypeManifestVisitor() {
             looseType: `${docblock}${name}: ${fieldChild.looseType}; `,
             serializer: `['${name}', ${fieldChild.serializer}]`,
           };
-          if (structFieldType.defaultsTo === null) {
+          if (!structFieldType.defaultValue) {
             return baseField;
           }
-          if (structFieldType.defaultsTo.strategy === 'optional') {
+          if (structFieldType.defaultValueStrategy !== 'omitted') {
             return {
               ...baseField,
               looseType: `${docblock}${name}?: ${fieldChild.looseType}; `,
@@ -446,19 +447,17 @@ export function getTypeManifestVisitor() {
         },
 
         visitTupleType(tupleType, { self }) {
-          const children = tupleType.children.map((item) => visit(item, self));
-          const mergedManifest = mergeManifests(children);
+          const items = tupleType.items.map((item) => visit(item, self));
+          const mergedManifest = mergeManifests(items);
           mergedManifest.serializerImports.add('umiSerializers', 'tuple');
-          const childrenSerializers = children
+          const itemSerializers = items
             .map((child) => child.serializer)
             .join(', ');
           return {
             ...mergedManifest,
-            strictType: `[${children
-              .map((item) => item.strictType)
-              .join(', ')}]`,
-            looseType: `[${children.map((item) => item.looseType).join(', ')}]`,
-            serializer: `tuple([${childrenSerializers}])`,
+            strictType: `[${items.map((item) => item.strictType).join(', ')}]`,
+            looseType: `[${items.map((item) => item.looseType).join(', ')}]`,
+            serializer: `tuple([${itemSerializers}])`,
           };
         },
 
@@ -558,9 +557,9 @@ export function getTypeManifestVisitor() {
                 `integer types. Got type [${amountType.number.toString()}].`
             );
           }
-          const { identifier, decimals } = amountType;
-          const idAndDecimals = `'${identifier}', ${decimals}`;
-          const isSolAmount = identifier === 'SOL' && decimals === 9;
+          const { unit, decimals } = amountType;
+          const idAndDecimals = `'${unit ?? 'Unknown'}', ${decimals}`;
+          const isSolAmount = unit === 'SOL' && decimals === 9;
           const amountTypeString = isSolAmount
             ? 'SolAmount'
             : `Amount<${idAndDecimals}>`;

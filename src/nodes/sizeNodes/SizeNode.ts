@@ -1,8 +1,9 @@
+import { getNodeKinds } from '../../shared/utils';
 import type { FixedSizeNode } from './FixedSizeNode';
 import type { PrefixedSizeNode } from './PrefixedSizeNode';
 import type { RemainderSizeNode } from './RemainderSizeNode';
 
-// Node Group Registration.
+// Size Node Registration.
 
 export const REGISTERED_SIZE_NODES = {
   fixedSizeNode: {} as FixedSizeNode,
@@ -10,14 +11,12 @@ export const REGISTERED_SIZE_NODES = {
   prefixedSizeNode: {} as PrefixedSizeNode,
 };
 
-export const REGISTERED_SIZE_NODE_KEYS = Object.keys(
-  REGISTERED_SIZE_NODES
-) as (keyof typeof REGISTERED_SIZE_NODES)[];
+export const REGISTERED_SIZE_NODE_KINDS = getNodeKinds(REGISTERED_SIZE_NODES);
+export type RegisteredSizeNodeKind = typeof REGISTERED_SIZE_NODE_KINDS[number];
+export type RegisteredSizeNode =
+  typeof REGISTERED_SIZE_NODES[RegisteredSizeNodeKind];
 
-export type RegisteredSizeNodes = typeof REGISTERED_SIZE_NODES;
+// Size Node Helpers.
 
-// Node Group Helpers.
-
-export type SizeNode = RegisteredSizeNodes[keyof RegisteredSizeNodes];
-
-export const SIZE_NODES = REGISTERED_SIZE_NODE_KEYS;
+export type SizeNode = RegisteredSizeNode;
+export const SIZE_NODES = REGISTERED_SIZE_NODE_KINDS;

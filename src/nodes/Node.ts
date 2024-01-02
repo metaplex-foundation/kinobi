@@ -1,3 +1,4 @@
+import { getNodeKinds } from '../shared/utils';
 import type { AccountDataNode } from './AccountDataNode';
 import type { AccountNode } from './AccountNode';
 import type { DefinedTypeNode } from './DefinedTypeNode';
@@ -40,58 +41,53 @@ const REGISTERED_NODES = {
   ...REGISTERED_VALUE_NODES,
 };
 
-export const REGISTERED_NODES_KEYS = Object.keys(
-  REGISTERED_NODES
-) as (keyof RegisteredNodes)[];
-
-export type RegisteredNodes = typeof REGISTERED_NODES;
+export const REGISTERED_NODE_KINDS = getNodeKinds(REGISTERED_NODES);
+export type NodeDictionary = typeof REGISTERED_NODES;
+export type NodeKind = keyof NodeDictionary;
+export type Node = NodeDictionary[NodeKind];
 
 // Node Helpers.
 
-export type Node = RegisteredNodes[keyof RegisteredNodes];
-
-export function isNode<TKeys extends keyof RegisteredNodes>(
+export function isNode<TKind extends NodeKind>(
   node: Node | null | undefined,
-  key: TKeys | TKeys[]
-): node is RegisteredNodes[TKeys] {
-  const keys = Array.isArray(key) ? key : [key];
-  return !!node && (keys as (keyof RegisteredNodes)[]).includes(node.kind);
+  kind: TKind | TKind[]
+): node is NodeDictionary[TKind] {
+  const kinds = Array.isArray(kind) ? kind : [kind];
+  return !!node && (kinds as NodeKind[]).includes(node.kind);
 }
 
-export function assertIsNode<TKeys extends keyof RegisteredNodes>(
+export function assertIsNode<TKind extends NodeKind>(
   node: Node | null | undefined,
-  key: TKeys | TKeys[]
-): asserts node is RegisteredNodes[TKeys] {
-  const keys = Array.isArray(key) ? key : [key];
-  if (!isNode(node, keys)) {
+  kind: TKind | TKind[]
+): asserts node is NodeDictionary[TKind] {
+  const kinds = Array.isArray(kind) ? kind : [kind];
+  if (!isNode(node, kinds)) {
     throw new Error(
-      `Expected ${keys.join(' | ')}, got ${node?.kind ?? 'null'}.`
+      `Expected ${kinds.join(' | ')}, got ${node?.kind ?? 'null'}.`
     );
   }
 }
 
-export function isNodeFilter<TKeys extends keyof RegisteredNodes>(
-  key: TKeys | TKeys[]
-): (node: Node | null | undefined) => node is RegisteredNodes[TKeys] {
-  return (node): node is RegisteredNodes[TKeys] => isNode(node, key);
+export function isNodeFilter<TKind extends NodeKind>(
+  kind: TKind | TKind[]
+): (node: Node | null | undefined) => node is NodeDictionary[TKind] {
+  return (node): node is NodeDictionary[TKind] => isNode(node, kind);
 }
 
-export function assertIsNodeFilter<TKeys extends keyof RegisteredNodes>(
-  key: TKeys | TKeys[]
-): (node: Node | null | undefined) => node is RegisteredNodes[TKeys] {
-  return (node): node is RegisteredNodes[TKeys] => {
-    assertIsNode(node, key);
+export function assertIsNodeFilter<TKind extends NodeKind>(
+  kind: TKind | TKind[]
+): (node: Node | null | undefined) => node is NodeDictionary[TKind] {
+  return (node): node is NodeDictionary[TKind] => {
+    assertIsNode(node, kind);
     return true;
   };
 }
 
-export function removeNullAndAssertIsNodeFilter<
-  TKeys extends keyof RegisteredNodes
->(
-  key: TKeys | TKeys[]
-): (node: Node | null | undefined) => node is RegisteredNodes[TKeys] {
-  return (node): node is RegisteredNodes[TKeys] => {
-    if (node) assertIsNode(node, key);
+export function removeNullAndAssertIsNodeFilter<TKind extends NodeKind>(
+  kind: TKind | TKind[]
+): (node: Node | null | undefined) => node is NodeDictionary[TKind] {
+  return (node): node is NodeDictionary[TKind] => {
+    if (node) assertIsNode(node, kind);
     return node != null;
   };
 }

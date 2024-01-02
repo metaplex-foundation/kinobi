@@ -12,7 +12,8 @@ import {
 
 type StructDefaultValueMap = Record<string, Record<string, StructDefaultValue>>;
 type StructDefaultValue =
-  | (ValueNode & { strategy?: 'optional' | 'omitted' })
+  | ValueNode
+  | { value: ValueNode; strategy?: 'optional' | 'omitted' }
   | null;
 
 export function setStructDefaultValuesVisitor(map: StructDefaultValueMap) {
@@ -25,14 +26,19 @@ export function setStructDefaultValuesVisitor(map: StructDefaultValueMap) {
           const fields = node.fields.map((field): StructFieldTypeNode => {
             const defaultValue = defaultValues[field.name];
             if (defaultValue === undefined) return field;
+            if (defaultValue === null) {
+              return structFieldTypeNode({
+                ...field,
+                defaultValue: undefined,
+                defaultValueStrategy: undefined,
+              });
+            }
             return structFieldTypeNode({
               ...field,
-              defaultsTo: !defaultValue
-                ? null
-                : {
-                    strategy: defaultValue.strategy ?? 'optional',
-                    value: defaultValue,
-                  },
+              defaultValue:
+                'kind' in defaultValue ? defaultValue : defaultValue.value,
+              defaultValueStrategy:
+                'kind' in defaultValue ? undefined : defaultValue.strategy,
             });
           });
           return structTypeNode(fields);

@@ -1,17 +1,18 @@
 import { TypeManifest } from '../TypeManifest';
-import { NameApi } from '../nameTransformers';
+import { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragmentFromTemplate, mergeFragments } from './common';
 import { getTypeDecoderFragment } from './typeDecoder';
 import { getTypeEncoderFragment } from './typeEncoder';
 
-export function getTypeCodecFragment(scope: {
-  name: string;
-  manifest: Pick<TypeManifest, 'encoder' | 'decoder'>;
-  nameApi: NameApi;
-  codecDocs?: string[];
-  encoderDocs?: string[];
-  decoderDocs?: string[];
-}): Fragment {
+export function getTypeCodecFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi'> & {
+    name: string;
+    manifest: Pick<TypeManifest, 'encoder' | 'decoder'>;
+    codecDocs?: string[];
+    encoderDocs?: string[];
+    decoderDocs?: string[];
+  }
+): Fragment {
   const { name, manifest, nameApi } = scope;
   return mergeFragments(
     [

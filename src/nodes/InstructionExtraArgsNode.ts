@@ -4,9 +4,13 @@ import { StructTypeNode } from './typeNodes';
 
 export type InstructionExtraArgsNode = {
   readonly kind: 'instructionExtraArgsNode';
-  readonly name: MainCaseString;
+
+  // Children.
   readonly struct: StructTypeNode;
   readonly link?: DefinedTypeLinkNode;
+
+  // Data.
+  readonly name: MainCaseString;
 };
 
 export type InstructionExtraArgsNodeInput = Omit<

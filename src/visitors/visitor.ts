@@ -1,12 +1,14 @@
-import { Node, REGISTERED_NODES_KEYS, RegisteredNodes } from '../nodes';
+import {
+  Node,
+  NodeDictionary,
+  NodeKind,
+  REGISTERED_NODE_KINDS,
+} from '../nodes';
 import { KinobiError, pascalCase } from '../shared';
 
-export type Visitor<
-  TReturn,
-  TNodeKeys extends keyof RegisteredNodes = keyof RegisteredNodes
-> = {
-  [K in TNodeKeys as GetVisitorFunctionName<K>]: (
-    node: RegisteredNodes[K]
+export type Visitor<TReturn, TNodeKind extends NodeKind = NodeKind> = {
+  [K in TNodeKind as GetVisitorFunctionName<K>]: (
+    node: NodeDictionary[K]
   ) => TReturn;
 };
 
@@ -43,7 +45,7 @@ export function visitOrElse<TReturn>(
 }
 
 export function getVisitFunctionName<T extends Node['kind']>(node: T) {
-  if (!REGISTERED_NODES_KEYS.includes(node)) {
+  if (!REGISTERED_NODE_KINDS.includes(node)) {
     throw new KinobiError(`Unrecognized node [${node}]`);
   }
 

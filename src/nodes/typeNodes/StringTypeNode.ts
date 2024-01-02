@@ -5,19 +5,23 @@ export type StringEncoding = 'utf8' | 'base16' | 'base58' | 'base64';
 
 export type StringTypeNode = {
   readonly kind: 'stringTypeNode';
-  readonly encoding: StringEncoding;
+
+  // Children.
   readonly size: SizeNode;
+
+  // Data.
+  readonly encoding: StringEncoding;
 };
 
 export function stringTypeNode(
-  options: {
+  input: {
     readonly encoding?: StringEncoding;
     readonly size?: SizeNode;
   } = {}
 ): StringTypeNode {
   return {
     kind: 'stringTypeNode',
-    encoding: options.encoding ?? 'utf8',
-    size: options.size ?? prefixedSizeNode(numberTypeNode('u32')),
+    encoding: input.encoding ?? 'utf8',
+    size: input.size ?? prefixedSizeNode(numberTypeNode('u32')),
   };
 }

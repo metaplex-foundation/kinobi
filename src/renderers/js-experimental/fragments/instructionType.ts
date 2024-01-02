@@ -1,17 +1,17 @@
 import { InstructionNode, ProgramNode } from '../../../nodes';
-import { LinkableDictionary, pascalCase } from '../../../shared';
-import { NameApi } from '../nameTransformers';
+import { pascalCase } from '../../../shared';
+import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragmentFromTemplate, mergeFragments } from './common';
 import { getInstructionAccountMetaFragment } from './instructionAccountMeta';
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
 
-export function getInstructionTypeFragment(scope: {
-  instructionNode: InstructionNode;
-  programNode: ProgramNode;
-  withSigners: boolean;
-  nameApi: NameApi;
-  linkables: LinkableDictionary;
-}): Fragment {
+export function getInstructionTypeFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi' | 'linkables'> & {
+    instructionNode: InstructionNode;
+    programNode: ProgramNode;
+    withSigners: boolean;
+  }
+): Fragment {
   const { instructionNode, programNode, withSigners, nameApi } = scope;
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasData =

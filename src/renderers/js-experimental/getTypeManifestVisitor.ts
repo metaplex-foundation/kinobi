@@ -1,5 +1,5 @@
 import {
-  REGISTERED_TYPE_NODE_KEYS,
+  REGISTERED_TYPE_NODE_KINDS,
   SizeNode,
   isNode,
   isScalarEnum,
@@ -10,10 +10,17 @@ import { camelCase, pascalCase, pipe } from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
 import { ImportMap } from './ImportMap';
 import { TypeManifest, mergeManifests } from './TypeManifest';
-import { Fragment, fragment, getValueNodeFragment } from './fragments';
+import { Fragment, fragment } from './fragments';
 import { NameApi } from './nameTransformers';
+import { ValueNodeVisitor } from './renderValueNodeVisitor';
 
-export function getTypeManifestVisitor(nameApi: NameApi) {
+export type TypeManifestVisitor = ReturnType<typeof getTypeManifestVisitor>;
+
+export function getTypeManifestVisitor(input: {
+  nameApi: NameApi;
+  valueNodeVisitor: ValueNodeVisitor;
+}) {
+  const { nameApi, valueNodeVisitor } = input;
   let parentName: { strict: string; loose: string } | null = null;
 
   return pipe(
@@ -27,7 +34,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           decoder: fragment(''),
         } as TypeManifest),
       [
-        ...REGISTERED_TYPE_NODE_KEYS,
+        ...REGISTERED_TYPE_NODE_KINDS,
         'definedTypeLinkNode',
         'definedTypeNode',
         'accountNode',
@@ -83,13 +90,13 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
             strict: nameApi.dataType(definedType.name),
             loose: nameApi.dataArgsType(definedType.name),
           };
-          const manifest = visit(definedType.data, self);
+          const manifest = visit(definedType.type, self);
           parentName = null;
           return manifest;
         },
 
         visitArrayType(arrayType, { self }) {
-          const childManifest = visit(arrayType.child, self);
+          const childManifest = visit(arrayType.item, self);
           childManifest.looseType.mapRender((r) => `Array<${r}>`);
           childManifest.strictType.mapRender((r) => `Array<${r}>`);
           const sizeManifest = getArrayLikeSizeOption(arrayType.size, self);
@@ -276,7 +283,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           const struct = structTypeNode([
             structFieldTypeNode({
               name: 'fields',
-              child: enumTupleVariantType.tuple,
+              type: enumTupleVariantType.tuple,
             }),
           ]);
           const structManifest = visit(struct, self);
@@ -316,7 +323,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
         },
 
         visitOptionType(optionType, { self }) {
-          const childManifest = visit(optionType.child, self);
+          const childManifest = visit(optionType.item, self);
           childManifest.strictType
             .mapRender((r) => `Option<${r}>`)
             .addImports('solanaOptions', 'Option');
@@ -362,7 +369,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
         },
 
         visitSetType(setType, { self }) {
-          const childManifest = visit(setType.child, self);
+          const childManifest = visit(setType.item, self);
           childManifest.strictType.mapRender((r) => `Set<${r}>`);
           childManifest.looseType.mapRender((r) => `Set<${r}>`);
 
@@ -389,7 +396,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           const currentParentName = parentName;
           parentName = null;
           const optionalFields = structType.fields.filter(
-            (f) => f.defaultsTo !== null
+            (f) => !!f.defaultValue
           );
 
           const mergedManifest = mergeManifests(
@@ -408,7 +415,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           if (!encoderType || optionalFields.length > 0) {
             const nonDefaultsMergedManifest = mergeManifests(
               structType.fields.map((field) =>
-                visit({ ...field, defaultsTo: null }, self)
+                visit({ ...field, defaultValue: undefined }, self)
               ),
               (renders) => `{ ${renders.join('')} }`,
               (renders) => `([${renders.join(', ')}])`
@@ -433,15 +440,15 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           const defaultValues = optionalFields
             .map((f) => {
               const key = camelCase(f.name);
-              const defaultsTo = f.defaultsTo as NonNullable<
-                typeof f.defaultsTo
+              const defaultValue = f.defaultValue as NonNullable<
+                typeof f.defaultValue
               >;
-              const { render: renderedValue, imports } = getValueNodeFragment(
-                defaultsTo.value,
-                nameApi
+              const { render: renderedValue, imports } = visit(
+                defaultValue,
+                valueNodeVisitor
               );
               mergedManifest.encoder.mergeImportsWith(imports);
-              return defaultsTo.strategy === 'omitted'
+              return f.defaultValueStrategy === 'omitted'
                 ? `${key}: ${renderedValue}`
                 : `${key}: value.${key} ?? ${renderedValue}`;
             })
@@ -457,7 +464,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
 
         visitStructFieldType(structFieldType, { self }) {
           const name = camelCase(structFieldType.name);
-          const childManifest = visit(structFieldType.child, self);
+          const childManifest = visit(structFieldType.type, self);
           const docblock = createDocblock(structFieldType.docs);
           const originalLooseType = childManifest.looseType.render;
           childManifest.strictType.mapRender(
@@ -470,12 +477,12 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
           childManifest.decoder.mapRender((r) => `['${name}', ${r}]`);
 
           // No default value.
-          if (structFieldType.defaultsTo === null) {
+          if (!structFieldType.defaultValue) {
             return childManifest;
           }
 
           // Optional default value.
-          if (structFieldType.defaultsTo.strategy === 'optional') {
+          if (structFieldType.defaultValueStrategy !== 'omitted') {
             childManifest.looseType.setRender(
               `${docblock}${name}?: ${originalLooseType}; `
             );
@@ -488,9 +495,9 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
         },
 
         visitTupleType(tupleType, { self }) {
-          const children = tupleType.children.map((item) => visit(item, self));
+          const items = tupleType.items.map((item) => visit(item, self));
           const mergedManifest = mergeManifests(
-            children,
+            items,
             (types) => `[${types.join(', ')}]`,
             (codecs) => `[${codecs.join(', ')}]`
           );

@@ -2,6 +2,8 @@ import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 
 export type BooleanTypeNode = {
   readonly kind: 'booleanTypeNode';
+
+  // Children.
   readonly size: NumberTypeNode;
 };
 

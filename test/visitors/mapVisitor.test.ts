@@ -25,8 +25,8 @@ test('it maps the return value of a visitor to another', (t) => {
 
   // Then we expect the following results when visiting different nodes.
   t.is(visit(node, visitorB), 47);
-  t.is(visit(node.children[0], visitorB), 14);
-  t.is(visit(node.children[1], visitorB), 17);
+  t.is(visit(node.items[0], visitorB), 14);
+  t.is(visit(node.items[1], visitorB), 17);
 });
 
 test('it creates partial visitors from partial visitors', (t) => {
@@ -48,5 +48,5 @@ test('it creates partial visitors from partial visitors', (t) => {
 
   // Then we expect an error when visiting an unsupported node.
   // @ts-expect-error
-  t.throws(() => visit(node.children[1], visitorB));
+  t.throws(() => visit(node.items[1], visitorB));
 });
