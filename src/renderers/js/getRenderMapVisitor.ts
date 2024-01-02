@@ -123,8 +123,8 @@ export function getRenderMapVisitor(
   ): string[] {
     const allNames = [
       ...instruction.accounts.map((account) => account.name),
-      ...instruction.dataArgs.struct.fields.map((field) => field.name),
-      ...instruction.extraArgs.struct.fields.map((field) => field.name),
+      ...instruction.dataArgs.dataArguments.map((field) => field.name),
+      ...instruction.extraArgs.extraArguments.map((field) => field.name),
     ];
     const duplicates = allNames.filter((e, i, a) => a.indexOf(e) !== i);
     return [...new Set(duplicates)];
@@ -406,15 +406,15 @@ export function getRenderMapVisitor(
           // Instruction helpers.
           const hasAccounts = node.accounts.length > 0;
           const hasData =
-            !!node.dataArgs.link || node.dataArgs.struct.fields.length > 0;
+            !!node.dataArgs.link || node.dataArgs.dataArguments.length > 0;
           const hasDataArgs =
             !!node.dataArgs.link ||
-            node.dataArgs.struct.fields.filter(
+            node.dataArgs.dataArguments.filter(
               (field) => field.defaultValueStrategy !== 'omitted'
             ).length > 0;
           const hasExtraArgs =
             !!node.extraArgs.link ||
-            node.extraArgs.struct.fields.filter(
+            node.extraArgs.extraArguments.filter(
               (field) => field.defaultValueStrategy !== 'omitted'
             ).length > 0;
           const hasAnyArgs = hasDataArgs || hasExtraArgs;

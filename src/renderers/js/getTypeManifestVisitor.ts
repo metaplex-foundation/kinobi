@@ -7,6 +7,7 @@ import {
   isUnsignedInteger,
   structFieldTypeNode,
   structTypeNode,
+  structTypeNodeFromInstructionArgumentNodes,
 } from '../../nodes';
 import { camelCase, pascalCase, pipe } from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
@@ -73,9 +74,12 @@ export function getTypeManifestVisitor(
             strict: pascalCase(instructionDataArgs.name),
             loose: `${pascalCase(instructionDataArgs.name)}Args`,
           };
+          const struct = structTypeNodeFromInstructionArgumentNodes(
+            instructionDataArgs.dataArguments
+          );
           const manifest = instructionDataArgs.link
             ? visit(instructionDataArgs.link, self)
-            : visit(instructionDataArgs.struct, self);
+            : visit(struct, self);
           parentName = null;
           return manifest;
         },
@@ -85,9 +89,12 @@ export function getTypeManifestVisitor(
             strict: pascalCase(instructionExtraArgs.name),
             loose: `${pascalCase(instructionExtraArgs.name)}Args`,
           };
+          const struct = structTypeNodeFromInstructionArgumentNodes(
+            instructionExtraArgs.extraArguments
+          );
           const manifest = instructionExtraArgs.link
             ? visit(instructionExtraArgs.link, self)
-            : visit(instructionExtraArgs.struct, self);
+            : visit(struct, self);
           parentName = null;
           return manifest;
         },

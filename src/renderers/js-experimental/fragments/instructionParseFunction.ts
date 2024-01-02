@@ -21,7 +21,7 @@ export function getInstructionParseFunctionFragment(
       : instructionNode.accounts.length;
   const hasData =
     !!instructionNode.dataArgs.link ||
-    instructionNode.dataArgs.struct.fields.length > 0;
+    instructionNode.dataArgs.dataArguments.length > 0;
 
   if (!hasAccounts && !hasData) {
     return fragment('');

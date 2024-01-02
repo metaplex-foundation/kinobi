@@ -453,8 +453,8 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
 
 function getRenamedArgsMap(instruction: InstructionNode): Map<string, string> {
   const argNames = [
-    ...instruction.dataArgs.struct.fields.map((field) => field.name),
-    ...instruction.extraArgs.struct.fields.map((field) => field.name),
+    ...instruction.dataArgs.dataArguments.map((field) => field.name),
+    ...instruction.extraArgs.extraArguments.map((field) => field.name),
   ];
   const duplicateArgs = argNames.filter((e, i, a) => a.indexOf(e) !== i);
   if (duplicateArgs.length > 0) {

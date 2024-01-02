@@ -50,12 +50,12 @@ export function getInstructionFunctionHighLevelFragment(
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasDataArgs =
     !!instructionNode.dataArgs.link ||
-    instructionNode.dataArgs.struct.fields.filter(
+    instructionNode.dataArgs.dataArguments.filter(
       (field) => !field.defaultValue || field.defaultValueStrategy !== 'omitted'
     ).length > 0;
   const hasExtraArgs =
     !!instructionNode.extraArgs.link ||
-    instructionNode.extraArgs.struct.fields.filter(
+    instructionNode.extraArgs.extraArguments.filter(
       (field) => !field.defaultValue || field.defaultValueStrategy !== 'omitted'
     ).length > 0;
   const hasAnyArgs = hasDataArgs || hasExtraArgs;

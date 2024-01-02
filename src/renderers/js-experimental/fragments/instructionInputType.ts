@@ -1,7 +1,7 @@
 import {
+  InstructionArgumentNode,
   InstructionNode,
   ProgramNode,
-  StructFieldTypeNode,
   isNode,
 } from '../../../nodes';
 import { pascalCase } from '../../../shared';
@@ -77,7 +77,7 @@ export function getInstructionInputTypeFragment(
   }
 
   // Arguments.
-  const resolveArg = (arg: StructFieldTypeNode) => {
+  const resolveArg = (arg: InstructionArgumentNode) => {
     const resolvedArg = resolvedInputs.find(
       (input) => input.kind === 'argument' && input.name === arg.name
     ) as ResolvedInstructionArgument | undefined;
@@ -98,13 +98,13 @@ export function getInstructionInputTypeFragment(
     : nameApi.dataArgsType(instructionNode.dataArgs.name);
   const dataArgs = instructionNode.dataArgs.link
     ? []
-    : instructionNode.dataArgs.struct.fields.flatMap(resolveArg);
+    : instructionNode.dataArgs.dataArguments.flatMap(resolveArg);
   const extraArgsType = instructionNode.extraArgs.link
     ? nameApi.dataArgsType(instructionNode.extraArgs.link.name)
     : nameApi.dataArgsType(instructionNode.extraArgs.name);
   const extraArgs = instructionNode.extraArgs.link
     ? []
-    : instructionNode.extraArgs.struct.fields.flatMap(resolveArg);
+    : instructionNode.extraArgs.extraArguments.flatMap(resolveArg);
 
   const syncInputType = withSigners
     ? nameApi.instructionSyncInputWithSignersType(instructionNode.name)

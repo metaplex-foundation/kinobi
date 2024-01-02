@@ -32,10 +32,10 @@ export function getInstructionFunctionLowLevelFragment(
     instructionNode.accounts.some((account) => account.isOptional);
   const hasData =
     !!instructionNode.dataArgs.link ||
-    instructionNode.dataArgs.struct.fields.length > 0;
+    instructionNode.dataArgs.dataArguments.length > 0;
   const hasArgs =
     !!instructionNode.dataArgs.link ||
-    instructionNode.dataArgs.struct.fields.filter(
+    instructionNode.dataArgs.dataArguments.filter(
       (field) => !field.defaultValue || field.defaultValueStrategy !== 'omitted'
     ).length > 0;
   const argsType = instructionNode.dataArgs.link

@@ -16,7 +16,7 @@ export function getInstructionTypeFragment(
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasData =
     !!instructionNode.dataArgs.link ||
-    instructionNode.dataArgs.struct.fields.length > 0;
+    instructionNode.dataArgs.dataArguments.length > 0;
   const dataType = instructionNode.dataArgs.link
     ? pascalCase(instructionNode.dataArgs.link.name)
     : pascalCase(instructionNode.dataArgs.name);

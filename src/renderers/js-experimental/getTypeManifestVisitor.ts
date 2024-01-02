@@ -5,6 +5,7 @@ import {
   isScalarEnum,
   structFieldTypeNode,
   structTypeNode,
+  structTypeNodeFromInstructionArgumentNodes,
 } from '../../nodes';
 import { camelCase, pascalCase, pipe } from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
@@ -66,9 +67,12 @@ export function getTypeManifestVisitor(input: {
             strict: nameApi.dataType(instructionDataArgs.name),
             loose: nameApi.dataArgsType(instructionDataArgs.name),
           };
+          const struct = structTypeNodeFromInstructionArgumentNodes(
+            instructionDataArgs.dataArguments
+          );
           const manifest = instructionDataArgs.link
             ? visit(instructionDataArgs.link, self)
-            : visit(instructionDataArgs.struct, self);
+            : visit(struct, self);
           parentName = null;
           return manifest;
         },
@@ -78,9 +82,12 @@ export function getTypeManifestVisitor(input: {
             strict: nameApi.dataType(instructionExtraArgs.name),
             loose: nameApi.dataArgsType(instructionExtraArgs.name),
           };
+          const struct = structTypeNodeFromInstructionArgumentNodes(
+            instructionExtraArgs.extraArguments
+          );
           const manifest = instructionExtraArgs.link
             ? visit(instructionExtraArgs.link, self)
-            : visit(instructionExtraArgs.struct, self);
+            : visit(struct, self);
           parentName = null;
           return manifest;
         },

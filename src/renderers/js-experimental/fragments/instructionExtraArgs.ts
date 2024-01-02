@@ -11,7 +11,7 @@ export function getInstructionExtraArgsFragment(
 ): Fragment {
   const { instructionNode, extraArgsManifest, nameApi } = scope;
   if (
-    instructionNode.extraArgs.struct.fields.length === 0 ||
+    instructionNode.extraArgs.extraArguments.length === 0 ||
     !!instructionNode.extraArgs.link
   ) {
     return fragment('');
