@@ -2,21 +2,20 @@ import {
   EnumTypeNode,
   InstructionNode,
   assertIsNode,
+  instructionArgumentNode,
   instructionDataArgsNode,
   instructionExtraArgsNode,
   instructionNode,
   isNode,
   numberTypeNode,
   numberValueNode,
-  structFieldTypeNode,
-  structTypeNode,
 } from '../nodes';
 import { LinkableDictionary, logWarn, mainCase } from '../shared';
 import {
   BottomUpNodeTransformerWithSelector,
   bottomUpTransformerVisitor,
 } from './bottomUpTransformerVisitor';
-import { flattenStruct } from './flattenStructVisitor';
+import { flattenInstructionArguments } from './flattenInstructionDataArgumentsVisitor';
 import { recordLinkablesVisitor } from './recordLinkablesVisitor';
 
 export function createSubInstructionsFromEnumArgsVisitor(
@@ -34,7 +33,7 @@ export function createSubInstructionsFromEnumArgsVisitor(
           transform: (node) => {
             assertIsNode(node, 'instructionNode');
 
-            const argFields = node.dataArgs.struct.fields;
+            const argFields = node.dataArgs.dataArguments;
             const argName = mainCase(argNameInput);
             const argFieldIndex = argFields.findIndex(
               (field) => field.name === argName
@@ -69,7 +68,7 @@ export function createSubInstructionsFromEnumArgsVisitor(
                 const subName = mainCase(`${node.name} ${variant.name}`);
                 const subFields = argFields.slice(0, argFieldIndex);
                 subFields.push(
-                  structFieldTypeNode({
+                  instructionArgumentNode({
                     name: `${subName}Discriminator`,
                     type: numberTypeNode('u8'),
                     defaultValue: numberValueNode(index),
@@ -78,14 +77,14 @@ export function createSubInstructionsFromEnumArgsVisitor(
                 );
                 if (isNode(variant, 'enumStructVariantTypeNode')) {
                   subFields.push(
-                    structFieldTypeNode({
+                    instructionArgumentNode({
                       ...argField,
                       type: variant.struct,
                     })
                   );
                 } else if (isNode(variant, 'enumTupleVariantTypeNode')) {
                   subFields.push(
-                    structFieldTypeNode({
+                    instructionArgumentNode({
                       ...argField,
                       type: variant.tuple,
                     })
@@ -99,7 +98,7 @@ export function createSubInstructionsFromEnumArgsVisitor(
                   dataArgs: instructionDataArgsNode({
                     ...node.dataArgs,
                     name: `${subName}InstructionData`,
-                    struct: flattenStruct(structTypeNode(subFields)),
+                    dataArguments: flattenInstructionArguments(subFields),
                   }),
                   extraArgs: instructionExtraArgsNode({
                     ...node.extraArgs,

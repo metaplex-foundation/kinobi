@@ -2,6 +2,7 @@ import type { ConfigureOptions } from 'nunjucks';
 import {
   InstructionNode,
   ProgramNode,
+  VALUE_NODES,
   getAllAccounts,
   getAllDefinedTypes,
   getAllInstructionsWithSubs,
@@ -220,45 +221,47 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
           let hasArgs = false;
           let hasOptional = false;
 
-          node.dataArgs.struct.fields.forEach((field) => {
+          node.dataArgs.dataArguments.forEach((argument) => {
             typeManifestVisitor.setParentName(
-              pascalCase(node.dataArgs.name) + pascalCase(field.name)
+              pascalCase(node.dataArgs.name) + pascalCase(argument.name)
             );
             typeManifestVisitor.setNestedStruct(true);
-            const manifest = visit(field.type, typeManifestVisitor);
+            const manifest = visit(argument.type, typeManifestVisitor);
             imports.mergeWith(manifest.imports);
-            const innerOptionType = isNode(field.type, 'optionTypeNode')
+            const innerOptionType = isNode(argument.type, 'optionTypeNode')
               ? manifest.type.slice('Option<'.length, -1)
               : null;
             typeManifestVisitor.setParentName(null);
             typeManifestVisitor.setNestedStruct(false);
 
+            const hasDefaultValue =
+              !!argument.defaultValue &&
+              isNode(argument.defaultValue, VALUE_NODES);
             let renderValue: string | null = null;
-            if (field.defaultValue) {
+            if (hasDefaultValue) {
               const { imports: argImports, render: value } = renderValueNode(
-                field.defaultValue
+                argument.defaultValue
               );
               imports.mergeWith(argImports);
               renderValue = value;
             }
 
-            const hasDefaultValue = !!field.defaultValue;
-            hasArgs = hasArgs || field.defaultValueStrategy !== 'omitted';
+            hasArgs = hasArgs || argument.defaultValueStrategy !== 'omitted';
             hasOptional =
               hasOptional ||
-              (hasDefaultValue && field.defaultValueStrategy !== 'omitted');
+              (hasDefaultValue && argument.defaultValueStrategy !== 'omitted');
 
-            const name = accountsAndArgsConflicts.includes(field.name)
-              ? `${field.name}_arg`
-              : field.name;
+            const name = accountsAndArgsConflicts.includes(argument.name)
+              ? `${argument.name}_arg`
+              : argument.name;
 
             instructionArgs.push({
               name,
               type: manifest.type,
               default:
-                hasDefaultValue && field.defaultValueStrategy === 'omitted',
+                hasDefaultValue && argument.defaultValueStrategy === 'omitted',
               optional:
-                hasDefaultValue && field.defaultValueStrategy !== 'omitted',
+                hasDefaultValue && argument.defaultValueStrategy !== 'omitted',
               innerOptionType,
               value: renderValue,
             });
@@ -320,7 +323,7 @@ function getConflictsForInstructionAccountsAndArgs(
 ): string[] {
   const allNames = [
     ...instruction.accounts.map((account) => account.name),
-    ...instruction.dataArgs.struct.fields.map((field) => field.name),
+    ...instruction.dataArgs.dataArguments.map((argument) => argument.name),
   ];
   const duplicates = allNames.filter((e, i, a) => a.indexOf(e) !== i);
   return [...new Set(duplicates)];
