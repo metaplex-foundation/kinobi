@@ -1,12 +1,12 @@
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
+import { InstructionArgumentNode } from './InstructionArgumentNode';
 import { DefinedTypeLinkNode } from './linkNodes';
-import { StructTypeNode } from './typeNodes';
 
 export type InstructionExtraArgsNode = {
   readonly kind: 'instructionExtraArgsNode';
 
   // Children.
-  readonly struct: StructTypeNode;
+  readonly extraArguments: InstructionArgumentNode[];
   readonly link?: DefinedTypeLinkNode;
 
   // Data.
@@ -31,7 +31,7 @@ export function instructionExtraArgsNode(
   return {
     kind: 'instructionExtraArgsNode',
     name: mainCase(input.name),
-    struct: input.struct,
+    extraArguments: input.extraArguments,
     link: input.link,
   };
 }

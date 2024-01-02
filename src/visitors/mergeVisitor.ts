@@ -67,10 +67,18 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
     };
   }
 
+  if (castedNodeKeys.includes('instructionAccountNode')) {
+    visitor.visitInstructionAccount = function visitInstructionAccount(node) {
+      return merge(node, [
+        ...(node.defaultValue ? visit(this)(node.defaultValue) : []),
+      ]);
+    };
+  }
+
   if (castedNodeKeys.includes('instructionDataArgsNode')) {
     visitor.visitInstructionDataArgs = function visitInstructionDataArgs(node) {
       return merge(node, [
-        ...visit(this)(node.struct),
+        ...node.dataArguments.flatMap(visit(this)),
         ...(node.link ? visit(this)(node.link) : []),
       ]);
     };
@@ -81,8 +89,17 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
       node
     ) {
       return merge(node, [
-        ...visit(this)(node.struct),
+        ...node.extraArguments.flatMap(visit(this)),
         ...(node.link ? visit(this)(node.link) : []),
+      ]);
+    };
+  }
+
+  if (castedNodeKeys.includes('instructionArgumentNode')) {
+    visitor.visitInstructionArgument = function visitInstructionArgument(node) {
+      return merge(node, [
+        ...visit(this)(node.type),
+        ...(node.defaultValue ? visit(this)(node.defaultValue) : []),
       ]);
     };
   }
