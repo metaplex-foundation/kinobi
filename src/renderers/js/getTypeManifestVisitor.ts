@@ -102,7 +102,7 @@ export function getTypeManifestVisitor() {
         },
 
         visitArrayType(arrayType, { self }) {
-          const childManifest = visit(arrayType.child, self);
+          const childManifest = visit(arrayType.item, self);
           childManifest.serializerImports.add('umiSerializers', 'array');
           const sizeOption = getArrayLikeSizeOption(
             arrayType.size,

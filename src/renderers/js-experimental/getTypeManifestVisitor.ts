@@ -89,7 +89,7 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
         },
 
         visitArrayType(arrayType, { self }) {
-          const childManifest = visit(arrayType.child, self);
+          const childManifest = visit(arrayType.item, self);
           childManifest.looseType.mapRender((r) => `Array<${r}>`);
           childManifest.strictType.mapRender((r) => `Array<${r}>`);
           const sizeManifest = getArrayLikeSizeOption(arrayType.size, self);

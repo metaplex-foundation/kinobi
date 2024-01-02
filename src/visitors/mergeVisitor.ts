@@ -100,7 +100,7 @@ export function mergeVisitor<
     visitor.visitArrayType = function visitArrayType(node) {
       return merge(node, [
         ...visit(this)(node.size),
-        ...visit(this)(node.child),
+        ...visit(this)(node.item),
       ]);
     };
   }

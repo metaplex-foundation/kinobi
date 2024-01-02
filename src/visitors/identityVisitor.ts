@@ -193,10 +193,10 @@ export function identityVisitor<
       const size = visit(this)(node.size);
       if (size === null) return null;
       assertIsNode(size, SIZE_NODES);
-      const child = visit(this)(node.child);
-      if (child === null) return null;
-      assertIsNode(child, TYPE_NODES);
-      return arrayTypeNode(child, { size });
+      const item = visit(this)(node.item);
+      if (item === null) return null;
+      assertIsNode(item, TYPE_NODES);
+      return arrayTypeNode(item, size);
     };
   }
 

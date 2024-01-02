@@ -117,7 +117,7 @@ export function getTypeManifestVisitor() {
         },
 
         visitArrayType(arrayType, { self }) {
-          const childManifest = visit(arrayType.child, self);
+          const childManifest = visit(arrayType.item, self);
 
           if (isNode(arrayType.size, 'fixedSizeNode')) {
             return {
@@ -398,10 +398,7 @@ export function getTypeManifestVisitor() {
         },
 
         visitBytesType(bytesType, { self }) {
-          const arrayType = arrayTypeNode(numberTypeNode('u8'), {
-            size: bytesType.size,
-          });
-
+          const arrayType = arrayTypeNode(numberTypeNode('u8'), bytesType.size);
           return visit(arrayType, self);
         },
 
