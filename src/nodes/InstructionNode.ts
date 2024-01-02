@@ -12,6 +12,10 @@ import {
   instructionAccountNodeFromIdl,
 } from './InstructionAccountNode';
 import {
+  instructionArgumentNode,
+  instructionArgumentNodeFromIdl,
+} from './InstructionArgumentNode';
+import {
   InstructionDataArgsNode,
   instructionDataArgsNode,
 } from './InstructionDataArgsNode';
@@ -23,11 +27,6 @@ import { isNode } from './Node';
 import { ProgramNode } from './ProgramNode';
 import { RootNode } from './RootNode';
 import { InstructionInputValueNode } from './contextualValueNodes';
-import { structFieldTypeNode } from './typeNodes/StructFieldTypeNode';
-import {
-  structTypeNode,
-  structTypeNodeFromIdl,
-} from './typeNodes/StructTypeNode';
 import { createTypeNodeFromIdl } from './typeNodes/TypeNode';
 import { numberValueNode } from './valueNodes';
 
@@ -75,7 +74,7 @@ export function instructionNode(input: InstructionNodeInput): InstructionNode {
       input.extraArgs ??
       instructionExtraArgsNode({
         name: `${name}InstructionExtra`,
-        struct: structTypeNode([]),
+        extraArguments: [],
       }),
     subInstructions: input.subInstructions ?? [],
     idlName: input.idlName ?? input.name,
@@ -98,18 +97,15 @@ export function instructionNodeFromIdl(
 ): InstructionNode {
   const idlName = idl.name ?? '';
   const name = mainCase(idlName);
-  let dataArgs = structTypeNodeFromIdl({
-    kind: 'struct',
-    fields: idl.args ?? [],
-  });
+  let dataArguments = (idl.args ?? []).map(instructionArgumentNodeFromIdl);
   if (idl.discriminant) {
-    const discriminatorField = structFieldTypeNode({
+    const discriminatorField = instructionArgumentNode({
       name: 'discriminator',
       type: createTypeNodeFromIdl(idl.discriminant.type),
       defaultValue: numberValueNode(idl.discriminant.value),
       defaultValueStrategy: 'omitted',
     });
-    dataArgs = structTypeNode([discriminatorField, ...dataArgs.fields]);
+    dataArguments = [discriminatorField, ...dataArguments];
   }
   return instructionNode({
     name,
@@ -120,7 +116,7 @@ export function instructionNodeFromIdl(
     ),
     dataArgs: instructionDataArgsNode({
       name: `${name}InstructionData`,
-      struct: dataArgs,
+      dataArguments,
     }),
     optionalAccountStrategy: idl.legacyOptionalAccountsStrategy
       ? 'omitted'

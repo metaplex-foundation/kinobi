@@ -14,7 +14,8 @@ export type ByteSizeVisitorKeys =
   | 'definedTypeNode'
   | 'accountDataNode'
   | 'instructionDataArgsNode'
-  | 'instructionExtraArgsNode';
+  | 'instructionExtraArgsNode'
+  | 'instructionArgumentNode';
 
 export function getByteSizeVisitor(
   linkables: LinkableDictionary
@@ -38,6 +39,7 @@ export function getByteSizeVisitor(
       'accountDataNode',
       'instructionDataArgsNode',
       'instructionExtraArgsNode',
+      'instructionArgumentNode',
     ]
   );
 
@@ -49,11 +51,15 @@ export function getByteSizeVisitor(
     },
 
     visitInstructionDataArgs(node) {
-      return visit(node.struct, this);
+      return sumSizes(node.dataArguments.map((arg) => visit(arg, this)));
     },
 
     visitInstructionExtraArgs(node) {
-      return visit(node.struct, this);
+      return sumSizes(node.extraArguments.map((arg) => visit(arg, this)));
+    },
+
+    visitInstructionArgument(node) {
+      return visit(node.type, this);
     },
 
     visitDefinedType(node) {

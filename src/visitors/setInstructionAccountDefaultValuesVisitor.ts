@@ -232,7 +232,7 @@ export function setInstructionAccountDefaultValuesVisitor(
                     );
                   }
                   if (node.dataArgs.link) return true;
-                  return node.dataArgs.struct.fields.some(
+                  return node.dataArgs.dataArguments.some(
                     (f) => f.name === mainCase(seed.name)
                   );
                 });
