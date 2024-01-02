@@ -19,17 +19,15 @@ export type MapTypeNode = {
 export function mapTypeNode(
   key: TypeNode,
   value: TypeNode,
-  options: {
-    readonly size?: MapTypeNode['size'];
-    readonly idlMap?: MapTypeNode['idlMap'];
-  } = {}
+  size?: SizeNode,
+  idlMap?: MapTypeNode['idlMap']
 ): MapTypeNode {
   return {
     kind: 'mapTypeNode',
     key,
     value,
-    size: options.size ?? prefixedSizeNode(numberTypeNode('u32')),
-    idlMap: options.idlMap ?? 'hashMap',
+    size: size ?? prefixedSizeNode(numberTypeNode('u32')),
+    idlMap: idlMap ?? 'hashMap',
   };
 }
 
@@ -43,8 +41,10 @@ export function mapTypeNodeFromIdl(idl: IdlTypeMap): MapTypeNode {
   } else if (idl.size) {
     size = prefixedSizeNode(numberTypeNode(idl.size));
   }
-  return mapTypeNode(createTypeNodeFromIdl(key), createTypeNodeFromIdl(value), {
+  return mapTypeNode(
+    createTypeNodeFromIdl(key),
+    createTypeNodeFromIdl(value),
     size,
-    idlMap: 'hashMap' in idl ? 'hashMap' : 'bTreeMap',
-  });
+    'hashMap' in idl ? 'hashMap' : 'bTreeMap'
+  );
 }

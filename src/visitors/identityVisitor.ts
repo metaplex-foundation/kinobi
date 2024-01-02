@@ -244,7 +244,7 @@ export function identityVisitor<
       const value = visit(this)(node.value);
       if (value === null) return null;
       assertIsNode(value, TYPE_NODES);
-      return mapTypeNode(key, value, { ...node, size });
+      return mapTypeNode(key, value, size, node.idlMap);
     };
   }
 
