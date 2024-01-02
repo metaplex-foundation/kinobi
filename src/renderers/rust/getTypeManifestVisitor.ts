@@ -372,12 +372,12 @@ export function getTypeManifestVisitor() {
         },
 
         visitTupleType(tupleType, { self }) {
-          const children = tupleType.children.map((item) => visit(item, self));
-          const mergedManifest = mergeManifests(children);
+          const items = tupleType.items.map((item) => visit(item, self));
+          const mergedManifest = mergeManifests(items);
 
           return {
             ...mergedManifest,
-            type: `(${children.map((item) => item.type).join(', ')})`,
+            type: `(${items.map((item) => item.type).join(', ')})`,
           };
         },
 

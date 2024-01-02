@@ -22,9 +22,9 @@ test('it returns a unique string representing the whole node', (t) => {
   // Then we expect the following string.
   t.deepEqual(
     result,
-    '{"children":[' +
+    '{"items":[' +
       '{"endian":"le","format":"u32","kind":"numberTypeNode"},' +
-      '{"children":[{"endian":"le","format":"u32","kind":"numberTypeNode"},{"kind":"publicKeyTypeNode"}],"kind":"tupleTypeNode"}' +
+      '{"items":[{"endian":"le","format":"u32","kind":"numberTypeNode"},{"kind":"publicKeyTypeNode"}],"kind":"tupleTypeNode"}' +
       '],"kind":"tupleTypeNode"}'
   );
 });

@@ -16,8 +16,8 @@ test('it returns the same value for any visited node', (t) => {
 
   // Then we expect the following results when visiting different nodes.
   t.is(visit(node, visitor), 'tupleTypeNode');
-  t.is(visit(node.children[0], visitor), 'numberTypeNode');
-  t.is(visit(node.children[1], visitor), 'publicKeyTypeNode');
+  t.is(visit(node.items[0], visitor), 'numberTypeNode');
+  t.is(visit(node.items[1], visitor), 'publicKeyTypeNode');
 });
 
 test('it can create partial visitor', (t) => {
@@ -32,9 +32,9 @@ test('it can create partial visitor', (t) => {
 
   // Then we expect the following results when visiting supported nodes.
   t.is(visit(node, visitor), 'tupleTypeNode');
-  t.is(visit(node.children[0], visitor), 'numberTypeNode');
+  t.is(visit(node.items[0], visitor), 'numberTypeNode');
 
   // But expect an error when visiting an unsupported node.
   // @ts-expect-error
-  t.throws(() => visit(node.children[1], visitor));
+  t.throws(() => visit(node.items[1], visitor));
 });

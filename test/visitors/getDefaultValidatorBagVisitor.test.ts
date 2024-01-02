@@ -53,8 +53,8 @@ test('it validates nested nodes', (t) => {
   const bag = visit(node, getDefaultValidatorBagVisitor());
 
   // Then we expect the following validation errors.
-  const tupleNode = node.children[0];
-  const structNode = node.children[1];
+  const tupleNode = node.items[0];
+  const structNode = node.items[1];
   t.deepEqual(
     bag,
     new ValidatorBag()

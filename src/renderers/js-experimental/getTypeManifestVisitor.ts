@@ -488,9 +488,9 @@ export function getTypeManifestVisitor(nameApi: NameApi) {
         },
 
         visitTupleType(tupleType, { self }) {
-          const children = tupleType.children.map((item) => visit(item, self));
+          const items = tupleType.items.map((item) => visit(item, self));
           const mergedManifest = mergeManifests(
-            children,
+            items,
             (types) => `[${types.join(', ')}]`,
             (codecs) => `[${codecs.join(', ')}]`
           );

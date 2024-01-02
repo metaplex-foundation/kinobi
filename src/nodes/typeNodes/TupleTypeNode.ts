@@ -3,13 +3,13 @@ import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type TupleTypeNode = {
   readonly kind: 'tupleTypeNode';
-  readonly children: TypeNode[];
+  readonly items: TypeNode[];
 };
 
 export function tupleTypeNode<TItems extends TypeNode[] = TypeNode[]>(
-  children: [...TItems]
-): TupleTypeNode & { readonly children: [...TItems] } {
-  return { kind: 'tupleTypeNode', children };
+  items: [...TItems]
+): TupleTypeNode & { readonly items: [...TItems] } {
+  return { kind: 'tupleTypeNode', items };
 }
 
 export function tupleTypeNodeFromIdl(idl: IdlTypeTuple): TupleTypeNode {

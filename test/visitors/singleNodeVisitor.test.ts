@@ -20,7 +20,7 @@ test('it visits a single node and return a custom value', (t) => {
   // And a visitor that counts the number of direct items in a tuple node.
   const visitor = singleNodeVisitor(
     'tupleTypeNode',
-    (node) => node.children.length
+    (node) => node.items.length
   );
 
   // When we visit the tree using that visitor.

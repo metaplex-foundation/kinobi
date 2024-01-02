@@ -225,7 +225,7 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
 
         visitTupleType(node, { next }) {
           const bag = new ValidatorBag();
-          if (node.children.length === 0) {
+          if (node.items.length === 0) {
             bag.warn('Tuple has no items.', node, stack);
           }
           return bag.mergeWith([next(node)]);

@@ -307,7 +307,7 @@ export function identityVisitor<
   if (castedNodeKeys.includes('tupleTypeNode')) {
     visitor.visitTupleType = function visitTupleType(node) {
       return tupleTypeNode(
-        node.children
+        node.items
           .map((child) => visit(this)(child))
           .filter(removeNullAndAssertIsNodeFilter(TYPE_NODES))
       );

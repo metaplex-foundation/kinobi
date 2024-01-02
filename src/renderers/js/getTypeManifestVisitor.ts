@@ -446,19 +446,17 @@ export function getTypeManifestVisitor() {
         },
 
         visitTupleType(tupleType, { self }) {
-          const children = tupleType.children.map((item) => visit(item, self));
-          const mergedManifest = mergeManifests(children);
+          const items = tupleType.items.map((item) => visit(item, self));
+          const mergedManifest = mergeManifests(items);
           mergedManifest.serializerImports.add('umiSerializers', 'tuple');
-          const childrenSerializers = children
+          const itemSerializers = items
             .map((child) => child.serializer)
             .join(', ');
           return {
             ...mergedManifest,
-            strictType: `[${children
-              .map((item) => item.strictType)
-              .join(', ')}]`,
-            looseType: `[${children.map((item) => item.looseType).join(', ')}]`,
-            serializer: `tuple([${childrenSerializers}])`,
+            strictType: `[${items.map((item) => item.strictType).join(', ')}]`,
+            looseType: `[${items.map((item) => item.looseType).join(', ')}]`,
+            serializer: `tuple([${itemSerializers}])`,
           };
         },
 

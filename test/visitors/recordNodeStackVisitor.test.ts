@@ -67,6 +67,6 @@ test('it includes the current node when applied last', (t) => {
   t.deepEqual(numberStacks[0].all(), [
     node,
     node.data,
-    (node.data as TupleTypeNode).children[0],
+    (node.data as TupleTypeNode).items[0],
   ]);
 });

@@ -181,7 +181,7 @@ export function mergeVisitor<
 
   if (castedNodeKeys.includes('tupleTypeNode')) {
     visitor.visitTupleType = function visitTupleType(node) {
-      return merge(node, node.children.flatMap(visit(this)));
+      return merge(node, node.items.flatMap(visit(this)));
     };
   }
 
