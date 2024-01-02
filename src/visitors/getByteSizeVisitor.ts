@@ -1,6 +1,6 @@
 import {
   REGISTERED_TYPE_NODE_KEYS,
-  RegisteredTypeNodes,
+  RegisteredTypeNodeKeys,
   isNode,
   isScalarEnum,
 } from '../nodes';
@@ -9,7 +9,7 @@ import { mergeVisitor } from './mergeVisitor';
 import { Visitor, visit } from './visitor';
 
 export type ByteSizeVisitorKeys =
-  | keyof RegisteredTypeNodes
+  | RegisteredTypeNodeKeys
   | 'definedTypeLinkNode'
   | 'definedTypeNode'
   | 'accountDataNode'

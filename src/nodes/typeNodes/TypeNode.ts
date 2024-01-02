@@ -1,7 +1,9 @@
-import type { Mutable } from '../../shared';
 import { IDL_TYPE_LEAVES, IdlType } from '../../idl';
-import type { RegisteredNodes } from '../Node';
-import { definedTypeLinkNode } from '../linkNodes/DefinedTypeLinkNode';
+import { getNodeKeys } from '../../shared/utils';
+import {
+  DefinedTypeLinkNode,
+  definedTypeLinkNode,
+} from '../linkNodes/DefinedTypeLinkNode';
 import { prefixedSizeNode } from '../sizeNodes/PrefixedSizeNode';
 import { AmountTypeNode } from './AmountTypeNode';
 import { ArrayTypeNode, arrayTypeNodeFromIdl } from './ArrayTypeNode';
@@ -23,9 +25,9 @@ import { StructFieldTypeNode } from './StructFieldTypeNode';
 import { StructTypeNode, structTypeNodeFromIdl } from './StructTypeNode';
 import { TupleTypeNode, tupleTypeNodeFromIdl } from './TupleTypeNode';
 
-// Node Group Registration.
+// Standalone Type Node Registration.
 
-export const REGISTERED_TYPE_NODES = {
+export const STANDALONE_TYPE_NODES = {
   amountTypeNode: {} as AmountTypeNode,
   arrayTypeNode: {} as ArrayTypeNode,
   booleanTypeNode: {} as BooleanTypeNode,
@@ -41,6 +43,17 @@ export const REGISTERED_TYPE_NODES = {
   stringTypeNode: {} as StringTypeNode,
   structTypeNode: {} as StructTypeNode,
   tupleTypeNode: {} as TupleTypeNode,
+};
+
+export const STANDALONE_TYPE_NODE_KEYS = getNodeKeys(STANDALONE_TYPE_NODES);
+export type StandaloneTypeNodeKeys = typeof STANDALONE_TYPE_NODE_KEYS[number];
+export type StandaloneTypeNodes =
+  typeof STANDALONE_TYPE_NODES[StandaloneTypeNodeKeys];
+
+// Type Node Registration.
+
+export const REGISTERED_TYPE_NODES = {
+  ...STANDALONE_TYPE_NODES,
 
   // The following are not valid standalone types.
   structFieldTypeNode: {} as StructFieldTypeNode,
@@ -49,46 +62,22 @@ export const REGISTERED_TYPE_NODES = {
   enumTupleVariantTypeNode: {} as EnumTupleVariantTypeNode,
 };
 
-export const REGISTERED_TYPE_NODE_KEYS = Object.keys(
-  REGISTERED_TYPE_NODES
-) as (keyof typeof REGISTERED_TYPE_NODES)[];
-
-export type RegisteredTypeNodes = typeof REGISTERED_TYPE_NODES;
+export const REGISTERED_TYPE_NODE_KEYS = getNodeKeys(REGISTERED_TYPE_NODES);
+export type RegisteredTypeNodeKeys = typeof REGISTERED_TYPE_NODE_KEYS[number];
+export type RegisteredTypeNodes =
+  typeof REGISTERED_TYPE_NODES[RegisteredTypeNodeKeys];
 
 // Type Node Helpers.
 // This only includes type nodes that can be used as standalone types.
 // E.g. this excludes structFieldTypeNode, enumEmptyVariantTypeNode, etc.
 // It also includes the definedTypeLinkNode to compose types.
 
-const TYPE_NODES_INTERNAL = [
-  // Standalone types.
-  'amountTypeNode',
-  'arrayTypeNode',
-  'booleanTypeNode',
-  'bytesTypeNode',
-  'dateTimeTypeNode',
-  'enumTypeNode',
-  'mapTypeNode',
-  'numberTypeNode',
-  'optionTypeNode',
-  'publicKeyTypeNode',
-  'setTypeNode',
-  'solAmountTypeNode',
-  'stringTypeNode',
-  'structTypeNode',
-  'tupleTypeNode',
-
-  // Link types.
-  'definedTypeLinkNode',
-] as const;
-
-export const TYPE_NODES = TYPE_NODES_INTERNAL as Mutable<
-  typeof TYPE_NODES_INTERNAL
->;
-
-export type TypeNode = RegisteredNodes[typeof TYPE_NODES[number]];
-
-// Node Group Helpers.
+export const TYPE_NODES = [
+  ...STANDALONE_TYPE_NODE_KEYS,
+  'definedTypeLinkNode' as const,
+];
+export type TypeNodeKeys = typeof TYPE_NODES[number];
+export type TypeNode = StandaloneTypeNodes | DefinedTypeLinkNode;
 
 function isArrayOfSize(array: any, size: number): boolean {
   return Array.isArray(array) && array.length === size;
