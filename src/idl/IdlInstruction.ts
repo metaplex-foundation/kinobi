@@ -24,6 +24,7 @@ export type IdlInstructionAccount = {
 export type IdlInstructionArg = {
   name: string;
   type: IdlType;
+  docs?: string[];
 };
 
 export type IdlInstructionDiscriminant = {
