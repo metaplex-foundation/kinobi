@@ -44,8 +44,6 @@ export * from './updateDefinedTypesVisitor';
 export * from './updateErrorsVisitor';
 export * from './updateInstructionsVisitor';
 export * from './updateProgramsVisitor';
-export * from './useCustomAccountSerializerVisitor';
-export * from './useCustomInstructionSerializerVisitor';
 export * from './visitor';
 export * from './voidVisitor';
 export * from './writeRenderMapVisitor';

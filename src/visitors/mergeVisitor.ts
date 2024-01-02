@@ -49,10 +49,7 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
 
   if (castedNodeKeys.includes('accountDataNode')) {
     visitor.visitAccountData = function visitAccountData(node) {
-      return merge(node, [
-        ...visit(this)(node.struct),
-        ...(node.link ? visit(this)(node.link) : []),
-      ]);
+      return merge(node, visit(this)(node.struct));
     };
   }
 
@@ -77,10 +74,7 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
 
   if (castedNodeKeys.includes('instructionDataArgsNode')) {
     visitor.visitInstructionDataArgs = function visitInstructionDataArgs(node) {
-      return merge(node, [
-        ...node.dataArguments.flatMap(visit(this)),
-        ...(node.link ? visit(this)(node.link) : []),
-      ]);
+      return merge(node, node.dataArguments.flatMap(visit(this)));
     };
   }
 
@@ -88,10 +82,7 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
     visitor.visitInstructionExtraArgs = function visitInstructionExtraArgs(
       node
     ) {
-      return merge(node, [
-        ...node.extraArguments.flatMap(visit(this)),
-        ...(node.link ? visit(this)(node.link) : []),
-      ]);
+      return merge(node, node.extraArguments.flatMap(visit(this)));
     };
   }
 

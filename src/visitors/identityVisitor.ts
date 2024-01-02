@@ -131,9 +131,7 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       const struct = visit(this)(node.struct);
       if (struct === null) return null;
       assertIsNode(struct, 'structTypeNode');
-      const link = node.link ? visit(this)(node.link) ?? undefined : undefined;
-      if (link) assertIsNode(link, 'definedTypeLinkNode');
-      return accountDataNode({ ...node, struct, link });
+      return accountDataNode({ ...node, struct });
     };
   }
 
@@ -173,9 +171,7 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       const dataArguments = node.dataArguments
         .map(visit(this))
         .filter(removeNullAndAssertIsNodeFilter('instructionArgumentNode'));
-      const link = node.link ? visit(this)(node.link) ?? undefined : undefined;
-      if (link) assertIsNode(link, 'definedTypeLinkNode');
-      return instructionDataArgsNode({ ...node, dataArguments, link });
+      return instructionDataArgsNode({ ...node, dataArguments });
     };
   }
 
@@ -186,9 +182,7 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       const extraArguments = node.extraArguments
         .map(visit(this))
         .filter(removeNullAndAssertIsNodeFilter('instructionArgumentNode'));
-      const link = node.link ? visit(this)(node.link) ?? undefined : undefined;
-      if (link) assertIsNode(link, 'definedTypeLinkNode');
-      return instructionExtraArgsNode({ ...node, extraArguments, link });
+      return instructionExtraArgsNode({ ...node, extraArguments });
     };
   }
 

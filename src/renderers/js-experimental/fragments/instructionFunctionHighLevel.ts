@@ -54,7 +54,6 @@ export function getInstructionFunctionHighLevelFragment(
       (field) => !field.defaultValue || field.defaultValueStrategy !== 'omitted'
     ).length > 0;
   const hasExtraArgs =
-    !!instructionNode.extraArgs.link ||
     instructionNode.extraArgs.extraArguments.filter(
       (field) => !field.defaultValue || field.defaultValueStrategy !== 'omitted'
     ).length > 0;

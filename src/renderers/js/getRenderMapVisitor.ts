@@ -53,12 +53,21 @@ const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   parser: 'typescript',
 };
 
+export type CustomDataOptions = {
+  name: string;
+  importFrom?: ImportFrom;
+  extractAs?: string;
+  extract?: boolean;
+};
+
 export type GetJavaScriptRenderMapOptions = {
   renderParentInstructions?: boolean;
   formatCode?: boolean;
   prettierOptions?: PrettierOptions;
   dependencyMap?: Record<ImportFrom, string>;
   nonScalarEnums?: string[];
+  customAccountData?: CustomDataOptions[];
+  customInstructionData?: CustomDataOptions[];
 };
 
 export function getRenderMapVisitor(
@@ -89,6 +98,8 @@ export function getRenderMapVisitor(
     generatedTypes: '../types',
   };
   const nonScalarEnums = (options.nonScalarEnums ?? []).map(mainCase);
+  const customAccountData = options.customAccountData ?? [];
+  const customInstructionData = options.customInstructionData ?? [];
 
   const valueNodeVisitor = renderValueNodeVisitor({
     linkables,

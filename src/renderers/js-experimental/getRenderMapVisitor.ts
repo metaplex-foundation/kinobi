@@ -4,6 +4,8 @@ import {
   Options as PrettierOptions,
 } from 'prettier';
 import {
+  definedTypeLinkNode,
+  DefinedTypeLinkNode,
   getAllAccounts,
   getAllDefinedTypes,
   getAllInstructionsWithSubs,
@@ -73,6 +75,25 @@ const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   parser: 'typescript',
 };
 
+export type CustomDataOptions = {
+  name: string;
+  importAs?: string;
+  importFrom?: ImportFrom;
+  extractAs?: string;
+  extract?: boolean;
+};
+
+export type ParsedCustomDataOptions = Record<
+  MainCaseString,
+  {
+    importAs: MainCaseString;
+    importFrom: ImportFrom;
+    extractAs?: MainCaseString;
+    extract: boolean;
+    linkNode: DefinedTypeLinkNode;
+  }
+>;
+
 export type GetRenderMapOptions = {
   renderParentInstructions?: boolean;
   formatCode?: boolean;
@@ -81,6 +102,8 @@ export type GetRenderMapOptions = {
   asyncResolvers?: string[];
   nameTransformers?: Partial<NameTransformers>;
   nonScalarEnums?: string[];
+  customAccountData?: CustomDataOptions[];
+  customInstructionData?: CustomDataOptions[];
 };
 
 export type GlobalFragmentScope = {
@@ -91,6 +114,8 @@ export type GlobalFragmentScope = {
   asyncResolvers: MainCaseString[];
   nonScalarEnums: MainCaseString[];
   renderParentInstructions: boolean;
+  customAccountData: ParsedCustomDataOptions;
+  customInstructionData: ParsedCustomDataOptions;
 };
 
 export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
@@ -111,6 +136,34 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
   const dependencyMap = options.dependencyMap ?? {};
   const asyncResolvers = (options.asyncResolvers ?? []).map(mainCase);
   const nonScalarEnums = (options.nonScalarEnums ?? []).map(mainCase);
+  const parseCustomDataOptions = (
+    customDataOptions: CustomDataOptions[],
+    defaultSuffix: string
+  ): ParsedCustomDataOptions =>
+    Object.fromEntries(
+      customDataOptions.map((o) => {
+        const importFrom = o.importFrom ?? 'hooked';
+        return [
+          mainCase(o.name),
+          {
+            importAs: mainCase(o.importAs ?? `${o.name}${defaultSuffix}`),
+            importFrom,
+            extractAs: o.extractAs ? mainCase(o.extractAs) : undefined,
+            extract: o.extract ?? true,
+            linkNode: definedTypeLinkNode(o.name, importFrom),
+          },
+        ];
+      })
+    );
+
+  const customAccountData = parseCustomDataOptions(
+    options.customAccountData ?? [],
+    'AccountData'
+  );
+  const customInstructionData = parseCustomDataOptions(
+    options.customInstructionData ?? [],
+    'InstructionData'
+  );
 
   const valueNodeVisitor = renderValueNodeVisitor({
     nameApi,
@@ -120,6 +173,8 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
   const typeManifestVisitor = getTypeManifestVisitor({
     nameApi,
     valueNodeVisitor,
+    customAccountData,
+    customInstructionData,
   });
   const resolvedInstructionInputVisitor = getResolvedInstructionInputsVisitor();
 
@@ -131,6 +186,8 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
     asyncResolvers,
     nonScalarEnums,
     renderParentInstructions,
+    customAccountData,
+    customInstructionData,
   };
 
   const render = (

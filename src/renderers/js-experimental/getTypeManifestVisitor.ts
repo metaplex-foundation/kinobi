@@ -12,6 +12,7 @@ import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
 import { ImportMap } from './ImportMap';
 import { TypeManifest, mergeManifests } from './TypeManifest';
 import { Fragment, fragment } from './fragments';
+import { ParsedCustomDataOptions } from './getRenderMapVisitor';
 import { NameApi } from './nameTransformers';
 import { ValueNodeVisitor } from './renderValueNodeVisitor';
 
@@ -20,8 +21,15 @@ export type TypeManifestVisitor = ReturnType<typeof getTypeManifestVisitor>;
 export function getTypeManifestVisitor(input: {
   nameApi: NameApi;
   valueNodeVisitor: ValueNodeVisitor;
+  customAccountData: ParsedCustomDataOptions;
+  customInstructionData: ParsedCustomDataOptions;
 }) {
-  const { nameApi, valueNodeVisitor } = input;
+  const {
+    nameApi,
+    valueNodeVisitor,
+    customAccountData,
+    customInstructionData,
+  } = input;
   let parentName: { strict: string; loose: string } | null = null;
 
   return pipe(
@@ -55,8 +63,8 @@ export function getTypeManifestVisitor(input: {
             strict: nameApi.dataType(accountData.name),
             loose: nameApi.dataArgsType(accountData.name),
           };
-          const manifest = accountData.link
-            ? visit(accountData.link, self)
+          const manifest = customAccountData[accountData.name]
+            ? visit(customAccountData[accountData.name].linkNode, self)
             : visit(accountData.struct, self);
           parentName = null;
           return manifest;
@@ -70,8 +78,11 @@ export function getTypeManifestVisitor(input: {
           const struct = structTypeNodeFromInstructionArgumentNodes(
             instructionDataArgs.dataArguments
           );
-          const manifest = instructionDataArgs.link
-            ? visit(instructionDataArgs.link, self)
+          const manifest = customInstructionData[instructionDataArgs.name]
+            ? visit(
+                customInstructionData[instructionDataArgs.name].linkNode,
+                self
+              )
             : visit(struct, self);
           parentName = null;
           return manifest;
@@ -85,9 +96,7 @@ export function getTypeManifestVisitor(input: {
           const struct = structTypeNodeFromInstructionArgumentNodes(
             instructionExtraArgs.extraArguments
           );
-          const manifest = instructionExtraArgs.link
-            ? visit(instructionExtraArgs.link, self)
-            : visit(struct, self);
+          const manifest = visit(struct, self);
           parentName = null;
           return manifest;
         },

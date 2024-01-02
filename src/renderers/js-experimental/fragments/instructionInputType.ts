@@ -22,7 +22,6 @@ export function getInstructionInputTypeFragment(
     resolvedInputs: ResolvedInstructionInput[];
     renamedArgs: Map<string, string>;
     dataArgsManifest: TypeManifest;
-    extraArgsManifest: TypeManifest;
     programNode: ProgramNode;
     withSigners: boolean;
     useAsync: boolean;
@@ -33,7 +32,6 @@ export function getInstructionInputTypeFragment(
     resolvedInputs,
     renamedArgs,
     dataArgsManifest,
-    extraArgsManifest,
     programNode,
     withSigners,
     asyncResolvers,
@@ -72,9 +70,6 @@ export function getInstructionInputTypeFragment(
   if (instructionNode.dataArgs.link) {
     argLinkImports.mergeWith(dataArgsManifest.looseType);
   }
-  if (instructionNode.extraArgs.link) {
-    argLinkImports.mergeWith(extraArgsManifest.looseType);
-  }
 
   // Arguments.
   const resolveArg = (arg: InstructionArgumentNode) => {
@@ -99,12 +94,9 @@ export function getInstructionInputTypeFragment(
   const dataArgs = instructionNode.dataArgs.link
     ? []
     : instructionNode.dataArgs.dataArguments.flatMap(resolveArg);
-  const extraArgsType = instructionNode.extraArgs.link
-    ? nameApi.dataArgsType(instructionNode.extraArgs.link.name)
-    : nameApi.dataArgsType(instructionNode.extraArgs.name);
-  const extraArgs = instructionNode.extraArgs.link
-    ? []
-    : instructionNode.extraArgs.extraArguments.flatMap(resolveArg);
+  const extraArgsType = nameApi.dataArgsType(instructionNode.extraArgs.name);
+  const extraArgs =
+    instructionNode.extraArgs.extraArguments.flatMap(resolveArg);
 
   const syncInputType = withSigners
     ? nameApi.instructionSyncInputWithSignersType(instructionNode.name)

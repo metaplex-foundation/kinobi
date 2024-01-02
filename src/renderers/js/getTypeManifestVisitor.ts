@@ -92,9 +92,7 @@ export function getTypeManifestVisitor(
           const struct = structTypeNodeFromInstructionArgumentNodes(
             instructionExtraArgs.extraArguments
           );
-          const manifest = instructionExtraArgs.link
-            ? visit(instructionExtraArgs.link, self)
-            : visit(struct, self);
+          const manifest = visit(struct, self);
           parentName = null;
           return manifest;
         },

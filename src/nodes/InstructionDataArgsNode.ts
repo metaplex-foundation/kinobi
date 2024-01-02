@@ -1,13 +1,11 @@
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
 import { InstructionArgumentNode } from './InstructionArgumentNode';
-import { DefinedTypeLinkNode } from './linkNodes';
 
 export type InstructionDataArgsNode = {
   readonly kind: 'instructionDataArgsNode';
 
   // Children.
   readonly dataArguments: InstructionArgumentNode[];
-  readonly link?: DefinedTypeLinkNode;
 
   // Data.
   readonly name: MainCaseString;
@@ -32,6 +30,5 @@ export function instructionDataArgsNode(
     kind: 'instructionDataArgsNode',
     name: mainCase(input.name),
     dataArguments: input.dataArguments,
-    link: input.link,
   };
 }

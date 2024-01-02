@@ -201,18 +201,6 @@ kinobi.update(
   })
 );
 
-// Custom serializers.
-kinobi.update(
-  k.useCustomAccountSerializerVisitor({
-    ReservationListV1: { extract: true },
-  })
-);
-kinobi.update(
-  k.useCustomInstructionSerializerVisitor({
-    CreateReservationList: true,
-  })
-);
-
 kinobi.update(
   k.setStructDefaultValuesVisitor({
     'mplTokenMetadata.Collection': {
@@ -263,13 +251,20 @@ const kinobiReconstructed = k.createFromJson(kinobiJson);
  */
 
 kinobiReconstructed.accept(
-  k.renderJavaScriptVisitor('./test/packages/js/src/generated')
+  k.renderJavaScriptVisitor('./test/packages/js/src/generated', {
+    customAccountData: ['ReservationListV1'],
+    customInstructionData: ['CreateReservationList'],
+  })
 );
 
 kinobiReconstructed.accept(
   k.renderJavaScriptExperimentalVisitor(
     './test/packages/js-experimental/src/generated',
-    { asyncResolvers: ['resolveMasterEditionFromTokenStandard'] }
+    {
+      asyncResolvers: ['resolveMasterEditionFromTokenStandard'],
+      customAccountData: ['ReservationListV1'],
+      customInstructionData: ['CreateReservationList'],
+    }
   )
 );
 
