@@ -1,5 +1,5 @@
 import { InstructionInputValueNode, isNode } from '../../nodes';
-import { MainCaseString, camelCase, pascalCase } from '../../shared';
+import { camelCase, pascalCase } from '../../shared';
 import { ResolvedInstructionInput, visit } from '../../visitors';
 import { JavaScriptContextMap } from './JavaScriptContextMap';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
@@ -85,26 +85,23 @@ export function renderInstructionDefaults(
       imports.add(pdaImportFrom, pdaFunction);
       interfaces.add('eddsa');
       const pdaArgs = ['context'];
-      const pdaSeeds = Object.keys(defaultValue.seeds).map(
-        (seed: string): string => {
-          const seedValue = defaultValue.seeds[seed as MainCaseString];
-          if (isNode(seedValue, 'accountValueNode')) {
-            imports.add('shared', 'expectPublicKey');
-            return `${seed}: expectPublicKey(resolvedAccounts.${camelCase(
-              seedValue.name
-            )}.value)`;
-          }
-          if (isNode(seedValue, 'argumentValueNode')) {
-            imports.add('shared', 'expectSome');
-            return `${seed}: expectSome(${argObject}.${camelCase(
-              seedValue.name
-            )})`;
-          }
-          const valueManifest = visit(seedValue, valueNodeVisitor);
-          imports.mergeWith(valueManifest.imports);
-          return `${seed}: ${valueManifest.render}`;
+      const pdaSeeds = defaultValue.seeds.map((seed): string => {
+        if (isNode(seed.value, 'accountValueNode')) {
+          imports.add('shared', 'expectPublicKey');
+          return `${seed.name}: expectPublicKey(resolvedAccounts.${camelCase(
+            seed.value.name
+          )}.value)`;
         }
-      );
+        if (isNode(seed.value, 'argumentValueNode')) {
+          imports.add('shared', 'expectSome');
+          return `${seed.name}: expectSome(${argObject}.${camelCase(
+            seed.value.name
+          )})`;
+        }
+        const valueManifest = visit(seed.value, valueNodeVisitor);
+        imports.mergeWith(valueManifest.imports);
+        return `${seed.name}: ${valueManifest.render}`;
+      });
       if (pdaSeeds.length > 0) {
         pdaArgs.push(`{ ${pdaSeeds.join(', ')} }`);
       }

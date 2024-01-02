@@ -8,8 +8,8 @@ import {
   InstructionNodeInput,
   TYPE_NODES,
   TypeNode,
+  addDefaultSeedValuesFromPdaWhenMissing,
   assertIsNode,
-  getDefaultSeedValuesFromPda,
   instructionAccountNode,
   instructionDataArgsNode,
   instructionExtraArgsNode,
@@ -126,18 +126,14 @@ function handleInstructionAccount(
       name: mainCase(acountWithoutDefault.name),
       defaultValue: {
         ...defaultValue,
-        seeds: {
-          ...(foundPda ? getDefaultSeedValuesFromPda(foundPda) : {}),
-          ...defaultValue.seeds,
-        },
+        seeds: foundPda
+          ? addDefaultSeedValuesFromPdaWhenMissing(foundPda, defaultValue.seeds)
+          : defaultValue.seeds,
       },
     };
   }
 
-  return instructionAccountNode({
-    ...acountWithoutDefault,
-    defaultValue: defaultValue,
-  });
+  return instructionAccountNode({ ...acountWithoutDefault, defaultValue });
 }
 
 function handleInstructionArgs(

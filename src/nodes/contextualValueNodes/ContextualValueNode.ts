@@ -7,6 +7,7 @@ import type { ArgumentValueNode } from './ArgumentValueNode';
 import type { ConditionalValueNode } from './ConditionalValueNode';
 import type { IdentityValueNode } from './IdentityValueNode';
 import type { PayerValueNode } from './PayerValueNode';
+import type { PdaSeedValueNode } from './PdaSeedValueNode';
 import type { PdaValueNode } from './PdaValueNode';
 import type { ProgramIdValueNode } from './ProgramIdValueNode';
 import type { ResolverValueNode } from './ResolverValueNode';
@@ -37,6 +38,9 @@ export type StandaloneContextualValueNode =
 
 export const REGISTERED_CONTEXTUAL_VALUE_NODES = {
   ...STANDALONE_CONTEXTUAL_VALUE_NODES,
+
+  // The following are not valid standalone nodes.
+  pdaSeedValueNode: {} as PdaSeedValueNode,
 };
 
 export const REGISTERED_CONTEXTUAL_VALUE_NODE_KINDS = getNodeKinds(

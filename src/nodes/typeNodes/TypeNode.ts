@@ -55,7 +55,7 @@ export type StandaloneTypeNode =
 export const REGISTERED_TYPE_NODES = {
   ...STANDALONE_TYPE_NODES,
 
-  // The following are not valid standalone types.
+  // The following are not valid standalone nodes.
   structFieldTypeNode: {} as StructFieldTypeNode,
   enumEmptyVariantTypeNode: {} as EnumEmptyVariantTypeNode,
   enumStructVariantTypeNode: {} as EnumStructVariantTypeNode,

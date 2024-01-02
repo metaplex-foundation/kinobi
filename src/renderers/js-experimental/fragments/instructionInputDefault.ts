@@ -1,5 +1,5 @@
 import { InstructionInputValueNode, isNode } from '../../../nodes';
-import { MainCaseString, camelCase } from '../../../shared';
+import { camelCase } from '../../../shared';
 import { ResolvedInstructionInput, visit } from '../../../visitors';
 import { isAsyncDefaultValue } from '../asyncHelpers';
 import { GlobalFragmentScope } from '../getRenderMapVisitor';
@@ -83,26 +83,23 @@ export function getInstructionInputDefaultFragment(
       const pdaFunction = nameApi.pdaFindFunction(defaultValue.pda.name);
       const pdaImportFrom = defaultValue.pda.importFrom ?? 'generatedPdas';
       const pdaArgs = [];
-      const pdaSeeds = Object.keys(defaultValue.seeds).map(
-        (seed: string): Fragment => {
-          const seedValue = defaultValue.seeds[seed as MainCaseString];
-          if (isNode(seedValue, 'accountValueNode')) {
-            return fragment(
-              `${seed}: expectAddress(accounts.${camelCase(
-                seedValue.name
-              )}.value)`
-            ).addImports('shared', 'expectAddress');
-          }
-          if (isNode(seedValue, 'argumentValueNode')) {
-            return fragment(
-              `${seed}: expectSome(args.${camelCase(seedValue.name)})`
-            ).addImports('shared', 'expectSome');
-          }
-          return visit(seedValue, valueNodeVisitor).mapRender(
-            (r) => `${seed}: ${r}`
-          );
+      const pdaSeeds = defaultValue.seeds.map((seed): Fragment => {
+        if (isNode(seed.value, 'accountValueNode')) {
+          return fragment(
+            `${seed.name}: expectAddress(accounts.${camelCase(
+              seed.value.name
+            )}.value)`
+          ).addImports('shared', 'expectAddress');
         }
-      );
+        if (isNode(seed.value, 'argumentValueNode')) {
+          return fragment(
+            `${seed.name}: expectSome(args.${camelCase(seed.value.name)})`
+          ).addImports('shared', 'expectSome');
+        }
+        return visit(seed.value, valueNodeVisitor).mapRender(
+          (r) => `${seed.name}: ${r}`
+        );
+      });
       const pdaSeedsFragment = mergeFragments(pdaSeeds, (renders) =>
         renders.join(', ')
       ).mapRender((r) => `{ ${r} }`);

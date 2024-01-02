@@ -132,13 +132,12 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
           account.isSigner === false ? false : 'either';
         localResolved.resolvedIsOptional = false;
         const { seeds } = localResolved.defaultValue;
-        Object.keys(seeds).forEach((seedKey) => {
-          const seed = seeds[seedKey as MainCaseString];
-          if (!isNode(seed, 'accountValueNode')) return;
-          const dependency = visitedAccounts.get(seed.name)!;
+        seeds.forEach((seed) => {
+          if (!isNode(seed.value, 'accountValueNode')) return;
+          const dependency = visitedAccounts.get(seed.value.name)!;
           if (dependency.resolvedIsOptional) {
             const error =
-              `Cannot use optional account "${seed.name}" as the "${seedKey}" PDA seed ` +
+              `Cannot use optional account "${seed.value.name}" as the "${seed.name}" PDA seed ` +
               `for the "${account.name}" account of the "${instruction.name}" instruction.`;
             throw new Error(error);
           }
@@ -221,9 +220,9 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
 
     if (isNode(input.defaultValue, 'pdaValueNode')) {
       const dependencies = new Map<MainCaseString, InstructionDependency>();
-      Object.values(input.defaultValue.seeds).forEach((seed) => {
-        if (isNode(seed, ['accountValueNode', 'argumentValueNode'])) {
-          dependencies.set(seed.name, { ...seed });
+      input.defaultValue.seeds.forEach((seed) => {
+        if (isNode(seed.value, ['accountValueNode', 'argumentValueNode'])) {
+          dependencies.set(seed.value.name, { ...seed.value });
         }
       });
       return [...dependencies.values()];

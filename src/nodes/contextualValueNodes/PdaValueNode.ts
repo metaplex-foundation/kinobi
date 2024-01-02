@@ -1,46 +1,46 @@
-import { MainCaseString, mainCase } from '../../shared';
 import { isNode } from '../Node';
 import { PdaNode } from '../PdaNode';
 import { PdaLinkNode, pdaLinkNode } from '../linkNodes';
-import { ValueNode } from '../valueNodes';
-import { AccountValueNode, accountValueNode } from './AccountValueNode';
-import { ArgumentValueNode, argumentValueNode } from './ArgumentValueNode';
+import { accountValueNode } from './AccountValueNode';
+import { argumentValueNode } from './ArgumentValueNode';
+import { PdaSeedValueNode, pdaSeedValueNode } from './PdaSeedValueNode';
 
 export type PdaValueNode = {
   readonly kind: 'pdaValueNode';
 
   // Children.
   readonly pda: PdaLinkNode;
-  readonly seeds: Record<
-    MainCaseString,
-    ValueNode | AccountValueNode | ArgumentValueNode
-  >;
+  readonly seeds: PdaSeedValueNode[];
 };
 
 export function pdaValueNode(
   pda: PdaLinkNode | string,
-  seeds: Record<string, ValueNode | AccountValueNode | ArgumentValueNode> = {}
+  seeds: PdaSeedValueNode[] = []
 ): PdaValueNode {
   return {
     kind: 'pdaValueNode',
     pda: typeof pda === 'string' ? pdaLinkNode(pda) : pda,
-    seeds: Object.entries(seeds).reduce((acc, [name, seedValue]) => {
-      acc[mainCase(name)] = seedValue;
-      return acc;
-    }, {} as PdaValueNode['seeds']),
+    seeds,
   };
 }
 
-export function getDefaultSeedValuesFromPda(
-  node: PdaNode
-): PdaValueNode['seeds'] {
-  return node.seeds.reduce((acc, seed) => {
-    if (!isNode(seed, 'variablePdaSeedNode')) return acc;
+export function addDefaultSeedValuesFromPdaWhenMissing(
+  node: PdaNode,
+  existingSeeds: PdaSeedValueNode[]
+): PdaSeedValueNode[] {
+  const existingSeedNames = new Set(existingSeeds.map((seed) => seed.name));
+  const defaultSeeds = getDefaultSeedValuesFromPda(node).filter(
+    (seed) => !existingSeedNames.has(seed.name)
+  );
+  return [...defaultSeeds, ...existingSeeds];
+}
+
+export function getDefaultSeedValuesFromPda(node: PdaNode): PdaSeedValueNode[] {
+  return node.seeds.flatMap((seed): PdaSeedValueNode[] => {
+    if (!isNode(seed, 'variablePdaSeedNode')) return [];
     if (isNode(seed.type, 'publicKeyTypeNode')) {
-      acc[seed.name] = accountValueNode(seed.name);
-    } else {
-      acc[seed.name] = argumentValueNode(seed.name);
+      return [pdaSeedValueNode(seed.name, accountValueNode(seed.name))];
     }
-    return acc;
-  }, {} as PdaValueNode['seeds']);
+    return [pdaSeedValueNode(seed.name, argumentValueNode(seed.name))];
+  });
 }

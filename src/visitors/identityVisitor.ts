@@ -31,6 +31,7 @@ import {
   mapValueNode,
   optionTypeNode,
   pdaNode,
+  pdaSeedValueNode,
   pdaValueNode,
   prefixedSizeNode,
   programNode,
@@ -517,21 +518,23 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       const pda = visit(this)(node.pda);
       if (pda === null) return null;
       assertIsNode(pda, 'pdaLinkNode');
-      return pdaValueNode(
-        pda,
-        Object.fromEntries(
-          Object.entries(node.seeds).flatMap(([k, v]) => {
-            const value = visit(this)(v);
-            if (value === null) return [];
-            assertIsNode(value, [
-              ...VALUE_NODES,
-              'accountValueNode',
-              'argumentValueNode',
-            ]);
-            return [[k, value]];
-          })
-        )
-      );
+      const seeds = node.seeds
+        .map(visit(this))
+        .filter(removeNullAndAssertIsNodeFilter('pdaSeedValueNode'));
+      return pdaValueNode(pda, seeds);
+    };
+  }
+
+  if (castedNodeKeys.includes('pdaSeedValueNode')) {
+    visitor.visitPdaSeedValue = function visitPdaSeedValue(node) {
+      const value = visit(this)(node.value);
+      if (value === null) return null;
+      assertIsNode(value, [
+        ...VALUE_NODES,
+        'accountValueNode',
+        'argumentValueNode',
+      ]);
+      return pdaSeedValueNode(node.name, value);
     };
   }
 

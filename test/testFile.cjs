@@ -120,9 +120,12 @@ kinobi.update(
         delegateRecord: {
           defaultValue: k.conditionalValueNode({
             condition: k.accountValueNode('delegate'),
-            ifTrue: k.pdaValueNode('delegateRecord', {
-              role: k.enumValueNode('delegateRole', 'Collection'),
-            }),
+            ifTrue: k.pdaValueNode('delegateRecord', [
+              k.pdaSeedValueNode(
+                'role',
+                k.enumValueNode('delegateRole', 'Collection')
+              ),
+            ]),
           }),
         },
         tokenOrAtaProgram: {

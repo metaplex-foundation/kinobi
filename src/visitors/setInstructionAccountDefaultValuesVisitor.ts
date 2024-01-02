@@ -2,12 +2,12 @@ import {
   InstructionAccountNode,
   InstructionNode,
   VALUE_NODES,
-  getDefaultSeedValuesFromPda,
   instructionNode,
   isNode,
 } from '../nodes';
 import {
   InstructionInputValueNode,
+  addDefaultSeedValuesFromPdaWhenMissing,
   identityValueNode,
   payerValueNode,
   programIdValueNode,
@@ -209,26 +209,24 @@ export function setInstructionAccountDefaultValuesVisitor(
                 return account;
               }
               if (isNode(rule.defaultValue, 'pdaValueNode')) {
-                const foundAccount = linkables.get(rule.defaultValue.pda);
+                const foundPda = linkables.get(rule.defaultValue.pda);
                 const defaultValue = {
                   ...rule.defaultValue,
-                  seeds: {
-                    ...(foundAccount
-                      ? getDefaultSeedValuesFromPda(foundAccount)
-                      : {}),
-                    ...rule.defaultValue.seeds,
-                  },
+                  seeds: foundPda
+                    ? addDefaultSeedValuesFromPdaWhenMissing(
+                        foundPda,
+                        rule.defaultValue.seeds
+                      )
+                    : rule.defaultValue.seeds,
                 };
 
                 if (rule.instruction) {
                   return { ...account, defaultValue };
                 }
 
-                const allSeedsAreValid = Object.entries(
-                  defaultValue.seeds
-                ).every(([, seed]) => {
-                  if (isNode(seed, VALUE_NODES)) return true;
-                  if (isNode(seed, 'accountValueNode')) {
+                const allSeedsAreValid = defaultValue.seeds.every((seed) => {
+                  if (isNode(seed.value, VALUE_NODES)) return true;
+                  if (isNode(seed.value, 'accountValueNode')) {
                     return node.accounts.some(
                       (a) => a.name === mainCase(seed.name)
                     );

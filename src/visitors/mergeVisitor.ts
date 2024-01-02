@@ -302,8 +302,14 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
     visitor.visitPdaValue = function visitPdaValue(node) {
       return merge(node, [
         ...visit(this)(node.pda),
-        ...Object.values(node.seeds).flatMap(visit(this)),
+        ...node.seeds.flatMap(visit(this)),
       ]);
+    };
+  }
+
+  if (castedNodeKeys.includes('pdaSeedValueNode')) {
+    visitor.visitPdaSeedValue = function visitPdaSeedValue(node) {
+      return merge(node, visit(this)(node.value));
     };
   }
 
