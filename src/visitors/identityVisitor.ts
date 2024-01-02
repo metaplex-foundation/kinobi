@@ -45,6 +45,7 @@ import {
   someValueNode,
   stringTypeNode,
   structFieldTypeNode,
+  structFieldValueNode,
   structTypeNode,
   structValueNode,
   tupleTypeNode,
@@ -436,15 +437,19 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
   if (castedNodeKeys.includes('structValueNode')) {
     visitor.visitStructValue = function visitStructValue(node) {
       return structValueNode(
-        Object.fromEntries(
-          Object.entries(node.fields).flatMap(([k, v]) => {
-            const value = visit(this)(v);
-            if (value === null) return [];
-            assertIsNode(value, VALUE_NODES);
-            return [[k, value]];
-          })
-        )
+        node.fields
+          .map(visit(this))
+          .filter(removeNullAndAssertIsNodeFilter('structFieldValueNode'))
       );
+    };
+  }
+
+  if (castedNodeKeys.includes('structFieldValueNode')) {
+    visitor.visitStructFieldValue = function visitStructFieldValue(node) {
+      const value = visit(this)(node.value);
+      if (value === null) return null;
+      assertIsNode(value, VALUE_NODES);
+      return structFieldValueNode(node.name, value);
     };
   }
 

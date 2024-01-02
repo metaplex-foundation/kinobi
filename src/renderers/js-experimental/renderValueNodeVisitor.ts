@@ -92,13 +92,13 @@ export function renderValueNodeVisitor(input: {
       return fragment(JSON.stringify(node.string));
     },
     visitStructValue(node) {
-      const fieldFragments = Object.entries(node.fields).map(([k, v]) =>
-        visit(v, this).mapRender((r) => `${k}: ${r}`)
-      );
       return mergeFragments(
-        fieldFragments,
+        node.fields.map((field) => visit(field, this)),
         (renders) => `{ ${renders.join(', ')} }`
       );
+    },
+    visitStructFieldValue(node) {
+      return visit(node.value, this).mapRender((r) => `${node.name}: ${r}`);
     },
     visitTupleValue(node) {
       return mergeFragments(

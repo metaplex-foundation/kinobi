@@ -108,16 +108,17 @@ export function renderValueNodeVisitor(useStr: boolean = false): Visitor<
       };
     },
     visitStructValue(node) {
-      const struct = Object.entries(node.fields).map(([k, v]) => {
-        const structValue = visit(v, this);
-        return {
-          imports: structValue.imports,
-          render: `${k}: ${structValue.render}`,
-        };
-      });
+      const struct = node.fields.map((field) => visit(field, this));
       return {
         imports: new RustImportMap().mergeWith(...struct.map((c) => c.imports)),
         render: `{ ${struct.map((c) => c.render).join(', ')} }`,
+      };
+    },
+    visitStructFieldValue(node) {
+      const structValue = visit(node.value, this);
+      return {
+        imports: structValue.imports,
+        render: `${node.name}: ${structValue.render}`,
       };
     },
     visitTupleValue(node) {

@@ -10,6 +10,7 @@ import type { PublicKeyValueNode } from './PublicKeyValueNode';
 import type { SetValueNode } from './SetValueNode';
 import type { SomeValueNode } from './SomeValueNode';
 import type { StringValueNode } from './StringValueNode';
+import type { StructFieldValueNode } from './StructFieldValueNode';
 import type { StructValueNode } from './StructValueNode';
 import type { TupleValueNode } from './TupleValueNode';
 
@@ -43,6 +44,7 @@ export const REGISTERED_VALUE_NODES = {
 
   // The following are not valid standalone nodes.
   mapEntryValueNode: {} as MapEntryValueNode,
+  structFieldValueNode: {} as StructFieldValueNode,
 };
 
 export const REGISTERED_VALUE_NODE_KINDS = getNodeKinds(REGISTERED_VALUE_NODES);

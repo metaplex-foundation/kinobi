@@ -262,7 +262,13 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
 
   if (castedNodeKeys.includes('structValueNode')) {
     visitor.visitStructValue = function visitStructValue(node) {
-      return merge(node, Object.values(node.fields).flatMap(visit(this)));
+      return merge(node, node.fields.flatMap(visit(this)));
+    };
+  }
+
+  if (castedNodeKeys.includes('structFieldValueNode')) {
+    visitor.visitStructFieldValue = function visitStructFieldValue(node) {
+      return merge(node, visit(this)(node.value));
     };
   }
 

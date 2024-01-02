@@ -8,6 +8,7 @@ export * from './PublicKeyValueNode';
 export * from './SetValueNode';
 export * from './SomeValueNode';
 export * from './StringValueNode';
+export * from './StructFieldValueNode';
 export * from './StructValueNode';
 export * from './TupleValueNode';
 export * from './ValueNode';
