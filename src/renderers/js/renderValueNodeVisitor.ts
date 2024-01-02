@@ -1,11 +1,11 @@
-import { Visitor, visit } from '../../visitors';
-import { RegisteredValueNodes, isNode, isScalarEnum } from '../../nodes';
+import { RegisteredValueNodeKinds, isNode, isScalarEnum } from '../../nodes';
 import {
   LinkableDictionary,
   MainCaseString,
   camelCase,
   pascalCase,
 } from '../../shared';
+import { Visitor, visit } from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 
 export function renderValueNodeVisitor(input: {
@@ -16,7 +16,7 @@ export function renderValueNodeVisitor(input: {
     imports: JavaScriptImportMap;
     render: string;
   },
-  keyof RegisteredValueNodes
+  RegisteredValueNodeKinds
 > {
   const { linkables, nonScalarEnums } = input;
   return {

@@ -1,3 +1,4 @@
+import { getNodeKinds } from '../../shared/utils';
 import type { ArrayValueNode } from './ArrayValueNode';
 import type { BooleanValueNode } from './BooleanValueNode';
 import type { EnumValueNode } from './EnumValueNode';
@@ -11,9 +12,9 @@ import type { StringValueNode } from './StringValueNode';
 import type { StructValueNode } from './StructValueNode';
 import type { TupleValueNode } from './TupleValueNode';
 
-// Node Group Registration.
+// Standalone Value Node Registration.
 
-export const REGISTERED_VALUE_NODES = {
+export const STANDALONE_VALUE_NODES = {
   arrayValueNode: {} as ArrayValueNode,
   booleanValueNode: {} as BooleanValueNode,
   enumValueNode: {} as EnumValueNode,
@@ -28,14 +29,25 @@ export const REGISTERED_VALUE_NODES = {
   stringValueNode: {} as StringValueNode,
 };
 
-export const REGISTERED_VALUE_NODE_KEYS = Object.keys(
-  REGISTERED_VALUE_NODES
-) as (keyof typeof REGISTERED_VALUE_NODES)[];
+export const STANDALONE_VALUE_NODE_KINDS = getNodeKinds(STANDALONE_VALUE_NODES);
+export type StandaloneValueNodeKinds =
+  typeof STANDALONE_VALUE_NODE_KINDS[number];
+export type StandaloneValueNodes =
+  typeof STANDALONE_VALUE_NODES[StandaloneValueNodeKinds];
 
-export type RegisteredValueNodes = typeof REGISTERED_VALUE_NODES;
+// Value Node Registration.
 
-// Node Group Helpers.
+export const REGISTERED_VALUE_NODES = {
+  ...STANDALONE_VALUE_NODES,
+};
 
-export type ValueNode = RegisteredValueNodes[keyof RegisteredValueNodes];
+export const REGISTERED_VALUE_NODE_KINDS = getNodeKinds(REGISTERED_VALUE_NODES);
+export type RegisteredValueNodeKinds =
+  typeof REGISTERED_VALUE_NODE_KINDS[number];
+export type RegisteredValueNodes =
+  typeof REGISTERED_VALUE_NODES[RegisteredValueNodeKinds];
 
-export const VALUE_NODES = REGISTERED_VALUE_NODE_KEYS;
+// Value Node Helpers.
+
+export type ValueNode = RegisteredValueNodes;
+export const VALUE_NODES = STANDALONE_VALUE_NODE_KINDS;

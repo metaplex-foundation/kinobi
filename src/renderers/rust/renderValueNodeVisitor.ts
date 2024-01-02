@@ -1,7 +1,7 @@
-import { RustImportMap } from './RustImportMap';
-import { Visitor, visit } from '../../visitors';
-import { RegisteredValueNodes, ValueNode } from '../../nodes';
+import { RegisteredValueNodeKinds, ValueNode } from '../../nodes';
 import { pascalCase } from '../../shared';
+import { Visitor, visit } from '../../visitors';
+import { RustImportMap } from './RustImportMap';
 
 export function renderValueNode(
   value: ValueNode,
@@ -18,7 +18,7 @@ export function renderValueNodeVisitor(useStr: boolean = false): Visitor<
     imports: RustImportMap;
     render: string;
   },
-  keyof RegisteredValueNodes
+  RegisteredValueNodeKinds
 > {
   return {
     visitArrayValue(node) {
