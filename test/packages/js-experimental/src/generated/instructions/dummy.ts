@@ -422,10 +422,9 @@ export async function getDummyInstructionAsync<
   }
 
   // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = args.proof.map((address) => ({
-    address,
-    role: AccountRole.READONLY,
-  }));
+  const remainingAccounts: IAccountMeta[] = [
+    ...args.proof.map((address) => ({ address, role: AccountRole.READONLY })),
+  ];
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -666,10 +665,9 @@ export function getDummyInstruction<
   }
 
   // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = args.proof.map((address) => ({
-    address,
-    role: AccountRole.READONLY,
-  }));
+  const remainingAccounts: IAccountMeta[] = [
+    ...args.proof.map((address) => ({ address, role: AccountRole.READONLY })),
+  ];
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(

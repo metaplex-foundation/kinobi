@@ -621,6 +621,7 @@ export function getRenderMapVisitor(
               hasResolvers,
               hasResolvedArgs,
               customData,
+              remainingAccounts,
             })
           );
         },
