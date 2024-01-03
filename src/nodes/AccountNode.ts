@@ -59,6 +59,7 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
   const hasSeeds = (idl.seeds ?? []).length > 0;
   return accountNode({
     name,
+    data: accountDataNode({ struct }),
     pda: hasSeeds ? pdaLinkNode(name) : undefined,
     idlName,
     docs: idl.docs ?? [],
