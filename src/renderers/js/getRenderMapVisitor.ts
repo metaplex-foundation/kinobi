@@ -528,7 +528,7 @@ export function getRenderMapVisitor(
           imports.mergeWith(getInstructionAccountImports(accounts));
 
           // Data Args.
-          const dataArgManifest = visit(node.dataArgs, typeManifestVisitor);
+          const dataArgManifest = visit(node, typeManifestVisitor);
           if (linkedDataArgs || hasData) {
             imports.mergeWith(
               dataArgManifest.looseImports,

@@ -50,6 +50,7 @@ export function getTypeManifestVisitor(
         'definedTypeNode',
         'accountNode',
         'accountDataNode',
+        'instructionNode',
         'instructionDataArgsNode',
         'instructionExtraArgsNode',
       ]
@@ -57,7 +58,8 @@ export function getTypeManifestVisitor(
     (v) =>
       extendVisitor(v, {
         visitAccount(account, { self }) {
-          return visit(account.data, self);
+          const link = customAccountData.get(account.name)?.linkNode;
+          return link ? visit(link, self) : visit(account.data, self);
         },
 
         visitAccountData(accountData, { self }) {
@@ -65,12 +67,14 @@ export function getTypeManifestVisitor(
             strict: pascalCase(accountData.name),
             loose: `${pascalCase(accountData.name)}Args`,
           };
-          const link = customAccountData.get(accountData.name)?.linkNode;
-          const manifest = link
-            ? visit(link, self)
-            : visit(accountData.struct, self);
+          const manifest = visit(accountData.struct, self);
           parentName = null;
           return manifest;
+        },
+
+        visitInstruction(instruction, { self }) {
+          const link = customInstructionData.get(instruction.name)?.linkNode;
+          return link ? visit(link, self) : visit(instruction.dataArgs, self);
         },
 
         visitInstructionDataArgs(instructionDataArgs, { self }) {
@@ -78,13 +82,10 @@ export function getTypeManifestVisitor(
             strict: pascalCase(instructionDataArgs.name),
             loose: `${pascalCase(instructionDataArgs.name)}Args`,
           };
-          const link = customInstructionData.get(
-            instructionDataArgs.name
-          )?.linkNode;
           const struct = structTypeNodeFromInstructionArgumentNodes(
             instructionDataArgs.dataArguments
           );
-          const manifest = link ? visit(link, self) : visit(struct, self);
+          const manifest = visit(struct, self);
           parentName = null;
           return manifest;
         },
