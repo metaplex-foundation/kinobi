@@ -4,13 +4,20 @@ import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getInstructionParseFunctionFragment(
-  scope: Pick<GlobalFragmentScope, 'nameApi'> & {
+  scope: Pick<GlobalFragmentScope, 'nameApi' | 'customInstructionData'> & {
     instructionNode: InstructionNode;
     programNode: ProgramNode;
     dataArgsManifest: TypeManifest;
   }
 ): Fragment {
-  const { instructionNode, programNode, dataArgsManifest, nameApi } = scope;
+  const {
+    instructionNode,
+    programNode,
+    dataArgsManifest,
+    nameApi,
+    customInstructionData,
+  } = scope;
+  const customData = customInstructionData.get(instructionNode.name);
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasOptionalAccounts = instructionNode.accounts.some(
     (account) => account.isOptional
@@ -20,22 +27,21 @@ export function getInstructionParseFunctionFragment(
       ? instructionNode.accounts.filter((account) => !account.isOptional).length
       : instructionNode.accounts.length;
   const hasData =
-    !!instructionNode.dataArgs.link ||
-    instructionNode.dataArgs.dataArguments.length > 0;
+    !!customData || instructionNode.dataArgs.dataArguments.length > 0;
 
   if (!hasAccounts && !hasData) {
     return fragment('');
   }
 
   const dataTypeFragment = fragment(
-    instructionNode.dataArgs.link
+    customData
       ? dataArgsManifest.strictType.render
       : nameApi.dataType(instructionNode.dataArgs.name)
   );
-  const decoderFunction = instructionNode.dataArgs.link
+  const decoderFunction = customData
     ? dataArgsManifest.decoder.render
     : `${nameApi.decoderFunction(instructionNode.dataArgs.name)}()`;
-  if (instructionNode.dataArgs.link) {
+  if (customData) {
     dataTypeFragment.mergeImportsWith(
       dataArgsManifest.strictType,
       dataArgsManifest.decoder

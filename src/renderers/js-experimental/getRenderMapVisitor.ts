@@ -4,8 +4,6 @@ import {
   Options as PrettierOptions,
 } from 'prettier';
 import {
-  definedTypeLinkNode,
-  DefinedTypeLinkNode,
   getAllAccounts,
   getAllDefinedTypes,
   getAllInstructionsWithSubs,
@@ -31,6 +29,12 @@ import {
   staticVisitor,
   visit,
 } from '../../visitors';
+import {
+  CustomDataOptions,
+  getDefinedTypeNodesToExtract,
+  parseCustomDataOptions,
+  ParsedCustomDataOptions,
+} from './customDataHelpers';
 import {
   getAccountFetchHelpersFragment,
   getAccountPdaHelpersFragment,
@@ -75,25 +79,6 @@ const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   parser: 'typescript',
 };
 
-export type CustomDataOptions = {
-  name: string;
-  importAs?: string;
-  importFrom?: ImportFrom;
-  extractAs?: string;
-  extract?: boolean;
-};
-
-export type ParsedCustomDataOptions = Record<
-  MainCaseString,
-  {
-    importAs: MainCaseString;
-    importFrom: ImportFrom;
-    extractAs?: MainCaseString;
-    extract: boolean;
-    linkNode: DefinedTypeLinkNode;
-  }
->;
-
 export type GetRenderMapOptions = {
   renderParentInstructions?: boolean;
   formatCode?: boolean;
@@ -136,26 +121,6 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
   const dependencyMap = options.dependencyMap ?? {};
   const asyncResolvers = (options.asyncResolvers ?? []).map(mainCase);
   const nonScalarEnums = (options.nonScalarEnums ?? []).map(mainCase);
-  const parseCustomDataOptions = (
-    customDataOptions: CustomDataOptions[],
-    defaultSuffix: string
-  ): ParsedCustomDataOptions =>
-    Object.fromEntries(
-      customDataOptions.map((o) => {
-        const importFrom = o.importFrom ?? 'hooked';
-        return [
-          mainCase(o.name),
-          {
-            importAs: mainCase(o.importAs ?? `${o.name}${defaultSuffix}`),
-            importFrom,
-            extractAs: o.extractAs ? mainCase(o.extractAs) : undefined,
-            extract: o.extract ?? true,
-            linkNode: definedTypeLinkNode(o.name, importFrom),
-          },
-        ];
-      })
-    );
-
   const customAccountData = parseCustomDataOptions(
     options.customAccountData ?? [],
     'AccountData'
@@ -285,10 +250,18 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
 
         visitProgram(node, { self }) {
           program = node;
+          const customDataDefinedType = [
+            ...getDefinedTypeNodesToExtract(node.accounts, customAccountData),
+            ...getDefinedTypeNodesToExtract(
+              node.instructions,
+              customAccountData
+            ),
+          ];
           const renderMap = new RenderMap()
-            .mergeWith(...node.pdas.map((pda) => visit(pda, self)))
-            .mergeWith(...node.accounts.map((account) => visit(account, self)))
-            .mergeWith(...node.definedTypes.map((type) => visit(type, self)));
+            .mergeWith(...node.pdas.map((p) => visit(p, self)))
+            .mergeWith(...node.accounts.map((a) => visit(a, self)))
+            .mergeWith(...node.definedTypes.map((t) => visit(t, self)))
+            .mergeWith(...customDataDefinedType.map((t) => visit(t, self)));
 
           // Internal programs are support programs that
           // were added to fill missing types or accounts.

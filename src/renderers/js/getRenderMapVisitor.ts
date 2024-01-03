@@ -36,6 +36,11 @@ import {
   visit,
   Visitor,
 } from '../../visitors';
+import {
+  CustomDataOptions,
+  getDefinedTypeNodesToExtract,
+  parseCustomDataOptions,
+} from './customDataHelpers';
 import { getTypeManifestVisitor } from './getTypeManifestVisitor';
 import { JavaScriptContextMap } from './JavaScriptContextMap';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
@@ -51,13 +56,6 @@ const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   arrowParens: 'always',
   printWidth: 80,
   parser: 'typescript',
-};
-
-export type CustomDataOptions = {
-  name: string;
-  importFrom?: ImportFrom;
-  extractAs?: string;
-  extract?: boolean;
 };
 
 export type GetJavaScriptRenderMapOptions = {
@@ -98,14 +96,24 @@ export function getRenderMapVisitor(
     generatedTypes: '../types',
   };
   const nonScalarEnums = (options.nonScalarEnums ?? []).map(mainCase);
-  const customAccountData = options.customAccountData ?? [];
-  const customInstructionData = options.customInstructionData ?? [];
+  const customAccountData = parseCustomDataOptions(
+    options.customAccountData ?? [],
+    'AccountData'
+  );
+  const customInstructionData = parseCustomDataOptions(
+    options.customInstructionData ?? [],
+    'InstructionData'
+  );
 
   const valueNodeVisitor = renderValueNodeVisitor({
     linkables,
     nonScalarEnums,
   });
-  const typeManifestVisitor = getTypeManifestVisitor(valueNodeVisitor);
+  const typeManifestVisitor = getTypeManifestVisitor(
+    valueNodeVisitor,
+    customAccountData,
+    customInstructionData
+  );
   const resolvedInstructionInputVisitor = getResolvedInstructionInputsVisitor();
 
   function getInstructionAccountType(
@@ -216,9 +224,17 @@ export function getRenderMapVisitor(
         visitProgram(node, { self }) {
           program = node;
           const pascalCaseName = pascalCase(node.name);
+          const customDataDefinedType = [
+            ...getDefinedTypeNodesToExtract(node.accounts, customAccountData),
+            ...getDefinedTypeNodesToExtract(
+              node.instructions,
+              customAccountData
+            ),
+          ];
           const renderMap = new RenderMap()
-            .mergeWith(...node.accounts.map((account) => visit(account, self)))
-            .mergeWith(...node.definedTypes.map((type) => visit(type, self)));
+            .mergeWith(...node.accounts.map((a) => visit(a, self)))
+            .mergeWith(...node.definedTypes.map((t) => visit(t, self)))
+            .mergeWith(...customDataDefinedType.map((t) => visit(t, self)));
 
           // Internal programs are support programs that
           // were added to fill missing types or accounts.
@@ -272,7 +288,7 @@ export function getRenderMapVisitor(
         },
 
         visitAccount(node) {
-          const isLinked = !!node.data.link;
+          const isLinked = customAccountData.has(node.name);
           const typeManifest = visit(node, typeManifestVisitor);
           const imports = new JavaScriptImportMap().mergeWith(
             typeManifest.strictImports,
@@ -415,16 +431,16 @@ export function getRenderMapVisitor(
             ]);
 
           // Instruction helpers.
+          const linkedDataArgs = customInstructionData.has(node.name);
           const hasAccounts = node.accounts.length > 0;
           const hasData =
-            !!node.dataArgs.link || node.dataArgs.dataArguments.length > 0;
+            linkedDataArgs || node.dataArgs.dataArguments.length > 0;
           const hasDataArgs =
-            !!node.dataArgs.link ||
+            linkedDataArgs ||
             node.dataArgs.dataArguments.filter(
               (field) => field.defaultValueStrategy !== 'omitted'
             ).length > 0;
           const hasExtraArgs =
-            !!node.extraArgs.link ||
             node.extraArgs.extraArguments.filter(
               (field) => field.defaultValueStrategy !== 'omitted'
             ).length > 0;
@@ -450,10 +466,8 @@ export function getRenderMapVisitor(
           }
 
           // canMergeAccountsAndArgs
-          const linkedDataArgs = !!node.dataArgs.link;
-          const linkedExtraArgs = !!node.extraArgs.link;
           let canMergeAccountsAndArgs = false;
-          if (!linkedDataArgs && !linkedExtraArgs) {
+          if (!linkedDataArgs) {
             const accountsAndArgsConflicts =
               getMergeConflictsForInstructionAccountsAndArgs(node);
             if (accountsAndArgsConflicts.length > 0) {

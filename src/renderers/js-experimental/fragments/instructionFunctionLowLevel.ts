@@ -18,33 +18,42 @@ import {
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
 
 export function getInstructionFunctionLowLevelFragment(
-  scope: Pick<GlobalFragmentScope, 'nameApi' | 'linkables'> & {
+  scope: Pick<
+    GlobalFragmentScope,
+    'nameApi' | 'linkables' | 'customInstructionData'
+  > & {
     instructionNode: InstructionNode;
     programNode: ProgramNode;
     dataArgsManifest: TypeManifest;
   }
 ): Fragment {
-  const { instructionNode, programNode, dataArgsManifest, nameApi } = scope;
+  const {
+    instructionNode,
+    programNode,
+    dataArgsManifest,
+    nameApi,
+    customInstructionData,
+  } = scope;
   const imports = new ImportMap();
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasLegacyOptionalAccounts =
     instructionNode.optionalAccountStrategy === 'omitted' &&
     instructionNode.accounts.some((account) => account.isOptional);
+  const customData = customInstructionData.get(instructionNode.name);
   const hasData =
-    !!instructionNode.dataArgs.link ||
-    instructionNode.dataArgs.dataArguments.length > 0;
+    !!customData || instructionNode.dataArgs.dataArguments.length > 0;
   const hasArgs =
-    !!instructionNode.dataArgs.link ||
+    !!customData ||
     instructionNode.dataArgs.dataArguments.filter(
       (field) => !field.defaultValue || field.defaultValueStrategy !== 'omitted'
     ).length > 0;
-  const argsType = instructionNode.dataArgs.link
+  const argsType = customData
     ? dataArgsManifest.looseType.render
     : nameApi.dataArgsType(instructionNode.dataArgs.name);
-  const encoderFunction = instructionNode.dataArgs.link
+  const encoderFunction = customData
     ? dataArgsManifest.encoder.render
     : `${nameApi.encoderFunction(instructionNode.dataArgs.name)}()`;
-  if (instructionNode.dataArgs.link) {
+  if (customData) {
     imports.mergeWith(dataArgsManifest.looseType, dataArgsManifest.encoder);
   }
 

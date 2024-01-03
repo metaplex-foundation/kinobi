@@ -11,8 +11,8 @@ import { camelCase, pascalCase, pipe } from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
 import { ImportMap } from './ImportMap';
 import { TypeManifest, mergeManifests } from './TypeManifest';
+import { ParsedCustomDataOptions } from './customDataHelpers';
 import { Fragment, fragment } from './fragments';
-import { ParsedCustomDataOptions } from './getRenderMapVisitor';
 import { NameApi } from './nameTransformers';
 import { ValueNodeVisitor } from './renderValueNodeVisitor';
 
@@ -63,8 +63,9 @@ export function getTypeManifestVisitor(input: {
             strict: nameApi.dataType(accountData.name),
             loose: nameApi.dataArgsType(accountData.name),
           };
-          const manifest = customAccountData[accountData.name]
-            ? visit(customAccountData[accountData.name].linkNode, self)
+          const link = customAccountData.get(accountData.name)?.linkNode;
+          const manifest = link
+            ? visit(link, self)
             : visit(accountData.struct, self);
           parentName = null;
           return manifest;
@@ -75,15 +76,13 @@ export function getTypeManifestVisitor(input: {
             strict: nameApi.dataType(instructionDataArgs.name),
             loose: nameApi.dataArgsType(instructionDataArgs.name),
           };
+          const link = customInstructionData.get(
+            instructionDataArgs.name
+          )?.linkNode;
           const struct = structTypeNodeFromInstructionArgumentNodes(
             instructionDataArgs.dataArguments
           );
-          const manifest = customInstructionData[instructionDataArgs.name]
-            ? visit(
-                customInstructionData[instructionDataArgs.name].linkNode,
-                self
-              )
-            : visit(struct, self);
+          const manifest = link ? visit(link, self) : visit(struct, self);
           parentName = null;
           return manifest;
         },

@@ -17,7 +17,10 @@ import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getInstructionInputTypeFragment(
-  scope: Pick<GlobalFragmentScope, 'nameApi' | 'asyncResolvers'> & {
+  scope: Pick<
+    GlobalFragmentScope,
+    'nameApi' | 'asyncResolvers' | 'customInstructionData'
+  > & {
     instructionNode: InstructionNode;
     resolvedInputs: ResolvedInstructionInput[];
     renamedArgs: Map<string, string>;
@@ -37,6 +40,7 @@ export function getInstructionInputTypeFragment(
     asyncResolvers,
     useAsync,
     nameApi,
+    customInstructionData,
   } = scope;
 
   // Accounts.
@@ -66,8 +70,9 @@ export function getInstructionInputTypeFragment(
   });
 
   // Arg link imports.
+  const customData = customInstructionData.get(instructionNode.name);
   const argLinkImports = new ImportMap();
-  if (instructionNode.dataArgs.link) {
+  if (customData) {
     argLinkImports.mergeWith(dataArgsManifest.looseType);
   }
 
@@ -88,10 +93,10 @@ export function getInstructionInputTypeFragment(
       },
     ];
   };
-  const dataArgsType = instructionNode.dataArgs.link
-    ? nameApi.dataArgsType(instructionNode.dataArgs.link.name)
+  const dataArgsType = customData
+    ? nameApi.dataArgsType(customData.importAs)
     : nameApi.dataArgsType(instructionNode.dataArgs.name);
-  const dataArgs = instructionNode.dataArgs.link
+  const dataArgs = customData
     ? []
     : instructionNode.dataArgs.dataArguments.flatMap(resolveArg);
   const extraArgsType = nameApi.dataArgsType(instructionNode.extraArgs.name);

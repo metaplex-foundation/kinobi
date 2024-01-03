@@ -12,6 +12,7 @@ import {
 import { camelCase, pascalCase, pipe } from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
+import { ParsedCustomDataOptions } from './customDataHelpers';
 import { renderValueNodeVisitor } from './renderValueNodeVisitor';
 
 export type JavaScriptTypeManifest = {
@@ -25,7 +26,9 @@ export type JavaScriptTypeManifest = {
 };
 
 export function getTypeManifestVisitor(
-  valueNodeVisitor: ReturnType<typeof renderValueNodeVisitor>
+  valueNodeVisitor: ReturnType<typeof renderValueNodeVisitor>,
+  customAccountData: ParsedCustomDataOptions,
+  customInstructionData: ParsedCustomDataOptions
 ) {
   let parentName: { strict: string; loose: string } | null = null;
 
@@ -62,8 +65,9 @@ export function getTypeManifestVisitor(
             strict: pascalCase(accountData.name),
             loose: `${pascalCase(accountData.name)}Args`,
           };
-          const manifest = accountData.link
-            ? visit(accountData.link, self)
+          const link = customAccountData.get(accountData.name)?.linkNode;
+          const manifest = link
+            ? visit(link, self)
             : visit(accountData.struct, self);
           parentName = null;
           return manifest;
@@ -74,12 +78,13 @@ export function getTypeManifestVisitor(
             strict: pascalCase(instructionDataArgs.name),
             loose: `${pascalCase(instructionDataArgs.name)}Args`,
           };
+          const link = customInstructionData.get(
+            instructionDataArgs.name
+          )?.linkNode;
           const struct = structTypeNodeFromInstructionArgumentNodes(
             instructionDataArgs.dataArguments
           );
-          const manifest = instructionDataArgs.link
-            ? visit(instructionDataArgs.link, self)
-            : visit(struct, self);
+          const manifest = link ? visit(link, self) : visit(struct, self);
           parentName = null;
           return manifest;
         },

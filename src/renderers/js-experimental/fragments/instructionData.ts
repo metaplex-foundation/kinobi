@@ -5,15 +5,16 @@ import { Fragment, fragment } from './common';
 import { getTypeWithCodecFragment } from './typeWithCodec';
 
 export function getInstructionDataFragment(
-  scope: Pick<GlobalFragmentScope, 'nameApi'> & {
+  scope: Pick<GlobalFragmentScope, 'nameApi' | 'customInstructionData'> & {
     instructionNode: InstructionNode;
     dataArgsManifest: TypeManifest;
   }
 ): Fragment {
-  const { instructionNode, dataArgsManifest, nameApi } = scope;
+  const { instructionNode, dataArgsManifest, nameApi, customInstructionData } =
+    scope;
   if (
     instructionNode.dataArgs.dataArguments.length === 0 ||
-    !!instructionNode.dataArgs.link
+    customInstructionData.has(instructionNode.name)
   ) {
     return fragment('');
   }
