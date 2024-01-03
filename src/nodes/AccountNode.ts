@@ -31,9 +31,13 @@ export function accountNode(input: AccountNodeInput): AccountNode {
   }
   return {
     kind: 'accountNode',
+
+    // Children.
     data: input.data ?? structTypeNode([]),
     pda: input.pda,
     discriminators: input.discriminators,
+
+    // Data.
     name: mainCase(input.name),
     idlName: input.idlName ?? input.name,
     docs: input.docs ?? [],
