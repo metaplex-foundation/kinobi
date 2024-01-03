@@ -32,7 +32,6 @@ export function getTypeManifestVisitor() {
         'definedTypeLinkNode',
         'definedTypeNode',
         'accountNode',
-        'accountDataNode',
       ]
     ),
     (v) =>
@@ -52,10 +51,6 @@ export function getTypeManifestVisitor() {
               '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
               `${manifest.type}`,
           };
-        },
-
-        visitAccountData(accountData, { self }) {
-          return visit(accountData.struct, self);
         },
 
         visitDefinedType(definedType, { self }) {

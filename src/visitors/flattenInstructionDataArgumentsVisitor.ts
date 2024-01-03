@@ -2,7 +2,6 @@ import {
   InstructionArgumentNode,
   assertIsNode,
   instructionArgumentNode,
-  instructionDataArgsNode,
   instructionNode,
   isNode,
 } from '../nodes';
@@ -17,12 +16,7 @@ export function flattenInstructionDataArgumentsVisitor() {
         assertIsNode(instruction, 'instructionNode');
         return instructionNode({
           ...instruction,
-          dataArgs: instructionDataArgsNode({
-            ...instruction.dataArgs,
-            dataArguments: flattenInstructionArguments(
-              instruction.dataArgs.dataArguments
-            ),
-          }),
+          arguments: flattenInstructionArguments(instruction.arguments),
         });
       },
     },

@@ -1,12 +1,9 @@
 import { getNodeKinds } from '../shared/utils';
-import type { AccountDataNode } from './AccountDataNode';
 import type { AccountNode } from './AccountNode';
 import type { DefinedTypeNode } from './DefinedTypeNode';
 import type { ErrorNode } from './ErrorNode';
 import type { InstructionAccountNode } from './InstructionAccountNode';
 import type { InstructionArgumentNode } from './InstructionArgumentNode';
-import type { InstructionDataArgsNode } from './InstructionDataArgsNode';
-import type { InstructionExtraArgsNode } from './InstructionExtraArgsNode';
 import type { InstructionNode } from './InstructionNode';
 import type { PdaNode } from './PdaNode';
 import type { ProgramNode } from './ProgramNode';
@@ -25,12 +22,9 @@ const REGISTERED_NODES = {
   programNode: {} as ProgramNode,
   pdaNode: {} as PdaNode,
   accountNode: {} as AccountNode,
-  accountDataNode: {} as AccountDataNode,
   instructionNode: {} as InstructionNode,
   instructionAccountNode: {} as InstructionAccountNode,
   instructionArgumentNode: {} as InstructionArgumentNode,
-  instructionDataArgsNode: {} as InstructionDataArgsNode,
-  instructionExtraArgsNode: {} as InstructionExtraArgsNode,
   errorNode: {} as ErrorNode,
   definedTypeNode: {} as DefinedTypeNode,
 

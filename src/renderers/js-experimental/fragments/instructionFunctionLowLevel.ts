@@ -40,11 +40,10 @@ export function getInstructionFunctionLowLevelFragment(
     instructionNode.optionalAccountStrategy === 'omitted' &&
     instructionNode.accounts.some((account) => account.isOptional);
   const customData = customInstructionData.get(instructionNode.name);
-  const hasData =
-    !!customData || instructionNode.dataArgs.dataArguments.length > 0;
+  const hasData = !!customData || instructionNode.arguments.length > 0;
   const hasArgs =
     !!customData ||
-    instructionNode.dataArgs.dataArguments.filter(
+    instructionNode.arguments.filter(
       (field) => !field.defaultValue || field.defaultValueStrategy !== 'omitted'
     ).length > 0;
   const instructionDataName = nameApi.instructionDataType(instructionNode.name);

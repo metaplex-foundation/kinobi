@@ -26,8 +26,7 @@ export function getInstructionParseFunctionFragment(
     instructionNode.optionalAccountStrategy === 'omitted'
       ? instructionNode.accounts.filter((account) => !account.isOptional).length
       : instructionNode.accounts.length;
-  const hasData =
-    !!customData || instructionNode.dataArgs.dataArguments.length > 0;
+  const hasData = !!customData || instructionNode.arguments.length > 0;
 
   if (!hasAccounts && !hasData) {
     return fragment('');

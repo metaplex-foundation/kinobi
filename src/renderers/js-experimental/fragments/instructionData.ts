@@ -13,7 +13,7 @@ export function getInstructionDataFragment(
   const { instructionNode, dataArgsManifest, nameApi, customInstructionData } =
     scope;
   if (
-    instructionNode.dataArgs.dataArguments.length === 0 ||
+    instructionNode.arguments.length === 0 ||
     customInstructionData.has(instructionNode.name)
   ) {
     return fragment('');

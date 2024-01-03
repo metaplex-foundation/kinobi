@@ -1,9 +1,4 @@
-import {
-  accountDataNode,
-  accountNode,
-  assertIsNode,
-  programNode,
-} from '../nodes';
+import { accountNode, assertIsNode, programNode } from '../nodes';
 import { pipe } from '../shared';
 import { extendVisitor } from './extendVisitor';
 import { identityVisitor } from './identityVisitor';
@@ -26,7 +21,7 @@ export function transformDefinedTypesIntoAccountsVisitor(
           assertIsNode(node.type, 'structTypeNode');
           return accountNode({
             ...node,
-            data: accountDataNode({ struct: node.type }),
+            data: node.type,
             size: undefined,
             discriminator: undefined,
           });

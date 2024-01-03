@@ -9,7 +9,6 @@ import {
   SIZE_NODES,
   TYPE_NODES,
   VALUE_NODES,
-  accountDataNode,
   accountNode,
   amountTypeNode,
   arrayTypeNode,
@@ -27,8 +26,6 @@ import {
   enumValueNode,
   instructionAccountNode,
   instructionArgumentNode,
-  instructionDataArgsNode,
-  instructionExtraArgsNode,
   instructionNode,
   mapEntryValueNode,
   mapTypeNode,
@@ -119,38 +116,35 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
     visitor.visitAccount = function visitAccount(node) {
       const data = visit(this)(node.data);
       if (data === null) return null;
-      assertIsNode(data, 'accountDataNode');
+      assertIsNode(data, 'structTypeNode');
       const pda = node.pda ? visit(this)(node.pda) ?? undefined : undefined;
       if (pda) assertIsNode(pda, 'pdaLinkNode');
       return accountNode({ ...node, data, pda });
     };
   }
 
-  if (castedNodeKeys.includes('accountDataNode')) {
-    visitor.visitAccountData = function visitAccountData(node) {
-      const struct = visit(this)(node.struct);
-      if (struct === null) return null;
-      assertIsNode(struct, 'structTypeNode');
-      return accountDataNode({ ...node, struct });
-    };
-  }
-
   if (castedNodeKeys.includes('instructionNode')) {
     visitor.visitInstruction = function visitInstruction(node) {
-      const dataArgs = visit(this)(node.dataArgs);
-      assertIsNode(dataArgs, 'instructionDataArgsNode');
-      const extraArgs = visit(this)(node.extraArgs);
-      assertIsNode(extraArgs, 'instructionExtraArgsNode');
       return instructionNode({
         ...node,
-        dataArgs,
-        extraArgs,
         accounts: node.accounts
           .map(visit(this))
           .filter(removeNullAndAssertIsNodeFilter('instructionAccountNode')),
-        subInstructions: node.subInstructions
+        arguments: node.arguments
           .map(visit(this))
-          .filter(removeNullAndAssertIsNodeFilter('instructionNode')),
+          .filter(removeNullAndAssertIsNodeFilter('instructionArgumentNode')),
+        extraArguments: node.extraArguments
+          ? node.extraArguments
+              .map(visit(this))
+              .filter(
+                removeNullAndAssertIsNodeFilter('instructionArgumentNode')
+              )
+          : undefined,
+        subInstructions: node.subInstructions
+          ? node.subInstructions
+              .map(visit(this))
+              .filter(removeNullAndAssertIsNodeFilter('instructionNode'))
+          : undefined,
       });
     };
   }
@@ -163,26 +157,6 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       if (defaultValue)
         assertIsNode(defaultValue, INSTRUCTION_INPUT_VALUE_NODE);
       return instructionAccountNode({ ...node, defaultValue });
-    };
-  }
-
-  if (castedNodeKeys.includes('instructionDataArgsNode')) {
-    visitor.visitInstructionDataArgs = function visitInstructionDataArgs(node) {
-      const dataArguments = node.dataArguments
-        .map(visit(this))
-        .filter(removeNullAndAssertIsNodeFilter('instructionArgumentNode'));
-      return instructionDataArgsNode({ ...node, dataArguments });
-    };
-  }
-
-  if (castedNodeKeys.includes('instructionExtraArgsNode')) {
-    visitor.visitInstructionExtraArgs = function visitInstructionExtraArgs(
-      node
-    ) {
-      const extraArguments = node.extraArguments
-        .map(visit(this))
-        .filter(removeNullAndAssertIsNodeFilter('instructionArgumentNode'));
-      return instructionExtraArgsNode({ ...node, extraArguments });
     };
   }
 

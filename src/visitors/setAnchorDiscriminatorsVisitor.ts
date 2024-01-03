@@ -1,11 +1,9 @@
 import {
   ProgramNode,
-  accountDataNode,
   accountNode,
   arrayTypeNode,
   fixedSizeNode,
   instructionArgumentNode,
-  instructionDataArgsNode,
   instructionNode,
   numberTypeNode,
   structFieldTypeNode,
@@ -52,13 +50,7 @@ export function setAnchorDiscriminatorsVisitor() {
           return accountNode({
             ...node,
             discriminator: fieldAccountDiscriminator('discriminator'),
-            data: accountDataNode({
-              ...node.data,
-              struct: structTypeNode([
-                discriminatorArgument,
-                ...node.data.struct.fields,
-              ]),
-            }),
+            data: structTypeNode([discriminatorArgument, ...node.data.fields]),
           });
         },
 
@@ -75,13 +67,7 @@ export function setAnchorDiscriminatorsVisitor() {
 
           return instructionNode({
             ...node,
-            dataArgs: instructionDataArgsNode({
-              ...node.dataArgs,
-              dataArguments: [
-                discriminatorArgument,
-                ...node.dataArgs.dataArguments,
-              ],
-            }),
+            arguments: [discriminatorArgument, ...node.arguments],
           });
         },
       })

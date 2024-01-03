@@ -2,7 +2,6 @@ import {
   AccountNodeInput,
   PdaNode,
   PdaSeedNode,
-  accountDataNode,
   accountLinkNode,
   accountNode,
   assertIsNode,
@@ -67,10 +66,7 @@ export function updateAccountsVisitor(map: Record<string, AccountUpdates>) {
             return accountNode({
               ...node,
               ...assignableUpdates,
-              data: accountDataNode({
-                ...node.data,
-                struct: renameStructNode(node.data.struct, updates.data ?? {}),
-              }),
+              data: renameStructNode(node.data, updates.data ?? {}),
               pda: newPda,
             });
           },

@@ -10,6 +10,7 @@ import {
   getAllPdas,
   InstructionNode,
   ProgramNode,
+  structTypeNodeFromInstructionArgumentNodes,
 } from '../../nodes';
 import {
   camelCase,
@@ -385,7 +386,9 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             renamedArgs: getRenamedArgsMap(node),
             dataArgsManifest: visit(node, typeManifestVisitor),
             extraArgsManifest: visit(
-              node.extraArgs,
+              structTypeNodeFromInstructionArgumentNodes(
+                node.extraArguments ?? []
+              ),
               getTypeManifestVisitor({
                 strict: nameApi.dataType(instructionExtraName),
                 loose: nameApi.dataArgsType(instructionExtraName),
@@ -496,8 +499,8 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
 
 function getRenamedArgsMap(instruction: InstructionNode): Map<string, string> {
   const argNames = [
-    ...instruction.dataArgs.dataArguments.map((field) => field.name),
-    ...instruction.extraArgs.extraArguments.map((field) => field.name),
+    ...instruction.arguments.map((a) => a.name),
+    ...(instruction.extraArguments ?? []).map((a) => a.name),
   ];
   const duplicateArgs = argNames.filter((e, i, a) => a.indexOf(e) !== i);
   if (duplicateArgs.length > 0) {

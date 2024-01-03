@@ -1,8 +1,7 @@
 import {
   InstructionAccountNode,
   InstructionAccountNodeInput,
-  InstructionDataArgsNode,
-  InstructionExtraArgsNode,
+  InstructionArgumentNode,
   InstructionInputValueNode,
   InstructionNode,
   InstructionNodeInput,
@@ -12,8 +11,6 @@ import {
   assertIsNode,
   instructionAccountNode,
   instructionArgumentNode,
-  instructionDataArgsNode,
-  instructionExtraArgsNode,
   instructionNode,
   isNode,
 } from '../nodes';
@@ -78,19 +75,19 @@ export function updateInstructionsVisitor(
             ...metadataUpdates
           } = updates;
           const newName = mainCase(updates.name ?? node.name);
-          const { newDataArgs, newExtraArgs, newArgDefaults } =
+          const { newArguments, newExtraArguments, newArgDefaults } =
             handleInstructionArgs(node, newName, argsUpdates ?? {});
           const newAccounts = node.accounts.map((account) =>
             handleInstructionAccount(account, accountUpdates ?? {}, linkables)
           );
-
           return instructionNode({
             ...node,
             ...metadataUpdates,
             argDefaults: newArgDefaults,
             accounts: newAccounts,
-            dataArgs: newDataArgs,
-            extraArgs: newExtraArgs,
+            arguments: newArguments,
+            extraArguments:
+              newExtraArguments.length > 0 ? newExtraArguments : undefined,
           });
         },
       };
@@ -140,28 +137,25 @@ function handleInstructionArgs(
   newInstructionName: string,
   argUpdates: InstructionArgUpdates
 ): {
-  newDataArgs: InstructionDataArgsNode;
-  newExtraArgs: InstructionExtraArgsNode;
+  newArguments: InstructionArgumentNode[];
+  newExtraArguments: InstructionArgumentNode[];
   newArgDefaults: Record<string, InstructionInputValueNode>;
 } {
   const usedArgs = new Set<string>();
 
-  const newDataArgs = instructionDataArgsNode({
-    ...instruction.dataArgs,
-    dataArguments: instruction.dataArgs.dataArguments.map((node) => {
-      const argUpdate = argUpdates[node.name];
-      if (!argUpdate) return node;
-      usedArgs.add(node.name);
-      return instructionArgumentNode({
-        ...node,
-        type: argUpdate.type ?? node.type,
-        name: argUpdate.name ?? node.name,
-        docs: argUpdate.docs ?? node.docs,
-      });
-    }),
+  const newArguments = instruction.arguments.map((node) => {
+    const argUpdate = argUpdates[node.name];
+    if (!argUpdate) return node;
+    usedArgs.add(node.name);
+    return instructionArgumentNode({
+      ...node,
+      type: argUpdate.type ?? node.type,
+      name: argUpdate.name ?? node.name,
+      docs: argUpdate.docs ?? node.docs,
+    });
   });
 
-  const updatedExtraArguments = instruction.extraArgs.extraArguments.map(
+  const updatedExtraArguments = (instruction.extraArguments ?? []).map(
     (node) => {
       if (usedArgs.has(node.name)) return node;
       const argUpdate = argUpdates[node.name];
@@ -176,22 +170,20 @@ function handleInstructionArgs(
     }
   );
 
-  const newExtraArguments = Object.entries(argUpdates)
-    .filter(([argName]) => !usedArgs.has(argName))
-    .map(([argName, argUpdate]) => {
-      const { type } = argUpdate;
-      assertIsNode(type, TYPE_NODES);
-      return instructionArgumentNode({
-        name: argUpdate.name ?? argName,
-        type,
-        docs: argUpdate.docs ?? [],
-      });
-    });
-
-  const newExtraArgs = instructionExtraArgsNode({
-    ...instruction.extraArgs,
-    extraArguments: [...updatedExtraArguments, ...newExtraArguments],
-  });
+  const newExtraArguments = [
+    ...updatedExtraArguments,
+    ...Object.entries(argUpdates)
+      .filter(([argName]) => !usedArgs.has(argName))
+      .map(([argName, argUpdate]) => {
+        const { type } = argUpdate;
+        assertIsNode(type, TYPE_NODES);
+        return instructionArgumentNode({
+          name: argUpdate.name ?? argName,
+          type,
+          docs: argUpdate.docs ?? [],
+        });
+      }),
+  ];
 
   const newArgDefaults = instruction.argDefaults;
   Object.entries(argUpdates).forEach(([argName, argUpdate]) => {
@@ -203,5 +195,5 @@ function handleInstructionArgs(
     }
   });
 
-  return { newDataArgs, newExtraArgs, newArgDefaults };
+  return { newArguments, newExtraArguments, newArgDefaults };
 }

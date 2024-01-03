@@ -3,7 +3,6 @@ import {
   BytesCreatedOnChain,
   InvalidKinobiTreeError,
   MainCaseString,
-  PartialExcept,
   RemainingAccounts,
   mainCase,
 } from '../shared';
@@ -12,17 +11,10 @@ import {
   instructionAccountNodeFromIdl,
 } from './InstructionAccountNode';
 import {
+  InstructionArgumentNode,
   instructionArgumentNode,
   instructionArgumentNodeFromIdl,
 } from './InstructionArgumentNode';
-import {
-  InstructionDataArgsNode,
-  instructionDataArgsNode,
-} from './InstructionDataArgsNode';
-import {
-  InstructionExtraArgsNode,
-  instructionExtraArgsNode,
-} from './InstructionExtraArgsNode';
 import { isNode } from './Node';
 import { ProgramNode } from './ProgramNode';
 import { RootNode } from './RootNode';
@@ -35,9 +27,9 @@ export type InstructionNode = {
 
   // Children.
   readonly accounts: InstructionAccountNode[];
-  readonly dataArgs: InstructionDataArgsNode;
-  readonly extraArgs: InstructionExtraArgsNode;
-  readonly subInstructions: InstructionNode[];
+  readonly arguments: InstructionArgumentNode[];
+  readonly extraArguments?: InstructionArgumentNode[];
+  readonly subInstructions?: InstructionNode[];
   readonly argDefaults: Record<MainCaseString, InstructionInputValueNode>;
 
   // Children to-be.
@@ -53,7 +45,7 @@ export type InstructionNode = {
 };
 
 export type InstructionNodeInput = Omit<
-  PartialExcept<InstructionNode, 'accounts' | 'dataArgs'>,
+  Partial<InstructionNode>,
   'kind' | 'name' | 'argDefaults'
 > & {
   readonly name: string;
@@ -68,14 +60,10 @@ export function instructionNode(input: InstructionNodeInput): InstructionNode {
   return {
     kind: 'instructionNode',
     name,
-    accounts: input.accounts,
-    dataArgs: input.dataArgs,
-    extraArgs:
-      input.extraArgs ??
-      instructionExtraArgsNode({
-        extraArguments: [],
-      }),
-    subInstructions: input.subInstructions ?? [],
+    accounts: input.accounts ?? [],
+    arguments: input.arguments ?? [],
+    extraArguments: input.extraArguments,
+    subInstructions: input.subInstructions,
     idlName: input.idlName ?? input.name,
     docs: input.docs ?? [],
     internal: input.internal ?? false,
@@ -113,9 +101,7 @@ export function instructionNodeFromIdl(
     accounts: (idl.accounts ?? []).map((account) =>
       instructionAccountNodeFromIdl(account)
     ),
-    dataArgs: instructionDataArgsNode({
-      dataArguments,
-    }),
+    arguments: dataArguments,
     optionalAccountStrategy: idl.legacyOptionalAccountsStrategy
       ? 'omitted'
       : 'programId',
@@ -127,7 +113,8 @@ export function getAllInstructionsWithSubs(
   leavesOnly = false
 ): InstructionNode[] {
   if (isNode(node, 'instructionNode')) {
-    if (node.subInstructions.length === 0) return [node];
+    if (!node.subInstructions || node.subInstructions.length === 0)
+      return [node];
     const subInstructions = node.subInstructions.flatMap((sub) =>
       getAllInstructionsWithSubs(sub, leavesOnly)
     );

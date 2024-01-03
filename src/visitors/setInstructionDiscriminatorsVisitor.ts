@@ -3,7 +3,6 @@ import {
   ValueNode,
   assertIsNode,
   instructionArgumentNode,
-  instructionDataArgsNode,
   instructionNode,
   numberTypeNode,
 } from '../nodes';
@@ -46,13 +45,7 @@ export function setInstructionDiscriminatorsVisitor(
 
             return instructionNode({
               ...node,
-              dataArgs: instructionDataArgsNode({
-                ...node.dataArgs,
-                dataArguments: [
-                  discriminatorArgument,
-                  ...node.dataArgs.dataArguments,
-                ],
-              }),
+              arguments: [discriminatorArgument, ...node.arguments],
             });
           },
         };

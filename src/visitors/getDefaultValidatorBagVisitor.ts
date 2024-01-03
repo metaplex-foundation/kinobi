@@ -86,8 +86,8 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
 
           // Check args.
           const names = [
-            ...node.dataArgs.dataArguments.map(({ name }) => mainCase(name)),
-            ...node.extraArgs.extraArguments.map(({ name }) => mainCase(name)),
+            ...node.arguments.map(({ name }) => mainCase(name)),
+            ...(node.extraArguments ?? []).map(({ name }) => mainCase(name)),
           ];
           const duplicates = names.filter((e, i, a) => a.indexOf(e) !== i);
           const uniqueDuplicates = [...new Set(duplicates)];

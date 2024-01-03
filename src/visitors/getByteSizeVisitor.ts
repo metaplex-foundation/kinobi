@@ -12,9 +12,8 @@ export type ByteSizeVisitorKeys =
   | RegisteredTypeNodeKind
   | 'definedTypeLinkNode'
   | 'definedTypeNode'
-  | 'accountDataNode'
-  | 'instructionDataArgsNode'
-  | 'instructionExtraArgsNode'
+  | 'accountNode'
+  | 'instructionNode'
   | 'instructionArgumentNode';
 
 export function getByteSizeVisitor(
@@ -36,9 +35,8 @@ export function getByteSizeVisitor(
       ...REGISTERED_TYPE_NODE_KINDS,
       'definedTypeLinkNode',
       'definedTypeNode',
-      'accountDataNode',
-      'instructionDataArgsNode',
-      'instructionExtraArgsNode',
+      'accountNode',
+      'instructionNode',
       'instructionArgumentNode',
     ]
   );
@@ -46,16 +44,12 @@ export function getByteSizeVisitor(
   return {
     ...visitor,
 
-    visitAccountData(node) {
-      return visit(node.struct, this);
+    visitAccount(node) {
+      return visit(node.data, this);
     },
 
-    visitInstructionDataArgs(node) {
-      return sumSizes(node.dataArguments.map((arg) => visit(arg, this)));
-    },
-
-    visitInstructionExtraArgs(node) {
-      return sumSizes(node.extraArguments.map((arg) => visit(arg, this)));
+    visitInstruction(node) {
+      return sumSizes(node.arguments.map((arg) => visit(arg, this)));
     },
 
     visitInstructionArgument(node) {

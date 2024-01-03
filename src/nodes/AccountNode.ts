@@ -5,17 +5,16 @@ import {
   MainCaseString,
   mainCase,
 } from '../shared';
-import { AccountDataNode, accountDataNode } from './AccountDataNode';
 import { assertIsNode } from './Node';
 import { PdaLinkNode, pdaLinkNode } from './linkNodes';
-import { structTypeNode } from './typeNodes';
+import { StructTypeNode, structTypeNode } from './typeNodes';
 import { createTypeNodeFromIdl } from './typeNodes/TypeNode';
 
 export type AccountNode = {
   readonly kind: 'accountNode';
 
   // Children.
-  readonly data: AccountDataNode;
+  readonly data: StructTypeNode;
   readonly pda?: PdaLinkNode;
 
   // Children to-be.
@@ -39,7 +38,7 @@ export function accountNode(input: AccountNodeInput): AccountNode {
   }
   return {
     kind: 'accountNode',
-    data: input.data ?? accountDataNode({ struct: structTypeNode([]) }),
+    data: input.data ?? structTypeNode([]),
     pda: input.pda,
     name: mainCase(input.name),
     idlName: input.idlName ?? input.name,
@@ -54,12 +53,12 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
   const idlName = idl.name ?? '';
   const name = mainCase(idlName);
   const idlStruct = idl.type ?? { kind: 'struct', fields: [] };
-  const struct = createTypeNodeFromIdl(idlStruct);
-  assertIsNode(struct, 'structTypeNode');
+  const data = createTypeNodeFromIdl(idlStruct);
+  assertIsNode(data, 'structTypeNode');
   const hasSeeds = (idl.seeds ?? []).length > 0;
   return accountNode({
     name,
-    data: accountDataNode({ struct }),
+    data,
     pda: hasSeeds ? pdaLinkNode(name) : undefined,
     idlName,
     docs: idl.docs ?? [],

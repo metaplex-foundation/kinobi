@@ -102,10 +102,9 @@ export function getInstructionInputTypeFragment(
     : nameApi.dataArgsType(instructionDataName);
   const dataArgs = customData
     ? []
-    : instructionNode.dataArgs.dataArguments.flatMap(resolveArg);
+    : instructionNode.arguments.flatMap(resolveArg);
   const extraArgsType = nameApi.dataArgsType(instructionExtraName);
-  const extraArgs =
-    instructionNode.extraArgs.extraArguments.flatMap(resolveArg);
+  const extraArgs = (instructionNode.extraArguments ?? []).flatMap(resolveArg);
 
   const syncInputType = withSigners
     ? nameApi.instructionSyncInputWithSignersType(instructionNode.name)

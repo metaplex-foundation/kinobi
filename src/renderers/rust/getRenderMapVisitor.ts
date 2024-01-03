@@ -222,7 +222,7 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
           let hasArgs = false;
           let hasOptional = false;
 
-          node.dataArgs.dataArguments.forEach((argument) => {
+          node.arguments.forEach((argument) => {
             typeManifestVisitor.setParentName(
               `${pascalCase(node.name)}InstructionData${pascalCase(
                 argument.name
@@ -271,7 +271,7 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
           });
 
           const struct = structTypeNodeFromInstructionArgumentNodes(
-            node.dataArgs.dataArguments
+            node.arguments
           );
           typeManifestVisitor.setParentName(
             `${pascalCase(node.name)}InstructionData`
@@ -333,7 +333,7 @@ function getConflictsForInstructionAccountsAndArgs(
 ): string[] {
   const allNames = [
     ...instruction.accounts.map((account) => account.name),
-    ...instruction.dataArgs.dataArguments.map((argument) => argument.name),
+    ...instruction.arguments.map((argument) => argument.name),
   ];
   const duplicates = allNames.filter((e, i, a) => a.indexOf(e) !== i);
   return [...new Set(duplicates)];

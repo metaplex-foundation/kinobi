@@ -149,8 +149,8 @@ export function getRenderMapVisitor(
   ): string[] {
     const allNames = [
       ...instruction.accounts.map((account) => account.name),
-      ...instruction.dataArgs.dataArguments.map((field) => field.name),
-      ...instruction.extraArgs.extraArguments.map((field) => field.name),
+      ...instruction.arguments.map((field) => field.name),
+      ...(instruction.extraArguments ?? []).map((field) => field.name),
     ];
     const duplicates = allNames.filter((e, i, a) => a.indexOf(e) !== i);
     return [...new Set(duplicates)];
@@ -328,7 +328,7 @@ export function getRenderMapVisitor(
             | { kind: 'field'; name: string; value: string }
             | null = null;
           if (discriminator?.kind === 'field') {
-            const discriminatorField = node.data.struct.fields.find(
+            const discriminatorField = node.data.fields.find(
               (f) => f.name === discriminator.name
             );
             const discriminatorValue = discriminatorField?.defaultValue
@@ -443,15 +443,14 @@ export function getRenderMapVisitor(
           const customData = customInstructionData.get(node.name);
           const linkedDataArgs = !!customData;
           const hasAccounts = node.accounts.length > 0;
-          const hasData =
-            linkedDataArgs || node.dataArgs.dataArguments.length > 0;
+          const hasData = linkedDataArgs || node.arguments.length > 0;
           const hasDataArgs =
             linkedDataArgs ||
-            node.dataArgs.dataArguments.filter(
+            node.arguments.filter(
               (field) => field.defaultValueStrategy !== 'omitted'
             ).length > 0;
           const hasExtraArgs =
-            node.extraArgs.extraArguments.filter(
+            (node.extraArguments ?? []).filter(
               (field) => field.defaultValueStrategy !== 'omitted'
             ).length > 0;
           const hasAnyArgs = hasDataArgs || hasExtraArgs;
@@ -551,7 +550,7 @@ export function getRenderMapVisitor(
 
           // Extra args.
           const extraArgStruct = structTypeNodeFromInstructionArgumentNodes(
-            node.extraArgs.extraArguments
+            node.extraArguments ?? []
           );
           const visitor = getTypeManifestVisitor({
             strict: `${node.name}InstructionExtra`,

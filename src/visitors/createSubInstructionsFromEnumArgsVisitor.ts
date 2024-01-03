@@ -3,7 +3,6 @@ import {
   InstructionNode,
   assertIsNode,
   instructionArgumentNode,
-  instructionDataArgsNode,
   instructionNode,
   isNode,
   numberTypeNode,
@@ -32,7 +31,7 @@ export function createSubInstructionsFromEnumArgsVisitor(
           transform: (node) => {
             assertIsNode(node, 'instructionNode');
 
-            const argFields = node.dataArgs.dataArguments;
+            const argFields = node.arguments;
             const argName = mainCase(argNameInput);
             const argFieldIndex = argFields.findIndex(
               (field) => field.name === argName
@@ -94,18 +93,17 @@ export function createSubInstructionsFromEnumArgsVisitor(
                 return instructionNode({
                   ...node,
                   name: subName,
-                  dataArgs: instructionDataArgsNode({
-                    ...node.dataArgs,
-                    dataArguments: flattenInstructionArguments(subFields),
-                  }),
-                  extraArgs: node.extraArgs,
+                  arguments: flattenInstructionArguments(subFields),
                 });
               }
             );
 
             return instructionNode({
               ...node,
-              subInstructions: [...node.subInstructions, ...subInstructions],
+              subInstructions: [
+                ...(node.subInstructions ?? []),
+                ...subInstructions,
+              ],
             });
           },
         };

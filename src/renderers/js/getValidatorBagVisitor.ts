@@ -108,7 +108,7 @@ export function getValidatorBagVisitor(): Visitor<ValidatorBag> {
           }
 
           const reservedAccountFields = new Set(['publicKey', 'header']);
-          const invalidFields = node.data.struct.fields
+          const invalidFields = node.data.fields
             .map((field) => field.name)
             .filter((name) => reservedAccountFields.has(name));
           if (invalidFields.length > 0) {

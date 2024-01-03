@@ -67,7 +67,7 @@ export const getDefinedTypeNodesToExtract = (
       return [
         definedTypeNode({
           name: options.extractAs,
-          type: { ...node.data.struct },
+          type: { ...node.data },
           idlName: node.idlName,
         }),
       ];
@@ -76,9 +76,7 @@ export const getDefinedTypeNodesToExtract = (
     return [
       definedTypeNode({
         name: options.extractAs,
-        type: structTypeNodeFromInstructionArgumentNodes(
-          node.dataArgs.dataArguments
-        ),
+        type: structTypeNodeFromInstructionArgumentNodes(node.arguments),
         idlName: node.idlName,
       }),
     ];

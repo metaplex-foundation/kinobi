@@ -24,8 +24,7 @@ export function getInstructionTypeFragment(
   } = scope;
   const hasAccounts = instructionNode.accounts.length > 0;
   const customData = customInstructionData.get(instructionNode.name);
-  const hasData =
-    !!customData || instructionNode.dataArgs.dataArguments.length > 0;
+  const hasData = !!customData || instructionNode.arguments.length > 0;
   const instructionDataName = nameApi.instructionDataType(instructionNode.name);
   const dataType = customData
     ? pascalCase(customData.importAs)

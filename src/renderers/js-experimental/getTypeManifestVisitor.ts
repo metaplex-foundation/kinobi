@@ -48,10 +48,7 @@ export function getTypeManifestVisitor(input: {
         'definedTypeLinkNode',
         'definedTypeNode',
         'accountNode',
-        'accountDataNode',
         'instructionNode',
-        'instructionDataArgsNode',
-        'instructionExtraArgsNode',
       ]
     ),
     (visitor) =>
@@ -68,10 +65,6 @@ export function getTypeManifestVisitor(input: {
           return manifest;
         },
 
-        visitAccountData(accountData, { self }) {
-          return visit(accountData.struct, self);
-        },
-
         visitInstruction(instruction, { self }) {
           const instructionDataName = nameApi.instructionDataType(
             instruction.name
@@ -81,25 +74,12 @@ export function getTypeManifestVisitor(input: {
             loose: nameApi.dataArgsType(instructionDataName),
           };
           const link = customInstructionData.get(instruction.name)?.linkNode;
-          const manifest = link
-            ? visit(link, self)
-            : visit(instruction.dataArgs, self);
+          const struct = structTypeNodeFromInstructionArgumentNodes(
+            instruction.arguments
+          );
+          const manifest = link ? visit(link, self) : visit(struct, self);
           parentName = null;
           return manifest;
-        },
-
-        visitInstructionDataArgs(instructionDataArgs, { self }) {
-          const struct = structTypeNodeFromInstructionArgumentNodes(
-            instructionDataArgs.dataArguments
-          );
-          return visit(struct, self);
-        },
-
-        visitInstructionExtraArgs(instructionExtraArgs, { self }) {
-          const struct = structTypeNodeFromInstructionArgumentNodes(
-            instructionExtraArgs.extraArguments
-          );
-          return visit(struct, self);
         },
 
         visitDefinedType(definedType, { self }) {

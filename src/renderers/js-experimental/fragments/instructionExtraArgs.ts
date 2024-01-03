@@ -10,7 +10,7 @@ export function getInstructionExtraArgsFragment(
   }
 ): Fragment {
   const { instructionNode, extraArgsManifest, nameApi } = scope;
-  if (instructionNode.extraArgs.extraArguments.length === 0) {
+  if ((instructionNode.extraArguments ?? []).length === 0) {
     return fragment('');
   }
 
