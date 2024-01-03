@@ -1,4 +1,3 @@
-import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
 import { InstructionArgumentNode } from './InstructionArgumentNode';
 
 export type InstructionDataArgsNode = {
@@ -6,29 +5,18 @@ export type InstructionDataArgsNode = {
 
   // Children.
   readonly dataArguments: InstructionArgumentNode[];
-
-  // Data.
-  readonly name: MainCaseString;
 };
 
 export type InstructionDataArgsNodeInput = Omit<
   InstructionDataArgsNode,
-  'kind' | 'name'
-> & {
-  readonly name: string;
-};
+  'kind'
+>;
 
 export function instructionDataArgsNode(
   input: InstructionDataArgsNodeInput
 ): InstructionDataArgsNode {
-  if (!input.name) {
-    throw new InvalidKinobiTreeError(
-      'InstructionDataArgsNode must have a name.'
-    );
-  }
   return {
     kind: 'instructionDataArgsNode',
-    name: mainCase(input.name),
     dataArguments: input.dataArguments,
   };
 }

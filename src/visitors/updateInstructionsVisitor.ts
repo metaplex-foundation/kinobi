@@ -148,7 +148,6 @@ function handleInstructionArgs(
 
   const newDataArgs = instructionDataArgsNode({
     ...instruction.dataArgs,
-    name: `${newInstructionName}InstructionData`,
     dataArguments: instruction.dataArgs.dataArguments.map((node) => {
       const argUpdate = argUpdates[node.name];
       if (!argUpdate) return node;
@@ -191,7 +190,6 @@ function handleInstructionArgs(
 
   const newExtraArgs = instructionExtraArgsNode({
     ...instruction.extraArgs,
-    name: `${newInstructionName}InstructionExtra`,
     extraArguments: [...updatedExtraArguments, ...newExtraArguments],
   });
 

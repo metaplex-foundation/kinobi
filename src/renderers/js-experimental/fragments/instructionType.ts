@@ -26,9 +26,10 @@ export function getInstructionTypeFragment(
   const customData = customInstructionData.get(instructionNode.name);
   const hasData =
     !!customData || instructionNode.dataArgs.dataArguments.length > 0;
+  const instructionDataName = nameApi.instructionDataType(instructionNode.name);
   const dataType = customData
     ? pascalCase(customData.importAs)
-    : pascalCase(instructionNode.dataArgs.name);
+    : pascalCase(instructionDataName);
   const accountTypeParamsFragment = mergeFragments(
     instructionNode.accounts.map((account) =>
       getInstructionAccountTypeParamFragment({

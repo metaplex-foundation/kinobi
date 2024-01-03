@@ -47,12 +47,13 @@ export function getInstructionFunctionLowLevelFragment(
     instructionNode.dataArgs.dataArguments.filter(
       (field) => !field.defaultValue || field.defaultValueStrategy !== 'omitted'
     ).length > 0;
+  const instructionDataName = nameApi.instructionDataType(instructionNode.name);
   const argsType = customData
     ? dataArgsManifest.looseType.render
-    : nameApi.dataArgsType(instructionNode.dataArgs.name);
+    : nameApi.dataArgsType(instructionDataName);
   const encoderFunction = customData
     ? dataArgsManifest.encoder.render
-    : `${nameApi.encoderFunction(instructionNode.dataArgs.name)}()`;
+    : `${nameApi.encoderFunction(instructionDataName)}()`;
   if (customData) {
     imports.mergeWith(dataArgsManifest.looseType, dataArgsManifest.encoder);
   }

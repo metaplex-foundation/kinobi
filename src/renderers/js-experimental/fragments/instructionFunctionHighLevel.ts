@@ -60,10 +60,11 @@ export function getInstructionFunctionHighLevelFragment(
       (field) => !field.defaultValue || field.defaultValueStrategy !== 'omitted'
     ).length > 0;
   const hasAnyArgs = hasDataArgs || hasExtraArgs;
+  const instructionDataName = nameApi.instructionDataType(instructionNode.name);
   const argsTypeFragment = fragment(
     customData
       ? dataArgsManifest.looseType.render
-      : nameApi.dataArgsType(instructionNode.dataArgs.name)
+      : nameApi.dataArgsType(instructionDataName)
   );
   if (customData) {
     argsTypeFragment.mergeImportsWith(dataArgsManifest.looseType);

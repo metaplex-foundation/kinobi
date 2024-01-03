@@ -26,10 +26,7 @@ export function transformDefinedTypesIntoAccountsVisitor(
           assertIsNode(node.type, 'structTypeNode');
           return accountNode({
             ...node,
-            data: accountDataNode({
-              name: `${node.name}AccountData`,
-              struct: node.type,
-            }),
+            data: accountDataNode({ struct: node.type }),
             size: undefined,
             discriminator: undefined,
           });

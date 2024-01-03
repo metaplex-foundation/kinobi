@@ -25,12 +25,14 @@ export type JavaScriptTypeManifest = {
   serializerImports: JavaScriptImportMap;
 };
 
-export function getTypeManifestVisitor(
-  valueNodeVisitor: ReturnType<typeof renderValueNodeVisitor>,
-  customAccountData: ParsedCustomDataOptions,
-  customInstructionData: ParsedCustomDataOptions
-) {
-  let parentName: { strict: string; loose: string } | null = null;
+export function getTypeManifestVisitor(input: {
+  valueNodeVisitor: ReturnType<typeof renderValueNodeVisitor>;
+  customAccountData: ParsedCustomDataOptions;
+  customInstructionData: ParsedCustomDataOptions;
+  parentName?: { strict: string; loose: string };
+}) {
+  const { valueNodeVisitor, customAccountData, customInstructionData } = input;
+  let parentName = input.parentName ?? null;
 
   return pipe(
     staticVisitor(
@@ -52,55 +54,43 @@ export function getTypeManifestVisitor(
         'accountDataNode',
         'instructionNode',
         'instructionDataArgsNode',
-        'instructionExtraArgsNode',
       ]
     ),
     (v) =>
       extendVisitor(v, {
         visitAccount(account, { self }) {
+          parentName = {
+            strict: `${pascalCase(account.name)}AccountData`,
+            loose: `${pascalCase(account.name)}AccountDataArgs`,
+          };
           const link = customAccountData.get(account.name)?.linkNode;
-          return link ? visit(link, self) : visit(account.data, self);
+          const manifest = link ? visit(link, self) : visit(account.data, self);
+          parentName = null;
+          return manifest;
         },
 
         visitAccountData(accountData, { self }) {
-          parentName = {
-            strict: pascalCase(accountData.name),
-            loose: `${pascalCase(accountData.name)}Args`,
-          };
-          const manifest = visit(accountData.struct, self);
-          parentName = null;
-          return manifest;
+          return visit(accountData.struct, self);
         },
 
         visitInstruction(instruction, { self }) {
+          parentName = {
+            strict: `${pascalCase(instruction.name)}InstructionData`,
+            loose: `${pascalCase(instruction.name)}InstructionDataArgs`,
+          };
           const link = customInstructionData.get(instruction.name)?.linkNode;
-          return link ? visit(link, self) : visit(instruction.dataArgs, self);
+          const manifest = link
+            ? visit(link, self)
+            : visit(instruction.dataArgs, self);
+          parentName = null;
+          return manifest;
         },
 
         visitInstructionDataArgs(instructionDataArgs, { self }) {
-          parentName = {
-            strict: pascalCase(instructionDataArgs.name),
-            loose: `${pascalCase(instructionDataArgs.name)}Args`,
-          };
           const struct = structTypeNodeFromInstructionArgumentNodes(
             instructionDataArgs.dataArguments
           );
-          const manifest = visit(struct, self);
-          parentName = null;
-          return manifest;
-        },
-
-        visitInstructionExtraArgs(instructionExtraArgs, { self }) {
-          parentName = {
-            strict: pascalCase(instructionExtraArgs.name),
-            loose: `${pascalCase(instructionExtraArgs.name)}Args`,
-          };
-          const struct = structTypeNodeFromInstructionArgumentNodes(
-            instructionExtraArgs.extraArguments
-          );
-          const manifest = visit(struct, self);
-          parentName = null;
-          return manifest;
+          return visit(struct, self);
         },
 
         visitDefinedType(definedType, { self }) {

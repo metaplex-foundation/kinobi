@@ -23,6 +23,7 @@ export function getTypeManifestVisitor(input: {
   valueNodeVisitor: ValueNodeVisitor;
   customAccountData: ParsedCustomDataOptions;
   customInstructionData: ParsedCustomDataOptions;
+  parentName?: { strict: string; loose: string };
 }) {
   const {
     nameApi,
@@ -30,7 +31,7 @@ export function getTypeManifestVisitor(input: {
     customAccountData,
     customInstructionData,
   } = input;
-  let parentName: { strict: string; loose: string } | null = null;
+  let parentName = input.parentName ?? null;
 
   return pipe(
     staticVisitor(
@@ -56,49 +57,49 @@ export function getTypeManifestVisitor(input: {
     (visitor) =>
       extendVisitor(visitor, {
         visitAccount(account, { self }) {
+          const accountDataName = nameApi.accountDataType(account.name);
+          parentName = {
+            strict: nameApi.dataType(accountDataName),
+            loose: nameApi.dataArgsType(accountDataName),
+          };
           const link = customAccountData.get(account.name)?.linkNode;
-          return link ? visit(link, self) : visit(account.data, self);
+          const manifest = link ? visit(link, self) : visit(account.data, self);
+          parentName = null;
+          return manifest;
         },
 
         visitAccountData(accountData, { self }) {
-          parentName = {
-            strict: nameApi.dataType(accountData.name),
-            loose: nameApi.dataArgsType(accountData.name),
-          };
-          const manifest = visit(accountData.struct, self);
-          parentName = null;
-          return manifest;
+          return visit(accountData.struct, self);
         },
 
         visitInstruction(instruction, { self }) {
+          const instructionDataName = nameApi.instructionDataType(
+            instruction.name
+          );
+          parentName = {
+            strict: nameApi.dataType(instructionDataName),
+            loose: nameApi.dataArgsType(instructionDataName),
+          };
           const link = customInstructionData.get(instruction.name)?.linkNode;
-          return link ? visit(link, self) : visit(instruction.dataArgs, self);
+          const manifest = link
+            ? visit(link, self)
+            : visit(instruction.dataArgs, self);
+          parentName = null;
+          return manifest;
         },
 
         visitInstructionDataArgs(instructionDataArgs, { self }) {
-          parentName = {
-            strict: nameApi.dataType(instructionDataArgs.name),
-            loose: nameApi.dataArgsType(instructionDataArgs.name),
-          };
           const struct = structTypeNodeFromInstructionArgumentNodes(
             instructionDataArgs.dataArguments
           );
-          const manifest = visit(struct, self);
-          parentName = null;
-          return manifest;
+          return visit(struct, self);
         },
 
         visitInstructionExtraArgs(instructionExtraArgs, { self }) {
-          parentName = {
-            strict: nameApi.dataType(instructionExtraArgs.name),
-            loose: nameApi.dataArgsType(instructionExtraArgs.name),
-          };
           const struct = structTypeNodeFromInstructionArgumentNodes(
             instructionExtraArgs.extraArguments
           );
-          const manifest = visit(struct, self);
-          parentName = null;
-          return manifest;
+          return visit(struct, self);
         },
 
         visitDefinedType(definedType, { self }) {

@@ -126,8 +126,8 @@ export function getValidatorBagVisitor(): Visitor<ValidatorBag> {
           const bag = new ValidatorBag();
           const camelCaseName = camelCase(node.name);
           const pascalCaseName = pascalCase(node.name);
-          const pascalCaseData = pascalCase(node.dataArgs.name);
-          const pascalCaseExtra = pascalCase(node.extraArgs.name);
+          const pascalCaseData = `${pascalCaseName}InstructionData`;
+          const pascalCaseExtra = `${pascalCaseName}InstructionExtra`;
           if (!node.internal) {
             bag.mergeWith([
               checkExportConflicts(node, {

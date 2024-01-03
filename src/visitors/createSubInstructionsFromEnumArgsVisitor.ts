@@ -4,7 +4,6 @@ import {
   assertIsNode,
   instructionArgumentNode,
   instructionDataArgsNode,
-  instructionExtraArgsNode,
   instructionNode,
   isNode,
   numberTypeNode,
@@ -97,13 +96,9 @@ export function createSubInstructionsFromEnumArgsVisitor(
                   name: subName,
                   dataArgs: instructionDataArgsNode({
                     ...node.dataArgs,
-                    name: `${subName}InstructionData`,
                     dataArguments: flattenInstructionArguments(subFields),
                   }),
-                  extraArgs: instructionExtraArgsNode({
-                    ...node.extraArgs,
-                    name: `${subName}InstructionExtra`,
-                  }),
+                  extraArgs: node.extraArgs,
                 });
               }
             );

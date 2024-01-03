@@ -73,7 +73,6 @@ export function instructionNode(input: InstructionNodeInput): InstructionNode {
     extraArgs:
       input.extraArgs ??
       instructionExtraArgsNode({
-        name: `${name}InstructionExtra`,
         extraArguments: [],
       }),
     subInstructions: input.subInstructions ?? [],
@@ -115,7 +114,6 @@ export function instructionNodeFromIdl(
       instructionAccountNodeFromIdl(account)
     ),
     dataArgs: instructionDataArgsNode({
-      name: `${name}InstructionData`,
       dataArguments,
     }),
     optionalAccountStrategy: idl.legacyOptionalAccountsStrategy

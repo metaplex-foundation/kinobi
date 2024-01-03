@@ -53,7 +53,7 @@ import {
   getTypeWithCodecFragment,
 } from './fragments';
 import {
-  getTypeManifestVisitor,
+  getTypeManifestVisitor as baseGetTypeManifestVisitor,
   TypeManifestVisitor,
 } from './getTypeManifestVisitor';
 import { ImportMap } from './ImportMap';
@@ -135,12 +135,18 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
     linkables,
     nonScalarEnums,
   });
-  const typeManifestVisitor = getTypeManifestVisitor({
-    nameApi,
-    valueNodeVisitor,
-    customAccountData,
-    customInstructionData,
-  });
+  const getTypeManifestVisitor = (parentName?: {
+    strict: string;
+    loose: string;
+  }) =>
+    baseGetTypeManifestVisitor({
+      nameApi,
+      valueNodeVisitor,
+      customAccountData,
+      customInstructionData,
+      parentName,
+    });
+  const typeManifestVisitor = getTypeManifestVisitor();
   const resolvedInstructionInputVisitor = getResolvedInstructionInputsVisitor();
 
   const globalScope: GlobalFragmentScope = {
@@ -371,13 +377,20 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             throw new Error('Instruction must be visited inside a program.');
           }
 
+          const instructionExtraName = nameApi.instructionExtraType(node.name);
           const scope = {
             ...globalScope,
             instructionNode: node,
             programNode: program,
             renamedArgs: getRenamedArgsMap(node),
             dataArgsManifest: visit(node, typeManifestVisitor),
-            extraArgsManifest: visit(node.extraArgs, typeManifestVisitor),
+            extraArgsManifest: visit(
+              node.extraArgs,
+              getTypeManifestVisitor({
+                strict: nameApi.dataType(instructionExtraName),
+                loose: nameApi.dataArgsType(instructionExtraName),
+              })
+            ),
             resolvedInputs: visit(node, resolvedInstructionInputVisitor),
           };
 

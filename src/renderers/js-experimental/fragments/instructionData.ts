@@ -19,8 +19,9 @@ export function getInstructionDataFragment(
     return fragment('');
   }
 
+  const instructionDataName = nameApi.instructionDataType(instructionNode.name);
   return getTypeWithCodecFragment({
-    name: instructionNode.dataArgs.name,
+    name: instructionDataName,
     manifest: dataArgsManifest,
     nameApi,
   });

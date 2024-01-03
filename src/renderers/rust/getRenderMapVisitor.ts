@@ -223,7 +223,9 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
 
           node.dataArgs.dataArguments.forEach((argument) => {
             typeManifestVisitor.setParentName(
-              pascalCase(node.dataArgs.name) + pascalCase(argument.name)
+              `${pascalCase(node.name)}InstructionData${pascalCase(
+                argument.name
+              )}`
             );
             typeManifestVisitor.setNestedStruct(true);
             const manifest = visit(argument.type, typeManifestVisitor);

@@ -12,6 +12,7 @@ import {
   isNode,
   isNodeFilter,
   ProgramNode,
+  structTypeNodeFromInstructionArgumentNodes,
 } from '../../nodes';
 import {
   camelCase,
@@ -41,7 +42,7 @@ import {
   getDefinedTypeNodesToExtract,
   parseCustomDataOptions,
 } from './customDataHelpers';
-import { getTypeManifestVisitor } from './getTypeManifestVisitor';
+import { getTypeManifestVisitor as baseGetTypeManifestVisitor } from './getTypeManifestVisitor';
 import { JavaScriptContextMap } from './JavaScriptContextMap';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 import { renderInstructionDefaults } from './renderInstructionDefaults';
@@ -109,11 +110,17 @@ export function getRenderMapVisitor(
     linkables,
     nonScalarEnums,
   });
-  const typeManifestVisitor = getTypeManifestVisitor(
-    valueNodeVisitor,
-    customAccountData,
-    customInstructionData
-  );
+  const getTypeManifestVisitor = (parentName?: {
+    strict: string;
+    loose: string;
+  }) =>
+    baseGetTypeManifestVisitor({
+      valueNodeVisitor,
+      customAccountData,
+      customInstructionData,
+      parentName,
+    });
+  const typeManifestVisitor = getTypeManifestVisitor();
   const resolvedInstructionInputVisitor = getResolvedInstructionInputsVisitor();
 
   function getInstructionAccountType(
@@ -543,7 +550,14 @@ export function getRenderMapVisitor(
           }
 
           // Extra args.
-          const extraArgManifest = visit(node.extraArgs, typeManifestVisitor);
+          const extraArgStruct = structTypeNodeFromInstructionArgumentNodes(
+            node.extraArgs.extraArguments
+          );
+          const visitor = getTypeManifestVisitor({
+            strict: `${node.name}InstructionExtra`,
+            loose: `${node.name}InstructionExtraArgs`,
+          });
+          const extraArgManifest = visit(extraArgStruct, visitor);
           imports.mergeWith(extraArgManifest.looseImports);
 
           // Arg defaults.

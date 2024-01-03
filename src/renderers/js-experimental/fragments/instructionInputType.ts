@@ -93,13 +93,17 @@ export function getInstructionInputTypeFragment(
       },
     ];
   };
+  const instructionDataName = nameApi.instructionDataType(instructionNode.name);
+  const instructionExtraName = nameApi.instructionExtraType(
+    instructionNode.name
+  );
   const dataArgsType = customData
     ? nameApi.dataArgsType(customData.importAs)
-    : nameApi.dataArgsType(instructionNode.dataArgs.name);
+    : nameApi.dataArgsType(instructionDataName);
   const dataArgs = customData
     ? []
     : instructionNode.dataArgs.dataArguments.flatMap(resolveArg);
-  const extraArgsType = nameApi.dataArgsType(instructionNode.extraArgs.name);
+  const extraArgsType = nameApi.dataArgsType(instructionExtraName);
   const extraArgs =
     instructionNode.extraArgs.extraArguments.flatMap(resolveArg);
 

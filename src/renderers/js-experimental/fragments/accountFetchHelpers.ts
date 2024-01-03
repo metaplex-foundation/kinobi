@@ -10,9 +10,10 @@ export function getAccountFetchHelpersFragment(
   }
 ): Fragment {
   const { accountNode, typeManifest, nameApi, customAccountData } = scope;
+  const accountDataName = nameApi.accountDataType(accountNode.name);
   const decoderFunctionFragment = customAccountData.has(accountNode.name)
     ? typeManifest.decoder.clone()
-    : fragment(`${nameApi.decoderFunction(accountNode.data.name)}()`);
+    : fragment(`${nameApi.decoderFunction(accountDataName)}()`);
 
   return fragmentFromTemplate('accountFetchHelpers.njk', {
     decoderFunction: decoderFunctionFragment.render,

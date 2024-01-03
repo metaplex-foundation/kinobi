@@ -39,12 +39,7 @@ export function accountNode(input: AccountNodeInput): AccountNode {
   }
   return {
     kind: 'accountNode',
-    data:
-      input.data ??
-      accountDataNode({
-        name: `${mainCase(input.name)}AccountData`,
-        struct: structTypeNode([]),
-      }),
+    data: input.data ?? accountDataNode({ struct: structTypeNode([]) }),
     pda: input.pda,
     name: mainCase(input.name),
     idlName: input.idlName ?? input.name,
@@ -64,7 +59,6 @@ export function accountNodeFromIdl(idl: Partial<IdlAccount>): AccountNode {
   const hasSeeds = (idl.seeds ?? []).length > 0;
   return accountNode({
     name,
-    data: accountDataNode({ name: `${name}AccountData`, struct }),
     pda: hasSeeds ? pdaLinkNode(name) : undefined,
     idlName,
     docs: idl.docs ?? [],

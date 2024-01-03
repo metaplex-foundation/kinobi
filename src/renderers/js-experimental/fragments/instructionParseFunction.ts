@@ -33,14 +33,15 @@ export function getInstructionParseFunctionFragment(
     return fragment('');
   }
 
+  const instructionDataName = nameApi.instructionDataType(instructionNode.name);
   const dataTypeFragment = fragment(
     customData
       ? dataArgsManifest.strictType.render
-      : nameApi.dataType(instructionNode.dataArgs.name)
+      : nameApi.dataType(instructionDataName)
   );
   const decoderFunction = customData
     ? dataArgsManifest.decoder.render
-    : `${nameApi.decoderFunction(instructionNode.dataArgs.name)}()`;
+    : `${nameApi.decoderFunction(instructionDataName)}()`;
   if (customData) {
     dataTypeFragment.mergeImportsWith(
       dataArgsManifest.strictType,

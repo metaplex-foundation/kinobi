@@ -12,17 +12,18 @@ export function getAccountTypeFragment(
 ): Fragment {
   const { accountNode, typeManifest, nameApi, customAccountData } = scope;
   const customData = customAccountData.get(accountNode.name);
+  const accountDataName = nameApi.accountDataType(accountNode.name);
   const typeWithCodecFragment = customData
     ? fragment('')
     : getTypeWithCodecFragment({
-        name: accountNode.data.name,
+        name: accountDataName,
         manifest: typeManifest,
         nameApi,
       });
 
   const dataNameFragment = customData
     ? typeManifest.strictType.clone()
-    : fragment(nameApi.dataType(accountNode.data.name));
+    : fragment(nameApi.dataType(accountDataName));
 
   return fragmentFromTemplate('accountType.njk', {
     accountType: nameApi.accountType(accountNode.name),

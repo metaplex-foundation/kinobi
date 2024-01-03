@@ -14,9 +14,12 @@ export function getInstructionExtraArgsFragment(
     return fragment('');
   }
 
+  const instructionExtraName = nameApi.instructionExtraType(
+    instructionNode.name
+  );
   return fragmentFromTemplate('instructionExtraArgs.njk', {
-    strictName: nameApi.dataType(instructionNode.extraArgs.name),
-    looseName: nameApi.dataArgsType(instructionNode.extraArgs.name),
+    strictName: nameApi.dataType(instructionExtraName),
+    looseName: nameApi.dataArgsType(instructionExtraName),
     manifest: extraArgsManifest,
   }).mergeImportsWith(extraArgsManifest.looseType);
 }

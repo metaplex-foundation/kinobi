@@ -30,7 +30,7 @@ export type NameTransformerKey =
   | 'pdaSeedsType'
   | 'pdaFindFunction'
   | 'accountType'
-  // | 'accountData'
+  | 'accountDataType'
   | 'accountDecodeFunction'
   | 'accountFetchFunction'
   | 'accountFetchAllFunction'
@@ -47,7 +47,8 @@ export type NameTransformerKey =
   | 'instructionSyncInputWithSignersType'
   | 'instructionType'
   | 'instructionWithSignersType'
-  // | 'instructionData'
+  | 'instructionDataType'
+  | 'instructionExtraType'
   | 'instructionAsyncFunction'
   | 'instructionSyncFunction'
   | 'instructionRawFunction'
@@ -92,7 +93,7 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
   pdaSeedsType: (name) => `${pascalCase(name)}Seeds`,
   pdaFindFunction: (name) => `find${pascalCase(name)}Pda`,
   accountType: (name) => `${pascalCase(name)}`,
-  // accountData: (name) => `${pascalCase(name)}AccountData`,
+  accountDataType: (name) => `${pascalCase(name)}AccountData`,
   accountDecodeFunction: (name) => `decode${pascalCase(name)}`,
   accountFetchFunction: (name) => `fetch${pascalCase(name)}`,
   accountFetchAllFunction: (name) => `fetchAll${pascalCase(name)}`,
@@ -113,7 +114,8 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
   instructionType: (name) => `${pascalCase(name)}Instruction`,
   instructionWithSignersType: (name) =>
     `${pascalCase(name)}InstructionWithSigners`,
-  // instructionData: (name) => `${pascalCase(name)}InstructionData`,
+  instructionDataType: (name) => `${pascalCase(name)}InstructionData`,
+  instructionExtraType: (name) => `${pascalCase(name)}InstructionExtra`,
   instructionAsyncFunction: (name) => `get${pascalCase(name)}InstructionAsync`,
   instructionSyncFunction: (name) => `get${pascalCase(name)}Instruction`,
   instructionRawFunction: (name) => `get${pascalCase(name)}InstructionRaw`,
