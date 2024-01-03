@@ -2,6 +2,7 @@ import {
   ProgramNode,
   accountNode,
   arrayTypeNode,
+  fieldDiscriminatorNode,
   fixedSizeNode,
   instructionArgumentNode,
   instructionNode,
@@ -10,7 +11,6 @@ import {
   structTypeNode,
 } from '../nodes';
 import {
-  fieldAccountDiscriminator,
   getAnchorAccountDiscriminator,
   getAnchorInstructionDiscriminator,
   pipe,
@@ -49,7 +49,10 @@ export function setAnchorDiscriminatorsVisitor() {
 
           return accountNode({
             ...node,
-            discriminator: fieldAccountDiscriminator('discriminator'),
+            discriminators: [
+              fieldDiscriminatorNode('discriminator'),
+              ...(node.discriminators ?? []),
+            ],
             data: structTypeNode([discriminatorArgument, ...node.data.fields]),
           });
         },

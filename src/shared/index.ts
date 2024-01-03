@@ -1,4 +1,3 @@
-export * from './AccountDiscriminator';
 export * from './AnchorDiscriminator';
 export * from './GpaField';
 export * from './ImportFrom';

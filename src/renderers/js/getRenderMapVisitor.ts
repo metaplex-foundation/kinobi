@@ -4,6 +4,7 @@ import {
   Options as PrettierOptions,
 } from 'prettier';
 import {
+  FieldDiscriminatorNode,
   getAllAccounts,
   getAllDefinedTypes,
   getAllInstructionsWithSubs,
@@ -12,6 +13,7 @@ import {
   isNode,
   isNodeFilter,
   ProgramNode,
+  SizeDiscriminatorNode,
   structTypeNodeFromInstructionArgumentNodes,
   VALUE_NODES,
 } from '../../nodes';
@@ -315,12 +317,15 @@ export function getRenderMapVisitor(
             .addAlias('umi', 'publicKey', 'toPublicKey');
 
           // Discriminator.
-          const { discriminator } = node;
+          const discriminator =
+            (node.discriminators ?? []).find(
+              (d) => !isNode(d, 'byteDiscriminatorNode')
+            ) ?? null;
           let resolvedDiscriminator:
-            | { kind: 'size'; value: string }
-            | { kind: 'field'; name: string; value: string }
+            | SizeDiscriminatorNode
+            | (FieldDiscriminatorNode & { value: string })
             | null = null;
-          if (discriminator?.kind === 'field') {
+          if (isNode(discriminator, 'fieldDiscriminatorNode')) {
             const discriminatorField = node.data.fields.find(
               (f) => f.name === discriminator.name
             );
@@ -330,16 +335,12 @@ export function getRenderMapVisitor(
             if (discriminatorValue) {
               imports.mergeWith(discriminatorValue.imports);
               resolvedDiscriminator = {
-                kind: 'field',
-                name: discriminator.name,
+                ...discriminator,
                 value: discriminatorValue.render,
               };
             }
-          } else if (discriminator?.kind === 'size') {
-            resolvedDiscriminator =
-              node.size !== undefined
-                ? { kind: 'size', value: `${node.size}` }
-                : null;
+          } else if (isNode(discriminator, 'sizeDiscriminatorNode')) {
+            resolvedDiscriminator = discriminator;
           }
 
           // GPA Fields.

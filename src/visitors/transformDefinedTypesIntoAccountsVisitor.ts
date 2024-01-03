@@ -23,7 +23,7 @@ export function transformDefinedTypesIntoAccountsVisitor(
             ...node,
             data: node.type,
             size: undefined,
-            discriminator: undefined,
+            discriminators: [],
           });
         });
 

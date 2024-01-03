@@ -69,10 +69,10 @@ export function get{{ account.name | pascalCase }}GpaBuilder(context: Pick<Conte
   return gpaBuilder(context, programId)
     .registerFields<{{ gpaFields.type }}>({{ gpaFields.argument }})
     .deserializeUsing<{{ account.name | pascalCase }}>((account) => deserialize{{ account.name | pascalCase }}(account))
-    {%- if discriminator.kind === 'field' %}
+    {%- if discriminator.kind === 'fieldDiscriminatorNode' %}
       .whereField('{{ discriminator.name }}', {{ discriminator.value }})
-    {% elif discriminator.kind === 'size' %}
-      .whereSize({{ discriminator.value }})
+    {% elif discriminator.kind === 'sizeDiscriminatorNode' %}
+      .whereSize({{ discriminator.size }})
     {% endif -%}
   ;
 }

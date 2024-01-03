@@ -1,4 +1,4 @@
-import { MainCaseString, mainCase } from 'src/shared';
+import { MainCaseString, mainCase } from '../../shared';
 
 export type FieldDiscriminatorNode = {
   readonly kind: 'fieldDiscriminatorNode';
