@@ -228,7 +228,7 @@ export function getRenderMapVisitor(
             ...getDefinedTypeNodesToExtract(node.accounts, customAccountData),
             ...getDefinedTypeNodesToExtract(
               node.instructions,
-              customAccountData
+              customInstructionData
             ),
           ];
           const renderMap = new RenderMap()
