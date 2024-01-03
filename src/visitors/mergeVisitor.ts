@@ -43,6 +43,7 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
       return merge(node, [
         ...visit(this)(node.data),
         ...(node.pda ? visit(this)(node.pda) : []),
+        ...(node.discriminators ?? []).flatMap(visit(this)),
       ]);
     };
   }
@@ -53,8 +54,10 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
         ...node.accounts.flatMap(visit(this)),
         ...node.arguments.flatMap(visit(this)),
         ...(node.extraArguments ?? []).flatMap(visit(this)),
-        ...(node.subInstructions ?? []).flatMap(visit(this)),
         ...(node.remainingAccounts ?? []).flatMap(visit(this)),
+        ...(node.byteDeltas ?? []).flatMap(visit(this)),
+        ...(node.discriminators ?? []).flatMap(visit(this)),
+        ...(node.subInstructions ?? []).flatMap(visit(this)),
       ]);
     };
   }

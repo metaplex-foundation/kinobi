@@ -1,5 +1,4 @@
-export * from './AccountDiscriminator';
-export * from './AnchorDiscriminator';
+export * from './anchorHelpers';
 export * from './GpaField';
 export * from './ImportFrom';
 export * from './LinkableDictionary';

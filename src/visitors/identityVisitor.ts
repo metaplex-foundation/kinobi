@@ -1,5 +1,6 @@
 import {
   CONDITIONAL_VALUE_BRANCH_NODES,
+  DISCRIMINATOR_NODES,
   ENUM_VARIANT_TYPE_NODES,
   INSTRUCTION_INPUT_VALUE_NODE,
   Node,
@@ -26,6 +27,7 @@ import {
   enumValueNode,
   instructionAccountNode,
   instructionArgumentNode,
+  instructionByteDeltaNode,
   instructionNode,
   instructionRemainingAccountsNode,
   mapEntryValueNode,
@@ -141,11 +143,6 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
                 removeNullAndAssertIsNodeFilter('instructionArgumentNode')
               )
           : undefined,
-        subInstructions: node.subInstructions
-          ? node.subInstructions
-              .map(visit(this))
-              .filter(removeNullAndAssertIsNodeFilter('instructionNode'))
-          : undefined,
         remainingAccounts: node.remainingAccounts
           ? node.remainingAccounts
               .map(visit(this))
@@ -154,6 +151,23 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
                   'instructionRemainingAccountsNode'
                 )
               )
+          : undefined,
+        byteDeltas: node.byteDeltas
+          ? node.byteDeltas
+              .map(visit(this))
+              .filter(
+                removeNullAndAssertIsNodeFilter('instructionByteDeltaNode')
+              )
+          : undefined,
+        discriminators: node.discriminators
+          ? node.discriminators
+              .map(visit(this))
+              .filter(removeNullAndAssertIsNodeFilter(DISCRIMINATOR_NODES))
+          : undefined,
+        subInstructions: node.subInstructions
+          ? node.subInstructions
+              .map(visit(this))
+              .filter(removeNullAndAssertIsNodeFilter('instructionNode'))
           : undefined,
       });
     };
@@ -192,6 +206,22 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
         assertIsNode(value, ['argumentValueNode', 'resolverValueNode']);
         return instructionRemainingAccountsNode(value, { ...node });
       };
+  }
+
+  if (castedNodeKeys.includes('instructionByteDeltaNode')) {
+    visitor.visitInstructionByteDelta = function visitInstructionByteDelta(
+      node
+    ) {
+      const value = visit(this)(node.value);
+      if (value === null) return null;
+      assertIsNode(value, [
+        'numberValueNode',
+        'accountLinkNode',
+        'argumentValueNode',
+        'resolverValueNode',
+      ]);
+      return instructionByteDeltaNode(value, { ...node });
+    };
   }
 
   if (castedNodeKeys.includes('definedTypeNode')) {

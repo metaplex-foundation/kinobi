@@ -1,11 +1,7 @@
 import type { IdlAccount } from '../idl';
-import {
-  AccountDiscriminator,
-  InvalidKinobiTreeError,
-  MainCaseString,
-  mainCase,
-} from '../shared';
+import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
 import { assertIsNode } from './Node';
+import { DiscriminatorNode } from './discriminatorNodes';
 import { PdaLinkNode, pdaLinkNode } from './linkNodes';
 import { StructTypeNode, structTypeNode } from './typeNodes';
 import { createTypeNodeFromIdl } from './typeNodes/TypeNode';
@@ -16,9 +12,7 @@ export type AccountNode = {
   // Children.
   readonly data: StructTypeNode;
   readonly pda?: PdaLinkNode;
-
-  // Children to-be.
-  readonly discriminator?: AccountDiscriminator;
+  readonly discriminators?: DiscriminatorNode[];
 
   // Data.
   readonly name: MainCaseString;
@@ -37,13 +31,17 @@ export function accountNode(input: AccountNodeInput): AccountNode {
   }
   return {
     kind: 'accountNode',
+
+    // Children.
     data: input.data ?? structTypeNode([]),
     pda: input.pda,
+    discriminators: input.discriminators,
+
+    // Data.
     name: mainCase(input.name),
     idlName: input.idlName ?? input.name,
     docs: input.docs ?? [],
     size: input.size,
-    discriminator: input.discriminator,
   };
 }
 

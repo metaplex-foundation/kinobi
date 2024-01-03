@@ -7,6 +7,9 @@ importers:
       '@noble/hashes':
         specifier: ^1.1.5
         version: 1.1.5
+      '@solana/codecs-strings':
+        specifier: 2.0.0-experimental.a157265
+        version: 2.0.0-experimental.a157265(fastestsmallesttextencoderdecoder@1.0.22)
       chalk:
         specifier: ^4.0.0
         version: 4.1.2
@@ -2061,6 +2064,26 @@ packages:
     resolution: {integrity: sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==}
     engines: {node: '>=10'}
     dev: true
+
+  /@solana/codecs-core@2.0.0-experimental.a157265:
+    resolution: {integrity: sha512-78SjZiLWWjAn5sVL92T5W+4LXYG01Vu28tVbtiCWi4QEX21794bW6lMcXbPmbivFPbD8Dje+EHAYADfxYj6RTA==}
+    dev: false
+
+  /@solana/codecs-numbers@2.0.0-experimental.a157265:
+    resolution: {integrity: sha512-Bkp7Y1KyhMsu8tHKxwHDXCnYxEawT0P4kEsIO1Fzs54pxOS1jtwJHo7e4FE8Kv8ZSajUQAnbmQqj5GaIU08h9A==}
+    dependencies:
+      '@solana/codecs-core': 2.0.0-experimental.a157265
+    dev: false
+
+  /@solana/codecs-strings@2.0.0-experimental.a157265(fastestsmallesttextencoderdecoder@1.0.22):
+    resolution: {integrity: sha512-1AypxqrFipI053/EOHZnDDcfKBduLjJdrpkbcqrgWJyciv/7+fMQjkgjbG+C8Vcqx5G8weUesXCcvAhqbdRwMw==}
+    peerDependencies:
+      fastestsmallesttextencoderdecoder: ^1.0.22
+    dependencies:
+      '@solana/codecs-core': 2.0.0-experimental.a157265
+      '@solana/codecs-numbers': 2.0.0-experimental.a157265
+      fastestsmallesttextencoderdecoder: 1.0.22
+    dev: false
 
   /@szmarczak/http-timer@4.0.6:
     resolution: {integrity: sha512-4BAffykYOgO+5nzBWYwE3W90sBgLJoUPRWWcL8wlyiM8IB8ipJz3UMJ9KXQd1RKQXpKp8Tutn80HZtWsu2u76w==}
@@ -4573,6 +4596,10 @@ packages:
   /fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
     dev: true
+
+  /fastestsmallesttextencoderdecoder@1.0.22:
+    resolution: {integrity: sha512-Pb8d48e+oIuY4MaM64Cd7OW1gt4nxCHs7/ddPPZ/Ic3sg8yVGM7O9wDvZ7us6ScaUupzM+pfBolwtYhN1IxBIw==}
+    dev: false
 
   /fastq@1.14.0:
     resolution: {integrity: sha512-eR2D+V9/ExcbF9ls441yIuN6TI2ED1Y2ZcA5BmMtJsOkWOFRJQ0Jt0g1UwqXJJVAb+V+umH5Dfr8oh4EVP7VVg==}

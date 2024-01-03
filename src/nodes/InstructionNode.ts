@@ -14,6 +14,7 @@ import { InstructionRemainingAccountsNode } from './InstructionRemainingAccounts
 import { isNode } from './Node';
 import { ProgramNode } from './ProgramNode';
 import { RootNode } from './RootNode';
+import { DiscriminatorNode } from './discriminatorNodes';
 import { createTypeNodeFromIdl } from './typeNodes/TypeNode';
 import { numberValueNode } from './valueNodes';
 
@@ -24,9 +25,10 @@ export type InstructionNode = {
   readonly accounts: InstructionAccountNode[];
   readonly arguments: InstructionArgumentNode[];
   readonly extraArguments?: InstructionArgumentNode[];
-  readonly subInstructions?: InstructionNode[];
   readonly remainingAccounts?: InstructionRemainingAccountsNode[];
   readonly byteDeltas?: InstructionByteDeltaNode[];
+  readonly discriminators?: DiscriminatorNode[];
+  readonly subInstructions?: InstructionNode[];
 
   // Data.
   readonly name: MainCaseString;
@@ -49,15 +51,20 @@ export function instructionNode(input: InstructionNodeInput): InstructionNode {
   const name = mainCase(input.name);
   return {
     kind: 'instructionNode',
-    name,
+
+    // Children.
     accounts: input.accounts ?? [],
     arguments: input.arguments ?? [],
     extraArguments: input.extraArguments,
-    subInstructions: input.subInstructions,
-    idlName: input.idlName ?? input.name,
-    docs: input.docs ?? [],
     remainingAccounts: input.remainingAccounts,
     byteDeltas: input.byteDeltas,
+    discriminators: input.discriminators,
+    subInstructions: input.subInstructions,
+
+    // Data.
+    name,
+    idlName: input.idlName ?? input.name,
+    docs: input.docs ?? [],
     optionalAccountStrategy: input.optionalAccountStrategy ?? 'programId',
   };
 }

@@ -1,8 +1,8 @@
-import { fieldAccountDiscriminator } from '../shared';
 import {
   ValueNode,
   accountNode,
   assertIsNode,
+  fieldDiscriminatorNode,
   structFieldTypeNode,
   structTypeNode,
 } from '../nodes';
@@ -12,13 +12,13 @@ import {
 } from './bottomUpTransformerVisitor';
 
 export function setAccountDiscriminatorFromFieldVisitor(
-  map: Record<string, { field: string; value: ValueNode }>
+  map: Record<string, { field: string; value: ValueNode; offset?: number }>
 ) {
   return bottomUpTransformerVisitor(
     Object.entries(map).map(
       ([
         selectorStack,
-        { field, value },
+        { field, value, offset },
       ]): BottomUpNodeTransformerWithSelector => {
         const stack = selectorStack.split('.');
         const name = stack.pop();
@@ -39,7 +39,10 @@ export function setAccountDiscriminatorFromFieldVisitor(
             const fieldNode = node.data.fields[fieldIndex];
             return accountNode({
               ...node,
-              discriminator: fieldAccountDiscriminator(field),
+              discriminators: [
+                fieldDiscriminatorNode(field, offset),
+                ...(node.discriminators ?? []),
+              ],
               data: structTypeNode([
                 ...node.data.fields.slice(0, fieldIndex),
                 structFieldTypeNode({
