@@ -461,8 +461,10 @@ export function getRenderMapVisitor(
             isNode(a.defaultValue, 'resolverValueNode')
           );
           const hasByteResolver = node.bytesCreatedOnChain?.kind === 'resolver';
+          const remainingAccounts = node.remainingAccounts?.[0] ?? undefined;
           const hasRemainingAccountsResolver =
-            node.remainingAccounts?.kind === 'resolver';
+            remainingAccounts &&
+            isNode(remainingAccounts.value, 'resolverValueNode');
           const hasResolvers =
             hasArgResolvers ||
             hasAccountResolvers ||
@@ -585,11 +587,10 @@ export function getRenderMapVisitor(
           }
 
           // Remaining accounts.
-          const { remainingAccounts } = node;
-          if (remainingAccounts?.kind === 'resolver') {
+          if (hasRemainingAccountsResolver) {
             imports.add(
-              remainingAccounts.importFrom,
-              camelCase(remainingAccounts.name)
+              remainingAccounts.value.importFrom ?? 'hooked',
+              camelCase(remainingAccounts.value.name)
             );
           }
 

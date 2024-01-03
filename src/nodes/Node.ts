@@ -5,6 +5,7 @@ import type { ErrorNode } from './ErrorNode';
 import type { InstructionAccountNode } from './InstructionAccountNode';
 import type { InstructionArgumentNode } from './InstructionArgumentNode';
 import type { InstructionNode } from './InstructionNode';
+import type { InstructionRemainingAccountsNode } from './InstructionRemainingAccountsNode';
 import type { PdaNode } from './PdaNode';
 import type { ProgramNode } from './ProgramNode';
 import type { RootNode } from './RootNode';
@@ -22,9 +23,10 @@ const REGISTERED_NODES = {
   programNode: {} as ProgramNode,
   pdaNode: {} as PdaNode,
   accountNode: {} as AccountNode,
-  instructionNode: {} as InstructionNode,
   instructionAccountNode: {} as InstructionAccountNode,
   instructionArgumentNode: {} as InstructionArgumentNode,
+  instructionNode: {} as InstructionNode,
+  instructionRemainingAccountsNode: {} as InstructionRemainingAccountsNode,
   errorNode: {} as ErrorNode,
   definedTypeNode: {} as DefinedTypeNode,
 

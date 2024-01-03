@@ -6,7 +6,6 @@ export * from './ImportFrom';
 export * from './LinkableDictionary';
 export * from './NodeSelector';
 export * from './NodeStack';
-export * from './RemainingAccounts';
 export * from './RenderMap';
 export * from './ValidatorBag';
 export * from './errors';

@@ -1,6 +1,5 @@
-// Remaining accounts.
-{% if remainingAccounts.kind === 'arg' %}
-  const remainingAccounts: IAccountMeta[] = args.{{ remainingAccounts.name | camelCase }}.map((address) => ({ address, role: {{ "AccountRole.WRITABLE" if remainingAccounts.isWritable else "AccountRole.READONLY" }} }));
-{% elif remainingAccounts.kind === 'resolver' %}
-  const remainingAccounts: IAccountMeta[] = {{ awaitKeyword }}{{ nameApi.resolverFunction(remainingAccounts.name) }}(resolverScope);
+{% if remainingAccounts.value.kind === 'argumentValueNode' %}
+  args.{{ remainingAccounts.value.name | camelCase }}.map((address) => ({ address, role: {{ "AccountRole.WRITABLE" if remainingAccounts.isWritable else "AccountRole.READONLY" }} }))
+{% elif remainingAccounts.value.kind === 'resolverValueNode' %}
+  {{ awaitKeyword }}{{ nameApi.resolverFunction(remainingAccounts.value.name) }}(resolverScope)
 {% endif %}

@@ -1,4 +1,8 @@
-import { InstructionInputValueNode, InstructionNode } from '../../nodes';
+import {
+  InstructionInputValueNode,
+  InstructionNode,
+  isNode,
+} from '../../nodes';
 import { ResolvedInstructionInput } from '../../visitors';
 
 export function hasAsyncFunction(
@@ -6,17 +10,20 @@ export function hasAsyncFunction(
   resolvedInputs: ResolvedInstructionInput[],
   asyncResolvers: string[]
 ): boolean {
-  const isBytesCreatedOnChainAsync =
+  const hasBytesCreatedOnChainAsync =
     instructionNode.bytesCreatedOnChain?.kind === 'resolver' &&
     asyncResolvers.includes(instructionNode.bytesCreatedOnChain.name);
-  const isRemainingAccountAsync =
-    instructionNode.remainingAccounts?.kind === 'resolver' &&
-    asyncResolvers.includes(instructionNode.remainingAccounts.name);
+  const hasRemainingAccountsAsync = (
+    instructionNode.remainingAccounts ?? []
+  ).some(
+    ({ value }) =>
+      isNode(value, 'resolverValueNode') && asyncResolvers.includes(value.name)
+  );
 
   return (
     hasAsyncDefaultValues(resolvedInputs, asyncResolvers) ||
-    isBytesCreatedOnChainAsync ||
-    isRemainingAccountAsync
+    hasBytesCreatedOnChainAsync ||
+    hasRemainingAccountsAsync
   );
 }
 
