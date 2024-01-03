@@ -252,7 +252,7 @@ const kinobiReconstructed = k.createFromJson(kinobiJson);
 
 kinobiReconstructed.accept(
   k.renderJavaScriptVisitor('./test/packages/js/src/generated', {
-    customAccountData: ['ReservationListV1'],
+    customAccountData: [{ name: 'ReservationListV1', extract: true }],
     customInstructionData: ['CreateReservationList'],
   })
 );
@@ -262,7 +262,7 @@ kinobiReconstructed.accept(
     './test/packages/js-experimental/src/generated',
     {
       asyncResolvers: ['resolveMasterEditionFromTokenStandard'],
-      customAccountData: ['ReservationListV1'],
+      customAccountData: [{ name: 'ReservationListV1', extract: true }],
       customInstructionData: ['CreateReservationList'],
     }
   )
