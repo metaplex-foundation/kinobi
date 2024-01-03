@@ -48,7 +48,7 @@ export const parseCustomDataOptions = (
           importAs,
           importFrom,
           extractAs: options.extractAs ? mainCase(options.extractAs) : importAs,
-          extract: options.extract ?? true,
+          extract: options.extract ?? false,
           linkNode: definedTypeLinkNode(importAs, importFrom),
         },
       ];
