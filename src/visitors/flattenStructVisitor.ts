@@ -1,4 +1,3 @@
-import { logWarn } from '../shared/logs';
 import {
   Node,
   StructFieldTypeNode,
@@ -8,6 +7,7 @@ import {
   structTypeNode,
 } from '../nodes';
 import { camelCase } from '../shared';
+import { logWarn } from '../shared/logs';
 import {
   BottomUpNodeTransformerWithSelector,
   bottomUpTransformerVisitor,
@@ -36,17 +36,12 @@ export const flattenStruct = (
   const camelCaseOptions = options === '*' ? options : options.map(camelCase);
   const shouldInline = (field: StructFieldTypeNode): boolean =>
     options === '*' || camelCaseOptions.includes(camelCase(field.name));
-  const inlinedFields = node.fields.reduce<StructFieldTypeNode[]>(
-    (all, one) => {
-      if (isNode(one.type, 'structTypeNode') && shouldInline(one)) {
-        all.push(...one.type.fields);
-      } else {
-        all.push(one);
-      }
-      return all;
-    },
-    []
-  );
+  const inlinedFields = node.fields.flatMap((field) => {
+    if (isNode(field.type, 'structTypeNode') && shouldInline(field)) {
+      return field.type.fields;
+    }
+    return [field];
+  });
 
   const inlinedFieldsNames = inlinedFields.map((arg) => arg.name);
   const duplicates = inlinedFieldsNames.filter((e, i, a) => a.indexOf(e) !== i);

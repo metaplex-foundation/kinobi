@@ -1,7 +1,6 @@
 import {
   InstructionAccountNode,
   InstructionNode,
-  VALUE_NODES,
   instructionNode,
   isNode,
 } from '../nodes';
@@ -199,15 +198,15 @@ export function setInstructionAccountDefaultValuesVisitor(
           const instructionAccounts = node.accounts.map(
             (account): InstructionAccountNode => {
               const rule = matchRule(node, account);
-              if (!rule) {
-                return account;
-              }
+              if (!rule) return account;
+
               if (
                 (rule.ignoreIfOptional ?? false) &&
                 (account.isOptional || !!account.defaultValue)
               ) {
                 return account;
               }
+
               if (isNode(rule.defaultValue, 'pdaValueNode')) {
                 const foundPda = linkables.get(rule.defaultValue.pda);
                 const defaultValue = {
@@ -219,30 +218,9 @@ export function setInstructionAccountDefaultValuesVisitor(
                       )
                     : rule.defaultValue.seeds,
                 };
-
-                if (rule.instruction) {
-                  return { ...account, defaultValue };
-                }
-
-                const allSeedsAreValid = defaultValue.seeds.every((seed) => {
-                  if (isNode(seed.value, VALUE_NODES)) return true;
-                  if (isNode(seed.value, 'accountValueNode')) {
-                    return node.accounts.some(
-                      (a) => a.name === mainCase(seed.name)
-                    );
-                  }
-                  if (node.dataArgs.link) return true;
-                  return node.dataArgs.struct.fields.some(
-                    (f) => f.name === mainCase(seed.name)
-                  );
-                });
-
-                if (allSeedsAreValid) {
-                  return { ...account, defaultValue };
-                }
-
-                return account;
+                return { ...account, defaultValue };
               }
+
               return { ...account, defaultValue: rule.defaultValue };
             }
           );

@@ -1,13 +1,12 @@
 import test from 'ava';
 import {
-  accountDataNode,
   accountNode,
+  definedTypeLinkNode,
   definedTypeNode,
   enumTypeNode,
   getDefinedTypeHistogramVisitor,
-  instructionDataArgsNode,
+  instructionArgumentNode,
   instructionNode,
-  definedTypeLinkNode,
   programNode,
   structFieldTypeNode,
   structTypeNode,
@@ -33,34 +32,28 @@ test('it counts the amount of times defined types are used within the tree', (t)
     accounts: [
       accountNode({
         name: 'myAccount',
-        data: accountDataNode({
-          name: 'myAccountData',
-          struct: structTypeNode([
-            structFieldTypeNode({
-              name: 'field1',
-              type: definedTypeLinkNode('myStruct'),
-            }),
-            structFieldTypeNode({
-              name: 'field2',
-              type: definedTypeLinkNode('myEnum'),
-            }),
-          ]),
-        }),
+        data: structTypeNode([
+          structFieldTypeNode({
+            name: 'field1',
+            type: definedTypeLinkNode('myStruct'),
+          }),
+          structFieldTypeNode({
+            name: 'field2',
+            type: definedTypeLinkNode('myEnum'),
+          }),
+        ]),
       }),
     ],
     instructions: [
       instructionNode({
         name: 'myInstruction',
         accounts: [],
-        dataArgs: instructionDataArgsNode({
-          name: 'myInstructionData',
-          struct: structTypeNode([
-            structFieldTypeNode({
-              name: 'arg1',
-              type: definedTypeLinkNode('myStruct'),
-            }),
-          ]),
-        }),
+        arguments: [
+          instructionArgumentNode({
+            name: 'arg1',
+            type: definedTypeLinkNode('myStruct'),
+          }),
+        ],
       }),
     ],
     errors: [],

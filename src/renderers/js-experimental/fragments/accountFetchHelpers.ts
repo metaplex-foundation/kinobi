@@ -4,15 +4,16 @@ import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getAccountFetchHelpersFragment(
-  scope: Pick<GlobalFragmentScope, 'nameApi'> & {
+  scope: Pick<GlobalFragmentScope, 'nameApi' | 'customAccountData'> & {
     accountNode: AccountNode;
     typeManifest: TypeManifest;
   }
 ): Fragment {
-  const { accountNode, typeManifest, nameApi } = scope;
-  const decoderFunctionFragment = accountNode.data.link
+  const { accountNode, typeManifest, nameApi, customAccountData } = scope;
+  const accountDataName = nameApi.accountDataType(accountNode.name);
+  const decoderFunctionFragment = customAccountData.has(accountNode.name)
     ? typeManifest.decoder.clone()
-    : fragment(`${nameApi.decoderFunction(accountNode.data.name)}()`);
+    : fragment(`${nameApi.decoderFunction(accountDataName)}()`);
 
   return fragmentFromTemplate('accountFetchHelpers.njk', {
     decoderFunction: decoderFunctionFragment.render,

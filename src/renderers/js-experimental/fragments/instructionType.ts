@@ -6,20 +6,29 @@ import { getInstructionAccountMetaFragment } from './instructionAccountMeta';
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
 
 export function getInstructionTypeFragment(
-  scope: Pick<GlobalFragmentScope, 'nameApi' | 'linkables'> & {
+  scope: Pick<
+    GlobalFragmentScope,
+    'nameApi' | 'linkables' | 'customInstructionData'
+  > & {
     instructionNode: InstructionNode;
     programNode: ProgramNode;
     withSigners: boolean;
   }
 ): Fragment {
-  const { instructionNode, programNode, withSigners, nameApi } = scope;
+  const {
+    instructionNode,
+    programNode,
+    withSigners,
+    nameApi,
+    customInstructionData,
+  } = scope;
   const hasAccounts = instructionNode.accounts.length > 0;
-  const hasData =
-    !!instructionNode.dataArgs.link ||
-    instructionNode.dataArgs.struct.fields.length > 0;
-  const dataType = instructionNode.dataArgs.link
-    ? pascalCase(instructionNode.dataArgs.link.name)
-    : pascalCase(instructionNode.dataArgs.name);
+  const customData = customInstructionData.get(instructionNode.name);
+  const hasData = !!customData || instructionNode.arguments.length > 0;
+  const instructionDataName = nameApi.instructionDataType(instructionNode.name);
+  const dataType = customData
+    ? pascalCase(customData.importAs)
+    : pascalCase(instructionDataName);
   const accountTypeParamsFragment = mergeFragments(
     instructionNode.accounts.map((account) =>
       getInstructionAccountTypeParamFragment({

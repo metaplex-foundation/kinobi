@@ -19,7 +19,7 @@ import { getInstructionRemainingAccountsFragment } from './instructionRemainingA
 export function getInstructionFunctionHighLevelFragment(
   scope: Pick<
     GlobalFragmentScope,
-    'nameApi' | 'asyncResolvers' | 'valueNodeVisitor'
+    'nameApi' | 'asyncResolvers' | 'valueNodeVisitor' | 'customInstructionData'
   > & {
     instructionNode: InstructionNode;
     programNode: ProgramNode;
@@ -39,6 +39,7 @@ export function getInstructionFunctionHighLevelFragment(
     dataArgsManifest,
     asyncResolvers,
     nameApi,
+    customInstructionData,
   } = scope;
   if (
     useAsync &&
@@ -47,24 +48,25 @@ export function getInstructionFunctionHighLevelFragment(
     return fragment('');
   }
 
+  const customData = customInstructionData.get(instructionNode.name);
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasDataArgs =
-    !!instructionNode.dataArgs.link ||
-    instructionNode.dataArgs.struct.fields.filter(
+    !!customData ||
+    instructionNode.arguments.filter(
       (field) => !field.defaultValue || field.defaultValueStrategy !== 'omitted'
     ).length > 0;
   const hasExtraArgs =
-    !!instructionNode.extraArgs.link ||
-    instructionNode.extraArgs.struct.fields.filter(
+    (instructionNode.extraArguments ?? []).filter(
       (field) => !field.defaultValue || field.defaultValueStrategy !== 'omitted'
     ).length > 0;
   const hasAnyArgs = hasDataArgs || hasExtraArgs;
+  const instructionDataName = nameApi.instructionDataType(instructionNode.name);
   const argsTypeFragment = fragment(
-    instructionNode.dataArgs.link
+    customData
       ? dataArgsManifest.looseType.render
-      : nameApi.dataArgsType(instructionNode.dataArgs.name)
+      : nameApi.dataArgsType(instructionDataName)
   );
-  if (instructionNode.dataArgs.link) {
+  if (customData) {
     argsTypeFragment.mergeImportsWith(dataArgsManifest.looseType);
   }
 

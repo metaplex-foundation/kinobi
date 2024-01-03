@@ -47,42 +47,30 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
     };
   }
 
-  if (castedNodeKeys.includes('accountDataNode')) {
-    visitor.visitAccountData = function visitAccountData(node) {
-      return merge(node, [
-        ...visit(this)(node.struct),
-        ...(node.link ? visit(this)(node.link) : []),
-      ]);
-    };
-  }
-
   if (castedNodeKeys.includes('instructionNode')) {
     visitor.visitInstruction = function visitInstruction(node) {
       return merge(node, [
         ...node.accounts.flatMap(visit(this)),
-        ...visit(this)(node.dataArgs),
-        ...visit(this)(node.extraArgs),
-        ...node.subInstructions.flatMap(visit(this)),
+        ...node.arguments.flatMap(visit(this)),
+        ...(node.extraArguments ?? []).flatMap(visit(this)),
+        ...(node.subInstructions ?? []).flatMap(visit(this)),
       ]);
     };
   }
 
-  if (castedNodeKeys.includes('instructionDataArgsNode')) {
-    visitor.visitInstructionDataArgs = function visitInstructionDataArgs(node) {
+  if (castedNodeKeys.includes('instructionAccountNode')) {
+    visitor.visitInstructionAccount = function visitInstructionAccount(node) {
       return merge(node, [
-        ...visit(this)(node.struct),
-        ...(node.link ? visit(this)(node.link) : []),
+        ...(node.defaultValue ? visit(this)(node.defaultValue) : []),
       ]);
     };
   }
 
-  if (castedNodeKeys.includes('instructionExtraArgsNode')) {
-    visitor.visitInstructionExtraArgs = function visitInstructionExtraArgs(
-      node
-    ) {
+  if (castedNodeKeys.includes('instructionArgumentNode')) {
+    visitor.visitInstructionArgument = function visitInstructionArgument(node) {
       return merge(node, [
-        ...visit(this)(node.struct),
-        ...(node.link ? visit(this)(node.link) : []),
+        ...visit(this)(node.type),
+        ...(node.defaultValue ? visit(this)(node.defaultValue) : []),
       ]);
     };
   }

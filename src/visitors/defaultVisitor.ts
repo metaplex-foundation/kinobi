@@ -1,6 +1,6 @@
 import { Node, RootNode, assertIsNode } from '../nodes';
 import { deduplicateIdenticalDefinedTypesVisitor } from './deduplicateIdenticalDefinedTypesVisitor';
-import { flattenInstructionArgsStructVisitor } from './flattenInstructionArgsStructVisitor';
+import { flattenInstructionDataArgumentsVisitor } from './flattenInstructionDataArgumentsVisitor';
 import { setAnchorDiscriminatorsVisitor } from './setAnchorDiscriminatorsVisitor';
 import { setFixedAccountSizesVisitor } from './setFixedAccountSizesVisitor';
 import {
@@ -35,7 +35,7 @@ export function defaultVisitor() {
       )
     );
     updateRoot(unwrapInstructionArgsDefinedTypesVisitor());
-    updateRoot(flattenInstructionArgsStructVisitor());
+    updateRoot(flattenInstructionDataArgumentsVisitor());
 
     // Extras.
     updateRoot(transformU8ArraysToBytesVisitor());

@@ -5,11 +5,13 @@ import {
   isScalarEnum,
   structFieldTypeNode,
   structTypeNode,
+  structTypeNodeFromInstructionArgumentNodes,
 } from '../../nodes';
 import { camelCase, pascalCase, pipe } from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
 import { ImportMap } from './ImportMap';
 import { TypeManifest, mergeManifests } from './TypeManifest';
+import { ParsedCustomDataOptions } from './customDataHelpers';
 import { Fragment, fragment } from './fragments';
 import { NameApi } from './nameTransformers';
 import { ValueNodeVisitor } from './renderValueNodeVisitor';
@@ -19,9 +21,17 @@ export type TypeManifestVisitor = ReturnType<typeof getTypeManifestVisitor>;
 export function getTypeManifestVisitor(input: {
   nameApi: NameApi;
   valueNodeVisitor: ValueNodeVisitor;
+  customAccountData: ParsedCustomDataOptions;
+  customInstructionData: ParsedCustomDataOptions;
+  parentName?: { strict: string; loose: string };
 }) {
-  const { nameApi, valueNodeVisitor } = input;
-  let parentName: { strict: string; loose: string } | null = null;
+  const {
+    nameApi,
+    valueNodeVisitor,
+    customAccountData,
+    customInstructionData,
+  } = input;
+  let parentName = input.parentName ?? null;
 
   return pipe(
     staticVisitor(
@@ -38,49 +48,36 @@ export function getTypeManifestVisitor(input: {
         'definedTypeLinkNode',
         'definedTypeNode',
         'accountNode',
-        'accountDataNode',
-        'instructionDataArgsNode',
-        'instructionExtraArgsNode',
+        'instructionNode',
       ]
     ),
     (visitor) =>
       extendVisitor(visitor, {
         visitAccount(account, { self }) {
-          return visit(account.data, self);
-        },
-
-        visitAccountData(accountData, { self }) {
+          const accountDataName = nameApi.accountDataType(account.name);
           parentName = {
-            strict: nameApi.dataType(accountData.name),
-            loose: nameApi.dataArgsType(accountData.name),
+            strict: nameApi.dataType(accountDataName),
+            loose: nameApi.dataArgsType(accountDataName),
           };
-          const manifest = accountData.link
-            ? visit(accountData.link, self)
-            : visit(accountData.struct, self);
+          const link = customAccountData.get(account.name)?.linkNode;
+          const manifest = link ? visit(link, self) : visit(account.data, self);
           parentName = null;
           return manifest;
         },
 
-        visitInstructionDataArgs(instructionDataArgs, { self }) {
+        visitInstruction(instruction, { self }) {
+          const instructionDataName = nameApi.instructionDataType(
+            instruction.name
+          );
           parentName = {
-            strict: nameApi.dataType(instructionDataArgs.name),
-            loose: nameApi.dataArgsType(instructionDataArgs.name),
+            strict: nameApi.dataType(instructionDataName),
+            loose: nameApi.dataArgsType(instructionDataName),
           };
-          const manifest = instructionDataArgs.link
-            ? visit(instructionDataArgs.link, self)
-            : visit(instructionDataArgs.struct, self);
-          parentName = null;
-          return manifest;
-        },
-
-        visitInstructionExtraArgs(instructionExtraArgs, { self }) {
-          parentName = {
-            strict: nameApi.dataType(instructionExtraArgs.name),
-            loose: nameApi.dataArgsType(instructionExtraArgs.name),
-          };
-          const manifest = instructionExtraArgs.link
-            ? visit(instructionExtraArgs.link, self)
-            : visit(instructionExtraArgs.struct, self);
+          const link = customInstructionData.get(instruction.name)?.linkNode;
+          const struct = structTypeNodeFromInstructionArgumentNodes(
+            instruction.arguments
+          );
+          const manifest = link ? visit(link, self) : visit(struct, self);
           parentName = null;
           return manifest;
         },

@@ -108,18 +108,16 @@ export function getValidatorBagVisitor(): Visitor<ValidatorBag> {
           }
 
           const reservedAccountFields = new Set(['publicKey', 'header']);
-          if (!node.data.link) {
-            const invalidFields = node.data.struct.fields
-              .map((field) => field.name)
-              .filter((name) => reservedAccountFields.has(name));
-            if (invalidFields.length > 0) {
-              const x = invalidFields.join(', ');
-              const message =
-                invalidFields.length === 1
-                  ? `Account field [${x}] is reserved. Please rename it.`
-                  : `Account fields [${x}] are reserved. Please rename them.`;
-              bag.error(message, node, stack);
-            }
+          const invalidFields = node.data.fields
+            .map((field) => field.name)
+            .filter((name) => reservedAccountFields.has(name));
+          if (invalidFields.length > 0) {
+            const x = invalidFields.join(', ');
+            const message =
+              invalidFields.length === 1
+                ? `Account field [${x}] is reserved. Please rename it.`
+                : `Account fields [${x}] are reserved. Please rename them.`;
+            bag.error(message, node, stack);
           }
           return bag.mergeWith([next(node)]);
         },
@@ -128,8 +126,8 @@ export function getValidatorBagVisitor(): Visitor<ValidatorBag> {
           const bag = new ValidatorBag();
           const camelCaseName = camelCase(node.name);
           const pascalCaseName = pascalCase(node.name);
-          const pascalCaseData = pascalCase(node.dataArgs.name);
-          const pascalCaseExtra = pascalCase(node.extraArgs.name);
+          const pascalCaseData = `${pascalCaseName}InstructionData`;
+          const pascalCaseExtra = `${pascalCaseName}InstructionExtra`;
           if (!node.internal) {
             bag.mergeWith([
               checkExportConflicts(node, {

@@ -3,13 +3,10 @@ import {
   accountValueNode,
   getResolvedInstructionInputsVisitor,
   instructionAccountNode,
-  instructionDataArgsNode,
-  instructionExtraArgsNode,
+  instructionArgumentNode,
   instructionNode,
   numberTypeNode,
   publicKeyTypeNode,
-  structFieldTypeNode,
-  structTypeNode,
   visit,
 } from '../../src';
 
@@ -30,10 +27,6 @@ test('it returns all instruction accounts in order of resolution', (t) => {
         isWritable: false,
       }),
     ],
-    dataArgs: instructionDataArgsNode({
-      name: 'myInstructionData',
-      struct: structTypeNode([]),
-    }),
   });
 
   // When we get its resolved inputs.
@@ -75,10 +68,6 @@ test('it sets the resolved signer to either when a non signer defaults to a sign
         isWritable: false,
       }),
     ],
-    dataArgs: instructionDataArgsNode({
-      name: 'myInstructionData',
-      struct: structTypeNode([]),
-    }),
   });
 
   // When we get its resolved inputs.
@@ -111,10 +100,6 @@ test('it sets the resolved signer to either when a signer defaults to a non sign
         isWritable: false,
       }),
     ],
-    dataArgs: instructionDataArgsNode({
-      name: 'myInstructionData',
-      struct: structTypeNode([]),
-    }),
   });
 
   // When we get its resolved inputs.
@@ -143,16 +128,16 @@ test('it includes instruction data arguments with default values', (t) => {
         isWritable: false,
       }),
     ],
-    dataArgs: instructionDataArgsNode({
-      name: 'myInstructionData',
-      struct: structTypeNode([
-        structFieldTypeNode({ name: 'ownerArg', type: publicKeyTypeNode() }),
-        structFieldTypeNode({
-          name: 'argWithoutDefaults',
-          type: numberTypeNode('u8'),
-        }),
-      ]),
-    }),
+    arguments: [
+      instructionArgumentNode({
+        name: 'ownerArg',
+        type: publicKeyTypeNode(),
+      }),
+      instructionArgumentNode({
+        name: 'argWithoutDefaults',
+        type: numberTypeNode('u8'),
+      }),
+    ],
     argDefaults: {
       ownerArg: accountValueNode('owner'),
     },
@@ -195,20 +180,16 @@ test('it includes instruction extra arguments with default values', (t) => {
         isWritable: false,
       }),
     ],
-    dataArgs: instructionDataArgsNode({
-      name: 'myInstructionData',
-      struct: structTypeNode([]),
-    }),
-    extraArgs: instructionExtraArgsNode({
-      name: 'myInstructionExtra',
-      struct: structTypeNode([
-        structFieldTypeNode({ name: 'ownerArg', type: publicKeyTypeNode() }),
-        structFieldTypeNode({
-          name: 'argWithoutDefaults',
-          type: numberTypeNode('u8'),
-        }),
-      ]),
-    }),
+    extraArguments: [
+      instructionArgumentNode({
+        name: 'ownerArg',
+        type: publicKeyTypeNode(),
+      }),
+      instructionArgumentNode({
+        name: 'argWithoutDefaults',
+        type: numberTypeNode('u8'),
+      }),
+    ],
     argDefaults: {
       ownerArg: accountValueNode('owner'),
     },
@@ -240,14 +221,7 @@ test('it includes instruction extra arguments with default values', (t) => {
 
 test('it returns an empty array for empty instructions', (t) => {
   // Given the following empty instruction node.
-  const node = instructionNode({
-    name: 'myInstruction',
-    accounts: [],
-    dataArgs: instructionDataArgsNode({
-      name: 'myInstructionData',
-      struct: structTypeNode([]),
-    }),
-  });
+  const node = instructionNode({ name: 'myInstruction' });
 
   // When we get its resolved inputs.
   const result = visit(node, getResolvedInstructionInputsVisitor());

@@ -18,33 +18,42 @@ import {
 import { getInstructionAccountTypeParamFragment } from './instructionAccountTypeParam';
 
 export function getInstructionFunctionLowLevelFragment(
-  scope: Pick<GlobalFragmentScope, 'nameApi' | 'linkables'> & {
+  scope: Pick<
+    GlobalFragmentScope,
+    'nameApi' | 'linkables' | 'customInstructionData'
+  > & {
     instructionNode: InstructionNode;
     programNode: ProgramNode;
     dataArgsManifest: TypeManifest;
   }
 ): Fragment {
-  const { instructionNode, programNode, dataArgsManifest, nameApi } = scope;
+  const {
+    instructionNode,
+    programNode,
+    dataArgsManifest,
+    nameApi,
+    customInstructionData,
+  } = scope;
   const imports = new ImportMap();
   const hasAccounts = instructionNode.accounts.length > 0;
   const hasLegacyOptionalAccounts =
     instructionNode.optionalAccountStrategy === 'omitted' &&
     instructionNode.accounts.some((account) => account.isOptional);
-  const hasData =
-    !!instructionNode.dataArgs.link ||
-    instructionNode.dataArgs.struct.fields.length > 0;
+  const customData = customInstructionData.get(instructionNode.name);
+  const hasData = !!customData || instructionNode.arguments.length > 0;
   const hasArgs =
-    !!instructionNode.dataArgs.link ||
-    instructionNode.dataArgs.struct.fields.filter(
+    !!customData ||
+    instructionNode.arguments.filter(
       (field) => !field.defaultValue || field.defaultValueStrategy !== 'omitted'
     ).length > 0;
-  const argsType = instructionNode.dataArgs.link
+  const instructionDataName = nameApi.instructionDataType(instructionNode.name);
+  const argsType = customData
     ? dataArgsManifest.looseType.render
-    : nameApi.dataArgsType(instructionNode.dataArgs.name);
-  const encoderFunction = instructionNode.dataArgs.link
+    : nameApi.dataArgsType(instructionDataName);
+  const encoderFunction = customData
     ? dataArgsManifest.encoder.render
-    : `${nameApi.encoderFunction(instructionNode.dataArgs.name)}()`;
-  if (instructionNode.dataArgs.link) {
+    : `${nameApi.encoderFunction(instructionDataName)}()`;
+  if (customData) {
     imports.mergeWith(dataArgsManifest.looseType, dataArgsManifest.encoder);
   }
 

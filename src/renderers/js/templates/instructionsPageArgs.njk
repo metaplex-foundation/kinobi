@@ -1,23 +1,23 @@
-{% if not instruction.dataArgs.link and hasData %}
+{% if not customData and hasData %}
   // Data.
-  {{ macros.exportType(instruction.dataArgs.name | pascalCase, dataArgManifest) }}
+  {{ macros.exportType(instruction.name | pascalCase + 'InstructionData', dataArgManifest) }}
 
-  {{ macros.exportSerializer(instruction.dataArgs.name | pascalCase, dataArgManifest) }}
+  {{ macros.exportSerializer(instruction.name | pascalCase + 'InstructionData', dataArgManifest) }}
 {% endif %}
 
-{% if not instruction.extraArgs.link and hasExtraArgs %}
+{% if hasExtraArgs %}
   // Extra Args.
-  export type {{ instruction.extraArgs.name | pascalCase + 'Args' }} = {{ extraArgManifest.looseType }};
+  export type {{ instruction.name | pascalCase + 'InstructionExtraArgs' }} = {{ extraArgManifest.looseType }};
 {% endif %}
 
 {% if hasAnyArgs %}
   {% set argType %}
     {% if hasDataArgs and hasExtraArgs %}
-      {{ instruction.dataArgs.name | pascalCase + 'Args' }} & {{ instruction.extraArgs.name | pascalCase + 'Args' }}
+      {{ instruction.name | pascalCase + 'InstructionDataArgs' }} & {{ instruction.name | pascalCase + 'InstructionExtraArgs' }}
     {% elif hasDataArgs %}
-      {{ instruction.dataArgs.name | pascalCase + 'Args' }}
+      {{ instruction.name | pascalCase + 'InstructionDataArgs' }}
     {% elif hasExtraArgs %}
-      {{ instruction.extraArgs.name | pascalCase + 'Args' }}
+      {{ instruction.name | pascalCase + 'InstructionExtraArgs' }}
     {% endif %}
   {% endset %}
 

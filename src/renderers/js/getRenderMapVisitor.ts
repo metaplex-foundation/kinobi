@@ -12,6 +12,7 @@ import {
   isNode,
   isNodeFilter,
   ProgramNode,
+  structTypeNodeFromInstructionArgumentNodes,
 } from '../../nodes';
 import {
   camelCase,
@@ -36,7 +37,12 @@ import {
   visit,
   Visitor,
 } from '../../visitors';
-import { getTypeManifestVisitor } from './getTypeManifestVisitor';
+import {
+  CustomDataOptions,
+  getDefinedTypeNodesToExtract,
+  parseCustomDataOptions,
+} from './customDataHelpers';
+import { getTypeManifestVisitor as baseGetTypeManifestVisitor } from './getTypeManifestVisitor';
 import { JavaScriptContextMap } from './JavaScriptContextMap';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 import { renderInstructionDefaults } from './renderInstructionDefaults';
@@ -59,6 +65,8 @@ export type GetJavaScriptRenderMapOptions = {
   prettierOptions?: PrettierOptions;
   dependencyMap?: Record<ImportFrom, string>;
   nonScalarEnums?: string[];
+  customAccountData?: CustomDataOptions[];
+  customInstructionData?: CustomDataOptions[];
 };
 
 export function getRenderMapVisitor(
@@ -89,12 +97,30 @@ export function getRenderMapVisitor(
     generatedTypes: '../types',
   };
   const nonScalarEnums = (options.nonScalarEnums ?? []).map(mainCase);
+  const customAccountData = parseCustomDataOptions(
+    options.customAccountData ?? [],
+    'AccountData'
+  );
+  const customInstructionData = parseCustomDataOptions(
+    options.customInstructionData ?? [],
+    'InstructionData'
+  );
 
   const valueNodeVisitor = renderValueNodeVisitor({
     linkables,
     nonScalarEnums,
   });
-  const typeManifestVisitor = getTypeManifestVisitor(valueNodeVisitor);
+  const getTypeManifestVisitor = (parentName?: {
+    strict: string;
+    loose: string;
+  }) =>
+    baseGetTypeManifestVisitor({
+      valueNodeVisitor,
+      customAccountData,
+      customInstructionData,
+      parentName,
+    });
+  const typeManifestVisitor = getTypeManifestVisitor();
   const resolvedInstructionInputVisitor = getResolvedInstructionInputsVisitor();
 
   function getInstructionAccountType(
@@ -123,8 +149,8 @@ export function getRenderMapVisitor(
   ): string[] {
     const allNames = [
       ...instruction.accounts.map((account) => account.name),
-      ...instruction.dataArgs.struct.fields.map((field) => field.name),
-      ...instruction.extraArgs.struct.fields.map((field) => field.name),
+      ...instruction.arguments.map((field) => field.name),
+      ...(instruction.extraArguments ?? []).map((field) => field.name),
     ];
     const duplicates = allNames.filter((e, i, a) => a.indexOf(e) !== i);
     return [...new Set(duplicates)];
@@ -205,9 +231,17 @@ export function getRenderMapVisitor(
         visitProgram(node, { self }) {
           program = node;
           const pascalCaseName = pascalCase(node.name);
+          const customDataDefinedType = [
+            ...getDefinedTypeNodesToExtract(node.accounts, customAccountData),
+            ...getDefinedTypeNodesToExtract(
+              node.instructions,
+              customInstructionData
+            ),
+          ];
           const renderMap = new RenderMap()
-            .mergeWith(...node.accounts.map((account) => visit(account, self)))
-            .mergeWith(...node.definedTypes.map((type) => visit(type, self)));
+            .mergeWith(...node.accounts.map((a) => visit(a, self)))
+            .mergeWith(...node.definedTypes.map((t) => visit(t, self)))
+            .mergeWith(...customDataDefinedType.map((t) => visit(t, self)));
 
           // Internal programs are support programs that
           // were added to fill missing types or accounts.
@@ -261,7 +295,8 @@ export function getRenderMapVisitor(
         },
 
         visitAccount(node) {
-          const isLinked = !!node.data.link;
+          const customData = customAccountData.get(node.name);
+          const isLinked = !!customData;
           const typeManifest = visit(node, typeManifestVisitor);
           const imports = new JavaScriptImportMap().mergeWith(
             typeManifest.strictImports,
@@ -293,7 +328,7 @@ export function getRenderMapVisitor(
             | { kind: 'field'; name: string; value: string }
             | null = null;
           if (discriminator?.kind === 'field') {
-            const discriminatorField = node.data.struct.fields.find(
+            const discriminatorField = node.data.fields.find(
               (f) => f.name === discriminator.name
             );
             const discriminatorValue = discriminatorField?.defaultValue
@@ -388,6 +423,7 @@ export function getRenderMapVisitor(
               gpaFields: resolvedGpaFields,
               seeds,
               hasVariableSeeds,
+              customData,
             })
           );
         },
@@ -404,17 +440,17 @@ export function getRenderMapVisitor(
             ]);
 
           // Instruction helpers.
+          const customData = customInstructionData.get(node.name);
+          const linkedDataArgs = !!customData;
           const hasAccounts = node.accounts.length > 0;
-          const hasData =
-            !!node.dataArgs.link || node.dataArgs.struct.fields.length > 0;
+          const hasData = linkedDataArgs || node.arguments.length > 0;
           const hasDataArgs =
-            !!node.dataArgs.link ||
-            node.dataArgs.struct.fields.filter(
+            linkedDataArgs ||
+            node.arguments.filter(
               (field) => field.defaultValueStrategy !== 'omitted'
             ).length > 0;
           const hasExtraArgs =
-            !!node.extraArgs.link ||
-            node.extraArgs.struct.fields.filter(
+            (node.extraArguments ?? []).filter(
               (field) => field.defaultValueStrategy !== 'omitted'
             ).length > 0;
           const hasAnyArgs = hasDataArgs || hasExtraArgs;
@@ -439,10 +475,8 @@ export function getRenderMapVisitor(
           }
 
           // canMergeAccountsAndArgs
-          const linkedDataArgs = !!node.dataArgs.link;
-          const linkedExtraArgs = !!node.extraArgs.link;
           let canMergeAccountsAndArgs = false;
-          if (!linkedDataArgs && !linkedExtraArgs) {
+          if (!linkedDataArgs) {
             const accountsAndArgsConflicts =
               getMergeConflictsForInstructionAccountsAndArgs(node);
             if (accountsAndArgsConflicts.length > 0) {
@@ -500,7 +534,7 @@ export function getRenderMapVisitor(
           imports.mergeWith(getInstructionAccountImports(accounts));
 
           // Data Args.
-          const dataArgManifest = visit(node.dataArgs, typeManifestVisitor);
+          const dataArgManifest = visit(node, typeManifestVisitor);
           if (linkedDataArgs || hasData) {
             imports.mergeWith(
               dataArgManifest.looseImports,
@@ -515,7 +549,14 @@ export function getRenderMapVisitor(
           }
 
           // Extra args.
-          const extraArgManifest = visit(node.extraArgs, typeManifestVisitor);
+          const extraArgStruct = structTypeNodeFromInstructionArgumentNodes(
+            node.extraArguments ?? []
+          );
+          const visitor = getTypeManifestVisitor({
+            strict: `${node.name}InstructionExtra`,
+            loose: `${node.name}InstructionExtraArgs`,
+          });
+          const extraArgManifest = visit(extraArgStruct, visitor);
           imports.mergeWith(extraArgManifest.looseImports);
 
           // Arg defaults.
@@ -579,6 +620,7 @@ export function getRenderMapVisitor(
               hasRemainingAccountsResolver,
               hasResolvers,
               hasResolvedArgs,
+              customData,
             })
           );
         },

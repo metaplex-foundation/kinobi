@@ -5,23 +5,25 @@ import { Fragment, fragment, fragmentFromTemplate } from './common';
 import { getTypeWithCodecFragment } from './typeWithCodec';
 
 export function getAccountTypeFragment(
-  scope: Pick<GlobalFragmentScope, 'nameApi'> & {
+  scope: Pick<GlobalFragmentScope, 'nameApi' | 'customAccountData'> & {
     accountNode: AccountNode;
     typeManifest: TypeManifest;
   }
 ): Fragment {
-  const { accountNode, typeManifest, nameApi } = scope;
-  const typeWithCodecFragment = accountNode.data.link
+  const { accountNode, typeManifest, nameApi, customAccountData } = scope;
+  const customData = customAccountData.get(accountNode.name);
+  const accountDataName = nameApi.accountDataType(accountNode.name);
+  const typeWithCodecFragment = customData
     ? fragment('')
     : getTypeWithCodecFragment({
-        name: accountNode.data.name,
+        name: accountDataName,
         manifest: typeManifest,
         nameApi,
       });
 
-  const dataNameFragment = accountNode.data.link
+  const dataNameFragment = customData
     ? typeManifest.strictType.clone()
-    : fragment(nameApi.dataType(accountNode.data.name));
+    : fragment(nameApi.dataType(accountDataName));
 
   return fragmentFromTemplate('accountType.njk', {
     accountType: nameApi.accountType(accountNode.name),

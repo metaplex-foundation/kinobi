@@ -10,16 +10,16 @@ export function getInstructionExtraArgsFragment(
   }
 ): Fragment {
   const { instructionNode, extraArgsManifest, nameApi } = scope;
-  if (
-    instructionNode.extraArgs.struct.fields.length === 0 ||
-    !!instructionNode.extraArgs.link
-  ) {
+  if ((instructionNode.extraArguments ?? []).length === 0) {
     return fragment('');
   }
 
+  const instructionExtraName = nameApi.instructionExtraType(
+    instructionNode.name
+  );
   return fragmentFromTemplate('instructionExtraArgs.njk', {
-    strictName: nameApi.dataType(instructionNode.extraArgs.name),
-    looseName: nameApi.dataArgsType(instructionNode.extraArgs.name),
+    strictName: nameApi.dataType(instructionExtraName),
+    looseName: nameApi.dataArgsType(instructionExtraName),
     manifest: extraArgsManifest,
   }).mergeImportsWith(extraArgsManifest.looseType);
 }

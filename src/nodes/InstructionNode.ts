@@ -3,7 +3,6 @@ import {
   BytesCreatedOnChain,
   InvalidKinobiTreeError,
   MainCaseString,
-  PartialExcept,
   RemainingAccounts,
   mainCase,
 } from '../shared';
@@ -12,22 +11,14 @@ import {
   instructionAccountNodeFromIdl,
 } from './InstructionAccountNode';
 import {
-  InstructionDataArgsNode,
-  instructionDataArgsNode,
-} from './InstructionDataArgsNode';
-import {
-  InstructionExtraArgsNode,
-  instructionExtraArgsNode,
-} from './InstructionExtraArgsNode';
+  InstructionArgumentNode,
+  instructionArgumentNode,
+  instructionArgumentNodeFromIdl,
+} from './InstructionArgumentNode';
 import { isNode } from './Node';
 import { ProgramNode } from './ProgramNode';
 import { RootNode } from './RootNode';
 import { InstructionInputValueNode } from './contextualValueNodes';
-import { structFieldTypeNode } from './typeNodes/StructFieldTypeNode';
-import {
-  structTypeNode,
-  structTypeNodeFromIdl,
-} from './typeNodes/StructTypeNode';
 import { createTypeNodeFromIdl } from './typeNodes/TypeNode';
 import { numberValueNode } from './valueNodes';
 
@@ -36,9 +27,9 @@ export type InstructionNode = {
 
   // Children.
   readonly accounts: InstructionAccountNode[];
-  readonly dataArgs: InstructionDataArgsNode;
-  readonly extraArgs: InstructionExtraArgsNode;
-  readonly subInstructions: InstructionNode[];
+  readonly arguments: InstructionArgumentNode[];
+  readonly extraArguments?: InstructionArgumentNode[];
+  readonly subInstructions?: InstructionNode[];
   readonly argDefaults: Record<MainCaseString, InstructionInputValueNode>;
 
   // Children to-be.
@@ -54,7 +45,7 @@ export type InstructionNode = {
 };
 
 export type InstructionNodeInput = Omit<
-  PartialExcept<InstructionNode, 'accounts' | 'dataArgs'>,
+  Partial<InstructionNode>,
   'kind' | 'name' | 'argDefaults'
 > & {
   readonly name: string;
@@ -69,15 +60,10 @@ export function instructionNode(input: InstructionNodeInput): InstructionNode {
   return {
     kind: 'instructionNode',
     name,
-    accounts: input.accounts,
-    dataArgs: input.dataArgs,
-    extraArgs:
-      input.extraArgs ??
-      instructionExtraArgsNode({
-        name: `${name}InstructionExtra`,
-        struct: structTypeNode([]),
-      }),
-    subInstructions: input.subInstructions ?? [],
+    accounts: input.accounts ?? [],
+    arguments: input.arguments ?? [],
+    extraArguments: input.extraArguments,
+    subInstructions: input.subInstructions,
     idlName: input.idlName ?? input.name,
     docs: input.docs ?? [],
     internal: input.internal ?? false,
@@ -98,18 +84,15 @@ export function instructionNodeFromIdl(
 ): InstructionNode {
   const idlName = idl.name ?? '';
   const name = mainCase(idlName);
-  let dataArgs = structTypeNodeFromIdl({
-    kind: 'struct',
-    fields: idl.args ?? [],
-  });
+  let dataArguments = (idl.args ?? []).map(instructionArgumentNodeFromIdl);
   if (idl.discriminant) {
-    const discriminatorField = structFieldTypeNode({
+    const discriminatorField = instructionArgumentNode({
       name: 'discriminator',
       type: createTypeNodeFromIdl(idl.discriminant.type),
       defaultValue: numberValueNode(idl.discriminant.value),
       defaultValueStrategy: 'omitted',
     });
-    dataArgs = structTypeNode([discriminatorField, ...dataArgs.fields]);
+    dataArguments = [discriminatorField, ...dataArguments];
   }
   return instructionNode({
     name,
@@ -118,10 +101,7 @@ export function instructionNodeFromIdl(
     accounts: (idl.accounts ?? []).map((account) =>
       instructionAccountNodeFromIdl(account)
     ),
-    dataArgs: instructionDataArgsNode({
-      name: `${name}InstructionData`,
-      struct: dataArgs,
-    }),
+    arguments: dataArguments,
     optionalAccountStrategy: idl.legacyOptionalAccountsStrategy
       ? 'omitted'
       : 'programId',
@@ -133,7 +113,8 @@ export function getAllInstructionsWithSubs(
   leavesOnly = false
 ): InstructionNode[] {
   if (isNode(node, 'instructionNode')) {
-    if (node.subInstructions.length === 0) return [node];
+    if (!node.subInstructions || node.subInstructions.length === 0)
+      return [node];
     const subInstructions = node.subInstructions.flatMap((sub) =>
       getAllInstructionsWithSubs(sub, leavesOnly)
     );

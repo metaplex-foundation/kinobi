@@ -1,7 +1,7 @@
 import {
+  InstructionArgumentNode,
   InstructionNode,
   ProgramNode,
-  StructFieldTypeNode,
   isNode,
 } from '../../../nodes';
 import { pascalCase } from '../../../shared';
@@ -17,12 +17,14 @@ import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, fragmentFromTemplate } from './common';
 
 export function getInstructionInputTypeFragment(
-  scope: Pick<GlobalFragmentScope, 'nameApi' | 'asyncResolvers'> & {
+  scope: Pick<
+    GlobalFragmentScope,
+    'nameApi' | 'asyncResolvers' | 'customInstructionData'
+  > & {
     instructionNode: InstructionNode;
     resolvedInputs: ResolvedInstructionInput[];
     renamedArgs: Map<string, string>;
     dataArgsManifest: TypeManifest;
-    extraArgsManifest: TypeManifest;
     programNode: ProgramNode;
     withSigners: boolean;
     useAsync: boolean;
@@ -33,12 +35,12 @@ export function getInstructionInputTypeFragment(
     resolvedInputs,
     renamedArgs,
     dataArgsManifest,
-    extraArgsManifest,
     programNode,
     withSigners,
     asyncResolvers,
     useAsync,
     nameApi,
+    customInstructionData,
   } = scope;
 
   // Accounts.
@@ -68,16 +70,14 @@ export function getInstructionInputTypeFragment(
   });
 
   // Arg link imports.
+  const customData = customInstructionData.get(instructionNode.name);
   const argLinkImports = new ImportMap();
-  if (instructionNode.dataArgs.link) {
+  if (customData) {
     argLinkImports.mergeWith(dataArgsManifest.looseType);
-  }
-  if (instructionNode.extraArgs.link) {
-    argLinkImports.mergeWith(extraArgsManifest.looseType);
   }
 
   // Arguments.
-  const resolveArg = (arg: StructFieldTypeNode) => {
+  const resolveArg = (arg: InstructionArgumentNode) => {
     const resolvedArg = resolvedInputs.find(
       (input) => input.kind === 'argument' && input.name === arg.name
     ) as ResolvedInstructionArgument | undefined;
@@ -93,18 +93,18 @@ export function getInstructionInputTypeFragment(
       },
     ];
   };
-  const dataArgsType = instructionNode.dataArgs.link
-    ? nameApi.dataArgsType(instructionNode.dataArgs.link.name)
-    : nameApi.dataArgsType(instructionNode.dataArgs.name);
-  const dataArgs = instructionNode.dataArgs.link
+  const instructionDataName = nameApi.instructionDataType(instructionNode.name);
+  const instructionExtraName = nameApi.instructionExtraType(
+    instructionNode.name
+  );
+  const dataArgsType = customData
+    ? nameApi.dataArgsType(customData.importAs)
+    : nameApi.dataArgsType(instructionDataName);
+  const dataArgs = customData
     ? []
-    : instructionNode.dataArgs.struct.fields.flatMap(resolveArg);
-  const extraArgsType = instructionNode.extraArgs.link
-    ? nameApi.dataArgsType(instructionNode.extraArgs.link.name)
-    : nameApi.dataArgsType(instructionNode.extraArgs.name);
-  const extraArgs = instructionNode.extraArgs.link
-    ? []
-    : instructionNode.extraArgs.struct.fields.flatMap(resolveArg);
+    : instructionNode.arguments.flatMap(resolveArg);
+  const extraArgsType = nameApi.dataArgsType(instructionExtraName);
+  const extraArgs = (instructionNode.extraArguments ?? []).flatMap(resolveArg);
 
   const syncInputType = withSigners
     ? nameApi.instructionSyncInputWithSignersType(instructionNode.name)

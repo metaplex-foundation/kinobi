@@ -1,10 +1,9 @@
 import {
   ProgramNode,
-  accountDataNode,
   accountNode,
   arrayTypeNode,
   fixedSizeNode,
-  instructionDataArgsNode,
+  instructionArgumentNode,
   instructionNode,
   numberTypeNode,
   structFieldTypeNode,
@@ -41,7 +40,7 @@ export function setAnchorDiscriminatorsVisitor() {
           const shouldAddDiscriminator = program?.origin === 'anchor';
           if (!shouldAddDiscriminator) return node;
 
-          const discriminatorField = structFieldTypeNode({
+          const discriminatorArgument = structFieldTypeNode({
             name: 'discriminator',
             type: arrayTypeNode(numberTypeNode('u8'), fixedSizeNode(8)),
             defaultValue: getAnchorAccountDiscriminator(node.idlName),
@@ -51,13 +50,7 @@ export function setAnchorDiscriminatorsVisitor() {
           return accountNode({
             ...node,
             discriminator: fieldAccountDiscriminator('discriminator'),
-            data: accountDataNode({
-              ...node.data,
-              struct: structTypeNode([
-                discriminatorField,
-                ...node.data.struct.fields,
-              ]),
-            }),
+            data: structTypeNode([discriminatorArgument, ...node.data.fields]),
           });
         },
 
@@ -65,7 +58,7 @@ export function setAnchorDiscriminatorsVisitor() {
           const shouldAddDiscriminator = program?.origin === 'anchor';
           if (!shouldAddDiscriminator) return node;
 
-          const discriminatorField = structFieldTypeNode({
+          const discriminatorArgument = instructionArgumentNode({
             name: 'discriminator',
             type: arrayTypeNode(numberTypeNode('u8'), fixedSizeNode(8)),
             defaultValue: getAnchorInstructionDiscriminator(node.idlName),
@@ -74,13 +67,7 @@ export function setAnchorDiscriminatorsVisitor() {
 
           return instructionNode({
             ...node,
-            dataArgs: instructionDataArgsNode({
-              ...node.dataArgs,
-              struct: structTypeNode([
-                discriminatorField,
-                ...node.dataArgs.struct.fields,
-              ]),
-            }),
+            arguments: [discriminatorArgument, ...node.arguments],
           });
         },
       })

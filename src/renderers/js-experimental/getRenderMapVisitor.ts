@@ -10,6 +10,7 @@ import {
   getAllPdas,
   InstructionNode,
   ProgramNode,
+  structTypeNodeFromInstructionArgumentNodes,
 } from '../../nodes';
 import {
   camelCase,
@@ -30,6 +31,12 @@ import {
   visit,
 } from '../../visitors';
 import {
+  CustomDataOptions,
+  getDefinedTypeNodesToExtract,
+  parseCustomDataOptions,
+  ParsedCustomDataOptions,
+} from './customDataHelpers';
+import {
   getAccountFetchHelpersFragment,
   getAccountPdaHelpersFragment,
   getAccountSizeHelpersFragment,
@@ -47,7 +54,7 @@ import {
   getTypeWithCodecFragment,
 } from './fragments';
 import {
-  getTypeManifestVisitor,
+  getTypeManifestVisitor as baseGetTypeManifestVisitor,
   TypeManifestVisitor,
 } from './getTypeManifestVisitor';
 import { ImportMap } from './ImportMap';
@@ -81,6 +88,8 @@ export type GetRenderMapOptions = {
   asyncResolvers?: string[];
   nameTransformers?: Partial<NameTransformers>;
   nonScalarEnums?: string[];
+  customAccountData?: CustomDataOptions[];
+  customInstructionData?: CustomDataOptions[];
 };
 
 export type GlobalFragmentScope = {
@@ -91,6 +100,8 @@ export type GlobalFragmentScope = {
   asyncResolvers: MainCaseString[];
   nonScalarEnums: MainCaseString[];
   renderParentInstructions: boolean;
+  customAccountData: ParsedCustomDataOptions;
+  customInstructionData: ParsedCustomDataOptions;
 };
 
 export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
@@ -111,16 +122,32 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
   const dependencyMap = options.dependencyMap ?? {};
   const asyncResolvers = (options.asyncResolvers ?? []).map(mainCase);
   const nonScalarEnums = (options.nonScalarEnums ?? []).map(mainCase);
+  const customAccountData = parseCustomDataOptions(
+    options.customAccountData ?? [],
+    'AccountData'
+  );
+  const customInstructionData = parseCustomDataOptions(
+    options.customInstructionData ?? [],
+    'InstructionData'
+  );
 
   const valueNodeVisitor = renderValueNodeVisitor({
     nameApi,
     linkables,
     nonScalarEnums,
   });
-  const typeManifestVisitor = getTypeManifestVisitor({
-    nameApi,
-    valueNodeVisitor,
-  });
+  const getTypeManifestVisitor = (parentName?: {
+    strict: string;
+    loose: string;
+  }) =>
+    baseGetTypeManifestVisitor({
+      nameApi,
+      valueNodeVisitor,
+      customAccountData,
+      customInstructionData,
+      parentName,
+    });
+  const typeManifestVisitor = getTypeManifestVisitor();
   const resolvedInstructionInputVisitor = getResolvedInstructionInputsVisitor();
 
   const globalScope: GlobalFragmentScope = {
@@ -131,6 +158,8 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
     asyncResolvers,
     nonScalarEnums,
     renderParentInstructions,
+    customAccountData,
+    customInstructionData,
   };
 
   const render = (
@@ -228,10 +257,18 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
 
         visitProgram(node, { self }) {
           program = node;
+          const customDataDefinedType = [
+            ...getDefinedTypeNodesToExtract(node.accounts, customAccountData),
+            ...getDefinedTypeNodesToExtract(
+              node.instructions,
+              customInstructionData
+            ),
+          ];
           const renderMap = new RenderMap()
-            .mergeWith(...node.pdas.map((pda) => visit(pda, self)))
-            .mergeWith(...node.accounts.map((account) => visit(account, self)))
-            .mergeWith(...node.definedTypes.map((type) => visit(type, self)));
+            .mergeWith(...node.pdas.map((p) => visit(p, self)))
+            .mergeWith(...node.accounts.map((a) => visit(a, self)))
+            .mergeWith(...node.definedTypes.map((t) => visit(t, self)))
+            .mergeWith(...customDataDefinedType.map((t) => visit(t, self)));
 
           // Internal programs are support programs that
           // were added to fill missing types or accounts.
@@ -341,13 +378,22 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             throw new Error('Instruction must be visited inside a program.');
           }
 
+          const instructionExtraName = nameApi.instructionExtraType(node.name);
           const scope = {
             ...globalScope,
             instructionNode: node,
             programNode: program,
             renamedArgs: getRenamedArgsMap(node),
-            dataArgsManifest: visit(node.dataArgs, typeManifestVisitor),
-            extraArgsManifest: visit(node.extraArgs, typeManifestVisitor),
+            dataArgsManifest: visit(node, typeManifestVisitor),
+            extraArgsManifest: visit(
+              structTypeNodeFromInstructionArgumentNodes(
+                node.extraArguments ?? []
+              ),
+              getTypeManifestVisitor({
+                strict: nameApi.dataType(instructionExtraName),
+                loose: nameApi.dataArgsType(instructionExtraName),
+              })
+            ),
             resolvedInputs: visit(node, resolvedInstructionInputVisitor),
           };
 
@@ -453,8 +499,8 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
 
 function getRenamedArgsMap(instruction: InstructionNode): Map<string, string> {
   const argNames = [
-    ...instruction.dataArgs.struct.fields.map((field) => field.name),
-    ...instruction.extraArgs.struct.fields.map((field) => field.name),
+    ...instruction.arguments.map((a) => a.name),
+    ...(instruction.extraArguments ?? []).map((a) => a.name),
   ];
   const duplicateArgs = argNames.filter((e, i, a) => a.indexOf(e) !== i);
   if (duplicateArgs.length > 0) {

@@ -32,10 +32,6 @@ export function getTypeManifestVisitor() {
         'definedTypeLinkNode',
         'definedTypeNode',
         'accountNode',
-        'accountDataNode',
-        'instructionNode',
-        'instructionDataArgsNode',
-        'instructionExtraArgsNode',
       ]
     ),
     (v) =>
@@ -55,28 +51,6 @@ export function getTypeManifestVisitor() {
               '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
               `${manifest.type}`,
           };
-        },
-
-        visitAccountData(accountData, { self }) {
-          return visit(accountData.struct, self);
-        },
-
-        visitInstruction(instruction, { self }) {
-          return visit(instruction.dataArgs, self);
-        },
-
-        visitInstructionDataArgs(instructionDataArgs, { self }) {
-          parentName = pascalCase(instructionDataArgs.name);
-          const manifest = visit(instructionDataArgs.struct, self);
-          parentName = null;
-          return manifest;
-        },
-
-        visitInstructionExtraArgs(instructionExtraArgs, { self }) {
-          parentName = pascalCase(instructionExtraArgs.name);
-          const manifest = visit(instructionExtraArgs.struct, self);
-          parentName = null;
-          return manifest;
         },
 
         visitDefinedType(definedType, { self }) {

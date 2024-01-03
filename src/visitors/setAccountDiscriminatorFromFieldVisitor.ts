@@ -1,7 +1,6 @@
 import { fieldAccountDiscriminator } from '../shared';
 import {
   ValueNode,
-  accountDataNode,
   accountNode,
   assertIsNode,
   structFieldTypeNode,
@@ -28,7 +27,7 @@ export function setAccountDiscriminatorFromFieldVisitor(
           transform: (node) => {
             assertIsNode(node, 'accountNode');
 
-            const fieldIndex = node.data.struct.fields.findIndex(
+            const fieldIndex = node.data.fields.findIndex(
               (f) => f.name === field
             );
             if (fieldIndex < 0) {
@@ -37,22 +36,19 @@ export function setAccountDiscriminatorFromFieldVisitor(
               );
             }
 
-            const fieldNode = node.data.struct.fields[fieldIndex];
+            const fieldNode = node.data.fields[fieldIndex];
             return accountNode({
               ...node,
               discriminator: fieldAccountDiscriminator(field),
-              data: accountDataNode({
-                ...node.data,
-                struct: structTypeNode([
-                  ...node.data.struct.fields.slice(0, fieldIndex),
-                  structFieldTypeNode({
-                    ...fieldNode,
-                    defaultValue: value,
-                    defaultValueStrategy: 'omitted',
-                  }),
-                  ...node.data.struct.fields.slice(fieldIndex + 1),
-                ]),
-              }),
+              data: structTypeNode([
+                ...node.data.fields.slice(0, fieldIndex),
+                structFieldTypeNode({
+                  ...fieldNode,
+                  defaultValue: value,
+                  defaultValueStrategy: 'omitted',
+                }),
+                ...node.data.fields.slice(fieldIndex + 1),
+              ]),
             });
           },
         };
