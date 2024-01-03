@@ -99,7 +99,9 @@ export function getTransferInstructionDataSerializer(): Serializer<
 }
 
 // Extra Args.
-export type TransferInstructionExtraArgs = { tokenStandard: TokenStandardArgs };
+export type TransferInstructionExtraArgs = {
+  tokenStandard?: TokenStandardArgs;
+};
 
 // Args.
 export type TransferInstructionArgs = PickPartial<
