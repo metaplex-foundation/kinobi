@@ -460,7 +460,9 @@ export function getRenderMapVisitor(
           const hasAccountResolvers = node.accounts.some((a) =>
             isNode(a.defaultValue, 'resolverValueNode')
           );
-          const hasByteResolver = node.bytesCreatedOnChain?.kind === 'resolver';
+          const byteDelta = node.byteDeltas?.[0] ?? undefined;
+          const hasByteResolver =
+            byteDelta && isNode(byteDelta.value, 'resolverValueNode');
           const remainingAccounts = node.remainingAccounts?.[0] ?? undefined;
           const hasRemainingAccountsResolver =
             remainingAccounts &&
@@ -574,16 +576,22 @@ export function getRenderMapVisitor(
           }
 
           // Bytes created on chain.
-          const bytes = node.bytesCreatedOnChain;
-          if (bytes && 'includeHeader' in bytes && bytes.includeHeader) {
+          if (byteDelta && byteDelta.withHeader) {
             imports.add('umi', 'ACCOUNT_HEADER_SIZE');
           }
-          if (bytes?.kind === 'account') {
-            const accountName = pascalCase(bytes.name);
-            const importFrom = bytes.importFrom ?? 'generatedAccounts';
+          if (byteDelta && isNode(byteDelta.value, 'accountLinkNode')) {
+            const accountName = pascalCase(byteDelta.value.name);
+            const importFrom =
+              byteDelta.value.importFrom ?? 'generatedAccounts';
             imports.add(importFrom, `get${accountName}Size`);
-          } else if (bytes?.kind === 'resolver') {
-            imports.add(bytes.importFrom, camelCase(bytes.name));
+          } else if (
+            byteDelta &&
+            isNode(byteDelta.value, 'resolverValueNode')
+          ) {
+            imports.add(
+              byteDelta.value.importFrom ?? 'hooked',
+              camelCase(byteDelta.value.name)
+            );
           }
 
           // Remaining accounts.
@@ -622,6 +630,7 @@ export function getRenderMapVisitor(
               hasResolvedArgs,
               customData,
               remainingAccounts,
+              byteDelta,
             })
           );
         },

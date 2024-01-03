@@ -11,7 +11,7 @@ import {
   fragmentFromTemplate,
   mergeFragments,
 } from './common';
-import { getInstructionBytesCreatedOnChainFragment } from './instructionBytesCreatedOnChain';
+import { getInstructionByteDeltaFragment } from './instructionByteDelta';
 import { getInstructionInputResolvedFragment } from './instructionInputResolved';
 import { getInstructionInputTypeFragment } from './instructionInputType';
 import { getInstructionRemainingAccountsFragment } from './instructionRemainingAccounts';
@@ -111,8 +111,7 @@ export function getInstructionFunctionHighLevelFragment(
   const resolvedInputsFragment = getInstructionInputResolvedFragment(scope);
   const remainingAccountsFragment =
     getInstructionRemainingAccountsFragment(scope);
-  const bytesCreatedOnChainFragment =
-    getInstructionBytesCreatedOnChainFragment(scope);
+  const bytesCreatedOnChainFragment = getInstructionByteDeltaFragment(scope);
   const resolvedFragment = mergeFragments(
     [
       resolvedInputsFragment,

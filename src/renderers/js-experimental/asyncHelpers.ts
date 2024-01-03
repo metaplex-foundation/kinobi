@@ -10,9 +10,10 @@ export function hasAsyncFunction(
   resolvedInputs: ResolvedInstructionInput[],
   asyncResolvers: string[]
 ): boolean {
-  const hasBytesCreatedOnChainAsync =
-    instructionNode.bytesCreatedOnChain?.kind === 'resolver' &&
-    asyncResolvers.includes(instructionNode.bytesCreatedOnChain.name);
+  const hasByteDeltasAsync = (instructionNode.byteDeltas ?? []).some(
+    ({ value }) =>
+      isNode(value, 'resolverValueNode') && asyncResolvers.includes(value.name)
+  );
   const hasRemainingAccountsAsync = (
     instructionNode.remainingAccounts ?? []
   ).some(
@@ -22,7 +23,7 @@ export function hasAsyncFunction(
 
   return (
     hasAsyncDefaultValues(resolvedInputs, asyncResolvers) ||
-    hasBytesCreatedOnChainAsync ||
+    hasByteDeltasAsync ||
     hasRemainingAccountsAsync
   );
 }

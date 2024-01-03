@@ -68,15 +68,14 @@ export function {{ instruction.name | camelCase }}(
   {% endif %}
 
   // Bytes Created On Chain.
-  {% set bytes = instruction.bytesCreatedOnChain %}
-  {% if bytes.kind === 'number' %}
-    const bytesCreatedOnChain = {{ bytes.value }}{% if bytes.includeHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
-  {% elif bytes.kind === 'arg' %}
-    const bytesCreatedOnChain = Number({{ argsObj }}.{{ bytes.name }}){% if bytes.includeHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
-  {% elif bytes.kind === 'account' %}
-    const bytesCreatedOnChain = get{{ bytes.name | pascalCase }}Size(){% if bytes.includeHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
-  {% elif bytes.kind === 'resolver' %}
-    const bytesCreatedOnChain = {{ bytes.name | camelCase }}(context, resolvedAccounts, resolvedArgs, programId);
+  {% if byteDelta.value.kind === 'numberValueNode' %}
+    const bytesCreatedOnChain = {{ byteDelta.value.number }}{% if byteDelta.withHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
+  {% elif byteDelta.value.kind === 'argumentValueNode' %}
+    const bytesCreatedOnChain = Number({{ argsObj }}.{{ byteDelta.value.name }}){% if byteDelta.withHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
+  {% elif byteDelta.value.kind === 'accountLinkNode' %}
+    const bytesCreatedOnChain = get{{ byteDelta.value.name | pascalCase }}Size(){% if byteDelta.withHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
+  {% elif byteDelta.value.kind === 'resolverValueNode' %}
+    const bytesCreatedOnChain = {{ byteDelta.value.name | camelCase }}(context, resolvedAccounts, resolvedArgs, programId){% if byteDelta.withHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
   {% else %}
     const bytesCreatedOnChain = 0;
   {% endif %}

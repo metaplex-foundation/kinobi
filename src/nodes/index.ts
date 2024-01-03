@@ -3,6 +3,7 @@ export * from './DefinedTypeNode';
 export * from './ErrorNode';
 export * from './InstructionAccountNode';
 export * from './InstructionArgumentNode';
+export * from './InstructionByteDeltaNode';
 export * from './InstructionNode';
 export * from './InstructionRemainingAccountsNode';
 export * from './Node';
