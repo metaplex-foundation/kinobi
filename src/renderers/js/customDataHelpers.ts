@@ -10,13 +10,15 @@ import {
 } from '../../nodes';
 import { ImportFrom, MainCaseString, mainCase } from '../../shared';
 
-export type CustomDataOptions = {
-  name: string;
-  importAs?: string;
-  importFrom?: ImportFrom;
-  extractAs?: string;
-  extract?: boolean;
-};
+export type CustomDataOptions =
+  | string
+  | {
+      name: string;
+      importAs?: string;
+      importFrom?: ImportFrom;
+      extractAs?: string;
+      extract?: boolean;
+    };
 
 export type ParsedCustomDataOptions = Map<
   MainCaseString,
@@ -35,15 +37,18 @@ export const parseCustomDataOptions = (
 ): ParsedCustomDataOptions =>
   new Map(
     customDataOptions.map((o) => {
-      const importAs = mainCase(o.importAs ?? `${o.name}${defaultSuffix}`);
-      const importFrom = o.importFrom ?? 'hooked';
+      const options = typeof o === 'string' ? { name: o } : o;
+      const importAs = mainCase(
+        options.importAs ?? `${options.name}${defaultSuffix}`
+      );
+      const importFrom = options.importFrom ?? 'hooked';
       return [
-        mainCase(o.name),
+        mainCase(options.name),
         {
           importAs,
           importFrom,
-          extractAs: o.extractAs ? mainCase(o.extractAs) : importAs,
-          extract: o.extract ?? true,
+          extractAs: options.extractAs ? mainCase(options.extractAs) : importAs,
+          extract: options.extract ?? true,
           linkNode: definedTypeLinkNode(importAs, importFrom),
         },
       ];
