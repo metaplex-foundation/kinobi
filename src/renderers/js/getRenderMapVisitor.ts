@@ -288,7 +288,8 @@ export function getRenderMapVisitor(
         },
 
         visitAccount(node) {
-          const isLinked = customAccountData.has(node.name);
+          const customData = customAccountData.get(node.name);
+          const isLinked = !!customData;
           const typeManifest = visit(node, typeManifestVisitor);
           const imports = new JavaScriptImportMap().mergeWith(
             typeManifest.strictImports,
@@ -415,6 +416,7 @@ export function getRenderMapVisitor(
               gpaFields: resolvedGpaFields,
               seeds,
               hasVariableSeeds,
+              customData,
             })
           );
         },
@@ -431,7 +433,8 @@ export function getRenderMapVisitor(
             ]);
 
           // Instruction helpers.
-          const linkedDataArgs = customInstructionData.has(node.name);
+          const customData = customInstructionData.get(node.name);
+          const linkedDataArgs = !!customData;
           const hasAccounts = node.accounts.length > 0;
           const hasData =
             linkedDataArgs || node.dataArgs.dataArguments.length > 0;
@@ -604,6 +607,7 @@ export function getRenderMapVisitor(
               hasRemainingAccountsResolver,
               hasResolvers,
               hasResolvedArgs,
+              customData,
             })
           );
         },

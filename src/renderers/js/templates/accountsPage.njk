@@ -4,9 +4,9 @@
 {% block main %}
 {{ imports }}
 
-{% if account.data.link %}
+{% if customData %}
   {{ macros.docblock(account.docs) }}
-  export type {{ account.name | pascalCase }} = Account<{{ account.data.link.name | pascalCase }}>;
+  export type {{ account.name | pascalCase }} = Account<{{ customData.importAs | pascalCase }}>;
 {% else %}
   {{ macros.docblock(account.docs) }}
   export type {{ account.name | pascalCase }} = Account<{{ account.name | pascalCase }}AccountData>;
