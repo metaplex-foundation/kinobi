@@ -30,7 +30,6 @@ export function getInstructionRemainingAccountsFragment(
 function getRemainingAccountsFragment(
   remainingAccounts: InstructionRemainingAccountsNode,
   scope: Pick<GlobalFragmentScope, 'nameApi' | 'asyncResolvers'> & {
-    instructionNode: InstructionNode;
     useAsync: boolean;
   }
 ): Fragment[] {
