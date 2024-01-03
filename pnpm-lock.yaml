@@ -8,8 +8,8 @@ importers:
         specifier: ^1.1.5
         version: 1.1.5
       '@solana/codecs-strings':
-        specifier: 2.0.0-experimental.9741939
-        version: 2.0.0-experimental.9741939(fastestsmallesttextencoderdecoder@1.0.22)
+        specifier: 2.0.0-experimental.a157265
+        version: 2.0.0-experimental.a157265(fastestsmallesttextencoderdecoder@1.0.22)
       chalk:
         specifier: ^4.0.0
         version: 4.1.2
@@ -2065,23 +2065,23 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /@solana/codecs-core@2.0.0-experimental.9741939:
-    resolution: {integrity: sha512-7E51aEwLW+1ta6VWbEq0CbvwSUOcIwmaQCLpkOKsF6cwSNqE5GDv/jw9zKuiYOynlBFQO1Ws59a/hlb2wwwWKg==}
+  /@solana/codecs-core@2.0.0-experimental.a157265:
+    resolution: {integrity: sha512-78SjZiLWWjAn5sVL92T5W+4LXYG01Vu28tVbtiCWi4QEX21794bW6lMcXbPmbivFPbD8Dje+EHAYADfxYj6RTA==}
     dev: false
 
-  /@solana/codecs-numbers@2.0.0-experimental.9741939:
-    resolution: {integrity: sha512-VXBvw8LZdGUJGuC33EFzvaUxCvgNtr9y9Td8zjK9wJDqKSzR0+G53CJv5K4AF25LUu8du8XHBK3VEz3YHl44nQ==}
+  /@solana/codecs-numbers@2.0.0-experimental.a157265:
+    resolution: {integrity: sha512-Bkp7Y1KyhMsu8tHKxwHDXCnYxEawT0P4kEsIO1Fzs54pxOS1jtwJHo7e4FE8Kv8ZSajUQAnbmQqj5GaIU08h9A==}
     dependencies:
-      '@solana/codecs-core': 2.0.0-experimental.9741939
+      '@solana/codecs-core': 2.0.0-experimental.a157265
     dev: false
 
-  /@solana/codecs-strings@2.0.0-experimental.9741939(fastestsmallesttextencoderdecoder@1.0.22):
-    resolution: {integrity: sha512-J1DCTJsAMhFcIIvys/yNWM2Vr4HEWi+LzFB9xxdH+FHTynApjTMd4vI7frgnckuWH7ynp8EZFPnBTje1BphQrw==}
+  /@solana/codecs-strings@2.0.0-experimental.a157265(fastestsmallesttextencoderdecoder@1.0.22):
+    resolution: {integrity: sha512-1AypxqrFipI053/EOHZnDDcfKBduLjJdrpkbcqrgWJyciv/7+fMQjkgjbG+C8Vcqx5G8weUesXCcvAhqbdRwMw==}
     peerDependencies:
       fastestsmallesttextencoderdecoder: ^1.0.22
     dependencies:
-      '@solana/codecs-core': 2.0.0-experimental.9741939
-      '@solana/codecs-numbers': 2.0.0-experimental.9741939
+      '@solana/codecs-core': 2.0.0-experimental.a157265
+      '@solana/codecs-numbers': 2.0.0-experimental.a157265
       fastestsmallesttextencoderdecoder: 1.0.22
     dev: false
 
