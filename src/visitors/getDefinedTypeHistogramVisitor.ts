@@ -104,7 +104,7 @@ export function getDefinedTypeHistogramVisitor(): Visitor<DefinedTypeHistogram> 
               inDefinedTypes: Number(mode === 'definedType'),
               inInstructionArgs: Number(mode === 'instruction'),
               directlyAsInstructionArgs: Number(
-                mode === 'instruction' && stackLevel <= 2
+                mode === 'instruction' && stackLevel <= 1
               ),
             },
           };
