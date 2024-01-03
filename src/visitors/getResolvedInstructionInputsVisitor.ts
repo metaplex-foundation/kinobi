@@ -2,22 +2,17 @@ import {
   AccountValueNode,
   ArgumentValueNode,
   InstructionAccountNode,
+  InstructionArgumentNode,
   InstructionInputValueNode,
   InstructionNode,
+  VALUE_NODES,
   accountValueNode,
+  getAllInstructionArguments,
   isNode,
 } from '../nodes';
 import { MainCaseString } from '../shared';
 import { singleNodeVisitor } from './singleNodeVisitor';
 import { Visitor } from './visitor';
-
-type InstructionInput = InstructionArgument | InstructionAccountNode;
-type InstructionArgument = {
-  kind: 'argument';
-  name: string;
-  defaultValue: InstructionInputValueNode;
-};
-type InstructionDependency = ArgumentValueNode | AccountValueNode;
 
 export type ResolvedInstructionInput =
   | ResolvedInstructionAccount
@@ -28,14 +23,17 @@ export type ResolvedInstructionAccount = InstructionAccountNode & {
   resolvedIsSigner: boolean | 'either';
   resolvedIsOptional: boolean;
 };
-export type ResolvedInstructionArgument = InstructionArgument & {
+export type ResolvedInstructionArgument = InstructionArgumentNode & {
   dependsOn: InstructionDependency[];
 };
+type InstructionInput = InstructionArgumentNode | InstructionAccountNode;
+type InstructionDependency = ArgumentValueNode | AccountValueNode;
 
-export function getResolvedInstructionInputsVisitor(): Visitor<
-  ResolvedInstructionInput[],
-  'instructionNode'
-> {
+export function getResolvedInstructionInputsVisitor(
+  options: { includeDataArgumentValueNodes?: boolean } = {}
+): Visitor<ResolvedInstructionInput[], 'instructionNode'> {
+  const includeDataArgumentValueNodes =
+    options.includeDataArgumentValueNodes ?? false;
   let stack: InstructionInput[] = [];
   let resolved: ResolvedInstructionInput[] = [];
   let visitedAccounts = new Map<string, ResolvedInstructionAccount>();
@@ -47,9 +45,9 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
   ): void {
     // Ensure we don't visit the same input twice.
     if (
-      (input.kind === 'instructionAccountNode' &&
+      (isNode(input, 'instructionAccountNode') &&
         visitedAccounts.has(input.name)) ||
-      (input.kind === 'argument' && visitedArgs.has(input.name))
+      (isNode(input, 'instructionArgumentNode') && visitedArgs.has(input.name))
     ) {
       return;
     }
@@ -72,7 +70,7 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
     const localResolved =
       input.kind === 'instructionAccountNode'
         ? resolveInstructionAccount(instruction, input)
-        : resolveInstructionArg(instruction, input);
+        : resolveInstructionArgument(instruction, input);
     stack.pop();
 
     // Store the resolved input.
@@ -94,10 +92,10 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
 
     const localResolved: ResolvedInstructionAccount = {
       ...account,
-      isPda: Object.values(instruction.argDefaults).some(
-        (argDefault) =>
-          isNode(argDefault, 'accountBumpValueNode') &&
-          argDefault.name === account.name
+      isPda: getAllInstructionArguments(instruction).some(
+        (argument) =>
+          isNode(argument.defaultValue, 'accountBumpValueNode') &&
+          argument.defaultValue.name === account.name
       ),
       dependsOn,
       resolvedIsSigner: account.isSigner,
@@ -155,15 +153,15 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
     return localResolved;
   }
 
-  function resolveInstructionArg(
+  function resolveInstructionArgument(
     instruction: InstructionNode,
-    arg: InstructionArgument & { kind: 'argument' }
+    argument: InstructionArgumentNode
   ): ResolvedInstructionArgument {
     // Find and visit dependencies first.
-    const dependsOn = getInstructionDependencies(arg);
-    resolveInstructionDependencies(instruction, arg, dependsOn);
+    const dependsOn = getInstructionDependencies(argument);
+    resolveInstructionDependencies(instruction, argument, dependsOn);
 
-    return { ...arg, dependsOn };
+    return { ...argument, dependsOn };
   }
 
   function resolveInstructionDependencies(
@@ -175,7 +173,7 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
       let input: InstructionInput | null = null;
       if (isNode(dependency, 'accountValueNode')) {
         const dependencyAccount = instruction.accounts.find(
-          ({ name }) => name === dependency.name
+          (a) => a.name === dependency.name
         );
         if (!dependencyAccount) {
           const error =
@@ -185,14 +183,16 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
         }
         input = { ...dependencyAccount };
       } else if (isNode(dependency, 'argumentValueNode')) {
-        const dependencyArg = instruction.argDefaults[dependency.name] ?? null;
-        if (dependencyArg) {
-          input = {
-            kind: 'argument',
-            name: dependency.name,
-            defaultValue: dependencyArg,
-          };
+        const dependencyArgument = getAllInstructionArguments(instruction).find(
+          (a) => a.name === dependency.name
+        );
+        if (!dependencyArgument) {
+          const error =
+            `Argument "${dependency.name}" is not a valid dependency of ${parent.kind} ` +
+            `"${parent.name}" in the "${instruction.name}" instruction.`;
+          throw new Error(error);
         }
+        input = { ...dependencyArgument };
       }
       if (input) {
         resolveInstructionInput(instruction, input);
@@ -254,11 +254,11 @@ export function getResolvedInstructionInputsVisitor(): Visitor<
 
       const inputs: InstructionInput[] = [
         ...node.accounts,
-        ...Object.entries(node.argDefaults).map(([argName, argDefault]) => ({
-          kind: 'argument' as const,
-          name: argName,
-          defaultValue: argDefault,
-        })),
+        ...node.arguments.filter((a) => {
+          if (includeDataArgumentValueNodes) return a.defaultValue;
+          return a.defaultValue && !isNode(a.defaultValue, VALUE_NODES);
+        }),
+        ...(node.extraArguments ?? []).filter((a) => a.defaultValue),
       ];
 
       // Visit all instruction accounts.

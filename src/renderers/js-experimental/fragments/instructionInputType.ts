@@ -79,7 +79,8 @@ export function getInstructionInputTypeFragment(
   // Arguments.
   const resolveArg = (arg: InstructionArgumentNode) => {
     const resolvedArg = resolvedInputs.find(
-      (input) => input.kind === 'argument' && input.name === arg.name
+      (input) =>
+        isNode(input, 'instructionArgumentNode') && input.name === arg.name
     ) as ResolvedInstructionArgument | undefined;
     if (arg.defaultValue && arg.defaultValueStrategy === 'omitted') return [];
     const renamedName = renamedArgs.get(arg.name) ?? arg.name;

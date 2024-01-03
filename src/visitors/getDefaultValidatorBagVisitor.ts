@@ -1,4 +1,4 @@
-import { isNode } from '../nodes';
+import { getAllInstructionArguments, isNode } from '../nodes';
 import {
   LinkableDictionary,
   NodeStack,
@@ -102,14 +102,15 @@ export function getDefaultValidatorBagVisitor(): Visitor<ValidatorBag> {
           }
 
           // Check arg defaults.
-          Object.entries(node.argDefaults).forEach(([name, defaultValue]) => {
+          getAllInstructionArguments(node).forEach((argument) => {
+            const { defaultValue } = argument;
             if (isNode(defaultValue, 'accountBumpValueNode')) {
               const defaultAccount = node.accounts.find(
                 (account) => account.name === defaultValue.name
               );
               if (defaultAccount && defaultAccount.isSigner !== false) {
                 bag.error(
-                  `Argument ${name} cannot default to the bump attribute of ` +
+                  `Argument ${argument.name} cannot default to the bump attribute of ` +
                     `the [${defaultValue.name}] account as it may be a Signer.`,
                   node,
                   stack

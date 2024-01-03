@@ -185,7 +185,7 @@ export function getDummyInstructionDataCodec(): Codec<
 
 export type DummyInstructionExtraArgs = {
   identityArg: Address;
-  proof: Array<Address>;
+  proof?: Array<Address>;
 };
 
 export type DummyAsyncInput<

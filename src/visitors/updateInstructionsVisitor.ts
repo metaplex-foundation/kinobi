@@ -2,11 +2,11 @@ import {
   InstructionAccountNode,
   InstructionAccountNodeInput,
   InstructionArgumentNode,
+  InstructionArgumentNodeInput,
   InstructionInputValueNode,
   InstructionNode,
   InstructionNodeInput,
   TYPE_NODES,
-  TypeNode,
   addDefaultSeedValuesFromPdaWhenMissing,
   assertIsNode,
   instructionAccountNode,
@@ -14,7 +14,7 @@ import {
   instructionNode,
   isNode,
 } from '../nodes';
-import { LinkableDictionary, MainCaseString, mainCase, pipe } from '../shared';
+import { LinkableDictionary, mainCase, pipe } from '../shared';
 import {
   BottomUpNodeTransformerWithSelector,
   bottomUpTransformerVisitor,
@@ -25,7 +25,7 @@ export type InstructionUpdates =
   | { delete: true }
   | (InstructionMetadataUpdates & {
       accounts?: InstructionAccountUpdates;
-      args?: InstructionArgUpdates;
+      args?: InstructionArgumentUpdates;
     });
 
 export type InstructionMetadataUpdates = Partial<
@@ -42,12 +42,9 @@ export type InstructionAccountUpdates = Record<
   }
 >;
 
-export type InstructionArgUpdates = Record<
+export type InstructionArgumentUpdates = Record<
   string,
-  {
-    name?: string;
-    docs?: string[];
-    type?: TypeNode;
+  Partial<Omit<InstructionArgumentNodeInput, 'defaultValue'>> & {
     defaultValue?: InstructionInputValueNode | null;
   }
 >;
@@ -74,16 +71,16 @@ export function updateInstructionsVisitor(
             args: argsUpdates,
             ...metadataUpdates
           } = updates;
-          const newName = mainCase(updates.name ?? node.name);
-          const { newArguments, newExtraArguments, newArgDefaults } =
-            handleInstructionArgs(node, newName, argsUpdates ?? {});
+          const { newArguments, newExtraArguments } = handleInstructionArgument(
+            node,
+            argsUpdates ?? {}
+          );
           const newAccounts = node.accounts.map((account) =>
             handleInstructionAccount(account, accountUpdates ?? {}, linkables)
           );
           return instructionNode({
             ...node,
             ...metadataUpdates,
-            argDefaults: newArgDefaults,
             accounts: newAccounts,
             arguments: newArguments,
             extraArguments:
@@ -132,14 +129,12 @@ function handleInstructionAccount(
   return instructionAccountNode({ ...acountWithoutDefault, defaultValue });
 }
 
-function handleInstructionArgs(
+function handleInstructionArgument(
   instruction: InstructionNode,
-  newInstructionName: string,
-  argUpdates: InstructionArgUpdates
+  argUpdates: InstructionArgumentUpdates
 ): {
   newArguments: InstructionArgumentNode[];
   newExtraArguments: InstructionArgumentNode[];
-  newArgDefaults: Record<string, InstructionInputValueNode>;
 } {
   const usedArgs = new Set<string>();
 
@@ -152,6 +147,7 @@ function handleInstructionArgs(
       type: argUpdate.type ?? node.type,
       name: argUpdate.name ?? node.name,
       docs: argUpdate.docs ?? node.docs,
+      defaultValue: argUpdate.defaultValue ?? node.defaultValue,
     });
   });
 
@@ -166,6 +162,7 @@ function handleInstructionArgs(
         type: argUpdate.type ?? node.type,
         name: argUpdate.name ?? node.name,
         docs: argUpdate.docs ?? node.docs,
+        defaultValue: argUpdate.defaultValue ?? node.defaultValue,
       });
     }
   );
@@ -181,19 +178,10 @@ function handleInstructionArgs(
           name: argUpdate.name ?? argName,
           type,
           docs: argUpdate.docs ?? [],
+          defaultValue: argUpdate.defaultValue ?? undefined,
         });
       }),
   ];
 
-  const newArgDefaults = instruction.argDefaults;
-  Object.entries(argUpdates).forEach(([argName, argUpdate]) => {
-    if (argUpdate?.defaultValue === undefined) return;
-    if (argUpdate.defaultValue === null) {
-      delete newArgDefaults[argName as MainCaseString];
-    } else {
-      newArgDefaults[argName as MainCaseString] = argUpdate.defaultValue;
-    }
-  });
-
-  return { newArguments, newExtraArguments, newArgDefaults };
+  return { newArguments, newExtraArguments };
 }

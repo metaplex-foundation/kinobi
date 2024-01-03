@@ -71,7 +71,7 @@ export function getDummyInstructionDataSerializer(): Serializer<
 // Extra Args.
 export type DummyInstructionExtraArgs = {
   identityArg: PublicKey;
-  proof: Array<PublicKey>;
+  proof?: Array<PublicKey>;
 };
 
 // Args.

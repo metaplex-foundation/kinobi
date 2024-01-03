@@ -244,7 +244,9 @@ export function getTransferInstructionDataCodec(): Codec<
   );
 }
 
-export type TransferInstructionExtraArgs = { tokenStandard: TokenStandardArgs };
+export type TransferInstructionExtraArgs = {
+  tokenStandard?: TokenStandardArgs;
+};
 
 export type TransferAsyncInput<
   TAccountAuthority extends string,
