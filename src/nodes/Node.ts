@@ -11,6 +11,7 @@ import type { PdaNode } from './PdaNode';
 import type { ProgramNode } from './ProgramNode';
 import type { RootNode } from './RootNode';
 import { REGISTERED_CONTEXTUAL_VALUE_NODES } from './contextualValueNodes/ContextualValueNode';
+import { REGISTERED_DISCRIMINATOR_NODES } from './discriminatorNodes/DiscriminatorNode';
 import { REGISTERED_LINK_NODES } from './linkNodes/LinkNode';
 import { REGISTERED_PDA_SEED_NODES } from './pdaSeedNodes/PdaSeedNode';
 import { REGISTERED_SIZE_NODES } from './sizeNodes/SizeNode';
@@ -34,6 +35,7 @@ const REGISTERED_NODES = {
 
   // Groups.
   ...REGISTERED_CONTEXTUAL_VALUE_NODES,
+  ...REGISTERED_DISCRIMINATOR_NODES,
   ...REGISTERED_LINK_NODES,
   ...REGISTERED_PDA_SEED_NODES,
   ...REGISTERED_SIZE_NODES,

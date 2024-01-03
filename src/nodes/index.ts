@@ -12,6 +12,7 @@ export * from './ProgramNode';
 export * from './RootNode';
 
 export * from './contextualValueNodes';
+export * from './discriminatorNodes';
 export * from './linkNodes';
 export * from './pdaSeedNodes';
 export * from './sizeNodes';
