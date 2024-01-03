@@ -8,6 +8,7 @@ import {
   getAllInstructionsWithSubs,
   isNode,
   isNodeFilter,
+  structTypeNodeFromInstructionArgumentNodes,
 } from '../../nodes';
 import {
   ImportFrom,
@@ -269,7 +270,14 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
             });
           });
 
-          const typeManifest = visit(node, typeManifestVisitor);
+          const struct = structTypeNodeFromInstructionArgumentNodes(
+            node.dataArgs.dataArguments
+          );
+          typeManifestVisitor.setParentName(
+            `${pascalCase(node.name)}InstructionData`
+          );
+          const typeManifest = visit(struct, typeManifestVisitor);
+          typeManifestVisitor.setParentName(null);
 
           return new RenderMap().add(
             `instructions/${snakeCase(node.name)}.rs`,
