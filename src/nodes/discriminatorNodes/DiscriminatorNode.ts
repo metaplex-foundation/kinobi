@@ -14,12 +14,12 @@ export const REGISTERED_DISCRIMINATOR_NODES = {
 export const REGISTERED_DISCRIMINATOR_NODE_KINDS = getNodeKinds(
   REGISTERED_DISCRIMINATOR_NODES
 );
-export type RegisteredDiscriminatordNodeKind =
+export type RegisteredDiscriminatorNodeKind =
   typeof REGISTERED_DISCRIMINATOR_NODE_KINDS[number];
-export type RegisteredDiscriminatordNode =
-  typeof REGISTERED_DISCRIMINATOR_NODES[RegisteredDiscriminatordNodeKind];
+export type RegisteredDiscriminatorNode =
+  typeof REGISTERED_DISCRIMINATOR_NODES[RegisteredDiscriminatorNodeKind];
 
 // Discriminator Node Helpers.
 
-export type DiscriminatordNode = RegisteredDiscriminatordNode;
+export type DiscriminatorNode = RegisteredDiscriminatorNode;
 export const DISCRIMINATOR_NODES = REGISTERED_DISCRIMINATOR_NODE_KINDS;
