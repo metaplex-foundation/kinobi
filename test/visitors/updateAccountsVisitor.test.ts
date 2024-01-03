@@ -31,10 +31,6 @@ test('it updates the name of an account', (t) => {
   // Then we expect the following tree changes.
   assertIsNode(result, 'programNode');
   t.is(result.accounts[0].name, 'myNewAccount' as MainCaseString);
-  t.is(
-    result.accounts[0].data.name,
-    'myNewAccountAccountData' as MainCaseString
-  );
 
   // But the idl name should not be changed.
   t.is(result.accounts[0].idlName, 'myAccount');

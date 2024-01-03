@@ -47,7 +47,6 @@ const tree = rootNode([
       accountNode({
         name: 'token',
         data: accountDataNode({
-          name: 'tokenAccountData',
           struct: structTypeNode([
             structFieldTypeNode({
               name: 'owner',
@@ -92,7 +91,6 @@ const tree = rootNode([
           }),
         ],
         dataArgs: instructionDataArgsNode({
-          name: 'mintTokenInstructionData',
           dataArguments: [
             instructionArgumentNode({
               name: 'amount',
@@ -101,7 +99,6 @@ const tree = rootNode([
           ],
         }),
         extraArgs: instructionExtraArgsNode({
-          name: 'mintTokenInstructionExtra',
           extraArguments: [],
         }),
       }),
@@ -128,7 +125,6 @@ const tree = rootNode([
       accountNode({
         name: 'gift',
         data: accountDataNode({
-          name: 'giftAccountData',
           struct: structTypeNode([
             structFieldTypeNode({
               name: 'owner',
@@ -166,11 +162,9 @@ const tree = rootNode([
           }),
         ],
         dataArgs: instructionDataArgsNode({
-          name: 'openGiftInstructionData',
           dataArguments: [],
         }),
         extraArgs: instructionExtraArgsNode({
-          name: 'openGiftInstructionExtra',
           extraArguments: [],
         }),
       }),

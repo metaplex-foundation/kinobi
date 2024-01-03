@@ -4,7 +4,6 @@ import {
   isNode,
   isScalarEnum,
   numberTypeNode,
-  structTypeNodeFromInstructionArgumentNodes,
 } from '../../nodes';
 import { pascalCase, pipe, snakeCase } from '../../shared';
 import { extendVisitor, mergeVisitor, visit } from '../../visitors';
@@ -34,9 +33,6 @@ export function getTypeManifestVisitor() {
         'definedTypeNode',
         'accountNode',
         'accountDataNode',
-        'instructionNode',
-        'instructionDataArgsNode',
-        'instructionExtraArgsNode',
       ]
     ),
     (v) =>
@@ -60,30 +56,6 @@ export function getTypeManifestVisitor() {
 
         visitAccountData(accountData, { self }) {
           return visit(accountData.struct, self);
-        },
-
-        visitInstruction(instruction, { self }) {
-          return visit(instruction.dataArgs, self);
-        },
-
-        visitInstructionDataArgs(instructionDataArgs, { self }) {
-          parentName = pascalCase(instructionDataArgs.name);
-          const struct = structTypeNodeFromInstructionArgumentNodes(
-            instructionDataArgs.dataArguments
-          );
-          const manifest = visit(struct, self);
-          parentName = null;
-          return manifest;
-        },
-
-        visitInstructionExtraArgs(instructionExtraArgs, { self }) {
-          parentName = pascalCase(instructionExtraArgs.name);
-          const struct = structTypeNodeFromInstructionArgumentNodes(
-            instructionExtraArgs.extraArguments
-          );
-          const manifest = visit(struct, self);
-          parentName = null;
-          return manifest;
         },
 
         visitDefinedType(definedType, { self }) {

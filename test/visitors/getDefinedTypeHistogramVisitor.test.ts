@@ -35,7 +35,6 @@ test('it counts the amount of times defined types are used within the tree', (t)
       accountNode({
         name: 'myAccount',
         data: accountDataNode({
-          name: 'myAccountData',
           struct: structTypeNode([
             structFieldTypeNode({
               name: 'field1',
@@ -54,7 +53,6 @@ test('it counts the amount of times defined types are used within the tree', (t)
         name: 'myInstruction',
         accounts: [],
         dataArgs: instructionDataArgsNode({
-          name: 'myInstructionData',
           dataArguments: [
             instructionArgumentNode({
               name: 'arg1',

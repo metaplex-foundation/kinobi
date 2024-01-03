@@ -32,7 +32,6 @@ test('it returns all instruction accounts in order of resolution', (t) => {
       }),
     ],
     dataArgs: instructionDataArgsNode({
-      name: 'myInstructionData',
       dataArguments: [],
     }),
   });
@@ -77,7 +76,6 @@ test('it sets the resolved signer to either when a non signer defaults to a sign
       }),
     ],
     dataArgs: instructionDataArgsNode({
-      name: 'myInstructionData',
       dataArguments: [],
     }),
   });
@@ -113,7 +111,6 @@ test('it sets the resolved signer to either when a signer defaults to a non sign
       }),
     ],
     dataArgs: instructionDataArgsNode({
-      name: 'myInstructionData',
       dataArguments: [],
     }),
   });
@@ -145,7 +142,6 @@ test('it includes instruction data arguments with default values', (t) => {
       }),
     ],
     dataArgs: instructionDataArgsNode({
-      name: 'myInstructionData',
       dataArguments: [
         instructionArgumentNode({
           name: 'ownerArg',
@@ -200,11 +196,9 @@ test('it includes instruction extra arguments with default values', (t) => {
       }),
     ],
     dataArgs: instructionDataArgsNode({
-      name: 'myInstructionData',
       dataArguments: [],
     }),
     extraArgs: instructionExtraArgsNode({
-      name: 'myInstructionExtra',
       extraArguments: [
         instructionArgumentNode({
           name: 'ownerArg',
@@ -251,7 +245,6 @@ test('it returns an empty array for empty instructions', (t) => {
     name: 'myInstruction',
     accounts: [],
     dataArgs: instructionDataArgsNode({
-      name: 'myInstructionData',
       dataArguments: [],
     }),
   });
