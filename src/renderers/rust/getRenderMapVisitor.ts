@@ -57,17 +57,13 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
     (v) =>
       extendVisitor(v, {
         visitRoot(node, { self }) {
-          const programsToExport = node.programs.filter((p) => !p.internal);
-          const accountsToExport = getAllAccounts(node).filter(
-            (a) => !a.internal
-          );
+          const programsToExport = node.programs;
+          const accountsToExport = getAllAccounts(node);
           const instructionsToExport = getAllInstructionsWithSubs(
             node,
             !renderParentInstructions
-          ).filter((i) => !i.internal);
-          const definedTypesToExport = getAllDefinedTypes(node).filter(
-            (t) => !t.internal
           );
+          const definedTypesToExport = getAllDefinedTypes(node);
           const hasAnythingToExport =
             programsToExport.length > 0 ||
             accountsToExport.length > 0 ||
@@ -108,21 +104,13 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
           program = node;
           const renderMap = new RenderMap()
             .mergeWith(...node.accounts.map((account) => visit(account, self)))
-            .mergeWith(...node.definedTypes.map((type) => visit(type, self)));
-
-          // Internal programs are support programs that
-          // were added to fill missing types or accounts.
-          // They don't need to render anything else.
-          if (node.internal) {
-            program = null;
-            return renderMap;
-          }
-
-          renderMap.mergeWith(
-            ...getAllInstructionsWithSubs(node, !renderParentInstructions).map(
-              (ix) => visit(ix, self)
-            )
-          );
+            .mergeWith(...node.definedTypes.map((type) => visit(type, self)))
+            .mergeWith(
+              ...getAllInstructionsWithSubs(
+                node,
+                !renderParentInstructions
+              ).map((ix) => visit(ix, self))
+            );
 
           // Errors.
           if (node.errors.length > 0) {

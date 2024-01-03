@@ -24,7 +24,6 @@ export type AccountNode = {
   readonly name: MainCaseString;
   readonly idlName: string;
   readonly docs: string[];
-  readonly internal: boolean;
   readonly size?: number | null;
 };
 
@@ -43,7 +42,6 @@ export function accountNode(input: AccountNodeInput): AccountNode {
     name: mainCase(input.name),
     idlName: input.idlName ?? input.name,
     docs: input.docs ?? [],
-    internal: input.internal ?? false,
     size: input.size,
     discriminator: input.discriminator,
   };

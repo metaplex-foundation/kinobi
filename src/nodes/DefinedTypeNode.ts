@@ -12,7 +12,6 @@ export type DefinedTypeNode = {
   readonly name: MainCaseString;
   readonly idlName: string;
   readonly docs: string[];
-  readonly internal: boolean;
 };
 
 export type DefinedTypeNodeInput = {
@@ -20,7 +19,6 @@ export type DefinedTypeNodeInput = {
   readonly type: TypeNode;
   readonly idlName?: string;
   readonly docs?: string[];
-  readonly internal?: boolean;
 };
 
 export function definedTypeNode(input: DefinedTypeNodeInput): DefinedTypeNode {
@@ -33,7 +31,6 @@ export function definedTypeNode(input: DefinedTypeNodeInput): DefinedTypeNode {
     type: input.type,
     idlName: input.idlName ?? input.name,
     docs: input.docs ?? [],
-    internal: input.internal ?? false,
   };
 }
 

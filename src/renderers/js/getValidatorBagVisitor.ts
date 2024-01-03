@@ -103,9 +103,7 @@ export function getValidatorBagVisitor(): Visitor<ValidatorBag> {
             [`get${pascalCaseName}GpaBuilder`]: 'function',
             [`get${pascalCaseName}Size`]: 'function',
           };
-          if (!node.internal) {
-            bag.mergeWith([checkExportConflicts(node, exports)]);
-          }
+          bag.mergeWith([checkExportConflicts(node, exports)]);
 
           const reservedAccountFields = new Set(['publicKey', 'header']);
           const invalidFields = node.data.fields
@@ -128,19 +126,17 @@ export function getValidatorBagVisitor(): Visitor<ValidatorBag> {
           const pascalCaseName = pascalCase(node.name);
           const pascalCaseData = `${pascalCaseName}InstructionData`;
           const pascalCaseExtra = `${pascalCaseName}InstructionExtra`;
-          if (!node.internal) {
-            bag.mergeWith([
-              checkExportConflicts(node, {
-                [camelCaseName]: 'function',
-                [`${pascalCaseName}InstructionAccounts`]: 'type',
-                [`${pascalCaseName}InstructionArgs`]: 'type',
-                [`${pascalCaseData}`]: 'type',
-                [`${pascalCaseData}Args`]: 'type',
-                [`get${pascalCaseData}Serializer`]: 'function',
-                [`${pascalCaseExtra}Args`]: 'type',
-              }),
-            ]);
-          }
+          bag.mergeWith([
+            checkExportConflicts(node, {
+              [camelCaseName]: 'function',
+              [`${pascalCaseName}InstructionAccounts`]: 'type',
+              [`${pascalCaseName}InstructionArgs`]: 'type',
+              [`${pascalCaseData}`]: 'type',
+              [`${pascalCaseData}Args`]: 'type',
+              [`get${pascalCaseData}Serializer`]: 'function',
+              [`${pascalCaseExtra}Args`]: 'type',
+            }),
+          ]);
           return bag.mergeWith([next(node)]);
         },
 
@@ -148,21 +144,19 @@ export function getValidatorBagVisitor(): Visitor<ValidatorBag> {
           const bag = new ValidatorBag();
           const camelCaseName = camelCase(node.name);
           const pascalCaseName = pascalCase(node.name);
-          if (!node.internal) {
-            bag.mergeWith([
-              checkExportConflicts(node, {
-                [pascalCaseName]: 'type',
-                [`${pascalCaseName}Args`]: 'type',
-                [`fetch${pascalCaseName}`]: 'function',
-                ...(isNode(node.type, 'enumTypeNode') && isDataEnum(node.type)
-                  ? {
-                      [camelCaseName]: 'function',
-                      [`is${pascalCaseName}`]: 'function',
-                    }
-                  : {}),
-              }),
-            ]);
-          }
+          bag.mergeWith([
+            checkExportConflicts(node, {
+              [pascalCaseName]: 'type',
+              [`${pascalCaseName}Args`]: 'type',
+              [`fetch${pascalCaseName}`]: 'function',
+              ...(isNode(node.type, 'enumTypeNode') && isDataEnum(node.type)
+                ? {
+                    [camelCaseName]: 'function',
+                    [`is${pascalCaseName}`]: 'function',
+                  }
+                : {}),
+            }),
+          ]);
           return bag.mergeWith([next(node)]);
         },
 

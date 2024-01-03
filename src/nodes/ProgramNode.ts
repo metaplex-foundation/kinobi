@@ -22,7 +22,6 @@ export type ProgramNode = {
   readonly publicKey: string;
   readonly version: string;
   readonly origin?: 'shank' | 'anchor';
-  readonly internal: boolean;
 };
 
 export type ProgramNodeInput = Omit<
@@ -46,7 +45,6 @@ export function programNode(input: ProgramNodeInput): ProgramNode {
     publicKey: input.publicKey,
     version: input.version ?? '',
     origin: input.origin,
-    internal: input.internal ?? false,
   };
 }
 
