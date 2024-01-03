@@ -18,7 +18,6 @@ import {
 import { isNode } from './Node';
 import { ProgramNode } from './ProgramNode';
 import { RootNode } from './RootNode';
-import { InstructionInputValueNode } from './contextualValueNodes';
 import { createTypeNodeFromIdl } from './typeNodes/TypeNode';
 import { numberValueNode } from './valueNodes';
 
@@ -30,7 +29,6 @@ export type InstructionNode = {
   readonly arguments: InstructionArgumentNode[];
   readonly extraArguments?: InstructionArgumentNode[];
   readonly subInstructions?: InstructionNode[];
-  readonly argDefaults: Record<MainCaseString, InstructionInputValueNode>;
 
   // Children to-be.
   readonly bytesCreatedOnChain?: BytesCreatedOnChain;
@@ -46,10 +44,9 @@ export type InstructionNode = {
 
 export type InstructionNodeInput = Omit<
   Partial<InstructionNode>,
-  'kind' | 'name' | 'argDefaults'
+  'kind' | 'name'
 > & {
   readonly name: string;
-  readonly argDefaults?: Record<string, InstructionInputValueNode>;
 };
 
 export function instructionNode(input: InstructionNodeInput): InstructionNode {
@@ -69,12 +66,6 @@ export function instructionNode(input: InstructionNodeInput): InstructionNode {
     internal: input.internal ?? false,
     bytesCreatedOnChain: input.bytesCreatedOnChain,
     remainingAccounts: input.remainingAccounts,
-    argDefaults: Object.fromEntries(
-      Object.entries(input.argDefaults ?? {}).map(([key, value]) => [
-        mainCase(key),
-        value,
-      ])
-    ),
     optionalAccountStrategy: input.optionalAccountStrategy ?? 'programId',
   };
 }
@@ -106,6 +97,12 @@ export function instructionNodeFromIdl(
       ? 'omitted'
       : 'programId',
   });
+}
+
+export function getAllInstructionArguments(
+  node: InstructionNode
+): InstructionArgumentNode[] {
+  return [...node.arguments, ...(node.extraArguments ?? [])];
 }
 
 export function getAllInstructionsWithSubs(

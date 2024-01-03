@@ -132,15 +132,13 @@ test('it includes instruction data arguments with default values', (t) => {
       instructionArgumentNode({
         name: 'ownerArg',
         type: publicKeyTypeNode(),
+        defaultValue: accountValueNode('owner'),
       }),
       instructionArgumentNode({
         name: 'argWithoutDefaults',
         type: numberTypeNode('u8'),
       }),
     ],
-    argDefaults: {
-      ownerArg: accountValueNode('owner'),
-    },
   });
 
   // When we get its resolved inputs.
@@ -156,9 +154,7 @@ test('it includes instruction data arguments with default values', (t) => {
       resolvedIsSigner: true,
     },
     {
-      kind: 'argument',
-      name: 'ownerArg',
-      defaultValue: accountValueNode('owner'),
+      ...node.arguments[0],
       dependsOn: [accountValueNode('owner')],
     },
   ]);
@@ -184,15 +180,13 @@ test('it includes instruction extra arguments with default values', (t) => {
       instructionArgumentNode({
         name: 'ownerArg',
         type: publicKeyTypeNode(),
+        defaultValue: accountValueNode('owner'),
       }),
       instructionArgumentNode({
         name: 'argWithoutDefaults',
         type: numberTypeNode('u8'),
       }),
     ],
-    argDefaults: {
-      ownerArg: accountValueNode('owner'),
-    },
   });
 
   // When we get its resolved inputs.
@@ -208,9 +202,7 @@ test('it includes instruction extra arguments with default values', (t) => {
       resolvedIsSigner: true,
     },
     {
-      kind: 'argument',
-      name: 'ownerArg',
-      defaultValue: accountValueNode('owner'),
+      ...node.extraArguments![0],
       dependsOn: [accountValueNode('owner')],
     },
   ]);

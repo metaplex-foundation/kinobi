@@ -1,4 +1,4 @@
-import { InstructionNode } from '../../../nodes';
+import { InstructionNode, isNode } from '../../../nodes';
 import { camelCase } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import type { GlobalFragmentScope } from '../getRenderMapVisitor';
@@ -26,7 +26,7 @@ export function getInstructionInputResolvedFragment(
       const camelName = camelCase(input.name);
       return [
         inputFragment.mapRender((r) =>
-          input.kind === 'argument'
+          isNode(input, 'instructionArgumentNode')
             ? `if (!args.${camelName}) {\n${r}\n}`
             : `if (!accounts.${camelName}.value) {\n${r}\n}`
         ),

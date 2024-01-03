@@ -6,6 +6,7 @@ import {
 import {
   getAllAccounts,
   getAllDefinedTypes,
+  getAllInstructionArguments,
   getAllInstructionsWithSubs,
   InstructionNode,
   isDataEnum,
@@ -454,12 +455,13 @@ export function getRenderMapVisitor(
               (field) => field.defaultValueStrategy !== 'omitted'
             ).length > 0;
           const hasAnyArgs = hasDataArgs || hasExtraArgs;
-          const hasArgDefaults = Object.keys(node.argDefaults).length > 0;
-          const hasArgResolvers = Object.values(node.argDefaults).some(
-            isNodeFilter('resolverValueNode')
+          const allArguments = getAllInstructionArguments(node);
+          const hasArgDefaults = allArguments.some((a) => a.defaultValue);
+          const hasArgResolvers = allArguments.some((a) =>
+            isNode(a.defaultValue, 'resolverValueNode')
           );
-          const hasAccountResolvers = node.accounts.some(({ defaultValue }) =>
-            isNode(defaultValue, 'resolverValueNode')
+          const hasAccountResolvers = node.accounts.some((a) =>
+            isNode(a.defaultValue, 'resolverValueNode')
           );
           const hasByteResolver = node.bytesCreatedOnChain?.kind === 'resolver';
           const hasRemainingAccountsResolver =
@@ -513,7 +515,7 @@ export function getRenderMapVisitor(
             (input) => input.defaultValue !== undefined && input.render !== ''
           );
           const argsWithDefaults = resolvedInputsWithDefaults
-            .filter((input) => input.kind === 'argument')
+            .filter(isNodeFilter('instructionArgumentNode'))
             .map((input) => input.name);
 
           // Accounts.
@@ -560,11 +562,11 @@ export function getRenderMapVisitor(
           imports.mergeWith(extraArgManifest.looseImports);
 
           // Arg defaults.
-          Object.values(node.argDefaults).forEach((argDefault) => {
-            if (isNode(argDefault, 'resolverValueNode')) {
+          allArguments.forEach((argument) => {
+            if (isNode(argument.defaultValue, 'resolverValueNode')) {
               imports.add(
-                argDefault.importFrom ?? 'hooked',
-                camelCase(argDefault.name)
+                argument.defaultValue.importFrom ?? 'hooked',
+                camelCase(argument.defaultValue.name)
               );
             }
           });
