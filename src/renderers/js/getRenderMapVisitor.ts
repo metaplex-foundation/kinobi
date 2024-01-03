@@ -22,6 +22,7 @@ import {
   LinkableDictionary,
   logWarn,
   mainCase,
+  MainCaseString,
   pascalCase,
   pipe,
   RenderMap,
@@ -66,6 +67,7 @@ export type GetJavaScriptRenderMapOptions = {
   prettierOptions?: PrettierOptions;
   dependencyMap?: Record<ImportFrom, string>;
   nonScalarEnums?: string[];
+  internalNodes?: string[];
   customAccountData?: CustomDataOptions[];
   customInstructionData?: CustomDataOptions[];
 };
@@ -98,6 +100,7 @@ export function getRenderMapVisitor(
     generatedTypes: '../types',
   };
   const nonScalarEnums = (options.nonScalarEnums ?? []).map(mainCase);
+  const internalNodes = (options.internalNodes ?? []).map(mainCase);
   const customAccountData = parseCustomDataOptions(
     options.customAccountData ?? [],
     'AccountData'
@@ -176,17 +179,16 @@ export function getRenderMapVisitor(
     (v) =>
       extendVisitor(v, {
         visitRoot(node, { self }) {
-          const programsToExport = node.programs.filter((p) => !p.internal);
-          const accountsToExport = getAllAccounts(node).filter(
-            (a) => !a.internal
-          );
+          const isNotInternal = (n: { name: MainCaseString }) =>
+            !internalNodes.includes(n.name);
+          const programsToExport = node.programs.filter(isNotInternal);
+          const accountsToExport = getAllAccounts(node).filter(isNotInternal);
           const instructionsToExport = getAllInstructionsWithSubs(
             node,
             !renderParentInstructions
-          ).filter((i) => !i.internal);
-          const definedTypesToExport = getAllDefinedTypes(node).filter(
-            (t) => !t.internal
-          );
+          ).filter(isNotInternal);
+          const definedTypesToExport =
+            getAllDefinedTypes(node).filter(isNotInternal);
           const hasAnythingToExport =
             programsToExport.length > 0 ||
             accountsToExport.length > 0 ||
@@ -242,17 +244,7 @@ export function getRenderMapVisitor(
           const renderMap = new RenderMap()
             .mergeWith(...node.accounts.map((a) => visit(a, self)))
             .mergeWith(...node.definedTypes.map((t) => visit(t, self)))
-            .mergeWith(...customDataDefinedType.map((t) => visit(t, self)));
-
-          // Internal programs are support programs that
-          // were added to fill missing types or accounts.
-          // They don't need to render anything else.
-          if (node.internal) {
-            program = null;
-            return renderMap;
-          }
-
-          renderMap
+            .mergeWith(...customDataDefinedType.map((t) => visit(t, self)))
             .mergeWith(
               ...getAllInstructionsWithSubs(
                 node,

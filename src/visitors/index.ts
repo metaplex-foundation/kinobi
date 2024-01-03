@@ -25,7 +25,6 @@ export * from './setAnchorDiscriminatorsVisitor';
 export * from './setFixedAccountSizesVisitor';
 export * from './setInstructionAccountDefaultValuesVisitor';
 export * from './setInstructionDiscriminatorsVisitor';
-export * from './setMissingDefinedTypesVisitor';
 export * from './setNumberWrappersVisitor';
 export * from './setStructDefaultValuesVisitor';
 export * from './singleNodeVisitor';

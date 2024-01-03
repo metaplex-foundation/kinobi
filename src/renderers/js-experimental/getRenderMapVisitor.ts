@@ -88,6 +88,7 @@ export type GetRenderMapOptions = {
   asyncResolvers?: string[];
   nameTransformers?: Partial<NameTransformers>;
   nonScalarEnums?: string[];
+  internalNodes?: string[];
   customAccountData?: CustomDataOptions[];
   customInstructionData?: CustomDataOptions[];
 };
@@ -122,6 +123,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
   const dependencyMap = options.dependencyMap ?? {};
   const asyncResolvers = (options.asyncResolvers ?? []).map(mainCase);
   const nonScalarEnums = (options.nonScalarEnums ?? []).map(mainCase);
+  const internalNodes = (options.internalNodes ?? []).map(mainCase);
   const customAccountData = parseCustomDataOptions(
     options.customAccountData ?? [],
     'AccountData'
@@ -191,21 +193,20 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
     (v) =>
       extendVisitor(v, {
         visitRoot(node, { self }) {
-          const programsToExport = node.programs.filter((p) => !p.internal);
+          const isNotInternal = (n: { name: MainCaseString }) =>
+            !internalNodes.includes(n.name);
+          const programsToExport = node.programs.filter(isNotInternal);
           const programsWithErrorsToExport = programsToExport.filter(
             (p) => p.errors.length > 0
           );
           const pdasToExport = getAllPdas(node);
-          const accountsToExport = getAllAccounts(node).filter(
-            (a) => !a.internal
-          );
+          const accountsToExport = getAllAccounts(node).filter(isNotInternal);
           const instructionsToExport = getAllInstructionsWithSubs(
             node,
             !renderParentInstructions
-          ).filter((i) => !i.internal);
-          const definedTypesToExport = getAllDefinedTypes(node).filter(
-            (t) => !t.internal
-          );
+          ).filter(isNotInternal);
+          const definedTypesToExport =
+            getAllDefinedTypes(node).filter(isNotInternal);
           const hasAnythingToExport =
             programsToExport.length > 0 ||
             accountsToExport.length > 0 ||
@@ -269,14 +270,6 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             .mergeWith(...node.accounts.map((a) => visit(a, self)))
             .mergeWith(...node.definedTypes.map((t) => visit(t, self)))
             .mergeWith(...customDataDefinedType.map((t) => visit(t, self)));
-
-          // Internal programs are support programs that
-          // were added to fill missing types or accounts.
-          // They don't need to render anything else.
-          if (node.internal) {
-            program = null;
-            return renderMap;
-          }
 
           if (node.errors.length > 0) {
             const programErrorsFragment = getProgramErrorsFragment({

@@ -38,7 +38,6 @@ export type InstructionNode = {
   readonly name: MainCaseString;
   readonly idlName: string;
   readonly docs: string[];
-  readonly internal: boolean;
   readonly optionalAccountStrategy: 'omitted' | 'programId';
 };
 
@@ -63,7 +62,6 @@ export function instructionNode(input: InstructionNodeInput): InstructionNode {
     subInstructions: input.subInstructions,
     idlName: input.idlName ?? input.name,
     docs: input.docs ?? [],
-    internal: input.internal ?? false,
     bytesCreatedOnChain: input.bytesCreatedOnChain,
     remainingAccounts: input.remainingAccounts,
     optionalAccountStrategy: input.optionalAccountStrategy ?? 'programId',
