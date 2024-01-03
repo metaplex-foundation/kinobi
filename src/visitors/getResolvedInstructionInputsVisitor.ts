@@ -30,9 +30,10 @@ type InstructionInput = InstructionArgumentNode | InstructionAccountNode;
 type InstructionDependency = ArgumentValueNode | AccountValueNode;
 
 export function getResolvedInstructionInputsVisitor(
-  options: { includeValueNodes?: boolean } = {}
+  options: { includeDataArgumentValueNodes?: boolean } = {}
 ): Visitor<ResolvedInstructionInput[], 'instructionNode'> {
-  const includeValueNodes = options.includeValueNodes ?? false;
+  const includeDataArgumentValueNodes =
+    options.includeDataArgumentValueNodes ?? false;
   let stack: InstructionInput[] = [];
   let resolved: ResolvedInstructionInput[] = [];
   let visitedAccounts = new Map<string, ResolvedInstructionAccount>();
@@ -253,10 +254,11 @@ export function getResolvedInstructionInputsVisitor(
 
       const inputs: InstructionInput[] = [
         ...node.accounts,
-        ...getAllInstructionArguments(node).filter((a) => {
-          if (includeValueNodes) return a.defaultValue;
+        ...node.arguments.filter((a) => {
+          if (includeDataArgumentValueNodes) return a.defaultValue;
           return a.defaultValue && !isNode(a.defaultValue, VALUE_NODES);
         }),
+        ...(node.extraArguments ?? []).filter((a) => a.defaultValue),
       ];
 
       // Visit all instruction accounts.

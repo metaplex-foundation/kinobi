@@ -6,7 +6,6 @@ import {
 import {
   getAllAccounts,
   getAllDefinedTypes,
-  getAllInstructionArguments,
   getAllInstructionsWithSubs,
   InstructionNode,
   isDataEnum,
@@ -14,6 +13,7 @@ import {
   isNodeFilter,
   ProgramNode,
   structTypeNodeFromInstructionArgumentNodes,
+  VALUE_NODES,
 } from '../../nodes';
 import {
   camelCase,
@@ -455,9 +455,14 @@ export function getRenderMapVisitor(
               (field) => field.defaultValueStrategy !== 'omitted'
             ).length > 0;
           const hasAnyArgs = hasDataArgs || hasExtraArgs;
-          const allArguments = getAllInstructionArguments(node);
-          const hasArgDefaults = allArguments.some((a) => a.defaultValue);
-          const hasArgResolvers = allArguments.some((a) =>
+          const allArgumentsWithDefaultValue = [
+            ...node.arguments.filter(
+              (a) => a.defaultValue && !isNode(a.defaultValue, VALUE_NODES)
+            ),
+            ...(node.extraArguments ?? []).filter((a) => a.defaultValue),
+          ];
+          const hasArgDefaults = allArgumentsWithDefaultValue.length > 0;
+          const hasArgResolvers = allArgumentsWithDefaultValue.some((a) =>
             isNode(a.defaultValue, 'resolverValueNode')
           );
           const hasAccountResolvers = node.accounts.some((a) =>
@@ -562,7 +567,7 @@ export function getRenderMapVisitor(
           imports.mergeWith(extraArgManifest.looseImports);
 
           // Arg defaults.
-          allArguments.forEach((argument) => {
+          allArgumentsWithDefaultValue.forEach((argument) => {
             if (isNode(argument.defaultValue, 'resolverValueNode')) {
               imports.add(
                 argument.defaultValue.importFrom ?? 'hooked',
