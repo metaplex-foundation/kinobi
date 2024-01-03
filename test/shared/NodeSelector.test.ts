@@ -231,7 +231,7 @@ const macro = test.macro({
 
 /**
  * [programNode] splToken
- *     [accountNode] token > [accountDataNode] tokenAccountData > [structTypeNode]
+ *     [accountNode] token > [accountDataNode] > [structTypeNode]
  *         [structFieldTypeNode] owner > [publicKeyTypeNode]
  *         [structFieldTypeNode] mint > [publicKeyTypeNode]
  *         [structFieldTypeNode] amount > [numberTypeNode] (u64)
@@ -245,7 +245,7 @@ const macro = test.macro({
  *     [errorNode] invalidProgramId (0)
  *     [errorNode] invalidTokenOwner (1)
  * [programNode] christmasProgram
- *     [accountNode] gift > [accountDataNode] giftAccountData > [structTypeNode]
+ *     [accountNode] gift > [accountDataNode] > [structTypeNode]
  *         [structFieldTypeNode] owner > [publicKeyTypeNode]
  *         [structFieldTypeNode] opened > [booleanTypeNode] > [numberTypeNode] (u64)
  *         [structFieldTypeNode] amount > [numberTypeNode] (u64)
