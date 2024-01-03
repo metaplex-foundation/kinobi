@@ -51,7 +51,7 @@ import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { getMetadataSize } from '../accounts';
 import { findMetadataPda } from '../pdas';
 import {
-  IInstructionWithBytesCreatedOnChain,
+  IInstructionWithByteDelta,
   ResolvedAccount,
   accountMetaWithDefault,
   expectAddress,
@@ -336,7 +336,7 @@ export async function getCreateMetadataAccountInstructionAsync<
     TAccountSystemProgram,
     TAccountRent
   > &
-    IInstructionWithBytesCreatedOnChain
+    IInstructionWithByteDelta
 >;
 export async function getCreateMetadataAccountInstructionAsync<
   TAccountMetadata extends string,
@@ -368,7 +368,7 @@ export async function getCreateMetadataAccountInstructionAsync<
     TAccountSystemProgram,
     TAccountRent
   > &
-    IInstructionWithBytesCreatedOnChain
+    IInstructionWithByteDelta
 >;
 export async function getCreateMetadataAccountInstructionAsync<
   TAccountMetadata extends string,
@@ -389,7 +389,7 @@ export async function getCreateMetadataAccountInstructionAsync<
     TAccountSystemProgram,
     TAccountRent
   >
-): Promise<IInstruction & IInstructionWithBytesCreatedOnChain> {
+): Promise<IInstruction & IInstructionWithByteDelta> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -441,8 +441,11 @@ export async function getCreateMetadataAccountInstructionAsync<
     args.metadataBump = expectProgramDerivedAddress(accounts.metadata.value)[1];
   }
 
-  // Bytes created on chain.
-  const bytesCreatedOnChain = getMetadataSize() + BASE_ACCOUNT_SIZE;
+  // Bytes created or reallocated by the instruction.
+  const byteDelta: number = [getMetadataSize() + BASE_ACCOUNT_SIZE].reduce(
+    (a, b) => a + b,
+    0
+  );
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -457,7 +460,7 @@ export async function getCreateMetadataAccountInstructionAsync<
     programAddress
   );
 
-  return Object.freeze({ ...instruction, bytesCreatedOnChain });
+  return Object.freeze({ ...instruction, byteDelta });
 }
 
 export type CreateMetadataAccountInput<
@@ -545,7 +548,7 @@ export function getCreateMetadataAccountInstruction<
   TAccountSystemProgram,
   TAccountRent
 > &
-  IInstructionWithBytesCreatedOnChain;
+  IInstructionWithByteDelta;
 export function getCreateMetadataAccountInstruction<
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -575,7 +578,7 @@ export function getCreateMetadataAccountInstruction<
   TAccountSystemProgram,
   TAccountRent
 > &
-  IInstructionWithBytesCreatedOnChain;
+  IInstructionWithByteDelta;
 export function getCreateMetadataAccountInstruction<
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -595,7 +598,7 @@ export function getCreateMetadataAccountInstruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): IInstruction & IInstructionWithBytesCreatedOnChain {
+): IInstruction & IInstructionWithByteDelta {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -642,8 +645,11 @@ export function getCreateMetadataAccountInstruction<
     args.metadataBump = expectProgramDerivedAddress(accounts.metadata.value)[1];
   }
 
-  // Bytes created on chain.
-  const bytesCreatedOnChain = getMetadataSize() + BASE_ACCOUNT_SIZE;
+  // Bytes created or reallocated by the instruction.
+  const byteDelta: number = [getMetadataSize() + BASE_ACCOUNT_SIZE].reduce(
+    (a, b) => a + b,
+    0
+  );
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -658,7 +664,7 @@ export function getCreateMetadataAccountInstruction<
     programAddress
   );
 
-  return Object.freeze({ ...instruction, bytesCreatedOnChain });
+  return Object.freeze({ ...instruction, byteDelta });
 }
 
 export function getCreateMetadataAccountInstructionRaw<

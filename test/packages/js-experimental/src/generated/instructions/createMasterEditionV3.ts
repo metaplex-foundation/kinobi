@@ -34,7 +34,7 @@ import {
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { getMasterEditionV2Size } from '../accounts';
 import {
-  IInstructionWithBytesCreatedOnChain,
+  IInstructionWithByteDelta,
   ResolvedAccount,
   accountMetaWithDefault,
   getAccountMetasWithSigners,
@@ -289,7 +289,7 @@ export function getCreateMasterEditionV3Instruction<
   TAccountSystemProgram,
   TAccountRent
 > &
-  IInstructionWithBytesCreatedOnChain;
+  IInstructionWithByteDelta;
 export function getCreateMasterEditionV3Instruction<
   TAccountEdition extends string,
   TAccountMint extends string,
@@ -325,7 +325,7 @@ export function getCreateMasterEditionV3Instruction<
   TAccountSystemProgram,
   TAccountRent
 > &
-  IInstructionWithBytesCreatedOnChain;
+  IInstructionWithByteDelta;
 export function getCreateMasterEditionV3Instruction<
   TAccountEdition extends string,
   TAccountMint extends string,
@@ -349,7 +349,7 @@ export function getCreateMasterEditionV3Instruction<
     TAccountSystemProgram,
     TAccountRent
   >
-): IInstruction & IInstructionWithBytesCreatedOnChain {
+): IInstruction & IInstructionWithByteDelta {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -397,8 +397,10 @@ export function getCreateMasterEditionV3Instruction<
       '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
   }
 
-  // Bytes created on chain.
-  const bytesCreatedOnChain = getMasterEditionV2Size() + BASE_ACCOUNT_SIZE;
+  // Bytes created or reallocated by the instruction.
+  const byteDelta: number = [
+    getMasterEditionV2Size() + BASE_ACCOUNT_SIZE,
+  ].reduce((a, b) => a + b, 0);
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(
@@ -413,7 +415,7 @@ export function getCreateMasterEditionV3Instruction<
     programAddress
   );
 
-  return Object.freeze({ ...instruction, bytesCreatedOnChain });
+  return Object.freeze({ ...instruction, byteDelta });
 }
 
 export function getCreateMasterEditionV3InstructionRaw<

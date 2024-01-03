@@ -52,8 +52,8 @@ export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragme
     {% endif %}
   );
 
-  {% if hasBytesCreatedOnChain %}
-    return Object.freeze({ ...instruction, bytesCreatedOnChain });
+  {% if hasByteDeltas %}
+    return Object.freeze({ ...instruction, byteDelta });
   {% else %}
     return instruction;
   {% endif %}
