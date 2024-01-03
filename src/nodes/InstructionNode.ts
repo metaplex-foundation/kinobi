@@ -1,10 +1,5 @@
 import type { IdlInstruction } from '../idl';
-import {
-  BytesCreatedOnChain,
-  InvalidKinobiTreeError,
-  MainCaseString,
-  mainCase,
-} from '../shared';
+import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
 import {
   InstructionAccountNode,
   instructionAccountNodeFromIdl,
@@ -14,6 +9,7 @@ import {
   instructionArgumentNode,
   instructionArgumentNodeFromIdl,
 } from './InstructionArgumentNode';
+import { InstructionByteDeltaNode } from './InstructionByteDeltaNode';
 import { InstructionRemainingAccountsNode } from './InstructionRemainingAccountsNode';
 import { isNode } from './Node';
 import { ProgramNode } from './ProgramNode';
@@ -30,9 +26,7 @@ export type InstructionNode = {
   readonly extraArguments?: InstructionArgumentNode[];
   readonly subInstructions?: InstructionNode[];
   readonly remainingAccounts?: InstructionRemainingAccountsNode[];
-
-  // Children to-be.
-  readonly bytesCreatedOnChain?: BytesCreatedOnChain;
+  readonly byteDeltas?: InstructionByteDeltaNode[];
 
   // Data.
   readonly name: MainCaseString;
@@ -62,8 +56,8 @@ export function instructionNode(input: InstructionNodeInput): InstructionNode {
     subInstructions: input.subInstructions,
     idlName: input.idlName ?? input.name,
     docs: input.docs ?? [],
-    bytesCreatedOnChain: input.bytesCreatedOnChain,
     remainingAccounts: input.remainingAccounts,
+    byteDeltas: input.byteDeltas,
     optionalAccountStrategy: input.optionalAccountStrategy ?? 'programId',
   };
 }

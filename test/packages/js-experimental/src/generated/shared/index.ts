@@ -129,8 +129,8 @@ export function accountMetaWithDefault<
  * Defines an instruction that stores additional bytes on-chain.
  * @internal
  */
-export type IInstructionWithBytesCreatedOnChain = {
-  bytesCreatedOnChain: number;
+export type IInstructionWithByteDelta = {
+  byteDelta: number;
 };
 
 /**

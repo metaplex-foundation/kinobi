@@ -4,6 +4,7 @@ import type { DefinedTypeNode } from './DefinedTypeNode';
 import type { ErrorNode } from './ErrorNode';
 import type { InstructionAccountNode } from './InstructionAccountNode';
 import type { InstructionArgumentNode } from './InstructionArgumentNode';
+import type { InstructionByteDeltaNode } from './InstructionByteDeltaNode';
 import type { InstructionNode } from './InstructionNode';
 import type { InstructionRemainingAccountsNode } from './InstructionRemainingAccountsNode';
 import type { PdaNode } from './PdaNode';
@@ -25,6 +26,7 @@ const REGISTERED_NODES = {
   accountNode: {} as AccountNode,
   instructionAccountNode: {} as InstructionAccountNode,
   instructionArgumentNode: {} as InstructionArgumentNode,
+  instructionByteDeltaNode: {} as InstructionByteDeltaNode,
   instructionNode: {} as InstructionNode,
   instructionRemainingAccountsNode: {} as InstructionRemainingAccountsNode,
   errorNode: {} as ErrorNode,

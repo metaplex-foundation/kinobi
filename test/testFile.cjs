@@ -86,7 +86,7 @@ kinobi.update(
     },
     'mplCandyMachineCore.Update': { name: 'UpdateCandyMachine' },
     CreateMetadataAccount: {
-      bytesCreatedOnChain: k.bytesFromAccount('Metadata'),
+      byteDeltas: [k.instructionByteDeltaNode(k.accountLinkNode('Metadata'))],
       accounts: {
         metadata: { defaultValue: k.pdaValueNode('metadata') },
       },
@@ -100,7 +100,9 @@ kinobi.update(
       },
     },
     CreateMasterEditionV3: {
-      bytesCreatedOnChain: k.bytesFromAccount('MasterEditionV2'),
+      byteDeltas: [
+        k.instructionByteDeltaNode(k.accountLinkNode('MasterEditionV2')),
+      ],
     },
     'mplCandyMachineCore.Mint': {
       name: 'MintFromCandyMachine',

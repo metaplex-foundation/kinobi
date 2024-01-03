@@ -11,7 +11,7 @@ import {
   fragmentFromTemplate,
   mergeFragments,
 } from './common';
-import { getInstructionBytesCreatedOnChainFragment } from './instructionBytesCreatedOnChain';
+import { getInstructionByteDeltaFragment } from './instructionByteDelta';
 import { getInstructionInputResolvedFragment } from './instructionInputResolved';
 import { getInstructionInputTypeFragment } from './instructionInputType';
 import { getInstructionRemainingAccountsFragment } from './instructionRemainingAccounts';
@@ -111,25 +111,20 @@ export function getInstructionFunctionHighLevelFragment(
   const resolvedInputsFragment = getInstructionInputResolvedFragment(scope);
   const remainingAccountsFragment =
     getInstructionRemainingAccountsFragment(scope);
-  const bytesCreatedOnChainFragment =
-    getInstructionBytesCreatedOnChainFragment(scope);
+  const byteDeltaFragment = getInstructionByteDeltaFragment(scope);
   const resolvedFragment = mergeFragments(
-    [
-      resolvedInputsFragment,
-      remainingAccountsFragment,
-      bytesCreatedOnChainFragment,
-    ],
+    [resolvedInputsFragment, remainingAccountsFragment, byteDeltaFragment],
     (renders) => renders.join('\n\n')
   );
   const hasRemainingAccounts = remainingAccountsFragment.render !== '';
-  const hasBytesCreatedOnChain = bytesCreatedOnChainFragment.render !== '';
+  const hasByteDeltas = byteDeltaFragment.render !== '';
   const hasResolver = resolvedFragment.hasFeatures(
     'instruction:resolverScopeVariable'
   );
   const getReturnType = (instructionType: string) => {
     let returnType = instructionType;
-    if (hasBytesCreatedOnChain) {
-      returnType = `${returnType} & IInstructionWithBytesCreatedOnChain`;
+    if (hasByteDeltas) {
+      returnType = `${returnType} & IInstructionWithByteDelta`;
     }
     return useAsync ? `Promise<${returnType}>` : returnType;
   };
@@ -156,7 +151,7 @@ export function getInstructionFunctionHighLevelFragment(
       renamedArgs: renamedArgsText,
       resolvedFragment,
       hasRemainingAccounts,
-      hasBytesCreatedOnChain,
+      hasByteDeltas,
       hasResolver,
       useAsync,
       getReturnType,
@@ -181,10 +176,8 @@ export function getInstructionFunctionHighLevelFragment(
       .addImports('shared', ['getAccountMetasWithSigners', 'ResolvedAccount']);
   }
 
-  if (hasBytesCreatedOnChain) {
-    functionFragment.addImports('shared', [
-      'IInstructionWithBytesCreatedOnChain',
-    ]);
+  if (hasByteDeltas) {
+    functionFragment.addImports('shared', ['IInstructionWithByteDelta']);
   }
 
   return functionFragment;

@@ -89,8 +89,8 @@ export type ResolvedAccount<T extends string = string, U extends Address<T> | Pr
  * Defines an instruction that stores additional bytes on-chain.
  * @internal
  */
-export type IInstructionWithBytesCreatedOnChain = {
-  bytesCreatedOnChain: number;
+export type IInstructionWithByteDelta = {
+  byteDelta: number;
 };
 
 /**
