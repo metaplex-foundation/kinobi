@@ -376,7 +376,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             instructionNode: node,
             programNode: program,
             renamedArgs: getRenamedArgsMap(node),
-            dataArgsManifest: visit(node.dataArgs, typeManifestVisitor),
+            dataArgsManifest: visit(node, typeManifestVisitor),
             extraArgsManifest: visit(node.extraArgs, typeManifestVisitor),
             resolvedInputs: visit(node, resolvedInstructionInputVisitor),
           };

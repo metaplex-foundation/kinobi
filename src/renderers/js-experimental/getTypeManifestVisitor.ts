@@ -48,6 +48,7 @@ export function getTypeManifestVisitor(input: {
         'definedTypeNode',
         'accountNode',
         'accountDataNode',
+        'instructionNode',
         'instructionDataArgsNode',
         'instructionExtraArgsNode',
       ]
@@ -55,7 +56,8 @@ export function getTypeManifestVisitor(input: {
     (visitor) =>
       extendVisitor(visitor, {
         visitAccount(account, { self }) {
-          return visit(account.data, self);
+          const link = customAccountData.get(account.name)?.linkNode;
+          return link ? visit(link, self) : visit(account.data, self);
         },
 
         visitAccountData(accountData, { self }) {
@@ -63,12 +65,14 @@ export function getTypeManifestVisitor(input: {
             strict: nameApi.dataType(accountData.name),
             loose: nameApi.dataArgsType(accountData.name),
           };
-          const link = customAccountData.get(accountData.name)?.linkNode;
-          const manifest = link
-            ? visit(link, self)
-            : visit(accountData.struct, self);
+          const manifest = visit(accountData.struct, self);
           parentName = null;
           return manifest;
+        },
+
+        visitInstruction(instruction, { self }) {
+          const link = customInstructionData.get(instruction.name)?.linkNode;
+          return link ? visit(link, self) : visit(instruction.dataArgs, self);
         },
 
         visitInstructionDataArgs(instructionDataArgs, { self }) {
@@ -76,13 +80,10 @@ export function getTypeManifestVisitor(input: {
             strict: nameApi.dataType(instructionDataArgs.name),
             loose: nameApi.dataArgsType(instructionDataArgs.name),
           };
-          const link = customInstructionData.get(
-            instructionDataArgs.name
-          )?.linkNode;
           const struct = structTypeNodeFromInstructionArgumentNodes(
             instructionDataArgs.dataArguments
           );
-          const manifest = link ? visit(link, self) : visit(struct, self);
+          const manifest = visit(struct, self);
           parentName = null;
           return manifest;
         },
