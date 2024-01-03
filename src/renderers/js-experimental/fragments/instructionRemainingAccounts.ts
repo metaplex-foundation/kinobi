@@ -1,6 +1,15 @@
-import { InstructionNode } from '../../../nodes';
+import {
+  InstructionNode,
+  InstructionRemainingAccountsNode,
+  isNode,
+} from '../../../nodes';
 import type { GlobalFragmentScope } from '../getRenderMapVisitor';
-import { Fragment, fragment, fragmentFromTemplate } from './common';
+import {
+  Fragment,
+  fragment,
+  fragmentFromTemplate,
+  mergeFragments,
+} from './common';
 
 export function getInstructionRemainingAccountsFragment(
   scope: Pick<GlobalFragmentScope, 'nameApi' | 'asyncResolvers'> & {
@@ -9,12 +18,29 @@ export function getInstructionRemainingAccountsFragment(
   }
 ): Fragment {
   const { remainingAccounts } = scope.instructionNode;
-  if (!remainingAccounts) return fragment('');
+  const fragments = (remainingAccounts ?? []).flatMap((r) =>
+    getSingleFragment(r, scope)
+  );
+  if (fragments.length === 0) return fragment('');
+  return mergeFragments(
+    fragments,
+    (r) =>
+      `// Remaining accounts.\n` +
+      `const remainingAccounts: IAccountMeta[] = [...${r.join(', ...')}]`
+  );
+}
 
+function getSingleFragment(
+  remainingAccounts: InstructionRemainingAccountsNode,
+  scope: Pick<GlobalFragmentScope, 'nameApi' | 'asyncResolvers'> & {
+    instructionNode: InstructionNode;
+    useAsync: boolean;
+  }
+): Fragment[] {
   const isAsync =
-    remainingAccounts?.kind === 'resolver' &&
-    scope.asyncResolvers.includes(remainingAccounts.name);
-  if (!scope.useAsync && isAsync) return fragment('');
+    isNode(remainingAccounts.value, 'resolverValueNode') &&
+    scope.asyncResolvers.includes(remainingAccounts.value.name);
+  if (!scope.useAsync && isAsync) return [];
 
   const remainingAccountsFragment = fragmentFromTemplate(
     'instructionRemainingAccounts.njk',
@@ -25,14 +51,16 @@ export function getInstructionRemainingAccountsFragment(
     }
   ).addImports('solanaInstructions', ['IAccountMeta']);
 
-  if (remainingAccounts?.kind === 'arg') {
+  if (isNode(remainingAccounts.value, 'argumentValueNode')) {
     remainingAccountsFragment.addImports('solanaInstructions', ['AccountRole']);
-  } else if (remainingAccounts?.kind === 'resolver') {
-    const functionName = scope.nameApi.resolverFunction(remainingAccounts.name);
+  } else {
+    const functionName = scope.nameApi.resolverFunction(
+      remainingAccounts.value.name
+    );
     remainingAccountsFragment
-      .addImports(remainingAccounts.importFrom, functionName)
+      .addImports(remainingAccounts.value.importFrom ?? 'hooked', functionName)
       .addFeatures(['instruction:resolverScopeVariable']);
   }
 
-  return remainingAccountsFragment;
+  return [remainingAccountsFragment];
 }

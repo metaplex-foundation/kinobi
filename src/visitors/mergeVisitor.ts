@@ -54,6 +54,7 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
         ...node.arguments.flatMap(visit(this)),
         ...(node.extraArguments ?? []).flatMap(visit(this)),
         ...(node.subInstructions ?? []).flatMap(visit(this)),
+        ...(node.remainingAccounts ?? []).flatMap(visit(this)),
       ]);
     };
   }
@@ -73,6 +74,13 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
         ...(node.defaultValue ? visit(this)(node.defaultValue) : []),
       ]);
     };
+  }
+
+  if (castedNodeKeys.includes('instructionRemainingAccountsNode')) {
+    visitor.visitInstructionRemainingAccounts =
+      function visitInstructionRemainingAccounts(node) {
+        return merge(node, visit(this)(node.value));
+      };
   }
 
   if (castedNodeKeys.includes('definedTypeNode')) {

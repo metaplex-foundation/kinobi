@@ -152,7 +152,9 @@ kinobi.update(
           defaultValue: k.arrayValueNode([]),
         },
       },
-      remainingAccounts: k.remainingAccountsFromArg('proof'),
+      remainingAccounts: [
+        k.instructionRemainingAccountsNode(k.argumentValueNode('proof')),
+      ],
     },
     DeprecatedCreateReservationList: { name: 'CreateReservationList' },
     Transfer: {

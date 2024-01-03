@@ -3,7 +3,6 @@ import {
   BytesCreatedOnChain,
   InvalidKinobiTreeError,
   MainCaseString,
-  RemainingAccounts,
   mainCase,
 } from '../shared';
 import {
@@ -15,6 +14,7 @@ import {
   instructionArgumentNode,
   instructionArgumentNodeFromIdl,
 } from './InstructionArgumentNode';
+import { InstructionRemainingAccountsNode } from './InstructionRemainingAccountsNode';
 import { isNode } from './Node';
 import { ProgramNode } from './ProgramNode';
 import { RootNode } from './RootNode';
@@ -29,10 +29,10 @@ export type InstructionNode = {
   readonly arguments: InstructionArgumentNode[];
   readonly extraArguments?: InstructionArgumentNode[];
   readonly subInstructions?: InstructionNode[];
+  readonly remainingAccounts?: InstructionRemainingAccountsNode[];
 
   // Children to-be.
   readonly bytesCreatedOnChain?: BytesCreatedOnChain;
-  readonly remainingAccounts?: RemainingAccounts;
 
   // Data.
   readonly name: MainCaseString;

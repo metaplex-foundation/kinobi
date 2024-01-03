@@ -27,6 +27,7 @@ import {
   instructionAccountNode,
   instructionArgumentNode,
   instructionNode,
+  instructionRemainingAccountsNode,
   mapEntryValueNode,
   mapTypeNode,
   mapValueNode,
@@ -145,6 +146,15 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
               .map(visit(this))
               .filter(removeNullAndAssertIsNodeFilter('instructionNode'))
           : undefined,
+        remainingAccounts: node.remainingAccounts
+          ? node.remainingAccounts
+              .map(visit(this))
+              .filter(
+                removeNullAndAssertIsNodeFilter(
+                  'instructionRemainingAccountsNode'
+                )
+              )
+          : undefined,
       });
     };
   }
@@ -172,6 +182,16 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
         assertIsNode(defaultValue, INSTRUCTION_INPUT_VALUE_NODE);
       return instructionArgumentNode({ ...node, type, defaultValue });
     };
+  }
+
+  if (castedNodeKeys.includes('instructionRemainingAccountsNode')) {
+    visitor.visitInstructionRemainingAccounts =
+      function visitInstructionRemainingAccounts(node) {
+        const value = visit(this)(node.value);
+        if (value === null) return null;
+        assertIsNode(value, ['argumentValueNode', 'resolverValueNode']);
+        return instructionRemainingAccountsNode(value, { ...node });
+      };
   }
 
   if (castedNodeKeys.includes('definedTypeNode')) {
