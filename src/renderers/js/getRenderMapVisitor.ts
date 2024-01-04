@@ -185,10 +185,9 @@ export function getRenderMapVisitor(
             !internalNodes.includes(n.name);
           const programsToExport = node.programs.filter(isNotInternal);
           const accountsToExport = getAllAccounts(node).filter(isNotInternal);
-          const instructionsToExport = getAllInstructionsWithSubs(
-            node,
-            !renderParentInstructions
-          ).filter(isNotInternal);
+          const instructionsToExport = getAllInstructionsWithSubs(node, {
+            leavesOnly: !renderParentInstructions,
+          }).filter(isNotInternal);
           const definedTypesToExport =
             getAllDefinedTypes(node).filter(isNotInternal);
           const hasAnythingToExport =
@@ -248,10 +247,9 @@ export function getRenderMapVisitor(
             .mergeWith(...node.definedTypes.map((t) => visit(t, self)))
             .mergeWith(...customDataDefinedType.map((t) => visit(t, self)))
             .mergeWith(
-              ...getAllInstructionsWithSubs(
-                node,
-                !renderParentInstructions
-              ).map((ix) => visit(ix, self))
+              ...getAllInstructionsWithSubs(node, {
+                leavesOnly: !renderParentInstructions,
+              }).map((ix) => visit(ix, self))
             )
             .add(
               `errors/${camelCase(node.name)}.ts`,

@@ -7,12 +7,14 @@
  */
 
 import { Address } from '@solana/addresses';
+import { getU64Encoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   MplTokenAuthRulesProgramError,
   MplTokenAuthRulesProgramErrorCode,
   getMplTokenAuthRulesProgramErrorFromCode,
 } from '../errors';
-import { Program, ProgramWithErrors } from '../shared';
+import { Program, ProgramWithErrors, memcmp } from '../shared';
+import { TaKey } from '../types';
 
 export const MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS =
   'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
@@ -32,4 +34,45 @@ export function createMplTokenAuthRulesProgram(): MplTokenAuthRulesProgram {
       return getMplTokenAuthRulesProgramErrorFromCode(code, cause);
     },
   };
+}
+
+export enum MplTokenAuthRulesAccount {
+  FREQUENCY_ACCOUNT,
+}
+
+export function identifyMplTokenAuthRulesAccount(
+  account: { data: Uint8Array } | Uint8Array
+): MplTokenAuthRulesAccount {
+  const data = account instanceof Uint8Array ? account : account.data;
+  if (memcmp(data, getU64Encoder().encode(TaKey.Frequency), 0)) {
+    return MplTokenAuthRulesAccount.FREQUENCY_ACCOUNT;
+  }
+  throw new Error(
+    'The provided account could not be identified as a mplTokenAuthRules account.'
+  );
+}
+
+export enum MplTokenAuthRulesInstruction {
+  CREATE_RULE_SET,
+  VALIDATE,
+  CREATE_FREQUENCY_RULE,
+}
+
+export function identifyMplTokenAuthRulesInstruction(
+  instruction: { data: Uint8Array } | Uint8Array
+): MplTokenAuthRulesInstruction {
+  const data =
+    instruction instanceof Uint8Array ? instruction : instruction.data;
+  if (memcmp(data, getU8Encoder().encode(0), 0)) {
+    return MplTokenAuthRulesInstruction.CREATE_RULE_SET;
+  }
+  if (memcmp(data, getU8Encoder().encode(1), 0)) {
+    return MplTokenAuthRulesInstruction.VALIDATE;
+  }
+  if (memcmp(data, getU8Encoder().encode(2), 0)) {
+    return MplTokenAuthRulesInstruction.CREATE_FREQUENCY_RULE;
+  }
+  throw new Error(
+    'The provided instruction could not be identified as a mplTokenAuthRules instruction.'
+  );
 }

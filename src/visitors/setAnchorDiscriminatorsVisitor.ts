@@ -70,6 +70,10 @@ export function setAnchorDiscriminatorsVisitor() {
 
           return instructionNode({
             ...node,
+            discriminators: [
+              fieldDiscriminatorNode('discriminator'),
+              ...(node.discriminators ?? []),
+            ],
             arguments: [discriminatorArgument, ...node.arguments],
           });
         },
