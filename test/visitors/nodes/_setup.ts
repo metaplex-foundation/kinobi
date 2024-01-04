@@ -10,7 +10,7 @@ import {
 } from '../../../src';
 
 export const mergeVisitorMacro = test.macro({
-  title: () => 'mergeVisitor',
+  title: (title) => title ?? 'mergeVisitor',
   exec(t, node: Node, expectedNodeCount: number) {
     const visitor = mergeVisitor(
       () => 1,
@@ -22,7 +22,7 @@ export const mergeVisitorMacro = test.macro({
 });
 
 export const identityVisitorMacro = test.macro({
-  title: () => 'identityVisitor',
+  title: (title) => title ?? 'identityVisitor',
   exec(t, node: Node) {
     const visitor = identityVisitor();
     const result = visit(node, visitor);
@@ -32,9 +32,9 @@ export const identityVisitorMacro = test.macro({
 });
 
 export const deleteNodesVisitorMacro = test.macro({
-  title(_, _node, selector: NodeSelector | NodeSelector[]) {
+  title(title, _node, selector: NodeSelector | NodeSelector[]) {
     const selectors = Array.isArray(selector) ? selector : [selector];
-    return `deleteNodesVisitor: ${selectors.join(', ')}`;
+    return title ?? `deleteNodesVisitor: ${selectors.join(', ')}`;
   },
   exec(
     t,
@@ -51,7 +51,7 @@ export const deleteNodesVisitorMacro = test.macro({
 });
 
 export const getDebugStringVisitorMacro = test.macro({
-  title: () => 'getDebugStringVisitor',
+  title: (title) => title ?? 'getDebugStringVisitor',
   exec(t, node: Node, expectedIndentedString: string) {
     const visitor = getDebugStringVisitor({ indent: true });
     const result = visit(node, visitor);
