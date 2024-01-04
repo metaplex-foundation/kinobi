@@ -7,7 +7,7 @@
  */
 
 import { Address } from '@solana/addresses';
-import { getU64Encoder } from '@solana/codecs-numbers';
+import { getU64Encoder, getU8Encoder } from '@solana/codecs-numbers';
 import {
   MplTokenAuthRulesProgramError,
   MplTokenAuthRulesProgramErrorCode,
@@ -55,4 +55,23 @@ export enum MplTokenAuthRulesInstruction {
   CREATE_RULE_SET,
   VALIDATE,
   CREATE_FREQUENCY_RULE,
+}
+
+export function identifyMplTokenAuthRulesInstruction(
+  instruction: { data: Uint8Array } | Uint8Array
+): MplTokenAuthRulesInstruction {
+  const data =
+    instruction instanceof Uint8Array ? instruction : instruction.data;
+  if (memcmp(data, getU8Encoder().encode(0), 0)) {
+    return MplTokenAuthRulesInstruction.CREATE_RULE_SET;
+  }
+  if (memcmp(data, getU8Encoder().encode(1), 0)) {
+    return MplTokenAuthRulesInstruction.VALIDATE;
+  }
+  if (memcmp(data, getU8Encoder().encode(2), 0)) {
+    return MplTokenAuthRulesInstruction.CREATE_FREQUENCY_RULE;
+  }
+  throw new Error(
+    'The provided instruction could not be identified as a mplTokenAuthRules instruction.'
+  );
 }

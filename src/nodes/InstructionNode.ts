@@ -14,7 +14,10 @@ import { InstructionRemainingAccountsNode } from './InstructionRemainingAccounts
 import { isNode } from './Node';
 import { ProgramNode } from './ProgramNode';
 import { RootNode } from './RootNode';
-import { DiscriminatorNode } from './discriminatorNodes';
+import {
+  DiscriminatorNode,
+  fieldDiscriminatorNode,
+} from './discriminatorNodes';
 import { createTypeNodeFromIdl } from './typeNodes/TypeNode';
 import { numberValueNode } from './valueNodes';
 
@@ -75,6 +78,7 @@ export function instructionNodeFromIdl(
   const idlName = idl.name ?? '';
   const name = mainCase(idlName);
   let dataArguments = (idl.args ?? []).map(instructionArgumentNodeFromIdl);
+  let discriminators: DiscriminatorNode[] | undefined;
   if (idl.discriminant) {
     const discriminatorField = instructionArgumentNode({
       name: 'discriminator',
@@ -83,6 +87,7 @@ export function instructionNodeFromIdl(
       defaultValueStrategy: 'omitted',
     });
     dataArguments = [discriminatorField, ...dataArguments];
+    discriminators = [fieldDiscriminatorNode('discriminator')];
   }
   return instructionNode({
     name,
@@ -92,6 +97,7 @@ export function instructionNodeFromIdl(
       instructionAccountNodeFromIdl(account)
     ),
     arguments: dataArguments,
+    discriminators,
     optionalAccountStrategy: idl.legacyOptionalAccountsStrategy
       ? 'omitted'
       : 'programId',

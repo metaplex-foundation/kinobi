@@ -7,6 +7,7 @@
  */
 
 import { Address } from '@solana/addresses';
+import { getU8Encoder } from '@solana/codecs-numbers';
 import {
   MplTokenMetadataProgramError,
   MplTokenMetadataProgramErrorCode,
@@ -145,4 +146,170 @@ export enum MplTokenMetadataInstruction {
   DELEGATE,
   REVOKE,
   MIGRATE,
+}
+
+export function identifyMplTokenMetadataInstruction(
+  instruction: { data: Uint8Array } | Uint8Array
+): MplTokenMetadataInstruction {
+  const data =
+    instruction instanceof Uint8Array ? instruction : instruction.data;
+  if (memcmp(data, getU8Encoder().encode(0), 0)) {
+    return MplTokenMetadataInstruction.CREATE_METADATA_ACCOUNT;
+  }
+  if (memcmp(data, getU8Encoder().encode(1), 0)) {
+    return MplTokenMetadataInstruction.UPDATE_METADATA_ACCOUNT;
+  }
+  if (memcmp(data, getU8Encoder().encode(2), 0)) {
+    return MplTokenMetadataInstruction.DEPRECATED_CREATE_MASTER_EDITION;
+  }
+  if (memcmp(data, getU8Encoder().encode(3), 0)) {
+    return MplTokenMetadataInstruction.DEPRECATED_MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_PRINTING_TOKEN;
+  }
+  if (memcmp(data, getU8Encoder().encode(4), 0)) {
+    return MplTokenMetadataInstruction.UPDATE_PRIMARY_SALE_HAPPENED_VIA_TOKEN;
+  }
+  if (memcmp(data, getU8Encoder().encode(5), 0)) {
+    return MplTokenMetadataInstruction.DEPRECATED_SET_RESERVATION_LIST;
+  }
+  if (memcmp(data, getU8Encoder().encode(6), 0)) {
+    return MplTokenMetadataInstruction.CREATE_RESERVATION_LIST;
+  }
+  if (memcmp(data, getU8Encoder().encode(7), 0)) {
+    return MplTokenMetadataInstruction.SIGN_METADATA;
+  }
+  if (memcmp(data, getU8Encoder().encode(8), 0)) {
+    return MplTokenMetadataInstruction.DEPRECATED_MINT_PRINTING_TOKENS_VIA_TOKEN;
+  }
+  if (memcmp(data, getU8Encoder().encode(9), 0)) {
+    return MplTokenMetadataInstruction.DEPRECATED_MINT_PRINTING_TOKENS;
+  }
+  if (memcmp(data, getU8Encoder().encode(10), 0)) {
+    return MplTokenMetadataInstruction.CREATE_MASTER_EDITION;
+  }
+  if (memcmp(data, getU8Encoder().encode(11), 0)) {
+    return MplTokenMetadataInstruction.MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_TOKEN;
+  }
+  if (memcmp(data, getU8Encoder().encode(12), 0)) {
+    return MplTokenMetadataInstruction.CONVERT_MASTER_EDITION_V1_TO_V2;
+  }
+  if (memcmp(data, getU8Encoder().encode(13), 0)) {
+    return MplTokenMetadataInstruction.MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_VAULT_PROXY;
+  }
+  if (memcmp(data, getU8Encoder().encode(14), 0)) {
+    return MplTokenMetadataInstruction.PUFF_METADATA;
+  }
+  if (memcmp(data, getU8Encoder().encode(15), 0)) {
+    return MplTokenMetadataInstruction.UPDATE_METADATA_ACCOUNT_V2;
+  }
+  if (memcmp(data, getU8Encoder().encode(16), 0)) {
+    return MplTokenMetadataInstruction.CREATE_METADATA_ACCOUNT_V2;
+  }
+  if (memcmp(data, getU8Encoder().encode(17), 0)) {
+    return MplTokenMetadataInstruction.CREATE_MASTER_EDITION_V3;
+  }
+  if (memcmp(data, getU8Encoder().encode(18), 0)) {
+    return MplTokenMetadataInstruction.VERIFY_COLLECTION;
+  }
+  if (memcmp(data, getU8Encoder().encode(19), 0)) {
+    return MplTokenMetadataInstruction.UTILIZE;
+  }
+  if (memcmp(data, getU8Encoder().encode(20), 0)) {
+    return MplTokenMetadataInstruction.APPROVE_USE_AUTHORITY;
+  }
+  if (memcmp(data, getU8Encoder().encode(21), 0)) {
+    return MplTokenMetadataInstruction.REVOKE_USE_AUTHORITY;
+  }
+  if (memcmp(data, getU8Encoder().encode(22), 0)) {
+    return MplTokenMetadataInstruction.UNVERIFY_COLLECTION;
+  }
+  if (memcmp(data, getU8Encoder().encode(23), 0)) {
+    return MplTokenMetadataInstruction.APPROVE_COLLECTION_AUTHORITY;
+  }
+  if (memcmp(data, getU8Encoder().encode(24), 0)) {
+    return MplTokenMetadataInstruction.REVOKE_COLLECTION_AUTHORITY;
+  }
+  if (memcmp(data, getU8Encoder().encode(25), 0)) {
+    return MplTokenMetadataInstruction.SET_AND_VERIFY_COLLECTION;
+  }
+  if (memcmp(data, getU8Encoder().encode(26), 0)) {
+    return MplTokenMetadataInstruction.FREEZE_DELEGATED_ACCOUNT;
+  }
+  if (memcmp(data, getU8Encoder().encode(27), 0)) {
+    return MplTokenMetadataInstruction.THAW_DELEGATED_ACCOUNT;
+  }
+  if (memcmp(data, getU8Encoder().encode(28), 0)) {
+    return MplTokenMetadataInstruction.REMOVE_CREATOR_VERIFICATION;
+  }
+  if (memcmp(data, getU8Encoder().encode(29), 0)) {
+    return MplTokenMetadataInstruction.BURN_NFT;
+  }
+  if (memcmp(data, getU8Encoder().encode(30), 0)) {
+    return MplTokenMetadataInstruction.VERIFY_SIZED_COLLECTION_ITEM;
+  }
+  if (memcmp(data, getU8Encoder().encode(31), 0)) {
+    return MplTokenMetadataInstruction.UNVERIFY_SIZED_COLLECTION_ITEM;
+  }
+  if (memcmp(data, getU8Encoder().encode(32), 0)) {
+    return MplTokenMetadataInstruction.SET_AND_VERIFY_SIZED_COLLECTION_ITEM;
+  }
+  if (memcmp(data, getU8Encoder().encode(33), 0)) {
+    return MplTokenMetadataInstruction.CREATE_METADATA_ACCOUNT_V3;
+  }
+  if (memcmp(data, getU8Encoder().encode(34), 0)) {
+    return MplTokenMetadataInstruction.SET_COLLECTION_SIZE;
+  }
+  if (memcmp(data, getU8Encoder().encode(35), 0)) {
+    return MplTokenMetadataInstruction.SET_TOKEN_STANDARD;
+  }
+  if (memcmp(data, getU8Encoder().encode(36), 0)) {
+    return MplTokenMetadataInstruction.BUBBLEGUM_SET_COLLECTION_SIZE;
+  }
+  if (memcmp(data, getU8Encoder().encode(37), 0)) {
+    return MplTokenMetadataInstruction.BURN_EDITION_NFT;
+  }
+  if (memcmp(data, getU8Encoder().encode(38), 0)) {
+    return MplTokenMetadataInstruction.CREATE_ESCROW_ACCOUNT;
+  }
+  if (memcmp(data, getU8Encoder().encode(39), 0)) {
+    return MplTokenMetadataInstruction.CLOSE_ESCROW_ACCOUNT;
+  }
+  if (memcmp(data, getU8Encoder().encode(40), 0)) {
+    return MplTokenMetadataInstruction.TRANSFER_OUT_OF_ESCROW;
+  }
+  if (memcmp(data, getU8Encoder().encode(41), 0)) {
+    return MplTokenMetadataInstruction.CREATE_V1;
+  }
+  if (memcmp(data, getU8Encoder().encode(41), 0)) {
+    return MplTokenMetadataInstruction.CREATE_V2;
+  }
+  if (memcmp(data, getU8Encoder().encode(42), 0)) {
+    return MplTokenMetadataInstruction.MINT;
+  }
+  if (memcmp(data, getU8Encoder().encode(43), 0)) {
+    return MplTokenMetadataInstruction.UPDATE_V1;
+  }
+  if (memcmp(data, getU8Encoder().encode(44), 0)) {
+    return MplTokenMetadataInstruction.BURN;
+  }
+  if (memcmp(data, getU8Encoder().encode(45), 0)) {
+    return MplTokenMetadataInstruction.USE_ASSET;
+  }
+  if (memcmp(data, getU8Encoder().encode(46), 0)) {
+    return MplTokenMetadataInstruction.TRANSFER;
+  }
+  if (memcmp(data, getU8Encoder().encode(47), 0)) {
+    return MplTokenMetadataInstruction.VERIFY;
+  }
+  if (memcmp(data, getU8Encoder().encode(48), 0)) {
+    return MplTokenMetadataInstruction.DELEGATE;
+  }
+  if (memcmp(data, getU8Encoder().encode(49), 0)) {
+    return MplTokenMetadataInstruction.REVOKE;
+  }
+  if (memcmp(data, getU8Encoder().encode(50), 0)) {
+    return MplTokenMetadataInstruction.MIGRATE;
+  }
+  throw new Error(
+    'The provided instruction could not be identified as a mplTokenMetadata instruction.'
+  );
 }

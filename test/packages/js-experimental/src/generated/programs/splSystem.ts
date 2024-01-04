@@ -7,7 +7,8 @@
  */
 
 import { Address } from '@solana/addresses';
-import { Program } from '../shared';
+import { getU32Encoder } from '@solana/codecs-numbers';
+import { Program, memcmp } from '../shared';
 
 export const SPL_SYSTEM_PROGRAM_ADDRESS =
   '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
@@ -24,4 +25,20 @@ export function createSplSystemProgram(): SplSystemProgram {
 export enum SplSystemInstruction {
   CREATE_ACCOUNT,
   TRANSFER_SOL,
+}
+
+export function identifySplSystemInstruction(
+  instruction: { data: Uint8Array } | Uint8Array
+): SplSystemInstruction {
+  const data =
+    instruction instanceof Uint8Array ? instruction : instruction.data;
+  if (memcmp(data, getU32Encoder().encode(0), 0)) {
+    return SplSystemInstruction.CREATE_ACCOUNT;
+  }
+  if (memcmp(data, getU32Encoder().encode(2), 0)) {
+    return SplSystemInstruction.TRANSFER_SOL;
+  }
+  throw new Error(
+    'The provided instruction could not be identified as a splSystem instruction.'
+  );
 }
