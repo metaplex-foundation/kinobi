@@ -1,12 +1,8 @@
 import test from 'ava';
 import {
-  accountNode,
+  instructionArgumentNode,
   numberTypeNode,
-  pdaLinkNode,
-  publicKeyTypeNode,
-  sizeDiscriminatorNode,
-  structFieldTypeNode,
-  structTypeNode,
+  numberValueNode,
 } from '../../../src';
 import {
   deleteNodesVisitorMacro,
@@ -15,37 +11,25 @@ import {
   mergeVisitorMacro,
 } from './_setup';
 
-const node = accountNode({
-  name: 'token',
-  data: structTypeNode([
-    structFieldTypeNode({ name: 'mint', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'owner', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'amount', type: numberTypeNode('u64') }),
-  ]),
-  pda: pdaLinkNode('associatedToken'),
-  discriminators: [sizeDiscriminatorNode(72)],
-  size: 72,
+const node = instructionArgumentNode({
+  name: 'amount',
+  type: numberTypeNode('u64'),
+  defaultValue: numberValueNode(1),
 });
 
-test(mergeVisitorMacro, node, 10);
+test(mergeVisitorMacro, node, 3);
 test(identityVisitorMacro, node);
-test(deleteNodesVisitorMacro, node, '[accountNode]', null);
-test(deleteNodesVisitorMacro, node, '[pdaLinkNode]', {
+test(deleteNodesVisitorMacro, node, '[instructionArgumentNode]', null);
+test(deleteNodesVisitorMacro, node, '[numberTypeNode]', null);
+test(deleteNodesVisitorMacro, node, '[numberValueNode]', {
   ...node,
-  pda: undefined,
+  defaultValue: undefined,
 });
 test(
   getDebugStringVisitorMacro,
   node,
   `
-accountNode [token]
-|   structTypeNode
-|   |   structFieldTypeNode [mint]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [owner]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [amount]
-|   |   |   numberTypeNode [u64]
-|   pdaLinkNode [associatedToken]
-|   sizeDiscriminatorNode`
+instructionArgumentNode [amount]
+|   numberTypeNode [u64]
+|   numberValueNode [1]`
 );

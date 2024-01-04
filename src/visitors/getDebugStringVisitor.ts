@@ -1,5 +1,5 @@
-import { pipe } from '../shared';
 import { Node } from '../nodes';
+import { pipe } from '../shared';
 import { interceptVisitor } from './interceptVisitor';
 import { mergeVisitor } from './mergeVisitor';
 import { Visitor } from './visitor';
@@ -77,6 +77,16 @@ function getNodeDetails(node: Node): string[] {
       return [node.encoding];
     case 'fixedSizeNode':
       return [node.size.toString()];
+    case 'numberValueNode':
+      return [node.number.toString()];
+    case 'stringValueNode':
+      return [node.string];
+    case 'booleanValueNode':
+      return [node.boolean ? 'true' : 'false'];
+    case 'publicKeyValueNode':
+      return [node.publicKey];
+    case 'enumValueNode':
+      return [node.variant];
     default:
       return 'name' in node ? [node.name] : [];
   }
