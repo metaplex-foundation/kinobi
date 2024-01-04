@@ -92,7 +92,7 @@ test('it renders an function that identifies accounts in a program', (t) => {
     `export function identifySplTokenAccount(account: { data: Uint8Array } | Uint8Array): SplTokenAccount {\n` +
       `const data = account instanceof Uint8Array ? account : account.data;\n` +
       `if (memcmp(data, getU8Encoder().encode(5), 0)) { return SplTokenAccount.METADATA; }\n` +
-      `if (data.length === 72 && memcmp(data, new Uint8Array(1, 2, 3), 4)) { return SplTokenAccount.TOKEN; }\n` +
+      `if (data.length === 72 && memcmp(data, new Uint8Array([1, 2, 3]), 4)) { return SplTokenAccount.TOKEN; }\n` +
       `throw new Error('The provided account could not be identified as a splToken account.')\n` +
       `}`,
   ]);

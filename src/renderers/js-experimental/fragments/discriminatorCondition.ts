@@ -6,6 +6,8 @@ import {
   type ProgramNode,
   type SizeDiscriminatorNode,
   type StructTypeNode,
+  isNodeFilter,
+  byteDiscriminatorNode,
 } from '../../../nodes';
 import { InvalidKinobiTreeError } from '../../../shared';
 import { visit } from '../../../visitors';
@@ -69,7 +71,7 @@ function getByteConditionFragment(
 ): Fragment {
   const bytes = discriminator.bytes.join(', ');
   return fragment(
-    `memcmp(${dataName}, new Uint8Array(${bytes}), ${discriminator.offset})`
+    `memcmp(${dataName}, new Uint8Array([${bytes}]), ${discriminator.offset})`
   ).addImports('shared', 'memcmp');
 }
 
@@ -86,6 +88,26 @@ function getFieldConditionFragment(
       `Field discriminator "${discriminator.name}" does not have a matching argument with default value.`
     );
   }
+
+  // This handles the case where a field uses an u8 array to represent its discriminator.
+  // In this case, we can simplify the generated code by delegating to a byteDiscriminatorNode.
+  if (
+    isNode(field.type, 'arrayTypeNode') &&
+    isNode(field.type.item, 'numberTypeNode') &&
+    field.type.item.format === 'u8' &&
+    isNode(field.type.size, 'fixedSizeNode') &&
+    isNode(field.defaultValue, 'arrayValueNode') &&
+    field.defaultValue.items.every(isNodeFilter('numberValueNode'))
+  ) {
+    return getByteConditionFragment(
+      byteDiscriminatorNode(
+        field.defaultValue.items.map((node) => node.number),
+        discriminator.offset
+      ),
+      scope.dataName
+    );
+  }
+
   return mergeFragments(
     [
       visit(field.type, scope.typeManifestVisitor).encoder,

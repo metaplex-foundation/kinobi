@@ -7,8 +7,6 @@
  */
 
 import { Address } from '@solana/addresses';
-import { getArrayEncoder } from '@solana/codecs-data-structures';
-import { getU8Encoder } from '@solana/codecs-numbers';
 import {
   MplCandyMachineCoreProgramError,
   MplCandyMachineCoreProgramErrorCode,
@@ -44,15 +42,7 @@ export function identifyMplCandyMachineCoreAccount(
   account: { data: Uint8Array } | Uint8Array
 ): MplCandyMachineCoreAccount {
   const data = account instanceof Uint8Array ? account : account.data;
-  if (
-    memcmp(
-      data,
-      getArrayEncoder(getU8Encoder(), { size: 8 }).encode([
-        51, 173, 177, 113, 25, 241, 109, 189,
-      ]),
-      0
-    )
-  ) {
+  if (memcmp(data, new Uint8Array([51, 173, 177, 113, 25, 241, 109, 189]), 0)) {
     return MplCandyMachineCoreAccount.CANDY_MACHINE;
   }
   throw new Error(
