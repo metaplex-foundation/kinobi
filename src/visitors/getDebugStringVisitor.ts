@@ -1,5 +1,5 @@
-import { pipe } from '../shared';
 import { Node } from '../nodes';
+import { pipe } from '../shared';
 import { interceptVisitor } from './interceptVisitor';
 import { mergeVisitor } from './mergeVisitor';
 import { Visitor } from './visitor';
@@ -59,6 +59,17 @@ function getNodeDetails(node: Node): string[] {
         ...(node.isSigner === 'either' ? ['optionalSigner'] : []),
         ...(node.isOptional ? ['optional'] : []),
       ];
+    case 'instructionRemainingAccountsNode':
+      return [
+        ...(node.isWritable ? ['writable'] : []),
+        ...(node.isSigner === true ? ['signer'] : []),
+        ...(node.isSigner === 'either' ? ['optionalSigner'] : []),
+      ];
+    case 'instructionByteDeltaNode':
+      return [
+        ...(node.subtract ? ['subtract'] : []),
+        ...(node.withHeader ? ['withHeader'] : []),
+      ];
     case 'errorNode':
       return [node.code.toString(), node.name];
     case 'programLinkNode':
@@ -70,12 +81,44 @@ function getNodeDetails(node: Node): string[] {
         ...(node.importFrom ? [`from:${node.importFrom}`] : []),
       ];
     case 'numberTypeNode':
-      return [node.format, ...(node.endian === 'be' ? ['be'] : [])];
+      return [node.format, ...(node.endian === 'be' ? ['bigEndian'] : [])];
     case 'amountTypeNode':
       return [node.decimals.toString(), ...(node.unit ? [node.unit] : [])];
     case 'stringTypeNode':
       return [node.encoding];
+    case 'optionTypeNode':
+      return node.fixed ? ['fixed'] : [];
     case 'fixedSizeNode':
+      return [node.size.toString()];
+    case 'numberValueNode':
+      return [node.number.toString()];
+    case 'stringValueNode':
+      return [node.string];
+    case 'booleanValueNode':
+      return [node.boolean ? 'true' : 'false'];
+    case 'publicKeyValueNode':
+      return [node.publicKey];
+    case 'enumValueNode':
+      return [node.variant];
+    case 'resolverValueNode':
+      return [
+        node.name,
+        ...(node.importFrom ? [`from:${node.importFrom}`] : []),
+      ];
+    case 'byteDiscriminatorNode':
+      return [
+        ...(node.bytes.length > 0
+          ? [
+              `0x${node.bytes
+                .map((byte) => byte.toString(16).padStart(2, '0'))
+                .join('')}`,
+            ]
+          : []),
+        ...(node.offset > 0 ? [`offset:${node.offset}`] : []),
+      ];
+    case 'fieldDiscriminatorNode':
+      return [node.name, ...(node.offset > 0 ? [`offset:${node.offset}`] : [])];
+    case 'sizeDiscriminatorNode':
       return [node.size.toString()];
     default:
       return 'name' in node ? [node.name] : [];

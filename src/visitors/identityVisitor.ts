@@ -21,6 +21,7 @@ import {
   constantPdaSeedNode,
   dateTimeTypeNode,
   definedTypeNode,
+  enumEmptyVariantTypeNode,
   enumStructVariantTypeNode,
   enumTupleVariantTypeNode,
   enumTypeNode,
@@ -261,8 +262,13 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       node
     ) {
       const newStruct = visit(this)(node.struct);
-      if (!newStruct) return null;
+      if (!newStruct) {
+        return enumEmptyVariantTypeNode(node.name);
+      }
       assertIsNode(newStruct, 'structTypeNode');
+      if (newStruct.fields.length === 0) {
+        return enumEmptyVariantTypeNode(node.name);
+      }
       return enumStructVariantTypeNode(node.name, newStruct);
     };
   }
@@ -272,8 +278,13 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       node
     ) {
       const newTuple = visit(this)(node.tuple);
-      if (!newTuple) return null;
+      if (!newTuple) {
+        return enumEmptyVariantTypeNode(node.name);
+      }
       assertIsNode(newTuple, 'tupleTypeNode');
+      if (newTuple.items.length === 0) {
+        return enumEmptyVariantTypeNode(node.name);
+      }
       return enumTupleVariantTypeNode(node.name, newTuple);
     };
   }
@@ -328,11 +339,10 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
 
   if (castedNodeKeys.includes('structTypeNode')) {
     visitor.visitStructType = function visitStructType(node) {
-      return structTypeNode(
-        node.fields
-          .map(visit(this))
-          .filter(removeNullAndAssertIsNodeFilter('structFieldTypeNode'))
-      );
+      const fields = node.fields
+        .map(visit(this))
+        .filter(removeNullAndAssertIsNodeFilter('structFieldTypeNode'));
+      return structTypeNode(fields);
     };
   }
 
@@ -351,11 +361,10 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
 
   if (castedNodeKeys.includes('tupleTypeNode')) {
     visitor.visitTupleType = function visitTupleType(node) {
-      return tupleTypeNode(
-        node.items
-          .map(visit(this))
-          .filter(removeNullAndAssertIsNodeFilter(TYPE_NODES))
-      );
+      const items = node.items
+        .map(visit(this))
+        .filter(removeNullAndAssertIsNodeFilter(TYPE_NODES));
+      return tupleTypeNode(items);
     };
   }
 
@@ -566,6 +575,7 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
         ? visit(this)(node.ifFalse) ?? undefined
         : undefined;
       if (ifFalse) assertIsNode(ifFalse, CONDITIONAL_VALUE_BRANCH_NODES);
+      if (!ifTrue && !ifFalse) return null;
       return conditionalValueNode({ condition, value, ifTrue, ifFalse });
     };
   }

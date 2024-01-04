@@ -1,0 +1,28 @@
+import test from 'ava';
+import {
+  publicKeyTypeNode,
+  remainderSizeNode,
+  setTypeNode,
+} from '../../../../src';
+import {
+  deleteNodesVisitorMacro,
+  getDebugStringVisitorMacro,
+  identityVisitorMacro,
+  mergeVisitorMacro,
+} from '../_setup';
+
+const node = setTypeNode(publicKeyTypeNode(), remainderSizeNode());
+
+test(mergeVisitorMacro, node, 3);
+test(identityVisitorMacro, node);
+test(deleteNodesVisitorMacro, node, '[setTypeNode]', null);
+test(deleteNodesVisitorMacro, node, '[publicKeyTypeNode]', null);
+test(deleteNodesVisitorMacro, node, '[remainderSizeNode]', null);
+test(
+  getDebugStringVisitorMacro,
+  node,
+  `
+setTypeNode
+|   remainderSizeNode
+|   publicKeyTypeNode`
+);

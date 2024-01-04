@@ -20,5 +20,10 @@ export function resolverValueNode(
     dependsOn?: ResolverValueNode['dependsOn'];
   } = {}
 ): ResolverValueNode {
-  return { kind: 'resolverValueNode', name: mainCase(name), ...options };
+  return {
+    kind: 'resolverValueNode',
+    name: mainCase(name),
+    importFrom: options.importFrom,
+    dependsOn: options.dependsOn,
+  };
 }
