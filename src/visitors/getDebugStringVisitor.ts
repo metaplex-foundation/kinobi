@@ -59,6 +59,12 @@ function getNodeDetails(node: Node): string[] {
         ...(node.isSigner === 'either' ? ['optionalSigner'] : []),
         ...(node.isOptional ? ['optional'] : []),
       ];
+    case 'instructionRemainingAccountsNode':
+      return [
+        ...(node.isWritable ? ['writable'] : []),
+        ...(node.isSigner === true ? ['signer'] : []),
+        ...(node.isSigner === 'either' ? ['optionalSigner'] : []),
+      ];
     case 'instructionByteDeltaNode':
       return [
         ...(node.subtract ? ['subtract'] : []),
