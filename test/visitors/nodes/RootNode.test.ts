@@ -1,13 +1,5 @@
 import test from 'ava';
-import {
-  accountNode,
-  numberTypeNode,
-  pdaLinkNode,
-  publicKeyTypeNode,
-  sizeDiscriminatorNode,
-  structFieldTypeNode,
-  structTypeNode,
-} from '../../../src';
+import { programNode, rootNode } from '../../../src';
 import {
   deleteNodesVisitorMacro,
   getDebugStringVisitorMacro,
@@ -15,37 +7,26 @@ import {
   mergeVisitorMacro,
 } from './_setup';
 
-const node = accountNode({
-  name: 'token',
-  data: structTypeNode([
-    structFieldTypeNode({ name: 'mint', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'owner', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'amount', type: numberTypeNode('u64') }),
-  ]),
-  pda: pdaLinkNode('associatedToken'),
-  discriminators: [sizeDiscriminatorNode(72)],
-  size: 72,
-});
+const node = rootNode([
+  programNode({
+    name: 'splToken',
+    publicKey: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  }),
+  programNode({
+    name: 'splAddressLookupTable',
+    publicKey: 'AddressLookupTab1e1111111111111111111111111',
+  }),
+]);
 
-test(mergeVisitorMacro, node, 10);
+test(mergeVisitorMacro, node, 3);
 test(identityVisitorMacro, node);
-test(deleteNodesVisitorMacro, node, '[accountNode]', null);
-test(deleteNodesVisitorMacro, node, '[pdaLinkNode]', {
-  ...node,
-  pda: undefined,
-});
+test(deleteNodesVisitorMacro, node, '[rootNode]', null);
+test(deleteNodesVisitorMacro, node, '[programNode]', { ...node, programs: [] });
 test(
   getDebugStringVisitorMacro,
   node,
   `
-accountNode [token]
-|   structTypeNode
-|   |   structFieldTypeNode [mint]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [owner]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [amount]
-|   |   |   numberTypeNode [u64]
-|   pdaLinkNode [associatedToken]
-|   sizeDiscriminatorNode`
+rootNode
+|   programNode [splToken.TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA]
+|   programNode [splAddressLookupTable.AddressLookupTab1e1111111111111111111111111]`
 );
