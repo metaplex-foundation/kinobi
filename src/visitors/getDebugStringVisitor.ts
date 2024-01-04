@@ -103,6 +103,21 @@ function getNodeDetails(node: Node): string[] {
         node.name,
         ...(node.importFrom ? [`from:${node.importFrom}`] : []),
       ];
+    case 'byteDiscriminatorNode':
+      return [
+        ...(node.bytes.length > 0
+          ? [
+              `0x${node.bytes
+                .map((byte) => byte.toString(16).padStart(2, '0'))
+                .join('')}`,
+            ]
+          : []),
+        ...(node.offset > 0 ? [`offset:${node.offset}`] : []),
+      ];
+    case 'fieldDiscriminatorNode':
+      return [node.name, ...(node.offset > 0 ? [`offset:${node.offset}`] : [])];
+    case 'sizeDiscriminatorNode':
+      return [node.size.toString()];
     default:
       return 'name' in node ? [node.name] : [];
   }

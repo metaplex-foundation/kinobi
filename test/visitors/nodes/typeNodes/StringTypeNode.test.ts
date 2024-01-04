@@ -47,5 +47,5 @@ accountNode [token]
 |   |   structFieldTypeNode [amount]
 |   |   |   numberTypeNode [u64]
 |   pdaLinkNode [associatedToken]
-|   sizeDiscriminatorNode`
+|   sizeDiscriminatorNode [72]`
 );
