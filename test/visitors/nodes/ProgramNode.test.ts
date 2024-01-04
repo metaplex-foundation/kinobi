@@ -1,11 +1,12 @@
 import test from 'ava';
 import {
   accountNode,
-  numberTypeNode,
-  pdaLinkNode,
-  publicKeyTypeNode,
-  sizeDiscriminatorNode,
-  structFieldTypeNode,
+  definedTypeNode,
+  enumTypeNode,
+  errorNode,
+  instructionNode,
+  pdaNode,
+  programNode,
   structTypeNode,
 } from '../../../src';
 import {
@@ -15,37 +16,57 @@ import {
   mergeVisitorMacro,
 } from './_setup';
 
-const node = accountNode({
-  name: 'token',
-  data: structTypeNode([
-    structFieldTypeNode({ name: 'mint', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'owner', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'amount', type: numberTypeNode('u64') }),
-  ]),
-  pda: pdaLinkNode('associatedToken'),
-  discriminators: [sizeDiscriminatorNode(72)],
-  size: 72,
+const node = programNode({
+  name: 'splToken',
+  publicKey: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  version: '1.2.3',
+  pdas: [pdaNode('associatedToken', [])],
+  accounts: [
+    accountNode({ name: 'mint', data: structTypeNode([]) }),
+    accountNode({ name: 'token', data: structTypeNode([]) }),
+  ],
+  instructions: [
+    instructionNode({ name: 'mintTokens' }),
+    instructionNode({ name: 'transferTokens' }),
+  ],
+  definedTypes: [
+    definedTypeNode({ name: 'tokenState', type: enumTypeNode([]) }),
+  ],
+  errors: [
+    errorNode({ name: 'invalidMint', code: 1, message: 'Invalid mint' }),
+    errorNode({ name: 'invalidToken', code: 2, message: 'Invalid token' }),
+  ],
 });
 
-test(mergeVisitorMacro, node, 10);
+test(mergeVisitorMacro, node, 13);
 test(identityVisitorMacro, node);
-test(deleteNodesVisitorMacro, node, '[accountNode]', null);
-test(deleteNodesVisitorMacro, node, '[pdaLinkNode]', {
+test(deleteNodesVisitorMacro, node, '[programNode]', null);
+test(deleteNodesVisitorMacro, node, '[pdaNode]', { ...node, pdas: [] });
+test(deleteNodesVisitorMacro, node, '[accountNode]', { ...node, accounts: [] });
+test(deleteNodesVisitorMacro, node, '[instructionNode]', {
   ...node,
-  pda: undefined,
+  instructions: [],
 });
+test(deleteNodesVisitorMacro, node, '[definedTypeNode]', {
+  ...node,
+  definedTypes: [],
+});
+test(deleteNodesVisitorMacro, node, '[errorNode]', { ...node, errors: [] });
 test(
   getDebugStringVisitorMacro,
   node,
   `
-accountNode [token]
-|   structTypeNode
-|   |   structFieldTypeNode [mint]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [owner]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [amount]
-|   |   |   numberTypeNode [u64]
-|   pdaLinkNode [associatedToken]
-|   sizeDiscriminatorNode`
+programNode [splToken.TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA]
+|   pdaNode [associatedToken]
+|   accountNode [mint]
+|   |   structTypeNode
+|   accountNode [token]
+|   |   structTypeNode
+|   instructionNode [mintTokens]
+|   instructionNode [transferTokens]
+|   definedTypeNode [tokenState]
+|   |   enumTypeNode
+|   |   |   numberTypeNode [u8]
+|   errorNode [1.invalidMint]
+|   errorNode [2.invalidToken]`
 );
