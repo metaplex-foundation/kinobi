@@ -98,6 +98,11 @@ function getNodeDetails(node: Node): string[] {
       return [node.publicKey];
     case 'enumValueNode':
       return [node.variant];
+    case 'resolverValueNode':
+      return [
+        node.name,
+        ...(node.importFrom ? [`from:${node.importFrom}`] : []),
+      ];
     default:
       return 'name' in node ? [node.name] : [];
   }

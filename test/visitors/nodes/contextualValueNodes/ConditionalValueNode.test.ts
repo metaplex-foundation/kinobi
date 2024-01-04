@@ -1,12 +1,10 @@
 import test from 'ava';
 import {
-  accountNode,
-  numberTypeNode,
-  pdaLinkNode,
-  publicKeyTypeNode,
-  sizeDiscriminatorNode,
-  structFieldTypeNode,
-  structTypeNode,
+  accountValueNode,
+  argumentValueNode,
+  conditionalValueNode,
+  enumValueNode,
+  programIdValueNode,
 } from '../../../../src';
 import {
   deleteNodesVisitorMacro,
@@ -15,37 +13,42 @@ import {
   mergeVisitorMacro,
 } from '../_setup';
 
-const node = accountNode({
-  name: 'token',
-  data: structTypeNode([
-    structFieldTypeNode({ name: 'mint', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'owner', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'amount', type: numberTypeNode('u64') }),
-  ]),
-  pda: pdaLinkNode('associatedToken'),
-  discriminators: [sizeDiscriminatorNode(72)],
-  size: 72,
+const node = conditionalValueNode({
+  condition: argumentValueNode('tokenStandard'),
+  value: enumValueNode('tokenStandard', 'ProgrammableNonFungible'),
+  ifTrue: accountValueNode('mint'),
+  ifFalse: programIdValueNode(),
 });
 
-test(mergeVisitorMacro, node, 10);
+test(mergeVisitorMacro, node, 6);
 test(identityVisitorMacro, node);
-test(deleteNodesVisitorMacro, node, '[accountNode]', null);
-test(deleteNodesVisitorMacro, node, '[pdaLinkNode]', {
+test(deleteNodesVisitorMacro, node, '[conditionalValueNode]', null);
+test(deleteNodesVisitorMacro, node, '[enumValueNode]', {
   ...node,
-  pda: undefined,
+  value: undefined,
 });
+test(deleteNodesVisitorMacro, node, '[accountValueNode]', {
+  ...node,
+  ifTrue: undefined,
+});
+test(deleteNodesVisitorMacro, node, '[programIdValueNode]', {
+  ...node,
+  ifFalse: undefined,
+});
+test(
+  deleteNodesVisitorMacro,
+  node,
+  ['[accountValueNode]', '[programIdValueNode]'],
+  null
+);
 test(
   getDebugStringVisitorMacro,
   node,
   `
-accountNode [token]
-|   structTypeNode
-|   |   structFieldTypeNode [mint]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [owner]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [amount]
-|   |   |   numberTypeNode [u64]
-|   pdaLinkNode [associatedToken]
-|   sizeDiscriminatorNode`
+conditionalValueNode
+|   argumentValueNode [tokenStandard]
+|   enumValueNode [programmableNonFungible]
+|   |   definedTypeLinkNode [tokenStandard]
+|   accountValueNode [mint]
+|   programIdValueNode`
 );

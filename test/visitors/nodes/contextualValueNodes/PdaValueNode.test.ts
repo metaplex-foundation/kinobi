@@ -1,12 +1,10 @@
 import test from 'ava';
 import {
-  accountNode,
-  numberTypeNode,
+  accountValueNode,
   pdaLinkNode,
-  publicKeyTypeNode,
-  sizeDiscriminatorNode,
-  structFieldTypeNode,
-  structTypeNode,
+  pdaSeedValueNode,
+  pdaValueNode,
+  publicKeyValueNode,
 } from '../../../../src';
 import {
   deleteNodesVisitorMacro,
@@ -15,37 +13,30 @@ import {
   mergeVisitorMacro,
 } from '../_setup';
 
-const node = accountNode({
-  name: 'token',
-  data: structTypeNode([
-    structFieldTypeNode({ name: 'mint', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'owner', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'amount', type: numberTypeNode('u64') }),
-  ]),
-  pda: pdaLinkNode('associatedToken'),
-  discriminators: [sizeDiscriminatorNode(72)],
-  size: 72,
-});
+const node = pdaValueNode(pdaLinkNode('associatedToken'), [
+  pdaSeedValueNode('mint', accountValueNode('mint')),
+  pdaSeedValueNode(
+    'owner',
+    publicKeyValueNode('8sphVBHQxufE4Jc1HMuWwWdKgoDjncQyPHwxYhfATRtF')
+  ),
+]);
 
-test(mergeVisitorMacro, node, 10);
+test(mergeVisitorMacro, node, 6);
 test(identityVisitorMacro, node);
-test(deleteNodesVisitorMacro, node, '[accountNode]', null);
-test(deleteNodesVisitorMacro, node, '[pdaLinkNode]', {
+test(deleteNodesVisitorMacro, node, '[pdaValueNode]', null);
+test(deleteNodesVisitorMacro, node, '[pdaLinkNode]', null);
+test(deleteNodesVisitorMacro, node, '[pdaSeedValueNode]', {
   ...node,
-  pda: undefined,
+  seeds: [],
 });
 test(
   getDebugStringVisitorMacro,
   node,
   `
-accountNode [token]
-|   structTypeNode
-|   |   structFieldTypeNode [mint]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [owner]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [amount]
-|   |   |   numberTypeNode [u64]
+pdaValueNode
 |   pdaLinkNode [associatedToken]
-|   sizeDiscriminatorNode`
+|   pdaSeedValueNode [mint]
+|   |   accountValueNode [mint]
+|   pdaSeedValueNode [owner]
+|   |   publicKeyValueNode [8sphVBHQxufE4Jc1HMuWwWdKgoDjncQyPHwxYhfATRtF]`
 );

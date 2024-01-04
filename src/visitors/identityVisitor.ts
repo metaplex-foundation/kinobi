@@ -566,6 +566,7 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
         ? visit(this)(node.ifFalse) ?? undefined
         : undefined;
       if (ifFalse) assertIsNode(ifFalse, CONDITIONAL_VALUE_BRANCH_NODES);
+      if (!ifTrue && !ifFalse) return null;
       return conditionalValueNode({ condition, value, ifTrue, ifFalse });
     };
   }
