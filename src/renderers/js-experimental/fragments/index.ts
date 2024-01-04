@@ -21,6 +21,7 @@ export * from './pdaFunction';
 export * from './program';
 export * from './programAccounts';
 export * from './programErrors';
+export * from './programInstructions';
 export * from './type';
 export * from './typeCodec';
 export * from './typeDataEnumHelpers';

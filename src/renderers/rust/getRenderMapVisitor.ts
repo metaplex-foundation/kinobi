@@ -59,10 +59,9 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
         visitRoot(node, { self }) {
           const programsToExport = node.programs;
           const accountsToExport = getAllAccounts(node);
-          const instructionsToExport = getAllInstructionsWithSubs(
-            node,
-            !renderParentInstructions
-          );
+          const instructionsToExport = getAllInstructionsWithSubs(node, {
+            leavesOnly: !renderParentInstructions,
+          });
           const definedTypesToExport = getAllDefinedTypes(node);
           const hasAnythingToExport =
             programsToExport.length > 0 ||
@@ -106,10 +105,9 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
             .mergeWith(...node.accounts.map((account) => visit(account, self)))
             .mergeWith(...node.definedTypes.map((type) => visit(type, self)))
             .mergeWith(
-              ...getAllInstructionsWithSubs(
-                node,
-                !renderParentInstructions
-              ).map((ix) => visit(ix, self))
+              ...getAllInstructionsWithSubs(node, {
+                leavesOnly: !renderParentInstructions,
+              }).map((ix) => visit(ix, self))
             );
 
           // Errors.

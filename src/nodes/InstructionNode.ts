@@ -106,15 +106,19 @@ export function getAllInstructionArguments(
 
 export function getAllInstructionsWithSubs(
   node: ProgramNode | RootNode | InstructionNode,
-  leavesOnly = false
+  config: { leavesOnly?: boolean; subInstructionsFirst?: boolean } = {}
 ): InstructionNode[] {
+  const { leavesOnly = false, subInstructionsFirst = false } = config;
   if (isNode(node, 'instructionNode')) {
     if (!node.subInstructions || node.subInstructions.length === 0)
       return [node];
     const subInstructions = node.subInstructions.flatMap((sub) =>
-      getAllInstructionsWithSubs(sub, leavesOnly)
+      getAllInstructionsWithSubs(sub, config)
     );
-    return leavesOnly ? subInstructions : [node, ...subInstructions];
+    if (leavesOnly) return subInstructions;
+    return subInstructionsFirst
+      ? [...subInstructions, node]
+      : [node, ...subInstructions];
   }
 
   const instructions = isNode(node, 'programNode')
@@ -122,6 +126,6 @@ export function getAllInstructionsWithSubs(
     : node.programs.flatMap((program) => program.instructions);
 
   return instructions.flatMap((instruction) =>
-    getAllInstructionsWithSubs(instruction, leavesOnly)
+    getAllInstructionsWithSubs(instruction, config)
   );
 }
