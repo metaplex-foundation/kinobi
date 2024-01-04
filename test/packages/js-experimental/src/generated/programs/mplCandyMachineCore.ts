@@ -49,3 +49,14 @@ export function identifyMplCandyMachineCoreAccount(
     'The provided account could not be identified as a mplCandyMachineCore account.'
   );
 }
+export enum MplCandyMachineCoreInstruction {
+  DUMMY,
+  ADD_CONFIG_LINES,
+  INITIALIZE,
+  MINT_FROM_CANDY_MACHINE,
+  SET_AUTHORITY,
+  SET_COLLECTION,
+  SET_MINT_AUTHORITY,
+  UPDATE_CANDY_MACHINE,
+  WITHDRAW,
+}

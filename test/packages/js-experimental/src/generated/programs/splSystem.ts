@@ -20,3 +20,8 @@ export function createSplSystemProgram(): SplSystemProgram {
     address: SPL_SYSTEM_PROGRAM_ADDRESS,
   };
 }
+
+export enum SplSystemInstruction {
+  CREATE_ACCOUNT,
+  TRANSFER_SOL,
+}
