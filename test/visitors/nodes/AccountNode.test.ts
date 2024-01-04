@@ -1,18 +1,19 @@
 import test from 'ava';
 import {
   accountNode,
-  deleteNodesVisitor,
-  getDebugStringVisitor,
-  identityVisitor,
-  mergeVisitor,
   numberTypeNode,
   pdaLinkNode,
   publicKeyTypeNode,
   sizeDiscriminatorNode,
   structFieldTypeNode,
   structTypeNode,
-  visit,
 } from '../../../src';
+import {
+  deleteNodesVisitorMacro,
+  getDebugStringVisitorMacro,
+  identityVisitorMacro,
+  mergeVisitorMacro,
+} from './_setup';
 
 const node = accountNode({
   name: 'token',
@@ -26,35 +27,16 @@ const node = accountNode({
   size: 72,
 });
 
-test('mergeVisitor', (t) => {
-  const visitor = mergeVisitor(
-    () => 1,
-    (_, values) => values.reduce((a, b) => a + b, 1)
-  );
-  const result = visit(node, visitor);
-  t.is(result, 10);
+test(mergeVisitorMacro, node, 10);
+test(identityVisitorMacro, node);
+test(deleteNodesVisitorMacro, node, '[pdaLinkNode]', {
+  ...node,
+  pda: undefined,
 });
-
-test('identityVisitor', (t) => {
-  const visitor = identityVisitor();
-  const result = visit(node, visitor);
-  t.deepEqual(result, node);
-  t.not(result, node);
-});
-
-test('deleteNodesVisitor', (t) => {
-  const visitor = deleteNodesVisitor(['[pdaLinkNode]']);
-  const result = visit(node, visitor);
-  t.deepEqual(result, { ...node, pda: undefined });
-  t.not(result, node);
-});
-
-test('getDebugStringVisitor', (t) => {
-  const visitor = getDebugStringVisitor({ indent: true });
-  const result = visit(node, visitor);
-  t.is(
-    result,
-    `
+test(
+  getDebugStringVisitorMacro,
+  node,
+  `
 accountNode [token]
 |   structTypeNode
 |   |   structFieldTypeNode [mint]
@@ -64,7 +46,5 @@ accountNode [token]
 |   |   structFieldTypeNode [amount]
 |   |   |   numberTypeNode [u64]
 |   pdaLinkNode [associatedToken]
-|   sizeDiscriminatorNode
-`.trim()
-  );
-});
+|   sizeDiscriminatorNode`
+);
