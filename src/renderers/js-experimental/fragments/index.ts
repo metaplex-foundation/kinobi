@@ -18,6 +18,7 @@ export * from './instructionRemainingAccounts';
 export * from './instructionType';
 export * from './pdaFunction';
 export * from './program';
+export * from './programAccounts';
 export * from './programErrors';
 export * from './type';
 export * from './typeCodec';

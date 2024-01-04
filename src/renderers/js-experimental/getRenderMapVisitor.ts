@@ -48,6 +48,7 @@ import {
   getInstructionParseFunctionFragment,
   getInstructionTypeFragment,
   getPdaFunctionFragment,
+  getProgramAccountsFragment,
   getProgramErrorsFragment,
   getProgramFragment,
   getTypeDataEnumHelpersFragment,
@@ -265,6 +266,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
               customInstructionData
             ),
           ];
+          const scope = { ...globalScope, programNode: node };
           const renderMap = new RenderMap()
             .mergeWith(...node.pdas.map((p) => visit(p, self)))
             .mergeWith(...node.accounts.map((a) => visit(a, self)))
@@ -272,10 +274,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             .mergeWith(...customDataDefinedType.map((t) => visit(t, self)));
 
           if (node.errors.length > 0) {
-            const programErrorsFragment = getProgramErrorsFragment({
-              programNode: node,
-              nameApi,
-            });
+            const programErrorsFragment = getProgramErrorsFragment(scope);
             renderMap.add(
               `errors/${camelCase(node.name)}.ts`,
               render('errorsPage.njk', {
@@ -287,17 +286,16 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             );
           }
 
-          const programFragment = getProgramFragment({
-            programNode: node,
-            nameApi,
-          });
+          const programFragment = getProgramFragment(scope);
+          const programAccountsFragment = getProgramAccountsFragment(scope);
           renderMap.add(
             `programs/${camelCase(node.name)}.ts`,
             render('programsPage.njk', {
               imports: new ImportMap()
-                .mergeWith(programFragment)
+                .mergeWith(programFragment, programAccountsFragment)
                 .toString(dependencyMap),
               programFragment,
+              programAccountsFragment,
             })
           );
 

@@ -57,6 +57,12 @@ export type NameTransformerKey =
   | 'programType'
   | 'programAddressConstant'
   | 'programCreateFunction'
+  | 'programAccountsEnum'
+  | 'programAccountsEnumVariant'
+  | 'programAccountsIdentifierFunction'
+  | 'programInstructionsEnum'
+  | 'programInstructionsEnumVariant'
+  | 'programInstructionsIdentifierFunction'
   | 'programErrorClass'
   | 'programErrorCodeEnum'
   | 'programErrorCodeMap'
@@ -125,6 +131,14 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
   programAddressConstant: (name) =>
     `${snakeCase(name).toUpperCase()}_PROGRAM_ADDRESS`,
   programCreateFunction: (name) => `create${pascalCase(name)}Program`,
+  programAccountsEnum: (name) => `${pascalCase(name)}Accounts`,
+  programAccountsEnumVariant: (name) => `${snakeCase(name).toUpperCase()}`,
+  programAccountsIdentifierFunction: (name) =>
+    `identify${pascalCase(name)}Account`,
+  programInstructionsEnum: (name) => `${pascalCase(name)}Instructions`,
+  programInstructionsEnumVariant: (name) => `${snakeCase(name).toUpperCase()}`,
+  programInstructionsIdentifierFunction: (name) =>
+    `identify${pascalCase(name)}Instruction`,
   programErrorClass: (name) => `${pascalCase(name)}ProgramError`,
   programErrorCodeEnum: (name) => `${pascalCase(name)}ProgramErrorCode`,
   programErrorCodeMap: (name) => `${camelCase(name)}ProgramErrorCodeMap`,
