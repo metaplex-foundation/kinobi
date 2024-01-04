@@ -11,12 +11,13 @@ export function getProgramAccountsFragment(
     programNode: ProgramNode;
   }
 ): Fragment {
+  if (scope.programNode.accounts.length === 0) return fragment('');
   return mergeFragments(
     [
       getProgramAccountsEnumFragment(scope),
       getProgramAccountsIdentifierFunctionFragment(scope),
     ],
-    (r) => r.join('\n')
+    (r) => r.join('\n\n')
   );
 }
 

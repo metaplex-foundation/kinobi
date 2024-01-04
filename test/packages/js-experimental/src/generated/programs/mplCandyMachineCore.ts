@@ -7,12 +7,14 @@
  */
 
 import { Address } from '@solana/addresses';
+import { getArrayEncoder } from '@solana/codecs-data-structures';
+import { getU8Encoder } from '@solana/codecs-numbers';
 import {
   MplCandyMachineCoreProgramError,
   MplCandyMachineCoreProgramErrorCode,
   getMplCandyMachineCoreProgramErrorFromCode,
 } from '../errors';
-import { Program, ProgramWithErrors } from '../shared';
+import { Program, ProgramWithErrors, memcmp } from '../shared';
 
 export const MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS =
   'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
@@ -32,4 +34,28 @@ export function createMplCandyMachineCoreProgram(): MplCandyMachineCoreProgram {
       return getMplCandyMachineCoreProgramErrorFromCode(code, cause);
     },
   };
+}
+
+export enum MplCandyMachineCoreAccount {
+  CANDY_MACHINE,
+}
+
+export function identifyMplCandyMachineCoreAccount(
+  account: { data: Uint8Array } | Uint8Array
+): MplCandyMachineCoreAccount {
+  const data = account instanceof Uint8Array ? account : account.data;
+  if (
+    memcmp(
+      data,
+      getArrayEncoder(getU8Encoder(), { size: 8 }).encode([
+        51, 173, 177, 113, 25, 241, 109, 189,
+      ]),
+      0
+    )
+  ) {
+    return MplCandyMachineCoreAccount.CANDY_MACHINE;
+  }
+  throw new Error(
+    'The provided account could not be identified as a mplCandyMachineCore account.'
+  );
 }

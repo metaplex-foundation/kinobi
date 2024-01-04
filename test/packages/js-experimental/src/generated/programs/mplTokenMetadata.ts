@@ -12,7 +12,8 @@ import {
   MplTokenMetadataProgramErrorCode,
   getMplTokenMetadataProgramErrorFromCode,
 } from '../errors';
-import { Program, ProgramWithErrors } from '../shared';
+import { Program, ProgramWithErrors, memcmp } from '../shared';
+import { TmKey, getTmKeyEncoder } from '../types';
 
 export const MPL_TOKEN_METADATA_PROGRAM_ADDRESS =
   'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -32,4 +33,62 @@ export function createMplTokenMetadataProgram(): MplTokenMetadataProgram {
       return getMplTokenMetadataProgramErrorFromCode(code, cause);
     },
   };
+}
+
+export enum MplTokenMetadataAccount {
+  COLLECTION_AUTHORITY_RECORD,
+  DELEGATE_RECORD,
+  EDITION,
+  EDITION_MARKER,
+  TOKEN_OWNED_ESCROW,
+  MASTER_EDITION_V2,
+  MASTER_EDITION_V1,
+  METADATA,
+  RESERVATION_LIST_V2,
+  RESERVATION_LIST_V1,
+  USE_AUTHORITY_RECORD,
+}
+
+export function identifyMplTokenMetadataAccount(
+  account: { data: Uint8Array } | Uint8Array
+): MplTokenMetadataAccount {
+  const data = account instanceof Uint8Array ? account : account.data;
+  if (
+    memcmp(data, getTmKeyEncoder().encode(TmKey.CollectionAuthorityRecord), 0)
+  ) {
+    return MplTokenMetadataAccount.COLLECTION_AUTHORITY_RECORD;
+  }
+  if (memcmp(data, getTmKeyEncoder().encode(TmKey.Delegate), 0)) {
+    return MplTokenMetadataAccount.DELEGATE_RECORD;
+  }
+  if (memcmp(data, getTmKeyEncoder().encode(TmKey.EditionV1), 0)) {
+    return MplTokenMetadataAccount.EDITION;
+  }
+  if (memcmp(data, getTmKeyEncoder().encode(TmKey.EditionMarker), 0)) {
+    return MplTokenMetadataAccount.EDITION_MARKER;
+  }
+  if (memcmp(data, getTmKeyEncoder().encode(TmKey.TokenOwnedEscrow), 0)) {
+    return MplTokenMetadataAccount.TOKEN_OWNED_ESCROW;
+  }
+  if (memcmp(data, getTmKeyEncoder().encode(TmKey.MasterEditionV2), 0)) {
+    return MplTokenMetadataAccount.MASTER_EDITION_V2;
+  }
+  if (memcmp(data, getTmKeyEncoder().encode(TmKey.MasterEditionV1), 0)) {
+    return MplTokenMetadataAccount.MASTER_EDITION_V1;
+  }
+  if (memcmp(data, getTmKeyEncoder().encode(TmKey.MetadataV1), 0)) {
+    return MplTokenMetadataAccount.METADATA;
+  }
+  if (memcmp(data, getTmKeyEncoder().encode(TmKey.ReservationListV2), 0)) {
+    return MplTokenMetadataAccount.RESERVATION_LIST_V2;
+  }
+  if (memcmp(data, getTmKeyEncoder().encode(TmKey.ReservationListV1), 0)) {
+    return MplTokenMetadataAccount.RESERVATION_LIST_V1;
+  }
+  if (memcmp(data, getTmKeyEncoder().encode(TmKey.UseAuthorityRecord), 0)) {
+    return MplTokenMetadataAccount.USE_AUTHORITY_RECORD;
+  }
+  throw new Error(
+    'The provided account could not be identified as a mplTokenMetadata account.'
+  );
 }

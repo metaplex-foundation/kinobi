@@ -196,3 +196,9 @@ export type ProgramWithErrors<
 > = {
   getErrorFromCode: (code: TErrorCode, cause?: Error) => TError;
 };
+
+export function memcmp(data: Uint8Array, bytes: Uint8Array, offset: number) {
+  const slice = data.slice(offset, offset + bytes.length);
+  if (slice.length !== bytes.length) return false;
+  return bytes.every((b, i) => b === slice[i]);
+}
