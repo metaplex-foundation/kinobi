@@ -1,3 +1,4 @@
+import { KinobiError } from './errors';
 import { createFile } from './utils';
 
 export class RenderMap {
@@ -24,6 +25,29 @@ export class RenderMap {
 
   isEmpty(): boolean {
     return this._map.size === 0;
+  }
+
+  has(key: string): boolean {
+    return this._map.has(key);
+  }
+
+  get(key: string): string {
+    const value = this.safeGet(key);
+    if (value === undefined) {
+      throw new KinobiError(`Cannot find key "${key}" in RenderMap.`);
+    }
+    return value;
+  }
+
+  safeGet(key: string): string | undefined {
+    return this._map.get(key);
+  }
+
+  contains(key: string, value: string | RegExp): boolean {
+    const content = this.get(key);
+    return typeof value === 'string'
+      ? content.includes(value)
+      : value.test(content);
   }
 
   write(path: string): void {
