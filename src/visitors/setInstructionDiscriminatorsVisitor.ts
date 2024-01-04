@@ -2,6 +2,7 @@ import {
   TypeNode,
   ValueNode,
   assertIsNode,
+  fieldDiscriminatorNode,
   instructionArgumentNode,
   instructionNode,
   numberTypeNode,
@@ -45,6 +46,10 @@ export function setInstructionDiscriminatorsVisitor(
 
             return instructionNode({
               ...node,
+              discriminators: [
+                fieldDiscriminatorNode(discriminator.name ?? 'discriminator'),
+                ...(node.discriminators ?? []),
+              ],
               arguments: [discriminatorArgument, ...node.arguments],
             });
           },
