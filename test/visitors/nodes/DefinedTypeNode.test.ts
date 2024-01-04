@@ -27,6 +27,7 @@ const node = definedTypeNode({
 
 test(mergeVisitorMacro, node, 7);
 test(identityVisitorMacro, node);
+test(deleteNodesVisitorMacro, node, '[definedTypeNode]', null);
 test(deleteNodesVisitorMacro, node, '[structTypeNode]', null);
 test(
   getDebugStringVisitorMacro,

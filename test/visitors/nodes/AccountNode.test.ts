@@ -29,6 +29,7 @@ const node = accountNode({
 
 test(mergeVisitorMacro, node, 10);
 test(identityVisitorMacro, node);
+test(deleteNodesVisitorMacro, node, '[accountNode]', null);
 test(deleteNodesVisitorMacro, node, '[pdaLinkNode]', {
   ...node,
   pda: undefined,
