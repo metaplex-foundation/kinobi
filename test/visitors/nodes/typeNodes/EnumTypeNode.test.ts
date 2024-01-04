@@ -1,12 +1,15 @@
 import test from 'ava';
 import {
-  accountNode,
+  enumEmptyVariantTypeNode,
+  enumStructVariantTypeNode,
+  enumTupleVariantTypeNode,
+  enumTypeNode,
+  fixedSizeNode,
   numberTypeNode,
-  pdaLinkNode,
-  publicKeyTypeNode,
-  sizeDiscriminatorNode,
+  stringTypeNode,
   structFieldTypeNode,
   structTypeNode,
+  tupleTypeNode,
 } from '../../../../src';
 import {
   deleteNodesVisitorMacro,
@@ -15,37 +18,65 @@ import {
   mergeVisitorMacro,
 } from '../_setup';
 
-const node = accountNode({
-  name: 'token',
-  data: structTypeNode([
-    structFieldTypeNode({ name: 'mint', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'owner', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'amount', type: numberTypeNode('u64') }),
-  ]),
-  pda: pdaLinkNode('associatedToken'),
-  discriminators: [sizeDiscriminatorNode(72)],
-  size: 72,
-});
+const node = enumTypeNode(
+  [
+    enumEmptyVariantTypeNode('quit'),
+    enumTupleVariantTypeNode(
+      'write',
+      tupleTypeNode([stringTypeNode({ size: fixedSizeNode(32) })])
+    ),
+    enumStructVariantTypeNode(
+      'move',
+      structTypeNode([
+        structFieldTypeNode({ name: 'x', type: numberTypeNode('u32') }),
+        structFieldTypeNode({ name: 'y', type: numberTypeNode('u32') }),
+      ])
+    ),
+  ],
+  { size: numberTypeNode('u64') }
+);
 
-test(mergeVisitorMacro, node, 10);
+test(mergeVisitorMacro, node, 13);
 test(identityVisitorMacro, node);
-test(deleteNodesVisitorMacro, node, '[accountNode]', null);
-test(deleteNodesVisitorMacro, node, '[pdaLinkNode]', {
-  ...node,
-  pda: undefined,
-});
+test(deleteNodesVisitorMacro, node, '[enumTypeNode]', null);
+test(
+  deleteNodesVisitorMacro,
+  node,
+  [
+    '[enumEmptyVariantTypeNode]',
+    '[enumTupleVariantTypeNode]',
+    '[enumStructVariantTypeNode]',
+  ],
+  { ...node, variants: [] }
+);
+test(
+  deleteNodesVisitorMacro,
+  node,
+  ['[tupleTypeNode]', '[structFieldTypeNode]'],
+  {
+    ...node,
+    variants: [
+      enumEmptyVariantTypeNode('quit'),
+      enumEmptyVariantTypeNode('write'),
+      enumEmptyVariantTypeNode('move'),
+    ],
+  }
+);
 test(
   getDebugStringVisitorMacro,
   node,
   `
-accountNode [token]
-|   structTypeNode
-|   |   structFieldTypeNode [mint]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [owner]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [amount]
-|   |   |   numberTypeNode [u64]
-|   pdaLinkNode [associatedToken]
-|   sizeDiscriminatorNode [72]`
+enumTypeNode
+|   numberTypeNode [u64]
+|   enumEmptyVariantTypeNode [quit]
+|   enumTupleVariantTypeNode [write]
+|   |   tupleTypeNode
+|   |   |   stringTypeNode [utf8]
+|   |   |   |   fixedSizeNode [32]
+|   enumStructVariantTypeNode [move]
+|   |   structTypeNode
+|   |   |   structFieldTypeNode [x]
+|   |   |   |   numberTypeNode [u32]
+|   |   |   structFieldTypeNode [y]
+|   |   |   |   numberTypeNode [u32]`
 );

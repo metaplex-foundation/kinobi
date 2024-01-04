@@ -81,11 +81,13 @@ function getNodeDetails(node: Node): string[] {
         ...(node.importFrom ? [`from:${node.importFrom}`] : []),
       ];
     case 'numberTypeNode':
-      return [node.format, ...(node.endian === 'be' ? ['be'] : [])];
+      return [node.format, ...(node.endian === 'be' ? ['bigEndian'] : [])];
     case 'amountTypeNode':
       return [node.decimals.toString(), ...(node.unit ? [node.unit] : [])];
     case 'stringTypeNode':
       return [node.encoding];
+    case 'optionTypeNode':
+      return node.fixed ? ['fixed'] : [];
     case 'fixedSizeNode':
       return [node.size.toString()];
     case 'numberValueNode':

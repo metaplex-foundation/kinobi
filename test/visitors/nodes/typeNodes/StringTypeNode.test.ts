@@ -1,12 +1,8 @@
 import test from 'ava';
 import {
-  accountNode,
   numberTypeNode,
-  pdaLinkNode,
-  publicKeyTypeNode,
-  sizeDiscriminatorNode,
-  structFieldTypeNode,
-  structTypeNode,
+  prefixedSizeNode,
+  stringTypeNode,
 } from '../../../../src';
 import {
   deleteNodesVisitorMacro,
@@ -15,37 +11,31 @@ import {
   mergeVisitorMacro,
 } from '../_setup';
 
-const node = accountNode({
-  name: 'token',
-  data: structTypeNode([
-    structFieldTypeNode({ name: 'mint', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'owner', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'amount', type: numberTypeNode('u64') }),
-  ]),
-  pda: pdaLinkNode('associatedToken'),
-  discriminators: [sizeDiscriminatorNode(72)],
-  size: 72,
+const node = stringTypeNode({
+  size: prefixedSizeNode(numberTypeNode('u32')),
 });
 
-test(mergeVisitorMacro, node, 10);
+test(mergeVisitorMacro, node, 3);
 test(identityVisitorMacro, node);
-test(deleteNodesVisitorMacro, node, '[accountNode]', null);
-test(deleteNodesVisitorMacro, node, '[pdaLinkNode]', {
-  ...node,
-  pda: undefined,
-});
+test(deleteNodesVisitorMacro, node, '[stringTypeNode]', null);
+test(deleteNodesVisitorMacro, node, '[prefixedSizeNode]', null);
+test(deleteNodesVisitorMacro, node, '[numberTypeNode]', null);
 test(
   getDebugStringVisitorMacro,
   node,
   `
-accountNode [token]
-|   structTypeNode
-|   |   structFieldTypeNode [mint]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [owner]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [amount]
-|   |   |   numberTypeNode [u64]
-|   pdaLinkNode [associatedToken]
-|   sizeDiscriminatorNode [72]`
+stringTypeNode [utf8]
+|   prefixedSizeNode
+|   |   numberTypeNode [u32]`
+);
+
+// Different encoding.
+test(
+  'getDebugStringVisitor: different encoding',
+  getDebugStringVisitorMacro,
+  stringTypeNode({ encoding: 'base58' }),
+  `
+stringTypeNode [base58]
+|   prefixedSizeNode
+|   |   numberTypeNode [u32]`
 );
