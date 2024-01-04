@@ -59,6 +59,11 @@ function getNodeDetails(node: Node): string[] {
         ...(node.isSigner === 'either' ? ['optionalSigner'] : []),
         ...(node.isOptional ? ['optional'] : []),
       ];
+    case 'instructionByteDeltaNode':
+      return [
+        ...(node.subtract ? ['subtract'] : []),
+        ...(node.withHeader ? ['withHeader'] : []),
+      ];
     case 'errorNode':
       return [node.code.toString(), node.name];
     case 'programLinkNode':

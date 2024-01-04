@@ -86,6 +86,14 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
       };
   }
 
+  if (castedNodeKeys.includes('instructionByteDeltaNode')) {
+    visitor.visitInstructionByteDelta = function visitInstructionByteDelta(
+      node
+    ) {
+      return merge(node, visit(this)(node.value));
+    };
+  }
+
   if (castedNodeKeys.includes('definedTypeNode')) {
     visitor.visitDefinedType = function visitDefinedType(node) {
       return merge(node, visit(this)(node.type));
