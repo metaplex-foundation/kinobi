@@ -131,11 +131,11 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
   programAddressConstant: (name) =>
     `${snakeCase(name).toUpperCase()}_PROGRAM_ADDRESS`,
   programCreateFunction: (name) => `create${pascalCase(name)}Program`,
-  programAccountsEnum: (name) => `${pascalCase(name)}Accounts`,
+  programAccountsEnum: (name) => `${pascalCase(name)}Account`,
   programAccountsEnumVariant: (name) => `${snakeCase(name).toUpperCase()}`,
   programAccountsIdentifierFunction: (name) =>
     `identify${pascalCase(name)}Account`,
-  programInstructionsEnum: (name) => `${pascalCase(name)}Instructions`,
+  programInstructionsEnum: (name) => `${pascalCase(name)}Instruction`,
   programInstructionsEnumVariant: (name) => `${snakeCase(name).toUpperCase()}`,
   programInstructionsIdentifierFunction: (name) =>
     `identify${pascalCase(name)}Instruction`,
