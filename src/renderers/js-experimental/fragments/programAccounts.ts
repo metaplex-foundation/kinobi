@@ -17,7 +17,7 @@ export function getProgramAccountsFragment(
       getProgramAccountsEnumFragment(scope),
       getProgramAccountsIdentifierFunctionFragment(scope),
     ],
-    (r) => r.join('\n\n')
+    (r) => `${r.join('\n\n')}\n`
   );
 }
 

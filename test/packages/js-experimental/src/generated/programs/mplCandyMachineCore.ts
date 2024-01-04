@@ -49,6 +49,7 @@ export function identifyMplCandyMachineCoreAccount(
     'The provided account could not be identified as a mplCandyMachineCore account.'
   );
 }
+
 export enum MplCandyMachineCoreInstruction {
   DUMMY,
   ADD_CONFIG_LINES,

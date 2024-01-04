@@ -30,7 +30,7 @@ export function getProgramInstructionsFragment(
       getProgramInstructionsEnumFragment(scopeWithInstructions),
       getProgramInstructionsIdentifierFunctionFragment(scopeWithInstructions),
     ],
-    (r) => r.join('\n\n')
+    (r) => `${r.join('\n\n')}\n`
   );
 }
 

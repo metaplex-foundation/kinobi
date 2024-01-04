@@ -93,6 +93,7 @@ export function identifyMplTokenMetadataAccount(
     'The provided account could not be identified as a mplTokenMetadata account.'
   );
 }
+
 export enum MplTokenMetadataInstruction {
   CREATE_METADATA_ACCOUNT,
   UPDATE_METADATA_ACCOUNT,

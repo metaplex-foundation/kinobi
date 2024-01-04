@@ -51,6 +51,7 @@ export function identifyMplTokenAuthRulesAccount(
     'The provided account could not be identified as a mplTokenAuthRules account.'
   );
 }
+
 export enum MplTokenAuthRulesInstruction {
   CREATE_RULE_SET,
   VALIDATE,
