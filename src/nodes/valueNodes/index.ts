@@ -3,6 +3,7 @@ export * from './BooleanValueNode';
 export * from './EnumValueNode';
 export * from './MapEntryValueNode';
 export * from './MapValueNode';
+export * from './NoneValueNode';
 export * from './NumberValueNode';
 export * from './PublicKeyValueNode';
 export * from './SetValueNode';

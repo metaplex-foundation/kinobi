@@ -1,13 +1,5 @@
 import test from 'ava';
-import {
-  accountNode,
-  numberTypeNode,
-  pdaLinkNode,
-  publicKeyTypeNode,
-  sizeDiscriminatorNode,
-  structFieldTypeNode,
-  structTypeNode,
-} from '../../../../src';
+import { arrayValueNode, publicKeyValueNode } from '../../../../src';
 import {
   deleteNodesVisitorMacro,
   getDebugStringVisitorMacro,
@@ -15,37 +7,25 @@ import {
   mergeVisitorMacro,
 } from '../_setup';
 
-const node = accountNode({
-  name: 'token',
-  data: structTypeNode([
-    structFieldTypeNode({ name: 'mint', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'owner', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'amount', type: numberTypeNode('u64') }),
-  ]),
-  pda: pdaLinkNode('associatedToken'),
-  discriminators: [sizeDiscriminatorNode(72)],
-  size: 72,
-});
+const node = arrayValueNode([
+  publicKeyValueNode('8jeCDm1zPb68kfzv5MaUo9BK7beGzFrGHA9hhMGL1ay1'),
+  publicKeyValueNode('8PEBfDem8yb5aUkrhKgNKMraB9gR8WtJDprEW3QwLFz'),
+  publicKeyValueNode('97hChLjFswwqBrE82Q4wqctpFfB2jZ91svxCv68iCrqG'),
+]);
 
-test(mergeVisitorMacro, node, 10);
+test(mergeVisitorMacro, node, 4);
 test(identityVisitorMacro, node);
-test(deleteNodesVisitorMacro, node, '[accountNode]', null);
-test(deleteNodesVisitorMacro, node, '[pdaLinkNode]', {
+test(deleteNodesVisitorMacro, node, '[arrayValueNode]', null);
+test(deleteNodesVisitorMacro, node, '[publicKeyValueNode]', {
   ...node,
-  pda: undefined,
+  items: [],
 });
 test(
   getDebugStringVisitorMacro,
   node,
   `
-accountNode [token]
-|   structTypeNode
-|   |   structFieldTypeNode [mint]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [owner]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [amount]
-|   |   |   numberTypeNode [u64]
-|   pdaLinkNode [associatedToken]
-|   sizeDiscriminatorNode [72]`
+arrayValueNode
+|   publicKeyValueNode [8jeCDm1zPb68kfzv5MaUo9BK7beGzFrGHA9hhMGL1ay1]
+|   publicKeyValueNode [8PEBfDem8yb5aUkrhKgNKMraB9gR8WtJDprEW3QwLFz]
+|   publicKeyValueNode [97hChLjFswwqBrE82Q4wqctpFfB2jZ91svxCv68iCrqG]`
 );

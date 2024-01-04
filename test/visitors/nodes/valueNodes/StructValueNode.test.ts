@@ -1,12 +1,9 @@
 import test from 'ava';
 import {
-  accountNode,
-  numberTypeNode,
-  pdaLinkNode,
-  publicKeyTypeNode,
-  sizeDiscriminatorNode,
-  structFieldTypeNode,
-  structTypeNode,
+  numberValueNode,
+  stringValueNode,
+  structFieldValueNode,
+  structValueNode,
 } from '../../../../src';
 import {
   deleteNodesVisitorMacro,
@@ -15,37 +12,25 @@ import {
   mergeVisitorMacro,
 } from '../_setup';
 
-const node = accountNode({
-  name: 'token',
-  data: structTypeNode([
-    structFieldTypeNode({ name: 'mint', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'owner', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'amount', type: numberTypeNode('u64') }),
-  ]),
-  pda: pdaLinkNode('associatedToken'),
-  discriminators: [sizeDiscriminatorNode(72)],
-  size: 72,
-});
+const node = structValueNode([
+  structFieldValueNode('name', stringValueNode('Alice')),
+  structFieldValueNode('age', numberValueNode(42)),
+]);
 
-test(mergeVisitorMacro, node, 10);
+test(mergeVisitorMacro, node, 5);
 test(identityVisitorMacro, node);
-test(deleteNodesVisitorMacro, node, '[accountNode]', null);
-test(deleteNodesVisitorMacro, node, '[pdaLinkNode]', {
+test(deleteNodesVisitorMacro, node, '[structValueNode]', null);
+test(deleteNodesVisitorMacro, node, '[structFieldValueNode]', {
   ...node,
-  pda: undefined,
+  fields: [],
 });
 test(
   getDebugStringVisitorMacro,
   node,
   `
-accountNode [token]
-|   structTypeNode
-|   |   structFieldTypeNode [mint]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [owner]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [amount]
-|   |   |   numberTypeNode [u64]
-|   pdaLinkNode [associatedToken]
-|   sizeDiscriminatorNode [72]`
+structValueNode
+|   structFieldValueNode [name]
+|   |   stringValueNode [Alice]
+|   structFieldValueNode [age]
+|   |   numberValueNode [42]`
 );

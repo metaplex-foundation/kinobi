@@ -1,12 +1,9 @@
 import test from 'ava';
 import {
-  accountNode,
-  numberTypeNode,
-  pdaLinkNode,
-  publicKeyTypeNode,
-  sizeDiscriminatorNode,
-  structFieldTypeNode,
-  structTypeNode,
+  mapEntryValueNode,
+  mapValueNode,
+  numberValueNode,
+  stringValueNode,
 } from '../../../../src';
 import {
   deleteNodesVisitorMacro,
@@ -15,37 +12,31 @@ import {
   mergeVisitorMacro,
 } from '../_setup';
 
-const node = accountNode({
-  name: 'token',
-  data: structTypeNode([
-    structFieldTypeNode({ name: 'mint', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'owner', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'amount', type: numberTypeNode('u64') }),
-  ]),
-  pda: pdaLinkNode('associatedToken'),
-  discriminators: [sizeDiscriminatorNode(72)],
-  size: 72,
-});
+const node = mapValueNode([
+  mapEntryValueNode(stringValueNode('Alice'), numberValueNode(42)),
+  mapEntryValueNode(stringValueNode('Bob'), numberValueNode(37)),
+  mapEntryValueNode(stringValueNode('Carla'), numberValueNode(29)),
+]);
 
 test(mergeVisitorMacro, node, 10);
 test(identityVisitorMacro, node);
-test(deleteNodesVisitorMacro, node, '[accountNode]', null);
-test(deleteNodesVisitorMacro, node, '[pdaLinkNode]', {
+test(deleteNodesVisitorMacro, node, '[mapValueNode]', null);
+test(deleteNodesVisitorMacro, node, '[mapEntryValueNode]', {
   ...node,
-  pda: undefined,
+  entries: [],
 });
 test(
   getDebugStringVisitorMacro,
   node,
   `
-accountNode [token]
-|   structTypeNode
-|   |   structFieldTypeNode [mint]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [owner]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [amount]
-|   |   |   numberTypeNode [u64]
-|   pdaLinkNode [associatedToken]
-|   sizeDiscriminatorNode [72]`
+mapValueNode
+|   mapEntryValueNode
+|   |   stringValueNode [Alice]
+|   |   numberValueNode [42]
+|   mapEntryValueNode
+|   |   stringValueNode [Bob]
+|   |   numberValueNode [37]
+|   mapEntryValueNode
+|   |   stringValueNode [Carla]
+|   |   numberValueNode [29]`
 );

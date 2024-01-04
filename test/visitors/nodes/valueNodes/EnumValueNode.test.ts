@@ -1,12 +1,11 @@
 import test from 'ava';
 import {
-  accountNode,
-  numberTypeNode,
-  pdaLinkNode,
-  publicKeyTypeNode,
-  sizeDiscriminatorNode,
-  structFieldTypeNode,
-  structTypeNode,
+  definedTypeLinkNode,
+  enumValueNode,
+  numberValueNode,
+  stringValueNode,
+  structFieldValueNode,
+  structValueNode,
 } from '../../../../src';
 import {
   deleteNodesVisitorMacro,
@@ -15,37 +14,32 @@ import {
   mergeVisitorMacro,
 } from '../_setup';
 
-const node = accountNode({
-  name: 'token',
-  data: structTypeNode([
-    structFieldTypeNode({ name: 'mint', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'owner', type: publicKeyTypeNode() }),
-    structFieldTypeNode({ name: 'amount', type: numberTypeNode('u64') }),
-  ]),
-  pda: pdaLinkNode('associatedToken'),
-  discriminators: [sizeDiscriminatorNode(72)],
-  size: 72,
-});
+const node = enumValueNode(
+  definedTypeLinkNode('entity'),
+  'person',
+  structValueNode([
+    structFieldValueNode('name', stringValueNode('Alice')),
+    structFieldValueNode('age', numberValueNode(42)),
+  ])
+);
 
-test(mergeVisitorMacro, node, 10);
+test(mergeVisitorMacro, node, 7);
 test(identityVisitorMacro, node);
-test(deleteNodesVisitorMacro, node, '[accountNode]', null);
-test(deleteNodesVisitorMacro, node, '[pdaLinkNode]', {
+test(deleteNodesVisitorMacro, node, '[enumValueNode]', null);
+test(deleteNodesVisitorMacro, node, '[definedTypeLinkNode]', null);
+test(deleteNodesVisitorMacro, node, '[structValueNode]', {
   ...node,
-  pda: undefined,
+  value: undefined,
 });
 test(
   getDebugStringVisitorMacro,
   node,
   `
-accountNode [token]
-|   structTypeNode
-|   |   structFieldTypeNode [mint]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [owner]
-|   |   |   publicKeyTypeNode
-|   |   structFieldTypeNode [amount]
-|   |   |   numberTypeNode [u64]
-|   pdaLinkNode [associatedToken]
-|   sizeDiscriminatorNode [72]`
+enumValueNode [person]
+|   definedTypeLinkNode [entity]
+|   structValueNode
+|   |   structFieldValueNode [name]
+|   |   |   stringValueNode [Alice]
+|   |   structFieldValueNode [age]
+|   |   |   numberValueNode [42]`
 );
