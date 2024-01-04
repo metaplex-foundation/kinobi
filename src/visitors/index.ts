@@ -1,3 +1,4 @@
+export * from './addPdasVisitor';
 export * from './bottomUpTransformerVisitor';
 export * from './consoleLogVisitor';
 export * from './createSubInstructionsFromEnumArgsVisitor';
