@@ -4,6 +4,7 @@ import {
   getAllInstructionArguments,
   instructionNode,
   isNode,
+  isNodeFilter,
 } from '../nodes';
 import {
   InstructionInputValueNode,
@@ -215,6 +216,11 @@ export function setInstructionAccountDefaultValuesVisitor(
               );
 
               if (isNode(defaultValue, 'pdaValueNode')) {
+                const foundPda = linkables.get(defaultValue.pda);
+                const hasAllVariableSeeds = foundPda
+                  ? foundPda.seeds.filter(isNodeFilter('variablePdaSeedNode'))
+                      .length === defaultValue.seeds.length
+                  : false;
                 const allAccountsName = node.accounts.map((a) => a.name);
                 const allArgumentsName = getAllInstructionArguments(node).map(
                   (a) => a.name
@@ -229,7 +235,7 @@ export function setInstructionAccountDefaultValuesVisitor(
                   return true;
                 });
 
-                return allSeedsAreValid
+                return hasAllVariableSeeds && allSeedsAreValid
                   ? { ...account, defaultValue }
                   : account;
               }
