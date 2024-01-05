@@ -1,6 +1,7 @@
 import {
   InstructionAccountNode,
   InstructionNode,
+  getAllInstructionArguments,
   instructionNode,
   isNode,
 } from '../nodes';
@@ -11,7 +12,7 @@ import {
   payerValueNode,
   programIdValueNode,
 } from '../nodes/contextualValueNodes';
-import { publicKeyValueNode } from '../nodes/valueNodes';
+import { VALUE_NODES, publicKeyValueNode } from '../nodes/valueNodes';
 import { LinkableDictionary, mainCase, pipe } from '../shared';
 import { extendVisitor } from './extendVisitor';
 import { identityVisitor } from './identityVisitor';
@@ -218,7 +219,24 @@ export function setInstructionAccountDefaultValuesVisitor(
                       )
                     : rule.defaultValue.seeds,
                 };
-                return { ...account, defaultValue };
+
+                if (rule.instruction) {
+                  return { ...account, defaultValue };
+                }
+
+                const allSeedsAreValid = defaultValue.seeds.every((seed) => {
+                  if (isNode(seed.value, VALUE_NODES)) return true;
+                  const seedName = seed.value.name;
+                  if (isNode(seed.value, 'accountValueNode')) {
+                    return node.accounts.some((a) => a.name === seedName);
+                  }
+                  const args = getAllInstructionArguments(node);
+                  return args.some((a) => a.name === seedName);
+                });
+
+                return allSeedsAreValid
+                  ? { ...account, defaultValue }
+                  : account;
               }
 
               return { ...account, defaultValue: rule.defaultValue };
