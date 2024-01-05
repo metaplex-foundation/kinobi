@@ -1,7 +1,9 @@
 import {
   InstructionAccountNode,
   InstructionNode,
+  getAllInstructionArguments,
   instructionNode,
+  isNode,
 } from '../nodes';
 import {
   InstructionInputValueNode,
@@ -205,6 +207,31 @@ export function setInstructionAccountDefaultValuesVisitor(
                 (account.isOptional || !!account.defaultValue)
               ) {
                 return account;
+              }
+
+              const defaultValue = visit(
+                rule.defaultValue,
+                fillDefaultPdaSeedValuesVisitor(node, linkables)
+              );
+
+              if (isNode(defaultValue, 'pdaValueNode')) {
+                const allAccountsName = node.accounts.map((a) => a.name);
+                const allArgumentsName = getAllInstructionArguments(node).map(
+                  (a) => a.name
+                );
+                const allSeedsAreValid = defaultValue.seeds.every((seed) => {
+                  if (isNode(seed.value, 'accountValueNode')) {
+                    return allAccountsName.includes(seed.value.name);
+                  }
+                  if (isNode(seed.value, 'argumentValueNode')) {
+                    return allArgumentsName.includes(seed.value.name);
+                  }
+                  return true;
+                });
+
+                return allSeedsAreValid
+                  ? { ...account, defaultValue }
+                  : account;
               }
 
               return {
