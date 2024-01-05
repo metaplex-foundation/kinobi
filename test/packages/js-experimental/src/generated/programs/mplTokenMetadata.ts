@@ -8,12 +8,13 @@
 
 import { Address } from '@solana/addresses';
 import { getU8Encoder } from '@solana/codecs-numbers';
+import { Program, ProgramWithErrors } from '@solana/programs';
 import {
   MplTokenMetadataProgramError,
   MplTokenMetadataProgramErrorCode,
   getMplTokenMetadataProgramErrorFromCode,
 } from '../errors';
-import { Program, ProgramWithErrors, memcmp } from '../shared';
+import { memcmp } from '../shared';
 import { TmKey, getTmKeyEncoder } from '../types';
 
 export const MPL_TOKEN_METADATA_PROGRAM_ADDRESS =

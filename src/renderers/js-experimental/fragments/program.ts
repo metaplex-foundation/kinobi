@@ -23,11 +23,11 @@ export function getProgramFragment(
     programGetErrorFromCodeFunction,
   })
     .addImports('solanaAddresses', ['Address'])
-    .addImports('shared', ['Program']);
+    .addImports('solanaPrograms', ['Program']);
 
   if (programNode.errors.length > 0) {
     programFragment
-      .addImports('shared', ['ProgramWithErrors'])
+      .addImports('solanaPrograms', ['ProgramWithErrors'])
       .addImports('generatedErrors', [
         programErrorClass,
         programErrorCode,

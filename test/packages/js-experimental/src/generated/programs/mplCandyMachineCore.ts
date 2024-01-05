@@ -7,12 +7,13 @@
  */
 
 import { Address } from '@solana/addresses';
+import { Program, ProgramWithErrors } from '@solana/programs';
 import {
   MplCandyMachineCoreProgramError,
   MplCandyMachineCoreProgramErrorCode,
   getMplCandyMachineCoreProgramErrorFromCode,
 } from '../errors';
-import { Program, ProgramWithErrors, memcmp } from '../shared';
+import { memcmp } from '../shared';
 
 export const MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS =
   'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;

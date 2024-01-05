@@ -8,7 +8,8 @@
 
 import { Address } from '@solana/addresses';
 import { getU32Encoder } from '@solana/codecs-numbers';
-import { Program, memcmp } from '../shared';
+import { Program } from '@solana/programs';
+import { memcmp } from '../shared';
 
 export const SPL_SYSTEM_PROGRAM_ADDRESS =
   '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
