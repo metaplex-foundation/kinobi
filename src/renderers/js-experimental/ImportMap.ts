@@ -11,6 +11,7 @@ const DEFAULT_MODULE_MAP: Record<string, string> = {
   solanaCodecsStrings: '@solana/codecs-strings',
   solanaCodecsDataStructures: '@solana/codecs-data-structures',
   solanaInstructions: '@solana/instructions',
+  solanaPrograms: '@solana/programs',
   solanaOptions: '@solana/options',
   solanaSigners: '@solana/signers',
   solanaTransactions: '@solana/transactions',

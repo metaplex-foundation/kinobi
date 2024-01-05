@@ -8,12 +8,13 @@
 
 import { Address } from '@solana/addresses';
 import { getU64Encoder, getU8Encoder } from '@solana/codecs-numbers';
+import { Program, ProgramWithErrors } from '@solana/programs';
 import {
   MplTokenAuthRulesProgramError,
   MplTokenAuthRulesProgramErrorCode,
   getMplTokenAuthRulesProgramErrorFromCode,
 } from '../errors';
-import { Program, ProgramWithErrors, memcmp } from '../shared';
+import { memcmp } from '../shared';
 import { TaKey } from '../types';
 
 export const MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS =
