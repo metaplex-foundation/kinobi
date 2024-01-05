@@ -76,7 +76,12 @@ export function updateInstructionsVisitor(
             argsUpdates ?? {}
           );
           const newAccounts = node.accounts.map((account) =>
-            handleInstructionAccount(account, accountUpdates ?? {}, linkables)
+            handleInstructionAccount(
+              node,
+              account,
+              accountUpdates ?? {},
+              linkables
+            )
           );
           return instructionNode({
             ...node,
@@ -97,6 +102,7 @@ export function updateInstructionsVisitor(
 }
 
 function handleInstructionAccount(
+  instruction: InstructionNode,
   account: InstructionAccountNode,
   accountUpdates: InstructionAccountUpdates,
   linkables: LinkableDictionary
@@ -116,7 +122,7 @@ function handleInstructionAccount(
     ...acountWithoutDefault,
     defaultValue: visit(
       defaultValue,
-      fillDefaultPdaSeedValuesVisitor(linkables)
+      fillDefaultPdaSeedValuesVisitor(instruction, linkables)
     ),
   });
 }

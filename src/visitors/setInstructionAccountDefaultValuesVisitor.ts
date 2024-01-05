@@ -1,10 +1,7 @@
 import {
   InstructionAccountNode,
   InstructionNode,
-  assertIsNode,
-  getAllInstructionArguments,
   instructionNode,
-  isNode,
 } from '../nodes';
 import {
   InstructionInputValueNode,
@@ -12,7 +9,7 @@ import {
   payerValueNode,
   programIdValueNode,
 } from '../nodes/contextualValueNodes';
-import { VALUE_NODES, publicKeyValueNode } from '../nodes/valueNodes';
+import { publicKeyValueNode } from '../nodes/valueNodes';
 import { LinkableDictionary, mainCase, pipe } from '../shared';
 import { extendVisitor } from './extendVisitor';
 import { fillDefaultPdaSeedValuesVisitor } from './fillDefaultPdaSeedValuesVisitor';
@@ -210,33 +207,13 @@ export function setInstructionAccountDefaultValuesVisitor(
                 return account;
               }
 
-              if (isNode(rule.defaultValue, 'pdaValueNode')) {
-                const defaultValue = visit(
+              return {
+                ...account,
+                defaultValue: visit(
                   rule.defaultValue,
-                  fillDefaultPdaSeedValuesVisitor(linkables)
-                );
-                assertIsNode(defaultValue, 'pdaValueNode');
-
-                if (rule.instruction) {
-                  return { ...account, defaultValue };
-                }
-
-                const allSeedsAreValid = defaultValue.seeds.every((seed) => {
-                  if (isNode(seed.value, VALUE_NODES)) return true;
-                  const seedName = seed.value.name;
-                  if (isNode(seed.value, 'accountValueNode')) {
-                    return node.accounts.some((a) => a.name === seedName);
-                  }
-                  const args = getAllInstructionArguments(node);
-                  return args.some((a) => a.name === seedName);
-                });
-
-                return allSeedsAreValid
-                  ? { ...account, defaultValue }
-                  : account;
-              }
-
-              return { ...account, defaultValue: rule.defaultValue };
+                  fillDefaultPdaSeedValuesVisitor(node, linkables)
+                ),
+              };
             }
           );
 
