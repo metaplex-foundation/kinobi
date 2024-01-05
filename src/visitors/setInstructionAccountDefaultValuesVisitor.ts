@@ -1,13 +1,13 @@
 import {
   InstructionAccountNode,
   InstructionNode,
+  assertIsNode,
   getAllInstructionArguments,
   instructionNode,
   isNode,
 } from '../nodes';
 import {
   InstructionInputValueNode,
-  addDefaultSeedValuesFromPdaWhenMissing,
   identityValueNode,
   payerValueNode,
   programIdValueNode,
@@ -15,8 +15,10 @@ import {
 import { VALUE_NODES, publicKeyValueNode } from '../nodes/valueNodes';
 import { LinkableDictionary, mainCase, pipe } from '../shared';
 import { extendVisitor } from './extendVisitor';
+import { fillDefaultPdaSeedValuesVisitor } from './fillDefaultPdaSeedValuesVisitor';
 import { identityVisitor } from './identityVisitor';
 import { recordLinkablesVisitor } from './recordLinkablesVisitor';
+import { visit } from './visitor';
 
 export type InstructionAccountDefaultRule = {
   /** The name of the instruction account or a pattern to match on it. */
@@ -209,16 +211,11 @@ export function setInstructionAccountDefaultValuesVisitor(
               }
 
               if (isNode(rule.defaultValue, 'pdaValueNode')) {
-                const foundPda = linkables.get(rule.defaultValue.pda);
-                const defaultValue = {
-                  ...rule.defaultValue,
-                  seeds: foundPda
-                    ? addDefaultSeedValuesFromPdaWhenMissing(
-                        foundPda,
-                        rule.defaultValue.seeds
-                      )
-                    : rule.defaultValue.seeds,
-                };
+                const defaultValue = visit(
+                  rule.defaultValue,
+                  fillDefaultPdaSeedValuesVisitor(linkables)
+                );
+                assertIsNode(defaultValue, 'pdaValueNode');
 
                 if (rule.instruction) {
                   return { ...account, defaultValue };

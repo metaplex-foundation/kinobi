@@ -7,19 +7,19 @@ import {
   InstructionNode,
   InstructionNodeInput,
   TYPE_NODES,
-  addDefaultSeedValuesFromPdaWhenMissing,
   assertIsNode,
   instructionAccountNode,
   instructionArgumentNode,
   instructionNode,
-  isNode,
 } from '../nodes';
-import { LinkableDictionary, mainCase, pipe } from '../shared';
+import { LinkableDictionary, pipe } from '../shared';
 import {
   BottomUpNodeTransformerWithSelector,
   bottomUpTransformerVisitor,
 } from './bottomUpTransformerVisitor';
+import { fillDefaultPdaSeedValuesVisitor } from './fillDefaultPdaSeedValuesVisitor';
 import { recordLinkablesVisitor } from './recordLinkablesVisitor';
+import { visit } from './visitor';
 
 export type InstructionUpdates =
   | { delete: true }
@@ -108,25 +108,17 @@ function handleInstructionAccount(
     ...accountUpdate,
   };
 
-  if (defaultValue === null) {
+  if (!defaultValue) {
     return instructionAccountNode(acountWithoutDefault);
   }
 
-  if (isNode(defaultValue, 'pdaValueNode')) {
-    const foundPda = linkables.get(defaultValue.pda);
-    return {
-      ...acountWithoutDefault,
-      name: mainCase(acountWithoutDefault.name),
-      defaultValue: {
-        ...defaultValue,
-        seeds: foundPda
-          ? addDefaultSeedValuesFromPdaWhenMissing(foundPda, defaultValue.seeds)
-          : defaultValue.seeds,
-      },
-    };
-  }
-
-  return instructionAccountNode({ ...acountWithoutDefault, defaultValue });
+  return instructionAccountNode({
+    ...acountWithoutDefault,
+    defaultValue: visit(
+      defaultValue,
+      fillDefaultPdaSeedValuesVisitor(linkables)
+    ),
+  });
 }
 
 function handleInstructionArgument(

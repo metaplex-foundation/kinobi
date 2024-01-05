@@ -32,7 +32,7 @@ export function addDefaultSeedValuesFromPdaWhenMissing(
   const defaultSeeds = getDefaultSeedValuesFromPda(node).filter(
     (seed) => !existingSeedNames.has(seed.name)
   );
-  return [...defaultSeeds, ...existingSeeds];
+  return [...existingSeeds, ...defaultSeeds];
 }
 
 export function getDefaultSeedValuesFromPda(node: PdaNode): PdaSeedValueNode[] {
