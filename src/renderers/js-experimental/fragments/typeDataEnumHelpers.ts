@@ -19,6 +19,8 @@ export function getTypeDataEnumHelpersFragment(
   return fragmentFromTemplate('typeDataEnumHelpers.njk', {
     strictName: nameApi.dataType(name),
     looseName: nameApi.dataArgsType(name),
+    dataEnumDiscriminator: nameApi.dataEnumDiscriminator(name),
+    getVariant: (variant: string) => nameApi.dataEnumVariant(variant),
     dataEnumFunction: nameApi.dataEnumFunction(name),
     isDataEnumFunction: nameApi.isDataEnumFunction(name),
     typeNode,

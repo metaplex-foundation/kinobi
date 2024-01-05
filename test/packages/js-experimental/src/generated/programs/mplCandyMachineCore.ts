@@ -35,7 +35,7 @@ export function createMplCandyMachineCoreProgram(): MplCandyMachineCoreProgram {
 }
 
 export enum MplCandyMachineCoreAccount {
-  CANDY_MACHINE,
+  CandyMachine,
 }
 
 export function identifyMplCandyMachineCoreAccount(
@@ -43,7 +43,7 @@ export function identifyMplCandyMachineCoreAccount(
 ): MplCandyMachineCoreAccount {
   const data = account instanceof Uint8Array ? account : account.data;
   if (memcmp(data, new Uint8Array([51, 173, 177, 113, 25, 241, 109, 189]), 0)) {
-    return MplCandyMachineCoreAccount.CANDY_MACHINE;
+    return MplCandyMachineCoreAccount.CandyMachine;
   }
   throw new Error(
     'The provided account could not be identified as a mplCandyMachineCore account.'
@@ -51,15 +51,15 @@ export function identifyMplCandyMachineCoreAccount(
 }
 
 export enum MplCandyMachineCoreInstruction {
-  DUMMY,
-  ADD_CONFIG_LINES,
-  INITIALIZE,
-  MINT_FROM_CANDY_MACHINE,
-  SET_AUTHORITY,
-  SET_COLLECTION,
-  SET_MINT_AUTHORITY,
-  UPDATE_CANDY_MACHINE,
-  WITHDRAW,
+  Dummy,
+  AddConfigLines,
+  Initialize,
+  MintFromCandyMachine,
+  SetAuthority,
+  SetCollection,
+  SetMintAuthority,
+  UpdateCandyMachine,
+  Withdraw,
 }
 
 export function identifyMplCandyMachineCoreInstruction(
@@ -68,33 +68,33 @@ export function identifyMplCandyMachineCoreInstruction(
   const data =
     instruction instanceof Uint8Array ? instruction : instruction.data;
   if (memcmp(data, new Uint8Array([167, 117, 211, 79, 251, 254, 47, 135]), 0)) {
-    return MplCandyMachineCoreInstruction.DUMMY;
+    return MplCandyMachineCoreInstruction.Dummy;
   }
   if (memcmp(data, new Uint8Array([223, 50, 224, 227, 151, 8, 115, 106]), 0)) {
-    return MplCandyMachineCoreInstruction.ADD_CONFIG_LINES;
+    return MplCandyMachineCoreInstruction.AddConfigLines;
   }
   if (memcmp(data, new Uint8Array([175, 175, 109, 31, 13, 152, 155, 237]), 0)) {
-    return MplCandyMachineCoreInstruction.INITIALIZE;
+    return MplCandyMachineCoreInstruction.Initialize;
   }
   if (memcmp(data, new Uint8Array([51, 57, 225, 47, 182, 146, 137, 166]), 0)) {
-    return MplCandyMachineCoreInstruction.MINT_FROM_CANDY_MACHINE;
+    return MplCandyMachineCoreInstruction.MintFromCandyMachine;
   }
   if (memcmp(data, new Uint8Array([133, 250, 37, 21, 110, 163, 26, 121]), 0)) {
-    return MplCandyMachineCoreInstruction.SET_AUTHORITY;
+    return MplCandyMachineCoreInstruction.SetAuthority;
   }
   if (memcmp(data, new Uint8Array([192, 254, 206, 76, 168, 182, 59, 223]), 0)) {
-    return MplCandyMachineCoreInstruction.SET_COLLECTION;
+    return MplCandyMachineCoreInstruction.SetCollection;
   }
   if (
     memcmp(data, new Uint8Array([67, 127, 155, 187, 100, 174, 103, 121]), 0)
   ) {
-    return MplCandyMachineCoreInstruction.SET_MINT_AUTHORITY;
+    return MplCandyMachineCoreInstruction.SetMintAuthority;
   }
   if (memcmp(data, new Uint8Array([219, 200, 88, 176, 158, 63, 253, 127]), 0)) {
-    return MplCandyMachineCoreInstruction.UPDATE_CANDY_MACHINE;
+    return MplCandyMachineCoreInstruction.UpdateCandyMachine;
   }
   if (memcmp(data, new Uint8Array([183, 18, 70, 156, 148, 109, 161, 34]), 0)) {
-    return MplCandyMachineCoreInstruction.WITHDRAW;
+    return MplCandyMachineCoreInstruction.Withdraw;
   }
   throw new Error(
     'The provided instruction could not be identified as a mplCandyMachineCore instruction.'

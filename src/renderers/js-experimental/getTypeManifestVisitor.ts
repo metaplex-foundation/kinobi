@@ -7,7 +7,7 @@ import {
   structTypeNode,
   structTypeNodeFromInstructionArgumentNodes,
 } from '../../nodes';
-import { camelCase, pascalCase, pipe } from '../../shared';
+import { camelCase, pipe } from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
 import { ImportMap } from './ImportMap';
 import { TypeManifest, mergeManifests } from './TypeManifest';
@@ -140,9 +140,6 @@ export function getTypeManifestVisitor(input: {
           const currentParentName = parentName;
           parentName = null;
 
-          const variantNames = enumType.variants.map(({ name }) =>
-            pascalCase(name)
-          );
           const encoderImports = new ImportMap();
           const decoderImports = new ImportMap();
           const encoderOptions: string[] = [];
@@ -173,6 +170,9 @@ export function getTypeManifestVisitor(input: {
                   'defined type that is a scalar enum through a visitor.'
               );
             }
+            const variantNames = enumType.variants.map(({ name }) =>
+              nameApi.scalarEnumVariant(name)
+            );
             return {
               isEnum: true,
               strictType: fragment(`{ ${variantNames.join(', ')} }`),
@@ -199,7 +199,7 @@ export function getTypeManifestVisitor(input: {
           }
 
           const variants = enumType.variants.map((variant): TypeManifest => {
-            const variantName = pascalCase(variant.name);
+            const variantName = nameApi.dataEnumVariant(variant.name);
             parentName = currentParentName
               ? {
                   strict: `GetDataEnumKindContent<${currentParentName.strict}, '${variantName}'>`,
@@ -242,8 +242,11 @@ export function getTypeManifestVisitor(input: {
         },
 
         visitEnumEmptyVariantType(enumEmptyVariantType) {
-          const name = pascalCase(enumEmptyVariantType.name);
-          const kindAttribute = `__kind: "${name}"`;
+          const discriminator = nameApi.dataEnumDiscriminator(
+            enumEmptyVariantType.name
+          );
+          const name = nameApi.dataEnumVariant(enumEmptyVariantType.name);
+          const kindAttribute = `${discriminator}: "${name}"`;
           return {
             isEnum: false,
             strictType: fragment(`{ ${kindAttribute} }`),
@@ -260,8 +263,11 @@ export function getTypeManifestVisitor(input: {
         },
 
         visitEnumStructVariantType(enumStructVariantType, { self }) {
-          const name = pascalCase(enumStructVariantType.name);
-          const kindAttribute = `__kind: "${name}"`;
+          const discriminator = nameApi.dataEnumDiscriminator(
+            enumStructVariantType.name
+          );
+          const name = nameApi.dataEnumVariant(enumStructVariantType.name);
+          const kindAttribute = `${discriminator}: "${name}"`;
           const structManifest = visit(enumStructVariantType.struct, self);
           structManifest.strictType.mapRender(
             (r) => `{ ${kindAttribute},${r.slice(1, -1)}}`
@@ -275,8 +281,11 @@ export function getTypeManifestVisitor(input: {
         },
 
         visitEnumTupleVariantType(enumTupleVariantType, { self }) {
-          const name = pascalCase(enumTupleVariantType.name);
-          const kindAttribute = `__kind: "${name}"`;
+          const discriminator = nameApi.dataEnumDiscriminator(
+            enumTupleVariantType.name
+          );
+          const name = nameApi.dataEnumVariant(enumTupleVariantType.name);
+          const kindAttribute = `${discriminator}: "${name}"`;
           const struct = structTypeNode([
             structFieldTypeNode({
               name: 'fields',
