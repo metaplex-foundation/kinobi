@@ -37,7 +37,7 @@ export function createMplTokenAuthRulesProgram(): MplTokenAuthRulesProgram {
 }
 
 export enum MplTokenAuthRulesAccount {
-  FREQUENCY_ACCOUNT,
+  FrequencyAccount,
 }
 
 export function identifyMplTokenAuthRulesAccount(
@@ -45,7 +45,7 @@ export function identifyMplTokenAuthRulesAccount(
 ): MplTokenAuthRulesAccount {
   const data = account instanceof Uint8Array ? account : account.data;
   if (memcmp(data, getU64Encoder().encode(TaKey.Frequency), 0)) {
-    return MplTokenAuthRulesAccount.FREQUENCY_ACCOUNT;
+    return MplTokenAuthRulesAccount.FrequencyAccount;
   }
   throw new Error(
     'The provided account could not be identified as a mplTokenAuthRules account.'
@@ -53,9 +53,9 @@ export function identifyMplTokenAuthRulesAccount(
 }
 
 export enum MplTokenAuthRulesInstruction {
-  CREATE_RULE_SET,
-  VALIDATE,
-  CREATE_FREQUENCY_RULE,
+  CreateRuleSet,
+  Validate,
+  CreateFrequencyRule,
 }
 
 export function identifyMplTokenAuthRulesInstruction(
@@ -64,13 +64,13 @@ export function identifyMplTokenAuthRulesInstruction(
   const data =
     instruction instanceof Uint8Array ? instruction : instruction.data;
   if (memcmp(data, getU8Encoder().encode(0), 0)) {
-    return MplTokenAuthRulesInstruction.CREATE_RULE_SET;
+    return MplTokenAuthRulesInstruction.CreateRuleSet;
   }
   if (memcmp(data, getU8Encoder().encode(1), 0)) {
-    return MplTokenAuthRulesInstruction.VALIDATE;
+    return MplTokenAuthRulesInstruction.Validate;
   }
   if (memcmp(data, getU8Encoder().encode(2), 0)) {
-    return MplTokenAuthRulesInstruction.CREATE_FREQUENCY_RULE;
+    return MplTokenAuthRulesInstruction.CreateFrequencyRule;
   }
   throw new Error(
     'The provided instruction could not be identified as a mplTokenAuthRules instruction.'

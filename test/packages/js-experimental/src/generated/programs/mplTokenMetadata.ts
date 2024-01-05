@@ -37,17 +37,17 @@ export function createMplTokenMetadataProgram(): MplTokenMetadataProgram {
 }
 
 export enum MplTokenMetadataAccount {
-  COLLECTION_AUTHORITY_RECORD,
-  DELEGATE_RECORD,
-  EDITION,
-  EDITION_MARKER,
-  TOKEN_OWNED_ESCROW,
-  MASTER_EDITION_V2,
-  MASTER_EDITION_V1,
-  METADATA,
-  RESERVATION_LIST_V2,
-  RESERVATION_LIST_V1,
-  USE_AUTHORITY_RECORD,
+  CollectionAuthorityRecord,
+  DelegateRecord,
+  Edition,
+  EditionMarker,
+  TokenOwnedEscrow,
+  MasterEditionV2,
+  MasterEditionV1,
+  Metadata,
+  ReservationListV2,
+  ReservationListV1,
+  UseAuthorityRecord,
 }
 
 export function identifyMplTokenMetadataAccount(
@@ -57,37 +57,37 @@ export function identifyMplTokenMetadataAccount(
   if (
     memcmp(data, getTmKeyEncoder().encode(TmKey.CollectionAuthorityRecord), 0)
   ) {
-    return MplTokenMetadataAccount.COLLECTION_AUTHORITY_RECORD;
+    return MplTokenMetadataAccount.CollectionAuthorityRecord;
   }
   if (memcmp(data, getTmKeyEncoder().encode(TmKey.Delegate), 0)) {
-    return MplTokenMetadataAccount.DELEGATE_RECORD;
+    return MplTokenMetadataAccount.DelegateRecord;
   }
   if (memcmp(data, getTmKeyEncoder().encode(TmKey.EditionV1), 0)) {
-    return MplTokenMetadataAccount.EDITION;
+    return MplTokenMetadataAccount.Edition;
   }
   if (memcmp(data, getTmKeyEncoder().encode(TmKey.EditionMarker), 0)) {
-    return MplTokenMetadataAccount.EDITION_MARKER;
+    return MplTokenMetadataAccount.EditionMarker;
   }
   if (memcmp(data, getTmKeyEncoder().encode(TmKey.TokenOwnedEscrow), 0)) {
-    return MplTokenMetadataAccount.TOKEN_OWNED_ESCROW;
+    return MplTokenMetadataAccount.TokenOwnedEscrow;
   }
   if (memcmp(data, getTmKeyEncoder().encode(TmKey.MasterEditionV2), 0)) {
-    return MplTokenMetadataAccount.MASTER_EDITION_V2;
+    return MplTokenMetadataAccount.MasterEditionV2;
   }
   if (memcmp(data, getTmKeyEncoder().encode(TmKey.MasterEditionV1), 0)) {
-    return MplTokenMetadataAccount.MASTER_EDITION_V1;
+    return MplTokenMetadataAccount.MasterEditionV1;
   }
   if (memcmp(data, getTmKeyEncoder().encode(TmKey.MetadataV1), 0)) {
-    return MplTokenMetadataAccount.METADATA;
+    return MplTokenMetadataAccount.Metadata;
   }
   if (memcmp(data, getTmKeyEncoder().encode(TmKey.ReservationListV2), 0)) {
-    return MplTokenMetadataAccount.RESERVATION_LIST_V2;
+    return MplTokenMetadataAccount.ReservationListV2;
   }
   if (memcmp(data, getTmKeyEncoder().encode(TmKey.ReservationListV1), 0)) {
-    return MplTokenMetadataAccount.RESERVATION_LIST_V1;
+    return MplTokenMetadataAccount.ReservationListV1;
   }
   if (memcmp(data, getTmKeyEncoder().encode(TmKey.UseAuthorityRecord), 0)) {
-    return MplTokenMetadataAccount.USE_AUTHORITY_RECORD;
+    return MplTokenMetadataAccount.UseAuthorityRecord;
   }
   throw new Error(
     'The provided account could not be identified as a mplTokenMetadata account.'
@@ -95,58 +95,58 @@ export function identifyMplTokenMetadataAccount(
 }
 
 export enum MplTokenMetadataInstruction {
-  CREATE_METADATA_ACCOUNT,
-  UPDATE_METADATA_ACCOUNT,
-  DEPRECATED_CREATE_MASTER_EDITION,
-  DEPRECATED_MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_PRINTING_TOKEN,
-  UPDATE_PRIMARY_SALE_HAPPENED_VIA_TOKEN,
-  DEPRECATED_SET_RESERVATION_LIST,
-  CREATE_RESERVATION_LIST,
-  SIGN_METADATA,
-  DEPRECATED_MINT_PRINTING_TOKENS_VIA_TOKEN,
-  DEPRECATED_MINT_PRINTING_TOKENS,
-  CREATE_MASTER_EDITION,
-  MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_TOKEN,
-  CONVERT_MASTER_EDITION_V1_TO_V2,
-  MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_VAULT_PROXY,
-  PUFF_METADATA,
-  UPDATE_METADATA_ACCOUNT_V2,
-  CREATE_METADATA_ACCOUNT_V2,
-  CREATE_MASTER_EDITION_V3,
-  VERIFY_COLLECTION,
-  UTILIZE,
-  APPROVE_USE_AUTHORITY,
-  REVOKE_USE_AUTHORITY,
-  UNVERIFY_COLLECTION,
-  APPROVE_COLLECTION_AUTHORITY,
-  REVOKE_COLLECTION_AUTHORITY,
-  SET_AND_VERIFY_COLLECTION,
-  FREEZE_DELEGATED_ACCOUNT,
-  THAW_DELEGATED_ACCOUNT,
-  REMOVE_CREATOR_VERIFICATION,
-  BURN_NFT,
-  VERIFY_SIZED_COLLECTION_ITEM,
-  UNVERIFY_SIZED_COLLECTION_ITEM,
-  SET_AND_VERIFY_SIZED_COLLECTION_ITEM,
-  CREATE_METADATA_ACCOUNT_V3,
-  SET_COLLECTION_SIZE,
-  SET_TOKEN_STANDARD,
-  BUBBLEGUM_SET_COLLECTION_SIZE,
-  BURN_EDITION_NFT,
-  CREATE_ESCROW_ACCOUNT,
-  CLOSE_ESCROW_ACCOUNT,
-  TRANSFER_OUT_OF_ESCROW,
-  CREATE_V1,
-  CREATE_V2,
-  MINT,
-  UPDATE_V1,
-  BURN,
-  USE_ASSET,
-  TRANSFER,
-  VERIFY,
-  DELEGATE,
-  REVOKE,
-  MIGRATE,
+  CreateMetadataAccount,
+  UpdateMetadataAccount,
+  DeprecatedCreateMasterEdition,
+  DeprecatedMintNewEditionFromMasterEditionViaPrintingToken,
+  UpdatePrimarySaleHappenedViaToken,
+  DeprecatedSetReservationList,
+  CreateReservationList,
+  SignMetadata,
+  DeprecatedMintPrintingTokensViaToken,
+  DeprecatedMintPrintingTokens,
+  CreateMasterEdition,
+  MintNewEditionFromMasterEditionViaToken,
+  ConvertMasterEditionV1ToV2,
+  MintNewEditionFromMasterEditionViaVaultProxy,
+  PuffMetadata,
+  UpdateMetadataAccountV2,
+  CreateMetadataAccountV2,
+  CreateMasterEditionV3,
+  VerifyCollection,
+  Utilize,
+  ApproveUseAuthority,
+  RevokeUseAuthority,
+  UnverifyCollection,
+  ApproveCollectionAuthority,
+  RevokeCollectionAuthority,
+  SetAndVerifyCollection,
+  FreezeDelegatedAccount,
+  ThawDelegatedAccount,
+  RemoveCreatorVerification,
+  BurnNft,
+  VerifySizedCollectionItem,
+  UnverifySizedCollectionItem,
+  SetAndVerifySizedCollectionItem,
+  CreateMetadataAccountV3,
+  SetCollectionSize,
+  SetTokenStandard,
+  BubblegumSetCollectionSize,
+  BurnEditionNft,
+  CreateEscrowAccount,
+  CloseEscrowAccount,
+  TransferOutOfEscrow,
+  CreateV1,
+  CreateV2,
+  Mint,
+  UpdateV1,
+  Burn,
+  UseAsset,
+  Transfer,
+  Verify,
+  Delegate,
+  Revoke,
+  Migrate,
 }
 
 export function identifyMplTokenMetadataInstruction(
@@ -155,160 +155,160 @@ export function identifyMplTokenMetadataInstruction(
   const data =
     instruction instanceof Uint8Array ? instruction : instruction.data;
   if (memcmp(data, getU8Encoder().encode(0), 0)) {
-    return MplTokenMetadataInstruction.CREATE_METADATA_ACCOUNT;
+    return MplTokenMetadataInstruction.CreateMetadataAccount;
   }
   if (memcmp(data, getU8Encoder().encode(1), 0)) {
-    return MplTokenMetadataInstruction.UPDATE_METADATA_ACCOUNT;
+    return MplTokenMetadataInstruction.UpdateMetadataAccount;
   }
   if (memcmp(data, getU8Encoder().encode(2), 0)) {
-    return MplTokenMetadataInstruction.DEPRECATED_CREATE_MASTER_EDITION;
+    return MplTokenMetadataInstruction.DeprecatedCreateMasterEdition;
   }
   if (memcmp(data, getU8Encoder().encode(3), 0)) {
-    return MplTokenMetadataInstruction.DEPRECATED_MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_PRINTING_TOKEN;
+    return MplTokenMetadataInstruction.DeprecatedMintNewEditionFromMasterEditionViaPrintingToken;
   }
   if (memcmp(data, getU8Encoder().encode(4), 0)) {
-    return MplTokenMetadataInstruction.UPDATE_PRIMARY_SALE_HAPPENED_VIA_TOKEN;
+    return MplTokenMetadataInstruction.UpdatePrimarySaleHappenedViaToken;
   }
   if (memcmp(data, getU8Encoder().encode(5), 0)) {
-    return MplTokenMetadataInstruction.DEPRECATED_SET_RESERVATION_LIST;
+    return MplTokenMetadataInstruction.DeprecatedSetReservationList;
   }
   if (memcmp(data, getU8Encoder().encode(6), 0)) {
-    return MplTokenMetadataInstruction.CREATE_RESERVATION_LIST;
+    return MplTokenMetadataInstruction.CreateReservationList;
   }
   if (memcmp(data, getU8Encoder().encode(7), 0)) {
-    return MplTokenMetadataInstruction.SIGN_METADATA;
+    return MplTokenMetadataInstruction.SignMetadata;
   }
   if (memcmp(data, getU8Encoder().encode(8), 0)) {
-    return MplTokenMetadataInstruction.DEPRECATED_MINT_PRINTING_TOKENS_VIA_TOKEN;
+    return MplTokenMetadataInstruction.DeprecatedMintPrintingTokensViaToken;
   }
   if (memcmp(data, getU8Encoder().encode(9), 0)) {
-    return MplTokenMetadataInstruction.DEPRECATED_MINT_PRINTING_TOKENS;
+    return MplTokenMetadataInstruction.DeprecatedMintPrintingTokens;
   }
   if (memcmp(data, getU8Encoder().encode(10), 0)) {
-    return MplTokenMetadataInstruction.CREATE_MASTER_EDITION;
+    return MplTokenMetadataInstruction.CreateMasterEdition;
   }
   if (memcmp(data, getU8Encoder().encode(11), 0)) {
-    return MplTokenMetadataInstruction.MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_TOKEN;
+    return MplTokenMetadataInstruction.MintNewEditionFromMasterEditionViaToken;
   }
   if (memcmp(data, getU8Encoder().encode(12), 0)) {
-    return MplTokenMetadataInstruction.CONVERT_MASTER_EDITION_V1_TO_V2;
+    return MplTokenMetadataInstruction.ConvertMasterEditionV1ToV2;
   }
   if (memcmp(data, getU8Encoder().encode(13), 0)) {
-    return MplTokenMetadataInstruction.MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_VAULT_PROXY;
+    return MplTokenMetadataInstruction.MintNewEditionFromMasterEditionViaVaultProxy;
   }
   if (memcmp(data, getU8Encoder().encode(14), 0)) {
-    return MplTokenMetadataInstruction.PUFF_METADATA;
+    return MplTokenMetadataInstruction.PuffMetadata;
   }
   if (memcmp(data, getU8Encoder().encode(15), 0)) {
-    return MplTokenMetadataInstruction.UPDATE_METADATA_ACCOUNT_V2;
+    return MplTokenMetadataInstruction.UpdateMetadataAccountV2;
   }
   if (memcmp(data, getU8Encoder().encode(16), 0)) {
-    return MplTokenMetadataInstruction.CREATE_METADATA_ACCOUNT_V2;
+    return MplTokenMetadataInstruction.CreateMetadataAccountV2;
   }
   if (memcmp(data, getU8Encoder().encode(17), 0)) {
-    return MplTokenMetadataInstruction.CREATE_MASTER_EDITION_V3;
+    return MplTokenMetadataInstruction.CreateMasterEditionV3;
   }
   if (memcmp(data, getU8Encoder().encode(18), 0)) {
-    return MplTokenMetadataInstruction.VERIFY_COLLECTION;
+    return MplTokenMetadataInstruction.VerifyCollection;
   }
   if (memcmp(data, getU8Encoder().encode(19), 0)) {
-    return MplTokenMetadataInstruction.UTILIZE;
+    return MplTokenMetadataInstruction.Utilize;
   }
   if (memcmp(data, getU8Encoder().encode(20), 0)) {
-    return MplTokenMetadataInstruction.APPROVE_USE_AUTHORITY;
+    return MplTokenMetadataInstruction.ApproveUseAuthority;
   }
   if (memcmp(data, getU8Encoder().encode(21), 0)) {
-    return MplTokenMetadataInstruction.REVOKE_USE_AUTHORITY;
+    return MplTokenMetadataInstruction.RevokeUseAuthority;
   }
   if (memcmp(data, getU8Encoder().encode(22), 0)) {
-    return MplTokenMetadataInstruction.UNVERIFY_COLLECTION;
+    return MplTokenMetadataInstruction.UnverifyCollection;
   }
   if (memcmp(data, getU8Encoder().encode(23), 0)) {
-    return MplTokenMetadataInstruction.APPROVE_COLLECTION_AUTHORITY;
+    return MplTokenMetadataInstruction.ApproveCollectionAuthority;
   }
   if (memcmp(data, getU8Encoder().encode(24), 0)) {
-    return MplTokenMetadataInstruction.REVOKE_COLLECTION_AUTHORITY;
+    return MplTokenMetadataInstruction.RevokeCollectionAuthority;
   }
   if (memcmp(data, getU8Encoder().encode(25), 0)) {
-    return MplTokenMetadataInstruction.SET_AND_VERIFY_COLLECTION;
+    return MplTokenMetadataInstruction.SetAndVerifyCollection;
   }
   if (memcmp(data, getU8Encoder().encode(26), 0)) {
-    return MplTokenMetadataInstruction.FREEZE_DELEGATED_ACCOUNT;
+    return MplTokenMetadataInstruction.FreezeDelegatedAccount;
   }
   if (memcmp(data, getU8Encoder().encode(27), 0)) {
-    return MplTokenMetadataInstruction.THAW_DELEGATED_ACCOUNT;
+    return MplTokenMetadataInstruction.ThawDelegatedAccount;
   }
   if (memcmp(data, getU8Encoder().encode(28), 0)) {
-    return MplTokenMetadataInstruction.REMOVE_CREATOR_VERIFICATION;
+    return MplTokenMetadataInstruction.RemoveCreatorVerification;
   }
   if (memcmp(data, getU8Encoder().encode(29), 0)) {
-    return MplTokenMetadataInstruction.BURN_NFT;
+    return MplTokenMetadataInstruction.BurnNft;
   }
   if (memcmp(data, getU8Encoder().encode(30), 0)) {
-    return MplTokenMetadataInstruction.VERIFY_SIZED_COLLECTION_ITEM;
+    return MplTokenMetadataInstruction.VerifySizedCollectionItem;
   }
   if (memcmp(data, getU8Encoder().encode(31), 0)) {
-    return MplTokenMetadataInstruction.UNVERIFY_SIZED_COLLECTION_ITEM;
+    return MplTokenMetadataInstruction.UnverifySizedCollectionItem;
   }
   if (memcmp(data, getU8Encoder().encode(32), 0)) {
-    return MplTokenMetadataInstruction.SET_AND_VERIFY_SIZED_COLLECTION_ITEM;
+    return MplTokenMetadataInstruction.SetAndVerifySizedCollectionItem;
   }
   if (memcmp(data, getU8Encoder().encode(33), 0)) {
-    return MplTokenMetadataInstruction.CREATE_METADATA_ACCOUNT_V3;
+    return MplTokenMetadataInstruction.CreateMetadataAccountV3;
   }
   if (memcmp(data, getU8Encoder().encode(34), 0)) {
-    return MplTokenMetadataInstruction.SET_COLLECTION_SIZE;
+    return MplTokenMetadataInstruction.SetCollectionSize;
   }
   if (memcmp(data, getU8Encoder().encode(35), 0)) {
-    return MplTokenMetadataInstruction.SET_TOKEN_STANDARD;
+    return MplTokenMetadataInstruction.SetTokenStandard;
   }
   if (memcmp(data, getU8Encoder().encode(36), 0)) {
-    return MplTokenMetadataInstruction.BUBBLEGUM_SET_COLLECTION_SIZE;
+    return MplTokenMetadataInstruction.BubblegumSetCollectionSize;
   }
   if (memcmp(data, getU8Encoder().encode(37), 0)) {
-    return MplTokenMetadataInstruction.BURN_EDITION_NFT;
+    return MplTokenMetadataInstruction.BurnEditionNft;
   }
   if (memcmp(data, getU8Encoder().encode(38), 0)) {
-    return MplTokenMetadataInstruction.CREATE_ESCROW_ACCOUNT;
+    return MplTokenMetadataInstruction.CreateEscrowAccount;
   }
   if (memcmp(data, getU8Encoder().encode(39), 0)) {
-    return MplTokenMetadataInstruction.CLOSE_ESCROW_ACCOUNT;
+    return MplTokenMetadataInstruction.CloseEscrowAccount;
   }
   if (memcmp(data, getU8Encoder().encode(40), 0)) {
-    return MplTokenMetadataInstruction.TRANSFER_OUT_OF_ESCROW;
+    return MplTokenMetadataInstruction.TransferOutOfEscrow;
   }
   if (memcmp(data, getU8Encoder().encode(41), 0)) {
-    return MplTokenMetadataInstruction.CREATE_V1;
+    return MplTokenMetadataInstruction.CreateV1;
   }
   if (memcmp(data, getU8Encoder().encode(41), 0)) {
-    return MplTokenMetadataInstruction.CREATE_V2;
+    return MplTokenMetadataInstruction.CreateV2;
   }
   if (memcmp(data, getU8Encoder().encode(42), 0)) {
-    return MplTokenMetadataInstruction.MINT;
+    return MplTokenMetadataInstruction.Mint;
   }
   if (memcmp(data, getU8Encoder().encode(43), 0)) {
-    return MplTokenMetadataInstruction.UPDATE_V1;
+    return MplTokenMetadataInstruction.UpdateV1;
   }
   if (memcmp(data, getU8Encoder().encode(44), 0)) {
-    return MplTokenMetadataInstruction.BURN;
+    return MplTokenMetadataInstruction.Burn;
   }
   if (memcmp(data, getU8Encoder().encode(45), 0)) {
-    return MplTokenMetadataInstruction.USE_ASSET;
+    return MplTokenMetadataInstruction.UseAsset;
   }
   if (memcmp(data, getU8Encoder().encode(46), 0)) {
-    return MplTokenMetadataInstruction.TRANSFER;
+    return MplTokenMetadataInstruction.Transfer;
   }
   if (memcmp(data, getU8Encoder().encode(47), 0)) {
-    return MplTokenMetadataInstruction.VERIFY;
+    return MplTokenMetadataInstruction.Verify;
   }
   if (memcmp(data, getU8Encoder().encode(48), 0)) {
-    return MplTokenMetadataInstruction.DELEGATE;
+    return MplTokenMetadataInstruction.Delegate;
   }
   if (memcmp(data, getU8Encoder().encode(49), 0)) {
-    return MplTokenMetadataInstruction.REVOKE;
+    return MplTokenMetadataInstruction.Revoke;
   }
   if (memcmp(data, getU8Encoder().encode(50), 0)) {
-    return MplTokenMetadataInstruction.MIGRATE;
+    return MplTokenMetadataInstruction.Migrate;
   }
   throw new Error(
     'The provided instruction could not be identified as a mplTokenMetadata instruction.'

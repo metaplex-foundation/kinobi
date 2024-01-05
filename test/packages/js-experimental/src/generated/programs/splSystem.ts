@@ -23,8 +23,8 @@ export function createSplSystemProgram(): SplSystemProgram {
 }
 
 export enum SplSystemInstruction {
-  CREATE_ACCOUNT,
-  TRANSFER_SOL,
+  CreateAccount,
+  TransferSol,
 }
 
 export function identifySplSystemInstruction(
@@ -33,10 +33,10 @@ export function identifySplSystemInstruction(
   const data =
     instruction instanceof Uint8Array ? instruction : instruction.data;
   if (memcmp(data, getU32Encoder().encode(0), 0)) {
-    return SplSystemInstruction.CREATE_ACCOUNT;
+    return SplSystemInstruction.CreateAccount;
   }
   if (memcmp(data, getU32Encoder().encode(2), 0)) {
-    return SplSystemInstruction.TRANSFER_SOL;
+    return SplSystemInstruction.TransferSol;
   }
   throw new Error(
     'The provided instruction could not be identified as a splSystem instruction.'

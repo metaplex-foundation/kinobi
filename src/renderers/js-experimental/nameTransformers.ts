@@ -1,10 +1,10 @@
 import {
-  capitalize,
-  titleCase,
-  pascalCase,
   camelCase,
+  capitalize,
   kebabCase,
+  pascalCase,
   snakeCase,
+  titleCase,
 } from '../../shared';
 
 export type NameTransformerHelpers = {
@@ -39,6 +39,9 @@ export type NameTransformerKey =
   | 'accountFetchFromSeedsFunction'
   | 'accountSafeFetchFromSeedsFunction'
   | 'accountGetSizeFunction'
+  | 'scalarEnumVariant'
+  | 'dataEnumDiscriminator'
+  | 'dataEnumVariant'
   | 'dataEnumFunction'
   | 'isDataEnumFunction'
   | 'instructionAsyncInputType'
@@ -109,6 +112,9 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
   accountSafeFetchFromSeedsFunction: (name) =>
     `safeFetch${pascalCase(name)}FromSeeds`,
   accountGetSizeFunction: (name) => `get${pascalCase(name)}Size`,
+  scalarEnumVariant: (name) => `${pascalCase(name)}`,
+  dataEnumDiscriminator: () => '__kind',
+  dataEnumVariant: (name) => `${pascalCase(name)}`,
   dataEnumFunction: (name) => `${camelCase(name)}`,
   isDataEnumFunction: (name) => `is${pascalCase(name)}`,
   instructionAsyncInputType: (name) => `${pascalCase(name)}AsyncInput`,
@@ -132,11 +138,11 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
     `${snakeCase(name).toUpperCase()}_PROGRAM_ADDRESS`,
   programCreateFunction: (name) => `create${pascalCase(name)}Program`,
   programAccountsEnum: (name) => `${pascalCase(name)}Account`,
-  programAccountsEnumVariant: (name) => `${snakeCase(name).toUpperCase()}`,
+  programAccountsEnumVariant: (name) => `${pascalCase(name)}`,
   programAccountsIdentifierFunction: (name) =>
     `identify${pascalCase(name)}Account`,
   programInstructionsEnum: (name) => `${pascalCase(name)}Instruction`,
-  programInstructionsEnumVariant: (name) => `${snakeCase(name).toUpperCase()}`,
+  programInstructionsEnumVariant: (name) => `${pascalCase(name)}`,
   programInstructionsIdentifierFunction: (name) =>
     `identify${pascalCase(name)}Instruction`,
   programErrorClass: (name) => `${pascalCase(name)}ProgramError`,

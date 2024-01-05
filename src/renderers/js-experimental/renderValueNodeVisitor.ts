@@ -1,5 +1,5 @@
 import { RegisteredValueNodeKind, isNode, isScalarEnum } from '../../nodes';
-import { LinkableDictionary, MainCaseString, pascalCase } from '../../shared';
+import { LinkableDictionary, MainCaseString } from '../../shared';
 import { Visitor, visit } from '../../visitors';
 import { Fragment, fragment, mergeFragments } from './fragments';
 import { NameApi } from './nameTransformers';
@@ -25,7 +25,6 @@ export function renderValueNodeVisitor(input: {
     visitEnumValue(node) {
       const enumName = nameApi.dataType(node.enum.name);
       const enumFunction = nameApi.dataEnumFunction(node.enum.name);
-      const variantName = pascalCase(node.variant);
       const importFrom = node.enum.importFrom ?? 'generatedTypes';
 
       const enumNode = linkables.get(node.enum);
@@ -35,12 +34,14 @@ export function renderValueNodeVisitor(input: {
           : !nonScalarEnums.includes(node.enum.name);
 
       if (!node.value && isScalar) {
+        const variantName = nameApi.scalarEnumVariant(node.variant);
         return fragment(`${enumName}.${variantName}`).addImports(
           importFrom,
           enumName
         );
       }
 
+      const variantName = nameApi.dataEnumVariant(node.variant);
       if (!node.value) {
         return fragment(`${enumFunction}('${variantName}')`).addImports(
           importFrom,
