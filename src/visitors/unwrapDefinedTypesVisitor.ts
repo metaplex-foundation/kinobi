@@ -1,7 +1,7 @@
 import { assertIsNodeFilter, programNode } from '../nodes';
 import { LinkableDictionary, MainCaseString, mainCase, pipe } from '../shared';
 import { extendVisitor } from './extendVisitor';
-import { identityVisitor } from './identityVisitor';
+import { nonNullableIdentityVisitor } from './nonNullableIdentityVisitor';
 import { recordLinkablesVisitor } from './recordLinkablesVisitor';
 import { visit } from './visitor';
 
@@ -14,7 +14,7 @@ export function unwrapDefinedTypesVisitor(typesToInline: string[] | '*' = '*') {
     typesToInlineMainCased.includes(definedType);
 
   return pipe(
-    identityVisitor(),
+    nonNullableIdentityVisitor(),
     (v) => recordLinkablesVisitor(v, linkables),
     (v) =>
       extendVisitor(v, {

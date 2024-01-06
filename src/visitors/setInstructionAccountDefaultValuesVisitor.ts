@@ -13,7 +13,7 @@ import { publicKeyValueNode } from '../nodes/valueNodes';
 import { LinkableDictionary, mainCase, pipe } from '../shared';
 import { extendVisitor } from './extendVisitor';
 import { fillDefaultPdaSeedValuesVisitor } from './fillDefaultPdaSeedValuesVisitor';
-import { identityVisitor } from './identityVisitor';
+import { nonNullableIdentityVisitor } from './nonNullableIdentityVisitor';
 import { recordLinkablesVisitor } from './recordLinkablesVisitor';
 import { visit } from './visitor';
 
@@ -190,7 +190,7 @@ export function setInstructionAccountDefaultValuesVisitor(
   }
 
   return pipe(
-    identityVisitor(['rootNode', 'programNode', 'instructionNode']),
+    nonNullableIdentityVisitor(['rootNode', 'programNode', 'instructionNode']),
     (v) => recordLinkablesVisitor(v, linkables),
     (v) =>
       extendVisitor(v, {

@@ -9,7 +9,7 @@ import {
 } from '../nodes';
 import { pipe } from '../shared';
 import { extendVisitor } from './extendVisitor';
-import { identityVisitor } from './identityVisitor';
+import { nonNullableIdentityVisitor } from './nonNullableIdentityVisitor';
 import { visit } from './visitor';
 
 export function transformU8ArraysToBytesVisitor(
@@ -20,7 +20,7 @@ export function transformU8ArraysToBytesVisitor(
     return sizes === '*' || sizes.includes(size.size);
   };
 
-  return pipe(identityVisitor(), (v) =>
+  return pipe(nonNullableIdentityVisitor(), (v) =>
     extendVisitor(v, {
       visitArrayType(node, { self }) {
         const child = visit(node.item, self);
