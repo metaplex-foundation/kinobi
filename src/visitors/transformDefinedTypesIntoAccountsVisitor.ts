@@ -1,12 +1,12 @@
 import { accountNode, assertIsNode, programNode } from '../nodes';
 import { pipe } from '../shared';
 import { extendVisitor } from './extendVisitor';
-import { identityVisitor } from './identityVisitor';
+import { nonNullableIdentityVisitor } from './nonNullableIdentityVisitor';
 
 export function transformDefinedTypesIntoAccountsVisitor(
   definedTypes: string[]
 ) {
-  return pipe(identityVisitor(['rootNode', 'programNode']), (v) =>
+  return pipe(nonNullableIdentityVisitor(['rootNode', 'programNode']), (v) =>
     extendVisitor(v, {
       visitProgram(program) {
         const typesToExtract = program.definedTypes.filter((node) =>

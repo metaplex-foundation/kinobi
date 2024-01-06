@@ -16,12 +16,12 @@ import {
   pipe,
 } from '../shared';
 import { extendVisitor } from './extendVisitor';
-import { identityVisitor } from './identityVisitor';
+import { nonNullableIdentityVisitor } from './nonNullableIdentityVisitor';
 
 export function setAnchorDiscriminatorsVisitor() {
   let program: ProgramNode | null = null;
   return pipe(
-    identityVisitor([
+    nonNullableIdentityVisitor([
       'rootNode',
       'programNode',
       'accountNode',

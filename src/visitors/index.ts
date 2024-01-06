@@ -19,6 +19,7 @@ export * from './identityVisitor';
 export * from './interceptVisitor';
 export * from './mapVisitor';
 export * from './mergeVisitor';
+export * from './nonNullableIdentityVisitor';
 export * from './recordLinkablesVisitor';
 export * from './recordNodeStackVisitor';
 export * from './removeDocsVisitor';
