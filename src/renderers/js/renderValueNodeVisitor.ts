@@ -41,7 +41,7 @@ export function renderValueNodeVisitor(input: {
       const variantName = pascalCase(node.variant);
       const importFrom = node.enum.importFrom ?? 'generatedTypes';
 
-      const enumNode = linkables.get(node.enum);
+      const enumNode = linkables.get(node.enum)?.type;
       const isScalar =
         enumNode && isNode(enumNode, 'enumTypeNode')
           ? isScalarEnum(enumNode)
