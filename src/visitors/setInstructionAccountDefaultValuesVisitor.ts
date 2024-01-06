@@ -1,10 +1,7 @@
 import {
   InstructionAccountNode,
   InstructionNode,
-  getAllInstructionArguments,
   instructionNode,
-  isNode,
-  isNodeFilter,
 } from '../nodes';
 import {
   InstructionInputValueNode,
@@ -210,43 +207,17 @@ export function setInstructionAccountDefaultValuesVisitor(
                 return account;
               }
 
-              const defaultValue = visit(
-                rule.defaultValue,
-                fillDefaultPdaSeedValuesVisitor(node, linkables)
-              );
-
-              if (isNode(defaultValue, 'pdaValueNode')) {
-                const foundPda = linkables.get(defaultValue.pda);
-                const hasAllVariableSeeds = foundPda
-                  ? foundPda.seeds.filter(isNodeFilter('variablePdaSeedNode'))
-                      .length === defaultValue.seeds.length
-                  : false;
-                const allAccountsName = node.accounts.map((a) => a.name);
-                const allArgumentsName = getAllInstructionArguments(node).map(
-                  (a) => a.name
-                );
-                const allSeedsAreValid = defaultValue.seeds.every((seed) => {
-                  if (isNode(seed.value, 'accountValueNode')) {
-                    return allAccountsName.includes(seed.value.name);
-                  }
-                  if (isNode(seed.value, 'argumentValueNode')) {
-                    return allArgumentsName.includes(seed.value.name);
-                  }
-                  return true;
-                });
-
-                return hasAllVariableSeeds && allSeedsAreValid
-                  ? { ...account, defaultValue }
-                  : account;
+              try {
+                return {
+                  ...account,
+                  defaultValue: visit(
+                    rule.defaultValue,
+                    fillDefaultPdaSeedValuesVisitor(node, linkables, true)
+                  ),
+                };
+              } catch (error) {
+                return account;
               }
-
-              return {
-                ...account,
-                defaultValue: visit(
-                  rule.defaultValue,
-                  fillDefaultPdaSeedValuesVisitor(node, linkables)
-                ),
-              };
             }
           );
 

@@ -9,17 +9,31 @@ import {
   assertIsNode,
   getAllInstructionArguments,
   isNode,
+  isNodeFilter,
   pdaSeedValueNode,
   pdaValueNode,
 } from '../nodes';
-import { LinkableDictionary, pipe } from '../shared';
+import { KinobiError, LinkableDictionary, pipe } from '../shared';
 import { extendVisitor } from './extendVisitor';
 import { identityVisitor } from './identityVisitor';
 import { Visitor } from './visitor';
 
+/**
+ * Fills in default values for variable PDA seeds that are not explicitly provided.
+ * Namely, public key seeds are filled with an accountValueNode using the seed name
+ * and other types of seeds are filled with an argumentValueNode using the seed name.
+ *
+ * An instruction and linkable dictionary are required to determine which seeds are
+ * valids and to find the pdaLinkNode for the seed respectively. Any invalid default
+ * seed won't be filled in.
+ *
+ * Strict mode goes one step further and will throw an error if the final array of
+ * pdaSeedValueNodes contains invalid seeds or if there aren't enough variable seeds.
+ */
 export function fillDefaultPdaSeedValuesVisitor(
   instruction: InstructionNode,
-  linkables: LinkableDictionary
+  linkables: LinkableDictionary,
+  strictMode: boolean = false
 ) {
   return pipe(identityVisitor(INSTRUCTION_INPUT_VALUE_NODE), (v) =>
     extendVisitor(v, {
@@ -28,14 +42,17 @@ export function fillDefaultPdaSeedValuesVisitor(
         assertIsNode(visitedNode, 'pdaValueNode');
         const foundPda = linkables.get(visitedNode.pda);
         if (!foundPda) return visitedNode;
-        return pdaValueNode(
-          visitedNode.pda,
-          addDefaultSeedValuesFromPdaWhenMissing(
-            instruction,
-            foundPda,
-            visitedNode.seeds
-          )
+        const seeds = addDefaultSeedValuesFromPdaWhenMissing(
+          instruction,
+          foundPda,
+          visitedNode.seeds
         );
+        if (strictMode && !allSeedsAreValid(instruction, foundPda, seeds)) {
+          throw new KinobiError(
+            `Invalid seed values for PDA ${foundPda.name} in instruction ${instruction.name}`
+          );
+        }
+        return pdaValueNode(visitedNode.pda, seeds);
       },
     })
   ) as Visitor<InstructionInputValueNode, InstructionInputValueNode['kind']>;
@@ -76,4 +93,29 @@ function getDefaultSeedValuesFromPda(
 
     return [];
   });
+}
+
+function allSeedsAreValid(
+  instruction: InstructionNode,
+  foundPda: PdaNode,
+  seeds: PdaSeedValueNode[]
+) {
+  const hasAllVariableSeeds =
+    foundPda.seeds.filter(isNodeFilter('variablePdaSeedNode')).length ===
+    seeds.length;
+  const allAccountsName = instruction.accounts.map((a) => a.name);
+  const allArgumentsName = getAllInstructionArguments(instruction).map(
+    (a) => a.name
+  );
+  const validSeeds = seeds.every((seed) => {
+    if (isNode(seed.value, 'accountValueNode')) {
+      return allAccountsName.includes(seed.value.name);
+    }
+    if (isNode(seed.value, 'argumentValueNode')) {
+      return allArgumentsName.includes(seed.value.name);
+    }
+    return true;
+  });
+
+  return hasAllVariableSeeds && validSeeds;
 }
