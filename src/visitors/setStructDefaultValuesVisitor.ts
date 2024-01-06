@@ -1,10 +1,14 @@
 import {
+  InstructionArgumentNode,
   StructFieldTypeNode,
   ValueNode,
   assertIsNode,
+  instructionArgumentNode,
+  instructionNode,
   structFieldTypeNode,
   structTypeNode,
 } from '../nodes';
+import { mainCase } from '../shared';
 import {
   BottomUpNodeTransformerWithSelector,
   bottomUpTransformerVisitor,
@@ -18,32 +22,76 @@ type StructDefaultValue =
 
 export function setStructDefaultValuesVisitor(map: StructDefaultValueMap) {
   return bottomUpTransformerVisitor(
-    Object.entries(map).map(
-      ([stack, defaultValues]): BottomUpNodeTransformerWithSelector => ({
-        select: `${stack}.[structTypeNode]`,
-        transform: (node) => {
-          assertIsNode(node, 'structTypeNode');
-          const fields = node.fields.map((field): StructFieldTypeNode => {
-            const defaultValue = defaultValues[field.name];
-            if (defaultValue === undefined) return field;
-            if (defaultValue === null) {
-              return structFieldTypeNode({
-                ...field,
-                defaultValue: undefined,
-                defaultValueStrategy: undefined,
+    Object.entries(map).flatMap(
+      ([stack, defaultValues]): BottomUpNodeTransformerWithSelector[] => {
+        const mainCasedDefaultValues = Object.fromEntries(
+          Object.entries(defaultValues).map(([key, value]) => [
+            mainCase(key),
+            value,
+          ])
+        );
+
+        return [
+          {
+            select: `${stack}.[structTypeNode]`,
+            transform: (node) => {
+              assertIsNode(node, 'structTypeNode');
+              const fields = node.fields.map((field): StructFieldTypeNode => {
+                const defaultValue = mainCasedDefaultValues[field.name];
+                if (defaultValue === undefined) return field;
+                if (defaultValue === null) {
+                  return structFieldTypeNode({
+                    ...field,
+                    defaultValue: undefined,
+                    defaultValueStrategy: undefined,
+                  });
+                }
+                return structFieldTypeNode({
+                  ...field,
+                  defaultValue:
+                    'kind' in defaultValue ? defaultValue : defaultValue.value,
+                  defaultValueStrategy:
+                    'kind' in defaultValue ? undefined : defaultValue.strategy,
+                });
               });
-            }
-            return structFieldTypeNode({
-              ...field,
-              defaultValue:
-                'kind' in defaultValue ? defaultValue : defaultValue.value,
-              defaultValueStrategy:
-                'kind' in defaultValue ? undefined : defaultValue.strategy,
-            });
-          });
-          return structTypeNode(fields);
-        },
-      })
+              return structTypeNode(fields);
+            },
+          },
+          {
+            select: `${stack}.[instructionNode]`,
+            transform: (node) => {
+              assertIsNode(node, 'instructionNode');
+              const transformArguments = (
+                arg: InstructionArgumentNode
+              ): InstructionArgumentNode => {
+                const defaultValue = mainCasedDefaultValues[arg.name];
+                if (defaultValue === undefined) return arg;
+                if (defaultValue === null) {
+                  return instructionArgumentNode({
+                    ...arg,
+                    defaultValue: undefined,
+                    defaultValueStrategy: undefined,
+                  });
+                }
+                return instructionArgumentNode({
+                  ...arg,
+                  defaultValue:
+                    'kind' in defaultValue ? defaultValue : defaultValue.value,
+                  defaultValueStrategy:
+                    'kind' in defaultValue ? undefined : defaultValue.strategy,
+                });
+              };
+              return instructionNode({
+                ...node,
+                arguments: node.arguments.map(transformArguments),
+                extraArguments: node.extraArguments
+                  ? node.extraArguments.map(transformArguments)
+                  : undefined,
+              });
+            },
+          },
+        ];
+      }
     )
   );
 }
