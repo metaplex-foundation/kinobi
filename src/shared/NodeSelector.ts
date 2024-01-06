@@ -1,5 +1,5 @@
 import { Node } from '../nodes';
-import { mainCase } from './utils';
+import { MainCaseString, mainCase } from './utils';
 import type { NodeStack } from './NodeStack';
 
 export type NodeSelector = NodeSelectorPath | NodeSelectorFunction;
@@ -9,6 +9,7 @@ export type NodeSelector = NodeSelectorPath | NodeSelectorFunction;
  * - `*` matches any node.
  * - `someText` matches the name of a node, if any.
  * - `[someNode]` matches a node of the given kind.
+ * - `[someNode|someOtherNode]` matches a node with any of the given kind.
  * - `[someNode]someText` matches both the kind and the name of a node.
  * - `a.b.c` matches a node `c` such that its parent stack contains `a` and `b` in order (but not necessarily subsequent).
  */
@@ -25,10 +26,22 @@ export const getNodeSelectorFunction = (
     if (nodeSelector === '*') return true;
     const matches = nodeSelector.match(/^(?:\[([^\]]+)\])?(.*)?$/);
     if (!matches) return false;
-    const [, kind, name] = matches;
-    if (kind && mainCase(kind) !== node.kind) return false;
-    if (name && (!('name' in node) || mainCase(name) !== node.name))
+    const [, kinds, name] = matches;
+
+    // Check kinds.
+    const kindArray = kinds ? kinds.split('|').map(mainCase) : [];
+    if (
+      kindArray.length > 0 &&
+      !kindArray.includes(node.kind as MainCaseString)
+    ) {
       return false;
+    }
+
+    // Check names.
+    if (name && (!('name' in node) || mainCase(name) !== node.name)) {
+      return false;
+    }
+
     return true;
   };
 

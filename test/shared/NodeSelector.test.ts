@@ -336,6 +336,12 @@ test(macro, '[structFieldTypeNode].*.*', [
   (giftAccount.data.fields[1].type as BooleanTypeNode).size,
 ]);
 
+// Select multiple node kinds.
+test(macro, '[accountNode]gift.[publicKeyTypeNode|booleanTypeNode]', [
+  giftAccount.data.fields[0].type,
+  giftAccount.data.fields[1].type,
+]);
+
 // Select using functions.
 test(macro, (node) => isNode(node, 'numberTypeNode') && node.format === 'u32', [
   tokenDelegatedAmountOption.prefix,
