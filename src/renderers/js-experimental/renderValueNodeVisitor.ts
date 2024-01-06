@@ -27,7 +27,7 @@ export function renderValueNodeVisitor(input: {
       const enumFunction = nameApi.dataEnumFunction(node.enum.name);
       const importFrom = node.enum.importFrom ?? 'generatedTypes';
 
-      const enumNode = linkables.get(node.enum);
+      const enumNode = linkables.get(node.enum)?.type;
       const isScalar =
         enumNode && isNode(enumNode, 'enumTypeNode')
           ? isScalarEnum(enumNode)

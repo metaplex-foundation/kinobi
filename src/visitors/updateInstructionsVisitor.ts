@@ -7,31 +7,37 @@ import {
   InstructionNode,
   InstructionNodeInput,
   TYPE_NODES,
-  addDefaultSeedValuesFromPdaWhenMissing,
   assertIsNode,
   instructionAccountNode,
   instructionArgumentNode,
   instructionNode,
-  isNode,
 } from '../nodes';
-import { LinkableDictionary, mainCase, pipe } from '../shared';
+import { LinkableDictionary, pipe } from '../shared';
 import {
   BottomUpNodeTransformerWithSelector,
   bottomUpTransformerVisitor,
 } from './bottomUpTransformerVisitor';
+import { fillDefaultPdaSeedValuesVisitor } from './fillDefaultPdaSeedValuesVisitor';
 import { recordLinkablesVisitor } from './recordLinkablesVisitor';
+import { visit } from './visitor';
 
 export type InstructionUpdates =
   | { delete: true }
   | (InstructionMetadataUpdates & {
       accounts?: InstructionAccountUpdates;
-      args?: InstructionArgumentUpdates;
+      arguments?: InstructionArgumentUpdates;
     });
 
 export type InstructionMetadataUpdates = Partial<
   Omit<
     InstructionNodeInput,
-    'accounts' | 'dataArgs' | 'extraArgs' | 'subInstructions' | 'argDefaults'
+    | 'accounts'
+    | 'arguments'
+    | 'extraArguments'
+    | 'remainingAccounts'
+    | 'byteDeltas'
+    | 'discriminators'
+    | 'subInstructions'
   >
 >;
 
@@ -68,15 +74,18 @@ export function updateInstructionsVisitor(
 
           const {
             accounts: accountUpdates,
-            args: argsUpdates,
+            arguments: argumentUpdates,
             ...metadataUpdates
           } = updates;
-          const { newArguments, newExtraArguments } = handleInstructionArgument(
-            node,
-            argsUpdates ?? {}
-          );
+          const { newArguments, newExtraArguments } =
+            handleInstructionArguments(node, argumentUpdates ?? {});
           const newAccounts = node.accounts.map((account) =>
-            handleInstructionAccount(account, accountUpdates ?? {}, linkables)
+            handleInstructionAccount(
+              node,
+              account,
+              accountUpdates ?? {},
+              linkables
+            )
           );
           return instructionNode({
             ...node,
@@ -97,6 +106,7 @@ export function updateInstructionsVisitor(
 }
 
 function handleInstructionAccount(
+  instruction: InstructionNode,
   account: InstructionAccountNode,
   accountUpdates: InstructionAccountUpdates,
   linkables: LinkableDictionary
@@ -108,40 +118,32 @@ function handleInstructionAccount(
     ...accountUpdate,
   };
 
-  if (defaultValue === null) {
+  if (!defaultValue) {
     return instructionAccountNode(acountWithoutDefault);
   }
 
-  if (isNode(defaultValue, 'pdaValueNode')) {
-    const foundPda = linkables.get(defaultValue.pda);
-    return {
-      ...acountWithoutDefault,
-      name: mainCase(acountWithoutDefault.name),
-      defaultValue: {
-        ...defaultValue,
-        seeds: foundPda
-          ? addDefaultSeedValuesFromPdaWhenMissing(foundPda, defaultValue.seeds)
-          : defaultValue.seeds,
-      },
-    };
-  }
-
-  return instructionAccountNode({ ...acountWithoutDefault, defaultValue });
+  return instructionAccountNode({
+    ...acountWithoutDefault,
+    defaultValue: visit(
+      defaultValue,
+      fillDefaultPdaSeedValuesVisitor(instruction, linkables)
+    ),
+  });
 }
 
-function handleInstructionArgument(
+function handleInstructionArguments(
   instruction: InstructionNode,
   argUpdates: InstructionArgumentUpdates
 ): {
   newArguments: InstructionArgumentNode[];
   newExtraArguments: InstructionArgumentNode[];
 } {
-  const usedArgs = new Set<string>();
+  const usedArguments = new Set<string>();
 
   const newArguments = instruction.arguments.map((node) => {
     const argUpdate = argUpdates[node.name];
     if (!argUpdate) return node;
-    usedArgs.add(node.name);
+    usedArguments.add(node.name);
     return instructionArgumentNode({
       ...node,
       type: argUpdate.type ?? node.type,
@@ -153,10 +155,10 @@ function handleInstructionArgument(
 
   const updatedExtraArguments = (instruction.extraArguments ?? []).map(
     (node) => {
-      if (usedArgs.has(node.name)) return node;
+      if (usedArguments.has(node.name)) return node;
       const argUpdate = argUpdates[node.name];
       if (!argUpdate) return node;
-      usedArgs.add(node.name);
+      usedArguments.add(node.name);
       return instructionArgumentNode({
         ...node,
         type: argUpdate.type ?? node.type,
@@ -170,7 +172,7 @@ function handleInstructionArgument(
   const newExtraArguments = [
     ...updatedExtraArguments,
     ...Object.entries(argUpdates)
-      .filter(([argName]) => !usedArgs.has(argName))
+      .filter(([argName]) => !usedArguments.has(argName))
       .map(([argName, argUpdate]) => {
         const { type } = argUpdate;
         assertIsNode(type, TYPE_NODES);

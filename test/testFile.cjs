@@ -80,7 +80,7 @@ kinobi.update(
   k.updateInstructionsVisitor({
     'mplTokenAuthRules.Create': {
       name: 'CreateRuleSet',
-      args: {
+      arguments: {
         ruleSetBump: { defaultValue: k.accountBumpValueNode('ruleSetPda') },
       },
     },
@@ -90,7 +90,7 @@ kinobi.update(
       accounts: {
         metadata: { defaultValue: k.pdaValueNode('metadata') },
       },
-      args: {
+      arguments: {
         metadataBump: { defaultValue: k.accountBumpValueNode('metadata') },
       },
     },
@@ -144,7 +144,7 @@ kinobi.update(
           }),
         },
       },
-      args: {
+      arguments: {
         identityArg: {
           type: k.publicKeyTypeNode(),
           defaultValue: k.identityValueNode(),
@@ -168,7 +168,7 @@ kinobi.update(
           ),
         },
       },
-      args: {
+      arguments: {
         tokenStandard: {
           type: k.definedTypeLinkNode('tokenStandard'),
           defaultValue: k.enumValueNode('tokenStandard', 'NonFungible'),

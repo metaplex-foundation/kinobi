@@ -6,6 +6,7 @@ export * from './deduplicateIdenticalDefinedTypesVisitor';
 export * from './defaultVisitor';
 export * from './deleteNodesVisitor';
 export * from './extendVisitor';
+export * from './fillDefaultPdaSeedValuesVisitor';
 export * from './flattenInstructionDataArgumentsVisitor';
 export * from './flattenStructVisitor';
 export * from './getByteSizeVisitor';
