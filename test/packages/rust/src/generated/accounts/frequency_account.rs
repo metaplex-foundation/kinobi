@@ -22,6 +22,14 @@ pub struct FrequencyAccount {
 impl FrequencyAccount {
     pub const LEN: usize = 24;
 
+    /// Prefix values used to generate a PDA for this account.
+    ///
+    /// Values are positional and appear in the following order:
+    ///
+    ///   0. `FrequencyAccount::PREFIX`
+    ///   1. `crate::MPL_TOKEN_AUTH_RULES_ID`
+    pub const PREFIX: &'static [u8] = "frequency_pda".as_bytes();
+
     pub fn create_pda(
         bump: u8,
     ) -> Result<solana_program::pubkey::Pubkey, solana_program::pubkey::PubkeyError> {
