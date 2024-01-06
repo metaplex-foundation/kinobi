@@ -25,13 +25,19 @@ export type InstructionUpdates =
   | { delete: true }
   | (InstructionMetadataUpdates & {
       accounts?: InstructionAccountUpdates;
-      args?: InstructionArgumentUpdates;
+      arguments?: InstructionArgumentUpdates;
     });
 
 export type InstructionMetadataUpdates = Partial<
   Omit<
     InstructionNodeInput,
-    'accounts' | 'dataArgs' | 'extraArgs' | 'subInstructions' | 'argDefaults'
+    | 'accounts'
+    | 'arguments'
+    | 'extraArguments'
+    | 'remainingAccounts'
+    | 'byteDeltas'
+    | 'discriminators'
+    | 'subInstructions'
   >
 >;
 
@@ -68,13 +74,11 @@ export function updateInstructionsVisitor(
 
           const {
             accounts: accountUpdates,
-            args: argsUpdates,
+            arguments: argumentUpdates,
             ...metadataUpdates
           } = updates;
-          const { newArguments, newExtraArguments } = handleInstructionArgument(
-            node,
-            argsUpdates ?? {}
-          );
+          const { newArguments, newExtraArguments } =
+            handleInstructionArguments(node, argumentUpdates ?? {});
           const newAccounts = node.accounts.map((account) =>
             handleInstructionAccount(
               node,
@@ -127,19 +131,19 @@ function handleInstructionAccount(
   });
 }
 
-function handleInstructionArgument(
+function handleInstructionArguments(
   instruction: InstructionNode,
   argUpdates: InstructionArgumentUpdates
 ): {
   newArguments: InstructionArgumentNode[];
   newExtraArguments: InstructionArgumentNode[];
 } {
-  const usedArgs = new Set<string>();
+  const usedArguments = new Set<string>();
 
   const newArguments = instruction.arguments.map((node) => {
     const argUpdate = argUpdates[node.name];
     if (!argUpdate) return node;
-    usedArgs.add(node.name);
+    usedArguments.add(node.name);
     return instructionArgumentNode({
       ...node,
       type: argUpdate.type ?? node.type,
@@ -151,10 +155,10 @@ function handleInstructionArgument(
 
   const updatedExtraArguments = (instruction.extraArguments ?? []).map(
     (node) => {
-      if (usedArgs.has(node.name)) return node;
+      if (usedArguments.has(node.name)) return node;
       const argUpdate = argUpdates[node.name];
       if (!argUpdate) return node;
-      usedArgs.add(node.name);
+      usedArguments.add(node.name);
       return instructionArgumentNode({
         ...node,
         type: argUpdate.type ?? node.type,
@@ -168,7 +172,7 @@ function handleInstructionArgument(
   const newExtraArguments = [
     ...updatedExtraArguments,
     ...Object.entries(argUpdates)
-      .filter(([argName]) => !usedArgs.has(argName))
+      .filter(([argName]) => !usedArguments.has(argName))
       .map(([argName, argUpdate]) => {
         const { type } = argUpdate;
         assertIsNode(type, TYPE_NODES);
