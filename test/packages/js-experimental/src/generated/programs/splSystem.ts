@@ -16,7 +16,7 @@ export const SPL_SYSTEM_PROGRAM_ADDRESS =
 
 export type SplSystemProgram = Program<'11111111111111111111111111111111'>;
 
-export function createSplSystemProgram(): SplSystemProgram {
+export function getSplSystemProgram(): SplSystemProgram {
   return {
     name: 'splSystem',
     address: SPL_SYSTEM_PROGRAM_ADDRESS,

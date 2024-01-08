@@ -27,7 +27,7 @@ export type MplTokenAuthRulesProgram =
       MplTokenAuthRulesProgramError
     >;
 
-export function createMplTokenAuthRulesProgram(): MplTokenAuthRulesProgram {
+export function getMplTokenAuthRulesProgram(): MplTokenAuthRulesProgram {
   return {
     name: 'mplTokenAuthRules',
     address: MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS,

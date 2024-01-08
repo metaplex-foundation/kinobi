@@ -27,7 +27,7 @@ export type MplTokenMetadataProgram =
       MplTokenMetadataProgramError
     >;
 
-export function createMplTokenMetadataProgram(): MplTokenMetadataProgram {
+export function getMplTokenMetadataProgram(): MplTokenMetadataProgram {
   return {
     name: 'mplTokenMetadata',
     address: MPL_TOKEN_METADATA_PROGRAM_ADDRESS,

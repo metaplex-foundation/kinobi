@@ -136,7 +136,7 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
   programType: (name) => `${pascalCase(name)}Program`,
   programAddressConstant: (name) =>
     `${snakeCase(name).toUpperCase()}_PROGRAM_ADDRESS`,
-  programCreateFunction: (name) => `create${pascalCase(name)}Program`,
+  programCreateFunction: (name) => `get${pascalCase(name)}Program`,
   programAccountsEnum: (name) => `${pascalCase(name)}Account`,
   programAccountsEnumVariant: (name) => `${pascalCase(name)}`,
   programAccountsIdentifierFunction: (name) =>
