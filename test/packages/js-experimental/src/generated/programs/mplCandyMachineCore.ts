@@ -25,7 +25,7 @@ export type MplCandyMachineCoreProgram =
       MplCandyMachineCoreProgramError
     >;
 
-export function createMplCandyMachineCoreProgram(): MplCandyMachineCoreProgram {
+export function getMplCandyMachineCoreProgram(): MplCandyMachineCoreProgram {
   return {
     name: 'mplCandyMachineCore',
     address: MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
