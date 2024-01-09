@@ -97,7 +97,10 @@ function getNodeDetails(node: Node): string[] {
     case 'booleanValueNode':
       return [node.boolean ? 'true' : 'false'];
     case 'publicKeyValueNode':
-      return [node.publicKey];
+      return [
+        ...(node.identifier ? [`${node.identifier}`] : []),
+        node.publicKey,
+      ];
     case 'enumValueNode':
       return [node.variant];
     case 'resolverValueNode':

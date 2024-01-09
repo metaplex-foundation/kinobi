@@ -12,7 +12,6 @@ import {
   PublicKey,
   Signer,
   TransactionBuilder,
-  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import {
@@ -163,14 +162,18 @@ export function initialize(
     resolvedAccounts.payer.value = context.payer;
   }
   if (!resolvedAccounts.tokenMetadataProgram.value) {
-    resolvedAccounts.tokenMetadataProgram.value = publicKey(
+    resolvedAccounts.tokenMetadataProgram.value = context.programs.getPublicKey(
+      'mplTokenMetadata',
       'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
     );
+    resolvedAccounts.tokenMetadataProgram.isWritable = false;
   }
   if (!resolvedAccounts.systemProgram.value) {
-    resolvedAccounts.systemProgram.value = publicKey(
+    resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
+      'splSystem',
       '11111111111111111111111111111111'
     );
+    resolvedAccounts.systemProgram.isWritable = false;
   }
 
   // Accounts in order.

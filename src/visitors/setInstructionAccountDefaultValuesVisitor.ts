@@ -47,27 +47,33 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
     },
     {
       account: /^systemProgram|splSystemProgram$/,
-      defaultValue: publicKeyValueNode('11111111111111111111111111111111'),
+      defaultValue: publicKeyValueNode(
+        '11111111111111111111111111111111',
+        'splSystem'
+      ),
       ignoreIfOptional: true,
     },
     {
       account: /^tokenProgram|splTokenProgram$/,
       defaultValue: publicKeyValueNode(
-        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+        'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        'splToken'
       ),
       ignoreIfOptional: true,
     },
     {
       account: /^ataProgram|splAtaProgram$/,
       defaultValue: publicKeyValueNode(
-        'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+        'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        'splAssociatedToken'
       ),
       ignoreIfOptional: true,
     },
     {
       account: /^tokenMetadataProgram|mplTokenMetadataProgram$/,
       defaultValue: publicKeyValueNode(
-        'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+        'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+        'mplTokenMetadata'
       ),
       ignoreIfOptional: true,
     },
@@ -75,21 +81,24 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
       account:
         /^(tokenAuth|mplTokenAuth|authorization|mplAuthorization|auth|mplAuth)RulesProgram$/,
       defaultValue: publicKeyValueNode(
-        'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+        'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+        'mplTokenAuthRules'
       ),
       ignoreIfOptional: true,
     },
     {
       account: /^candyMachineProgram|mplCandyMachineProgram$/,
       defaultValue: publicKeyValueNode(
-        'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+        'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+        'mplCandyMachine'
       ),
       ignoreIfOptional: true,
     },
     {
       account: /^candyGuardProgram|mplCandyGuardProgram$/,
       defaultValue: publicKeyValueNode(
-        'Guard1JwRhJkVH6XZhzoYxeBVQe872VH6QggF4BWmS9g'
+        'Guard1JwRhJkVH6XZhzoYxeBVQe872VH6QggF4BWmS9g',
+        'mplCandyGuard'
       ),
       ignoreIfOptional: true,
     },

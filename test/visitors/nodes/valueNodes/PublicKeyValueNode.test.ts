@@ -17,3 +17,12 @@ test(
   node,
   `publicKeyValueNode [HqJgWgvkn5wMGU8LpzkRw8389N5Suvu2nZcmpya9JyJB]`
 );
+test(
+  'getDebugStringVisitor: with identifier',
+  getDebugStringVisitorMacro,
+  publicKeyValueNode(
+    'HqJgWgvkn5wMGU8LpzkRw8389N5Suvu2nZcmpya9JyJB',
+    'myIdentifier'
+  ),
+  `publicKeyValueNode [myIdentifier.HqJgWgvkn5wMGU8LpzkRw8389N5Suvu2nZcmpya9JyJB]`
+);
