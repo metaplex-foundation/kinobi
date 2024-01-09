@@ -107,8 +107,15 @@ export function renderInstructionDefaults(
       }
       return render(`${pdaFunction}(${pdaArgs.join(', ')})`);
     case 'publicKeyValueNode':
-      imports.add('umi', 'publicKey');
-      return render(`publicKey('${defaultValue.publicKey}')`);
+      if (!defaultValue.identifier) {
+        imports.add('umi', 'publicKey');
+        return render(`publicKey('${defaultValue.publicKey}')`);
+      }
+      interfaces.add('programs');
+      return render(
+        `context.programs.getPublicKey('${defaultValue.identifier}', '${defaultValue.publicKey}')`,
+        false
+      );
     case 'programLinkNode':
       const importFrom = defaultValue.importFrom ?? 'generatedPrograms';
       const functionName = `get${pascalCase(defaultValue.name)}ProgramId`;

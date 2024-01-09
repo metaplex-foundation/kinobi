@@ -12,7 +12,6 @@ import {
   PublicKey,
   Signer,
   TransactionBuilder,
-  publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
 import {
@@ -160,19 +159,25 @@ export function useAsset(
 
   // Default values.
   if (!resolvedAccounts.splTokenProgram.value) {
-    resolvedAccounts.splTokenProgram.value = publicKey(
+    resolvedAccounts.splTokenProgram.value = context.programs.getPublicKey(
+      'splToken',
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
     );
+    resolvedAccounts.splTokenProgram.isWritable = false;
   }
   if (!resolvedAccounts.ataProgram.value) {
-    resolvedAccounts.ataProgram.value = publicKey(
+    resolvedAccounts.ataProgram.value = context.programs.getPublicKey(
+      'splAssociatedToken',
       'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
     );
+    resolvedAccounts.ataProgram.isWritable = false;
   }
   if (!resolvedAccounts.systemProgram.value) {
-    resolvedAccounts.systemProgram.value = publicKey(
+    resolvedAccounts.systemProgram.value = context.programs.getPublicKey(
+      'splSystem',
       '11111111111111111111111111111111'
     );
+    resolvedAccounts.systemProgram.isWritable = false;
   }
 
   // Accounts in order.

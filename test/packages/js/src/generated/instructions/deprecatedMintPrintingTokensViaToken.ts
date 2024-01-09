@@ -158,9 +158,11 @@ export function deprecatedMintPrintingTokensViaToken(
 
   // Default values.
   if (!resolvedAccounts.tokenProgram.value) {
-    resolvedAccounts.tokenProgram.value = publicKey(
+    resolvedAccounts.tokenProgram.value = context.programs.getPublicKey(
+      'splToken',
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
     );
+    resolvedAccounts.tokenProgram.isWritable = false;
   }
   if (!resolvedAccounts.rent.value) {
     resolvedAccounts.rent.value = publicKey(
