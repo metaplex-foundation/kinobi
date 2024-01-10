@@ -36,8 +36,11 @@ export class ImportMap {
     new Map();
 
   add(module: ImportFrom, imports: string | string[] | Set<string>): ImportMap {
+    const newImports = new Set(
+      typeof imports === 'string' ? [imports] : imports
+    );
+    if (newImports.size === 0) return this;
     const currentImports = this._imports.get(module) ?? new Set();
-    const newImports = typeof imports === 'string' ? [imports] : imports;
     newImports.forEach((i) => currentImports.add(i));
     this._imports.set(module, currentImports);
     return this;
@@ -47,8 +50,11 @@ export class ImportMap {
     module: ImportFrom,
     imports: string | string[] | Set<string>
   ): ImportMap {
+    const importsToRemove = new Set(
+      typeof imports === 'string' ? [imports] : imports
+    );
+    if (importsToRemove.size === 0) return this;
     const currentImports = this._imports.get(module) ?? new Set();
-    const importsToRemove = typeof imports === 'string' ? [imports] : imports;
     importsToRemove.forEach((i) => currentImports.delete(i));
     if (currentImports.size === 0) {
       this._imports.delete(module);
@@ -93,7 +99,7 @@ export class ImportMap {
     return this._imports.size === 0;
   }
 
-  toString(dependencies: Record<ImportFrom, string>): string {
+  toString(dependencies: Record<ImportFrom, string> = {}): string {
     const dependencyMap = { ...DEFAULT_MODULE_MAP, ...dependencies };
     const importStatements = [...this._imports.entries()]
       .map(([module, imports]) => {
