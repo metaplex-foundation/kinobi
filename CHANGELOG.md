@@ -1,5 +1,77 @@
 # @metaplex-foundation/kinobi
 
+## 0.17.0
+
+### Minor Changes
+
+- [#128](https://github.com/metaplex-foundation/kinobi/pull/128) [`c517404`](https://github.com/metaplex-foundation/kinobi/commit/c51740476bd14fb1fba76629af1fcf437447318d) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Link AccountNodes to PdaNodes
+
+- [#127](https://github.com/metaplex-foundation/kinobi/pull/127) [`361d106`](https://github.com/metaplex-foundation/kinobi/commit/361d106e72b4fe15bec973901274b56dd07654ca) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add Link nodes
+
+- [#132](https://github.com/metaplex-foundation/kinobi/pull/132) [`a318698`](https://github.com/metaplex-foundation/kinobi/commit/a3186985829d74e79bcd97ecfe1606aff6fc712d) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Remove redundant argDefaults in InstructionNode
+
+- [#120](https://github.com/metaplex-foundation/kinobi/pull/120) [`828f31b`](https://github.com/metaplex-foundation/kinobi/commit/828f31b9da27e11723adac967ac75c98b32a68e1) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Refactored all visitors so they can be composed and created dynamically
+
+- [`9fa6240`](https://github.com/metaplex-foundation/kinobi/commit/9fa62403745d62a97beedafe97dda65a2909bd6a) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Rename BoolTypeNode to BooleanTypeNode
+
+- [#123](https://github.com/metaplex-foundation/kinobi/pull/123) [`1c1b1eb`](https://github.com/metaplex-foundation/kinobi/commit/1c1b1ebdc9d6cec76687cf189376ae4770b44c75) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Create Value nodes
+
+- [#138](https://github.com/metaplex-foundation/kinobi/pull/138) [`f399702`](https://github.com/metaplex-foundation/kinobi/commit/f399702c0a2281270e09642a54029f348b8753e7) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Render enums and identifier functions for program accounts and instructions
+
+- [#136](https://github.com/metaplex-foundation/kinobi/pull/136) [`6d02b0e`](https://github.com/metaplex-foundation/kinobi/commit/6d02b0ef8787967d313a6ae15508b62055d593f5) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add discriminator nodes
+
+- [#129](https://github.com/metaplex-foundation/kinobi/pull/129) [`b3ec72c`](https://github.com/metaplex-foundation/kinobi/commit/b3ec72c09fadce96e2d9ddda76626e47408b96dd) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add Contextual Value Nodes and use instead of InstructionDefaults
+
+- [#130](https://github.com/metaplex-foundation/kinobi/pull/130) [`3ef61bb`](https://github.com/metaplex-foundation/kinobi/commit/3ef61bbbcdcaf2276d617538fe4410ff8a9acdeb) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Refactor nodes for consistency
+
+- [#120](https://github.com/metaplex-foundation/kinobi/pull/120) [`828f31b`](https://github.com/metaplex-foundation/kinobi/commit/828f31b9da27e11723adac967ac75c98b32a68e1) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Split the NumberWrapperNode into 3 distinct new nodes
+
+- [#131](https://github.com/metaplex-foundation/kinobi/pull/131) [`dc2d2b0`](https://github.com/metaplex-foundation/kinobi/commit/dc2d2b012319ff4daefe45bea83499988831d1e1) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Remove AccountDataNode, InstructionDataArgsNode and InstructionExtraArgsNode
+
+- [#135](https://github.com/metaplex-foundation/kinobi/pull/135) [`cd243ea`](https://github.com/metaplex-foundation/kinobi/commit/cd243ead00d1e92ac7e80160114ad572650fc92c) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add InstructionByteDeltaNode
+
+- [#122](https://github.com/metaplex-foundation/kinobi/pull/122) [`122bb39`](https://github.com/metaplex-foundation/kinobi/commit/122bb390fe52dc60199f7af5e233d30f26d3f0da) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Create Size nodes
+
+- [#139](https://github.com/metaplex-foundation/kinobi/pull/139) [`3bfeb8c`](https://github.com/metaplex-foundation/kinobi/commit/3bfeb8c17b201036256a9f1906f6ef4bec861544) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add a visitor that adds PDA nodes to programs
+
+- [#124](https://github.com/metaplex-foundation/kinobi/pull/124) [`5fb8ca2`](https://github.com/metaplex-foundation/kinobi/commit/5fb8ca259ec229e1403bd6d140acdb079974e8db) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Create PDA Seed nodes
+
+- [#134](https://github.com/metaplex-foundation/kinobi/pull/134) [`9439055`](https://github.com/metaplex-foundation/kinobi/commit/9439055406574408820c70f7e72e2460e7aa7c43) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add InstructionRemainingAccountsNode
+
+- [#133](https://github.com/metaplex-foundation/kinobi/pull/133) [`9432c41`](https://github.com/metaplex-foundation/kinobi/commit/9432c414a3824e58e5ce1337153e2c651500d1f2) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Remove internal booleans from nodes
+
+- [#120](https://github.com/metaplex-foundation/kinobi/pull/120) [`828f31b`](https://github.com/metaplex-foundation/kinobi/commit/828f31b9da27e11723adac967ac75c98b32a68e1) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Refactor NodeSelector to be more powerful and simple to use
+
+### Patch Changes
+
+- [#125](https://github.com/metaplex-foundation/kinobi/pull/125) [`22ce9ee`](https://github.com/metaplex-foundation/kinobi/commit/22ce9eed35a1eeb38312d6eff84d463c27d72648) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Create isNode and assertIsNode helper functions
+
+- [`728e68b`](https://github.com/metaplex-foundation/kinobi/commit/728e68baa36e4003e877b20c9f78767cf1756c5a) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Remove TS unique symbols for nodes
+
+- [#143](https://github.com/metaplex-foundation/kinobi/pull/143) [`cdac690`](https://github.com/metaplex-foundation/kinobi/commit/cdac69014b54dead30c0e40bf71d58b5b07acbed) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add nonNullableIdentityVisitor
+
+- [#145](https://github.com/metaplex-foundation/kinobi/pull/145) [`a9768f9`](https://github.com/metaplex-foundation/kinobi/commit/a9768f9848347fcb64b8da5e69bb57914e3cf9d9) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Rename program create function in js-experimental
+
+- [#142](https://github.com/metaplex-foundation/kinobi/pull/142) [`68c9288`](https://github.com/metaplex-foundation/kinobi/commit/68c928804cd64d61788a96b70794f7332c9c8e9b) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add fillDefaultPdaSeedValuesVisitor to recursively fill PDA default seed values
+
+- [#137](https://github.com/metaplex-foundation/kinobi/pull/137) [`d1a2149`](https://github.com/metaplex-foundation/kinobi/commit/d1a21493de806b57d5bf51bed14c493a30b6b9c6) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add base visitor tests for each node
+
+- [#142](https://github.com/metaplex-foundation/kinobi/pull/142) [`68c9288`](https://github.com/metaplex-foundation/kinobi/commit/68c928804cd64d61788a96b70794f7332c9c8e9b) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Support multiple kinds node selectors
+
+- [#142](https://github.com/metaplex-foundation/kinobi/pull/142) [`68c9288`](https://github.com/metaplex-foundation/kinobi/commit/68c928804cd64d61788a96b70794f7332c9c8e9b) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Make setStructDefaultValuesVisitor fill instruction arguments
+
+- [#142](https://github.com/metaplex-foundation/kinobi/pull/142) [`68c9288`](https://github.com/metaplex-foundation/kinobi/commit/68c928804cd64d61788a96b70794f7332c9c8e9b) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Bring back seed check in setInstructionAccountDefaultValuesVisitor
+
+- [#140](https://github.com/metaplex-foundation/kinobi/pull/140) [`69a9f3e`](https://github.com/metaplex-foundation/kinobi/commit/69a9f3e77baac1fcb8d106a6152d6c3886921f44) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Use name transformers for enum variant and data enum discriminator
+
+- [#126](https://github.com/metaplex-foundation/kinobi/pull/126) [`fc32421`](https://github.com/metaplex-foundation/kinobi/commit/fc3242132ff2fbd10fe97b3100b6941de90d6bc5) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add PdaNode
+
+- [#141](https://github.com/metaplex-foundation/kinobi/pull/141) [`8784db9`](https://github.com/metaplex-foundation/kinobi/commit/8784db99686bfceffc87e079612168835573dcd5) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Import program types from new @solana/programs in js-experimental client
+
+- [#147](https://github.com/metaplex-foundation/kinobi/pull/147) [`ceb467a`](https://github.com/metaplex-foundation/kinobi/commit/ceb467a541cb331cfdc4dc894f97392de0557988) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add optional identifier to PublicKeyValueNode
+
+- [#144](https://github.com/metaplex-foundation/kinobi/pull/144) [`b8939de`](https://github.com/metaplex-foundation/kinobi/commit/b8939de85fe523669a3854cea6ad68657f57b0e7) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add constant seeds in Rust client
+
 ## 0.16.14
 
 ### Patch Changes
