@@ -26,6 +26,8 @@ export * from './dummyLines';
 export * from './escrowAuthority';
 export * from './extendedPayload';
 export * from './hiddenSettings';
+export * from './link';
+export * from './links';
 export * from './migrateArgs';
 export * from './mintArgs';
 export * from './mintNewEditionFromMasterEditionViaTokenArgs';

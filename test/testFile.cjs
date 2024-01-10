@@ -16,6 +16,52 @@ kinobi.update(
 );
 
 kinobi.update(
+  new k.TransformNodesVisitor([
+    {
+      selector: { kind: "programNode", name: "mplTokenMetadata" },
+      transformer: (node) => {
+        k.assertProgramNode(node);
+        return k.programNode({
+          ...node,
+          definedTypes: [
+            ...node.definedTypes,
+            k.definedTypeNodeFromIdl({
+              name: "links",
+              type: {
+                kind: "struct",
+                fields: [
+                  {
+                    name: "values",
+                    type: { vec: { defined: "link" }, size: "remainder" },
+                  },
+                ],
+              },
+            }),
+            k.definedTypeNode({
+              name: "link",
+              data: k.structTypeNode([
+                k.structFieldTypeNode({
+                  name: "name",
+                  child: k.stringTypeNode({
+                    size: k.prefixedSize(k.numberTypeNode("u8")),
+                  }),
+                }),
+                k.structFieldTypeNode({
+                  name: "uri",
+                  child: k.stringTypeNode({
+                    size: k.prefixedSize(k.numberTypeNode("u8")),
+                  }),
+                }),
+              ]),
+            }),
+          ],
+        });
+      },
+    },
+  ])
+);
+
+kinobi.update(
   new k.UpdateAccountsVisitor({
     Metadata: { size: 679 },
     MasterEditionV1: {
