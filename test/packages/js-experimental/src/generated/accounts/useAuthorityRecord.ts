@@ -11,6 +11,7 @@ import {
   EncodedAccount,
   FetchAccountConfig,
   FetchAccountsConfig,
+  MaybeAccount,
   assertAccountExists,
   decodeAccount,
   fetchEncodedAccount,
@@ -40,6 +41,9 @@ export type UseAuthorityRecord<TAddress extends string = string> = Account<
   UseAuthorityRecordAccountData,
   TAddress
 >;
+
+export type MaybeUseAuthorityRecord<TAddress extends string = string> =
+  MaybeAccount<UseAuthorityRecordAccountData, TAddress>;
 
 export type UseAuthorityRecordAccountData = {
   key: TmKey;

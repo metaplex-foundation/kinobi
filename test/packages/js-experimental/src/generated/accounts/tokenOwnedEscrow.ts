@@ -11,6 +11,7 @@ import {
   EncodedAccount,
   FetchAccountConfig,
   FetchAccountsConfig,
+  MaybeAccount,
   assertAccountExists,
   decodeAccount,
   fetchEncodedAccount,
@@ -48,6 +49,9 @@ export type TokenOwnedEscrow<TAddress extends string = string> = Account<
   TokenOwnedEscrowAccountData,
   TAddress
 >;
+
+export type MaybeTokenOwnedEscrow<TAddress extends string = string> =
+  MaybeAccount<TokenOwnedEscrowAccountData, TAddress>;
 
 export type TokenOwnedEscrowAccountData = {
   key: TmKey;

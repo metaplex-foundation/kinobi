@@ -11,6 +11,7 @@ import {
   EncodedAccount,
   FetchAccountConfig,
   FetchAccountsConfig,
+  MaybeAccount,
   assertAccountExists,
   decodeAccount,
   fetchEncodedAccount,
@@ -46,6 +47,9 @@ export type MasterEditionV1<TAddress extends string = string> = Account<
   MasterEditionV1AccountData,
   TAddress
 >;
+
+export type MaybeMasterEditionV1<TAddress extends string = string> =
+  MaybeAccount<MasterEditionV1AccountData, TAddress>;
 
 export type MasterEditionV1AccountData = {
   key: TmKey;

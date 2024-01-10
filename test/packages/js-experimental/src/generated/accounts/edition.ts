@@ -11,6 +11,7 @@ import {
   EncodedAccount,
   FetchAccountConfig,
   FetchAccountsConfig,
+  MaybeAccount,
   assertAccountExists,
   decodeAccount,
   fetchEncodedAccount,
@@ -36,6 +37,11 @@ import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
 import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type Edition<TAddress extends string = string> = Account<
+  EditionAccountData,
+  TAddress
+>;
+
+export type MaybeEdition<TAddress extends string = string> = MaybeAccount<
   EditionAccountData,
   TAddress
 >;

@@ -11,6 +11,7 @@ import {
   EncodedAccount,
   FetchAccountConfig,
   FetchAccountsConfig,
+  MaybeAccount,
   assertAccountExists,
   decodeAccount,
   fetchEncodedAccount,
@@ -56,6 +57,9 @@ export type ReservationListV2<TAddress extends string = string> = Account<
   ReservationListV2AccountData,
   TAddress
 >;
+
+export type MaybeReservationListV2<TAddress extends string = string> =
+  MaybeAccount<ReservationListV2AccountData, TAddress>;
 
 export type ReservationListV2AccountData = {
   key: TmKey;

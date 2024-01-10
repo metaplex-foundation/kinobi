@@ -11,6 +11,7 @@ import {
   EncodedAccount,
   FetchAccountConfig,
   FetchAccountsConfig,
+  MaybeAccount,
   assertAccountExists,
   decodeAccount,
   fetchEncodedAccount,
@@ -43,6 +44,9 @@ import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type CollectionAuthorityRecord<TAddress extends string = string> =
   Account<CollectionAuthorityRecordAccountData, TAddress>;
+
+export type MaybeCollectionAuthorityRecord<TAddress extends string = string> =
+  MaybeAccount<CollectionAuthorityRecordAccountData, TAddress>;
 
 export type CollectionAuthorityRecordAccountData = {
   key: TmKey;

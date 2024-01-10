@@ -30,6 +30,7 @@ export type NameTransformerKey =
   | 'pdaSeedsType'
   | 'pdaFindFunction'
   | 'accountType'
+  | 'accountMaybeType'
   | 'accountDataType'
   | 'accountDecodeFunction'
   | 'accountFetchFunction'
@@ -102,6 +103,7 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
   pdaSeedsType: (name) => `${pascalCase(name)}Seeds`,
   pdaFindFunction: (name) => `find${pascalCase(name)}Pda`,
   accountType: (name) => `${pascalCase(name)}`,
+  accountMaybeType: (name) => `Maybe${pascalCase(name)}`,
   accountDataType: (name) => `${pascalCase(name)}AccountData`,
   accountDecodeFunction: (name) => `decode${pascalCase(name)}`,
   accountFetchFunction: (name) => `fetch${pascalCase(name)}`,

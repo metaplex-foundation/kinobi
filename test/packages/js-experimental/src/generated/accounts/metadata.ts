@@ -11,6 +11,7 @@ import {
   EncodedAccount,
   FetchAccountConfig,
   FetchAccountsConfig,
+  MaybeAccount,
   assertAccountExists,
   decodeAccount,
   fetchEncodedAccount,
@@ -86,6 +87,11 @@ import {
 } from '../types';
 
 export type Metadata<TAddress extends string = string> = Account<
+  MetadataAccountData,
+  TAddress
+>;
+
+export type MaybeMetadata<TAddress extends string = string> = MaybeAccount<
   MetadataAccountData,
   TAddress
 >;

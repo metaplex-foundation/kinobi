@@ -11,6 +11,7 @@ import {
   EncodedAccount,
   FetchAccountConfig,
   FetchAccountsConfig,
+  MaybeAccount,
   assertAccountExists,
   decodeAccount,
   fetchEncodedAccount,
@@ -48,6 +49,11 @@ import {
 } from '../types';
 
 export type CandyMachine<TAddress extends string = string> = Account<
+  CandyMachineAccountData,
+  TAddress
+>;
+
+export type MaybeCandyMachine<TAddress extends string = string> = MaybeAccount<
   CandyMachineAccountData,
   TAddress
 >;

@@ -11,6 +11,7 @@ import {
   EncodedAccount,
   FetchAccountConfig,
   FetchAccountsConfig,
+  MaybeAccount,
   assertAccountExists,
   decodeAccount,
   fetchEncodedAccount,
@@ -41,6 +42,9 @@ export type FrequencyAccount<TAddress extends string = string> = Account<
   FrequencyAccountAccountData,
   TAddress
 >;
+
+export type MaybeFrequencyAccount<TAddress extends string = string> =
+  MaybeAccount<FrequencyAccountAccountData, TAddress>;
 
 export type FrequencyAccountAccountData = {
   /** Test with only one line. */

@@ -11,6 +11,7 @@ import {
   EncodedAccount,
   FetchAccountConfig,
   FetchAccountsConfig,
+  MaybeAccount,
   assertAccountExists,
   decodeAccount,
   fetchEncodedAccount,
@@ -45,6 +46,9 @@ export type DelegateRecord<TAddress extends string = string> = Account<
   DelegateRecordAccountData,
   TAddress
 >;
+
+export type MaybeDelegateRecord<TAddress extends string = string> =
+  MaybeAccount<DelegateRecordAccountData, TAddress>;
 
 export type DelegateRecordAccountData = {
   key: TmKey;
