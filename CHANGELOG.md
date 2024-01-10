@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.16.16
+
+### Patch Changes
+
+- [#148](https://github.com/metaplex-foundation/kinobi/pull/148) [`f987339`](https://github.com/metaplex-foundation/kinobi/commit/f9873398c52a409cbdba1356c7aa499cb76b42bc) Thanks [@febo](https://github.com/febo)! - Add support to prefix string type in Rust client
+
 ## 0.16.15
 
 ### Patch Changes
