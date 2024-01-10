@@ -85,7 +85,7 @@ export async function fetchEditionMarker<TAddress extends string = string>(
   return decodeEditionMarker(maybeAccount);
 }
 
-export async function safeFetchEditionMarker<TAddress extends string = string>(
+export async function fetchMaybeEditionMarker<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
@@ -106,7 +106,7 @@ export async function fetchAllEditionMarker(
   });
 }
 
-export async function safeFetchAllEditionMarker(
+export async function fetchAllMaybeEditionMarker(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig

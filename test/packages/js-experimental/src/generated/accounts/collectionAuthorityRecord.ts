@@ -111,7 +111,7 @@ export async function fetchCollectionAuthorityRecord<
   return decodeCollectionAuthorityRecord(maybeAccount);
 }
 
-export async function safeFetchCollectionAuthorityRecord<
+export async function fetchMaybeCollectionAuthorityRecord<
   TAddress extends string = string
 >(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
@@ -136,7 +136,7 @@ export async function fetchAllCollectionAuthorityRecord(
   });
 }
 
-export async function safeFetchAllCollectionAuthorityRecord(
+export async function fetchAllMaybeCollectionAuthorityRecord(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig

@@ -103,7 +103,7 @@ export async function fetchMasterEditionV2<TAddress extends string = string>(
   return decodeMasterEditionV2(maybeAccount);
 }
 
-export async function safeFetchMasterEditionV2<
+export async function fetchMaybeMasterEditionV2<
   TAddress extends string = string
 >(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
@@ -126,7 +126,7 @@ export async function fetchAllMasterEditionV2(
   });
 }
 
-export async function safeFetchAllMasterEditionV2(
+export async function fetchAllMaybeMasterEditionV2(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
@@ -153,12 +153,12 @@ export async function fetchMasterEditionV2FromSeeds(
   return fetchMasterEditionV2(rpc, address, fetchConfig);
 }
 
-export async function safeFetchMasterEditionV2FromSeeds(
+export async function fetchMaybeMasterEditionV2FromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   seeds: MasterEditionV2Seeds,
   config: FetchAccountConfig & { programAddress?: Address } = {}
 ): Promise<MasterEditionV2 | null> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findMasterEditionV2Pda(seeds, { programAddress });
-  return safeFetchMasterEditionV2(rpc, address, fetchConfig);
+  return fetchMaybeMasterEditionV2(rpc, address, fetchConfig);
 }

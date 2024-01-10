@@ -135,7 +135,7 @@ export async function fetchReservationListV2<TAddress extends string = string>(
   return decodeReservationListV2(maybeAccount);
 }
 
-export async function safeFetchReservationListV2<
+export async function fetchMaybeReservationListV2<
   TAddress extends string = string
 >(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
@@ -158,7 +158,7 @@ export async function fetchAllReservationListV2(
   });
 }
 
-export async function safeFetchAllReservationListV2(
+export async function fetchAllMaybeReservationListV2(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig

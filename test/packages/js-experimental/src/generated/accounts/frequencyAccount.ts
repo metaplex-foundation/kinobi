@@ -116,7 +116,7 @@ export async function fetchFrequencyAccount<TAddress extends string = string>(
   return decodeFrequencyAccount(maybeAccount);
 }
 
-export async function safeFetchFrequencyAccount<
+export async function fetchMaybeFrequencyAccount<
   TAddress extends string = string
 >(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
@@ -139,7 +139,7 @@ export async function fetchAllFrequencyAccount(
   });
 }
 
-export async function safeFetchAllFrequencyAccount(
+export async function fetchAllMaybeFrequencyAccount(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
@@ -165,11 +165,11 @@ export async function fetchFrequencyAccountFromSeeds(
   return fetchFrequencyAccount(rpc, address, fetchConfig);
 }
 
-export async function safeFetchFrequencyAccountFromSeeds(
+export async function fetchMaybeFrequencyAccountFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   config: FetchAccountConfig & { programAddress?: Address } = {}
 ): Promise<FrequencyAccount | null> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findFrequencyAccountPda({ programAddress });
-  return safeFetchFrequencyAccount(rpc, address, fetchConfig);
+  return fetchMaybeFrequencyAccount(rpc, address, fetchConfig);
 }

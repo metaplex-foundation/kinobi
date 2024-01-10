@@ -114,7 +114,7 @@ export async function fetchTokenOwnedEscrow<TAddress extends string = string>(
   return decodeTokenOwnedEscrow(maybeAccount);
 }
 
-export async function safeFetchTokenOwnedEscrow<
+export async function fetchMaybeTokenOwnedEscrow<
   TAddress extends string = string
 >(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
@@ -137,7 +137,7 @@ export async function fetchAllTokenOwnedEscrow(
   });
 }
 
-export async function safeFetchAllTokenOwnedEscrow(
+export async function fetchAllMaybeTokenOwnedEscrow(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig

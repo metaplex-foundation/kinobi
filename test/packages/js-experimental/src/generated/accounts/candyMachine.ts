@@ -153,7 +153,7 @@ export async function fetchCandyMachine<TAddress extends string = string>(
   return decodeCandyMachine(maybeAccount);
 }
 
-export async function safeFetchCandyMachine<TAddress extends string = string>(
+export async function fetchMaybeCandyMachine<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
@@ -174,7 +174,7 @@ export async function fetchAllCandyMachine(
   });
 }
 
-export async function safeFetchAllCandyMachine(
+export async function fetchAllMaybeCandyMachine(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig

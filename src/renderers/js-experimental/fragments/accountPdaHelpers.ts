@@ -25,11 +25,11 @@ export function getAccountPdaHelpersFragment(
     pdaSeedsType,
     findPdaFunction,
     fetchFunction: nameApi.accountFetchFunction(accountNode.name),
-    safeFetchFunction: nameApi.accountSafeFetchFunction(accountNode.name),
+    fetchMaybeFunction: nameApi.accountFetchMaybeFunction(accountNode.name),
     fetchFromSeedsFunction: nameApi.accountFetchFromSeedsFunction(
       accountNode.name
     ),
-    safeFetchFromSeedsFunction: nameApi.accountSafeFetchFromSeedsFunction(
+    fetchMaybeFromSeedsFunction: nameApi.accountFetchMaybeFromSeedsFunction(
       accountNode.name
     ),
     program: programNode,

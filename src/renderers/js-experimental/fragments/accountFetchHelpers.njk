@@ -12,7 +12,7 @@ export async function {{ fetchFunction }}<TAddress extends string = string>(
   return {{ decodeFunction }}(maybeAccount);
 }
 
-export async function {{ safeFetchFunction }}<TAddress extends string = string>(
+export async function {{ fetchMaybeFunction }}<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig,
@@ -33,7 +33,7 @@ export async function {{ fetchAllFunction }}(
   });
 }
 
-export async function {{ safeFetchAllFunction }}(
+export async function {{ fetchAllMaybeFunction }}(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig,

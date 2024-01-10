@@ -20,9 +20,11 @@ export function getAccountFetchHelpersFragment(
     accountType: nameApi.accountType(accountNode.name),
     decodeFunction: nameApi.accountDecodeFunction(accountNode.name),
     fetchFunction: nameApi.accountFetchFunction(accountNode.name),
-    safeFetchFunction: nameApi.accountSafeFetchFunction(accountNode.name),
+    fetchMaybeFunction: nameApi.accountFetchMaybeFunction(accountNode.name),
     fetchAllFunction: nameApi.accountFetchAllFunction(accountNode.name),
-    safeFetchAllFunction: nameApi.accountSafeFetchAllFunction(accountNode.name),
+    fetchAllMaybeFunction: nameApi.accountFetchAllMaybeFunction(
+      accountNode.name
+    ),
   })
     .mergeImportsWith(decoderFunctionFragment)
     .addImports('solanaAddresses', ['Address'])

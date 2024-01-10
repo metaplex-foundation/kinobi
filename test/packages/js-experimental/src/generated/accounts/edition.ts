@@ -100,7 +100,7 @@ export async function fetchEdition<TAddress extends string = string>(
   return decodeEdition(maybeAccount);
 }
 
-export async function safeFetchEdition<TAddress extends string = string>(
+export async function fetchMaybeEdition<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
@@ -121,7 +121,7 @@ export async function fetchAllEdition(
   });
 }
 
-export async function safeFetchAllEdition(
+export async function fetchAllMaybeEdition(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig

@@ -102,7 +102,9 @@ export async function fetchDelegateRecord<TAddress extends string = string>(
   return decodeDelegateRecord(maybeAccount);
 }
 
-export async function safeFetchDelegateRecord<TAddress extends string = string>(
+export async function fetchMaybeDelegateRecord<
+  TAddress extends string = string
+>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
@@ -123,7 +125,7 @@ export async function fetchAllDelegateRecord(
   });
 }
 
-export async function safeFetchAllDelegateRecord(
+export async function fetchAllMaybeDelegateRecord(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
@@ -150,12 +152,12 @@ export async function fetchDelegateRecordFromSeeds(
   return fetchDelegateRecord(rpc, address, fetchConfig);
 }
 
-export async function safeFetchDelegateRecordFromSeeds(
+export async function fetchMaybeDelegateRecordFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   seeds: DelegateRecordSeeds,
   config: FetchAccountConfig & { programAddress?: Address } = {}
 ): Promise<DelegateRecord | null> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findDelegateRecordPda(seeds, { programAddress });
-  return safeFetchDelegateRecord(rpc, address, fetchConfig);
+  return fetchMaybeDelegateRecord(rpc, address, fetchConfig);
 }

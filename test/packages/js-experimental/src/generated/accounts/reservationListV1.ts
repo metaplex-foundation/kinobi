@@ -46,7 +46,7 @@ export async function fetchReservationListV1<TAddress extends string = string>(
   return decodeReservationListV1(maybeAccount);
 }
 
-export async function safeFetchReservationListV1<
+export async function fetchMaybeReservationListV1<
   TAddress extends string = string
 >(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
@@ -69,7 +69,7 @@ export async function fetchAllReservationListV1(
   });
 }
 
-export async function safeFetchAllReservationListV1(
+export async function fetchAllMaybeReservationListV1(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig

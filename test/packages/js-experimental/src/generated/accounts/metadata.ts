@@ -220,7 +220,7 @@ export async function fetchMetadata<TAddress extends string = string>(
   return decodeMetadata(maybeAccount);
 }
 
-export async function safeFetchMetadata<TAddress extends string = string>(
+export async function fetchMaybeMetadata<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
@@ -241,7 +241,7 @@ export async function fetchAllMetadata(
   });
 }
 
-export async function safeFetchAllMetadata(
+export async function fetchAllMaybeMetadata(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
@@ -266,12 +266,12 @@ export async function fetchMetadataFromSeeds(
   return fetchMetadata(rpc, address, fetchConfig);
 }
 
-export async function safeFetchMetadataFromSeeds(
+export async function fetchMaybeMetadataFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   seeds: MetadataSeeds,
   config: FetchAccountConfig & { programAddress?: Address } = {}
 ): Promise<Metadata | null> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findMetadataPda(seeds, { programAddress });
-  return safeFetchMetadata(rpc, address, fetchConfig);
+  return fetchMaybeMetadata(rpc, address, fetchConfig);
 }

@@ -104,7 +104,7 @@ export async function fetchUseAuthorityRecord<TAddress extends string = string>(
   return decodeUseAuthorityRecord(maybeAccount);
 }
 
-export async function safeFetchUseAuthorityRecord<
+export async function fetchMaybeUseAuthorityRecord<
   TAddress extends string = string
 >(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
@@ -127,7 +127,7 @@ export async function fetchAllUseAuthorityRecord(
   });
 }
 
-export async function safeFetchAllUseAuthorityRecord(
+export async function fetchAllMaybeUseAuthorityRecord(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
