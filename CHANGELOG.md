@@ -1,5 +1,13 @@
 # @metaplex-foundation/kinobi
 
+## 0.17.1
+
+### Patch Changes
+
+- [#152](https://github.com/metaplex-foundation/kinobi/pull/152) [`7695a7a`](https://github.com/metaplex-foundation/kinobi/commit/7695a7a9da2c9ae3b47a0c665992494b68b2f06f) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Use MaybeAccount types in fetch account helpers of js-experimental
+
+- [#150](https://github.com/metaplex-foundation/kinobi/pull/150) [`1877460`](https://github.com/metaplex-foundation/kinobi/commit/1877460faaa474f4fbf1eed974f697e8b9bc923c) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix js-experimental ImportMap by not rendering empty statements
+
 ## 0.17.0
 
 ### Minor Changes
