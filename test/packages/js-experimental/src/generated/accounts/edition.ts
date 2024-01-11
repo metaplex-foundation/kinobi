@@ -12,7 +12,9 @@ import {
   FetchAccountConfig,
   FetchAccountsConfig,
   MaybeAccount,
+  MaybeEncodedAccount,
   assertAccountExists,
+  assertAccountsExist,
   decodeAccount,
   fetchEncodedAccount,
   fetchEncodedAccounts,
@@ -92,8 +94,17 @@ export function getEditionAccountDataCodec(): Codec<
 
 export function decodeEdition<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>
-): Edition<TAddress> {
-  return decodeAccount(encodedAccount, getEditionAccountDataDecoder());
+): Edition<TAddress>;
+export function decodeEdition<TAddress extends string = string>(
+  encodedAccount: MaybeEncodedAccount<TAddress>
+): MaybeEdition<TAddress>;
+export function decodeEdition<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
+): Edition<TAddress> | MaybeEdition<TAddress> {
+  return decodeAccount(
+    encodedAccount as MaybeEncodedAccount<TAddress>,
+    getEditionAccountDataDecoder()
+  );
 }
 
 export async function fetchEdition<TAddress extends string = string>(
@@ -101,18 +112,18 @@ export async function fetchEdition<TAddress extends string = string>(
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<Edition<TAddress>> {
-  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
+  const maybeAccount = await fetchMaybeEdition(rpc, address, config);
   assertAccountExists(maybeAccount);
-  return decodeEdition(maybeAccount);
+  return maybeAccount;
 }
 
 export async function fetchMaybeEdition<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<Edition<TAddress> | null> {
+): Promise<MaybeEdition<TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
-  return maybeAccount.exists ? decodeEdition(maybeAccount) : null;
+  return decodeEdition(maybeAccount);
 }
 
 export async function fetchAllEdition(
@@ -120,22 +131,18 @@ export async function fetchAllEdition(
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<Edition[]> {
-  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
-  return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount);
-    return decodeEdition(maybeAccount);
-  });
+  const maybeAccounts = await fetchAllMaybeEdition(rpc, addresses, config);
+  assertAccountsExist(maybeAccounts);
+  return maybeAccounts;
 }
 
 export async function fetchAllMaybeEdition(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<Edition[]> {
+): Promise<MaybeEdition[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
-  return maybeAccounts
-    .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) => decodeEdition(maybeAccount as EncodedAccount));
+  return maybeAccounts.map((maybeAccount) => decodeEdition(maybeAccount));
 }
 
 export function getEditionSize(): number {

@@ -12,7 +12,9 @@ import {
   FetchAccountConfig,
   FetchAccountsConfig,
   MaybeAccount,
+  MaybeEncodedAccount,
   assertAccountExists,
+  assertAccountsExist,
   decodeAccount,
   fetchEncodedAccount,
   fetchEncodedAccounts,
@@ -104,8 +106,17 @@ export function getTokenOwnedEscrowAccountDataCodec(): Codec<
 
 export function decodeTokenOwnedEscrow<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>
-): TokenOwnedEscrow<TAddress> {
-  return decodeAccount(encodedAccount, getTokenOwnedEscrowAccountDataDecoder());
+): TokenOwnedEscrow<TAddress>;
+export function decodeTokenOwnedEscrow<TAddress extends string = string>(
+  encodedAccount: MaybeEncodedAccount<TAddress>
+): MaybeTokenOwnedEscrow<TAddress>;
+export function decodeTokenOwnedEscrow<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
+): TokenOwnedEscrow<TAddress> | MaybeTokenOwnedEscrow<TAddress> {
+  return decodeAccount(
+    encodedAccount as MaybeEncodedAccount<TAddress>,
+    getTokenOwnedEscrowAccountDataDecoder()
+  );
 }
 
 export async function fetchTokenOwnedEscrow<TAddress extends string = string>(
@@ -113,9 +124,9 @@ export async function fetchTokenOwnedEscrow<TAddress extends string = string>(
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<TokenOwnedEscrow<TAddress>> {
-  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
+  const maybeAccount = await fetchMaybeTokenOwnedEscrow(rpc, address, config);
   assertAccountExists(maybeAccount);
-  return decodeTokenOwnedEscrow(maybeAccount);
+  return maybeAccount;
 }
 
 export async function fetchMaybeTokenOwnedEscrow<
@@ -124,9 +135,9 @@ export async function fetchMaybeTokenOwnedEscrow<
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<TokenOwnedEscrow<TAddress> | null> {
+): Promise<MaybeTokenOwnedEscrow<TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
-  return maybeAccount.exists ? decodeTokenOwnedEscrow(maybeAccount) : null;
+  return decodeTokenOwnedEscrow(maybeAccount);
 }
 
 export async function fetchAllTokenOwnedEscrow(
@@ -134,22 +145,22 @@ export async function fetchAllTokenOwnedEscrow(
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<TokenOwnedEscrow[]> {
-  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
-  return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount);
-    return decodeTokenOwnedEscrow(maybeAccount);
-  });
+  const maybeAccounts = await fetchAllMaybeTokenOwnedEscrow(
+    rpc,
+    addresses,
+    config
+  );
+  assertAccountsExist(maybeAccounts);
+  return maybeAccounts;
 }
 
 export async function fetchAllMaybeTokenOwnedEscrow(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<TokenOwnedEscrow[]> {
+): Promise<MaybeTokenOwnedEscrow[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
-  return maybeAccounts
-    .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) =>
-      decodeTokenOwnedEscrow(maybeAccount as EncodedAccount)
-    );
+  return maybeAccounts.map((maybeAccount) =>
+    decodeTokenOwnedEscrow(maybeAccount)
+  );
 }

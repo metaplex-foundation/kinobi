@@ -12,7 +12,9 @@ import {
   FetchAccountConfig,
   FetchAccountsConfig,
   MaybeAccount,
+  MaybeEncodedAccount,
   assertAccountExists,
+  assertAccountsExist,
   decodeAccount,
   fetchEncodedAccount,
   fetchEncodedAccounts,
@@ -96,9 +98,21 @@ export function decodeCollectionAuthorityRecord<
   TAddress extends string = string
 >(
   encodedAccount: EncodedAccount<TAddress>
-): CollectionAuthorityRecord<TAddress> {
+): CollectionAuthorityRecord<TAddress>;
+export function decodeCollectionAuthorityRecord<
+  TAddress extends string = string
+>(
+  encodedAccount: MaybeEncodedAccount<TAddress>
+): MaybeCollectionAuthorityRecord<TAddress>;
+export function decodeCollectionAuthorityRecord<
+  TAddress extends string = string
+>(
+  encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
+):
+  | CollectionAuthorityRecord<TAddress>
+  | MaybeCollectionAuthorityRecord<TAddress> {
   return decodeAccount(
-    encodedAccount,
+    encodedAccount as MaybeEncodedAccount<TAddress>,
     getCollectionAuthorityRecordAccountDataDecoder()
   );
 }
@@ -110,9 +124,13 @@ export async function fetchCollectionAuthorityRecord<
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<CollectionAuthorityRecord<TAddress>> {
-  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
+  const maybeAccount = await fetchMaybeCollectionAuthorityRecord(
+    rpc,
+    address,
+    config
+  );
   assertAccountExists(maybeAccount);
-  return decodeCollectionAuthorityRecord(maybeAccount);
+  return maybeAccount;
 }
 
 export async function fetchMaybeCollectionAuthorityRecord<
@@ -121,11 +139,9 @@ export async function fetchMaybeCollectionAuthorityRecord<
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<CollectionAuthorityRecord<TAddress> | null> {
+): Promise<MaybeCollectionAuthorityRecord<TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
-  return maybeAccount.exists
-    ? decodeCollectionAuthorityRecord(maybeAccount)
-    : null;
+  return decodeCollectionAuthorityRecord(maybeAccount);
 }
 
 export async function fetchAllCollectionAuthorityRecord(
@@ -133,22 +149,22 @@ export async function fetchAllCollectionAuthorityRecord(
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<CollectionAuthorityRecord[]> {
-  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
-  return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount);
-    return decodeCollectionAuthorityRecord(maybeAccount);
-  });
+  const maybeAccounts = await fetchAllMaybeCollectionAuthorityRecord(
+    rpc,
+    addresses,
+    config
+  );
+  assertAccountsExist(maybeAccounts);
+  return maybeAccounts;
 }
 
 export async function fetchAllMaybeCollectionAuthorityRecord(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<CollectionAuthorityRecord[]> {
+): Promise<MaybeCollectionAuthorityRecord[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
-  return maybeAccounts
-    .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) =>
-      decodeCollectionAuthorityRecord(maybeAccount as EncodedAccount)
-    );
+  return maybeAccounts.map((maybeAccount) =>
+    decodeCollectionAuthorityRecord(maybeAccount)
+  );
 }

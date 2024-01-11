@@ -12,7 +12,9 @@ import {
   FetchAccountConfig,
   FetchAccountsConfig,
   MaybeAccount,
+  MaybeEncodedAccount,
   assertAccountExists,
+  assertAccountsExist,
   decodeAccount,
   fetchEncodedAccount,
   fetchEncodedAccounts,
@@ -212,8 +214,17 @@ export function getMetadataAccountDataCodec(): Codec<
 
 export function decodeMetadata<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>
-): Metadata<TAddress> {
-  return decodeAccount(encodedAccount, getMetadataAccountDataDecoder());
+): Metadata<TAddress>;
+export function decodeMetadata<TAddress extends string = string>(
+  encodedAccount: MaybeEncodedAccount<TAddress>
+): MaybeMetadata<TAddress>;
+export function decodeMetadata<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
+): Metadata<TAddress> | MaybeMetadata<TAddress> {
+  return decodeAccount(
+    encodedAccount as MaybeEncodedAccount<TAddress>,
+    getMetadataAccountDataDecoder()
+  );
 }
 
 export async function fetchMetadata<TAddress extends string = string>(
@@ -221,18 +232,18 @@ export async function fetchMetadata<TAddress extends string = string>(
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<Metadata<TAddress>> {
-  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
+  const maybeAccount = await fetchMaybeMetadata(rpc, address, config);
   assertAccountExists(maybeAccount);
-  return decodeMetadata(maybeAccount);
+  return maybeAccount;
 }
 
 export async function fetchMaybeMetadata<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<Metadata<TAddress> | null> {
+): Promise<MaybeMetadata<TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
-  return maybeAccount.exists ? decodeMetadata(maybeAccount) : null;
+  return decodeMetadata(maybeAccount);
 }
 
 export async function fetchAllMetadata(
@@ -240,22 +251,18 @@ export async function fetchAllMetadata(
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<Metadata[]> {
-  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
-  return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount);
-    return decodeMetadata(maybeAccount);
-  });
+  const maybeAccounts = await fetchAllMaybeMetadata(rpc, addresses, config);
+  assertAccountsExist(maybeAccounts);
+  return maybeAccounts;
 }
 
 export async function fetchAllMaybeMetadata(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<Metadata[]> {
+): Promise<MaybeMetadata[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
-  return maybeAccounts
-    .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) => decodeMetadata(maybeAccount as EncodedAccount));
+  return maybeAccounts.map((maybeAccount) => decodeMetadata(maybeAccount));
 }
 
 export function getMetadataSize(): number {
@@ -267,16 +274,16 @@ export async function fetchMetadataFromSeeds(
   seeds: MetadataSeeds,
   config: FetchAccountConfig & { programAddress?: Address } = {}
 ): Promise<Metadata> {
-  const { programAddress, ...fetchConfig } = config;
-  const [address] = await findMetadataPda(seeds, { programAddress });
-  return fetchMetadata(rpc, address, fetchConfig);
+  const maybeAccount = await fetchMaybeMetadataFromSeeds(rpc, seeds, config);
+  assertAccountExists(maybeAccount);
+  return maybeAccount;
 }
 
 export async function fetchMaybeMetadataFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   seeds: MetadataSeeds,
   config: FetchAccountConfig & { programAddress?: Address } = {}
-): Promise<Metadata | null> {
+): Promise<MaybeMetadata> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findMetadataPda(seeds, { programAddress });
   return fetchMaybeMetadata(rpc, address, fetchConfig);

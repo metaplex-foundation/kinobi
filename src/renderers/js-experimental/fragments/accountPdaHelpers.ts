@@ -22,6 +22,7 @@ export function getAccountPdaHelpersFragment(
 
   return fragmentFromTemplate('accountPdaHelpers.njk', {
     accountType: nameApi.accountType(accountNode.name),
+    accountMaybeType: nameApi.accountMaybeType(accountNode.name),
     pdaSeedsType,
     findPdaFunction,
     fetchFunction: nameApi.accountFetchFunction(accountNode.name),
@@ -40,5 +41,8 @@ export function getAccountPdaHelpersFragment(
       hasVariableSeeds ? [pdaSeedsType, findPdaFunction] : [findPdaFunction]
     )
     .addImports('solanaAddresses', ['Address'])
-    .addImports('solanaAccounts', ['FetchAccountConfig']);
+    .addImports('solanaAccounts', [
+      'assertAccountExists',
+      'FetchAccountConfig',
+    ]);
 }

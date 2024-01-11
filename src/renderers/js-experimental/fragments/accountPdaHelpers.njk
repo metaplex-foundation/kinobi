@@ -7,9 +7,9 @@ export async function {{ fetchFromSeedsFunction }}(
   {% endif %}
   config: FetchAccountConfig & { programAddress?: Address } = {},
 ): Promise<{{ accountType }}> {
-  const { programAddress, ...fetchConfig } = config;
-  const [address] = await {{ findPdaFunction }}({% if hasVariableSeeds %}seeds, {% endif %}{ programAddress });
-  return {{ fetchFunction }}(rpc, address, fetchConfig);
+  const maybeAccount = await {{ fetchMaybeFromSeedsFunction }}(rpc, {% if hasVariableSeeds %}seeds, {% endif %}config);
+  assertAccountExists(maybeAccount);
+  return maybeAccount;
 }
 
 export async function {{ fetchMaybeFromSeedsFunction }}(
@@ -18,7 +18,7 @@ export async function {{ fetchMaybeFromSeedsFunction }}(
     seeds: {{ pdaSeedsType }},
   {% endif %}
   config: FetchAccountConfig & { programAddress?: Address } = {},
-): Promise<{{ accountType }} | null> {
+): Promise<{{ accountMaybeType }}> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await {{ findPdaFunction }}({% if hasVariableSeeds %}seeds, {% endif %}{ programAddress });
   return {{ fetchMaybeFunction }}(rpc, address, fetchConfig);

@@ -18,6 +18,7 @@ export function getAccountFetchHelpersFragment(
   return fragmentFromTemplate('accountFetchHelpers.njk', {
     decoderFunction: decoderFunctionFragment.render,
     accountType: nameApi.accountType(accountNode.name),
+    accountMaybeType: nameApi.accountMaybeType(accountNode.name),
     decodeFunction: nameApi.accountDecodeFunction(accountNode.name),
     fetchFunction: nameApi.accountFetchFunction(accountNode.name),
     fetchMaybeFunction: nameApi.accountFetchMaybeFunction(accountNode.name),
@@ -30,11 +31,13 @@ export function getAccountFetchHelpersFragment(
     .addImports('solanaAddresses', ['Address'])
     .addImports('solanaAccounts', [
       'assertAccountExists',
+      'assertAccountsExist',
       'decodeAccount',
       'EncodedAccount',
       'fetchEncodedAccount',
       'fetchEncodedAccounts',
       'FetchAccountConfig',
       'FetchAccountsConfig',
+      'MaybeEncodedAccount',
     ]);
 }
