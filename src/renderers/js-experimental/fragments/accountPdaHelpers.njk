@@ -7,19 +7,19 @@ export async function {{ fetchFromSeedsFunction }}(
   {% endif %}
   config: FetchAccountConfig & { programAddress?: Address } = {},
 ): Promise<{{ accountType }}> {
-  const { programAddress, ...fetchConfig } = config;
-  const [address] = await {{ findPdaFunction }}({% if hasVariableSeeds %}seeds, {% endif %}{ programAddress });
-  return {{ fetchFunction }}(rpc, address, fetchConfig);
+  const maybeAccount = await {{ fetchMaybeFromSeedsFunction }}(rpc, {% if hasVariableSeeds %}seeds, {% endif %}config);
+  assertAccountExists(maybeAccount);
+  return maybeAccount;
 }
 
-export async function {{ safeFetchFromSeedsFunction }}(
+export async function {{ fetchMaybeFromSeedsFunction }}(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   {% if hasVariableSeeds %}
     seeds: {{ pdaSeedsType }},
   {% endif %}
   config: FetchAccountConfig & { programAddress?: Address } = {},
-): Promise<{{ accountType }} | null> {
+): Promise<{{ accountMaybeType }}> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await {{ findPdaFunction }}({% if hasVariableSeeds %}seeds, {% endif %}{ programAddress });
-  return {{ safeFetchFunction }}(rpc, address, fetchConfig);
+  return {{ fetchMaybeFunction }}(rpc, address, fetchConfig);
 }

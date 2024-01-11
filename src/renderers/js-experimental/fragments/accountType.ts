@@ -27,9 +27,10 @@ export function getAccountTypeFragment(
 
   return fragmentFromTemplate('accountType.njk', {
     accountType: nameApi.accountType(accountNode.name),
+    accountMaybeType: nameApi.accountMaybeType(accountNode.name),
     dataName: dataNameFragment.render,
     typeWithCodec: typeWithCodecFragment,
   })
     .mergeImportsWith(dataNameFragment, typeWithCodecFragment)
-    .addImports('solanaAccounts', 'Account');
+    .addImports('solanaAccounts', ['Account', 'MaybeAccount']);
 }

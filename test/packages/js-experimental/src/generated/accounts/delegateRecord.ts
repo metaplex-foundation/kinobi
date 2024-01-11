@@ -11,7 +11,10 @@ import {
   EncodedAccount,
   FetchAccountConfig,
   FetchAccountsConfig,
+  MaybeAccount,
+  MaybeEncodedAccount,
   assertAccountExists,
+  assertAccountsExist,
   decodeAccount,
   fetchEncodedAccount,
   fetchEncodedAccounts,
@@ -45,6 +48,9 @@ export type DelegateRecord<TAddress extends string = string> = Account<
   DelegateRecordAccountData,
   TAddress
 >;
+
+export type MaybeDelegateRecord<TAddress extends string = string> =
+  MaybeAccount<DelegateRecordAccountData, TAddress>;
 
 export type DelegateRecordAccountData = {
   key: TmKey;
@@ -88,8 +94,17 @@ export function getDelegateRecordAccountDataCodec(): Codec<
 
 export function decodeDelegateRecord<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>
-): DelegateRecord<TAddress> {
-  return decodeAccount(encodedAccount, getDelegateRecordAccountDataDecoder());
+): DelegateRecord<TAddress>;
+export function decodeDelegateRecord<TAddress extends string = string>(
+  encodedAccount: MaybeEncodedAccount<TAddress>
+): MaybeDelegateRecord<TAddress>;
+export function decodeDelegateRecord<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
+): DelegateRecord<TAddress> | MaybeDelegateRecord<TAddress> {
+  return decodeAccount(
+    encodedAccount as MaybeEncodedAccount<TAddress>,
+    getDelegateRecordAccountDataDecoder()
+  );
 }
 
 export async function fetchDelegateRecord<TAddress extends string = string>(
@@ -97,18 +112,20 @@ export async function fetchDelegateRecord<TAddress extends string = string>(
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<DelegateRecord<TAddress>> {
-  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
+  const maybeAccount = await fetchMaybeDelegateRecord(rpc, address, config);
   assertAccountExists(maybeAccount);
-  return decodeDelegateRecord(maybeAccount);
+  return maybeAccount;
 }
 
-export async function safeFetchDelegateRecord<TAddress extends string = string>(
+export async function fetchMaybeDelegateRecord<
+  TAddress extends string = string
+>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<DelegateRecord<TAddress> | null> {
+): Promise<MaybeDelegateRecord<TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
-  return maybeAccount.exists ? decodeDelegateRecord(maybeAccount) : null;
+  return decodeDelegateRecord(maybeAccount);
 }
 
 export async function fetchAllDelegateRecord(
@@ -116,24 +133,24 @@ export async function fetchAllDelegateRecord(
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<DelegateRecord[]> {
-  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
-  return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount);
-    return decodeDelegateRecord(maybeAccount);
-  });
+  const maybeAccounts = await fetchAllMaybeDelegateRecord(
+    rpc,
+    addresses,
+    config
+  );
+  assertAccountsExist(maybeAccounts);
+  return maybeAccounts;
 }
 
-export async function safeFetchAllDelegateRecord(
+export async function fetchAllMaybeDelegateRecord(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<DelegateRecord[]> {
+): Promise<MaybeDelegateRecord[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
-  return maybeAccounts
-    .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) =>
-      decodeDelegateRecord(maybeAccount as EncodedAccount)
-    );
+  return maybeAccounts.map((maybeAccount) =>
+    decodeDelegateRecord(maybeAccount)
+  );
 }
 
 export function getDelegateRecordSize(): number {
@@ -145,17 +162,21 @@ export async function fetchDelegateRecordFromSeeds(
   seeds: DelegateRecordSeeds,
   config: FetchAccountConfig & { programAddress?: Address } = {}
 ): Promise<DelegateRecord> {
-  const { programAddress, ...fetchConfig } = config;
-  const [address] = await findDelegateRecordPda(seeds, { programAddress });
-  return fetchDelegateRecord(rpc, address, fetchConfig);
+  const maybeAccount = await fetchMaybeDelegateRecordFromSeeds(
+    rpc,
+    seeds,
+    config
+  );
+  assertAccountExists(maybeAccount);
+  return maybeAccount;
 }
 
-export async function safeFetchDelegateRecordFromSeeds(
+export async function fetchMaybeDelegateRecordFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   seeds: DelegateRecordSeeds,
   config: FetchAccountConfig & { programAddress?: Address } = {}
-): Promise<DelegateRecord | null> {
+): Promise<MaybeDelegateRecord> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findDelegateRecordPda(seeds, { programAddress });
-  return safeFetchDelegateRecord(rpc, address, fetchConfig);
+  return fetchMaybeDelegateRecord(rpc, address, fetchConfig);
 }

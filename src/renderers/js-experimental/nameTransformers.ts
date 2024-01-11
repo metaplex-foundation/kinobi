@@ -30,14 +30,15 @@ export type NameTransformerKey =
   | 'pdaSeedsType'
   | 'pdaFindFunction'
   | 'accountType'
+  | 'accountMaybeType'
   | 'accountDataType'
   | 'accountDecodeFunction'
   | 'accountFetchFunction'
   | 'accountFetchAllFunction'
-  | 'accountSafeFetchFunction'
-  | 'accountSafeFetchAllFunction'
+  | 'accountFetchMaybeFunction'
+  | 'accountFetchAllMaybeFunction'
   | 'accountFetchFromSeedsFunction'
-  | 'accountSafeFetchFromSeedsFunction'
+  | 'accountFetchMaybeFromSeedsFunction'
   | 'accountGetSizeFunction'
   | 'scalarEnumVariant'
   | 'dataEnumDiscriminator'
@@ -102,15 +103,16 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
   pdaSeedsType: (name) => `${pascalCase(name)}Seeds`,
   pdaFindFunction: (name) => `find${pascalCase(name)}Pda`,
   accountType: (name) => `${pascalCase(name)}`,
+  accountMaybeType: (name) => `Maybe${pascalCase(name)}`,
   accountDataType: (name) => `${pascalCase(name)}AccountData`,
   accountDecodeFunction: (name) => `decode${pascalCase(name)}`,
   accountFetchFunction: (name) => `fetch${pascalCase(name)}`,
   accountFetchAllFunction: (name) => `fetchAll${pascalCase(name)}`,
-  accountSafeFetchFunction: (name) => `safeFetch${pascalCase(name)}`,
-  accountSafeFetchAllFunction: (name) => `safeFetchAll${pascalCase(name)}`,
+  accountFetchMaybeFunction: (name) => `fetchMaybe${pascalCase(name)}`,
+  accountFetchAllMaybeFunction: (name) => `fetchAllMaybe${pascalCase(name)}`,
   accountFetchFromSeedsFunction: (name) => `fetch${pascalCase(name)}FromSeeds`,
-  accountSafeFetchFromSeedsFunction: (name) =>
-    `safeFetch${pascalCase(name)}FromSeeds`,
+  accountFetchMaybeFromSeedsFunction: (name) =>
+    `fetchMaybe${pascalCase(name)}FromSeeds`,
   accountGetSizeFunction: (name) => `get${pascalCase(name)}Size`,
   scalarEnumVariant: (name) => `${pascalCase(name)}`,
   dataEnumDiscriminator: () => '__kind',

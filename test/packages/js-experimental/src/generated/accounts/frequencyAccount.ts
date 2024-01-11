@@ -11,7 +11,10 @@ import {
   EncodedAccount,
   FetchAccountConfig,
   FetchAccountsConfig,
+  MaybeAccount,
+  MaybeEncodedAccount,
   assertAccountExists,
+  assertAccountsExist,
   decodeAccount,
   fetchEncodedAccount,
   fetchEncodedAccounts,
@@ -41,6 +44,9 @@ export type FrequencyAccount<TAddress extends string = string> = Account<
   FrequencyAccountAccountData,
   TAddress
 >;
+
+export type MaybeFrequencyAccount<TAddress extends string = string> =
+  MaybeAccount<FrequencyAccountAccountData, TAddress>;
 
 export type FrequencyAccountAccountData = {
   /** Test with only one line. */
@@ -102,8 +108,17 @@ export function getFrequencyAccountAccountDataCodec(): Codec<
 
 export function decodeFrequencyAccount<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>
-): FrequencyAccount<TAddress> {
-  return decodeAccount(encodedAccount, getFrequencyAccountAccountDataDecoder());
+): FrequencyAccount<TAddress>;
+export function decodeFrequencyAccount<TAddress extends string = string>(
+  encodedAccount: MaybeEncodedAccount<TAddress>
+): MaybeFrequencyAccount<TAddress>;
+export function decodeFrequencyAccount<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
+): FrequencyAccount<TAddress> | MaybeFrequencyAccount<TAddress> {
+  return decodeAccount(
+    encodedAccount as MaybeEncodedAccount<TAddress>,
+    getFrequencyAccountAccountDataDecoder()
+  );
 }
 
 export async function fetchFrequencyAccount<TAddress extends string = string>(
@@ -111,20 +126,20 @@ export async function fetchFrequencyAccount<TAddress extends string = string>(
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<FrequencyAccount<TAddress>> {
-  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
+  const maybeAccount = await fetchMaybeFrequencyAccount(rpc, address, config);
   assertAccountExists(maybeAccount);
-  return decodeFrequencyAccount(maybeAccount);
+  return maybeAccount;
 }
 
-export async function safeFetchFrequencyAccount<
+export async function fetchMaybeFrequencyAccount<
   TAddress extends string = string
 >(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<FrequencyAccount<TAddress> | null> {
+): Promise<MaybeFrequencyAccount<TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
-  return maybeAccount.exists ? decodeFrequencyAccount(maybeAccount) : null;
+  return decodeFrequencyAccount(maybeAccount);
 }
 
 export async function fetchAllFrequencyAccount(
@@ -132,24 +147,24 @@ export async function fetchAllFrequencyAccount(
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<FrequencyAccount[]> {
-  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
-  return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount);
-    return decodeFrequencyAccount(maybeAccount);
-  });
+  const maybeAccounts = await fetchAllMaybeFrequencyAccount(
+    rpc,
+    addresses,
+    config
+  );
+  assertAccountsExist(maybeAccounts);
+  return maybeAccounts;
 }
 
-export async function safeFetchAllFrequencyAccount(
+export async function fetchAllMaybeFrequencyAccount(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<FrequencyAccount[]> {
+): Promise<MaybeFrequencyAccount[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
-  return maybeAccounts
-    .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) =>
-      decodeFrequencyAccount(maybeAccount as EncodedAccount)
-    );
+  return maybeAccounts.map((maybeAccount) =>
+    decodeFrequencyAccount(maybeAccount)
+  );
 }
 
 export function getFrequencyAccountSize(): number {
@@ -160,16 +175,16 @@ export async function fetchFrequencyAccountFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   config: FetchAccountConfig & { programAddress?: Address } = {}
 ): Promise<FrequencyAccount> {
-  const { programAddress, ...fetchConfig } = config;
-  const [address] = await findFrequencyAccountPda({ programAddress });
-  return fetchFrequencyAccount(rpc, address, fetchConfig);
+  const maybeAccount = await fetchMaybeFrequencyAccountFromSeeds(rpc, config);
+  assertAccountExists(maybeAccount);
+  return maybeAccount;
 }
 
-export async function safeFetchFrequencyAccountFromSeeds(
+export async function fetchMaybeFrequencyAccountFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   config: FetchAccountConfig & { programAddress?: Address } = {}
-): Promise<FrequencyAccount | null> {
+): Promise<MaybeFrequencyAccount> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findFrequencyAccountPda({ programAddress });
-  return safeFetchFrequencyAccount(rpc, address, fetchConfig);
+  return fetchMaybeFrequencyAccount(rpc, address, fetchConfig);
 }

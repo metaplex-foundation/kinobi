@@ -11,7 +11,10 @@ import {
   EncodedAccount,
   FetchAccountConfig,
   FetchAccountsConfig,
+  MaybeAccount,
+  MaybeEncodedAccount,
   assertAccountExists,
+  assertAccountsExist,
   decodeAccount,
   fetchEncodedAccount,
   fetchEncodedAccounts,
@@ -46,6 +49,9 @@ export type MasterEditionV1<TAddress extends string = string> = Account<
   MasterEditionV1AccountData,
   TAddress
 >;
+
+export type MaybeMasterEditionV1<TAddress extends string = string> =
+  MaybeAccount<MasterEditionV1AccountData, TAddress>;
 
 export type MasterEditionV1AccountData = {
   key: TmKey;
@@ -103,8 +109,17 @@ export function getMasterEditionV1AccountDataCodec(): Codec<
 
 export function decodeMasterEditionV1<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>
-): MasterEditionV1<TAddress> {
-  return decodeAccount(encodedAccount, getMasterEditionV1AccountDataDecoder());
+): MasterEditionV1<TAddress>;
+export function decodeMasterEditionV1<TAddress extends string = string>(
+  encodedAccount: MaybeEncodedAccount<TAddress>
+): MaybeMasterEditionV1<TAddress>;
+export function decodeMasterEditionV1<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
+): MasterEditionV1<TAddress> | MaybeMasterEditionV1<TAddress> {
+  return decodeAccount(
+    encodedAccount as MaybeEncodedAccount<TAddress>,
+    getMasterEditionV1AccountDataDecoder()
+  );
 }
 
 export async function fetchMasterEditionV1<TAddress extends string = string>(
@@ -112,20 +127,20 @@ export async function fetchMasterEditionV1<TAddress extends string = string>(
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<MasterEditionV1<TAddress>> {
-  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
+  const maybeAccount = await fetchMaybeMasterEditionV1(rpc, address, config);
   assertAccountExists(maybeAccount);
-  return decodeMasterEditionV1(maybeAccount);
+  return maybeAccount;
 }
 
-export async function safeFetchMasterEditionV1<
+export async function fetchMaybeMasterEditionV1<
   TAddress extends string = string
 >(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<MasterEditionV1<TAddress> | null> {
+): Promise<MaybeMasterEditionV1<TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
-  return maybeAccount.exists ? decodeMasterEditionV1(maybeAccount) : null;
+  return decodeMasterEditionV1(maybeAccount);
 }
 
 export async function fetchAllMasterEditionV1(
@@ -133,24 +148,24 @@ export async function fetchAllMasterEditionV1(
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<MasterEditionV1[]> {
-  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
-  return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount);
-    return decodeMasterEditionV1(maybeAccount);
-  });
+  const maybeAccounts = await fetchAllMaybeMasterEditionV1(
+    rpc,
+    addresses,
+    config
+  );
+  assertAccountsExist(maybeAccounts);
+  return maybeAccounts;
 }
 
-export async function safeFetchAllMasterEditionV1(
+export async function fetchAllMaybeMasterEditionV1(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<MasterEditionV1[]> {
+): Promise<MaybeMasterEditionV1[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
-  return maybeAccounts
-    .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) =>
-      decodeMasterEditionV1(maybeAccount as EncodedAccount)
-    );
+  return maybeAccounts.map((maybeAccount) =>
+    decodeMasterEditionV1(maybeAccount)
+  );
 }
 
 export async function fetchMasterEditionV1FromSeeds(
@@ -158,17 +173,21 @@ export async function fetchMasterEditionV1FromSeeds(
   seeds: MasterEditionV1Seeds,
   config: FetchAccountConfig & { programAddress?: Address } = {}
 ): Promise<MasterEditionV1> {
-  const { programAddress, ...fetchConfig } = config;
-  const [address] = await findMasterEditionV1Pda(seeds, { programAddress });
-  return fetchMasterEditionV1(rpc, address, fetchConfig);
+  const maybeAccount = await fetchMaybeMasterEditionV1FromSeeds(
+    rpc,
+    seeds,
+    config
+  );
+  assertAccountExists(maybeAccount);
+  return maybeAccount;
 }
 
-export async function safeFetchMasterEditionV1FromSeeds(
+export async function fetchMaybeMasterEditionV1FromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   seeds: MasterEditionV1Seeds,
   config: FetchAccountConfig & { programAddress?: Address } = {}
-): Promise<MasterEditionV1 | null> {
+): Promise<MaybeMasterEditionV1> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findMasterEditionV1Pda(seeds, { programAddress });
-  return safeFetchMasterEditionV1(rpc, address, fetchConfig);
+  return fetchMaybeMasterEditionV1(rpc, address, fetchConfig);
 }

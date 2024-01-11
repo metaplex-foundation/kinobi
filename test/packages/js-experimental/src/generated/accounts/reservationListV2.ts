@@ -11,7 +11,10 @@ import {
   EncodedAccount,
   FetchAccountConfig,
   FetchAccountsConfig,
+  MaybeAccount,
+  MaybeEncodedAccount,
   assertAccountExists,
+  assertAccountsExist,
   decodeAccount,
   fetchEncodedAccount,
   fetchEncodedAccounts,
@@ -56,6 +59,9 @@ export type ReservationListV2<TAddress extends string = string> = Account<
   ReservationListV2AccountData,
   TAddress
 >;
+
+export type MaybeReservationListV2<TAddress extends string = string> =
+  MaybeAccount<ReservationListV2AccountData, TAddress>;
 
 export type ReservationListV2AccountData = {
   key: TmKey;
@@ -118,9 +124,15 @@ export function getReservationListV2AccountDataCodec(): Codec<
 
 export function decodeReservationListV2<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>
-): ReservationListV2<TAddress> {
+): ReservationListV2<TAddress>;
+export function decodeReservationListV2<TAddress extends string = string>(
+  encodedAccount: MaybeEncodedAccount<TAddress>
+): MaybeReservationListV2<TAddress>;
+export function decodeReservationListV2<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
+): ReservationListV2<TAddress> | MaybeReservationListV2<TAddress> {
   return decodeAccount(
-    encodedAccount,
+    encodedAccount as MaybeEncodedAccount<TAddress>,
     getReservationListV2AccountDataDecoder()
   );
 }
@@ -130,20 +142,20 @@ export async function fetchReservationListV2<TAddress extends string = string>(
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<ReservationListV2<TAddress>> {
-  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
+  const maybeAccount = await fetchMaybeReservationListV2(rpc, address, config);
   assertAccountExists(maybeAccount);
-  return decodeReservationListV2(maybeAccount);
+  return maybeAccount;
 }
 
-export async function safeFetchReservationListV2<
+export async function fetchMaybeReservationListV2<
   TAddress extends string = string
 >(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<ReservationListV2<TAddress> | null> {
+): Promise<MaybeReservationListV2<TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
-  return maybeAccount.exists ? decodeReservationListV2(maybeAccount) : null;
+  return decodeReservationListV2(maybeAccount);
 }
 
 export async function fetchAllReservationListV2(
@@ -151,22 +163,22 @@ export async function fetchAllReservationListV2(
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<ReservationListV2[]> {
-  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
-  return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount);
-    return decodeReservationListV2(maybeAccount);
-  });
+  const maybeAccounts = await fetchAllMaybeReservationListV2(
+    rpc,
+    addresses,
+    config
+  );
+  assertAccountsExist(maybeAccounts);
+  return maybeAccounts;
 }
 
-export async function safeFetchAllReservationListV2(
+export async function fetchAllMaybeReservationListV2(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<ReservationListV2[]> {
+): Promise<MaybeReservationListV2[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
-  return maybeAccounts
-    .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) =>
-      decodeReservationListV2(maybeAccount as EncodedAccount)
-    );
+  return maybeAccounts.map((maybeAccount) =>
+    decodeReservationListV2(maybeAccount)
+  );
 }

@@ -11,7 +11,10 @@ import {
   EncodedAccount,
   FetchAccountConfig,
   FetchAccountsConfig,
+  MaybeAccount,
+  MaybeEncodedAccount,
   assertAccountExists,
+  assertAccountsExist,
   decodeAccount,
   fetchEncodedAccount,
   fetchEncodedAccounts,
@@ -34,6 +37,11 @@ import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
 import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type EditionMarker<TAddress extends string = string> = Account<
+  EditionMarkerAccountData,
+  TAddress
+>;
+
+export type MaybeEditionMarker<TAddress extends string = string> = MaybeAccount<
   EditionMarkerAccountData,
   TAddress
 >;
@@ -71,8 +79,17 @@ export function getEditionMarkerAccountDataCodec(): Codec<
 
 export function decodeEditionMarker<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>
-): EditionMarker<TAddress> {
-  return decodeAccount(encodedAccount, getEditionMarkerAccountDataDecoder());
+): EditionMarker<TAddress>;
+export function decodeEditionMarker<TAddress extends string = string>(
+  encodedAccount: MaybeEncodedAccount<TAddress>
+): MaybeEditionMarker<TAddress>;
+export function decodeEditionMarker<TAddress extends string = string>(
+  encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
+): EditionMarker<TAddress> | MaybeEditionMarker<TAddress> {
+  return decodeAccount(
+    encodedAccount as MaybeEncodedAccount<TAddress>,
+    getEditionMarkerAccountDataDecoder()
+  );
 }
 
 export async function fetchEditionMarker<TAddress extends string = string>(
@@ -80,18 +97,18 @@ export async function fetchEditionMarker<TAddress extends string = string>(
   address: Address<TAddress>,
   config?: FetchAccountConfig
 ): Promise<EditionMarker<TAddress>> {
-  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
+  const maybeAccount = await fetchMaybeEditionMarker(rpc, address, config);
   assertAccountExists(maybeAccount);
-  return decodeEditionMarker(maybeAccount);
+  return maybeAccount;
 }
 
-export async function safeFetchEditionMarker<TAddress extends string = string>(
+export async function fetchMaybeEditionMarker<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<EditionMarker<TAddress> | null> {
+): Promise<MaybeEditionMarker<TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
-  return maybeAccount.exists ? decodeEditionMarker(maybeAccount) : null;
+  return decodeEditionMarker(maybeAccount);
 }
 
 export async function fetchAllEditionMarker(
@@ -99,22 +116,22 @@ export async function fetchAllEditionMarker(
   addresses: Array<Address>,
   config?: FetchAccountsConfig
 ): Promise<EditionMarker[]> {
-  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
-  return maybeAccounts.map((maybeAccount) => {
-    assertAccountExists(maybeAccount);
-    return decodeEditionMarker(maybeAccount);
-  });
+  const maybeAccounts = await fetchAllMaybeEditionMarker(
+    rpc,
+    addresses,
+    config
+  );
+  assertAccountsExist(maybeAccounts);
+  return maybeAccounts;
 }
 
-export async function safeFetchAllEditionMarker(
+export async function fetchAllMaybeEditionMarker(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<EditionMarker[]> {
+): Promise<MaybeEditionMarker[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
-  return maybeAccounts
-    .filter((maybeAccount) => maybeAccount.exists)
-    .map((maybeAccount) => decodeEditionMarker(maybeAccount as EncodedAccount));
+  return maybeAccounts.map((maybeAccount) => decodeEditionMarker(maybeAccount));
 }
 
 export function getEditionMarkerSize(): number {
