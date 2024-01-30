@@ -1,5 +1,13 @@
 # @metaplex-foundation/kinobi
 
+## 0.17.2
+
+### Patch Changes
+
+- [#157](https://github.com/metaplex-foundation/kinobi/pull/157) [`fda84c5`](https://github.com/metaplex-foundation/kinobi/commit/fda84c5d4ab5d39b61e0ae26e67af13efa43bcf0) Thanks [@febo](https://github.com/febo)! - Add support for empty array seeds
+
+- [#155](https://github.com/metaplex-foundation/kinobi/pull/155) [`4d7db50`](https://github.com/metaplex-foundation/kinobi/commit/4d7db50c95bd8a1ed1c031029592a636a5748d93) Thanks [@febo](https://github.com/febo)! - Fix byte array as seeds on Rust client
+
 ## 0.17.1
 
 ### Patch Changes
