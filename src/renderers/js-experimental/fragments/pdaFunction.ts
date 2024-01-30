@@ -2,7 +2,7 @@ import { PdaNode, ProgramNode, isNode, isNodeFilter } from '../../../nodes';
 import { visit } from '../../../visitors';
 import { ImportMap } from '../ImportMap';
 import type { GlobalFragmentScope } from '../getRenderMapVisitor';
-import { Fragment, fragment, fragmentFromTemplate } from './common';
+import { Fragment, fragmentFromTemplate } from './common';
 
 export function getPdaFunctionFragment(
   scope: Pick<
