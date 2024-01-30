@@ -42,7 +42,7 @@ export function updateAccountsVisitor(map: Record<string, AccountUpdates>) {
 
             const { seeds, pda, ...assignableUpdates } = updates;
             let newPda = node.pda;
-            if (pda && !pda.importFrom && seeds) {
+            if (pda && !pda.importFrom && seeds !== undefined) {
               newPda = pda;
               pdasToUpsert.push({
                 program: stack.getProgram()!.name,
@@ -50,12 +50,12 @@ export function updateAccountsVisitor(map: Record<string, AccountUpdates>) {
               });
             } else if (pda) {
               newPda = pda;
-            } else if (seeds && node.pda) {
+            } else if (seeds !== undefined && node.pda) {
               pdasToUpsert.push({
                 program: stack.getProgram()!.name,
                 pda: pdaNode(node.pda.name, seeds),
               });
-            } else if (seeds) {
+            } else if (seeds !== undefined) {
               newPda = pdaLinkNode(newName ?? node.name);
               pdasToUpsert.push({
                 program: stack.getProgram()!.name,

@@ -177,6 +177,7 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
               seeds,
               constantSeeds,
               hasVariableSeeds,
+              pda,
             })
           );
         },

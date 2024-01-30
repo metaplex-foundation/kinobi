@@ -20,9 +20,6 @@ export function getPdaFunctionFragment(
     valueNodeVisitor,
     nameApi,
   } = scope;
-  if (pdaNode.seeds.length === 0) {
-    return fragment('');
-  }
 
   // Seeds.
   const imports = new ImportMap();
