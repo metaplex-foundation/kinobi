@@ -2,7 +2,7 @@ import { PdaNode, ProgramNode, isNode, isNodeFilter } from '../../../nodes';
 import { visit } from '../../../visitors';
 import { ImportMap } from '../ImportMap';
 import type { GlobalFragmentScope } from '../getRenderMapVisitor';
-import { Fragment, fragment, fragmentFromTemplate } from './common';
+import { Fragment, fragmentFromTemplate } from './common';
 
 export function getPdaFunctionFragment(
   scope: Pick<
@@ -20,9 +20,6 @@ export function getPdaFunctionFragment(
     valueNodeVisitor,
     nameApi,
   } = scope;
-  if (pdaNode.seeds.length === 0) {
-    return fragment('');
-  }
 
   // Seeds.
   const imports = new ImportMap();

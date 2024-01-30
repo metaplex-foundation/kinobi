@@ -48,7 +48,7 @@ impl {{ account.name | pascalCase }} {
     {% endif %}
   {% endif %}
 
-  {% if seeds.length > 0 %}
+  {% if pda %}
     pub fn create_pda(
       {% if hasVariableSeeds %}
           {% for seed in seeds %}
