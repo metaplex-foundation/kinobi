@@ -68,6 +68,8 @@ impl {{ account.name | pascalCase }} {
               {{ seed.value.render }}.as_bytes(),
             {% elif seed.kind == 'variablePdaSeedNode' and seed.type.kind == 'publicKeyTypeNode' %}
               {{ seed.name | snakeCase }}.as_ref(),
+            {% elif seed.kind == 'variablePdaSeedNode' and seed.type.kind == 'bytesTypeNode' %}
+              &{{ seed.name | snakeCase }},
             {% else %}
               {{ seed.name | snakeCase }}.to_string().as_ref(),
             {% endif %}
@@ -98,6 +100,8 @@ impl {{ account.name | pascalCase }} {
               {{ seed.value.render }}.as_bytes(),
             {% elif seed.kind == 'variablePdaSeedNode' and seed.type.kind == 'publicKeyTypeNode' %}
               {{ seed.name | snakeCase }}.as_ref(),
+            {% elif seed.kind == 'variablePdaSeedNode' and seed.type.kind == 'bytesTypeNode' %}
+              &{{ seed.name | snakeCase }},
             {% else %}
               {{ seed.name | snakeCase }}.to_string().as_ref(),
             {% endif %}
