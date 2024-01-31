@@ -33,7 +33,7 @@ test('it renders an empty array seed used on a pda', (t) => {
   // Then we expect the following function and and empty seeds
   // array used on program derived address function.
   renderMapContains(t, renderMap, 'pdas/testPda.ts', [
-    /export async function findTestPdaPda/,
-    /getProgramDerivedAddress\({ programAddress, seeds: \[\] }\)/,
+    'export async function findTestPdaPda',
+    'getProgramDerivedAddress({ programAddress, seeds: [] })',
   ]);
 });

@@ -232,11 +232,7 @@ test('it checks the discriminator of sub-instructions before their parents.', (t
 
   // Then we expect the sub-instruction condition to be rendered before the parent instruction condition.
   renderMapContains(t, renderMap, 'programs/splToken.ts', [
-    `export function identifySplTokenInstruction(instruction: { data: Uint8Array } | Uint8Array): SplTokenInstruction {\n` +
-      `const data = instruction instanceof Uint8Array ? instruction : instruction.data;\n` +
-      `if (memcmp(data, getU8Encoder().encode(1), 0) && memcmp(data, getU32Encoder().encode(1), 1)) { return SplTokenInstruction.MintTokensV1; }\n` +
-      `if (memcmp(data, getU8Encoder().encode(1), 0)) { return SplTokenInstruction.MintTokens; }\n` +
-      `throw new Error('The provided instruction could not be identified as a splToken instruction.')\n` +
-      `}`,
+    `if (memcmp(data, getU8Encoder().encode(1), 0) && memcmp(data, getU32Encoder().encode(1), 1)) { return SplTokenInstruction.MintTokensV1; }\n` +
+      `if (memcmp(data, getU8Encoder().encode(1), 0)) { return SplTokenInstruction.MintTokens; }`,
   ]);
 });
