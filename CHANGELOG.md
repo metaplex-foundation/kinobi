@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.17.3
+
+### Patch Changes
+
+- [`132e371`](https://github.com/metaplex-foundation/kinobi/commit/132e371f0cddfe3db0d85502c83dbfd60a83ed7a) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix instructionInputType bug in js-experimental
+
 ## 0.17.2
 
 ### Patch Changes
