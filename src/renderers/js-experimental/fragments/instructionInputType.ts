@@ -84,7 +84,8 @@ export function getInstructionInputTypeFragment(
     ) as ResolvedInstructionArgument | undefined;
     if (arg.defaultValue && arg.defaultValueStrategy === 'omitted') return [];
     const renamedName = renamedArgs.get(arg.name) ?? arg.name;
-    const optionalSign = arg.defaultValue || resolvedArg ? '?' : '';
+    const optionalSign =
+      arg.defaultValue || resolvedArg?.defaultValue ? '?' : '';
     return [
       {
         ...arg,
