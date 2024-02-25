@@ -172,7 +172,7 @@ export type ApproveUseAuthorityInstructionDataArgs = {
 
 export function getApproveUseAuthorityInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number; numberOfUses: number | bigint }>([
+    getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['numberOfUses', getU64Encoder()],
     ]),
@@ -181,7 +181,7 @@ export function getApproveUseAuthorityInstructionDataEncoder() {
 }
 
 export function getApproveUseAuthorityInstructionDataDecoder() {
-  return getStructDecoder<ApproveUseAuthorityInstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['numberOfUses', getU64Decoder()],
   ]) satisfies Decoder<ApproveUseAuthorityInstructionData>;

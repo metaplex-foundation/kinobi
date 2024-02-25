@@ -178,18 +178,16 @@ export type UseAssetInstructionDataArgs = { useAssetArgs: UseAssetArgsArgs };
 
 export function getUseAssetInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number; useAssetArgs: UseAssetArgsArgs }>(
-      [
-        ['discriminator', getU8Encoder()],
-        ['useAssetArgs', getUseAssetArgsEncoder()],
-      ]
-    ),
+    getStructEncoder([
+      ['discriminator', getU8Encoder()],
+      ['useAssetArgs', getUseAssetArgsEncoder()],
+    ]),
     (value) => ({ ...value, discriminator: 45 })
   ) satisfies Encoder<UseAssetInstructionDataArgs>;
 }
 
 export function getUseAssetInstructionDataDecoder() {
-  return getStructDecoder<UseAssetInstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['useAssetArgs', getUseAssetArgsDecoder()],
   ]) satisfies Decoder<UseAssetInstructionData>;

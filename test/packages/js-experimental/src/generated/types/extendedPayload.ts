@@ -39,14 +39,14 @@ export type ExtendedPayloadArgs = {
 };
 
 export function getExtendedPayloadEncoder() {
-  return getStructEncoder<ExtendedPayloadArgs>([
+  return getStructEncoder([
     ['map', getMapEncoder(getPayloadKeyEncoder(), getPayloadTypeEncoder())],
     ['args', getTupleEncoder([getU8Encoder(), getStringEncoder()])],
   ]) satisfies Encoder<ExtendedPayloadArgs>;
 }
 
 export function getExtendedPayloadDecoder() {
-  return getStructDecoder<ExtendedPayload>([
+  return getStructDecoder([
     ['map', getMapDecoder(getPayloadKeyDecoder(), getPayloadTypeDecoder())],
     ['args', getTupleDecoder([getU8Decoder(), getStringDecoder()])],
   ]) satisfies Decoder<ExtendedPayload>;

@@ -142,11 +142,7 @@ export type CreateMetadataAccountV2InstructionDataArgs = {
 
 export function getCreateMetadataAccountV2InstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{
-      discriminator: number;
-      data: DataV2Args;
-      isMutable: boolean;
-    }>([
+    getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['data', getDataV2Encoder()],
       ['isMutable', getBooleanEncoder()],
@@ -156,7 +152,7 @@ export function getCreateMetadataAccountV2InstructionDataEncoder() {
 }
 
 export function getCreateMetadataAccountV2InstructionDataDecoder() {
-  return getStructDecoder<CreateMetadataAccountV2InstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['data', getDataV2Decoder()],
     ['isMutable', getBooleanDecoder()],

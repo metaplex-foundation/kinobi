@@ -141,15 +141,13 @@ export type SetAndVerifySizedCollectionItemInstructionDataArgs = {};
 
 export function getSetAndVerifySizedCollectionItemInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>([
-      ['discriminator', getU8Encoder()],
-    ]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 32 })
   ) satisfies Encoder<SetAndVerifySizedCollectionItemInstructionDataArgs>;
 }
 
 export function getSetAndVerifySizedCollectionItemInstructionDataDecoder() {
-  return getStructDecoder<SetAndVerifySizedCollectionItemInstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
   ]) satisfies Decoder<SetAndVerifySizedCollectionItemInstructionData>;
 }

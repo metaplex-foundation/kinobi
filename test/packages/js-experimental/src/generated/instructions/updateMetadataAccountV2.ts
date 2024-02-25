@@ -109,13 +109,7 @@ export type UpdateMetadataAccountV2InstructionDataArgs = {
 
 export function getUpdateMetadataAccountV2InstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{
-      discriminator: number;
-      data: OptionOrNullable<DataV2Args>;
-      updateAuthority: OptionOrNullable<Address>;
-      primarySaleHappened: OptionOrNullable<boolean>;
-      isMutable: OptionOrNullable<boolean>;
-    }>([
+    getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['data', getOptionEncoder(getDataV2Encoder())],
       ['updateAuthority', getOptionEncoder(getAddressEncoder())],
@@ -127,7 +121,7 @@ export function getUpdateMetadataAccountV2InstructionDataEncoder() {
 }
 
 export function getUpdateMetadataAccountV2InstructionDataDecoder() {
-  return getStructDecoder<UpdateMetadataAccountV2InstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['data', getOptionDecoder(getDataV2Decoder())],
     ['updateAuthority', getOptionDecoder(getAddressDecoder())],

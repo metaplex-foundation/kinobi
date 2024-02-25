@@ -121,15 +121,13 @@ export type UnverifyCollectionInstructionDataArgs = {};
 
 export function getUnverifyCollectionInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>([
-      ['discriminator', getU8Encoder()],
-    ]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 22 })
   ) satisfies Encoder<UnverifyCollectionInstructionDataArgs>;
 }
 
 export function getUnverifyCollectionInstructionDataDecoder() {
-  return getStructDecoder<UnverifyCollectionInstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
   ]) satisfies Decoder<UnverifyCollectionInstructionData>;
 }

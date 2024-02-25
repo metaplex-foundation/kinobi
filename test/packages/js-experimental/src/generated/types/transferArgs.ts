@@ -42,10 +42,10 @@ export type TransferArgsArgs = {
 };
 
 export function getTransferArgsEncoder() {
-  return getDataEnumEncoder<TransferArgsArgs>([
+  return getDataEnumEncoder([
     [
       'V1',
-      getStructEncoder<GetDataEnumKindContent<TransferArgsArgs, 'V1'>>([
+      getStructEncoder([
         ['authorizationData', getOptionEncoder(getAuthorizationDataEncoder())],
         ['amount', getU64Encoder()],
       ]),
@@ -54,10 +54,10 @@ export function getTransferArgsEncoder() {
 }
 
 export function getTransferArgsDecoder() {
-  return getDataEnumDecoder<TransferArgs>([
+  return getDataEnumDecoder([
     [
       'V1',
-      getStructDecoder<GetDataEnumKindContent<TransferArgs, 'V1'>>([
+      getStructDecoder([
         ['authorizationData', getOptionDecoder(getAuthorizationDataDecoder())],
         ['amount', getU64Decoder()],
       ]),

@@ -43,7 +43,7 @@ import {
   getOptionEncoder,
 } from '@solana/options';
 import { MasterEditionV1Seeds, findMasterEditionV1Pda } from '../pdas';
-import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
+import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type MasterEditionV1<TAddress extends string = string> = Account<
   MasterEditionV1AccountData,
@@ -70,13 +70,7 @@ export type MasterEditionV1AccountDataArgs = {
 
 export function getMasterEditionV1AccountDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{
-      key: TmKeyArgs;
-      supply: number | bigint;
-      maxSupply: OptionOrNullable<number | bigint>;
-      printingMint: Address;
-      oneTimePrintingAuthorizationMint: Address;
-    }>([
+    getStructEncoder([
       ['key', getTmKeyEncoder()],
       ['supply', getU64Encoder()],
       ['maxSupply', getOptionEncoder(getU64Encoder())],
@@ -88,7 +82,7 @@ export function getMasterEditionV1AccountDataEncoder() {
 }
 
 export function getMasterEditionV1AccountDataDecoder() {
-  return getStructDecoder<MasterEditionV1AccountData>([
+  return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['supply', getU64Decoder()],
     ['maxSupply', getOptionDecoder(getU64Decoder())],

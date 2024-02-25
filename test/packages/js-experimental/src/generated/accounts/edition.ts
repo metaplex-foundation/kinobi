@@ -36,7 +36,7 @@ import {
   getStructEncoder,
 } from '@solana/codecs-data-structures';
 import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
-import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
+import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type Edition<TAddress extends string = string> = Account<
   EditionAccountData,
@@ -61,11 +61,7 @@ export type EditionAccountDataArgs = {
 
 export function getEditionAccountDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{
-      key: TmKeyArgs;
-      parent: Address;
-      edition: number | bigint;
-    }>([
+    getStructEncoder([
       ['key', getTmKeyEncoder()],
       ['parent', getAddressEncoder()],
       ['edition', getU64Encoder()],
@@ -75,7 +71,7 @@ export function getEditionAccountDataEncoder() {
 }
 
 export function getEditionAccountDataDecoder() {
-  return getStructDecoder<EditionAccountData>([
+  return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['parent', getAddressDecoder()],
     ['edition', getU64Decoder()],

@@ -70,16 +70,7 @@ export type FrequencyAccountAccountDataArgs = {
 
 export function getFrequencyAccountAccountDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{
-      /** Test with only one line. */
-      key: number | bigint;
-      /**
-       * Test with multiple lines
-       * and this is the second line.
-       */
-      lastUpdate: number | bigint;
-      period: number | bigint;
-    }>([
+    getStructEncoder([
       ['key', getU64Encoder()],
       ['lastUpdate', getI64Encoder()],
       ['period', getI64Encoder()],
@@ -89,7 +80,7 @@ export function getFrequencyAccountAccountDataEncoder() {
 }
 
 export function getFrequencyAccountAccountDataDecoder() {
-  return getStructDecoder<FrequencyAccountAccountData>([
+  return getStructDecoder([
     ['key', getU64Decoder()],
     ['lastUpdate', getI64Decoder()],
     ['period', getI64Decoder()],

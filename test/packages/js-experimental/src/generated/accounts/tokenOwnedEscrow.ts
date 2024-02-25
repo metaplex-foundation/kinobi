@@ -40,7 +40,6 @@ import {
   EscrowAuthority,
   EscrowAuthorityArgs,
   TmKey,
-  TmKeyArgs,
   getEscrowAuthorityDecoder,
   getEscrowAuthorityEncoder,
   getTmKeyDecoder,
@@ -70,12 +69,7 @@ export type TokenOwnedEscrowAccountDataArgs = {
 
 export function getTokenOwnedEscrowAccountDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{
-      key: TmKeyArgs;
-      baseToken: Address;
-      authority: EscrowAuthorityArgs;
-      bump: number;
-    }>([
+    getStructEncoder([
       ['key', getTmKeyEncoder()],
       ['baseToken', getAddressEncoder()],
       ['authority', getEscrowAuthorityEncoder()],
@@ -86,7 +80,7 @@ export function getTokenOwnedEscrowAccountDataEncoder() {
 }
 
 export function getTokenOwnedEscrowAccountDataDecoder() {
-  return getStructDecoder<TokenOwnedEscrowAccountData>([
+  return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['baseToken', getAddressDecoder()],
     ['authority', getEscrowAuthorityDecoder()],

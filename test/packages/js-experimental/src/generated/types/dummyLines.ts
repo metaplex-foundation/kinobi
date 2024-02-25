@@ -27,13 +27,13 @@ export type DummyLinesArgs = {
 };
 
 export function getDummyLinesEncoder() {
-  return getStructEncoder<DummyLinesArgs>([
+  return getStructEncoder([
     ['lines', getArrayEncoder(getU64Encoder(), { size: 'remainder' })],
   ]) satisfies Encoder<DummyLinesArgs>;
 }
 
 export function getDummyLinesDecoder() {
-  return getStructDecoder<DummyLines>([
+  return getStructDecoder([
     ['lines', getArrayDecoder(getU64Decoder(), { size: 'remainder' })],
   ]) satisfies Decoder<DummyLines>;
 }

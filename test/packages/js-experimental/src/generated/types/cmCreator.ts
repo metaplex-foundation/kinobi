@@ -31,7 +31,7 @@ export type CmCreator = {
 export type CmCreatorArgs = CmCreator;
 
 export function getCmCreatorEncoder() {
-  return getStructEncoder<CmCreatorArgs>([
+  return getStructEncoder([
     ['address', getAddressEncoder()],
     ['verified', getBooleanEncoder()],
     ['percentageShare', getU8Encoder()],
@@ -39,7 +39,7 @@ export function getCmCreatorEncoder() {
 }
 
 export function getCmCreatorDecoder() {
-  return getStructDecoder<CmCreator>([
+  return getStructDecoder([
     ['address', getAddressDecoder()],
     ['verified', getBooleanDecoder()],
     ['percentageShare', getU8Decoder()],

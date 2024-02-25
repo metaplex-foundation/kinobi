@@ -88,7 +88,7 @@ export type TransferSolInstructionDataArgs = { amount: number | bigint };
 
 export function getTransferSolInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number; amount: number | bigint }>([
+    getStructEncoder([
       ['discriminator', getU32Encoder()],
       ['amount', getU64Encoder()],
     ]),
@@ -97,7 +97,7 @@ export function getTransferSolInstructionDataEncoder() {
 }
 
 export function getTransferSolInstructionDataDecoder() {
-  return getStructDecoder<TransferSolInstructionData>([
+  return getStructDecoder([
     ['discriminator', getU32Decoder()],
     ['amount', getU64Decoder()],
   ]) satisfies Decoder<TransferSolInstructionData>;

@@ -65,7 +65,6 @@ import {
   ProgrammableConfig,
   ProgrammableConfigArgs,
   TmKey,
-  TmKeyArgs,
   TokenStandard,
   TokenStandardArgs,
   Uses,
@@ -139,25 +138,7 @@ export type MetadataAccountDataArgs = {
 
 export function getMetadataAccountDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{
-      key: TmKeyArgs;
-      updateAuthority: Address;
-      mint: Address;
-      name: string;
-      symbol: string;
-      uri: string;
-      sellerFeeBasisPoints: number;
-      creators: OptionOrNullable<Array<CreatorArgs>>;
-      primarySaleHappened: boolean;
-      isMutable: boolean;
-      editionNonce: OptionOrNullable<number>;
-      tokenStandard: OptionOrNullable<TokenStandardArgs>;
-      collection: OptionOrNullable<CollectionArgs>;
-      uses: OptionOrNullable<UsesArgs>;
-      collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
-      programmableConfig: OptionOrNullable<ProgrammableConfigArgs>;
-      delegateState: OptionOrNullable<DelegateStateArgs>;
-    }>([
+    getStructEncoder([
       ['key', getTmKeyEncoder()],
       ['updateAuthority', getAddressEncoder()],
       ['mint', getAddressEncoder()],
@@ -181,7 +162,7 @@ export function getMetadataAccountDataEncoder() {
 }
 
 export function getMetadataAccountDataDecoder() {
-  return getStructDecoder<MetadataAccountData>([
+  return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['updateAuthority', getAddressDecoder()],
     ['mint', getAddressDecoder()],

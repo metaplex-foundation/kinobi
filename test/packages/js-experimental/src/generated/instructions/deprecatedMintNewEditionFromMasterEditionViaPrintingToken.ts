@@ -209,17 +209,15 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction
 
 export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>([
-      ['discriminator', getU8Encoder()],
-    ]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 3 })
   ) satisfies Encoder<DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataArgs>;
 }
 
 export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataDecoder() {
-  return getStructDecoder<DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData>(
-    [['discriminator', getU8Decoder()]]
-  ) satisfies Decoder<DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData>;
+  return getStructDecoder([
+    ['discriminator', getU8Decoder()],
+  ]) satisfies Decoder<DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData>;
 }
 
 export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataCodec(): Codec<

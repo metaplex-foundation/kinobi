@@ -31,7 +31,7 @@ export type CollectionArgs = { verified?: boolean; key: Address };
 
 export function getCollectionEncoder() {
   return mapEncoder(
-    getStructEncoder<{ verified: boolean; key: Address }>([
+    getStructEncoder([
       ['verified', getBooleanEncoder()],
       ['key', getAddressEncoder()],
     ]),
@@ -40,7 +40,7 @@ export function getCollectionEncoder() {
 }
 
 export function getCollectionDecoder() {
-  return getStructDecoder<Collection>([
+  return getStructDecoder([
     ['verified', getBooleanDecoder()],
     ['key', getAddressDecoder()],
   ]) satisfies Decoder<Collection>;

@@ -206,7 +206,7 @@ export type SetCollectionInstructionDataArgs = {};
 
 export function getSetCollectionInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: Array<number> }>([
+    getStructEncoder([
       ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
     ]),
     (value) => ({
@@ -217,7 +217,7 @@ export function getSetCollectionInstructionDataEncoder() {
 }
 
 export function getSetCollectionInstructionDataDecoder() {
-  return getStructDecoder<SetCollectionInstructionData>([
+  return getStructDecoder([
     ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
   ]) satisfies Decoder<SetCollectionInstructionData>;
 }

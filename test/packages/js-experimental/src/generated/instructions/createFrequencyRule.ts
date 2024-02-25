@@ -110,13 +110,7 @@ export type CreateFrequencyRuleInstructionDataArgs = {
 
 export function getCreateFrequencyRuleInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{
-      discriminator: number;
-      ruleSetName: string;
-      freqRuleName: string;
-      lastUpdate: number | bigint;
-      period: number | bigint;
-    }>([
+    getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['ruleSetName', getStringEncoder()],
       ['freqRuleName', getStringEncoder()],
@@ -128,7 +122,7 @@ export function getCreateFrequencyRuleInstructionDataEncoder() {
 }
 
 export function getCreateFrequencyRuleInstructionDataDecoder() {
-  return getStructDecoder<CreateFrequencyRuleInstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['ruleSetName', getStringDecoder()],
     ['freqRuleName', getStringDecoder()],

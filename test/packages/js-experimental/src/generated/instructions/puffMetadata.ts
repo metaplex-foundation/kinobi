@@ -69,15 +69,13 @@ export type PuffMetadataInstructionDataArgs = {};
 
 export function getPuffMetadataInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>([
-      ['discriminator', getU8Encoder()],
-    ]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 14 })
   ) satisfies Encoder<PuffMetadataInstructionDataArgs>;
 }
 
 export function getPuffMetadataInstructionDataDecoder() {
-  return getStructDecoder<PuffMetadataInstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
   ]) satisfies Decoder<PuffMetadataInstructionData>;
 }

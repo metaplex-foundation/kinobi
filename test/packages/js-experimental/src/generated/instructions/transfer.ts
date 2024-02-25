@@ -217,18 +217,16 @@ export type TransferInstructionDataArgs = { transferArgs: TransferArgsArgs };
 
 export function getTransferInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number; transferArgs: TransferArgsArgs }>(
-      [
-        ['discriminator', getU8Encoder()],
-        ['transferArgs', getTransferArgsEncoder()],
-      ]
-    ),
+    getStructEncoder([
+      ['discriminator', getU8Encoder()],
+      ['transferArgs', getTransferArgsEncoder()],
+    ]),
     (value) => ({ ...value, discriminator: 46 })
   ) satisfies Encoder<TransferInstructionDataArgs>;
 }
 
 export function getTransferInstructionDataDecoder() {
-  return getStructDecoder<TransferInstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['transferArgs', getTransferArgsDecoder()],
   ]) satisfies Decoder<TransferInstructionData>;

@@ -38,7 +38,7 @@ export type DelegateStateArgs = {
 };
 
 export function getDelegateStateEncoder() {
-  return getStructEncoder<DelegateStateArgs>([
+  return getStructEncoder([
     ['role', getDelegateRoleEncoder()],
     ['delegate', getAddressEncoder()],
     ['hasData', getBooleanEncoder()],
@@ -46,7 +46,7 @@ export function getDelegateStateEncoder() {
 }
 
 export function getDelegateStateDecoder() {
-  return getStructDecoder<DelegateState>([
+  return getStructDecoder([
     ['role', getDelegateRoleDecoder()],
     ['delegate', getAddressDecoder()],
     ['hasData', getBooleanDecoder()],

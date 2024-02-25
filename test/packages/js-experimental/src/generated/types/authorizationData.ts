@@ -18,13 +18,13 @@ export type AuthorizationData = { payload: Payload };
 export type AuthorizationDataArgs = { payload: PayloadArgs };
 
 export function getAuthorizationDataEncoder() {
-  return getStructEncoder<AuthorizationDataArgs>([
+  return getStructEncoder([
     ['payload', getPayloadEncoder()],
   ]) satisfies Encoder<AuthorizationDataArgs>;
 }
 
 export function getAuthorizationDataDecoder() {
-  return getStructDecoder<AuthorizationData>([
+  return getStructDecoder([
     ['payload', getPayloadDecoder()],
   ]) satisfies Decoder<AuthorizationData>;
 }

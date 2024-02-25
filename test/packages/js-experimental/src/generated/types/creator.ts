@@ -25,7 +25,7 @@ export type Creator = { address: Address; verified: boolean; share: number };
 export type CreatorArgs = Creator;
 
 export function getCreatorEncoder() {
-  return getStructEncoder<CreatorArgs>([
+  return getStructEncoder([
     ['address', getAddressEncoder()],
     ['verified', getBooleanEncoder()],
     ['share', getU8Encoder()],
@@ -33,7 +33,7 @@ export function getCreatorEncoder() {
 }
 
 export function getCreatorDecoder() {
-  return getStructDecoder<Creator>([
+  return getStructDecoder([
     ['address', getAddressDecoder()],
     ['verified', getBooleanDecoder()],
     ['share', getU8Decoder()],

@@ -18,13 +18,13 @@ export type SetCollectionSizeArgs = { size: bigint };
 export type SetCollectionSizeArgsArgs = { size: number | bigint };
 
 export function getSetCollectionSizeArgsEncoder() {
-  return getStructEncoder<SetCollectionSizeArgsArgs>([
+  return getStructEncoder([
     ['size', getU64Encoder()],
   ]) satisfies Encoder<SetCollectionSizeArgsArgs>;
 }
 
 export function getSetCollectionSizeArgsDecoder() {
-  return getStructDecoder<SetCollectionSizeArgs>([
+  return getStructDecoder([
     ['size', getU64Decoder()],
   ]) satisfies Decoder<SetCollectionSizeArgs>;
 }

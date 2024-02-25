@@ -204,10 +204,7 @@ export type DeprecatedCreateMasterEditionInstructionDataArgs = {
 
 export function getDeprecatedCreateMasterEditionInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{
-      discriminator: number;
-      createMasterEditionArgs: CreateMasterEditionArgsArgs;
-    }>([
+    getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['createMasterEditionArgs', getCreateMasterEditionArgsEncoder()],
     ]),
@@ -216,7 +213,7 @@ export function getDeprecatedCreateMasterEditionInstructionDataEncoder() {
 }
 
 export function getDeprecatedCreateMasterEditionInstructionDataDecoder() {
-  return getStructDecoder<DeprecatedCreateMasterEditionInstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['createMasterEditionArgs', getCreateMasterEditionArgsDecoder()],
   ]) satisfies Decoder<DeprecatedCreateMasterEditionInstructionData>;

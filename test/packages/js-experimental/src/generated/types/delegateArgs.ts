@@ -30,38 +30,18 @@ export type DelegateArgsArgs =
   | { __kind: 'TransferV1'; amount: number | bigint };
 
 export function getDelegateArgsEncoder() {
-  return getDataEnumEncoder<DelegateArgsArgs>([
+  return getDataEnumEncoder([
     ['CollectionV1', getUnitEncoder()],
-    [
-      'SaleV1',
-      getStructEncoder<GetDataEnumKindContent<DelegateArgsArgs, 'SaleV1'>>([
-        ['amount', getU64Encoder()],
-      ]),
-    ],
-    [
-      'TransferV1',
-      getStructEncoder<GetDataEnumKindContent<DelegateArgsArgs, 'TransferV1'>>([
-        ['amount', getU64Encoder()],
-      ]),
-    ],
+    ['SaleV1', getStructEncoder([['amount', getU64Encoder()]])],
+    ['TransferV1', getStructEncoder([['amount', getU64Encoder()]])],
   ]) satisfies Encoder<DelegateArgsArgs>;
 }
 
 export function getDelegateArgsDecoder() {
-  return getDataEnumDecoder<DelegateArgs>([
+  return getDataEnumDecoder([
     ['CollectionV1', getUnitDecoder()],
-    [
-      'SaleV1',
-      getStructDecoder<GetDataEnumKindContent<DelegateArgs, 'SaleV1'>>([
-        ['amount', getU64Decoder()],
-      ]),
-    ],
-    [
-      'TransferV1',
-      getStructDecoder<GetDataEnumKindContent<DelegateArgs, 'TransferV1'>>([
-        ['amount', getU64Decoder()],
-      ]),
-    ],
+    ['SaleV1', getStructDecoder([['amount', getU64Decoder()]])],
+    ['TransferV1', getStructDecoder([['amount', getU64Decoder()]])],
   ]) satisfies Decoder<DelegateArgs>;
 }
 

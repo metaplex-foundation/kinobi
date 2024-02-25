@@ -31,7 +31,7 @@ export type ReservationArgs = {
 };
 
 export function getReservationEncoder() {
-  return getStructEncoder<ReservationArgs>([
+  return getStructEncoder([
     ['address', getAddressEncoder()],
     ['spotsRemaining', getU64Encoder()],
     ['totalSpots', getU64Encoder()],
@@ -39,7 +39,7 @@ export function getReservationEncoder() {
 }
 
 export function getReservationDecoder() {
-  return getStructDecoder<Reservation>([
+  return getStructDecoder([
     ['address', getAddressDecoder()],
     ['spotsRemaining', getU64Decoder()],
     ['totalSpots', getU64Decoder()],

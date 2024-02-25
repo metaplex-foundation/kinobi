@@ -47,61 +47,53 @@ export type PayloadTypeArgs =
   | { __kind: 'Number'; fields: [number | bigint] };
 
 export function getPayloadTypeEncoder() {
-  return getDataEnumEncoder<PayloadTypeArgs>([
+  return getDataEnumEncoder([
     [
       'Pubkey',
-      getStructEncoder<GetDataEnumKindContent<PayloadTypeArgs, 'Pubkey'>>([
-        ['fields', getTupleEncoder([getAddressEncoder()])],
-      ]),
+      getStructEncoder([['fields', getTupleEncoder([getAddressEncoder()])]]),
     ],
     [
       'Seeds',
-      getStructEncoder<GetDataEnumKindContent<PayloadTypeArgs, 'Seeds'>>([
+      getStructEncoder([
         ['seeds', getArrayEncoder(getBytesEncoder({ size: getU32Encoder() }))],
       ]),
     ],
     [
       'MerkleProof',
-      getStructEncoder<GetDataEnumKindContent<PayloadTypeArgs, 'MerkleProof'>>([
+      getStructEncoder([
         ['leaf', getBytesEncoder({ size: 32 })],
         ['proof', getArrayEncoder(getBytesEncoder({ size: 32 }))],
       ]),
     ],
     [
       'Number',
-      getStructEncoder<GetDataEnumKindContent<PayloadTypeArgs, 'Number'>>([
-        ['fields', getTupleEncoder([getU64Encoder()])],
-      ]),
+      getStructEncoder([['fields', getTupleEncoder([getU64Encoder()])]]),
     ],
   ]) satisfies Encoder<PayloadTypeArgs>;
 }
 
 export function getPayloadTypeDecoder() {
-  return getDataEnumDecoder<PayloadType>([
+  return getDataEnumDecoder([
     [
       'Pubkey',
-      getStructDecoder<GetDataEnumKindContent<PayloadType, 'Pubkey'>>([
-        ['fields', getTupleDecoder([getAddressDecoder()])],
-      ]),
+      getStructDecoder([['fields', getTupleDecoder([getAddressDecoder()])]]),
     ],
     [
       'Seeds',
-      getStructDecoder<GetDataEnumKindContent<PayloadType, 'Seeds'>>([
+      getStructDecoder([
         ['seeds', getArrayDecoder(getBytesDecoder({ size: getU32Decoder() }))],
       ]),
     ],
     [
       'MerkleProof',
-      getStructDecoder<GetDataEnumKindContent<PayloadType, 'MerkleProof'>>([
+      getStructDecoder([
         ['leaf', getBytesDecoder({ size: 32 })],
         ['proof', getArrayDecoder(getBytesDecoder({ size: 32 }))],
       ]),
     ],
     [
       'Number',
-      getStructDecoder<GetDataEnumKindContent<PayloadType, 'Number'>>([
-        ['fields', getTupleDecoder([getU64Decoder()])],
-      ]),
+      getStructDecoder([['fields', getTupleDecoder([getU64Decoder()])]]),
     ],
   ]) satisfies Decoder<PayloadType>;
 }

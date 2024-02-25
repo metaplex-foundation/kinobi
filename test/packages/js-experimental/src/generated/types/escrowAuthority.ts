@@ -32,25 +32,21 @@ export type EscrowAuthority =
 export type EscrowAuthorityArgs = EscrowAuthority;
 
 export function getEscrowAuthorityEncoder() {
-  return getDataEnumEncoder<EscrowAuthorityArgs>([
+  return getDataEnumEncoder([
     ['TokenOwner', getUnitEncoder()],
     [
       'Creator',
-      getStructEncoder<GetDataEnumKindContent<EscrowAuthorityArgs, 'Creator'>>([
-        ['fields', getTupleEncoder([getAddressEncoder()])],
-      ]),
+      getStructEncoder([['fields', getTupleEncoder([getAddressEncoder()])]]),
     ],
   ]) satisfies Encoder<EscrowAuthorityArgs>;
 }
 
 export function getEscrowAuthorityDecoder() {
-  return getDataEnumDecoder<EscrowAuthority>([
+  return getDataEnumDecoder([
     ['TokenOwner', getUnitDecoder()],
     [
       'Creator',
-      getStructDecoder<GetDataEnumKindContent<EscrowAuthority, 'Creator'>>([
-        ['fields', getTupleDecoder([getAddressDecoder()])],
-      ]),
+      getStructDecoder([['fields', getTupleDecoder([getAddressDecoder()])]]),
     ],
   ]) satisfies Decoder<EscrowAuthority>;
 }

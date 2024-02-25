@@ -26,13 +26,13 @@ export type CreateMasterEditionArgsArgs = {
 };
 
 export function getCreateMasterEditionArgsEncoder() {
-  return getStructEncoder<CreateMasterEditionArgsArgs>([
+  return getStructEncoder([
     ['maxSupply', getOptionEncoder(getU64Encoder())],
   ]) satisfies Encoder<CreateMasterEditionArgsArgs>;
 }
 
 export function getCreateMasterEditionArgsDecoder() {
-  return getStructDecoder<CreateMasterEditionArgs>([
+  return getStructDecoder([
     ['maxSupply', getOptionDecoder(getU64Decoder())],
   ]) satisfies Decoder<CreateMasterEditionArgs>;
 }

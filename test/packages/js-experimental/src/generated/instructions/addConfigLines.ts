@@ -106,13 +106,7 @@ export type AddConfigLinesInstructionDataArgs = {
 
 export function getAddConfigLinesInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{
-      discriminator: Array<number>;
-      index: number;
-      configLines: Array<ConfigLineArgs>;
-      /** More dummy lines. */
-      moreLines: Array<ConfigLineArgs>;
-    }>([
+    getStructEncoder([
       ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
       ['index', getU32Encoder()],
       ['configLines', getArrayEncoder(getConfigLineEncoder())],
@@ -129,7 +123,7 @@ export function getAddConfigLinesInstructionDataEncoder() {
 }
 
 export function getAddConfigLinesInstructionDataDecoder() {
-  return getStructDecoder<AddConfigLinesInstructionData>([
+  return getStructDecoder([
     ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
     ['index', getU32Decoder()],
     ['configLines', getArrayDecoder(getConfigLineDecoder())],

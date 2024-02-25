@@ -111,15 +111,13 @@ export type RevokeCollectionAuthorityInstructionDataArgs = {};
 
 export function getRevokeCollectionAuthorityInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>([
-      ['discriminator', getU8Encoder()],
-    ]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 24 })
   ) satisfies Encoder<RevokeCollectionAuthorityInstructionDataArgs>;
 }
 
 export function getRevokeCollectionAuthorityInstructionDataDecoder() {
-  return getStructDecoder<RevokeCollectionAuthorityInstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
   ]) satisfies Decoder<RevokeCollectionAuthorityInstructionData>;
 }

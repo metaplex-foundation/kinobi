@@ -18,13 +18,13 @@ export type MintPrintingTokensViaTokenArgs = { supply: bigint };
 export type MintPrintingTokensViaTokenArgsArgs = { supply: number | bigint };
 
 export function getMintPrintingTokensViaTokenArgsEncoder() {
-  return getStructEncoder<MintPrintingTokensViaTokenArgsArgs>([
+  return getStructEncoder([
     ['supply', getU64Encoder()],
   ]) satisfies Encoder<MintPrintingTokensViaTokenArgsArgs>;
 }
 
 export function getMintPrintingTokensViaTokenArgsDecoder() {
-  return getStructDecoder<MintPrintingTokensViaTokenArgs>([
+  return getStructDecoder([
     ['supply', getU64Decoder()],
   ]) satisfies Decoder<MintPrintingTokensViaTokenArgs>;
 }

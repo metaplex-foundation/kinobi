@@ -127,29 +127,12 @@ export type UpdateMetadataAccountInstructionDataArgs = {
 
 export function getUpdateMetadataAccountInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{
-      discriminator: number;
-      data: OptionOrNullable<{
-        name: string;
-        symbol: string;
-        uri: string;
-        sellerFeeBasisPoints: number;
-        creators: OptionOrNullable<Array<CreatorArgs>>;
-      }>;
-      updateAuthority: OptionOrNullable<Address>;
-      primarySaleHappened: OptionOrNullable<boolean>;
-    }>([
+    getStructEncoder([
       ['discriminator', getU8Encoder()],
       [
         'data',
         getOptionEncoder(
-          getStructEncoder<{
-            name: string;
-            symbol: string;
-            uri: string;
-            sellerFeeBasisPoints: number;
-            creators: OptionOrNullable<Array<CreatorArgs>>;
-          }>([
+          getStructEncoder([
             ['name', getStringEncoder()],
             ['symbol', getStringEncoder()],
             ['uri', getStringEncoder()],
@@ -169,18 +152,12 @@ export function getUpdateMetadataAccountInstructionDataEncoder() {
 }
 
 export function getUpdateMetadataAccountInstructionDataDecoder() {
-  return getStructDecoder<UpdateMetadataAccountInstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
     [
       'data',
       getOptionDecoder(
-        getStructDecoder<{
-          name: string;
-          symbol: string;
-          uri: string;
-          sellerFeeBasisPoints: number;
-          creators: Option<Array<Creator>>;
-        }>([
+        getStructDecoder([
           ['name', getStringDecoder()],
           ['symbol', getStringDecoder()],
           ['uri', getStringDecoder()],

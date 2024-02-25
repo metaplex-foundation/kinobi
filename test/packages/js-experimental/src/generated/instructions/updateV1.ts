@@ -256,28 +256,7 @@ export type UpdateV1InstructionDataArgs = {
 
 export function getUpdateV1InstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{
-      discriminator: number;
-      updateV1Discriminator: number;
-      authorizationData: OptionOrNullable<AuthorizationDataArgs>;
-      newUpdateAuthority: OptionOrNullable<Address>;
-      data: OptionOrNullable<{
-        name: string;
-        symbol: string;
-        uri: string;
-        sellerFeeBasisPoints: number;
-        creators: OptionOrNullable<Array<CreatorArgs>>;
-      }>;
-      primarySaleHappened: OptionOrNullable<boolean>;
-      isMutable: OptionOrNullable<boolean>;
-      tokenStandard: OptionOrNullable<TokenStandardArgs>;
-      collection: OptionOrNullable<CollectionArgs>;
-      uses: OptionOrNullable<UsesArgs>;
-      collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
-      programmableConfig: OptionOrNullable<ProgrammableConfigArgs>;
-      delegateState: OptionOrNullable<DelegateStateArgs>;
-      authorityType: AuthorityTypeArgs;
-    }>([
+    getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['updateV1Discriminator', getU8Encoder()],
       ['authorizationData', getOptionEncoder(getAuthorizationDataEncoder())],
@@ -285,13 +264,7 @@ export function getUpdateV1InstructionDataEncoder() {
       [
         'data',
         getOptionEncoder(
-          getStructEncoder<{
-            name: string;
-            symbol: string;
-            uri: string;
-            sellerFeeBasisPoints: number;
-            creators: OptionOrNullable<Array<CreatorArgs>>;
-          }>([
+          getStructEncoder([
             ['name', getStringEncoder()],
             ['symbol', getStringEncoder()],
             ['uri', getStringEncoder()],
@@ -323,7 +296,7 @@ export function getUpdateV1InstructionDataEncoder() {
 }
 
 export function getUpdateV1InstructionDataDecoder() {
-  return getStructDecoder<UpdateV1InstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['updateV1Discriminator', getU8Decoder()],
     ['authorizationData', getOptionDecoder(getAuthorizationDataDecoder())],
@@ -331,13 +304,7 @@ export function getUpdateV1InstructionDataDecoder() {
     [
       'data',
       getOptionDecoder(
-        getStructDecoder<{
-          name: string;
-          symbol: string;
-          uri: string;
-          sellerFeeBasisPoints: number;
-          creators: Option<Array<Creator>>;
-        }>([
+        getStructDecoder([
           ['name', getStringDecoder()],
           ['symbol', getStringDecoder()],
           ['uri', getStringDecoder()],

@@ -37,7 +37,7 @@ import {
   getU8Decoder,
   getU8Encoder,
 } from '@solana/codecs-numbers';
-import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
+import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type UseAuthorityRecord<TAddress extends string = string> = Account<
   UseAuthorityRecordAccountData,
@@ -60,11 +60,7 @@ export type UseAuthorityRecordAccountDataArgs = {
 
 export function getUseAuthorityRecordAccountDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{
-      key: TmKeyArgs;
-      allowedUses: number | bigint;
-      bump: number;
-    }>([
+    getStructEncoder([
       ['key', getTmKeyEncoder()],
       ['allowedUses', getU64Encoder()],
       ['bump', getU8Encoder()],
@@ -74,7 +70,7 @@ export function getUseAuthorityRecordAccountDataEncoder() {
 }
 
 export function getUseAuthorityRecordAccountDataDecoder() {
-  return getStructDecoder<UseAuthorityRecordAccountData>([
+  return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['allowedUses', getU64Decoder()],
     ['bump', getU8Decoder()],

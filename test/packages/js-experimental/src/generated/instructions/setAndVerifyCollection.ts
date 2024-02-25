@@ -138,15 +138,13 @@ export type SetAndVerifyCollectionInstructionDataArgs = {};
 
 export function getSetAndVerifyCollectionInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>([
-      ['discriminator', getU8Encoder()],
-    ]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 25 })
   ) satisfies Encoder<SetAndVerifyCollectionInstructionDataArgs>;
 }
 
 export function getSetAndVerifyCollectionInstructionDataDecoder() {
-  return getStructDecoder<SetAndVerifyCollectionInstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
   ]) satisfies Decoder<SetAndVerifyCollectionInstructionData>;
 }

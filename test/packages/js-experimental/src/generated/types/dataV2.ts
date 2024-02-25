@@ -57,7 +57,7 @@ export type DataV2Args = {
 };
 
 export function getDataV2Encoder() {
-  return getStructEncoder<DataV2Args>([
+  return getStructEncoder([
     ['name', getStringEncoder()],
     ['symbol', getStringEncoder()],
     ['uri', getStringEncoder()],
@@ -69,7 +69,7 @@ export function getDataV2Encoder() {
 }
 
 export function getDataV2Decoder() {
-  return getStructDecoder<DataV2>([
+  return getStructDecoder([
     ['name', getStringDecoder()],
     ['symbol', getStringDecoder()],
     ['uri', getStringDecoder()],

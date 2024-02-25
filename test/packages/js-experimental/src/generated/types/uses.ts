@@ -28,7 +28,7 @@ export type UsesArgs = {
 };
 
 export function getUsesEncoder() {
-  return getStructEncoder<UsesArgs>([
+  return getStructEncoder([
     ['useMethod', getUseMethodEncoder()],
     ['remaining', getU64Encoder()],
     ['total', getU64Encoder()],
@@ -36,7 +36,7 @@ export function getUsesEncoder() {
 }
 
 export function getUsesDecoder() {
-  return getStructDecoder<Uses>([
+  return getStructDecoder([
     ['useMethod', getUseMethodDecoder()],
     ['remaining', getU64Decoder()],
     ['total', getU64Decoder()],

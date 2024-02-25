@@ -42,10 +42,10 @@ export type MintArgsArgs = {
 };
 
 export function getMintArgsEncoder() {
-  return getDataEnumEncoder<MintArgsArgs>([
+  return getDataEnumEncoder([
     [
       'V1',
-      getStructEncoder<GetDataEnumKindContent<MintArgsArgs, 'V1'>>([
+      getStructEncoder([
         ['amount', getU64Encoder()],
         ['authorizationData', getOptionEncoder(getAuthorizationDataEncoder())],
       ]),
@@ -54,10 +54,10 @@ export function getMintArgsEncoder() {
 }
 
 export function getMintArgsDecoder() {
-  return getDataEnumDecoder<MintArgs>([
+  return getDataEnumDecoder([
     [
       'V1',
-      getStructDecoder<GetDataEnumKindContent<MintArgs, 'V1'>>([
+      getStructDecoder([
         ['amount', getU64Decoder()],
         ['authorizationData', getOptionDecoder(getAuthorizationDataDecoder())],
       ]),

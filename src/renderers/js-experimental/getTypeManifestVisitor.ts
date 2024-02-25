@@ -198,46 +198,21 @@ export function getTypeManifestVisitor(input: {
             };
           }
 
-          const variants = enumType.variants.map((variant): TypeManifest => {
-            const variantName = nameApi.dataEnumVariant(variant.name);
-            parentName = currentParentName
-              ? {
-                  strict: `GetDataEnumKindContent<${currentParentName.strict}, '${variantName}'>`,
-                  loose: `GetDataEnumKindContent<${currentParentName.loose}, '${variantName}'>`,
-                }
-              : null;
-            const variantManifest = visit(variant, self);
-            parentName = null;
-            return variantManifest;
-          });
-
           const mergedManifest = mergeManifests(
-            variants,
+            enumType.variants.map((variant) => visit(variant, self)),
             (renders) => renders.join(' | '),
             (renders) => renders.join(', ')
           );
           mergedManifest.encoder
             .mapRender(
-              (r) =>
-                `getDataEnumEncoder<${
-                  currentParentName ? currentParentName.loose : 'any'
-                }>([${r}]${encoderOptionsAsString})`
+              (r) => `getDataEnumEncoder([${r}]${encoderOptionsAsString})`
             )
-            .addImports('solanaCodecsDataStructures', [
-              'GetDataEnumKindContent',
-              'getDataEnumEncoder',
-            ]);
+            .addImports('solanaCodecsDataStructures', ['getDataEnumEncoder']);
           mergedManifest.decoder
             .mapRender(
-              (r) =>
-                `getDataEnumDecoder<${
-                  currentParentName ? currentParentName.strict : 'any'
-                }>([${r}]${decoderOptionsAsString})`
+              (r) => `getDataEnumDecoder([${r}]${decoderOptionsAsString})`
             )
-            .addImports('solanaCodecsDataStructures', [
-              'GetDataEnumKind',
-              'getDataEnumDecoder',
-            ]);
+            .addImports('solanaCodecsDataStructures', ['getDataEnumDecoder']);
           return mergedManifest;
         },
 
@@ -399,7 +374,7 @@ export function getTypeManifestVisitor(input: {
         },
 
         visitStructType(structType, { self }) {
-          const currentParentName = parentName;
+          // const currentParentName = parentName;
           parentName = null;
           const optionalFields = structType.fields.filter(
             (f) => !!f.defaultValue
@@ -411,32 +386,11 @@ export function getTypeManifestVisitor(input: {
             (renders) => `([${renders.join(', ')}])`
           );
 
-          let decoderType = currentParentName?.strict;
-          if (!decoderType) {
-            decoderType = mergedManifest.strictType.render;
-            mergedManifest.decoder.mergeImportsWith(mergedManifest.strictType);
-          }
-
-          let encoderType = currentParentName?.loose;
-          if (!encoderType || optionalFields.length > 0) {
-            const nonDefaultsMergedManifest = mergeManifests(
-              structType.fields.map((field) =>
-                visit({ ...field, defaultValue: undefined }, self)
-              ),
-              (renders) => `{ ${renders.join('')} }`,
-              (renders) => `([${renders.join(', ')}])`
-            );
-            encoderType = nonDefaultsMergedManifest.looseType.render;
-            mergedManifest.encoder.mergeImportsWith(
-              nonDefaultsMergedManifest.looseType
-            );
-          }
-
           mergedManifest.encoder
-            .mapRender((r) => `getStructEncoder<${encoderType}>${r}`)
+            .mapRender((r) => `getStructEncoder${r}`)
             .addImports('solanaCodecsDataStructures', 'getStructEncoder');
           mergedManifest.decoder
-            .mapRender((r) => `getStructDecoder<${decoderType}>${r}`)
+            .mapRender((r) => `getStructDecoder${r}`)
             .addImports('solanaCodecsDataStructures', 'getStructDecoder');
 
           if (optionalFields.length === 0) {

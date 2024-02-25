@@ -91,15 +91,13 @@ export type UpdatePrimarySaleHappenedViaTokenInstructionDataArgs = {};
 
 export function getUpdatePrimarySaleHappenedViaTokenInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>([
-      ['discriminator', getU8Encoder()],
-    ]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 4 })
   ) satisfies Encoder<UpdatePrimarySaleHappenedViaTokenInstructionDataArgs>;
 }
 
 export function getUpdatePrimarySaleHappenedViaTokenInstructionDataDecoder() {
-  return getStructDecoder<UpdatePrimarySaleHappenedViaTokenInstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
   ]) satisfies Decoder<UpdatePrimarySaleHappenedViaTokenInstructionData>;
 }

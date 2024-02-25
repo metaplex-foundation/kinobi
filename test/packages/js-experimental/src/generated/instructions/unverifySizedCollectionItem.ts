@@ -133,15 +133,13 @@ export type UnverifySizedCollectionItemInstructionDataArgs = {};
 
 export function getUnverifySizedCollectionItemInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>([
-      ['discriminator', getU8Encoder()],
-    ]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 31 })
   ) satisfies Encoder<UnverifySizedCollectionItemInstructionDataArgs>;
 }
 
 export function getUnverifySizedCollectionItemInstructionDataDecoder() {
-  return getStructDecoder<UnverifySizedCollectionItemInstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
   ]) satisfies Decoder<UnverifySizedCollectionItemInstructionData>;
 }

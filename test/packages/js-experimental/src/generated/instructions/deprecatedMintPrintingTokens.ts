@@ -140,10 +140,7 @@ export type DeprecatedMintPrintingTokensInstructionDataArgs = {
 
 export function getDeprecatedMintPrintingTokensInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{
-      discriminator: number;
-      mintPrintingTokensViaTokenArgs: MintPrintingTokensViaTokenArgsArgs;
-    }>([
+    getStructEncoder([
       ['discriminator', getU8Encoder()],
       [
         'mintPrintingTokensViaTokenArgs',
@@ -155,7 +152,7 @@ export function getDeprecatedMintPrintingTokensInstructionDataEncoder() {
 }
 
 export function getDeprecatedMintPrintingTokensInstructionDataDecoder() {
-  return getStructDecoder<DeprecatedMintPrintingTokensInstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
     [
       'mintPrintingTokensViaTokenArgs',

@@ -83,7 +83,7 @@ export type CandyMachineDataArgs = {
 };
 
 export function getCandyMachineDataEncoder() {
-  return getStructEncoder<CandyMachineDataArgs>([
+  return getStructEncoder([
     ['itemsAvailable', getU64Encoder()],
     ['symbol', getStringEncoder()],
     ['sellerFeeBasisPoints', getU16Encoder()],
@@ -96,7 +96,7 @@ export function getCandyMachineDataEncoder() {
 }
 
 export function getCandyMachineDataDecoder() {
-  return getStructDecoder<CandyMachineData>([
+  return getStructDecoder([
     ['itemsAvailable', getU64Decoder()],
     ['symbol', getStringDecoder()],
     ['sellerFeeBasisPoints', getU16Decoder()],

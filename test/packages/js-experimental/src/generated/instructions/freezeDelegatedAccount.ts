@@ -109,15 +109,13 @@ export type FreezeDelegatedAccountInstructionDataArgs = {};
 
 export function getFreezeDelegatedAccountInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>([
-      ['discriminator', getU8Encoder()],
-    ]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 26 })
   ) satisfies Encoder<FreezeDelegatedAccountInstructionDataArgs>;
 }
 
 export function getFreezeDelegatedAccountInstructionDataDecoder() {
-  return getStructDecoder<FreezeDelegatedAccountInstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
   ]) satisfies Decoder<FreezeDelegatedAccountInstructionData>;
 }

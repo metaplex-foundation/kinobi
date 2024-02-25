@@ -93,10 +93,7 @@ export type UpdateCandyMachineInstructionDataArgs = {
 
 export function getUpdateCandyMachineInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{
-      discriminator: Array<number>;
-      data: CandyMachineDataArgs;
-    }>([
+    getStructEncoder([
       ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
       ['data', getCandyMachineDataEncoder()],
     ]),
@@ -108,7 +105,7 @@ export function getUpdateCandyMachineInstructionDataEncoder() {
 }
 
 export function getUpdateCandyMachineInstructionDataDecoder() {
-  return getStructDecoder<UpdateCandyMachineInstructionData>([
+  return getStructDecoder([
     ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
     ['data', getCandyMachineDataDecoder()],
   ]) satisfies Decoder<UpdateCandyMachineInstructionData>;

@@ -89,7 +89,7 @@ export type SetAuthorityInstructionDataArgs = { newAuthority: Address };
 
 export function getSetAuthorityInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: Array<number>; newAuthority: Address }>([
+    getStructEncoder([
       ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
       ['newAuthority', getAddressEncoder()],
     ]),
@@ -101,7 +101,7 @@ export function getSetAuthorityInstructionDataEncoder() {
 }
 
 export function getSetAuthorityInstructionDataDecoder() {
-  return getStructDecoder<SetAuthorityInstructionData>([
+  return getStructDecoder([
     ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
     ['newAuthority', getAddressDecoder()],
   ]) satisfies Decoder<SetAuthorityInstructionData>;

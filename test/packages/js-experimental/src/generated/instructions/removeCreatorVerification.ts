@@ -82,15 +82,13 @@ export type RemoveCreatorVerificationInstructionDataArgs = {};
 
 export function getRemoveCreatorVerificationInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>([
-      ['discriminator', getU8Encoder()],
-    ]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 28 })
   ) satisfies Encoder<RemoveCreatorVerificationInstructionDataArgs>;
 }
 
 export function getRemoveCreatorVerificationInstructionDataDecoder() {
-  return getStructDecoder<RemoveCreatorVerificationInstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
   ]) satisfies Decoder<RemoveCreatorVerificationInstructionData>;
 }

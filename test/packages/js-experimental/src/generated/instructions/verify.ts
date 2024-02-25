@@ -119,7 +119,7 @@ export type VerifyInstructionDataArgs = { verifyArgs: VerifyArgsArgs };
 
 export function getVerifyInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number; verifyArgs: VerifyArgsArgs }>([
+    getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['verifyArgs', getVerifyArgsEncoder()],
     ]),
@@ -128,7 +128,7 @@ export function getVerifyInstructionDataEncoder() {
 }
 
 export function getVerifyInstructionDataDecoder() {
-  return getStructDecoder<VerifyInstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['verifyArgs', getVerifyArgsDecoder()],
   ]) satisfies Decoder<VerifyInstructionData>;

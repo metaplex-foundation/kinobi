@@ -42,7 +42,7 @@ import {
   getOptionDecoder,
   getOptionEncoder,
 } from '@solana/options';
-import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
+import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type CollectionAuthorityRecord<TAddress extends string = string> =
   Account<CollectionAuthorityRecordAccountData, TAddress>;
@@ -63,11 +63,7 @@ export type CollectionAuthorityRecordAccountDataArgs = {
 
 export function getCollectionAuthorityRecordAccountDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{
-      key: TmKeyArgs;
-      bump: number;
-      updateAuthority: OptionOrNullable<Address>;
-    }>([
+    getStructEncoder([
       ['key', getTmKeyEncoder()],
       ['bump', getU8Encoder()],
       ['updateAuthority', getOptionEncoder(getAddressEncoder())],
@@ -77,7 +73,7 @@ export function getCollectionAuthorityRecordAccountDataEncoder() {
 }
 
 export function getCollectionAuthorityRecordAccountDataDecoder() {
-  return getStructDecoder<CollectionAuthorityRecordAccountData>([
+  return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['bump', getU8Decoder()],
     ['updateAuthority', getOptionDecoder(getAddressDecoder())],

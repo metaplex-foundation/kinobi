@@ -33,7 +33,7 @@ export type ConfigLineSettings = {
 export type ConfigLineSettingsArgs = ConfigLineSettings;
 
 export function getConfigLineSettingsEncoder() {
-  return getStructEncoder<ConfigLineSettingsArgs>([
+  return getStructEncoder([
     ['prefixName', getStringEncoder()],
     ['nameLength', getU32Encoder()],
     ['prefixUri', getStringEncoder()],
@@ -43,7 +43,7 @@ export function getConfigLineSettingsEncoder() {
 }
 
 export function getConfigLineSettingsDecoder() {
-  return getStructDecoder<ConfigLineSettings>([
+  return getStructDecoder([
     ['prefixName', getStringDecoder()],
     ['nameLength', getU32Decoder()],
     ['prefixUri', getStringDecoder()],

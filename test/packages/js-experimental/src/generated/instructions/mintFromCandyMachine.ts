@@ -232,7 +232,7 @@ export type MintFromCandyMachineInstructionDataArgs = {};
 
 export function getMintFromCandyMachineInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: Array<number> }>([
+    getStructEncoder([
       ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
     ]),
     (value) => ({
@@ -243,7 +243,7 @@ export function getMintFromCandyMachineInstructionDataEncoder() {
 }
 
 export function getMintFromCandyMachineInstructionDataDecoder() {
-  return getStructDecoder<MintFromCandyMachineInstructionData>([
+  return getStructDecoder([
     ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
   ]) satisfies Decoder<MintFromCandyMachineInstructionData>;
 }

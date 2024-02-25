@@ -133,15 +133,13 @@ export type VerifySizedCollectionItemInstructionDataArgs = {};
 
 export function getVerifySizedCollectionItemInstructionDataEncoder() {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>([
-      ['discriminator', getU8Encoder()],
-    ]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 30 })
   ) satisfies Encoder<VerifySizedCollectionItemInstructionDataArgs>;
 }
 
 export function getVerifySizedCollectionItemInstructionDataDecoder() {
-  return getStructDecoder<VerifySizedCollectionItemInstructionData>([
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
   ]) satisfies Decoder<VerifySizedCollectionItemInstructionData>;
 }
