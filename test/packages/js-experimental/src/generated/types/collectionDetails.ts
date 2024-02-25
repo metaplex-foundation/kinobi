@@ -21,26 +21,16 @@ export type CollectionDetails = { __kind: 'V1'; size: bigint };
 
 export type CollectionDetailsArgs = { __kind: 'V1'; size: number | bigint };
 
-export function getCollectionDetailsEncoder() {
-  return getDataEnumEncoder<CollectionDetailsArgs>([
-    [
-      'V1',
-      getStructEncoder<GetDataEnumKindContent<CollectionDetailsArgs, 'V1'>>([
-        ['size', getU64Encoder()],
-      ]),
-    ],
-  ]) satisfies Encoder<CollectionDetailsArgs>;
+export function getCollectionDetailsEncoder(): Encoder<CollectionDetailsArgs> {
+  return getDataEnumEncoder([
+    ['V1', getStructEncoder([['size', getU64Encoder()]])],
+  ]);
 }
 
-export function getCollectionDetailsDecoder() {
-  return getDataEnumDecoder<CollectionDetails>([
-    [
-      'V1',
-      getStructDecoder<GetDataEnumKindContent<CollectionDetails, 'V1'>>([
-        ['size', getU64Decoder()],
-      ]),
-    ],
-  ]) satisfies Decoder<CollectionDetails>;
+export function getCollectionDetailsDecoder(): Decoder<CollectionDetails> {
+  return getDataEnumDecoder([
+    ['V1', getStructDecoder([['size', getU64Decoder()]])],
+  ]);
 }
 
 export function getCollectionDetailsCodec(): Codec<

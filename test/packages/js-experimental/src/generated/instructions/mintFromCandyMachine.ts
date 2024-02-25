@@ -230,22 +230,22 @@ export type MintFromCandyMachineInstructionData = {
 
 export type MintFromCandyMachineInstructionDataArgs = {};
 
-export function getMintFromCandyMachineInstructionDataEncoder() {
+export function getMintFromCandyMachineInstructionDataEncoder(): Encoder<MintFromCandyMachineInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ discriminator: Array<number> }>([
+    getStructEncoder([
       ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
     ]),
     (value) => ({
       ...value,
       discriminator: [51, 57, 225, 47, 182, 146, 137, 166],
     })
-  ) satisfies Encoder<MintFromCandyMachineInstructionDataArgs>;
+  );
 }
 
-export function getMintFromCandyMachineInstructionDataDecoder() {
-  return getStructDecoder<MintFromCandyMachineInstructionData>([
+export function getMintFromCandyMachineInstructionDataDecoder(): Decoder<MintFromCandyMachineInstructionData> {
+  return getStructDecoder([
     ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
-  ]) satisfies Decoder<MintFromCandyMachineInstructionData>;
+  ]);
 }
 
 export function getMintFromCandyMachineInstructionDataCodec(): Codec<

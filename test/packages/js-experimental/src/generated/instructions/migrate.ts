@@ -164,21 +164,21 @@ export type MigrateInstructionData = {
 
 export type MigrateInstructionDataArgs = { migrateArgs: MigrateArgsArgs };
 
-export function getMigrateInstructionDataEncoder() {
+export function getMigrateInstructionDataEncoder(): Encoder<MigrateInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number; migrateArgs: MigrateArgsArgs }>([
+    getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['migrateArgs', getMigrateArgsEncoder()],
     ]),
     (value) => ({ ...value, discriminator: 50 })
-  ) satisfies Encoder<MigrateInstructionDataArgs>;
+  );
 }
 
-export function getMigrateInstructionDataDecoder() {
-  return getStructDecoder<MigrateInstructionData>([
+export function getMigrateInstructionDataDecoder(): Decoder<MigrateInstructionData> {
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['migrateArgs', getMigrateArgsDecoder()],
-  ]) satisfies Decoder<MigrateInstructionData>;
+  ]);
 }
 
 export function getMigrateInstructionDataCodec(): Codec<

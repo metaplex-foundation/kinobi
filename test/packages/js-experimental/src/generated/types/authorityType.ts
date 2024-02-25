@@ -21,14 +21,12 @@ export enum AuthorityType {
 
 export type AuthorityTypeArgs = AuthorityType;
 
-export function getAuthorityTypeEncoder() {
-  return getScalarEnumEncoder(
-    AuthorityType
-  ) satisfies Encoder<AuthorityTypeArgs>;
+export function getAuthorityTypeEncoder(): Encoder<AuthorityTypeArgs> {
+  return getScalarEnumEncoder(AuthorityType);
 }
 
-export function getAuthorityTypeDecoder() {
-  return getScalarEnumDecoder(AuthorityType) satisfies Decoder<AuthorityType>;
+export function getAuthorityTypeDecoder(): Decoder<AuthorityType> {
+  return getScalarEnumDecoder(AuthorityType);
 }
 
 export function getAuthorityTypeCodec(): Codec<

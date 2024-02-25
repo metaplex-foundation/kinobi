@@ -175,21 +175,21 @@ export type UtilizeInstructionData = {
 
 export type UtilizeInstructionDataArgs = { numberOfUses: number | bigint };
 
-export function getUtilizeInstructionDataEncoder() {
+export function getUtilizeInstructionDataEncoder(): Encoder<UtilizeInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number; numberOfUses: number | bigint }>([
+    getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['numberOfUses', getU64Encoder()],
     ]),
     (value) => ({ ...value, discriminator: 19 })
-  ) satisfies Encoder<UtilizeInstructionDataArgs>;
+  );
 }
 
-export function getUtilizeInstructionDataDecoder() {
-  return getStructDecoder<UtilizeInstructionData>([
+export function getUtilizeInstructionDataDecoder(): Decoder<UtilizeInstructionData> {
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['numberOfUses', getU64Decoder()],
-  ]) satisfies Decoder<UtilizeInstructionData>;
+  ]);
 }
 
 export function getUtilizeInstructionDataCodec(): Codec<

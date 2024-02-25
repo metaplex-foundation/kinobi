@@ -11,7 +11,7 @@ export const resolveMasterEditionFromTokenStandard = async ({
   args,
 }: {
   accounts: Record<string, ResolvedAccount>;
-  args: { tokenStandard?: TokenStandard };
+  args: { tokenStandard?: TokenStandard | undefined };
 }): Promise<Partial<{ value: ProgramDerivedAddress | null }>> => {
   return args.tokenStandard === TokenStandard.NonFungible ||
     args.tokenStandard === TokenStandard.ProgrammableNonFungible
@@ -26,7 +26,7 @@ export const resolveMasterEditionFromTokenStandard = async ({
 export const resolveTokenOrAta = ({
   args,
 }: {
-  args: { proof?: Address[] };
+  args: { proof?: Address[] | undefined };
 }): boolean => {
   return !!args.proof && args.proof.length > 0;
 };

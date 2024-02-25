@@ -24,12 +24,12 @@ export enum DelegateRole {
 
 export type DelegateRoleArgs = DelegateRole;
 
-export function getDelegateRoleEncoder() {
-  return getScalarEnumEncoder(DelegateRole) satisfies Encoder<DelegateRoleArgs>;
+export function getDelegateRoleEncoder(): Encoder<DelegateRoleArgs> {
+  return getScalarEnumEncoder(DelegateRole);
 }
 
-export function getDelegateRoleDecoder() {
-  return getScalarEnumDecoder(DelegateRole) satisfies Decoder<DelegateRole>;
+export function getDelegateRoleDecoder(): Decoder<DelegateRole> {
+  return getScalarEnumDecoder(DelegateRole);
 }
 
 export function getDelegateRoleCodec(): Codec<DelegateRoleArgs, DelegateRole> {

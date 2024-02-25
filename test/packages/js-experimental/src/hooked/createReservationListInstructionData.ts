@@ -17,17 +17,13 @@ export type CreateReservationListInstructionDataArgs = {};
 
 export function getCreateReservationListInstructionDataEncoder(): Encoder<CreateReservationListInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>([
-      ['discriminator', getU8Encoder()],
-    ]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 42 })
-  ) as Encoder<CreateReservationListInstructionDataArgs>;
+  );
 }
 
 export function getCreateReservationListInstructionDataDecoder(): Decoder<CreateReservationListInstructionData> {
-  return getStructDecoder<CreateReservationListInstructionData>([
-    ['discriminator', getU8Decoder()],
-  ]) as Decoder<CreateReservationListInstructionData>;
+  return getStructDecoder([['discriminator', getU8Decoder()]]);
 }
 
 export function getCreateReservationListInstructionDataCodec(): Codec<

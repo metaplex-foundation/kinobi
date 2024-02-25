@@ -29,21 +29,21 @@ export type Collection = { verified: boolean; key: Address };
 
 export type CollectionArgs = { verified?: boolean; key: Address };
 
-export function getCollectionEncoder() {
+export function getCollectionEncoder(): Encoder<CollectionArgs> {
   return mapEncoder(
-    getStructEncoder<{ verified: boolean; key: Address }>([
+    getStructEncoder([
       ['verified', getBooleanEncoder()],
       ['key', getAddressEncoder()],
     ]),
     (value) => ({ ...value, verified: value.verified ?? false })
-  ) satisfies Encoder<CollectionArgs>;
+  );
 }
 
-export function getCollectionDecoder() {
-  return getStructDecoder<Collection>([
+export function getCollectionDecoder(): Decoder<Collection> {
+  return getStructDecoder([
     ['verified', getBooleanDecoder()],
     ['key', getAddressDecoder()],
-  ]) satisfies Decoder<Collection>;
+  ]);
 }
 
 export function getCollectionCodec(): Codec<CollectionArgs, Collection> {

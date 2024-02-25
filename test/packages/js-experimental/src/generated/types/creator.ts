@@ -24,20 +24,20 @@ export type Creator = { address: Address; verified: boolean; share: number };
 
 export type CreatorArgs = Creator;
 
-export function getCreatorEncoder() {
-  return getStructEncoder<CreatorArgs>([
+export function getCreatorEncoder(): Encoder<CreatorArgs> {
+  return getStructEncoder([
     ['address', getAddressEncoder()],
     ['verified', getBooleanEncoder()],
     ['share', getU8Encoder()],
-  ]) satisfies Encoder<CreatorArgs>;
+  ]);
 }
 
-export function getCreatorDecoder() {
-  return getStructDecoder<Creator>([
+export function getCreatorDecoder(): Decoder<Creator> {
+  return getStructDecoder([
     ['address', getAddressDecoder()],
     ['verified', getBooleanDecoder()],
     ['share', getU8Decoder()],
-  ]) satisfies Decoder<Creator>;
+  ]);
 }
 
 export function getCreatorCodec(): Codec<CreatorArgs, Creator> {

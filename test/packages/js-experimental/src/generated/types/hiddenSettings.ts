@@ -27,20 +27,20 @@ export type HiddenSettings = {
 
 export type HiddenSettingsArgs = HiddenSettings;
 
-export function getHiddenSettingsEncoder() {
-  return getStructEncoder<HiddenSettingsArgs>([
+export function getHiddenSettingsEncoder(): Encoder<HiddenSettingsArgs> {
+  return getStructEncoder([
     ['name', getStringEncoder()],
     ['uri', getStringEncoder()],
     ['hash', getBytesEncoder({ size: 64 })],
-  ]) satisfies Encoder<HiddenSettingsArgs>;
+  ]);
 }
 
-export function getHiddenSettingsDecoder() {
-  return getStructDecoder<HiddenSettings>([
+export function getHiddenSettingsDecoder(): Decoder<HiddenSettings> {
+  return getStructDecoder([
     ['name', getStringDecoder()],
     ['uri', getStringDecoder()],
     ['hash', getBytesDecoder({ size: 64 })],
-  ]) satisfies Decoder<HiddenSettings>;
+  ]);
 }
 
 export function getHiddenSettingsCodec(): Codec<

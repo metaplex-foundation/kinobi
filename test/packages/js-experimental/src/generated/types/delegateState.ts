@@ -37,20 +37,20 @@ export type DelegateStateArgs = {
   hasData: boolean;
 };
 
-export function getDelegateStateEncoder() {
-  return getStructEncoder<DelegateStateArgs>([
+export function getDelegateStateEncoder(): Encoder<DelegateStateArgs> {
+  return getStructEncoder([
     ['role', getDelegateRoleEncoder()],
     ['delegate', getAddressEncoder()],
     ['hasData', getBooleanEncoder()],
-  ]) satisfies Encoder<DelegateStateArgs>;
+  ]);
 }
 
-export function getDelegateStateDecoder() {
-  return getStructDecoder<DelegateState>([
+export function getDelegateStateDecoder(): Decoder<DelegateState> {
+  return getStructDecoder([
     ['role', getDelegateRoleDecoder()],
     ['delegate', getAddressDecoder()],
     ['hasData', getBooleanDecoder()],
-  ]) satisfies Decoder<DelegateState>;
+  ]);
 }
 
 export function getDelegateStateCodec(): Codec<

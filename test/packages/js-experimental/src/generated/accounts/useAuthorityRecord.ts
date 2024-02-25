@@ -37,7 +37,7 @@ import {
   getU8Decoder,
   getU8Encoder,
 } from '@solana/codecs-numbers';
-import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
+import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type UseAuthorityRecord<TAddress extends string = string> = Account<
   UseAuthorityRecordAccountData,
@@ -58,27 +58,23 @@ export type UseAuthorityRecordAccountDataArgs = {
   bump: number;
 };
 
-export function getUseAuthorityRecordAccountDataEncoder() {
+export function getUseAuthorityRecordAccountDataEncoder(): Encoder<UseAuthorityRecordAccountDataArgs> {
   return mapEncoder(
-    getStructEncoder<{
-      key: TmKeyArgs;
-      allowedUses: number | bigint;
-      bump: number;
-    }>([
+    getStructEncoder([
       ['key', getTmKeyEncoder()],
       ['allowedUses', getU64Encoder()],
       ['bump', getU8Encoder()],
     ]),
     (value) => ({ ...value, key: TmKey.UseAuthorityRecord })
-  ) satisfies Encoder<UseAuthorityRecordAccountDataArgs>;
+  );
 }
 
-export function getUseAuthorityRecordAccountDataDecoder() {
-  return getStructDecoder<UseAuthorityRecordAccountData>([
+export function getUseAuthorityRecordAccountDataDecoder(): Decoder<UseAuthorityRecordAccountData> {
+  return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['allowedUses', getU64Decoder()],
     ['bump', getU8Decoder()],
-  ]) satisfies Decoder<UseAuthorityRecordAccountData>;
+  ]);
 }
 
 export function getUseAuthorityRecordAccountDataCodec(): Codec<

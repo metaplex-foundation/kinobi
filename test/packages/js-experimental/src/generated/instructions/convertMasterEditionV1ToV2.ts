@@ -85,19 +85,15 @@ export type ConvertMasterEditionV1ToV2InstructionData = {
 
 export type ConvertMasterEditionV1ToV2InstructionDataArgs = {};
 
-export function getConvertMasterEditionV1ToV2InstructionDataEncoder() {
+export function getConvertMasterEditionV1ToV2InstructionDataEncoder(): Encoder<ConvertMasterEditionV1ToV2InstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>([
-      ['discriminator', getU8Encoder()],
-    ]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 12 })
-  ) satisfies Encoder<ConvertMasterEditionV1ToV2InstructionDataArgs>;
+  );
 }
 
-export function getConvertMasterEditionV1ToV2InstructionDataDecoder() {
-  return getStructDecoder<ConvertMasterEditionV1ToV2InstructionData>([
-    ['discriminator', getU8Decoder()],
-  ]) satisfies Decoder<ConvertMasterEditionV1ToV2InstructionData>;
+export function getConvertMasterEditionV1ToV2InstructionDataDecoder(): Decoder<ConvertMasterEditionV1ToV2InstructionData> {
+  return getStructDecoder([['discriminator', getU8Decoder()]]);
 }
 
 export function getConvertMasterEditionV1ToV2InstructionDataCodec(): Codec<

@@ -91,23 +91,9 @@ export type CandyMachineAccountDataArgs = {
   data: CandyMachineDataArgs;
 };
 
-export function getCandyMachineAccountDataEncoder() {
+export function getCandyMachineAccountDataEncoder(): Encoder<CandyMachineAccountDataArgs> {
   return mapEncoder(
-    getStructEncoder<{
-      discriminator: Array<number>;
-      /** Features versioning flags. */
-      features: number | bigint;
-      /** Authority address. */
-      authority: Address;
-      /** Authority address allowed to mint from the candy machine. */
-      mintAuthority: Address;
-      /** The collection mint for the candy machine. */
-      collectionMint: Address;
-      /** Number of assets redeemed. */
-      itemsRedeemed: number | bigint;
-      /** Candy machine configuration data. */
-      data: CandyMachineDataArgs;
-    }>([
+    getStructEncoder([
       ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
       ['features', getU64Encoder()],
       ['authority', getAddressEncoder()],
@@ -120,11 +106,11 @@ export function getCandyMachineAccountDataEncoder() {
       ...value,
       discriminator: [51, 173, 177, 113, 25, 241, 109, 189],
     })
-  ) satisfies Encoder<CandyMachineAccountDataArgs>;
+  );
 }
 
-export function getCandyMachineAccountDataDecoder() {
-  return getStructDecoder<CandyMachineAccountData>([
+export function getCandyMachineAccountDataDecoder(): Decoder<CandyMachineAccountData> {
+  return getStructDecoder([
     ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
     ['features', getU64Decoder()],
     ['authority', getAddressDecoder()],
@@ -132,7 +118,7 @@ export function getCandyMachineAccountDataDecoder() {
     ['collectionMint', getAddressDecoder()],
     ['itemsRedeemed', getU64Decoder()],
     ['data', getCandyMachineDataDecoder()],
-  ]) satisfies Decoder<CandyMachineAccountData>;
+  ]);
 }
 
 export function getCandyMachineAccountDataCodec(): Codec<

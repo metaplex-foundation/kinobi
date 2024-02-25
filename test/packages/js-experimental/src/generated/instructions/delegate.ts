@@ -190,23 +190,21 @@ export type DelegateInstructionData = {
 
 export type DelegateInstructionDataArgs = { delegateArgs: DelegateArgsArgs };
 
-export function getDelegateInstructionDataEncoder() {
+export function getDelegateInstructionDataEncoder(): Encoder<DelegateInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number; delegateArgs: DelegateArgsArgs }>(
-      [
-        ['discriminator', getU8Encoder()],
-        ['delegateArgs', getDelegateArgsEncoder()],
-      ]
-    ),
+    getStructEncoder([
+      ['discriminator', getU8Encoder()],
+      ['delegateArgs', getDelegateArgsEncoder()],
+    ]),
     (value) => ({ ...value, discriminator: 48 })
-  ) satisfies Encoder<DelegateInstructionDataArgs>;
+  );
 }
 
-export function getDelegateInstructionDataDecoder() {
-  return getStructDecoder<DelegateInstructionData>([
+export function getDelegateInstructionDataDecoder(): Decoder<DelegateInstructionData> {
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['delegateArgs', getDelegateArgsDecoder()],
-  ]) satisfies Decoder<DelegateInstructionData>;
+  ]);
 }
 
 export function getDelegateInstructionDataCodec(): Codec<

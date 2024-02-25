@@ -125,31 +125,14 @@ export type UpdateMetadataAccountInstructionDataArgs = {
   primarySaleHappened: OptionOrNullable<boolean>;
 };
 
-export function getUpdateMetadataAccountInstructionDataEncoder() {
+export function getUpdateMetadataAccountInstructionDataEncoder(): Encoder<UpdateMetadataAccountInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{
-      discriminator: number;
-      data: OptionOrNullable<{
-        name: string;
-        symbol: string;
-        uri: string;
-        sellerFeeBasisPoints: number;
-        creators: OptionOrNullable<Array<CreatorArgs>>;
-      }>;
-      updateAuthority: OptionOrNullable<Address>;
-      primarySaleHappened: OptionOrNullable<boolean>;
-    }>([
+    getStructEncoder([
       ['discriminator', getU8Encoder()],
       [
         'data',
         getOptionEncoder(
-          getStructEncoder<{
-            name: string;
-            symbol: string;
-            uri: string;
-            sellerFeeBasisPoints: number;
-            creators: OptionOrNullable<Array<CreatorArgs>>;
-          }>([
+          getStructEncoder([
             ['name', getStringEncoder()],
             ['symbol', getStringEncoder()],
             ['uri', getStringEncoder()],
@@ -165,22 +148,16 @@ export function getUpdateMetadataAccountInstructionDataEncoder() {
       ['primarySaleHappened', getOptionEncoder(getBooleanEncoder())],
     ]),
     (value) => ({ ...value, discriminator: 1 })
-  ) satisfies Encoder<UpdateMetadataAccountInstructionDataArgs>;
+  );
 }
 
-export function getUpdateMetadataAccountInstructionDataDecoder() {
-  return getStructDecoder<UpdateMetadataAccountInstructionData>([
+export function getUpdateMetadataAccountInstructionDataDecoder(): Decoder<UpdateMetadataAccountInstructionData> {
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
     [
       'data',
       getOptionDecoder(
-        getStructDecoder<{
-          name: string;
-          symbol: string;
-          uri: string;
-          sellerFeeBasisPoints: number;
-          creators: Option<Array<Creator>>;
-        }>([
+        getStructDecoder([
           ['name', getStringDecoder()],
           ['symbol', getStringDecoder()],
           ['uri', getStringDecoder()],
@@ -191,7 +168,7 @@ export function getUpdateMetadataAccountInstructionDataDecoder() {
     ],
     ['updateAuthority', getOptionDecoder(getAddressDecoder())],
     ['primarySaleHappened', getOptionDecoder(getBooleanDecoder())],
-  ]) satisfies Decoder<UpdateMetadataAccountInstructionData>;
+  ]);
 }
 
 export function getUpdateMetadataAccountInstructionDataCodec(): Codec<

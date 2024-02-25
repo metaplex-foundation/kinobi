@@ -37,7 +37,6 @@ import {
   DelegateRole,
   DelegateRoleArgs,
   TmKey,
-  TmKeyArgs,
   getDelegateRoleDecoder,
   getDelegateRoleEncoder,
   getTmKeyDecoder,
@@ -63,23 +62,23 @@ export type DelegateRecordAccountDataArgs = {
   bump: number;
 };
 
-export function getDelegateRecordAccountDataEncoder() {
+export function getDelegateRecordAccountDataEncoder(): Encoder<DelegateRecordAccountDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ key: TmKeyArgs; role: DelegateRoleArgs; bump: number }>([
+    getStructEncoder([
       ['key', getTmKeyEncoder()],
       ['role', getDelegateRoleEncoder()],
       ['bump', getU8Encoder()],
     ]),
     (value) => ({ ...value, key: TmKey.Delegate })
-  ) satisfies Encoder<DelegateRecordAccountDataArgs>;
+  );
 }
 
-export function getDelegateRecordAccountDataDecoder() {
-  return getStructDecoder<DelegateRecordAccountData>([
+export function getDelegateRecordAccountDataDecoder(): Decoder<DelegateRecordAccountData> {
+  return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['role', getDelegateRoleDecoder()],
     ['bump', getU8Decoder()],
-  ]) satisfies Decoder<DelegateRecordAccountData>;
+  ]);
 }
 
 export function getDelegateRecordAccountDataCodec(): Codec<

@@ -17,16 +17,12 @@ export type AuthorizationData = { payload: Payload };
 
 export type AuthorizationDataArgs = { payload: PayloadArgs };
 
-export function getAuthorizationDataEncoder() {
-  return getStructEncoder<AuthorizationDataArgs>([
-    ['payload', getPayloadEncoder()],
-  ]) satisfies Encoder<AuthorizationDataArgs>;
+export function getAuthorizationDataEncoder(): Encoder<AuthorizationDataArgs> {
+  return getStructEncoder([['payload', getPayloadEncoder()]]);
 }
 
-export function getAuthorizationDataDecoder() {
-  return getStructDecoder<AuthorizationData>([
-    ['payload', getPayloadDecoder()],
-  ]) satisfies Decoder<AuthorizationData>;
+export function getAuthorizationDataDecoder(): Decoder<AuthorizationData> {
+  return getStructDecoder([['payload', getPayloadDecoder()]]);
 }
 
 export function getAuthorizationDataCodec(): Codec<

@@ -143,19 +143,15 @@ export type RevokeUseAuthorityInstructionData = { discriminator: number };
 
 export type RevokeUseAuthorityInstructionDataArgs = {};
 
-export function getRevokeUseAuthorityInstructionDataEncoder() {
+export function getRevokeUseAuthorityInstructionDataEncoder(): Encoder<RevokeUseAuthorityInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>([
-      ['discriminator', getU8Encoder()],
-    ]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 21 })
-  ) satisfies Encoder<RevokeUseAuthorityInstructionDataArgs>;
+  );
 }
 
-export function getRevokeUseAuthorityInstructionDataDecoder() {
-  return getStructDecoder<RevokeUseAuthorityInstructionData>([
-    ['discriminator', getU8Decoder()],
-  ]) satisfies Decoder<RevokeUseAuthorityInstructionData>;
+export function getRevokeUseAuthorityInstructionDataDecoder(): Decoder<RevokeUseAuthorityInstructionData> {
+  return getStructDecoder([['discriminator', getU8Decoder()]]);
 }
 
 export function getRevokeUseAuthorityInstructionDataCodec(): Codec<

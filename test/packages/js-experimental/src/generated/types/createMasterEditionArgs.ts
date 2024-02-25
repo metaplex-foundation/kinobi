@@ -25,16 +25,12 @@ export type CreateMasterEditionArgsArgs = {
   maxSupply: OptionOrNullable<number | bigint>;
 };
 
-export function getCreateMasterEditionArgsEncoder() {
-  return getStructEncoder<CreateMasterEditionArgsArgs>([
-    ['maxSupply', getOptionEncoder(getU64Encoder())],
-  ]) satisfies Encoder<CreateMasterEditionArgsArgs>;
+export function getCreateMasterEditionArgsEncoder(): Encoder<CreateMasterEditionArgsArgs> {
+  return getStructEncoder([['maxSupply', getOptionEncoder(getU64Encoder())]]);
 }
 
-export function getCreateMasterEditionArgsDecoder() {
-  return getStructDecoder<CreateMasterEditionArgs>([
-    ['maxSupply', getOptionDecoder(getU64Decoder())],
-  ]) satisfies Decoder<CreateMasterEditionArgs>;
+export function getCreateMasterEditionArgsDecoder(): Decoder<CreateMasterEditionArgs> {
+  return getStructDecoder([['maxSupply', getOptionDecoder(getU64Decoder())]]);
 }
 
 export function getCreateMasterEditionArgsCodec(): Codec<

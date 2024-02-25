@@ -135,19 +135,15 @@ export type CloseEscrowAccountInstructionData = { discriminator: number };
 
 export type CloseEscrowAccountInstructionDataArgs = {};
 
-export function getCloseEscrowAccountInstructionDataEncoder() {
+export function getCloseEscrowAccountInstructionDataEncoder(): Encoder<CloseEscrowAccountInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>([
-      ['discriminator', getU8Encoder()],
-    ]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 39 })
-  ) satisfies Encoder<CloseEscrowAccountInstructionDataArgs>;
+  );
 }
 
-export function getCloseEscrowAccountInstructionDataDecoder() {
-  return getStructDecoder<CloseEscrowAccountInstructionData>([
-    ['discriminator', getU8Decoder()],
-  ]) satisfies Decoder<CloseEscrowAccountInstructionData>;
+export function getCloseEscrowAccountInstructionDataDecoder(): Decoder<CloseEscrowAccountInstructionData> {
+  return getStructDecoder([['discriminator', getU8Decoder()]]);
 }
 
 export function getCloseEscrowAccountInstructionDataCodec(): Codec<

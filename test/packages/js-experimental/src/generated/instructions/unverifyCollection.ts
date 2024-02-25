@@ -119,19 +119,15 @@ export type UnverifyCollectionInstructionData = { discriminator: number };
 
 export type UnverifyCollectionInstructionDataArgs = {};
 
-export function getUnverifyCollectionInstructionDataEncoder() {
+export function getUnverifyCollectionInstructionDataEncoder(): Encoder<UnverifyCollectionInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>([
-      ['discriminator', getU8Encoder()],
-    ]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 22 })
-  ) satisfies Encoder<UnverifyCollectionInstructionDataArgs>;
+  );
 }
 
-export function getUnverifyCollectionInstructionDataDecoder() {
-  return getStructDecoder<UnverifyCollectionInstructionData>([
-    ['discriminator', getU8Decoder()],
-  ]) satisfies Decoder<UnverifyCollectionInstructionData>;
+export function getUnverifyCollectionInstructionDataDecoder(): Decoder<UnverifyCollectionInstructionData> {
+  return getStructDecoder([['discriminator', getU8Decoder()]]);
 }
 
 export function getUnverifyCollectionInstructionDataCodec(): Codec<

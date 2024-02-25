@@ -48,7 +48,6 @@ import {
   Reservation,
   ReservationArgs,
   TmKey,
-  TmKeyArgs,
   getReservationDecoder,
   getReservationEncoder,
   getTmKeyDecoder,
@@ -80,16 +79,9 @@ export type ReservationListV2AccountDataArgs = {
   currentReservationSpots: number | bigint;
 };
 
-export function getReservationListV2AccountDataEncoder() {
+export function getReservationListV2AccountDataEncoder(): Encoder<ReservationListV2AccountDataArgs> {
   return mapEncoder(
-    getStructEncoder<{
-      key: TmKeyArgs;
-      masterEdition: Address;
-      supplySnapshot: OptionOrNullable<number | bigint>;
-      reservations: Array<ReservationArgs>;
-      totalReservationSpots: number | bigint;
-      currentReservationSpots: number | bigint;
-    }>([
+    getStructEncoder([
       ['key', getTmKeyEncoder()],
       ['masterEdition', getAddressEncoder()],
       ['supplySnapshot', getOptionEncoder(getU64Encoder())],
@@ -98,18 +90,18 @@ export function getReservationListV2AccountDataEncoder() {
       ['currentReservationSpots', getU64Encoder()],
     ]),
     (value) => ({ ...value, key: TmKey.ReservationListV2 })
-  ) satisfies Encoder<ReservationListV2AccountDataArgs>;
+  );
 }
 
-export function getReservationListV2AccountDataDecoder() {
-  return getStructDecoder<ReservationListV2AccountData>([
+export function getReservationListV2AccountDataDecoder(): Decoder<ReservationListV2AccountData> {
+  return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['masterEdition', getAddressDecoder()],
     ['supplySnapshot', getOptionDecoder(getU64Decoder())],
     ['reservations', getArrayDecoder(getReservationDecoder())],
     ['totalReservationSpots', getU64Decoder()],
     ['currentReservationSpots', getU64Decoder()],
-  ]) satisfies Decoder<ReservationListV2AccountData>;
+  ]);
 }
 
 export function getReservationListV2AccountDataCodec(): Codec<

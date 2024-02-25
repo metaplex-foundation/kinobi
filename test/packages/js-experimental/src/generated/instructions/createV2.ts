@@ -174,30 +174,25 @@ export type CreateV2InstructionDataArgs = {
   maxSupply: OptionOrNullable<number | bigint>;
 };
 
-export function getCreateV2InstructionDataEncoder() {
+export function getCreateV2InstructionDataEncoder(): Encoder<CreateV2InstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{
-      discriminator: number;
-      createV2Discriminator: number;
-      assetData: AssetDataArgs;
-      maxSupply: OptionOrNullable<number | bigint>;
-    }>([
+    getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['createV2Discriminator', getU8Encoder()],
       ['assetData', getAssetDataEncoder()],
       ['maxSupply', getOptionEncoder(getU64Encoder())],
     ]),
     (value) => ({ ...value, discriminator: 41, createV2Discriminator: 1 })
-  ) satisfies Encoder<CreateV2InstructionDataArgs>;
+  );
 }
 
-export function getCreateV2InstructionDataDecoder() {
-  return getStructDecoder<CreateV2InstructionData>([
+export function getCreateV2InstructionDataDecoder(): Decoder<CreateV2InstructionData> {
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['createV2Discriminator', getU8Decoder()],
     ['assetData', getAssetDataDecoder()],
     ['maxSupply', getOptionDecoder(getU64Decoder())],
-  ]) satisfies Decoder<CreateV2InstructionData>;
+  ]);
 }
 
 export function getCreateV2InstructionDataCodec(): Codec<

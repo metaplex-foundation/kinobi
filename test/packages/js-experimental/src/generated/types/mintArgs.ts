@@ -41,28 +41,28 @@ export type MintArgsArgs = {
   authorizationData: OptionOrNullable<AuthorizationDataArgs>;
 };
 
-export function getMintArgsEncoder() {
-  return getDataEnumEncoder<MintArgsArgs>([
+export function getMintArgsEncoder(): Encoder<MintArgsArgs> {
+  return getDataEnumEncoder([
     [
       'V1',
-      getStructEncoder<GetDataEnumKindContent<MintArgsArgs, 'V1'>>([
+      getStructEncoder([
         ['amount', getU64Encoder()],
         ['authorizationData', getOptionEncoder(getAuthorizationDataEncoder())],
       ]),
     ],
-  ]) satisfies Encoder<MintArgsArgs>;
+  ]);
 }
 
-export function getMintArgsDecoder() {
-  return getDataEnumDecoder<MintArgs>([
+export function getMintArgsDecoder(): Decoder<MintArgs> {
+  return getDataEnumDecoder([
     [
       'V1',
-      getStructDecoder<GetDataEnumKindContent<MintArgs, 'V1'>>([
+      getStructDecoder([
         ['amount', getU64Decoder()],
         ['authorizationData', getOptionDecoder(getAuthorizationDataDecoder())],
       ]),
     ],
-  ]) satisfies Decoder<MintArgs>;
+  ]);
 }
 
 export function getMintArgsCodec(): Codec<MintArgsArgs, MintArgs> {

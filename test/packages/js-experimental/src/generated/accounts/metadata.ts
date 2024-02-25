@@ -65,7 +65,6 @@ import {
   ProgrammableConfig,
   ProgrammableConfigArgs,
   TmKey,
-  TmKeyArgs,
   TokenStandard,
   TokenStandardArgs,
   Uses,
@@ -137,27 +136,9 @@ export type MetadataAccountDataArgs = {
   delegateState: OptionOrNullable<DelegateStateArgs>;
 };
 
-export function getMetadataAccountDataEncoder() {
+export function getMetadataAccountDataEncoder(): Encoder<MetadataAccountDataArgs> {
   return mapEncoder(
-    getStructEncoder<{
-      key: TmKeyArgs;
-      updateAuthority: Address;
-      mint: Address;
-      name: string;
-      symbol: string;
-      uri: string;
-      sellerFeeBasisPoints: number;
-      creators: OptionOrNullable<Array<CreatorArgs>>;
-      primarySaleHappened: boolean;
-      isMutable: boolean;
-      editionNonce: OptionOrNullable<number>;
-      tokenStandard: OptionOrNullable<TokenStandardArgs>;
-      collection: OptionOrNullable<CollectionArgs>;
-      uses: OptionOrNullable<UsesArgs>;
-      collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
-      programmableConfig: OptionOrNullable<ProgrammableConfigArgs>;
-      delegateState: OptionOrNullable<DelegateStateArgs>;
-    }>([
+    getStructEncoder([
       ['key', getTmKeyEncoder()],
       ['updateAuthority', getAddressEncoder()],
       ['mint', getAddressEncoder()],
@@ -177,11 +158,11 @@ export function getMetadataAccountDataEncoder() {
       ['delegateState', getOptionEncoder(getDelegateStateEncoder())],
     ]),
     (value) => ({ ...value, key: TmKey.MetadataV1 })
-  ) satisfies Encoder<MetadataAccountDataArgs>;
+  );
 }
 
-export function getMetadataAccountDataDecoder() {
-  return getStructDecoder<MetadataAccountData>([
+export function getMetadataAccountDataDecoder(): Decoder<MetadataAccountData> {
+  return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['updateAuthority', getAddressDecoder()],
     ['mint', getAddressDecoder()],
@@ -199,7 +180,7 @@ export function getMetadataAccountDataDecoder() {
     ['collectionDetails', getOptionDecoder(getCollectionDetailsDecoder())],
     ['programmableConfig', getOptionDecoder(getProgrammableConfigDecoder())],
     ['delegateState', getOptionDecoder(getDelegateStateDecoder())],
-  ]) satisfies Decoder<MetadataAccountData>;
+  ]);
 }
 
 export function getMetadataAccountDataCodec(): Codec<

@@ -20,12 +20,12 @@ export enum RevokeArgs {
 
 export type RevokeArgsArgs = RevokeArgs;
 
-export function getRevokeArgsEncoder() {
-  return getScalarEnumEncoder(RevokeArgs) satisfies Encoder<RevokeArgsArgs>;
+export function getRevokeArgsEncoder(): Encoder<RevokeArgsArgs> {
+  return getScalarEnumEncoder(RevokeArgs);
 }
 
-export function getRevokeArgsDecoder() {
-  return getScalarEnumDecoder(RevokeArgs) satisfies Decoder<RevokeArgs>;
+export function getRevokeArgsDecoder(): Decoder<RevokeArgs> {
+  return getScalarEnumDecoder(RevokeArgs);
 }
 
 export function getRevokeArgsCodec(): Codec<RevokeArgsArgs, RevokeArgs> {

@@ -138,19 +138,15 @@ export type ApproveCollectionAuthorityInstructionData = {
 
 export type ApproveCollectionAuthorityInstructionDataArgs = {};
 
-export function getApproveCollectionAuthorityInstructionDataEncoder() {
+export function getApproveCollectionAuthorityInstructionDataEncoder(): Encoder<ApproveCollectionAuthorityInstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{ discriminator: number }>([
-      ['discriminator', getU8Encoder()],
-    ]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 23 })
-  ) satisfies Encoder<ApproveCollectionAuthorityInstructionDataArgs>;
+  );
 }
 
-export function getApproveCollectionAuthorityInstructionDataDecoder() {
-  return getStructDecoder<ApproveCollectionAuthorityInstructionData>([
-    ['discriminator', getU8Decoder()],
-  ]) satisfies Decoder<ApproveCollectionAuthorityInstructionData>;
+export function getApproveCollectionAuthorityInstructionDataDecoder(): Decoder<ApproveCollectionAuthorityInstructionData> {
+  return getStructDecoder([['discriminator', getU8Decoder()]]);
 }
 
 export function getApproveCollectionAuthorityInstructionDataCodec(): Codec<

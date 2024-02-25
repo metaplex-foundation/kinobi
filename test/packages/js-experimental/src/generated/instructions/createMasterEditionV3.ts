@@ -160,24 +160,21 @@ export type CreateMasterEditionV3InstructionDataArgs = {
   createMasterEditionArgs: CreateMasterEditionArgsArgs;
 };
 
-export function getCreateMasterEditionV3InstructionDataEncoder() {
+export function getCreateMasterEditionV3InstructionDataEncoder(): Encoder<CreateMasterEditionV3InstructionDataArgs> {
   return mapEncoder(
-    getStructEncoder<{
-      discriminator: number;
-      createMasterEditionArgs: CreateMasterEditionArgsArgs;
-    }>([
+    getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['createMasterEditionArgs', getCreateMasterEditionArgsEncoder()],
     ]),
     (value) => ({ ...value, discriminator: 17 })
-  ) satisfies Encoder<CreateMasterEditionV3InstructionDataArgs>;
+  );
 }
 
-export function getCreateMasterEditionV3InstructionDataDecoder() {
-  return getStructDecoder<CreateMasterEditionV3InstructionData>([
+export function getCreateMasterEditionV3InstructionDataDecoder(): Decoder<CreateMasterEditionV3InstructionData> {
+  return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['createMasterEditionArgs', getCreateMasterEditionArgsDecoder()],
-  ]) satisfies Decoder<CreateMasterEditionV3InstructionData>;
+  ]);
 }
 
 export function getCreateMasterEditionV3InstructionDataCodec(): Codec<

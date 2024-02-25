@@ -19,16 +19,12 @@ export enum BurnArgs {
 
 export type BurnArgsArgs = BurnArgs;
 
-export function getBurnArgsEncoder() {
-  return getScalarEnumEncoder(BurnArgs, {
-    size: getU64Encoder(),
-  }) satisfies Encoder<BurnArgsArgs>;
+export function getBurnArgsEncoder(): Encoder<BurnArgsArgs> {
+  return getScalarEnumEncoder(BurnArgs, { size: getU64Encoder() });
 }
 
-export function getBurnArgsDecoder() {
-  return getScalarEnumDecoder(BurnArgs, {
-    size: getU64Decoder(),
-  }) satisfies Decoder<BurnArgs>;
+export function getBurnArgsDecoder(): Decoder<BurnArgs> {
+  return getScalarEnumDecoder(BurnArgs, { size: getU64Decoder() });
 }
 
 export function getBurnArgsCodec(): Codec<BurnArgsArgs, BurnArgs> {

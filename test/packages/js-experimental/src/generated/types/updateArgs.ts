@@ -122,31 +122,12 @@ export type UpdateArgsArgs = {
   authorityType: AuthorityTypeArgs;
 };
 
-export function getUpdateArgsEncoder() {
-  return getDataEnumEncoder<UpdateArgsArgs>([
+export function getUpdateArgsEncoder(): Encoder<UpdateArgsArgs> {
+  return getDataEnumEncoder([
     [
       'V1',
       mapEncoder(
-        getStructEncoder<{
-          authorizationData: OptionOrNullable<AuthorizationDataArgs>;
-          newUpdateAuthority: OptionOrNullable<Address>;
-          data: OptionOrNullable<{
-            name: string;
-            symbol: string;
-            uri: string;
-            sellerFeeBasisPoints: number;
-            creators: OptionOrNullable<Array<CreatorArgs>>;
-          }>;
-          primarySaleHappened: OptionOrNullable<boolean>;
-          isMutable: OptionOrNullable<boolean>;
-          tokenStandard: OptionOrNullable<TokenStandardArgs>;
-          collection: OptionOrNullable<CollectionArgs>;
-          uses: OptionOrNullable<UsesArgs>;
-          collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
-          programmableConfig: OptionOrNullable<ProgrammableConfigArgs>;
-          delegateState: OptionOrNullable<DelegateStateArgs>;
-          authorityType: AuthorityTypeArgs;
-        }>([
+        getStructEncoder([
           [
             'authorizationData',
             getOptionEncoder(getAuthorizationDataEncoder()),
@@ -155,13 +136,7 @@ export function getUpdateArgsEncoder() {
           [
             'data',
             getOptionEncoder(
-              getStructEncoder<{
-                name: string;
-                symbol: string;
-                uri: string;
-                sellerFeeBasisPoints: number;
-                creators: OptionOrNullable<Array<CreatorArgs>>;
-              }>([
+              getStructEncoder([
                 ['name', getStringEncoder()],
                 ['symbol', getStringEncoder()],
                 ['uri', getStringEncoder()],
@@ -195,26 +170,20 @@ export function getUpdateArgsEncoder() {
         })
       ),
     ],
-  ]) satisfies Encoder<UpdateArgsArgs>;
+  ]);
 }
 
-export function getUpdateArgsDecoder() {
-  return getDataEnumDecoder<UpdateArgs>([
+export function getUpdateArgsDecoder(): Decoder<UpdateArgs> {
+  return getDataEnumDecoder([
     [
       'V1',
-      getStructDecoder<GetDataEnumKindContent<UpdateArgs, 'V1'>>([
+      getStructDecoder([
         ['authorizationData', getOptionDecoder(getAuthorizationDataDecoder())],
         ['newUpdateAuthority', getOptionDecoder(getAddressDecoder())],
         [
           'data',
           getOptionDecoder(
-            getStructDecoder<{
-              name: string;
-              symbol: string;
-              uri: string;
-              sellerFeeBasisPoints: number;
-              creators: Option<Array<Creator>>;
-            }>([
+            getStructDecoder([
               ['name', getStringDecoder()],
               ['symbol', getStringDecoder()],
               ['uri', getStringDecoder()],
@@ -240,7 +209,7 @@ export function getUpdateArgsDecoder() {
         ['authorityType', getAuthorityTypeDecoder()],
       ]),
     ],
-  ]) satisfies Decoder<UpdateArgs>;
+  ]);
 }
 
 export function getUpdateArgsCodec(): Codec<UpdateArgsArgs, UpdateArgs> {

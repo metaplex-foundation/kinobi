@@ -1,6 +1,6 @@
 {% import "templates/macros.njk" as macros %}
 
 {{ macros.docblock(docs) }}
-export function {{ decoderFunction }}() {
-  return {{ manifest.decoder.render }} satisfies Decoder<{{ strictName }}>;
+export function {{ decoderFunction }}(): Decoder<{{ strictName }}> {
+  return {{ manifest.decoder.render }};
 }

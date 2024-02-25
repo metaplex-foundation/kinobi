@@ -32,24 +32,24 @@ export type ConfigLineSettings = {
 
 export type ConfigLineSettingsArgs = ConfigLineSettings;
 
-export function getConfigLineSettingsEncoder() {
-  return getStructEncoder<ConfigLineSettingsArgs>([
+export function getConfigLineSettingsEncoder(): Encoder<ConfigLineSettingsArgs> {
+  return getStructEncoder([
     ['prefixName', getStringEncoder()],
     ['nameLength', getU32Encoder()],
     ['prefixUri', getStringEncoder()],
     ['uriLength', getU32Encoder()],
     ['isSequential', getBooleanEncoder()],
-  ]) satisfies Encoder<ConfigLineSettingsArgs>;
+  ]);
 }
 
-export function getConfigLineSettingsDecoder() {
-  return getStructDecoder<ConfigLineSettings>([
+export function getConfigLineSettingsDecoder(): Decoder<ConfigLineSettings> {
+  return getStructDecoder([
     ['prefixName', getStringDecoder()],
     ['nameLength', getU32Decoder()],
     ['prefixUri', getStringDecoder()],
     ['uriLength', getU32Decoder()],
     ['isSequential', getBooleanDecoder()],
-  ]) satisfies Decoder<ConfigLineSettings>;
+  ]);
 }
 
 export function getConfigLineSettingsCodec(): Codec<

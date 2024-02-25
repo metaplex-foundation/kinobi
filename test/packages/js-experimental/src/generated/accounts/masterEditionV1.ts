@@ -43,7 +43,7 @@ import {
   getOptionEncoder,
 } from '@solana/options';
 import { MasterEditionV1Seeds, findMasterEditionV1Pda } from '../pdas';
-import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
+import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type MasterEditionV1<TAddress extends string = string> = Account<
   MasterEditionV1AccountData,
@@ -68,15 +68,9 @@ export type MasterEditionV1AccountDataArgs = {
   oneTimePrintingAuthorizationMint: Address;
 };
 
-export function getMasterEditionV1AccountDataEncoder() {
+export function getMasterEditionV1AccountDataEncoder(): Encoder<MasterEditionV1AccountDataArgs> {
   return mapEncoder(
-    getStructEncoder<{
-      key: TmKeyArgs;
-      supply: number | bigint;
-      maxSupply: OptionOrNullable<number | bigint>;
-      printingMint: Address;
-      oneTimePrintingAuthorizationMint: Address;
-    }>([
+    getStructEncoder([
       ['key', getTmKeyEncoder()],
       ['supply', getU64Encoder()],
       ['maxSupply', getOptionEncoder(getU64Encoder())],
@@ -84,17 +78,17 @@ export function getMasterEditionV1AccountDataEncoder() {
       ['oneTimePrintingAuthorizationMint', getAddressEncoder()],
     ]),
     (value) => ({ ...value, key: TmKey.MasterEditionV1 })
-  ) satisfies Encoder<MasterEditionV1AccountDataArgs>;
+  );
 }
 
-export function getMasterEditionV1AccountDataDecoder() {
-  return getStructDecoder<MasterEditionV1AccountData>([
+export function getMasterEditionV1AccountDataDecoder(): Decoder<MasterEditionV1AccountData> {
+  return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['supply', getU64Decoder()],
     ['maxSupply', getOptionDecoder(getU64Decoder())],
     ['printingMint', getAddressDecoder()],
     ['oneTimePrintingAuthorizationMint', getAddressDecoder()],
-  ]) satisfies Decoder<MasterEditionV1AccountData>;
+  ]);
 }
 
 export function getMasterEditionV1AccountDataCodec(): Codec<

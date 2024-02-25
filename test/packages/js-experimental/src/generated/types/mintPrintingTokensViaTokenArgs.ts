@@ -17,16 +17,12 @@ export type MintPrintingTokensViaTokenArgs = { supply: bigint };
 
 export type MintPrintingTokensViaTokenArgsArgs = { supply: number | bigint };
 
-export function getMintPrintingTokensViaTokenArgsEncoder() {
-  return getStructEncoder<MintPrintingTokensViaTokenArgsArgs>([
-    ['supply', getU64Encoder()],
-  ]) satisfies Encoder<MintPrintingTokensViaTokenArgsArgs>;
+export function getMintPrintingTokensViaTokenArgsEncoder(): Encoder<MintPrintingTokensViaTokenArgsArgs> {
+  return getStructEncoder([['supply', getU64Encoder()]]);
 }
 
-export function getMintPrintingTokensViaTokenArgsDecoder() {
-  return getStructDecoder<MintPrintingTokensViaTokenArgs>([
-    ['supply', getU64Decoder()],
-  ]) satisfies Decoder<MintPrintingTokensViaTokenArgs>;
+export function getMintPrintingTokensViaTokenArgsDecoder(): Decoder<MintPrintingTokensViaTokenArgs> {
+  return getStructDecoder([['supply', getU64Decoder()]]);
 }
 
 export function getMintPrintingTokensViaTokenArgsCodec(): Codec<
