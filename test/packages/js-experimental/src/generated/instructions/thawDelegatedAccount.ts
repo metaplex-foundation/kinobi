@@ -107,17 +107,15 @@ export type ThawDelegatedAccountInstructionData = { discriminator: number };
 
 export type ThawDelegatedAccountInstructionDataArgs = {};
 
-export function getThawDelegatedAccountInstructionDataEncoder() {
+export function getThawDelegatedAccountInstructionDataEncoder(): Encoder<ThawDelegatedAccountInstructionDataArgs> {
   return mapEncoder(
     getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 27 })
-  ) satisfies Encoder<ThawDelegatedAccountInstructionDataArgs>;
+  );
 }
 
-export function getThawDelegatedAccountInstructionDataDecoder() {
-  return getStructDecoder([
-    ['discriminator', getU8Decoder()],
-  ]) satisfies Decoder<ThawDelegatedAccountInstructionData>;
+export function getThawDelegatedAccountInstructionDataDecoder(): Decoder<ThawDelegatedAccountInstructionData> {
+  return getStructDecoder([['discriminator', getU8Decoder()]]);
 }
 
 export function getThawDelegatedAccountInstructionDataCodec(): Codec<

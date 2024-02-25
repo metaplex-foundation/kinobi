@@ -59,7 +59,7 @@ export type EditionAccountDataArgs = {
   edition: number | bigint;
 };
 
-export function getEditionAccountDataEncoder() {
+export function getEditionAccountDataEncoder(): Encoder<EditionAccountDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['key', getTmKeyEncoder()],
@@ -67,15 +67,15 @@ export function getEditionAccountDataEncoder() {
       ['edition', getU64Encoder()],
     ]),
     (value) => ({ ...value, key: TmKey.EditionV1 })
-  ) satisfies Encoder<EditionAccountDataArgs>;
+  );
 }
 
-export function getEditionAccountDataDecoder() {
+export function getEditionAccountDataDecoder(): Decoder<EditionAccountData> {
   return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['parent', getAddressDecoder()],
     ['edition', getU64Decoder()],
-  ]) satisfies Decoder<EditionAccountData>;
+  ]);
 }
 
 export function getEditionAccountDataCodec(): Codec<

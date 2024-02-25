@@ -176,21 +176,21 @@ export type UseAssetInstructionData = {
 
 export type UseAssetInstructionDataArgs = { useAssetArgs: UseAssetArgsArgs };
 
-export function getUseAssetInstructionDataEncoder() {
+export function getUseAssetInstructionDataEncoder(): Encoder<UseAssetInstructionDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['useAssetArgs', getUseAssetArgsEncoder()],
     ]),
     (value) => ({ ...value, discriminator: 45 })
-  ) satisfies Encoder<UseAssetInstructionDataArgs>;
+  );
 }
 
-export function getUseAssetInstructionDataDecoder() {
+export function getUseAssetInstructionDataDecoder(): Decoder<UseAssetInstructionData> {
   return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['useAssetArgs', getUseAssetArgsDecoder()],
-  ]) satisfies Decoder<UseAssetInstructionData>;
+  ]);
 }
 
 export function getUseAssetInstructionDataCodec(): Codec<

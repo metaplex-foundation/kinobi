@@ -28,16 +28,16 @@ export type Payload = { map: Map<PayloadKey, PayloadType> };
 
 export type PayloadArgs = { map: Map<PayloadKeyArgs, PayloadTypeArgs> };
 
-export function getPayloadEncoder() {
+export function getPayloadEncoder(): Encoder<PayloadArgs> {
   return getStructEncoder([
     ['map', getMapEncoder(getPayloadKeyEncoder(), getPayloadTypeEncoder())],
-  ]) satisfies Encoder<PayloadArgs>;
+  ]);
 }
 
-export function getPayloadDecoder() {
+export function getPayloadDecoder(): Decoder<Payload> {
   return getStructDecoder([
     ['map', getMapDecoder(getPayloadKeyDecoder(), getPayloadTypeDecoder())],
-  ]) satisfies Decoder<Payload>;
+  ]);
 }
 
 export function getPayloadCodec(): Codec<PayloadArgs, Payload> {

@@ -139,17 +139,15 @@ export type SetAndVerifySizedCollectionItemInstructionData = {
 
 export type SetAndVerifySizedCollectionItemInstructionDataArgs = {};
 
-export function getSetAndVerifySizedCollectionItemInstructionDataEncoder() {
+export function getSetAndVerifySizedCollectionItemInstructionDataEncoder(): Encoder<SetAndVerifySizedCollectionItemInstructionDataArgs> {
   return mapEncoder(
     getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 32 })
-  ) satisfies Encoder<SetAndVerifySizedCollectionItemInstructionDataArgs>;
+  );
 }
 
-export function getSetAndVerifySizedCollectionItemInstructionDataDecoder() {
-  return getStructDecoder([
-    ['discriminator', getU8Decoder()],
-  ]) satisfies Decoder<SetAndVerifySizedCollectionItemInstructionData>;
+export function getSetAndVerifySizedCollectionItemInstructionDataDecoder(): Decoder<SetAndVerifySizedCollectionItemInstructionData> {
+  return getStructDecoder([['discriminator', getU8Decoder()]]);
 }
 
 export function getSetAndVerifySizedCollectionItemInstructionDataCodec(): Codec<

@@ -38,18 +38,18 @@ export type ExtendedPayloadArgs = {
   args: [number, string];
 };
 
-export function getExtendedPayloadEncoder() {
+export function getExtendedPayloadEncoder(): Encoder<ExtendedPayloadArgs> {
   return getStructEncoder([
     ['map', getMapEncoder(getPayloadKeyEncoder(), getPayloadTypeEncoder())],
     ['args', getTupleEncoder([getU8Encoder(), getStringEncoder()])],
-  ]) satisfies Encoder<ExtendedPayloadArgs>;
+  ]);
 }
 
-export function getExtendedPayloadDecoder() {
+export function getExtendedPayloadDecoder(): Decoder<ExtendedPayload> {
   return getStructDecoder([
     ['map', getMapDecoder(getPayloadKeyDecoder(), getPayloadTypeDecoder())],
     ['args', getTupleDecoder([getU8Decoder(), getStringDecoder()])],
-  ]) satisfies Decoder<ExtendedPayload>;
+  ]);
 }
 
 export function getExtendedPayloadCodec(): Codec<

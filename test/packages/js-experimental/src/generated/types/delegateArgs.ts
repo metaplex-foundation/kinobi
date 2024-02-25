@@ -29,20 +29,20 @@ export type DelegateArgsArgs =
   | { __kind: 'SaleV1'; amount: number | bigint }
   | { __kind: 'TransferV1'; amount: number | bigint };
 
-export function getDelegateArgsEncoder() {
+export function getDelegateArgsEncoder(): Encoder<DelegateArgsArgs> {
   return getDataEnumEncoder([
     ['CollectionV1', getUnitEncoder()],
     ['SaleV1', getStructEncoder([['amount', getU64Encoder()]])],
     ['TransferV1', getStructEncoder([['amount', getU64Encoder()]])],
-  ]) satisfies Encoder<DelegateArgsArgs>;
+  ]);
 }
 
-export function getDelegateArgsDecoder() {
+export function getDelegateArgsDecoder(): Decoder<DelegateArgs> {
   return getDataEnumDecoder([
     ['CollectionV1', getUnitDecoder()],
     ['SaleV1', getStructDecoder([['amount', getU64Decoder()]])],
     ['TransferV1', getStructDecoder([['amount', getU64Decoder()]])],
-  ]) satisfies Decoder<DelegateArgs>;
+  ]);
 }
 
 export function getDelegateArgsCodec(): Codec<DelegateArgsArgs, DelegateArgs> {

@@ -62,7 +62,7 @@ export type DelegateRecordAccountDataArgs = {
   bump: number;
 };
 
-export function getDelegateRecordAccountDataEncoder() {
+export function getDelegateRecordAccountDataEncoder(): Encoder<DelegateRecordAccountDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['key', getTmKeyEncoder()],
@@ -70,15 +70,15 @@ export function getDelegateRecordAccountDataEncoder() {
       ['bump', getU8Encoder()],
     ]),
     (value) => ({ ...value, key: TmKey.Delegate })
-  ) satisfies Encoder<DelegateRecordAccountDataArgs>;
+  );
 }
 
-export function getDelegateRecordAccountDataDecoder() {
+export function getDelegateRecordAccountDataDecoder(): Decoder<DelegateRecordAccountData> {
   return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['role', getDelegateRoleDecoder()],
     ['bump', getU8Decoder()],
-  ]) satisfies Decoder<DelegateRecordAccountData>;
+  ]);
 }
 
 export function getDelegateRecordAccountDataCodec(): Codec<

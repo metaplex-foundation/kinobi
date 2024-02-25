@@ -68,7 +68,7 @@ export type FrequencyAccountAccountDataArgs = {
   period: number | bigint;
 };
 
-export function getFrequencyAccountAccountDataEncoder() {
+export function getFrequencyAccountAccountDataEncoder(): Encoder<FrequencyAccountAccountDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['key', getU64Encoder()],
@@ -76,15 +76,15 @@ export function getFrequencyAccountAccountDataEncoder() {
       ['period', getI64Encoder()],
     ]),
     (value) => ({ ...value, key: TaKey.Frequency })
-  ) satisfies Encoder<FrequencyAccountAccountDataArgs>;
+  );
 }
 
-export function getFrequencyAccountAccountDataDecoder() {
+export function getFrequencyAccountAccountDataDecoder(): Decoder<FrequencyAccountAccountData> {
   return getStructDecoder([
     ['key', getU64Decoder()],
     ['lastUpdate', getI64Decoder()],
     ['period', getI64Decoder()],
-  ]) satisfies Decoder<FrequencyAccountAccountData>;
+  ]);
 }
 
 export function getFrequencyAccountAccountDataCodec(): Codec<

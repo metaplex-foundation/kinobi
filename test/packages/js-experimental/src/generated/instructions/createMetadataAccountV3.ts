@@ -154,7 +154,7 @@ export type CreateMetadataAccountV3InstructionDataArgs = {
   collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
 };
 
-export function getCreateMetadataAccountV3InstructionDataEncoder() {
+export function getCreateMetadataAccountV3InstructionDataEncoder(): Encoder<CreateMetadataAccountV3InstructionDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
@@ -163,16 +163,16 @@ export function getCreateMetadataAccountV3InstructionDataEncoder() {
       ['collectionDetails', getOptionEncoder(getCollectionDetailsEncoder())],
     ]),
     (value) => ({ ...value, discriminator: 33 })
-  ) satisfies Encoder<CreateMetadataAccountV3InstructionDataArgs>;
+  );
 }
 
-export function getCreateMetadataAccountV3InstructionDataDecoder() {
+export function getCreateMetadataAccountV3InstructionDataDecoder(): Decoder<CreateMetadataAccountV3InstructionData> {
   return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['data', getDataV2Decoder()],
     ['isMutable', getBooleanDecoder()],
     ['collectionDetails', getOptionDecoder(getCollectionDetailsDecoder())],
-  ]) satisfies Decoder<CreateMetadataAccountV3InstructionData>;
+  ]);
 }
 
 export function getCreateMetadataAccountV3InstructionDataCodec(): Codec<

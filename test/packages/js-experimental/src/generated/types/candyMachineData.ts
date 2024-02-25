@@ -82,7 +82,7 @@ export type CandyMachineDataArgs = {
   hiddenSettings: OptionOrNullable<HiddenSettingsArgs>;
 };
 
-export function getCandyMachineDataEncoder() {
+export function getCandyMachineDataEncoder(): Encoder<CandyMachineDataArgs> {
   return getStructEncoder([
     ['itemsAvailable', getU64Encoder()],
     ['symbol', getStringEncoder()],
@@ -92,10 +92,10 @@ export function getCandyMachineDataEncoder() {
     ['creators', getArrayEncoder(getCmCreatorEncoder())],
     ['configLineSettings', getOptionEncoder(getConfigLineSettingsEncoder())],
     ['hiddenSettings', getOptionEncoder(getHiddenSettingsEncoder())],
-  ]) satisfies Encoder<CandyMachineDataArgs>;
+  ]);
 }
 
-export function getCandyMachineDataDecoder() {
+export function getCandyMachineDataDecoder(): Decoder<CandyMachineData> {
   return getStructDecoder([
     ['itemsAvailable', getU64Decoder()],
     ['symbol', getStringDecoder()],
@@ -105,7 +105,7 @@ export function getCandyMachineDataDecoder() {
     ['creators', getArrayDecoder(getCmCreatorDecoder())],
     ['configLineSettings', getOptionDecoder(getConfigLineSettingsDecoder())],
     ['hiddenSettings', getOptionDecoder(getHiddenSettingsDecoder())],
-  ]) satisfies Decoder<CandyMachineData>;
+  ]);
 }
 
 export function getCandyMachineDataCodec(): Codec<

@@ -67,7 +67,7 @@ export type TokenOwnedEscrowAccountDataArgs = {
   bump: number;
 };
 
-export function getTokenOwnedEscrowAccountDataEncoder() {
+export function getTokenOwnedEscrowAccountDataEncoder(): Encoder<TokenOwnedEscrowAccountDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['key', getTmKeyEncoder()],
@@ -76,16 +76,16 @@ export function getTokenOwnedEscrowAccountDataEncoder() {
       ['bump', getU8Encoder()],
     ]),
     (value) => ({ ...value, key: TmKey.TokenOwnedEscrow })
-  ) satisfies Encoder<TokenOwnedEscrowAccountDataArgs>;
+  );
 }
 
-export function getTokenOwnedEscrowAccountDataDecoder() {
+export function getTokenOwnedEscrowAccountDataDecoder(): Decoder<TokenOwnedEscrowAccountData> {
   return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['baseToken', getAddressDecoder()],
     ['authority', getEscrowAuthorityDecoder()],
     ['bump', getU8Decoder()],
-  ]) satisfies Decoder<TokenOwnedEscrowAccountData>;
+  ]);
 }
 
 export function getTokenOwnedEscrowAccountDataCodec(): Codec<

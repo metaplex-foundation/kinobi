@@ -80,17 +80,15 @@ export type RemoveCreatorVerificationInstructionData = {
 
 export type RemoveCreatorVerificationInstructionDataArgs = {};
 
-export function getRemoveCreatorVerificationInstructionDataEncoder() {
+export function getRemoveCreatorVerificationInstructionDataEncoder(): Encoder<RemoveCreatorVerificationInstructionDataArgs> {
   return mapEncoder(
     getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 28 })
-  ) satisfies Encoder<RemoveCreatorVerificationInstructionDataArgs>;
+  );
 }
 
-export function getRemoveCreatorVerificationInstructionDataDecoder() {
-  return getStructDecoder([
-    ['discriminator', getU8Decoder()],
-  ]) satisfies Decoder<RemoveCreatorVerificationInstructionData>;
+export function getRemoveCreatorVerificationInstructionDataDecoder(): Decoder<RemoveCreatorVerificationInstructionData> {
+  return getStructDecoder([['discriminator', getU8Decoder()]]);
 }
 
 export function getRemoveCreatorVerificationInstructionDataCodec(): Codec<

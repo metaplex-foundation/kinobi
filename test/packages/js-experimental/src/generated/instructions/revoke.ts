@@ -190,21 +190,21 @@ export type RevokeInstructionData = {
 
 export type RevokeInstructionDataArgs = { revokeArgs: RevokeArgsArgs };
 
-export function getRevokeInstructionDataEncoder() {
+export function getRevokeInstructionDataEncoder(): Encoder<RevokeInstructionDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['revokeArgs', getRevokeArgsEncoder()],
     ]),
     (value) => ({ ...value, discriminator: 49 })
-  ) satisfies Encoder<RevokeInstructionDataArgs>;
+  );
 }
 
-export function getRevokeInstructionDataDecoder() {
+export function getRevokeInstructionDataDecoder(): Decoder<RevokeInstructionData> {
   return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['revokeArgs', getRevokeArgsDecoder()],
-  ]) satisfies Decoder<RevokeInstructionData>;
+  ]);
 }
 
 export function getRevokeInstructionDataCodec(): Codec<

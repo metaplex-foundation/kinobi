@@ -21,16 +21,16 @@ export type UseAssetArgs = { __kind: 'V1'; useCount: bigint };
 
 export type UseAssetArgsArgs = { __kind: 'V1'; useCount: number | bigint };
 
-export function getUseAssetArgsEncoder() {
+export function getUseAssetArgsEncoder(): Encoder<UseAssetArgsArgs> {
   return getDataEnumEncoder([
     ['V1', getStructEncoder([['useCount', getU64Encoder()]])],
-  ]) satisfies Encoder<UseAssetArgsArgs>;
+  ]);
 }
 
-export function getUseAssetArgsDecoder() {
+export function getUseAssetArgsDecoder(): Decoder<UseAssetArgs> {
   return getDataEnumDecoder([
     ['V1', getStructDecoder([['useCount', getU64Decoder()]])],
-  ]) satisfies Decoder<UseAssetArgs>;
+  ]);
 }
 
 export function getUseAssetArgsCodec(): Codec<UseAssetArgsArgs, UseAssetArgs> {

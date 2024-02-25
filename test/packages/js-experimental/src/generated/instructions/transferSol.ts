@@ -86,21 +86,21 @@ export type TransferSolInstructionData = {
 
 export type TransferSolInstructionDataArgs = { amount: number | bigint };
 
-export function getTransferSolInstructionDataEncoder() {
+export function getTransferSolInstructionDataEncoder(): Encoder<TransferSolInstructionDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['discriminator', getU32Encoder()],
       ['amount', getU64Encoder()],
     ]),
     (value) => ({ ...value, discriminator: 2 })
-  ) satisfies Encoder<TransferSolInstructionDataArgs>;
+  );
 }
 
-export function getTransferSolInstructionDataDecoder() {
+export function getTransferSolInstructionDataDecoder(): Decoder<TransferSolInstructionData> {
   return getStructDecoder([
     ['discriminator', getU32Decoder()],
     ['amount', getU64Decoder()],
-  ]) satisfies Decoder<TransferSolInstructionData>;
+  ]);
 }
 
 export function getTransferSolInstructionDataCodec(): Codec<

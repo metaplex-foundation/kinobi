@@ -140,7 +140,7 @@ export type CreateMetadataAccountV2InstructionDataArgs = {
   isMutable: boolean;
 };
 
-export function getCreateMetadataAccountV2InstructionDataEncoder() {
+export function getCreateMetadataAccountV2InstructionDataEncoder(): Encoder<CreateMetadataAccountV2InstructionDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
@@ -148,15 +148,15 @@ export function getCreateMetadataAccountV2InstructionDataEncoder() {
       ['isMutable', getBooleanEncoder()],
     ]),
     (value) => ({ ...value, discriminator: 16 })
-  ) satisfies Encoder<CreateMetadataAccountV2InstructionDataArgs>;
+  );
 }
 
-export function getCreateMetadataAccountV2InstructionDataDecoder() {
+export function getCreateMetadataAccountV2InstructionDataDecoder(): Decoder<CreateMetadataAccountV2InstructionData> {
   return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['data', getDataV2Decoder()],
     ['isMutable', getBooleanDecoder()],
-  ]) satisfies Decoder<CreateMetadataAccountV2InstructionData>;
+  ]);
 }
 
 export function getCreateMetadataAccountV2InstructionDataCodec(): Codec<

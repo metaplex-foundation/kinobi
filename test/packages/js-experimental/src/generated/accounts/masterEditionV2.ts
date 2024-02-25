@@ -60,7 +60,7 @@ export type MasterEditionV2AccountDataArgs = {
   maxSupply: OptionOrNullable<number | bigint>;
 };
 
-export function getMasterEditionV2AccountDataEncoder() {
+export function getMasterEditionV2AccountDataEncoder(): Encoder<MasterEditionV2AccountDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['key', getTmKeyEncoder()],
@@ -68,15 +68,15 @@ export function getMasterEditionV2AccountDataEncoder() {
       ['maxSupply', getOptionEncoder(getU64Encoder())],
     ]),
     (value) => ({ ...value, key: TmKey.MasterEditionV2 })
-  ) satisfies Encoder<MasterEditionV2AccountDataArgs>;
+  );
 }
 
-export function getMasterEditionV2AccountDataDecoder() {
+export function getMasterEditionV2AccountDataDecoder(): Decoder<MasterEditionV2AccountData> {
   return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['supply', getU64Decoder()],
     ['maxSupply', getOptionDecoder(getU64Decoder())],
-  ]) satisfies Decoder<MasterEditionV2AccountData>;
+  ]);
 }
 
 export function getMasterEditionV2AccountDataCodec(): Codec<

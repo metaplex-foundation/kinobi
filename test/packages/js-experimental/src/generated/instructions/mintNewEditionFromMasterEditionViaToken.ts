@@ -201,7 +201,7 @@ export type MintNewEditionFromMasterEditionViaTokenInstructionDataArgs = {
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenArgsArgs;
 };
 
-export function getMintNewEditionFromMasterEditionViaTokenInstructionDataEncoder() {
+export function getMintNewEditionFromMasterEditionViaTokenInstructionDataEncoder(): Encoder<MintNewEditionFromMasterEditionViaTokenInstructionDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
@@ -211,17 +211,17 @@ export function getMintNewEditionFromMasterEditionViaTokenInstructionDataEncoder
       ],
     ]),
     (value) => ({ ...value, discriminator: 11 })
-  ) satisfies Encoder<MintNewEditionFromMasterEditionViaTokenInstructionDataArgs>;
+  );
 }
 
-export function getMintNewEditionFromMasterEditionViaTokenInstructionDataDecoder() {
+export function getMintNewEditionFromMasterEditionViaTokenInstructionDataDecoder(): Decoder<MintNewEditionFromMasterEditionViaTokenInstructionData> {
   return getStructDecoder([
     ['discriminator', getU8Decoder()],
     [
       'mintNewEditionFromMasterEditionViaTokenArgs',
       getMintNewEditionFromMasterEditionViaTokenArgsDecoder(),
     ],
-  ]) satisfies Decoder<MintNewEditionFromMasterEditionViaTokenInstructionData>;
+  ]);
 }
 
 export function getMintNewEditionFromMasterEditionViaTokenInstructionDataCodec(): Codec<

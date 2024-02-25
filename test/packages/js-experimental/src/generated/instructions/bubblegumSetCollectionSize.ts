@@ -120,21 +120,21 @@ export type BubblegumSetCollectionSizeInstructionDataArgs = {
   setCollectionSizeArgs: SetCollectionSizeArgsArgs;
 };
 
-export function getBubblegumSetCollectionSizeInstructionDataEncoder() {
+export function getBubblegumSetCollectionSizeInstructionDataEncoder(): Encoder<BubblegumSetCollectionSizeInstructionDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['setCollectionSizeArgs', getSetCollectionSizeArgsEncoder()],
     ]),
     (value) => ({ ...value, discriminator: 36 })
-  ) satisfies Encoder<BubblegumSetCollectionSizeInstructionDataArgs>;
+  );
 }
 
-export function getBubblegumSetCollectionSizeInstructionDataDecoder() {
+export function getBubblegumSetCollectionSizeInstructionDataDecoder(): Decoder<BubblegumSetCollectionSizeInstructionData> {
   return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['setCollectionSizeArgs', getSetCollectionSizeArgsDecoder()],
-  ]) satisfies Decoder<BubblegumSetCollectionSizeInstructionData>;
+  ]);
 }
 
 export function getBubblegumSetCollectionSizeInstructionDataCodec(): Codec<

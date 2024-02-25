@@ -161,21 +161,21 @@ export type CreateMasterEditionInstructionDataArgs = {
   createMasterEditionArgs: CreateMasterEditionArgsArgs;
 };
 
-export function getCreateMasterEditionInstructionDataEncoder() {
+export function getCreateMasterEditionInstructionDataEncoder(): Encoder<CreateMasterEditionInstructionDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['createMasterEditionArgs', getCreateMasterEditionArgsEncoder()],
     ]),
     (value) => ({ ...value, discriminator: 10 })
-  ) satisfies Encoder<CreateMasterEditionInstructionDataArgs>;
+  );
 }
 
-export function getCreateMasterEditionInstructionDataDecoder() {
+export function getCreateMasterEditionInstructionDataDecoder(): Decoder<CreateMasterEditionInstructionData> {
   return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['createMasterEditionArgs', getCreateMasterEditionArgsDecoder()],
-  ]) satisfies Decoder<CreateMasterEditionInstructionData>;
+  ]);
 }
 
 export function getCreateMasterEditionInstructionDataCodec(): Codec<

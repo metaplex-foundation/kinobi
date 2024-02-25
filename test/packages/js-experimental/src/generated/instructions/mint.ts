@@ -187,21 +187,21 @@ export type MintInstructionData = { discriminator: number; mintArgs: MintArgs };
 
 export type MintInstructionDataArgs = { mintArgs: MintArgsArgs };
 
-export function getMintInstructionDataEncoder() {
+export function getMintInstructionDataEncoder(): Encoder<MintInstructionDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['mintArgs', getMintArgsEncoder()],
     ]),
     (value) => ({ ...value, discriminator: 42 })
-  ) satisfies Encoder<MintInstructionDataArgs>;
+  );
 }
 
-export function getMintInstructionDataDecoder() {
+export function getMintInstructionDataDecoder(): Decoder<MintInstructionData> {
   return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['mintArgs', getMintArgsDecoder()],
-  ]) satisfies Decoder<MintInstructionData>;
+  ]);
 }
 
 export function getMintInstructionDataCodec(): Codec<

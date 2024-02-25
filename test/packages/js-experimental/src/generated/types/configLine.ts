@@ -23,18 +23,18 @@ export type ConfigLine = {
 
 export type ConfigLineArgs = ConfigLine;
 
-export function getConfigLineEncoder() {
+export function getConfigLineEncoder(): Encoder<ConfigLineArgs> {
   return getStructEncoder([
     ['name', getStringEncoder()],
     ['uri', getStringEncoder()],
-  ]) satisfies Encoder<ConfigLineArgs>;
+  ]);
 }
 
-export function getConfigLineDecoder() {
+export function getConfigLineDecoder(): Decoder<ConfigLine> {
   return getStructDecoder([
     ['name', getStringDecoder()],
     ['uri', getStringDecoder()],
-  ]) satisfies Decoder<ConfigLine>;
+  ]);
 }
 
 export function getConfigLineCodec(): Codec<ConfigLineArgs, ConfigLine> {

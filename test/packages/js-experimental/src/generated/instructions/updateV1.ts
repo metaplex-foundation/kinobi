@@ -254,7 +254,7 @@ export type UpdateV1InstructionDataArgs = {
   authorityType: AuthorityTypeArgs;
 };
 
-export function getUpdateV1InstructionDataEncoder() {
+export function getUpdateV1InstructionDataEncoder(): Encoder<UpdateV1InstructionDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
@@ -292,10 +292,10 @@ export function getUpdateV1InstructionDataEncoder() {
       updateV1Discriminator: 0,
       tokenStandard: value.tokenStandard ?? some(TokenStandard.NonFungible),
     })
-  ) satisfies Encoder<UpdateV1InstructionDataArgs>;
+  );
 }
 
-export function getUpdateV1InstructionDataDecoder() {
+export function getUpdateV1InstructionDataDecoder(): Decoder<UpdateV1InstructionData> {
   return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['updateV1Discriminator', getU8Decoder()],
@@ -322,7 +322,7 @@ export function getUpdateV1InstructionDataDecoder() {
     ['programmableConfig', getOptionDecoder(getProgrammableConfigDecoder())],
     ['delegateState', getOptionDecoder(getDelegateStateDecoder())],
     ['authorityType', getAuthorityTypeDecoder()],
-  ]) satisfies Decoder<UpdateV1InstructionData>;
+  ]);
 }
 
 export function getUpdateV1InstructionDataCodec(): Codec<

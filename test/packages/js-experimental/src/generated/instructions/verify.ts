@@ -117,21 +117,21 @@ export type VerifyInstructionData = {
 
 export type VerifyInstructionDataArgs = { verifyArgs: VerifyArgsArgs };
 
-export function getVerifyInstructionDataEncoder() {
+export function getVerifyInstructionDataEncoder(): Encoder<VerifyInstructionDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['verifyArgs', getVerifyArgsEncoder()],
     ]),
     (value) => ({ ...value, discriminator: 47 })
-  ) satisfies Encoder<VerifyInstructionDataArgs>;
+  );
 }
 
-export function getVerifyInstructionDataDecoder() {
+export function getVerifyInstructionDataDecoder(): Decoder<VerifyInstructionData> {
   return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['verifyArgs', getVerifyArgsDecoder()],
-  ]) satisfies Decoder<VerifyInstructionData>;
+  ]);
 }
 
 export function getVerifyInstructionDataCodec(): Codec<

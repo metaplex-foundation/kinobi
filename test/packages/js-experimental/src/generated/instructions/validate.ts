@@ -336,7 +336,7 @@ export type ValidateInstructionDataArgs = {
   payload: PayloadArgs;
 };
 
-export function getValidateInstructionDataEncoder() {
+export function getValidateInstructionDataEncoder(): Encoder<ValidateInstructionDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
@@ -345,16 +345,16 @@ export function getValidateInstructionDataEncoder() {
       ['payload', getPayloadEncoder()],
     ]),
     (value) => ({ ...value, discriminator: 1 })
-  ) satisfies Encoder<ValidateInstructionDataArgs>;
+  );
 }
 
-export function getValidateInstructionDataDecoder() {
+export function getValidateInstructionDataDecoder(): Decoder<ValidateInstructionData> {
   return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['ruleSetName', getStringDecoder()],
     ['operation', getOperationDecoder()],
     ['payload', getPayloadDecoder()],
-  ]) satisfies Decoder<ValidateInstructionData>;
+  ]);
 }
 
 export function getValidateInstructionDataCodec(): Codec<

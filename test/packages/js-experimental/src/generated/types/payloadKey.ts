@@ -21,12 +21,12 @@ export enum PayloadKey {
 
 export type PayloadKeyArgs = PayloadKey;
 
-export function getPayloadKeyEncoder() {
-  return getScalarEnumEncoder(PayloadKey) satisfies Encoder<PayloadKeyArgs>;
+export function getPayloadKeyEncoder(): Encoder<PayloadKeyArgs> {
+  return getScalarEnumEncoder(PayloadKey);
 }
 
-export function getPayloadKeyDecoder() {
-  return getScalarEnumDecoder(PayloadKey) satisfies Decoder<PayloadKey>;
+export function getPayloadKeyDecoder(): Decoder<PayloadKey> {
+  return getScalarEnumDecoder(PayloadKey);
 }
 
 export function getPayloadKeyCodec(): Codec<PayloadKeyArgs, PayloadKey> {

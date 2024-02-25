@@ -26,16 +26,16 @@ export type DummyLinesArgs = {
   lines: Array<number | bigint>;
 };
 
-export function getDummyLinesEncoder() {
+export function getDummyLinesEncoder(): Encoder<DummyLinesArgs> {
   return getStructEncoder([
     ['lines', getArrayEncoder(getU64Encoder(), { size: 'remainder' })],
-  ]) satisfies Encoder<DummyLinesArgs>;
+  ]);
 }
 
-export function getDummyLinesDecoder() {
+export function getDummyLinesDecoder(): Decoder<DummyLines> {
   return getStructDecoder([
     ['lines', getArrayDecoder(getU64Decoder(), { size: 'remainder' })],
-  ]) satisfies Decoder<DummyLines>;
+  ]);
 }
 
 export function getDummyLinesCodec(): Codec<DummyLinesArgs, DummyLines> {

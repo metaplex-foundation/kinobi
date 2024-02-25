@@ -125,7 +125,7 @@ export type UpdateMetadataAccountInstructionDataArgs = {
   primarySaleHappened: OptionOrNullable<boolean>;
 };
 
-export function getUpdateMetadataAccountInstructionDataEncoder() {
+export function getUpdateMetadataAccountInstructionDataEncoder(): Encoder<UpdateMetadataAccountInstructionDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
@@ -148,10 +148,10 @@ export function getUpdateMetadataAccountInstructionDataEncoder() {
       ['primarySaleHappened', getOptionEncoder(getBooleanEncoder())],
     ]),
     (value) => ({ ...value, discriminator: 1 })
-  ) satisfies Encoder<UpdateMetadataAccountInstructionDataArgs>;
+  );
 }
 
-export function getUpdateMetadataAccountInstructionDataDecoder() {
+export function getUpdateMetadataAccountInstructionDataDecoder(): Decoder<UpdateMetadataAccountInstructionData> {
   return getStructDecoder([
     ['discriminator', getU8Decoder()],
     [
@@ -168,7 +168,7 @@ export function getUpdateMetadataAccountInstructionDataDecoder() {
     ],
     ['updateAuthority', getOptionDecoder(getAddressDecoder())],
     ['primarySaleHappened', getOptionDecoder(getBooleanDecoder())],
-  ]) satisfies Decoder<UpdateMetadataAccountInstructionData>;
+  ]);
 }
 
 export function getUpdateMetadataAccountInstructionDataCodec(): Codec<

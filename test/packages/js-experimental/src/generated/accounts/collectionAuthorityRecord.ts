@@ -61,7 +61,7 @@ export type CollectionAuthorityRecordAccountDataArgs = {
   updateAuthority: OptionOrNullable<Address>;
 };
 
-export function getCollectionAuthorityRecordAccountDataEncoder() {
+export function getCollectionAuthorityRecordAccountDataEncoder(): Encoder<CollectionAuthorityRecordAccountDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['key', getTmKeyEncoder()],
@@ -69,15 +69,15 @@ export function getCollectionAuthorityRecordAccountDataEncoder() {
       ['updateAuthority', getOptionEncoder(getAddressEncoder())],
     ]),
     (value) => ({ ...value, key: TmKey.CollectionAuthorityRecord })
-  ) satisfies Encoder<CollectionAuthorityRecordAccountDataArgs>;
+  );
 }
 
-export function getCollectionAuthorityRecordAccountDataDecoder() {
+export function getCollectionAuthorityRecordAccountDataDecoder(): Decoder<CollectionAuthorityRecordAccountData> {
   return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['bump', getU8Decoder()],
     ['updateAuthority', getOptionDecoder(getAddressDecoder())],
-  ]) satisfies Decoder<CollectionAuthorityRecordAccountData>;
+  ]);
 }
 
 export function getCollectionAuthorityRecordAccountDataCodec(): Codec<

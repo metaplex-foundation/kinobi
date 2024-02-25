@@ -176,7 +176,7 @@ export type CreateV1InstructionDataArgs = {
   maxSupply: OptionOrNullable<number | bigint>;
 };
 
-export function getCreateV1InstructionDataEncoder() {
+export function getCreateV1InstructionDataEncoder(): Encoder<CreateV1InstructionDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
@@ -186,17 +186,17 @@ export function getCreateV1InstructionDataEncoder() {
       ['maxSupply', getOptionEncoder(getU64Encoder())],
     ]),
     (value) => ({ ...value, discriminator: 41, createV1Discriminator: 0 })
-  ) satisfies Encoder<CreateV1InstructionDataArgs>;
+  );
 }
 
-export function getCreateV1InstructionDataDecoder() {
+export function getCreateV1InstructionDataDecoder(): Decoder<CreateV1InstructionData> {
   return getStructDecoder([
     ['discriminator', getU8Decoder()],
     ['createV1Discriminator', getU8Decoder()],
     ['assetData', getAssetDataDecoder()],
     ['decimals', getOptionDecoder(getU8Decoder())],
     ['maxSupply', getOptionDecoder(getU64Decoder())],
-  ]) satisfies Decoder<CreateV1InstructionData>;
+  ]);
 }
 
 export function getCreateV1InstructionDataCodec(): Codec<

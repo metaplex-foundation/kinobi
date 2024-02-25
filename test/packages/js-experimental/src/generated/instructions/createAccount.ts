@@ -96,7 +96,7 @@ export type CreateAccountInstructionDataArgs = {
   programId: Address;
 };
 
-export function getCreateAccountInstructionDataEncoder() {
+export function getCreateAccountInstructionDataEncoder(): Encoder<CreateAccountInstructionDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['discriminator', getU32Encoder()],
@@ -105,16 +105,16 @@ export function getCreateAccountInstructionDataEncoder() {
       ['programId', getAddressEncoder()],
     ]),
     (value) => ({ ...value, discriminator: 0 })
-  ) satisfies Encoder<CreateAccountInstructionDataArgs>;
+  );
 }
 
-export function getCreateAccountInstructionDataDecoder() {
+export function getCreateAccountInstructionDataDecoder(): Decoder<CreateAccountInstructionData> {
   return getStructDecoder([
     ['discriminator', getU32Decoder()],
     ['lamports', getU64Decoder()],
     ['space', getU64Decoder()],
     ['programId', getAddressDecoder()],
-  ]) satisfies Decoder<CreateAccountInstructionData>;
+  ]);
 }
 
 export function getCreateAccountInstructionDataCodec(): Codec<

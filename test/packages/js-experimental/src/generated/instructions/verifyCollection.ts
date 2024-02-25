@@ -116,17 +116,15 @@ export type VerifyCollectionInstructionData = { discriminator: number };
 
 export type VerifyCollectionInstructionDataArgs = {};
 
-export function getVerifyCollectionInstructionDataEncoder() {
+export function getVerifyCollectionInstructionDataEncoder(): Encoder<VerifyCollectionInstructionDataArgs> {
   return mapEncoder(
     getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 18 })
-  ) satisfies Encoder<VerifyCollectionInstructionDataArgs>;
+  );
 }
 
-export function getVerifyCollectionInstructionDataDecoder() {
-  return getStructDecoder([
-    ['discriminator', getU8Decoder()],
-  ]) satisfies Decoder<VerifyCollectionInstructionData>;
+export function getVerifyCollectionInstructionDataDecoder(): Decoder<VerifyCollectionInstructionData> {
+  return getStructDecoder([['discriminator', getU8Decoder()]]);
 }
 
 export function getVerifyCollectionInstructionDataCodec(): Codec<

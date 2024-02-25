@@ -79,7 +79,7 @@ export type ReservationListV2AccountDataArgs = {
   currentReservationSpots: number | bigint;
 };
 
-export function getReservationListV2AccountDataEncoder() {
+export function getReservationListV2AccountDataEncoder(): Encoder<ReservationListV2AccountDataArgs> {
   return mapEncoder(
     getStructEncoder([
       ['key', getTmKeyEncoder()],
@@ -90,10 +90,10 @@ export function getReservationListV2AccountDataEncoder() {
       ['currentReservationSpots', getU64Encoder()],
     ]),
     (value) => ({ ...value, key: TmKey.ReservationListV2 })
-  ) satisfies Encoder<ReservationListV2AccountDataArgs>;
+  );
 }
 
-export function getReservationListV2AccountDataDecoder() {
+export function getReservationListV2AccountDataDecoder(): Decoder<ReservationListV2AccountData> {
   return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['masterEdition', getAddressDecoder()],
@@ -101,7 +101,7 @@ export function getReservationListV2AccountDataDecoder() {
     ['reservations', getArrayDecoder(getReservationDecoder())],
     ['totalReservationSpots', getU64Decoder()],
     ['currentReservationSpots', getU64Decoder()],
-  ]) satisfies Decoder<ReservationListV2AccountData>;
+  ]);
 }
 
 export function getReservationListV2AccountDataCodec(): Codec<

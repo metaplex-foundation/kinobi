@@ -136,17 +136,15 @@ export type SetAndVerifyCollectionInstructionData = { discriminator: number };
 
 export type SetAndVerifyCollectionInstructionDataArgs = {};
 
-export function getSetAndVerifyCollectionInstructionDataEncoder() {
+export function getSetAndVerifyCollectionInstructionDataEncoder(): Encoder<SetAndVerifyCollectionInstructionDataArgs> {
   return mapEncoder(
     getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 25 })
-  ) satisfies Encoder<SetAndVerifyCollectionInstructionDataArgs>;
+  );
 }
 
-export function getSetAndVerifyCollectionInstructionDataDecoder() {
-  return getStructDecoder([
-    ['discriminator', getU8Decoder()],
-  ]) satisfies Decoder<SetAndVerifyCollectionInstructionData>;
+export function getSetAndVerifyCollectionInstructionDataDecoder(): Decoder<SetAndVerifyCollectionInstructionData> {
+  return getStructDecoder([['discriminator', getU8Decoder()]]);
 }
 
 export function getSetAndVerifyCollectionInstructionDataCodec(): Codec<
