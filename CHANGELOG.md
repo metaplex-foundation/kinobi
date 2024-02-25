@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.17.4
+
+### Patch Changes
+
+- [#160](https://github.com/metaplex-foundation/kinobi/pull/160) [`c5cca5f`](https://github.com/metaplex-foundation/kinobi/commit/c5cca5f42c013d1af53b7bcc9e26e0ff9b4a2ca6) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Update web3.js and use new codec type inferrences
+
 ## 0.17.3
 
 ### Patch Changes
