@@ -67,7 +67,7 @@ export type NameTransformerKey =
   | 'programInstructionsEnum'
   | 'programInstructionsEnumVariant'
   | 'programInstructionsIdentifierFunction'
-  | 'programInstructionsTypeUnion'
+  | 'programInstructionsParsedUnionType'
   | 'programErrorClass'
   | 'programErrorCodeEnum'
   | 'programErrorCodeMap'
@@ -148,7 +148,7 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
   programInstructionsEnumVariant: (name) => `${pascalCase(name)}`,
   programInstructionsIdentifierFunction: (name) =>
     `identify${pascalCase(name)}Instruction`,
-  programInstructionsTypeUnion: (name) =>
+  programInstructionsParsedUnionType: (name) =>
     `Parsed${pascalCase(name)}Instruction`,
   programErrorClass: (name) => `${pascalCase(name)}ProgramError`,
   programErrorCodeEnum: (name) => `${pascalCase(name)}ProgramErrorCode`,

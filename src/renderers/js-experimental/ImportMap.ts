@@ -27,6 +27,7 @@ const DEFAULT_MODULE_MAP: Record<string, string> = {
   generatedAccounts: '../accounts',
   generatedErrors: '../errors',
   generatedTypes: '../types',
+  generatedInstructions: '../instructions',
 };
 
 export class ImportMap {

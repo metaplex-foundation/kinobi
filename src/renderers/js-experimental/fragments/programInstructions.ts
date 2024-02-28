@@ -4,7 +4,6 @@ import {
   ProgramNode,
   structTypeNodeFromInstructionArgumentNodes,
 } from '../../../nodes';
-import { ImportMap } from '../ImportMap';
 import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, mergeFragments } from './common';
 import { getDiscriminatorConditionFragment } from './discriminatorCondition';
@@ -30,7 +29,7 @@ export function getProgramInstructionsFragment(
     [
       getProgramInstructionsEnumFragment(scopeWithInstructions),
       getProgramInstructionsIdentifierFunctionFragment(scopeWithInstructions),
-      getProgramUnionParsedInstructionTypeFragment(scopeWithInstructions),
+      getProgramInstructionsParsedUnionTypeFragment(scopeWithInstructions),
     ],
     (r) => `${r.join('\n\n')}\n`
   );
@@ -106,7 +105,7 @@ function getProgramInstructionsIdentifierFunctionFragment(
   );
 }
 
-function getProgramUnionParsedInstructionTypeFragment(
+function getProgramInstructionsParsedUnionTypeFragment(
   scope: Pick<GlobalFragmentScope, 'nameApi'> & {
     programNode: ProgramNode;
     allInstructions: InstructionNode[];
@@ -114,7 +113,7 @@ function getProgramUnionParsedInstructionTypeFragment(
 ): Fragment {
   const { programNode, allInstructions, nameApi } = scope;
 
-  const programInstructionsType = nameApi.programInstructionsTypeUnion(
+  const programInstructionsType = nameApi.programInstructionsParsedUnionType(
     programNode.name
   );
 
@@ -132,9 +131,8 @@ function getProgramUnionParsedInstructionTypeFragment(
     );
 
     return fragment(
-      `| {instructionType: ${programInstructionsEnum}.${instructionEnumVariant}} & ${parsedInstructionType}`,
-      new ImportMap().add('../instructions', parsedInstructionType)
-    );
+      `| { instructionType: ${programInstructionsEnum}.${instructionEnumVariant} } & ${parsedInstructionType}`
+    ).addImports('generatedInstructions', parsedInstructionType);
   });
 
   return mergeFragments(

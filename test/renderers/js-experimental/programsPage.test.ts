@@ -236,3 +236,27 @@ test('it checks the discriminator of sub-instructions before their parents.', (t
       `if (memcmp(data, getU8Encoder().encode(1), 0)) { return SplTokenInstruction.MintTokens; }`,
   ]);
 });
+
+test('it renders a parsed union type of all available instructions for a program', (t) => {
+  // Given the following program.
+  const node = programNode({
+    name: 'splToken',
+    publicKey: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+    instructions: [
+      instructionNode({ name: 'mintTokens' }),
+      instructionNode({ name: 'transferTokens' }),
+      instructionNode({ name: 'updateAuthority' }),
+    ],
+  });
+
+  // When we render it.
+  const renderMap = visit(node, getRenderMapVisitor());
+
+  // Then we expect the following program parsed instruction union type.
+  renderMapContains(t, renderMap, 'programs/splToken.ts', [
+    'export type ParsedSplTokenInstruction=',
+    '|({instructionType: SplTokenInstruction.MintTokens;} & ParsedMintTokensInstruction)',
+    '|({instructionType: SplTokenInstruction.TransferTokens;} & ParsedTransferTokensInstruction)',
+    '|({instructionType: SplTokenInstruction.UpdateAuthority;} & ParsedUpdateAuthorityInstruction)',
+  ]);
+});
