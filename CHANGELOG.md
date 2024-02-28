@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.17.5
+
+### Patch Changes
+
+- [#162](https://github.com/metaplex-foundation/kinobi/pull/162) [`c52bea0`](https://github.com/metaplex-foundation/kinobi/commit/c52bea0b469f5c2cacb0dc9055aaef07060cfd93) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Render a union type for parsed instructions in js-experimental
+
 ## 0.17.4
 
 ### Patch Changes
