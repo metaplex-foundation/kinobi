@@ -14,6 +14,11 @@ import {
   MplTokenAuthRulesProgramErrorCode,
   getMplTokenAuthRulesProgramErrorFromCode,
 } from '../errors';
+import {
+  ParsedCreateFrequencyRuleInstruction,
+  ParsedCreateRuleSetInstruction,
+  ParsedValidateInstruction,
+} from '../instructions';
 import { memcmp } from '../shared';
 import { TaKey } from '../types';
 
@@ -77,3 +82,14 @@ export function identifyMplTokenAuthRulesInstruction(
     'The provided instruction could not be identified as a mplTokenAuthRules instruction.'
   );
 }
+
+export type ParsedMplTokenAuthRulesInstruction =
+  | ({
+      instructionType: MplTokenAuthRulesInstruction.CreateRuleSet;
+    } & ParsedCreateRuleSetInstruction)
+  | ({
+      instructionType: MplTokenAuthRulesInstruction.Validate;
+    } & ParsedValidateInstruction)
+  | ({
+      instructionType: MplTokenAuthRulesInstruction.CreateFrequencyRule;
+    } & ParsedCreateFrequencyRuleInstruction);

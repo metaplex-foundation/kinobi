@@ -13,6 +13,17 @@ import {
   MplCandyMachineCoreProgramErrorCode,
   getMplCandyMachineCoreProgramErrorFromCode,
 } from '../errors';
+import {
+  ParsedAddConfigLinesInstruction,
+  ParsedDummyInstruction,
+  ParsedInitializeInstruction,
+  ParsedMintFromCandyMachineInstruction,
+  ParsedSetAuthorityInstruction,
+  ParsedSetCollectionInstruction,
+  ParsedSetMintAuthorityInstruction,
+  ParsedUpdateCandyMachineInstruction,
+  ParsedWithdrawInstruction,
+} from '../instructions';
 import { memcmp } from '../shared';
 
 export const MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS =
@@ -101,3 +112,32 @@ export function identifyMplCandyMachineCoreInstruction(
     'The provided instruction could not be identified as a mplCandyMachineCore instruction.'
   );
 }
+
+export type ParsedMplCandyMachineCoreInstruction =
+  | ({
+      instructionType: MplCandyMachineCoreInstruction.Dummy;
+    } & ParsedDummyInstruction)
+  | ({
+      instructionType: MplCandyMachineCoreInstruction.AddConfigLines;
+    } & ParsedAddConfigLinesInstruction)
+  | ({
+      instructionType: MplCandyMachineCoreInstruction.Initialize;
+    } & ParsedInitializeInstruction)
+  | ({
+      instructionType: MplCandyMachineCoreInstruction.MintFromCandyMachine;
+    } & ParsedMintFromCandyMachineInstruction)
+  | ({
+      instructionType: MplCandyMachineCoreInstruction.SetAuthority;
+    } & ParsedSetAuthorityInstruction)
+  | ({
+      instructionType: MplCandyMachineCoreInstruction.SetCollection;
+    } & ParsedSetCollectionInstruction)
+  | ({
+      instructionType: MplCandyMachineCoreInstruction.SetMintAuthority;
+    } & ParsedSetMintAuthorityInstruction)
+  | ({
+      instructionType: MplCandyMachineCoreInstruction.UpdateCandyMachine;
+    } & ParsedUpdateCandyMachineInstruction)
+  | ({
+      instructionType: MplCandyMachineCoreInstruction.Withdraw;
+    } & ParsedWithdrawInstruction);

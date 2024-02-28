@@ -1,9 +1,10 @@
 import {
+  getAllInstructionsWithSubs,
   InstructionNode,
   ProgramNode,
-  getAllInstructionsWithSubs,
   structTypeNodeFromInstructionArgumentNodes,
 } from '../../../nodes';
+import { ImportMap } from '../ImportMap';
 import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, mergeFragments } from './common';
 import { getDiscriminatorConditionFragment } from './discriminatorCondition';
@@ -29,6 +30,7 @@ export function getProgramInstructionsFragment(
     [
       getProgramInstructionsEnumFragment(scopeWithInstructions),
       getProgramInstructionsIdentifierFunctionFragment(scopeWithInstructions),
+      getProgramUnionParsedInstructionTypeFragment(scopeWithInstructions),
     ],
     (r) => `${r.join('\n\n')}\n`
   );
@@ -101,5 +103,42 @@ function getProgramInstructionsIdentifierFunctionFragment(
       `${discriminators}\n` +
       `throw new Error("The provided instruction could not be identified as a ${programNode.name} instruction.")\n` +
       `}`
+  );
+}
+
+function getProgramUnionParsedInstructionTypeFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi'> & {
+    programNode: ProgramNode;
+    allInstructions: InstructionNode[];
+  }
+): Fragment {
+  const { programNode, allInstructions, nameApi } = scope;
+
+  const programInstructionsType = nameApi.programInstructionsTypeUnion(
+    programNode.name
+  );
+
+  const programInstructionsEnum = nameApi.programInstructionsEnum(
+    programNode.name
+  );
+
+  const typeVariants = allInstructions.map((instruction): Fragment => {
+    const instructionEnumVariant = nameApi.programInstructionsEnumVariant(
+      instruction.name
+    );
+
+    const parsedInstructionType = nameApi.instructionParsedType(
+      instruction.name
+    );
+
+    return fragment(
+      `| {instructionType: ${programInstructionsEnum}.${instructionEnumVariant}} & ${parsedInstructionType}`,
+      new ImportMap().add('../instructions', parsedInstructionType)
+    );
+  });
+
+  return mergeFragments(
+    [fragment(`export type ${programInstructionsType} =`), ...typeVariants],
+    (r) => r.join('\n')
   );
 }
