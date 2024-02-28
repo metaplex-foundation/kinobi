@@ -9,6 +9,10 @@
 import { Address } from '@solana/addresses';
 import { getU32Encoder } from '@solana/codecs-numbers';
 import { Program } from '@solana/programs';
+import {
+  ParsedCreateAccountInstruction,
+  ParsedTransferSolInstruction,
+} from '../instructions';
 import { memcmp } from '../shared';
 
 export const SPL_SYSTEM_PROGRAM_ADDRESS =
@@ -43,3 +47,11 @@ export function identifySplSystemInstruction(
     'The provided instruction could not be identified as a splSystem instruction.'
   );
 }
+
+export type ParsedSplSystemInstruction =
+  | ({
+      instructionType: SplSystemInstruction.CreateAccount;
+    } & ParsedCreateAccountInstruction)
+  | ({
+      instructionType: SplSystemInstruction.TransferSol;
+    } & ParsedTransferSolInstruction);

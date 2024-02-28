@@ -1,7 +1,7 @@
 import {
+  getAllInstructionsWithSubs,
   InstructionNode,
   ProgramNode,
-  getAllInstructionsWithSubs,
   structTypeNodeFromInstructionArgumentNodes,
 } from '../../../nodes';
 import type { GlobalFragmentScope } from '../getRenderMapVisitor';
@@ -29,6 +29,7 @@ export function getProgramInstructionsFragment(
     [
       getProgramInstructionsEnumFragment(scopeWithInstructions),
       getProgramInstructionsIdentifierFunctionFragment(scopeWithInstructions),
+      getProgramInstructionsParsedUnionTypeFragment(scopeWithInstructions),
     ],
     (r) => `${r.join('\n\n')}\n`
   );
@@ -101,5 +102,41 @@ function getProgramInstructionsIdentifierFunctionFragment(
       `${discriminators}\n` +
       `throw new Error("The provided instruction could not be identified as a ${programNode.name} instruction.")\n` +
       `}`
+  );
+}
+
+function getProgramInstructionsParsedUnionTypeFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi'> & {
+    programNode: ProgramNode;
+    allInstructions: InstructionNode[];
+  }
+): Fragment {
+  const { programNode, allInstructions, nameApi } = scope;
+
+  const programInstructionsType = nameApi.programInstructionsParsedUnionType(
+    programNode.name
+  );
+
+  const programInstructionsEnum = nameApi.programInstructionsEnum(
+    programNode.name
+  );
+
+  const typeVariants = allInstructions.map((instruction): Fragment => {
+    const instructionEnumVariant = nameApi.programInstructionsEnumVariant(
+      instruction.name
+    );
+
+    const parsedInstructionType = nameApi.instructionParsedType(
+      instruction.name
+    );
+
+    return fragment(
+      `| { instructionType: ${programInstructionsEnum}.${instructionEnumVariant} } & ${parsedInstructionType}`
+    ).addImports('generatedInstructions', parsedInstructionType);
+  });
+
+  return mergeFragments(
+    [fragment(`export type ${programInstructionsType} =`), ...typeVariants],
+    (r) => r.join('\n')
   );
 }

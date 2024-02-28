@@ -14,6 +14,60 @@ import {
   MplTokenMetadataProgramErrorCode,
   getMplTokenMetadataProgramErrorFromCode,
 } from '../errors';
+import {
+  ParsedApproveCollectionAuthorityInstruction,
+  ParsedApproveUseAuthorityInstruction,
+  ParsedBubblegumSetCollectionSizeInstruction,
+  ParsedBurnEditionNftInstruction,
+  ParsedBurnInstruction,
+  ParsedBurnNftInstruction,
+  ParsedCloseEscrowAccountInstruction,
+  ParsedConvertMasterEditionV1ToV2Instruction,
+  ParsedCreateEscrowAccountInstruction,
+  ParsedCreateMasterEditionInstruction,
+  ParsedCreateMasterEditionV3Instruction,
+  ParsedCreateMetadataAccountInstruction,
+  ParsedCreateMetadataAccountV2Instruction,
+  ParsedCreateMetadataAccountV3Instruction,
+  ParsedCreateReservationListInstruction,
+  ParsedCreateV1Instruction,
+  ParsedCreateV2Instruction,
+  ParsedDelegateInstruction,
+  ParsedDeprecatedCreateMasterEditionInstruction,
+  ParsedDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction,
+  ParsedDeprecatedMintPrintingTokensInstruction,
+  ParsedDeprecatedMintPrintingTokensViaTokenInstruction,
+  ParsedDeprecatedSetReservationListInstruction,
+  ParsedFreezeDelegatedAccountInstruction,
+  ParsedMigrateInstruction,
+  ParsedMintInstruction,
+  ParsedMintNewEditionFromMasterEditionViaTokenInstruction,
+  ParsedMintNewEditionFromMasterEditionViaVaultProxyInstruction,
+  ParsedPuffMetadataInstruction,
+  ParsedRemoveCreatorVerificationInstruction,
+  ParsedRevokeCollectionAuthorityInstruction,
+  ParsedRevokeInstruction,
+  ParsedRevokeUseAuthorityInstruction,
+  ParsedSetAndVerifyCollectionInstruction,
+  ParsedSetAndVerifySizedCollectionItemInstruction,
+  ParsedSetCollectionSizeInstruction,
+  ParsedSetTokenStandardInstruction,
+  ParsedSignMetadataInstruction,
+  ParsedThawDelegatedAccountInstruction,
+  ParsedTransferInstruction,
+  ParsedTransferOutOfEscrowInstruction,
+  ParsedUnverifyCollectionInstruction,
+  ParsedUnverifySizedCollectionItemInstruction,
+  ParsedUpdateMetadataAccountInstruction,
+  ParsedUpdateMetadataAccountV2Instruction,
+  ParsedUpdatePrimarySaleHappenedViaTokenInstruction,
+  ParsedUpdateV1Instruction,
+  ParsedUseAssetInstruction,
+  ParsedUtilizeInstruction,
+  ParsedVerifyCollectionInstruction,
+  ParsedVerifyInstruction,
+  ParsedVerifySizedCollectionItemInstruction,
+} from '../instructions';
 import { memcmp } from '../shared';
 import { TmKey, getTmKeyEncoder } from '../types';
 
@@ -315,3 +369,161 @@ export function identifyMplTokenMetadataInstruction(
     'The provided instruction could not be identified as a mplTokenMetadata instruction.'
   );
 }
+
+export type ParsedMplTokenMetadataInstruction =
+  | ({
+      instructionType: MplTokenMetadataInstruction.CreateMetadataAccount;
+    } & ParsedCreateMetadataAccountInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.UpdateMetadataAccount;
+    } & ParsedUpdateMetadataAccountInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.DeprecatedCreateMasterEdition;
+    } & ParsedDeprecatedCreateMasterEditionInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.DeprecatedMintNewEditionFromMasterEditionViaPrintingToken;
+    } & ParsedDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.UpdatePrimarySaleHappenedViaToken;
+    } & ParsedUpdatePrimarySaleHappenedViaTokenInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.DeprecatedSetReservationList;
+    } & ParsedDeprecatedSetReservationListInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.CreateReservationList;
+    } & ParsedCreateReservationListInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.SignMetadata;
+    } & ParsedSignMetadataInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.DeprecatedMintPrintingTokensViaToken;
+    } & ParsedDeprecatedMintPrintingTokensViaTokenInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.DeprecatedMintPrintingTokens;
+    } & ParsedDeprecatedMintPrintingTokensInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.CreateMasterEdition;
+    } & ParsedCreateMasterEditionInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.MintNewEditionFromMasterEditionViaToken;
+    } & ParsedMintNewEditionFromMasterEditionViaTokenInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.ConvertMasterEditionV1ToV2;
+    } & ParsedConvertMasterEditionV1ToV2Instruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.MintNewEditionFromMasterEditionViaVaultProxy;
+    } & ParsedMintNewEditionFromMasterEditionViaVaultProxyInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.PuffMetadata;
+    } & ParsedPuffMetadataInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.UpdateMetadataAccountV2;
+    } & ParsedUpdateMetadataAccountV2Instruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.CreateMetadataAccountV2;
+    } & ParsedCreateMetadataAccountV2Instruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.CreateMasterEditionV3;
+    } & ParsedCreateMasterEditionV3Instruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.VerifyCollection;
+    } & ParsedVerifyCollectionInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.Utilize;
+    } & ParsedUtilizeInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.ApproveUseAuthority;
+    } & ParsedApproveUseAuthorityInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.RevokeUseAuthority;
+    } & ParsedRevokeUseAuthorityInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.UnverifyCollection;
+    } & ParsedUnverifyCollectionInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.ApproveCollectionAuthority;
+    } & ParsedApproveCollectionAuthorityInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.RevokeCollectionAuthority;
+    } & ParsedRevokeCollectionAuthorityInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.SetAndVerifyCollection;
+    } & ParsedSetAndVerifyCollectionInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.FreezeDelegatedAccount;
+    } & ParsedFreezeDelegatedAccountInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.ThawDelegatedAccount;
+    } & ParsedThawDelegatedAccountInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.RemoveCreatorVerification;
+    } & ParsedRemoveCreatorVerificationInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.BurnNft;
+    } & ParsedBurnNftInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.VerifySizedCollectionItem;
+    } & ParsedVerifySizedCollectionItemInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.UnverifySizedCollectionItem;
+    } & ParsedUnverifySizedCollectionItemInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.SetAndVerifySizedCollectionItem;
+    } & ParsedSetAndVerifySizedCollectionItemInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.CreateMetadataAccountV3;
+    } & ParsedCreateMetadataAccountV3Instruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.SetCollectionSize;
+    } & ParsedSetCollectionSizeInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.SetTokenStandard;
+    } & ParsedSetTokenStandardInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.BubblegumSetCollectionSize;
+    } & ParsedBubblegumSetCollectionSizeInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.BurnEditionNft;
+    } & ParsedBurnEditionNftInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.CreateEscrowAccount;
+    } & ParsedCreateEscrowAccountInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.CloseEscrowAccount;
+    } & ParsedCloseEscrowAccountInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.TransferOutOfEscrow;
+    } & ParsedTransferOutOfEscrowInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.CreateV1;
+    } & ParsedCreateV1Instruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.CreateV2;
+    } & ParsedCreateV2Instruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.Mint;
+    } & ParsedMintInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.UpdateV1;
+    } & ParsedUpdateV1Instruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.Burn;
+    } & ParsedBurnInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.UseAsset;
+    } & ParsedUseAssetInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.Transfer;
+    } & ParsedTransferInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.Verify;
+    } & ParsedVerifyInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.Delegate;
+    } & ParsedDelegateInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.Revoke;
+    } & ParsedRevokeInstruction)
+  | ({
+      instructionType: MplTokenMetadataInstruction.Migrate;
+    } & ParsedMigrateInstruction);
