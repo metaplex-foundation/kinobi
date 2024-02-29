@@ -23,9 +23,9 @@ export type {{ instructionParsedType }}<
 };
 
 export function {{ instructionParseFunction }}<
-  TProgram extends string,
+  TProgram extends string = '{{ programAddress }}',
   {% if hasAccounts %}
-    TAccountMetas extends readonly IAccountMeta[],
+    TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
   {% endif %}
 >(
   instruction: IInstruction<TProgram>

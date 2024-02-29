@@ -851,8 +851,8 @@ export type ParsedValidateInstruction<
 };
 
 export function parseValidateInstruction<
-  TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

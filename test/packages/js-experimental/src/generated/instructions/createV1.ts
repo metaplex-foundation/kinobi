@@ -577,8 +577,8 @@ export type ParsedCreateV1Instruction<
 };
 
 export function parseCreateV1Instruction<
-  TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

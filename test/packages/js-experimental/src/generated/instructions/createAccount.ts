@@ -255,8 +255,8 @@ export type ParsedCreateAccountInstruction<
 };
 
 export function parseCreateAccountInstruction<
-  TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TProgram extends string = '11111111111111111111111111111111',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

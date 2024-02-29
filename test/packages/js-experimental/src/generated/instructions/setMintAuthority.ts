@@ -273,8 +273,8 @@ export type ParsedSetMintAuthorityInstruction<
 };
 
 export function parseSetMintAuthorityInstruction<
-  TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &
