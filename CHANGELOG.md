@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.17.6
+
+### Patch Changes
+
+- [#165](https://github.com/metaplex-foundation/kinobi/pull/165) [`d33e637`](https://github.com/metaplex-foundation/kinobi/commit/d33e637cedafcf03d5f7196244856a522e46c44a) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Add a TProgram param to the ParsedInstruction union type in js-experimental
+
 ## 0.17.5
 
 ### Patch Changes
