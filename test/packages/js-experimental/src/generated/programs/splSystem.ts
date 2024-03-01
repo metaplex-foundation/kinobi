@@ -48,10 +48,12 @@ export function identifySplSystemInstruction(
   );
 }
 
-export type ParsedSplSystemInstruction =
+export type ParsedSplSystemInstruction<
+  TProgram extends string = '11111111111111111111111111111111'
+> =
   | ({
       instructionType: SplSystemInstruction.CreateAccount;
-    } & ParsedCreateAccountInstruction)
+    } & ParsedCreateAccountInstruction<TProgram>)
   | ({
       instructionType: SplSystemInstruction.TransferSol;
-    } & ParsedTransferSolInstruction);
+    } & ParsedTransferSolInstruction<TProgram>);

@@ -370,160 +370,162 @@ export function identifyMplTokenMetadataInstruction(
   );
 }
 
-export type ParsedMplTokenMetadataInstruction =
+export type ParsedMplTokenMetadataInstruction<
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+> =
   | ({
       instructionType: MplTokenMetadataInstruction.CreateMetadataAccount;
-    } & ParsedCreateMetadataAccountInstruction)
+    } & ParsedCreateMetadataAccountInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.UpdateMetadataAccount;
-    } & ParsedUpdateMetadataAccountInstruction)
+    } & ParsedUpdateMetadataAccountInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.DeprecatedCreateMasterEdition;
-    } & ParsedDeprecatedCreateMasterEditionInstruction)
+    } & ParsedDeprecatedCreateMasterEditionInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.DeprecatedMintNewEditionFromMasterEditionViaPrintingToken;
-    } & ParsedDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction)
+    } & ParsedDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.UpdatePrimarySaleHappenedViaToken;
-    } & ParsedUpdatePrimarySaleHappenedViaTokenInstruction)
+    } & ParsedUpdatePrimarySaleHappenedViaTokenInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.DeprecatedSetReservationList;
-    } & ParsedDeprecatedSetReservationListInstruction)
+    } & ParsedDeprecatedSetReservationListInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.CreateReservationList;
-    } & ParsedCreateReservationListInstruction)
+    } & ParsedCreateReservationListInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.SignMetadata;
-    } & ParsedSignMetadataInstruction)
+    } & ParsedSignMetadataInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.DeprecatedMintPrintingTokensViaToken;
-    } & ParsedDeprecatedMintPrintingTokensViaTokenInstruction)
+    } & ParsedDeprecatedMintPrintingTokensViaTokenInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.DeprecatedMintPrintingTokens;
-    } & ParsedDeprecatedMintPrintingTokensInstruction)
+    } & ParsedDeprecatedMintPrintingTokensInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.CreateMasterEdition;
-    } & ParsedCreateMasterEditionInstruction)
+    } & ParsedCreateMasterEditionInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.MintNewEditionFromMasterEditionViaToken;
-    } & ParsedMintNewEditionFromMasterEditionViaTokenInstruction)
+    } & ParsedMintNewEditionFromMasterEditionViaTokenInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.ConvertMasterEditionV1ToV2;
-    } & ParsedConvertMasterEditionV1ToV2Instruction)
+    } & ParsedConvertMasterEditionV1ToV2Instruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.MintNewEditionFromMasterEditionViaVaultProxy;
-    } & ParsedMintNewEditionFromMasterEditionViaVaultProxyInstruction)
+    } & ParsedMintNewEditionFromMasterEditionViaVaultProxyInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.PuffMetadata;
-    } & ParsedPuffMetadataInstruction)
+    } & ParsedPuffMetadataInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.UpdateMetadataAccountV2;
-    } & ParsedUpdateMetadataAccountV2Instruction)
+    } & ParsedUpdateMetadataAccountV2Instruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.CreateMetadataAccountV2;
-    } & ParsedCreateMetadataAccountV2Instruction)
+    } & ParsedCreateMetadataAccountV2Instruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.CreateMasterEditionV3;
-    } & ParsedCreateMasterEditionV3Instruction)
+    } & ParsedCreateMasterEditionV3Instruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.VerifyCollection;
-    } & ParsedVerifyCollectionInstruction)
+    } & ParsedVerifyCollectionInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.Utilize;
-    } & ParsedUtilizeInstruction)
+    } & ParsedUtilizeInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.ApproveUseAuthority;
-    } & ParsedApproveUseAuthorityInstruction)
+    } & ParsedApproveUseAuthorityInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.RevokeUseAuthority;
-    } & ParsedRevokeUseAuthorityInstruction)
+    } & ParsedRevokeUseAuthorityInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.UnverifyCollection;
-    } & ParsedUnverifyCollectionInstruction)
+    } & ParsedUnverifyCollectionInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.ApproveCollectionAuthority;
-    } & ParsedApproveCollectionAuthorityInstruction)
+    } & ParsedApproveCollectionAuthorityInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.RevokeCollectionAuthority;
-    } & ParsedRevokeCollectionAuthorityInstruction)
+    } & ParsedRevokeCollectionAuthorityInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.SetAndVerifyCollection;
-    } & ParsedSetAndVerifyCollectionInstruction)
+    } & ParsedSetAndVerifyCollectionInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.FreezeDelegatedAccount;
-    } & ParsedFreezeDelegatedAccountInstruction)
+    } & ParsedFreezeDelegatedAccountInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.ThawDelegatedAccount;
-    } & ParsedThawDelegatedAccountInstruction)
+    } & ParsedThawDelegatedAccountInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.RemoveCreatorVerification;
-    } & ParsedRemoveCreatorVerificationInstruction)
+    } & ParsedRemoveCreatorVerificationInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.BurnNft;
-    } & ParsedBurnNftInstruction)
+    } & ParsedBurnNftInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.VerifySizedCollectionItem;
-    } & ParsedVerifySizedCollectionItemInstruction)
+    } & ParsedVerifySizedCollectionItemInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.UnverifySizedCollectionItem;
-    } & ParsedUnverifySizedCollectionItemInstruction)
+    } & ParsedUnverifySizedCollectionItemInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.SetAndVerifySizedCollectionItem;
-    } & ParsedSetAndVerifySizedCollectionItemInstruction)
+    } & ParsedSetAndVerifySizedCollectionItemInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.CreateMetadataAccountV3;
-    } & ParsedCreateMetadataAccountV3Instruction)
+    } & ParsedCreateMetadataAccountV3Instruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.SetCollectionSize;
-    } & ParsedSetCollectionSizeInstruction)
+    } & ParsedSetCollectionSizeInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.SetTokenStandard;
-    } & ParsedSetTokenStandardInstruction)
+    } & ParsedSetTokenStandardInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.BubblegumSetCollectionSize;
-    } & ParsedBubblegumSetCollectionSizeInstruction)
+    } & ParsedBubblegumSetCollectionSizeInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.BurnEditionNft;
-    } & ParsedBurnEditionNftInstruction)
+    } & ParsedBurnEditionNftInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.CreateEscrowAccount;
-    } & ParsedCreateEscrowAccountInstruction)
+    } & ParsedCreateEscrowAccountInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.CloseEscrowAccount;
-    } & ParsedCloseEscrowAccountInstruction)
+    } & ParsedCloseEscrowAccountInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.TransferOutOfEscrow;
-    } & ParsedTransferOutOfEscrowInstruction)
+    } & ParsedTransferOutOfEscrowInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.CreateV1;
-    } & ParsedCreateV1Instruction)
+    } & ParsedCreateV1Instruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.CreateV2;
-    } & ParsedCreateV2Instruction)
+    } & ParsedCreateV2Instruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.Mint;
-    } & ParsedMintInstruction)
+    } & ParsedMintInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.UpdateV1;
-    } & ParsedUpdateV1Instruction)
+    } & ParsedUpdateV1Instruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.Burn;
-    } & ParsedBurnInstruction)
+    } & ParsedBurnInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.UseAsset;
-    } & ParsedUseAssetInstruction)
+    } & ParsedUseAssetInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.Transfer;
-    } & ParsedTransferInstruction)
+    } & ParsedTransferInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.Verify;
-    } & ParsedVerifyInstruction)
+    } & ParsedVerifyInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.Delegate;
-    } & ParsedDelegateInstruction)
+    } & ParsedDelegateInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.Revoke;
-    } & ParsedRevokeInstruction)
+    } & ParsedRevokeInstruction<TProgram>)
   | ({
       instructionType: MplTokenMetadataInstruction.Migrate;
-    } & ParsedMigrateInstruction);
+    } & ParsedMigrateInstruction<TProgram>);
