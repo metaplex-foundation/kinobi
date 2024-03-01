@@ -254,9 +254,9 @@ test('it renders a parsed union type of all available instructions for a program
 
   // Then we expect the following program parsed instruction union type.
   renderMapContains(t, renderMap, 'programs/splToken.ts', [
-    'export type ParsedSplTokenInstruction=',
-    '|({instructionType: SplTokenInstruction.MintTokens;} & ParsedMintTokensInstruction)',
-    '|({instructionType: SplTokenInstruction.TransferTokens;} & ParsedTransferTokensInstruction)',
-    '|({instructionType: SplTokenInstruction.UpdateAuthority;} & ParsedUpdateAuthorityInstruction)',
+    "export type ParsedSplTokenInstruction<TProgram extends string='TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>=",
+    '|({instructionType: SplTokenInstruction.MintTokens;} & ParsedMintTokensInstruction<TProgram>)',
+    '|({instructionType: SplTokenInstruction.TransferTokens;} & ParsedTransferTokensInstruction<TProgram>)',
+    '|({instructionType: SplTokenInstruction.UpdateAuthority;} & ParsedUpdateAuthorityInstruction<TProgram>)',
   ]);
 });

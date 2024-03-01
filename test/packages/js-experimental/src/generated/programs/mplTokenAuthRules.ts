@@ -83,13 +83,15 @@ export function identifyMplTokenAuthRulesInstruction(
   );
 }
 
-export type ParsedMplTokenAuthRulesInstruction =
+export type ParsedMplTokenAuthRulesInstruction<
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+> =
   | ({
       instructionType: MplTokenAuthRulesInstruction.CreateRuleSet;
-    } & ParsedCreateRuleSetInstruction)
+    } & ParsedCreateRuleSetInstruction<TProgram>)
   | ({
       instructionType: MplTokenAuthRulesInstruction.Validate;
-    } & ParsedValidateInstruction)
+    } & ParsedValidateInstruction<TProgram>)
   | ({
       instructionType: MplTokenAuthRulesInstruction.CreateFrequencyRule;
-    } & ParsedCreateFrequencyRuleInstruction);
+    } & ParsedCreateFrequencyRuleInstruction<TProgram>);

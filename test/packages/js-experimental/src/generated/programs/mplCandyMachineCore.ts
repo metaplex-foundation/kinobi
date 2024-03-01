@@ -113,31 +113,33 @@ export function identifyMplCandyMachineCoreInstruction(
   );
 }
 
-export type ParsedMplCandyMachineCoreInstruction =
+export type ParsedMplCandyMachineCoreInstruction<
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+> =
   | ({
       instructionType: MplCandyMachineCoreInstruction.Dummy;
-    } & ParsedDummyInstruction)
+    } & ParsedDummyInstruction<TProgram>)
   | ({
       instructionType: MplCandyMachineCoreInstruction.AddConfigLines;
-    } & ParsedAddConfigLinesInstruction)
+    } & ParsedAddConfigLinesInstruction<TProgram>)
   | ({
       instructionType: MplCandyMachineCoreInstruction.Initialize;
-    } & ParsedInitializeInstruction)
+    } & ParsedInitializeInstruction<TProgram>)
   | ({
       instructionType: MplCandyMachineCoreInstruction.MintFromCandyMachine;
-    } & ParsedMintFromCandyMachineInstruction)
+    } & ParsedMintFromCandyMachineInstruction<TProgram>)
   | ({
       instructionType: MplCandyMachineCoreInstruction.SetAuthority;
-    } & ParsedSetAuthorityInstruction)
+    } & ParsedSetAuthorityInstruction<TProgram>)
   | ({
       instructionType: MplCandyMachineCoreInstruction.SetCollection;
-    } & ParsedSetCollectionInstruction)
+    } & ParsedSetCollectionInstruction<TProgram>)
   | ({
       instructionType: MplCandyMachineCoreInstruction.SetMintAuthority;
-    } & ParsedSetMintAuthorityInstruction)
+    } & ParsedSetMintAuthorityInstruction<TProgram>)
   | ({
       instructionType: MplCandyMachineCoreInstruction.UpdateCandyMachine;
-    } & ParsedUpdateCandyMachineInstruction)
+    } & ParsedUpdateCandyMachineInstruction<TProgram>)
   | ({
       instructionType: MplCandyMachineCoreInstruction.Withdraw;
-    } & ParsedWithdrawInstruction);
+    } & ParsedWithdrawInstruction<TProgram>);

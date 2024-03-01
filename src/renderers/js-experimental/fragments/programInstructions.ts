@@ -113,6 +113,8 @@ function getProgramInstructionsParsedUnionTypeFragment(
 ): Fragment {
   const { programNode, allInstructions, nameApi } = scope;
 
+  const programAddress = programNode.publicKey;
+
   const programInstructionsType = nameApi.programInstructionsParsedUnionType(
     programNode.name
   );
@@ -131,12 +133,17 @@ function getProgramInstructionsParsedUnionTypeFragment(
     );
 
     return fragment(
-      `| { instructionType: ${programInstructionsEnum}.${instructionEnumVariant} } & ${parsedInstructionType}`
+      `| { instructionType: ${programInstructionsEnum}.${instructionEnumVariant} } & ${parsedInstructionType}<TProgram>`
     ).addImports('generatedInstructions', parsedInstructionType);
   });
 
   return mergeFragments(
-    [fragment(`export type ${programInstructionsType} =`), ...typeVariants],
+    [
+      fragment(
+        `export type ${programInstructionsType}<TProgram extends string = '${programAddress}'> =`
+      ),
+      ...typeVariants,
+    ],
     (r) => r.join('\n')
   );
 }
