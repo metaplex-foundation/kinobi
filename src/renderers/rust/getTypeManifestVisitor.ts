@@ -400,7 +400,6 @@ export function getTypeManifestVisitor() {
         visitStringType(stringType) {
           if (
             isNode(stringType.size, 'prefixedSizeNode') &&
-            //stringType.size.prefix.format === 'u32' &&
             stringType.size.prefix.endian === 'le'
           ) {
             switch (stringType.size.prefix.format) {
