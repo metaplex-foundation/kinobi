@@ -400,14 +400,32 @@ export function getTypeManifestVisitor() {
         visitStringType(stringType) {
           if (
             isNode(stringType.size, 'prefixedSizeNode') &&
-            stringType.size.prefix.format === 'u32' &&
             stringType.size.prefix.endian === 'le'
           ) {
-            return {
-              type: 'String',
-              imports: new RustImportMap(),
-              nestedStructs: [],
-            };
+            switch (stringType.size.prefix.format) {
+              case 'u32':
+                return {
+                  type: 'String',
+                  imports: new RustImportMap(),
+                  nestedStructs: [],
+                };
+              case 'u8':
+              case 'u16':
+              case 'u64': {
+                const prefix = stringType.size.prefix.format.toUpperCase();
+                return {
+                  type: `${prefix}PrefixString`,
+                  imports: new RustImportMap().add(
+                    `kaigan::types::${prefix}PrefixString`
+                  ),
+                  nestedStructs: [],
+                };
+              }
+              default:
+                throw new Error(
+                  `'String size not supported: ${stringType.size.prefix.format}`
+                );
+            }
           }
 
           if (isNode(stringType.size, 'fixedSizeNode')) {
