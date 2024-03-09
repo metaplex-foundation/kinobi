@@ -14,7 +14,6 @@ const DEFAULT_MODULE_MAP: Record<string, string> = {
   solanaPrograms: '@solana/programs',
   solanaOptions: '@solana/options',
   solanaSigners: '@solana/signers',
-  solanaTransactions: '@solana/transactions',
 
   // Internal.
   types: '../types',

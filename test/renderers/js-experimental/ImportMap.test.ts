@@ -5,7 +5,7 @@ test('it renders JavaScript import statements', (t) => {
   // Given an import map with 3 imports from 2 sources.
   const importMap = new ImportMap()
     .add('@solana/addresses', ['getAddressEncoder', 'Address'])
-    .add('@solana/transactions', 'Transaction');
+    .add('@solana/instructions', 'IInstructionWithData');
 
   // When we render it.
   const importStatements = importMap.toString();
@@ -14,7 +14,7 @@ test('it renders JavaScript import statements', (t) => {
   t.is(
     importStatements,
     "import { Address, getAddressEncoder } from '@solana/addresses';\n" +
-      "import { Transaction } from '@solana/transactions';"
+      "import { IInstructionWithData } from '@solana/instructions';"
   );
 });
 

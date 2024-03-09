@@ -21,8 +21,7 @@
     "@solana/keys": "2.0.0-experimental.a7a613a",
     "@solana/programs": "2.0.0-experimental.a7a613a",
     "@solana/options": "2.0.0-experimental.a7a613a",
-    "@solana/signers": "2.0.0-experimental.a7a613a",
-    "@solana/transactions": "2.0.0-experimental.a7a613a"
+    "@solana/signers": "2.0.0-experimental.a7a613a"
   },
   "devDependencies": {
     "typescript": "^5.3.3"
