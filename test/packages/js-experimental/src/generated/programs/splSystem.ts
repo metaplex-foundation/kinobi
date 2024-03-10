@@ -7,7 +7,7 @@
  */
 
 import { Address } from '@solana/addresses';
-import { getU32Encoder } from '@solana/codecs-numbers';
+import { getU32Encoder } from '@solana/codecs';
 import { Program } from '@solana/programs';
 import {
   ParsedCreateAccountInstruction,

@@ -16,14 +16,12 @@ import {
   Decoder,
   Encoder,
   combineCodec,
-  mapEncoder,
-} from '@solana/codecs-core';
-import {
   getBooleanDecoder,
   getBooleanEncoder,
   getStructDecoder,
   getStructEncoder,
-} from '@solana/codecs-data-structures';
+  mapEncoder,
+} from '@solana/codecs';
 
 export type Collection = { verified: boolean; key: Address };
 

@@ -13,16 +13,10 @@
   "dependencies": {
     "@solana/accounts": "2.0.0-experimental.a7a613a",
     "@solana/addresses": "2.0.0-experimental.a7a613a",
-    "@solana/codecs-core": "2.0.0-experimental.a7a613a",
-    "@solana/codecs-data-structures": "2.0.0-experimental.a7a613a",
-    "@solana/codecs-numbers": "2.0.0-experimental.a7a613a",
-    "@solana/codecs-strings": "2.0.0-experimental.a7a613a",
+    "@solana/codecs": "2.0.0-experimental.a7a613a",
     "@solana/instructions": "2.0.0-experimental.a7a613a",
-    "@solana/keys": "2.0.0-experimental.a7a613a",
     "@solana/programs": "2.0.0-experimental.a7a613a",
-    "@solana/options": "2.0.0-experimental.a7a613a",
-    "@solana/signers": "2.0.0-experimental.a7a613a",
-    "@solana/transactions": "2.0.0-experimental.a7a613a"
+    "@solana/signers": "2.0.0-experimental.a7a613a"
   },
   "devDependencies": {
     "typescript": "^5.3.3"

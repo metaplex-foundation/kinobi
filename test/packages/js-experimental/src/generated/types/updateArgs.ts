@@ -15,30 +15,28 @@ import {
   Codec,
   Decoder,
   Encoder,
-  combineCodec,
-  mapEncoder,
-} from '@solana/codecs-core';
-import {
   GetDataEnumKind,
   GetDataEnumKindContent,
+  Option,
+  OptionOrNullable,
+  combineCodec,
   getArrayDecoder,
   getArrayEncoder,
   getBooleanDecoder,
   getBooleanEncoder,
   getDataEnumDecoder,
   getDataEnumEncoder,
-  getStructDecoder,
-  getStructEncoder,
-} from '@solana/codecs-data-structures';
-import { getU16Decoder, getU16Encoder } from '@solana/codecs-numbers';
-import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
-import {
-  Option,
-  OptionOrNullable,
   getOptionDecoder,
   getOptionEncoder,
+  getStringDecoder,
+  getStringEncoder,
+  getStructDecoder,
+  getStructEncoder,
+  getU16Decoder,
+  getU16Encoder,
+  mapEncoder,
   some,
-} from '@solana/options';
+} from '@solana/codecs';
 import {
   AuthorityType,
   AuthorityTypeArgs,

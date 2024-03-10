@@ -11,10 +11,13 @@ import {
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
-import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
 import {
+  Codec,
+  Decoder,
+  Encoder,
   GetDataEnumKind,
   GetDataEnumKindContent,
+  combineCodec,
   getArrayDecoder,
   getArrayEncoder,
   getBytesDecoder,
@@ -25,13 +28,11 @@ import {
   getStructEncoder,
   getTupleDecoder,
   getTupleEncoder,
-} from '@solana/codecs-data-structures';
-import {
   getU32Decoder,
   getU32Encoder,
   getU64Decoder,
   getU64Encoder,
-} from '@solana/codecs-numbers';
+} from '@solana/codecs';
 
 /** This is a union of all the possible payload types. */
 export type PayloadType =

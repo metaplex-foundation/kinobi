@@ -5,7 +5,7 @@ test('it renders JavaScript import statements', (t) => {
   // Given an import map with 3 imports from 2 sources.
   const importMap = new ImportMap()
     .add('@solana/addresses', ['getAddressEncoder', 'Address'])
-    .add('@solana/transactions', 'Transaction');
+    .add('@solana/instructions', 'IInstructionWithData');
 
   // When we render it.
   const importStatements = importMap.toString();
@@ -14,7 +14,7 @@ test('it renders JavaScript import statements', (t) => {
   t.is(
     importStatements,
     "import { Address, getAddressEncoder } from '@solana/addresses';\n" +
-      "import { Transaction } from '@solana/transactions';"
+      "import { IInstructionWithData } from '@solana/instructions';"
   );
 });
 
@@ -50,7 +50,7 @@ test('it offers some default dependency mappings', (t) => {
   t.is(
     importStatements,
     "import { Address } from '@solana/addresses';\n" +
-      "import { Codec } from '@solana/codecs-core';\n" +
+      "import { Codec } from '@solana/codecs';\n" +
       "import { MyCustomType } from '../../hooked';\n" +
       "import { myHelper } from '../shared';\n" +
       "import { MyType } from '../types';"
@@ -74,4 +74,20 @@ test('it does not render empty import statements', (t) => {
   t.is(new ImportMap().toString(), '');
   t.is(new ImportMap().add('shared', []).toString(), '');
   t.is(new ImportMap().addAlias('shared', 'Foo', 'Bar').toString(), '');
+});
+
+test('it merges imports that have the same aliases together', (t) => {
+  // Given an import map with some recognized dependency keys.
+  const importMap = new ImportMap()
+    .add('packageA', 'foo')
+    .add('packageB', 'bar');
+
+  // When we render it.
+  const importStatements = importMap.toString({
+    packageA: '@solana/packages',
+    packageB: '@solana/packages',
+  });
+
+  // Then we expect the following import statements.
+  t.is(importStatements, "import { bar, foo } from '@solana/packages';");
 });

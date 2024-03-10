@@ -28,20 +28,17 @@ import {
   Codec,
   Decoder,
   Encoder,
-  combineCodec,
-  mapEncoder,
-} from '@solana/codecs-core';
-import {
-  getStructDecoder,
-  getStructEncoder,
-} from '@solana/codecs-data-structures';
-import { getU8Decoder, getU8Encoder } from '@solana/codecs-numbers';
-import {
   Option,
   OptionOrNullable,
+  combineCodec,
   getOptionDecoder,
   getOptionEncoder,
-} from '@solana/options';
+  getStructDecoder,
+  getStructEncoder,
+  getU8Decoder,
+  getU8Encoder,
+  mapEncoder,
+} from '@solana/codecs';
 import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type CollectionAuthorityRecord<TAddress extends string = string> =

@@ -7,7 +7,7 @@
  */
 
 import { Address } from '@solana/addresses';
-import { getU64Encoder, getU8Encoder } from '@solana/codecs-numbers';
+import { getU64Encoder, getU8Encoder } from '@solana/codecs';
 import { Program, ProgramWithErrors } from '@solana/programs';
 import {
   MplTokenAuthRulesProgramError,
