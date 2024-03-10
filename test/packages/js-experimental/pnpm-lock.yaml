@@ -17,9 +17,6 @@ dependencies:
   '@solana/instructions':
     specifier: 2.0.0-experimental.a7a613a
     version: 2.0.0-experimental.a7a613a
-  '@solana/keys':
-    specifier: 2.0.0-experimental.a7a613a
-    version: 2.0.0-experimental.a7a613a(fastestsmallesttextencoderdecoder@1.0.22)
   '@solana/programs':
     specifier: 2.0.0-experimental.a7a613a
     version: 2.0.0-experimental.a7a613a
