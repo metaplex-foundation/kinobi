@@ -11,10 +11,13 @@ import {
   getAddressDecoder,
   getAddressEncoder,
 } from '@solana/addresses';
-import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
 import {
+  Codec,
+  Decoder,
+  Encoder,
   GetDataEnumKind,
   GetDataEnumKindContent,
+  combineCodec,
   getDataEnumDecoder,
   getDataEnumEncoder,
   getStructDecoder,
@@ -23,7 +26,7 @@ import {
   getTupleEncoder,
   getUnitDecoder,
   getUnitEncoder,
-} from '@solana/codecs-data-structures';
+} from '@solana/codecs';
 
 export type EscrowAuthority =
   | { __kind: 'TokenOwner' }

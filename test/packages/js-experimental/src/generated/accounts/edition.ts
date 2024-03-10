@@ -29,13 +29,12 @@ import {
   Decoder,
   Encoder,
   combineCodec,
-  mapEncoder,
-} from '@solana/codecs-core';
-import {
   getStructDecoder,
   getStructEncoder,
-} from '@solana/codecs-data-structures';
-import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
+  getU64Decoder,
+  getU64Encoder,
+  mapEncoder,
+} from '@solana/codecs';
 import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type Edition<TAddress extends string = string> = Account<

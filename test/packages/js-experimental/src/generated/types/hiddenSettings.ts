@@ -6,14 +6,18 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
 import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
   getBytesDecoder,
   getBytesEncoder,
+  getStringDecoder,
+  getStringEncoder,
   getStructDecoder,
   getStructEncoder,
-} from '@solana/codecs-data-structures';
-import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
+} from '@solana/codecs';
 
 /** Hidden settings for large mints used with off-chain data. */
 export type HiddenSettings = {

@@ -6,13 +6,13 @@ const DEFAULT_MODULE_MAP: Record<string, string> = {
   // External.
   solanaAccounts: '@solana/accounts',
   solanaAddresses: '@solana/addresses',
-  solanaCodecsCore: '@solana/codecs-core',
-  solanaCodecsNumbers: '@solana/codecs-numbers',
-  solanaCodecsStrings: '@solana/codecs-strings',
-  solanaCodecsDataStructures: '@solana/codecs-data-structures',
+  solanaCodecsCore: '@solana/codecs',
+  solanaCodecsNumbers: '@solana/codecs',
+  solanaCodecsStrings: '@solana/codecs',
+  solanaCodecsDataStructures: '@solana/codecs',
   solanaInstructions: '@solana/instructions',
   solanaPrograms: '@solana/programs',
-  solanaOptions: '@solana/options',
+  solanaOptions: '@solana/codecs',
   solanaSigners: '@solana/signers',
 
   // Internal.
@@ -99,13 +99,35 @@ export class ImportMap {
     return this._imports.size === 0;
   }
 
-  toString(dependencies: Record<ImportFrom, string> = {}): string {
-    const dependencyMap = { ...DEFAULT_MODULE_MAP, ...dependencies };
-    const importStatements = [...this._imports.entries()]
-      .map(([module, imports]) => {
-        const mappedModule: string = dependencyMap[module] ?? module;
-        return [mappedModule, module, imports] as const;
+  resolve(
+    dependencies: Record<ImportFrom, string> = {}
+  ): Map<ImportFrom, Set<string>> {
+    // Resolve aliases.
+    const aliasedMap = new Map<ImportFrom, Set<string>>(
+      [...this._imports.entries()].map(([module, imports]) => {
+        const aliasMap = this._aliases.get(module) ?? {};
+        const joinedImports = [...imports].map((i) =>
+          aliasMap[i] ? `${i} as ${aliasMap[i]}` : i
+        );
+        return [module, new Set(joinedImports)];
       })
+    );
+
+    // Resolve dependency mappings.
+    const dependencyMap = { ...DEFAULT_MODULE_MAP, ...dependencies };
+    const resolvedMap = new Map<ImportFrom, Set<string>>();
+    aliasedMap.forEach((imports, module) => {
+      const resolvedModule: string = dependencyMap[module] ?? module;
+      const currentImports = resolvedMap.get(resolvedModule) ?? new Set();
+      imports.forEach((i) => currentImports.add(i));
+      resolvedMap.set(resolvedModule, currentImports);
+    });
+
+    return resolvedMap;
+  }
+
+  toString(dependencies: Record<ImportFrom, string> = {}): string {
+    return [...this.resolve(dependencies).entries()]
       .sort(([a], [b]) => {
         const aIsRelative = a.startsWith('.');
         const bIsRelative = b.startsWith('.');
@@ -113,14 +135,10 @@ export class ImportMap {
         if (!aIsRelative && bIsRelative) return -1;
         return a.localeCompare(b);
       })
-      .map(([mappedModule, module, imports]) => {
-        const aliasMap = this._aliases.get(module) ?? {};
-        const joinedImports = [...imports]
-          .sort()
-          .map((i) => (aliasMap[i] ? `${i} as ${aliasMap[i]}` : i))
-          .join(', ');
-        return `import { ${joinedImports} } from '${mappedModule}';`;
-      });
-    return importStatements.join('\n');
+      .map(([module, imports]) => {
+        const joinedImports = [...imports].sort().join(', ');
+        return `import { ${joinedImports} } from '${module}';`;
+      })
+      .join('\n');
   }
 }

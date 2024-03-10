@@ -25,18 +25,14 @@ import {
   Decoder,
   Encoder,
   combineCodec,
-  mapEncoder,
-} from '@solana/codecs-core';
-import {
-  getStructDecoder,
-  getStructEncoder,
-} from '@solana/codecs-data-structures';
-import {
   getI64Decoder,
   getI64Encoder,
+  getStructDecoder,
+  getStructEncoder,
   getU64Decoder,
   getU64Encoder,
-} from '@solana/codecs-numbers';
+  mapEncoder,
+} from '@solana/codecs';
 import { findFrequencyAccountPda } from '../pdas';
 import { TaKey } from '../types';
 

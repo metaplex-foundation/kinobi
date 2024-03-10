@@ -12,7 +12,7 @@ import {
   getAddressEncoder,
   getProgramDerivedAddress,
 } from '@solana/addresses';
-import { getStringEncoder } from '@solana/codecs-strings';
+import { getStringEncoder } from '@solana/codecs';
 
 export type MasterEditionV2Seeds = {
   /** The address of the mint account */

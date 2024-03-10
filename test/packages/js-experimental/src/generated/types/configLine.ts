@@ -6,12 +6,16 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
 import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
+  getStringDecoder,
+  getStringEncoder,
   getStructDecoder,
   getStructEncoder,
-} from '@solana/codecs-data-structures';
-import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
+} from '@solana/codecs';
 
 /** Config line struct for storing asset (NFT) data pre-mint. */
 export type ConfigLine = {

@@ -6,15 +6,20 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
 import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
   getBooleanDecoder,
   getBooleanEncoder,
+  getStringDecoder,
+  getStringEncoder,
   getStructDecoder,
   getStructEncoder,
-} from '@solana/codecs-data-structures';
-import { getU32Decoder, getU32Encoder } from '@solana/codecs-numbers';
-import { getStringDecoder, getStringEncoder } from '@solana/codecs-strings';
+  getU32Decoder,
+  getU32Encoder,
+} from '@solana/codecs';
 
 /** Config line settings to allocate space for individual name + URI. */
 export type ConfigLineSettings = {

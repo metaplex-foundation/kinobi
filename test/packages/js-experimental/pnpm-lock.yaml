@@ -11,16 +11,7 @@ dependencies:
   '@solana/addresses':
     specifier: 2.0.0-experimental.a7a613a
     version: 2.0.0-experimental.a7a613a(fastestsmallesttextencoderdecoder@1.0.22)
-  '@solana/codecs-core':
-    specifier: 2.0.0-experimental.a7a613a
-    version: 2.0.0-experimental.a7a613a
-  '@solana/codecs-data-structures':
-    specifier: 2.0.0-experimental.a7a613a
-    version: 2.0.0-experimental.a7a613a
-  '@solana/codecs-numbers':
-    specifier: 2.0.0-experimental.a7a613a
-    version: 2.0.0-experimental.a7a613a
-  '@solana/codecs-strings':
+  '@solana/codecs':
     specifier: 2.0.0-experimental.a7a613a
     version: 2.0.0-experimental.a7a613a(fastestsmallesttextencoderdecoder@1.0.22)
   '@solana/instructions':
@@ -29,9 +20,6 @@ dependencies:
   '@solana/keys':
     specifier: 2.0.0-experimental.a7a613a
     version: 2.0.0-experimental.a7a613a(fastestsmallesttextencoderdecoder@1.0.22)
-  '@solana/options':
-    specifier: 2.0.0-experimental.a7a613a
-    version: 2.0.0-experimental.a7a613a
   '@solana/programs':
     specifier: 2.0.0-experimental.a7a613a
     version: 2.0.0-experimental.a7a613a
@@ -97,6 +85,18 @@ packages:
       '@solana/codecs-core': 2.0.0-experimental.a7a613a
       '@solana/codecs-numbers': 2.0.0-experimental.a7a613a
       fastestsmallesttextencoderdecoder: 1.0.22
+    dev: false
+
+  /@solana/codecs@2.0.0-experimental.a7a613a(fastestsmallesttextencoderdecoder@1.0.22):
+    resolution: {integrity: sha512-9egdKvdYisL1pc4EXQJmikuIJISJFvmRkSFq147xSQoTg19J7wKikILqa39/jnthqE1NwyVgZgkv/h2ILoB/8A==}
+    dependencies:
+      '@solana/codecs-core': 2.0.0-experimental.a7a613a
+      '@solana/codecs-data-structures': 2.0.0-experimental.a7a613a
+      '@solana/codecs-numbers': 2.0.0-experimental.a7a613a
+      '@solana/codecs-strings': 2.0.0-experimental.a7a613a(fastestsmallesttextencoderdecoder@1.0.22)
+      '@solana/options': 2.0.0-experimental.a7a613a
+    transitivePeerDependencies:
+      - fastestsmallesttextencoderdecoder
     dev: false
 
   /@solana/errors@2.0.0-experimental.a7a613a:

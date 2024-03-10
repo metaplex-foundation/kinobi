@@ -12,7 +12,7 @@ import {
   getAddressEncoder,
   getProgramDerivedAddress,
 } from '@solana/addresses';
-import { getStringEncoder } from '@solana/codecs-strings';
+import { getStringEncoder } from '@solana/codecs';
 import { DelegateRoleArgs, getDelegateRoleEncoder } from '../types';
 
 export type DelegateRecordSeeds = {

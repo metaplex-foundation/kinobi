@@ -6,14 +6,18 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Codec, Decoder, Encoder, combineCodec } from '@solana/codecs-core';
 import {
+  Codec,
+  Decoder,
+  Encoder,
+  combineCodec,
   getArrayDecoder,
   getArrayEncoder,
   getStructDecoder,
   getStructEncoder,
-} from '@solana/codecs-data-structures';
-import { getU64Decoder, getU64Encoder } from '@solana/codecs-numbers';
+  getU64Decoder,
+  getU64Encoder,
+} from '@solana/codecs';
 
 /** Dummy lines. */
 export type DummyLines = {
