@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.17.8
+
+### Patch Changes
+
+- [#169](https://github.com/metaplex-foundation/kinobi/pull/169) [`88db888`](https://github.com/metaplex-foundation/kinobi/commit/88db888a349937cd364b3befd68a3f044689101c) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Use @solana/codecs instead of codec sub-packages
+
 ## 0.17.7
 
 ### Patch Changes
