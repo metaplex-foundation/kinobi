@@ -62,3 +62,11 @@ export const getNodeSelectorFunction = (
     checkNode(node, lastNodeSelector) &&
     checkStack(stack.all(), [...nodeSelectors]);
 };
+
+export const getConjunctiveNodeSelectorFunction = (
+  selector: NodeSelector | NodeSelector[]
+): NodeSelectorFunction => {
+  const selectors = Array.isArray(selector) ? selector : [selector];
+  const selectorFunctions = selectors.map(getNodeSelectorFunction);
+  return (node, stack) => selectorFunctions.every((fn) => fn(node, stack));
+};

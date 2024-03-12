@@ -17,45 +17,41 @@ export function setAccountDiscriminatorFromFieldVisitor(
   return bottomUpTransformerVisitor(
     Object.entries(map).map(
       ([
-        selectorStack,
+        selector,
         { field, value, offset },
-      ]): BottomUpNodeTransformerWithSelector => {
-        const stack = selectorStack.split('.');
-        const name = stack.pop();
-        return {
-          select: `${stack.join('.')}.[accountNode]${name}`,
-          transform: (node) => {
-            assertIsNode(node, 'accountNode');
+      ]): BottomUpNodeTransformerWithSelector => ({
+        select: ['[accountNode]', selector],
+        transform: (node) => {
+          assertIsNode(node, 'accountNode');
 
-            const fieldIndex = node.data.fields.findIndex(
-              (f) => f.name === field
+          const fieldIndex = node.data.fields.findIndex(
+            (f) => f.name === field
+          );
+          if (fieldIndex < 0) {
+            throw new Error(
+              `Account [${node.name}] does not have a field named [${field}].`
             );
-            if (fieldIndex < 0) {
-              throw new Error(
-                `Account [${node.name}] does not have a field named [${field}].`
-              );
-            }
+          }
 
-            const fieldNode = node.data.fields[fieldIndex];
-            return accountNode({
-              ...node,
-              discriminators: [
-                fieldDiscriminatorNode(field, offset),
-                ...(node.discriminators ?? []),
-              ],
-              data: structTypeNode([
-                ...node.data.fields.slice(0, fieldIndex),
-                structFieldTypeNode({
-                  ...fieldNode,
-                  defaultValue: value,
-                  defaultValueStrategy: 'omitted',
-                }),
-                ...node.data.fields.slice(fieldIndex + 1),
-              ]),
-            });
-          },
-        };
-      }
+          const fieldNode = node.data.fields[fieldIndex];
+          return accountNode({
+            ...node,
+            discriminators: [
+              fieldDiscriminatorNode(field, offset),
+              ...(node.discriminators ?? []),
+            ],
+            data: structTypeNode([
+              ...node.data.fields.slice(0, fieldIndex),
+              structFieldTypeNode({
+                ...fieldNode,
+                defaultValue: value,
+                defaultValueStrategy: 'omitted',
+              }),
+              ...node.data.fields.slice(fieldIndex + 1),
+            ]),
+          });
+        },
+      })
     )
   );
 }

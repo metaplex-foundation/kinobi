@@ -58,7 +58,7 @@ export function setStructDefaultValuesVisitor(map: StructDefaultValueMap) {
             },
           },
           {
-            select: `${stack}.[instructionNode]`,
+            select: ['[instructionNode]', stack],
             transform: (node) => {
               assertIsNode(node, 'instructionNode');
               const transformArguments = (

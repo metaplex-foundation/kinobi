@@ -23,8 +23,6 @@ export function updateDefinedTypesVisitor(
   return bottomUpTransformerVisitor(
     Object.entries(map).flatMap(
       ([selector, updates]): BottomUpNodeTransformerWithSelector[] => {
-        const selectorStack = selector.split('.');
-        const name = selectorStack.pop();
         const newName =
           typeof updates === 'object' && 'name' in updates && updates.name
             ? mainCase(updates.name)
@@ -32,7 +30,7 @@ export function updateDefinedTypesVisitor(
 
         const transformers: BottomUpNodeTransformerWithSelector[] = [
           {
-            select: `${selectorStack.join('.')}.[definedTypeNode]${name}`,
+            select: ['[definedTypeNode]', selector],
             transform: (node) => {
               assertIsNode(node, 'definedTypeNode');
               if ('delete' in updates) {
@@ -57,7 +55,7 @@ export function updateDefinedTypesVisitor(
 
         if (newName) {
           transformers.push({
-            select: `${selectorStack.join('.')}.[definedTypeLinkNode]${name}`,
+            select: ['[definedTypeLinkNode]', selector],
             transform: (node) => {
               assertIsNode(node, 'definedTypeLinkNode');
               if (node.importFrom) return node;

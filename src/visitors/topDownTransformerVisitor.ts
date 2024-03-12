@@ -2,7 +2,7 @@ import { Node, NodeKind } from '../nodes';
 import {
   NodeSelector,
   NodeStack,
-  getNodeSelectorFunction,
+  getConjunctiveNodeSelectorFunction,
   pipe,
 } from '../shared';
 import { identityVisitor } from './identityVisitor';
@@ -18,7 +18,7 @@ export type TopDownNodeTransformer<TNode extends Node = Node> = <
 ) => T | null;
 
 export type TopDownNodeTransformerWithSelector<TNode extends Node = Node> = {
-  select: NodeSelector;
+  select: NodeSelector | NodeSelector[];
   transform: TopDownNodeTransformer<TNode>;
 };
 
@@ -29,13 +29,13 @@ export function topDownTransformerVisitor<
   nodeKeys?: TNodeKind[]
 ): Visitor<Node | null, TNodeKind> {
   const transformerFunctions = transformers.map(
-    (transformer): TopDownNodeTransformer =>
-      typeof transformer === 'function'
-        ? transformer
-        : (node, stack) =>
-            getNodeSelectorFunction(transformer.select)(node, stack)
-              ? transformer.transform(node, stack)
-              : node
+    (transformer): TopDownNodeTransformer => {
+      if (typeof transformer === 'function') return transformer;
+      return (node, stack) =>
+        getConjunctiveNodeSelectorFunction(transformer.select)(node, stack)
+          ? transformer.transform(node, stack)
+          : node;
+    }
   );
 
   const stack = new NodeStack();

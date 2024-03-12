@@ -29,32 +29,28 @@ export function setInstructionDiscriminatorsVisitor(
 ) {
   return bottomUpTransformerVisitor(
     Object.entries(map).map(
-      ([selectorStack, discriminator]): BottomUpNodeTransformerWithSelector => {
-        const stack = selectorStack.split('.');
-        const name = stack.pop();
-        return {
-          select: `${stack.join('.')}.[instructionNode]${name}`,
-          transform: (node) => {
-            assertIsNode(node, 'instructionNode');
-            const discriminatorArgument = instructionArgumentNode({
-              name: discriminator.name ?? 'discriminator',
-              type: discriminator.type ?? numberTypeNode('u8'),
-              docs: discriminator.docs ?? [],
-              defaultValue: discriminator.value,
-              defaultValueStrategy: discriminator.strategy ?? 'omitted',
-            });
+      ([selector, discriminator]): BottomUpNodeTransformerWithSelector => ({
+        select: ['[instructionNode]', selector],
+        transform: (node) => {
+          assertIsNode(node, 'instructionNode');
+          const discriminatorArgument = instructionArgumentNode({
+            name: discriminator.name ?? 'discriminator',
+            type: discriminator.type ?? numberTypeNode('u8'),
+            docs: discriminator.docs ?? [],
+            defaultValue: discriminator.value,
+            defaultValueStrategy: discriminator.strategy ?? 'omitted',
+          });
 
-            return instructionNode({
-              ...node,
-              discriminators: [
-                fieldDiscriminatorNode(discriminator.name ?? 'discriminator'),
-                ...(node.discriminators ?? []),
-              ],
-              arguments: [discriminatorArgument, ...node.arguments],
-            });
-          },
-        };
-      }
+          return instructionNode({
+            ...node,
+            discriminators: [
+              fieldDiscriminatorNode(discriminator.name ?? 'discriminator'),
+              ...(node.discriminators ?? []),
+            ],
+            arguments: [discriminatorArgument, ...node.arguments],
+          });
+        },
+      })
     )
   );
 }
