@@ -1,5 +1,13 @@
 # @metaplex-foundation/kinobi
 
+## 0.17.9
+
+### Patch Changes
+
+- [#172](https://github.com/metaplex-foundation/kinobi/pull/172) [`2883472`](https://github.com/metaplex-foundation/kinobi/commit/28834725fa0ba5351c0a4acbef68bedbf49d45b4) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix NodeSelectors in several visitors
+
+  Adds support for multiple NodeSelectors inside transformer visitors, refactors users of transformer visitors and adds tests.
+
 ## 0.17.8
 
 ### Patch Changes
