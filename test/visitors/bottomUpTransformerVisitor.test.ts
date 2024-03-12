@@ -119,3 +119,36 @@ test('it can be used to delete nodes', (t) => {
   // Then we expect the number nodes to have been deleted.
   t.deepEqual(result, tupleTypeNode([tupleTypeNode([publicKeyTypeNode()])]));
 });
+
+test('it can transform nodes using multiple node selectors', (t) => {
+  // Given the following tree.
+  const node = tupleTypeNode([
+    numberTypeNode('u32'),
+    tupleTypeNode([numberTypeNode('u32'), publicKeyTypeNode()]),
+  ]);
+
+  // And a transformer visitor that uses two node selectors such that
+  // - the first one selects all number nodes, and
+  // - the second one selects all nodes with more than one ancestor.
+  const visitor = bottomUpTransformerVisitor([
+    {
+      select: [
+        '[numberTypeNode]',
+        (_, nodeStack) => nodeStack.all().length > 1,
+      ],
+      transform: () => stringTypeNode(),
+    },
+  ]);
+
+  // When we visit the tree using that visitor.
+  const result = visit(node, visitor);
+
+  // Then we expect both node selectors to have been applied.
+  t.deepEqual(
+    result,
+    tupleTypeNode([
+      numberTypeNode('u32'),
+      tupleTypeNode([stringTypeNode(), publicKeyTypeNode()]),
+    ])
+  );
+});
