@@ -61,45 +61,41 @@ export function updateInstructionsVisitor(
   const linkables = new LinkableDictionary();
 
   const transformers = Object.entries(map).map(
-    ([selector, updates]): BottomUpNodeTransformerWithSelector => {
-      const selectorStack = selector.split('.');
-      const name = selectorStack.pop();
-      const selectorPrefix =
-        selectorStack.length > 0 ? `${selectorStack.join('.')}.` : '';
-      return {
-        select: `${selectorPrefix}[instructionNode]${name}`,
-        transform: (node) => {
-          assertIsNode(node, 'instructionNode');
-          if ('delete' in updates) {
-            return null;
-          }
+    ([selector, updates]): BottomUpNodeTransformerWithSelector => ({
+      select: ['[instructionNode]', selector],
+      transform: (node) => {
+        assertIsNode(node, 'instructionNode');
+        if ('delete' in updates) {
+          return null;
+        }
 
-          const {
-            accounts: accountUpdates,
-            arguments: argumentUpdates,
-            ...metadataUpdates
-          } = updates;
-          const { newArguments, newExtraArguments } =
-            handleInstructionArguments(node, argumentUpdates ?? {});
-          const newAccounts = node.accounts.map((account) =>
-            handleInstructionAccount(
-              node,
-              account,
-              accountUpdates ?? {},
-              linkables
-            )
-          );
-          return instructionNode({
-            ...node,
-            ...metadataUpdates,
-            accounts: newAccounts,
-            arguments: newArguments,
-            extraArguments:
-              newExtraArguments.length > 0 ? newExtraArguments : undefined,
-          });
-        },
-      };
-    }
+        const {
+          accounts: accountUpdates,
+          arguments: argumentUpdates,
+          ...metadataUpdates
+        } = updates;
+        const { newArguments, newExtraArguments } = handleInstructionArguments(
+          node,
+          argumentUpdates ?? {}
+        );
+        const newAccounts = node.accounts.map((account) =>
+          handleInstructionAccount(
+            node,
+            account,
+            accountUpdates ?? {},
+            linkables
+          )
+        );
+        return instructionNode({
+          ...node,
+          ...metadataUpdates,
+          accounts: newAccounts,
+          arguments: newArguments,
+          extraArguments:
+            newExtraArguments.length > 0 ? newExtraArguments : undefined,
+        });
+      },
+    })
   );
 
   return pipe(bottomUpTransformerVisitor(transformers), (v) =>

@@ -5,11 +5,10 @@ import {
   assertIsNode,
   instructionArgumentNode,
   instructionNode,
-  isNode,
   structFieldTypeNode,
   structTypeNode,
 } from '../nodes';
-import { getNodeSelectorFunction, mainCase } from '../shared';
+import { mainCase } from '../shared';
 import {
   BottomUpNodeTransformerWithSelector,
   bottomUpTransformerVisitor,
@@ -59,9 +58,7 @@ export function setStructDefaultValuesVisitor(map: StructDefaultValueMap) {
             },
           },
           {
-            select: (node, nodeStack): boolean =>
-              getNodeSelectorFunction(stack)(node, nodeStack) &&
-              isNode(node, 'instructionNode'),
+            select: ['[instructionNode]', stack],
             transform: (node) => {
               assertIsNode(node, 'instructionNode');
               const transformArguments = (

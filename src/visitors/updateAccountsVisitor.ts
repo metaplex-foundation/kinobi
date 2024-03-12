@@ -25,10 +25,6 @@ export type AccountUpdates =
 export function updateAccountsVisitor(map: Record<string, AccountUpdates>) {
   return bottomUpTransformerVisitor(
     Object.entries(map).flatMap(([selector, updates]) => {
-      const selectorStack = selector.split('.');
-      const name = selectorStack.pop();
-      const selectorPrefix =
-        selectorStack.length > 0 ? `${selectorStack.join('.')}.` : '';
       const newName =
         typeof updates === 'object' && 'name' in updates && updates.name
           ? mainCase(updates.name)
@@ -37,7 +33,7 @@ export function updateAccountsVisitor(map: Record<string, AccountUpdates>) {
 
       const transformers: BottomUpNodeTransformerWithSelector[] = [
         {
-          select: `${selectorPrefix}[accountNode]${name}`,
+          select: ['[accountNode]', selector],
           transform: (node, stack) => {
             assertIsNode(node, 'accountNode');
             if ('delete' in updates) return null;
@@ -102,7 +98,7 @@ export function updateAccountsVisitor(map: Record<string, AccountUpdates>) {
       if (newName) {
         transformers.push(
           {
-            select: `${selectorStack.join('.')}.[accountLinkNode]${name}`,
+            select: ['[accountLinkNode]', selector],
             transform: (node) => {
               assertIsNode(node, 'accountLinkNode');
               if (node.importFrom) return node;
@@ -110,14 +106,14 @@ export function updateAccountsVisitor(map: Record<string, AccountUpdates>) {
             },
           },
           {
-            select: `${selectorStack.join('.')}.[pdaNode]${name}`,
+            select: ['[pdaNode]', selector],
             transform: (node) => {
               assertIsNode(node, 'pdaNode');
               return pdaNode(newName, node.seeds);
             },
           },
           {
-            select: `${selectorStack.join('.')}.[pdaLinkNode]${name}`,
+            select: ['[pdaLinkNode]', selector],
             transform: (node) => {
               assertIsNode(node, 'pdaLinkNode');
               if (node.importFrom) return node;
