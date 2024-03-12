@@ -64,8 +64,10 @@ export function updateInstructionsVisitor(
     ([selector, updates]): BottomUpNodeTransformerWithSelector => {
       const selectorStack = selector.split('.');
       const name = selectorStack.pop();
+      const selectorPrefix =
+        selectorStack.length > 0 ? `${selectorStack.join('.')}.` : '';
       return {
-        select: `${selectorStack.join('.')}.[instructionNode]${name}`,
+        select: `${selectorPrefix}[instructionNode]${name}`,
         transform: (node) => {
           assertIsNode(node, 'instructionNode');
           if ('delete' in updates) {
@@ -150,6 +152,8 @@ function handleInstructionArguments(
       name: argUpdate.name ?? node.name,
       docs: argUpdate.docs ?? node.docs,
       defaultValue: argUpdate.defaultValue ?? node.defaultValue,
+      defaultValueStrategy:
+        argUpdate.defaultValueStrategy ?? node.defaultValueStrategy,
     });
   });
 
@@ -165,6 +169,8 @@ function handleInstructionArguments(
         name: argUpdate.name ?? node.name,
         docs: argUpdate.docs ?? node.docs,
         defaultValue: argUpdate.defaultValue ?? node.defaultValue,
+        defaultValueStrategy:
+          argUpdate.defaultValueStrategy ?? node.defaultValueStrategy,
       });
     }
   );
@@ -181,6 +187,7 @@ function handleInstructionArguments(
           type,
           docs: argUpdate.docs ?? [],
           defaultValue: argUpdate.defaultValue ?? undefined,
+          defaultValueStrategy: argUpdate.defaultValueStrategy ?? undefined,
         });
       }),
   ];

@@ -4,10 +4,13 @@ import {
   accountNode,
   assertIsNode,
   constantPdaSeedNodeFromString,
+  numberTypeNode,
   pdaLinkNode,
   pdaNode,
   programNode,
   rootNode,
+  structFieldTypeNode,
+  structTypeNode,
   updateAccountsVisitor,
   visit,
 } from '../../src';
@@ -68,6 +71,30 @@ test('it updates the name of an account within a specific program', (t) => {
 
   // But not the second account.
   t.is(result.programs[1].accounts[0].name, 'candyMachine' as MainCaseString);
+});
+
+test("it renames the fields of an account's data", (t) => {
+  // Given the following account.
+  const node = accountNode({
+    name: 'myAccount',
+    data: structTypeNode([
+      structFieldTypeNode({ name: 'myData', type: numberTypeNode('u32') }),
+    ]),
+  });
+
+  // When we rename its data fields.
+  const result = visit(
+    node,
+    updateAccountsVisitor({
+      myAccount: {
+        data: { myData: 'myNewData' },
+      },
+    })
+  );
+
+  // Then we expect the following tree changes.
+  assertIsNode(result, 'accountNode');
+  t.is(result.data.fields[0].name, 'myNewData' as MainCaseString);
 });
 
 test('it updates the name of associated PDA nodes', (t) => {

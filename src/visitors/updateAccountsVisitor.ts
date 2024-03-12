@@ -27,6 +27,8 @@ export function updateAccountsVisitor(map: Record<string, AccountUpdates>) {
     Object.entries(map).flatMap(([selector, updates]) => {
       const selectorStack = selector.split('.');
       const name = selectorStack.pop();
+      const selectorPrefix =
+        selectorStack.length > 0 ? `${selectorStack.join('.')}.` : '';
       const newName =
         typeof updates === 'object' && 'name' in updates && updates.name
           ? mainCase(updates.name)
@@ -35,7 +37,7 @@ export function updateAccountsVisitor(map: Record<string, AccountUpdates>) {
 
       const transformers: BottomUpNodeTransformerWithSelector[] = [
         {
-          select: `${selectorStack.join('.')}.[accountNode]${name}`,
+          select: `${selectorPrefix}[accountNode]${name}`,
           transform: (node, stack) => {
             assertIsNode(node, 'accountNode');
             if ('delete' in updates) return null;
