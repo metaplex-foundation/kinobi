@@ -165,6 +165,14 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
       ),
       ignoreIfOptional: true,
     },
+    {
+      account: /^mplCoreProgram$/,
+      defaultValue: publicKeyValueNode(
+        'CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d',
+        'mplCore'
+      ),
+      ignoreIfOptional: true,
+    },
   ];
 
 export function setInstructionAccountDefaultValuesVisitor(
