@@ -49,7 +49,7 @@ export type ApproveCollectionAuthorityInstruction<
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountRent extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -78,7 +78,7 @@ export type ApproveCollectionAuthorityInstruction<
       TAccountRent extends string
         ? ReadonlyAccount<TAccountRent>
         : TAccountRent,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -96,7 +96,7 @@ export type ApproveCollectionAuthorityInstructionWithSigners<
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountRent extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -127,7 +127,7 @@ export type ApproveCollectionAuthorityInstructionWithSigners<
       TAccountRent extends string
         ? ReadonlyAccount<TAccountRent>
         : TAccountRent,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -166,7 +166,7 @@ export type ApproveCollectionAuthorityInput<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountSystemProgram extends string,
-  TAccountRent extends string
+  TAccountRent extends string,
 > = {
   /** Collection Authority Record PDA */
   collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
@@ -194,7 +194,7 @@ export type ApproveCollectionAuthorityInputWithSigners<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountSystemProgram extends string,
-  TAccountRent extends string
+  TAccountRent extends string,
 > = {
   /** Collection Authority Record PDA */
   collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
@@ -223,7 +223,7 @@ export function getApproveCollectionAuthorityInstruction<
   TAccountMint extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: ApproveCollectionAuthorityInputWithSigners<
     TAccountCollectionAuthorityRecord,
@@ -255,7 +255,7 @@ export function getApproveCollectionAuthorityInstruction<
   TAccountMint extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: ApproveCollectionAuthorityInput<
     TAccountCollectionAuthorityRecord,
@@ -287,7 +287,7 @@ export function getApproveCollectionAuthorityInstruction<
   TAccountMint extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: ApproveCollectionAuthorityInput<
     TAccountCollectionAuthorityRecord,
@@ -370,7 +370,7 @@ export function getApproveCollectionAuthorityInstructionRaw<
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountRent extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     collectionAuthorityRecord: TAccountCollectionAuthorityRecord extends string
@@ -447,7 +447,7 @@ export function getApproveCollectionAuthorityInstructionRaw<
 
 export type ParsedApproveCollectionAuthorityInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -473,7 +473,7 @@ export type ParsedApproveCollectionAuthorityInstruction<
 
 export function parseApproveCollectionAuthorityInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

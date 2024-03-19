@@ -3,7 +3,7 @@ import chalk from 'chalk';
 
 const DEFAULT_LOG_LEVEL = 'info';
 export const LOG_LEVELS = ['debug', 'trace', 'info', 'warn', 'error'] as const;
-export type LogLevel = typeof LOG_LEVELS[number];
+export type LogLevel = (typeof LOG_LEVELS)[number];
 
 export const logError = (message: string, hint?: string): void => {
   if (!shouldLogLevel('error')) return;

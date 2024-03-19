@@ -84,7 +84,7 @@ export function identifyMplTokenAuthRulesInstruction(
 }
 
 export type ParsedMplTokenAuthRulesInstruction<
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
 > =
   | ({
       instructionType: MplTokenAuthRulesInstruction.CreateRuleSet;

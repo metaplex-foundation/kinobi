@@ -31,7 +31,7 @@ export function visit<TReturn, TNode extends Node>(
     TNode['kind']
   >;
   return (
-    visitor[key] as typeof visitor[typeof key] & ((node: TNode) => TReturn)
+    visitor[key] as (typeof visitor)[typeof key] & ((node: TNode) => TReturn)
   )(node);
 }
 

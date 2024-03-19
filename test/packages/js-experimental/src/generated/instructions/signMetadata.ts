@@ -38,7 +38,7 @@ export type SignMetadataInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountCreator extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -49,7 +49,7 @@ export type SignMetadataInstruction<
       TAccountCreator extends string
         ? ReadonlySignerAccount<TAccountCreator>
         : TAccountCreator,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -57,7 +57,7 @@ export type SignMetadataInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountCreator extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -69,7 +69,7 @@ export type SignMetadataInstructionWithSigners<
         ? ReadonlySignerAccount<TAccountCreator> &
             IAccountSignerMeta<TAccountCreator>
         : TAccountCreator,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -100,7 +100,7 @@ export function getSignMetadataInstructionDataCodec(): Codec<
 
 export type SignMetadataInput<
   TAccountMetadata extends string,
-  TAccountCreator extends string
+  TAccountCreator extends string,
 > = {
   /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
@@ -110,7 +110,7 @@ export type SignMetadataInput<
 
 export type SignMetadataInputWithSigners<
   TAccountMetadata extends string,
-  TAccountCreator extends string
+  TAccountCreator extends string,
 > = {
   /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
@@ -121,7 +121,7 @@ export type SignMetadataInputWithSigners<
 export function getSignMetadataInstruction<
   TAccountMetadata extends string,
   TAccountCreator extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: SignMetadataInputWithSigners<TAccountMetadata, TAccountCreator>
 ): SignMetadataInstructionWithSigners<
@@ -132,14 +132,14 @@ export function getSignMetadataInstruction<
 export function getSignMetadataInstruction<
   TAccountMetadata extends string,
   TAccountCreator extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: SignMetadataInput<TAccountMetadata, TAccountCreator>
 ): SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>;
 export function getSignMetadataInstruction<
   TAccountMetadata extends string,
   TAccountCreator extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(input: SignMetadataInput<TAccountMetadata, TAccountCreator>): IInstruction {
   // Program address.
   const programAddress =
@@ -177,7 +177,7 @@ export function getSignMetadataInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountCreator extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -208,7 +208,7 @@ export function getSignMetadataInstructionRaw<
 
 export type ParsedSignMetadataInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -222,7 +222,7 @@ export type ParsedSignMetadataInstruction<
 
 export function parseSignMetadataInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

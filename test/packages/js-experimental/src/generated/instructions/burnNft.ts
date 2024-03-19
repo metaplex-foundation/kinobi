@@ -46,7 +46,7 @@ export type BurnNftInstruction<
     | string
     | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -72,7 +72,7 @@ export type BurnNftInstruction<
       TAccountCollectionMetadata extends string
         ? WritableAccount<TAccountCollectionMetadata>
         : TAccountCollectionMetadata,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -87,7 +87,7 @@ export type BurnNftInstructionWithSigners<
     | string
     | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -114,7 +114,7 @@ export type BurnNftInstructionWithSigners<
       TAccountCollectionMetadata extends string
         ? WritableAccount<TAccountCollectionMetadata>
         : TAccountCollectionMetadata,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -150,7 +150,7 @@ export type BurnNftInput<
   TAccountTokenAccount extends string,
   TAccountMasterEditionAccount extends string,
   TAccountSplTokenProgram extends string,
-  TAccountCollectionMetadata extends string
+  TAccountCollectionMetadata extends string,
 > = {
   /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
@@ -175,7 +175,7 @@ export type BurnNftInputWithSigners<
   TAccountTokenAccount extends string,
   TAccountMasterEditionAccount extends string,
   TAccountSplTokenProgram extends string,
-  TAccountCollectionMetadata extends string
+  TAccountCollectionMetadata extends string,
 > = {
   /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
@@ -201,7 +201,7 @@ export function getBurnNftInstruction<
   TAccountMasterEditionAccount extends string,
   TAccountSplTokenProgram extends string,
   TAccountCollectionMetadata extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: BurnNftInputWithSigners<
     TAccountMetadata,
@@ -230,7 +230,7 @@ export function getBurnNftInstruction<
   TAccountMasterEditionAccount extends string,
   TAccountSplTokenProgram extends string,
   TAccountCollectionMetadata extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: BurnNftInput<
     TAccountMetadata,
@@ -259,7 +259,7 @@ export function getBurnNftInstruction<
   TAccountMasterEditionAccount extends string,
   TAccountSplTokenProgram extends string,
   TAccountCollectionMetadata extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: BurnNftInput<
     TAccountMetadata,
@@ -339,7 +339,7 @@ export function getBurnNftInstructionRaw<
     | string
     | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -407,7 +407,7 @@ export function getBurnNftInstructionRaw<
 
 export type ParsedBurnNftInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -431,7 +431,7 @@ export type ParsedBurnNftInstruction<
 
 export function parseBurnNftInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

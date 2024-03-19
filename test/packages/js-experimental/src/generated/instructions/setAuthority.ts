@@ -44,7 +44,7 @@ export type SetAuthorityInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -55,7 +55,7 @@ export type SetAuthorityInstruction<
       TAccountAuthority extends string
         ? ReadonlySignerAccount<TAccountAuthority>
         : TAccountAuthority,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -63,7 +63,7 @@ export type SetAuthorityInstructionWithSigners<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -75,7 +75,7 @@ export type SetAuthorityInstructionWithSigners<
         ? ReadonlySignerAccount<TAccountAuthority> &
             IAccountSignerMeta<TAccountAuthority>
         : TAccountAuthority,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -118,7 +118,7 @@ export function getSetAuthorityInstructionDataCodec(): Codec<
 
 export type SetAuthorityInput<
   TAccountCandyMachine extends string,
-  TAccountAuthority extends string
+  TAccountAuthority extends string,
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authority: Address<TAccountAuthority>;
@@ -127,7 +127,7 @@ export type SetAuthorityInput<
 
 export type SetAuthorityInputWithSigners<
   TAccountCandyMachine extends string,
-  TAccountAuthority extends string
+  TAccountAuthority extends string,
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authority: TransactionSigner<TAccountAuthority>;
@@ -137,7 +137,7 @@ export type SetAuthorityInputWithSigners<
 export function getSetAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: SetAuthorityInputWithSigners<TAccountCandyMachine, TAccountAuthority>
 ): SetAuthorityInstructionWithSigners<
@@ -148,14 +148,14 @@ export function getSetAuthorityInstruction<
 export function getSetAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
 ): SetAuthorityInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>;
 export function getSetAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
 ): IInstruction {
@@ -199,7 +199,7 @@ export function getSetAuthorityInstructionRaw<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     candyMachine: TAccountCandyMachine extends string
@@ -231,7 +231,7 @@ export function getSetAuthorityInstructionRaw<
 
 export type ParsedSetAuthorityInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -243,7 +243,7 @@ export type ParsedSetAuthorityInstruction<
 
 export function parseSetAuthorityInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

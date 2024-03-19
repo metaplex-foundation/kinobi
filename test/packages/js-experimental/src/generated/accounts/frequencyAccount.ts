@@ -119,7 +119,7 @@ export async function fetchFrequencyAccount<TAddress extends string = string>(
 }
 
 export async function fetchMaybeFrequencyAccount<
-  TAddress extends string = string
+  TAddress extends string = string,
 >(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,

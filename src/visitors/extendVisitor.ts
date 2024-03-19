@@ -14,7 +14,7 @@ import {
 export type VisitorOverrideFunction<
   TReturn,
   TNodeKind extends NodeKind,
-  TNode extends Node
+  TNode extends Node,
 > = (
   node: TNode,
   scope: {

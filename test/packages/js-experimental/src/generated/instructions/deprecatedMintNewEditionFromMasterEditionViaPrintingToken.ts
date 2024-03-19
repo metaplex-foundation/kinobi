@@ -59,7 +59,7 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction
     | string
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
   TAccountReservationList extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -112,7 +112,7 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction
       TAccountReservationList extends string
         ? WritableAccount<TAccountReservationList>
         : TAccountReservationList,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -140,7 +140,7 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction
     | string
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
   TAccountReservationList extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -196,7 +196,7 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction
       TAccountReservationList extends string
         ? WritableAccount<TAccountReservationList>
         : TAccountReservationList,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -243,7 +243,7 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TAccountReservationList extends string
+  TAccountReservationList extends string,
 > = {
   /** New Metadata key (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
@@ -295,7 +295,7 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInputWithSi
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TAccountReservationList extends string
+  TAccountReservationList extends string,
 > = {
   /** New Metadata key (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
@@ -348,7 +348,7 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
   TAccountSystemProgram extends string,
   TAccountRent extends string,
   TAccountReservationList extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInputWithSigners<
     TAccountMetadata,
@@ -404,7 +404,7 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
   TAccountSystemProgram extends string,
   TAccountRent extends string,
   TAccountReservationList extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
     TAccountMetadata,
@@ -460,7 +460,7 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
   TAccountSystemProgram extends string,
   TAccountRent extends string,
   TAccountReservationList extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
     TAccountMetadata,
@@ -586,7 +586,7 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
     | string
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
   TAccountReservationList extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -713,7 +713,7 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
 
 export type ParsedDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -755,7 +755,7 @@ export type ParsedDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstr
 
 export function parseDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

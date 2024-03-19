@@ -46,7 +46,7 @@ export function getDefinedTypeHistogramVisitor(): Visitor<DefinedTypeHistogram> 
 
   return pipe(
     mergeVisitor(
-      () => ({} as DefinedTypeHistogram),
+      () => ({}) as DefinedTypeHistogram,
       (_, histograms) => mergeHistograms(histograms)
     ),
     (v) =>

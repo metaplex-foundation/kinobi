@@ -42,7 +42,7 @@ export function getTypeManifestVisitor(input: {
           looseType: fragment(''),
           encoder: fragment(''),
           decoder: fragment(''),
-        } as TypeManifest),
+        }) as TypeManifest,
       [
         ...REGISTERED_TYPE_NODE_KINDS,
         'definedTypeLinkNode',

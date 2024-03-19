@@ -45,7 +45,7 @@ export function getTypeManifestVisitor(input: {
           looseImports: new JavaScriptImportMap(),
           serializer: '',
           serializerImports: new JavaScriptImportMap(),
-        } as JavaScriptTypeManifest),
+        }) as JavaScriptTypeManifest,
       [
         ...REGISTERED_TYPE_NODE_KINDS,
         'definedTypeLinkNode',

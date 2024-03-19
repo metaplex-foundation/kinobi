@@ -112,7 +112,7 @@ export async function fetchMasterEditionV2<TAddress extends string = string>(
 }
 
 export async function fetchMaybeMasterEditionV2<
-  TAddress extends string = string
+  TAddress extends string = string,
 >(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,

@@ -71,7 +71,7 @@ export type TransferInstruction<
     | string
     | IAccountMeta<string> = string,
   TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -121,7 +121,7 @@ export type TransferInstruction<
       TAccountAuthorizationRules extends string
         ? ReadonlyAccount<TAccountAuthorizationRules>
         : TAccountAuthorizationRules,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -152,7 +152,7 @@ export type TransferInstructionWithSigners<
     | string
     | IAccountMeta<string> = string,
   TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -203,7 +203,7 @@ export type TransferInstructionWithSigners<
       TAccountAuthorizationRules extends string
         ? ReadonlyAccount<TAccountAuthorizationRules>
         : TAccountAuthorizationRules,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -260,7 +260,7 @@ export type TransferAsyncInput<
   TAccountSystemProgram extends string,
   TAccountSysvarInstructions extends string,
   TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string
+  TAccountAuthorizationRules extends string,
 > = {
   /** Transfer authority (token or delegate owner) */
   authority: Address<TAccountAuthority>;
@@ -311,7 +311,7 @@ export type TransferAsyncInputWithSigners<
   TAccountSystemProgram extends string,
   TAccountSysvarInstructions extends string,
   TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string
+  TAccountAuthorizationRules extends string,
 > = {
   /** Transfer authority (token or delegate owner) */
   authority: TransactionSigner<TAccountAuthority>;
@@ -363,7 +363,7 @@ export async function getTransferInstructionAsync<
   TAccountSysvarInstructions extends string,
   TAccountAuthorizationRulesProgram extends string,
   TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: TransferAsyncInputWithSigners<
     TAccountAuthority,
@@ -418,7 +418,7 @@ export async function getTransferInstructionAsync<
   TAccountSysvarInstructions extends string,
   TAccountAuthorizationRulesProgram extends string,
   TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: TransferAsyncInput<
     TAccountAuthority,
@@ -473,7 +473,7 @@ export async function getTransferInstructionAsync<
   TAccountSysvarInstructions extends string,
   TAccountAuthorizationRulesProgram extends string,
   TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: TransferAsyncInput<
     TAccountAuthority,
@@ -615,7 +615,7 @@ export type TransferInput<
   TAccountSystemProgram extends string,
   TAccountSysvarInstructions extends string,
   TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string
+  TAccountAuthorizationRules extends string,
 > = {
   /** Transfer authority (token or delegate owner) */
   authority: Address<TAccountAuthority>;
@@ -666,7 +666,7 @@ export type TransferInputWithSigners<
   TAccountSystemProgram extends string,
   TAccountSysvarInstructions extends string,
   TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string
+  TAccountAuthorizationRules extends string,
 > = {
   /** Transfer authority (token or delegate owner) */
   authority: TransactionSigner<TAccountAuthority>;
@@ -718,7 +718,7 @@ export function getTransferInstruction<
   TAccountSysvarInstructions extends string,
   TAccountAuthorizationRulesProgram extends string,
   TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: TransferInputWithSigners<
     TAccountAuthority,
@@ -771,7 +771,7 @@ export function getTransferInstruction<
   TAccountSysvarInstructions extends string,
   TAccountAuthorizationRulesProgram extends string,
   TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: TransferInput<
     TAccountAuthority,
@@ -824,7 +824,7 @@ export function getTransferInstruction<
   TAccountSysvarInstructions extends string,
   TAccountAuthorizationRulesProgram extends string,
   TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: TransferInput<
     TAccountAuthority,
@@ -969,7 +969,7 @@ export function getTransferInstructionRaw<
     | string
     | IAccountMeta<string> = string,
   TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     authority: TAccountAuthority extends string
@@ -1108,7 +1108,7 @@ export function getTransferInstructionRaw<
 
 export type ParsedTransferInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -1148,7 +1148,7 @@ export type ParsedTransferInstruction<
 
 export function parseTransferInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

@@ -3,7 +3,7 @@ import { identityVisitor } from './identityVisitor';
 import { Visitor } from './visitor';
 
 export function nonNullableIdentityVisitor<
-  TNodeKind extends NodeKind = NodeKind
+  TNodeKind extends NodeKind = NodeKind,
 >(
   nodeKeys: TNodeKind[] = REGISTERED_NODE_KINDS as TNodeKind[]
 ): Visitor<Node, TNodeKind> {

@@ -67,7 +67,7 @@ export type InitializeInstruction<
   TAccountSystemProgram extends
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -105,7 +105,7 @@ export type InitializeInstruction<
       TAccountSystemProgram extends string
         ? ReadonlyAccount<TAccountSystemProgram>
         : TAccountSystemProgram,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -132,7 +132,7 @@ export type InitializeInstructionWithSigners<
   TAccountSystemProgram extends
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -172,7 +172,7 @@ export type InitializeInstructionWithSigners<
       TAccountSystemProgram extends string
         ? ReadonlyAccount<TAccountSystemProgram>
         : TAccountSystemProgram,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -224,7 +224,7 @@ export type InitializeInput<
   TAccountCollectionUpdateAuthority extends string,
   TAccountCollectionAuthorityRecord extends string,
   TAccountTokenMetadataProgram extends string,
-  TAccountSystemProgram extends string
+  TAccountSystemProgram extends string,
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authorityPda: Address<TAccountAuthorityPda>;
@@ -251,7 +251,7 @@ export type InitializeInputWithSigners<
   TAccountCollectionUpdateAuthority extends string,
   TAccountCollectionAuthorityRecord extends string,
   TAccountTokenMetadataProgram extends string,
-  TAccountSystemProgram extends string
+  TAccountSystemProgram extends string,
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authorityPda: Address<TAccountAuthorityPda>;
@@ -279,7 +279,7 @@ export function getInitializeInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TAccountTokenMetadataProgram extends string,
   TAccountSystemProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: InitializeInputWithSigners<
     TAccountCandyMachine,
@@ -320,7 +320,7 @@ export function getInitializeInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TAccountTokenMetadataProgram extends string,
   TAccountSystemProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: InitializeInput<
     TAccountCandyMachine,
@@ -361,7 +361,7 @@ export function getInitializeInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TAccountTokenMetadataProgram extends string,
   TAccountSystemProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: InitializeInput<
     TAccountCandyMachine,
@@ -479,7 +479,7 @@ export function getInitializeInstructionRaw<
   TAccountSystemProgram extends
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     candyMachine: TAccountCandyMachine extends string
@@ -573,7 +573,7 @@ export function getInitializeInstructionRaw<
 
 export type ParsedInitializeInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -594,7 +594,7 @@ export type ParsedInitializeInstruction<
 
 export function parseInitializeInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

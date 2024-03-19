@@ -103,7 +103,11 @@ export type ResolvedAccount<
     | Address<T>
     | ProgramDerivedAddress<T>
     | TransactionSigner<T>
-    | null = Address<T> | ProgramDerivedAddress<T> | TransactionSigner<T> | null
+    | null =
+    | Address<T>
+    | ProgramDerivedAddress<T>
+    | TransactionSigner<T>
+    | null,
 > = {
   isWritable: boolean;
   value: U;
@@ -115,7 +119,7 @@ export type ResolvedAccount<
  */
 export function accountMetaWithDefault<
   TAccount extends string | IAccountMeta<string>,
-  TRole extends AccountRole
+  TRole extends AccountRole,
 >(account: TAccount | undefined, role: TRole) {
   if (account === undefined) return undefined;
   return (

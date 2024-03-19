@@ -69,7 +69,7 @@ export type MintFromCandyMachineInstruction<
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountRecentSlothashes extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -125,7 +125,7 @@ export type MintFromCandyMachineInstruction<
       TAccountRecentSlothashes extends string
         ? ReadonlyAccount<TAccountRecentSlothashes>
         : TAccountRecentSlothashes,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -160,7 +160,7 @@ export type MintFromCandyMachineInstructionWithSigners<
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountRecentSlothashes extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -219,7 +219,7 @@ export type MintFromCandyMachineInstructionWithSigners<
       TAccountRecentSlothashes extends string
         ? ReadonlyAccount<TAccountRecentSlothashes>
         : TAccountRecentSlothashes,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -274,7 +274,7 @@ export type MintFromCandyMachineInput<
   TAccountTokenMetadataProgram extends string,
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
-  TAccountRecentSlothashes extends string
+  TAccountRecentSlothashes extends string,
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authorityPda: Address<TAccountAuthorityPda>;
@@ -312,7 +312,7 @@ export type MintFromCandyMachineInputWithSigners<
   TAccountTokenMetadataProgram extends string,
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
-  TAccountRecentSlothashes extends string
+  TAccountRecentSlothashes extends string,
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authorityPda: Address<TAccountAuthorityPda>;
@@ -351,7 +351,7 @@ export function getMintFromCandyMachineInstruction<
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
   TAccountRecentSlothashes extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: MintFromCandyMachineInputWithSigners<
     TAccountCandyMachine,
@@ -410,7 +410,7 @@ export function getMintFromCandyMachineInstruction<
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
   TAccountRecentSlothashes extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: MintFromCandyMachineInput<
     TAccountCandyMachine,
@@ -469,7 +469,7 @@ export function getMintFromCandyMachineInstruction<
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
   TAccountRecentSlothashes extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: MintFromCandyMachineInput<
     TAccountCandyMachine,
@@ -622,7 +622,7 @@ export function getMintFromCandyMachineInstructionRaw<
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountRecentSlothashes extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     candyMachine: TAccountCandyMachine extends string
@@ -755,7 +755,7 @@ export function getMintFromCandyMachineInstructionRaw<
 
 export type ParsedMintFromCandyMachineInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -782,7 +782,7 @@ export type ParsedMintFromCandyMachineInstruction<
 
 export function parseMintFromCandyMachineInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

@@ -53,7 +53,7 @@ export type DeprecatedSetReservationListInstruction<
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
   TAccountReservationList extends string | IAccountMeta<string> = string,
   TAccountResource extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -67,7 +67,7 @@ export type DeprecatedSetReservationListInstruction<
       TAccountResource extends string
         ? ReadonlySignerAccount<TAccountResource>
         : TAccountResource,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -76,7 +76,7 @@ export type DeprecatedSetReservationListInstructionWithSigners<
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
   TAccountReservationList extends string | IAccountMeta<string> = string,
   TAccountResource extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -91,7 +91,7 @@ export type DeprecatedSetReservationListInstructionWithSigners<
         ? ReadonlySignerAccount<TAccountResource> &
             IAccountSignerMeta<TAccountResource>
         : TAccountResource,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -146,7 +146,7 @@ export function getDeprecatedSetReservationListInstructionDataCodec(): Codec<
 export type DeprecatedSetReservationListInput<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
-  TAccountResource extends string
+  TAccountResource extends string,
 > = {
   /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
   masterEdition: Address<TAccountMasterEdition>;
@@ -163,7 +163,7 @@ export type DeprecatedSetReservationListInput<
 export type DeprecatedSetReservationListInputWithSigners<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
-  TAccountResource extends string
+  TAccountResource extends string,
 > = {
   /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
   masterEdition: Address<TAccountMasterEdition>;
@@ -181,7 +181,7 @@ export function getDeprecatedSetReservationListInstruction<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
   TAccountResource extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: DeprecatedSetReservationListInputWithSigners<
     TAccountMasterEdition,
@@ -198,7 +198,7 @@ export function getDeprecatedSetReservationListInstruction<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
   TAccountResource extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: DeprecatedSetReservationListInput<
     TAccountMasterEdition,
@@ -215,7 +215,7 @@ export function getDeprecatedSetReservationListInstruction<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
   TAccountResource extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: DeprecatedSetReservationListInput<
     TAccountMasterEdition,
@@ -266,7 +266,7 @@ export function getDeprecatedSetReservationListInstructionRaw<
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
   TAccountReservationList extends string | IAccountMeta<string> = string,
   TAccountResource extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     masterEdition: TAccountMasterEdition extends string
@@ -303,7 +303,7 @@ export function getDeprecatedSetReservationListInstructionRaw<
 
 export type ParsedDeprecatedSetReservationListInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -319,7 +319,7 @@ export type ParsedDeprecatedSetReservationListInstruction<
 
 export function parseDeprecatedSetReservationListInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

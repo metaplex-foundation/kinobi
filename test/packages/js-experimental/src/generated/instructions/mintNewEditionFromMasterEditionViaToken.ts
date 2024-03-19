@@ -64,7 +64,7 @@ export type MintNewEditionFromMasterEditionViaTokenInstruction<
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountRent extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -111,7 +111,7 @@ export type MintNewEditionFromMasterEditionViaTokenInstruction<
       TAccountRent extends string
         ? ReadonlyAccount<TAccountRent>
         : TAccountRent,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -137,7 +137,7 @@ export type MintNewEditionFromMasterEditionViaTokenInstructionWithSigners<
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountRent extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -187,7 +187,7 @@ export type MintNewEditionFromMasterEditionViaTokenInstructionWithSigners<
       TAccountRent extends string
         ? ReadonlyAccount<TAccountRent>
         : TAccountRent,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -247,7 +247,7 @@ export type MintNewEditionFromMasterEditionViaTokenInput<
   TAccountMetadata extends string,
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
-  TAccountRent extends string
+  TAccountRent extends string,
 > = {
   /** New Metadata key (pda of ['metadata', program id, mint id]) */
   newMetadata: Address<TAccountNewMetadata>;
@@ -294,7 +294,7 @@ export type MintNewEditionFromMasterEditionViaTokenInputWithSigners<
   TAccountMetadata extends string,
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
-  TAccountRent extends string
+  TAccountRent extends string,
 > = {
   /** New Metadata key (pda of ['metadata', program id, mint id]) */
   newMetadata: Address<TAccountNewMetadata>;
@@ -342,7 +342,7 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: MintNewEditionFromMasterEditionViaTokenInputWithSigners<
     TAccountNewMetadata,
@@ -392,7 +392,7 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: MintNewEditionFromMasterEditionViaTokenInput<
     TAccountNewMetadata,
@@ -442,7 +442,7 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: MintNewEditionFromMasterEditionViaTokenInput<
     TAccountNewMetadata,
@@ -562,7 +562,7 @@ export function getMintNewEditionFromMasterEditionViaTokenInstructionRaw<
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountRent extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     newMetadata: TAccountNewMetadata extends string
@@ -678,7 +678,7 @@ export function getMintNewEditionFromMasterEditionViaTokenInstructionRaw<
 
 export type ParsedMintNewEditionFromMasterEditionViaTokenInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -716,7 +716,7 @@ export type ParsedMintNewEditionFromMasterEditionViaTokenInstruction<
 
 export function parseMintNewEditionFromMasterEditionViaTokenInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

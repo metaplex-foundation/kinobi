@@ -88,17 +88,17 @@ export function getCollectionAuthorityRecordAccountDataCodec(): Codec<
 }
 
 export function decodeCollectionAuthorityRecord<
-  TAddress extends string = string
+  TAddress extends string = string,
 >(
   encodedAccount: EncodedAccount<TAddress>
 ): CollectionAuthorityRecord<TAddress>;
 export function decodeCollectionAuthorityRecord<
-  TAddress extends string = string
+  TAddress extends string = string,
 >(
   encodedAccount: MaybeEncodedAccount<TAddress>
 ): MaybeCollectionAuthorityRecord<TAddress>;
 export function decodeCollectionAuthorityRecord<
-  TAddress extends string = string
+  TAddress extends string = string,
 >(
   encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
 ):
@@ -111,7 +111,7 @@ export function decodeCollectionAuthorityRecord<
 }
 
 export async function fetchCollectionAuthorityRecord<
-  TAddress extends string = string
+  TAddress extends string = string,
 >(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
@@ -127,7 +127,7 @@ export async function fetchCollectionAuthorityRecord<
 }
 
 export async function fetchMaybeCollectionAuthorityRecord<
-  TAddress extends string = string
+  TAddress extends string = string,
 >(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,

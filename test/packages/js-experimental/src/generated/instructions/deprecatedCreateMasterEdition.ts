@@ -66,7 +66,7 @@ export type DeprecatedCreateMasterEditionInstruction<
   TAccountOneTimePrintingAuthorizationMintAuthority extends
     | string
     | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -110,7 +110,7 @@ export type DeprecatedCreateMasterEditionInstruction<
       TAccountOneTimePrintingAuthorizationMintAuthority extends string
         ? ReadonlySignerAccount<TAccountOneTimePrintingAuthorizationMintAuthority>
         : TAccountOneTimePrintingAuthorizationMintAuthority,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -139,7 +139,7 @@ export type DeprecatedCreateMasterEditionInstructionWithSigners<
   TAccountOneTimePrintingAuthorizationMintAuthority extends
     | string
     | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -188,7 +188,7 @@ export type DeprecatedCreateMasterEditionInstructionWithSigners<
         ? ReadonlySignerAccount<TAccountOneTimePrintingAuthorizationMintAuthority> &
             IAccountSignerMeta<TAccountOneTimePrintingAuthorizationMintAuthority>
         : TAccountOneTimePrintingAuthorizationMintAuthority,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -241,7 +241,7 @@ export type DeprecatedCreateMasterEditionInput<
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TAccountOneTimePrintingAuthorizationMintAuthority extends string
+  TAccountOneTimePrintingAuthorizationMintAuthority extends string,
 > = {
   /** Unallocated edition V1 account with address as pda of ['metadata', program id, mint, 'edition'] */
   edition: Address<TAccountEdition>;
@@ -285,7 +285,7 @@ export type DeprecatedCreateMasterEditionInputWithSigners<
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TAccountOneTimePrintingAuthorizationMintAuthority extends string
+  TAccountOneTimePrintingAuthorizationMintAuthority extends string,
 > = {
   /** Unallocated edition V1 account with address as pda of ['metadata', program id, mint, 'edition'] */
   edition: Address<TAccountEdition>;
@@ -330,7 +330,7 @@ export function getDeprecatedCreateMasterEditionInstruction<
   TAccountSystemProgram extends string,
   TAccountRent extends string,
   TAccountOneTimePrintingAuthorizationMintAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: DeprecatedCreateMasterEditionInputWithSigners<
     TAccountEdition,
@@ -377,7 +377,7 @@ export function getDeprecatedCreateMasterEditionInstruction<
   TAccountSystemProgram extends string,
   TAccountRent extends string,
   TAccountOneTimePrintingAuthorizationMintAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: DeprecatedCreateMasterEditionInput<
     TAccountEdition,
@@ -424,7 +424,7 @@ export function getDeprecatedCreateMasterEditionInstruction<
   TAccountSystemProgram extends string,
   TAccountRent extends string,
   TAccountOneTimePrintingAuthorizationMintAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: DeprecatedCreateMasterEditionInput<
     TAccountEdition,
@@ -551,7 +551,7 @@ export function getDeprecatedCreateMasterEditionInstructionRaw<
   TAccountOneTimePrintingAuthorizationMintAuthority extends
     | string
     | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     edition: TAccountEdition extends string
@@ -661,7 +661,7 @@ export function getDeprecatedCreateMasterEditionInstructionRaw<
 
 export type ParsedDeprecatedCreateMasterEditionInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -697,7 +697,7 @@ export type ParsedDeprecatedCreateMasterEditionInstruction<
 
 export function parseDeprecatedCreateMasterEditionInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

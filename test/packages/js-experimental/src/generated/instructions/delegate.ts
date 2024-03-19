@@ -63,7 +63,7 @@ export type DelegateInstruction<
     | string
     | IAccountMeta<string> = string,
   TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -107,7 +107,7 @@ export type DelegateInstruction<
       TAccountAuthorizationRules extends string
         ? ReadonlyAccount<TAccountAuthorizationRules>
         : TAccountAuthorizationRules,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -132,7 +132,7 @@ export type DelegateInstructionWithSigners<
     | string
     | IAccountMeta<string> = string,
   TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -178,7 +178,7 @@ export type DelegateInstructionWithSigners<
       TAccountAuthorizationRules extends string
         ? ReadonlyAccount<TAccountAuthorizationRules>
         : TAccountAuthorizationRules,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -229,7 +229,7 @@ export type DelegateInput<
   TAccountSysvarInstructions extends string,
   TAccountSplTokenProgram extends string,
   TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string
+  TAccountAuthorizationRules extends string,
 > = {
   /** Delegate account key (pda of [mint id, delegate role, user id, authority id]) */
   delegateRecord: Address<TAccountDelegateRecord>;
@@ -273,7 +273,7 @@ export type DelegateInputWithSigners<
   TAccountSysvarInstructions extends string,
   TAccountSplTokenProgram extends string,
   TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string
+  TAccountAuthorizationRules extends string,
 > = {
   /** Delegate account key (pda of [mint id, delegate role, user id, authority id]) */
   delegateRecord: Address<TAccountDelegateRecord>;
@@ -318,7 +318,7 @@ export function getDelegateInstruction<
   TAccountSplTokenProgram extends string,
   TAccountAuthorizationRulesProgram extends string,
   TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: DelegateInputWithSigners<
     TAccountDelegateRecord,
@@ -365,7 +365,7 @@ export function getDelegateInstruction<
   TAccountSplTokenProgram extends string,
   TAccountAuthorizationRulesProgram extends string,
   TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: DelegateInput<
     TAccountDelegateRecord,
@@ -412,7 +412,7 @@ export function getDelegateInstruction<
   TAccountSplTokenProgram extends string,
   TAccountAuthorizationRulesProgram extends string,
   TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: DelegateInput<
     TAccountDelegateRecord,
@@ -531,7 +531,7 @@ export function getDelegateInstructionRaw<
     | string
     | IAccountMeta<string> = string,
   TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     delegateRecord: TAccountDelegateRecord extends string
@@ -659,7 +659,7 @@ export function getDelegateInstructionRaw<
 
 export type ParsedDelegateInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -695,7 +695,7 @@ export type ParsedDelegateInstruction<
 
 export function parseDelegateInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

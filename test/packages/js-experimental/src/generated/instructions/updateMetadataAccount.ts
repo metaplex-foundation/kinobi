@@ -60,7 +60,7 @@ export type UpdateMetadataAccountInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -71,7 +71,7 @@ export type UpdateMetadataAccountInstruction<
       TAccountUpdateAuthority extends string
         ? ReadonlySignerAccount<TAccountUpdateAuthority>
         : TAccountUpdateAuthority,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -79,7 +79,7 @@ export type UpdateMetadataAccountInstructionWithSigners<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -91,7 +91,7 @@ export type UpdateMetadataAccountInstructionWithSigners<
         ? ReadonlySignerAccount<TAccountUpdateAuthority> &
             IAccountSignerMeta<TAccountUpdateAuthority>
         : TAccountUpdateAuthority,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -178,7 +178,7 @@ export function getUpdateMetadataAccountInstructionDataCodec(): Codec<
 
 export type UpdateMetadataAccountInput<
   TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string
+  TAccountUpdateAuthority extends string,
 > = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
@@ -191,7 +191,7 @@ export type UpdateMetadataAccountInput<
 
 export type UpdateMetadataAccountInputWithSigners<
   TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string
+  TAccountUpdateAuthority extends string,
 > = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
@@ -205,7 +205,7 @@ export type UpdateMetadataAccountInputWithSigners<
 export function getUpdateMetadataAccountInstruction<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: UpdateMetadataAccountInputWithSigners<
     TAccountMetadata,
@@ -219,7 +219,7 @@ export function getUpdateMetadataAccountInstruction<
 export function getUpdateMetadataAccountInstruction<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>
 ): UpdateMetadataAccountInstruction<
@@ -230,7 +230,7 @@ export function getUpdateMetadataAccountInstruction<
 export function getUpdateMetadataAccountInstruction<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>
 ): IInstruction {
@@ -277,7 +277,7 @@ export function getUpdateMetadataAccountInstructionRaw<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -312,7 +312,7 @@ export function getUpdateMetadataAccountInstructionRaw<
 
 export type ParsedUpdateMetadataAccountInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -326,7 +326,7 @@ export type ParsedUpdateMetadataAccountInstruction<
 
 export function parseUpdateMetadataAccountInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

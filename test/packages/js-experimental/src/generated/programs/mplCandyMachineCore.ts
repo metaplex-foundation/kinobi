@@ -114,7 +114,7 @@ export function identifyMplCandyMachineCoreInstruction(
 }
 
 export type ParsedMplCandyMachineCoreInstruction<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 > =
   | ({
       instructionType: MplCandyMachineCoreInstruction.Dummy;

@@ -44,7 +44,7 @@ export type FreezeDelegatedAccountInstruction<
   TAccountTokenProgram extends
     | string
     | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -64,7 +64,7 @@ export type FreezeDelegatedAccountInstruction<
       TAccountTokenProgram extends string
         ? ReadonlyAccount<TAccountTokenProgram>
         : TAccountTokenProgram,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -77,7 +77,7 @@ export type FreezeDelegatedAccountInstructionWithSigners<
   TAccountTokenProgram extends
     | string
     | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -98,7 +98,7 @@ export type FreezeDelegatedAccountInstructionWithSigners<
       TAccountTokenProgram extends string
         ? ReadonlyAccount<TAccountTokenProgram>
         : TAccountTokenProgram,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -132,7 +132,7 @@ export type FreezeDelegatedAccountInput<
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
   TAccountMint extends string,
-  TAccountTokenProgram extends string
+  TAccountTokenProgram extends string,
 > = {
   /** Delegate */
   delegate: Address<TAccountDelegate>;
@@ -151,7 +151,7 @@ export type FreezeDelegatedAccountInputWithSigners<
   TAccountTokenAccount extends string,
   TAccountEdition extends string,
   TAccountMint extends string,
-  TAccountTokenProgram extends string
+  TAccountTokenProgram extends string,
 > = {
   /** Delegate */
   delegate: TransactionSigner<TAccountDelegate>;
@@ -171,7 +171,7 @@ export function getFreezeDelegatedAccountInstruction<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountTokenProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: FreezeDelegatedAccountInputWithSigners<
     TAccountDelegate,
@@ -194,7 +194,7 @@ export function getFreezeDelegatedAccountInstruction<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountTokenProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: FreezeDelegatedAccountInput<
     TAccountDelegate,
@@ -217,7 +217,7 @@ export function getFreezeDelegatedAccountInstruction<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountTokenProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: FreezeDelegatedAccountInput<
     TAccountDelegate,
@@ -280,7 +280,7 @@ export function getFreezeDelegatedAccountInstructionRaw<
   TAccountTokenProgram extends
     | string
     | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     delegate: TAccountDelegate extends string
@@ -328,7 +328,7 @@ export function getFreezeDelegatedAccountInstructionRaw<
 
 export type ParsedFreezeDelegatedAccountInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -348,7 +348,7 @@ export type ParsedFreezeDelegatedAccountInstruction<
 
 export function parseFreezeDelegatedAccountInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

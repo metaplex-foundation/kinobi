@@ -50,7 +50,7 @@ export type AddConfigLinesInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -61,7 +61,7 @@ export type AddConfigLinesInstruction<
       TAccountAuthority extends string
         ? ReadonlySignerAccount<TAccountAuthority>
         : TAccountAuthority,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -69,7 +69,7 @@ export type AddConfigLinesInstructionWithSigners<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -81,7 +81,7 @@ export type AddConfigLinesInstructionWithSigners<
         ? ReadonlySignerAccount<TAccountAuthority> &
             IAccountSignerMeta<TAccountAuthority>
         : TAccountAuthority,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -142,7 +142,7 @@ export function getAddConfigLinesInstructionDataCodec(): Codec<
 
 export type AddConfigLinesInput<
   TAccountCandyMachine extends string,
-  TAccountAuthority extends string
+  TAccountAuthority extends string,
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authority: Address<TAccountAuthority>;
@@ -153,7 +153,7 @@ export type AddConfigLinesInput<
 
 export type AddConfigLinesInputWithSigners<
   TAccountCandyMachine extends string,
-  TAccountAuthority extends string
+  TAccountAuthority extends string,
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authority: TransactionSigner<TAccountAuthority>;
@@ -165,7 +165,7 @@ export type AddConfigLinesInputWithSigners<
 export function getAddConfigLinesInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: AddConfigLinesInputWithSigners<TAccountCandyMachine, TAccountAuthority>
 ): AddConfigLinesInstructionWithSigners<
@@ -176,14 +176,14 @@ export function getAddConfigLinesInstruction<
 export function getAddConfigLinesInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
 ): AddConfigLinesInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>;
 export function getAddConfigLinesInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: AddConfigLinesInput<TAccountCandyMachine, TAccountAuthority>
 ): IInstruction {
@@ -227,7 +227,7 @@ export function getAddConfigLinesInstructionRaw<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     candyMachine: TAccountCandyMachine extends string
@@ -259,7 +259,7 @@ export function getAddConfigLinesInstructionRaw<
 
 export type ParsedAddConfigLinesInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -271,7 +271,7 @@ export type ParsedAddConfigLinesInstruction<
 
 export function parseAddConfigLinesInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

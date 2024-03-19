@@ -54,7 +54,7 @@ export type DeprecatedMintPrintingTokensInstruction<
   TAccountRent extends
     | string
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -80,7 +80,7 @@ export type DeprecatedMintPrintingTokensInstruction<
       TAccountRent extends string
         ? ReadonlyAccount<TAccountRent>
         : TAccountRent,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -97,7 +97,7 @@ export type DeprecatedMintPrintingTokensInstructionWithSigners<
   TAccountRent extends
     | string
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -124,7 +124,7 @@ export type DeprecatedMintPrintingTokensInstructionWithSigners<
       TAccountRent extends string
         ? ReadonlyAccount<TAccountRent>
         : TAccountRent,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -177,7 +177,7 @@ export type DeprecatedMintPrintingTokensInput<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountTokenProgram extends string,
-  TAccountRent extends string
+  TAccountRent extends string,
 > = {
   /** Destination account */
   destination: Address<TAccountDestination>;
@@ -203,7 +203,7 @@ export type DeprecatedMintPrintingTokensInputWithSigners<
   TAccountMetadata extends string,
   TAccountMasterEdition extends string,
   TAccountTokenProgram extends string,
-  TAccountRent extends string
+  TAccountRent extends string,
 > = {
   /** Destination account */
   destination: Address<TAccountDestination>;
@@ -230,7 +230,7 @@ export function getDeprecatedMintPrintingTokensInstruction<
   TAccountMasterEdition extends string,
   TAccountTokenProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: DeprecatedMintPrintingTokensInputWithSigners<
     TAccountDestination,
@@ -259,7 +259,7 @@ export function getDeprecatedMintPrintingTokensInstruction<
   TAccountMasterEdition extends string,
   TAccountTokenProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: DeprecatedMintPrintingTokensInput<
     TAccountDestination,
@@ -288,7 +288,7 @@ export function getDeprecatedMintPrintingTokensInstruction<
   TAccountMasterEdition extends string,
   TAccountTokenProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: DeprecatedMintPrintingTokensInput<
     TAccountDestination,
@@ -372,7 +372,7 @@ export function getDeprecatedMintPrintingTokensInstructionRaw<
   TAccountRent extends
     | string
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     destination: TAccountDestination extends string
@@ -438,7 +438,7 @@ export function getDeprecatedMintPrintingTokensInstructionRaw<
 
 export type ParsedDeprecatedMintPrintingTokensInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -462,7 +462,7 @@ export type ParsedDeprecatedMintPrintingTokensInstruction<
 
 export function parseDeprecatedMintPrintingTokensInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

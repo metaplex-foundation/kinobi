@@ -1,6 +1,7 @@
+import { format } from '@prettier/sync';
 import type { ExecutionContext } from 'ava';
 import chalk from 'chalk';
-import { format, type Options as PrettierOptions } from 'prettier';
+import { type Options as PrettierOptions } from 'prettier';
 import type { RenderMap } from '../../../src';
 
 const PRETTIER_OPTIONS: PrettierOptions = {

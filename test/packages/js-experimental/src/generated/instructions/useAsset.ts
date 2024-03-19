@@ -62,7 +62,7 @@ export type UseAssetInstruction<
   TAccountAuthorizationRulesProgram extends
     | string
     | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -100,7 +100,7 @@ export type UseAssetInstruction<
       TAccountAuthorizationRulesProgram extends string
         ? ReadonlyAccount<TAccountAuthorizationRulesProgram>
         : TAccountAuthorizationRulesProgram,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -125,7 +125,7 @@ export type UseAssetInstructionWithSigners<
   TAccountAuthorizationRulesProgram extends
     | string
     | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -164,7 +164,7 @@ export type UseAssetInstructionWithSigners<
       TAccountAuthorizationRulesProgram extends string
         ? ReadonlyAccount<TAccountAuthorizationRulesProgram>
         : TAccountAuthorizationRulesProgram,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -213,7 +213,7 @@ export type UseAssetInput<
   TAccountSystemProgram extends string,
   TAccountUseAuthorityRecord extends string,
   TAccountAuthorizationRules extends string,
-  TAccountAuthorizationRulesProgram extends string
+  TAccountAuthorizationRulesProgram extends string,
 > = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
@@ -251,7 +251,7 @@ export type UseAssetInputWithSigners<
   TAccountSystemProgram extends string,
   TAccountUseAuthorityRecord extends string,
   TAccountAuthorizationRules extends string,
-  TAccountAuthorizationRulesProgram extends string
+  TAccountAuthorizationRulesProgram extends string,
 > = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
@@ -290,7 +290,7 @@ export function getUseAssetInstruction<
   TAccountUseAuthorityRecord extends string,
   TAccountAuthorizationRules extends string,
   TAccountAuthorizationRulesProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: UseAssetInputWithSigners<
     TAccountMetadata,
@@ -331,7 +331,7 @@ export function getUseAssetInstruction<
   TAccountUseAuthorityRecord extends string,
   TAccountAuthorizationRules extends string,
   TAccountAuthorizationRulesProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: UseAssetInput<
     TAccountMetadata,
@@ -372,7 +372,7 @@ export function getUseAssetInstruction<
   TAccountUseAuthorityRecord extends string,
   TAccountAuthorizationRules extends string,
   TAccountAuthorizationRulesProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: UseAssetInput<
     TAccountMetadata,
@@ -489,7 +489,7 @@ export function getUseAssetInstructionRaw<
   TAccountAuthorizationRulesProgram extends
     | string
     | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -600,7 +600,7 @@ export function getUseAssetInstructionRaw<
 
 export type ParsedUseAssetInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -632,7 +632,7 @@ export type ParsedUseAssetInstruction<
 
 export function parseUseAssetInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

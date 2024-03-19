@@ -30,9 +30,9 @@ export const STANDALONE_CONTEXTUAL_VALUE_NODE_KINDS = getNodeKinds(
   STANDALONE_CONTEXTUAL_VALUE_NODES
 );
 export type StandaloneContextualValueNodeKind =
-  typeof STANDALONE_CONTEXTUAL_VALUE_NODE_KINDS[number];
+  (typeof STANDALONE_CONTEXTUAL_VALUE_NODE_KINDS)[number];
 export type StandaloneContextualValueNode =
-  typeof STANDALONE_CONTEXTUAL_VALUE_NODES[StandaloneContextualValueNodeKind];
+  (typeof STANDALONE_CONTEXTUAL_VALUE_NODES)[StandaloneContextualValueNodeKind];
 
 // Contextual Value Node Registration.
 
@@ -47,9 +47,9 @@ export const REGISTERED_CONTEXTUAL_VALUE_NODE_KINDS = getNodeKinds(
   REGISTERED_CONTEXTUAL_VALUE_NODES
 );
 export type RegisteredContextualValueNodeKind =
-  typeof REGISTERED_CONTEXTUAL_VALUE_NODE_KINDS[number];
+  (typeof REGISTERED_CONTEXTUAL_VALUE_NODE_KINDS)[number];
 export type RegisteredContextualValueNode =
-  typeof REGISTERED_CONTEXTUAL_VALUE_NODES[RegisteredContextualValueNodeKind];
+  (typeof REGISTERED_CONTEXTUAL_VALUE_NODES)[RegisteredContextualValueNodeKind];
 
 // Contextual Value Node Helpers.
 

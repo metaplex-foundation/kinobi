@@ -43,7 +43,7 @@ export type CreateAccountInstruction<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountNewAccount extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -54,7 +54,7 @@ export type CreateAccountInstruction<
       TAccountNewAccount extends string
         ? WritableSignerAccount<TAccountNewAccount>
         : TAccountNewAccount,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -62,7 +62,7 @@ export type CreateAccountInstructionWithSigners<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountNewAccount extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -75,7 +75,7 @@ export type CreateAccountInstructionWithSigners<
         ? WritableSignerAccount<TAccountNewAccount> &
             IAccountSignerMeta<TAccountNewAccount>
         : TAccountNewAccount,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -125,7 +125,7 @@ export function getCreateAccountInstructionDataCodec(): Codec<
 
 export type CreateAccountInput<
   TAccountPayer extends string,
-  TAccountNewAccount extends string
+  TAccountNewAccount extends string,
 > = {
   payer: Address<TAccountPayer>;
   newAccount: Address<TAccountNewAccount>;
@@ -136,7 +136,7 @@ export type CreateAccountInput<
 
 export type CreateAccountInputWithSigners<
   TAccountPayer extends string,
-  TAccountNewAccount extends string
+  TAccountNewAccount extends string,
 > = {
   payer: TransactionSigner<TAccountPayer>;
   newAccount: TransactionSigner<TAccountNewAccount>;
@@ -148,7 +148,7 @@ export type CreateAccountInputWithSigners<
 export function getCreateAccountInstruction<
   TAccountPayer extends string,
   TAccountNewAccount extends string,
-  TProgram extends string = '11111111111111111111111111111111'
+  TProgram extends string = '11111111111111111111111111111111',
 >(
   input: CreateAccountInputWithSigners<TAccountPayer, TAccountNewAccount>
 ): CreateAccountInstructionWithSigners<
@@ -159,14 +159,14 @@ export function getCreateAccountInstruction<
 export function getCreateAccountInstruction<
   TAccountPayer extends string,
   TAccountNewAccount extends string,
-  TProgram extends string = '11111111111111111111111111111111'
+  TProgram extends string = '11111111111111111111111111111111',
 >(
   input: CreateAccountInput<TAccountPayer, TAccountNewAccount>
 ): CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>;
 export function getCreateAccountInstruction<
   TAccountPayer extends string,
   TAccountNewAccount extends string,
-  TProgram extends string = '11111111111111111111111111111111'
+  TProgram extends string = '11111111111111111111111111111111',
 >(input: CreateAccountInput<TAccountPayer, TAccountNewAccount>): IInstruction {
   // Program address.
   const programAddress =
@@ -208,7 +208,7 @@ export function getCreateAccountInstructionRaw<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountNewAccount extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     payer: TAccountPayer extends string
@@ -240,7 +240,7 @@ export function getCreateAccountInstructionRaw<
 
 export type ParsedCreateAccountInstruction<
   TProgram extends string = '11111111111111111111111111111111',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -252,7 +252,7 @@ export type ParsedCreateAccountInstruction<
 
 export function parseCreateAccountInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

@@ -11,7 +11,7 @@ import { recordNodeStackVisitor } from './recordNodeStackVisitor';
 import { Visitor } from './visitor';
 
 export type TopDownNodeTransformer<TNode extends Node = Node> = <
-  T extends TNode = TNode
+  T extends TNode = TNode,
 >(
   node: T,
   stack: NodeStack
@@ -23,7 +23,7 @@ export type TopDownNodeTransformerWithSelector<TNode extends Node = Node> = {
 };
 
 export function topDownTransformerVisitor<
-  TNodeKind extends NodeKind = NodeKind
+  TNodeKind extends NodeKind = NodeKind,
 >(
   transformers: (TopDownNodeTransformer | TopDownNodeTransformerWithSelector)[],
   nodeKeys?: TNodeKind[]

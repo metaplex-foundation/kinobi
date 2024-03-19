@@ -15,9 +15,9 @@ export const REGISTERED_DISCRIMINATOR_NODE_KINDS = getNodeKinds(
   REGISTERED_DISCRIMINATOR_NODES
 );
 export type RegisteredDiscriminatorNodeKind =
-  typeof REGISTERED_DISCRIMINATOR_NODE_KINDS[number];
+  (typeof REGISTERED_DISCRIMINATOR_NODE_KINDS)[number];
 export type RegisteredDiscriminatorNode =
-  typeof REGISTERED_DISCRIMINATOR_NODES[RegisteredDiscriminatorNodeKind];
+  (typeof REGISTERED_DISCRIMINATOR_NODES)[RegisteredDiscriminatorNodeKind];
 
 // Discriminator Node Helpers.
 

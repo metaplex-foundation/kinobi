@@ -44,7 +44,7 @@ export type RevokeCollectionAuthorityInstruction<
   TAccountRevokeAuthority extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -64,7 +64,7 @@ export type RevokeCollectionAuthorityInstruction<
       TAccountMint extends string
         ? ReadonlyAccount<TAccountMint>
         : TAccountMint,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -77,7 +77,7 @@ export type RevokeCollectionAuthorityInstructionWithSigners<
   TAccountRevokeAuthority extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -98,7 +98,7 @@ export type RevokeCollectionAuthorityInstructionWithSigners<
       TAccountMint extends string
         ? ReadonlyAccount<TAccountMint>
         : TAccountMint,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -134,7 +134,7 @@ export type RevokeCollectionAuthorityInput<
   TAccountDelegateAuthority extends string,
   TAccountRevokeAuthority extends string,
   TAccountMetadata extends string,
-  TAccountMint extends string
+  TAccountMint extends string,
 > = {
   /** Collection Authority Record PDA */
   collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
@@ -153,7 +153,7 @@ export type RevokeCollectionAuthorityInputWithSigners<
   TAccountDelegateAuthority extends string,
   TAccountRevokeAuthority extends string,
   TAccountMetadata extends string,
-  TAccountMint extends string
+  TAccountMint extends string,
 > = {
   /** Collection Authority Record PDA */
   collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
@@ -173,7 +173,7 @@ export function getRevokeCollectionAuthorityInstruction<
   TAccountRevokeAuthority extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: RevokeCollectionAuthorityInputWithSigners<
     TAccountCollectionAuthorityRecord,
@@ -196,7 +196,7 @@ export function getRevokeCollectionAuthorityInstruction<
   TAccountRevokeAuthority extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: RevokeCollectionAuthorityInput<
     TAccountCollectionAuthorityRecord,
@@ -219,7 +219,7 @@ export function getRevokeCollectionAuthorityInstruction<
   TAccountRevokeAuthority extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: RevokeCollectionAuthorityInput<
     TAccountCollectionAuthorityRecord,
@@ -282,7 +282,7 @@ export function getRevokeCollectionAuthorityInstructionRaw<
   TAccountRevokeAuthority extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     collectionAuthorityRecord: TAccountCollectionAuthorityRecord extends string
@@ -332,7 +332,7 @@ export function getRevokeCollectionAuthorityInstructionRaw<
 
 export type ParsedRevokeCollectionAuthorityInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -352,7 +352,7 @@ export type ParsedRevokeCollectionAuthorityInstruction<
 
 export function parseRevokeCollectionAuthorityInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

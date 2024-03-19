@@ -8,7 +8,7 @@ import {
 export function tapVisitor<
   TReturn,
   TNodeKey extends NodeKind,
-  TVisitor extends Visitor<TReturn, TNodeKey>
+  TVisitor extends Visitor<TReturn, TNodeKey>,
 >(
   visitor: TVisitor,
   key: TNodeKey,
