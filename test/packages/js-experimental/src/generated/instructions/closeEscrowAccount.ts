@@ -49,7 +49,7 @@ export type CloseEscrowAccountInstruction<
   TAccountSysvarInstructions extends
     | string
     | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -78,7 +78,7 @@ export type CloseEscrowAccountInstruction<
       TAccountSysvarInstructions extends string
         ? ReadonlyAccount<TAccountSysvarInstructions>
         : TAccountSysvarInstructions,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -96,7 +96,7 @@ export type CloseEscrowAccountInstructionWithSigners<
   TAccountSysvarInstructions extends
     | string
     | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -126,7 +126,7 @@ export type CloseEscrowAccountInstructionWithSigners<
       TAccountSysvarInstructions extends string
         ? ReadonlyAccount<TAccountSysvarInstructions>
         : TAccountSysvarInstructions,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -163,7 +163,7 @@ export type CloseEscrowAccountInput<
   TAccountEdition extends string,
   TAccountPayer extends string,
   TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string
+  TAccountSysvarInstructions extends string,
 > = {
   /** Escrow account */
   escrow: Address<TAccountEscrow>;
@@ -191,7 +191,7 @@ export type CloseEscrowAccountInputWithSigners<
   TAccountEdition extends string,
   TAccountPayer extends string,
   TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string
+  TAccountSysvarInstructions extends string,
 > = {
   /** Escrow account */
   escrow: Address<TAccountEscrow>;
@@ -220,7 +220,7 @@ export function getCloseEscrowAccountInstruction<
   TAccountPayer extends string,
   TAccountSystemProgram extends string,
   TAccountSysvarInstructions extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CloseEscrowAccountInputWithSigners<
     TAccountEscrow,
@@ -252,7 +252,7 @@ export function getCloseEscrowAccountInstruction<
   TAccountPayer extends string,
   TAccountSystemProgram extends string,
   TAccountSysvarInstructions extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CloseEscrowAccountInput<
     TAccountEscrow,
@@ -284,7 +284,7 @@ export function getCloseEscrowAccountInstruction<
   TAccountPayer extends string,
   TAccountSystemProgram extends string,
   TAccountSysvarInstructions extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CloseEscrowAccountInput<
     TAccountEscrow,
@@ -368,7 +368,7 @@ export function getCloseEscrowAccountInstructionRaw<
   TAccountSysvarInstructions extends
     | string
     | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     escrow: TAccountEscrow extends string
@@ -435,7 +435,7 @@ export function getCloseEscrowAccountInstructionRaw<
 
 export type ParsedCloseEscrowAccountInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -461,7 +461,7 @@ export type ParsedCloseEscrowAccountInstruction<
 
 export function parseCloseEscrowAccountInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

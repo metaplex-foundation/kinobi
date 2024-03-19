@@ -65,7 +65,7 @@ export type CreateV2Instruction<
   TAccountSplTokenProgram extends
     | string
     | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -97,7 +97,7 @@ export type CreateV2Instruction<
       TAccountSplTokenProgram extends string
         ? ReadonlyAccount<TAccountSplTokenProgram>
         : TAccountSplTokenProgram,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -118,7 +118,7 @@ export type CreateV2InstructionWithSigners<
   TAccountSplTokenProgram extends
     | string
     | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -152,7 +152,7 @@ export type CreateV2InstructionWithSigners<
       TAccountSplTokenProgram extends string
         ? ReadonlyAccount<TAccountSplTokenProgram>
         : TAccountSplTokenProgram,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -208,7 +208,7 @@ export type CreateV2Input<
   TAccountUpdateAuthority extends string,
   TAccountSystemProgram extends string,
   TAccountSysvarInstructions extends string,
-  TAccountSplTokenProgram extends string
+  TAccountSplTokenProgram extends string,
 > = {
   /** Metadata account key (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
@@ -241,7 +241,7 @@ export type CreateV2InputWithSigners<
   TAccountUpdateAuthority extends string,
   TAccountSystemProgram extends string,
   TAccountSysvarInstructions extends string,
-  TAccountSplTokenProgram extends string
+  TAccountSplTokenProgram extends string,
 > = {
   /** Metadata account key (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
@@ -275,7 +275,7 @@ export function getCreateV2Instruction<
   TAccountSystemProgram extends string,
   TAccountSysvarInstructions extends string,
   TAccountSplTokenProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CreateV2InputWithSigners<
     TAccountMetadata,
@@ -292,7 +292,7 @@ export function getCreateV2Instruction<
   TProgram,
   TAccountMetadata,
   TAccountMasterEdition,
-  typeof input['mint'] extends TransactionSigner<TAccountMint>
+  (typeof input)['mint'] extends TransactionSigner<TAccountMint>
     ? WritableSignerAccount<TAccountMint> & IAccountSignerMeta<TAccountMint>
     : TAccountMint,
   TAccountMintAuthority,
@@ -312,7 +312,7 @@ export function getCreateV2Instruction<
   TAccountSystemProgram extends string,
   TAccountSysvarInstructions extends string,
   TAccountSplTokenProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CreateV2Input<
     TAccountMetadata,
@@ -347,7 +347,7 @@ export function getCreateV2Instruction<
   TAccountSystemProgram extends string,
   TAccountSysvarInstructions extends string,
   TAccountSplTokenProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CreateV2Input<
     TAccountMetadata,
@@ -451,7 +451,7 @@ export function getCreateV2InstructionRaw<
   TAccountSplTokenProgram extends
     | string
     | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -538,7 +538,7 @@ export function getCreateV2InstructionRaw<
 
 export type ParsedCreateV2Instruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -566,7 +566,7 @@ export type ParsedCreateV2Instruction<
 
 export function parseCreateV2Instruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

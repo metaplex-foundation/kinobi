@@ -44,7 +44,7 @@ export type CreateReservationListInstruction<
   TAccountRent extends
     | string
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -73,7 +73,7 @@ export type CreateReservationListInstruction<
       TAccountRent extends string
         ? ReadonlyAccount<TAccountRent>
         : TAccountRent,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -91,7 +91,7 @@ export type CreateReservationListInstructionWithSigners<
   TAccountRent extends
     | string
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -122,7 +122,7 @@ export type CreateReservationListInstructionWithSigners<
       TAccountRent extends string
         ? ReadonlyAccount<TAccountRent>
         : TAccountRent,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -134,7 +134,7 @@ export type CreateReservationListInput<
   TAccountResource extends string,
   TAccountMetadata extends string,
   TAccountSystemProgram extends string,
-  TAccountRent extends string
+  TAccountRent extends string,
 > = {
   /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
   reservationList: Address<TAccountReservationList>;
@@ -162,7 +162,7 @@ export type CreateReservationListInputWithSigners<
   TAccountResource extends string,
   TAccountMetadata extends string,
   TAccountSystemProgram extends string,
-  TAccountRent extends string
+  TAccountRent extends string,
 > = {
   /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
   reservationList: Address<TAccountReservationList>;
@@ -191,7 +191,7 @@ export function getCreateReservationListInstruction<
   TAccountMetadata extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CreateReservationListInputWithSigners<
     TAccountReservationList,
@@ -223,7 +223,7 @@ export function getCreateReservationListInstruction<
   TAccountMetadata extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CreateReservationListInput<
     TAccountReservationList,
@@ -255,7 +255,7 @@ export function getCreateReservationListInstruction<
   TAccountMetadata extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CreateReservationListInput<
     TAccountReservationList,
@@ -343,7 +343,7 @@ export function getCreateReservationListInstructionRaw<
   TAccountRent extends
     | string
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     reservationList: TAccountReservationList extends string
@@ -414,7 +414,7 @@ export function getCreateReservationListInstructionRaw<
 
 export type ParsedCreateReservationListInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -440,7 +440,7 @@ export type ParsedCreateReservationListInstruction<
 
 export function parseCreateReservationListInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

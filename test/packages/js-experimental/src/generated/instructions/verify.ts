@@ -50,7 +50,7 @@ export type VerifyInstruction<
   TAccountAuthorizationRulesProgram extends
     | string
     | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -70,7 +70,7 @@ export type VerifyInstruction<
       TAccountAuthorizationRulesProgram extends string
         ? ReadonlyAccount<TAccountAuthorizationRulesProgram>
         : TAccountAuthorizationRulesProgram,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -83,7 +83,7 @@ export type VerifyInstructionWithSigners<
   TAccountAuthorizationRulesProgram extends
     | string
     | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -105,7 +105,7 @@ export type VerifyInstructionWithSigners<
       TAccountAuthorizationRulesProgram extends string
         ? ReadonlyAccount<TAccountAuthorizationRulesProgram>
         : TAccountAuthorizationRulesProgram,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -148,7 +148,7 @@ export type VerifyInput<
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
   TAccountAuthorizationRules extends string,
-  TAccountAuthorizationRulesProgram extends string
+  TAccountAuthorizationRulesProgram extends string,
 > = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
@@ -168,7 +168,7 @@ export type VerifyInputWithSigners<
   TAccountCollectionAuthority extends string,
   TAccountPayer extends string,
   TAccountAuthorizationRules extends string,
-  TAccountAuthorizationRulesProgram extends string
+  TAccountAuthorizationRulesProgram extends string,
 > = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
@@ -189,7 +189,7 @@ export function getVerifyInstruction<
   TAccountPayer extends string,
   TAccountAuthorizationRules extends string,
   TAccountAuthorizationRulesProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: VerifyInputWithSigners<
     TAccountMetadata,
@@ -212,7 +212,7 @@ export function getVerifyInstruction<
   TAccountPayer extends string,
   TAccountAuthorizationRules extends string,
   TAccountAuthorizationRulesProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: VerifyInput<
     TAccountMetadata,
@@ -235,7 +235,7 @@ export function getVerifyInstruction<
   TAccountPayer extends string,
   TAccountAuthorizationRules extends string,
   TAccountAuthorizationRulesProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: VerifyInput<
     TAccountMetadata,
@@ -305,7 +305,7 @@ export function getVerifyInstructionRaw<
   TAccountAuthorizationRulesProgram extends
     | string
     | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -369,7 +369,7 @@ export function getVerifyInstructionRaw<
 
 export type ParsedVerifyInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -389,7 +389,7 @@ export type ParsedVerifyInstruction<
 
 export function parseVerifyInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

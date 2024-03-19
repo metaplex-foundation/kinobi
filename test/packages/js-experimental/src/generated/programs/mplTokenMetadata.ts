@@ -371,7 +371,7 @@ export function identifyMplTokenMetadataInstruction(
 }
 
 export type ParsedMplTokenMetadataInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 > =
   | ({
       instructionType: MplTokenMetadataInstruction.CreateMetadataAccount;

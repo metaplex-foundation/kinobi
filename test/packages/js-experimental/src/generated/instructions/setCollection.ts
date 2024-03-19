@@ -66,7 +66,7 @@ export type SetCollectionInstruction<
   TAccountSystemProgram extends
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -113,7 +113,7 @@ export type SetCollectionInstruction<
       TAccountSystemProgram extends string
         ? ReadonlyAccount<TAccountSystemProgram>
         : TAccountSystemProgram,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -145,7 +145,7 @@ export type SetCollectionInstructionWithSigners<
   TAccountSystemProgram extends
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -195,7 +195,7 @@ export type SetCollectionInstructionWithSigners<
       TAccountSystemProgram extends string
         ? ReadonlyAccount<TAccountSystemProgram>
         : TAccountSystemProgram,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -245,7 +245,7 @@ export type SetCollectionInput<
   TAccountNewCollectionMasterEdition extends string,
   TAccountNewCollectionAuthorityRecord extends string,
   TAccountTokenMetadataProgram extends string,
-  TAccountSystemProgram extends string
+  TAccountSystemProgram extends string,
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authority: Address<TAccountAuthority>;
@@ -277,7 +277,7 @@ export type SetCollectionInputWithSigners<
   TAccountNewCollectionMasterEdition extends string,
   TAccountNewCollectionAuthorityRecord extends string,
   TAccountTokenMetadataProgram extends string,
-  TAccountSystemProgram extends string
+  TAccountSystemProgram extends string,
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authority: TransactionSigner<TAccountAuthority>;
@@ -310,7 +310,7 @@ export function getSetCollectionInstruction<
   TAccountNewCollectionAuthorityRecord extends string,
   TAccountTokenMetadataProgram extends string,
   TAccountSystemProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: SetCollectionInputWithSigners<
     TAccountCandyMachine,
@@ -360,7 +360,7 @@ export function getSetCollectionInstruction<
   TAccountNewCollectionAuthorityRecord extends string,
   TAccountTokenMetadataProgram extends string,
   TAccountSystemProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: SetCollectionInput<
     TAccountCandyMachine,
@@ -410,7 +410,7 @@ export function getSetCollectionInstruction<
   TAccountNewCollectionAuthorityRecord extends string,
   TAccountTokenMetadataProgram extends string,
   TAccountSystemProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: SetCollectionInput<
     TAccountCandyMachine,
@@ -547,7 +547,7 @@ export function getSetCollectionInstructionRaw<
   TAccountSystemProgram extends
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     candyMachine: TAccountCandyMachine extends string
@@ -661,7 +661,7 @@ export function getSetCollectionInstructionRaw<
 
 export type ParsedSetCollectionInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -685,7 +685,7 @@ export type ParsedSetCollectionInstruction<
 
 export function parseSetCollectionInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

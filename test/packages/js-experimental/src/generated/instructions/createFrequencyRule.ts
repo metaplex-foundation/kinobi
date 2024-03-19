@@ -46,7 +46,7 @@ export type CreateFrequencyRuleInstruction<
   TAccountSystemProgram extends
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -60,7 +60,7 @@ export type CreateFrequencyRuleInstruction<
       TAccountSystemProgram extends string
         ? ReadonlyAccount<TAccountSystemProgram>
         : TAccountSystemProgram,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -71,7 +71,7 @@ export type CreateFrequencyRuleInstructionWithSigners<
   TAccountSystemProgram extends
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -86,7 +86,7 @@ export type CreateFrequencyRuleInstructionWithSigners<
       TAccountSystemProgram extends string
         ? ReadonlyAccount<TAccountSystemProgram>
         : TAccountSystemProgram,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -141,7 +141,7 @@ export function getCreateFrequencyRuleInstructionDataCodec(): Codec<
 export type CreateFrequencyRuleInput<
   TAccountPayer extends string,
   TAccountFrequencyPda extends string,
-  TAccountSystemProgram extends string
+  TAccountSystemProgram extends string,
 > = {
   /** Payer and creator of the Frequency Rule */
   payer: Address<TAccountPayer>;
@@ -158,7 +158,7 @@ export type CreateFrequencyRuleInput<
 export type CreateFrequencyRuleInputWithSigners<
   TAccountPayer extends string,
   TAccountFrequencyPda extends string,
-  TAccountSystemProgram extends string
+  TAccountSystemProgram extends string,
 > = {
   /** Payer and creator of the Frequency Rule */
   payer: TransactionSigner<TAccountPayer>;
@@ -176,7 +176,7 @@ export function getCreateFrequencyRuleInstruction<
   TAccountPayer extends string,
   TAccountFrequencyPda extends string,
   TAccountSystemProgram extends string,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
 >(
   input: CreateFrequencyRuleInputWithSigners<
     TAccountPayer,
@@ -193,7 +193,7 @@ export function getCreateFrequencyRuleInstruction<
   TAccountPayer extends string,
   TAccountFrequencyPda extends string,
   TAccountSystemProgram extends string,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
 >(
   input: CreateFrequencyRuleInput<
     TAccountPayer,
@@ -210,7 +210,7 @@ export function getCreateFrequencyRuleInstruction<
   TAccountPayer extends string,
   TAccountFrequencyPda extends string,
   TAccountSystemProgram extends string,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
 >(
   input: CreateFrequencyRuleInput<
     TAccountPayer,
@@ -269,7 +269,7 @@ export function getCreateFrequencyRuleInstructionRaw<
   TAccountSystemProgram extends
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     payer: TAccountPayer extends string
@@ -310,7 +310,7 @@ export function getCreateFrequencyRuleInstructionRaw<
 
 export type ParsedCreateFrequencyRuleInstruction<
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -326,7 +326,7 @@ export type ParsedCreateFrequencyRuleInstruction<
 
 export function parseCreateFrequencyRuleInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

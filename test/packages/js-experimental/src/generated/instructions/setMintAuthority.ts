@@ -41,7 +41,7 @@ export type SetMintAuthorityInstruction<
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
   TAccountMintAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -55,7 +55,7 @@ export type SetMintAuthorityInstruction<
       TAccountMintAuthority extends string
         ? ReadonlySignerAccount<TAccountMintAuthority>
         : TAccountMintAuthority,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -64,7 +64,7 @@ export type SetMintAuthorityInstructionWithSigners<
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
   TAccountMintAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -80,7 +80,7 @@ export type SetMintAuthorityInstructionWithSigners<
         ? ReadonlySignerAccount<TAccountMintAuthority> &
             IAccountSignerMeta<TAccountMintAuthority>
         : TAccountMintAuthority,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -119,7 +119,7 @@ export function getSetMintAuthorityInstructionDataCodec(): Codec<
 export type SetMintAuthorityInput<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
-  TAccountMintAuthority extends string
+  TAccountMintAuthority extends string,
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authority: Address<TAccountAuthority>;
@@ -129,7 +129,7 @@ export type SetMintAuthorityInput<
 export type SetMintAuthorityInputWithSigners<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
-  TAccountMintAuthority extends string
+  TAccountMintAuthority extends string,
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authority: TransactionSigner<TAccountAuthority>;
@@ -140,7 +140,7 @@ export function getSetMintAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountMintAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: SetMintAuthorityInputWithSigners<
     TAccountCandyMachine,
@@ -157,7 +157,7 @@ export function getSetMintAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountMintAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: SetMintAuthorityInput<
     TAccountCandyMachine,
@@ -174,7 +174,7 @@ export function getSetMintAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountMintAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: SetMintAuthorityInput<
     TAccountCandyMachine,
@@ -221,7 +221,7 @@ export function getSetMintAuthorityInstructionRaw<
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
   TAccountMintAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     candyMachine: TAccountCandyMachine extends string
@@ -260,7 +260,7 @@ export function getSetMintAuthorityInstructionRaw<
 
 export type ParsedSetMintAuthorityInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -273,7 +273,7 @@ export type ParsedSetMintAuthorityInstruction<
 
 export function parseSetMintAuthorityInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

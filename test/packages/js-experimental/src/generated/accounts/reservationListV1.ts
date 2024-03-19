@@ -59,7 +59,7 @@ export async function fetchReservationListV1<TAddress extends string = string>(
 }
 
 export async function fetchMaybeReservationListV1<
-  TAddress extends string = string
+  TAddress extends string = string,
 >(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,

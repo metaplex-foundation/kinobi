@@ -41,7 +41,7 @@ export type SetTokenStandardInstruction<
   TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
   TAccountEdition extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -58,7 +58,7 @@ export type SetTokenStandardInstruction<
       TAccountEdition extends string
         ? ReadonlyAccount<TAccountEdition>
         : TAccountEdition,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -68,7 +68,7 @@ export type SetTokenStandardInstructionWithSigners<
   TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
   TAccountEdition extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -86,7 +86,7 @@ export type SetTokenStandardInstructionWithSigners<
       TAccountEdition extends string
         ? ReadonlyAccount<TAccountEdition>
         : TAccountEdition,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -119,7 +119,7 @@ export type SetTokenStandardInput<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TAccountMint extends string,
-  TAccountEdition extends string
+  TAccountEdition extends string,
 > = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
@@ -135,7 +135,7 @@ export type SetTokenStandardInputWithSigners<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
   TAccountMint extends string,
-  TAccountEdition extends string
+  TAccountEdition extends string,
 > = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
@@ -152,7 +152,7 @@ export function getSetTokenStandardInstruction<
   TAccountUpdateAuthority extends string,
   TAccountMint extends string,
   TAccountEdition extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: SetTokenStandardInputWithSigners<
     TAccountMetadata,
@@ -172,7 +172,7 @@ export function getSetTokenStandardInstruction<
   TAccountUpdateAuthority extends string,
   TAccountMint extends string,
   TAccountEdition extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: SetTokenStandardInput<
     TAccountMetadata,
@@ -192,7 +192,7 @@ export function getSetTokenStandardInstruction<
   TAccountUpdateAuthority extends string,
   TAccountMint extends string,
   TAccountEdition extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: SetTokenStandardInput<
     TAccountMetadata,
@@ -243,7 +243,7 @@ export function getSetTokenStandardInstructionRaw<
   TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
   TAccountEdition extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -292,7 +292,7 @@ export function getSetTokenStandardInstructionRaw<
 
 export type ParsedSetTokenStandardInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -310,7 +310,7 @@ export type ParsedSetTokenStandardInstruction<
 
 export function parseSetTokenStandardInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

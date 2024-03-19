@@ -108,7 +108,7 @@ export type UpdateV1Instruction<
     | string
     | IAccountMeta<string> = string,
   TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -143,7 +143,7 @@ export type UpdateV1Instruction<
       TAccountAuthorizationRules extends string
         ? ReadonlyAccount<TAccountAuthorizationRules>
         : TAccountAuthorizationRules,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -165,7 +165,7 @@ export type UpdateV1InstructionWithSigners<
     | string
     | IAccountMeta<string> = string,
   TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -201,7 +201,7 @@ export type UpdateV1InstructionWithSigners<
       TAccountAuthorizationRules extends string
         ? ReadonlyAccount<TAccountAuthorizationRules>
         : TAccountAuthorizationRules,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -340,7 +340,7 @@ export type UpdateV1Input<
   TAccountToken extends string,
   TAccountDelegateRecord extends string,
   TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string
+  TAccountAuthorizationRules extends string,
 > = {
   /** Update authority or delegate */
   authority: Address<TAccountAuthority>;
@@ -386,7 +386,7 @@ export type UpdateV1InputWithSigners<
   TAccountToken extends string,
   TAccountDelegateRecord extends string,
   TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string
+  TAccountAuthorizationRules extends string,
 > = {
   /** Update authority or delegate */
   authority: TransactionSigner<TAccountAuthority>;
@@ -433,7 +433,7 @@ export function getUpdateV1Instruction<
   TAccountDelegateRecord extends string,
   TAccountAuthorizationRulesProgram extends string,
   TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: UpdateV1InputWithSigners<
     TAccountAuthority,
@@ -471,7 +471,7 @@ export function getUpdateV1Instruction<
   TAccountDelegateRecord extends string,
   TAccountAuthorizationRulesProgram extends string,
   TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: UpdateV1Input<
     TAccountAuthority,
@@ -509,7 +509,7 @@ export function getUpdateV1Instruction<
   TAccountDelegateRecord extends string,
   TAccountAuthorizationRulesProgram extends string,
   TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: UpdateV1Input<
     TAccountAuthority,
@@ -613,7 +613,7 @@ export function getUpdateV1InstructionRaw<
     | string
     | IAccountMeta<string> = string,
   TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     authority: TAccountAuthority extends string
@@ -726,7 +726,7 @@ export function getUpdateV1InstructionRaw<
 
 export type ParsedUpdateV1Instruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -756,7 +756,7 @@ export type ParsedUpdateV1Instruction<
 
 export function parseUpdateV1Instruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

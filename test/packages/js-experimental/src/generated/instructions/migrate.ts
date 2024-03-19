@@ -59,7 +59,7 @@ export type MigrateInstruction<
     | string
     | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
   TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -94,7 +94,7 @@ export type MigrateInstruction<
       TAccountAuthorizationRules extends string
         ? ReadonlyAccount<TAccountAuthorizationRules>
         : TAccountAuthorizationRules,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -116,7 +116,7 @@ export type MigrateInstructionWithSigners<
     | string
     | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
   TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -152,7 +152,7 @@ export type MigrateInstructionWithSigners<
       TAccountAuthorizationRules extends string
         ? ReadonlyAccount<TAccountAuthorizationRules>
         : TAccountAuthorizationRules,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -200,7 +200,7 @@ export type MigrateInput<
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
   TAccountSysvarInstructions extends string,
-  TAccountAuthorizationRules extends string
+  TAccountAuthorizationRules extends string,
 > = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
@@ -235,7 +235,7 @@ export type MigrateInputWithSigners<
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
   TAccountSysvarInstructions extends string,
-  TAccountAuthorizationRules extends string
+  TAccountAuthorizationRules extends string,
 > = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
@@ -271,7 +271,7 @@ export function getMigrateInstruction<
   TAccountSystemProgram extends string,
   TAccountSysvarInstructions extends string,
   TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: MigrateInputWithSigners<
     TAccountMetadata,
@@ -309,7 +309,7 @@ export function getMigrateInstruction<
   TAccountSystemProgram extends string,
   TAccountSysvarInstructions extends string,
   TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: MigrateInput<
     TAccountMetadata,
@@ -347,7 +347,7 @@ export function getMigrateInstruction<
   TAccountSystemProgram extends string,
   TAccountSysvarInstructions extends string,
   TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: MigrateInput<
     TAccountMetadata,
@@ -458,7 +458,7 @@ export function getMigrateInstructionRaw<
     | string
     | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
   TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -550,7 +550,7 @@ export function getMigrateInstructionRaw<
 
 export type ParsedMigrateInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -580,7 +580,7 @@ export type ParsedMigrateInstruction<
 
 export function parseMigrateInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

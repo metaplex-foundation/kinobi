@@ -109,7 +109,7 @@ export async function fetchUseAuthorityRecord<TAddress extends string = string>(
 }
 
 export async function fetchMaybeUseAuthorityRecord<
-  TAddress extends string = string
+  TAddress extends string = string,
 >(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,

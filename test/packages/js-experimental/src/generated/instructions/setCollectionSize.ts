@@ -49,7 +49,7 @@ export type SetCollectionSizeInstruction<
   TAccountCollectionAuthorityRecord extends
     | string
     | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -66,7 +66,7 @@ export type SetCollectionSizeInstruction<
       TAccountCollectionAuthorityRecord extends string
         ? ReadonlyAccount<TAccountCollectionAuthorityRecord>
         : TAccountCollectionAuthorityRecord,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -78,7 +78,7 @@ export type SetCollectionSizeInstructionWithSigners<
   TAccountCollectionAuthorityRecord extends
     | string
     | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -96,7 +96,7 @@ export type SetCollectionSizeInstructionWithSigners<
       TAccountCollectionAuthorityRecord extends string
         ? ReadonlyAccount<TAccountCollectionAuthorityRecord>
         : TAccountCollectionAuthorityRecord,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -140,7 +140,7 @@ export type SetCollectionSizeInput<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
-  TAccountCollectionAuthorityRecord extends string
+  TAccountCollectionAuthorityRecord extends string,
 > = {
   /** Collection Metadata account */
   collectionMetadata: Address<TAccountCollectionMetadata>;
@@ -157,7 +157,7 @@ export type SetCollectionSizeInputWithSigners<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
-  TAccountCollectionAuthorityRecord extends string
+  TAccountCollectionAuthorityRecord extends string,
 > = {
   /** Collection Metadata account */
   collectionMetadata: Address<TAccountCollectionMetadata>;
@@ -175,7 +175,7 @@ export function getSetCollectionSizeInstruction<
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
   TAccountCollectionAuthorityRecord extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: SetCollectionSizeInputWithSigners<
     TAccountCollectionMetadata,
@@ -195,7 +195,7 @@ export function getSetCollectionSizeInstruction<
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
   TAccountCollectionAuthorityRecord extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: SetCollectionSizeInput<
     TAccountCollectionMetadata,
@@ -215,7 +215,7 @@ export function getSetCollectionSizeInstruction<
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
   TAccountCollectionAuthorityRecord extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: SetCollectionSizeInput<
     TAccountCollectionMetadata,
@@ -281,7 +281,7 @@ export function getSetCollectionSizeInstructionRaw<
   TAccountCollectionAuthorityRecord extends
     | string
     | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     collectionMetadata: TAccountCollectionMetadata extends string
@@ -333,7 +333,7 @@ export function getSetCollectionSizeInstructionRaw<
 
 export type ParsedSetCollectionSizeInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -351,7 +351,7 @@ export type ParsedSetCollectionSizeInstruction<
 
 export function parseSetCollectionSizeInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

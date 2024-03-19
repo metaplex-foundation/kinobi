@@ -58,7 +58,7 @@ export type UtilizeInstruction<
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
   TAccountUseAuthorityRecord extends string | IAccountMeta<string> = string,
   TAccountBurner extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -96,7 +96,7 @@ export type UtilizeInstruction<
       TAccountBurner extends string
         ? ReadonlyAccount<TAccountBurner>
         : TAccountBurner,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -121,7 +121,7 @@ export type UtilizeInstructionWithSigners<
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
   TAccountUseAuthorityRecord extends string | IAccountMeta<string> = string,
   TAccountBurner extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -160,7 +160,7 @@ export type UtilizeInstructionWithSigners<
       TAccountBurner extends string
         ? ReadonlyAccount<TAccountBurner>
         : TAccountBurner,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -209,7 +209,7 @@ export type UtilizeInput<
   TAccountSystemProgram extends string,
   TAccountRent extends string,
   TAccountUseAuthorityRecord extends string,
-  TAccountBurner extends string
+  TAccountBurner extends string,
 > = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
@@ -247,7 +247,7 @@ export type UtilizeInputWithSigners<
   TAccountSystemProgram extends string,
   TAccountRent extends string,
   TAccountUseAuthorityRecord extends string,
-  TAccountBurner extends string
+  TAccountBurner extends string,
 > = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
@@ -286,7 +286,7 @@ export function getUtilizeInstruction<
   TAccountRent extends string,
   TAccountUseAuthorityRecord extends string,
   TAccountBurner extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: UtilizeInputWithSigners<
     TAccountMetadata,
@@ -327,7 +327,7 @@ export function getUtilizeInstruction<
   TAccountRent extends string,
   TAccountUseAuthorityRecord extends string,
   TAccountBurner extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: UtilizeInput<
     TAccountMetadata,
@@ -368,7 +368,7 @@ export function getUtilizeInstruction<
   TAccountRent extends string,
   TAccountUseAuthorityRecord extends string,
   TAccountBurner extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: UtilizeInput<
     TAccountMetadata,
@@ -480,7 +480,7 @@ export function getUtilizeInstructionRaw<
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
   TAccountUseAuthorityRecord extends string | IAccountMeta<string> = string,
   TAccountBurner extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -586,7 +586,7 @@ export function getUtilizeInstructionRaw<
 
 export type ParsedUtilizeInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -618,7 +618,7 @@ export type ParsedUtilizeInstruction<
 
 export function parseUtilizeInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

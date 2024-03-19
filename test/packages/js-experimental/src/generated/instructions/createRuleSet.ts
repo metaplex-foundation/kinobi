@@ -49,7 +49,7 @@ export type CreateRuleSetInstruction<
   TAccountSystemProgram extends
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -63,7 +63,7 @@ export type CreateRuleSetInstruction<
       TAccountSystemProgram extends string
         ? ReadonlyAccount<TAccountSystemProgram>
         : TAccountSystemProgram,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -74,7 +74,7 @@ export type CreateRuleSetInstructionWithSigners<
   TAccountSystemProgram extends
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -89,7 +89,7 @@ export type CreateRuleSetInstructionWithSigners<
       TAccountSystemProgram extends string
         ? ReadonlyAccount<TAccountSystemProgram>
         : TAccountSystemProgram,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -136,7 +136,7 @@ export function getCreateRuleSetInstructionDataCodec(): Codec<
 export type CreateRuleSetInput<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
-  TAccountSystemProgram extends string
+  TAccountSystemProgram extends string,
 > = {
   /** Payer and creator of the RuleSet */
   payer: Address<TAccountPayer>;
@@ -151,7 +151,7 @@ export type CreateRuleSetInput<
 export type CreateRuleSetInputWithSigners<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
-  TAccountSystemProgram extends string
+  TAccountSystemProgram extends string,
 > = {
   /** Payer and creator of the RuleSet */
   payer: TransactionSigner<TAccountPayer>;
@@ -167,7 +167,7 @@ export function getCreateRuleSetInstruction<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
   TAccountSystemProgram extends string,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
 >(
   input: CreateRuleSetInputWithSigners<
     TAccountPayer,
@@ -184,7 +184,7 @@ export function getCreateRuleSetInstruction<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
   TAccountSystemProgram extends string,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
 >(
   input: CreateRuleSetInput<
     TAccountPayer,
@@ -201,7 +201,7 @@ export function getCreateRuleSetInstruction<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
   TAccountSystemProgram extends string,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
 >(
   input: CreateRuleSetInput<
     TAccountPayer,
@@ -265,7 +265,7 @@ export function getCreateRuleSetInstructionRaw<
   TAccountSystemProgram extends
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     payer: TAccountPayer extends string
@@ -306,7 +306,7 @@ export function getCreateRuleSetInstructionRaw<
 
 export type ParsedCreateRuleSetInstruction<
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -322,7 +322,7 @@ export type ParsedCreateRuleSetInstruction<
 
 export function parseCreateRuleSetInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

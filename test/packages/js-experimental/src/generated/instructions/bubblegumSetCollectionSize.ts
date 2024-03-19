@@ -51,7 +51,7 @@ export type BubblegumSetCollectionSizeInstruction<
   TAccountCollectionAuthorityRecord extends
     | string
     | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -71,7 +71,7 @@ export type BubblegumSetCollectionSizeInstruction<
       TAccountCollectionAuthorityRecord extends string
         ? ReadonlyAccount<TAccountCollectionAuthorityRecord>
         : TAccountCollectionAuthorityRecord,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -84,7 +84,7 @@ export type BubblegumSetCollectionSizeInstructionWithSigners<
   TAccountCollectionAuthorityRecord extends
     | string
     | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -106,7 +106,7 @@ export type BubblegumSetCollectionSizeInstructionWithSigners<
       TAccountCollectionAuthorityRecord extends string
         ? ReadonlyAccount<TAccountCollectionAuthorityRecord>
         : TAccountCollectionAuthorityRecord,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -151,7 +151,7 @@ export type BubblegumSetCollectionSizeInput<
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
   TAccountBubblegumSigner extends string,
-  TAccountCollectionAuthorityRecord extends string
+  TAccountCollectionAuthorityRecord extends string,
 > = {
   /** Collection Metadata account */
   collectionMetadata: Address<TAccountCollectionMetadata>;
@@ -171,7 +171,7 @@ export type BubblegumSetCollectionSizeInputWithSigners<
   TAccountCollectionAuthority extends string,
   TAccountCollectionMint extends string,
   TAccountBubblegumSigner extends string,
-  TAccountCollectionAuthorityRecord extends string
+  TAccountCollectionAuthorityRecord extends string,
 > = {
   /** Collection Metadata account */
   collectionMetadata: Address<TAccountCollectionMetadata>;
@@ -192,7 +192,7 @@ export function getBubblegumSetCollectionSizeInstruction<
   TAccountCollectionMint extends string,
   TAccountBubblegumSigner extends string,
   TAccountCollectionAuthorityRecord extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: BubblegumSetCollectionSizeInputWithSigners<
     TAccountCollectionMetadata,
@@ -215,7 +215,7 @@ export function getBubblegumSetCollectionSizeInstruction<
   TAccountCollectionMint extends string,
   TAccountBubblegumSigner extends string,
   TAccountCollectionAuthorityRecord extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: BubblegumSetCollectionSizeInput<
     TAccountCollectionMetadata,
@@ -238,7 +238,7 @@ export function getBubblegumSetCollectionSizeInstruction<
   TAccountCollectionMint extends string,
   TAccountBubblegumSigner extends string,
   TAccountCollectionAuthorityRecord extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: BubblegumSetCollectionSizeInput<
     TAccountCollectionMetadata,
@@ -311,7 +311,7 @@ export function getBubblegumSetCollectionSizeInstructionRaw<
   TAccountCollectionAuthorityRecord extends
     | string
     | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     collectionMetadata: TAccountCollectionMetadata extends string
@@ -371,7 +371,7 @@ export function getBubblegumSetCollectionSizeInstructionRaw<
 
 export type ParsedBubblegumSetCollectionSizeInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -391,7 +391,7 @@ export type ParsedBubblegumSetCollectionSizeInstruction<
 
 export function parseBubblegumSetCollectionSizeInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

@@ -1,8 +1,6 @@
+import { format as formatCodeUsingPrettier } from '@prettier/sync';
 import type { ConfigureOptions } from 'nunjucks';
-import {
-  format as formatCodeUsingPrettier,
-  Options as PrettierOptions,
-} from 'prettier';
+import { Options as PrettierOptions } from 'prettier';
 import {
   getAllAccounts,
   getAllDefinedTypes,

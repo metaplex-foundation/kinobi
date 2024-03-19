@@ -95,7 +95,7 @@ export type ValidateInstruction<
     | string
     | IAccountMeta<string>
     | undefined = undefined,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -114,72 +114,72 @@ export type ValidateInstruction<
         : [
             TAccountOptRuleSigner1 extends string
               ? ReadonlyAccount<TAccountOptRuleSigner1>
-              : TAccountOptRuleSigner1
+              : TAccountOptRuleSigner1,
           ]),
       ...(TAccountOptRuleSigner2 extends undefined
         ? []
         : [
             TAccountOptRuleSigner2 extends string
               ? ReadonlySignerAccount<TAccountOptRuleSigner2>
-              : TAccountOptRuleSigner2
+              : TAccountOptRuleSigner2,
           ]),
       ...(TAccountOptRuleSigner3 extends undefined
         ? []
         : [
             TAccountOptRuleSigner3 extends string
               ? ReadonlySignerAccount<TAccountOptRuleSigner3>
-              : TAccountOptRuleSigner3
+              : TAccountOptRuleSigner3,
           ]),
       ...(TAccountOptRuleSigner4 extends undefined
         ? []
         : [
             TAccountOptRuleSigner4 extends string
               ? ReadonlySignerAccount<TAccountOptRuleSigner4>
-              : TAccountOptRuleSigner4
+              : TAccountOptRuleSigner4,
           ]),
       ...(TAccountOptRuleSigner5 extends undefined
         ? []
         : [
             TAccountOptRuleSigner5 extends string
               ? ReadonlySignerAccount<TAccountOptRuleSigner5>
-              : TAccountOptRuleSigner5
+              : TAccountOptRuleSigner5,
           ]),
       ...(TAccountOptRuleNonsigner1 extends undefined
         ? []
         : [
             TAccountOptRuleNonsigner1 extends string
               ? ReadonlyAccount<TAccountOptRuleNonsigner1>
-              : TAccountOptRuleNonsigner1
+              : TAccountOptRuleNonsigner1,
           ]),
       ...(TAccountOptRuleNonsigner2 extends undefined
         ? []
         : [
             TAccountOptRuleNonsigner2 extends string
               ? ReadonlyAccount<TAccountOptRuleNonsigner2>
-              : TAccountOptRuleNonsigner2
+              : TAccountOptRuleNonsigner2,
           ]),
       ...(TAccountOptRuleNonsigner3 extends undefined
         ? []
         : [
             TAccountOptRuleNonsigner3 extends string
               ? ReadonlyAccount<TAccountOptRuleNonsigner3>
-              : TAccountOptRuleNonsigner3
+              : TAccountOptRuleNonsigner3,
           ]),
       ...(TAccountOptRuleNonsigner4 extends undefined
         ? []
         : [
             TAccountOptRuleNonsigner4 extends string
               ? ReadonlyAccount<TAccountOptRuleNonsigner4>
-              : TAccountOptRuleNonsigner4
+              : TAccountOptRuleNonsigner4,
           ]),
       ...(TAccountOptRuleNonsigner5 extends undefined
         ? []
         : [
             TAccountOptRuleNonsigner5 extends string
               ? ReadonlyAccount<TAccountOptRuleNonsigner5>
-              : TAccountOptRuleNonsigner5
+              : TAccountOptRuleNonsigner5,
           ]),
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -230,7 +230,7 @@ export type ValidateInstructionWithSigners<
     | string
     | IAccountMeta<string>
     | undefined = undefined,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -250,7 +250,7 @@ export type ValidateInstructionWithSigners<
         : [
             TAccountOptRuleSigner1 extends string
               ? ReadonlyAccount<TAccountOptRuleSigner1>
-              : TAccountOptRuleSigner1
+              : TAccountOptRuleSigner1,
           ]),
       ...(TAccountOptRuleSigner2 extends undefined
         ? []
@@ -258,7 +258,7 @@ export type ValidateInstructionWithSigners<
             TAccountOptRuleSigner2 extends string
               ? ReadonlySignerAccount<TAccountOptRuleSigner2> &
                   IAccountSignerMeta<TAccountOptRuleSigner2>
-              : TAccountOptRuleSigner2
+              : TAccountOptRuleSigner2,
           ]),
       ...(TAccountOptRuleSigner3 extends undefined
         ? []
@@ -266,7 +266,7 @@ export type ValidateInstructionWithSigners<
             TAccountOptRuleSigner3 extends string
               ? ReadonlySignerAccount<TAccountOptRuleSigner3> &
                   IAccountSignerMeta<TAccountOptRuleSigner3>
-              : TAccountOptRuleSigner3
+              : TAccountOptRuleSigner3,
           ]),
       ...(TAccountOptRuleSigner4 extends undefined
         ? []
@@ -274,7 +274,7 @@ export type ValidateInstructionWithSigners<
             TAccountOptRuleSigner4 extends string
               ? ReadonlySignerAccount<TAccountOptRuleSigner4> &
                   IAccountSignerMeta<TAccountOptRuleSigner4>
-              : TAccountOptRuleSigner4
+              : TAccountOptRuleSigner4,
           ]),
       ...(TAccountOptRuleSigner5 extends undefined
         ? []
@@ -282,44 +282,44 @@ export type ValidateInstructionWithSigners<
             TAccountOptRuleSigner5 extends string
               ? ReadonlySignerAccount<TAccountOptRuleSigner5> &
                   IAccountSignerMeta<TAccountOptRuleSigner5>
-              : TAccountOptRuleSigner5
+              : TAccountOptRuleSigner5,
           ]),
       ...(TAccountOptRuleNonsigner1 extends undefined
         ? []
         : [
             TAccountOptRuleNonsigner1 extends string
               ? ReadonlyAccount<TAccountOptRuleNonsigner1>
-              : TAccountOptRuleNonsigner1
+              : TAccountOptRuleNonsigner1,
           ]),
       ...(TAccountOptRuleNonsigner2 extends undefined
         ? []
         : [
             TAccountOptRuleNonsigner2 extends string
               ? ReadonlyAccount<TAccountOptRuleNonsigner2>
-              : TAccountOptRuleNonsigner2
+              : TAccountOptRuleNonsigner2,
           ]),
       ...(TAccountOptRuleNonsigner3 extends undefined
         ? []
         : [
             TAccountOptRuleNonsigner3 extends string
               ? ReadonlyAccount<TAccountOptRuleNonsigner3>
-              : TAccountOptRuleNonsigner3
+              : TAccountOptRuleNonsigner3,
           ]),
       ...(TAccountOptRuleNonsigner4 extends undefined
         ? []
         : [
             TAccountOptRuleNonsigner4 extends string
               ? ReadonlyAccount<TAccountOptRuleNonsigner4>
-              : TAccountOptRuleNonsigner4
+              : TAccountOptRuleNonsigner4,
           ]),
       ...(TAccountOptRuleNonsigner5 extends undefined
         ? []
         : [
             TAccountOptRuleNonsigner5 extends string
               ? ReadonlyAccount<TAccountOptRuleNonsigner5>
-              : TAccountOptRuleNonsigner5
+              : TAccountOptRuleNonsigner5,
           ]),
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -380,7 +380,7 @@ export type ValidateInput<
   TAccountOptRuleNonsigner2 extends string,
   TAccountOptRuleNonsigner3 extends string,
   TAccountOptRuleNonsigner4 extends string,
-  TAccountOptRuleNonsigner5 extends string
+  TAccountOptRuleNonsigner5 extends string,
 > = {
   /** Payer and creator of the RuleSet */
   payer: Address<TAccountPayer>;
@@ -425,7 +425,7 @@ export type ValidateInputWithSigners<
   TAccountOptRuleNonsigner2 extends string,
   TAccountOptRuleNonsigner3 extends string,
   TAccountOptRuleNonsigner4 extends string,
-  TAccountOptRuleNonsigner5 extends string
+  TAccountOptRuleNonsigner5 extends string,
 > = {
   /** Payer and creator of the RuleSet */
   payer: TransactionSigner<TAccountPayer>;
@@ -473,7 +473,7 @@ export function getValidateInstruction<
   TAccountOptRuleNonsigner3 extends string,
   TAccountOptRuleNonsigner4 extends string,
   TAccountOptRuleNonsigner5 extends string,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
 >(
   input: ValidateInputWithSigners<
     TAccountPayer,
@@ -495,7 +495,7 @@ export function getValidateInstruction<
   TAccountPayer,
   TAccountRuleSet,
   TAccountSystemProgram,
-  typeof input['optRuleSigner1'] extends TransactionSigner<TAccountOptRuleSigner1>
+  (typeof input)['optRuleSigner1'] extends TransactionSigner<TAccountOptRuleSigner1>
     ? ReadonlySignerAccount<TAccountOptRuleSigner1> &
         IAccountSignerMeta<TAccountOptRuleSigner1>
     : TAccountOptRuleSigner1,
@@ -523,7 +523,7 @@ export function getValidateInstruction<
   TAccountOptRuleNonsigner3 extends string,
   TAccountOptRuleNonsigner4 extends string,
   TAccountOptRuleNonsigner5 extends string,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
 >(
   input: ValidateInput<
     TAccountPayer,
@@ -570,7 +570,7 @@ export function getValidateInstruction<
   TAccountOptRuleNonsigner3 extends string,
   TAccountOptRuleNonsigner4 extends string,
   TAccountOptRuleNonsigner5 extends string,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'
+  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
 >(
   input: ValidateInput<
     TAccountPayer,
@@ -714,7 +714,7 @@ export function getValidateInstructionRaw<
     | string
     | IAccountMeta<string>
     | undefined = undefined,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     payer: TAccountPayer extends string
@@ -793,7 +793,7 @@ export function getValidateInstructionRaw<
       accountMetaWithDefault(accounts.optRuleNonsigner4, AccountRole.READONLY),
       accountMetaWithDefault(accounts.optRuleNonsigner5, AccountRole.READONLY),
       ...(remainingAccounts ?? []),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ].filter(<T,>(x: T | undefined): x is T => x !== undefined),
     data: getValidateInstructionDataEncoder().encode(args),
     programAddress,
   } as ValidateInstruction<
@@ -817,7 +817,7 @@ export function getValidateInstructionRaw<
 
 export type ParsedValidateInstruction<
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -852,7 +852,7 @@ export type ParsedValidateInstruction<
 
 export function parseValidateInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

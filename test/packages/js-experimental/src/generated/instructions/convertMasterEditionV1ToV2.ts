@@ -37,7 +37,7 @@ export type ConvertMasterEditionV1ToV2Instruction<
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
   TAccountOneTimeAuth extends string | IAccountMeta<string> = string,
   TAccountPrintingMint extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -51,7 +51,7 @@ export type ConvertMasterEditionV1ToV2Instruction<
       TAccountPrintingMint extends string
         ? WritableAccount<TAccountPrintingMint>
         : TAccountPrintingMint,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -60,7 +60,7 @@ export type ConvertMasterEditionV1ToV2InstructionWithSigners<
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
   TAccountOneTimeAuth extends string | IAccountMeta<string> = string,
   TAccountPrintingMint extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -74,7 +74,7 @@ export type ConvertMasterEditionV1ToV2InstructionWithSigners<
       TAccountPrintingMint extends string
         ? WritableAccount<TAccountPrintingMint>
         : TAccountPrintingMint,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -108,7 +108,7 @@ export function getConvertMasterEditionV1ToV2InstructionDataCodec(): Codec<
 export type ConvertMasterEditionV1ToV2Input<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
-  TAccountPrintingMint extends string
+  TAccountPrintingMint extends string,
 > = {
   /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
   masterEdition: Address<TAccountMasterEdition>;
@@ -121,7 +121,7 @@ export type ConvertMasterEditionV1ToV2Input<
 export type ConvertMasterEditionV1ToV2InputWithSigners<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
-  TAccountPrintingMint extends string
+  TAccountPrintingMint extends string,
 > = {
   /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
   masterEdition: Address<TAccountMasterEdition>;
@@ -135,7 +135,7 @@ export function getConvertMasterEditionV1ToV2Instruction<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
   TAccountPrintingMint extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: ConvertMasterEditionV1ToV2InputWithSigners<
     TAccountMasterEdition,
@@ -152,7 +152,7 @@ export function getConvertMasterEditionV1ToV2Instruction<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
   TAccountPrintingMint extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: ConvertMasterEditionV1ToV2Input<
     TAccountMasterEdition,
@@ -169,7 +169,7 @@ export function getConvertMasterEditionV1ToV2Instruction<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
   TAccountPrintingMint extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: ConvertMasterEditionV1ToV2Input<
     TAccountMasterEdition,
@@ -216,7 +216,7 @@ export function getConvertMasterEditionV1ToV2InstructionRaw<
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
   TAccountOneTimeAuth extends string | IAccountMeta<string> = string,
   TAccountPrintingMint extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     masterEdition: TAccountMasterEdition extends string
@@ -252,7 +252,7 @@ export function getConvertMasterEditionV1ToV2InstructionRaw<
 
 export type ParsedConvertMasterEditionV1ToV2Instruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -268,7 +268,7 @@ export type ParsedConvertMasterEditionV1ToV2Instruction<
 
 export function parseConvertMasterEditionV1ToV2Instruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

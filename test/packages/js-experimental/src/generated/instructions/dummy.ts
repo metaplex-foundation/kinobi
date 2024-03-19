@@ -57,7 +57,7 @@ export type DummyInstruction<
   TAccountDelegate extends string | IAccountMeta<string> = string,
   TAccountDelegateRecord extends string | IAccountMeta<string> = string,
   TAccountTokenOrAtaProgram extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -90,7 +90,7 @@ export type DummyInstruction<
       TAccountTokenOrAtaProgram extends string
         ? ReadonlyAccount<TAccountTokenOrAtaProgram>
         : TAccountTokenOrAtaProgram,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -108,7 +108,7 @@ export type DummyInstructionWithSigners<
   TAccountDelegate extends string | IAccountMeta<string> = string,
   TAccountDelegateRecord extends string | IAccountMeta<string> = string,
   TAccountTokenOrAtaProgram extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -146,7 +146,7 @@ export type DummyInstructionWithSigners<
       TAccountTokenOrAtaProgram extends string
         ? ReadonlyAccount<TAccountTokenOrAtaProgram>
         : TAccountTokenOrAtaProgram,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -197,7 +197,7 @@ export type DummyAsyncInput<
   TAccountBar extends string,
   TAccountDelegate extends string,
   TAccountDelegateRecord extends string,
-  TAccountTokenOrAtaProgram extends string
+  TAccountTokenOrAtaProgram extends string,
 > = {
   edition?: Address<TAccountEdition>;
   mint?: Address<TAccountMint>;
@@ -223,7 +223,7 @@ export type DummyAsyncInputWithSigners<
   TAccountBar extends string,
   TAccountDelegate extends string,
   TAccountDelegateRecord extends string,
-  TAccountTokenOrAtaProgram extends string
+  TAccountTokenOrAtaProgram extends string,
 > = {
   edition?: TransactionSigner<TAccountEdition>;
   mint?: Address<TAccountMint>;
@@ -250,7 +250,7 @@ export async function getDummyInstructionAsync<
   TAccountDelegate extends string,
   TAccountDelegateRecord extends string,
   TAccountTokenOrAtaProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: DummyAsyncInputWithSigners<
     TAccountEdition,
@@ -290,7 +290,7 @@ export async function getDummyInstructionAsync<
   TAccountDelegate extends string,
   TAccountDelegateRecord extends string,
   TAccountTokenOrAtaProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: DummyAsyncInput<
     TAccountEdition,
@@ -330,7 +330,7 @@ export async function getDummyInstructionAsync<
   TAccountDelegate extends string,
   TAccountDelegateRecord extends string,
   TAccountTokenOrAtaProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: DummyAsyncInput<
     TAccountEdition,
@@ -451,7 +451,7 @@ export type DummyInput<
   TAccountBar extends string,
   TAccountDelegate extends string,
   TAccountDelegateRecord extends string,
-  TAccountTokenOrAtaProgram extends string
+  TAccountTokenOrAtaProgram extends string,
 > = {
   edition?: Address<TAccountEdition>;
   mint?: Address<TAccountMint>;
@@ -477,7 +477,7 @@ export type DummyInputWithSigners<
   TAccountBar extends string,
   TAccountDelegate extends string,
   TAccountDelegateRecord extends string,
-  TAccountTokenOrAtaProgram extends string
+  TAccountTokenOrAtaProgram extends string,
 > = {
   edition?: TransactionSigner<TAccountEdition>;
   mint?: Address<TAccountMint>;
@@ -504,7 +504,7 @@ export function getDummyInstruction<
   TAccountDelegate extends string,
   TAccountDelegateRecord extends string,
   TAccountTokenOrAtaProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: DummyInputWithSigners<
     TAccountEdition,
@@ -542,7 +542,7 @@ export function getDummyInstruction<
   TAccountDelegate extends string,
   TAccountDelegateRecord extends string,
   TAccountTokenOrAtaProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: DummyInput<
     TAccountEdition,
@@ -580,7 +580,7 @@ export function getDummyInstruction<
   TAccountDelegate extends string,
   TAccountDelegateRecord extends string,
   TAccountTokenOrAtaProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: DummyInput<
     TAccountEdition,
@@ -698,7 +698,7 @@ export function getDummyInstructionRaw<
   TAccountDelegate extends string | IAccountMeta<string> = string,
   TAccountDelegateRecord extends string | IAccountMeta<string> = string,
   TAccountTokenOrAtaProgram extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     edition: TAccountEdition extends string
@@ -797,7 +797,7 @@ export function getDummyInstructionRaw<
 
 export type ParsedDummyInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -817,7 +817,7 @@ export type ParsedDummyInstruction<
 
 export function parseDummyInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

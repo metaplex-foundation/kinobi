@@ -40,7 +40,7 @@ export type TransferSolInstruction<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountSource extends string | IAccountMeta<string> = string,
   TAccountDestination extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -51,7 +51,7 @@ export type TransferSolInstruction<
       TAccountDestination extends string
         ? WritableAccount<TAccountDestination>
         : TAccountDestination,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -59,7 +59,7 @@ export type TransferSolInstructionWithSigners<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountSource extends string | IAccountMeta<string> = string,
   TAccountDestination extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -71,7 +71,7 @@ export type TransferSolInstructionWithSigners<
       TAccountDestination extends string
         ? WritableAccount<TAccountDestination>
         : TAccountDestination,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -111,7 +111,7 @@ export function getTransferSolInstructionDataCodec(): Codec<
 
 export type TransferSolInput<
   TAccountSource extends string,
-  TAccountDestination extends string
+  TAccountDestination extends string,
 > = {
   source: Address<TAccountSource>;
   destination: Address<TAccountDestination>;
@@ -120,7 +120,7 @@ export type TransferSolInput<
 
 export type TransferSolInputWithSigners<
   TAccountSource extends string,
-  TAccountDestination extends string
+  TAccountDestination extends string,
 > = {
   source: TransactionSigner<TAccountSource>;
   destination: Address<TAccountDestination>;
@@ -130,7 +130,7 @@ export type TransferSolInputWithSigners<
 export function getTransferSolInstruction<
   TAccountSource extends string,
   TAccountDestination extends string,
-  TProgram extends string = '11111111111111111111111111111111'
+  TProgram extends string = '11111111111111111111111111111111',
 >(
   input: TransferSolInputWithSigners<TAccountSource, TAccountDestination>
 ): TransferSolInstructionWithSigners<
@@ -141,14 +141,14 @@ export function getTransferSolInstruction<
 export function getTransferSolInstruction<
   TAccountSource extends string,
   TAccountDestination extends string,
-  TProgram extends string = '11111111111111111111111111111111'
+  TProgram extends string = '11111111111111111111111111111111',
 >(
   input: TransferSolInput<TAccountSource, TAccountDestination>
 ): TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>;
 export function getTransferSolInstruction<
   TAccountSource extends string,
   TAccountDestination extends string,
-  TProgram extends string = '11111111111111111111111111111111'
+  TProgram extends string = '11111111111111111111111111111111',
 >(input: TransferSolInput<TAccountSource, TAccountDestination>): IInstruction {
   // Program address.
   const programAddress =
@@ -190,7 +190,7 @@ export function getTransferSolInstructionRaw<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountSource extends string | IAccountMeta<string> = string,
   TAccountDestination extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     source: TAccountSource extends string
@@ -222,7 +222,7 @@ export function getTransferSolInstructionRaw<
 
 export type ParsedTransferSolInstruction<
   TProgram extends string = '11111111111111111111111111111111',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -234,7 +234,7 @@ export type ParsedTransferSolInstruction<
 
 export function parseTransferSolInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

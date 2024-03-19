@@ -73,7 +73,7 @@ export type CreateMetadataAccountInstruction<
   TAccountRent extends
     | string
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -99,7 +99,7 @@ export type CreateMetadataAccountInstruction<
       TAccountRent extends string
         ? ReadonlyAccount<TAccountRent>
         : TAccountRent,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -116,7 +116,7 @@ export type CreateMetadataAccountInstructionWithSigners<
   TAccountRent extends
     | string
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -144,7 +144,7 @@ export type CreateMetadataAccountInstructionWithSigners<
       TAccountRent extends string
         ? ReadonlyAccount<TAccountRent>
         : TAccountRent,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -229,7 +229,7 @@ export type CreateMetadataAccountAsyncInput<
   TAccountPayer extends string,
   TAccountUpdateAuthority extends string,
   TAccountSystemProgram extends string,
-  TAccountRent extends string
+  TAccountRent extends string,
 > = {
   /** Metadata key (pda of ['metadata', program id, mint id]) */
   metadata?: ProgramDerivedAddress<TAccountMetadata>;
@@ -257,7 +257,7 @@ export type CreateMetadataAccountAsyncInputWithSigners<
   TAccountPayer extends string,
   TAccountUpdateAuthority extends string,
   TAccountSystemProgram extends string,
-  TAccountRent extends string
+  TAccountRent extends string,
 > = {
   /** Metadata key (pda of ['metadata', program id, mint id]) */
   metadata?: ProgramDerivedAddress<TAccountMetadata>;
@@ -286,7 +286,7 @@ export async function getCreateMetadataAccountInstructionAsync<
   TAccountUpdateAuthority extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CreateMetadataAccountAsyncInputWithSigners<
     TAccountMetadata,
@@ -318,7 +318,7 @@ export async function getCreateMetadataAccountInstructionAsync<
   TAccountUpdateAuthority extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CreateMetadataAccountAsyncInput<
     TAccountMetadata,
@@ -350,7 +350,7 @@ export async function getCreateMetadataAccountInstructionAsync<
   TAccountUpdateAuthority extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CreateMetadataAccountAsyncInput<
     TAccountMetadata,
@@ -442,7 +442,7 @@ export type CreateMetadataAccountInput<
   TAccountPayer extends string,
   TAccountUpdateAuthority extends string,
   TAccountSystemProgram extends string,
-  TAccountRent extends string
+  TAccountRent extends string,
 > = {
   /** Metadata key (pda of ['metadata', program id, mint id]) */
   metadata: ProgramDerivedAddress<TAccountMetadata>;
@@ -470,7 +470,7 @@ export type CreateMetadataAccountInputWithSigners<
   TAccountPayer extends string,
   TAccountUpdateAuthority extends string,
   TAccountSystemProgram extends string,
-  TAccountRent extends string
+  TAccountRent extends string,
 > = {
   /** Metadata key (pda of ['metadata', program id, mint id]) */
   metadata: ProgramDerivedAddress<TAccountMetadata>;
@@ -499,7 +499,7 @@ export function getCreateMetadataAccountInstruction<
   TAccountUpdateAuthority extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CreateMetadataAccountInputWithSigners<
     TAccountMetadata,
@@ -529,7 +529,7 @@ export function getCreateMetadataAccountInstruction<
   TAccountUpdateAuthority extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CreateMetadataAccountInput<
     TAccountMetadata,
@@ -559,7 +559,7 @@ export function getCreateMetadataAccountInstruction<
   TAccountUpdateAuthority extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CreateMetadataAccountInput<
     TAccountMetadata,
@@ -652,7 +652,7 @@ export function getCreateMetadataAccountInstructionRaw<
   TAccountRent extends
     | string
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -716,7 +716,7 @@ export function getCreateMetadataAccountInstructionRaw<
 
 export type ParsedCreateMetadataAccountInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -740,7 +740,7 @@ export type ParsedCreateMetadataAccountInstruction<
 
 export function parseCreateMetadataAccountInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &

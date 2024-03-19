@@ -49,7 +49,7 @@ export type SetAndVerifyCollectionInstruction<
   TAccountCollectionAuthorityRecord extends
     | string
     | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -78,7 +78,7 @@ export type SetAndVerifyCollectionInstruction<
       TAccountCollectionAuthorityRecord extends string
         ? ReadonlyAccount<TAccountCollectionAuthorityRecord>
         : TAccountCollectionAuthorityRecord,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -96,7 +96,7 @@ export type SetAndVerifyCollectionInstructionWithSigners<
   TAccountCollectionAuthorityRecord extends
     | string
     | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -127,7 +127,7 @@ export type SetAndVerifyCollectionInstructionWithSigners<
       TAccountCollectionAuthorityRecord extends string
         ? ReadonlyAccount<TAccountCollectionAuthorityRecord>
         : TAccountCollectionAuthorityRecord,
-      ...TRemainingAccounts
+      ...TRemainingAccounts,
     ]
   >;
 
@@ -164,7 +164,7 @@ export type SetAndVerifyCollectionInput<
   TAccountCollectionMint extends string,
   TAccountCollection extends string,
   TAccountCollectionMasterEditionAccount extends string,
-  TAccountCollectionAuthorityRecord extends string
+  TAccountCollectionAuthorityRecord extends string,
 > = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
@@ -192,7 +192,7 @@ export type SetAndVerifyCollectionInputWithSigners<
   TAccountCollectionMint extends string,
   TAccountCollection extends string,
   TAccountCollectionMasterEditionAccount extends string,
-  TAccountCollectionAuthorityRecord extends string
+  TAccountCollectionAuthorityRecord extends string,
 > = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
@@ -221,7 +221,7 @@ export function getSetAndVerifyCollectionInstruction<
   TAccountCollection extends string,
   TAccountCollectionMasterEditionAccount extends string,
   TAccountCollectionAuthorityRecord extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: SetAndVerifyCollectionInputWithSigners<
     TAccountMetadata,
@@ -253,7 +253,7 @@ export function getSetAndVerifyCollectionInstruction<
   TAccountCollection extends string,
   TAccountCollectionMasterEditionAccount extends string,
   TAccountCollectionAuthorityRecord extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: SetAndVerifyCollectionInput<
     TAccountMetadata,
@@ -285,7 +285,7 @@ export function getSetAndVerifyCollectionInstruction<
   TAccountCollection extends string,
   TAccountCollectionMasterEditionAccount extends string,
   TAccountCollectionAuthorityRecord extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: SetAndVerifyCollectionInput<
     TAccountMetadata,
@@ -368,7 +368,7 @@ export function getSetAndVerifyCollectionInstructionRaw<
   TAccountCollectionAuthorityRecord extends
     | string
     | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = []
+  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
 >(
   accounts: {
     metadata: TAccountMetadata extends string
@@ -442,7 +442,7 @@ export function getSetAndVerifyCollectionInstructionRaw<
 
 export type ParsedSetAndVerifyCollectionInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
   accounts: {
@@ -468,7 +468,7 @@ export type ParsedSetAndVerifyCollectionInstruction<
 
 export function parseSetAndVerifyCollectionInstruction<
   TProgram extends string,
-  TAccountMetas extends readonly IAccountMeta[]
+  TAccountMetas extends readonly IAccountMeta[],
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &
