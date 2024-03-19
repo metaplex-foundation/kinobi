@@ -21,7 +21,7 @@ export type BottomUpNodeTransformerWithSelector<TNode extends Node = Node> = {
 };
 
 export function bottomUpTransformerVisitor<
-  TNodeKind extends NodeKind = NodeKind
+  TNodeKind extends NodeKind = NodeKind,
 >(
   transformers: (
     | BottomUpNodeTransformer

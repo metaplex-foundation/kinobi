@@ -78,7 +78,7 @@ export const IDL_TYPE_LEAVES = [
   'f32',
   'f64',
 ] as const;
-export type IdlTypeLeaf = typeof IDL_TYPE_LEAVES[number];
+export type IdlTypeLeaf = (typeof IDL_TYPE_LEAVES)[number];
 
 export type IdlTypeUnsignedInteger = 'u8' | 'u16' | 'u32' | 'u64' | 'u128';
 export type IdlTypeSignedInteger = 'i8' | 'i16' | 'i32' | 'i64' | 'i128';

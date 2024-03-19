@@ -5,7 +5,7 @@ import { mapVisitor } from './mapVisitor';
 import { Visitor } from './visitor';
 
 export function throwValidatorItemsVisitor<
-  TNodeKind extends NodeKind = NodeKind
+  TNodeKind extends NodeKind = NodeKind,
 >(
   visitor: Visitor<ValidatorBag, TNodeKind>,
   throwLevel: LogLevel = 'error'
@@ -15,10 +15,13 @@ export function throwValidatorItemsVisitor<
     const bag = validatorBag.orderByLevel();
     bag.log();
 
-    const levelHistogram = bag.items.reduce((acc, item) => {
-      acc[item.level] = (acc[item.level] ?? 0) + 1;
-      return acc;
-    }, {} as Record<LogLevel, number>);
+    const levelHistogram = bag.items.reduce(
+      (acc, item) => {
+        acc[item.level] = (acc[item.level] ?? 0) + 1;
+        return acc;
+      },
+      {} as Record<LogLevel, number>
+    );
     const maxLevel = Object.keys(levelHistogram)
       .map((level) => getLevelIndex(level as LogLevel))
       .sort((a, b) => b - a)[0];

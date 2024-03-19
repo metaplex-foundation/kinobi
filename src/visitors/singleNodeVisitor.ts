@@ -7,7 +7,7 @@ import {
 
 export function singleNodeVisitor<
   TReturn,
-  TNodeKey extends NodeKind = NodeKind
+  TNodeKey extends NodeKind = NodeKind,
 >(
   key: TNodeKey,
   fn: (node: NodeDictionary[TNodeKey]) => TReturn

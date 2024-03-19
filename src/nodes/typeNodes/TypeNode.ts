@@ -46,9 +46,10 @@ export const STANDALONE_TYPE_NODES = {
 };
 
 export const STANDALONE_TYPE_NODE_KINDS = getNodeKinds(STANDALONE_TYPE_NODES);
-export type StandaloneTypeNodeKind = typeof STANDALONE_TYPE_NODE_KINDS[number];
+export type StandaloneTypeNodeKind =
+  (typeof STANDALONE_TYPE_NODE_KINDS)[number];
 export type StandaloneTypeNode =
-  typeof STANDALONE_TYPE_NODES[StandaloneTypeNodeKind];
+  (typeof STANDALONE_TYPE_NODES)[StandaloneTypeNodeKind];
 
 // Type Node Registration.
 
@@ -63,9 +64,10 @@ export const REGISTERED_TYPE_NODES = {
 };
 
 export const REGISTERED_TYPE_NODE_KINDS = getNodeKinds(REGISTERED_TYPE_NODES);
-export type RegisteredTypeNodeKind = typeof REGISTERED_TYPE_NODE_KINDS[number];
+export type RegisteredTypeNodeKind =
+  (typeof REGISTERED_TYPE_NODE_KINDS)[number];
 export type RegisteredTypeNode =
-  typeof REGISTERED_TYPE_NODES[RegisteredTypeNodeKind];
+  (typeof REGISTERED_TYPE_NODES)[RegisteredTypeNodeKind];
 
 // Type Node Helpers.
 // This only includes type nodes that can be used as standalone types.
@@ -76,7 +78,7 @@ export const TYPE_NODES = [
   ...STANDALONE_TYPE_NODE_KINDS,
   'definedTypeLinkNode' as const,
 ];
-export type TypeNodeKind = typeof TYPE_NODES[number];
+export type TypeNodeKind = (typeof TYPE_NODES)[number];
 export type TypeNode = StandaloneTypeNode | DefinedTypeLinkNode;
 
 function isArrayOfSize(array: any, size: number): boolean {

@@ -14,9 +14,10 @@ export const REGISTERED_LINK_NODES = {
 };
 
 export const REGISTERED_LINK_NODE_KINDS = getNodeKinds(REGISTERED_LINK_NODES);
-export type RegisteredLinkNodeKind = typeof REGISTERED_LINK_NODE_KINDS[number];
+export type RegisteredLinkNodeKind =
+  (typeof REGISTERED_LINK_NODE_KINDS)[number];
 export type RegisteredLinkNode =
-  typeof REGISTERED_LINK_NODES[RegisteredLinkNodeKind];
+  (typeof REGISTERED_LINK_NODES)[RegisteredLinkNodeKind];
 
 // Link Node Helpers.
 
