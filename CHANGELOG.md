@@ -1,5 +1,13 @@
 # @metaplex-foundation/kinobi
 
+## 0.17.10
+
+### Patch Changes
+
+- [#176](https://github.com/metaplex-foundation/kinobi/pull/176) [`50b63f7`](https://github.com/metaplex-foundation/kinobi/commit/50b63f73dad7e416400cb8912d56105710080516) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Update prettier dependency for JS renderers
+
+- [#171](https://github.com/metaplex-foundation/kinobi/pull/171) [`47207e9`](https://github.com/metaplex-foundation/kinobi/commit/47207e9231640299fab4586afd6d1a095cb17f75) Thanks [@shotgunofdeath](https://github.com/shotgunofdeath)! - Add mpl-core program to DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES
+
 ## 0.17.9
 
 ### Patch Changes
