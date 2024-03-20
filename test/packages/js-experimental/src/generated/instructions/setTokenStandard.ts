@@ -41,7 +41,7 @@ export type SetTokenStandardInstruction<
   TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
   TAccountEdition extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -89,10 +89,10 @@ export function getSetTokenStandardInstructionDataCodec(): Codec<
 }
 
 export type SetTokenStandardInput<
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMint extends string,
-  TAccountEdition extends string,
+  TAccountMetadata extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMint extends string = string,
+  TAccountEdition extends string = string,
 > = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;

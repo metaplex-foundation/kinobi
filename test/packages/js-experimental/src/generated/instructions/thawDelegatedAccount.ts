@@ -44,7 +44,7 @@ export type ThawDelegatedAccountInstruction<
   TAccountTokenProgram extends
     | string
     | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -95,11 +95,11 @@ export function getThawDelegatedAccountInstructionDataCodec(): Codec<
 }
 
 export type ThawDelegatedAccountInput<
-  TAccountDelegate extends string,
-  TAccountTokenAccount extends string,
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountTokenProgram extends string,
+  TAccountDelegate extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenProgram extends string = string,
 > = {
   /** Delegate */
   delegate: TransactionSigner<TAccountDelegate>;

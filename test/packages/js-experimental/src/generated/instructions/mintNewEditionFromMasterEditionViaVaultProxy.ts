@@ -67,7 +67,7 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInstruction<
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountRent extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -173,23 +173,23 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataCo
 }
 
 export type MintNewEditionFromMasterEditionViaVaultProxyInput<
-  TAccountNewMetadata extends string,
-  TAccountNewEdition extends string,
-  TAccountMasterEdition extends string,
-  TAccountNewMint extends string,
-  TAccountEditionMarkPda extends string,
-  TAccountNewMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountVaultAuthority extends string,
-  TAccountSafetyDepositStore extends string,
-  TAccountSafetyDepositBox extends string,
-  TAccountVault extends string,
-  TAccountNewMetadataUpdateAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountTokenVaultProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
+  TAccountNewMetadata extends string = string,
+  TAccountNewEdition extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountNewMint extends string = string,
+  TAccountEditionMarkPda extends string = string,
+  TAccountNewMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountVaultAuthority extends string = string,
+  TAccountSafetyDepositStore extends string = string,
+  TAccountSafetyDepositBox extends string = string,
+  TAccountVault extends string = string,
+  TAccountNewMetadataUpdateAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountTokenProgram extends string = string,
+  TAccountTokenVaultProgram extends string = string,
+  TAccountSystemProgram extends string = string,
+  TAccountRent extends string = string,
 > = {
   /** New Metadata key (pda of ['metadata', program id, mint id]) */
   newMetadata: Address<TAccountNewMetadata>;

@@ -40,7 +40,7 @@ export type TransferSolInstruction<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountSource extends string | IAccountMeta<string> = string,
   TAccountDestination extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -91,8 +91,8 @@ export function getTransferSolInstructionDataCodec(): Codec<
 }
 
 export type TransferSolInput<
-  TAccountSource extends string,
-  TAccountDestination extends string,
+  TAccountSource extends string = string,
+  TAccountDestination extends string = string,
 > = {
   source: TransactionSigner<TAccountSource>;
   destination: Address<TAccountDestination>;

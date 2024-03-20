@@ -44,7 +44,7 @@ export type CreateReservationListInstruction<
   TAccountRent extends
     | string
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -80,14 +80,14 @@ export type CreateReservationListInstruction<
   >;
 
 export type CreateReservationListInput<
-  TAccountReservationList extends string,
-  TAccountPayer extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMasterEdition extends string,
-  TAccountResource extends string,
-  TAccountMetadata extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
+  TAccountReservationList extends string = string,
+  TAccountPayer extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountResource extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountSystemProgram extends string = string,
+  TAccountRent extends string = string,
 > = {
   /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
   reservationList: Address<TAccountReservationList>;

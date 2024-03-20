@@ -53,7 +53,7 @@ export type BurnEditionNftInstruction<
   TAccountSplTokenProgram extends
     | string
     | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -119,16 +119,16 @@ export function getBurnEditionNftInstructionDataCodec(): Codec<
 }
 
 export type BurnEditionNftInput<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountPrintEditionMint extends string,
-  TAccountMasterEditionMint extends string,
-  TAccountPrintEditionTokenAccount extends string,
-  TAccountMasterEditionTokenAccount extends string,
-  TAccountMasterEditionAccount extends string,
-  TAccountPrintEditionAccount extends string,
-  TAccountEditionMarkerAccount extends string,
-  TAccountSplTokenProgram extends string,
+  TAccountMetadata extends string = string,
+  TAccountOwner extends string = string,
+  TAccountPrintEditionMint extends string = string,
+  TAccountMasterEditionMint extends string = string,
+  TAccountPrintEditionTokenAccount extends string = string,
+  TAccountMasterEditionTokenAccount extends string = string,
+  TAccountMasterEditionAccount extends string = string,
+  TAccountPrintEditionAccount extends string = string,
+  TAccountEditionMarkerAccount extends string = string,
+  TAccountSplTokenProgram extends string = string,
 > = {
   /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;

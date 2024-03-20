@@ -5,7 +5,7 @@ export type {{ instructionType }}<
   {% if hasAccounts %}
     {{ accountTypeParams }},
   {% endif %}
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram>
   {% if hasData %}
     & IInstructionWithData<Uint8Array>

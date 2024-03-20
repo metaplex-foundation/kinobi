@@ -37,7 +37,7 @@ export type ConvertMasterEditionV1ToV2Instruction<
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
   TAccountOneTimeAuth extends string | IAccountMeta<string> = string,
   TAccountPrintingMint extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -83,9 +83,9 @@ export function getConvertMasterEditionV1ToV2InstructionDataCodec(): Codec<
 }
 
 export type ConvertMasterEditionV1ToV2Input<
-  TAccountMasterEdition extends string,
-  TAccountOneTimeAuth extends string,
-  TAccountPrintingMint extends string,
+  TAccountMasterEdition extends string = string,
+  TAccountOneTimeAuth extends string = string,
+  TAccountPrintingMint extends string = string,
 > = {
   /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
   masterEdition: Address<TAccountMasterEdition>;

@@ -95,7 +95,7 @@ export type ValidateInstruction<
     | string
     | IAccountMeta<string>
     | undefined = undefined,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -233,19 +233,19 @@ export function getValidateInstructionDataCodec(): Codec<
 }
 
 export type ValidateInput<
-  TAccountPayer extends string,
-  TAccountRuleSet extends string,
-  TAccountSystemProgram extends string,
-  TAccountOptRuleSigner1 extends string,
-  TAccountOptRuleSigner2 extends string,
-  TAccountOptRuleSigner3 extends string,
-  TAccountOptRuleSigner4 extends string,
-  TAccountOptRuleSigner5 extends string,
-  TAccountOptRuleNonsigner1 extends string,
-  TAccountOptRuleNonsigner2 extends string,
-  TAccountOptRuleNonsigner3 extends string,
-  TAccountOptRuleNonsigner4 extends string,
-  TAccountOptRuleNonsigner5 extends string,
+  TAccountPayer extends string = string,
+  TAccountRuleSet extends string = string,
+  TAccountSystemProgram extends string = string,
+  TAccountOptRuleSigner1 extends string = string,
+  TAccountOptRuleSigner2 extends string = string,
+  TAccountOptRuleSigner3 extends string = string,
+  TAccountOptRuleSigner4 extends string = string,
+  TAccountOptRuleSigner5 extends string = string,
+  TAccountOptRuleNonsigner1 extends string = string,
+  TAccountOptRuleNonsigner2 extends string = string,
+  TAccountOptRuleNonsigner3 extends string = string,
+  TAccountOptRuleNonsigner4 extends string = string,
+  TAccountOptRuleNonsigner5 extends string = string,
 > = {
   /** Payer and creator of the RuleSet */
   payer: TransactionSigner<TAccountPayer>;

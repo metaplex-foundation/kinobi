@@ -41,7 +41,7 @@ export type SetMintAuthorityInstruction<
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
   TAccountMintAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -94,9 +94,9 @@ export function getSetMintAuthorityInstructionDataCodec(): Codec<
 }
 
 export type SetMintAuthorityInput<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TAccountMintAuthority extends string,
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string,
+  TAccountMintAuthority extends string = string,
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authority: TransactionSigner<TAccountAuthority>;

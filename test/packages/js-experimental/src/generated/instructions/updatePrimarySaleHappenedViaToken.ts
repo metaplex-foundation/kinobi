@@ -40,7 +40,7 @@ export type UpdatePrimarySaleHappenedViaTokenInstruction<
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountOwner extends string | IAccountMeta<string> = string,
   TAccountToken extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -87,9 +87,9 @@ export function getUpdatePrimarySaleHappenedViaTokenInstructionDataCodec(): Code
 }
 
 export type UpdatePrimarySaleHappenedViaTokenInput<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountToken extends string,
+  TAccountMetadata extends string = string,
+  TAccountOwner extends string = string,
+  TAccountToken extends string = string,
 > = {
   /** Metadata key (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;

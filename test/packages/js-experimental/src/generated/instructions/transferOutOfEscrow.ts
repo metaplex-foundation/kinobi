@@ -61,7 +61,7 @@ export type TransferOutOfEscrowInstruction<
     | string
     | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
   TAccountAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -148,19 +148,19 @@ export function getTransferOutOfEscrowInstructionDataCodec(): Codec<
 }
 
 export type TransferOutOfEscrowInput<
-  TAccountEscrow extends string,
-  TAccountMetadata extends string,
-  TAccountPayer extends string,
-  TAccountAttributeMint extends string,
-  TAccountAttributeSrc extends string,
-  TAccountAttributeDst extends string,
-  TAccountEscrowMint extends string,
-  TAccountEscrowAccount extends string,
-  TAccountSystemProgram extends string,
-  TAccountAtaProgram extends string,
-  TAccountTokenProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountAuthority extends string,
+  TAccountEscrow extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountPayer extends string = string,
+  TAccountAttributeMint extends string = string,
+  TAccountAttributeSrc extends string = string,
+  TAccountAttributeDst extends string = string,
+  TAccountEscrowMint extends string = string,
+  TAccountEscrowAccount extends string = string,
+  TAccountSystemProgram extends string = string,
+  TAccountAtaProgram extends string = string,
+  TAccountTokenProgram extends string = string,
+  TAccountSysvarInstructions extends string = string,
+  TAccountAuthority extends string = string,
 > = {
   /** Escrow account */
   escrow: Address<TAccountEscrow>;

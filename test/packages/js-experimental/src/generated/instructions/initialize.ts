@@ -67,7 +67,7 @@ export type InitializeInstruction<
   TAccountSystemProgram extends
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -149,17 +149,17 @@ export function getInitializeInstructionDataCodec(): Codec<
 }
 
 export type InitializeInput<
-  TAccountCandyMachine extends string,
-  TAccountAuthorityPda extends string,
-  TAccountAuthority extends string,
-  TAccountPayer extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionMasterEdition extends string,
-  TAccountCollectionUpdateAuthority extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountTokenMetadataProgram extends string,
-  TAccountSystemProgram extends string,
+  TAccountCandyMachine extends string = string,
+  TAccountAuthorityPda extends string = string,
+  TAccountAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountCollectionMetadata extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollectionMasterEdition extends string = string,
+  TAccountCollectionUpdateAuthority extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountTokenMetadataProgram extends string = string,
+  TAccountSystemProgram extends string = string,
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authorityPda: Address<TAccountAuthorityPda>;

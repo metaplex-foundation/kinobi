@@ -35,7 +35,7 @@ import {
 export type PuffMetadataInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
   TAccountMetadata extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -72,7 +72,7 @@ export function getPuffMetadataInstructionDataCodec(): Codec<
   );
 }
 
-export type PuffMetadataInput<TAccountMetadata extends string> = {
+export type PuffMetadataInput<TAccountMetadata extends string = string> = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
 };

@@ -49,7 +49,7 @@ export type ApproveCollectionAuthorityInstruction<
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountRent extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -112,14 +112,14 @@ export function getApproveCollectionAuthorityInstructionDataCodec(): Codec<
 }
 
 export type ApproveCollectionAuthorityInput<
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountNewCollectionAuthority extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountPayer extends string,
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountNewCollectionAuthority extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
+  TAccountSystemProgram extends string = string,
+  TAccountRent extends string = string,
 > = {
   /** Collection Authority Record PDA */
   collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;

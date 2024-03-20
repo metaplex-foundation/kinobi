@@ -46,7 +46,7 @@ export type CreateFrequencyRuleInstruction<
   TAccountSystemProgram extends
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -114,9 +114,9 @@ export function getCreateFrequencyRuleInstructionDataCodec(): Codec<
 }
 
 export type CreateFrequencyRuleInput<
-  TAccountPayer extends string,
-  TAccountFrequencyPda extends string,
-  TAccountSystemProgram extends string,
+  TAccountPayer extends string = string,
+  TAccountFrequencyPda extends string = string,
+  TAccountSystemProgram extends string = string,
 > = {
   /** Payer and creator of the Frequency Rule */
   payer: TransactionSigner<TAccountPayer>;

@@ -69,7 +69,7 @@ export type MintFromCandyMachineInstruction<
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountRecentSlothashes extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -167,23 +167,23 @@ export function getMintFromCandyMachineInstructionDataCodec(): Codec<
 }
 
 export type MintFromCandyMachineInput<
-  TAccountCandyMachine extends string,
-  TAccountAuthorityPda extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountNftMint extends string,
-  TAccountNftMintAuthority extends string,
-  TAccountNftMetadata extends string,
-  TAccountNftMasterEdition extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionMasterEdition extends string,
-  TAccountCollectionUpdateAuthority extends string,
-  TAccountTokenMetadataProgram extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRecentSlothashes extends string,
+  TAccountCandyMachine extends string = string,
+  TAccountAuthorityPda extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountNftMint extends string = string,
+  TAccountNftMintAuthority extends string = string,
+  TAccountNftMetadata extends string = string,
+  TAccountNftMasterEdition extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollectionMetadata extends string = string,
+  TAccountCollectionMasterEdition extends string = string,
+  TAccountCollectionUpdateAuthority extends string = string,
+  TAccountTokenMetadataProgram extends string = string,
+  TAccountTokenProgram extends string = string,
+  TAccountSystemProgram extends string = string,
+  TAccountRecentSlothashes extends string = string,
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authorityPda: Address<TAccountAuthorityPda>;

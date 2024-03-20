@@ -57,7 +57,7 @@ export type DummyInstruction<
   TAccountDelegate extends string | IAccountMeta<string> = string,
   TAccountDelegateRecord extends string | IAccountMeta<string> = string,
   TAccountTokenOrAtaProgram extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -137,16 +137,16 @@ export type DummyInstructionExtraArgs = {
 };
 
 export type DummyAsyncInput<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountFoo extends string,
-  TAccountBar extends string,
-  TAccountDelegate extends string,
-  TAccountDelegateRecord extends string,
-  TAccountTokenOrAtaProgram extends string,
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountFoo extends string = string,
+  TAccountBar extends string = string,
+  TAccountDelegate extends string = string,
+  TAccountDelegateRecord extends string = string,
+  TAccountTokenOrAtaProgram extends string = string,
 > = {
   edition?: TransactionSigner<TAccountEdition>;
   mint?: Address<TAccountMint>;
@@ -311,16 +311,16 @@ export async function getDummyInstructionAsync<
 }
 
 export type DummyInput<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountFoo extends string,
-  TAccountBar extends string,
-  TAccountDelegate extends string,
-  TAccountDelegateRecord extends string,
-  TAccountTokenOrAtaProgram extends string,
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountFoo extends string = string,
+  TAccountBar extends string = string,
+  TAccountDelegate extends string = string,
+  TAccountDelegateRecord extends string = string,
+  TAccountTokenOrAtaProgram extends string = string,
 > = {
   edition?: TransactionSigner<TAccountEdition>;
   mint?: Address<TAccountMint>;

@@ -44,7 +44,7 @@ export type RevokeCollectionAuthorityInstruction<
   TAccountRevokeAuthority extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -97,11 +97,11 @@ export function getRevokeCollectionAuthorityInstructionDataCodec(): Codec<
 }
 
 export type RevokeCollectionAuthorityInput<
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountDelegateAuthority extends string,
-  TAccountRevokeAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountMint extends string,
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountDelegateAuthority extends string = string,
+  TAccountRevokeAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMint extends string = string,
 > = {
   /** Collection Authority Record PDA */
   collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;

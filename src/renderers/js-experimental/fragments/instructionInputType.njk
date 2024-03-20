@@ -4,7 +4,7 @@ export type {{ instructionInputType }}
 {%- if accounts.length > 0 -%}
 <
   {%- for account in accounts -%}
-    {{ account.typeParam }} extends string,
+    {{ account.typeParam }} extends string = string,
   {% endfor %}
 >
 {% endif %}

@@ -59,7 +59,7 @@ export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction
     | string
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
   TAccountReservationList extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -147,22 +147,22 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
 }
 
 export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
-  TAccountMetadata extends string,
-  TAccountEdition extends string,
-  TAccountMasterEdition extends string,
-  TAccountMint extends string,
-  TAccountMintAuthority extends string,
-  TAccountPrintingMint extends string,
-  TAccountMasterTokenAccount extends string,
-  TAccountEditionMarker extends string,
-  TAccountBurnAuthority extends string,
-  TAccountPayer extends string,
-  TAccountMasterUpdateAuthority extends string,
-  TAccountMasterMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TAccountReservationList extends string,
+  TAccountMetadata extends string = string,
+  TAccountEdition extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountPrintingMint extends string = string,
+  TAccountMasterTokenAccount extends string = string,
+  TAccountEditionMarker extends string = string,
+  TAccountBurnAuthority extends string = string,
+  TAccountPayer extends string = string,
+  TAccountMasterUpdateAuthority extends string = string,
+  TAccountMasterMetadata extends string = string,
+  TAccountTokenProgram extends string = string,
+  TAccountSystemProgram extends string = string,
+  TAccountRent extends string = string,
+  TAccountReservationList extends string = string,
 > = {
   /** New Metadata key (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;

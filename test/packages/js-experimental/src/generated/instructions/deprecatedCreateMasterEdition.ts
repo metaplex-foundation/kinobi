@@ -66,7 +66,7 @@ export type DeprecatedCreateMasterEditionInstruction<
   TAccountOneTimePrintingAuthorizationMintAuthority extends
     | string
     | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -156,19 +156,19 @@ export function getDeprecatedCreateMasterEditionInstructionDataCodec(): Codec<
 }
 
 export type DeprecatedCreateMasterEditionInput<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountPrintingMint extends string,
-  TAccountOneTimePrintingAuthorizationMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountPrintingMintAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountPayer extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TAccountOneTimePrintingAuthorizationMintAuthority extends string,
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountPrintingMint extends string = string,
+  TAccountOneTimePrintingAuthorizationMint extends string = string,
+  TAccountUpdateAuthority extends string = string,
+  TAccountPrintingMintAuthority extends string = string,
+  TAccountMintAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountPayer extends string = string,
+  TAccountTokenProgram extends string = string,
+  TAccountSystemProgram extends string = string,
+  TAccountRent extends string = string,
+  TAccountOneTimePrintingAuthorizationMintAuthority extends string = string,
 > = {
   /** Unallocated edition V1 account with address as pda of ['metadata', program id, mint, 'edition'] */
   edition: Address<TAccountEdition>;

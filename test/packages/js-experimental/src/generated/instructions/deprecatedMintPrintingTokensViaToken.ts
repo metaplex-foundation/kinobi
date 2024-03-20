@@ -58,7 +58,7 @@ export type DeprecatedMintPrintingTokensViaTokenInstruction<
   TAccountRent extends
     | string
     | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -138,15 +138,15 @@ export function getDeprecatedMintPrintingTokensViaTokenInstructionDataCodec(): C
 }
 
 export type DeprecatedMintPrintingTokensViaTokenInput<
-  TAccountDestination extends string,
-  TAccountToken extends string,
-  TAccountOneTimePrintingAuthorizationMint extends string,
-  TAccountPrintingMint extends string,
-  TAccountBurnAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountTokenProgram extends string,
-  TAccountRent extends string,
+  TAccountDestination extends string = string,
+  TAccountToken extends string = string,
+  TAccountOneTimePrintingAuthorizationMint extends string = string,
+  TAccountPrintingMint extends string = string,
+  TAccountBurnAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMasterEdition extends string = string,
+  TAccountTokenProgram extends string = string,
+  TAccountRent extends string = string,
 > = {
   /** Destination account */
   destination: Address<TAccountDestination>;

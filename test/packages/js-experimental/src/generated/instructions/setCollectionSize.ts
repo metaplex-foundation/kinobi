@@ -49,7 +49,7 @@ export type SetCollectionSizeInstruction<
   TAccountCollectionAuthorityRecord extends
     | string
     | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -108,10 +108,10 @@ export function getSetCollectionSizeInstructionDataCodec(): Codec<
 }
 
 export type SetCollectionSizeInput<
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionAuthority extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionAuthorityRecord extends string,
+  TAccountCollectionMetadata extends string = string,
+  TAccountCollectionAuthority extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string,
 > = {
   /** Collection Metadata account */
   collectionMetadata: Address<TAccountCollectionMetadata>;

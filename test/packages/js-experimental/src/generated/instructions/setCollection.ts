@@ -66,7 +66,7 @@ export type SetCollectionInstruction<
   TAccountSystemProgram extends
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -153,20 +153,20 @@ export function getSetCollectionInstructionDataCodec(): Codec<
 }
 
 export type SetCollectionInput<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TAccountAuthorityPda extends string,
-  TAccountPayer extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountNewCollectionUpdateAuthority extends string,
-  TAccountNewCollectionMetadata extends string,
-  TAccountNewCollectionMint extends string,
-  TAccountNewCollectionMasterEdition extends string,
-  TAccountNewCollectionAuthorityRecord extends string,
-  TAccountTokenMetadataProgram extends string,
-  TAccountSystemProgram extends string,
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string,
+  TAccountAuthorityPda extends string = string,
+  TAccountPayer extends string = string,
+  TAccountCollectionMint extends string = string,
+  TAccountCollectionMetadata extends string = string,
+  TAccountCollectionAuthorityRecord extends string = string,
+  TAccountNewCollectionUpdateAuthority extends string = string,
+  TAccountNewCollectionMetadata extends string = string,
+  TAccountNewCollectionMint extends string = string,
+  TAccountNewCollectionMasterEdition extends string = string,
+  TAccountNewCollectionAuthorityRecord extends string = string,
+  TAccountTokenMetadataProgram extends string = string,
+  TAccountSystemProgram extends string = string,
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authority: TransactionSigner<TAccountAuthority>;

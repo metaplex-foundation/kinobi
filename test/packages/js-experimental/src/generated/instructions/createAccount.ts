@@ -43,7 +43,7 @@ export type CreateAccountInstruction<
   TProgram extends string = '11111111111111111111111111111111',
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountNewAccount extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -105,8 +105,8 @@ export function getCreateAccountInstructionDataCodec(): Codec<
 }
 
 export type CreateAccountInput<
-  TAccountPayer extends string,
-  TAccountNewAccount extends string,
+  TAccountPayer extends string = string,
+  TAccountNewAccount extends string = string,
 > = {
   payer: TransactionSigner<TAccountPayer>;
   newAccount: TransactionSigner<TAccountNewAccount>;

@@ -49,7 +49,7 @@ export type CreateRuleSetInstruction<
   TAccountSystemProgram extends
     | string
     | IAccountMeta<string> = '11111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -109,9 +109,9 @@ export function getCreateRuleSetInstructionDataCodec(): Codec<
 }
 
 export type CreateRuleSetInput<
-  TAccountPayer extends string,
-  TAccountRuleSetPda extends string,
-  TAccountSystemProgram extends string,
+  TAccountPayer extends string = string,
+  TAccountRuleSetPda extends string = string,
+  TAccountSystemProgram extends string = string,
 > = {
   /** Payer and creator of the RuleSet */
   payer: TransactionSigner<TAccountPayer>;

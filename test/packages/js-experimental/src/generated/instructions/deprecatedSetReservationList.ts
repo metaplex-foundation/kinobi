@@ -53,7 +53,7 @@ export type DeprecatedSetReservationListInstruction<
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
   TAccountReservationList extends string | IAccountMeta<string> = string,
   TAccountResource extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -121,9 +121,9 @@ export function getDeprecatedSetReservationListInstructionDataCodec(): Codec<
 }
 
 export type DeprecatedSetReservationListInput<
-  TAccountMasterEdition extends string,
-  TAccountReservationList extends string,
-  TAccountResource extends string,
+  TAccountMasterEdition extends string = string,
+  TAccountReservationList extends string = string,
+  TAccountResource extends string = string,
 > = {
   /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
   masterEdition: Address<TAccountMasterEdition>;
