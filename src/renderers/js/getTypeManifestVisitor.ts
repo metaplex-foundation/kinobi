@@ -136,10 +136,7 @@ export function getTypeManifestVisitor(input: {
         visitEnumType(enumType, { self }) {
           const strictImports = new JavaScriptImportMap();
           const looseImports = new JavaScriptImportMap();
-          const serializerImports = new JavaScriptImportMap().add(
-            'umiSerializers',
-            'scalarEnum'
-          );
+          const serializerImports = new JavaScriptImportMap();
 
           const variantNames = enumType.variants.map((variant) =>
             pascalCase(variant.name)
@@ -176,7 +173,10 @@ export function getTypeManifestVisitor(input: {
               serializer:
                 `scalarEnum<${currentParentName.strict}>` +
                 `(${currentParentName.strict + optionsAsString})`,
-              serializerImports,
+              serializerImports: serializerImports.add(
+                'umiSerializers',
+                'scalarEnum'
+              ),
             };
           }
 
@@ -194,6 +194,9 @@ export function getTypeManifestVisitor(input: {
           });
 
           const mergedManifest = mergeManifests(variants);
+          mergedManifest.strictImports.mergeWith(strictImports);
+          mergedManifest.looseImports.mergeWith(looseImports);
+          mergedManifest.serializerImports.mergeWith(serializerImports);
           const variantSerializers = variants
             .map((variant) => variant.serializer)
             .join(', ');

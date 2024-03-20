@@ -4229,6 +4229,7 @@
       "name": "DelegateArgs",
       "type": {
         "kind": "enum",
+        "size": "u16",
         "variants": [
           {
             "name": "CollectionV1"

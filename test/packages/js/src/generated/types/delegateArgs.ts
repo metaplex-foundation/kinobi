@@ -13,6 +13,7 @@ import {
   Serializer,
   dataEnum,
   struct,
+  u16,
   u64,
   unit,
 } from '@metaplex-foundation/umi/serializers';
@@ -47,7 +48,7 @@ export function getDelegateArgsSerializer(): Serializer<
         ]),
       ],
     ],
-    { description: 'DelegateArgs' }
+    { size: u16(), description: 'DelegateArgs' }
   ) as Serializer<DelegateArgsArgs, DelegateArgs>;
 }
 

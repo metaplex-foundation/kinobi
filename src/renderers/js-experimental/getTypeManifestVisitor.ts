@@ -207,11 +207,13 @@ export function getTypeManifestVisitor(input: {
             .mapRender(
               (r) => `getDataEnumEncoder([${r}]${encoderOptionsAsString})`
             )
+            .mergeImportsWith(encoderImports)
             .addImports('solanaCodecsDataStructures', ['getDataEnumEncoder']);
           mergedManifest.decoder
             .mapRender(
               (r) => `getDataEnumDecoder([${r}]${decoderOptionsAsString})`
             )
+            .mergeImportsWith(decoderImports)
             .addImports('solanaCodecsDataStructures', ['getDataEnumDecoder']);
           return mergedManifest;
         },
