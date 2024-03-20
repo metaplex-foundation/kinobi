@@ -21,6 +21,7 @@ import {
   CreateReservationListInstructionData,
   CreateReservationListInstructionDataArgs,
   getCreateReservationListInstructionDataDecoder,
+  getCreateReservationListInstructionDataEncoder,
 } from '../../hooked';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 

@@ -71,7 +71,10 @@ export function getInstructionFunctionHighLevelFragment(
       : nameApi.dataArgsType(instructionDataName)
   );
   if (customData) {
-    argsTypeFragment.mergeImportsWith(dataArgsManifest.looseType);
+    argsTypeFragment.mergeImportsWith(
+      dataArgsManifest.looseType,
+      dataArgsManifest.encoder
+    );
   }
 
   const functionName = useAsync
