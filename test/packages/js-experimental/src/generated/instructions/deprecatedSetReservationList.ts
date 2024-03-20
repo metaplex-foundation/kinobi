@@ -65,29 +65,6 @@ export type DeprecatedSetReservationListInstruction<
         ? WritableAccount<TAccountReservationList>
         : TAccountReservationList,
       TAccountResource extends string
-        ? ReadonlySignerAccount<TAccountResource>
-        : TAccountResource,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type DeprecatedSetReservationListInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountReservationList extends string | IAccountMeta<string> = string,
-  TAccountResource extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountMasterEdition extends string
-        ? WritableAccount<TAccountMasterEdition>
-        : TAccountMasterEdition,
-      TAccountReservationList extends string
-        ? WritableAccount<TAccountReservationList>
-        : TAccountReservationList,
-      TAccountResource extends string
         ? ReadonlySignerAccount<TAccountResource> &
             IAccountSignerMeta<TAccountResource>
         : TAccountResource,
@@ -153,23 +130,6 @@ export type DeprecatedSetReservationListInput<
   /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
   reservationList: Address<TAccountReservationList>;
   /** The resource you tied the reservation list too */
-  resource: Address<TAccountResource>;
-  reservations: DeprecatedSetReservationListInstructionDataArgs['reservations'];
-  totalReservationSpots: DeprecatedSetReservationListInstructionDataArgs['totalReservationSpots'];
-  offset: DeprecatedSetReservationListInstructionDataArgs['offset'];
-  totalSpotOffset: DeprecatedSetReservationListInstructionDataArgs['totalSpotOffset'];
-};
-
-export type DeprecatedSetReservationListInputWithSigners<
-  TAccountMasterEdition extends string,
-  TAccountReservationList extends string,
-  TAccountResource extends string,
-> = {
-  /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
-  masterEdition: Address<TAccountMasterEdition>;
-  /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
-  reservationList: Address<TAccountReservationList>;
-  /** The resource you tied the reservation list too */
   resource: TransactionSigner<TAccountResource>;
   reservations: DeprecatedSetReservationListInstructionDataArgs['reservations'];
   totalReservationSpots: DeprecatedSetReservationListInstructionDataArgs['totalReservationSpots'];
@@ -177,23 +137,6 @@ export type DeprecatedSetReservationListInputWithSigners<
   totalSpotOffset: DeprecatedSetReservationListInstructionDataArgs['totalSpotOffset'];
 };
 
-export function getDeprecatedSetReservationListInstruction<
-  TAccountMasterEdition extends string,
-  TAccountReservationList extends string,
-  TAccountResource extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: DeprecatedSetReservationListInputWithSigners<
-    TAccountMasterEdition,
-    TAccountReservationList,
-    TAccountResource
-  >
-): DeprecatedSetReservationListInstructionWithSigners<
-  TProgram,
-  TAccountMasterEdition,
-  TAccountReservationList,
-  TAccountResource
->;
 export function getDeprecatedSetReservationListInstruction<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
@@ -210,19 +153,7 @@ export function getDeprecatedSetReservationListInstruction<
   TAccountMasterEdition,
   TAccountReservationList,
   TAccountResource
->;
-export function getDeprecatedSetReservationListInstruction<
-  TAccountMasterEdition extends string,
-  TAccountReservationList extends string,
-  TAccountResource extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: DeprecatedSetReservationListInput<
-    TAccountMasterEdition,
-    TAccountReservationList,
-    TAccountResource
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -256,7 +187,12 @@ export function getDeprecatedSetReservationListInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as DeprecatedSetReservationListInstructionDataArgs,
     programAddress
-  );
+  ) as DeprecatedSetReservationListInstruction<
+    TProgram,
+    TAccountMasterEdition,
+    TAccountReservationList,
+    TAccountResource
+  >;
 
   return instruction;
 }

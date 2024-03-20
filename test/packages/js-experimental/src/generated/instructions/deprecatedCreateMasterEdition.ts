@@ -84,79 +84,6 @@ export type DeprecatedCreateMasterEditionInstruction<
         ? WritableAccount<TAccountOneTimePrintingAuthorizationMint>
         : TAccountOneTimePrintingAuthorizationMint,
       TAccountUpdateAuthority extends string
-        ? ReadonlySignerAccount<TAccountUpdateAuthority>
-        : TAccountUpdateAuthority,
-      TAccountPrintingMintAuthority extends string
-        ? ReadonlySignerAccount<TAccountPrintingMintAuthority>
-        : TAccountPrintingMintAuthority,
-      TAccountMintAuthority extends string
-        ? ReadonlySignerAccount<TAccountMintAuthority>
-        : TAccountMintAuthority,
-      TAccountMetadata extends string
-        ? ReadonlyAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountPayer extends string
-        ? ReadonlySignerAccount<TAccountPayer>
-        : TAccountPayer,
-      TAccountTokenProgram extends string
-        ? ReadonlyAccount<TAccountTokenProgram>
-        : TAccountTokenProgram,
-      TAccountSystemProgram extends string
-        ? ReadonlyAccount<TAccountSystemProgram>
-        : TAccountSystemProgram,
-      TAccountRent extends string
-        ? ReadonlyAccount<TAccountRent>
-        : TAccountRent,
-      TAccountOneTimePrintingAuthorizationMintAuthority extends string
-        ? ReadonlySignerAccount<TAccountOneTimePrintingAuthorizationMintAuthority>
-        : TAccountOneTimePrintingAuthorizationMintAuthority,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type DeprecatedCreateMasterEditionInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountEdition extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountPrintingMint extends string | IAccountMeta<string> = string,
-  TAccountOneTimePrintingAuthorizationMint extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TAccountPrintingMintAuthority extends string | IAccountMeta<string> = string,
-  TAccountMintAuthority extends string | IAccountMeta<string> = string,
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountRent extends
-    | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TAccountOneTimePrintingAuthorizationMintAuthority extends
-    | string
-    | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountEdition extends string
-        ? WritableAccount<TAccountEdition>
-        : TAccountEdition,
-      TAccountMint extends string
-        ? WritableAccount<TAccountMint>
-        : TAccountMint,
-      TAccountPrintingMint extends string
-        ? WritableAccount<TAccountPrintingMint>
-        : TAccountPrintingMint,
-      TAccountOneTimePrintingAuthorizationMint extends string
-        ? WritableAccount<TAccountOneTimePrintingAuthorizationMint>
-        : TAccountOneTimePrintingAuthorizationMint,
-      TAccountUpdateAuthority extends string
         ? ReadonlySignerAccount<TAccountUpdateAuthority> &
             IAccountSignerMeta<TAccountUpdateAuthority>
         : TAccountUpdateAuthority,
@@ -252,50 +179,6 @@ export type DeprecatedCreateMasterEditionInput<
   /** One time authorization printing mint - A mint you control that prints tokens that gives the bearer permission to mint any number of tokens from the printing mint one time via an endpoint with the token-metadata program for your metadata. Also burns the token. */
   oneTimePrintingAuthorizationMint: Address<TAccountOneTimePrintingAuthorizationMint>;
   /** Current Update authority key */
-  updateAuthority: Address<TAccountUpdateAuthority>;
-  /** Printing mint authority - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY. */
-  printingMintAuthority: Address<TAccountPrintingMintAuthority>;
-  /** Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
-  mintAuthority: Address<TAccountMintAuthority>;
-  /** Metadata account */
-  metadata: Address<TAccountMetadata>;
-  /** payer */
-  payer: Address<TAccountPayer>;
-  /** Token program */
-  tokenProgram?: Address<TAccountTokenProgram>;
-  /** System program */
-  systemProgram?: Address<TAccountSystemProgram>;
-  /** Rent info */
-  rent?: Address<TAccountRent>;
-  /** One time authorization printing mint authority - must be provided if using max supply. THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY. */
-  oneTimePrintingAuthorizationMintAuthority: Address<TAccountOneTimePrintingAuthorizationMintAuthority>;
-  createMasterEditionArgs: DeprecatedCreateMasterEditionInstructionDataArgs['createMasterEditionArgs'];
-};
-
-export type DeprecatedCreateMasterEditionInputWithSigners<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountPrintingMint extends string,
-  TAccountOneTimePrintingAuthorizationMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountPrintingMintAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountPayer extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TAccountOneTimePrintingAuthorizationMintAuthority extends string,
-> = {
-  /** Unallocated edition V1 account with address as pda of ['metadata', program id, mint, 'edition'] */
-  edition: Address<TAccountEdition>;
-  /** Metadata mint */
-  mint: Address<TAccountMint>;
-  /** Printing mint - A mint you control that can mint tokens that can be exchanged for limited editions of your master edition via the MintNewEditionFromMasterEditionViaToken endpoint */
-  printingMint: Address<TAccountPrintingMint>;
-  /** One time authorization printing mint - A mint you control that prints tokens that gives the bearer permission to mint any number of tokens from the printing mint one time via an endpoint with the token-metadata program for your metadata. Also burns the token. */
-  oneTimePrintingAuthorizationMint: Address<TAccountOneTimePrintingAuthorizationMint>;
-  /** Current Update authority key */
   updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   /** Printing mint authority - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY. */
   printingMintAuthority: TransactionSigner<TAccountPrintingMintAuthority>;
@@ -316,53 +199,6 @@ export type DeprecatedCreateMasterEditionInputWithSigners<
   createMasterEditionArgs: DeprecatedCreateMasterEditionInstructionDataArgs['createMasterEditionArgs'];
 };
 
-export function getDeprecatedCreateMasterEditionInstruction<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountPrintingMint extends string,
-  TAccountOneTimePrintingAuthorizationMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountPrintingMintAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountPayer extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TAccountOneTimePrintingAuthorizationMintAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: DeprecatedCreateMasterEditionInputWithSigners<
-    TAccountEdition,
-    TAccountMint,
-    TAccountPrintingMint,
-    TAccountOneTimePrintingAuthorizationMint,
-    TAccountUpdateAuthority,
-    TAccountPrintingMintAuthority,
-    TAccountMintAuthority,
-    TAccountMetadata,
-    TAccountPayer,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent,
-    TAccountOneTimePrintingAuthorizationMintAuthority
-  >
-): DeprecatedCreateMasterEditionInstructionWithSigners<
-  TProgram,
-  TAccountEdition,
-  TAccountMint,
-  TAccountPrintingMint,
-  TAccountOneTimePrintingAuthorizationMint,
-  TAccountUpdateAuthority,
-  TAccountPrintingMintAuthority,
-  TAccountMintAuthority,
-  TAccountMetadata,
-  TAccountPayer,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountRent,
-  TAccountOneTimePrintingAuthorizationMintAuthority
->;
 export function getDeprecatedCreateMasterEditionInstruction<
   TAccountEdition extends string,
   TAccountMint extends string,
@@ -409,39 +245,7 @@ export function getDeprecatedCreateMasterEditionInstruction<
   TAccountSystemProgram,
   TAccountRent,
   TAccountOneTimePrintingAuthorizationMintAuthority
->;
-export function getDeprecatedCreateMasterEditionInstruction<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountPrintingMint extends string,
-  TAccountOneTimePrintingAuthorizationMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountPrintingMintAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountPayer extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TAccountOneTimePrintingAuthorizationMintAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: DeprecatedCreateMasterEditionInput<
-    TAccountEdition,
-    TAccountMint,
-    TAccountPrintingMint,
-    TAccountOneTimePrintingAuthorizationMint,
-    TAccountUpdateAuthority,
-    TAccountPrintingMintAuthority,
-    TAccountMintAuthority,
-    TAccountMetadata,
-    TAccountPayer,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent,
-    TAccountOneTimePrintingAuthorizationMintAuthority
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -521,7 +325,22 @@ export function getDeprecatedCreateMasterEditionInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as DeprecatedCreateMasterEditionInstructionDataArgs,
     programAddress
-  );
+  ) as DeprecatedCreateMasterEditionInstruction<
+    TProgram,
+    TAccountEdition,
+    TAccountMint,
+    TAccountPrintingMint,
+    TAccountOneTimePrintingAuthorizationMint,
+    TAccountUpdateAuthority,
+    TAccountPrintingMintAuthority,
+    TAccountMintAuthority,
+    TAccountMetadata,
+    TAccountPayer,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent,
+    TAccountOneTimePrintingAuthorizationMintAuthority
+  >;
 
   return instruction;
 }

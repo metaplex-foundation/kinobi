@@ -63,57 +63,6 @@ export type DummyInstruction<
   IInstructionWithAccounts<
     [
       TAccountEdition extends string
-        ? WritableSignerAccount<TAccountEdition>
-        : TAccountEdition,
-      TAccountMint extends string
-        ? WritableAccount<TAccountMint>
-        : TAccountMint,
-      TAccountUpdateAuthority extends string
-        ? ReadonlySignerAccount<TAccountUpdateAuthority>
-        : TAccountUpdateAuthority,
-      TAccountMintAuthority extends string
-        ? WritableSignerAccount<TAccountMintAuthority>
-        : TAccountMintAuthority,
-      TAccountPayer extends string
-        ? WritableSignerAccount<TAccountPayer>
-        : TAccountPayer,
-      TAccountFoo extends string ? WritableAccount<TAccountFoo> : TAccountFoo,
-      TAccountBar extends string
-        ? ReadonlySignerAccount<TAccountBar>
-        : TAccountBar,
-      TAccountDelegate extends string
-        ? ReadonlySignerAccount<TAccountDelegate>
-        : TAccountDelegate,
-      TAccountDelegateRecord extends string
-        ? WritableAccount<TAccountDelegateRecord>
-        : TAccountDelegateRecord,
-      TAccountTokenOrAtaProgram extends string
-        ? ReadonlyAccount<TAccountTokenOrAtaProgram>
-        : TAccountTokenOrAtaProgram,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type DummyInstructionWithSigners<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountEdition extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TAccountMintAuthority extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountFoo extends string | IAccountMeta<string> = string,
-  TAccountBar extends
-    | string
-    | IAccountMeta<string> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountDelegate extends string | IAccountMeta<string> = string,
-  TAccountDelegateRecord extends string | IAccountMeta<string> = string,
-  TAccountTokenOrAtaProgram extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountEdition extends string
         ? WritableSignerAccount<TAccountEdition> &
             IAccountSignerMeta<TAccountEdition>
         : TAccountEdition,
@@ -199,32 +148,6 @@ export type DummyAsyncInput<
   TAccountDelegateRecord extends string,
   TAccountTokenOrAtaProgram extends string,
 > = {
-  edition?: Address<TAccountEdition>;
-  mint?: Address<TAccountMint>;
-  updateAuthority: Address<TAccountUpdateAuthority>;
-  mintAuthority?: Address<TAccountMintAuthority>;
-  payer: Address<TAccountPayer>;
-  foo?: Address<TAccountFoo>;
-  bar?: Address<TAccountBar>;
-  delegate?: Address<TAccountDelegate>;
-  delegateRecord?: Address<TAccountDelegateRecord>;
-  tokenOrAtaProgram?: Address<TAccountTokenOrAtaProgram>;
-  identityArg?: DummyInstructionExtraArgs['identityArg'];
-  proof?: DummyInstructionExtraArgs['proof'];
-};
-
-export type DummyAsyncInputWithSigners<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountFoo extends string,
-  TAccountBar extends string,
-  TAccountDelegate extends string,
-  TAccountDelegateRecord extends string,
-  TAccountTokenOrAtaProgram extends string,
-> = {
   edition?: TransactionSigner<TAccountEdition>;
   mint?: Address<TAccountMint>;
   updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
@@ -239,46 +162,6 @@ export type DummyAsyncInputWithSigners<
   proof?: DummyInstructionExtraArgs['proof'];
 };
 
-export async function getDummyInstructionAsync<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountFoo extends string,
-  TAccountBar extends string,
-  TAccountDelegate extends string,
-  TAccountDelegateRecord extends string,
-  TAccountTokenOrAtaProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
->(
-  input: DummyAsyncInputWithSigners<
-    TAccountEdition,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountFoo,
-    TAccountBar,
-    TAccountDelegate,
-    TAccountDelegateRecord,
-    TAccountTokenOrAtaProgram
-  >
-): Promise<
-  DummyInstructionWithSigners<
-    TProgram,
-    TAccountEdition,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountFoo,
-    TAccountBar,
-    TAccountDelegate,
-    TAccountDelegateRecord,
-    TAccountTokenOrAtaProgram
-  >
->;
 export async function getDummyInstructionAsync<
   TAccountEdition extends string,
   TAccountMint extends string,
@@ -318,33 +201,7 @@ export async function getDummyInstructionAsync<
     TAccountDelegateRecord,
     TAccountTokenOrAtaProgram
   >
->;
-export async function getDummyInstructionAsync<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountFoo extends string,
-  TAccountBar extends string,
-  TAccountDelegate extends string,
-  TAccountDelegateRecord extends string,
-  TAccountTokenOrAtaProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
->(
-  input: DummyAsyncInput<
-    TAccountEdition,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountFoo,
-    TAccountBar,
-    TAccountDelegate,
-    TAccountDelegateRecord,
-    TAccountTokenOrAtaProgram
-  >
-): Promise<IInstruction> {
+> {
   // Program address.
   const programAddress =
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
@@ -436,38 +293,24 @@ export async function getDummyInstructionAsync<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     programAddress,
     remainingAccounts
-  );
+  ) as DummyInstruction<
+    TProgram,
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountFoo,
+    TAccountBar,
+    TAccountDelegate,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >;
 
   return instruction;
 }
 
 export type DummyInput<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountFoo extends string,
-  TAccountBar extends string,
-  TAccountDelegate extends string,
-  TAccountDelegateRecord extends string,
-  TAccountTokenOrAtaProgram extends string,
-> = {
-  edition?: Address<TAccountEdition>;
-  mint?: Address<TAccountMint>;
-  updateAuthority: Address<TAccountUpdateAuthority>;
-  mintAuthority?: Address<TAccountMintAuthority>;
-  payer: Address<TAccountPayer>;
-  foo?: Address<TAccountFoo>;
-  bar?: Address<TAccountBar>;
-  delegate?: Address<TAccountDelegate>;
-  delegateRecord?: Address<TAccountDelegateRecord>;
-  tokenOrAtaProgram?: Address<TAccountTokenOrAtaProgram>;
-  identityArg?: DummyInstructionExtraArgs['identityArg'];
-  proof?: DummyInstructionExtraArgs['proof'];
-};
-
-export type DummyInputWithSigners<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountUpdateAuthority extends string,
@@ -506,44 +349,6 @@ export function getDummyInstruction<
   TAccountTokenOrAtaProgram extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
-  input: DummyInputWithSigners<
-    TAccountEdition,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountFoo,
-    TAccountBar,
-    TAccountDelegate,
-    TAccountDelegateRecord,
-    TAccountTokenOrAtaProgram
-  >
-): DummyInstructionWithSigners<
-  TProgram,
-  TAccountEdition,
-  TAccountMint,
-  TAccountUpdateAuthority,
-  TAccountMintAuthority,
-  TAccountPayer,
-  TAccountFoo,
-  TAccountBar,
-  TAccountDelegate,
-  TAccountDelegateRecord,
-  TAccountTokenOrAtaProgram
->;
-export function getDummyInstruction<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountFoo extends string,
-  TAccountBar extends string,
-  TAccountDelegate extends string,
-  TAccountDelegateRecord extends string,
-  TAccountTokenOrAtaProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
->(
   input: DummyInput<
     TAccountEdition,
     TAccountMint,
@@ -568,33 +373,7 @@ export function getDummyInstruction<
   TAccountDelegate,
   TAccountDelegateRecord,
   TAccountTokenOrAtaProgram
->;
-export function getDummyInstruction<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountFoo extends string,
-  TAccountBar extends string,
-  TAccountDelegate extends string,
-  TAccountDelegateRecord extends string,
-  TAccountTokenOrAtaProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
->(
-  input: DummyInput<
-    TAccountEdition,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountFoo,
-    TAccountBar,
-    TAccountDelegate,
-    TAccountDelegateRecord,
-    TAccountTokenOrAtaProgram
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
@@ -679,7 +458,19 @@ export function getDummyInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     programAddress,
     remainingAccounts
-  );
+  ) as DummyInstruction<
+    TProgram,
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountFoo,
+    TAccountBar,
+    TAccountDelegate,
+    TAccountDelegateRecord,
+    TAccountTokenOrAtaProgram
+  >;
 
   return instruction;
 }

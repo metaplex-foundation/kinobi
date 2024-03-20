@@ -81,97 +81,6 @@ export type MintFromCandyMachineInstruction<
         ? WritableAccount<TAccountAuthorityPda>
         : TAccountAuthorityPda,
       TAccountMintAuthority extends string
-        ? ReadonlySignerAccount<TAccountMintAuthority>
-        : TAccountMintAuthority,
-      TAccountPayer extends string
-        ? WritableSignerAccount<TAccountPayer>
-        : TAccountPayer,
-      TAccountNftMint extends string
-        ? WritableAccount<TAccountNftMint>
-        : TAccountNftMint,
-      TAccountNftMintAuthority extends string
-        ? ReadonlySignerAccount<TAccountNftMintAuthority>
-        : TAccountNftMintAuthority,
-      TAccountNftMetadata extends string
-        ? WritableAccount<TAccountNftMetadata>
-        : TAccountNftMetadata,
-      TAccountNftMasterEdition extends string
-        ? WritableAccount<TAccountNftMasterEdition>
-        : TAccountNftMasterEdition,
-      TAccountCollectionAuthorityRecord extends string
-        ? ReadonlyAccount<TAccountCollectionAuthorityRecord>
-        : TAccountCollectionAuthorityRecord,
-      TAccountCollectionMint extends string
-        ? ReadonlyAccount<TAccountCollectionMint>
-        : TAccountCollectionMint,
-      TAccountCollectionMetadata extends string
-        ? WritableAccount<TAccountCollectionMetadata>
-        : TAccountCollectionMetadata,
-      TAccountCollectionMasterEdition extends string
-        ? ReadonlyAccount<TAccountCollectionMasterEdition>
-        : TAccountCollectionMasterEdition,
-      TAccountCollectionUpdateAuthority extends string
-        ? ReadonlyAccount<TAccountCollectionUpdateAuthority>
-        : TAccountCollectionUpdateAuthority,
-      TAccountTokenMetadataProgram extends string
-        ? ReadonlyAccount<TAccountTokenMetadataProgram>
-        : TAccountTokenMetadataProgram,
-      TAccountTokenProgram extends string
-        ? ReadonlyAccount<TAccountTokenProgram>
-        : TAccountTokenProgram,
-      TAccountSystemProgram extends string
-        ? ReadonlyAccount<TAccountSystemProgram>
-        : TAccountSystemProgram,
-      TAccountRecentSlothashes extends string
-        ? ReadonlyAccount<TAccountRecentSlothashes>
-        : TAccountRecentSlothashes,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type MintFromCandyMachineInstructionWithSigners<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string | IAccountMeta<string> = string,
-  TAccountAuthorityPda extends string | IAccountMeta<string> = string,
-  TAccountMintAuthority extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountNftMint extends string | IAccountMeta<string> = string,
-  TAccountNftMintAuthority extends string | IAccountMeta<string> = string,
-  TAccountNftMetadata extends string | IAccountMeta<string> = string,
-  TAccountNftMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountCollectionAuthorityRecord extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountCollectionMint extends string | IAccountMeta<string> = string,
-  TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
-  TAccountCollectionMasterEdition extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountCollectionUpdateAuthority extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountTokenMetadataProgram extends
-    | string
-    | IAccountMeta<string> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountRecentSlothashes extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountCandyMachine extends string
-        ? WritableAccount<TAccountCandyMachine>
-        : TAccountCandyMachine,
-      TAccountAuthorityPda extends string
-        ? WritableAccount<TAccountAuthorityPda>
-        : TAccountAuthorityPda,
-      TAccountMintAuthority extends string
         ? ReadonlySignerAccount<TAccountMintAuthority> &
             IAccountSignerMeta<TAccountMintAuthority>
         : TAccountMintAuthority,
@@ -278,44 +187,6 @@ export type MintFromCandyMachineInput<
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authorityPda: Address<TAccountAuthorityPda>;
-  mintAuthority: Address<TAccountMintAuthority>;
-  payer: Address<TAccountPayer>;
-  nftMint: Address<TAccountNftMint>;
-  nftMintAuthority: Address<TAccountNftMintAuthority>;
-  nftMetadata: Address<TAccountNftMetadata>;
-  nftMasterEdition: Address<TAccountNftMasterEdition>;
-  collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
-  collectionMint: Address<TAccountCollectionMint>;
-  collectionMetadata: Address<TAccountCollectionMetadata>;
-  collectionMasterEdition: Address<TAccountCollectionMasterEdition>;
-  collectionUpdateAuthority: Address<TAccountCollectionUpdateAuthority>;
-  tokenMetadataProgram?: Address<TAccountTokenMetadataProgram>;
-  tokenProgram?: Address<TAccountTokenProgram>;
-  systemProgram?: Address<TAccountSystemProgram>;
-  recentSlothashes: Address<TAccountRecentSlothashes>;
-};
-
-export type MintFromCandyMachineInputWithSigners<
-  TAccountCandyMachine extends string,
-  TAccountAuthorityPda extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountNftMint extends string,
-  TAccountNftMintAuthority extends string,
-  TAccountNftMetadata extends string,
-  TAccountNftMasterEdition extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionMasterEdition extends string,
-  TAccountCollectionUpdateAuthority extends string,
-  TAccountTokenMetadataProgram extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRecentSlothashes extends string,
-> = {
-  candyMachine: Address<TAccountCandyMachine>;
-  authorityPda: Address<TAccountAuthorityPda>;
   mintAuthority: TransactionSigner<TAccountMintAuthority>;
   payer: TransactionSigner<TAccountPayer>;
   nftMint: Address<TAccountNftMint>;
@@ -333,65 +204,6 @@ export type MintFromCandyMachineInputWithSigners<
   recentSlothashes: Address<TAccountRecentSlothashes>;
 };
 
-export function getMintFromCandyMachineInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthorityPda extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountNftMint extends string,
-  TAccountNftMintAuthority extends string,
-  TAccountNftMetadata extends string,
-  TAccountNftMasterEdition extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionMasterEdition extends string,
-  TAccountCollectionUpdateAuthority extends string,
-  TAccountTokenMetadataProgram extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRecentSlothashes extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
->(
-  input: MintFromCandyMachineInputWithSigners<
-    TAccountCandyMachine,
-    TAccountAuthorityPda,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountNftMint,
-    TAccountNftMintAuthority,
-    TAccountNftMetadata,
-    TAccountNftMasterEdition,
-    TAccountCollectionAuthorityRecord,
-    TAccountCollectionMint,
-    TAccountCollectionMetadata,
-    TAccountCollectionMasterEdition,
-    TAccountCollectionUpdateAuthority,
-    TAccountTokenMetadataProgram,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRecentSlothashes
-  >
-): MintFromCandyMachineInstructionWithSigners<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthorityPda,
-  TAccountMintAuthority,
-  TAccountPayer,
-  TAccountNftMint,
-  TAccountNftMintAuthority,
-  TAccountNftMetadata,
-  TAccountNftMasterEdition,
-  TAccountCollectionAuthorityRecord,
-  TAccountCollectionMint,
-  TAccountCollectionMetadata,
-  TAccountCollectionMasterEdition,
-  TAccountCollectionUpdateAuthority,
-  TAccountTokenMetadataProgram,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountRecentSlothashes
->;
 export function getMintFromCandyMachineInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthorityPda extends string,
@@ -450,47 +262,7 @@ export function getMintFromCandyMachineInstruction<
   TAccountTokenProgram,
   TAccountSystemProgram,
   TAccountRecentSlothashes
->;
-export function getMintFromCandyMachineInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthorityPda extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountNftMint extends string,
-  TAccountNftMintAuthority extends string,
-  TAccountNftMetadata extends string,
-  TAccountNftMasterEdition extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionMasterEdition extends string,
-  TAccountCollectionUpdateAuthority extends string,
-  TAccountTokenMetadataProgram extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRecentSlothashes extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
->(
-  input: MintFromCandyMachineInput<
-    TAccountCandyMachine,
-    TAccountAuthorityPda,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountNftMint,
-    TAccountNftMintAuthority,
-    TAccountNftMetadata,
-    TAccountNftMasterEdition,
-    TAccountCollectionAuthorityRecord,
-    TAccountCollectionMint,
-    TAccountCollectionMetadata,
-    TAccountCollectionMasterEdition,
-    TAccountCollectionUpdateAuthority,
-    TAccountTokenMetadataProgram,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRecentSlothashes
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
@@ -586,7 +358,26 @@ export function getMintFromCandyMachineInstruction<
   const instruction = getMintFromCandyMachineInstructionRaw(
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     programAddress
-  );
+  ) as MintFromCandyMachineInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthorityPda,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountNftMint,
+    TAccountNftMintAuthority,
+    TAccountNftMetadata,
+    TAccountNftMasterEdition,
+    TAccountCollectionAuthorityRecord,
+    TAccountCollectionMint,
+    TAccountCollectionMetadata,
+    TAccountCollectionMasterEdition,
+    TAccountCollectionUpdateAuthority,
+    TAccountTokenMetadataProgram,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRecentSlothashes
+  >;
 
   return instruction;
 }

@@ -47,25 +47,6 @@ export type SignMetadataInstruction<
         ? WritableAccount<TAccountMetadata>
         : TAccountMetadata,
       TAccountCreator extends string
-        ? ReadonlySignerAccount<TAccountCreator>
-        : TAccountCreator,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type SignMetadataInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountCreator extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountMetadata extends string
-        ? WritableAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountCreator extends string
         ? ReadonlySignerAccount<TAccountCreator> &
             IAccountSignerMeta<TAccountCreator>
         : TAccountCreator,
@@ -105,16 +86,6 @@ export type SignMetadataInput<
   /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
   /** Creator */
-  creator: Address<TAccountCreator>;
-};
-
-export type SignMetadataInputWithSigners<
-  TAccountMetadata extends string,
-  TAccountCreator extends string,
-> = {
-  /** Metadata (pda of ['metadata', program id, mint id]) */
-  metadata: Address<TAccountMetadata>;
-  /** Creator */
   creator: TransactionSigner<TAccountCreator>;
 };
 
@@ -123,24 +94,8 @@ export function getSignMetadataInstruction<
   TAccountCreator extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
-  input: SignMetadataInputWithSigners<TAccountMetadata, TAccountCreator>
-): SignMetadataInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountCreator
->;
-export function getSignMetadataInstruction<
-  TAccountMetadata extends string,
-  TAccountCreator extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
   input: SignMetadataInput<TAccountMetadata, TAccountCreator>
-): SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>;
-export function getSignMetadataInstruction<
-  TAccountMetadata extends string,
-  TAccountCreator extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(input: SignMetadataInput<TAccountMetadata, TAccountCreator>): IInstruction {
+): SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -168,7 +123,7 @@ export function getSignMetadataInstruction<
   const instruction = getSignMetadataInstructionRaw(
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     programAddress
-  );
+  ) as SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>;
 
   return instruction;
 }

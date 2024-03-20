@@ -82,71 +82,6 @@ export type InitializeInstruction<
         ? ReadonlyAccount<TAccountAuthority>
         : TAccountAuthority,
       TAccountPayer extends string
-        ? ReadonlySignerAccount<TAccountPayer>
-        : TAccountPayer,
-      TAccountCollectionMetadata extends string
-        ? ReadonlyAccount<TAccountCollectionMetadata>
-        : TAccountCollectionMetadata,
-      TAccountCollectionMint extends string
-        ? ReadonlyAccount<TAccountCollectionMint>
-        : TAccountCollectionMint,
-      TAccountCollectionMasterEdition extends string
-        ? ReadonlyAccount<TAccountCollectionMasterEdition>
-        : TAccountCollectionMasterEdition,
-      TAccountCollectionUpdateAuthority extends string
-        ? WritableSignerAccount<TAccountCollectionUpdateAuthority>
-        : TAccountCollectionUpdateAuthority,
-      TAccountCollectionAuthorityRecord extends string
-        ? WritableAccount<TAccountCollectionAuthorityRecord>
-        : TAccountCollectionAuthorityRecord,
-      TAccountTokenMetadataProgram extends string
-        ? ReadonlyAccount<TAccountTokenMetadataProgram>
-        : TAccountTokenMetadataProgram,
-      TAccountSystemProgram extends string
-        ? ReadonlyAccount<TAccountSystemProgram>
-        : TAccountSystemProgram,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type InitializeInstructionWithSigners<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string | IAccountMeta<string> = string,
-  TAccountAuthorityPda extends string | IAccountMeta<string> = string,
-  TAccountAuthority extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
-  TAccountCollectionMint extends string | IAccountMeta<string> = string,
-  TAccountCollectionMasterEdition extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountCollectionUpdateAuthority extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountCollectionAuthorityRecord extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountTokenMetadataProgram extends
-    | string
-    | IAccountMeta<string> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountCandyMachine extends string
-        ? WritableAccount<TAccountCandyMachine>
-        : TAccountCandyMachine,
-      TAccountAuthorityPda extends string
-        ? WritableAccount<TAccountAuthorityPda>
-        : TAccountAuthorityPda,
-      TAccountAuthority extends string
-        ? ReadonlyAccount<TAccountAuthority>
-        : TAccountAuthority,
-      TAccountPayer extends string
         ? ReadonlySignerAccount<TAccountPayer> &
             IAccountSignerMeta<TAccountPayer>
         : TAccountPayer,
@@ -229,33 +164,6 @@ export type InitializeInput<
   candyMachine: Address<TAccountCandyMachine>;
   authorityPda: Address<TAccountAuthorityPda>;
   authority: Address<TAccountAuthority>;
-  payer: Address<TAccountPayer>;
-  collectionMetadata: Address<TAccountCollectionMetadata>;
-  collectionMint: Address<TAccountCollectionMint>;
-  collectionMasterEdition: Address<TAccountCollectionMasterEdition>;
-  collectionUpdateAuthority: Address<TAccountCollectionUpdateAuthority>;
-  collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
-  tokenMetadataProgram?: Address<TAccountTokenMetadataProgram>;
-  systemProgram?: Address<TAccountSystemProgram>;
-  data: InitializeInstructionDataArgs['data'];
-};
-
-export type InitializeInputWithSigners<
-  TAccountCandyMachine extends string,
-  TAccountAuthorityPda extends string,
-  TAccountAuthority extends string,
-  TAccountPayer extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionMasterEdition extends string,
-  TAccountCollectionUpdateAuthority extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountTokenMetadataProgram extends string,
-  TAccountSystemProgram extends string,
-> = {
-  candyMachine: Address<TAccountCandyMachine>;
-  authorityPda: Address<TAccountAuthorityPda>;
-  authority: Address<TAccountAuthority>;
   payer: TransactionSigner<TAccountPayer>;
   collectionMetadata: Address<TAccountCollectionMetadata>;
   collectionMint: Address<TAccountCollectionMint>;
@@ -267,47 +175,6 @@ export type InitializeInputWithSigners<
   data: InitializeInstructionDataArgs['data'];
 };
 
-export function getInitializeInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthorityPda extends string,
-  TAccountAuthority extends string,
-  TAccountPayer extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionMasterEdition extends string,
-  TAccountCollectionUpdateAuthority extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountTokenMetadataProgram extends string,
-  TAccountSystemProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
->(
-  input: InitializeInputWithSigners<
-    TAccountCandyMachine,
-    TAccountAuthorityPda,
-    TAccountAuthority,
-    TAccountPayer,
-    TAccountCollectionMetadata,
-    TAccountCollectionMint,
-    TAccountCollectionMasterEdition,
-    TAccountCollectionUpdateAuthority,
-    TAccountCollectionAuthorityRecord,
-    TAccountTokenMetadataProgram,
-    TAccountSystemProgram
-  >
-): InitializeInstructionWithSigners<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthorityPda,
-  TAccountAuthority,
-  TAccountPayer,
-  TAccountCollectionMetadata,
-  TAccountCollectionMint,
-  TAccountCollectionMasterEdition,
-  TAccountCollectionUpdateAuthority,
-  TAccountCollectionAuthorityRecord,
-  TAccountTokenMetadataProgram,
-  TAccountSystemProgram
->;
 export function getInitializeInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthorityPda extends string,
@@ -348,35 +215,7 @@ export function getInitializeInstruction<
   TAccountCollectionAuthorityRecord,
   TAccountTokenMetadataProgram,
   TAccountSystemProgram
->;
-export function getInitializeInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthorityPda extends string,
-  TAccountAuthority extends string,
-  TAccountPayer extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionMasterEdition extends string,
-  TAccountCollectionUpdateAuthority extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountTokenMetadataProgram extends string,
-  TAccountSystemProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
->(
-  input: InitializeInput<
-    TAccountCandyMachine,
-    TAccountAuthorityPda,
-    TAccountAuthority,
-    TAccountPayer,
-    TAccountCollectionMetadata,
-    TAccountCollectionMint,
-    TAccountCollectionMasterEdition,
-    TAccountCollectionUpdateAuthority,
-    TAccountCollectionAuthorityRecord,
-    TAccountTokenMetadataProgram,
-    TAccountSystemProgram
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
@@ -451,7 +290,20 @@ export function getInitializeInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as InitializeInstructionDataArgs,
     programAddress
-  );
+  ) as InitializeInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthorityPda,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountCollectionMetadata,
+    TAccountCollectionMint,
+    TAccountCollectionMasterEdition,
+    TAccountCollectionUpdateAuthority,
+    TAccountCollectionAuthorityRecord,
+    TAccountTokenMetadataProgram,
+    TAccountSystemProgram
+  >;
 
   return instruction;
 }

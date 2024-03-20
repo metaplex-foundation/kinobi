@@ -46,25 +46,6 @@ export type TransferSolInstruction<
   IInstructionWithAccounts<
     [
       TAccountSource extends string
-        ? WritableSignerAccount<TAccountSource>
-        : TAccountSource,
-      TAccountDestination extends string
-        ? WritableAccount<TAccountDestination>
-        : TAccountDestination,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type TransferSolInstructionWithSigners<
-  TProgram extends string = '11111111111111111111111111111111',
-  TAccountSource extends string | IAccountMeta<string> = string,
-  TAccountDestination extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountSource extends string
         ? WritableSignerAccount<TAccountSource> &
             IAccountSignerMeta<TAccountSource>
         : TAccountSource,
@@ -113,15 +94,6 @@ export type TransferSolInput<
   TAccountSource extends string,
   TAccountDestination extends string,
 > = {
-  source: Address<TAccountSource>;
-  destination: Address<TAccountDestination>;
-  amount: TransferSolInstructionDataArgs['amount'];
-};
-
-export type TransferSolInputWithSigners<
-  TAccountSource extends string,
-  TAccountDestination extends string,
-> = {
   source: TransactionSigner<TAccountSource>;
   destination: Address<TAccountDestination>;
   amount: TransferSolInstructionDataArgs['amount'];
@@ -132,24 +104,8 @@ export function getTransferSolInstruction<
   TAccountDestination extends string,
   TProgram extends string = '11111111111111111111111111111111',
 >(
-  input: TransferSolInputWithSigners<TAccountSource, TAccountDestination>
-): TransferSolInstructionWithSigners<
-  TProgram,
-  TAccountSource,
-  TAccountDestination
->;
-export function getTransferSolInstruction<
-  TAccountSource extends string,
-  TAccountDestination extends string,
-  TProgram extends string = '11111111111111111111111111111111',
->(
   input: TransferSolInput<TAccountSource, TAccountDestination>
-): TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>;
-export function getTransferSolInstruction<
-  TAccountSource extends string,
-  TAccountDestination extends string,
-  TProgram extends string = '11111111111111111111111111111111',
->(input: TransferSolInput<TAccountSource, TAccountDestination>): IInstruction {
+): TransferSolInstruction<TProgram, TAccountSource, TAccountDestination> {
   // Program address.
   const programAddress =
     '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
@@ -181,7 +137,7 @@ export function getTransferSolInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as TransferSolInstructionDataArgs,
     programAddress
-  );
+  ) as TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>;
 
   return instruction;
 }

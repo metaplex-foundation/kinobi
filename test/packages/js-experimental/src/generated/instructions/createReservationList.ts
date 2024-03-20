@@ -53,53 +53,6 @@ export type CreateReservationListInstruction<
         ? WritableAccount<TAccountReservationList>
         : TAccountReservationList,
       TAccountPayer extends string
-        ? ReadonlySignerAccount<TAccountPayer>
-        : TAccountPayer,
-      TAccountUpdateAuthority extends string
-        ? ReadonlySignerAccount<TAccountUpdateAuthority>
-        : TAccountUpdateAuthority,
-      TAccountMasterEdition extends string
-        ? ReadonlyAccount<TAccountMasterEdition>
-        : TAccountMasterEdition,
-      TAccountResource extends string
-        ? ReadonlyAccount<TAccountResource>
-        : TAccountResource,
-      TAccountMetadata extends string
-        ? ReadonlyAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountSystemProgram extends string
-        ? ReadonlyAccount<TAccountSystemProgram>
-        : TAccountSystemProgram,
-      TAccountRent extends string
-        ? ReadonlyAccount<TAccountRent>
-        : TAccountRent,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type CreateReservationListInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountReservationList extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountResource extends string | IAccountMeta<string> = string,
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountRent extends
-    | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountReservationList extends string
-        ? WritableAccount<TAccountReservationList>
-        : TAccountReservationList,
-      TAccountPayer extends string
         ? ReadonlySignerAccount<TAccountPayer> &
             IAccountSignerMeta<TAccountPayer>
         : TAccountPayer,
@@ -139,34 +92,6 @@ export type CreateReservationListInput<
   /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
   reservationList: Address<TAccountReservationList>;
   /** Payer */
-  payer: Address<TAccountPayer>;
-  /** Update authority */
-  updateAuthority: Address<TAccountUpdateAuthority>;
-  /**  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
-  masterEdition: Address<TAccountMasterEdition>;
-  /** A resource you wish to tie the reservation list to. This is so your later visitors who come to redeem can derive your reservation list PDA with something they can easily get at. You choose what this should be. */
-  resource: Address<TAccountResource>;
-  /** Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata: Address<TAccountMetadata>;
-  /** System program */
-  systemProgram?: Address<TAccountSystemProgram>;
-  /** Rent info */
-  rent?: Address<TAccountRent>;
-};
-
-export type CreateReservationListInputWithSigners<
-  TAccountReservationList extends string,
-  TAccountPayer extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMasterEdition extends string,
-  TAccountResource extends string,
-  TAccountMetadata extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-> = {
-  /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
-  reservationList: Address<TAccountReservationList>;
-  /** Payer */
   payer: TransactionSigner<TAccountPayer>;
   /** Update authority */
   updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
@@ -182,38 +107,6 @@ export type CreateReservationListInputWithSigners<
   rent?: Address<TAccountRent>;
 };
 
-export function getCreateReservationListInstruction<
-  TAccountReservationList extends string,
-  TAccountPayer extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMasterEdition extends string,
-  TAccountResource extends string,
-  TAccountMetadata extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: CreateReservationListInputWithSigners<
-    TAccountReservationList,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountMasterEdition,
-    TAccountResource,
-    TAccountMetadata,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): CreateReservationListInstructionWithSigners<
-  TProgram,
-  TAccountReservationList,
-  TAccountPayer,
-  TAccountUpdateAuthority,
-  TAccountMasterEdition,
-  TAccountResource,
-  TAccountMetadata,
-  TAccountSystemProgram,
-  TAccountRent
->;
 export function getCreateReservationListInstruction<
   TAccountReservationList extends string,
   TAccountPayer extends string,
@@ -245,29 +138,7 @@ export function getCreateReservationListInstruction<
   TAccountMetadata,
   TAccountSystemProgram,
   TAccountRent
->;
-export function getCreateReservationListInstruction<
-  TAccountReservationList extends string,
-  TAccountPayer extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMasterEdition extends string,
-  TAccountResource extends string,
-  TAccountMetadata extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: CreateReservationListInput<
-    TAccountReservationList,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountMasterEdition,
-    TAccountResource,
-    TAccountMetadata,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -324,7 +195,17 @@ export function getCreateReservationListInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as CreateReservationListInstructionDataArgs,
     programAddress
-  );
+  ) as CreateReservationListInstruction<
+    TProgram,
+    TAccountReservationList,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountMasterEdition,
+    TAccountResource,
+    TAccountMetadata,
+    TAccountSystemProgram,
+    TAccountRent
+  >;
 
   return instruction;
 }

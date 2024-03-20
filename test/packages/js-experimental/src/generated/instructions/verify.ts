@@ -59,39 +59,6 @@ export type VerifyInstruction<
         ? WritableAccount<TAccountMetadata>
         : TAccountMetadata,
       TAccountCollectionAuthority extends string
-        ? WritableSignerAccount<TAccountCollectionAuthority>
-        : TAccountCollectionAuthority,
-      TAccountPayer extends string
-        ? WritableSignerAccount<TAccountPayer>
-        : TAccountPayer,
-      TAccountAuthorizationRules extends string
-        ? ReadonlyAccount<TAccountAuthorizationRules>
-        : TAccountAuthorizationRules,
-      TAccountAuthorizationRulesProgram extends string
-        ? ReadonlyAccount<TAccountAuthorizationRulesProgram>
-        : TAccountAuthorizationRulesProgram,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type VerifyInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
-  TAccountAuthorizationRulesProgram extends
-    | string
-    | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountMetadata extends string
-        ? WritableAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountCollectionAuthority extends string
         ? WritableSignerAccount<TAccountCollectionAuthority> &
             IAccountSignerMeta<TAccountCollectionAuthority>
         : TAccountCollectionAuthority,
@@ -153,26 +120,6 @@ export type VerifyInput<
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Collection Update authority */
-  collectionAuthority: Address<TAccountCollectionAuthority>;
-  /** payer */
-  payer: Address<TAccountPayer>;
-  /** Token Authorization Rules account */
-  authorizationRules?: Address<TAccountAuthorizationRules>;
-  /** Token Authorization Rules Program */
-  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
-  verifyArgs: VerifyInstructionDataArgs['verifyArgs'];
-};
-
-export type VerifyInputWithSigners<
-  TAccountMetadata extends string,
-  TAccountCollectionAuthority extends string,
-  TAccountPayer extends string,
-  TAccountAuthorizationRules extends string,
-  TAccountAuthorizationRulesProgram extends string,
-> = {
-  /** Metadata account */
-  metadata: Address<TAccountMetadata>;
-  /** Collection Update authority */
   collectionAuthority: TransactionSigner<TAccountCollectionAuthority>;
   /** payer */
   payer: TransactionSigner<TAccountPayer>;
@@ -183,29 +130,6 @@ export type VerifyInputWithSigners<
   verifyArgs: VerifyInstructionDataArgs['verifyArgs'];
 };
 
-export function getVerifyInstruction<
-  TAccountMetadata extends string,
-  TAccountCollectionAuthority extends string,
-  TAccountPayer extends string,
-  TAccountAuthorizationRules extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: VerifyInputWithSigners<
-    TAccountMetadata,
-    TAccountCollectionAuthority,
-    TAccountPayer,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
-): VerifyInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountCollectionAuthority,
-  TAccountPayer,
-  TAccountAuthorizationRules,
-  TAccountAuthorizationRulesProgram
->;
 export function getVerifyInstruction<
   TAccountMetadata extends string,
   TAccountCollectionAuthority extends string,
@@ -228,23 +152,7 @@ export function getVerifyInstruction<
   TAccountPayer,
   TAccountAuthorizationRules,
   TAccountAuthorizationRulesProgram
->;
-export function getVerifyInstruction<
-  TAccountMetadata extends string,
-  TAccountCollectionAuthority extends string,
-  TAccountPayer extends string,
-  TAccountAuthorizationRules extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: VerifyInput<
-    TAccountMetadata,
-    TAccountCollectionAuthority,
-    TAccountPayer,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -291,7 +199,14 @@ export function getVerifyInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as VerifyInstructionDataArgs,
     programAddress
-  );
+  ) as VerifyInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountCollectionAuthority,
+    TAccountPayer,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >;
 
   return instruction;
 }

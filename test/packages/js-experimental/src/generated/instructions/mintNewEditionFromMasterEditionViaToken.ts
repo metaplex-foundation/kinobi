@@ -85,79 +85,6 @@ export type MintNewEditionFromMasterEditionViaTokenInstruction<
         ? WritableAccount<TAccountEditionMarkPda>
         : TAccountEditionMarkPda,
       TAccountNewMintAuthority extends string
-        ? ReadonlySignerAccount<TAccountNewMintAuthority>
-        : TAccountNewMintAuthority,
-      TAccountPayer extends string
-        ? WritableSignerAccount<TAccountPayer>
-        : TAccountPayer,
-      TAccountTokenAccountOwner extends string
-        ? ReadonlySignerAccount<TAccountTokenAccountOwner>
-        : TAccountTokenAccountOwner,
-      TAccountTokenAccount extends string
-        ? ReadonlyAccount<TAccountTokenAccount>
-        : TAccountTokenAccount,
-      TAccountNewMetadataUpdateAuthority extends string
-        ? ReadonlyAccount<TAccountNewMetadataUpdateAuthority>
-        : TAccountNewMetadataUpdateAuthority,
-      TAccountMetadata extends string
-        ? ReadonlyAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountTokenProgram extends string
-        ? ReadonlyAccount<TAccountTokenProgram>
-        : TAccountTokenProgram,
-      TAccountSystemProgram extends string
-        ? ReadonlyAccount<TAccountSystemProgram>
-        : TAccountSystemProgram,
-      TAccountRent extends string
-        ? ReadonlyAccount<TAccountRent>
-        : TAccountRent,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type MintNewEditionFromMasterEditionViaTokenInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountNewMetadata extends string | IAccountMeta<string> = string,
-  TAccountNewEdition extends string | IAccountMeta<string> = string,
-  TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountNewMint extends string | IAccountMeta<string> = string,
-  TAccountEditionMarkPda extends string | IAccountMeta<string> = string,
-  TAccountNewMintAuthority extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountTokenAccountOwner extends string | IAccountMeta<string> = string,
-  TAccountTokenAccount extends string | IAccountMeta<string> = string,
-  TAccountNewMetadataUpdateAuthority extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountRent extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountNewMetadata extends string
-        ? WritableAccount<TAccountNewMetadata>
-        : TAccountNewMetadata,
-      TAccountNewEdition extends string
-        ? WritableAccount<TAccountNewEdition>
-        : TAccountNewEdition,
-      TAccountMasterEdition extends string
-        ? WritableAccount<TAccountMasterEdition>
-        : TAccountMasterEdition,
-      TAccountNewMint extends string
-        ? WritableAccount<TAccountNewMint>
-        : TAccountNewMint,
-      TAccountEditionMarkPda extends string
-        ? WritableAccount<TAccountEditionMarkPda>
-        : TAccountEditionMarkPda,
-      TAccountNewMintAuthority extends string
         ? ReadonlySignerAccount<TAccountNewMintAuthority> &
             IAccountSignerMeta<TAccountNewMintAuthority>
         : TAccountNewMintAuthority,
@@ -260,53 +187,6 @@ export type MintNewEditionFromMasterEditionViaTokenInput<
   /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE). */
   editionMarkPda: Address<TAccountEditionMarkPda>;
   /** Mint authority of new mint */
-  newMintAuthority: Address<TAccountNewMintAuthority>;
-  /** payer */
-  payer: Address<TAccountPayer>;
-  /** owner of token account containing master token (#8) */
-  tokenAccountOwner: Address<TAccountTokenAccountOwner>;
-  /** token account containing token from master metadata mint */
-  tokenAccount: Address<TAccountTokenAccount>;
-  /** Update authority info for new metadata */
-  newMetadataUpdateAuthority: Address<TAccountNewMetadataUpdateAuthority>;
-  /** Master record metadata account */
-  metadata: Address<TAccountMetadata>;
-  /** Token program */
-  tokenProgram?: Address<TAccountTokenProgram>;
-  /** System program */
-  systemProgram?: Address<TAccountSystemProgram>;
-  /** Rent info */
-  rent?: Address<TAccountRent>;
-  mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenInstructionDataArgs['mintNewEditionFromMasterEditionViaTokenArgs'];
-};
-
-export type MintNewEditionFromMasterEditionViaTokenInputWithSigners<
-  TAccountNewMetadata extends string,
-  TAccountNewEdition extends string,
-  TAccountMasterEdition extends string,
-  TAccountNewMint extends string,
-  TAccountEditionMarkPda extends string,
-  TAccountNewMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountTokenAccountOwner extends string,
-  TAccountTokenAccount extends string,
-  TAccountNewMetadataUpdateAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-> = {
-  /** New Metadata key (pda of ['metadata', program id, mint id]) */
-  newMetadata: Address<TAccountNewMetadata>;
-  /** New Edition (pda of ['metadata', program id, mint id, 'edition']) */
-  newEdition: Address<TAccountNewEdition>;
-  /** Master Record Edition V2 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
-  masterEdition: Address<TAccountMasterEdition>;
-  /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
-  newMint: Address<TAccountNewMint>;
-  /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE). */
-  editionMarkPda: Address<TAccountEditionMarkPda>;
-  /** Mint authority of new mint */
   newMintAuthority: TransactionSigner<TAccountNewMintAuthority>;
   /** payer */
   payer: TransactionSigner<TAccountPayer>;
@@ -327,56 +207,6 @@ export type MintNewEditionFromMasterEditionViaTokenInputWithSigners<
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaTokenInstructionDataArgs['mintNewEditionFromMasterEditionViaTokenArgs'];
 };
 
-export function getMintNewEditionFromMasterEditionViaTokenInstruction<
-  TAccountNewMetadata extends string,
-  TAccountNewEdition extends string,
-  TAccountMasterEdition extends string,
-  TAccountNewMint extends string,
-  TAccountEditionMarkPda extends string,
-  TAccountNewMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountTokenAccountOwner extends string,
-  TAccountTokenAccount extends string,
-  TAccountNewMetadataUpdateAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: MintNewEditionFromMasterEditionViaTokenInputWithSigners<
-    TAccountNewMetadata,
-    TAccountNewEdition,
-    TAccountMasterEdition,
-    TAccountNewMint,
-    TAccountEditionMarkPda,
-    TAccountNewMintAuthority,
-    TAccountPayer,
-    TAccountTokenAccountOwner,
-    TAccountTokenAccount,
-    TAccountNewMetadataUpdateAuthority,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): MintNewEditionFromMasterEditionViaTokenInstructionWithSigners<
-  TProgram,
-  TAccountNewMetadata,
-  TAccountNewEdition,
-  TAccountMasterEdition,
-  TAccountNewMint,
-  TAccountEditionMarkPda,
-  TAccountNewMintAuthority,
-  TAccountPayer,
-  TAccountTokenAccountOwner,
-  TAccountTokenAccount,
-  TAccountNewMetadataUpdateAuthority,
-  TAccountMetadata,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountRent
->;
 export function getMintNewEditionFromMasterEditionViaTokenInstruction<
   TAccountNewMetadata extends string,
   TAccountNewEdition extends string,
@@ -426,41 +256,7 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
   TAccountTokenProgram,
   TAccountSystemProgram,
   TAccountRent
->;
-export function getMintNewEditionFromMasterEditionViaTokenInstruction<
-  TAccountNewMetadata extends string,
-  TAccountNewEdition extends string,
-  TAccountMasterEdition extends string,
-  TAccountNewMint extends string,
-  TAccountEditionMarkPda extends string,
-  TAccountNewMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountTokenAccountOwner extends string,
-  TAccountTokenAccount extends string,
-  TAccountNewMetadataUpdateAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: MintNewEditionFromMasterEditionViaTokenInput<
-    TAccountNewMetadata,
-    TAccountNewEdition,
-    TAccountMasterEdition,
-    TAccountNewMint,
-    TAccountEditionMarkPda,
-    TAccountNewMintAuthority,
-    TAccountPayer,
-    TAccountTokenAccountOwner,
-    TAccountTokenAccount,
-    TAccountNewMetadataUpdateAuthority,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -535,7 +331,23 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as MintNewEditionFromMasterEditionViaTokenInstructionDataArgs,
     programAddress
-  );
+  ) as MintNewEditionFromMasterEditionViaTokenInstruction<
+    TProgram,
+    TAccountNewMetadata,
+    TAccountNewEdition,
+    TAccountMasterEdition,
+    TAccountNewMint,
+    TAccountEditionMarkPda,
+    TAccountNewMintAuthority,
+    TAccountPayer,
+    TAccountTokenAccountOwner,
+    TAccountTokenAccount,
+    TAccountNewMetadataUpdateAuthority,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >;
 
   return instruction;
 }

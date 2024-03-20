@@ -88,91 +88,6 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInstruction<
         ? WritableAccount<TAccountEditionMarkPda>
         : TAccountEditionMarkPda,
       TAccountNewMintAuthority extends string
-        ? ReadonlySignerAccount<TAccountNewMintAuthority>
-        : TAccountNewMintAuthority,
-      TAccountPayer extends string
-        ? WritableSignerAccount<TAccountPayer>
-        : TAccountPayer,
-      TAccountVaultAuthority extends string
-        ? ReadonlySignerAccount<TAccountVaultAuthority>
-        : TAccountVaultAuthority,
-      TAccountSafetyDepositStore extends string
-        ? ReadonlyAccount<TAccountSafetyDepositStore>
-        : TAccountSafetyDepositStore,
-      TAccountSafetyDepositBox extends string
-        ? ReadonlyAccount<TAccountSafetyDepositBox>
-        : TAccountSafetyDepositBox,
-      TAccountVault extends string
-        ? ReadonlyAccount<TAccountVault>
-        : TAccountVault,
-      TAccountNewMetadataUpdateAuthority extends string
-        ? ReadonlyAccount<TAccountNewMetadataUpdateAuthority>
-        : TAccountNewMetadataUpdateAuthority,
-      TAccountMetadata extends string
-        ? ReadonlyAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountTokenProgram extends string
-        ? ReadonlyAccount<TAccountTokenProgram>
-        : TAccountTokenProgram,
-      TAccountTokenVaultProgram extends string
-        ? ReadonlyAccount<TAccountTokenVaultProgram>
-        : TAccountTokenVaultProgram,
-      TAccountSystemProgram extends string
-        ? ReadonlyAccount<TAccountSystemProgram>
-        : TAccountSystemProgram,
-      TAccountRent extends string
-        ? ReadonlyAccount<TAccountRent>
-        : TAccountRent,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type MintNewEditionFromMasterEditionViaVaultProxyInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountNewMetadata extends string | IAccountMeta<string> = string,
-  TAccountNewEdition extends string | IAccountMeta<string> = string,
-  TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountNewMint extends string | IAccountMeta<string> = string,
-  TAccountEditionMarkPda extends string | IAccountMeta<string> = string,
-  TAccountNewMintAuthority extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountVaultAuthority extends string | IAccountMeta<string> = string,
-  TAccountSafetyDepositStore extends string | IAccountMeta<string> = string,
-  TAccountSafetyDepositBox extends string | IAccountMeta<string> = string,
-  TAccountVault extends string | IAccountMeta<string> = string,
-  TAccountNewMetadataUpdateAuthority extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountTokenVaultProgram extends string | IAccountMeta<string> = string,
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountRent extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountNewMetadata extends string
-        ? WritableAccount<TAccountNewMetadata>
-        : TAccountNewMetadata,
-      TAccountNewEdition extends string
-        ? WritableAccount<TAccountNewEdition>
-        : TAccountNewEdition,
-      TAccountMasterEdition extends string
-        ? WritableAccount<TAccountMasterEdition>
-        : TAccountMasterEdition,
-      TAccountNewMint extends string
-        ? WritableAccount<TAccountNewMint>
-        : TAccountNewMint,
-      TAccountEditionMarkPda extends string
-        ? WritableAccount<TAccountEditionMarkPda>
-        : TAccountEditionMarkPda,
-      TAccountNewMintAuthority extends string
         ? ReadonlySignerAccount<TAccountNewMintAuthority> &
             IAccountSignerMeta<TAccountNewMintAuthority>
         : TAccountNewMintAuthority,
@@ -287,62 +202,6 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInput<
   /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE). */
   editionMarkPda: Address<TAccountEditionMarkPda>;
   /** Mint authority of new mint */
-  newMintAuthority: Address<TAccountNewMintAuthority>;
-  /** payer */
-  payer: Address<TAccountPayer>;
-  /** Vault authority */
-  vaultAuthority: Address<TAccountVaultAuthority>;
-  /** Safety deposit token store account */
-  safetyDepositStore: Address<TAccountSafetyDepositStore>;
-  /** Safety deposit box */
-  safetyDepositBox: Address<TAccountSafetyDepositBox>;
-  /** Vault */
-  vault: Address<TAccountVault>;
-  /** Update authority info for new metadata */
-  newMetadataUpdateAuthority: Address<TAccountNewMetadataUpdateAuthority>;
-  /** Master record metadata account */
-  metadata: Address<TAccountMetadata>;
-  /** Token program */
-  tokenProgram?: Address<TAccountTokenProgram>;
-  /** Token vault program */
-  tokenVaultProgram: Address<TAccountTokenVaultProgram>;
-  /** System program */
-  systemProgram?: Address<TAccountSystemProgram>;
-  /** Rent info */
-  rent?: Address<TAccountRent>;
-  mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs['mintNewEditionFromMasterEditionViaTokenArgs'];
-};
-
-export type MintNewEditionFromMasterEditionViaVaultProxyInputWithSigners<
-  TAccountNewMetadata extends string,
-  TAccountNewEdition extends string,
-  TAccountMasterEdition extends string,
-  TAccountNewMint extends string,
-  TAccountEditionMarkPda extends string,
-  TAccountNewMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountVaultAuthority extends string,
-  TAccountSafetyDepositStore extends string,
-  TAccountSafetyDepositBox extends string,
-  TAccountVault extends string,
-  TAccountNewMetadataUpdateAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountTokenVaultProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-> = {
-  /** New Metadata key (pda of ['metadata', program id, mint id]) */
-  newMetadata: Address<TAccountNewMetadata>;
-  /** New Edition (pda of ['metadata', program id, mint id, 'edition']) */
-  newEdition: Address<TAccountNewEdition>;
-  /** Master Record Edition V2 (pda of ['metadata', program id, master metadata mint id, 'edition'] */
-  masterEdition: Address<TAccountMasterEdition>;
-  /** Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
-  newMint: Address<TAccountNewMint>;
-  /** Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE). */
-  editionMarkPda: Address<TAccountEditionMarkPda>;
-  /** Mint authority of new mint */
   newMintAuthority: TransactionSigner<TAccountNewMintAuthority>;
   /** payer */
   payer: TransactionSigner<TAccountPayer>;
@@ -369,65 +228,6 @@ export type MintNewEditionFromMasterEditionViaVaultProxyInputWithSigners<
   mintNewEditionFromMasterEditionViaTokenArgs: MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs['mintNewEditionFromMasterEditionViaTokenArgs'];
 };
 
-export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
-  TAccountNewMetadata extends string,
-  TAccountNewEdition extends string,
-  TAccountMasterEdition extends string,
-  TAccountNewMint extends string,
-  TAccountEditionMarkPda extends string,
-  TAccountNewMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountVaultAuthority extends string,
-  TAccountSafetyDepositStore extends string,
-  TAccountSafetyDepositBox extends string,
-  TAccountVault extends string,
-  TAccountNewMetadataUpdateAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountTokenVaultProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: MintNewEditionFromMasterEditionViaVaultProxyInputWithSigners<
-    TAccountNewMetadata,
-    TAccountNewEdition,
-    TAccountMasterEdition,
-    TAccountNewMint,
-    TAccountEditionMarkPda,
-    TAccountNewMintAuthority,
-    TAccountPayer,
-    TAccountVaultAuthority,
-    TAccountSafetyDepositStore,
-    TAccountSafetyDepositBox,
-    TAccountVault,
-    TAccountNewMetadataUpdateAuthority,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountTokenVaultProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): MintNewEditionFromMasterEditionViaVaultProxyInstructionWithSigners<
-  TProgram,
-  TAccountNewMetadata,
-  TAccountNewEdition,
-  TAccountMasterEdition,
-  TAccountNewMint,
-  TAccountEditionMarkPda,
-  TAccountNewMintAuthority,
-  TAccountPayer,
-  TAccountVaultAuthority,
-  TAccountSafetyDepositStore,
-  TAccountSafetyDepositBox,
-  TAccountVault,
-  TAccountNewMetadataUpdateAuthority,
-  TAccountMetadata,
-  TAccountTokenProgram,
-  TAccountTokenVaultProgram,
-  TAccountSystemProgram,
-  TAccountRent
->;
 export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
   TAccountNewMetadata extends string,
   TAccountNewEdition extends string,
@@ -486,47 +286,7 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
   TAccountTokenVaultProgram,
   TAccountSystemProgram,
   TAccountRent
->;
-export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
-  TAccountNewMetadata extends string,
-  TAccountNewEdition extends string,
-  TAccountMasterEdition extends string,
-  TAccountNewMint extends string,
-  TAccountEditionMarkPda extends string,
-  TAccountNewMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountVaultAuthority extends string,
-  TAccountSafetyDepositStore extends string,
-  TAccountSafetyDepositBox extends string,
-  TAccountVault extends string,
-  TAccountNewMetadataUpdateAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountTokenVaultProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: MintNewEditionFromMasterEditionViaVaultProxyInput<
-    TAccountNewMetadata,
-    TAccountNewEdition,
-    TAccountMasterEdition,
-    TAccountNewMint,
-    TAccountEditionMarkPda,
-    TAccountNewMintAuthority,
-    TAccountPayer,
-    TAccountVaultAuthority,
-    TAccountSafetyDepositStore,
-    TAccountSafetyDepositBox,
-    TAccountVault,
-    TAccountNewMetadataUpdateAuthority,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountTokenVaultProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -614,7 +374,26 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
       accountMetas as Record<keyof AccountMetas, IAccountMeta>,
       args as MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs,
       programAddress
-    );
+    ) as MintNewEditionFromMasterEditionViaVaultProxyInstruction<
+      TProgram,
+      TAccountNewMetadata,
+      TAccountNewEdition,
+      TAccountMasterEdition,
+      TAccountNewMint,
+      TAccountEditionMarkPda,
+      TAccountNewMintAuthority,
+      TAccountPayer,
+      TAccountVaultAuthority,
+      TAccountSafetyDepositStore,
+      TAccountSafetyDepositBox,
+      TAccountVault,
+      TAccountNewMetadataUpdateAuthority,
+      TAccountMetadata,
+      TAccountTokenProgram,
+      TAccountTokenVaultProgram,
+      TAccountSystemProgram,
+      TAccountRent
+    >;
 
   return instruction;
 }

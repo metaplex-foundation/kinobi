@@ -49,29 +49,6 @@ export type UpdatePrimarySaleHappenedViaTokenInstruction<
         ? WritableAccount<TAccountMetadata>
         : TAccountMetadata,
       TAccountOwner extends string
-        ? ReadonlySignerAccount<TAccountOwner>
-        : TAccountOwner,
-      TAccountToken extends string
-        ? ReadonlyAccount<TAccountToken>
-        : TAccountToken,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type UpdatePrimarySaleHappenedViaTokenInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountOwner extends string | IAccountMeta<string> = string,
-  TAccountToken extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountMetadata extends string
-        ? WritableAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountOwner extends string
         ? ReadonlySignerAccount<TAccountOwner> &
             IAccountSignerMeta<TAccountOwner>
         : TAccountOwner,
@@ -117,41 +94,11 @@ export type UpdatePrimarySaleHappenedViaTokenInput<
   /** Metadata key (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
   /** Owner on the token account */
-  owner: Address<TAccountOwner>;
-  /** Account containing tokens from the metadata's mint */
-  token: Address<TAccountToken>;
-};
-
-export type UpdatePrimarySaleHappenedViaTokenInputWithSigners<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountToken extends string,
-> = {
-  /** Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata: Address<TAccountMetadata>;
-  /** Owner on the token account */
   owner: TransactionSigner<TAccountOwner>;
   /** Account containing tokens from the metadata's mint */
   token: Address<TAccountToken>;
 };
 
-export function getUpdatePrimarySaleHappenedViaTokenInstruction<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountToken extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: UpdatePrimarySaleHappenedViaTokenInputWithSigners<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountToken
-  >
-): UpdatePrimarySaleHappenedViaTokenInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountOwner,
-  TAccountToken
->;
 export function getUpdatePrimarySaleHappenedViaTokenInstruction<
   TAccountMetadata extends string,
   TAccountOwner extends string,
@@ -168,19 +115,7 @@ export function getUpdatePrimarySaleHappenedViaTokenInstruction<
   TAccountMetadata,
   TAccountOwner,
   TAccountToken
->;
-export function getUpdatePrimarySaleHappenedViaTokenInstruction<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountToken extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: UpdatePrimarySaleHappenedViaTokenInput<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountToken
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -210,7 +145,12 @@ export function getUpdatePrimarySaleHappenedViaTokenInstruction<
   const instruction = getUpdatePrimarySaleHappenedViaTokenInstructionRaw(
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     programAddress
-  );
+  ) as UpdatePrimarySaleHappenedViaTokenInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >;
 
   return instruction;
 }

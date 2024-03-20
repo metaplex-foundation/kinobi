@@ -66,49 +66,6 @@ export type DeprecatedMintPrintingTokensInstruction<
         ? WritableAccount<TAccountPrintingMint>
         : TAccountPrintingMint,
       TAccountUpdateAuthority extends string
-        ? ReadonlySignerAccount<TAccountUpdateAuthority>
-        : TAccountUpdateAuthority,
-      TAccountMetadata extends string
-        ? ReadonlyAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountMasterEdition extends string
-        ? ReadonlyAccount<TAccountMasterEdition>
-        : TAccountMasterEdition,
-      TAccountTokenProgram extends string
-        ? ReadonlyAccount<TAccountTokenProgram>
-        : TAccountTokenProgram,
-      TAccountRent extends string
-        ? ReadonlyAccount<TAccountRent>
-        : TAccountRent,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type DeprecatedMintPrintingTokensInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountDestination extends string | IAccountMeta<string> = string,
-  TAccountPrintingMint extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountRent extends
-    | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountDestination extends string
-        ? WritableAccount<TAccountDestination>
-        : TAccountDestination,
-      TAccountPrintingMint extends string
-        ? WritableAccount<TAccountPrintingMint>
-        : TAccountPrintingMint,
-      TAccountUpdateAuthority extends string
         ? ReadonlySignerAccount<TAccountUpdateAuthority> &
             IAccountSignerMeta<TAccountUpdateAuthority>
         : TAccountUpdateAuthority,
@@ -184,32 +141,6 @@ export type DeprecatedMintPrintingTokensInput<
   /** Printing mint */
   printingMint: Address<TAccountPrintingMint>;
   /** Update authority */
-  updateAuthority: Address<TAccountUpdateAuthority>;
-  /** Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata: Address<TAccountMetadata>;
-  /** Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition']) */
-  masterEdition: Address<TAccountMasterEdition>;
-  /** Token program */
-  tokenProgram?: Address<TAccountTokenProgram>;
-  /** Rent */
-  rent?: Address<TAccountRent>;
-  mintPrintingTokensViaTokenArgs: DeprecatedMintPrintingTokensInstructionDataArgs['mintPrintingTokensViaTokenArgs'];
-};
-
-export type DeprecatedMintPrintingTokensInputWithSigners<
-  TAccountDestination extends string,
-  TAccountPrintingMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountTokenProgram extends string,
-  TAccountRent extends string,
-> = {
-  /** Destination account */
-  destination: Address<TAccountDestination>;
-  /** Printing mint */
-  printingMint: Address<TAccountPrintingMint>;
-  /** Update authority */
   updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   /** Metadata key (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
@@ -222,35 +153,6 @@ export type DeprecatedMintPrintingTokensInputWithSigners<
   mintPrintingTokensViaTokenArgs: DeprecatedMintPrintingTokensInstructionDataArgs['mintPrintingTokensViaTokenArgs'];
 };
 
-export function getDeprecatedMintPrintingTokensInstruction<
-  TAccountDestination extends string,
-  TAccountPrintingMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountTokenProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: DeprecatedMintPrintingTokensInputWithSigners<
-    TAccountDestination,
-    TAccountPrintingMint,
-    TAccountUpdateAuthority,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountTokenProgram,
-    TAccountRent
-  >
-): DeprecatedMintPrintingTokensInstructionWithSigners<
-  TProgram,
-  TAccountDestination,
-  TAccountPrintingMint,
-  TAccountUpdateAuthority,
-  TAccountMetadata,
-  TAccountMasterEdition,
-  TAccountTokenProgram,
-  TAccountRent
->;
 export function getDeprecatedMintPrintingTokensInstruction<
   TAccountDestination extends string,
   TAccountPrintingMint extends string,
@@ -279,27 +181,7 @@ export function getDeprecatedMintPrintingTokensInstruction<
   TAccountMasterEdition,
   TAccountTokenProgram,
   TAccountRent
->;
-export function getDeprecatedMintPrintingTokensInstruction<
-  TAccountDestination extends string,
-  TAccountPrintingMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountTokenProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: DeprecatedMintPrintingTokensInput<
-    TAccountDestination,
-    TAccountPrintingMint,
-    TAccountUpdateAuthority,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountTokenProgram,
-    TAccountRent
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -354,7 +236,16 @@ export function getDeprecatedMintPrintingTokensInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as DeprecatedMintPrintingTokensInstructionDataArgs,
     programAddress
-  );
+  ) as DeprecatedMintPrintingTokensInstruction<
+    TProgram,
+    TAccountDestination,
+    TAccountPrintingMint,
+    TAccountUpdateAuthority,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountTokenProgram,
+    TAccountRent
+  >;
 
   return instruction;
 }

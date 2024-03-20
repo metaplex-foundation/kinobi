@@ -50,33 +50,6 @@ export type SetTokenStandardInstruction<
         ? WritableAccount<TAccountMetadata>
         : TAccountMetadata,
       TAccountUpdateAuthority extends string
-        ? WritableSignerAccount<TAccountUpdateAuthority>
-        : TAccountUpdateAuthority,
-      TAccountMint extends string
-        ? ReadonlyAccount<TAccountMint>
-        : TAccountMint,
-      TAccountEdition extends string
-        ? ReadonlyAccount<TAccountEdition>
-        : TAccountEdition,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type SetTokenStandardInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountEdition extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountMetadata extends string
-        ? WritableAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountUpdateAuthority extends string
         ? WritableSignerAccount<TAccountUpdateAuthority> &
             IAccountSignerMeta<TAccountUpdateAuthority>
         : TAccountUpdateAuthority,
@@ -124,22 +97,6 @@ export type SetTokenStandardInput<
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Metadata update authority */
-  updateAuthority: Address<TAccountUpdateAuthority>;
-  /** Mint account */
-  mint: Address<TAccountMint>;
-  /** Edition account */
-  edition?: Address<TAccountEdition>;
-};
-
-export type SetTokenStandardInputWithSigners<
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMint extends string,
-  TAccountEdition extends string,
-> = {
-  /** Metadata account */
-  metadata: Address<TAccountMetadata>;
-  /** Metadata update authority */
   updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   /** Mint account */
   mint: Address<TAccountMint>;
@@ -147,26 +104,6 @@ export type SetTokenStandardInputWithSigners<
   edition?: Address<TAccountEdition>;
 };
 
-export function getSetTokenStandardInstruction<
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMint extends string,
-  TAccountEdition extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: SetTokenStandardInputWithSigners<
-    TAccountMetadata,
-    TAccountUpdateAuthority,
-    TAccountMint,
-    TAccountEdition
-  >
-): SetTokenStandardInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountUpdateAuthority,
-  TAccountMint,
-  TAccountEdition
->;
 export function getSetTokenStandardInstruction<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
@@ -186,21 +123,7 @@ export function getSetTokenStandardInstruction<
   TAccountUpdateAuthority,
   TAccountMint,
   TAccountEdition
->;
-export function getSetTokenStandardInstruction<
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMint extends string,
-  TAccountEdition extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: SetTokenStandardInput<
-    TAccountMetadata,
-    TAccountUpdateAuthority,
-    TAccountMint,
-    TAccountEdition
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -232,7 +155,13 @@ export function getSetTokenStandardInstruction<
   const instruction = getSetTokenStandardInstructionRaw(
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     programAddress
-  );
+  ) as SetTokenStandardInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountUpdateAuthority,
+    TAccountMint,
+    TAccountEdition
+  >;
 
   return instruction;
 }

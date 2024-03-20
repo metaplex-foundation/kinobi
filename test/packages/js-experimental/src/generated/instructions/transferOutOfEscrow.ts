@@ -73,77 +73,6 @@ export type TransferOutOfEscrowInstruction<
         ? WritableAccount<TAccountMetadata>
         : TAccountMetadata,
       TAccountPayer extends string
-        ? WritableSignerAccount<TAccountPayer>
-        : TAccountPayer,
-      TAccountAttributeMint extends string
-        ? ReadonlyAccount<TAccountAttributeMint>
-        : TAccountAttributeMint,
-      TAccountAttributeSrc extends string
-        ? WritableAccount<TAccountAttributeSrc>
-        : TAccountAttributeSrc,
-      TAccountAttributeDst extends string
-        ? WritableAccount<TAccountAttributeDst>
-        : TAccountAttributeDst,
-      TAccountEscrowMint extends string
-        ? ReadonlyAccount<TAccountEscrowMint>
-        : TAccountEscrowMint,
-      TAccountEscrowAccount extends string
-        ? ReadonlyAccount<TAccountEscrowAccount>
-        : TAccountEscrowAccount,
-      TAccountSystemProgram extends string
-        ? ReadonlyAccount<TAccountSystemProgram>
-        : TAccountSystemProgram,
-      TAccountAtaProgram extends string
-        ? ReadonlyAccount<TAccountAtaProgram>
-        : TAccountAtaProgram,
-      TAccountTokenProgram extends string
-        ? ReadonlyAccount<TAccountTokenProgram>
-        : TAccountTokenProgram,
-      TAccountSysvarInstructions extends string
-        ? ReadonlyAccount<TAccountSysvarInstructions>
-        : TAccountSysvarInstructions,
-      TAccountAuthority extends string
-        ? ReadonlySignerAccount<TAccountAuthority>
-        : TAccountAuthority,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type TransferOutOfEscrowInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountEscrow extends string | IAccountMeta<string> = string,
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountAttributeMint extends string | IAccountMeta<string> = string,
-  TAccountAttributeSrc extends string | IAccountMeta<string> = string,
-  TAccountAttributeDst extends string | IAccountMeta<string> = string,
-  TAccountEscrowMint extends string | IAccountMeta<string> = string,
-  TAccountEscrowAccount extends string | IAccountMeta<string> = string,
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountAtaProgram extends
-    | string
-    | IAccountMeta<string> = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSysvarInstructions extends
-    | string
-    | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountEscrow extends string
-        ? ReadonlyAccount<TAccountEscrow>
-        : TAccountEscrow,
-      TAccountMetadata extends string
-        ? WritableAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountPayer extends string
         ? WritableSignerAccount<TAccountPayer> &
             IAccountSignerMeta<TAccountPayer>
         : TAccountPayer,
@@ -238,50 +167,6 @@ export type TransferOutOfEscrowInput<
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Wallet paying for the transaction and new account */
-  payer: Address<TAccountPayer>;
-  /** Mint account for the new attribute */
-  attributeMint: Address<TAccountAttributeMint>;
-  /** Token account source for the new attribute */
-  attributeSrc: Address<TAccountAttributeSrc>;
-  /** Token account, owned by TM, destination for the new attribute */
-  attributeDst: Address<TAccountAttributeDst>;
-  /** Mint account that the escrow is attached */
-  escrowMint: Address<TAccountEscrowMint>;
-  /** Token account that holds the token the escrow is attached to */
-  escrowAccount: Address<TAccountEscrowAccount>;
-  /** System program */
-  systemProgram?: Address<TAccountSystemProgram>;
-  /** Associated Token program */
-  ataProgram?: Address<TAccountAtaProgram>;
-  /** Token program */
-  tokenProgram?: Address<TAccountTokenProgram>;
-  /** Instructions sysvar account */
-  sysvarInstructions?: Address<TAccountSysvarInstructions>;
-  /** Authority/creator of the escrow account */
-  authority?: Address<TAccountAuthority>;
-  amount: TransferOutOfEscrowInstructionDataArgs['amount'];
-};
-
-export type TransferOutOfEscrowInputWithSigners<
-  TAccountEscrow extends string,
-  TAccountMetadata extends string,
-  TAccountPayer extends string,
-  TAccountAttributeMint extends string,
-  TAccountAttributeSrc extends string,
-  TAccountAttributeDst extends string,
-  TAccountEscrowMint extends string,
-  TAccountEscrowAccount extends string,
-  TAccountSystemProgram extends string,
-  TAccountAtaProgram extends string,
-  TAccountTokenProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountAuthority extends string,
-> = {
-  /** Escrow account */
-  escrow: Address<TAccountEscrow>;
-  /** Metadata account */
-  metadata: Address<TAccountMetadata>;
-  /** Wallet paying for the transaction and new account */
   payer: TransactionSigner<TAccountPayer>;
   /** Mint account for the new attribute */
   attributeMint: Address<TAccountAttributeMint>;
@@ -306,53 +191,6 @@ export type TransferOutOfEscrowInputWithSigners<
   amount: TransferOutOfEscrowInstructionDataArgs['amount'];
 };
 
-export function getTransferOutOfEscrowInstruction<
-  TAccountEscrow extends string,
-  TAccountMetadata extends string,
-  TAccountPayer extends string,
-  TAccountAttributeMint extends string,
-  TAccountAttributeSrc extends string,
-  TAccountAttributeDst extends string,
-  TAccountEscrowMint extends string,
-  TAccountEscrowAccount extends string,
-  TAccountSystemProgram extends string,
-  TAccountAtaProgram extends string,
-  TAccountTokenProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: TransferOutOfEscrowInputWithSigners<
-    TAccountEscrow,
-    TAccountMetadata,
-    TAccountPayer,
-    TAccountAttributeMint,
-    TAccountAttributeSrc,
-    TAccountAttributeDst,
-    TAccountEscrowMint,
-    TAccountEscrowAccount,
-    TAccountSystemProgram,
-    TAccountAtaProgram,
-    TAccountTokenProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthority
-  >
-): TransferOutOfEscrowInstructionWithSigners<
-  TProgram,
-  TAccountEscrow,
-  TAccountMetadata,
-  TAccountPayer,
-  TAccountAttributeMint,
-  TAccountAttributeSrc,
-  TAccountAttributeDst,
-  TAccountEscrowMint,
-  TAccountEscrowAccount,
-  TAccountSystemProgram,
-  TAccountAtaProgram,
-  TAccountTokenProgram,
-  TAccountSysvarInstructions,
-  TAccountAuthority
->;
 export function getTransferOutOfEscrowInstruction<
   TAccountEscrow extends string,
   TAccountMetadata extends string,
@@ -399,39 +237,7 @@ export function getTransferOutOfEscrowInstruction<
   TAccountTokenProgram,
   TAccountSysvarInstructions,
   TAccountAuthority
->;
-export function getTransferOutOfEscrowInstruction<
-  TAccountEscrow extends string,
-  TAccountMetadata extends string,
-  TAccountPayer extends string,
-  TAccountAttributeMint extends string,
-  TAccountAttributeSrc extends string,
-  TAccountAttributeDst extends string,
-  TAccountEscrowMint extends string,
-  TAccountEscrowAccount extends string,
-  TAccountSystemProgram extends string,
-  TAccountAtaProgram extends string,
-  TAccountTokenProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: TransferOutOfEscrowInput<
-    TAccountEscrow,
-    TAccountMetadata,
-    TAccountPayer,
-    TAccountAttributeMint,
-    TAccountAttributeSrc,
-    TAccountAttributeDst,
-    TAccountEscrowMint,
-    TAccountEscrowAccount,
-    TAccountSystemProgram,
-    TAccountAtaProgram,
-    TAccountTokenProgram,
-    TAccountSysvarInstructions,
-    TAccountAuthority
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -506,7 +312,22 @@ export function getTransferOutOfEscrowInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as TransferOutOfEscrowInstructionDataArgs,
     programAddress
-  );
+  ) as TransferOutOfEscrowInstruction<
+    TProgram,
+    TAccountEscrow,
+    TAccountMetadata,
+    TAccountPayer,
+    TAccountAttributeMint,
+    TAccountAttributeSrc,
+    TAccountAttributeDst,
+    TAccountEscrowMint,
+    TAccountEscrowAccount,
+    TAccountSystemProgram,
+    TAccountAtaProgram,
+    TAccountTokenProgram,
+    TAccountSysvarInstructions,
+    TAccountAuthority
+  >;
 
   return instruction;
 }

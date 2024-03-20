@@ -85,49 +85,6 @@ export type CreateMetadataAccountInstruction<
         ? ReadonlyAccount<TAccountMint>
         : TAccountMint,
       TAccountMintAuthority extends string
-        ? ReadonlySignerAccount<TAccountMintAuthority>
-        : TAccountMintAuthority,
-      TAccountPayer extends string
-        ? WritableSignerAccount<TAccountPayer>
-        : TAccountPayer,
-      TAccountUpdateAuthority extends string
-        ? ReadonlyAccount<TAccountUpdateAuthority>
-        : TAccountUpdateAuthority,
-      TAccountSystemProgram extends string
-        ? ReadonlyAccount<TAccountSystemProgram>
-        : TAccountSystemProgram,
-      TAccountRent extends string
-        ? ReadonlyAccount<TAccountRent>
-        : TAccountRent,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type CreateMetadataAccountInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountMintAuthority extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountRent extends
-    | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountMetadata extends string
-        ? WritableAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountMint extends string
-        ? ReadonlyAccount<TAccountMint>
-        : TAccountMint,
-      TAccountMintAuthority extends string
         ? ReadonlySignerAccount<TAccountMintAuthority> &
             IAccountSignerMeta<TAccountMintAuthority>
         : TAccountMintAuthority,
@@ -236,34 +193,6 @@ export type CreateMetadataAccountAsyncInput<
   /** Mint of token asset */
   mint: Address<TAccountMint>;
   /** Mint authority */
-  mintAuthority: Address<TAccountMintAuthority>;
-  /** payer */
-  payer: Address<TAccountPayer>;
-  /** update authority info */
-  updateAuthority: Address<TAccountUpdateAuthority>;
-  /** System program */
-  systemProgram?: Address<TAccountSystemProgram>;
-  /** Rent info */
-  rent?: Address<TAccountRent>;
-  data: CreateMetadataAccountInstructionDataArgs['data'];
-  isMutable: CreateMetadataAccountInstructionDataArgs['isMutable'];
-  metadataBump?: CreateMetadataAccountInstructionDataArgs['metadataBump'];
-};
-
-export type CreateMetadataAccountAsyncInputWithSigners<
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-> = {
-  /** Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata?: ProgramDerivedAddress<TAccountMetadata>;
-  /** Mint of token asset */
-  mint: Address<TAccountMint>;
-  /** Mint authority */
   mintAuthority: TransactionSigner<TAccountMintAuthority>;
   /** payer */
   payer: TransactionSigner<TAccountPayer>;
@@ -278,38 +207,6 @@ export type CreateMetadataAccountAsyncInputWithSigners<
   metadataBump?: CreateMetadataAccountInstructionDataArgs['metadataBump'];
 };
 
-export async function getCreateMetadataAccountInstructionAsync<
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: CreateMetadataAccountAsyncInputWithSigners<
-    TAccountMetadata,
-    TAccountMint,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): Promise<
-  CreateMetadataAccountInstructionWithSigners<
-    TProgram,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountRent
-  > &
-    IInstructionWithByteDelta
->;
 export async function getCreateMetadataAccountInstructionAsync<
   TAccountMetadata extends string,
   TAccountMint extends string,
@@ -341,27 +238,7 @@ export async function getCreateMetadataAccountInstructionAsync<
     TAccountRent
   > &
     IInstructionWithByteDelta
->;
-export async function getCreateMetadataAccountInstructionAsync<
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: CreateMetadataAccountAsyncInput<
-    TAccountMetadata,
-    TAccountMint,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): Promise<IInstruction & IInstructionWithByteDelta> {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -430,40 +307,21 @@ export async function getCreateMetadataAccountInstructionAsync<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as CreateMetadataAccountInstructionDataArgs,
     programAddress
-  );
+  ) as CreateMetadataAccountInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountRent
+  >;
 
   return Object.freeze({ ...instruction, byteDelta });
 }
 
 export type CreateMetadataAccountInput<
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-> = {
-  /** Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata: ProgramDerivedAddress<TAccountMetadata>;
-  /** Mint of token asset */
-  mint: Address<TAccountMint>;
-  /** Mint authority */
-  mintAuthority: Address<TAccountMintAuthority>;
-  /** payer */
-  payer: Address<TAccountPayer>;
-  /** update authority info */
-  updateAuthority: Address<TAccountUpdateAuthority>;
-  /** System program */
-  systemProgram?: Address<TAccountSystemProgram>;
-  /** Rent info */
-  rent?: Address<TAccountRent>;
-  data: CreateMetadataAccountInstructionDataArgs['data'];
-  isMutable: CreateMetadataAccountInstructionDataArgs['isMutable'];
-  metadataBump?: CreateMetadataAccountInstructionDataArgs['metadataBump'];
-};
-
-export type CreateMetadataAccountInputWithSigners<
   TAccountMetadata extends string,
   TAccountMint extends string,
   TAccountMintAuthority extends string,
@@ -501,36 +359,6 @@ export function getCreateMetadataAccountInstruction<
   TAccountRent extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
-  input: CreateMetadataAccountInputWithSigners<
-    TAccountMetadata,
-    TAccountMint,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): CreateMetadataAccountInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountMint,
-  TAccountMintAuthority,
-  TAccountPayer,
-  TAccountUpdateAuthority,
-  TAccountSystemProgram,
-  TAccountRent
-> &
-  IInstructionWithByteDelta;
-export function getCreateMetadataAccountInstruction<
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
   input: CreateMetadataAccountInput<
     TAccountMetadata,
     TAccountMint,
@@ -550,27 +378,7 @@ export function getCreateMetadataAccountInstruction<
   TAccountSystemProgram,
   TAccountRent
 > &
-  IInstructionWithByteDelta;
-export function getCreateMetadataAccountInstruction<
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: CreateMetadataAccountInput<
-    TAccountMetadata,
-    TAccountMint,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): IInstruction & IInstructionWithByteDelta {
+  IInstructionWithByteDelta {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -634,7 +442,16 @@ export function getCreateMetadataAccountInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as CreateMetadataAccountInstructionDataArgs,
     programAddress
-  );
+  ) as CreateMetadataAccountInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountRent
+  >;
 
   return Object.freeze({ ...instruction, byteDelta });
 }

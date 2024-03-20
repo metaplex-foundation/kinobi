@@ -71,59 +71,6 @@ export type CreateMasterEditionInstruction<
         ? WritableAccount<TAccountMint>
         : TAccountMint,
       TAccountUpdateAuthority extends string
-        ? ReadonlySignerAccount<TAccountUpdateAuthority>
-        : TAccountUpdateAuthority,
-      TAccountMintAuthority extends string
-        ? ReadonlySignerAccount<TAccountMintAuthority>
-        : TAccountMintAuthority,
-      TAccountPayer extends string
-        ? WritableSignerAccount<TAccountPayer>
-        : TAccountPayer,
-      TAccountMetadata extends string
-        ? ReadonlyAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountTokenProgram extends string
-        ? ReadonlyAccount<TAccountTokenProgram>
-        : TAccountTokenProgram,
-      TAccountSystemProgram extends string
-        ? ReadonlyAccount<TAccountSystemProgram>
-        : TAccountSystemProgram,
-      TAccountRent extends string
-        ? ReadonlyAccount<TAccountRent>
-        : TAccountRent,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type CreateMasterEditionInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountEdition extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TAccountMintAuthority extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountRent extends
-    | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountEdition extends string
-        ? WritableAccount<TAccountEdition>
-        : TAccountEdition,
-      TAccountMint extends string
-        ? WritableAccount<TAccountMint>
-        : TAccountMint,
-      TAccountUpdateAuthority extends string
         ? ReadonlySignerAccount<TAccountUpdateAuthority> &
             IAccountSignerMeta<TAccountUpdateAuthority>
         : TAccountUpdateAuthority,
@@ -203,38 +150,6 @@ export type CreateMasterEditionInput<
   /** Metadata mint */
   mint: Address<TAccountMint>;
   /** Update authority */
-  updateAuthority: Address<TAccountUpdateAuthority>;
-  /** Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
-  mintAuthority: Address<TAccountMintAuthority>;
-  /** payer */
-  payer: Address<TAccountPayer>;
-  /** Metadata account */
-  metadata: Address<TAccountMetadata>;
-  /** Token program */
-  tokenProgram?: Address<TAccountTokenProgram>;
-  /** System program */
-  systemProgram?: Address<TAccountSystemProgram>;
-  /** Rent info */
-  rent?: Address<TAccountRent>;
-  createMasterEditionArgs: CreateMasterEditionInstructionDataArgs['createMasterEditionArgs'];
-};
-
-export type CreateMasterEditionInputWithSigners<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-> = {
-  /** Unallocated edition V2 account with address as pda of ['metadata', program id, mint, 'edition'] */
-  edition: Address<TAccountEdition>;
-  /** Metadata mint */
-  mint: Address<TAccountMint>;
-  /** Update authority */
   updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   /** Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY */
   mintAuthority: TransactionSigner<TAccountMintAuthority>;
@@ -251,41 +166,6 @@ export type CreateMasterEditionInputWithSigners<
   createMasterEditionArgs: CreateMasterEditionInstructionDataArgs['createMasterEditionArgs'];
 };
 
-export function getCreateMasterEditionInstruction<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: CreateMasterEditionInputWithSigners<
-    TAccountEdition,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): CreateMasterEditionInstructionWithSigners<
-  TProgram,
-  TAccountEdition,
-  TAccountMint,
-  TAccountUpdateAuthority,
-  TAccountMintAuthority,
-  TAccountPayer,
-  TAccountMetadata,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountRent
->;
 export function getCreateMasterEditionInstruction<
   TAccountEdition extends string,
   TAccountMint extends string,
@@ -320,31 +200,7 @@ export function getCreateMasterEditionInstruction<
   TAccountTokenProgram,
   TAccountSystemProgram,
   TAccountRent
->;
-export function getCreateMasterEditionInstruction<
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountMetadata extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: CreateMasterEditionInput<
-    TAccountEdition,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -407,7 +263,18 @@ export function getCreateMasterEditionInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as CreateMasterEditionInstructionDataArgs,
     programAddress
-  );
+  ) as CreateMasterEditionInstruction<
+    TProgram,
+    TAccountEdition,
+    TAccountMint,
+    TAccountUpdateAuthority,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >;
 
   return instruction;
 }

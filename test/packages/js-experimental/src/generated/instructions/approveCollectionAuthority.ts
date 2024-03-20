@@ -61,53 +61,6 @@ export type ApproveCollectionAuthorityInstruction<
         ? ReadonlyAccount<TAccountNewCollectionAuthority>
         : TAccountNewCollectionAuthority,
       TAccountUpdateAuthority extends string
-        ? WritableSignerAccount<TAccountUpdateAuthority>
-        : TAccountUpdateAuthority,
-      TAccountPayer extends string
-        ? WritableSignerAccount<TAccountPayer>
-        : TAccountPayer,
-      TAccountMetadata extends string
-        ? ReadonlyAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountMint extends string
-        ? ReadonlyAccount<TAccountMint>
-        : TAccountMint,
-      TAccountSystemProgram extends string
-        ? ReadonlyAccount<TAccountSystemProgram>
-        : TAccountSystemProgram,
-      TAccountRent extends string
-        ? ReadonlyAccount<TAccountRent>
-        : TAccountRent,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type ApproveCollectionAuthorityInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionAuthorityRecord extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountNewCollectionAuthority extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountRent extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountCollectionAuthorityRecord extends string
-        ? WritableAccount<TAccountCollectionAuthorityRecord>
-        : TAccountCollectionAuthorityRecord,
-      TAccountNewCollectionAuthority extends string
-        ? ReadonlyAccount<TAccountNewCollectionAuthority>
-        : TAccountNewCollectionAuthority,
-      TAccountUpdateAuthority extends string
         ? WritableSignerAccount<TAccountUpdateAuthority> &
             IAccountSignerMeta<TAccountUpdateAuthority>
         : TAccountUpdateAuthority,
@@ -173,34 +126,6 @@ export type ApproveCollectionAuthorityInput<
   /** A Collection Authority */
   newCollectionAuthority: Address<TAccountNewCollectionAuthority>;
   /** Update Authority of Collection NFT */
-  updateAuthority: Address<TAccountUpdateAuthority>;
-  /** Payer */
-  payer: Address<TAccountPayer>;
-  /** Collection Metadata account */
-  metadata: Address<TAccountMetadata>;
-  /** Mint of Collection Metadata */
-  mint: Address<TAccountMint>;
-  /** System program */
-  systemProgram?: Address<TAccountSystemProgram>;
-  /** Rent info */
-  rent?: Address<TAccountRent>;
-};
-
-export type ApproveCollectionAuthorityInputWithSigners<
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountNewCollectionAuthority extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountPayer extends string,
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-> = {
-  /** Collection Authority Record PDA */
-  collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
-  /** A Collection Authority */
-  newCollectionAuthority: Address<TAccountNewCollectionAuthority>;
-  /** Update Authority of Collection NFT */
   updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   /** Payer */
   payer: TransactionSigner<TAccountPayer>;
@@ -214,38 +139,6 @@ export type ApproveCollectionAuthorityInputWithSigners<
   rent?: Address<TAccountRent>;
 };
 
-export function getApproveCollectionAuthorityInstruction<
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountNewCollectionAuthority extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountPayer extends string,
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: ApproveCollectionAuthorityInputWithSigners<
-    TAccountCollectionAuthorityRecord,
-    TAccountNewCollectionAuthority,
-    TAccountUpdateAuthority,
-    TAccountPayer,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): ApproveCollectionAuthorityInstructionWithSigners<
-  TProgram,
-  TAccountCollectionAuthorityRecord,
-  TAccountNewCollectionAuthority,
-  TAccountUpdateAuthority,
-  TAccountPayer,
-  TAccountMetadata,
-  TAccountMint,
-  TAccountSystemProgram,
-  TAccountRent
->;
 export function getApproveCollectionAuthorityInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TAccountNewCollectionAuthority extends string,
@@ -277,29 +170,7 @@ export function getApproveCollectionAuthorityInstruction<
   TAccountMint,
   TAccountSystemProgram,
   TAccountRent
->;
-export function getApproveCollectionAuthorityInstruction<
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountNewCollectionAuthority extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountPayer extends string,
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: ApproveCollectionAuthorityInput<
-    TAccountCollectionAuthorityRecord,
-    TAccountNewCollectionAuthority,
-    TAccountUpdateAuthority,
-    TAccountPayer,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -351,7 +222,17 @@ export function getApproveCollectionAuthorityInstruction<
   const instruction = getApproveCollectionAuthorityInstructionRaw(
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     programAddress
-  );
+  ) as ApproveCollectionAuthorityInstruction<
+    TProgram,
+    TAccountCollectionAuthorityRecord,
+    TAccountNewCollectionAuthority,
+    TAccountUpdateAuthority,
+    TAccountPayer,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountRent
+  >;
 
   return instruction;
 }

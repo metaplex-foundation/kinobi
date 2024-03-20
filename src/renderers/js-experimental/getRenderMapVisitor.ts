@@ -393,16 +393,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
           };
 
           // Fragments.
-          const instructionTypeFragment = getInstructionTypeFragment({
-            ...scope,
-            withSigners: false,
-          });
-          const instructionTypeWithSignersFragment = getInstructionTypeFragment(
-            {
-              ...scope,
-              withSigners: true,
-            }
-          );
+          const instructionTypeFragment = getInstructionTypeFragment(scope);
           const instructionDataFragment = getInstructionDataFragment(scope);
           const instructionExtraArgsFragment =
             getInstructionExtraArgsFragment(scope);
@@ -424,7 +415,6 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
           // Imports and interfaces.
           const imports = new ImportMap().mergeWith(
             instructionTypeFragment,
-            instructionTypeWithSignersFragment,
             instructionDataFragment,
             instructionExtraArgsFragment,
             instructionFunctionHighLevelAsyncFragment,
@@ -439,7 +429,6 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
               instruction: node,
               imports: imports.toString(dependencyMap),
               instructionTypeFragment,
-              instructionTypeWithSignersFragment,
               instructionDataFragment,
               instructionExtraArgsFragment,
               instructionFunctionHighLevelAsyncFragment,

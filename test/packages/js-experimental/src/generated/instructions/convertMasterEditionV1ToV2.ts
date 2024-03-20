@@ -55,29 +55,6 @@ export type ConvertMasterEditionV1ToV2Instruction<
     ]
   >;
 
-export type ConvertMasterEditionV1ToV2InstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountOneTimeAuth extends string | IAccountMeta<string> = string,
-  TAccountPrintingMint extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountMasterEdition extends string
-        ? WritableAccount<TAccountMasterEdition>
-        : TAccountMasterEdition,
-      TAccountOneTimeAuth extends string
-        ? WritableAccount<TAccountOneTimeAuth>
-        : TAccountOneTimeAuth,
-      TAccountPrintingMint extends string
-        ? WritableAccount<TAccountPrintingMint>
-        : TAccountPrintingMint,
-      ...TRemainingAccounts,
-    ]
-  >;
-
 export type ConvertMasterEditionV1ToV2InstructionData = {
   discriminator: number;
 };
@@ -118,36 +95,6 @@ export type ConvertMasterEditionV1ToV2Input<
   printingMint: Address<TAccountPrintingMint>;
 };
 
-export type ConvertMasterEditionV1ToV2InputWithSigners<
-  TAccountMasterEdition extends string,
-  TAccountOneTimeAuth extends string,
-  TAccountPrintingMint extends string,
-> = {
-  /** Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition']) */
-  masterEdition: Address<TAccountMasterEdition>;
-  /** One time authorization mint */
-  oneTimeAuth: Address<TAccountOneTimeAuth>;
-  /** Printing mint */
-  printingMint: Address<TAccountPrintingMint>;
-};
-
-export function getConvertMasterEditionV1ToV2Instruction<
-  TAccountMasterEdition extends string,
-  TAccountOneTimeAuth extends string,
-  TAccountPrintingMint extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: ConvertMasterEditionV1ToV2InputWithSigners<
-    TAccountMasterEdition,
-    TAccountOneTimeAuth,
-    TAccountPrintingMint
-  >
-): ConvertMasterEditionV1ToV2InstructionWithSigners<
-  TProgram,
-  TAccountMasterEdition,
-  TAccountOneTimeAuth,
-  TAccountPrintingMint
->;
 export function getConvertMasterEditionV1ToV2Instruction<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
@@ -164,19 +111,7 @@ export function getConvertMasterEditionV1ToV2Instruction<
   TAccountMasterEdition,
   TAccountOneTimeAuth,
   TAccountPrintingMint
->;
-export function getConvertMasterEditionV1ToV2Instruction<
-  TAccountMasterEdition extends string,
-  TAccountOneTimeAuth extends string,
-  TAccountPrintingMint extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: ConvertMasterEditionV1ToV2Input<
-    TAccountMasterEdition,
-    TAccountOneTimeAuth,
-    TAccountPrintingMint
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -206,7 +141,12 @@ export function getConvertMasterEditionV1ToV2Instruction<
   const instruction = getConvertMasterEditionV1ToV2InstructionRaw(
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     programAddress
-  );
+  ) as ConvertMasterEditionV1ToV2Instruction<
+    TProgram,
+    TAccountMasterEdition,
+    TAccountOneTimeAuth,
+    TAccountPrintingMint
+  >;
 
   return instruction;
 }

@@ -55,25 +55,6 @@ export type UpdateCandyMachineInstruction<
         ? WritableAccount<TAccountCandyMachine>
         : TAccountCandyMachine,
       TAccountAuthority extends string
-        ? ReadonlySignerAccount<TAccountAuthority>
-        : TAccountAuthority,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type UpdateCandyMachineInstructionWithSigners<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string | IAccountMeta<string> = string,
-  TAccountAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountCandyMachine extends string
-        ? WritableAccount<TAccountCandyMachine>
-        : TAccountCandyMachine,
-      TAccountAuthority extends string
         ? ReadonlySignerAccount<TAccountAuthority> &
             IAccountSignerMeta<TAccountAuthority>
         : TAccountAuthority,
@@ -125,33 +106,10 @@ export type UpdateCandyMachineInput<
   TAccountAuthority extends string,
 > = {
   candyMachine: Address<TAccountCandyMachine>;
-  authority: Address<TAccountAuthority>;
-  data: UpdateCandyMachineInstructionDataArgs['data'];
-};
-
-export type UpdateCandyMachineInputWithSigners<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-> = {
-  candyMachine: Address<TAccountCandyMachine>;
   authority: TransactionSigner<TAccountAuthority>;
   data: UpdateCandyMachineInstructionDataArgs['data'];
 };
 
-export function getUpdateCandyMachineInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
->(
-  input: UpdateCandyMachineInputWithSigners<
-    TAccountCandyMachine,
-    TAccountAuthority
-  >
-): UpdateCandyMachineInstructionWithSigners<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthority
->;
 export function getUpdateCandyMachineInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
@@ -162,14 +120,7 @@ export function getUpdateCandyMachineInstruction<
   TProgram,
   TAccountCandyMachine,
   TAccountAuthority
->;
-export function getUpdateCandyMachineInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
->(
-  input: UpdateCandyMachineInput<TAccountCandyMachine, TAccountAuthority>
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
@@ -201,7 +152,11 @@ export function getUpdateCandyMachineInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as UpdateCandyMachineInstructionDataArgs,
     programAddress
-  );
+  ) as UpdateCandyMachineInstruction<
+    TProgram,
+    TAccountCandyMachine,
+    TAccountAuthority
+  >;
 
   return instruction;
 }

@@ -65,57 +65,6 @@ export type BurnInstruction<
         ? WritableAccount<TAccountMetadata>
         : TAccountMetadata,
       TAccountOwner extends string
-        ? WritableSignerAccount<TAccountOwner>
-        : TAccountOwner,
-      TAccountMint extends string
-        ? WritableAccount<TAccountMint>
-        : TAccountMint,
-      TAccountTokenAccount extends string
-        ? WritableAccount<TAccountTokenAccount>
-        : TAccountTokenAccount,
-      TAccountMasterEditionAccount extends string
-        ? WritableAccount<TAccountMasterEditionAccount>
-        : TAccountMasterEditionAccount,
-      TAccountSplTokenProgram extends string
-        ? ReadonlyAccount<TAccountSplTokenProgram>
-        : TAccountSplTokenProgram,
-      TAccountCollectionMetadata extends string
-        ? WritableAccount<TAccountCollectionMetadata>
-        : TAccountCollectionMetadata,
-      TAccountAuthorizationRules extends string
-        ? ReadonlyAccount<TAccountAuthorizationRules>
-        : TAccountAuthorizationRules,
-      TAccountAuthorizationRulesProgram extends string
-        ? ReadonlyAccount<TAccountAuthorizationRulesProgram>
-        : TAccountAuthorizationRulesProgram,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type BurnInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountOwner extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountTokenAccount extends string | IAccountMeta<string> = string,
-  TAccountMasterEditionAccount extends string | IAccountMeta<string> = string,
-  TAccountSplTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
-  TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
-  TAccountAuthorizationRulesProgram extends
-    | string
-    | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountMetadata extends string
-        ? WritableAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountOwner extends string
         ? WritableSignerAccount<TAccountOwner> &
             IAccountSignerMeta<TAccountOwner>
         : TAccountOwner,
@@ -189,38 +138,6 @@ export type BurnInput<
   /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
   /** Asset owner */
-  owner: Address<TAccountOwner>;
-  /** Mint of token asset */
-  mint: Address<TAccountMint>;
-  /** Token account to close */
-  tokenAccount: Address<TAccountTokenAccount>;
-  /** MasterEdition of the asset */
-  masterEditionAccount: Address<TAccountMasterEditionAccount>;
-  /** SPL Token Program */
-  splTokenProgram?: Address<TAccountSplTokenProgram>;
-  /** Metadata of the Collection */
-  collectionMetadata?: Address<TAccountCollectionMetadata>;
-  /** Token Authorization Rules account */
-  authorizationRules?: Address<TAccountAuthorizationRules>;
-  /** Token Authorization Rules Program */
-  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
-  burnArgs: BurnInstructionDataArgs['burnArgs'];
-};
-
-export type BurnInputWithSigners<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountMint extends string,
-  TAccountTokenAccount extends string,
-  TAccountMasterEditionAccount extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountAuthorizationRules extends string,
-  TAccountAuthorizationRulesProgram extends string,
-> = {
-  /** Metadata (pda of ['metadata', program id, mint id]) */
-  metadata: Address<TAccountMetadata>;
-  /** Asset owner */
   owner: TransactionSigner<TAccountOwner>;
   /** Mint of token asset */
   mint: Address<TAccountMint>;
@@ -239,41 +156,6 @@ export type BurnInputWithSigners<
   burnArgs: BurnInstructionDataArgs['burnArgs'];
 };
 
-export function getBurnInstruction<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountMint extends string,
-  TAccountTokenAccount extends string,
-  TAccountMasterEditionAccount extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountAuthorizationRules extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: BurnInputWithSigners<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountSplTokenProgram,
-    TAccountCollectionMetadata,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
-): BurnInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountOwner,
-  TAccountMint,
-  TAccountTokenAccount,
-  TAccountMasterEditionAccount,
-  TAccountSplTokenProgram,
-  TAccountCollectionMetadata,
-  TAccountAuthorizationRules,
-  TAccountAuthorizationRulesProgram
->;
 export function getBurnInstruction<
   TAccountMetadata extends string,
   TAccountOwner extends string,
@@ -308,31 +190,7 @@ export function getBurnInstruction<
   TAccountCollectionMetadata,
   TAccountAuthorizationRules,
   TAccountAuthorizationRulesProgram
->;
-export function getBurnInstruction<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountMint extends string,
-  TAccountTokenAccount extends string,
-  TAccountMasterEditionAccount extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountCollectionMetadata extends string,
-  TAccountAuthorizationRules extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: BurnInput<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountSplTokenProgram,
-    TAccountCollectionMetadata,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -399,7 +257,18 @@ export function getBurnInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as BurnInstructionDataArgs,
     programAddress
-  );
+  ) as BurnInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >;
 
   return instruction;
 }

@@ -52,31 +52,6 @@ export type CreateFrequencyRuleInstruction<
   IInstructionWithAccounts<
     [
       TAccountPayer extends string
-        ? WritableSignerAccount<TAccountPayer>
-        : TAccountPayer,
-      TAccountFrequencyPda extends string
-        ? WritableAccount<TAccountFrequencyPda>
-        : TAccountFrequencyPda,
-      TAccountSystemProgram extends string
-        ? ReadonlyAccount<TAccountSystemProgram>
-        : TAccountSystemProgram,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type CreateFrequencyRuleInstructionWithSigners<
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountFrequencyPda extends string | IAccountMeta<string> = string,
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountPayer extends string
         ? WritableSignerAccount<TAccountPayer> &
             IAccountSignerMeta<TAccountPayer>
         : TAccountPayer,
@@ -144,23 +119,6 @@ export type CreateFrequencyRuleInput<
   TAccountSystemProgram extends string,
 > = {
   /** Payer and creator of the Frequency Rule */
-  payer: Address<TAccountPayer>;
-  /** The PDA account where the Frequency Rule is stored */
-  frequencyPda: Address<TAccountFrequencyPda>;
-  /** System program */
-  systemProgram?: Address<TAccountSystemProgram>;
-  ruleSetName: CreateFrequencyRuleInstructionDataArgs['ruleSetName'];
-  freqRuleName: CreateFrequencyRuleInstructionDataArgs['freqRuleName'];
-  lastUpdate: CreateFrequencyRuleInstructionDataArgs['lastUpdate'];
-  period: CreateFrequencyRuleInstructionDataArgs['period'];
-};
-
-export type CreateFrequencyRuleInputWithSigners<
-  TAccountPayer extends string,
-  TAccountFrequencyPda extends string,
-  TAccountSystemProgram extends string,
-> = {
-  /** Payer and creator of the Frequency Rule */
   payer: TransactionSigner<TAccountPayer>;
   /** The PDA account where the Frequency Rule is stored */
   frequencyPda: Address<TAccountFrequencyPda>;
@@ -178,23 +136,6 @@ export function getCreateFrequencyRuleInstruction<
   TAccountSystemProgram extends string,
   TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
 >(
-  input: CreateFrequencyRuleInputWithSigners<
-    TAccountPayer,
-    TAccountFrequencyPda,
-    TAccountSystemProgram
-  >
-): CreateFrequencyRuleInstructionWithSigners<
-  TProgram,
-  TAccountPayer,
-  TAccountFrequencyPda,
-  TAccountSystemProgram
->;
-export function getCreateFrequencyRuleInstruction<
-  TAccountPayer extends string,
-  TAccountFrequencyPda extends string,
-  TAccountSystemProgram extends string,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
->(
   input: CreateFrequencyRuleInput<
     TAccountPayer,
     TAccountFrequencyPda,
@@ -205,19 +146,7 @@ export function getCreateFrequencyRuleInstruction<
   TAccountPayer,
   TAccountFrequencyPda,
   TAccountSystemProgram
->;
-export function getCreateFrequencyRuleInstruction<
-  TAccountPayer extends string,
-  TAccountFrequencyPda extends string,
-  TAccountSystemProgram extends string,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
->(
-  input: CreateFrequencyRuleInput<
-    TAccountPayer,
-    TAccountFrequencyPda,
-    TAccountSystemProgram
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
@@ -257,7 +186,12 @@ export function getCreateFrequencyRuleInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as CreateFrequencyRuleInstructionDataArgs,
     programAddress
-  );
+  ) as CreateFrequencyRuleInstruction<
+    TProgram,
+    TAccountPayer,
+    TAccountFrequencyPda,
+    TAccountSystemProgram
+  >;
 
   return instruction;
 }

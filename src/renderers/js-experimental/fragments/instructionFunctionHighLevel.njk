@@ -1,9 +1,6 @@
 {{ inputTypeFragment }}
-{{ inputTypeWithSignersFragment }}
 
-export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(input: {{ inputTypeCallWithSignersFragment }}): {{ getReturnType(instructionTypeWithSignersFragment) }};
-export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(input: {{ inputTypeCallFragment }}): {{ getReturnType(instructionTypeFragment) }};
-export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(input: {{ inputTypeCallFragment }}): {{ getReturnType('IInstruction') }} {
+export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(input: {{ inputTypeCallFragment }}): {{ getReturnType(instructionTypeFragment) }} {
   // Program address.
   const programAddress = "{{ program.publicKey }}" as Address<"{{ program.publicKey }}">;
 
@@ -50,7 +47,7 @@ export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragme
     {%- if hasRemainingAccounts -%}
       remainingAccounts,
     {% endif %}
-  );
+  ) as {{ instructionTypeFragment }};
 
   {% if hasByteDeltas %}
     return Object.freeze({ ...instruction, byteDelta });

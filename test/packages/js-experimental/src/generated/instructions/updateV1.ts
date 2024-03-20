@@ -114,63 +114,6 @@ export type UpdateV1Instruction<
   IInstructionWithAccounts<
     [
       TAccountAuthority extends string
-        ? ReadonlySignerAccount<TAccountAuthority>
-        : TAccountAuthority,
-      TAccountMetadata extends string
-        ? WritableAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountMasterEdition extends string
-        ? WritableAccount<TAccountMasterEdition>
-        : TAccountMasterEdition,
-      TAccountMint extends string
-        ? ReadonlyAccount<TAccountMint>
-        : TAccountMint,
-      TAccountSystemProgram extends string
-        ? ReadonlyAccount<TAccountSystemProgram>
-        : TAccountSystemProgram,
-      TAccountSysvarInstructions extends string
-        ? ReadonlyAccount<TAccountSysvarInstructions>
-        : TAccountSysvarInstructions,
-      TAccountToken extends string
-        ? ReadonlyAccount<TAccountToken>
-        : TAccountToken,
-      TAccountDelegateRecord extends string
-        ? ReadonlyAccount<TAccountDelegateRecord>
-        : TAccountDelegateRecord,
-      TAccountAuthorizationRulesProgram extends string
-        ? ReadonlyAccount<TAccountAuthorizationRulesProgram>
-        : TAccountAuthorizationRulesProgram,
-      TAccountAuthorizationRules extends string
-        ? ReadonlyAccount<TAccountAuthorizationRules>
-        : TAccountAuthorizationRules,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type UpdateV1InstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountAuthority extends string | IAccountMeta<string> = string,
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountSysvarInstructions extends
-    | string
-    | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountToken extends string | IAccountMeta<string> = string,
-  TAccountDelegateRecord extends string | IAccountMeta<string> = string,
-  TAccountAuthorizationRulesProgram extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountAuthority extends string
         ? ReadonlySignerAccount<TAccountAuthority> &
             IAccountSignerMeta<TAccountAuthority>
         : TAccountAuthority,
@@ -343,52 +286,6 @@ export type UpdateV1Input<
   TAccountAuthorizationRules extends string,
 > = {
   /** Update authority or delegate */
-  authority: Address<TAccountAuthority>;
-  /** Metadata account */
-  metadata: Address<TAccountMetadata>;
-  /** Master Edition account */
-  masterEdition?: Address<TAccountMasterEdition>;
-  /** Mint account */
-  mint: Address<TAccountMint>;
-  /** System program */
-  systemProgram?: Address<TAccountSystemProgram>;
-  /** System program */
-  sysvarInstructions?: Address<TAccountSysvarInstructions>;
-  /** Token account */
-  token?: Address<TAccountToken>;
-  /** Delegate record PDA */
-  delegateRecord?: Address<TAccountDelegateRecord>;
-  /** Token Authorization Rules Program */
-  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
-  /** Token Authorization Rules account */
-  authorizationRules?: Address<TAccountAuthorizationRules>;
-  authorizationData: UpdateV1InstructionDataArgs['authorizationData'];
-  newUpdateAuthority: UpdateV1InstructionDataArgs['newUpdateAuthority'];
-  data: UpdateV1InstructionDataArgs['data'];
-  primarySaleHappened: UpdateV1InstructionDataArgs['primarySaleHappened'];
-  isMutable: UpdateV1InstructionDataArgs['isMutable'];
-  tokenStandard?: UpdateV1InstructionDataArgs['tokenStandard'];
-  collection: UpdateV1InstructionDataArgs['collection'];
-  uses: UpdateV1InstructionDataArgs['uses'];
-  collectionDetails: UpdateV1InstructionDataArgs['collectionDetails'];
-  programmableConfig: UpdateV1InstructionDataArgs['programmableConfig'];
-  delegateState: UpdateV1InstructionDataArgs['delegateState'];
-  authorityType: UpdateV1InstructionDataArgs['authorityType'];
-};
-
-export type UpdateV1InputWithSigners<
-  TAccountAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountMint extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountToken extends string,
-  TAccountDelegateRecord extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string,
-> = {
-  /** Update authority or delegate */
   authority: TransactionSigner<TAccountAuthority>;
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
@@ -435,44 +332,6 @@ export function getUpdateV1Instruction<
   TAccountAuthorizationRules extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
-  input: UpdateV1InputWithSigners<
-    TAccountAuthority,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountToken,
-    TAccountDelegateRecord,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
-): UpdateV1InstructionWithSigners<
-  TProgram,
-  TAccountAuthority,
-  TAccountMetadata,
-  TAccountMasterEdition,
-  TAccountMint,
-  TAccountSystemProgram,
-  TAccountSysvarInstructions,
-  TAccountToken,
-  TAccountDelegateRecord,
-  TAccountAuthorizationRulesProgram,
-  TAccountAuthorizationRules
->;
-export function getUpdateV1Instruction<
-  TAccountAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountMint extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountToken extends string,
-  TAccountDelegateRecord extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
   input: UpdateV1Input<
     TAccountAuthority,
     TAccountMetadata,
@@ -497,33 +356,7 @@ export function getUpdateV1Instruction<
   TAccountDelegateRecord,
   TAccountAuthorizationRulesProgram,
   TAccountAuthorizationRules
->;
-export function getUpdateV1Instruction<
-  TAccountAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountMint extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountToken extends string,
-  TAccountDelegateRecord extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: UpdateV1Input<
-    TAccountAuthority,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountToken,
-    TAccountDelegateRecord,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -590,7 +423,19 @@ export function getUpdateV1Instruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as UpdateV1InstructionDataArgs,
     programAddress
-  );
+  ) as UpdateV1Instruction<
+    TProgram,
+    TAccountAuthority,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountToken,
+    TAccountDelegateRecord,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >;
 
   return instruction;
 }

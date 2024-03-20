@@ -63,65 +63,6 @@ export type ApproveUseAuthorityInstruction<
         ? WritableAccount<TAccountUseAuthorityRecord>
         : TAccountUseAuthorityRecord,
       TAccountOwner extends string
-        ? WritableSignerAccount<TAccountOwner>
-        : TAccountOwner,
-      TAccountPayer extends string
-        ? WritableSignerAccount<TAccountPayer>
-        : TAccountPayer,
-      TAccountUser extends string
-        ? ReadonlyAccount<TAccountUser>
-        : TAccountUser,
-      TAccountOwnerTokenAccount extends string
-        ? WritableAccount<TAccountOwnerTokenAccount>
-        : TAccountOwnerTokenAccount,
-      TAccountMetadata extends string
-        ? ReadonlyAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountMint extends string
-        ? ReadonlyAccount<TAccountMint>
-        : TAccountMint,
-      TAccountBurner extends string
-        ? ReadonlyAccount<TAccountBurner>
-        : TAccountBurner,
-      TAccountTokenProgram extends string
-        ? ReadonlyAccount<TAccountTokenProgram>
-        : TAccountTokenProgram,
-      TAccountSystemProgram extends string
-        ? ReadonlyAccount<TAccountSystemProgram>
-        : TAccountSystemProgram,
-      TAccountRent extends string
-        ? ReadonlyAccount<TAccountRent>
-        : TAccountRent,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type ApproveUseAuthorityInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountUseAuthorityRecord extends string | IAccountMeta<string> = string,
-  TAccountOwner extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountUser extends string | IAccountMeta<string> = string,
-  TAccountOwnerTokenAccount extends string | IAccountMeta<string> = string,
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountBurner extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountRent extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountUseAuthorityRecord extends string
-        ? WritableAccount<TAccountUseAuthorityRecord>
-        : TAccountUseAuthorityRecord,
-      TAccountOwner extends string
         ? WritableSignerAccount<TAccountOwner> &
             IAccountSignerMeta<TAccountOwner>
         : TAccountOwner,
@@ -209,44 +150,6 @@ export type ApproveUseAuthorityInput<
   /** Use Authority Record PDA */
   useAuthorityRecord: Address<TAccountUseAuthorityRecord>;
   /** Owner */
-  owner: Address<TAccountOwner>;
-  /** Payer */
-  payer: Address<TAccountPayer>;
-  /** A Use Authority */
-  user: Address<TAccountUser>;
-  /** Owned Token Account Of Mint */
-  ownerTokenAccount: Address<TAccountOwnerTokenAccount>;
-  /** Metadata account */
-  metadata: Address<TAccountMetadata>;
-  /** Mint of Metadata */
-  mint: Address<TAccountMint>;
-  /** Program As Signer (Burner) */
-  burner: Address<TAccountBurner>;
-  /** Token program */
-  tokenProgram?: Address<TAccountTokenProgram>;
-  /** System program */
-  systemProgram?: Address<TAccountSystemProgram>;
-  /** Rent info */
-  rent?: Address<TAccountRent>;
-  numberOfUses: ApproveUseAuthorityInstructionDataArgs['numberOfUses'];
-};
-
-export type ApproveUseAuthorityInputWithSigners<
-  TAccountUseAuthorityRecord extends string,
-  TAccountOwner extends string,
-  TAccountPayer extends string,
-  TAccountUser extends string,
-  TAccountOwnerTokenAccount extends string,
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TAccountBurner extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-> = {
-  /** Use Authority Record PDA */
-  useAuthorityRecord: Address<TAccountUseAuthorityRecord>;
-  /** Owner */
   owner: TransactionSigner<TAccountOwner>;
   /** Payer */
   payer: TransactionSigner<TAccountPayer>;
@@ -269,47 +172,6 @@ export type ApproveUseAuthorityInputWithSigners<
   numberOfUses: ApproveUseAuthorityInstructionDataArgs['numberOfUses'];
 };
 
-export function getApproveUseAuthorityInstruction<
-  TAccountUseAuthorityRecord extends string,
-  TAccountOwner extends string,
-  TAccountPayer extends string,
-  TAccountUser extends string,
-  TAccountOwnerTokenAccount extends string,
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TAccountBurner extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: ApproveUseAuthorityInputWithSigners<
-    TAccountUseAuthorityRecord,
-    TAccountOwner,
-    TAccountPayer,
-    TAccountUser,
-    TAccountOwnerTokenAccount,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountBurner,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): ApproveUseAuthorityInstructionWithSigners<
-  TProgram,
-  TAccountUseAuthorityRecord,
-  TAccountOwner,
-  TAccountPayer,
-  TAccountUser,
-  TAccountOwnerTokenAccount,
-  TAccountMetadata,
-  TAccountMint,
-  TAccountBurner,
-  TAccountTokenProgram,
-  TAccountSystemProgram,
-  TAccountRent
->;
 export function getApproveUseAuthorityInstruction<
   TAccountUseAuthorityRecord extends string,
   TAccountOwner extends string,
@@ -350,35 +212,7 @@ export function getApproveUseAuthorityInstruction<
   TAccountTokenProgram,
   TAccountSystemProgram,
   TAccountRent
->;
-export function getApproveUseAuthorityInstruction<
-  TAccountUseAuthorityRecord extends string,
-  TAccountOwner extends string,
-  TAccountPayer extends string,
-  TAccountUser extends string,
-  TAccountOwnerTokenAccount extends string,
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TAccountBurner extends string,
-  TAccountTokenProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: ApproveUseAuthorityInput<
-    TAccountUseAuthorityRecord,
-    TAccountOwner,
-    TAccountPayer,
-    TAccountUser,
-    TAccountOwnerTokenAccount,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountBurner,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -444,7 +278,20 @@ export function getApproveUseAuthorityInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as ApproveUseAuthorityInstructionDataArgs,
     programAddress
-  );
+  ) as ApproveUseAuthorityInstruction<
+    TProgram,
+    TAccountUseAuthorityRecord,
+    TAccountOwner,
+    TAccountPayer,
+    TAccountUser,
+    TAccountOwnerTokenAccount,
+    TAccountMetadata,
+    TAccountMint,
+    TAccountBurner,
+    TAccountTokenProgram,
+    TAccountSystemProgram,
+    TAccountRent
+  >;
 
   return instruction;
 }

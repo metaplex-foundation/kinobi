@@ -55,47 +55,6 @@ export type BurnNftInstruction<
         ? WritableAccount<TAccountMetadata>
         : TAccountMetadata,
       TAccountOwner extends string
-        ? WritableSignerAccount<TAccountOwner>
-        : TAccountOwner,
-      TAccountMint extends string
-        ? WritableAccount<TAccountMint>
-        : TAccountMint,
-      TAccountTokenAccount extends string
-        ? WritableAccount<TAccountTokenAccount>
-        : TAccountTokenAccount,
-      TAccountMasterEditionAccount extends string
-        ? WritableAccount<TAccountMasterEditionAccount>
-        : TAccountMasterEditionAccount,
-      TAccountSplTokenProgram extends string
-        ? ReadonlyAccount<TAccountSplTokenProgram>
-        : TAccountSplTokenProgram,
-      TAccountCollectionMetadata extends string
-        ? WritableAccount<TAccountCollectionMetadata>
-        : TAccountCollectionMetadata,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type BurnNftInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountOwner extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountTokenAccount extends string | IAccountMeta<string> = string,
-  TAccountMasterEditionAccount extends string | IAccountMeta<string> = string,
-  TAccountSplTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountMetadata extends string
-        ? WritableAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountOwner extends string
         ? WritableSignerAccount<TAccountOwner> &
             IAccountSignerMeta<TAccountOwner>
         : TAccountOwner,
@@ -155,31 +114,6 @@ export type BurnNftInput<
   /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
   /** NFT owner */
-  owner: Address<TAccountOwner>;
-  /** Mint of the NFT */
-  mint: Address<TAccountMint>;
-  /** Token account to close */
-  tokenAccount: Address<TAccountTokenAccount>;
-  /** MasterEdition2 of the NFT */
-  masterEditionAccount: Address<TAccountMasterEditionAccount>;
-  /** SPL Token Program */
-  splTokenProgram?: Address<TAccountSplTokenProgram>;
-  /** Metadata of the Collection */
-  collectionMetadata?: Address<TAccountCollectionMetadata>;
-};
-
-export type BurnNftInputWithSigners<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountMint extends string,
-  TAccountTokenAccount extends string,
-  TAccountMasterEditionAccount extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountCollectionMetadata extends string,
-> = {
-  /** Metadata (pda of ['metadata', program id, mint id]) */
-  metadata: Address<TAccountMetadata>;
-  /** NFT owner */
   owner: TransactionSigner<TAccountOwner>;
   /** Mint of the NFT */
   mint: Address<TAccountMint>;
@@ -193,35 +127,6 @@ export type BurnNftInputWithSigners<
   collectionMetadata?: Address<TAccountCollectionMetadata>;
 };
 
-export function getBurnNftInstruction<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountMint extends string,
-  TAccountTokenAccount extends string,
-  TAccountMasterEditionAccount extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountCollectionMetadata extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: BurnNftInputWithSigners<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountSplTokenProgram,
-    TAccountCollectionMetadata
-  >
-): BurnNftInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountOwner,
-  TAccountMint,
-  TAccountTokenAccount,
-  TAccountMasterEditionAccount,
-  TAccountSplTokenProgram,
-  TAccountCollectionMetadata
->;
 export function getBurnNftInstruction<
   TAccountMetadata extends string,
   TAccountOwner extends string,
@@ -250,27 +155,7 @@ export function getBurnNftInstruction<
   TAccountMasterEditionAccount,
   TAccountSplTokenProgram,
   TAccountCollectionMetadata
->;
-export function getBurnNftInstruction<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountMint extends string,
-  TAccountTokenAccount extends string,
-  TAccountMasterEditionAccount extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountCollectionMetadata extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: BurnNftInput<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountSplTokenProgram,
-    TAccountCollectionMetadata
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -323,7 +208,16 @@ export function getBurnNftInstruction<
   const instruction = getBurnNftInstructionRaw(
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     programAddress
-  );
+  ) as BurnNftInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountMint,
+    TAccountTokenAccount,
+    TAccountMasterEditionAccount,
+    TAccountSplTokenProgram,
+    TAccountCollectionMetadata
+  >;
 
   return instruction;
 }

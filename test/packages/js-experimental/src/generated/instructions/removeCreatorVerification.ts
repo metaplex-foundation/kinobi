@@ -47,25 +47,6 @@ export type RemoveCreatorVerificationInstruction<
         ? WritableAccount<TAccountMetadata>
         : TAccountMetadata,
       TAccountCreator extends string
-        ? ReadonlySignerAccount<TAccountCreator>
-        : TAccountCreator,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type RemoveCreatorVerificationInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountCreator extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountMetadata extends string
-        ? WritableAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountCreator extends string
         ? ReadonlySignerAccount<TAccountCreator> &
             IAccountSignerMeta<TAccountCreator>
         : TAccountCreator,
@@ -107,33 +88,9 @@ export type RemoveCreatorVerificationInput<
   /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
   /** Creator */
-  creator: Address<TAccountCreator>;
-};
-
-export type RemoveCreatorVerificationInputWithSigners<
-  TAccountMetadata extends string,
-  TAccountCreator extends string,
-> = {
-  /** Metadata (pda of ['metadata', program id, mint id]) */
-  metadata: Address<TAccountMetadata>;
-  /** Creator */
   creator: TransactionSigner<TAccountCreator>;
 };
 
-export function getRemoveCreatorVerificationInstruction<
-  TAccountMetadata extends string,
-  TAccountCreator extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: RemoveCreatorVerificationInputWithSigners<
-    TAccountMetadata,
-    TAccountCreator
-  >
-): RemoveCreatorVerificationInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountCreator
->;
 export function getRemoveCreatorVerificationInstruction<
   TAccountMetadata extends string,
   TAccountCreator extends string,
@@ -144,14 +101,7 @@ export function getRemoveCreatorVerificationInstruction<
   TProgram,
   TAccountMetadata,
   TAccountCreator
->;
-export function getRemoveCreatorVerificationInstruction<
-  TAccountMetadata extends string,
-  TAccountCreator extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: RemoveCreatorVerificationInput<TAccountMetadata, TAccountCreator>
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -179,7 +129,11 @@ export function getRemoveCreatorVerificationInstruction<
   const instruction = getRemoveCreatorVerificationInstructionRaw(
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     programAddress
-  );
+  ) as RemoveCreatorVerificationInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountCreator
+  >;
 
   return instruction;
 }

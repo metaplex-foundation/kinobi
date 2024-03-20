@@ -87,75 +87,6 @@ export type DelegateInstruction<
         ? WritableAccount<TAccountToken>
         : TAccountToken,
       TAccountAuthority extends string
-        ? ReadonlySignerAccount<TAccountAuthority>
-        : TAccountAuthority,
-      TAccountPayer extends string
-        ? WritableSignerAccount<TAccountPayer>
-        : TAccountPayer,
-      TAccountSystemProgram extends string
-        ? ReadonlyAccount<TAccountSystemProgram>
-        : TAccountSystemProgram,
-      TAccountSysvarInstructions extends string
-        ? ReadonlyAccount<TAccountSysvarInstructions>
-        : TAccountSysvarInstructions,
-      TAccountSplTokenProgram extends string
-        ? ReadonlyAccount<TAccountSplTokenProgram>
-        : TAccountSplTokenProgram,
-      TAccountAuthorizationRulesProgram extends string
-        ? ReadonlyAccount<TAccountAuthorizationRulesProgram>
-        : TAccountAuthorizationRulesProgram,
-      TAccountAuthorizationRules extends string
-        ? ReadonlyAccount<TAccountAuthorizationRules>
-        : TAccountAuthorizationRules,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type DelegateInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountDelegateRecord extends string | IAccountMeta<string> = string,
-  TAccountDelegate extends string | IAccountMeta<string> = string,
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountToken extends string | IAccountMeta<string> = string,
-  TAccountAuthority extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountSysvarInstructions extends
-    | string
-    | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountSplTokenProgram extends string | IAccountMeta<string> = string,
-  TAccountAuthorizationRulesProgram extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountDelegateRecord extends string
-        ? WritableAccount<TAccountDelegateRecord>
-        : TAccountDelegateRecord,
-      TAccountDelegate extends string
-        ? ReadonlyAccount<TAccountDelegate>
-        : TAccountDelegate,
-      TAccountMetadata extends string
-        ? WritableAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountMasterEdition extends string
-        ? ReadonlyAccount<TAccountMasterEdition>
-        : TAccountMasterEdition,
-      TAccountMint extends string
-        ? ReadonlyAccount<TAccountMint>
-        : TAccountMint,
-      TAccountToken extends string
-        ? WritableAccount<TAccountToken>
-        : TAccountToken,
-      TAccountAuthority extends string
         ? ReadonlySignerAccount<TAccountAuthority> &
             IAccountSignerMeta<TAccountAuthority>
         : TAccountAuthority,
@@ -244,50 +175,6 @@ export type DelegateInput<
   /** Owned Token Account of mint */
   token?: Address<TAccountToken>;
   /** Authority to approve the delegation */
-  authority: Address<TAccountAuthority>;
-  /** Payer */
-  payer: Address<TAccountPayer>;
-  /** System Program */
-  systemProgram?: Address<TAccountSystemProgram>;
-  /** Instructions sysvar account */
-  sysvarInstructions?: Address<TAccountSysvarInstructions>;
-  /** SPL Token Program */
-  splTokenProgram?: Address<TAccountSplTokenProgram>;
-  /** Token Authorization Rules Program */
-  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
-  /** Token Authorization Rules account */
-  authorizationRules?: Address<TAccountAuthorizationRules>;
-  delegateArgs: DelegateInstructionDataArgs['delegateArgs'];
-};
-
-export type DelegateInputWithSigners<
-  TAccountDelegateRecord extends string,
-  TAccountDelegate extends string,
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountMint extends string,
-  TAccountToken extends string,
-  TAccountAuthority extends string,
-  TAccountPayer extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string,
-> = {
-  /** Delegate account key (pda of [mint id, delegate role, user id, authority id]) */
-  delegateRecord: Address<TAccountDelegateRecord>;
-  /** Owner of the delegated account */
-  delegate: Address<TAccountDelegate>;
-  /** Metadata account */
-  metadata: Address<TAccountMetadata>;
-  /** Master Edition account */
-  masterEdition?: Address<TAccountMasterEdition>;
-  /** Mint of metadata */
-  mint: Address<TAccountMint>;
-  /** Owned Token Account of mint */
-  token?: Address<TAccountToken>;
-  /** Authority to approve the delegation */
   authority: TransactionSigner<TAccountAuthority>;
   /** Payer */
   payer: TransactionSigner<TAccountPayer>;
@@ -304,53 +191,6 @@ export type DelegateInputWithSigners<
   delegateArgs: DelegateInstructionDataArgs['delegateArgs'];
 };
 
-export function getDelegateInstruction<
-  TAccountDelegateRecord extends string,
-  TAccountDelegate extends string,
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountMint extends string,
-  TAccountToken extends string,
-  TAccountAuthority extends string,
-  TAccountPayer extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: DelegateInputWithSigners<
-    TAccountDelegateRecord,
-    TAccountDelegate,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountToken,
-    TAccountAuthority,
-    TAccountPayer,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
-): DelegateInstructionWithSigners<
-  TProgram,
-  TAccountDelegateRecord,
-  TAccountDelegate,
-  TAccountMetadata,
-  TAccountMasterEdition,
-  TAccountMint,
-  TAccountToken,
-  TAccountAuthority,
-  TAccountPayer,
-  TAccountSystemProgram,
-  TAccountSysvarInstructions,
-  TAccountSplTokenProgram,
-  TAccountAuthorizationRulesProgram,
-  TAccountAuthorizationRules
->;
 export function getDelegateInstruction<
   TAccountDelegateRecord extends string,
   TAccountDelegate extends string,
@@ -397,39 +237,7 @@ export function getDelegateInstruction<
   TAccountSplTokenProgram,
   TAccountAuthorizationRulesProgram,
   TAccountAuthorizationRules
->;
-export function getDelegateInstruction<
-  TAccountDelegateRecord extends string,
-  TAccountDelegate extends string,
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountMint extends string,
-  TAccountToken extends string,
-  TAccountAuthority extends string,
-  TAccountPayer extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: DelegateInput<
-    TAccountDelegateRecord,
-    TAccountDelegate,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountToken,
-    TAccountAuthority,
-    TAccountPayer,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -505,7 +313,22 @@ export function getDelegateInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as DelegateInstructionDataArgs,
     programAddress
-  );
+  ) as DelegateInstruction<
+    TProgram,
+    TAccountDelegateRecord,
+    TAccountDelegate,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    TAccountMint,
+    TAccountToken,
+    TAccountAuthority,
+    TAccountPayer,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram,
+    TAccountAuthorizationRulesProgram,
+    TAccountAuthorizationRules
+  >;
 
   return instruction;
 }

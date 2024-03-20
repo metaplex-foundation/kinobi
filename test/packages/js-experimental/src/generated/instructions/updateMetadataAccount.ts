@@ -69,25 +69,6 @@ export type UpdateMetadataAccountInstruction<
         ? WritableAccount<TAccountMetadata>
         : TAccountMetadata,
       TAccountUpdateAuthority extends string
-        ? ReadonlySignerAccount<TAccountUpdateAuthority>
-        : TAccountUpdateAuthority,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type UpdateMetadataAccountInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountMetadata extends string
-        ? WritableAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountUpdateAuthority extends string
         ? ReadonlySignerAccount<TAccountUpdateAuthority> &
             IAccountSignerMeta<TAccountUpdateAuthority>
         : TAccountUpdateAuthority,
@@ -183,19 +164,6 @@ export type UpdateMetadataAccountInput<
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
   /** Update authority key */
-  updateAuthority: Address<TAccountUpdateAuthority>;
-  data: UpdateMetadataAccountInstructionDataArgs['data'];
-  updateAuthorityArg: UpdateMetadataAccountInstructionDataArgs['updateAuthority'];
-  primarySaleHappened: UpdateMetadataAccountInstructionDataArgs['primarySaleHappened'];
-};
-
-export type UpdateMetadataAccountInputWithSigners<
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string,
-> = {
-  /** Metadata account */
-  metadata: Address<TAccountMetadata>;
-  /** Update authority key */
   updateAuthority: TransactionSigner<TAccountUpdateAuthority>;
   data: UpdateMetadataAccountInstructionDataArgs['data'];
   updateAuthorityArg: UpdateMetadataAccountInstructionDataArgs['updateAuthority'];
@@ -207,33 +175,12 @@ export function getUpdateMetadataAccountInstruction<
   TAccountUpdateAuthority extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
-  input: UpdateMetadataAccountInputWithSigners<
-    TAccountMetadata,
-    TAccountUpdateAuthority
-  >
-): UpdateMetadataAccountInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountUpdateAuthority
->;
-export function getUpdateMetadataAccountInstruction<
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
   input: UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>
 ): UpdateMetadataAccountInstruction<
   TProgram,
   TAccountMetadata,
   TAccountUpdateAuthority
->;
-export function getUpdateMetadataAccountInstruction<
-  TAccountMetadata extends string,
-  TAccountUpdateAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: UpdateMetadataAccountInput<TAccountMetadata, TAccountUpdateAuthority>
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -268,7 +215,11 @@ export function getUpdateMetadataAccountInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as UpdateMetadataAccountInstructionDataArgs,
     programAddress
-  );
+  ) as UpdateMetadataAccountInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountUpdateAuthority
+  >;
 
   return instruction;
 }

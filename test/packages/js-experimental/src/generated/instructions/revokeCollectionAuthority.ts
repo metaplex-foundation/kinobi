@@ -56,39 +56,6 @@ export type RevokeCollectionAuthorityInstruction<
         ? WritableAccount<TAccountDelegateAuthority>
         : TAccountDelegateAuthority,
       TAccountRevokeAuthority extends string
-        ? WritableSignerAccount<TAccountRevokeAuthority>
-        : TAccountRevokeAuthority,
-      TAccountMetadata extends string
-        ? ReadonlyAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountMint extends string
-        ? ReadonlyAccount<TAccountMint>
-        : TAccountMint,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type RevokeCollectionAuthorityInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionAuthorityRecord extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountDelegateAuthority extends string | IAccountMeta<string> = string,
-  TAccountRevokeAuthority extends string | IAccountMeta<string> = string,
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountCollectionAuthorityRecord extends string
-        ? WritableAccount<TAccountCollectionAuthorityRecord>
-        : TAccountCollectionAuthorityRecord,
-      TAccountDelegateAuthority extends string
-        ? WritableAccount<TAccountDelegateAuthority>
-        : TAccountDelegateAuthority,
-      TAccountRevokeAuthority extends string
         ? WritableSignerAccount<TAccountRevokeAuthority> &
             IAccountSignerMeta<TAccountRevokeAuthority>
         : TAccountRevokeAuthority,
@@ -141,25 +108,6 @@ export type RevokeCollectionAuthorityInput<
   /** Delegated Collection Authority */
   delegateAuthority: Address<TAccountDelegateAuthority>;
   /** Update Authority, or Delegated Authority, of Collection NFT */
-  revokeAuthority: Address<TAccountRevokeAuthority>;
-  /** Metadata account */
-  metadata: Address<TAccountMetadata>;
-  /** Mint of Metadata */
-  mint: Address<TAccountMint>;
-};
-
-export type RevokeCollectionAuthorityInputWithSigners<
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountDelegateAuthority extends string,
-  TAccountRevokeAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-> = {
-  /** Collection Authority Record PDA */
-  collectionAuthorityRecord: Address<TAccountCollectionAuthorityRecord>;
-  /** Delegated Collection Authority */
-  delegateAuthority: Address<TAccountDelegateAuthority>;
-  /** Update Authority, or Delegated Authority, of Collection NFT */
   revokeAuthority: TransactionSigner<TAccountRevokeAuthority>;
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
@@ -167,29 +115,6 @@ export type RevokeCollectionAuthorityInputWithSigners<
   mint: Address<TAccountMint>;
 };
 
-export function getRevokeCollectionAuthorityInstruction<
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountDelegateAuthority extends string,
-  TAccountRevokeAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: RevokeCollectionAuthorityInputWithSigners<
-    TAccountCollectionAuthorityRecord,
-    TAccountDelegateAuthority,
-    TAccountRevokeAuthority,
-    TAccountMetadata,
-    TAccountMint
-  >
-): RevokeCollectionAuthorityInstructionWithSigners<
-  TProgram,
-  TAccountCollectionAuthorityRecord,
-  TAccountDelegateAuthority,
-  TAccountRevokeAuthority,
-  TAccountMetadata,
-  TAccountMint
->;
 export function getRevokeCollectionAuthorityInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TAccountDelegateAuthority extends string,
@@ -212,23 +137,7 @@ export function getRevokeCollectionAuthorityInstruction<
   TAccountRevokeAuthority,
   TAccountMetadata,
   TAccountMint
->;
-export function getRevokeCollectionAuthorityInstruction<
-  TAccountCollectionAuthorityRecord extends string,
-  TAccountDelegateAuthority extends string,
-  TAccountRevokeAuthority extends string,
-  TAccountMetadata extends string,
-  TAccountMint extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: RevokeCollectionAuthorityInput<
-    TAccountCollectionAuthorityRecord,
-    TAccountDelegateAuthority,
-    TAccountRevokeAuthority,
-    TAccountMetadata,
-    TAccountMint
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -268,7 +177,14 @@ export function getRevokeCollectionAuthorityInstruction<
   const instruction = getRevokeCollectionAuthorityInstructionRaw(
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     programAddress
-  );
+  ) as RevokeCollectionAuthorityInstruction<
+    TProgram,
+    TAccountCollectionAuthorityRecord,
+    TAccountDelegateAuthority,
+    TAccountRevokeAuthority,
+    TAccountMetadata,
+    TAccountMint
+  >;
 
   return instruction;
 }

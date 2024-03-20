@@ -80,59 +80,6 @@ export type CreateV1Instruction<
         ? WritableAccount<TAccountMint>
         : TAccountMint,
       TAccountMintAuthority extends string
-        ? ReadonlySignerAccount<TAccountMintAuthority>
-        : TAccountMintAuthority,
-      TAccountPayer extends string
-        ? WritableSignerAccount<TAccountPayer>
-        : TAccountPayer,
-      TAccountUpdateAuthority extends string
-        ? ReadonlyAccount<TAccountUpdateAuthority>
-        : TAccountUpdateAuthority,
-      TAccountSystemProgram extends string
-        ? ReadonlyAccount<TAccountSystemProgram>
-        : TAccountSystemProgram,
-      TAccountSysvarInstructions extends string
-        ? ReadonlyAccount<TAccountSysvarInstructions>
-        : TAccountSysvarInstructions,
-      TAccountSplTokenProgram extends string
-        ? ReadonlyAccount<TAccountSplTokenProgram>
-        : TAccountSplTokenProgram,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type CreateV1InstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountMintAuthority extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountSysvarInstructions extends
-    | string
-    | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountSplTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountMetadata extends string
-        ? WritableAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountMasterEdition extends string
-        ? WritableAccount<TAccountMasterEdition>
-        : TAccountMasterEdition,
-      TAccountMint extends string
-        ? WritableAccount<TAccountMint>
-        : TAccountMint,
-      TAccountMintAuthority extends string
         ? ReadonlySignerAccount<TAccountMintAuthority> &
             IAccountSignerMeta<TAccountMintAuthority>
         : TAccountMintAuthority,
@@ -219,40 +166,6 @@ export type CreateV1Input<
   /** Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition'] */
   masterEdition?: Address<TAccountMasterEdition>;
   /** Mint of token asset */
-  mint: Address<TAccountMint>;
-  /** Mint authority */
-  mintAuthority: Address<TAccountMintAuthority>;
-  /** Payer */
-  payer: Address<TAccountPayer>;
-  /** update authority info */
-  updateAuthority: Address<TAccountUpdateAuthority>;
-  /** System program */
-  systemProgram?: Address<TAccountSystemProgram>;
-  /** Instructions sysvar account */
-  sysvarInstructions?: Address<TAccountSysvarInstructions>;
-  /** SPL Token program */
-  splTokenProgram?: Address<TAccountSplTokenProgram>;
-  assetData: CreateV1InstructionDataArgs['assetData'];
-  decimals: CreateV1InstructionDataArgs['decimals'];
-  maxSupply: CreateV1InstructionDataArgs['maxSupply'];
-};
-
-export type CreateV1InputWithSigners<
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountMint extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountSplTokenProgram extends string,
-> = {
-  /** Metadata account key (pda of ['metadata', program id, mint id]) */
-  metadata: Address<TAccountMetadata>;
-  /** Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition'] */
-  masterEdition?: Address<TAccountMasterEdition>;
-  /** Mint of token asset */
   mint: Address<TAccountMint> | TransactionSigner<TAccountMint>;
   /** Mint authority */
   mintAuthority: TransactionSigner<TAccountMintAuthority>;
@@ -283,43 +196,6 @@ export function getCreateV1Instruction<
   TAccountSplTokenProgram extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
-  input: CreateV1InputWithSigners<
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram
-  >
-): CreateV1InstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountMasterEdition,
-  (typeof input)['mint'] extends TransactionSigner<TAccountMint>
-    ? WritableSignerAccount<TAccountMint> & IAccountSignerMeta<TAccountMint>
-    : TAccountMint,
-  TAccountMintAuthority,
-  TAccountPayer,
-  TAccountUpdateAuthority,
-  TAccountSystemProgram,
-  TAccountSysvarInstructions,
-  TAccountSplTokenProgram
->;
-export function getCreateV1Instruction<
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountMint extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountSplTokenProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
   input: CreateV1Input<
     TAccountMetadata,
     TAccountMasterEdition,
@@ -335,38 +211,16 @@ export function getCreateV1Instruction<
   TProgram,
   TAccountMetadata,
   TAccountMasterEdition,
-  TAccountMint,
+  (typeof input)['mint'] extends TransactionSigner<TAccountMint>
+    ? WritableSignerAccount<TAccountMint> & IAccountSignerMeta<TAccountMint>
+    : TAccountMint,
   TAccountMintAuthority,
   TAccountPayer,
   TAccountUpdateAuthority,
   TAccountSystemProgram,
   TAccountSysvarInstructions,
   TAccountSplTokenProgram
->;
-export function getCreateV1Instruction<
-  TAccountMetadata extends string,
-  TAccountMasterEdition extends string,
-  TAccountMint extends string,
-  TAccountMintAuthority extends string,
-  TAccountPayer extends string,
-  TAccountUpdateAuthority extends string,
-  TAccountSystemProgram extends string,
-  TAccountSysvarInstructions extends string,
-  TAccountSplTokenProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: CreateV1Input<
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -435,7 +289,20 @@ export function getCreateV1Instruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as CreateV1InstructionDataArgs,
     programAddress
-  );
+  ) as CreateV1Instruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountMasterEdition,
+    (typeof input)['mint'] extends TransactionSigner<TAccountMint>
+      ? WritableSignerAccount<TAccountMint> & IAccountSignerMeta<TAccountMint>
+      : TAccountMint,
+    TAccountMintAuthority,
+    TAccountPayer,
+    TAccountUpdateAuthority,
+    TAccountSystemProgram,
+    TAccountSysvarInstructions,
+    TAccountSplTokenProgram
+  >;
 
   return instruction;
 }

@@ -58,35 +58,6 @@ export type SetCollectionSizeInstruction<
         ? WritableAccount<TAccountCollectionMetadata>
         : TAccountCollectionMetadata,
       TAccountCollectionAuthority extends string
-        ? WritableSignerAccount<TAccountCollectionAuthority>
-        : TAccountCollectionAuthority,
-      TAccountCollectionMint extends string
-        ? ReadonlyAccount<TAccountCollectionMint>
-        : TAccountCollectionMint,
-      TAccountCollectionAuthorityRecord extends string
-        ? ReadonlyAccount<TAccountCollectionAuthorityRecord>
-        : TAccountCollectionAuthorityRecord,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type SetCollectionSizeInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
-  TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
-  TAccountCollectionMint extends string | IAccountMeta<string> = string,
-  TAccountCollectionAuthorityRecord extends
-    | string
-    | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountCollectionMetadata extends string
-        ? WritableAccount<TAccountCollectionMetadata>
-        : TAccountCollectionMetadata,
-      TAccountCollectionAuthority extends string
         ? WritableSignerAccount<TAccountCollectionAuthority> &
             IAccountSignerMeta<TAccountCollectionAuthority>
         : TAccountCollectionAuthority,
@@ -145,23 +116,6 @@ export type SetCollectionSizeInput<
   /** Collection Metadata account */
   collectionMetadata: Address<TAccountCollectionMetadata>;
   /** Collection Update authority */
-  collectionAuthority: Address<TAccountCollectionAuthority>;
-  /** Mint of the Collection */
-  collectionMint: Address<TAccountCollectionMint>;
-  /** Collection Authority Record PDA */
-  collectionAuthorityRecord?: Address<TAccountCollectionAuthorityRecord>;
-  setCollectionSizeArgs: SetCollectionSizeInstructionDataArgs['setCollectionSizeArgs'];
-};
-
-export type SetCollectionSizeInputWithSigners<
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionAuthority extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionAuthorityRecord extends string,
-> = {
-  /** Collection Metadata account */
-  collectionMetadata: Address<TAccountCollectionMetadata>;
-  /** Collection Update authority */
   collectionAuthority: TransactionSigner<TAccountCollectionAuthority>;
   /** Mint of the Collection */
   collectionMint: Address<TAccountCollectionMint>;
@@ -170,26 +124,6 @@ export type SetCollectionSizeInputWithSigners<
   setCollectionSizeArgs: SetCollectionSizeInstructionDataArgs['setCollectionSizeArgs'];
 };
 
-export function getSetCollectionSizeInstruction<
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionAuthority extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: SetCollectionSizeInputWithSigners<
-    TAccountCollectionMetadata,
-    TAccountCollectionAuthority,
-    TAccountCollectionMint,
-    TAccountCollectionAuthorityRecord
-  >
-): SetCollectionSizeInstructionWithSigners<
-  TProgram,
-  TAccountCollectionMetadata,
-  TAccountCollectionAuthority,
-  TAccountCollectionMint,
-  TAccountCollectionAuthorityRecord
->;
 export function getSetCollectionSizeInstruction<
   TAccountCollectionMetadata extends string,
   TAccountCollectionAuthority extends string,
@@ -209,21 +143,7 @@ export function getSetCollectionSizeInstruction<
   TAccountCollectionAuthority,
   TAccountCollectionMint,
   TAccountCollectionAuthorityRecord
->;
-export function getSetCollectionSizeInstruction<
-  TAccountCollectionMetadata extends string,
-  TAccountCollectionAuthority extends string,
-  TAccountCollectionMint extends string,
-  TAccountCollectionAuthorityRecord extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: SetCollectionSizeInput<
-    TAccountCollectionMetadata,
-    TAccountCollectionAuthority,
-    TAccountCollectionMint,
-    TAccountCollectionAuthorityRecord
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -268,7 +188,13 @@ export function getSetCollectionSizeInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as SetCollectionSizeInstructionDataArgs,
     programAddress
-  );
+  ) as SetCollectionSizeInstruction<
+    TProgram,
+    TAccountCollectionMetadata,
+    TAccountCollectionAuthority,
+    TAccountCollectionMint,
+    TAccountCollectionAuthorityRecord
+  >;
 
   return instruction;
 }

@@ -77,69 +77,6 @@ export type UseAssetInstruction<
         ? WritableAccount<TAccountMint>
         : TAccountMint,
       TAccountUseAuthority extends string
-        ? WritableSignerAccount<TAccountUseAuthority>
-        : TAccountUseAuthority,
-      TAccountOwner extends string
-        ? ReadonlyAccount<TAccountOwner>
-        : TAccountOwner,
-      TAccountSplTokenProgram extends string
-        ? ReadonlyAccount<TAccountSplTokenProgram>
-        : TAccountSplTokenProgram,
-      TAccountAtaProgram extends string
-        ? ReadonlyAccount<TAccountAtaProgram>
-        : TAccountAtaProgram,
-      TAccountSystemProgram extends string
-        ? ReadonlyAccount<TAccountSystemProgram>
-        : TAccountSystemProgram,
-      TAccountUseAuthorityRecord extends string
-        ? WritableAccount<TAccountUseAuthorityRecord>
-        : TAccountUseAuthorityRecord,
-      TAccountAuthorizationRules extends string
-        ? ReadonlyAccount<TAccountAuthorizationRules>
-        : TAccountAuthorizationRules,
-      TAccountAuthorizationRulesProgram extends string
-        ? ReadonlyAccount<TAccountAuthorizationRulesProgram>
-        : TAccountAuthorizationRulesProgram,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type UseAssetInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountTokenAccount extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountUseAuthority extends string | IAccountMeta<string> = string,
-  TAccountOwner extends string | IAccountMeta<string> = string,
-  TAccountSplTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAtaProgram extends
-    | string
-    | IAccountMeta<string> = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountUseAuthorityRecord extends string | IAccountMeta<string> = string,
-  TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
-  TAccountAuthorizationRulesProgram extends
-    | string
-    | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountMetadata extends string
-        ? WritableAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountTokenAccount extends string
-        ? WritableAccount<TAccountTokenAccount>
-        : TAccountTokenAccount,
-      TAccountMint extends string
-        ? WritableAccount<TAccountMint>
-        : TAccountMint,
-      TAccountUseAuthority extends string
         ? WritableSignerAccount<TAccountUseAuthority> &
             IAccountSignerMeta<TAccountUseAuthority>
         : TAccountUseAuthority,
@@ -222,44 +159,6 @@ export type UseAssetInput<
   /** Mint of the Metadata */
   mint: Address<TAccountMint>;
   /** Use authority or current owner of the asset */
-  useAuthority: Address<TAccountUseAuthority>;
-  /** Owner */
-  owner: Address<TAccountOwner>;
-  /** SPL Token program */
-  splTokenProgram?: Address<TAccountSplTokenProgram>;
-  /** Associated Token program */
-  ataProgram?: Address<TAccountAtaProgram>;
-  /** System program */
-  systemProgram?: Address<TAccountSystemProgram>;
-  /** Use Authority Record PDA (if present the program assumes a delegated use authority) */
-  useAuthorityRecord?: Address<TAccountUseAuthorityRecord>;
-  /** Token Authorization Rules account */
-  authorizationRules?: Address<TAccountAuthorizationRules>;
-  /** Token Authorization Rules Program */
-  authorizationRulesProgram?: Address<TAccountAuthorizationRulesProgram>;
-  useAssetArgs: UseAssetInstructionDataArgs['useAssetArgs'];
-};
-
-export type UseAssetInputWithSigners<
-  TAccountMetadata extends string,
-  TAccountTokenAccount extends string,
-  TAccountMint extends string,
-  TAccountUseAuthority extends string,
-  TAccountOwner extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountAtaProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountUseAuthorityRecord extends string,
-  TAccountAuthorizationRules extends string,
-  TAccountAuthorizationRulesProgram extends string,
-> = {
-  /** Metadata account */
-  metadata: Address<TAccountMetadata>;
-  /** Token Account Of NFT */
-  tokenAccount: Address<TAccountTokenAccount>;
-  /** Mint of the Metadata */
-  mint: Address<TAccountMint>;
-  /** Use authority or current owner of the asset */
   useAuthority: TransactionSigner<TAccountUseAuthority>;
   /** Owner */
   owner: Address<TAccountOwner>;
@@ -278,47 +177,6 @@ export type UseAssetInputWithSigners<
   useAssetArgs: UseAssetInstructionDataArgs['useAssetArgs'];
 };
 
-export function getUseAssetInstruction<
-  TAccountMetadata extends string,
-  TAccountTokenAccount extends string,
-  TAccountMint extends string,
-  TAccountUseAuthority extends string,
-  TAccountOwner extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountAtaProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountUseAuthorityRecord extends string,
-  TAccountAuthorizationRules extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: UseAssetInputWithSigners<
-    TAccountMetadata,
-    TAccountTokenAccount,
-    TAccountMint,
-    TAccountUseAuthority,
-    TAccountOwner,
-    TAccountSplTokenProgram,
-    TAccountAtaProgram,
-    TAccountSystemProgram,
-    TAccountUseAuthorityRecord,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
-): UseAssetInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountTokenAccount,
-  TAccountMint,
-  TAccountUseAuthority,
-  TAccountOwner,
-  TAccountSplTokenProgram,
-  TAccountAtaProgram,
-  TAccountSystemProgram,
-  TAccountUseAuthorityRecord,
-  TAccountAuthorizationRules,
-  TAccountAuthorizationRulesProgram
->;
 export function getUseAssetInstruction<
   TAccountMetadata extends string,
   TAccountTokenAccount extends string,
@@ -359,35 +217,7 @@ export function getUseAssetInstruction<
   TAccountUseAuthorityRecord,
   TAccountAuthorizationRules,
   TAccountAuthorizationRulesProgram
->;
-export function getUseAssetInstruction<
-  TAccountMetadata extends string,
-  TAccountTokenAccount extends string,
-  TAccountMint extends string,
-  TAccountUseAuthority extends string,
-  TAccountOwner extends string,
-  TAccountSplTokenProgram extends string,
-  TAccountAtaProgram extends string,
-  TAccountSystemProgram extends string,
-  TAccountUseAuthorityRecord extends string,
-  TAccountAuthorizationRules extends string,
-  TAccountAuthorizationRulesProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: UseAssetInput<
-    TAccountMetadata,
-    TAccountTokenAccount,
-    TAccountMint,
-    TAccountUseAuthority,
-    TAccountOwner,
-    TAccountSplTokenProgram,
-    TAccountAtaProgram,
-    TAccountSystemProgram,
-    TAccountUseAuthorityRecord,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -463,7 +293,20 @@ export function getUseAssetInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as UseAssetInstructionDataArgs,
     programAddress
-  );
+  ) as UseAssetInstruction<
+    TProgram,
+    TAccountMetadata,
+    TAccountTokenAccount,
+    TAccountMint,
+    TAccountUseAuthority,
+    TAccountOwner,
+    TAccountSplTokenProgram,
+    TAccountAtaProgram,
+    TAccountSystemProgram,
+    TAccountUseAuthorityRecord,
+    TAccountAuthorizationRules,
+    TAccountAuthorizationRulesProgram
+  >;
 
   return instruction;
 }

@@ -47,21 +47,6 @@ export type PuffMetadataInstruction<
     ]
   >;
 
-export type PuffMetadataInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountMetadata extends string
-        ? WritableAccount<TAccountMetadata>
-        : TAccountMetadata,
-      ...TRemainingAccounts,
-    ]
-  >;
-
 export type PuffMetadataInstructionData = { discriminator: number };
 
 export type PuffMetadataInstructionDataArgs = {};
@@ -92,27 +77,12 @@ export type PuffMetadataInput<TAccountMetadata extends string> = {
   metadata: Address<TAccountMetadata>;
 };
 
-export type PuffMetadataInputWithSigners<TAccountMetadata extends string> = {
-  /** Metadata account */
-  metadata: Address<TAccountMetadata>;
-};
-
-export function getPuffMetadataInstruction<
-  TAccountMetadata extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: PuffMetadataInputWithSigners<TAccountMetadata>
-): PuffMetadataInstructionWithSigners<TProgram, TAccountMetadata>;
 export function getPuffMetadataInstruction<
   TAccountMetadata extends string,
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: PuffMetadataInput<TAccountMetadata>
-): PuffMetadataInstruction<TProgram, TAccountMetadata>;
-export function getPuffMetadataInstruction<
-  TAccountMetadata extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(input: PuffMetadataInput<TAccountMetadata>): IInstruction {
+): PuffMetadataInstruction<TProgram, TAccountMetadata> {
   // Program address.
   const programAddress =
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
@@ -135,7 +105,7 @@ export function getPuffMetadataInstruction<
   const instruction = getPuffMetadataInstructionRaw(
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     programAddress
-  );
+  ) as PuffMetadataInstruction<TProgram, TAccountMetadata>;
 
   return instruction;
 }

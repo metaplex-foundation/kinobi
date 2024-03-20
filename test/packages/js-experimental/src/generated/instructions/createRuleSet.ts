@@ -55,31 +55,6 @@ export type CreateRuleSetInstruction<
   IInstructionWithAccounts<
     [
       TAccountPayer extends string
-        ? WritableSignerAccount<TAccountPayer>
-        : TAccountPayer,
-      TAccountRuleSetPda extends string
-        ? WritableAccount<TAccountRuleSetPda>
-        : TAccountRuleSetPda,
-      TAccountSystemProgram extends string
-        ? ReadonlyAccount<TAccountSystemProgram>
-        : TAccountSystemProgram,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type CreateRuleSetInstructionWithSigners<
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountRuleSetPda extends string | IAccountMeta<string> = string,
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountPayer extends string
         ? WritableSignerAccount<TAccountPayer> &
             IAccountSignerMeta<TAccountPayer>
         : TAccountPayer,
@@ -139,21 +114,6 @@ export type CreateRuleSetInput<
   TAccountSystemProgram extends string,
 > = {
   /** Payer and creator of the RuleSet */
-  payer: Address<TAccountPayer>;
-  /** The PDA account where the RuleSet is stored */
-  ruleSetPda: ProgramDerivedAddress<TAccountRuleSetPda>;
-  /** System program */
-  systemProgram?: Address<TAccountSystemProgram>;
-  createArgs: CreateRuleSetInstructionDataArgs['createArgs'];
-  ruleSetBump?: CreateRuleSetInstructionDataArgs['ruleSetBump'];
-};
-
-export type CreateRuleSetInputWithSigners<
-  TAccountPayer extends string,
-  TAccountRuleSetPda extends string,
-  TAccountSystemProgram extends string,
-> = {
-  /** Payer and creator of the RuleSet */
   payer: TransactionSigner<TAccountPayer>;
   /** The PDA account where the RuleSet is stored */
   ruleSetPda: ProgramDerivedAddress<TAccountRuleSetPda>;
@@ -163,23 +123,6 @@ export type CreateRuleSetInputWithSigners<
   ruleSetBump?: CreateRuleSetInstructionDataArgs['ruleSetBump'];
 };
 
-export function getCreateRuleSetInstruction<
-  TAccountPayer extends string,
-  TAccountRuleSetPda extends string,
-  TAccountSystemProgram extends string,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
->(
-  input: CreateRuleSetInputWithSigners<
-    TAccountPayer,
-    TAccountRuleSetPda,
-    TAccountSystemProgram
-  >
-): CreateRuleSetInstructionWithSigners<
-  TProgram,
-  TAccountPayer,
-  TAccountRuleSetPda,
-  TAccountSystemProgram
->;
 export function getCreateRuleSetInstruction<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
@@ -196,19 +139,7 @@ export function getCreateRuleSetInstruction<
   TAccountPayer,
   TAccountRuleSetPda,
   TAccountSystemProgram
->;
-export function getCreateRuleSetInstruction<
-  TAccountPayer extends string,
-  TAccountRuleSetPda extends string,
-  TAccountSystemProgram extends string,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
->(
-  input: CreateRuleSetInput<
-    TAccountPayer,
-    TAccountRuleSetPda,
-    TAccountSystemProgram
-  >
-): IInstruction {
+> {
   // Program address.
   const programAddress =
     'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
@@ -253,7 +184,12 @@ export function getCreateRuleSetInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as CreateRuleSetInstructionDataArgs,
     programAddress
-  );
+  ) as CreateRuleSetInstruction<
+    TProgram,
+    TAccountPayer,
+    TAccountRuleSetPda,
+    TAccountSystemProgram
+  >;
 
   return instruction;
 }

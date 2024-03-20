@@ -49,25 +49,6 @@ export type CreateAccountInstruction<
   IInstructionWithAccounts<
     [
       TAccountPayer extends string
-        ? WritableSignerAccount<TAccountPayer>
-        : TAccountPayer,
-      TAccountNewAccount extends string
-        ? WritableSignerAccount<TAccountNewAccount>
-        : TAccountNewAccount,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type CreateAccountInstructionWithSigners<
-  TProgram extends string = '11111111111111111111111111111111',
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountNewAccount extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountPayer extends string
         ? WritableSignerAccount<TAccountPayer> &
             IAccountSignerMeta<TAccountPayer>
         : TAccountPayer,
@@ -127,17 +108,6 @@ export type CreateAccountInput<
   TAccountPayer extends string,
   TAccountNewAccount extends string,
 > = {
-  payer: Address<TAccountPayer>;
-  newAccount: Address<TAccountNewAccount>;
-  lamports: CreateAccountInstructionDataArgs['lamports'];
-  space: CreateAccountInstructionDataArgs['space'];
-  programId: CreateAccountInstructionDataArgs['programId'];
-};
-
-export type CreateAccountInputWithSigners<
-  TAccountPayer extends string,
-  TAccountNewAccount extends string,
-> = {
   payer: TransactionSigner<TAccountPayer>;
   newAccount: TransactionSigner<TAccountNewAccount>;
   lamports: CreateAccountInstructionDataArgs['lamports'];
@@ -150,24 +120,8 @@ export function getCreateAccountInstruction<
   TAccountNewAccount extends string,
   TProgram extends string = '11111111111111111111111111111111',
 >(
-  input: CreateAccountInputWithSigners<TAccountPayer, TAccountNewAccount>
-): CreateAccountInstructionWithSigners<
-  TProgram,
-  TAccountPayer,
-  TAccountNewAccount
->;
-export function getCreateAccountInstruction<
-  TAccountPayer extends string,
-  TAccountNewAccount extends string,
-  TProgram extends string = '11111111111111111111111111111111',
->(
   input: CreateAccountInput<TAccountPayer, TAccountNewAccount>
-): CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>;
-export function getCreateAccountInstruction<
-  TAccountPayer extends string,
-  TAccountNewAccount extends string,
-  TProgram extends string = '11111111111111111111111111111111',
->(input: CreateAccountInput<TAccountPayer, TAccountNewAccount>): IInstruction {
+): CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount> {
   // Program address.
   const programAddress =
     '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
@@ -199,7 +153,7 @@ export function getCreateAccountInstruction<
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     args as CreateAccountInstructionDataArgs,
     programAddress
-  );
+  ) as CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>;
 
   return instruction;
 }

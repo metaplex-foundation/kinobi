@@ -49,25 +49,6 @@ export type WithdrawInstruction<
         ? WritableAccount<TAccountCandyMachine>
         : TAccountCandyMachine,
       TAccountAuthority extends string
-        ? WritableSignerAccount<TAccountAuthority>
-        : TAccountAuthority,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type WithdrawInstructionWithSigners<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string | IAccountMeta<string> = string,
-  TAccountAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountCandyMachine extends string
-        ? WritableAccount<TAccountCandyMachine>
-        : TAccountCandyMachine,
-      TAccountAuthority extends string
         ? WritableSignerAccount<TAccountAuthority> &
             IAccountSignerMeta<TAccountAuthority>
         : TAccountAuthority,
@@ -112,14 +93,6 @@ export type WithdrawInput<
   TAccountAuthority extends string,
 > = {
   candyMachine: Address<TAccountCandyMachine>;
-  authority: Address<TAccountAuthority>;
-};
-
-export type WithdrawInputWithSigners<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-> = {
-  candyMachine: Address<TAccountCandyMachine>;
   authority: TransactionSigner<TAccountAuthority>;
 };
 
@@ -128,24 +101,8 @@ export function getWithdrawInstruction<
   TAccountAuthority extends string,
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
-  input: WithdrawInputWithSigners<TAccountCandyMachine, TAccountAuthority>
-): WithdrawInstructionWithSigners<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthority
->;
-export function getWithdrawInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
->(
   input: WithdrawInput<TAccountCandyMachine, TAccountAuthority>
-): WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>;
-export function getWithdrawInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
->(input: WithdrawInput<TAccountCandyMachine, TAccountAuthority>): IInstruction {
+): WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority> {
   // Program address.
   const programAddress =
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
@@ -173,7 +130,7 @@ export function getWithdrawInstruction<
   const instruction = getWithdrawInstructionRaw(
     accountMetas as Record<keyof AccountMetas, IAccountMeta>,
     programAddress
-  );
+  ) as WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>;
 
   return instruction;
 }
