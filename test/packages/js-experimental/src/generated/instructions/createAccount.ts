@@ -25,7 +25,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -33,11 +32,7 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type CreateAccountInstruction<
   TProgram extends string = '11111111111111111111111111111111',
@@ -127,14 +122,8 @@ export function getCreateAccountInstruction<
     '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getCreateAccountInstructionRaw<
-      TProgram,
-      TAccountPayer,
-      TAccountNewAccount
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys = 'payer' | 'newAccount';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     payer: { value: input.payer ?? null, isWritable: true },
     newAccount: { value: input.newAccount ?? null, isWritable: true },
   };
@@ -149,47 +138,13 @@ export function getCreateAccountInstruction<
     programAddress
   );
 
-  const instruction = getCreateAccountInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as CreateAccountInstructionDataArgs,
-    programAddress
-  ) as CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>;
+  const instruction = {
+    accounts: [accountMetas.payer, accountMetas.newAccount],
+    programAddress,
+    data: getCreateAccountInstructionDataEncoder().encode(args),
+  } as CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>;
 
   return instruction;
-}
-
-export function getCreateAccountInstructionRaw<
-  TProgram extends string = '11111111111111111111111111111111',
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountNewAccount extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    payer: TAccountPayer extends string
-      ? Address<TAccountPayer>
-      : TAccountPayer;
-    newAccount: TAccountNewAccount extends string
-      ? Address<TAccountNewAccount>
-      : TAccountNewAccount;
-  },
-  args: CreateAccountInstructionDataArgs,
-  programAddress: Address<TProgram> = '11111111111111111111111111111111' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.newAccount, AccountRole.WRITABLE_SIGNER),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getCreateAccountInstructionDataEncoder().encode(args),
-    programAddress,
-  } as CreateAccountInstruction<
-    TProgram,
-    TAccountPayer,
-    TAccountNewAccount,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedCreateAccountInstruction<

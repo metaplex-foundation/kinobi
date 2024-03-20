@@ -27,7 +27,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -36,11 +35,7 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 import {
   Reservation,
   ReservationArgs,
@@ -159,15 +154,8 @@ export function getDeprecatedSetReservationListInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getDeprecatedSetReservationListInstructionRaw<
-      TProgram,
-      TAccountMasterEdition,
-      TAccountReservationList,
-      TAccountResource
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys = 'masterEdition' | 'reservationList' | 'resource';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     masterEdition: { value: input.masterEdition ?? null, isWritable: true },
     reservationList: { value: input.reservationList ?? null, isWritable: true },
     resource: { value: input.resource ?? null, isWritable: false },
@@ -183,11 +171,15 @@ export function getDeprecatedSetReservationListInstruction<
     programAddress
   );
 
-  const instruction = getDeprecatedSetReservationListInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as DeprecatedSetReservationListInstructionDataArgs,
-    programAddress
-  ) as DeprecatedSetReservationListInstruction<
+  const instruction = {
+    accounts: [
+      accountMetas.masterEdition,
+      accountMetas.reservationList,
+      accountMetas.resource,
+    ],
+    programAddress,
+    data: getDeprecatedSetReservationListInstructionDataEncoder().encode(args),
+  } as DeprecatedSetReservationListInstruction<
     TProgram,
     TAccountMasterEdition,
     TAccountReservationList,
@@ -195,46 +187,6 @@ export function getDeprecatedSetReservationListInstruction<
   >;
 
   return instruction;
-}
-
-export function getDeprecatedSetReservationListInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountReservationList extends string | IAccountMeta<string> = string,
-  TAccountResource extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    masterEdition: TAccountMasterEdition extends string
-      ? Address<TAccountMasterEdition>
-      : TAccountMasterEdition;
-    reservationList: TAccountReservationList extends string
-      ? Address<TAccountReservationList>
-      : TAccountReservationList;
-    resource: TAccountResource extends string
-      ? Address<TAccountResource>
-      : TAccountResource;
-  },
-  args: DeprecatedSetReservationListInstructionDataArgs,
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.masterEdition, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.reservationList, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.resource, AccountRole.READONLY_SIGNER),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getDeprecatedSetReservationListInstructionDataEncoder().encode(args),
-    programAddress,
-  } as DeprecatedSetReservationListInstruction<
-    TProgram,
-    TAccountMasterEdition,
-    TAccountReservationList,
-    TAccountResource,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedDeprecatedSetReservationListInstruction<

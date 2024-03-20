@@ -19,7 +19,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -30,11 +29,7 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 import {
   RevokeArgs,
   RevokeArgsArgs,
@@ -243,25 +238,21 @@ export function getRevokeInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getRevokeInstructionRaw<
-      TProgram,
-      TAccountDelegateRecord,
-      TAccountDelegate,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountMint,
-      TAccountToken,
-      TAccountAuthority,
-      TAccountPayer,
-      TAccountSystemProgram,
-      TAccountSysvarInstructions,
-      TAccountSplTokenProgram,
-      TAccountAuthorizationRulesProgram,
-      TAccountAuthorizationRules
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys =
+    | 'delegateRecord'
+    | 'delegate'
+    | 'metadata'
+    | 'masterEdition'
+    | 'mint'
+    | 'token'
+    | 'authority'
+    | 'payer'
+    | 'systemProgram'
+    | 'sysvarInstructions'
+    | 'splTokenProgram'
+    | 'authorizationRulesProgram'
+    | 'authorizationRules';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     delegateRecord: { value: input.delegateRecord ?? null, isWritable: true },
     delegate: { value: input.delegate ?? null, isWritable: false },
     metadata: { value: input.metadata ?? null, isWritable: true },
@@ -309,11 +300,25 @@ export function getRevokeInstruction<
     programAddress
   );
 
-  const instruction = getRevokeInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as RevokeInstructionDataArgs,
-    programAddress
-  ) as RevokeInstruction<
+  const instruction = {
+    accounts: [
+      accountMetas.delegateRecord,
+      accountMetas.delegate,
+      accountMetas.metadata,
+      accountMetas.masterEdition,
+      accountMetas.mint,
+      accountMetas.token,
+      accountMetas.authority,
+      accountMetas.payer,
+      accountMetas.systemProgram,
+      accountMetas.sysvarInstructions,
+      accountMetas.splTokenProgram,
+      accountMetas.authorizationRulesProgram,
+      accountMetas.authorizationRules,
+    ],
+    programAddress,
+    data: getRevokeInstructionDataEncoder().encode(args),
+  } as RevokeInstruction<
     TProgram,
     TAccountDelegateRecord,
     TAccountDelegate,
@@ -331,153 +336,6 @@ export function getRevokeInstruction<
   >;
 
   return instruction;
-}
-
-export function getRevokeInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountDelegateRecord extends string | IAccountMeta<string> = string,
-  TAccountDelegate extends string | IAccountMeta<string> = string,
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountToken extends string | IAccountMeta<string> = string,
-  TAccountAuthority extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountSysvarInstructions extends
-    | string
-    | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountSplTokenProgram extends string | IAccountMeta<string> = string,
-  TAccountAuthorizationRulesProgram extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    delegateRecord: TAccountDelegateRecord extends string
-      ? Address<TAccountDelegateRecord>
-      : TAccountDelegateRecord;
-    delegate: TAccountDelegate extends string
-      ? Address<TAccountDelegate>
-      : TAccountDelegate;
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    masterEdition?: TAccountMasterEdition extends string
-      ? Address<TAccountMasterEdition>
-      : TAccountMasterEdition;
-    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
-    token?: TAccountToken extends string
-      ? Address<TAccountToken>
-      : TAccountToken;
-    authority: TAccountAuthority extends string
-      ? Address<TAccountAuthority>
-      : TAccountAuthority;
-    payer: TAccountPayer extends string
-      ? Address<TAccountPayer>
-      : TAccountPayer;
-    systemProgram?: TAccountSystemProgram extends string
-      ? Address<TAccountSystemProgram>
-      : TAccountSystemProgram;
-    sysvarInstructions?: TAccountSysvarInstructions extends string
-      ? Address<TAccountSysvarInstructions>
-      : TAccountSysvarInstructions;
-    splTokenProgram?: TAccountSplTokenProgram extends string
-      ? Address<TAccountSplTokenProgram>
-      : TAccountSplTokenProgram;
-    authorizationRulesProgram?: TAccountAuthorizationRulesProgram extends string
-      ? Address<TAccountAuthorizationRulesProgram>
-      : TAccountAuthorizationRulesProgram;
-    authorizationRules?: TAccountAuthorizationRules extends string
-      ? Address<TAccountAuthorizationRules>
-      : TAccountAuthorizationRules;
-  },
-  args: RevokeInstructionDataArgs,
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.delegateRecord, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.delegate, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.masterEdition ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.token ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.WRITABLE
-      ),
-      accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
-      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(
-        accounts.systemProgram ??
-          ('11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>),
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.sysvarInstructions ??
-          ('Sysvar1nstructions1111111111111111111111111' as Address<'Sysvar1nstructions1111111111111111111111111'>),
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.splTokenProgram ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.authorizationRulesProgram ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.authorizationRules ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getRevokeInstructionDataEncoder().encode(args),
-    programAddress,
-  } as RevokeInstruction<
-    TProgram,
-    TAccountDelegateRecord,
-    TAccountDelegate,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountMint,
-    TAccountToken,
-    TAccountAuthority,
-    TAccountPayer,
-    TAccountSystemProgram,
-    TAccountSysvarInstructions,
-    TAccountSplTokenProgram,
-    TAccountAuthorizationRulesProgram,
-    TAccountAuthorizationRules,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedRevokeInstruction<

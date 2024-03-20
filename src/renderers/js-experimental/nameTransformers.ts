@@ -52,7 +52,6 @@ export type NameTransformerKey =
   | 'instructionExtraType'
   | 'instructionAsyncFunction'
   | 'instructionSyncFunction'
-  | 'instructionRawFunction'
   | 'instructionParsedType'
   | 'instructionParseFunction'
   | 'programType'
@@ -124,7 +123,6 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
   instructionExtraType: (name) => `${pascalCase(name)}InstructionExtra`,
   instructionAsyncFunction: (name) => `get${pascalCase(name)}InstructionAsync`,
   instructionSyncFunction: (name) => `get${pascalCase(name)}Instruction`,
-  instructionRawFunction: (name) => `get${pascalCase(name)}InstructionRaw`,
   instructionParsedType: (name) => `Parsed${pascalCase(name)}Instruction`,
   instructionParseFunction: (name) => `parse${pascalCase(name)}Instruction`,
   programType: (name) => `${pascalCase(name)}Program`,

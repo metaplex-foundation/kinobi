@@ -19,7 +19,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -29,11 +28,7 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 import {
   VerifyArgs,
   VerifyArgsArgs,
@@ -158,17 +153,13 @@ export function getVerifyInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getVerifyInstructionRaw<
-      TProgram,
-      TAccountMetadata,
-      TAccountCollectionAuthority,
-      TAccountPayer,
-      TAccountAuthorizationRules,
-      TAccountAuthorizationRulesProgram
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys =
+    | 'metadata'
+    | 'collectionAuthority'
+    | 'payer'
+    | 'authorizationRules'
+    | 'authorizationRulesProgram';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     collectionAuthority: {
       value: input.collectionAuthority ?? null,
@@ -195,11 +186,17 @@ export function getVerifyInstruction<
     programAddress
   );
 
-  const instruction = getVerifyInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as VerifyInstructionDataArgs,
-    programAddress
-  ) as VerifyInstruction<
+  const instruction = {
+    accounts: [
+      accountMetas.metadata,
+      accountMetas.collectionAuthority,
+      accountMetas.payer,
+      accountMetas.authorizationRules,
+      accountMetas.authorizationRulesProgram,
+    ],
+    programAddress,
+    data: getVerifyInstructionDataEncoder().encode(args),
+  } as VerifyInstruction<
     TProgram,
     TAccountMetadata,
     TAccountCollectionAuthority,
@@ -209,77 +206,6 @@ export function getVerifyInstruction<
   >;
 
   return instruction;
-}
-
-export function getVerifyInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
-  TAccountAuthorizationRulesProgram extends
-    | string
-    | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    collectionAuthority: TAccountCollectionAuthority extends string
-      ? Address<TAccountCollectionAuthority>
-      : TAccountCollectionAuthority;
-    payer: TAccountPayer extends string
-      ? Address<TAccountPayer>
-      : TAccountPayer;
-    authorizationRules?: TAccountAuthorizationRules extends string
-      ? Address<TAccountAuthorizationRules>
-      : TAccountAuthorizationRules;
-    authorizationRulesProgram?: TAccountAuthorizationRulesProgram extends string
-      ? Address<TAccountAuthorizationRulesProgram>
-      : TAccountAuthorizationRulesProgram;
-  },
-  args: VerifyInstructionDataArgs,
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.collectionAuthority,
-        AccountRole.WRITABLE_SIGNER
-      ),
-      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(
-        accounts.authorizationRules ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.authorizationRulesProgram ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getVerifyInstructionDataEncoder().encode(args),
-    programAddress,
-  } as VerifyInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountCollectionAuthority,
-    TAccountPayer,
-    TAccountAuthorizationRules,
-    TAccountAuthorizationRulesProgram,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedVerifyInstruction<

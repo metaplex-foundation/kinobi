@@ -19,7 +19,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -29,11 +28,7 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 import {
   SetCollectionSizeArgs,
   SetCollectionSizeArgsArgs,
@@ -149,16 +144,12 @@ export function getSetCollectionSizeInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getSetCollectionSizeInstructionRaw<
-      TProgram,
-      TAccountCollectionMetadata,
-      TAccountCollectionAuthority,
-      TAccountCollectionMint,
-      TAccountCollectionAuthorityRecord
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys =
+    | 'collectionMetadata'
+    | 'collectionAuthority'
+    | 'collectionMint'
+    | 'collectionAuthorityRecord';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     collectionMetadata: {
       value: input.collectionMetadata ?? null,
       isWritable: true,
@@ -184,11 +175,16 @@ export function getSetCollectionSizeInstruction<
     programAddress
   );
 
-  const instruction = getSetCollectionSizeInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as SetCollectionSizeInstructionDataArgs,
-    programAddress
-  ) as SetCollectionSizeInstruction<
+  const instruction = {
+    accounts: [
+      accountMetas.collectionMetadata,
+      accountMetas.collectionAuthority,
+      accountMetas.collectionMint,
+      accountMetas.collectionAuthorityRecord,
+    ],
+    programAddress,
+    data: getSetCollectionSizeInstructionDataEncoder().encode(args),
+  } as SetCollectionSizeInstruction<
     TProgram,
     TAccountCollectionMetadata,
     TAccountCollectionAuthority,
@@ -197,64 +193,6 @@ export function getSetCollectionSizeInstruction<
   >;
 
   return instruction;
-}
-
-export function getSetCollectionSizeInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
-  TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
-  TAccountCollectionMint extends string | IAccountMeta<string> = string,
-  TAccountCollectionAuthorityRecord extends
-    | string
-    | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    collectionMetadata: TAccountCollectionMetadata extends string
-      ? Address<TAccountCollectionMetadata>
-      : TAccountCollectionMetadata;
-    collectionAuthority: TAccountCollectionAuthority extends string
-      ? Address<TAccountCollectionAuthority>
-      : TAccountCollectionAuthority;
-    collectionMint: TAccountCollectionMint extends string
-      ? Address<TAccountCollectionMint>
-      : TAccountCollectionMint;
-    collectionAuthorityRecord?: TAccountCollectionAuthorityRecord extends string
-      ? Address<TAccountCollectionAuthorityRecord>
-      : TAccountCollectionAuthorityRecord;
-  },
-  args: SetCollectionSizeInstructionDataArgs,
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.collectionMetadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.collectionAuthority,
-        AccountRole.WRITABLE_SIGNER
-      ),
-      accountMetaWithDefault(accounts.collectionMint, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.collectionAuthorityRecord ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getSetCollectionSizeInstructionDataEncoder().encode(args),
-    programAddress,
-  } as SetCollectionSizeInstruction<
-    TProgram,
-    TAccountCollectionMetadata,
-    TAccountCollectionAuthority,
-    TAccountCollectionMint,
-    TAccountCollectionAuthorityRecord,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedSetCollectionSizeInstruction<

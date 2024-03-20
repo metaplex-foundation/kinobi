@@ -42,7 +42,6 @@ import {
   getInstructionDataFragment,
   getInstructionExtraArgsFragment,
   getInstructionFunctionHighLevelFragment,
-  getInstructionFunctionLowLevelFragment,
   getInstructionParseFunctionFragment,
   getInstructionTypeFragment,
   getPdaFunctionFragment,
@@ -407,8 +406,6 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
               ...scope,
               useAsync: false,
             });
-          const instructionFunctionLowLevelFragment =
-            getInstructionFunctionLowLevelFragment(scope);
           const instructionParseFunctionFragment =
             getInstructionParseFunctionFragment(scope);
 
@@ -419,7 +416,6 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             instructionExtraArgsFragment,
             instructionFunctionHighLevelAsyncFragment,
             instructionFunctionHighLevelSyncFragment,
-            instructionFunctionLowLevelFragment,
             instructionParseFunctionFragment
           );
 
@@ -433,7 +429,6 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
               instructionExtraArgsFragment,
               instructionFunctionHighLevelAsyncFragment,
               instructionFunctionHighLevelSyncFragment,
-              instructionFunctionLowLevelFragment,
               instructionParseFunctionFragment,
             })
           );

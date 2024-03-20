@@ -20,7 +20,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -35,7 +34,6 @@ import { getMasterEditionV2Size } from '../accounts';
 import {
   IInstructionWithByteDelta,
   ResolvedAccount,
-  accountMetaWithDefault,
   getAccountMetasWithSigners,
 } from '../shared';
 import {
@@ -208,21 +206,17 @@ export function getCreateMasterEditionV3Instruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getCreateMasterEditionV3InstructionRaw<
-      TProgram,
-      TAccountEdition,
-      TAccountMint,
-      TAccountUpdateAuthority,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountMetadata,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys =
+    | 'edition'
+    | 'mint'
+    | 'updateAuthority'
+    | 'mintAuthority'
+    | 'payer'
+    | 'metadata'
+    | 'tokenProgram'
+    | 'systemProgram'
+    | 'rent';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     edition: { value: input.edition ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: true },
     updateAuthority: {
@@ -262,11 +256,21 @@ export function getCreateMasterEditionV3Instruction<
     programAddress
   );
 
-  const instruction = getCreateMasterEditionV3InstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as CreateMasterEditionV3InstructionDataArgs,
-    programAddress
-  ) as CreateMasterEditionV3Instruction<
+  const instruction = {
+    accounts: [
+      accountMetas.edition,
+      accountMetas.mint,
+      accountMetas.updateAuthority,
+      accountMetas.mintAuthority,
+      accountMetas.payer,
+      accountMetas.metadata,
+      accountMetas.tokenProgram,
+      accountMetas.systemProgram,
+      accountMetas.rent,
+    ],
+    programAddress,
+    data: getCreateMasterEditionV3InstructionDataEncoder().encode(args),
+  } as CreateMasterEditionV3Instruction<
     TProgram,
     TAccountEdition,
     TAccountMint,
@@ -280,103 +284,6 @@ export function getCreateMasterEditionV3Instruction<
   >;
 
   return Object.freeze({ ...instruction, byteDelta });
-}
-
-export function getCreateMasterEditionV3InstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountEdition extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TAccountMintAuthority extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountRent extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    edition: TAccountEdition extends string
-      ? Address<TAccountEdition>
-      : TAccountEdition;
-    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
-    updateAuthority: TAccountUpdateAuthority extends string
-      ? Address<TAccountUpdateAuthority>
-      : TAccountUpdateAuthority;
-    mintAuthority: TAccountMintAuthority extends string
-      ? Address<TAccountMintAuthority>
-      : TAccountMintAuthority;
-    payer: TAccountPayer extends string
-      ? Address<TAccountPayer>
-      : TAccountPayer;
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    tokenProgram?: TAccountTokenProgram extends string
-      ? Address<TAccountTokenProgram>
-      : TAccountTokenProgram;
-    systemProgram?: TAccountSystemProgram extends string
-      ? Address<TAccountSystemProgram>
-      : TAccountSystemProgram;
-    rent?: TAccountRent extends string ? Address<TAccountRent> : TAccountRent;
-  },
-  args: CreateMasterEditionV3InstructionDataArgs,
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.edition, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.updateAuthority,
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(
-        accounts.mintAuthority,
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.tokenProgram ??
-          ('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>),
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.systemProgram ??
-          ('11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>),
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.rent ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getCreateMasterEditionV3InstructionDataEncoder().encode(args),
-    programAddress,
-  } as CreateMasterEditionV3Instruction<
-    TProgram,
-    TAccountEdition,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedCreateMasterEditionV3Instruction<

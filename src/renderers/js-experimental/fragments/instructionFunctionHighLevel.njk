@@ -6,13 +6,11 @@ export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragme
 
   {% if hasAccounts %}
     // Original accounts.
-    type AccountMetas = Parameters<typeof {{ lowLevelFunctionName }}<
-      TProgram,
+    type AccountKeys =
       {% for account in instruction.accounts %}
-        TAccount{{ account.name | pascalCase }},
+        | "{{ account.name | camelCase }}"
       {% endfor %}
-    >>[0];
-    const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+    const accounts: Record<AccountKeys, ResolvedAccount> = {
       {% for account in instruction.accounts %}
         {{ account.name | camelCase }}: { value: input.{{ account.name | camelCase }} ?? null, isWritable: {{ "true" if account.isWritable else "false" }} },
       {% endfor %}
@@ -36,18 +34,26 @@ export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragme
     const accountMetas = getAccountMetasWithSigners(accounts, 'programId', programAddress);
   {% endif %}
 
-  const instruction = {{ lowLevelFunctionName }}(
+  const instruction = {
     {%- if hasAccounts -%}
-      accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    {% endif %}
-    {%- if hasDataArgs -%}
-      args as {{ argsTypeFragment }},
+      accounts: [
+        {% for account in instruction.accounts %}
+          accountMetas.{{ account.name | camelCase }},
+        {% endfor %}
+        {% if hasRemainingAccounts %}
+          ...remainingAccounts,
+        {% endif %}
+      ],
+    {%- elif hasRemainingAccounts -%}
+      accounts: remainingAccounts,
     {% endif %}
     programAddress,
-    {%- if hasRemainingAccounts -%}
-      remainingAccounts,
+    {% if hasDataArgs %}
+      data: {{ encoderFunction }}.encode(args),
+    {% elif hasData %}
+      data: {{ encoderFunction }}.encode({}),
     {% endif %}
-  ) as {{ instructionTypeFragment }};
+  } as {{ instructionTypeFragment }};
 
   {% if hasByteDeltas %}
     return Object.freeze({ ...instruction, byteDelta });

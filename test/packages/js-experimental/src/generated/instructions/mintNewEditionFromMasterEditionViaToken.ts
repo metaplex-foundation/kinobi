@@ -19,7 +19,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -30,11 +29,7 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 import {
   MintNewEditionFromMasterEditionViaTokenArgs,
   MintNewEditionFromMasterEditionViaTokenArgsArgs,
@@ -262,26 +257,22 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getMintNewEditionFromMasterEditionViaTokenInstructionRaw<
-      TProgram,
-      TAccountNewMetadata,
-      TAccountNewEdition,
-      TAccountMasterEdition,
-      TAccountNewMint,
-      TAccountEditionMarkPda,
-      TAccountNewMintAuthority,
-      TAccountPayer,
-      TAccountTokenAccountOwner,
-      TAccountTokenAccount,
-      TAccountNewMetadataUpdateAuthority,
-      TAccountMetadata,
-      TAccountTokenProgram,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys =
+    | 'newMetadata'
+    | 'newEdition'
+    | 'masterEdition'
+    | 'newMint'
+    | 'editionMarkPda'
+    | 'newMintAuthority'
+    | 'payer'
+    | 'tokenAccountOwner'
+    | 'tokenAccount'
+    | 'newMetadataUpdateAuthority'
+    | 'metadata'
+    | 'tokenProgram'
+    | 'systemProgram'
+    | 'rent';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     newMetadata: { value: input.newMetadata ?? null, isWritable: true },
     newEdition: { value: input.newEdition ?? null, isWritable: true },
     masterEdition: { value: input.masterEdition ?? null, isWritable: true },
@@ -327,11 +318,28 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
     programAddress
   );
 
-  const instruction = getMintNewEditionFromMasterEditionViaTokenInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as MintNewEditionFromMasterEditionViaTokenInstructionDataArgs,
-    programAddress
-  ) as MintNewEditionFromMasterEditionViaTokenInstruction<
+  const instruction = {
+    accounts: [
+      accountMetas.newMetadata,
+      accountMetas.newEdition,
+      accountMetas.masterEdition,
+      accountMetas.newMint,
+      accountMetas.editionMarkPda,
+      accountMetas.newMintAuthority,
+      accountMetas.payer,
+      accountMetas.tokenAccountOwner,
+      accountMetas.tokenAccount,
+      accountMetas.newMetadataUpdateAuthority,
+      accountMetas.metadata,
+      accountMetas.tokenProgram,
+      accountMetas.systemProgram,
+      accountMetas.rent,
+    ],
+    programAddress,
+    data: getMintNewEditionFromMasterEditionViaTokenInstructionDataEncoder().encode(
+      args
+    ),
+  } as MintNewEditionFromMasterEditionViaTokenInstruction<
     TProgram,
     TAccountNewMetadata,
     TAccountNewEdition,
@@ -350,142 +358,6 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
   >;
 
   return instruction;
-}
-
-export function getMintNewEditionFromMasterEditionViaTokenInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountNewMetadata extends string | IAccountMeta<string> = string,
-  TAccountNewEdition extends string | IAccountMeta<string> = string,
-  TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountNewMint extends string | IAccountMeta<string> = string,
-  TAccountEditionMarkPda extends string | IAccountMeta<string> = string,
-  TAccountNewMintAuthority extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountTokenAccountOwner extends string | IAccountMeta<string> = string,
-  TAccountTokenAccount extends string | IAccountMeta<string> = string,
-  TAccountNewMetadataUpdateAuthority extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountRent extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    newMetadata: TAccountNewMetadata extends string
-      ? Address<TAccountNewMetadata>
-      : TAccountNewMetadata;
-    newEdition: TAccountNewEdition extends string
-      ? Address<TAccountNewEdition>
-      : TAccountNewEdition;
-    masterEdition: TAccountMasterEdition extends string
-      ? Address<TAccountMasterEdition>
-      : TAccountMasterEdition;
-    newMint: TAccountNewMint extends string
-      ? Address<TAccountNewMint>
-      : TAccountNewMint;
-    editionMarkPda: TAccountEditionMarkPda extends string
-      ? Address<TAccountEditionMarkPda>
-      : TAccountEditionMarkPda;
-    newMintAuthority: TAccountNewMintAuthority extends string
-      ? Address<TAccountNewMintAuthority>
-      : TAccountNewMintAuthority;
-    payer: TAccountPayer extends string
-      ? Address<TAccountPayer>
-      : TAccountPayer;
-    tokenAccountOwner: TAccountTokenAccountOwner extends string
-      ? Address<TAccountTokenAccountOwner>
-      : TAccountTokenAccountOwner;
-    tokenAccount: TAccountTokenAccount extends string
-      ? Address<TAccountTokenAccount>
-      : TAccountTokenAccount;
-    newMetadataUpdateAuthority: TAccountNewMetadataUpdateAuthority extends string
-      ? Address<TAccountNewMetadataUpdateAuthority>
-      : TAccountNewMetadataUpdateAuthority;
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    tokenProgram?: TAccountTokenProgram extends string
-      ? Address<TAccountTokenProgram>
-      : TAccountTokenProgram;
-    systemProgram?: TAccountSystemProgram extends string
-      ? Address<TAccountSystemProgram>
-      : TAccountSystemProgram;
-    rent?: TAccountRent extends string ? Address<TAccountRent> : TAccountRent;
-  },
-  args: MintNewEditionFromMasterEditionViaTokenInstructionDataArgs,
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.newMetadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.newEdition, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.masterEdition, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.newMint, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.editionMarkPda, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.newMintAuthority,
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(
-        accounts.tokenAccountOwner,
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(accounts.tokenAccount, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.newMetadataUpdateAuthority,
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(accounts.metadata, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.tokenProgram ??
-          ('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>),
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.systemProgram ??
-          ('11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>),
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.rent ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getMintNewEditionFromMasterEditionViaTokenInstructionDataEncoder().encode(
-      args
-    ),
-    programAddress,
-  } as MintNewEditionFromMasterEditionViaTokenInstruction<
-    TProgram,
-    TAccountNewMetadata,
-    TAccountNewEdition,
-    TAccountMasterEdition,
-    TAccountNewMint,
-    TAccountEditionMarkPda,
-    TAccountNewMintAuthority,
-    TAccountPayer,
-    TAccountTokenAccountOwner,
-    TAccountTokenAccount,
-    TAccountNewMetadataUpdateAuthority,
-    TAccountMetadata,
-    TAccountTokenProgram,
-    TAccountSystemProgram,
-    TAccountRent,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedMintNewEditionFromMasterEditionViaTokenInstruction<

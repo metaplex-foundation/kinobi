@@ -35,7 +35,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -44,11 +43,7 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 import {
   Creator,
   CreatorArgs,
@@ -186,14 +181,8 @@ export function getUpdateMetadataAccountInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getUpdateMetadataAccountInstructionRaw<
-      TProgram,
-      TAccountMetadata,
-      TAccountUpdateAuthority
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys = 'metadata' | 'updateAuthority';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     updateAuthority: {
       value: input.updateAuthority ?? null,
@@ -211,54 +200,17 @@ export function getUpdateMetadataAccountInstruction<
     programAddress
   );
 
-  const instruction = getUpdateMetadataAccountInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as UpdateMetadataAccountInstructionDataArgs,
-    programAddress
-  ) as UpdateMetadataAccountInstruction<
+  const instruction = {
+    accounts: [accountMetas.metadata, accountMetas.updateAuthority],
+    programAddress,
+    data: getUpdateMetadataAccountInstructionDataEncoder().encode(args),
+  } as UpdateMetadataAccountInstruction<
     TProgram,
     TAccountMetadata,
     TAccountUpdateAuthority
   >;
 
   return instruction;
-}
-
-export function getUpdateMetadataAccountInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    updateAuthority: TAccountUpdateAuthority extends string
-      ? Address<TAccountUpdateAuthority>
-      : TAccountUpdateAuthority;
-  },
-  args: UpdateMetadataAccountInstructionDataArgs,
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.updateAuthority,
-        AccountRole.READONLY_SIGNER
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getUpdateMetadataAccountInstructionDataEncoder().encode(args),
-    programAddress,
-  } as UpdateMetadataAccountInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountUpdateAuthority,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedUpdateMetadataAccountInstruction<

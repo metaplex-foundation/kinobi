@@ -19,7 +19,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -29,11 +28,7 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type BurnNftInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
@@ -161,19 +156,15 @@ export function getBurnNftInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getBurnNftInstructionRaw<
-      TProgram,
-      TAccountMetadata,
-      TAccountOwner,
-      TAccountMint,
-      TAccountTokenAccount,
-      TAccountMasterEditionAccount,
-      TAccountSplTokenProgram,
-      TAccountCollectionMetadata
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys =
+    | 'metadata'
+    | 'owner'
+    | 'mint'
+    | 'tokenAccount'
+    | 'masterEditionAccount'
+    | 'splTokenProgram'
+    | 'collectionMetadata';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     owner: { value: input.owner ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: true },
@@ -205,10 +196,19 @@ export function getBurnNftInstruction<
     programAddress
   );
 
-  const instruction = getBurnNftInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress
-  ) as BurnNftInstruction<
+  const instruction = {
+    accounts: [
+      accountMetas.metadata,
+      accountMetas.owner,
+      accountMetas.mint,
+      accountMetas.tokenAccount,
+      accountMetas.masterEditionAccount,
+      accountMetas.splTokenProgram,
+      accountMetas.collectionMetadata,
+    ],
+    programAddress,
+    data: getBurnNftInstructionDataEncoder().encode({}),
+  } as BurnNftInstruction<
     TProgram,
     TAccountMetadata,
     TAccountOwner,
@@ -220,83 +220,6 @@ export function getBurnNftInstruction<
   >;
 
   return instruction;
-}
-
-export function getBurnNftInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountOwner extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountTokenAccount extends string | IAccountMeta<string> = string,
-  TAccountMasterEditionAccount extends string | IAccountMeta<string> = string,
-  TAccountSplTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    owner: TAccountOwner extends string
-      ? Address<TAccountOwner>
-      : TAccountOwner;
-    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
-    tokenAccount: TAccountTokenAccount extends string
-      ? Address<TAccountTokenAccount>
-      : TAccountTokenAccount;
-    masterEditionAccount: TAccountMasterEditionAccount extends string
-      ? Address<TAccountMasterEditionAccount>
-      : TAccountMasterEditionAccount;
-    splTokenProgram?: TAccountSplTokenProgram extends string
-      ? Address<TAccountSplTokenProgram>
-      : TAccountSplTokenProgram;
-    collectionMetadata?: TAccountCollectionMetadata extends string
-      ? Address<TAccountCollectionMetadata>
-      : TAccountCollectionMetadata;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.owner, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.tokenAccount, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.masterEditionAccount,
-        AccountRole.WRITABLE
-      ),
-      accountMetaWithDefault(
-        accounts.splTokenProgram ??
-          ('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>),
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.collectionMetadata ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.WRITABLE
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getBurnNftInstructionDataEncoder().encode({}),
-    programAddress,
-  } as BurnNftInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountMint,
-    TAccountTokenAccount,
-    TAccountMasterEditionAccount,
-    TAccountSplTokenProgram,
-    TAccountCollectionMetadata,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedBurnNftInstruction<

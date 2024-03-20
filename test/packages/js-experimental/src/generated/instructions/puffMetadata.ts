@@ -19,18 +19,13 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
   WritableAccount,
 } from '@solana/instructions';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type PuffMetadataInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
@@ -88,10 +83,8 @@ export function getPuffMetadataInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getPuffMetadataInstructionRaw<TProgram, TAccountMetadata>
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys = 'metadata';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
   };
 
@@ -102,35 +95,13 @@ export function getPuffMetadataInstruction<
     programAddress
   );
 
-  const instruction = getPuffMetadataInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress
-  ) as PuffMetadataInstruction<TProgram, TAccountMetadata>;
+  const instruction = {
+    accounts: [accountMetas.metadata],
+    programAddress,
+    data: getPuffMetadataInstructionDataEncoder().encode({}),
+  } as PuffMetadataInstruction<TProgram, TAccountMetadata>;
 
   return instruction;
-}
-
-export function getPuffMetadataInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getPuffMetadataInstructionDataEncoder().encode({}),
-    programAddress,
-  } as PuffMetadataInstruction<TProgram, TAccountMetadata, TRemainingAccounts>;
 }
 
 export type ParsedPuffMetadataInstruction<

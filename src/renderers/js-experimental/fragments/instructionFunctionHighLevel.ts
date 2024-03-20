@@ -50,6 +50,7 @@ export function getInstructionFunctionHighLevelFragment(
 
   const customData = customInstructionData.get(instructionNode.name);
   const hasAccounts = instructionNode.accounts.length > 0;
+  const hasData = !!customData || instructionNode.arguments.length > 0;
   const hasDataArgs =
     !!customData ||
     instructionNode.arguments.filter(
@@ -61,6 +62,9 @@ export function getInstructionFunctionHighLevelFragment(
     ).length > 0;
   const hasAnyArgs = hasDataArgs || hasExtraArgs;
   const instructionDataName = nameApi.instructionDataType(instructionNode.name);
+  const encoderFunction = customData
+    ? dataArgsManifest.encoder.render
+    : `${nameApi.encoderFunction(instructionDataName)}()`;
   const argsTypeFragment = fragment(
     customData
       ? dataArgsManifest.looseType.render
@@ -73,9 +77,6 @@ export function getInstructionFunctionHighLevelFragment(
   const functionName = useAsync
     ? nameApi.instructionAsyncFunction(instructionNode.name)
     : nameApi.instructionSyncFunction(instructionNode.name);
-  const lowLevelFunctionName = nameApi.instructionRawFunction(
-    instructionNode.name
-  );
 
   const typeParamsFragment = getTypeParams(instructionNode, programNode);
   const instructionTypeFragment = getInstructionType(scope);
@@ -114,12 +115,13 @@ export function getInstructionFunctionHighLevelFragment(
       instruction: instructionNode,
       program: programNode,
       hasAccounts,
+      hasData,
       hasDataArgs,
       hasExtraArgs,
       hasAnyArgs,
+      encoderFunction,
       argsTypeFragment,
       functionName,
-      lowLevelFunctionName,
       typeParamsFragment,
       instructionTypeFragment,
       inputTypeFragment,

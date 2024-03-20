@@ -21,7 +21,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -31,11 +30,7 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type UtilizeInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
@@ -219,23 +214,19 @@ export function getUtilizeInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getUtilizeInstructionRaw<
-      TProgram,
-      TAccountMetadata,
-      TAccountTokenAccount,
-      TAccountMint,
-      TAccountUseAuthority,
-      TAccountOwner,
-      TAccountTokenProgram,
-      TAccountAtaProgram,
-      TAccountSystemProgram,
-      TAccountRent,
-      TAccountUseAuthorityRecord,
-      TAccountBurner
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys =
+    | 'metadata'
+    | 'tokenAccount'
+    | 'mint'
+    | 'useAuthority'
+    | 'owner'
+    | 'tokenProgram'
+    | 'ataProgram'
+    | 'systemProgram'
+    | 'rent'
+    | 'useAuthorityRecord'
+    | 'burner';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     tokenAccount: { value: input.tokenAccount ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: true },
@@ -280,11 +271,23 @@ export function getUtilizeInstruction<
     programAddress
   );
 
-  const instruction = getUtilizeInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as UtilizeInstructionDataArgs,
-    programAddress
-  ) as UtilizeInstruction<
+  const instruction = {
+    accounts: [
+      accountMetas.metadata,
+      accountMetas.tokenAccount,
+      accountMetas.mint,
+      accountMetas.useAuthority,
+      accountMetas.owner,
+      accountMetas.tokenProgram,
+      accountMetas.ataProgram,
+      accountMetas.systemProgram,
+      accountMetas.rent,
+      accountMetas.useAuthorityRecord,
+      accountMetas.burner,
+    ],
+    programAddress,
+    data: getUtilizeInstructionDataEncoder().encode(args),
+  } as UtilizeInstruction<
     TProgram,
     TAccountMetadata,
     TAccountTokenAccount,
@@ -300,131 +303,6 @@ export function getUtilizeInstruction<
   >;
 
   return instruction;
-}
-
-export function getUtilizeInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountTokenAccount extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountUseAuthority extends string | IAccountMeta<string> = string,
-  TAccountOwner extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountAtaProgram extends
-    | string
-    | IAccountMeta<string> = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountRent extends
-    | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TAccountUseAuthorityRecord extends string | IAccountMeta<string> = string,
-  TAccountBurner extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    tokenAccount: TAccountTokenAccount extends string
-      ? Address<TAccountTokenAccount>
-      : TAccountTokenAccount;
-    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
-    useAuthority: TAccountUseAuthority extends string
-      ? Address<TAccountUseAuthority>
-      : TAccountUseAuthority;
-    owner: TAccountOwner extends string
-      ? Address<TAccountOwner>
-      : TAccountOwner;
-    tokenProgram?: TAccountTokenProgram extends string
-      ? Address<TAccountTokenProgram>
-      : TAccountTokenProgram;
-    ataProgram?: TAccountAtaProgram extends string
-      ? Address<TAccountAtaProgram>
-      : TAccountAtaProgram;
-    systemProgram?: TAccountSystemProgram extends string
-      ? Address<TAccountSystemProgram>
-      : TAccountSystemProgram;
-    rent?: TAccountRent extends string ? Address<TAccountRent> : TAccountRent;
-    useAuthorityRecord?: TAccountUseAuthorityRecord extends string
-      ? Address<TAccountUseAuthorityRecord>
-      : TAccountUseAuthorityRecord;
-    burner?: TAccountBurner extends string
-      ? Address<TAccountBurner>
-      : TAccountBurner;
-  },
-  args: UtilizeInstructionDataArgs,
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.tokenAccount, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.mint, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.useAuthority,
-        AccountRole.WRITABLE_SIGNER
-      ),
-      accountMetaWithDefault(accounts.owner, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.tokenProgram ??
-          ('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>),
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.ataProgram ??
-          ('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>),
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.systemProgram ??
-          ('11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>),
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.rent ??
-          ('SysvarRent111111111111111111111111111111111' as Address<'SysvarRent111111111111111111111111111111111'>),
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.useAuthorityRecord ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.WRITABLE
-      ),
-      accountMetaWithDefault(
-        accounts.burner ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getUtilizeInstructionDataEncoder().encode(args),
-    programAddress,
-  } as UtilizeInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountTokenAccount,
-    TAccountMint,
-    TAccountUseAuthority,
-    TAccountOwner,
-    TAccountTokenProgram,
-    TAccountAtaProgram,
-    TAccountSystemProgram,
-    TAccountRent,
-    TAccountUseAuthorityRecord,
-    TAccountBurner,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedUtilizeInstruction<

@@ -19,7 +19,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -29,11 +28,7 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type RevokeCollectionAuthorityInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
@@ -143,17 +138,13 @@ export function getRevokeCollectionAuthorityInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getRevokeCollectionAuthorityInstructionRaw<
-      TProgram,
-      TAccountCollectionAuthorityRecord,
-      TAccountDelegateAuthority,
-      TAccountRevokeAuthority,
-      TAccountMetadata,
-      TAccountMint
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys =
+    | 'collectionAuthorityRecord'
+    | 'delegateAuthority'
+    | 'revokeAuthority'
+    | 'metadata'
+    | 'mint';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     collectionAuthorityRecord: {
       value: input.collectionAuthorityRecord ?? null,
       isWritable: true,
@@ -174,10 +165,17 @@ export function getRevokeCollectionAuthorityInstruction<
     programAddress
   );
 
-  const instruction = getRevokeCollectionAuthorityInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress
-  ) as RevokeCollectionAuthorityInstruction<
+  const instruction = {
+    accounts: [
+      accountMetas.collectionAuthorityRecord,
+      accountMetas.delegateAuthority,
+      accountMetas.revokeAuthority,
+      accountMetas.metadata,
+      accountMetas.mint,
+    ],
+    programAddress,
+    data: getRevokeCollectionAuthorityInstructionDataEncoder().encode({}),
+  } as RevokeCollectionAuthorityInstruction<
     TProgram,
     TAccountCollectionAuthorityRecord,
     TAccountDelegateAuthority,
@@ -187,63 +185,6 @@ export function getRevokeCollectionAuthorityInstruction<
   >;
 
   return instruction;
-}
-
-export function getRevokeCollectionAuthorityInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountCollectionAuthorityRecord extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountDelegateAuthority extends string | IAccountMeta<string> = string,
-  TAccountRevokeAuthority extends string | IAccountMeta<string> = string,
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    collectionAuthorityRecord: TAccountCollectionAuthorityRecord extends string
-      ? Address<TAccountCollectionAuthorityRecord>
-      : TAccountCollectionAuthorityRecord;
-    delegateAuthority: TAccountDelegateAuthority extends string
-      ? Address<TAccountDelegateAuthority>
-      : TAccountDelegateAuthority;
-    revokeAuthority: TAccountRevokeAuthority extends string
-      ? Address<TAccountRevokeAuthority>
-      : TAccountRevokeAuthority;
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(
-        accounts.collectionAuthorityRecord,
-        AccountRole.WRITABLE
-      ),
-      accountMetaWithDefault(accounts.delegateAuthority, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.revokeAuthority,
-        AccountRole.WRITABLE_SIGNER
-      ),
-      accountMetaWithDefault(accounts.metadata, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getRevokeCollectionAuthorityInstructionDataEncoder().encode({}),
-    programAddress,
-  } as RevokeCollectionAuthorityInstruction<
-    TProgram,
-    TAccountCollectionAuthorityRecord,
-    TAccountDelegateAuthority,
-    TAccountRevokeAuthority,
-    TAccountMetadata,
-    TAccountMint,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedRevokeCollectionAuthorityInstruction<

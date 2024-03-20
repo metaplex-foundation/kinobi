@@ -21,7 +21,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -32,11 +31,7 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 import {
   Operation,
   OperationArgs,
@@ -334,25 +329,21 @@ export function getValidateInstruction<
     'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getValidateInstructionRaw<
-      TProgram,
-      TAccountPayer,
-      TAccountRuleSet,
-      TAccountSystemProgram,
-      TAccountOptRuleSigner1,
-      TAccountOptRuleSigner2,
-      TAccountOptRuleSigner3,
-      TAccountOptRuleSigner4,
-      TAccountOptRuleSigner5,
-      TAccountOptRuleNonsigner1,
-      TAccountOptRuleNonsigner2,
-      TAccountOptRuleNonsigner3,
-      TAccountOptRuleNonsigner4,
-      TAccountOptRuleNonsigner5
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys =
+    | 'payer'
+    | 'ruleSet'
+    | 'systemProgram'
+    | 'optRuleSigner1'
+    | 'optRuleSigner2'
+    | 'optRuleSigner3'
+    | 'optRuleSigner4'
+    | 'optRuleSigner5'
+    | 'optRuleNonsigner1'
+    | 'optRuleNonsigner2'
+    | 'optRuleNonsigner3'
+    | 'optRuleNonsigner4'
+    | 'optRuleNonsigner5';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     payer: { value: input.payer ?? null, isWritable: true },
     ruleSet: { value: input.ruleSet ?? null, isWritable: true },
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
@@ -399,11 +390,25 @@ export function getValidateInstruction<
     programAddress
   );
 
-  const instruction = getValidateInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as ValidateInstructionDataArgs,
-    programAddress
-  ) as ValidateInstruction<
+  const instruction = {
+    accounts: [
+      accountMetas.payer,
+      accountMetas.ruleSet,
+      accountMetas.systemProgram,
+      accountMetas.optRuleSigner1,
+      accountMetas.optRuleSigner2,
+      accountMetas.optRuleSigner3,
+      accountMetas.optRuleSigner4,
+      accountMetas.optRuleSigner5,
+      accountMetas.optRuleNonsigner1,
+      accountMetas.optRuleNonsigner2,
+      accountMetas.optRuleNonsigner3,
+      accountMetas.optRuleNonsigner4,
+      accountMetas.optRuleNonsigner5,
+    ],
+    programAddress,
+    data: getValidateInstructionDataEncoder().encode(args),
+  } as ValidateInstruction<
     TProgram,
     TAccountPayer,
     TAccountRuleSet,
@@ -424,154 +429,6 @@ export function getValidateInstruction<
   >;
 
   return instruction;
-}
-
-export function getValidateInstructionRaw<
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountRuleSet extends string | IAccountMeta<string> = string,
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountOptRuleSigner1 extends
-    | string
-    | IAccountMeta<string>
-    | undefined = undefined,
-  TAccountOptRuleSigner2 extends
-    | string
-    | IAccountMeta<string>
-    | undefined = undefined,
-  TAccountOptRuleSigner3 extends
-    | string
-    | IAccountMeta<string>
-    | undefined = undefined,
-  TAccountOptRuleSigner4 extends
-    | string
-    | IAccountMeta<string>
-    | undefined = undefined,
-  TAccountOptRuleSigner5 extends
-    | string
-    | IAccountMeta<string>
-    | undefined = undefined,
-  TAccountOptRuleNonsigner1 extends
-    | string
-    | IAccountMeta<string>
-    | undefined = undefined,
-  TAccountOptRuleNonsigner2 extends
-    | string
-    | IAccountMeta<string>
-    | undefined = undefined,
-  TAccountOptRuleNonsigner3 extends
-    | string
-    | IAccountMeta<string>
-    | undefined = undefined,
-  TAccountOptRuleNonsigner4 extends
-    | string
-    | IAccountMeta<string>
-    | undefined = undefined,
-  TAccountOptRuleNonsigner5 extends
-    | string
-    | IAccountMeta<string>
-    | undefined = undefined,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    payer: TAccountPayer extends string
-      ? Address<TAccountPayer>
-      : TAccountPayer;
-    ruleSet: TAccountRuleSet extends string
-      ? Address<TAccountRuleSet>
-      : TAccountRuleSet;
-    systemProgram?: TAccountSystemProgram extends string
-      ? Address<TAccountSystemProgram>
-      : TAccountSystemProgram;
-    optRuleSigner1?: TAccountOptRuleSigner1 extends string
-      ? Address<TAccountOptRuleSigner1>
-      : TAccountOptRuleSigner1;
-    optRuleSigner2?: TAccountOptRuleSigner2 extends string
-      ? Address<TAccountOptRuleSigner2>
-      : TAccountOptRuleSigner2;
-    optRuleSigner3?: TAccountOptRuleSigner3 extends string
-      ? Address<TAccountOptRuleSigner3>
-      : TAccountOptRuleSigner3;
-    optRuleSigner4?: TAccountOptRuleSigner4 extends string
-      ? Address<TAccountOptRuleSigner4>
-      : TAccountOptRuleSigner4;
-    optRuleSigner5?: TAccountOptRuleSigner5 extends string
-      ? Address<TAccountOptRuleSigner5>
-      : TAccountOptRuleSigner5;
-    optRuleNonsigner1?: TAccountOptRuleNonsigner1 extends string
-      ? Address<TAccountOptRuleNonsigner1>
-      : TAccountOptRuleNonsigner1;
-    optRuleNonsigner2?: TAccountOptRuleNonsigner2 extends string
-      ? Address<TAccountOptRuleNonsigner2>
-      : TAccountOptRuleNonsigner2;
-    optRuleNonsigner3?: TAccountOptRuleNonsigner3 extends string
-      ? Address<TAccountOptRuleNonsigner3>
-      : TAccountOptRuleNonsigner3;
-    optRuleNonsigner4?: TAccountOptRuleNonsigner4 extends string
-      ? Address<TAccountOptRuleNonsigner4>
-      : TAccountOptRuleNonsigner4;
-    optRuleNonsigner5?: TAccountOptRuleNonsigner5 extends string
-      ? Address<TAccountOptRuleNonsigner5>
-      : TAccountOptRuleNonsigner5;
-  },
-  args: ValidateInstructionDataArgs,
-  programAddress: Address<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.ruleSet, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.systemProgram ??
-          ('11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>),
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(accounts.optRuleSigner1, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.optRuleSigner2,
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(
-        accounts.optRuleSigner3,
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(
-        accounts.optRuleSigner4,
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(
-        accounts.optRuleSigner5,
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(accounts.optRuleNonsigner1, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.optRuleNonsigner2, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.optRuleNonsigner3, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.optRuleNonsigner4, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.optRuleNonsigner5, AccountRole.READONLY),
-      ...(remainingAccounts ?? []),
-    ].filter(<T,>(x: T | undefined): x is T => x !== undefined),
-    data: getValidateInstructionDataEncoder().encode(args),
-    programAddress,
-  } as ValidateInstruction<
-    TProgram,
-    TAccountPayer,
-    TAccountRuleSet,
-    TAccountSystemProgram,
-    TAccountOptRuleSigner1,
-    TAccountOptRuleSigner2,
-    TAccountOptRuleSigner3,
-    TAccountOptRuleSigner4,
-    TAccountOptRuleSigner5,
-    TAccountOptRuleNonsigner1,
-    TAccountOptRuleNonsigner2,
-    TAccountOptRuleNonsigner3,
-    TAccountOptRuleNonsigner4,
-    TAccountOptRuleNonsigner5,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedValidateInstruction<

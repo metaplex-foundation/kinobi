@@ -19,7 +19,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -28,11 +27,7 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type RemoveCreatorVerificationInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
@@ -107,14 +102,8 @@ export function getRemoveCreatorVerificationInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getRemoveCreatorVerificationInstructionRaw<
-      TProgram,
-      TAccountMetadata,
-      TAccountCreator
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys = 'metadata' | 'creator';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     creator: { value: input.creator ?? null, isWritable: false },
   };
@@ -126,49 +115,17 @@ export function getRemoveCreatorVerificationInstruction<
     programAddress
   );
 
-  const instruction = getRemoveCreatorVerificationInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress
-  ) as RemoveCreatorVerificationInstruction<
+  const instruction = {
+    accounts: [accountMetas.metadata, accountMetas.creator],
+    programAddress,
+    data: getRemoveCreatorVerificationInstructionDataEncoder().encode({}),
+  } as RemoveCreatorVerificationInstruction<
     TProgram,
     TAccountMetadata,
     TAccountCreator
   >;
 
   return instruction;
-}
-
-export function getRemoveCreatorVerificationInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountCreator extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    creator: TAccountCreator extends string
-      ? Address<TAccountCreator>
-      : TAccountCreator;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.creator, AccountRole.READONLY_SIGNER),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getRemoveCreatorVerificationInstructionDataEncoder().encode({}),
-    programAddress,
-  } as RemoveCreatorVerificationInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountCreator,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedRemoveCreatorVerificationInstruction<

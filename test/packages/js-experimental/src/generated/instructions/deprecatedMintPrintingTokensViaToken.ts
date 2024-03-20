@@ -19,7 +19,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -29,11 +28,7 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 import {
   MintPrintingTokensViaTokenArgs,
   MintPrintingTokensViaTokenArgsArgs,
@@ -209,21 +204,17 @@ export function getDeprecatedMintPrintingTokensViaTokenInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getDeprecatedMintPrintingTokensViaTokenInstructionRaw<
-      TProgram,
-      TAccountDestination,
-      TAccountToken,
-      TAccountOneTimePrintingAuthorizationMint,
-      TAccountPrintingMint,
-      TAccountBurnAuthority,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountTokenProgram,
-      TAccountRent
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys =
+    | 'destination'
+    | 'token'
+    | 'oneTimePrintingAuthorizationMint'
+    | 'printingMint'
+    | 'burnAuthority'
+    | 'metadata'
+    | 'masterEdition'
+    | 'tokenProgram'
+    | 'rent';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     destination: { value: input.destination ?? null, isWritable: true },
     token: { value: input.token ?? null, isWritable: true },
     oneTimePrintingAuthorizationMint: {
@@ -258,11 +249,23 @@ export function getDeprecatedMintPrintingTokensViaTokenInstruction<
     programAddress
   );
 
-  const instruction = getDeprecatedMintPrintingTokensViaTokenInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as DeprecatedMintPrintingTokensViaTokenInstructionDataArgs,
-    programAddress
-  ) as DeprecatedMintPrintingTokensViaTokenInstruction<
+  const instruction = {
+    accounts: [
+      accountMetas.destination,
+      accountMetas.token,
+      accountMetas.oneTimePrintingAuthorizationMint,
+      accountMetas.printingMint,
+      accountMetas.burnAuthority,
+      accountMetas.metadata,
+      accountMetas.masterEdition,
+      accountMetas.tokenProgram,
+      accountMetas.rent,
+    ],
+    programAddress,
+    data: getDeprecatedMintPrintingTokensViaTokenInstructionDataEncoder().encode(
+      args
+    ),
+  } as DeprecatedMintPrintingTokensViaTokenInstruction<
     TProgram,
     TAccountDestination,
     TAccountToken,
@@ -276,102 +279,6 @@ export function getDeprecatedMintPrintingTokensViaTokenInstruction<
   >;
 
   return instruction;
-}
-
-export function getDeprecatedMintPrintingTokensViaTokenInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountDestination extends string | IAccountMeta<string> = string,
-  TAccountToken extends string | IAccountMeta<string> = string,
-  TAccountOneTimePrintingAuthorizationMint extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountPrintingMint extends string | IAccountMeta<string> = string,
-  TAccountBurnAuthority extends string | IAccountMeta<string> = string,
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountRent extends
-    | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    destination: TAccountDestination extends string
-      ? Address<TAccountDestination>
-      : TAccountDestination;
-    token: TAccountToken extends string
-      ? Address<TAccountToken>
-      : TAccountToken;
-    oneTimePrintingAuthorizationMint: TAccountOneTimePrintingAuthorizationMint extends string
-      ? Address<TAccountOneTimePrintingAuthorizationMint>
-      : TAccountOneTimePrintingAuthorizationMint;
-    printingMint: TAccountPrintingMint extends string
-      ? Address<TAccountPrintingMint>
-      : TAccountPrintingMint;
-    burnAuthority: TAccountBurnAuthority extends string
-      ? Address<TAccountBurnAuthority>
-      : TAccountBurnAuthority;
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    masterEdition: TAccountMasterEdition extends string
-      ? Address<TAccountMasterEdition>
-      : TAccountMasterEdition;
-    tokenProgram?: TAccountTokenProgram extends string
-      ? Address<TAccountTokenProgram>
-      : TAccountTokenProgram;
-    rent?: TAccountRent extends string ? Address<TAccountRent> : TAccountRent;
-  },
-  args: DeprecatedMintPrintingTokensViaTokenInstructionDataArgs,
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.token, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.oneTimePrintingAuthorizationMint,
-        AccountRole.WRITABLE
-      ),
-      accountMetaWithDefault(accounts.printingMint, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.burnAuthority,
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(accounts.metadata, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.masterEdition, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.tokenProgram ??
-          ('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>),
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.rent ??
-          ('SysvarRent111111111111111111111111111111111' as Address<'SysvarRent111111111111111111111111111111111'>),
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getDeprecatedMintPrintingTokensViaTokenInstructionDataEncoder().encode(
-      args
-    ),
-    programAddress,
-  } as DeprecatedMintPrintingTokensViaTokenInstruction<
-    TProgram,
-    TAccountDestination,
-    TAccountToken,
-    TAccountOneTimePrintingAuthorizationMint,
-    TAccountPrintingMint,
-    TAccountBurnAuthority,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountTokenProgram,
-    TAccountRent,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedDeprecatedMintPrintingTokensViaTokenInstruction<

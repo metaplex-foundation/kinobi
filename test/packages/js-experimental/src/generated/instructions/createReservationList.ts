@@ -8,7 +8,6 @@
 
 import { Address } from '@solana/addresses';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -22,13 +21,8 @@ import {
   CreateReservationListInstructionData,
   CreateReservationListInstructionDataArgs,
   getCreateReservationListInstructionDataDecoder,
-  getCreateReservationListInstructionDataEncoder,
 } from '../../hooked';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type CreateReservationListInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
@@ -144,20 +138,16 @@ export function getCreateReservationListInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getCreateReservationListInstructionRaw<
-      TProgram,
-      TAccountReservationList,
-      TAccountPayer,
-      TAccountUpdateAuthority,
-      TAccountMasterEdition,
-      TAccountResource,
-      TAccountMetadata,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys =
+    | 'reservationList'
+    | 'payer'
+    | 'updateAuthority'
+    | 'masterEdition'
+    | 'resource'
+    | 'metadata'
+    | 'systemProgram'
+    | 'rent';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     reservationList: { value: input.reservationList ?? null, isWritable: true },
     payer: { value: input.payer ?? null, isWritable: false },
     updateAuthority: {
@@ -191,11 +181,20 @@ export function getCreateReservationListInstruction<
     programAddress
   );
 
-  const instruction = getCreateReservationListInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as CreateReservationListInstructionDataArgs,
-    programAddress
-  ) as CreateReservationListInstruction<
+  const instruction = {
+    accounts: [
+      accountMetas.reservationList,
+      accountMetas.payer,
+      accountMetas.updateAuthority,
+      accountMetas.masterEdition,
+      accountMetas.resource,
+      accountMetas.metadata,
+      accountMetas.systemProgram,
+      accountMetas.rent,
+    ],
+    programAddress,
+    data: getCreateReservationListInstructionDataEncoder().encode(args),
+  } as CreateReservationListInstruction<
     TProgram,
     TAccountReservationList,
     TAccountPayer,
@@ -208,89 +207,6 @@ export function getCreateReservationListInstruction<
   >;
 
   return instruction;
-}
-
-export function getCreateReservationListInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountReservationList extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountResource extends string | IAccountMeta<string> = string,
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountRent extends
-    | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    reservationList: TAccountReservationList extends string
-      ? Address<TAccountReservationList>
-      : TAccountReservationList;
-    payer: TAccountPayer extends string
-      ? Address<TAccountPayer>
-      : TAccountPayer;
-    updateAuthority: TAccountUpdateAuthority extends string
-      ? Address<TAccountUpdateAuthority>
-      : TAccountUpdateAuthority;
-    masterEdition: TAccountMasterEdition extends string
-      ? Address<TAccountMasterEdition>
-      : TAccountMasterEdition;
-    resource: TAccountResource extends string
-      ? Address<TAccountResource>
-      : TAccountResource;
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    systemProgram?: TAccountSystemProgram extends string
-      ? Address<TAccountSystemProgram>
-      : TAccountSystemProgram;
-    rent?: TAccountRent extends string ? Address<TAccountRent> : TAccountRent;
-  },
-  args: CreateReservationListInstructionDataArgs,
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.reservationList, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.payer, AccountRole.READONLY_SIGNER),
-      accountMetaWithDefault(
-        accounts.updateAuthority,
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(accounts.masterEdition, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.resource, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.metadata, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.systemProgram ??
-          ('11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>),
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.rent ??
-          ('SysvarRent111111111111111111111111111111111' as Address<'SysvarRent111111111111111111111111111111111'>),
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getCreateReservationListInstructionDataEncoder().encode(args),
-    programAddress,
-  } as CreateReservationListInstruction<
-    TProgram,
-    TAccountReservationList,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountMasterEdition,
-    TAccountResource,
-    TAccountMetadata,
-    TAccountSystemProgram,
-    TAccountRent,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedCreateReservationListInstruction<

@@ -21,7 +21,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -30,11 +29,7 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type TransferSolInstruction<
   TProgram extends string = '11111111111111111111111111111111',
@@ -111,14 +106,8 @@ export function getTransferSolInstruction<
     '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getTransferSolInstructionRaw<
-      TProgram,
-      TAccountSource,
-      TAccountDestination
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys = 'source' | 'destination';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     source: { value: input.source ?? null, isWritable: true },
     destination: { value: input.destination ?? null, isWritable: true },
   };
@@ -133,47 +122,13 @@ export function getTransferSolInstruction<
     programAddress
   );
 
-  const instruction = getTransferSolInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as TransferSolInstructionDataArgs,
-    programAddress
-  ) as TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>;
+  const instruction = {
+    accounts: [accountMetas.source, accountMetas.destination],
+    programAddress,
+    data: getTransferSolInstructionDataEncoder().encode(args),
+  } as TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>;
 
   return instruction;
-}
-
-export function getTransferSolInstructionRaw<
-  TProgram extends string = '11111111111111111111111111111111',
-  TAccountSource extends string | IAccountMeta<string> = string,
-  TAccountDestination extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    source: TAccountSource extends string
-      ? Address<TAccountSource>
-      : TAccountSource;
-    destination: TAccountDestination extends string
-      ? Address<TAccountDestination>
-      : TAccountDestination;
-  },
-  args: TransferSolInstructionDataArgs,
-  programAddress: Address<TProgram> = '11111111111111111111111111111111' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.source, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getTransferSolInstructionDataEncoder().encode(args),
-    programAddress,
-  } as TransferSolInstruction<
-    TProgram,
-    TAccountSource,
-    TAccountDestination,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedTransferSolInstruction<

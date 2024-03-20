@@ -19,18 +19,13 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
   WritableAccount,
 } from '@solana/instructions';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type ConvertMasterEditionV1ToV2Instruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
@@ -117,15 +112,8 @@ export function getConvertMasterEditionV1ToV2Instruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getConvertMasterEditionV1ToV2InstructionRaw<
-      TProgram,
-      TAccountMasterEdition,
-      TAccountOneTimeAuth,
-      TAccountPrintingMint
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys = 'masterEdition' | 'oneTimeAuth' | 'printingMint';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     masterEdition: { value: input.masterEdition ?? null, isWritable: true },
     oneTimeAuth: { value: input.oneTimeAuth ?? null, isWritable: true },
     printingMint: { value: input.printingMint ?? null, isWritable: true },
@@ -138,10 +126,15 @@ export function getConvertMasterEditionV1ToV2Instruction<
     programAddress
   );
 
-  const instruction = getConvertMasterEditionV1ToV2InstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress
-  ) as ConvertMasterEditionV1ToV2Instruction<
+  const instruction = {
+    accounts: [
+      accountMetas.masterEdition,
+      accountMetas.oneTimeAuth,
+      accountMetas.printingMint,
+    ],
+    programAddress,
+    data: getConvertMasterEditionV1ToV2InstructionDataEncoder().encode({}),
+  } as ConvertMasterEditionV1ToV2Instruction<
     TProgram,
     TAccountMasterEdition,
     TAccountOneTimeAuth,
@@ -149,45 +142,6 @@ export function getConvertMasterEditionV1ToV2Instruction<
   >;
 
   return instruction;
-}
-
-export function getConvertMasterEditionV1ToV2InstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountOneTimeAuth extends string | IAccountMeta<string> = string,
-  TAccountPrintingMint extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    masterEdition: TAccountMasterEdition extends string
-      ? Address<TAccountMasterEdition>
-      : TAccountMasterEdition;
-    oneTimeAuth: TAccountOneTimeAuth extends string
-      ? Address<TAccountOneTimeAuth>
-      : TAccountOneTimeAuth;
-    printingMint: TAccountPrintingMint extends string
-      ? Address<TAccountPrintingMint>
-      : TAccountPrintingMint;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.masterEdition, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.oneTimeAuth, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.printingMint, AccountRole.WRITABLE),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getConvertMasterEditionV1ToV2InstructionDataEncoder().encode({}),
-    programAddress,
-  } as ConvertMasterEditionV1ToV2Instruction<
-    TProgram,
-    TAccountMasterEdition,
-    TAccountOneTimeAuth,
-    TAccountPrintingMint,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedConvertMasterEditionV1ToV2Instruction<

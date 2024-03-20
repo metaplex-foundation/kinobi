@@ -19,7 +19,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -29,11 +28,7 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type SetTokenStandardInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
@@ -129,16 +124,8 @@ export function getSetTokenStandardInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getSetTokenStandardInstructionRaw<
-      TProgram,
-      TAccountMetadata,
-      TAccountUpdateAuthority,
-      TAccountMint,
-      TAccountEdition
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys = 'metadata' | 'updateAuthority' | 'mint' | 'edition';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     updateAuthority: { value: input.updateAuthority ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: false },
@@ -152,10 +139,16 @@ export function getSetTokenStandardInstruction<
     programAddress
   );
 
-  const instruction = getSetTokenStandardInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress
-  ) as SetTokenStandardInstruction<
+  const instruction = {
+    accounts: [
+      accountMetas.metadata,
+      accountMetas.updateAuthority,
+      accountMetas.mint,
+      accountMetas.edition,
+    ],
+    programAddress,
+    data: getSetTokenStandardInstructionDataEncoder().encode({}),
+  } as SetTokenStandardInstruction<
     TProgram,
     TAccountMetadata,
     TAccountUpdateAuthority,
@@ -164,59 +157,6 @@ export function getSetTokenStandardInstruction<
   >;
 
   return instruction;
-}
-
-export function getSetTokenStandardInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountEdition extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    updateAuthority: TAccountUpdateAuthority extends string
-      ? Address<TAccountUpdateAuthority>
-      : TAccountUpdateAuthority;
-    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
-    edition?: TAccountEdition extends string
-      ? Address<TAccountEdition>
-      : TAccountEdition;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.updateAuthority,
-        AccountRole.WRITABLE_SIGNER
-      ),
-      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.edition ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getSetTokenStandardInstructionDataEncoder().encode({}),
-    programAddress,
-  } as SetTokenStandardInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountUpdateAuthority,
-    TAccountMint,
-    TAccountEdition,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedSetTokenStandardInstruction<

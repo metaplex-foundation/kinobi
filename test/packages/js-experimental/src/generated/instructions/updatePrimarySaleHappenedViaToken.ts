@@ -19,7 +19,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -29,11 +28,7 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type UpdatePrimarySaleHappenedViaTokenInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
@@ -121,15 +116,8 @@ export function getUpdatePrimarySaleHappenedViaTokenInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getUpdatePrimarySaleHappenedViaTokenInstructionRaw<
-      TProgram,
-      TAccountMetadata,
-      TAccountOwner,
-      TAccountToken
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys = 'metadata' | 'owner' | 'token';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     owner: { value: input.owner ?? null, isWritable: false },
     token: { value: input.token ?? null, isWritable: false },
@@ -142,10 +130,13 @@ export function getUpdatePrimarySaleHappenedViaTokenInstruction<
     programAddress
   );
 
-  const instruction = getUpdatePrimarySaleHappenedViaTokenInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress
-  ) as UpdatePrimarySaleHappenedViaTokenInstruction<
+  const instruction = {
+    accounts: [accountMetas.metadata, accountMetas.owner, accountMetas.token],
+    programAddress,
+    data: getUpdatePrimarySaleHappenedViaTokenInstructionDataEncoder().encode(
+      {}
+    ),
+  } as UpdatePrimarySaleHappenedViaTokenInstruction<
     TProgram,
     TAccountMetadata,
     TAccountOwner,
@@ -153,47 +144,6 @@ export function getUpdatePrimarySaleHappenedViaTokenInstruction<
   >;
 
   return instruction;
-}
-
-export function getUpdatePrimarySaleHappenedViaTokenInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountOwner extends string | IAccountMeta<string> = string,
-  TAccountToken extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    owner: TAccountOwner extends string
-      ? Address<TAccountOwner>
-      : TAccountOwner;
-    token: TAccountToken extends string
-      ? Address<TAccountToken>
-      : TAccountToken;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.owner, AccountRole.READONLY_SIGNER),
-      accountMetaWithDefault(accounts.token, AccountRole.READONLY),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getUpdatePrimarySaleHappenedViaTokenInstructionDataEncoder().encode(
-      {}
-    ),
-    programAddress,
-  } as UpdatePrimarySaleHappenedViaTokenInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountToken,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedUpdatePrimarySaleHappenedViaTokenInstruction<

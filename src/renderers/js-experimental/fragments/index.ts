@@ -10,7 +10,6 @@ export * from './instructionByteDelta';
 export * from './instructionData';
 export * from './instructionExtraArgs';
 export * from './instructionFunctionHighLevel';
-export * from './instructionFunctionLowLevel';
 export * from './instructionInputDefault';
 export * from './instructionInputResolved';
 export * from './instructionInputType';

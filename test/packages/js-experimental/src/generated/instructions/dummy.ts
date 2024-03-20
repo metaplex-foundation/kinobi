@@ -36,7 +36,6 @@ import { resolveTokenOrAta } from '../../hooked';
 import { findDelegateRecordPda } from '../pdas';
 import {
   ResolvedAccount,
-  accountMetaWithDefault,
   expectSome,
   expectTransactionSigner,
   getAccountMetasWithSigners,
@@ -207,22 +206,18 @@ export async function getDummyInstructionAsync<
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getDummyInstructionRaw<
-      TProgram,
-      TAccountEdition,
-      TAccountMint,
-      TAccountUpdateAuthority,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountFoo,
-      TAccountBar,
-      TAccountDelegate,
-      TAccountDelegateRecord,
-      TAccountTokenOrAtaProgram
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys =
+    | 'edition'
+    | 'mint'
+    | 'updateAuthority'
+    | 'mintAuthority'
+    | 'payer'
+    | 'foo'
+    | 'bar'
+    | 'delegate'
+    | 'delegateRecord'
+    | 'tokenOrAtaProgram';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     edition: { value: input.edition ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: true },
     updateAuthority: {
@@ -289,11 +284,23 @@ export async function getDummyInstructionAsync<
     programAddress
   );
 
-  const instruction = getDummyInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+  const instruction = {
+    accounts: [
+      accountMetas.edition,
+      accountMetas.mint,
+      accountMetas.updateAuthority,
+      accountMetas.mintAuthority,
+      accountMetas.payer,
+      accountMetas.foo,
+      accountMetas.bar,
+      accountMetas.delegate,
+      accountMetas.delegateRecord,
+      accountMetas.tokenOrAtaProgram,
+      ...remainingAccounts,
+    ],
     programAddress,
-    remainingAccounts
-  ) as DummyInstruction<
+    data: getDummyInstructionDataEncoder().encode({}),
+  } as DummyInstruction<
     TProgram,
     TAccountEdition,
     TAccountMint,
@@ -379,22 +386,18 @@ export function getDummyInstruction<
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getDummyInstructionRaw<
-      TProgram,
-      TAccountEdition,
-      TAccountMint,
-      TAccountUpdateAuthority,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountFoo,
-      TAccountBar,
-      TAccountDelegate,
-      TAccountDelegateRecord,
-      TAccountTokenOrAtaProgram
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys =
+    | 'edition'
+    | 'mint'
+    | 'updateAuthority'
+    | 'mintAuthority'
+    | 'payer'
+    | 'foo'
+    | 'bar'
+    | 'delegate'
+    | 'delegateRecord'
+    | 'tokenOrAtaProgram';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     edition: { value: input.edition ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: true },
     updateAuthority: {
@@ -454,11 +457,23 @@ export function getDummyInstruction<
     programAddress
   );
 
-  const instruction = getDummyInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
+  const instruction = {
+    accounts: [
+      accountMetas.edition,
+      accountMetas.mint,
+      accountMetas.updateAuthority,
+      accountMetas.mintAuthority,
+      accountMetas.payer,
+      accountMetas.foo,
+      accountMetas.bar,
+      accountMetas.delegate,
+      accountMetas.delegateRecord,
+      accountMetas.tokenOrAtaProgram,
+      ...remainingAccounts,
+    ],
     programAddress,
-    remainingAccounts
-  ) as DummyInstruction<
+    data: getDummyInstructionDataEncoder().encode({}),
+  } as DummyInstruction<
     TProgram,
     TAccountEdition,
     TAccountMint,
@@ -473,117 +488,6 @@ export function getDummyInstruction<
   >;
 
   return instruction;
-}
-
-export function getDummyInstructionRaw<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountEdition extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TAccountMintAuthority extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountFoo extends string | IAccountMeta<string> = string,
-  TAccountBar extends
-    | string
-    | IAccountMeta<string> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountDelegate extends string | IAccountMeta<string> = string,
-  TAccountDelegateRecord extends string | IAccountMeta<string> = string,
-  TAccountTokenOrAtaProgram extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    edition: TAccountEdition extends string
-      ? Address<TAccountEdition>
-      : TAccountEdition;
-    mint?: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
-    updateAuthority: TAccountUpdateAuthority extends string
-      ? Address<TAccountUpdateAuthority>
-      : TAccountUpdateAuthority;
-    mintAuthority: TAccountMintAuthority extends string
-      ? Address<TAccountMintAuthority>
-      : TAccountMintAuthority;
-    payer: TAccountPayer extends string
-      ? Address<TAccountPayer>
-      : TAccountPayer;
-    foo: TAccountFoo extends string ? Address<TAccountFoo> : TAccountFoo;
-    bar?: TAccountBar extends string ? Address<TAccountBar> : TAccountBar;
-    delegate?: TAccountDelegate extends string
-      ? Address<TAccountDelegate>
-      : TAccountDelegate;
-    delegateRecord?: TAccountDelegateRecord extends string
-      ? Address<TAccountDelegateRecord>
-      : TAccountDelegateRecord;
-    tokenOrAtaProgram: TAccountTokenOrAtaProgram extends string
-      ? Address<TAccountTokenOrAtaProgram>
-      : TAccountTokenOrAtaProgram;
-  },
-  programAddress: Address<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.edition, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(
-        accounts.mint ?? {
-          address:
-            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.WRITABLE
-      ),
-      accountMetaWithDefault(
-        accounts.updateAuthority,
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(
-        accounts.mintAuthority,
-        AccountRole.WRITABLE_SIGNER
-      ),
-      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.foo, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.bar ?? {
-          address:
-            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(
-        accounts.delegate ?? {
-          address:
-            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(
-        accounts.delegateRecord ?? {
-          address:
-            'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.WRITABLE
-      ),
-      accountMetaWithDefault(accounts.tokenOrAtaProgram, AccountRole.READONLY),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getDummyInstructionDataEncoder().encode({}),
-    programAddress,
-  } as DummyInstruction<
-    TProgram,
-    TAccountEdition,
-    TAccountMint,
-    TAccountUpdateAuthority,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountFoo,
-    TAccountBar,
-    TAccountDelegate,
-    TAccountDelegateRecord,
-    TAccountTokenOrAtaProgram,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedDummyInstruction<

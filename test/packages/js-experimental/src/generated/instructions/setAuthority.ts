@@ -25,7 +25,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -34,11 +33,7 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type SetAuthorityInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
@@ -118,14 +113,8 @@ export function getSetAuthorityInstruction<
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getSetAuthorityInstructionRaw<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthority
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys = 'candyMachine' | 'authority';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     candyMachine: { value: input.candyMachine ?? null, isWritable: true },
     authority: { value: input.authority ?? null, isWritable: false },
   };
@@ -140,51 +129,17 @@ export function getSetAuthorityInstruction<
     programAddress
   );
 
-  const instruction = getSetAuthorityInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as SetAuthorityInstructionDataArgs,
-    programAddress
-  ) as SetAuthorityInstruction<
+  const instruction = {
+    accounts: [accountMetas.candyMachine, accountMetas.authority],
+    programAddress,
+    data: getSetAuthorityInstructionDataEncoder().encode(args),
+  } as SetAuthorityInstruction<
     TProgram,
     TAccountCandyMachine,
     TAccountAuthority
   >;
 
   return instruction;
-}
-
-export function getSetAuthorityInstructionRaw<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string | IAccountMeta<string> = string,
-  TAccountAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    candyMachine: TAccountCandyMachine extends string
-      ? Address<TAccountCandyMachine>
-      : TAccountCandyMachine;
-    authority: TAccountAuthority extends string
-      ? Address<TAccountAuthority>
-      : TAccountAuthority;
-  },
-  args: SetAuthorityInstructionDataArgs,
-  programAddress: Address<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getSetAuthorityInstructionDataEncoder().encode(args),
-    programAddress,
-  } as SetAuthorityInstruction<
-    TProgram,
-    TAccountCandyMachine,
-    TAccountAuthority,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedSetAuthorityInstruction<

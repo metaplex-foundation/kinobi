@@ -32,7 +32,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -48,7 +47,6 @@ import { findMetadataPda } from '../pdas';
 import {
   IInstructionWithByteDelta,
   ResolvedAccount,
-  accountMetaWithDefault,
   expectAddress,
   expectProgramDerivedAddress,
   getAccountMetasWithSigners,
@@ -244,19 +242,15 @@ export async function getCreateMetadataAccountInstructionAsync<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getCreateMetadataAccountInstructionRaw<
-      TProgram,
-      TAccountMetadata,
-      TAccountMint,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountUpdateAuthority,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys =
+    | 'metadata'
+    | 'mint'
+    | 'mintAuthority'
+    | 'payer'
+    | 'updateAuthority'
+    | 'systemProgram'
+    | 'rent';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: false },
     mintAuthority: { value: input.mintAuthority ?? null, isWritable: false },
@@ -303,11 +297,19 @@ export async function getCreateMetadataAccountInstructionAsync<
     programAddress
   );
 
-  const instruction = getCreateMetadataAccountInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as CreateMetadataAccountInstructionDataArgs,
-    programAddress
-  ) as CreateMetadataAccountInstruction<
+  const instruction = {
+    accounts: [
+      accountMetas.metadata,
+      accountMetas.mint,
+      accountMetas.mintAuthority,
+      accountMetas.payer,
+      accountMetas.updateAuthority,
+      accountMetas.systemProgram,
+      accountMetas.rent,
+    ],
+    programAddress,
+    data: getCreateMetadataAccountInstructionDataEncoder().encode(args),
+  } as CreateMetadataAccountInstruction<
     TProgram,
     TAccountMetadata,
     TAccountMint,
@@ -384,19 +386,15 @@ export function getCreateMetadataAccountInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getCreateMetadataAccountInstructionRaw<
-      TProgram,
-      TAccountMetadata,
-      TAccountMint,
-      TAccountMintAuthority,
-      TAccountPayer,
-      TAccountUpdateAuthority,
-      TAccountSystemProgram,
-      TAccountRent
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys =
+    | 'metadata'
+    | 'mint'
+    | 'mintAuthority'
+    | 'payer'
+    | 'updateAuthority'
+    | 'systemProgram'
+    | 'rent';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: false },
     mintAuthority: { value: input.mintAuthority ?? null, isWritable: false },
@@ -438,11 +436,19 @@ export function getCreateMetadataAccountInstruction<
     programAddress
   );
 
-  const instruction = getCreateMetadataAccountInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as CreateMetadataAccountInstructionDataArgs,
-    programAddress
-  ) as CreateMetadataAccountInstruction<
+  const instruction = {
+    accounts: [
+      accountMetas.metadata,
+      accountMetas.mint,
+      accountMetas.mintAuthority,
+      accountMetas.payer,
+      accountMetas.updateAuthority,
+      accountMetas.systemProgram,
+      accountMetas.rent,
+    ],
+    programAddress,
+    data: getCreateMetadataAccountInstructionDataEncoder().encode(args),
+  } as CreateMetadataAccountInstruction<
     TProgram,
     TAccountMetadata,
     TAccountMint,
@@ -454,81 +460,6 @@ export function getCreateMetadataAccountInstruction<
   >;
 
   return Object.freeze({ ...instruction, byteDelta });
-}
-
-export function getCreateMetadataAccountInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountMintAuthority extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountRent extends
-    | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
-    mintAuthority: TAccountMintAuthority extends string
-      ? Address<TAccountMintAuthority>
-      : TAccountMintAuthority;
-    payer: TAccountPayer extends string
-      ? Address<TAccountPayer>
-      : TAccountPayer;
-    updateAuthority: TAccountUpdateAuthority extends string
-      ? Address<TAccountUpdateAuthority>
-      : TAccountUpdateAuthority;
-    systemProgram?: TAccountSystemProgram extends string
-      ? Address<TAccountSystemProgram>
-      : TAccountSystemProgram;
-    rent?: TAccountRent extends string ? Address<TAccountRent> : TAccountRent;
-  },
-  args: CreateMetadataAccountInstructionDataArgs,
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.mintAuthority,
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.updateAuthority, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.systemProgram ??
-          ('11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>),
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.rent ??
-          ('SysvarRent111111111111111111111111111111111' as Address<'SysvarRent111111111111111111111111111111111'>),
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getCreateMetadataAccountInstructionDataEncoder().encode(args),
-    programAddress,
-  } as CreateMetadataAccountInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountMint,
-    TAccountMintAuthority,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountSystemProgram,
-    TAccountRent,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedCreateMetadataAccountInstruction<

@@ -19,7 +19,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -31,7 +30,6 @@ import {
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import {
   ResolvedAccount,
-  accountMetaWithDefault,
   expectProgramDerivedAddress,
   getAccountMetasWithSigners,
 } from '../shared';
@@ -145,15 +143,8 @@ export function getCreateRuleSetInstruction<
     'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getCreateRuleSetInstructionRaw<
-      TProgram,
-      TAccountPayer,
-      TAccountRuleSetPda,
-      TAccountSystemProgram
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys = 'payer' | 'ruleSetPda' | 'systemProgram';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     payer: { value: input.payer ?? null, isWritable: true },
     ruleSetPda: { value: input.ruleSetPda ?? null, isWritable: true },
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
@@ -180,11 +171,15 @@ export function getCreateRuleSetInstruction<
     programAddress
   );
 
-  const instruction = getCreateRuleSetInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as CreateRuleSetInstructionDataArgs,
-    programAddress
-  ) as CreateRuleSetInstruction<
+  const instruction = {
+    accounts: [
+      accountMetas.payer,
+      accountMetas.ruleSetPda,
+      accountMetas.systemProgram,
+    ],
+    programAddress,
+    data: getCreateRuleSetInstructionDataEncoder().encode(args),
+  } as CreateRuleSetInstruction<
     TProgram,
     TAccountPayer,
     TAccountRuleSetPda,
@@ -192,52 +187,6 @@ export function getCreateRuleSetInstruction<
   >;
 
   return instruction;
-}
-
-export function getCreateRuleSetInstructionRaw<
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountRuleSetPda extends string | IAccountMeta<string> = string,
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    payer: TAccountPayer extends string
-      ? Address<TAccountPayer>
-      : TAccountPayer;
-    ruleSetPda: TAccountRuleSetPda extends string
-      ? Address<TAccountRuleSetPda>
-      : TAccountRuleSetPda;
-    systemProgram?: TAccountSystemProgram extends string
-      ? Address<TAccountSystemProgram>
-      : TAccountSystemProgram;
-  },
-  args: CreateRuleSetInstructionDataArgs,
-  programAddress: Address<TProgram> = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.ruleSetPda, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.systemProgram ??
-          ('11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>),
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getCreateRuleSetInstructionDataEncoder().encode(args),
-    programAddress,
-  } as CreateRuleSetInstruction<
-    TProgram,
-    TAccountPayer,
-    TAccountRuleSetPda,
-    TAccountSystemProgram,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedCreateRuleSetInstruction<

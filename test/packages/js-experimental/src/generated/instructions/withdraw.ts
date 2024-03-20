@@ -21,7 +21,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -30,11 +29,7 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type WithdrawInstruction<
   TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
@@ -108,14 +103,8 @@ export function getWithdrawInstruction<
     'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getWithdrawInstructionRaw<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthority
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys = 'candyMachine' | 'authority';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     candyMachine: { value: input.candyMachine ?? null, isWritable: true },
     authority: { value: input.authority ?? null, isWritable: true },
   };
@@ -127,45 +116,13 @@ export function getWithdrawInstruction<
     programAddress
   );
 
-  const instruction = getWithdrawInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress
-  ) as WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>;
+  const instruction = {
+    accounts: [accountMetas.candyMachine, accountMetas.authority],
+    programAddress,
+    data: getWithdrawInstructionDataEncoder().encode({}),
+  } as WithdrawInstruction<TProgram, TAccountCandyMachine, TAccountAuthority>;
 
   return instruction;
-}
-
-export function getWithdrawInstructionRaw<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string | IAccountMeta<string> = string,
-  TAccountAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    candyMachine: TAccountCandyMachine extends string
-      ? Address<TAccountCandyMachine>
-      : TAccountCandyMachine;
-    authority: TAccountAuthority extends string
-      ? Address<TAccountAuthority>
-      : TAccountAuthority;
-  },
-  programAddress: Address<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.authority, AccountRole.WRITABLE_SIGNER),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getWithdrawInstructionDataEncoder().encode({}),
-    programAddress,
-  } as WithdrawInstruction<
-    TProgram,
-    TAccountCandyMachine,
-    TAccountAuthority,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedWithdrawInstruction<

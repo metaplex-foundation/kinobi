@@ -19,7 +19,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -29,11 +28,7 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type SetAndVerifyCollectionInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
@@ -174,20 +169,16 @@ export function getSetAndVerifyCollectionInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getSetAndVerifyCollectionInstructionRaw<
-      TProgram,
-      TAccountMetadata,
-      TAccountCollectionAuthority,
-      TAccountPayer,
-      TAccountUpdateAuthority,
-      TAccountCollectionMint,
-      TAccountCollection,
-      TAccountCollectionMasterEditionAccount,
-      TAccountCollectionAuthorityRecord
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys =
+    | 'metadata'
+    | 'collectionAuthority'
+    | 'payer'
+    | 'updateAuthority'
+    | 'collectionMint'
+    | 'collection'
+    | 'collectionMasterEditionAccount'
+    | 'collectionAuthorityRecord';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     collectionAuthority: {
       value: input.collectionAuthority ?? null,
@@ -217,10 +208,20 @@ export function getSetAndVerifyCollectionInstruction<
     programAddress
   );
 
-  const instruction = getSetAndVerifyCollectionInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress
-  ) as SetAndVerifyCollectionInstruction<
+  const instruction = {
+    accounts: [
+      accountMetas.metadata,
+      accountMetas.collectionAuthority,
+      accountMetas.payer,
+      accountMetas.updateAuthority,
+      accountMetas.collectionMint,
+      accountMetas.collection,
+      accountMetas.collectionMasterEditionAccount,
+      accountMetas.collectionAuthorityRecord,
+    ],
+    programAddress,
+    data: getSetAndVerifyCollectionInstructionDataEncoder().encode({}),
+  } as SetAndVerifyCollectionInstruction<
     TProgram,
     TAccountMetadata,
     TAccountCollectionAuthority,
@@ -233,92 +234,6 @@ export function getSetAndVerifyCollectionInstruction<
   >;
 
   return instruction;
-}
-
-export function getSetAndVerifyCollectionInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
-  TAccountPayer extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TAccountCollectionMint extends string | IAccountMeta<string> = string,
-  TAccountCollection extends string | IAccountMeta<string> = string,
-  TAccountCollectionMasterEditionAccount extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountCollectionAuthorityRecord extends
-    | string
-    | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    collectionAuthority: TAccountCollectionAuthority extends string
-      ? Address<TAccountCollectionAuthority>
-      : TAccountCollectionAuthority;
-    payer: TAccountPayer extends string
-      ? Address<TAccountPayer>
-      : TAccountPayer;
-    updateAuthority: TAccountUpdateAuthority extends string
-      ? Address<TAccountUpdateAuthority>
-      : TAccountUpdateAuthority;
-    collectionMint: TAccountCollectionMint extends string
-      ? Address<TAccountCollectionMint>
-      : TAccountCollectionMint;
-    collection: TAccountCollection extends string
-      ? Address<TAccountCollection>
-      : TAccountCollection;
-    collectionMasterEditionAccount: TAccountCollectionMasterEditionAccount extends string
-      ? Address<TAccountCollectionMasterEditionAccount>
-      : TAccountCollectionMasterEditionAccount;
-    collectionAuthorityRecord?: TAccountCollectionAuthorityRecord extends string
-      ? Address<TAccountCollectionAuthorityRecord>
-      : TAccountCollectionAuthorityRecord;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.collectionAuthority,
-        AccountRole.WRITABLE_SIGNER
-      ),
-      accountMetaWithDefault(accounts.payer, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.updateAuthority, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.collectionMint, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.collection, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.collectionMasterEditionAccount,
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.collectionAuthorityRecord ?? {
-          address:
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
-          role: AccountRole.READONLY,
-        },
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getSetAndVerifyCollectionInstructionDataEncoder().encode({}),
-    programAddress,
-  } as SetAndVerifyCollectionInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountCollectionAuthority,
-    TAccountPayer,
-    TAccountUpdateAuthority,
-    TAccountCollectionMint,
-    TAccountCollection,
-    TAccountCollectionMasterEditionAccount,
-    TAccountCollectionAuthorityRecord,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedSetAndVerifyCollectionInstruction<

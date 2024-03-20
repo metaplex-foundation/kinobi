@@ -19,7 +19,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -28,11 +27,7 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type SignMetadataInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
@@ -101,14 +96,8 @@ export function getSignMetadataInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getSignMetadataInstructionRaw<
-      TProgram,
-      TAccountMetadata,
-      TAccountCreator
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys = 'metadata' | 'creator';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     creator: { value: input.creator ?? null, isWritable: false },
   };
@@ -120,45 +109,13 @@ export function getSignMetadataInstruction<
     programAddress
   );
 
-  const instruction = getSignMetadataInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress
-  ) as SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>;
+  const instruction = {
+    accounts: [accountMetas.metadata, accountMetas.creator],
+    programAddress,
+    data: getSignMetadataInstructionDataEncoder().encode({}),
+  } as SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>;
 
   return instruction;
-}
-
-export function getSignMetadataInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountCreator extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    creator: TAccountCreator extends string
-      ? Address<TAccountCreator>
-      : TAccountCreator;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.creator, AccountRole.READONLY_SIGNER),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getSignMetadataInstructionDataEncoder().encode({}),
-    programAddress,
-  } as SignMetadataInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountCreator,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedSignMetadataInstruction<

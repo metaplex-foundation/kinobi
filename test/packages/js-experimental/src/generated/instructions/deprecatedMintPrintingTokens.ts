@@ -19,7 +19,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -29,11 +28,7 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 import {
   MintPrintingTokensViaTokenArgs,
   MintPrintingTokensViaTokenArgsArgs,
@@ -187,19 +182,15 @@ export function getDeprecatedMintPrintingTokensInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getDeprecatedMintPrintingTokensInstructionRaw<
-      TProgram,
-      TAccountDestination,
-      TAccountPrintingMint,
-      TAccountUpdateAuthority,
-      TAccountMetadata,
-      TAccountMasterEdition,
-      TAccountTokenProgram,
-      TAccountRent
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys =
+    | 'destination'
+    | 'printingMint'
+    | 'updateAuthority'
+    | 'metadata'
+    | 'masterEdition'
+    | 'tokenProgram'
+    | 'rent';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     destination: { value: input.destination ?? null, isWritable: true },
     printingMint: { value: input.printingMint ?? null, isWritable: true },
     updateAuthority: {
@@ -232,11 +223,19 @@ export function getDeprecatedMintPrintingTokensInstruction<
     programAddress
   );
 
-  const instruction = getDeprecatedMintPrintingTokensInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    args as DeprecatedMintPrintingTokensInstructionDataArgs,
-    programAddress
-  ) as DeprecatedMintPrintingTokensInstruction<
+  const instruction = {
+    accounts: [
+      accountMetas.destination,
+      accountMetas.printingMint,
+      accountMetas.updateAuthority,
+      accountMetas.metadata,
+      accountMetas.masterEdition,
+      accountMetas.tokenProgram,
+      accountMetas.rent,
+    ],
+    programAddress,
+    data: getDeprecatedMintPrintingTokensInstructionDataEncoder().encode(args),
+  } as DeprecatedMintPrintingTokensInstruction<
     TProgram,
     TAccountDestination,
     TAccountPrintingMint,
@@ -248,83 +247,6 @@ export function getDeprecatedMintPrintingTokensInstruction<
   >;
 
   return instruction;
-}
-
-export function getDeprecatedMintPrintingTokensInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountDestination extends string | IAccountMeta<string> = string,
-  TAccountPrintingMint extends string | IAccountMeta<string> = string,
-  TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountRent extends
-    | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    destination: TAccountDestination extends string
-      ? Address<TAccountDestination>
-      : TAccountDestination;
-    printingMint: TAccountPrintingMint extends string
-      ? Address<TAccountPrintingMint>
-      : TAccountPrintingMint;
-    updateAuthority: TAccountUpdateAuthority extends string
-      ? Address<TAccountUpdateAuthority>
-      : TAccountUpdateAuthority;
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    masterEdition: TAccountMasterEdition extends string
-      ? Address<TAccountMasterEdition>
-      : TAccountMasterEdition;
-    tokenProgram?: TAccountTokenProgram extends string
-      ? Address<TAccountTokenProgram>
-      : TAccountTokenProgram;
-    rent?: TAccountRent extends string ? Address<TAccountRent> : TAccountRent;
-  },
-  args: DeprecatedMintPrintingTokensInstructionDataArgs,
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.destination, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.printingMint, AccountRole.WRITABLE),
-      accountMetaWithDefault(
-        accounts.updateAuthority,
-        AccountRole.READONLY_SIGNER
-      ),
-      accountMetaWithDefault(accounts.metadata, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.masterEdition, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.tokenProgram ??
-          ('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>),
-        AccountRole.READONLY
-      ),
-      accountMetaWithDefault(
-        accounts.rent ??
-          ('SysvarRent111111111111111111111111111111111' as Address<'SysvarRent111111111111111111111111111111111'>),
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getDeprecatedMintPrintingTokensInstructionDataEncoder().encode(args),
-    programAddress,
-  } as DeprecatedMintPrintingTokensInstruction<
-    TProgram,
-    TAccountDestination,
-    TAccountPrintingMint,
-    TAccountUpdateAuthority,
-    TAccountMetadata,
-    TAccountMasterEdition,
-    TAccountTokenProgram,
-    TAccountRent,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedDeprecatedMintPrintingTokensInstruction<

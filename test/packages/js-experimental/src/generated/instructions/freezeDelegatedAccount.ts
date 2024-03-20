@@ -19,7 +19,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -29,11 +28,7 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type FreezeDelegatedAccountInstruction<
   TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
@@ -141,17 +136,13 @@ export function getFreezeDelegatedAccountInstruction<
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getFreezeDelegatedAccountInstructionRaw<
-      TProgram,
-      TAccountDelegate,
-      TAccountTokenAccount,
-      TAccountEdition,
-      TAccountMint,
-      TAccountTokenProgram
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  type AccountKeys =
+    | 'delegate'
+    | 'tokenAccount'
+    | 'edition'
+    | 'mint'
+    | 'tokenProgram';
+  const accounts: Record<AccountKeys, ResolvedAccount> = {
     delegate: { value: input.delegate ?? null, isWritable: true },
     tokenAccount: { value: input.tokenAccount ?? null, isWritable: true },
     edition: { value: input.edition ?? null, isWritable: false },
@@ -172,10 +163,17 @@ export function getFreezeDelegatedAccountInstruction<
     programAddress
   );
 
-  const instruction = getFreezeDelegatedAccountInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress
-  ) as FreezeDelegatedAccountInstruction<
+  const instruction = {
+    accounts: [
+      accountMetas.delegate,
+      accountMetas.tokenAccount,
+      accountMetas.edition,
+      accountMetas.mint,
+      accountMetas.tokenProgram,
+    ],
+    programAddress,
+    data: getFreezeDelegatedAccountInstructionDataEncoder().encode({}),
+  } as FreezeDelegatedAccountInstruction<
     TProgram,
     TAccountDelegate,
     TAccountTokenAccount,
@@ -185,61 +183,6 @@ export function getFreezeDelegatedAccountInstruction<
   >;
 
   return instruction;
-}
-
-export function getFreezeDelegatedAccountInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountDelegate extends string | IAccountMeta<string> = string,
-  TAccountTokenAccount extends string | IAccountMeta<string> = string,
-  TAccountEdition extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    delegate: TAccountDelegate extends string
-      ? Address<TAccountDelegate>
-      : TAccountDelegate;
-    tokenAccount: TAccountTokenAccount extends string
-      ? Address<TAccountTokenAccount>
-      : TAccountTokenAccount;
-    edition: TAccountEdition extends string
-      ? Address<TAccountEdition>
-      : TAccountEdition;
-    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
-    tokenProgram?: TAccountTokenProgram extends string
-      ? Address<TAccountTokenProgram>
-      : TAccountTokenProgram;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.delegate, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.tokenAccount, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.edition, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.tokenProgram ??
-          ('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>),
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getFreezeDelegatedAccountInstructionDataEncoder().encode({}),
-    programAddress,
-  } as FreezeDelegatedAccountInstruction<
-    TProgram,
-    TAccountDelegate,
-    TAccountTokenAccount,
-    TAccountEdition,
-    TAccountMint,
-    TAccountTokenProgram,
-    TRemainingAccounts
-  >;
 }
 
 export type ParsedFreezeDelegatedAccountInstruction<
