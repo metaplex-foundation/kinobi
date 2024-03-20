@@ -165,7 +165,9 @@ export function getUpdateMetadataAccountV2Instruction<
   const instruction = {
     accounts: [accountMetas.metadata, accountMetas.updateAuthority],
     programAddress,
-    data: getUpdateMetadataAccountV2InstructionDataEncoder().encode(args),
+    data: getUpdateMetadataAccountV2InstructionDataEncoder().encode(
+      args as UpdateMetadataAccountV2InstructionDataArgs
+    ),
   } as UpdateMetadataAccountV2Instruction<
     TProgram,
     TAccountMetadata,

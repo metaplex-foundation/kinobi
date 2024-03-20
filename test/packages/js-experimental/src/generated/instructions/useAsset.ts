@@ -295,7 +295,9 @@ export function getUseAssetInstruction<
       accountMetas.authorizationRulesProgram,
     ],
     programAddress,
-    data: getUseAssetInstructionDataEncoder().encode(args),
+    data: getUseAssetInstructionDataEncoder().encode(
+      args as UseAssetInstructionDataArgs
+    ),
   } as UseAssetInstruction<
     TProgram,
     TAccountMetadata,

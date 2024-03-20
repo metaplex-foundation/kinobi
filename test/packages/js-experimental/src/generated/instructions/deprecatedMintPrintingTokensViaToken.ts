@@ -263,7 +263,7 @@ export function getDeprecatedMintPrintingTokensViaTokenInstruction<
     ],
     programAddress,
     data: getDeprecatedMintPrintingTokensViaTokenInstructionDataEncoder().encode(
-      args
+      args as DeprecatedMintPrintingTokensViaTokenInstructionDataArgs
     ),
   } as DeprecatedMintPrintingTokensViaTokenInstruction<
     TProgram,

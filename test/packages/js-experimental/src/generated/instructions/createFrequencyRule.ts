@@ -177,7 +177,9 @@ export function getCreateFrequencyRuleInstruction<
       accountMetas.systemProgram,
     ],
     programAddress,
-    data: getCreateFrequencyRuleInstructionDataEncoder().encode(args),
+    data: getCreateFrequencyRuleInstructionDataEncoder().encode(
+      args as CreateFrequencyRuleInstructionDataArgs
+    ),
   } as CreateFrequencyRuleInstruction<
     TProgram,
     TAccountPayer,

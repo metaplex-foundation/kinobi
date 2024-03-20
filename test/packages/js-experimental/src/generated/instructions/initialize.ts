@@ -292,7 +292,9 @@ export function getInitializeInstruction<
       accountMetas.systemProgram,
     ],
     programAddress,
-    data: getInitializeInstructionDataEncoder().encode(args),
+    data: getInitializeInstructionDataEncoder().encode(
+      args as InitializeInstructionDataArgs
+    ),
   } as InitializeInstruction<
     TProgram,
     TAccountCandyMachine,

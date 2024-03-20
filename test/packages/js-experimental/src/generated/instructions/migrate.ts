@@ -280,7 +280,9 @@ export function getMigrateInstruction<
       accountMetas.authorizationRules,
     ],
     programAddress,
-    data: getMigrateInstructionDataEncoder().encode(args),
+    data: getMigrateInstructionDataEncoder().encode(
+      args as MigrateInstructionDataArgs
+    ),
   } as MigrateInstruction<
     TProgram,
     TAccountMetadata,

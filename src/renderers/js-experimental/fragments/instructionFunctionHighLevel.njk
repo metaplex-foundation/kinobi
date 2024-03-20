@@ -49,7 +49,7 @@ export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragme
     {% endif %}
     programAddress,
     {% if hasDataArgs %}
-      data: {{ encoderFunction }}.encode(args),
+      data: {{ encoderFunction }}.encode(args as {{ argsTypeFragment }}),
     {% elif hasData %}
       data: {{ encoderFunction }}.encode({}),
     {% endif %}

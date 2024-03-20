@@ -162,7 +162,9 @@ export function getAddConfigLinesInstruction<
   const instruction = {
     accounts: [accountMetas.candyMachine, accountMetas.authority],
     programAddress,
-    data: getAddConfigLinesInstructionDataEncoder().encode(args),
+    data: getAddConfigLinesInstructionDataEncoder().encode(
+      args as AddConfigLinesInstructionDataArgs
+    ),
   } as AddConfigLinesInstruction<
     TProgram,
     TAccountCandyMachine,

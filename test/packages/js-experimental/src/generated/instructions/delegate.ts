@@ -317,7 +317,9 @@ export function getDelegateInstruction<
       accountMetas.authorizationRules,
     ],
     programAddress,
-    data: getDelegateInstructionDataEncoder().encode(args),
+    data: getDelegateInstructionDataEncoder().encode(
+      args as DelegateInstructionDataArgs
+    ),
   } as DelegateInstruction<
     TProgram,
     TAccountDelegateRecord,

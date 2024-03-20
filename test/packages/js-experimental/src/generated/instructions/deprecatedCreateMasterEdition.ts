@@ -329,7 +329,9 @@ export function getDeprecatedCreateMasterEditionInstruction<
       accountMetas.oneTimePrintingAuthorizationMintAuthority,
     ],
     programAddress,
-    data: getDeprecatedCreateMasterEditionInstructionDataEncoder().encode(args),
+    data: getDeprecatedCreateMasterEditionInstructionDataEncoder().encode(
+      args as DeprecatedCreateMasterEditionInstructionDataArgs
+    ),
   } as DeprecatedCreateMasterEditionInstruction<
     TProgram,
     TAccountEdition,

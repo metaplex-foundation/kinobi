@@ -313,7 +313,9 @@ export function getMintInstruction<
       accountMetas.authorizationRules,
     ],
     programAddress,
-    data: getMintInstructionDataEncoder().encode(args),
+    data: getMintInstructionDataEncoder().encode(
+      args as MintInstructionDataArgs
+    ),
   } as MintInstruction<
     TProgram,
     TAccountToken,

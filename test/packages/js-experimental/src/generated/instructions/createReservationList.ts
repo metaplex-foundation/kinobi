@@ -193,7 +193,9 @@ export function getCreateReservationListInstruction<
       accountMetas.rent,
     ],
     programAddress,
-    data: getCreateReservationListInstructionDataEncoder().encode(args),
+    data: getCreateReservationListInstructionDataEncoder().encode(
+      args as CreateReservationListInstructionDataArgs
+    ),
   } as CreateReservationListInstruction<
     TProgram,
     TAccountReservationList,

@@ -178,7 +178,9 @@ export function getDeprecatedSetReservationListInstruction<
       accountMetas.resource,
     ],
     programAddress,
-    data: getDeprecatedSetReservationListInstructionDataEncoder().encode(args),
+    data: getDeprecatedSetReservationListInstructionDataEncoder().encode(
+      args as DeprecatedSetReservationListInstructionDataArgs
+    ),
   } as DeprecatedSetReservationListInstruction<
     TProgram,
     TAccountMasterEdition,

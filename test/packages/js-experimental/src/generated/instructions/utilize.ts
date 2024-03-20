@@ -286,7 +286,9 @@ export function getUtilizeInstruction<
       accountMetas.burner,
     ],
     programAddress,
-    data: getUtilizeInstructionDataEncoder().encode(args),
+    data: getUtilizeInstructionDataEncoder().encode(
+      args as UtilizeInstructionDataArgs
+    ),
   } as UtilizeInstruction<
     TProgram,
     TAccountMetadata,

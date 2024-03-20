@@ -407,7 +407,9 @@ export function getValidateInstruction<
       accountMetas.optRuleNonsigner5,
     ],
     programAddress,
-    data: getValidateInstructionDataEncoder().encode(args),
+    data: getValidateInstructionDataEncoder().encode(
+      args as ValidateInstructionDataArgs
+    ),
   } as ValidateInstruction<
     TProgram,
     TAccountPayer,

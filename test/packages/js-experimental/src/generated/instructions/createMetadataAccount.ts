@@ -308,7 +308,9 @@ export async function getCreateMetadataAccountInstructionAsync<
       accountMetas.rent,
     ],
     programAddress,
-    data: getCreateMetadataAccountInstructionDataEncoder().encode(args),
+    data: getCreateMetadataAccountInstructionDataEncoder().encode(
+      args as CreateMetadataAccountInstructionDataArgs
+    ),
   } as CreateMetadataAccountInstruction<
     TProgram,
     TAccountMetadata,
@@ -447,7 +449,9 @@ export function getCreateMetadataAccountInstruction<
       accountMetas.rent,
     ],
     programAddress,
-    data: getCreateMetadataAccountInstructionDataEncoder().encode(args),
+    data: getCreateMetadataAccountInstructionDataEncoder().encode(
+      args as CreateMetadataAccountInstructionDataArgs
+    ),
   } as CreateMetadataAccountInstruction<
     TProgram,
     TAccountMetadata,

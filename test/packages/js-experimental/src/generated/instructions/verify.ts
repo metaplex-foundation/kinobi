@@ -195,7 +195,9 @@ export function getVerifyInstruction<
       accountMetas.authorizationRulesProgram,
     ],
     programAddress,
-    data: getVerifyInstructionDataEncoder().encode(args),
+    data: getVerifyInstructionDataEncoder().encode(
+      args as VerifyInstructionDataArgs
+    ),
   } as VerifyInstruction<
     TProgram,
     TAccountMetadata,

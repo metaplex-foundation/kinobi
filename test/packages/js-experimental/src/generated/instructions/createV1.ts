@@ -289,7 +289,9 @@ export function getCreateV1Instruction<
       accountMetas.splTokenProgram,
     ],
     programAddress,
-    data: getCreateV1InstructionDataEncoder().encode(args),
+    data: getCreateV1InstructionDataEncoder().encode(
+      args as CreateV1InstructionDataArgs
+    ),
   } as CreateV1Instruction<
     TProgram,
     TAccountMetadata,

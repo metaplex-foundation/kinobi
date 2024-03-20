@@ -337,7 +337,7 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
     ],
     programAddress,
     data: getMintNewEditionFromMasterEditionViaTokenInstructionDataEncoder().encode(
-      args
+      args as MintNewEditionFromMasterEditionViaTokenInstructionDataArgs
     ),
   } as MintNewEditionFromMasterEditionViaTokenInstruction<
     TProgram,

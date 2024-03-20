@@ -231,7 +231,9 @@ export function getCreateMetadataAccountV2Instruction<
       accountMetas.rent,
     ],
     programAddress,
-    data: getCreateMetadataAccountV2InstructionDataEncoder().encode(args),
+    data: getCreateMetadataAccountV2InstructionDataEncoder().encode(
+      args as CreateMetadataAccountV2InstructionDataArgs
+    ),
   } as CreateMetadataAccountV2Instruction<
     TProgram,
     TAccountMetadata,

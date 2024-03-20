@@ -424,7 +424,9 @@ export function getUpdateV1Instruction<
       accountMetas.authorizationRules,
     ],
     programAddress,
-    data: getUpdateV1InstructionDataEncoder().encode(args),
+    data: getUpdateV1InstructionDataEncoder().encode(
+      args as UpdateV1InstructionDataArgs
+    ),
   } as UpdateV1Instruction<
     TProgram,
     TAccountAuthority,

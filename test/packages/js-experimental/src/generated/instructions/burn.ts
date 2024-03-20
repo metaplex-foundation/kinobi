@@ -257,7 +257,9 @@ export function getBurnInstruction<
       accountMetas.authorizationRulesProgram,
     ],
     programAddress,
-    data: getBurnInstructionDataEncoder().encode(args),
+    data: getBurnInstructionDataEncoder().encode(
+      args as BurnInstructionDataArgs
+    ),
   } as BurnInstruction<
     TProgram,
     TAccountMetadata,

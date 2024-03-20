@@ -317,7 +317,9 @@ export function getRevokeInstruction<
       accountMetas.authorizationRules,
     ],
     programAddress,
-    data: getRevokeInstructionDataEncoder().encode(args),
+    data: getRevokeInstructionDataEncoder().encode(
+      args as RevokeInstructionDataArgs
+    ),
   } as RevokeInstruction<
     TProgram,
     TAccountDelegateRecord,

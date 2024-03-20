@@ -234,7 +234,9 @@ export function getDeprecatedMintPrintingTokensInstruction<
       accountMetas.rent,
     ],
     programAddress,
-    data: getDeprecatedMintPrintingTokensInstructionDataEncoder().encode(args),
+    data: getDeprecatedMintPrintingTokensInstructionDataEncoder().encode(
+      args as DeprecatedMintPrintingTokensInstructionDataArgs
+    ),
   } as DeprecatedMintPrintingTokensInstruction<
     TProgram,
     TAccountDestination,

@@ -280,7 +280,9 @@ export function getApproveUseAuthorityInstruction<
       accountMetas.rent,
     ],
     programAddress,
-    data: getApproveUseAuthorityInstructionDataEncoder().encode(args),
+    data: getApproveUseAuthorityInstructionDataEncoder().encode(
+      args as ApproveUseAuthorityInstructionDataArgs
+    ),
   } as ApproveUseAuthorityInstruction<
     TProgram,
     TAccountUseAuthorityRecord,

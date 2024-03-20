@@ -141,7 +141,9 @@ export function getCreateAccountInstruction<
   const instruction = {
     accounts: [accountMetas.payer, accountMetas.newAccount],
     programAddress,
-    data: getCreateAccountInstructionDataEncoder().encode(args),
+    data: getCreateAccountInstructionDataEncoder().encode(
+      args as CreateAccountInstructionDataArgs
+    ),
   } as CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>;
 
   return instruction;

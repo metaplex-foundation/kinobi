@@ -201,7 +201,9 @@ export function getBubblegumSetCollectionSizeInstruction<
       accountMetas.collectionAuthorityRecord,
     ],
     programAddress,
-    data: getBubblegumSetCollectionSizeInstructionDataEncoder().encode(args),
+    data: getBubblegumSetCollectionSizeInstructionDataEncoder().encode(
+      args as BubblegumSetCollectionSizeInstructionDataArgs
+    ),
   } as BubblegumSetCollectionSizeInstruction<
     TProgram,
     TAccountCollectionMetadata,

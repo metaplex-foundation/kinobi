@@ -132,7 +132,9 @@ export function getSetAuthorityInstruction<
   const instruction = {
     accounts: [accountMetas.candyMachine, accountMetas.authority],
     programAddress,
-    data: getSetAuthorityInstructionDataEncoder().encode(args),
+    data: getSetAuthorityInstructionDataEncoder().encode(
+      args as SetAuthorityInstructionDataArgs
+    ),
   } as SetAuthorityInstruction<
     TProgram,
     TAccountCandyMachine,

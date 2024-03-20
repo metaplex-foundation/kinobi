@@ -178,7 +178,9 @@ export function getCreateRuleSetInstruction<
       accountMetas.systemProgram,
     ],
     programAddress,
-    data: getCreateRuleSetInstructionDataEncoder().encode(args),
+    data: getCreateRuleSetInstructionDataEncoder().encode(
+      args as CreateRuleSetInstructionDataArgs
+    ),
   } as CreateRuleSetInstruction<
     TProgram,
     TAccountPayer,

@@ -183,7 +183,9 @@ export function getSetCollectionSizeInstruction<
       accountMetas.collectionAuthorityRecord,
     ],
     programAddress,
-    data: getSetCollectionSizeInstructionDataEncoder().encode(args),
+    data: getSetCollectionSizeInstructionDataEncoder().encode(
+      args as SetCollectionSizeInstructionDataArgs
+    ),
   } as SetCollectionSizeInstruction<
     TProgram,
     TAccountCollectionMetadata,

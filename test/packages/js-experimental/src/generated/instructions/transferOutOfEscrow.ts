@@ -316,7 +316,9 @@ export function getTransferOutOfEscrowInstruction<
       accountMetas.authority,
     ],
     programAddress,
-    data: getTransferOutOfEscrowInstructionDataEncoder().encode(args),
+    data: getTransferOutOfEscrowInstructionDataEncoder().encode(
+      args as TransferOutOfEscrowInstructionDataArgs
+    ),
   } as TransferOutOfEscrowInstruction<
     TProgram,
     TAccountEscrow,

@@ -263,7 +263,9 @@ export function getCreateMasterEditionInstruction<
       accountMetas.rent,
     ],
     programAddress,
-    data: getCreateMasterEditionInstructionDataEncoder().encode(args),
+    data: getCreateMasterEditionInstructionDataEncoder().encode(
+      args as CreateMasterEditionInstructionDataArgs
+    ),
   } as CreateMasterEditionInstruction<
     TProgram,
     TAccountEdition,

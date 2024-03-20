@@ -382,7 +382,7 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
     ],
     programAddress,
     data: getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataEncoder().encode(
-      args
+      args as MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs
     ),
   } as MintNewEditionFromMasterEditionViaVaultProxyInstruction<
     TProgram,

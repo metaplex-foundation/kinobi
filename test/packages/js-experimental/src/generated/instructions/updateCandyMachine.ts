@@ -140,7 +140,9 @@ export function getUpdateCandyMachineInstruction<
   const instruction = {
     accounts: [accountMetas.candyMachine, accountMetas.authority],
     programAddress,
-    data: getUpdateCandyMachineInstructionDataEncoder().encode(args),
+    data: getUpdateCandyMachineInstructionDataEncoder().encode(
+      args as UpdateCandyMachineInstructionDataArgs
+    ),
   } as UpdateCandyMachineInstruction<
     TProgram,
     TAccountCandyMachine,

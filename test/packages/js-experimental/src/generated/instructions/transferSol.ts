@@ -125,7 +125,9 @@ export function getTransferSolInstruction<
   const instruction = {
     accounts: [accountMetas.source, accountMetas.destination],
     programAddress,
-    data: getTransferSolInstructionDataEncoder().encode(args),
+    data: getTransferSolInstructionDataEncoder().encode(
+      args as TransferSolInstructionDataArgs
+    ),
   } as TransferSolInstruction<TProgram, TAccountSource, TAccountDestination>;
 
   return instruction;

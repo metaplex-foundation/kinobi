@@ -378,7 +378,9 @@ export async function getTransferInstructionAsync<
       accountMetas.authorizationRules,
     ],
     programAddress,
-    data: getTransferInstructionDataEncoder().encode(args),
+    data: getTransferInstructionDataEncoder().encode(
+      args as TransferInstructionDataArgs
+    ),
   } as TransferInstruction<
     TProgram,
     TAccountAuthority,
@@ -609,7 +611,9 @@ export function getTransferInstruction<
       accountMetas.authorizationRules,
     ],
     programAddress,
-    data: getTransferInstructionDataEncoder().encode(args),
+    data: getTransferInstructionDataEncoder().encode(
+      args as TransferInstructionDataArgs
+    ),
   } as TransferInstruction<
     TProgram,
     TAccountAuthority,
