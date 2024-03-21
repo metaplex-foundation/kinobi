@@ -19,7 +19,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -29,14 +28,11 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type FreezeDelegatedAccountInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountDelegate extends string | IAccountMeta<string> = string,
   TAccountTokenAccount extends string | IAccountMeta<string> = string,
   TAccountEdition extends string | IAccountMeta<string> = string,
@@ -44,40 +40,7 @@ export type FreezeDelegatedAccountInstruction<
   TAccountTokenProgram extends
     | string
     | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountDelegate extends string
-        ? WritableSignerAccount<TAccountDelegate>
-        : TAccountDelegate,
-      TAccountTokenAccount extends string
-        ? WritableAccount<TAccountTokenAccount>
-        : TAccountTokenAccount,
-      TAccountEdition extends string
-        ? ReadonlyAccount<TAccountEdition>
-        : TAccountEdition,
-      TAccountMint extends string
-        ? ReadonlyAccount<TAccountMint>
-        : TAccountMint,
-      TAccountTokenProgram extends string
-        ? ReadonlyAccount<TAccountTokenProgram>
-        : TAccountTokenProgram,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type FreezeDelegatedAccountInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountDelegate extends string | IAccountMeta<string> = string,
-  TAccountTokenAccount extends string | IAccountMeta<string> = string,
-  TAccountEdition extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -128,30 +91,11 @@ export function getFreezeDelegatedAccountInstructionDataCodec(): Codec<
 }
 
 export type FreezeDelegatedAccountInput<
-  TAccountDelegate extends string,
-  TAccountTokenAccount extends string,
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountTokenProgram extends string,
-> = {
-  /** Delegate */
-  delegate: Address<TAccountDelegate>;
-  /** Token account to freeze */
-  tokenAccount: Address<TAccountTokenAccount>;
-  /** Edition */
-  edition: Address<TAccountEdition>;
-  /** Token mint */
-  mint: Address<TAccountMint>;
-  /** Token Program */
-  tokenProgram?: Address<TAccountTokenProgram>;
-};
-
-export type FreezeDelegatedAccountInputWithSigners<
-  TAccountDelegate extends string,
-  TAccountTokenAccount extends string,
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountTokenProgram extends string,
+  TAccountDelegate extends string = string,
+  TAccountTokenAccount extends string = string,
+  TAccountEdition extends string = string,
+  TAccountMint extends string = string,
+  TAccountTokenProgram extends string = string,
 > = {
   /** Delegate */
   delegate: TransactionSigner<TAccountDelegate>;
@@ -171,30 +115,6 @@ export function getFreezeDelegatedAccountInstruction<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountTokenProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: FreezeDelegatedAccountInputWithSigners<
-    TAccountDelegate,
-    TAccountTokenAccount,
-    TAccountEdition,
-    TAccountMint,
-    TAccountTokenProgram
-  >
-): FreezeDelegatedAccountInstructionWithSigners<
-  TProgram,
-  TAccountDelegate,
-  TAccountTokenAccount,
-  TAccountEdition,
-  TAccountMint,
-  TAccountTokenProgram
->;
-export function getFreezeDelegatedAccountInstruction<
-  TAccountDelegate extends string,
-  TAccountTokenAccount extends string,
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountTokenProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: FreezeDelegatedAccountInput<
     TAccountDelegate,
@@ -204,51 +124,28 @@ export function getFreezeDelegatedAccountInstruction<
     TAccountTokenProgram
   >
 ): FreezeDelegatedAccountInstruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountDelegate,
   TAccountTokenAccount,
   TAccountEdition,
   TAccountMint,
   TAccountTokenProgram
->;
-export function getFreezeDelegatedAccountInstruction<
-  TAccountDelegate extends string,
-  TAccountTokenAccount extends string,
-  TAccountEdition extends string,
-  TAccountMint extends string,
-  TAccountTokenProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: FreezeDelegatedAccountInput<
-    TAccountDelegate,
-    TAccountTokenAccount,
-    TAccountEdition,
-    TAccountMint,
-    TAccountTokenProgram
-  >
-): IInstruction {
+> {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getFreezeDelegatedAccountInstructionRaw<
-      TProgram,
-      TAccountDelegate,
-      TAccountTokenAccount,
-      TAccountEdition,
-      TAccountMint,
-      TAccountTokenProgram
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  const originalAccounts = {
     delegate: { value: input.delegate ?? null, isWritable: true },
     tokenAccount: { value: input.tokenAccount ?? null, isWritable: true },
     edition: { value: input.edition ?? null, isWritable: false },
     mint: { value: input.mint ?? null, isWritable: false },
     tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {
@@ -256,78 +153,31 @@ export function getFreezeDelegatedAccountInstruction<
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
-  const instruction = getFreezeDelegatedAccountInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress
-  );
-
-  return instruction;
-}
-
-export function getFreezeDelegatedAccountInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountDelegate extends string | IAccountMeta<string> = string,
-  TAccountTokenAccount extends string | IAccountMeta<string> = string,
-  TAccountEdition extends string | IAccountMeta<string> = string,
-  TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    delegate: TAccountDelegate extends string
-      ? Address<TAccountDelegate>
-      : TAccountDelegate;
-    tokenAccount: TAccountTokenAccount extends string
-      ? Address<TAccountTokenAccount>
-      : TAccountTokenAccount;
-    edition: TAccountEdition extends string
-      ? Address<TAccountEdition>
-      : TAccountEdition;
-    mint: TAccountMint extends string ? Address<TAccountMint> : TAccountMint;
-    tokenProgram?: TAccountTokenProgram extends string
-      ? Address<TAccountTokenProgram>
-      : TAccountTokenProgram;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
+  const instruction = {
     accounts: [
-      accountMetaWithDefault(accounts.delegate, AccountRole.WRITABLE_SIGNER),
-      accountMetaWithDefault(accounts.tokenAccount, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.edition, AccountRole.READONLY),
-      accountMetaWithDefault(accounts.mint, AccountRole.READONLY),
-      accountMetaWithDefault(
-        accounts.tokenProgram ??
-          ('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>),
-        AccountRole.READONLY
-      ),
-      ...(remainingAccounts ?? []),
+      getAccountMeta(accounts.delegate),
+      getAccountMeta(accounts.tokenAccount),
+      getAccountMeta(accounts.edition),
+      getAccountMeta(accounts.mint),
+      getAccountMeta(accounts.tokenProgram),
     ],
-    data: getFreezeDelegatedAccountInstructionDataEncoder().encode({}),
     programAddress,
+    data: getFreezeDelegatedAccountInstructionDataEncoder().encode({}),
   } as FreezeDelegatedAccountInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountDelegate,
     TAccountTokenAccount,
     TAccountEdition,
     TAccountMint,
-    TAccountTokenProgram,
-    TRemainingAccounts
+    TAccountTokenProgram
   >;
+
+  return instruction;
 }
 
 export type ParsedFreezeDelegatedAccountInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

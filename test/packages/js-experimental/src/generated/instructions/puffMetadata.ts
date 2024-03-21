@@ -19,38 +19,19 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
   WritableAccount,
 } from '@solana/instructions';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type PuffMetadataInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetadata extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountMetadata extends string
-        ? WritableAccount<TAccountMetadata>
-        : TAccountMetadata,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type PuffMetadataInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -87,84 +68,44 @@ export function getPuffMetadataInstructionDataCodec(): Codec<
   );
 }
 
-export type PuffMetadataInput<TAccountMetadata extends string> = {
+export type PuffMetadataInput<TAccountMetadata extends string = string> = {
   /** Metadata account */
   metadata: Address<TAccountMetadata>;
 };
 
-export type PuffMetadataInputWithSigners<TAccountMetadata extends string> = {
-  /** Metadata account */
-  metadata: Address<TAccountMetadata>;
-};
-
-export function getPuffMetadataInstruction<
-  TAccountMetadata extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: PuffMetadataInputWithSigners<TAccountMetadata>
-): PuffMetadataInstructionWithSigners<TProgram, TAccountMetadata>;
-export function getPuffMetadataInstruction<
-  TAccountMetadata extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
+export function getPuffMetadataInstruction<TAccountMetadata extends string>(
   input: PuffMetadataInput<TAccountMetadata>
-): PuffMetadataInstruction<TProgram, TAccountMetadata>;
-export function getPuffMetadataInstruction<
-  TAccountMetadata extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(input: PuffMetadataInput<TAccountMetadata>): IInstruction {
+): PuffMetadataInstruction<
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
+  TAccountMetadata
+> {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getPuffMetadataInstructionRaw<TProgram, TAccountMetadata>
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  const originalAccounts = {
     metadata: { value: input.metadata ?? null, isWritable: true },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
-  const instruction = getPuffMetadataInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress
-  );
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
+  const instruction = {
+    accounts: [getAccountMeta(accounts.metadata)],
+    programAddress,
+    data: getPuffMetadataInstructionDataEncoder().encode({}),
+  } as PuffMetadataInstruction<
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
+    TAccountMetadata
+  >;
 
   return instruction;
 }
 
-export function getPuffMetadataInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getPuffMetadataInstructionDataEncoder().encode({}),
-    programAddress,
-  } as PuffMetadataInstruction<TProgram, TAccountMetadata, TRemainingAccounts>;
-}
-
 export type ParsedPuffMetadataInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

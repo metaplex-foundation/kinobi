@@ -21,7 +21,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -30,41 +29,15 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS } from '../programs';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type SetMintAuthorityInstruction<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TProgram extends string = typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
   TAccountMintAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountCandyMachine extends string
-        ? WritableAccount<TAccountCandyMachine>
-        : TAccountCandyMachine,
-      TAccountAuthority extends string
-        ? ReadonlySignerAccount<TAccountAuthority>
-        : TAccountAuthority,
-      TAccountMintAuthority extends string
-        ? ReadonlySignerAccount<TAccountMintAuthority>
-        : TAccountMintAuthority,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type SetMintAuthorityInstructionWithSigners<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string | IAccountMeta<string> = string,
-  TAccountAuthority extends string | IAccountMeta<string> = string,
-  TAccountMintAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -117,19 +90,9 @@ export function getSetMintAuthorityInstructionDataCodec(): Codec<
 }
 
 export type SetMintAuthorityInput<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TAccountMintAuthority extends string,
-> = {
-  candyMachine: Address<TAccountCandyMachine>;
-  authority: Address<TAccountAuthority>;
-  mintAuthority: Address<TAccountMintAuthority>;
-};
-
-export type SetMintAuthorityInputWithSigners<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TAccountMintAuthority extends string,
+  TAccountCandyMachine extends string = string,
+  TAccountAuthority extends string = string,
+  TAccountMintAuthority extends string = string,
 > = {
   candyMachine: Address<TAccountCandyMachine>;
   authority: TransactionSigner<TAccountAuthority>;
@@ -140,24 +103,6 @@ export function getSetMintAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountMintAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
->(
-  input: SetMintAuthorityInputWithSigners<
-    TAccountCandyMachine,
-    TAccountAuthority,
-    TAccountMintAuthority
-  >
-): SetMintAuthorityInstructionWithSigners<
-  TProgram,
-  TAccountCandyMachine,
-  TAccountAuthority,
-  TAccountMintAuthority
->;
-export function getSetMintAuthorityInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TAccountMintAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: SetMintAuthorityInput<
     TAccountCandyMachine,
@@ -165,101 +110,46 @@ export function getSetMintAuthorityInstruction<
     TAccountMintAuthority
   >
 ): SetMintAuthorityInstruction<
-  TProgram,
+  typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
   TAccountCandyMachine,
   TAccountAuthority,
   TAccountMintAuthority
->;
-export function getSetMintAuthorityInstruction<
-  TAccountCandyMachine extends string,
-  TAccountAuthority extends string,
-  TAccountMintAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
->(
-  input: SetMintAuthorityInput<
-    TAccountCandyMachine,
-    TAccountAuthority,
-    TAccountMintAuthority
-  >
-): IInstruction {
+> {
   // Program address.
-  const programAddress =
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  const programAddress = MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getSetMintAuthorityInstructionRaw<
-      TProgram,
-      TAccountCandyMachine,
-      TAccountAuthority,
-      TAccountMintAuthority
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  const originalAccounts = {
     candyMachine: { value: input.candyMachine ?? null, isWritable: true },
     authority: { value: input.authority ?? null, isWritable: false },
     mintAuthority: { value: input.mintAuthority ?? null, isWritable: false },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
-  const instruction = getSetMintAuthorityInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress
-  );
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
+  const instruction = {
+    accounts: [
+      getAccountMeta(accounts.candyMachine),
+      getAccountMeta(accounts.authority),
+      getAccountMeta(accounts.mintAuthority),
+    ],
+    programAddress,
+    data: getSetMintAuthorityInstructionDataEncoder().encode({}),
+  } as SetMintAuthorityInstruction<
+    typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
+    TAccountCandyMachine,
+    TAccountAuthority,
+    TAccountMintAuthority
+  >;
 
   return instruction;
 }
 
-export function getSetMintAuthorityInstructionRaw<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
-  TAccountCandyMachine extends string | IAccountMeta<string> = string,
-  TAccountAuthority extends string | IAccountMeta<string> = string,
-  TAccountMintAuthority extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    candyMachine: TAccountCandyMachine extends string
-      ? Address<TAccountCandyMachine>
-      : TAccountCandyMachine;
-    authority: TAccountAuthority extends string
-      ? Address<TAccountAuthority>
-      : TAccountAuthority;
-    mintAuthority: TAccountMintAuthority extends string
-      ? Address<TAccountMintAuthority>
-      : TAccountMintAuthority;
-  },
-  programAddress: Address<TProgram> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.candyMachine, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.authority, AccountRole.READONLY_SIGNER),
-      accountMetaWithDefault(
-        accounts.mintAuthority,
-        AccountRole.READONLY_SIGNER
-      ),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getSetMintAuthorityInstructionDataEncoder().encode({}),
-    programAddress,
-  } as SetMintAuthorityInstruction<
-    TProgram,
-    TAccountCandyMachine,
-    TAccountAuthority,
-    TAccountMintAuthority,
-    TRemainingAccounts
-  >;
-}
-
 export type ParsedSetMintAuthorityInstruction<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TProgram extends string = typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

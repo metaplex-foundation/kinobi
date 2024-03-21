@@ -1,7 +1,7 @@
 {% import "templates/macros.njk" as macros %}
 
 export type {{ instructionParsedType }}<
-  TProgram extends string = '{{ programAddress }}',
+  TProgram extends string = typeof {{ programAddressConstant }},
   {% if hasAccounts %}
     TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
   {% endif %}
@@ -50,7 +50,7 @@ export function {{ instructionParseFunction }}<
     {% if hasOptionalAccounts and instruction.optionalAccountStrategy === 'programId' %}
       const getNextOptionalAccount = () => {
         const accountMeta = getNextAccount();
-        return accountMeta.address === '{{ programAddress }}' ? undefined : accountMeta;
+        return accountMeta.address === {{ programAddressConstant }} ? undefined : accountMeta;
       };
     {% elif hasOptionalAccounts and instruction.optionalAccountStrategy === 'omitted' %}
       let optionalAccountsRemaining = instruction.accounts.length - {{ minimumNumberOfAccounts }};

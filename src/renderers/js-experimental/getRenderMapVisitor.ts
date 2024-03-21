@@ -41,8 +41,7 @@ import {
   getAccountTypeFragment,
   getInstructionDataFragment,
   getInstructionExtraArgsFragment,
-  getInstructionFunctionHighLevelFragment,
-  getInstructionFunctionLowLevelFragment,
+  getInstructionFunctionFragment,
   getInstructionParseFunctionFragment,
   getInstructionTypeFragment,
   getPdaFunctionFragment,
@@ -393,43 +392,30 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
           };
 
           // Fragments.
-          const instructionTypeFragment = getInstructionTypeFragment({
-            ...scope,
-            withSigners: false,
-          });
-          const instructionTypeWithSignersFragment = getInstructionTypeFragment(
-            {
-              ...scope,
-              withSigners: true,
-            }
-          );
+          const instructionTypeFragment = getInstructionTypeFragment(scope);
           const instructionDataFragment = getInstructionDataFragment(scope);
           const instructionExtraArgsFragment =
             getInstructionExtraArgsFragment(scope);
-          const instructionFunctionHighLevelAsyncFragment =
-            getInstructionFunctionHighLevelFragment({
+          const instructionFunctionAsyncFragment =
+            getInstructionFunctionFragment({
               ...scope,
               useAsync: true,
             });
-          const instructionFunctionHighLevelSyncFragment =
-            getInstructionFunctionHighLevelFragment({
+          const instructionFunctionSyncFragment =
+            getInstructionFunctionFragment({
               ...scope,
               useAsync: false,
             });
-          const instructionFunctionLowLevelFragment =
-            getInstructionFunctionLowLevelFragment(scope);
           const instructionParseFunctionFragment =
             getInstructionParseFunctionFragment(scope);
 
           // Imports and interfaces.
           const imports = new ImportMap().mergeWith(
             instructionTypeFragment,
-            instructionTypeWithSignersFragment,
             instructionDataFragment,
             instructionExtraArgsFragment,
-            instructionFunctionHighLevelAsyncFragment,
-            instructionFunctionHighLevelSyncFragment,
-            instructionFunctionLowLevelFragment,
+            instructionFunctionAsyncFragment,
+            instructionFunctionSyncFragment,
             instructionParseFunctionFragment
           );
 
@@ -439,12 +425,10 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
               instruction: node,
               imports: imports.toString(dependencyMap),
               instructionTypeFragment,
-              instructionTypeWithSignersFragment,
               instructionDataFragment,
               instructionExtraArgsFragment,
-              instructionFunctionHighLevelAsyncFragment,
-              instructionFunctionHighLevelSyncFragment,
-              instructionFunctionLowLevelFragment,
+              instructionFunctionAsyncFragment,
+              instructionFunctionSyncFragment,
               instructionParseFunctionFragment,
             })
           );

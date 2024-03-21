@@ -26,7 +26,6 @@ export function getInstructionInputTypeFragment(
     renamedArgs: Map<string, string>;
     dataArgsManifest: TypeManifest;
     programNode: ProgramNode;
-    withSigners: boolean;
     useAsync: boolean;
   }
 ): Fragment {
@@ -36,7 +35,6 @@ export function getInstructionInputTypeFragment(
     renamedArgs,
     dataArgsManifest,
     programNode,
-    withSigners,
     asyncResolvers,
     useAsync,
     nameApi,
@@ -59,7 +57,7 @@ export function getInstructionInputTypeFragment(
       ]) &&
       (useAsync ||
         !isAsyncDefaultValue(resolvedAccount.defaultValue, asyncResolvers));
-    const type = getAccountType(resolvedAccount, withSigners);
+    const type = getAccountType(resolvedAccount);
     accountImports.mergeWith(type);
     return {
       ...resolvedAccount,
@@ -107,14 +105,9 @@ export function getInstructionInputTypeFragment(
     : instructionNode.arguments.flatMap(resolveArg);
   const extraArgsType = nameApi.dataArgsType(instructionExtraName);
   const extraArgs = (instructionNode.extraArguments ?? []).flatMap(resolveArg);
-
-  const syncInputType = withSigners
-    ? nameApi.instructionSyncInputWithSignersType(instructionNode.name)
+  const instructionInputType = useAsync
+    ? nameApi.instructionAsyncInputType(instructionNode.name)
     : nameApi.instructionSyncInputType(instructionNode.name);
-  const asyncInputType = withSigners
-    ? nameApi.instructionAsyncInputWithSignersType(instructionNode.name)
-    : nameApi.instructionAsyncInputType(instructionNode.name);
-  const instructionInputType = useAsync ? asyncInputType : syncInputType;
 
   return fragmentFromTemplate('instructionInputType.njk', {
     instruction: instructionNode,
@@ -130,46 +123,34 @@ export function getInstructionInputTypeFragment(
     .addImports('solanaAddresses', ['Address']);
 }
 
-function getAccountType(
-  account: ResolvedInstructionAccount,
-  withSigners: boolean
-): Fragment {
+function getAccountType(account: ResolvedInstructionAccount): Fragment {
   const typeParam = `TAccount${pascalCase(account.name)}`;
 
-  if (withSigners) {
-    if (account.isPda && account.isSigner === false) {
-      return fragment(`ProgramDerivedAddress<${typeParam}>`).addImports(
-        'solanaAddresses',
-        ['ProgramDerivedAddress']
-      );
-    }
-
-    if (account.isPda && account.isSigner === 'either') {
-      return fragment(
-        `ProgramDerivedAddress<${typeParam}> | TransactionSigner<${typeParam}>`
-      )
-        .addImports('solanaAddresses', ['ProgramDerivedAddress'])
-        .addImports('solanaSigners', ['TransactionSigner']);
-    }
-
-    if (account.isSigner === 'either') {
-      return fragment(`Address<${typeParam}> | TransactionSigner<${typeParam}>`)
-        .addImports('solanaAddresses', ['Address'])
-        .addImports('solanaSigners', ['TransactionSigner']);
-    }
-
-    if (account.isSigner) {
-      return fragment(`TransactionSigner<${typeParam}>`).addImports(
-        'solanaSigners',
-        ['TransactionSigner']
-      );
-    }
-  }
-
-  if (!withSigners && account.isPda) {
+  if (account.isPda && account.isSigner === false) {
     return fragment(`ProgramDerivedAddress<${typeParam}>`).addImports(
       'solanaAddresses',
       ['ProgramDerivedAddress']
+    );
+  }
+
+  if (account.isPda && account.isSigner === 'either') {
+    return fragment(
+      `ProgramDerivedAddress<${typeParam}> | TransactionSigner<${typeParam}>`
+    )
+      .addImports('solanaAddresses', ['ProgramDerivedAddress'])
+      .addImports('solanaSigners', ['TransactionSigner']);
+  }
+
+  if (account.isSigner === 'either') {
+    return fragment(`Address<${typeParam}> | TransactionSigner<${typeParam}>`)
+      .addImports('solanaAddresses', ['Address'])
+      .addImports('solanaSigners', ['TransactionSigner']);
+  }
+
+  if (account.isSigner) {
+    return fragment(`TransactionSigner<${typeParam}>`).addImports(
+      'solanaSigners',
+      ['TransactionSigner']
     );
   }
 

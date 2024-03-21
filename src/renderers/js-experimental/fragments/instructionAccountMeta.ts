@@ -3,8 +3,7 @@ import { pascalCase } from '../../../shared';
 import { Fragment, fragment } from './common';
 
 export function getInstructionAccountMetaFragment(
-  instructionAccountNode: InstructionAccountNode,
-  withSigners: boolean
+  instructionAccountNode: InstructionAccountNode
 ): Fragment {
   const typeParam = `TAccount${pascalCase(instructionAccountNode.name)}`;
 
@@ -14,23 +13,19 @@ export function getInstructionAccountMetaFragment(
     instructionAccountNode.isWritable
   ) {
     return fragment(
-      withSigners
-        ? `WritableSignerAccount<${typeParam}> & IAccountSignerMeta<${typeParam}>`
-        : `WritableSignerAccount<${typeParam}>`
+      `WritableSignerAccount<${typeParam}> & IAccountSignerMeta<${typeParam}>`
     )
       .addImports('solanaInstructions', ['WritableSignerAccount'])
-      .addImports('solanaSigners', withSigners ? ['IAccountSignerMeta'] : []);
+      .addImports('solanaSigners', ['IAccountSignerMeta']);
   }
 
   // Readonly, signer.
   if (instructionAccountNode.isSigner === true) {
     return fragment(
-      withSigners
-        ? `ReadonlySignerAccount<${typeParam}> & IAccountSignerMeta<${typeParam}>`
-        : `ReadonlySignerAccount<${typeParam}>`
+      `ReadonlySignerAccount<${typeParam}> & IAccountSignerMeta<${typeParam}>`
     )
       .addImports('solanaInstructions', ['ReadonlySignerAccount'])
-      .addImports('solanaSigners', withSigners ? ['IAccountSignerMeta'] : []);
+      .addImports('solanaSigners', ['IAccountSignerMeta']);
   }
 
   // Writable, non-signer or optional signer.

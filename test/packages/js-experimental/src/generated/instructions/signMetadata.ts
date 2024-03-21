@@ -19,7 +19,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -28,36 +27,14 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type SignMetadataInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountCreator extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountMetadata extends string
-        ? WritableAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountCreator extends string
-        ? ReadonlySignerAccount<TAccountCreator>
-        : TAccountCreator,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type SignMetadataInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountCreator extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -99,18 +76,8 @@ export function getSignMetadataInstructionDataCodec(): Codec<
 }
 
 export type SignMetadataInput<
-  TAccountMetadata extends string,
-  TAccountCreator extends string,
-> = {
-  /** Metadata (pda of ['metadata', program id, mint id]) */
-  metadata: Address<TAccountMetadata>;
-  /** Creator */
-  creator: Address<TAccountCreator>;
-};
-
-export type SignMetadataInputWithSigners<
-  TAccountMetadata extends string,
-  TAccountCreator extends string,
+  TAccountMetadata extends string = string,
+  TAccountCreator extends string = string,
 > = {
   /** Metadata (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
@@ -121,93 +88,45 @@ export type SignMetadataInputWithSigners<
 export function getSignMetadataInstruction<
   TAccountMetadata extends string,
   TAccountCreator extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: SignMetadataInputWithSigners<TAccountMetadata, TAccountCreator>
-): SignMetadataInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountCreator
->;
-export function getSignMetadataInstruction<
-  TAccountMetadata extends string,
-  TAccountCreator extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: SignMetadataInput<TAccountMetadata, TAccountCreator>
-): SignMetadataInstruction<TProgram, TAccountMetadata, TAccountCreator>;
-export function getSignMetadataInstruction<
-  TAccountMetadata extends string,
-  TAccountCreator extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(input: SignMetadataInput<TAccountMetadata, TAccountCreator>): IInstruction {
+): SignMetadataInstruction<
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
+  TAccountMetadata,
+  TAccountCreator
+> {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getSignMetadataInstructionRaw<
-      TProgram,
-      TAccountMetadata,
-      TAccountCreator
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  const originalAccounts = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     creator: { value: input.creator ?? null, isWritable: false },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
-  const instruction = getSignMetadataInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress
-  );
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
+  const instruction = {
+    accounts: [
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.creator),
+    ],
+    programAddress,
+    data: getSignMetadataInstructionDataEncoder().encode({}),
+  } as SignMetadataInstruction<
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
+    TAccountMetadata,
+    TAccountCreator
+  >;
 
   return instruction;
 }
 
-export function getSignMetadataInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountCreator extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    creator: TAccountCreator extends string
-      ? Address<TAccountCreator>
-      : TAccountCreator;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.creator, AccountRole.READONLY_SIGNER),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getSignMetadataInstructionDataEncoder().encode({}),
-    programAddress,
-  } as SignMetadataInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountCreator,
-    TRemainingAccounts
-  >;
-}
-
 export type ParsedSignMetadataInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

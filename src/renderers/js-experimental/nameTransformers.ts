@@ -46,16 +46,12 @@ export type NameTransformerKey =
   | 'dataEnumFunction'
   | 'isDataEnumFunction'
   | 'instructionAsyncInputType'
-  | 'instructionAsyncInputWithSignersType'
   | 'instructionSyncInputType'
-  | 'instructionSyncInputWithSignersType'
   | 'instructionType'
-  | 'instructionWithSignersType'
   | 'instructionDataType'
   | 'instructionExtraType'
   | 'instructionAsyncFunction'
   | 'instructionSyncFunction'
-  | 'instructionRawFunction'
   | 'instructionParsedType'
   | 'instructionParseFunction'
   | 'programType'
@@ -121,19 +117,12 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
   dataEnumFunction: (name) => `${camelCase(name)}`,
   isDataEnumFunction: (name) => `is${pascalCase(name)}`,
   instructionAsyncInputType: (name) => `${pascalCase(name)}AsyncInput`,
-  instructionAsyncInputWithSignersType: (name) =>
-    `${pascalCase(name)}AsyncInputWithSigners`,
   instructionSyncInputType: (name) => `${pascalCase(name)}Input`,
-  instructionSyncInputWithSignersType: (name) =>
-    `${pascalCase(name)}InputWithSigners`,
   instructionType: (name) => `${pascalCase(name)}Instruction`,
-  instructionWithSignersType: (name) =>
-    `${pascalCase(name)}InstructionWithSigners`,
   instructionDataType: (name) => `${pascalCase(name)}InstructionData`,
   instructionExtraType: (name) => `${pascalCase(name)}InstructionExtra`,
   instructionAsyncFunction: (name) => `get${pascalCase(name)}InstructionAsync`,
   instructionSyncFunction: (name) => `get${pascalCase(name)}Instruction`,
-  instructionRawFunction: (name) => `get${pascalCase(name)}InstructionRaw`,
   instructionParsedType: (name) => `Parsed${pascalCase(name)}Instruction`,
   instructionParseFunction: (name) => `parse${pascalCase(name)}Instruction`,
   programType: (name) => `${pascalCase(name)}Program`,

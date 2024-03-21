@@ -12,20 +12,17 @@ export function getInstructionTypeFragment(
   > & {
     instructionNode: InstructionNode;
     programNode: ProgramNode;
-    withSigners: boolean;
   }
 ): Fragment {
-  const {
-    instructionNode,
-    programNode,
-    withSigners,
-    nameApi,
-    customInstructionData,
-  } = scope;
+  const { instructionNode, programNode, nameApi, customInstructionData } =
+    scope;
   const hasAccounts = instructionNode.accounts.length > 0;
   const customData = customInstructionData.get(instructionNode.name);
   const hasData = !!customData || instructionNode.arguments.length > 0;
   const instructionDataName = nameApi.instructionDataType(instructionNode.name);
+  const programAddressConstant = nameApi.programAddressConstant(
+    programNode.name
+  );
   const dataType = customData
     ? pascalCase(customData.importAs)
     : pascalCase(instructionDataName);
@@ -43,7 +40,7 @@ export function getInstructionTypeFragment(
     instructionNode.optionalAccountStrategy === 'omitted';
   const accountMetasFragment = mergeFragments(
     instructionNode.accounts.map((account) =>
-      getInstructionAccountMetaFragment(account, withSigners).mapRender((r) => {
+      getInstructionAccountMetaFragment(account).mapRender((r) => {
         const typeParam = `TAccount${pascalCase(account.name)}`;
         const isLegacyOptional =
           account.isOptional && usesLegacyOptionalAccounts;
@@ -57,10 +54,8 @@ export function getInstructionTypeFragment(
 
   const fragment = fragmentFromTemplate('instructionType.njk', {
     instruction: instructionNode,
-    instructionType: withSigners
-      ? nameApi.instructionWithSignersType(instructionNode.name)
-      : nameApi.instructionType(instructionNode.name),
-    program: programNode,
+    instructionType: nameApi.instructionType(instructionNode.name),
+    programAddressConstant,
     hasData,
     hasAccounts,
     dataType,
@@ -68,6 +63,7 @@ export function getInstructionTypeFragment(
     accountMetas: accountMetasFragment.render,
   })
     .mergeImportsWith(accountTypeParamsFragment, accountMetasFragment)
+    .addImports('generatedPrograms', [programAddressConstant])
     .addImports('solanaInstructions', [
       'IAccountMeta',
       'IInstruction',

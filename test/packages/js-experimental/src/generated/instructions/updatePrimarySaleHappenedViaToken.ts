@@ -19,7 +19,6 @@ import {
   mapEncoder,
 } from '@solana/codecs';
 import {
-  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
@@ -29,41 +28,15 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
-import {
-  ResolvedAccount,
-  accountMetaWithDefault,
-  getAccountMetasWithSigners,
-} from '../shared';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type UpdatePrimarySaleHappenedViaTokenInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountOwner extends string | IAccountMeta<string> = string,
   TAccountToken extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
-> = IInstruction<TProgram> &
-  IInstructionWithData<Uint8Array> &
-  IInstructionWithAccounts<
-    [
-      TAccountMetadata extends string
-        ? WritableAccount<TAccountMetadata>
-        : TAccountMetadata,
-      TAccountOwner extends string
-        ? ReadonlySignerAccount<TAccountOwner>
-        : TAccountOwner,
-      TAccountToken extends string
-        ? ReadonlyAccount<TAccountToken>
-        : TAccountToken,
-      ...TRemainingAccounts,
-    ]
-  >;
-
-export type UpdatePrimarySaleHappenedViaTokenInstructionWithSigners<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountOwner extends string | IAccountMeta<string> = string,
-  TAccountToken extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
+  TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
@@ -110,22 +83,9 @@ export function getUpdatePrimarySaleHappenedViaTokenInstructionDataCodec(): Code
 }
 
 export type UpdatePrimarySaleHappenedViaTokenInput<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountToken extends string,
-> = {
-  /** Metadata key (pda of ['metadata', program id, mint id]) */
-  metadata: Address<TAccountMetadata>;
-  /** Owner on the token account */
-  owner: Address<TAccountOwner>;
-  /** Account containing tokens from the metadata's mint */
-  token: Address<TAccountToken>;
-};
-
-export type UpdatePrimarySaleHappenedViaTokenInputWithSigners<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountToken extends string,
+  TAccountMetadata extends string = string,
+  TAccountOwner extends string = string,
+  TAccountToken extends string = string,
 > = {
   /** Metadata key (pda of ['metadata', program id, mint id]) */
   metadata: Address<TAccountMetadata>;
@@ -139,24 +99,6 @@ export function getUpdatePrimarySaleHappenedViaTokenInstruction<
   TAccountMetadata extends string,
   TAccountOwner extends string,
   TAccountToken extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: UpdatePrimarySaleHappenedViaTokenInputWithSigners<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountToken
-  >
-): UpdatePrimarySaleHappenedViaTokenInstructionWithSigners<
-  TProgram,
-  TAccountMetadata,
-  TAccountOwner,
-  TAccountToken
->;
-export function getUpdatePrimarySaleHappenedViaTokenInstruction<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountToken extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: UpdatePrimarySaleHappenedViaTokenInput<
     TAccountMetadata,
@@ -164,100 +106,48 @@ export function getUpdatePrimarySaleHappenedViaTokenInstruction<
     TAccountToken
   >
 ): UpdatePrimarySaleHappenedViaTokenInstruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetadata,
   TAccountOwner,
   TAccountToken
->;
-export function getUpdatePrimarySaleHappenedViaTokenInstruction<
-  TAccountMetadata extends string,
-  TAccountOwner extends string,
-  TAccountToken extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
-  input: UpdatePrimarySaleHappenedViaTokenInput<
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountToken
-  >
-): IInstruction {
+> {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountMetas = Parameters<
-    typeof getUpdatePrimarySaleHappenedViaTokenInstructionRaw<
-      TProgram,
-      TAccountMetadata,
-      TAccountOwner,
-      TAccountToken
-    >
-  >[0];
-  const accounts: Record<keyof AccountMetas, ResolvedAccount> = {
+  const originalAccounts = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     owner: { value: input.owner ?? null, isWritable: false },
     token: { value: input.token ?? null, isWritable: false },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
-  const instruction = getUpdatePrimarySaleHappenedViaTokenInstructionRaw(
-    accountMetas as Record<keyof AccountMetas, IAccountMeta>,
-    programAddress
-  );
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
+  const instruction = {
+    accounts: [
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.owner),
+      getAccountMeta(accounts.token),
+    ],
+    programAddress,
+    data: getUpdatePrimarySaleHappenedViaTokenInstructionDataEncoder().encode(
+      {}
+    ),
+  } as UpdatePrimarySaleHappenedViaTokenInstruction<
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
+    TAccountMetadata,
+    TAccountOwner,
+    TAccountToken
+  >;
 
   return instruction;
 }
 
-export function getUpdatePrimarySaleHappenedViaTokenInstructionRaw<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountOwner extends string | IAccountMeta<string> = string,
-  TAccountToken extends string | IAccountMeta<string> = string,
-  TRemainingAccounts extends Array<IAccountMeta<string>> = [],
->(
-  accounts: {
-    metadata: TAccountMetadata extends string
-      ? Address<TAccountMetadata>
-      : TAccountMetadata;
-    owner: TAccountOwner extends string
-      ? Address<TAccountOwner>
-      : TAccountOwner;
-    token: TAccountToken extends string
-      ? Address<TAccountToken>
-      : TAccountToken;
-  },
-  programAddress: Address<TProgram> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<TProgram>,
-  remainingAccounts?: TRemainingAccounts
-) {
-  return {
-    accounts: [
-      accountMetaWithDefault(accounts.metadata, AccountRole.WRITABLE),
-      accountMetaWithDefault(accounts.owner, AccountRole.READONLY_SIGNER),
-      accountMetaWithDefault(accounts.token, AccountRole.READONLY),
-      ...(remainingAccounts ?? []),
-    ],
-    data: getUpdatePrimarySaleHappenedViaTokenInstructionDataEncoder().encode(
-      {}
-    ),
-    programAddress,
-  } as UpdatePrimarySaleHappenedViaTokenInstruction<
-    TProgram,
-    TAccountMetadata,
-    TAccountOwner,
-    TAccountToken,
-    TRemainingAccounts
-  >;
-}
-
 export type ParsedUpdatePrimarySaleHappenedViaTokenInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
