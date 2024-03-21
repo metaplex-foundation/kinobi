@@ -114,22 +114,6 @@ export type ResolvedAccount<
 };
 
 /**
- * Add an account meta with a default role if only an address is provided.
- * @internal
- */
-export function accountMetaWithDefault<
-  TAccount extends string | IAccountMeta<string>,
-  TRole extends AccountRole,
->(account: TAccount | undefined, role: TRole) {
-  if (account === undefined) return undefined;
-  return (
-    typeof account === 'string' ? { address: account, role } : account
-  ) as TAccount extends string
-    ? { address: Address<TAccount>; role: TRole }
-    : TAccount;
-}
-
-/**
  * Defines an instruction that stores additional bytes on-chain.
  * @internal
  */
