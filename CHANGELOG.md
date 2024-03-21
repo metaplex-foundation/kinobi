@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.18.1
+
+### Patch Changes
+
+- [#183](https://github.com/metaplex-foundation/kinobi/pull/183) [`0873088`](https://github.com/metaplex-foundation/kinobi/commit/08730883a5b6fd7a4248d6bc7a48e163a0b7dd18) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add support for remaining account signers in JS experimental
+
 ## 0.18.0
 
 ### Minor Changes
