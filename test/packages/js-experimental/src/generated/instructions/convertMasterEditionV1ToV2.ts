@@ -25,10 +25,11 @@ import {
   IInstructionWithData,
   WritableAccount,
 } from '@solana/instructions';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type ConvertMasterEditionV1ToV2Instruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
   TAccountOneTimeAuth extends string | IAccountMeta<string> = string,
   TAccountPrintingMint extends string | IAccountMeta<string> = string,
@@ -94,7 +95,6 @@ export function getConvertMasterEditionV1ToV2Instruction<
   TAccountMasterEdition extends string,
   TAccountOneTimeAuth extends string,
   TAccountPrintingMint extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: ConvertMasterEditionV1ToV2Input<
     TAccountMasterEdition,
@@ -102,14 +102,13 @@ export function getConvertMasterEditionV1ToV2Instruction<
     TAccountPrintingMint
   >
 ): ConvertMasterEditionV1ToV2Instruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMasterEdition,
   TAccountOneTimeAuth,
   TAccountPrintingMint
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys = 'masterEdition' | 'oneTimeAuth' | 'printingMint';
@@ -135,7 +134,7 @@ export function getConvertMasterEditionV1ToV2Instruction<
     programAddress,
     data: getConvertMasterEditionV1ToV2InstructionDataEncoder().encode({}),
   } as ConvertMasterEditionV1ToV2Instruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountMasterEdition,
     TAccountOneTimeAuth,
     TAccountPrintingMint
@@ -145,7 +144,7 @@ export function getConvertMasterEditionV1ToV2Instruction<
 }
 
 export type ParsedConvertMasterEditionV1ToV2Instruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

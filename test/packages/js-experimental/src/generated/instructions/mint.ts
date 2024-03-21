@@ -29,6 +29,7 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 import {
   MintArgs,
@@ -38,7 +39,7 @@ import {
 } from '../types';
 
 export type MintInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountToken extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
@@ -193,7 +194,6 @@ export function getMintInstruction<
   TAccountSplAtaProgram extends string,
   TAccountAuthorizationRulesProgram extends string,
   TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: MintInput<
     TAccountToken,
@@ -210,7 +210,7 @@ export function getMintInstruction<
     TAccountAuthorizationRules
   >
 ): MintInstruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountToken,
   TAccountMetadata,
   TAccountMasterEdition,
@@ -225,8 +225,7 @@ export function getMintInstruction<
   TAccountAuthorizationRules
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -317,7 +316,7 @@ export function getMintInstruction<
       args as MintInstructionDataArgs
     ),
   } as MintInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountToken,
     TAccountMetadata,
     TAccountMasterEdition,
@@ -336,7 +335,7 @@ export function getMintInstruction<
 }
 
 export type ParsedMintInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
@@ -389,7 +388,7 @@ export function parseMintInstruction<
   };
   const getNextOptionalAccount = () => {
     const accountMeta = getNextAccount();
-    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+    return accountMeta.address === MPL_TOKEN_METADATA_PROGRAM_ADDRESS
       ? undefined
       : accountMeta;
   };

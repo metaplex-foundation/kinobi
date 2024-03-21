@@ -28,10 +28,11 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type RevokeCollectionAuthorityInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountCollectionAuthorityRecord extends
     | string
     | IAccountMeta<string> = string,
@@ -116,7 +117,6 @@ export function getRevokeCollectionAuthorityInstruction<
   TAccountRevokeAuthority extends string,
   TAccountMetadata extends string,
   TAccountMint extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: RevokeCollectionAuthorityInput<
     TAccountCollectionAuthorityRecord,
@@ -126,7 +126,7 @@ export function getRevokeCollectionAuthorityInstruction<
     TAccountMint
   >
 ): RevokeCollectionAuthorityInstruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountCollectionAuthorityRecord,
   TAccountDelegateAuthority,
   TAccountRevokeAuthority,
@@ -134,8 +134,7 @@ export function getRevokeCollectionAuthorityInstruction<
   TAccountMint
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -176,7 +175,7 @@ export function getRevokeCollectionAuthorityInstruction<
     programAddress,
     data: getRevokeCollectionAuthorityInstructionDataEncoder().encode({}),
   } as RevokeCollectionAuthorityInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountCollectionAuthorityRecord,
     TAccountDelegateAuthority,
     TAccountRevokeAuthority,
@@ -188,7 +187,7 @@ export function getRevokeCollectionAuthorityInstruction<
 }
 
 export type ParsedRevokeCollectionAuthorityInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

@@ -31,6 +31,7 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 import {
   CandyMachineData,
@@ -40,7 +41,7 @@ import {
 } from '../types';
 
 export type InitializeInstruction<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TProgram extends string = typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthorityPda extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
@@ -182,7 +183,6 @@ export function getInitializeInstruction<
   TAccountCollectionAuthorityRecord extends string,
   TAccountTokenMetadataProgram extends string,
   TAccountSystemProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: InitializeInput<
     TAccountCandyMachine,
@@ -198,7 +198,7 @@ export function getInitializeInstruction<
     TAccountSystemProgram
   >
 ): InitializeInstruction<
-  TProgram,
+  typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
   TAccountCandyMachine,
   TAccountAuthorityPda,
   TAccountAuthority,
@@ -212,8 +212,7 @@ export function getInitializeInstruction<
   TAccountSystemProgram
 > {
   // Program address.
-  const programAddress =
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  const programAddress = MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -296,7 +295,7 @@ export function getInitializeInstruction<
       args as InitializeInstructionDataArgs
     ),
   } as InitializeInstruction<
-    TProgram,
+    typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
     TAccountCandyMachine,
     TAccountAuthorityPda,
     TAccountAuthority,
@@ -314,7 +313,7 @@ export function getInitializeInstruction<
 }
 
 export type ParsedInitializeInstruction<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TProgram extends string = typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

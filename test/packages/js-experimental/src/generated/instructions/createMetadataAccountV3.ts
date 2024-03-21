@@ -36,6 +36,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { findMetadataPda } from '../pdas';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import {
   ResolvedAccount,
   expectAddress,
@@ -53,7 +54,7 @@ import {
 } from '../types';
 
 export type CreateMetadataAccountV3Instruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
   TAccountMintAuthority extends string | IAccountMeta<string> = string,
@@ -175,7 +176,6 @@ export async function getCreateMetadataAccountV3InstructionAsync<
   TAccountUpdateAuthority extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CreateMetadataAccountV3AsyncInput<
     TAccountMetadata,
@@ -188,7 +188,7 @@ export async function getCreateMetadataAccountV3InstructionAsync<
   >
 ): Promise<
   CreateMetadataAccountV3Instruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountMetadata,
     TAccountMint,
     TAccountMintAuthority,
@@ -199,8 +199,7 @@ export async function getCreateMetadataAccountV3InstructionAsync<
   >
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -260,7 +259,7 @@ export async function getCreateMetadataAccountV3InstructionAsync<
       args as CreateMetadataAccountV3InstructionDataArgs
     ),
   } as CreateMetadataAccountV3Instruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountMetadata,
     TAccountMint,
     TAccountMintAuthority,
@@ -309,7 +308,6 @@ export function getCreateMetadataAccountV3Instruction<
   TAccountUpdateAuthority extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CreateMetadataAccountV3Input<
     TAccountMetadata,
@@ -321,7 +319,7 @@ export function getCreateMetadataAccountV3Instruction<
     TAccountRent
   >
 ): CreateMetadataAccountV3Instruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetadata,
   TAccountMint,
   TAccountMintAuthority,
@@ -331,8 +329,7 @@ export function getCreateMetadataAccountV3Instruction<
   TAccountRent
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -387,7 +384,7 @@ export function getCreateMetadataAccountV3Instruction<
       args as CreateMetadataAccountV3InstructionDataArgs
     ),
   } as CreateMetadataAccountV3Instruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountMetadata,
     TAccountMint,
     TAccountMintAuthority,
@@ -401,7 +398,7 @@ export function getCreateMetadataAccountV3Instruction<
 }
 
 export type ParsedCreateMetadataAccountV3Instruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
@@ -444,7 +441,7 @@ export function parseCreateMetadataAccountV3Instruction<
   };
   const getNextOptionalAccount = () => {
     const accountMeta = getNextAccount();
-    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+    return accountMeta.address === MPL_TOKEN_METADATA_PROGRAM_ADDRESS
       ? undefined
       : accountMeta;
   };

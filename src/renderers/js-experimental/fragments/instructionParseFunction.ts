@@ -33,6 +33,9 @@ export function getInstructionParseFunctionFragment(
   }
 
   const instructionDataName = nameApi.instructionDataType(instructionNode.name);
+  const programAddressConstant = nameApi.programAddressConstant(
+    programNode.name
+  );
   const dataTypeFragment = fragment(
     customData
       ? dataArgsManifest.strictType.render
@@ -50,7 +53,7 @@ export function getInstructionParseFunctionFragment(
 
   return fragmentFromTemplate('instructionParseFunction.njk', {
     instruction: instructionNode,
-    programAddress: programNode.publicKey,
+    programAddressConstant,
     instructionParsedType: nameApi.instructionParsedType(instructionNode.name),
     instructionParseFunction: nameApi.instructionParseFunction(
       instructionNode.name
@@ -63,6 +66,7 @@ export function getInstructionParseFunctionFragment(
     hasData,
   })
     .mergeImportsWith(dataTypeFragment)
+    .addImports('generatedPrograms', [programAddressConstant])
     .addImports('solanaInstructions', ['IInstruction'])
     .addImports(
       'solanaInstructions',

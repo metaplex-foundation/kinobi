@@ -2,7 +2,7 @@
 
 export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(input: {{ inputTypeCallFragment }}): {{ getReturnType(instructionTypeFragment) }} {
   // Program address.
-  const programAddress = "{{ program.publicKey }}" as Address<"{{ program.publicKey }}">;
+  const programAddress = {{ programAddressConstant }};
 
   {% if hasAccounts %}
     // Original accounts.

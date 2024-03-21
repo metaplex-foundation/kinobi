@@ -31,10 +31,11 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type TransferOutOfEscrowInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountEscrow extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountPayer extends string | IAccountMeta<string> = string,
@@ -200,7 +201,6 @@ export function getTransferOutOfEscrowInstruction<
   TAccountTokenProgram extends string,
   TAccountSysvarInstructions extends string,
   TAccountAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: TransferOutOfEscrowInput<
     TAccountEscrow,
@@ -218,7 +218,7 @@ export function getTransferOutOfEscrowInstruction<
     TAccountAuthority
   >
 ): TransferOutOfEscrowInstruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountEscrow,
   TAccountMetadata,
   TAccountPayer,
@@ -234,8 +234,7 @@ export function getTransferOutOfEscrowInstruction<
   TAccountAuthority
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -320,7 +319,7 @@ export function getTransferOutOfEscrowInstruction<
       args as TransferOutOfEscrowInstructionDataArgs
     ),
   } as TransferOutOfEscrowInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountEscrow,
     TAccountMetadata,
     TAccountPayer,
@@ -340,7 +339,7 @@ export function getTransferOutOfEscrowInstruction<
 }
 
 export type ParsedTransferOutOfEscrowInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
@@ -395,7 +394,7 @@ export function parseTransferOutOfEscrowInstruction<
   };
   const getNextOptionalAccount = () => {
     const accountMeta = getNextAccount();
-    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+    return accountMeta.address === MPL_TOKEN_METADATA_PROGRAM_ADDRESS
       ? undefined
       : accountMeta;
   };

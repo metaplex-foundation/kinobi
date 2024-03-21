@@ -28,10 +28,11 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type VerifyCollectionInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
   TAccountPayer extends string | IAccountMeta<string> = string,
@@ -123,7 +124,6 @@ export function getVerifyCollectionInstruction<
   TAccountCollectionMint extends string,
   TAccountCollection extends string,
   TAccountCollectionMasterEditionAccount extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: VerifyCollectionInput<
     TAccountMetadata,
@@ -134,7 +134,7 @@ export function getVerifyCollectionInstruction<
     TAccountCollectionMasterEditionAccount
   >
 ): VerifyCollectionInstruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetadata,
   TAccountCollectionAuthority,
   TAccountPayer,
@@ -143,8 +143,7 @@ export function getVerifyCollectionInstruction<
   TAccountCollectionMasterEditionAccount
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -188,7 +187,7 @@ export function getVerifyCollectionInstruction<
     programAddress,
     data: getVerifyCollectionInstructionDataEncoder().encode({}),
   } as VerifyCollectionInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountMetadata,
     TAccountCollectionAuthority,
     TAccountPayer,
@@ -201,7 +200,7 @@ export function getVerifyCollectionInstruction<
 }
 
 export type ParsedVerifyCollectionInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

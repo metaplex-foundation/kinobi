@@ -28,10 +28,11 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type BurnEditionNftInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountOwner extends string | IAccountMeta<string> = string,
   TAccountPrintEditionMint extends string | IAccountMeta<string> = string,
@@ -158,7 +159,6 @@ export function getBurnEditionNftInstruction<
   TAccountPrintEditionAccount extends string,
   TAccountEditionMarkerAccount extends string,
   TAccountSplTokenProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: BurnEditionNftInput<
     TAccountMetadata,
@@ -173,7 +173,7 @@ export function getBurnEditionNftInstruction<
     TAccountSplTokenProgram
   >
 ): BurnEditionNftInstruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetadata,
   TAccountOwner,
   TAccountPrintEditionMint,
@@ -186,8 +186,7 @@ export function getBurnEditionNftInstruction<
   TAccountSplTokenProgram
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -267,7 +266,7 @@ export function getBurnEditionNftInstruction<
     programAddress,
     data: getBurnEditionNftInstructionDataEncoder().encode({}),
   } as BurnEditionNftInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountMetadata,
     TAccountOwner,
     TAccountPrintEditionMint,
@@ -284,7 +283,7 @@ export function getBurnEditionNftInstruction<
 }
 
 export type ParsedBurnEditionNftInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

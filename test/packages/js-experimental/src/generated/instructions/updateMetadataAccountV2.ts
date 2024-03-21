@@ -37,6 +37,7 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 import {
   DataV2,
@@ -46,7 +47,7 @@ import {
 } from '../types';
 
 export type UpdateMetadataAccountV2Instruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
@@ -130,17 +131,15 @@ export type UpdateMetadataAccountV2Input<
 export function getUpdateMetadataAccountV2Instruction<
   TAccountMetadata extends string,
   TAccountUpdateAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: UpdateMetadataAccountV2Input<TAccountMetadata, TAccountUpdateAuthority>
 ): UpdateMetadataAccountV2Instruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetadata,
   TAccountUpdateAuthority
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys = 'metadata' | 'updateAuthority';
@@ -169,7 +168,7 @@ export function getUpdateMetadataAccountV2Instruction<
       args as UpdateMetadataAccountV2InstructionDataArgs
     ),
   } as UpdateMetadataAccountV2Instruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountMetadata,
     TAccountUpdateAuthority
   >;
@@ -178,7 +177,7 @@ export function getUpdateMetadataAccountV2Instruction<
 }
 
 export type ParsedUpdateMetadataAccountV2Instruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

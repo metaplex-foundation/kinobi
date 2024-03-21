@@ -29,6 +29,7 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 import {
   MintNewEditionFromMasterEditionViaTokenArgs,
@@ -38,7 +39,7 @@ import {
 } from '../types';
 
 export type MintNewEditionFromMasterEditionViaTokenInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountNewMetadata extends string | IAccountMeta<string> = string,
   TAccountNewEdition extends string | IAccountMeta<string> = string,
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
@@ -217,7 +218,6 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: MintNewEditionFromMasterEditionViaTokenInput<
     TAccountNewMetadata,
@@ -236,7 +236,7 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
     TAccountRent
   >
 ): MintNewEditionFromMasterEditionViaTokenInstruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountNewMetadata,
   TAccountNewEdition,
   TAccountMasterEdition,
@@ -253,8 +253,7 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
   TAccountRent
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -340,7 +339,7 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
       args as MintNewEditionFromMasterEditionViaTokenInstructionDataArgs
     ),
   } as MintNewEditionFromMasterEditionViaTokenInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountNewMetadata,
     TAccountNewEdition,
     TAccountMasterEdition,
@@ -361,7 +360,7 @@ export function getMintNewEditionFromMasterEditionViaTokenInstruction<
 }
 
 export type ParsedMintNewEditionFromMasterEditionViaTokenInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
@@ -421,7 +420,7 @@ export function parseMintNewEditionFromMasterEditionViaTokenInstruction<
   };
   const getNextOptionalAccount = () => {
     const accountMeta = getNextAccount();
-    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+    return accountMeta.address === MPL_TOKEN_METADATA_PROGRAM_ADDRESS
       ? undefined
       : accountMeta;
   };

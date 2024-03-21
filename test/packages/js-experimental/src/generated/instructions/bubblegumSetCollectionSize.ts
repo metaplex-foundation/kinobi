@@ -29,6 +29,7 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 import {
   SetCollectionSizeArgs,
@@ -38,7 +39,7 @@ import {
 } from '../types';
 
 export type BubblegumSetCollectionSizeInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
   TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
   TAccountCollectionMint extends string | IAccountMeta<string> = string,
@@ -134,7 +135,6 @@ export function getBubblegumSetCollectionSizeInstruction<
   TAccountCollectionMint extends string,
   TAccountBubblegumSigner extends string,
   TAccountCollectionAuthorityRecord extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: BubblegumSetCollectionSizeInput<
     TAccountCollectionMetadata,
@@ -144,7 +144,7 @@ export function getBubblegumSetCollectionSizeInstruction<
     TAccountCollectionAuthorityRecord
   >
 ): BubblegumSetCollectionSizeInstruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountCollectionMetadata,
   TAccountCollectionAuthority,
   TAccountCollectionMint,
@@ -152,8 +152,7 @@ export function getBubblegumSetCollectionSizeInstruction<
   TAccountCollectionAuthorityRecord
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -205,7 +204,7 @@ export function getBubblegumSetCollectionSizeInstruction<
       args as BubblegumSetCollectionSizeInstructionDataArgs
     ),
   } as BubblegumSetCollectionSizeInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountCollectionMetadata,
     TAccountCollectionAuthority,
     TAccountCollectionMint,
@@ -217,7 +216,7 @@ export function getBubblegumSetCollectionSizeInstruction<
 }
 
 export type ParsedBubblegumSetCollectionSizeInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
@@ -256,7 +255,7 @@ export function parseBubblegumSetCollectionSizeInstruction<
   };
   const getNextOptionalAccount = () => {
     const accountMeta = getNextAccount();
-    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+    return accountMeta.address === MPL_TOKEN_METADATA_PROGRAM_ADDRESS
       ? undefined
       : accountMeta;
   };

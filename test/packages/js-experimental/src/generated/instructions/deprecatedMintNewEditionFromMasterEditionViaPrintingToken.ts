@@ -28,10 +28,11 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountEdition extends string | IAccountMeta<string> = string,
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
@@ -210,7 +211,6 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
   TAccountSystemProgram extends string,
   TAccountRent extends string,
   TAccountReservationList extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInput<
     TAccountMetadata,
@@ -231,7 +231,7 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
     TAccountReservationList
   >
 ): DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetadata,
   TAccountEdition,
   TAccountMasterEdition,
@@ -250,8 +250,7 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
   TAccountReservationList
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -341,7 +340,7 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
       {}
     ),
   } as DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountMetadata,
     TAccountEdition,
     TAccountMasterEdition,
@@ -364,7 +363,7 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
 }
 
 export type ParsedDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
@@ -428,7 +427,7 @@ export function parseDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenIn
   };
   const getNextOptionalAccount = () => {
     const accountMeta = getNextAccount();
-    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+    return accountMeta.address === MPL_TOKEN_METADATA_PROGRAM_ADDRESS
       ? undefined
       : accountMeta;
   };

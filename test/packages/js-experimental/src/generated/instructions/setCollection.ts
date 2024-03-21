@@ -31,10 +31,11 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type SetCollectionInstruction<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TProgram extends string = typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
   TAccountAuthorityPda extends string | IAccountMeta<string> = string,
@@ -194,7 +195,6 @@ export function getSetCollectionInstruction<
   TAccountNewCollectionAuthorityRecord extends string,
   TAccountTokenMetadataProgram extends string,
   TAccountSystemProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: SetCollectionInput<
     TAccountCandyMachine,
@@ -213,7 +213,7 @@ export function getSetCollectionInstruction<
     TAccountSystemProgram
   >
 ): SetCollectionInstruction<
-  TProgram,
+  typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
   TAccountCandyMachine,
   TAccountAuthority,
   TAccountAuthorityPda,
@@ -230,8 +230,7 @@ export function getSetCollectionInstruction<
   TAccountSystemProgram
 > {
   // Program address.
-  const programAddress =
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  const programAddress = MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -327,7 +326,7 @@ export function getSetCollectionInstruction<
     programAddress,
     data: getSetCollectionInstructionDataEncoder().encode({}),
   } as SetCollectionInstruction<
-    TProgram,
+    typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
     TAccountCandyMachine,
     TAccountAuthority,
     TAccountAuthorityPda,
@@ -348,7 +347,7 @@ export function getSetCollectionInstruction<
 }
 
 export type ParsedSetCollectionInstruction<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TProgram extends string = typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

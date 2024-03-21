@@ -65,6 +65,9 @@ export function getInstructionFunctionFragment(
     ).length > 0;
   const hasAnyArgs = hasDataArgs || hasExtraArgs;
   const instructionDataName = nameApi.instructionDataType(instructionNode.name);
+  const programAddressConstant = nameApi.programAddressConstant(
+    programNode.name
+  );
   const encoderFunction = customData
     ? dataArgsManifest.encoder.render
     : `${nameApi.encoderFunction(instructionDataName)}()`;
@@ -84,7 +87,7 @@ export function getInstructionFunctionFragment(
     ? nameApi.instructionAsyncFunction(instructionNode.name)
     : nameApi.instructionSyncFunction(instructionNode.name);
 
-  const typeParamsFragment = getTypeParams(instructionNode, programNode);
+  const typeParamsFragment = getTypeParams(instructionNode);
   const instructionTypeFragment = getInstructionType(scope);
 
   // Input.
@@ -117,7 +120,7 @@ export function getInstructionFunctionFragment(
 
   const functionFragment = fragmentFromTemplate('instructionFunction.njk', {
     instruction: instructionNode,
-    program: programNode,
+    programAddressConstant,
     hasAccounts,
     hasLegacyOptionalAccounts,
     hasData,
@@ -147,6 +150,7 @@ export function getInstructionFunctionFragment(
       resolvedFragment,
       argsTypeFragment
     )
+    .addImports('generatedPrograms', [programAddressConstant])
     .addImports('solanaAddresses', ['Address']);
 
   if (hasAccounts) {
@@ -162,25 +166,26 @@ export function getInstructionFunctionFragment(
   return functionFragment;
 }
 
-function getTypeParams(
-  instructionNode: InstructionNode,
-  programNode: ProgramNode
-): Fragment {
-  const typeParams = [
-    ...instructionNode.accounts.map(
-      (account) => `TAccount${pascalCase(account.name)} extends string`
-    ),
-    `TProgram extends string = "${programNode.publicKey}"`,
-  ];
+function getTypeParams(instructionNode: InstructionNode): Fragment {
+  const typeParams = instructionNode.accounts.map(
+    (account) => `TAccount${pascalCase(account.name)} extends string`
+  );
   return fragment(typeParams.filter((x) => !!x).join(', '));
 }
 
 function getInstructionType(scope: {
   instructionNode: InstructionNode;
+  programNode: ProgramNode;
   nameApi: NameApi;
 }): Fragment {
-  const { instructionNode, nameApi } = scope;
+  const { instructionNode, programNode, nameApi } = scope;
   const instructionTypeName = nameApi.instructionType(instructionNode.name);
+  const programAddressConstant = nameApi.programAddressConstant(
+    programNode.name
+  );
+  const programAddressFragment = fragment(
+    `typeof ${programAddressConstant}`
+  ).addImports('generatedPrograms', [programAddressConstant]);
   const accountTypeParamsFragments = instructionNode.accounts.map((account) => {
     const typeParam = `TAccount${pascalCase(account.name)}`;
     const camelName = camelCase(account.name);
@@ -202,7 +207,7 @@ function getInstructionType(scope: {
   });
 
   return mergeFragments(
-    [fragment('TProgram'), ...accountTypeParamsFragments],
+    [programAddressFragment, ...accountTypeParamsFragments],
     (renders) => renders.join(', ')
   ).mapRender((r) => `${instructionTypeName}<${r}>`);
 }

@@ -29,6 +29,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { resolveMasterEditionFromTokenStandard } from '../../hooked';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 import {
   TokenStandard,
@@ -40,7 +41,7 @@ import {
 } from '../types';
 
 export type TransferInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountAuthority extends string | IAccountMeta<string> = string,
   TAccountDelegateRecord extends string | IAccountMeta<string> = string,
   TAccountToken extends string | IAccountMeta<string> = string,
@@ -226,7 +227,6 @@ export async function getTransferInstructionAsync<
   TAccountSysvarInstructions extends string,
   TAccountAuthorizationRulesProgram extends string,
   TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: TransferAsyncInput<
     TAccountAuthority,
@@ -247,7 +247,7 @@ export async function getTransferInstructionAsync<
   >
 ): Promise<
   TransferInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountAuthority,
     TAccountDelegateRecord,
     TAccountToken,
@@ -266,8 +266,7 @@ export async function getTransferInstructionAsync<
   >
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -382,7 +381,7 @@ export async function getTransferInstructionAsync<
       args as TransferInstructionDataArgs
     ),
   } as TransferInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountAuthority,
     TAccountDelegateRecord,
     TAccountToken,
@@ -470,7 +469,6 @@ export function getTransferInstruction<
   TAccountSysvarInstructions extends string,
   TAccountAuthorizationRulesProgram extends string,
   TAccountAuthorizationRules extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: TransferInput<
     TAccountAuthority,
@@ -490,7 +488,7 @@ export function getTransferInstruction<
     TAccountAuthorizationRules
   >
 ): TransferInstruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountAuthority,
   TAccountDelegateRecord,
   TAccountToken,
@@ -508,8 +506,7 @@ export function getTransferInstruction<
   TAccountAuthorizationRules
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -615,7 +612,7 @@ export function getTransferInstruction<
       args as TransferInstructionDataArgs
     ),
   } as TransferInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountAuthority,
     TAccountDelegateRecord,
     TAccountToken,
@@ -637,7 +634,7 @@ export function getTransferInstruction<
 }
 
 export type ParsedTransferInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
@@ -696,7 +693,7 @@ export function parseTransferInstruction<
   };
   const getNextOptionalAccount = () => {
     const accountMeta = getNextAccount();
-    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+    return accountMeta.address === MPL_TOKEN_METADATA_PROGRAM_ADDRESS
       ? undefined
       : accountMeta;
   };

@@ -23,10 +23,11 @@ import {
   getCreateReservationListInstructionDataDecoder,
   getCreateReservationListInstructionDataEncoder,
 } from '../../hooked';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type CreateReservationListInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountReservationList extends string | IAccountMeta<string> = string,
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
@@ -111,7 +112,6 @@ export function getCreateReservationListInstruction<
   TAccountMetadata extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CreateReservationListInput<
     TAccountReservationList,
@@ -124,7 +124,7 @@ export function getCreateReservationListInstruction<
     TAccountRent
   >
 ): CreateReservationListInstruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountReservationList,
   TAccountPayer,
   TAccountUpdateAuthority,
@@ -135,8 +135,7 @@ export function getCreateReservationListInstruction<
   TAccountRent
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -198,7 +197,7 @@ export function getCreateReservationListInstruction<
       args as CreateReservationListInstructionDataArgs
     ),
   } as CreateReservationListInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountReservationList,
     TAccountPayer,
     TAccountUpdateAuthority,
@@ -213,7 +212,7 @@ export function getCreateReservationListInstruction<
 }
 
 export type ParsedCreateReservationListInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

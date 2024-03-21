@@ -28,10 +28,11 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type CloseEscrowAccountInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountEscrow extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
@@ -140,7 +141,6 @@ export function getCloseEscrowAccountInstruction<
   TAccountPayer extends string,
   TAccountSystemProgram extends string,
   TAccountSysvarInstructions extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CloseEscrowAccountInput<
     TAccountEscrow,
@@ -153,7 +153,7 @@ export function getCloseEscrowAccountInstruction<
     TAccountSysvarInstructions
   >
 ): CloseEscrowAccountInstruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountEscrow,
   TAccountMetadata,
   TAccountMint,
@@ -164,8 +164,7 @@ export function getCloseEscrowAccountInstruction<
   TAccountSysvarInstructions
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -222,7 +221,7 @@ export function getCloseEscrowAccountInstruction<
     programAddress,
     data: getCloseEscrowAccountInstructionDataEncoder().encode({}),
   } as CloseEscrowAccountInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountEscrow,
     TAccountMetadata,
     TAccountMint,
@@ -237,7 +236,7 @@ export function getCloseEscrowAccountInstruction<
 }
 
 export type ParsedCloseEscrowAccountInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

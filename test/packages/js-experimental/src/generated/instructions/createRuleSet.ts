@@ -28,6 +28,7 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS } from '../programs';
 import {
   ResolvedAccount,
   expectProgramDerivedAddress,
@@ -41,7 +42,7 @@ import {
 } from '../types';
 
 export type CreateRuleSetInstruction<
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TProgram extends string = typeof MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS,
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountRuleSetPda extends string | IAccountMeta<string> = string,
   TAccountSystemProgram extends
@@ -125,7 +126,6 @@ export function getCreateRuleSetInstruction<
   TAccountPayer extends string,
   TAccountRuleSetPda extends string,
   TAccountSystemProgram extends string,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
 >(
   input: CreateRuleSetInput<
     TAccountPayer,
@@ -133,14 +133,13 @@ export function getCreateRuleSetInstruction<
     TAccountSystemProgram
   >
 ): CreateRuleSetInstruction<
-  TProgram,
+  typeof MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS,
   TAccountPayer,
   TAccountRuleSetPda,
   TAccountSystemProgram
 > {
   // Program address.
-  const programAddress =
-    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
+  const programAddress = MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys = 'payer' | 'ruleSetPda' | 'systemProgram';
@@ -182,7 +181,7 @@ export function getCreateRuleSetInstruction<
       args as CreateRuleSetInstructionDataArgs
     ),
   } as CreateRuleSetInstruction<
-    TProgram,
+    typeof MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS,
     TAccountPayer,
     TAccountRuleSetPda,
     TAccountSystemProgram
@@ -192,7 +191,7 @@ export function getCreateRuleSetInstruction<
 }
 
 export type ParsedCreateRuleSetInstruction<
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TProgram extends string = typeof MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

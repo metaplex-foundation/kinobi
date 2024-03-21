@@ -31,6 +31,7 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 import {
   DataV2,
@@ -40,7 +41,7 @@ import {
 } from '../types';
 
 export type CreateMetadataAccountV2Instruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
   TAccountMintAuthority extends string | IAccountMeta<string> = string,
@@ -157,7 +158,6 @@ export function getCreateMetadataAccountV2Instruction<
   TAccountUpdateAuthority extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CreateMetadataAccountV2Input<
     TAccountMetadata,
@@ -169,7 +169,7 @@ export function getCreateMetadataAccountV2Instruction<
     TAccountRent
   >
 ): CreateMetadataAccountV2Instruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetadata,
   TAccountMint,
   TAccountMintAuthority,
@@ -179,8 +179,7 @@ export function getCreateMetadataAccountV2Instruction<
   TAccountRent
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -235,7 +234,7 @@ export function getCreateMetadataAccountV2Instruction<
       args as CreateMetadataAccountV2InstructionDataArgs
     ),
   } as CreateMetadataAccountV2Instruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountMetadata,
     TAccountMint,
     TAccountMintAuthority,
@@ -249,7 +248,7 @@ export function getCreateMetadataAccountV2Instruction<
 }
 
 export type ParsedCreateMetadataAccountV2Instruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
@@ -292,7 +291,7 @@ export function parseCreateMetadataAccountV2Instruction<
   };
   const getNextOptionalAccount = () => {
     const accountMeta = getNextAccount();
-    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+    return accountMeta.address === MPL_TOKEN_METADATA_PROGRAM_ADDRESS
       ? undefined
       : accountMeta;
   };

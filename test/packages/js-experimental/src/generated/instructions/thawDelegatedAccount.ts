@@ -28,10 +28,11 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type ThawDelegatedAccountInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountDelegate extends string | IAccountMeta<string> = string,
   TAccountTokenAccount extends string | IAccountMeta<string> = string,
   TAccountEdition extends string | IAccountMeta<string> = string,
@@ -114,7 +115,6 @@ export function getThawDelegatedAccountInstruction<
   TAccountEdition extends string,
   TAccountMint extends string,
   TAccountTokenProgram extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: ThawDelegatedAccountInput<
     TAccountDelegate,
@@ -124,7 +124,7 @@ export function getThawDelegatedAccountInstruction<
     TAccountTokenProgram
   >
 ): ThawDelegatedAccountInstruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountDelegate,
   TAccountTokenAccount,
   TAccountEdition,
@@ -132,8 +132,7 @@ export function getThawDelegatedAccountInstruction<
   TAccountTokenProgram
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -174,7 +173,7 @@ export function getThawDelegatedAccountInstruction<
     programAddress,
     data: getThawDelegatedAccountInstructionDataEncoder().encode({}),
   } as ThawDelegatedAccountInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountDelegate,
     TAccountTokenAccount,
     TAccountEdition,
@@ -186,7 +185,7 @@ export function getThawDelegatedAccountInstruction<
 }
 
 export type ParsedThawDelegatedAccountInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

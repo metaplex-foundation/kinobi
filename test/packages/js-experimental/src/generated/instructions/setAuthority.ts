@@ -33,10 +33,11 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type SetAuthorityInstruction<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TProgram extends string = typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
@@ -104,13 +105,15 @@ export type SetAuthorityInput<
 export function getSetAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: SetAuthorityInput<TAccountCandyMachine, TAccountAuthority>
-): SetAuthorityInstruction<TProgram, TAccountCandyMachine, TAccountAuthority> {
+): SetAuthorityInstruction<
+  typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
+  TAccountCandyMachine,
+  TAccountAuthority
+> {
   // Program address.
-  const programAddress =
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  const programAddress = MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys = 'candyMachine' | 'authority';
@@ -136,7 +139,7 @@ export function getSetAuthorityInstruction<
       args as SetAuthorityInstructionDataArgs
     ),
   } as SetAuthorityInstruction<
-    TProgram,
+    typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
     TAccountCandyMachine,
     TAccountAuthority
   >;
@@ -145,7 +148,7 @@ export function getSetAuthorityInstruction<
 }
 
 export type ParsedSetAuthorityInstruction<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TProgram extends string = typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

@@ -35,6 +35,7 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 import {
   Reservation,
@@ -44,7 +45,7 @@ import {
 } from '../types';
 
 export type DeprecatedSetReservationListInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
   TAccountReservationList extends string | IAccountMeta<string> = string,
   TAccountResource extends string | IAccountMeta<string> = string,
@@ -136,7 +137,6 @@ export function getDeprecatedSetReservationListInstruction<
   TAccountMasterEdition extends string,
   TAccountReservationList extends string,
   TAccountResource extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: DeprecatedSetReservationListInput<
     TAccountMasterEdition,
@@ -144,14 +144,13 @@ export function getDeprecatedSetReservationListInstruction<
     TAccountResource
   >
 ): DeprecatedSetReservationListInstruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMasterEdition,
   TAccountReservationList,
   TAccountResource
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys = 'masterEdition' | 'reservationList' | 'resource';
@@ -182,7 +181,7 @@ export function getDeprecatedSetReservationListInstruction<
       args as DeprecatedSetReservationListInstructionDataArgs
     ),
   } as DeprecatedSetReservationListInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountMasterEdition,
     TAccountReservationList,
     TAccountResource
@@ -192,7 +191,7 @@ export function getDeprecatedSetReservationListInstruction<
 }
 
 export type ParsedDeprecatedSetReservationListInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

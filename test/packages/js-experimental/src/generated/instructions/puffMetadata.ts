@@ -25,10 +25,11 @@ import {
   IInstructionWithData,
   WritableAccount,
 } from '@solana/instructions';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type PuffMetadataInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
@@ -72,15 +73,14 @@ export type PuffMetadataInput<TAccountMetadata extends string = string> = {
   metadata: Address<TAccountMetadata>;
 };
 
-export function getPuffMetadataInstruction<
-  TAccountMetadata extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
->(
+export function getPuffMetadataInstruction<TAccountMetadata extends string>(
   input: PuffMetadataInput<TAccountMetadata>
-): PuffMetadataInstruction<TProgram, TAccountMetadata> {
+): PuffMetadataInstruction<
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
+  TAccountMetadata
+> {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys = 'metadata';
@@ -99,13 +99,16 @@ export function getPuffMetadataInstruction<
     accounts: [accountMetas.metadata],
     programAddress,
     data: getPuffMetadataInstructionDataEncoder().encode({}),
-  } as PuffMetadataInstruction<TProgram, TAccountMetadata>;
+  } as PuffMetadataInstruction<
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
+    TAccountMetadata
+  >;
 
   return instruction;
 }
 
 export type ParsedPuffMetadataInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

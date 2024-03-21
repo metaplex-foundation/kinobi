@@ -28,6 +28,7 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 import {
   CreateMasterEditionArgs,
@@ -37,7 +38,7 @@ import {
 } from '../types';
 
 export type DeprecatedCreateMasterEditionInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountEdition extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
   TAccountPrintingMint extends string | IAccountMeta<string> = string,
@@ -208,7 +209,6 @@ export function getDeprecatedCreateMasterEditionInstruction<
   TAccountSystemProgram extends string,
   TAccountRent extends string,
   TAccountOneTimePrintingAuthorizationMintAuthority extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: DeprecatedCreateMasterEditionInput<
     TAccountEdition,
@@ -226,7 +226,7 @@ export function getDeprecatedCreateMasterEditionInstruction<
     TAccountOneTimePrintingAuthorizationMintAuthority
   >
 ): DeprecatedCreateMasterEditionInstruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountEdition,
   TAccountMint,
   TAccountPrintingMint,
@@ -242,8 +242,7 @@ export function getDeprecatedCreateMasterEditionInstruction<
   TAccountOneTimePrintingAuthorizationMintAuthority
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -333,7 +332,7 @@ export function getDeprecatedCreateMasterEditionInstruction<
       args as DeprecatedCreateMasterEditionInstructionDataArgs
     ),
   } as DeprecatedCreateMasterEditionInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountEdition,
     TAccountMint,
     TAccountPrintingMint,
@@ -353,7 +352,7 @@ export function getDeprecatedCreateMasterEditionInstruction<
 }
 
 export type ParsedDeprecatedCreateMasterEditionInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

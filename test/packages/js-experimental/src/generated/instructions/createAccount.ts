@@ -32,10 +32,11 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { SPL_SYSTEM_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type CreateAccountInstruction<
-  TProgram extends string = '11111111111111111111111111111111',
+  TProgram extends string = typeof SPL_SYSTEM_PROGRAM_ADDRESS,
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountNewAccount extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
@@ -113,13 +114,15 @@ export type CreateAccountInput<
 export function getCreateAccountInstruction<
   TAccountPayer extends string,
   TAccountNewAccount extends string,
-  TProgram extends string = '11111111111111111111111111111111',
 >(
   input: CreateAccountInput<TAccountPayer, TAccountNewAccount>
-): CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount> {
+): CreateAccountInstruction<
+  typeof SPL_SYSTEM_PROGRAM_ADDRESS,
+  TAccountPayer,
+  TAccountNewAccount
+> {
   // Program address.
-  const programAddress =
-    '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
+  const programAddress = SPL_SYSTEM_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys = 'payer' | 'newAccount';
@@ -144,13 +147,17 @@ export function getCreateAccountInstruction<
     data: getCreateAccountInstructionDataEncoder().encode(
       args as CreateAccountInstructionDataArgs
     ),
-  } as CreateAccountInstruction<TProgram, TAccountPayer, TAccountNewAccount>;
+  } as CreateAccountInstruction<
+    typeof SPL_SYSTEM_PROGRAM_ADDRESS,
+    TAccountPayer,
+    TAccountNewAccount
+  >;
 
   return instruction;
 }
 
 export type ParsedCreateAccountInstruction<
-  TProgram extends string = '11111111111111111111111111111111',
+  TProgram extends string = typeof SPL_SYSTEM_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

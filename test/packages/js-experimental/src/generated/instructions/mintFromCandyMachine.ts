@@ -31,10 +31,11 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type MintFromCandyMachineInstruction<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TProgram extends string = typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthorityPda extends string | IAccountMeta<string> = string,
   TAccountMintAuthority extends string | IAccountMeta<string> = string,
@@ -217,7 +218,6 @@ export function getMintFromCandyMachineInstruction<
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
   TAccountRecentSlothashes extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: MintFromCandyMachineInput<
     TAccountCandyMachine,
@@ -239,7 +239,7 @@ export function getMintFromCandyMachineInstruction<
     TAccountRecentSlothashes
   >
 ): MintFromCandyMachineInstruction<
-  TProgram,
+  typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
   TAccountCandyMachine,
   TAccountAuthorityPda,
   TAccountMintAuthority,
@@ -259,8 +259,7 @@ export function getMintFromCandyMachineInstruction<
   TAccountRecentSlothashes
 > {
   // Program address.
-  const programAddress =
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  const programAddress = MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -369,7 +368,7 @@ export function getMintFromCandyMachineInstruction<
     programAddress,
     data: getMintFromCandyMachineInstructionDataEncoder().encode({}),
   } as MintFromCandyMachineInstruction<
-    TProgram,
+    typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
     TAccountCandyMachine,
     TAccountAuthorityPda,
     TAccountMintAuthority,
@@ -393,7 +392,7 @@ export function getMintFromCandyMachineInstruction<
 }
 
 export type ParsedMintFromCandyMachineInstruction<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TProgram extends string = typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

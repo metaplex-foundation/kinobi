@@ -34,6 +34,7 @@ import {
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { resolveTokenOrAta } from '../../hooked';
 import { findDelegateRecordPda } from '../pdas';
+import { MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS } from '../programs';
 import {
   ResolvedAccount,
   expectSome,
@@ -43,7 +44,7 @@ import {
 import { DelegateRole } from '../types';
 
 export type DummyInstruction<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TProgram extends string = typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
   TAccountEdition extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
   TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
@@ -172,7 +173,6 @@ export async function getDummyInstructionAsync<
   TAccountDelegate extends string,
   TAccountDelegateRecord extends string,
   TAccountTokenOrAtaProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: DummyAsyncInput<
     TAccountEdition,
@@ -188,7 +188,7 @@ export async function getDummyInstructionAsync<
   >
 ): Promise<
   DummyInstruction<
-    TProgram,
+    typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
     TAccountEdition,
     TAccountMint,
     TAccountUpdateAuthority,
@@ -202,8 +202,7 @@ export async function getDummyInstructionAsync<
   >
 > {
   // Program address.
-  const programAddress =
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  const programAddress = MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -301,7 +300,7 @@ export async function getDummyInstructionAsync<
     programAddress,
     data: getDummyInstructionDataEncoder().encode({}),
   } as DummyInstruction<
-    TProgram,
+    typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
     TAccountEdition,
     TAccountMint,
     TAccountUpdateAuthority,
@@ -354,7 +353,6 @@ export function getDummyInstruction<
   TAccountDelegate extends string,
   TAccountDelegateRecord extends string,
   TAccountTokenOrAtaProgram extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: DummyInput<
     TAccountEdition,
@@ -369,7 +367,7 @@ export function getDummyInstruction<
     TAccountTokenOrAtaProgram
   >
 ): DummyInstruction<
-  TProgram,
+  typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
   TAccountEdition,
   TAccountMint,
   TAccountUpdateAuthority,
@@ -382,8 +380,7 @@ export function getDummyInstruction<
   TAccountTokenOrAtaProgram
 > {
   // Program address.
-  const programAddress =
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  const programAddress = MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -474,7 +471,7 @@ export function getDummyInstruction<
     programAddress,
     data: getDummyInstructionDataEncoder().encode({}),
   } as DummyInstruction<
-    TProgram,
+    typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
     TAccountEdition,
     TAccountMint,
     TAccountUpdateAuthority,
@@ -491,7 +488,7 @@ export function getDummyInstruction<
 }
 
 export type ParsedDummyInstruction<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TProgram extends string = typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
@@ -530,8 +527,7 @@ export function parseDummyInstruction<
   };
   const getNextOptionalAccount = () => {
     const accountMeta = getNextAccount();
-    return accountMeta.address ===
-      'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'
+    return accountMeta.address === MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS
       ? undefined
       : accountMeta;
   };

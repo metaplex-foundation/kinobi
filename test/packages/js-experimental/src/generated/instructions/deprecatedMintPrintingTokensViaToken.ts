@@ -28,6 +28,7 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 import {
   MintPrintingTokensViaTokenArgs,
@@ -37,7 +38,7 @@ import {
 } from '../types';
 
 export type DeprecatedMintPrintingTokensViaTokenInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountDestination extends string | IAccountMeta<string> = string,
   TAccountToken extends string | IAccountMeta<string> = string,
   TAccountOneTimePrintingAuthorizationMint extends
@@ -174,7 +175,6 @@ export function getDeprecatedMintPrintingTokensViaTokenInstruction<
   TAccountMasterEdition extends string,
   TAccountTokenProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: DeprecatedMintPrintingTokensViaTokenInput<
     TAccountDestination,
@@ -188,7 +188,7 @@ export function getDeprecatedMintPrintingTokensViaTokenInstruction<
     TAccountRent
   >
 ): DeprecatedMintPrintingTokensViaTokenInstruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountDestination,
   TAccountToken,
   TAccountOneTimePrintingAuthorizationMint,
@@ -200,8 +200,7 @@ export function getDeprecatedMintPrintingTokensViaTokenInstruction<
   TAccountRent
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -266,7 +265,7 @@ export function getDeprecatedMintPrintingTokensViaTokenInstruction<
       args as DeprecatedMintPrintingTokensViaTokenInstructionDataArgs
     ),
   } as DeprecatedMintPrintingTokensViaTokenInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountDestination,
     TAccountToken,
     TAccountOneTimePrintingAuthorizationMint,
@@ -282,7 +281,7 @@ export function getDeprecatedMintPrintingTokensViaTokenInstruction<
 }
 
 export type ParsedDeprecatedMintPrintingTokensViaTokenInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

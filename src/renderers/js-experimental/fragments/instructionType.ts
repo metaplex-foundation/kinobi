@@ -20,6 +20,9 @@ export function getInstructionTypeFragment(
   const customData = customInstructionData.get(instructionNode.name);
   const hasData = !!customData || instructionNode.arguments.length > 0;
   const instructionDataName = nameApi.instructionDataType(instructionNode.name);
+  const programAddressConstant = nameApi.programAddressConstant(
+    programNode.name
+  );
   const dataType = customData
     ? pascalCase(customData.importAs)
     : pascalCase(instructionDataName);
@@ -52,7 +55,7 @@ export function getInstructionTypeFragment(
   const fragment = fragmentFromTemplate('instructionType.njk', {
     instruction: instructionNode,
     instructionType: nameApi.instructionType(instructionNode.name),
-    program: programNode,
+    programAddressConstant,
     hasData,
     hasAccounts,
     dataType,
@@ -60,6 +63,7 @@ export function getInstructionTypeFragment(
     accountMetas: accountMetasFragment.render,
   })
     .mergeImportsWith(accountTypeParamsFragment, accountMetasFragment)
+    .addImports('generatedPrograms', [programAddressConstant])
     .addImports('solanaInstructions', [
       'IAccountMeta',
       'IInstruction',

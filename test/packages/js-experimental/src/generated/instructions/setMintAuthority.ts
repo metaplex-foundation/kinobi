@@ -29,10 +29,11 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type SetMintAuthorityInstruction<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TProgram extends string = typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
   TAccountCandyMachine extends string | IAccountMeta<string> = string,
   TAccountAuthority extends string | IAccountMeta<string> = string,
   TAccountMintAuthority extends string | IAccountMeta<string> = string,
@@ -102,7 +103,6 @@ export function getSetMintAuthorityInstruction<
   TAccountCandyMachine extends string,
   TAccountAuthority extends string,
   TAccountMintAuthority extends string,
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
 >(
   input: SetMintAuthorityInput<
     TAccountCandyMachine,
@@ -110,14 +110,13 @@ export function getSetMintAuthorityInstruction<
     TAccountMintAuthority
   >
 ): SetMintAuthorityInstruction<
-  TProgram,
+  typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
   TAccountCandyMachine,
   TAccountAuthority,
   TAccountMintAuthority
 > {
   // Program address.
-  const programAddress =
-    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
+  const programAddress = MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys = 'candyMachine' | 'authority' | 'mintAuthority';
@@ -143,7 +142,7 @@ export function getSetMintAuthorityInstruction<
     programAddress,
     data: getSetMintAuthorityInstructionDataEncoder().encode({}),
   } as SetMintAuthorityInstruction<
-    TProgram,
+    typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
     TAccountCandyMachine,
     TAccountAuthority,
     TAccountMintAuthority
@@ -153,7 +152,7 @@ export function getSetMintAuthorityInstruction<
 }
 
 export type ParsedSetMintAuthorityInstruction<
-  TProgram extends string = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TProgram extends string = typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

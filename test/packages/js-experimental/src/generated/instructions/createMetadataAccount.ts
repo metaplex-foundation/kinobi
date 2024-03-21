@@ -44,6 +44,7 @@ import {
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { getMetadataSize } from '../accounts';
 import { findMetadataPda } from '../pdas';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import {
   IInstructionWithByteDelta,
   ResolvedAccount,
@@ -59,7 +60,7 @@ import {
 } from '../types';
 
 export type CreateMetadataAccountInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
   TAccountMintAuthority extends string | IAccountMeta<string> = string,
@@ -213,7 +214,6 @@ export async function getCreateMetadataAccountInstructionAsync<
   TAccountUpdateAuthority extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CreateMetadataAccountAsyncInput<
     TAccountMetadata,
@@ -226,7 +226,7 @@ export async function getCreateMetadataAccountInstructionAsync<
   >
 ): Promise<
   CreateMetadataAccountInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountMetadata,
     TAccountMint,
     TAccountMintAuthority,
@@ -238,8 +238,7 @@ export async function getCreateMetadataAccountInstructionAsync<
     IInstructionWithByteDelta
 > {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -312,7 +311,7 @@ export async function getCreateMetadataAccountInstructionAsync<
       args as CreateMetadataAccountInstructionDataArgs
     ),
   } as CreateMetadataAccountInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountMetadata,
     TAccountMint,
     TAccountMintAuthority,
@@ -361,7 +360,6 @@ export function getCreateMetadataAccountInstruction<
   TAccountUpdateAuthority extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CreateMetadataAccountInput<
     TAccountMetadata,
@@ -373,7 +371,7 @@ export function getCreateMetadataAccountInstruction<
     TAccountRent
   >
 ): CreateMetadataAccountInstruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetadata,
   TAccountMint,
   TAccountMintAuthority,
@@ -384,8 +382,7 @@ export function getCreateMetadataAccountInstruction<
 > &
   IInstructionWithByteDelta {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -453,7 +450,7 @@ export function getCreateMetadataAccountInstruction<
       args as CreateMetadataAccountInstructionDataArgs
     ),
   } as CreateMetadataAccountInstruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountMetadata,
     TAccountMint,
     TAccountMintAuthority,
@@ -467,7 +464,7 @@ export function getCreateMetadataAccountInstruction<
 }
 
 export type ParsedCreateMetadataAccountInstruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

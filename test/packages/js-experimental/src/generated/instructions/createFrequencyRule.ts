@@ -32,10 +32,11 @@ import {
   WritableSignerAccount,
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+import { MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS } from '../programs';
 import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
 
 export type CreateFrequencyRuleInstruction<
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TProgram extends string = typeof MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS,
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountFrequencyPda extends string | IAccountMeta<string> = string,
   TAccountSystemProgram extends
@@ -129,7 +130,6 @@ export function getCreateFrequencyRuleInstruction<
   TAccountPayer extends string,
   TAccountFrequencyPda extends string,
   TAccountSystemProgram extends string,
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
 >(
   input: CreateFrequencyRuleInput<
     TAccountPayer,
@@ -137,14 +137,13 @@ export function getCreateFrequencyRuleInstruction<
     TAccountSystemProgram
   >
 ): CreateFrequencyRuleInstruction<
-  TProgram,
+  typeof MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS,
   TAccountPayer,
   TAccountFrequencyPda,
   TAccountSystemProgram
 > {
   // Program address.
-  const programAddress =
-    'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
+  const programAddress = MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys = 'payer' | 'frequencyPda' | 'systemProgram';
@@ -181,7 +180,7 @@ export function getCreateFrequencyRuleInstruction<
       args as CreateFrequencyRuleInstructionDataArgs
     ),
   } as CreateFrequencyRuleInstruction<
-    TProgram,
+    typeof MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS,
     TAccountPayer,
     TAccountFrequencyPda,
     TAccountSystemProgram
@@ -191,7 +190,7 @@ export function getCreateFrequencyRuleInstruction<
 }
 
 export type ParsedCreateFrequencyRuleInstruction<
-  TProgram extends string = 'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg',
+  TProgram extends string = typeof MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;

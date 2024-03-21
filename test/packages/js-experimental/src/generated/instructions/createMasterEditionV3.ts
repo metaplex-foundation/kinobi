@@ -31,6 +31,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { getMasterEditionV2Size } from '../accounts';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import {
   IInstructionWithByteDelta,
   ResolvedAccount,
@@ -44,7 +45,7 @@ import {
 } from '../types';
 
 export type CreateMasterEditionV3Instruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountEdition extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
   TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
@@ -175,7 +176,6 @@ export function getCreateMasterEditionV3Instruction<
   TAccountTokenProgram extends string,
   TAccountSystemProgram extends string,
   TAccountRent extends string,
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 >(
   input: CreateMasterEditionV3Input<
     TAccountEdition,
@@ -189,7 +189,7 @@ export function getCreateMasterEditionV3Instruction<
     TAccountRent
   >
 ): CreateMasterEditionV3Instruction<
-  TProgram,
+  typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountEdition,
   TAccountMint,
   TAccountUpdateAuthority,
@@ -202,8 +202,7 @@ export function getCreateMasterEditionV3Instruction<
 > &
   IInstructionWithByteDelta {
   // Program address.
-  const programAddress =
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
+  const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
   type AccountKeys =
@@ -273,7 +272,7 @@ export function getCreateMasterEditionV3Instruction<
       args as CreateMasterEditionV3InstructionDataArgs
     ),
   } as CreateMasterEditionV3Instruction<
-    TProgram,
+    typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
     TAccountEdition,
     TAccountMint,
     TAccountUpdateAuthority,
@@ -289,7 +288,7 @@ export function getCreateMasterEditionV3Instruction<
 }
 
 export type ParsedCreateMasterEditionV3Instruction<
-  TProgram extends string = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
   TAccountMetas extends readonly IAccountMeta[] = readonly IAccountMeta[],
 > = {
   programAddress: Address<TProgram>;
@@ -336,7 +335,7 @@ export function parseCreateMasterEditionV3Instruction<
   };
   const getNextOptionalAccount = () => {
     const accountMeta = getNextAccount();
-    return accountMeta.address === 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
+    return accountMeta.address === MPL_TOKEN_METADATA_PROGRAM_ADDRESS
       ? undefined
       : accountMeta;
   };
