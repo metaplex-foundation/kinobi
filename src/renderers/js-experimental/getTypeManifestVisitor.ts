@@ -7,7 +7,7 @@ import {
   structTypeNode,
   structTypeNodeFromInstructionArgumentNodes,
 } from '../../nodes';
-import { camelCase, pipe } from '../../shared';
+import { camelCase, jsDocblock, pipe } from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
 import { ImportMap } from './ImportMap';
 import { TypeManifest, mergeManifests } from './TypeManifest';
@@ -427,7 +427,10 @@ export function getTypeManifestVisitor(input: {
         visitStructFieldType(structFieldType, { self }) {
           const name = camelCase(structFieldType.name);
           const childManifest = visit(structFieldType.type, self);
-          const docblock = createDocblock(structFieldType.docs);
+          const docblock =
+            structFieldType.docs.length > 0
+              ? `\n${jsDocblock(structFieldType.docs)}`
+              : '';
           const originalLooseType = childManifest.looseType.render;
           childManifest.strictType.mapRender(
             (r) => `${docblock}${name}: ${r}; `
@@ -683,13 +686,6 @@ export function getTypeManifestVisitor(input: {
         },
       })
   );
-}
-
-function createDocblock(docs: string[]): string {
-  if (docs.length <= 0) return '';
-  if (docs.length === 1) return `\n/** ${docs[0]} */\n`;
-  const lines = docs.map((doc) => ` * ${doc}`);
-  return `\n/**\n${lines.join('\n')}\n */\n`;
 }
 
 function getArrayLikeSizeOption(

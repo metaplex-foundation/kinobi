@@ -59,6 +59,19 @@ export function mainCase(str: string): MainCaseString {
   return camelCase(str) as MainCaseString;
 }
 
+export function jsDocblock(docs: string[]): string {
+  if (docs.length <= 0) return '';
+  if (docs.length === 1) return `/** ${docs[0]} */\n`;
+  const lines = docs.map((doc) => ` * ${doc}`);
+  return `/**\n${lines.join('\n')}\n */\n`;
+}
+
+export function rustDocblock(docs: string[]): string {
+  if (docs.length <= 0) return '';
+  const lines = docs.map((doc) => `/// ${doc}`);
+  return `${lines.join('\n')}\n`;
+}
+
 export function readJson<T extends object>(value: string): T {
   return JSON.parse(readFileSync(value, 'utf-8')) as T;
 }
@@ -91,6 +104,8 @@ export const resolveTemplate = (
   env.addFilter('snakeCase', snakeCase);
   env.addFilter('kebabCase', kebabCase);
   env.addFilter('titleCase', titleCase);
+  env.addFilter('jsDocblock', jsDocblock);
+  env.addFilter('rustDocblock', rustDocblock);
   return env.render(file, context);
 };
 

@@ -9,7 +9,7 @@ import {
   structTypeNode,
   structTypeNodeFromInstructionArgumentNodes,
 } from '../../nodes';
-import { camelCase, pascalCase, pipe } from '../../shared';
+import { camelCase, jsDocblock, pascalCase, pipe } from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 import { ParsedCustomDataOptions } from './customDataHelpers';
@@ -415,7 +415,10 @@ export function getTypeManifestVisitor(input: {
         visitStructFieldType(structFieldType, { self }) {
           const name = camelCase(structFieldType.name);
           const fieldChild = visit(structFieldType.type, self);
-          const docblock = createDocblock(structFieldType.docs);
+          const docblock =
+            structFieldType.docs.length > 0
+              ? `\n${jsDocblock(structFieldType.docs)}`
+              : '';
           const baseField = {
             ...fieldChild,
             strictType: `${docblock}${name}: ${fieldChild.strictType}; `,
@@ -688,13 +691,6 @@ function mergeManifests(
     ),
     isEnum: false,
   };
-}
-
-function createDocblock(docs: string[]): string {
-  if (docs.length <= 0) return '';
-  if (docs.length === 1) return `\n/** ${docs[0]} */\n`;
-  const lines = docs.map((doc) => ` * ${doc}`);
-  return `\n/**\n${lines.join('\n')}\n */\n`;
 }
 
 function getArrayLikeSizeOption(
