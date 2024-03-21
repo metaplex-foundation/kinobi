@@ -84,7 +84,7 @@ export type CreateReservationListInput<
   TAccountMetadata extends string = string,
   TAccountSystemProgram extends string = string,
   TAccountRent extends string = string,
-> = {
+> = CreateReservationListInstructionDataArgs & {
   /** PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key] */
   reservationList: Address<TAccountReservationList>;
   /** Payer */

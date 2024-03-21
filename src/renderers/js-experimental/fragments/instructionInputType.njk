@@ -8,7 +8,7 @@ export type {{ instructionInputType }}
   {% endfor %}
 >
 {% endif %}
-= {
+= {{ customDataArgumentsFragment }} {
   {{ accountsFragment }}
   {{ dataArgumentsFragment }}
   {{ extraArgumentsFragment }}

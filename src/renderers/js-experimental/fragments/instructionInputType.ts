@@ -38,7 +38,8 @@ export function getInstructionInputTypeFragment(
     ? nameApi.instructionAsyncInputType(instructionNode.name)
     : nameApi.instructionSyncInputType(instructionNode.name);
   const accountsFragment = getAccountsFragment(scope);
-  const dataArgumentsFragment = getDataArgumentsFragment(scope);
+  const [dataArgumentsFragment, customDataArgumentsFragment] =
+    getDataArgumentsFragments(scope);
   const extraArgumentsFragment = getExtraArgumentsFragment(scope);
   const remainingAccountsFragment =
     getRemainingAccountsFragment(instructionNode);
@@ -48,12 +49,14 @@ export function getInstructionInputTypeFragment(
     instructionInputType,
     accountsFragment,
     dataArgumentsFragment,
+    customDataArgumentsFragment,
     extraArgumentsFragment,
     remainingAccountsFragment,
   })
     .mergeImportsWith(
       accountsFragment,
       dataArgumentsFragment,
+      customDataArgumentsFragment,
       extraArgumentsFragment,
       remainingAccountsFragment
     )
@@ -134,18 +137,24 @@ function getAccountTypeFragment(
   ]);
 }
 
-function getDataArgumentsFragment(
+function getDataArgumentsFragments(
   scope: Pick<GlobalFragmentScope, 'nameApi' | 'customInstructionData'> & {
     instructionNode: InstructionNode;
     resolvedInputs: ResolvedInstructionInput[];
     renamedArgs: Map<string, string>;
+    dataArgsManifest: TypeManifest;
   }
-): Fragment {
-  const { instructionNode, customInstructionData, nameApi } = scope;
+): [Fragment, Fragment] {
+  const { instructionNode, nameApi } = scope;
 
-  const customData = customInstructionData.get(instructionNode.name);
+  const customData = scope.customInstructionData.get(instructionNode.name);
   if (customData) {
-    return fragment('');
+    return [
+      fragment(''),
+      fragment(nameApi.dataArgsType(customData.importAs))
+        .mergeImportsWith(scope.dataArgsManifest.looseType)
+        .mapRender((r) => `${r} & `),
+    ];
   }
 
   const instructionDataName = nameApi.instructionDataType(instructionNode.name);
@@ -161,7 +170,7 @@ function getDataArgumentsFragment(
     return argFragment ? [argFragment] : [];
   });
 
-  return mergeFragments(fragments, (r) => r.join('\n'));
+  return [mergeFragments(fragments, (r) => r.join('\n')), fragment('')];
 }
 
 function getExtraArgumentsFragment(
