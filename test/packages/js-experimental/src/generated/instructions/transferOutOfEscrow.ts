@@ -32,7 +32,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type TransferOutOfEscrowInstruction<
   TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
@@ -281,28 +281,22 @@ export function getTransferOutOfEscrowInstruction<
       'Sysvar1nstructions1111111111111111111111111' as Address<'Sysvar1nstructions1111111111111111111111111'>;
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.escrow,
-      accountMetas.metadata,
-      accountMetas.payer,
-      accountMetas.attributeMint,
-      accountMetas.attributeSrc,
-      accountMetas.attributeDst,
-      accountMetas.escrowMint,
-      accountMetas.escrowAccount,
-      accountMetas.systemProgram,
-      accountMetas.ataProgram,
-      accountMetas.tokenProgram,
-      accountMetas.sysvarInstructions,
-      accountMetas.authority,
+      getAccountMeta(accounts.escrow),
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.attributeMint),
+      getAccountMeta(accounts.attributeSrc),
+      getAccountMeta(accounts.attributeDst),
+      getAccountMeta(accounts.escrowMint),
+      getAccountMeta(accounts.escrowAccount),
+      getAccountMeta(accounts.systemProgram),
+      getAccountMeta(accounts.ataProgram),
+      getAccountMeta(accounts.tokenProgram),
+      getAccountMeta(accounts.sysvarInstructions),
+      getAccountMeta(accounts.authority),
     ],
     programAddress,
     data: getTransferOutOfEscrowInstructionDataEncoder().encode(

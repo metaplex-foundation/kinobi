@@ -83,37 +83,23 @@ export type IInstructionWithByteDelta = {
 * Get account metas and signers from resolved accounts.
 * @internal
 */
-export function getAccountMetasWithSigners<TKey extends string = string>(
-  accounts: Record<TKey, ResolvedAccount>,
+export function getAccountMetaFactory(
+  programAddress: Address,
   optionalAccountStrategy: 'omitted' | 'programId',
-  programAddress: Address
-): Record<TKey, IAccountMeta | IAccountSignerMeta> {
-  const accountMetas: Record<string, IAccountMeta | IAccountSignerMeta> = {};
-
-  Object.keys(accounts).forEach((key) => {
-    const account = accounts[key as TKey] as ResolvedAccount;
+) {
+  return (account: ResolvedAccount): IAccountMeta | IAccountSignerMeta | undefined => {
     if (!account.value) {
       if (optionalAccountStrategy === 'omitted') return;
-      accountMetas[key] = {
-        address: programAddress,
-        role: AccountRole.READONLY,
-      };
-      return;
+      return Object.freeze({ address: programAddress, role: AccountRole.READONLY });
     }
 
-    const writableRole = account.isWritable
-      ? AccountRole.WRITABLE
-      : AccountRole.READONLY;
-    accountMetas[key] = Object.freeze({
+    const writableRole = account.isWritable ? AccountRole.WRITABLE : AccountRole.READONLY;
+    return Object.freeze({
       address: expectAddress(account.value),
-      role: isTransactionSigner(account.value)
-        ? upgradeRoleToSigner(writableRole)
-        : writableRole,
+      role: isTransactionSigner(account.value) ? upgradeRoleToSigner(writableRole) : writableRole,
       ...(isTransactionSigner(account.value) ? { signer: account.value } : {})
     });
- });
-
- return accountMetas;
+  };
 }
 
 export function isTransactionSigner<TAddress extends string = string>(value: Address<TAddress> | ProgramDerivedAddress<TAddress> | TransactionSigner<TAddress>): value is TransactionSigner<TAddress> {

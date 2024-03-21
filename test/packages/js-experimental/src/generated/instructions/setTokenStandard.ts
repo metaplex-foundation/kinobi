@@ -29,7 +29,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type SetTokenStandardInstruction<
   TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
@@ -134,19 +134,13 @@ export function getSetTokenStandardInstruction<
     ResolvedAccount
   >;
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.metadata,
-      accountMetas.updateAuthority,
-      accountMetas.mint,
-      accountMetas.edition,
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.updateAuthority),
+      getAccountMeta(accounts.mint),
+      getAccountMeta(accounts.edition),
     ],
     programAddress,
     data: getSetTokenStandardInstructionDataEncoder().encode({}),

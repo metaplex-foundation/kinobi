@@ -29,7 +29,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 import {
   SetCollectionSizeArgs,
   SetCollectionSizeArgsArgs,
@@ -166,19 +166,13 @@ export function getSetCollectionSizeInstruction<
   // Original args.
   const args = { ...input };
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.collectionMetadata,
-      accountMetas.collectionAuthority,
-      accountMetas.collectionMint,
-      accountMetas.collectionAuthorityRecord,
+      getAccountMeta(accounts.collectionMetadata),
+      getAccountMeta(accounts.collectionAuthority),
+      getAccountMeta(accounts.collectionMint),
+      getAccountMeta(accounts.collectionAuthorityRecord),
     ],
     programAddress,
     data: getSetCollectionSizeInstructionDataEncoder().encode(

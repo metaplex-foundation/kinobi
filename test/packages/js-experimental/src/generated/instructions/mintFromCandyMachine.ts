@@ -32,7 +32,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type MintFromCandyMachineInstruction<
   TProgram extends string = typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
@@ -324,32 +324,26 @@ export function getMintFromCandyMachineInstruction<
       '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.candyMachine,
-      accountMetas.authorityPda,
-      accountMetas.mintAuthority,
-      accountMetas.payer,
-      accountMetas.nftMint,
-      accountMetas.nftMintAuthority,
-      accountMetas.nftMetadata,
-      accountMetas.nftMasterEdition,
-      accountMetas.collectionAuthorityRecord,
-      accountMetas.collectionMint,
-      accountMetas.collectionMetadata,
-      accountMetas.collectionMasterEdition,
-      accountMetas.collectionUpdateAuthority,
-      accountMetas.tokenMetadataProgram,
-      accountMetas.tokenProgram,
-      accountMetas.systemProgram,
-      accountMetas.recentSlothashes,
+      getAccountMeta(accounts.candyMachine),
+      getAccountMeta(accounts.authorityPda),
+      getAccountMeta(accounts.mintAuthority),
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.nftMint),
+      getAccountMeta(accounts.nftMintAuthority),
+      getAccountMeta(accounts.nftMetadata),
+      getAccountMeta(accounts.nftMasterEdition),
+      getAccountMeta(accounts.collectionAuthorityRecord),
+      getAccountMeta(accounts.collectionMint),
+      getAccountMeta(accounts.collectionMetadata),
+      getAccountMeta(accounts.collectionMasterEdition),
+      getAccountMeta(accounts.collectionUpdateAuthority),
+      getAccountMeta(accounts.tokenMetadataProgram),
+      getAccountMeta(accounts.tokenProgram),
+      getAccountMeta(accounts.systemProgram),
+      getAccountMeta(accounts.recentSlothashes),
     ],
     programAddress,
     data: getMintFromCandyMachineInstructionDataEncoder().encode({}),

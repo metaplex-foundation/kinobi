@@ -29,7 +29,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 import {
   VerifyArgs,
   VerifyArgsArgs,
@@ -176,20 +176,14 @@ export function getVerifyInstruction<
   // Original args.
   const args = { ...input };
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.metadata,
-      accountMetas.collectionAuthority,
-      accountMetas.payer,
-      accountMetas.authorizationRules,
-      accountMetas.authorizationRulesProgram,
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.collectionAuthority),
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.authorizationRules),
+      getAccountMeta(accounts.authorizationRulesProgram),
     ],
     programAddress,
     data: getVerifyInstructionDataEncoder().encode(

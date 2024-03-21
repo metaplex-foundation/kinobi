@@ -39,7 +39,7 @@ import {
   ResolvedAccount,
   expectSome,
   expectTransactionSigner,
-  getAccountMetasWithSigners,
+  getAccountMetaFactory,
 } from '../shared';
 import { DelegateRole } from '../types';
 
@@ -269,25 +269,19 @@ export async function getDummyInstructionAsync<
     ...args.proof.map((address) => ({ address, role: AccountRole.READONLY })),
   ];
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.edition,
-      accountMetas.mint,
-      accountMetas.updateAuthority,
-      accountMetas.mintAuthority,
-      accountMetas.payer,
-      accountMetas.foo,
-      accountMetas.bar,
-      accountMetas.delegate,
-      accountMetas.delegateRecord,
-      accountMetas.tokenOrAtaProgram,
+      getAccountMeta(accounts.edition),
+      getAccountMeta(accounts.mint),
+      getAccountMeta(accounts.updateAuthority),
+      getAccountMeta(accounts.mintAuthority),
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.foo),
+      getAccountMeta(accounts.bar),
+      getAccountMeta(accounts.delegate),
+      getAccountMeta(accounts.delegateRecord),
+      getAccountMeta(accounts.tokenOrAtaProgram),
       ...remainingAccounts,
     ],
     programAddress,
@@ -433,25 +427,19 @@ export function getDummyInstruction<
     ...args.proof.map((address) => ({ address, role: AccountRole.READONLY })),
   ];
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.edition,
-      accountMetas.mint,
-      accountMetas.updateAuthority,
-      accountMetas.mintAuthority,
-      accountMetas.payer,
-      accountMetas.foo,
-      accountMetas.bar,
-      accountMetas.delegate,
-      accountMetas.delegateRecord,
-      accountMetas.tokenOrAtaProgram,
+      getAccountMeta(accounts.edition),
+      getAccountMeta(accounts.mint),
+      getAccountMeta(accounts.updateAuthority),
+      getAccountMeta(accounts.mintAuthority),
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.foo),
+      getAccountMeta(accounts.bar),
+      getAccountMeta(accounts.delegate),
+      getAccountMeta(accounts.delegateRecord),
+      getAccountMeta(accounts.tokenOrAtaProgram),
       ...remainingAccounts,
     ],
     programAddress,

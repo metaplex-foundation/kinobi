@@ -32,7 +32,7 @@ import { MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS } from '../programs';
 import {
   ResolvedAccount,
   expectProgramDerivedAddress,
-  getAccountMetasWithSigners,
+  getAccountMetaFactory,
 } from '../shared';
 import {
   TaCreateArgs,
@@ -166,18 +166,12 @@ export function getCreateRuleSetInstruction<
     )[1];
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.payer,
-      accountMetas.ruleSetPda,
-      accountMetas.systemProgram,
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.ruleSetPda),
+      getAccountMeta(accounts.systemProgram),
     ],
     programAddress,
     data: getCreateRuleSetInstructionDataEncoder().encode(

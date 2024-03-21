@@ -27,15 +27,13 @@ export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragme
   {{ resolvedFragment }}
 
   {% if hasAccounts %}
-    // Get account metas and signers.
-    const accountMetas = getAccountMetasWithSigners(accounts, 'programId', programAddress);
+    const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   {% endif %}
-
   const instruction = {
     {%- if hasAccounts -%}
       accounts: [
         {% for account in instruction.accounts %}
-          accountMetas.{{ account.name | camelCase }},
+          getAccountMeta(accounts.{{ account.name | camelCase }}),
         {% endfor %}
         {% if hasRemainingAccounts %}
           ...remainingAccounts,

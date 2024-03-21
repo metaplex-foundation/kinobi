@@ -26,7 +26,7 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type ConvertMasterEditionV1ToV2Instruction<
   TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
@@ -121,18 +121,12 @@ export function getConvertMasterEditionV1ToV2Instruction<
     ResolvedAccount
   >;
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.masterEdition,
-      accountMetas.oneTimeAuth,
-      accountMetas.printingMint,
+      getAccountMeta(accounts.masterEdition),
+      getAccountMeta(accounts.oneTimeAuth),
+      getAccountMeta(accounts.printingMint),
     ],
     programAddress,
     data: getConvertMasterEditionV1ToV2InstructionDataEncoder().encode({}),

@@ -29,7 +29,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type BurnEditionNftInstruction<
   TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
@@ -236,25 +236,19 @@ export function getBurnEditionNftInstruction<
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.metadata,
-      accountMetas.owner,
-      accountMetas.printEditionMint,
-      accountMetas.masterEditionMint,
-      accountMetas.printEditionTokenAccount,
-      accountMetas.masterEditionTokenAccount,
-      accountMetas.masterEditionAccount,
-      accountMetas.printEditionAccount,
-      accountMetas.editionMarkerAccount,
-      accountMetas.splTokenProgram,
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.owner),
+      getAccountMeta(accounts.printEditionMint),
+      getAccountMeta(accounts.masterEditionMint),
+      getAccountMeta(accounts.printEditionTokenAccount),
+      getAccountMeta(accounts.masterEditionTokenAccount),
+      getAccountMeta(accounts.masterEditionAccount),
+      getAccountMeta(accounts.printEditionAccount),
+      getAccountMeta(accounts.editionMarkerAccount),
+      getAccountMeta(accounts.splTokenProgram),
     ],
     programAddress,
     data: getBurnEditionNftInstructionDataEncoder().encode({}),

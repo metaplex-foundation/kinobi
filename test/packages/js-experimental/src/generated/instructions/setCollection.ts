@@ -32,7 +32,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type SetCollectionInstruction<
   TProgram extends string = typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
@@ -288,29 +288,23 @@ export function getSetCollectionInstruction<
       '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.candyMachine,
-      accountMetas.authority,
-      accountMetas.authorityPda,
-      accountMetas.payer,
-      accountMetas.collectionMint,
-      accountMetas.collectionMetadata,
-      accountMetas.collectionAuthorityRecord,
-      accountMetas.newCollectionUpdateAuthority,
-      accountMetas.newCollectionMetadata,
-      accountMetas.newCollectionMint,
-      accountMetas.newCollectionMasterEdition,
-      accountMetas.newCollectionAuthorityRecord,
-      accountMetas.tokenMetadataProgram,
-      accountMetas.systemProgram,
+      getAccountMeta(accounts.candyMachine),
+      getAccountMeta(accounts.authority),
+      getAccountMeta(accounts.authorityPda),
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.collectionMint),
+      getAccountMeta(accounts.collectionMetadata),
+      getAccountMeta(accounts.collectionAuthorityRecord),
+      getAccountMeta(accounts.newCollectionUpdateAuthority),
+      getAccountMeta(accounts.newCollectionMetadata),
+      getAccountMeta(accounts.newCollectionMint),
+      getAccountMeta(accounts.newCollectionMasterEdition),
+      getAccountMeta(accounts.newCollectionAuthorityRecord),
+      getAccountMeta(accounts.tokenMetadataProgram),
+      getAccountMeta(accounts.systemProgram),
     ],
     programAddress,
     data: getSetCollectionInstructionDataEncoder().encode({}),

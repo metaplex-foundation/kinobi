@@ -29,7 +29,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type ApproveCollectionAuthorityInstruction<
   TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
@@ -197,23 +197,17 @@ export function getApproveCollectionAuthorityInstruction<
       '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.collectionAuthorityRecord,
-      accountMetas.newCollectionAuthority,
-      accountMetas.updateAuthority,
-      accountMetas.payer,
-      accountMetas.metadata,
-      accountMetas.mint,
-      accountMetas.systemProgram,
-      accountMetas.rent,
+      getAccountMeta(accounts.collectionAuthorityRecord),
+      getAccountMeta(accounts.newCollectionAuthority),
+      getAccountMeta(accounts.updateAuthority),
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.mint),
+      getAccountMeta(accounts.systemProgram),
+      getAccountMeta(accounts.rent),
     ],
     programAddress,
     data: getApproveCollectionAuthorityInstructionDataEncoder().encode({}),

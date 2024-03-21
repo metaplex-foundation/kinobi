@@ -40,7 +40,7 @@ import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import {
   ResolvedAccount,
   expectAddress,
-  getAccountMetasWithSigners,
+  getAccountMetaFactory,
 } from '../shared';
 import {
   CollectionDetails,
@@ -233,22 +233,16 @@ export async function getCreateMetadataAccountV3InstructionAsync<
       '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.metadata,
-      accountMetas.mint,
-      accountMetas.mintAuthority,
-      accountMetas.payer,
-      accountMetas.updateAuthority,
-      accountMetas.systemProgram,
-      accountMetas.rent,
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.mint),
+      getAccountMeta(accounts.mintAuthority),
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.updateAuthority),
+      getAccountMeta(accounts.systemProgram),
+      getAccountMeta(accounts.rent),
     ],
     programAddress,
     data: getCreateMetadataAccountV3InstructionDataEncoder().encode(
@@ -354,22 +348,16 @@ export function getCreateMetadataAccountV3Instruction<
       '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.metadata,
-      accountMetas.mint,
-      accountMetas.mintAuthority,
-      accountMetas.payer,
-      accountMetas.updateAuthority,
-      accountMetas.systemProgram,
-      accountMetas.rent,
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.mint),
+      getAccountMeta(accounts.mintAuthority),
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.updateAuthority),
+      getAccountMeta(accounts.systemProgram),
+      getAccountMeta(accounts.rent),
     ],
     programAddress,
     data: getCreateMetadataAccountV3InstructionDataEncoder().encode(

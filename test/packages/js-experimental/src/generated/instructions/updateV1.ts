@@ -46,7 +46,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 import {
   AuthorityType,
   AuthorityTypeArgs,
@@ -395,25 +395,19 @@ export function getUpdateV1Instruction<
       'Sysvar1nstructions1111111111111111111111111' as Address<'Sysvar1nstructions1111111111111111111111111'>;
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.authority,
-      accountMetas.metadata,
-      accountMetas.masterEdition,
-      accountMetas.mint,
-      accountMetas.systemProgram,
-      accountMetas.sysvarInstructions,
-      accountMetas.token,
-      accountMetas.delegateRecord,
-      accountMetas.authorizationRulesProgram,
-      accountMetas.authorizationRules,
+      getAccountMeta(accounts.authority),
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.masterEdition),
+      getAccountMeta(accounts.mint),
+      getAccountMeta(accounts.systemProgram),
+      getAccountMeta(accounts.sysvarInstructions),
+      getAccountMeta(accounts.token),
+      getAccountMeta(accounts.delegateRecord),
+      getAccountMeta(accounts.authorizationRulesProgram),
+      getAccountMeta(accounts.authorizationRules),
     ],
     programAddress,
     data: getUpdateV1InstructionDataEncoder().encode(

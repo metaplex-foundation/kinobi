@@ -50,7 +50,7 @@ import {
   ResolvedAccount,
   expectAddress,
   expectProgramDerivedAddress,
-  getAccountMetasWithSigners,
+  getAccountMetaFactory,
 } from '../shared';
 import {
   Creator,
@@ -285,22 +285,16 @@ export async function getCreateMetadataAccountInstructionAsync<
     0
   );
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.metadata,
-      accountMetas.mint,
-      accountMetas.mintAuthority,
-      accountMetas.payer,
-      accountMetas.updateAuthority,
-      accountMetas.systemProgram,
-      accountMetas.rent,
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.mint),
+      getAccountMeta(accounts.mintAuthority),
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.updateAuthority),
+      getAccountMeta(accounts.systemProgram),
+      getAccountMeta(accounts.rent),
     ],
     programAddress,
     data: getCreateMetadataAccountInstructionDataEncoder().encode(
@@ -420,22 +414,16 @@ export function getCreateMetadataAccountInstruction<
     0
   );
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.metadata,
-      accountMetas.mint,
-      accountMetas.mintAuthority,
-      accountMetas.payer,
-      accountMetas.updateAuthority,
-      accountMetas.systemProgram,
-      accountMetas.rent,
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.mint),
+      getAccountMeta(accounts.mintAuthority),
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.updateAuthority),
+      getAccountMeta(accounts.systemProgram),
+      getAccountMeta(accounts.rent),
     ],
     programAddress,
     data: getCreateMetadataAccountInstructionDataEncoder().encode(

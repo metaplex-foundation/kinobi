@@ -44,7 +44,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 import {
   Creator,
   CreatorArgs,
@@ -195,15 +195,12 @@ export function getUpdateMetadataAccountInstruction<
   // Original args.
   const args = { ...input, updateAuthority: input.updateAuthorityArg };
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
-    accounts: [accountMetas.metadata, accountMetas.updateAuthority],
+    accounts: [
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.updateAuthority),
+    ],
     programAddress,
     data: getUpdateMetadataAccountInstructionDataEncoder().encode(
       args as UpdateMetadataAccountInstructionDataArgs

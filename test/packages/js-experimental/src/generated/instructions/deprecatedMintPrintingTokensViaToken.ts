@@ -29,7 +29,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 import {
   MintPrintingTokensViaTokenArgs,
   MintPrintingTokensViaTokenArgsArgs,
@@ -235,24 +235,18 @@ export function getDeprecatedMintPrintingTokensViaTokenInstruction<
       'SysvarRent111111111111111111111111111111111' as Address<'SysvarRent111111111111111111111111111111111'>;
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.destination,
-      accountMetas.token,
-      accountMetas.oneTimePrintingAuthorizationMint,
-      accountMetas.printingMint,
-      accountMetas.burnAuthority,
-      accountMetas.metadata,
-      accountMetas.masterEdition,
-      accountMetas.tokenProgram,
-      accountMetas.rent,
+      getAccountMeta(accounts.destination),
+      getAccountMeta(accounts.token),
+      getAccountMeta(accounts.oneTimePrintingAuthorizationMint),
+      getAccountMeta(accounts.printingMint),
+      getAccountMeta(accounts.burnAuthority),
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.masterEdition),
+      getAccountMeta(accounts.tokenProgram),
+      getAccountMeta(accounts.rent),
     ],
     programAddress,
     data: getDeprecatedMintPrintingTokensViaTokenInstructionDataEncoder().encode(

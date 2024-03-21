@@ -33,7 +33,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type CreateFrequencyRuleInstruction<
   TProgram extends string = typeof MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS,
@@ -165,18 +165,12 @@ export function getCreateFrequencyRuleInstruction<
       '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.payer,
-      accountMetas.frequencyPda,
-      accountMetas.systemProgram,
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.frequencyPda),
+      getAccountMeta(accounts.systemProgram),
     ],
     programAddress,
     data: getCreateFrequencyRuleInstructionDataEncoder().encode(

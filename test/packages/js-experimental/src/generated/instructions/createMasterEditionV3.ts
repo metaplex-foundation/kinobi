@@ -35,7 +35,7 @@ import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import {
   IInstructionWithByteDelta,
   ResolvedAccount,
-  getAccountMetasWithSigners,
+  getAccountMetaFactory,
 } from '../shared';
 import {
   CreateMasterEditionArgs,
@@ -242,24 +242,18 @@ export function getCreateMasterEditionV3Instruction<
     getMasterEditionV2Size() + BASE_ACCOUNT_SIZE,
   ].reduce((a, b) => a + b, 0);
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.edition,
-      accountMetas.mint,
-      accountMetas.updateAuthority,
-      accountMetas.mintAuthority,
-      accountMetas.payer,
-      accountMetas.metadata,
-      accountMetas.tokenProgram,
-      accountMetas.systemProgram,
-      accountMetas.rent,
+      getAccountMeta(accounts.edition),
+      getAccountMeta(accounts.mint),
+      getAccountMeta(accounts.updateAuthority),
+      getAccountMeta(accounts.mintAuthority),
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.tokenProgram),
+      getAccountMeta(accounts.systemProgram),
+      getAccountMeta(accounts.rent),
     ],
     programAddress,
     data: getCreateMasterEditionV3InstructionDataEncoder().encode(

@@ -29,7 +29,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 import {
   BurnArgs,
   BurnArgsArgs,
@@ -230,24 +230,18 @@ export function getBurnInstruction<
       'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.metadata,
-      accountMetas.owner,
-      accountMetas.mint,
-      accountMetas.tokenAccount,
-      accountMetas.masterEditionAccount,
-      accountMetas.splTokenProgram,
-      accountMetas.collectionMetadata,
-      accountMetas.authorizationRules,
-      accountMetas.authorizationRulesProgram,
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.owner),
+      getAccountMeta(accounts.mint),
+      getAccountMeta(accounts.tokenAccount),
+      getAccountMeta(accounts.masterEditionAccount),
+      getAccountMeta(accounts.splTokenProgram),
+      getAccountMeta(accounts.collectionMetadata),
+      getAccountMeta(accounts.authorizationRules),
+      getAccountMeta(accounts.authorizationRulesProgram),
     ],
     programAddress,
     data: getBurnInstructionDataEncoder().encode(

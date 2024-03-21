@@ -29,7 +29,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstruction<
   TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
@@ -296,31 +296,25 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
       'SysvarRent111111111111111111111111111111111' as Address<'SysvarRent111111111111111111111111111111111'>;
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.metadata,
-      accountMetas.edition,
-      accountMetas.masterEdition,
-      accountMetas.mint,
-      accountMetas.mintAuthority,
-      accountMetas.printingMint,
-      accountMetas.masterTokenAccount,
-      accountMetas.editionMarker,
-      accountMetas.burnAuthority,
-      accountMetas.payer,
-      accountMetas.masterUpdateAuthority,
-      accountMetas.masterMetadata,
-      accountMetas.tokenProgram,
-      accountMetas.systemProgram,
-      accountMetas.rent,
-      accountMetas.reservationList,
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.edition),
+      getAccountMeta(accounts.masterEdition),
+      getAccountMeta(accounts.mint),
+      getAccountMeta(accounts.mintAuthority),
+      getAccountMeta(accounts.printingMint),
+      getAccountMeta(accounts.masterTokenAccount),
+      getAccountMeta(accounts.editionMarker),
+      getAccountMeta(accounts.burnAuthority),
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.masterUpdateAuthority),
+      getAccountMeta(accounts.masterMetadata),
+      getAccountMeta(accounts.tokenProgram),
+      getAccountMeta(accounts.systemProgram),
+      getAccountMeta(accounts.rent),
+      getAccountMeta(accounts.reservationList),
     ],
     programAddress,
     data: getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDataEncoder().encode(

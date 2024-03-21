@@ -125,37 +125,32 @@ export type IInstructionWithByteDelta = {
  * Get account metas and signers from resolved accounts.
  * @internal
  */
-export function getAccountMetasWithSigners<TKey extends string = string>(
-  accounts: Record<TKey, ResolvedAccount>,
-  optionalAccountStrategy: 'omitted' | 'programId',
-  programAddress: Address
-): Record<TKey, IAccountMeta | IAccountSignerMeta> {
-  const accountMetas: Record<string, IAccountMeta | IAccountSignerMeta> = {};
-
-  Object.keys(accounts).forEach((key) => {
-    const account = accounts[key as TKey] as ResolvedAccount;
+export function getAccountMetaFactory(
+  programAddress: Address,
+  optionalAccountStrategy: 'omitted' | 'programId'
+) {
+  return (
+    account: ResolvedAccount
+  ): IAccountMeta | IAccountSignerMeta | undefined => {
     if (!account.value) {
       if (optionalAccountStrategy === 'omitted') return;
-      accountMetas[key] = {
+      return Object.freeze({
         address: programAddress,
         role: AccountRole.READONLY,
-      };
-      return;
+      });
     }
 
     const writableRole = account.isWritable
       ? AccountRole.WRITABLE
       : AccountRole.READONLY;
-    accountMetas[key] = Object.freeze({
+    return Object.freeze({
       address: expectAddress(account.value),
       role: isTransactionSigner(account.value)
         ? upgradeRoleToSigner(writableRole)
         : writableRole,
       ...(isTransactionSigner(account.value) ? { signer: account.value } : {}),
     });
-  });
-
-  return accountMetas;
+  };
 }
 
 export function isTransactionSigner<TAddress extends string = string>(

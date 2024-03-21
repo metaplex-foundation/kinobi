@@ -30,7 +30,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 import {
   MintNewEditionFromMasterEditionViaTokenArgs,
   MintNewEditionFromMasterEditionViaTokenArgsArgs,
@@ -338,32 +338,26 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
       '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.newMetadata,
-      accountMetas.newEdition,
-      accountMetas.masterEdition,
-      accountMetas.newMint,
-      accountMetas.editionMarkPda,
-      accountMetas.newMintAuthority,
-      accountMetas.payer,
-      accountMetas.vaultAuthority,
-      accountMetas.safetyDepositStore,
-      accountMetas.safetyDepositBox,
-      accountMetas.vault,
-      accountMetas.newMetadataUpdateAuthority,
-      accountMetas.metadata,
-      accountMetas.tokenProgram,
-      accountMetas.tokenVaultProgram,
-      accountMetas.systemProgram,
-      accountMetas.rent,
+      getAccountMeta(accounts.newMetadata),
+      getAccountMeta(accounts.newEdition),
+      getAccountMeta(accounts.masterEdition),
+      getAccountMeta(accounts.newMint),
+      getAccountMeta(accounts.editionMarkPda),
+      getAccountMeta(accounts.newMintAuthority),
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.vaultAuthority),
+      getAccountMeta(accounts.safetyDepositStore),
+      getAccountMeta(accounts.safetyDepositBox),
+      getAccountMeta(accounts.vault),
+      getAccountMeta(accounts.newMetadataUpdateAuthority),
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.tokenProgram),
+      getAccountMeta(accounts.tokenVaultProgram),
+      getAccountMeta(accounts.systemProgram),
+      getAccountMeta(accounts.rent),
     ],
     programAddress,
     data: getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataEncoder().encode(

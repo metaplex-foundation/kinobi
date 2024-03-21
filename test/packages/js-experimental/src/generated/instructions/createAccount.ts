@@ -33,7 +33,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { SPL_SYSTEM_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type CreateAccountInstruction<
   TProgram extends string = typeof SPL_SYSTEM_PROGRAM_ADDRESS,
@@ -137,15 +137,12 @@ export function getCreateAccountInstruction<
   // Original args.
   const args = { ...input };
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
-    accounts: [accountMetas.payer, accountMetas.newAccount],
+    accounts: [
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.newAccount),
+    ],
     programAddress,
     data: getCreateAccountInstructionDataEncoder().encode(
       args as CreateAccountInstructionDataArgs

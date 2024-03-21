@@ -30,7 +30,7 @@ import {
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { resolveMasterEditionFromTokenStandard } from '../../hooked';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 import {
   TokenStandard,
   TokenStandardArgs,
@@ -339,30 +339,24 @@ export async function getTransferInstructionAsync<
     args.tokenStandard = TokenStandard.NonFungible;
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.authority,
-      accountMetas.delegateRecord,
-      accountMetas.token,
-      accountMetas.tokenOwner,
-      accountMetas.destination,
-      accountMetas.destinationOwner,
-      accountMetas.mint,
-      accountMetas.metadata,
-      accountMetas.masterEdition,
-      accountMetas.splTokenProgram,
-      accountMetas.splAtaProgram,
-      accountMetas.systemProgram,
-      accountMetas.sysvarInstructions,
-      accountMetas.authorizationRulesProgram,
-      accountMetas.authorizationRules,
+      getAccountMeta(accounts.authority),
+      getAccountMeta(accounts.delegateRecord),
+      getAccountMeta(accounts.token),
+      getAccountMeta(accounts.tokenOwner),
+      getAccountMeta(accounts.destination),
+      getAccountMeta(accounts.destinationOwner),
+      getAccountMeta(accounts.mint),
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.masterEdition),
+      getAccountMeta(accounts.splTokenProgram),
+      getAccountMeta(accounts.splAtaProgram),
+      getAccountMeta(accounts.systemProgram),
+      getAccountMeta(accounts.sysvarInstructions),
+      getAccountMeta(accounts.authorizationRulesProgram),
+      getAccountMeta(accounts.authorizationRules),
     ],
     programAddress,
     data: getTransferInstructionDataEncoder().encode(
@@ -558,30 +552,24 @@ export function getTransferInstruction<
     args.tokenStandard = TokenStandard.NonFungible;
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.authority,
-      accountMetas.delegateRecord,
-      accountMetas.token,
-      accountMetas.tokenOwner,
-      accountMetas.destination,
-      accountMetas.destinationOwner,
-      accountMetas.mint,
-      accountMetas.metadata,
-      accountMetas.masterEdition,
-      accountMetas.splTokenProgram,
-      accountMetas.splAtaProgram,
-      accountMetas.systemProgram,
-      accountMetas.sysvarInstructions,
-      accountMetas.authorizationRulesProgram,
-      accountMetas.authorizationRules,
+      getAccountMeta(accounts.authority),
+      getAccountMeta(accounts.delegateRecord),
+      getAccountMeta(accounts.token),
+      getAccountMeta(accounts.tokenOwner),
+      getAccountMeta(accounts.destination),
+      getAccountMeta(accounts.destinationOwner),
+      getAccountMeta(accounts.mint),
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.masterEdition),
+      getAccountMeta(accounts.splTokenProgram),
+      getAccountMeta(accounts.splAtaProgram),
+      getAccountMeta(accounts.systemProgram),
+      getAccountMeta(accounts.sysvarInstructions),
+      getAccountMeta(accounts.authorizationRulesProgram),
+      getAccountMeta(accounts.authorizationRules),
     ],
     programAddress,
     data: getTransferInstructionDataEncoder().encode(

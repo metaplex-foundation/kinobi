@@ -24,7 +24,7 @@ import {
   getCreateReservationListInstructionDataEncoder,
 } from '../../hooked';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type CreateReservationListInstruction<
   TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
@@ -169,23 +169,17 @@ export function getCreateReservationListInstruction<
       'SysvarRent111111111111111111111111111111111' as Address<'SysvarRent111111111111111111111111111111111'>;
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.reservationList,
-      accountMetas.payer,
-      accountMetas.updateAuthority,
-      accountMetas.masterEdition,
-      accountMetas.resource,
-      accountMetas.metadata,
-      accountMetas.systemProgram,
-      accountMetas.rent,
+      getAccountMeta(accounts.reservationList),
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.updateAuthority),
+      getAccountMeta(accounts.masterEdition),
+      getAccountMeta(accounts.resource),
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.systemProgram),
+      getAccountMeta(accounts.rent),
     ],
     programAddress,
     data: getCreateReservationListInstructionDataEncoder().encode(

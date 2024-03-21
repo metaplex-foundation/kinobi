@@ -29,7 +29,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type RevokeCollectionAuthorityInstruction<
   TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
@@ -155,20 +155,14 @@ export function getRevokeCollectionAuthorityInstruction<
     ResolvedAccount
   >;
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.collectionAuthorityRecord,
-      accountMetas.delegateAuthority,
-      accountMetas.revokeAuthority,
-      accountMetas.metadata,
-      accountMetas.mint,
+      getAccountMeta(accounts.collectionAuthorityRecord),
+      getAccountMeta(accounts.delegateAuthority),
+      getAccountMeta(accounts.revokeAuthority),
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.mint),
     ],
     programAddress,
     data: getRevokeCollectionAuthorityInstructionDataEncoder().encode({}),

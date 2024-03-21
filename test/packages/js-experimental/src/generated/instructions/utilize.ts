@@ -31,7 +31,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type UtilizeInstruction<
   TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
@@ -255,26 +255,20 @@ export function getUtilizeInstruction<
       'SysvarRent111111111111111111111111111111111' as Address<'SysvarRent111111111111111111111111111111111'>;
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.metadata,
-      accountMetas.tokenAccount,
-      accountMetas.mint,
-      accountMetas.useAuthority,
-      accountMetas.owner,
-      accountMetas.tokenProgram,
-      accountMetas.ataProgram,
-      accountMetas.systemProgram,
-      accountMetas.rent,
-      accountMetas.useAuthorityRecord,
-      accountMetas.burner,
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.tokenAccount),
+      getAccountMeta(accounts.mint),
+      getAccountMeta(accounts.useAuthority),
+      getAccountMeta(accounts.owner),
+      getAccountMeta(accounts.tokenProgram),
+      getAccountMeta(accounts.ataProgram),
+      getAccountMeta(accounts.systemProgram),
+      getAccountMeta(accounts.rent),
+      getAccountMeta(accounts.useAuthorityRecord),
+      getAccountMeta(accounts.burner),
     ],
     programAddress,
     data: getUtilizeInstructionDataEncoder().encode(

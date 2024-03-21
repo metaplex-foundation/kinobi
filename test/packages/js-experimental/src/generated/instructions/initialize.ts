@@ -32,7 +32,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 import {
   CandyMachineData,
   CandyMachineDataArgs,
@@ -261,26 +261,20 @@ export function getInitializeInstruction<
       '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.candyMachine,
-      accountMetas.authorityPda,
-      accountMetas.authority,
-      accountMetas.payer,
-      accountMetas.collectionMetadata,
-      accountMetas.collectionMint,
-      accountMetas.collectionMasterEdition,
-      accountMetas.collectionUpdateAuthority,
-      accountMetas.collectionAuthorityRecord,
-      accountMetas.tokenMetadataProgram,
-      accountMetas.systemProgram,
+      getAccountMeta(accounts.candyMachine),
+      getAccountMeta(accounts.authorityPda),
+      getAccountMeta(accounts.authority),
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.collectionMetadata),
+      getAccountMeta(accounts.collectionMint),
+      getAccountMeta(accounts.collectionMasterEdition),
+      getAccountMeta(accounts.collectionUpdateAuthority),
+      getAccountMeta(accounts.collectionAuthorityRecord),
+      getAccountMeta(accounts.tokenMetadataProgram),
+      getAccountMeta(accounts.systemProgram),
     ],
     programAddress,
     data: getInitializeInstructionDataEncoder().encode(

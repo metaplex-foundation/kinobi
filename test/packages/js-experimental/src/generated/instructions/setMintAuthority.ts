@@ -30,7 +30,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type SetMintAuthorityInstruction<
   TProgram extends string = typeof MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
@@ -129,18 +129,12 @@ export function getSetMintAuthorityInstruction<
     ResolvedAccount
   >;
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.candyMachine,
-      accountMetas.authority,
-      accountMetas.mintAuthority,
+      getAccountMeta(accounts.candyMachine),
+      getAccountMeta(accounts.authority),
+      getAccountMeta(accounts.mintAuthority),
     ],
     programAddress,
     data: getSetMintAuthorityInstructionDataEncoder().encode({}),

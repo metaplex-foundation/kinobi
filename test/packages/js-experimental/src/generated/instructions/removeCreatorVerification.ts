@@ -28,7 +28,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type RemoveCreatorVerificationInstruction<
   TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
@@ -110,15 +110,12 @@ export function getRemoveCreatorVerificationInstruction<
     ResolvedAccount
   >;
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
-    accounts: [accountMetas.metadata, accountMetas.creator],
+    accounts: [
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.creator),
+    ],
     programAddress,
     data: getRemoveCreatorVerificationInstructionDataEncoder().encode({}),
   } as RemoveCreatorVerificationInstruction<

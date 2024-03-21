@@ -26,7 +26,7 @@ import {
   WritableAccount,
 } from '@solana/instructions';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type PuffMetadataInstruction<
   TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
@@ -91,15 +91,9 @@ export function getPuffMetadataInstruction<TAccountMetadata extends string>(
     ResolvedAccount
   >;
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
-    accounts: [accountMetas.metadata],
+    accounts: [getAccountMeta(accounts.metadata)],
     programAddress,
     data: getPuffMetadataInstructionDataEncoder().encode({}),
   } as PuffMetadataInstruction<

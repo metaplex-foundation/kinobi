@@ -156,7 +156,7 @@ export function getInstructionFunctionFragment(
   if (hasAccounts) {
     functionFragment
       .addImports('solanaInstructions', ['IAccountMeta'])
-      .addImports('shared', ['getAccountMetasWithSigners', 'ResolvedAccount']);
+      .addImports('shared', ['getAccountMetaFactory', 'ResolvedAccount']);
   }
 
   if (hasByteDeltas) {

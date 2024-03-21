@@ -32,7 +32,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 import {
   Operation,
   OperationArgs,
@@ -372,29 +372,23 @@ export function getValidateInstruction<
       '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
   }
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.payer,
-      accountMetas.ruleSet,
-      accountMetas.systemProgram,
-      accountMetas.optRuleSigner1,
-      accountMetas.optRuleSigner2,
-      accountMetas.optRuleSigner3,
-      accountMetas.optRuleSigner4,
-      accountMetas.optRuleSigner5,
-      accountMetas.optRuleNonsigner1,
-      accountMetas.optRuleNonsigner2,
-      accountMetas.optRuleNonsigner3,
-      accountMetas.optRuleNonsigner4,
-      accountMetas.optRuleNonsigner5,
-    ].filter(<T,>(x: T | undefined): x is T => x !== undefined),
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.ruleSet),
+      getAccountMeta(accounts.systemProgram),
+      getAccountMeta(accounts.optRuleSigner1),
+      getAccountMeta(accounts.optRuleSigner2),
+      getAccountMeta(accounts.optRuleSigner3),
+      getAccountMeta(accounts.optRuleSigner4),
+      getAccountMeta(accounts.optRuleSigner5),
+      getAccountMeta(accounts.optRuleNonsigner1),
+      getAccountMeta(accounts.optRuleNonsigner2),
+      getAccountMeta(accounts.optRuleNonsigner3),
+      getAccountMeta(accounts.optRuleNonsigner4),
+      getAccountMeta(accounts.optRuleNonsigner5),
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     programAddress,
     data: getValidateInstructionDataEncoder().encode(
       args as ValidateInstructionDataArgs

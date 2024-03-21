@@ -29,7 +29,7 @@ import {
 } from '@solana/instructions';
 import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetasWithSigners } from '../shared';
+import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type VerifyCollectionInstruction<
   TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
@@ -165,21 +165,15 @@ export function getVerifyCollectionInstruction<
     ResolvedAccount
   >;
 
-  // Get account metas and signers.
-  const accountMetas = getAccountMetasWithSigners(
-    accounts,
-    'programId',
-    programAddress
-  );
-
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      accountMetas.metadata,
-      accountMetas.collectionAuthority,
-      accountMetas.payer,
-      accountMetas.collectionMint,
-      accountMetas.collection,
-      accountMetas.collectionMasterEditionAccount,
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.collectionAuthority),
+      getAccountMeta(accounts.payer),
+      getAccountMeta(accounts.collectionMint),
+      getAccountMeta(accounts.collection),
+      getAccountMeta(accounts.collectionMasterEditionAccount),
     ],
     programAddress,
     data: getVerifyCollectionInstructionDataEncoder().encode({}),
