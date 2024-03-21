@@ -10,11 +10,7 @@ export type {{ instructionInputType }}
 {% endif %}
 = {
   {{ accountsFragment }}
-  {% for dataArg in dataArgs %}
-    {{ dataArg.renamedName | camelCase }}{{ dataArg.optionalSign }}: {{ dataArgsType }}["{{ dataArg.name | camelCase }}"];
-  {% endfor %}
-  {% for extraArg in extraArgs %}
-    {{ extraArg.renamedName | camelCase }}{{ extraArg.optionalSign }}: {{ extraArgsType }}["{{ extraArg.name | camelCase }}"];
-  {% endfor %}
+  {{ dataArgumentsFragment }}
+  {{ extraArgumentsFragment }}
   {{ remainingAccountsFragment }}
 }

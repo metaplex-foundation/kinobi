@@ -1,7 +1,6 @@
 import {
   InstructionArgumentNode,
   InstructionNode,
-  ProgramNode,
   getAllInstructionArguments,
   isNode,
 } from '../../../nodes';
@@ -11,7 +10,6 @@ import {
   ResolvedInstructionArgument,
   ResolvedInstructionInput,
 } from '../../../visitors';
-import { ImportMap } from '../ImportMap';
 import { TypeManifest } from '../TypeManifest';
 import { isAsyncDefaultValue } from '../asyncHelpers';
 import type { GlobalFragmentScope } from '../getRenderMapVisitor';
@@ -31,84 +29,32 @@ export function getInstructionInputTypeFragment(
     resolvedInputs: ResolvedInstructionInput[];
     renamedArgs: Map<string, string>;
     dataArgsManifest: TypeManifest;
-    programNode: ProgramNode;
     useAsync: boolean;
   }
 ): Fragment {
-  const {
-    instructionNode,
-    resolvedInputs,
-    renamedArgs,
-    dataArgsManifest,
-    programNode,
-    useAsync,
-    nameApi,
-    customInstructionData,
-  } = scope;
+  const { instructionNode, useAsync, nameApi } = scope;
 
-  // Accounts.
-  const accountsFragment = getAccountsFragment(scope);
-
-  // Arg link imports.
-  const customData = customInstructionData.get(instructionNode.name);
-  const argLinkImports = new ImportMap();
-  if (customData) {
-    argLinkImports.mergeWith(dataArgsManifest.looseType);
-  }
-
-  // Arguments.
-  const resolveArg = (arg: InstructionArgumentNode) => {
-    const resolvedArg = resolvedInputs.find(
-      (input) =>
-        isNode(input, 'instructionArgumentNode') && input.name === arg.name
-    ) as ResolvedInstructionArgument | undefined;
-    if (arg.defaultValue && arg.defaultValueStrategy === 'omitted') return [];
-    const renamedName = renamedArgs.get(arg.name) ?? arg.name;
-    const optionalSign =
-      arg.defaultValue || resolvedArg?.defaultValue ? '?' : '';
-    return [
-      {
-        ...arg,
-        ...resolvedArg,
-        renamedName,
-        optionalSign,
-      },
-    ];
-  };
-  const instructionDataName = nameApi.instructionDataType(instructionNode.name);
-  const instructionExtraName = nameApi.instructionExtraType(
-    instructionNode.name
-  );
-  const dataArgsType = customData
-    ? nameApi.dataArgsType(customData.importAs)
-    : nameApi.dataArgsType(instructionDataName);
-  const dataArgs = customData
-    ? []
-    : instructionNode.arguments.flatMap(resolveArg);
-  const extraArgsType = nameApi.dataArgsType(instructionExtraName);
-  const extraArgs = (instructionNode.extraArguments ?? []).flatMap(resolveArg);
   const instructionInputType = useAsync
     ? nameApi.instructionAsyncInputType(instructionNode.name)
     : nameApi.instructionSyncInputType(instructionNode.name);
-
-  // Remaining accounts.
+  const accountsFragment = getAccountsFragment(scope);
+  const dataArgumentsFragment = getDataArgumentsFragment(scope);
+  const extraArgumentsFragment = getExtraArgumentsFragment(scope);
   const remainingAccountsFragment =
     getRemainingAccountsFragment(instructionNode);
 
   return fragmentFromTemplate('instructionInputType.njk', {
     instruction: instructionNode,
-    program: programNode,
     instructionInputType,
     accountsFragment,
-    dataArgs,
-    dataArgsType,
-    extraArgs,
-    extraArgsType,
+    dataArgumentsFragment,
+    extraArgumentsFragment,
     remainingAccountsFragment,
   })
     .mergeImportsWith(
       accountsFragment,
-      argLinkImports,
+      dataArgumentsFragment,
+      extraArgumentsFragment,
       remainingAccountsFragment
     )
     .addImports('solanaAddresses', ['Address']);
@@ -142,12 +88,125 @@ function getAccountsFragment(
     const docblock = account.docs.length > 0 ? jsDocblock(account.docs) : '';
     const optionalSign =
       hasDefaultValue || resolvedAccount.isOptional ? '?' : '';
-    return getAccountType(resolvedAccount).mapRender(
+    return getAccountTypeFragment(resolvedAccount).mapRender(
       (r) => `${docblock}${camelCase(account.name)}${optionalSign}: ${r};`
     );
   });
 
   return mergeFragments(fragments, (r) => r.join('\n'));
+}
+
+function getAccountTypeFragment(
+  account: Pick<ResolvedInstructionAccount, 'name' | 'isPda' | 'isSigner'>
+): Fragment {
+  const typeParam = `TAccount${pascalCase(account.name)}`;
+
+  if (account.isPda && account.isSigner === false) {
+    return fragment(`ProgramDerivedAddress<${typeParam}>`).addImports(
+      'solanaAddresses',
+      ['ProgramDerivedAddress']
+    );
+  }
+
+  if (account.isPda && account.isSigner === 'either') {
+    return fragment(
+      `ProgramDerivedAddress<${typeParam}> | TransactionSigner<${typeParam}>`
+    )
+      .addImports('solanaAddresses', ['ProgramDerivedAddress'])
+      .addImports('solanaSigners', ['TransactionSigner']);
+  }
+
+  if (account.isSigner === 'either') {
+    return fragment(`Address<${typeParam}> | TransactionSigner<${typeParam}>`)
+      .addImports('solanaAddresses', ['Address'])
+      .addImports('solanaSigners', ['TransactionSigner']);
+  }
+
+  if (account.isSigner) {
+    return fragment(`TransactionSigner<${typeParam}>`).addImports(
+      'solanaSigners',
+      ['TransactionSigner']
+    );
+  }
+
+  return fragment(`Address<${typeParam}>`).addImports('solanaAddresses', [
+    'Address',
+  ]);
+}
+
+function getDataArgumentsFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi' | 'customInstructionData'> & {
+    instructionNode: InstructionNode;
+    resolvedInputs: ResolvedInstructionInput[];
+    renamedArgs: Map<string, string>;
+  }
+): Fragment {
+  const { instructionNode, customInstructionData, nameApi } = scope;
+
+  const customData = customInstructionData.get(instructionNode.name);
+  if (customData) {
+    return fragment('');
+  }
+
+  const instructionDataName = nameApi.instructionDataType(instructionNode.name);
+  const dataArgsType = nameApi.dataArgsType(instructionDataName);
+
+  const fragments = instructionNode.arguments.flatMap((arg) => {
+    const argFragment = getArgumentFragment(
+      arg,
+      fragment(dataArgsType),
+      scope.resolvedInputs,
+      scope.renamedArgs
+    );
+    return argFragment ? [argFragment] : [];
+  });
+
+  return mergeFragments(fragments, (r) => r.join('\n'));
+}
+
+function getExtraArgumentsFragment(
+  scope: Pick<GlobalFragmentScope, 'nameApi'> & {
+    instructionNode: InstructionNode;
+    resolvedInputs: ResolvedInstructionInput[];
+    renamedArgs: Map<string, string>;
+  }
+): Fragment {
+  const { instructionNode, nameApi } = scope;
+  const instructionExtraName = nameApi.instructionExtraType(
+    instructionNode.name
+  );
+  const extraArgsType = nameApi.dataArgsType(instructionExtraName);
+
+  const fragments = (instructionNode.extraArguments ?? []).flatMap((arg) => {
+    const argFragment = getArgumentFragment(
+      arg,
+      fragment(extraArgsType),
+      scope.resolvedInputs,
+      scope.renamedArgs
+    );
+    return argFragment ? [argFragment] : [];
+  });
+
+  return mergeFragments(fragments, (r) => r.join('\n'));
+}
+
+function getArgumentFragment(
+  arg: InstructionArgumentNode,
+  argsType: Fragment,
+  resolvedInputs: ResolvedInstructionInput[],
+  renamedArgs: Map<string, string>
+): Fragment | null {
+  const resolvedArg = resolvedInputs.find(
+    (input) =>
+      isNode(input, 'instructionArgumentNode') && input.name === arg.name
+  ) as ResolvedInstructionArgument | undefined;
+  if (arg.defaultValue && arg.defaultValueStrategy === 'omitted') return null;
+  const renamedName = renamedArgs.get(arg.name) ?? arg.name;
+  const optionalSign = arg.defaultValue || resolvedArg?.defaultValue ? '?' : '';
+  return argsType.mapRender(
+    (r) =>
+      `${camelCase(renamedName)}${optionalSign}: ${r}["${camelCase(arg.name)}"];`
+  );
 }
 
 function getRemainingAccountsFragment(
@@ -184,42 +243,4 @@ function getRemainingAccountsFragment(
   );
 
   return mergeFragments(fragments, (r) => r.join('\n'));
-}
-
-function getAccountType(
-  account: Pick<ResolvedInstructionAccount, 'name' | 'isPda' | 'isSigner'>
-): Fragment {
-  const typeParam = `TAccount${pascalCase(account.name)}`;
-
-  if (account.isPda && account.isSigner === false) {
-    return fragment(`ProgramDerivedAddress<${typeParam}>`).addImports(
-      'solanaAddresses',
-      ['ProgramDerivedAddress']
-    );
-  }
-
-  if (account.isPda && account.isSigner === 'either') {
-    return fragment(
-      `ProgramDerivedAddress<${typeParam}> | TransactionSigner<${typeParam}>`
-    )
-      .addImports('solanaAddresses', ['ProgramDerivedAddress'])
-      .addImports('solanaSigners', ['TransactionSigner']);
-  }
-
-  if (account.isSigner === 'either') {
-    return fragment(`Address<${typeParam}> | TransactionSigner<${typeParam}>`)
-      .addImports('solanaAddresses', ['Address'])
-      .addImports('solanaSigners', ['TransactionSigner']);
-  }
-
-  if (account.isSigner) {
-    return fragment(`TransactionSigner<${typeParam}>`).addImports(
-      'solanaSigners',
-      ['TransactionSigner']
-    );
-  }
-
-  return fragment(`Address<${typeParam}>`).addImports('solanaAddresses', [
-    'Address',
-  ]);
 }
