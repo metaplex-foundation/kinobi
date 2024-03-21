@@ -265,9 +265,10 @@ export async function getDummyInstructionAsync<
   }
 
   // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [
-    ...args.proof.map((address) => ({ address, role: AccountRole.READONLY })),
-  ];
+  const remainingAccounts: IAccountMeta[] = args.proof.map((address) => ({
+    address,
+    role: AccountRole.READONLY,
+  }));
 
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
@@ -423,9 +424,10 @@ export function getDummyInstruction<
   }
 
   // Remaining accounts.
-  const remainingAccounts: IAccountMeta[] = [
-    ...args.proof.map((address) => ({ address, role: AccountRole.READONLY })),
-  ];
+  const remainingAccounts: IAccountMeta[] = args.proof.map((address) => ({
+    address,
+    role: AccountRole.READONLY,
+  }));
 
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
