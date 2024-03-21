@@ -3,6 +3,7 @@ import {
   InstructionNode,
   InstructionRemainingAccountsNode,
   assertIsNode,
+  getAllInstructionArguments,
   isNode,
 } from '../../../nodes';
 import type { GlobalFragmentScope } from '../getRenderMapVisitor';
@@ -32,12 +33,13 @@ export function getInstructionRemainingAccountsFragment(
 function getRemainingAccountsFragment(
   remainingAccounts: InstructionRemainingAccountsNode,
   scope: Pick<GlobalFragmentScope, 'nameApi' | 'asyncResolvers'> & {
+    instructionNode: InstructionNode;
     useAsync: boolean;
   }
 ): Fragment[] {
   const remainingAccountsFragment = ((): Fragment | null => {
     if (isNode(remainingAccounts.value, 'argumentValueNode')) {
-      return getArgumentValueNodeFragment(remainingAccounts);
+      return getArgumentValueNodeFragment(remainingAccounts, scope);
     }
     if (isNode(remainingAccounts.value, 'resolverValueNode')) {
       return getResolverValueNodeFragment(remainingAccounts, scope);
@@ -50,8 +52,10 @@ function getRemainingAccountsFragment(
 }
 
 function getArgumentValueNodeFragment(
-  remainingAccounts: InstructionRemainingAccountsNode
+  remainingAccounts: InstructionRemainingAccountsNode,
+  scope: { instructionNode: InstructionNode }
 ): Fragment {
+  const { instructionNode } = scope;
   assertIsNode(remainingAccounts.value, 'argumentValueNode');
   const argumentName = camelCase(remainingAccounts.value.name);
   const isWritable = remainingAccounts.isWritable ?? false;
@@ -61,10 +65,19 @@ function getArgumentValueNodeFragment(
   const signerRole = isWritable
     ? 'AccountRole.WRITABLE_SIGNER'
     : 'AccountRole.READONLY_SIGNER';
-  const role = remainingAccounts.isSigner === true ? signerRole : nonSignerRole;
-  return fragment(
-    `args.${argumentName}.map((address) => ({ address, role: ${role} }))`
-  ).addImports('solanaInstructions', ['AccountRole']);
+
+  // If the argument already exists, it should be of type `Address[]`.
+  const allArguments = getAllInstructionArguments(instructionNode);
+  if (allArguments.some((arg) => arg.name === remainingAccounts.value.name)) {
+    const role =
+      remainingAccounts.isSigner === true ? signerRole : nonSignerRole;
+    return fragment(
+      `args.${argumentName}.map((address) => ({ address, role: ${role} }))`
+    ).addImports('solanaInstructions', ['AccountRole']);
+  }
+
+  // Otherwise, it may be of type `TransactionSigner[]`.
+  throw new Error('Not implemented');
 }
 
 function getResolverValueNodeFragment(

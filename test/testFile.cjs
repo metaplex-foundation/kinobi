@@ -176,6 +176,13 @@ kinobi.update(
         },
       },
     },
+    addMemo: {
+      remainingAccounts: [
+        k.instructionRemainingAccountsNode(k.argumentValueNode('signers'), {
+          isSigner: true,
+        }),
+      ],
+    },
   })
 );
 
