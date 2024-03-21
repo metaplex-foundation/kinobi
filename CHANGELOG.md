@@ -1,5 +1,17 @@
 # @metaplex-foundation/kinobi
 
+## 0.18.0
+
+### Minor Changes
+
+- [#182](https://github.com/metaplex-foundation/kinobi/pull/182) [`7af4ce6`](https://github.com/metaplex-foundation/kinobi/commit/7af4ce67d1459590cdaad52f0953d8a4f29c6aa6) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Remove non-signer function overloads in JS experimental renderer
+
+### Patch Changes
+
+- [#182](https://github.com/metaplex-foundation/kinobi/pull/182) [`7af4ce6`](https://github.com/metaplex-foundation/kinobi/commit/7af4ce67d1459590cdaad52f0953d8a4f29c6aa6) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Use generated address constant in instruction pages of JS experimental renderer
+
+- [#179](https://github.com/metaplex-foundation/kinobi/pull/179) [`dc8dea7`](https://github.com/metaplex-foundation/kinobi/commit/dc8dea7494101a3e320802e4c4636f11b98fdc09) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix enum size import issue in JS renderers
+
 ## 0.17.10
 
 ### Patch Changes
