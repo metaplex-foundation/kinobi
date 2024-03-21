@@ -9,7 +9,7 @@ export * from './instructionAccountTypeParam';
 export * from './instructionByteDelta';
 export * from './instructionData';
 export * from './instructionExtraArgs';
-export * from './instructionFunctionHighLevel';
+export * from './instructionFunction';
 export * from './instructionInputDefault';
 export * from './instructionInputResolved';
 export * from './instructionInputType';

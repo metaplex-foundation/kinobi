@@ -41,7 +41,7 @@ import {
   getAccountTypeFragment,
   getInstructionDataFragment,
   getInstructionExtraArgsFragment,
-  getInstructionFunctionHighLevelFragment,
+  getInstructionFunctionFragment,
   getInstructionParseFunctionFragment,
   getInstructionTypeFragment,
   getPdaFunctionFragment,
@@ -396,13 +396,13 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
           const instructionDataFragment = getInstructionDataFragment(scope);
           const instructionExtraArgsFragment =
             getInstructionExtraArgsFragment(scope);
-          const instructionFunctionHighLevelAsyncFragment =
-            getInstructionFunctionHighLevelFragment({
+          const instructionFunctionAsyncFragment =
+            getInstructionFunctionFragment({
               ...scope,
               useAsync: true,
             });
-          const instructionFunctionHighLevelSyncFragment =
-            getInstructionFunctionHighLevelFragment({
+          const instructionFunctionSyncFragment =
+            getInstructionFunctionFragment({
               ...scope,
               useAsync: false,
             });
@@ -414,8 +414,8 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
             instructionTypeFragment,
             instructionDataFragment,
             instructionExtraArgsFragment,
-            instructionFunctionHighLevelAsyncFragment,
-            instructionFunctionHighLevelSyncFragment,
+            instructionFunctionAsyncFragment,
+            instructionFunctionSyncFragment,
             instructionParseFunctionFragment
           );
 
@@ -427,8 +427,8 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
               instructionTypeFragment,
               instructionDataFragment,
               instructionExtraArgsFragment,
-              instructionFunctionHighLevelAsyncFragment,
-              instructionFunctionHighLevelSyncFragment,
+              instructionFunctionAsyncFragment,
+              instructionFunctionSyncFragment,
               instructionParseFunctionFragment,
             })
           );

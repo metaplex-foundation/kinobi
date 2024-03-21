@@ -16,7 +16,7 @@ import { getInstructionInputResolvedFragment } from './instructionInputResolved'
 import { getInstructionInputTypeFragment } from './instructionInputType';
 import { getInstructionRemainingAccountsFragment } from './instructionRemainingAccounts';
 
-export function getInstructionFunctionHighLevelFragment(
+export function getInstructionFunctionFragment(
   scope: Pick<
     GlobalFragmentScope,
     'nameApi' | 'asyncResolvers' | 'valueNodeVisitor' | 'customInstructionData'
@@ -115,33 +115,30 @@ export function getInstructionFunctionHighLevelFragment(
     return useAsync ? `Promise<${returnType}>` : returnType;
   };
 
-  const functionFragment = fragmentFromTemplate(
-    'instructionFunctionHighLevel.njk',
-    {
-      instruction: instructionNode,
-      program: programNode,
-      hasAccounts,
-      hasLegacyOptionalAccounts,
-      hasData,
-      hasDataArgs,
-      hasExtraArgs,
-      hasAnyArgs,
-      encoderFunction,
-      argsTypeFragment,
-      functionName,
-      typeParamsFragment,
-      instructionTypeFragment,
-      inputTypeFragment,
-      inputTypeCallFragment,
-      renamedArgs: renamedArgsText,
-      resolvedFragment,
-      hasRemainingAccounts,
-      hasByteDeltas,
-      hasResolver,
-      useAsync,
-      getReturnType,
-    }
-  )
+  const functionFragment = fragmentFromTemplate('instructionFunction.njk', {
+    instruction: instructionNode,
+    program: programNode,
+    hasAccounts,
+    hasLegacyOptionalAccounts,
+    hasData,
+    hasDataArgs,
+    hasExtraArgs,
+    hasAnyArgs,
+    encoderFunction,
+    argsTypeFragment,
+    functionName,
+    typeParamsFragment,
+    instructionTypeFragment,
+    inputTypeFragment,
+    inputTypeCallFragment,
+    renamedArgs: renamedArgsText,
+    resolvedFragment,
+    hasRemainingAccounts,
+    hasByteDeltas,
+    hasResolver,
+    useAsync,
+    getReturnType,
+  })
     .mergeImportsWith(
       typeParamsFragment,
       instructionTypeFragment,
