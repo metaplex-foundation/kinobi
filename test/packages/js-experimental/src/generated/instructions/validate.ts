@@ -372,7 +372,7 @@ export function getValidateInstruction<
       '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
   }
 
-  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'omitted');
   const instruction = {
     accounts: [
       getAccountMeta(accounts.payer),
@@ -388,7 +388,7 @@ export function getValidateInstruction<
       getAccountMeta(accounts.optRuleNonsigner3),
       getAccountMeta(accounts.optRuleNonsigner4),
       getAccountMeta(accounts.optRuleNonsigner5),
-    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
+    ].filter(<T,>(x: T | undefined): x is T => x !== undefined),
     programAddress,
     data: getValidateInstructionDataEncoder().encode(
       args as ValidateInstructionDataArgs

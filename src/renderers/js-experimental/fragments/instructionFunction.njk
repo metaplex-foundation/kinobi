@@ -27,7 +27,7 @@ export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragme
   {{ resolvedFragment }}
 
   {% if hasAccounts %}
-    const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
+    const getAccountMeta = getAccountMetaFactory(programAddress, '{{ 'omitted' if instruction.optionalAccountStrategy === 'omitted' else 'programId' }}');
   {% endif %}
   const instruction = {
     {%- if hasAccounts -%}
