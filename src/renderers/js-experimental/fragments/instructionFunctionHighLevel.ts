@@ -50,6 +50,9 @@ export function getInstructionFunctionHighLevelFragment(
 
   const customData = customInstructionData.get(instructionNode.name);
   const hasAccounts = instructionNode.accounts.length > 0;
+  const hasLegacyOptionalAccounts =
+    instructionNode.optionalAccountStrategy === 'omitted' &&
+    instructionNode.accounts.some((account) => account.isOptional);
   const hasData = !!customData || instructionNode.arguments.length > 0;
   const hasDataArgs =
     !!customData ||
@@ -118,6 +121,7 @@ export function getInstructionFunctionHighLevelFragment(
       instruction: instructionNode,
       program: programNode,
       hasAccounts,
+      hasLegacyOptionalAccounts,
       hasData,
       hasDataArgs,
       hasExtraArgs,

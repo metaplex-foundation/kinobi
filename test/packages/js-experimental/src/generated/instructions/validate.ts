@@ -405,7 +405,7 @@ export function getValidateInstruction<
       accountMetas.optRuleNonsigner3,
       accountMetas.optRuleNonsigner4,
       accountMetas.optRuleNonsigner5,
-    ],
+    ].filter(<T,>(x: T | undefined): x is T => x !== undefined),
     programAddress,
     data: getValidateInstructionDataEncoder().encode(
       args as ValidateInstructionDataArgs
