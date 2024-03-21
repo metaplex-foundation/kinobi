@@ -138,16 +138,7 @@ export function getCreateReservationListInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'reservationList'
-    | 'payer'
-    | 'updateAuthority'
-    | 'masterEdition'
-    | 'resource'
-    | 'metadata'
-    | 'systemProgram'
-    | 'rent';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     reservationList: { value: input.reservationList ?? null, isWritable: true },
     payer: { value: input.payer ?? null, isWritable: false },
     updateAuthority: {
@@ -160,6 +151,10 @@ export function getCreateReservationListInstruction<
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
     rent: { value: input.rent ?? null, isWritable: false },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

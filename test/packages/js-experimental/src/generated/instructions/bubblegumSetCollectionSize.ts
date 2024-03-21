@@ -155,13 +155,7 @@ export function getBubblegumSetCollectionSizeInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'collectionMetadata'
-    | 'collectionAuthority'
-    | 'collectionMint'
-    | 'bubblegumSigner'
-    | 'collectionAuthorityRecord';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     collectionMetadata: {
       value: input.collectionMetadata ?? null,
       isWritable: true,
@@ -180,6 +174,10 @@ export function getBubblegumSetCollectionSizeInstruction<
       isWritable: false,
     },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

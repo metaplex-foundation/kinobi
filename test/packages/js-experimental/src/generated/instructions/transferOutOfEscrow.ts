@@ -237,21 +237,7 @@ export function getTransferOutOfEscrowInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'escrow'
-    | 'metadata'
-    | 'payer'
-    | 'attributeMint'
-    | 'attributeSrc'
-    | 'attributeDst'
-    | 'escrowMint'
-    | 'escrowAccount'
-    | 'systemProgram'
-    | 'ataProgram'
-    | 'tokenProgram'
-    | 'sysvarInstructions'
-    | 'authority';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     escrow: { value: input.escrow ?? null, isWritable: false },
     metadata: { value: input.metadata ?? null, isWritable: true },
     payer: { value: input.payer ?? null, isWritable: true },
@@ -269,6 +255,10 @@ export function getTransferOutOfEscrowInstruction<
     },
     authority: { value: input.authority ?? null, isWritable: false },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

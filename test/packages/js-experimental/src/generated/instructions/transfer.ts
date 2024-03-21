@@ -269,23 +269,7 @@ export async function getTransferInstructionAsync<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'authority'
-    | 'delegateRecord'
-    | 'token'
-    | 'tokenOwner'
-    | 'destination'
-    | 'destinationOwner'
-    | 'mint'
-    | 'metadata'
-    | 'masterEdition'
-    | 'splTokenProgram'
-    | 'splAtaProgram'
-    | 'systemProgram'
-    | 'sysvarInstructions'
-    | 'authorizationRulesProgram'
-    | 'authorizationRules';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     authority: { value: input.authority ?? null, isWritable: true },
     delegateRecord: { value: input.delegateRecord ?? null, isWritable: true },
     token: { value: input.token ?? null, isWritable: true },
@@ -317,6 +301,10 @@ export async function getTransferInstructionAsync<
       isWritable: false,
     },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };
@@ -509,23 +497,7 @@ export function getTransferInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'authority'
-    | 'delegateRecord'
-    | 'token'
-    | 'tokenOwner'
-    | 'destination'
-    | 'destinationOwner'
-    | 'mint'
-    | 'metadata'
-    | 'masterEdition'
-    | 'splTokenProgram'
-    | 'splAtaProgram'
-    | 'systemProgram'
-    | 'sysvarInstructions'
-    | 'authorizationRulesProgram'
-    | 'authorizationRules';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     authority: { value: input.authority ?? null, isWritable: true },
     delegateRecord: { value: input.delegateRecord ?? null, isWritable: true },
     token: { value: input.token ?? null, isWritable: true },
@@ -557,6 +529,10 @@ export function getTransferInstruction<
       isWritable: false,
     },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

@@ -153,12 +153,15 @@ export function getDeprecatedSetReservationListInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys = 'masterEdition' | 'reservationList' | 'resource';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     masterEdition: { value: input.masterEdition ?? null, isWritable: true },
     reservationList: { value: input.reservationList ?? null, isWritable: true },
     resource: { value: input.resource ?? null, isWritable: false },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

@@ -203,17 +203,7 @@ export function getDeprecatedMintPrintingTokensViaTokenInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'destination'
-    | 'token'
-    | 'oneTimePrintingAuthorizationMint'
-    | 'printingMint'
-    | 'burnAuthority'
-    | 'metadata'
-    | 'masterEdition'
-    | 'tokenProgram'
-    | 'rent';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     destination: { value: input.destination ?? null, isWritable: true },
     token: { value: input.token ?? null, isWritable: true },
     oneTimePrintingAuthorizationMint: {
@@ -227,6 +217,10 @@ export function getDeprecatedMintPrintingTokensViaTokenInstruction<
     tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
     rent: { value: input.rent ?? null, isWritable: false },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

@@ -109,11 +109,14 @@ export function getTransferSolInstruction<
   const programAddress = SPL_SYSTEM_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys = 'source' | 'destination';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     source: { value: input.source ?? null, isWritable: true },
     destination: { value: input.destination ?? null, isWritable: true },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

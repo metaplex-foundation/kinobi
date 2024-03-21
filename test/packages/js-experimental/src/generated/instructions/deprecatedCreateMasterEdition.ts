@@ -245,21 +245,7 @@ export function getDeprecatedCreateMasterEditionInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'edition'
-    | 'mint'
-    | 'printingMint'
-    | 'oneTimePrintingAuthorizationMint'
-    | 'updateAuthority'
-    | 'printingMintAuthority'
-    | 'mintAuthority'
-    | 'metadata'
-    | 'payer'
-    | 'tokenProgram'
-    | 'systemProgram'
-    | 'rent'
-    | 'oneTimePrintingAuthorizationMintAuthority';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     edition: { value: input.edition ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: true },
     printingMint: { value: input.printingMint ?? null, isWritable: true },
@@ -286,6 +272,10 @@ export function getDeprecatedCreateMasterEditionInstruction<
       isWritable: false,
     },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

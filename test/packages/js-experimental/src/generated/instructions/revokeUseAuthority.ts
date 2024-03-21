@@ -177,17 +177,7 @@ export function getRevokeUseAuthorityInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'useAuthorityRecord'
-    | 'owner'
-    | 'user'
-    | 'ownerTokenAccount'
-    | 'mint'
-    | 'metadata'
-    | 'tokenProgram'
-    | 'systemProgram'
-    | 'rent';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     useAuthorityRecord: {
       value: input.useAuthorityRecord ?? null,
       isWritable: true,
@@ -204,6 +194,10 @@ export function getRevokeUseAuthorityInstruction<
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
     rent: { value: input.rent ?? null, isWritable: false },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {

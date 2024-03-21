@@ -217,19 +217,7 @@ export function getUseAssetInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'metadata'
-    | 'tokenAccount'
-    | 'mint'
-    | 'useAuthority'
-    | 'owner'
-    | 'splTokenProgram'
-    | 'ataProgram'
-    | 'systemProgram'
-    | 'useAuthorityRecord'
-    | 'authorizationRules'
-    | 'authorizationRulesProgram';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     tokenAccount: { value: input.tokenAccount ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: true },
@@ -254,6 +242,10 @@ export function getUseAssetInstruction<
       isWritable: false,
     },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

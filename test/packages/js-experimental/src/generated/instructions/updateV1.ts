@@ -356,18 +356,7 @@ export function getUpdateV1Instruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'authority'
-    | 'metadata'
-    | 'masterEdition'
-    | 'mint'
-    | 'systemProgram'
-    | 'sysvarInstructions'
-    | 'token'
-    | 'delegateRecord'
-    | 'authorizationRulesProgram'
-    | 'authorizationRules';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     authority: { value: input.authority ?? null, isWritable: false },
     metadata: { value: input.metadata ?? null, isWritable: true },
     masterEdition: { value: input.masterEdition ?? null, isWritable: true },
@@ -388,6 +377,10 @@ export function getUpdateV1Instruction<
       isWritable: false,
     },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

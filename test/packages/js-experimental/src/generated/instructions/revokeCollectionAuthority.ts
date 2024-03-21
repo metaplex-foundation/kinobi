@@ -137,13 +137,7 @@ export function getRevokeCollectionAuthorityInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'collectionAuthorityRecord'
-    | 'delegateAuthority'
-    | 'revokeAuthority'
-    | 'metadata'
-    | 'mint';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     collectionAuthorityRecord: {
       value: input.collectionAuthorityRecord ?? null,
       isWritable: true,
@@ -156,6 +150,10 @@ export function getRevokeCollectionAuthorityInstruction<
     metadata: { value: input.metadata ?? null, isWritable: false },
     mint: { value: input.mint ?? null, isWritable: false },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(

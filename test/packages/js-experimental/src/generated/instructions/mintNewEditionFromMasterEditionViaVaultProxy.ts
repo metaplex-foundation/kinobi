@@ -286,25 +286,7 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'newMetadata'
-    | 'newEdition'
-    | 'masterEdition'
-    | 'newMint'
-    | 'editionMarkPda'
-    | 'newMintAuthority'
-    | 'payer'
-    | 'vaultAuthority'
-    | 'safetyDepositStore'
-    | 'safetyDepositBox'
-    | 'vault'
-    | 'newMetadataUpdateAuthority'
-    | 'metadata'
-    | 'tokenProgram'
-    | 'tokenVaultProgram'
-    | 'systemProgram'
-    | 'rent';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     newMetadata: { value: input.newMetadata ?? null, isWritable: true },
     newEdition: { value: input.newEdition ?? null, isWritable: true },
     masterEdition: { value: input.masterEdition ?? null, isWritable: true },
@@ -338,6 +320,10 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstruction<
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
     rent: { value: input.rent ?? null, isWritable: false },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

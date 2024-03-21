@@ -237,21 +237,7 @@ export function getRevokeInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'delegateRecord'
-    | 'delegate'
-    | 'metadata'
-    | 'masterEdition'
-    | 'mint'
-    | 'token'
-    | 'authority'
-    | 'payer'
-    | 'systemProgram'
-    | 'sysvarInstructions'
-    | 'splTokenProgram'
-    | 'authorizationRulesProgram'
-    | 'authorizationRules';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     delegateRecord: { value: input.delegateRecord ?? null, isWritable: true },
     delegate: { value: input.delegate ?? null, isWritable: false },
     metadata: { value: input.metadata ?? null, isWritable: true },
@@ -278,6 +264,10 @@ export function getRevokeInstruction<
       isWritable: false,
     },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

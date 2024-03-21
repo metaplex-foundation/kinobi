@@ -189,18 +189,7 @@ export function getBurnEditionNftInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'metadata'
-    | 'owner'
-    | 'printEditionMint'
-    | 'masterEditionMint'
-    | 'printEditionTokenAccount'
-    | 'masterEditionTokenAccount'
-    | 'masterEditionAccount'
-    | 'printEditionAccount'
-    | 'editionMarkerAccount'
-    | 'splTokenProgram';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     owner: { value: input.owner ?? null, isWritable: true },
     printEditionMint: {
@@ -236,6 +225,10 @@ export function getBurnEditionNftInstruction<
       isWritable: false,
     },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Resolve default values.
   if (!accounts.splTokenProgram.value) {

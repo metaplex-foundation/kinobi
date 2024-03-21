@@ -168,16 +168,7 @@ export function getSetAndVerifyCollectionInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'metadata'
-    | 'collectionAuthority'
-    | 'payer'
-    | 'updateAuthority'
-    | 'collectionMint'
-    | 'collection'
-    | 'collectionMasterEditionAccount'
-    | 'collectionAuthorityRecord';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     collectionAuthority: {
       value: input.collectionAuthority ?? null,
@@ -199,6 +190,10 @@ export function getSetAndVerifyCollectionInstruction<
       isWritable: false,
     },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(

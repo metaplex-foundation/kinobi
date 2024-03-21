@@ -135,19 +135,17 @@ export function getThawDelegatedAccountInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'delegate'
-    | 'tokenAccount'
-    | 'edition'
-    | 'mint'
-    | 'tokenProgram';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     delegate: { value: input.delegate ?? null, isWritable: true },
     tokenAccount: { value: input.tokenAccount ?? null, isWritable: true },
     edition: { value: input.edition ?? null, isWritable: false },
     mint: { value: input.mint ?? null, isWritable: false },
     tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {

@@ -205,17 +205,7 @@ export function getCreateMasterEditionV3Instruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'edition'
-    | 'mint'
-    | 'updateAuthority'
-    | 'mintAuthority'
-    | 'payer'
-    | 'metadata'
-    | 'tokenProgram'
-    | 'systemProgram'
-    | 'rent';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     edition: { value: input.edition ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: true },
     updateAuthority: {
@@ -229,6 +219,10 @@ export function getCreateMasterEditionV3Instruction<
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
     rent: { value: input.rent ?? null, isWritable: false },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

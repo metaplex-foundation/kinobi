@@ -142,12 +142,15 @@ export function getCreateRuleSetInstruction<
   const programAddress = MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys = 'payer' | 'ruleSetPda' | 'systemProgram';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     payer: { value: input.payer ?? null, isWritable: true },
     ruleSetPda: { value: input.ruleSetPda ?? null, isWritable: true },
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

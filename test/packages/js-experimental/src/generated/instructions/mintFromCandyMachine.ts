@@ -262,25 +262,7 @@ export function getMintFromCandyMachineInstruction<
   const programAddress = MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'candyMachine'
-    | 'authorityPda'
-    | 'mintAuthority'
-    | 'payer'
-    | 'nftMint'
-    | 'nftMintAuthority'
-    | 'nftMetadata'
-    | 'nftMasterEdition'
-    | 'collectionAuthorityRecord'
-    | 'collectionMint'
-    | 'collectionMetadata'
-    | 'collectionMasterEdition'
-    | 'collectionUpdateAuthority'
-    | 'tokenMetadataProgram'
-    | 'tokenProgram'
-    | 'systemProgram'
-    | 'recentSlothashes';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     candyMachine: { value: input.candyMachine ?? null, isWritable: true },
     authorityPda: { value: input.authorityPda ?? null, isWritable: true },
     mintAuthority: { value: input.mintAuthority ?? null, isWritable: false },
@@ -323,6 +305,10 @@ export function getMintFromCandyMachineInstruction<
       isWritable: false,
     },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Resolve default values.
   if (!accounts.tokenMetadataProgram.value) {

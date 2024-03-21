@@ -119,12 +119,15 @@ export function getSetMintAuthorityInstruction<
   const programAddress = MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys = 'candyMachine' | 'authority' | 'mintAuthority';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     candyMachine: { value: input.candyMachine ?? null, isWritable: true },
     authority: { value: input.authority ?? null, isWritable: false },
     mintAuthority: { value: input.mintAuthority ?? null, isWritable: false },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(

@@ -215,19 +215,7 @@ export function getInitializeInstruction<
   const programAddress = MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'candyMachine'
-    | 'authorityPda'
-    | 'authority'
-    | 'payer'
-    | 'collectionMetadata'
-    | 'collectionMint'
-    | 'collectionMasterEdition'
-    | 'collectionUpdateAuthority'
-    | 'collectionAuthorityRecord'
-    | 'tokenMetadataProgram'
-    | 'systemProgram';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     candyMachine: { value: input.candyMachine ?? null, isWritable: true },
     authorityPda: { value: input.authorityPda ?? null, isWritable: true },
     authority: { value: input.authority ?? null, isWritable: false },
@@ -255,6 +243,10 @@ export function getInitializeInstruction<
     },
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

@@ -181,15 +181,7 @@ export function getDeprecatedMintPrintingTokensInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'destination'
-    | 'printingMint'
-    | 'updateAuthority'
-    | 'metadata'
-    | 'masterEdition'
-    | 'tokenProgram'
-    | 'rent';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     destination: { value: input.destination ?? null, isWritable: true },
     printingMint: { value: input.printingMint ?? null, isWritable: true },
     updateAuthority: {
@@ -201,6 +193,10 @@ export function getDeprecatedMintPrintingTokensInstruction<
     tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
     rent: { value: input.rent ?? null, isWritable: false },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

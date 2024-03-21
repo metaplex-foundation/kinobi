@@ -83,10 +83,13 @@ export function getPuffMetadataInstruction<TAccountMetadata extends string>(
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys = 'metadata';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     metadata: { value: input.metadata ?? null, isWritable: true },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(

@@ -125,11 +125,14 @@ export function getCreateAccountInstruction<
   const programAddress = SPL_SYSTEM_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys = 'payer' | 'newAccount';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     payer: { value: input.payer ?? null, isWritable: true },
     newAccount: { value: input.newAccount ?? null, isWritable: true },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

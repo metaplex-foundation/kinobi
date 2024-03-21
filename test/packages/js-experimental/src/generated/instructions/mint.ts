@@ -228,20 +228,7 @@ export function getMintInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'token'
-    | 'metadata'
-    | 'masterEdition'
-    | 'mint'
-    | 'payer'
-    | 'authority'
-    | 'systemProgram'
-    | 'sysvarInstructions'
-    | 'splTokenProgram'
-    | 'splAtaProgram'
-    | 'authorizationRulesProgram'
-    | 'authorizationRules';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     token: { value: input.token ?? null, isWritable: true },
     metadata: { value: input.metadata ?? null, isWritable: false },
     masterEdition: { value: input.masterEdition ?? null, isWritable: false },
@@ -267,6 +254,10 @@ export function getMintInstruction<
       isWritable: false,
     },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

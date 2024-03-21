@@ -253,24 +253,7 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'metadata'
-    | 'edition'
-    | 'masterEdition'
-    | 'mint'
-    | 'mintAuthority'
-    | 'printingMint'
-    | 'masterTokenAccount'
-    | 'editionMarker'
-    | 'burnAuthority'
-    | 'payer'
-    | 'masterUpdateAuthority'
-    | 'masterMetadata'
-    | 'tokenProgram'
-    | 'systemProgram'
-    | 'rent'
-    | 'reservationList';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     edition: { value: input.edition ?? null, isWritable: true },
     masterEdition: { value: input.masterEdition ?? null, isWritable: true },
@@ -294,6 +277,10 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
     rent: { value: input.rent ?? null, isWritable: false },
     reservationList: { value: input.reservationList ?? null, isWritable: true },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Resolve default values.
   if (!accounts.tokenProgram.value) {

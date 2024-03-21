@@ -205,18 +205,7 @@ export async function getDummyInstructionAsync<
   const programAddress = MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'edition'
-    | 'mint'
-    | 'updateAuthority'
-    | 'mintAuthority'
-    | 'payer'
-    | 'foo'
-    | 'bar'
-    | 'delegate'
-    | 'delegateRecord'
-    | 'tokenOrAtaProgram';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     edition: { value: input.edition ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: true },
     updateAuthority: {
@@ -234,6 +223,10 @@ export async function getDummyInstructionAsync<
       isWritable: false,
     },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };
@@ -383,18 +376,7 @@ export function getDummyInstruction<
   const programAddress = MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'edition'
-    | 'mint'
-    | 'updateAuthority'
-    | 'mintAuthority'
-    | 'payer'
-    | 'foo'
-    | 'bar'
-    | 'delegate'
-    | 'delegateRecord'
-    | 'tokenOrAtaProgram';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     edition: { value: input.edition ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: true },
     updateAuthority: {
@@ -412,6 +394,10 @@ export function getDummyInstruction<
       isWritable: false,
     },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

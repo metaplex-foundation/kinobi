@@ -123,13 +123,16 @@ export function getSetTokenStandardInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys = 'metadata' | 'updateAuthority' | 'mint' | 'edition';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     updateAuthority: { value: input.updateAuthority ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: false },
     edition: { value: input.edition ?? null, isWritable: false },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(

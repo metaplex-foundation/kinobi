@@ -190,17 +190,7 @@ export function getBurnInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'metadata'
-    | 'owner'
-    | 'mint'
-    | 'tokenAccount'
-    | 'masterEditionAccount'
-    | 'splTokenProgram'
-    | 'collectionMetadata'
-    | 'authorizationRules'
-    | 'authorizationRulesProgram';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     owner: { value: input.owner ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: true },
@@ -226,6 +216,10 @@ export function getBurnInstruction<
       isWritable: false,
     },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

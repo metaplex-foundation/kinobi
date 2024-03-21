@@ -328,21 +328,7 @@ export function getValidateInstruction<
   const programAddress = MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'payer'
-    | 'ruleSet'
-    | 'systemProgram'
-    | 'optRuleSigner1'
-    | 'optRuleSigner2'
-    | 'optRuleSigner3'
-    | 'optRuleSigner4'
-    | 'optRuleSigner5'
-    | 'optRuleNonsigner1'
-    | 'optRuleNonsigner2'
-    | 'optRuleNonsigner3'
-    | 'optRuleNonsigner4'
-    | 'optRuleNonsigner5';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     payer: { value: input.payer ?? null, isWritable: true },
     ruleSet: { value: input.ruleSet ?? null, isWritable: true },
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
@@ -372,6 +358,10 @@ export function getValidateInstruction<
       isWritable: false,
     },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

@@ -6,15 +6,12 @@ export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragme
 
   {% if hasAccounts %}
     // Original accounts.
-    type AccountKeys =
-      {% for account in instruction.accounts %}
-        | "{{ account.name | camelCase }}"
-      {% endfor %}
-    const accounts: Record<AccountKeys, ResolvedAccount> = {
+    const originalAccounts = {
       {% for account in instruction.accounts %}
         {{ account.name | camelCase }}: { value: input.{{ account.name | camelCase }} ?? null, isWritable: {{ "true" if account.isWritable else "false" }} },
       {% endfor %}
     };
+    const accounts = originalAccounts as Record<keyof typeof originalAccounts, ResolvedAccount>;
   {% endif %}
 
   {% if hasAnyArgs %}

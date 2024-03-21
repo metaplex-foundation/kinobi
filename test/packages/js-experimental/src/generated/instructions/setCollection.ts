@@ -233,22 +233,7 @@ export function getSetCollectionInstruction<
   const programAddress = MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'candyMachine'
-    | 'authority'
-    | 'authorityPda'
-    | 'payer'
-    | 'collectionMint'
-    | 'collectionMetadata'
-    | 'collectionAuthorityRecord'
-    | 'newCollectionUpdateAuthority'
-    | 'newCollectionMetadata'
-    | 'newCollectionMint'
-    | 'newCollectionMasterEdition'
-    | 'newCollectionAuthorityRecord'
-    | 'tokenMetadataProgram'
-    | 'systemProgram';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     candyMachine: { value: input.candyMachine ?? null, isWritable: true },
     authority: { value: input.authority ?? null, isWritable: false },
     authorityPda: { value: input.authorityPda ?? null, isWritable: true },
@@ -288,6 +273,10 @@ export function getSetCollectionInstruction<
     },
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Resolve default values.
   if (!accounts.tokenMetadataProgram.value) {

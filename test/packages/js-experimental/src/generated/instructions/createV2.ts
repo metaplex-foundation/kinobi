@@ -215,17 +215,7 @@ export function getCreateV2Instruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'metadata'
-    | 'masterEdition'
-    | 'mint'
-    | 'mintAuthority'
-    | 'payer'
-    | 'updateAuthority'
-    | 'systemProgram'
-    | 'sysvarInstructions'
-    | 'splTokenProgram';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     masterEdition: { value: input.masterEdition ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: true },
@@ -245,6 +235,10 @@ export function getCreateV2Instruction<
       isWritable: false,
     },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

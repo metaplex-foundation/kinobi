@@ -170,16 +170,7 @@ export function getApproveCollectionAuthorityInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'collectionAuthorityRecord'
-    | 'newCollectionAuthority'
-    | 'updateAuthority'
-    | 'payer'
-    | 'metadata'
-    | 'mint'
-    | 'systemProgram'
-    | 'rent';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     collectionAuthorityRecord: {
       value: input.collectionAuthorityRecord ?? null,
       isWritable: true,
@@ -195,6 +186,10 @@ export function getApproveCollectionAuthorityInstruction<
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
     rent: { value: input.rent ?? null, isWritable: false },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {

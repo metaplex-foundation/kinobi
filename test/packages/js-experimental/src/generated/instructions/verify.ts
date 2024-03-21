@@ -152,13 +152,7 @@ export function getVerifyInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'metadata'
-    | 'collectionAuthority'
-    | 'payer'
-    | 'authorizationRules'
-    | 'authorizationRulesProgram';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     metadata: { value: input.metadata ?? null, isWritable: true },
     collectionAuthority: {
       value: input.collectionAuthority ?? null,
@@ -174,6 +168,10 @@ export function getVerifyInstruction<
       isWritable: false,
     },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Original args.
   const args = { ...input };

@@ -111,12 +111,15 @@ export function getConvertMasterEditionV1ToV2Instruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys = 'masterEdition' | 'oneTimeAuth' | 'printingMint';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     masterEdition: { value: input.masterEdition ?? null, isWritable: true },
     oneTimeAuth: { value: input.oneTimeAuth ?? null, isWritable: true },
     printingMint: { value: input.printingMint ?? null, isWritable: true },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Get account metas and signers.
   const accountMetas = getAccountMetasWithSigners(

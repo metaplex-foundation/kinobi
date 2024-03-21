@@ -167,16 +167,7 @@ export function getCloseEscrowAccountInstruction<
   const programAddress = MPL_TOKEN_METADATA_PROGRAM_ADDRESS;
 
   // Original accounts.
-  type AccountKeys =
-    | 'escrow'
-    | 'metadata'
-    | 'mint'
-    | 'tokenAccount'
-    | 'edition'
-    | 'payer'
-    | 'systemProgram'
-    | 'sysvarInstructions';
-  const accounts: Record<AccountKeys, ResolvedAccount> = {
+  const originalAccounts = {
     escrow: { value: input.escrow ?? null, isWritable: true },
     metadata: { value: input.metadata ?? null, isWritable: true },
     mint: { value: input.mint ?? null, isWritable: false },
@@ -189,6 +180,10 @@ export function getCloseEscrowAccountInstruction<
       isWritable: false,
     },
   };
+  const accounts = originalAccounts as Record<
+    keyof typeof originalAccounts,
+    ResolvedAccount
+  >;
 
   // Resolve default values.
   if (!accounts.systemProgram.value) {
