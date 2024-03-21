@@ -5,6 +5,7 @@ import {
   FieldDiscriminatorNode,
   getAllAccounts,
   getAllDefinedTypes,
+  getAllInstructionArguments,
   getAllInstructionsWithSubs,
   InstructionNode,
   isDataEnum,
@@ -460,7 +461,16 @@ export function getRenderMapVisitor(
           const byteDelta = node.byteDeltas?.[0] ?? undefined;
           const hasByteResolver =
             byteDelta && isNode(byteDelta.value, 'resolverValueNode');
-          const remainingAccounts = node.remainingAccounts?.[0] ?? undefined;
+          let remainingAccounts = node.remainingAccounts?.[0] ?? undefined;
+          if (
+            remainingAccounts &&
+            isNode(remainingAccounts.value, 'argumentValueNode') &&
+            getAllInstructionArguments(node).every(
+              (arg) => arg.name !== remainingAccounts?.value.name
+            )
+          ) {
+            remainingAccounts = undefined;
+          }
           const hasRemainingAccountsResolver =
             remainingAccounts &&
             isNode(remainingAccounts.value, 'resolverValueNode');
@@ -592,7 +602,10 @@ export function getRenderMapVisitor(
           }
 
           // Remaining accounts.
-          if (hasRemainingAccountsResolver) {
+          if (
+            remainingAccounts &&
+            isNode(remainingAccounts.value, 'resolverValueNode')
+          ) {
             imports.add(
               remainingAccounts.value.importFrom ?? 'hooked',
               camelCase(remainingAccounts.value.name)

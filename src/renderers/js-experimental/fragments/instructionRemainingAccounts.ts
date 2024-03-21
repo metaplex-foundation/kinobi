@@ -3,6 +3,7 @@ import {
   InstructionNode,
   InstructionRemainingAccountsNode,
   assertIsNode,
+  getAllInstructionArguments,
   isNode,
 } from '../../../nodes';
 import type { GlobalFragmentScope } from '../getRenderMapVisitor';
@@ -23,19 +24,22 @@ export function getInstructionRemainingAccountsFragment(
     fragments,
     (r) =>
       `// Remaining accounts.\n` +
-      `const remainingAccounts: IAccountMeta[] = [...${r.join(', ...')}]`
+      `const remainingAccounts: IAccountMeta[] = ${
+        r.length === 1 ? r[0] : `[...${r.join(', ...')}]`
+      }`
   ).addImports('solanaInstructions', ['IAccountMeta']);
 }
 
 function getRemainingAccountsFragment(
   remainingAccounts: InstructionRemainingAccountsNode,
   scope: Pick<GlobalFragmentScope, 'nameApi' | 'asyncResolvers'> & {
+    instructionNode: InstructionNode;
     useAsync: boolean;
   }
 ): Fragment[] {
   const remainingAccountsFragment = ((): Fragment | null => {
     if (isNode(remainingAccounts.value, 'argumentValueNode')) {
-      return getArgumentValueNodeFragment(remainingAccounts);
+      return getArgumentValueNodeFragment(remainingAccounts, scope);
     }
     if (isNode(remainingAccounts.value, 'resolverValueNode')) {
       return getResolverValueNodeFragment(remainingAccounts, scope);
@@ -48,10 +52,14 @@ function getRemainingAccountsFragment(
 }
 
 function getArgumentValueNodeFragment(
-  remainingAccounts: InstructionRemainingAccountsNode
+  remainingAccounts: InstructionRemainingAccountsNode,
+  scope: { instructionNode: InstructionNode }
 ): Fragment {
+  const { instructionNode } = scope;
   assertIsNode(remainingAccounts.value, 'argumentValueNode');
   const argumentName = camelCase(remainingAccounts.value.name);
+  const isOptional = remainingAccounts.isOptional ?? false;
+  const isSigner = remainingAccounts.isSigner ?? false;
   const isWritable = remainingAccounts.isWritable ?? false;
   const nonSignerRole = isWritable
     ? 'AccountRole.WRITABLE'
@@ -59,9 +67,38 @@ function getArgumentValueNodeFragment(
   const signerRole = isWritable
     ? 'AccountRole.WRITABLE_SIGNER'
     : 'AccountRole.READONLY_SIGNER';
-  const role = remainingAccounts.isSigner === true ? signerRole : nonSignerRole;
+  const role = isSigner === true ? signerRole : nonSignerRole;
+  const argumentArray = isOptional
+    ? `(args.${argumentName} ?? [])`
+    : `args.${argumentName}`;
+
+  // The argument already exists or was added as `Array<Address>`.
+  const allArguments = getAllInstructionArguments(instructionNode);
+  const argumentExists = allArguments.some(
+    (arg) => arg.name === remainingAccounts.value.name
+  );
+  if (argumentExists || isSigner === false) {
+    return fragment(
+      `${argumentArray}.map((address) => ({ address, role: ${role} }))`
+    ).addImports('solanaInstructions', ['AccountRole']);
+  }
+
+  // The argument was added as `Array<TransactionSigner | Address>`.
+  if (isSigner === 'either') {
+    return fragment(
+      `${argumentArray}.map((addressOrSigner) => (` +
+        `isTransactionSigner(addressOrSigner)\n` +
+        `? { address: addressOrSigner.address, role: ${role}, signer: addressOrSigner }\n` +
+        `: { address: addressOrSigner, role: ${role} }\n` +
+        `))`
+    )
+      .addImports('solanaInstructions', ['AccountRole'])
+      .addImports('shared', ['isTransactionSigner']);
+  }
+
+  // The argument was added as `Array<TransactionSigner>`.
   return fragment(
-    `args.${argumentName}.map((address) => ({ address, role: ${role} }))`
+    `${argumentArray}.map((signer) => ({ address: signer.address, role: ${signerRole}, signer }))`
   ).addImports('solanaInstructions', ['AccountRole']);
 }
 

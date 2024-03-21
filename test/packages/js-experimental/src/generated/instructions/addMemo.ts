@@ -18,11 +18,13 @@ import {
   getStructEncoder,
 } from '@solana/codecs';
 import {
+  AccountRole,
   IAccountMeta,
   IInstruction,
   IInstructionWithAccounts,
   IInstructionWithData,
 } from '@solana/instructions';
+import { TransactionSigner } from '@solana/signers';
 import { SPL_MEMO_PROGRAM_ADDRESS } from '../programs';
 
 export type AddMemoInstruction<
@@ -56,6 +58,7 @@ export function getAddMemoInstructionDataCodec(): Codec<
 
 export type AddMemoInput = {
   memo: AddMemoInstructionDataArgs['memo'];
+  signers?: Array<TransactionSigner>;
 };
 
 export function getAddMemoInstruction(
@@ -67,7 +70,17 @@ export function getAddMemoInstruction(
   // Original args.
   const args = { ...input };
 
+  // Remaining accounts.
+  const remainingAccounts: IAccountMeta[] = (args.signers ?? []).map(
+    (signer) => ({
+      address: signer.address,
+      role: AccountRole.READONLY_SIGNER,
+      signer,
+    })
+  );
+
   const instruction = {
+    accounts: remainingAccounts,
     programAddress,
     data: getAddMemoInstructionDataEncoder().encode(
       args as AddMemoInstructionDataArgs

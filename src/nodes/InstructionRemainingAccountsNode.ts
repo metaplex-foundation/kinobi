@@ -7,8 +7,9 @@ export type InstructionRemainingAccountsNode = {
   readonly value: ArgumentValueNode | ResolverValueNode;
 
   // Data.
-  readonly isWritable?: boolean;
+  readonly isOptional?: boolean;
   readonly isSigner?: boolean | 'either';
+  readonly isWritable?: boolean;
 };
 
 export type InstructionRemainingAccountsNodeInput = Omit<
@@ -19,14 +20,16 @@ export type InstructionRemainingAccountsNodeInput = Omit<
 export function instructionRemainingAccountsNode(
   value: ArgumentValueNode | ResolverValueNode,
   options: {
-    isWritable?: boolean;
+    isOptional?: boolean;
     isSigner?: boolean | 'either';
+    isWritable?: boolean;
   } = {}
 ): InstructionRemainingAccountsNode {
   return {
     kind: 'instructionRemainingAccountsNode',
     value,
-    isWritable: options.isWritable,
+    isOptional: options.isOptional,
     isSigner: options.isSigner,
+    isWritable: options.isWritable,
   };
 }

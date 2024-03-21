@@ -61,6 +61,7 @@ function getNodeDetails(node: Node): string[] {
       ];
     case 'instructionRemainingAccountsNode':
       return [
+        ...(node.isOptional ? ['optional'] : []),
         ...(node.isWritable ? ['writable'] : []),
         ...(node.isSigner === true ? ['signer'] : []),
         ...(node.isSigner === 'either' ? ['optionalSigner'] : []),

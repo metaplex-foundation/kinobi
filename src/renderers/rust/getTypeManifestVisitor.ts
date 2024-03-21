@@ -5,7 +5,7 @@ import {
   isScalarEnum,
   numberTypeNode,
 } from '../../nodes';
-import { pascalCase, pipe, snakeCase } from '../../shared';
+import { pascalCase, pipe, rustDocblock, snakeCase } from '../../shared';
 import { extendVisitor, mergeVisitor, visit } from '../../visitors';
 import { RustImportMap } from './RustImportMap';
 
@@ -320,7 +320,7 @@ export function getTypeManifestVisitor() {
           nestedStruct = originalNestedStruct;
 
           const fieldName = snakeCase(structFieldType.name);
-          const docblock = createDocblock(structFieldType.docs);
+          const docblock = rustDocblock(structFieldType.docs);
 
           let derive = '';
           if (fieldManifest.type === 'Pubkey') {
@@ -470,10 +470,4 @@ function mergeManifests(
     ),
     nestedStructs: manifests.flatMap((m) => m.nestedStructs),
   };
-}
-
-function createDocblock(docs: string[]): string {
-  if (docs.length <= 0) return '';
-  const lines = docs.map((doc) => `/// ${doc}`);
-  return `${lines.join('\n')}\n`;
 }
