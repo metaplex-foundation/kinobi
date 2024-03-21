@@ -61,14 +61,6 @@ export function addMemo(
     resolvedAccounts
   ).sort((a, b) => a.index - b.index);
 
-  // Remaining Accounts.
-  const remainingAccounts = resolvedArgs.signers.map((value, index) => ({
-    index,
-    value,
-    isWritable: false,
-  }));
-  orderedAccounts.push(...remainingAccounts);
-
   // Keys and Signers.
   const [keys, signers] = getAccountMetasAndSigners(
     orderedAccounts,
