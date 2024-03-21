@@ -2,9 +2,10 @@ import {
   InstructionArgumentNode,
   InstructionNode,
   ProgramNode,
+  getAllInstructionArguments,
   isNode,
 } from '../../../nodes';
-import { pascalCase } from '../../../shared';
+import { camelCase, pascalCase } from '../../../shared';
 import {
   ResolvedInstructionAccount,
   ResolvedInstructionArgument,
@@ -14,7 +15,12 @@ import { ImportMap } from '../ImportMap';
 import { TypeManifest } from '../TypeManifest';
 import { isAsyncDefaultValue } from '../asyncHelpers';
 import type { GlobalFragmentScope } from '../getRenderMapVisitor';
-import { Fragment, fragment, fragmentFromTemplate } from './common';
+import {
+  Fragment,
+  fragment,
+  fragmentFromTemplate,
+  mergeFragments,
+} from './common';
 
 export function getInstructionInputTypeFragment(
   scope: Pick<
@@ -109,6 +115,10 @@ export function getInstructionInputTypeFragment(
     ? nameApi.instructionAsyncInputType(instructionNode.name)
     : nameApi.instructionSyncInputType(instructionNode.name);
 
+  // Remaining accounts.
+  const remainingAccountsFragment =
+    getRemainingAccountsFragment(instructionNode);
+
   return fragmentFromTemplate('instructionInputType.njk', {
     instruction: instructionNode,
     program: programNode,
@@ -118,12 +128,15 @@ export function getInstructionInputTypeFragment(
     dataArgsType,
     extraArgs,
     extraArgsType,
+    remainingAccountsFragment,
   })
-    .mergeImportsWith(accountImports, argLinkImports)
+    .mergeImportsWith(accountImports, argLinkImports, remainingAccountsFragment)
     .addImports('solanaAddresses', ['Address']);
 }
 
-function getAccountType(account: ResolvedInstructionAccount): Fragment {
+function getAccountType(
+  account: Pick<ResolvedInstructionAccount, 'name' | 'isPda' | 'isSigner'>
+): Fragment {
   const typeParam = `TAccount${pascalCase(account.name)}`;
 
   if (account.isPda && account.isSigner === false) {
@@ -157,4 +170,40 @@ function getAccountType(account: ResolvedInstructionAccount): Fragment {
   return fragment(`Address<${typeParam}>`).addImports('solanaAddresses', [
     'Address',
   ]);
+}
+
+function getRemainingAccountsFragment(
+  instructionNode: InstructionNode
+): Fragment {
+  const fragments = (instructionNode.remainingAccounts ?? []).flatMap(
+    (remainingAccountsNode) => {
+      if (isNode(remainingAccountsNode.value, 'resolverValueNode')) return [];
+
+      const { name } = remainingAccountsNode.value;
+      const allArguments = getAllInstructionArguments(instructionNode);
+      const argumentExists = allArguments.some((arg) => arg.name === name);
+      if (argumentExists) return [];
+
+      const isSigner = remainingAccountsNode.isSigner ?? false;
+      const optionalSign = remainingAccountsNode.isOptional ?? false ? '?' : '';
+      const signerFragment = fragment(`TransactionSigner`).addImports(
+        'solanaSigners',
+        ['TransactionSigner']
+      );
+      const addressFragment = fragment(`Address`).addImports(
+        'solanaAddresses',
+        ['Address']
+      );
+      return (() => {
+        if (isSigner === 'either') {
+          return mergeFragments([signerFragment, addressFragment], (r) =>
+            r.join(' | ')
+          );
+        }
+        return isSigner ? signerFragment : addressFragment;
+      })().mapRender((r) => `${camelCase(name)}${optionalSign}: Array<${r}>;`);
+    }
+  );
+
+  return mergeFragments(fragments, (r) => r.join('\n'));
 }

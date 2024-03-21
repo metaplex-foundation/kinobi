@@ -58,6 +58,8 @@ function getArgumentValueNodeFragment(
   const { instructionNode } = scope;
   assertIsNode(remainingAccounts.value, 'argumentValueNode');
   const argumentName = camelCase(remainingAccounts.value.name);
+  const isOptional = remainingAccounts.isOptional ?? false;
+  const isSigner = remainingAccounts.isSigner ?? false;
   const isWritable = remainingAccounts.isWritable ?? false;
   const nonSignerRole = isWritable
     ? 'AccountRole.WRITABLE'
@@ -65,19 +67,39 @@ function getArgumentValueNodeFragment(
   const signerRole = isWritable
     ? 'AccountRole.WRITABLE_SIGNER'
     : 'AccountRole.READONLY_SIGNER';
+  const role = isSigner === true ? signerRole : nonSignerRole;
+  const argumentArray = isOptional
+    ? `(args.${argumentName} ?? [])`
+    : `args.${argumentName}`;
 
-  // If the argument already exists, it should be of type `Address[]`.
+  // The argument already exists or was added as `Array<Address>`.
   const allArguments = getAllInstructionArguments(instructionNode);
-  if (allArguments.some((arg) => arg.name === remainingAccounts.value.name)) {
-    const role =
-      remainingAccounts.isSigner === true ? signerRole : nonSignerRole;
+  const argumentExists = allArguments.some(
+    (arg) => arg.name === remainingAccounts.value.name
+  );
+  if (argumentExists || isSigner === false) {
     return fragment(
-      `args.${argumentName}.map((address) => ({ address, role: ${role} }))`
+      `${argumentArray}.map((address) => ({ address, role: ${role} }))`
     ).addImports('solanaInstructions', ['AccountRole']);
   }
 
-  // Otherwise, it may be of type `TransactionSigner[]`.
-  throw new Error('Not implemented');
+  // The argument was added as `Array<TransactionSigner | Address>`.
+  if (isSigner === 'either') {
+    return fragment(
+      `${argumentArray}.map((addressOrSigner) => (` +
+        `isTransactionSigner(addressOrSigner)\n` +
+        `? { address: addressOrSigner.address, role: ${role}, signer: addressOrSigner }\n` +
+        `: { address: addressOrSigner, role: ${role} }\n` +
+        `))`
+    )
+      .addImports('solanaInstructions', ['AccountRole'])
+      .addImports('shared', ['isTransactionSigner']);
+  }
+
+  // The argument was added as `Array<TransactionSigner>`.
+  return fragment(
+    `${argumentArray}.map((signer) => ({ address: signer.address, role: ${signerRole}, signer }))`
+  ).addImports('solanaInstructions', ['AccountRole']);
 }
 
 function getResolverValueNodeFragment(

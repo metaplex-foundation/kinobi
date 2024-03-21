@@ -13,12 +13,13 @@ export type {{ instructionInputType }}
     {% if account.docs.length > 0 %}
       {{ macros.docblock(account.docs) }}
     {% endif %}
-    {{ account.name | camelCase }}{{ account.optionalSign }}: {{ account.type }},
+    {{ account.name | camelCase }}{{ account.optionalSign }}: {{ account.type }};
   {% endfor %}
   {% for dataArg in dataArgs %}
-    {{ dataArg.renamedName | camelCase }}{{ dataArg.optionalSign }}: {{ dataArgsType }}["{{ dataArg.name | camelCase }}"],
+    {{ dataArg.renamedName | camelCase }}{{ dataArg.optionalSign }}: {{ dataArgsType }}["{{ dataArg.name | camelCase }}"];
   {% endfor %}
   {% for extraArg in extraArgs %}
-    {{ extraArg.renamedName | camelCase }}{{ extraArg.optionalSign }}: {{ extraArgsType }}["{{ extraArg.name | camelCase }}"],
+    {{ extraArg.renamedName | camelCase }}{{ extraArg.optionalSign }}: {{ extraArgsType }}["{{ extraArg.name | camelCase }}"];
   {% endfor %}
+  {{ remainingAccountsFragment }}
 }

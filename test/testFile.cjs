@@ -180,6 +180,7 @@ kinobi.update(
       remainingAccounts: [
         k.instructionRemainingAccountsNode(k.argumentValueNode('signers'), {
           isSigner: true,
+          isOptional: true,
         }),
       ],
     },
