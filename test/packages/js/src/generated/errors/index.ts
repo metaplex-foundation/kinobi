@@ -9,4 +9,5 @@
 export * from './mplCandyMachineCore';
 export * from './mplTokenAuthRules';
 export * from './mplTokenMetadata';
+export * from './splMemo';
 export * from './splSystem';

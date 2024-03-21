@@ -6,6 +6,7 @@
 //!
 
 pub(crate) mod r#add_config_lines;
+pub(crate) mod r#add_memo;
 pub(crate) mod r#approve_collection_authority;
 pub(crate) mod r#approve_use_authority;
 pub(crate) mod r#bubblegum_set_collection_size;
@@ -73,6 +74,7 @@ pub(crate) mod r#verify_sized_collection_item;
 pub(crate) mod r#withdraw;
 
 pub use self::r#add_config_lines::*;
+pub use self::r#add_memo::*;
 pub use self::r#approve_collection_authority::*;
 pub use self::r#approve_use_authority::*;
 pub use self::r#bubblegum_set_collection_size::*;

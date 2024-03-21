@@ -4,6 +4,7 @@ const {
 } = require('../dist/cjs/nodes/typeNodes/PublicKeyTypeNode.js');
 
 const kinobi = k.createFromIdls([
+  __dirname + '/spl_memo.json',
   __dirname + '/spl_system.json',
   __dirname + '/mpl_candy_machine_core.json',
   __dirname + '/mpl_token_auth_rules.json',

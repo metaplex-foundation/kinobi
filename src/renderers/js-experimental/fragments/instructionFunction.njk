@@ -1,6 +1,6 @@
 {{ inputTypeFragment }}
 
-export {{ 'async' if useAsync }} function {{ functionName }}<{{ typeParamsFragment }}>(input: {{ inputTypeCallFragment }}): {{ getReturnType(instructionTypeFragment) }} {
+export {{ 'async' if useAsync }} function {{ functionName }}{{ typeParamsFragment }}(input: {{ inputTypeCallFragment }}): {{ getReturnType(instructionTypeFragment) }} {
   // Program address.
   const programAddress = {{ programAddressConstant }};
 

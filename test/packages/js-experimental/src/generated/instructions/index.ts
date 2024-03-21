@@ -7,6 +7,7 @@
  */
 
 export * from './addConfigLines';
+export * from './addMemo';
 export * from './approveCollectionAuthority';
 export * from './approveUseAuthority';
 export * from './bubblegumSetCollectionSize';

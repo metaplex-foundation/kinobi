@@ -167,10 +167,13 @@ export function getInstructionFunctionFragment(
 }
 
 function getTypeParams(instructionNode: InstructionNode): Fragment {
+  if (instructionNode.accounts.length === 0) return fragment('');
   const typeParams = instructionNode.accounts.map(
     (account) => `TAccount${pascalCase(account.name)} extends string`
   );
-  return fragment(typeParams.filter((x) => !!x).join(', '));
+  return fragment(typeParams.filter((x) => !!x).join(', ')).mapRender(
+    (r) => `<${r}>`
+  );
 }
 
 function getInstructionType(scope: {
