@@ -176,5 +176,5 @@ export async function fetchMaybeDelegateRecordFromSeeds(
 ): Promise<MaybeDelegateRecord> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findDelegateRecordPda(seeds, { programAddress });
-  return fetchMaybeDelegateRecord(rpc, address, fetchConfig);
+  return await fetchMaybeDelegateRecord(rpc, address, fetchConfig);
 }

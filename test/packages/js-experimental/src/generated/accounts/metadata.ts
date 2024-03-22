@@ -262,5 +262,5 @@ export async function fetchMaybeMetadataFromSeeds(
 ): Promise<MaybeMetadata> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findMetadataPda(seeds, { programAddress });
-  return fetchMaybeMetadata(rpc, address, fetchConfig);
+  return await fetchMaybeMetadata(rpc, address, fetchConfig);
 }

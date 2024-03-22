@@ -180,5 +180,5 @@ export async function fetchMaybeMasterEditionV1FromSeeds(
 ): Promise<MaybeMasterEditionV1> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findMasterEditionV1Pda(seeds, { programAddress });
-  return fetchMaybeMasterEditionV1(rpc, address, fetchConfig);
+  return await fetchMaybeMasterEditionV1(rpc, address, fetchConfig);
 }
