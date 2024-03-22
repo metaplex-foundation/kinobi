@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.18.2
+
+### Patch Changes
+
+- [#185](https://github.com/metaplex-foundation/kinobi/pull/185) [`86e231f`](https://github.com/metaplex-foundation/kinobi/commit/86e231fb932a06dde7623dbafa1fab796ac01f08) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix Eslint and TypeScript errors in JS renderers
+
 ## 0.18.1
 
 ### Patch Changes
