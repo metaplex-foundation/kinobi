@@ -19,5 +19,5 @@ module.exports = {
     'no-case-declarations': 'off',
     'no-underscore-dangle': 'off',
   },
-  ignorePatterns: ['dist/**', 'test**', 'packages/**'],
+  ignorePatterns: ['dist/**', 'test/**'],
 };
