@@ -19,6 +19,6 @@
     "@solana/signers": "2.0.0-experimental.a7a613a"
   },
   "devDependencies": {
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.3"
   }
 }
