@@ -8,10 +8,10 @@
     export function {{ dataEnumFunction }}(kind: '{{ getVariant(variant.name) }}'): GetDataEnumKind<{{ looseName }}, '{{ getVariant(variant.name) }}'>;
   {% endif %}
 {% endfor %}
-export function {{ dataEnumFunction }}<K extends {{ looseName }}['{{ dataEnumDiscriminator }}']>(
+export function {{ dataEnumFunction }}<K extends {{ looseName }}['{{ dataEnumDiscriminator }}'], Data>(
   kind: K,
-  data?: any,
-): Extract<{{ looseName }}, { {{ dataEnumDiscriminator }}: K }> {
+  data?: Data,
+) {
   return Array.isArray(data) ? { {{ dataEnumDiscriminator }}: kind, fields: data } : { {{ dataEnumDiscriminator }}: kind, ...(data ?? {}) };
 }
 

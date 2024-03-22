@@ -120,10 +120,10 @@ export function payloadType(
   kind: 'Number',
   data: GetDataEnumKindContent<PayloadTypeArgs, 'Number'>['fields']
 ): GetDataEnumKind<PayloadTypeArgs, 'Number'>;
-export function payloadType<K extends PayloadTypeArgs['__kind']>(
+export function payloadType<K extends PayloadTypeArgs['__kind'], Data>(
   kind: K,
-  data?: any
-): Extract<PayloadTypeArgs, { __kind: K }> {
+  data?: Data
+) {
   return Array.isArray(data)
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };

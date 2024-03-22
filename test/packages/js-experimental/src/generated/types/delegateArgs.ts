@@ -73,10 +73,10 @@ export function delegateArgs(
   kind: 'TransferV1',
   data: GetDataEnumKindContent<DelegateArgsArgs, 'TransferV1'>
 ): GetDataEnumKind<DelegateArgsArgs, 'TransferV1'>;
-export function delegateArgs<K extends DelegateArgsArgs['__kind']>(
+export function delegateArgs<K extends DelegateArgsArgs['__kind'], Data>(
   kind: K,
-  data?: any
-): Extract<DelegateArgsArgs, { __kind: K }> {
+  data?: Data
+) {
   return Array.isArray(data)
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };

@@ -76,10 +76,10 @@ export function mintArgs(
   kind: 'V1',
   data: GetDataEnumKindContent<MintArgsArgs, 'V1'>
 ): GetDataEnumKind<MintArgsArgs, 'V1'>;
-export function mintArgs<K extends MintArgsArgs['__kind']>(
+export function mintArgs<K extends MintArgsArgs['__kind'], Data>(
   kind: K,
-  data?: any
-): Extract<MintArgsArgs, { __kind: K }> {
+  data?: Data
+) {
   return Array.isArray(data)
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };
