@@ -52,10 +52,10 @@ export function collectionDetails(
   kind: 'V1',
   data: GetDataEnumKindContent<CollectionDetailsArgs, 'V1'>
 ): GetDataEnumKind<CollectionDetailsArgs, 'V1'>;
-export function collectionDetails<K extends CollectionDetailsArgs['__kind']>(
-  kind: K,
-  data?: any
-): Extract<CollectionDetailsArgs, { __kind: K }> {
+export function collectionDetails<
+  K extends CollectionDetailsArgs['__kind'],
+  Data,
+>(kind: K, data?: Data) {
   return Array.isArray(data)
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };

@@ -5,7 +5,8 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --no-eslintrc -c .eslintrc.js"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +20,7 @@
     "@solana/signers": "2.0.0-experimental.a7a613a"
   },
   "devDependencies": {
-    "typescript": "^5.4.3"
+    "@solana/eslint-config-solana": "^3.0.3",
+    "typescript": "^5.3.0"
   }
 }

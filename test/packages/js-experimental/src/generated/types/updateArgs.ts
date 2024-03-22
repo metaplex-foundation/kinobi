@@ -219,10 +219,10 @@ export function updateArgs(
   kind: 'V1',
   data: GetDataEnumKindContent<UpdateArgsArgs, 'V1'>
 ): GetDataEnumKind<UpdateArgsArgs, 'V1'>;
-export function updateArgs<K extends UpdateArgsArgs['__kind']>(
+export function updateArgs<K extends UpdateArgsArgs['__kind'], Data>(
   kind: K,
-  data?: any
-): Extract<UpdateArgsArgs, { __kind: K }> {
+  data?: Data
+) {
   return Array.isArray(data)
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };

@@ -9,6 +9,6 @@ const instruction = getTransferSolInstruction({
   amount: BigInt(100),
 });
 instruction.accounts[0].signer;
-// @ts-expect-error
+// @ts-expect-error The second account is not a signer.
 instruction.accounts[1].signer;
 export type T2 = typeof instruction;

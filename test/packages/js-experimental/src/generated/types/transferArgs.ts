@@ -76,10 +76,10 @@ export function transferArgs(
   kind: 'V1',
   data: GetDataEnumKindContent<TransferArgsArgs, 'V1'>
 ): GetDataEnumKind<TransferArgsArgs, 'V1'>;
-export function transferArgs<K extends TransferArgsArgs['__kind']>(
+export function transferArgs<K extends TransferArgsArgs['__kind'], Data>(
   kind: K,
-  data?: any
-): Extract<TransferArgsArgs, { __kind: K }> {
+  data?: Data
+) {
   return Array.isArray(data)
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };

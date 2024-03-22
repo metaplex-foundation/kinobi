@@ -173,5 +173,5 @@ export async function fetchMaybeFrequencyAccountFromSeeds(
 ): Promise<MaybeFrequencyAccount> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findFrequencyAccountPda({ programAddress });
-  return fetchMaybeFrequencyAccount(rpc, address, fetchConfig);
+  return await fetchMaybeFrequencyAccount(rpc, address, fetchConfig);
 }

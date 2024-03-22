@@ -69,10 +69,10 @@ export function escrowAuthority(
   kind: 'Creator',
   data: GetDataEnumKindContent<EscrowAuthorityArgs, 'Creator'>['fields']
 ): GetDataEnumKind<EscrowAuthorityArgs, 'Creator'>;
-export function escrowAuthority<K extends EscrowAuthorityArgs['__kind']>(
+export function escrowAuthority<K extends EscrowAuthorityArgs['__kind'], Data>(
   kind: K,
-  data?: any
-): Extract<EscrowAuthorityArgs, { __kind: K }> {
+  data?: Data
+) {
   return Array.isArray(data)
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };

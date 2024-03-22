@@ -46,10 +46,10 @@ export function useAssetArgs(
   kind: 'V1',
   data: GetDataEnumKindContent<UseAssetArgsArgs, 'V1'>
 ): GetDataEnumKind<UseAssetArgsArgs, 'V1'>;
-export function useAssetArgs<K extends UseAssetArgsArgs['__kind']>(
+export function useAssetArgs<K extends UseAssetArgsArgs['__kind'], Data>(
   kind: K,
-  data?: any
-): Extract<UseAssetArgsArgs, { __kind: K }> {
+  data?: Data
+) {
   return Array.isArray(data)
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };

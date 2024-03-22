@@ -27,7 +27,7 @@ export async function findMasterEditionV1Pda(
   const {
     programAddress = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>,
   } = config;
-  return getProgramDerivedAddress({
+  return await getProgramDerivedAddress({
     programAddress,
     seeds: [
       getStringEncoder({ size: 'variable' }).encode('metadata'),

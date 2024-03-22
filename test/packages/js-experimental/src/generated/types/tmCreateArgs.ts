@@ -108,10 +108,10 @@ export function tmCreateArgs(
   kind: 'V2',
   data: GetDataEnumKindContent<TmCreateArgsArgs, 'V2'>
 ): GetDataEnumKind<TmCreateArgsArgs, 'V2'>;
-export function tmCreateArgs<K extends TmCreateArgsArgs['__kind']>(
+export function tmCreateArgs<K extends TmCreateArgsArgs['__kind'], Data>(
   kind: K,
-  data?: any
-): Extract<TmCreateArgsArgs, { __kind: K }> {
+  data?: Data
+) {
   return Array.isArray(data)
     ? { __kind: kind, fields: data }
     : { __kind: kind, ...(data ?? {}) };
