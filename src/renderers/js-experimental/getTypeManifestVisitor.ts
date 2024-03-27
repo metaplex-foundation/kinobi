@@ -153,6 +153,14 @@ export function getTypeManifestVisitor(input: {
             decoderOptions.push(`size: ${sizeManifest.decoder.render}`);
           }
 
+          const discriminator = nameApi.discriminatedUnionDiscriminator(
+            currentParentName?.strict ?? ''
+          );
+          if (!isScalarEnum(enumType) && discriminator !== '__kind') {
+            encoderOptions.push(`discriminator: '${discriminator}'`);
+            decoderOptions.push(`discriminator: '${discriminator}'`);
+          }
+
           const encoderOptionsAsString =
             encoderOptions.length > 0
               ? `, { ${encoderOptions.join(', ')} }`
