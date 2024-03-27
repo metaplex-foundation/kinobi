@@ -475,7 +475,7 @@ export function getTypeManifestVisitor(input: {
           const items = tupleType.items.map((item) => visit(item, self));
           const mergedManifest = mergeManifests(
             items,
-            (types) => `[${types.join(', ')}]`,
+            (types) => `readonly [${types.join(', ')}]`,
             (codecs) => `[${codecs.join(', ')}]`
           );
           mergedManifest.encoder

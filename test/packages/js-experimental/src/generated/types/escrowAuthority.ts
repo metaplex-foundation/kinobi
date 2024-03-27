@@ -30,7 +30,7 @@ import {
 
 export type EscrowAuthority =
   | { __kind: 'TokenOwner' }
-  | { __kind: 'Creator'; fields: [Address] };
+  | { __kind: 'Creator'; fields: readonly [Address] };
 
 export type EscrowAuthorityArgs = EscrowAuthority;
 

@@ -36,16 +36,16 @@ import {
 
 /** This is a union of all the possible payload types. */
 export type PayloadType =
-  | { __kind: 'Pubkey'; fields: [Address] }
+  | { __kind: 'Pubkey'; fields: readonly [Address] }
   | { __kind: 'Seeds'; seeds: Array<Uint8Array> }
   | { __kind: 'MerkleProof'; leaf: Uint8Array; proof: Array<Uint8Array> }
-  | { __kind: 'Number'; fields: [bigint] };
+  | { __kind: 'Number'; fields: readonly [bigint] };
 
 export type PayloadTypeArgs =
-  | { __kind: 'Pubkey'; fields: [Address] }
+  | { __kind: 'Pubkey'; fields: readonly [Address] }
   | { __kind: 'Seeds'; seeds: Array<Uint8Array> }
   | { __kind: 'MerkleProof'; leaf: Uint8Array; proof: Array<Uint8Array> }
-  | { __kind: 'Number'; fields: [number | bigint] };
+  | { __kind: 'Number'; fields: readonly [number | bigint] };
 
 export function getPayloadTypeEncoder(): Encoder<PayloadTypeArgs> {
   return getDiscriminatedUnionEncoder([
