@@ -15,11 +15,11 @@ import {
   Codec,
   Decoder,
   Encoder,
-  GetDataEnumKind,
-  GetDataEnumKindContent,
+  GetDiscriminatedUnionVariant,
+  GetDiscriminatedUnionVariantContent,
   combineCodec,
-  getDataEnumDecoder,
-  getDataEnumEncoder,
+  getDiscriminatedUnionDecoder,
+  getDiscriminatedUnionEncoder,
   getStructDecoder,
   getStructEncoder,
   getTupleDecoder,
@@ -30,12 +30,12 @@ import {
 
 export type EscrowAuthority =
   | { __kind: 'TokenOwner' }
-  | { __kind: 'Creator'; fields: [Address] };
+  | { __kind: 'Creator'; fields: readonly [Address] };
 
 export type EscrowAuthorityArgs = EscrowAuthority;
 
 export function getEscrowAuthorityEncoder(): Encoder<EscrowAuthorityArgs> {
-  return getDataEnumEncoder([
+  return getDiscriminatedUnionEncoder([
     ['TokenOwner', getUnitEncoder()],
     [
       'Creator',
@@ -45,7 +45,7 @@ export function getEscrowAuthorityEncoder(): Encoder<EscrowAuthorityArgs> {
 }
 
 export function getEscrowAuthorityDecoder(): Decoder<EscrowAuthority> {
-  return getDataEnumDecoder([
+  return getDiscriminatedUnionDecoder([
     ['TokenOwner', getUnitDecoder()],
     [
       'Creator',
@@ -64,11 +64,15 @@ export function getEscrowAuthorityCodec(): Codec<
 // Data Enum Helpers.
 export function escrowAuthority(
   kind: 'TokenOwner'
-): GetDataEnumKind<EscrowAuthorityArgs, 'TokenOwner'>;
+): GetDiscriminatedUnionVariant<EscrowAuthorityArgs, '__kind', 'TokenOwner'>;
 export function escrowAuthority(
   kind: 'Creator',
-  data: GetDataEnumKindContent<EscrowAuthorityArgs, 'Creator'>['fields']
-): GetDataEnumKind<EscrowAuthorityArgs, 'Creator'>;
+  data: GetDiscriminatedUnionVariantContent<
+    EscrowAuthorityArgs,
+    '__kind',
+    'Creator'
+  >['fields']
+): GetDiscriminatedUnionVariant<EscrowAuthorityArgs, '__kind', 'Creator'>;
 export function escrowAuthority<K extends EscrowAuthorityArgs['__kind'], Data>(
   kind: K,
   data?: Data

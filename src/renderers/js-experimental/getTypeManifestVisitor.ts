@@ -171,28 +171,28 @@ export function getTypeManifestVisitor(input: {
               );
             }
             const variantNames = enumType.variants.map(({ name }) =>
-              nameApi.scalarEnumVariant(name)
+              nameApi.enumVariant(name)
             );
             return {
               isEnum: true,
               strictType: fragment(`{ ${variantNames.join(', ')} }`),
               looseType: fragment(`{ ${variantNames.join(', ')} }`),
               encoder: fragment(
-                `getScalarEnumEncoder(${
+                `getEnumEncoder(${
                   currentParentName.strict + encoderOptionsAsString
                 })`,
                 encoderImports.add(
                   'solanaCodecsDataStructures',
-                  'getScalarEnumEncoder'
+                  'getEnumEncoder'
                 )
               ),
               decoder: fragment(
-                `getScalarEnumDecoder(${
+                `getEnumDecoder(${
                   currentParentName.strict + decoderOptionsAsString
                 })`,
                 decoderImports.add(
                   'solanaCodecsDataStructures',
-                  'getScalarEnumDecoder'
+                  'getEnumDecoder'
                 )
               ),
             };
@@ -205,24 +205,32 @@ export function getTypeManifestVisitor(input: {
           );
           mergedManifest.encoder
             .mapRender(
-              (r) => `getDataEnumEncoder([${r}]${encoderOptionsAsString})`
+              (r) =>
+                `getDiscriminatedUnionEncoder([${r}]${encoderOptionsAsString})`
             )
             .mergeImportsWith(encoderImports)
-            .addImports('solanaCodecsDataStructures', ['getDataEnumEncoder']);
+            .addImports('solanaCodecsDataStructures', [
+              'getDiscriminatedUnionEncoder',
+            ]);
           mergedManifest.decoder
             .mapRender(
-              (r) => `getDataEnumDecoder([${r}]${decoderOptionsAsString})`
+              (r) =>
+                `getDiscriminatedUnionDecoder([${r}]${decoderOptionsAsString})`
             )
             .mergeImportsWith(decoderImports)
-            .addImports('solanaCodecsDataStructures', ['getDataEnumDecoder']);
+            .addImports('solanaCodecsDataStructures', [
+              'getDiscriminatedUnionDecoder',
+            ]);
           return mergedManifest;
         },
 
         visitEnumEmptyVariantType(enumEmptyVariantType) {
-          const discriminator = nameApi.dataEnumDiscriminator(
+          const discriminator = nameApi.discriminatedUnionDiscriminator(
             enumEmptyVariantType.name
           );
-          const name = nameApi.dataEnumVariant(enumEmptyVariantType.name);
+          const name = nameApi.discriminatedUnionVariant(
+            enumEmptyVariantType.name
+          );
           const kindAttribute = `${discriminator}: "${name}"`;
           return {
             isEnum: false,
@@ -240,10 +248,12 @@ export function getTypeManifestVisitor(input: {
         },
 
         visitEnumStructVariantType(enumStructVariantType, { self }) {
-          const discriminator = nameApi.dataEnumDiscriminator(
+          const discriminator = nameApi.discriminatedUnionDiscriminator(
             enumStructVariantType.name
           );
-          const name = nameApi.dataEnumVariant(enumStructVariantType.name);
+          const name = nameApi.discriminatedUnionVariant(
+            enumStructVariantType.name
+          );
           const kindAttribute = `${discriminator}: "${name}"`;
           const structManifest = visit(enumStructVariantType.struct, self);
           structManifest.strictType.mapRender(
@@ -258,10 +268,12 @@ export function getTypeManifestVisitor(input: {
         },
 
         visitEnumTupleVariantType(enumTupleVariantType, { self }) {
-          const discriminator = nameApi.dataEnumDiscriminator(
+          const discriminator = nameApi.discriminatedUnionDiscriminator(
             enumTupleVariantType.name
           );
-          const name = nameApi.dataEnumVariant(enumTupleVariantType.name);
+          const name = nameApi.discriminatedUnionVariant(
+            enumTupleVariantType.name
+          );
           const kindAttribute = `${discriminator}: "${name}"`;
           const struct = structTypeNode([
             structFieldTypeNode({
@@ -463,7 +475,7 @@ export function getTypeManifestVisitor(input: {
           const items = tupleType.items.map((item) => visit(item, self));
           const mergedManifest = mergeManifests(
             items,
-            (types) => `[${types.join(', ')}]`,
+            (types) => `readonly [${types.join(', ')}]`,
             (codecs) => `[${codecs.join(', ')}]`
           );
           mergedManifest.encoder

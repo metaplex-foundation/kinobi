@@ -11,8 +11,8 @@ import {
   Decoder,
   Encoder,
   combineCodec,
-  getScalarEnumDecoder,
-  getScalarEnumEncoder,
+  getEnumDecoder,
+  getEnumEncoder,
   getU64Decoder,
   getU64Encoder,
 } from '@solana/codecs';
@@ -24,11 +24,11 @@ export enum BurnArgs {
 export type BurnArgsArgs = BurnArgs;
 
 export function getBurnArgsEncoder(): Encoder<BurnArgsArgs> {
-  return getScalarEnumEncoder(BurnArgs, { size: getU64Encoder() });
+  return getEnumEncoder(BurnArgs, { size: getU64Encoder() });
 }
 
 export function getBurnArgsDecoder(): Decoder<BurnArgs> {
-  return getScalarEnumDecoder(BurnArgs, { size: getU64Decoder() });
+  return getEnumDecoder(BurnArgs, { size: getU64Decoder() });
 }
 
 export function getBurnArgsCodec(): Codec<BurnArgsArgs, BurnArgs> {

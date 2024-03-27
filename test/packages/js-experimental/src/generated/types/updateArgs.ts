@@ -15,8 +15,8 @@ import {
   Codec,
   Decoder,
   Encoder,
-  GetDataEnumKind,
-  GetDataEnumKindContent,
+  GetDiscriminatedUnionVariant,
+  GetDiscriminatedUnionVariantContent,
   Option,
   OptionOrNullable,
   combineCodec,
@@ -24,8 +24,8 @@ import {
   getArrayEncoder,
   getBooleanDecoder,
   getBooleanEncoder,
-  getDataEnumDecoder,
-  getDataEnumEncoder,
+  getDiscriminatedUnionDecoder,
+  getDiscriminatedUnionEncoder,
   getOptionDecoder,
   getOptionEncoder,
   getStringDecoder,
@@ -121,7 +121,7 @@ export type UpdateArgsArgs = {
 };
 
 export function getUpdateArgsEncoder(): Encoder<UpdateArgsArgs> {
-  return getDataEnumEncoder([
+  return getDiscriminatedUnionEncoder([
     [
       'V1',
       mapEncoder(
@@ -172,7 +172,7 @@ export function getUpdateArgsEncoder(): Encoder<UpdateArgsArgs> {
 }
 
 export function getUpdateArgsDecoder(): Decoder<UpdateArgs> {
-  return getDataEnumDecoder([
+  return getDiscriminatedUnionDecoder([
     [
       'V1',
       getStructDecoder([
@@ -217,8 +217,8 @@ export function getUpdateArgsCodec(): Codec<UpdateArgsArgs, UpdateArgs> {
 // Data Enum Helpers.
 export function updateArgs(
   kind: 'V1',
-  data: GetDataEnumKindContent<UpdateArgsArgs, 'V1'>
-): GetDataEnumKind<UpdateArgsArgs, 'V1'>;
+  data: GetDiscriminatedUnionVariantContent<UpdateArgsArgs, '__kind', 'V1'>
+): GetDiscriminatedUnionVariant<UpdateArgsArgs, '__kind', 'V1'>;
 export function updateArgs<K extends UpdateArgsArgs['__kind'], Data>(
   kind: K,
   data?: Data

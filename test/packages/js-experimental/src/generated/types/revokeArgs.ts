@@ -11,8 +11,8 @@ import {
   Decoder,
   Encoder,
   combineCodec,
-  getScalarEnumDecoder,
-  getScalarEnumEncoder,
+  getEnumDecoder,
+  getEnumEncoder,
 } from '@solana/codecs';
 
 export enum RevokeArgs {
@@ -24,11 +24,11 @@ export enum RevokeArgs {
 export type RevokeArgsArgs = RevokeArgs;
 
 export function getRevokeArgsEncoder(): Encoder<RevokeArgsArgs> {
-  return getScalarEnumEncoder(RevokeArgs);
+  return getEnumEncoder(RevokeArgs);
 }
 
 export function getRevokeArgsDecoder(): Decoder<RevokeArgs> {
-  return getScalarEnumDecoder(RevokeArgs);
+  return getEnumDecoder(RevokeArgs);
 }
 
 export function getRevokeArgsCodec(): Codec<RevokeArgsArgs, RevokeArgs> {

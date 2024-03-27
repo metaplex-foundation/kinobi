@@ -40,11 +40,11 @@ export type NameTransformerKey =
   | 'accountFetchFromSeedsFunction'
   | 'accountFetchMaybeFromSeedsFunction'
   | 'accountGetSizeFunction'
-  | 'scalarEnumVariant'
-  | 'dataEnumDiscriminator'
-  | 'dataEnumVariant'
-  | 'dataEnumFunction'
-  | 'isDataEnumFunction'
+  | 'enumVariant'
+  | 'discriminatedUnionDiscriminator'
+  | 'discriminatedUnionVariant'
+  | 'discriminatedUnionFunction'
+  | 'isDiscriminatedUnionFunction'
   | 'instructionAsyncInputType'
   | 'instructionSyncInputType'
   | 'instructionType'
@@ -111,11 +111,11 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
   accountFetchMaybeFromSeedsFunction: (name) =>
     `fetchMaybe${pascalCase(name)}FromSeeds`,
   accountGetSizeFunction: (name) => `get${pascalCase(name)}Size`,
-  scalarEnumVariant: (name) => `${pascalCase(name)}`,
-  dataEnumDiscriminator: () => '__kind',
-  dataEnumVariant: (name) => `${pascalCase(name)}`,
-  dataEnumFunction: (name) => `${camelCase(name)}`,
-  isDataEnumFunction: (name) => `is${pascalCase(name)}`,
+  enumVariant: (name) => `${pascalCase(name)}`,
+  discriminatedUnionDiscriminator: () => '__kind',
+  discriminatedUnionVariant: (name) => `${pascalCase(name)}`,
+  discriminatedUnionFunction: (name) => `${camelCase(name)}`,
+  isDiscriminatedUnionFunction: (name) => `is${pascalCase(name)}`,
   instructionAsyncInputType: (name) => `${pascalCase(name)}AsyncInput`,
   instructionSyncInputType: (name) => `${pascalCase(name)}Input`,
   instructionType: (name) => `${pascalCase(name)}Instruction`,

@@ -10,13 +10,13 @@ import {
   Codec,
   Decoder,
   Encoder,
-  GetDataEnumKind,
-  GetDataEnumKindContent,
+  GetDiscriminatedUnionVariant,
+  GetDiscriminatedUnionVariantContent,
   Option,
   OptionOrNullable,
   combineCodec,
-  getDataEnumDecoder,
-  getDataEnumEncoder,
+  getDiscriminatedUnionDecoder,
+  getDiscriminatedUnionEncoder,
   getOptionDecoder,
   getOptionEncoder,
   getStructDecoder,
@@ -44,7 +44,7 @@ export type TransferArgsArgs = {
 };
 
 export function getTransferArgsEncoder(): Encoder<TransferArgsArgs> {
-  return getDataEnumEncoder([
+  return getDiscriminatedUnionEncoder([
     [
       'V1',
       getStructEncoder([
@@ -56,7 +56,7 @@ export function getTransferArgsEncoder(): Encoder<TransferArgsArgs> {
 }
 
 export function getTransferArgsDecoder(): Decoder<TransferArgs> {
-  return getDataEnumDecoder([
+  return getDiscriminatedUnionDecoder([
     [
       'V1',
       getStructDecoder([
@@ -74,8 +74,8 @@ export function getTransferArgsCodec(): Codec<TransferArgsArgs, TransferArgs> {
 // Data Enum Helpers.
 export function transferArgs(
   kind: 'V1',
-  data: GetDataEnumKindContent<TransferArgsArgs, 'V1'>
-): GetDataEnumKind<TransferArgsArgs, 'V1'>;
+  data: GetDiscriminatedUnionVariantContent<TransferArgsArgs, '__kind', 'V1'>
+): GetDiscriminatedUnionVariant<TransferArgsArgs, '__kind', 'V1'>;
 export function transferArgs<K extends TransferArgsArgs['__kind'], Data>(
   kind: K,
   data?: Data

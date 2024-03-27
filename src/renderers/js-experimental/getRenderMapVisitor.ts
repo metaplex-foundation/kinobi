@@ -49,7 +49,7 @@ import {
   getProgramErrorsFragment,
   getProgramFragment,
   getProgramInstructionsFragment,
-  getTypeDataEnumHelpersFragment,
+  getTypeDiscriminatedUnionHelpersFragment,
   getTypeWithCodecFragment,
 } from './fragments';
 import {
@@ -447,10 +447,13 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
           };
 
           const typeWithCodecFragment = getTypeWithCodecFragment(scope);
-          const typeDataEnumHelpersFragment =
-            getTypeDataEnumHelpersFragment(scope);
+          const typeDiscriminatedUnionHelpersFragment =
+            getTypeDiscriminatedUnionHelpersFragment(scope);
           const imports = new ImportMap()
-            .mergeWith(typeWithCodecFragment, typeDataEnumHelpersFragment)
+            .mergeWith(
+              typeWithCodecFragment,
+              typeDiscriminatedUnionHelpersFragment
+            )
             .remove('generatedTypes', [
               nameApi.dataType(node.name),
               nameApi.dataArgsType(node.name),
@@ -467,7 +470,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
                 generatedTypes: '.',
               }),
               typeWithCodecFragment,
-              typeDataEnumHelpersFragment,
+              typeDiscriminatedUnionHelpersFragment,
             })
           );
         },

@@ -11,8 +11,8 @@ import {
   Decoder,
   Encoder,
   combineCodec,
-  getScalarEnumDecoder,
-  getScalarEnumEncoder,
+  getEnumDecoder,
+  getEnumEncoder,
 } from '@solana/codecs';
 
 export enum VerifyArgs {
@@ -22,11 +22,11 @@ export enum VerifyArgs {
 export type VerifyArgsArgs = VerifyArgs;
 
 export function getVerifyArgsEncoder(): Encoder<VerifyArgsArgs> {
-  return getScalarEnumEncoder(VerifyArgs);
+  return getEnumEncoder(VerifyArgs);
 }
 
 export function getVerifyArgsDecoder(): Decoder<VerifyArgs> {
-  return getScalarEnumDecoder(VerifyArgs);
+  return getEnumDecoder(VerifyArgs);
 }
 
 export function getVerifyArgsCodec(): Codec<VerifyArgsArgs, VerifyArgs> {

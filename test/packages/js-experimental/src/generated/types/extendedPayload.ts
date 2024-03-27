@@ -35,12 +35,12 @@ import {
 
 export type ExtendedPayload = {
   map: Map<PayloadKey, PayloadType>;
-  args: [number, string];
+  args: readonly [number, string];
 };
 
 export type ExtendedPayloadArgs = {
   map: Map<PayloadKeyArgs, PayloadTypeArgs>;
-  args: [number, string];
+  args: readonly [number, string];
 };
 
 export function getExtendedPayloadEncoder(): Encoder<ExtendedPayloadArgs> {

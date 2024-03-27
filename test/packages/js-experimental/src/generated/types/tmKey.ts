@@ -11,8 +11,8 @@ import {
   Decoder,
   Encoder,
   combineCodec,
-  getScalarEnumDecoder,
-  getScalarEnumEncoder,
+  getEnumDecoder,
+  getEnumEncoder,
 } from '@solana/codecs';
 
 export enum TmKey {
@@ -33,11 +33,11 @@ export enum TmKey {
 export type TmKeyArgs = TmKey;
 
 export function getTmKeyEncoder(): Encoder<TmKeyArgs> {
-  return getScalarEnumEncoder(TmKey);
+  return getEnumEncoder(TmKey);
 }
 
 export function getTmKeyDecoder(): Decoder<TmKey> {
-  return getScalarEnumDecoder(TmKey);
+  return getEnumDecoder(TmKey);
 }
 
 export function getTmKeyCodec(): Codec<TmKeyArgs, TmKey> {

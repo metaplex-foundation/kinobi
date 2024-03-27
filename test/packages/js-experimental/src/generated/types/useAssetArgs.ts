@@ -10,11 +10,11 @@ import {
   Codec,
   Decoder,
   Encoder,
-  GetDataEnumKind,
-  GetDataEnumKindContent,
+  GetDiscriminatedUnionVariant,
+  GetDiscriminatedUnionVariantContent,
   combineCodec,
-  getDataEnumDecoder,
-  getDataEnumEncoder,
+  getDiscriminatedUnionDecoder,
+  getDiscriminatedUnionEncoder,
   getStructDecoder,
   getStructEncoder,
   getU64Decoder,
@@ -26,13 +26,13 @@ export type UseAssetArgs = { __kind: 'V1'; useCount: bigint };
 export type UseAssetArgsArgs = { __kind: 'V1'; useCount: number | bigint };
 
 export function getUseAssetArgsEncoder(): Encoder<UseAssetArgsArgs> {
-  return getDataEnumEncoder([
+  return getDiscriminatedUnionEncoder([
     ['V1', getStructEncoder([['useCount', getU64Encoder()]])],
   ]);
 }
 
 export function getUseAssetArgsDecoder(): Decoder<UseAssetArgs> {
-  return getDataEnumDecoder([
+  return getDiscriminatedUnionDecoder([
     ['V1', getStructDecoder([['useCount', getU64Decoder()]])],
   ]);
 }
@@ -44,8 +44,8 @@ export function getUseAssetArgsCodec(): Codec<UseAssetArgsArgs, UseAssetArgs> {
 // Data Enum Helpers.
 export function useAssetArgs(
   kind: 'V1',
-  data: GetDataEnumKindContent<UseAssetArgsArgs, 'V1'>
-): GetDataEnumKind<UseAssetArgsArgs, 'V1'>;
+  data: GetDiscriminatedUnionVariantContent<UseAssetArgsArgs, '__kind', 'V1'>
+): GetDiscriminatedUnionVariant<UseAssetArgsArgs, '__kind', 'V1'>;
 export function useAssetArgs<K extends UseAssetArgsArgs['__kind'], Data>(
   kind: K,
   data?: Data

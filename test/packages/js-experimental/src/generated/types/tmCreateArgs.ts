@@ -10,13 +10,13 @@ import {
   Codec,
   Decoder,
   Encoder,
-  GetDataEnumKind,
-  GetDataEnumKindContent,
+  GetDiscriminatedUnionVariant,
+  GetDiscriminatedUnionVariantContent,
   Option,
   OptionOrNullable,
   combineCodec,
-  getDataEnumDecoder,
-  getDataEnumEncoder,
+  getDiscriminatedUnionDecoder,
+  getDiscriminatedUnionEncoder,
   getOptionDecoder,
   getOptionEncoder,
   getStructDecoder,
@@ -56,7 +56,7 @@ export type TmCreateArgsArgs =
     };
 
 export function getTmCreateArgsEncoder(): Encoder<TmCreateArgsArgs> {
-  return getDataEnumEncoder([
+  return getDiscriminatedUnionEncoder([
     [
       'V1',
       getStructEncoder([
@@ -76,7 +76,7 @@ export function getTmCreateArgsEncoder(): Encoder<TmCreateArgsArgs> {
 }
 
 export function getTmCreateArgsDecoder(): Decoder<TmCreateArgs> {
-  return getDataEnumDecoder([
+  return getDiscriminatedUnionDecoder([
     [
       'V1',
       getStructDecoder([
@@ -102,12 +102,12 @@ export function getTmCreateArgsCodec(): Codec<TmCreateArgsArgs, TmCreateArgs> {
 // Data Enum Helpers.
 export function tmCreateArgs(
   kind: 'V1',
-  data: GetDataEnumKindContent<TmCreateArgsArgs, 'V1'>
-): GetDataEnumKind<TmCreateArgsArgs, 'V1'>;
+  data: GetDiscriminatedUnionVariantContent<TmCreateArgsArgs, '__kind', 'V1'>
+): GetDiscriminatedUnionVariant<TmCreateArgsArgs, '__kind', 'V1'>;
 export function tmCreateArgs(
   kind: 'V2',
-  data: GetDataEnumKindContent<TmCreateArgsArgs, 'V2'>
-): GetDataEnumKind<TmCreateArgsArgs, 'V2'>;
+  data: GetDiscriminatedUnionVariantContent<TmCreateArgsArgs, '__kind', 'V2'>
+): GetDiscriminatedUnionVariant<TmCreateArgsArgs, '__kind', 'V2'>;
 export function tmCreateArgs<K extends TmCreateArgsArgs['__kind'], Data>(
   kind: K,
   data?: Data
