@@ -11,8 +11,8 @@ import {
   Decoder,
   Encoder,
   combineCodec,
-  getScalarEnumDecoder,
-  getScalarEnumEncoder,
+  getEnumDecoder,
+  getEnumEncoder,
 } from '@solana/codecs';
 
 export enum MigrateArgs {
@@ -22,11 +22,11 @@ export enum MigrateArgs {
 export type MigrateArgsArgs = MigrateArgs;
 
 export function getMigrateArgsEncoder(): Encoder<MigrateArgsArgs> {
-  return getScalarEnumEncoder(MigrateArgs);
+  return getEnumEncoder(MigrateArgs);
 }
 
 export function getMigrateArgsDecoder(): Decoder<MigrateArgs> {
-  return getScalarEnumDecoder(MigrateArgs);
+  return getEnumDecoder(MigrateArgs);
 }
 
 export function getMigrateArgsCodec(): Codec<MigrateArgsArgs, MigrateArgs> {

@@ -24,7 +24,7 @@ export function renderValueNodeVisitor(input: {
     },
     visitEnumValue(node) {
       const enumName = nameApi.dataType(node.enum.name);
-      const enumFunction = nameApi.dataEnumFunction(node.enum.name);
+      const enumFunction = nameApi.discriminatedUnionFunction(node.enum.name);
       const importFrom = node.enum.importFrom ?? 'generatedTypes';
 
       const enumNode = linkables.get(node.enum)?.type;
@@ -34,14 +34,14 @@ export function renderValueNodeVisitor(input: {
           : !nonScalarEnums.includes(node.enum.name);
 
       if (!node.value && isScalar) {
-        const variantName = nameApi.scalarEnumVariant(node.variant);
+        const variantName = nameApi.enumVariant(node.variant);
         return fragment(`${enumName}.${variantName}`).addImports(
           importFrom,
           enumName
         );
       }
 
-      const variantName = nameApi.dataEnumVariant(node.variant);
+      const variantName = nameApi.discriminatedUnionVariant(node.variant);
       if (!node.value) {
         return fragment(`${enumFunction}('${variantName}')`).addImports(
           importFrom,

@@ -11,8 +11,8 @@ import {
   Decoder,
   Encoder,
   combineCodec,
-  getScalarEnumDecoder,
-  getScalarEnumEncoder,
+  getEnumDecoder,
+  getEnumEncoder,
 } from '@solana/codecs';
 
 export enum DelegateRole {
@@ -28,11 +28,11 @@ export enum DelegateRole {
 export type DelegateRoleArgs = DelegateRole;
 
 export function getDelegateRoleEncoder(): Encoder<DelegateRoleArgs> {
-  return getScalarEnumEncoder(DelegateRole);
+  return getEnumEncoder(DelegateRole);
 }
 
 export function getDelegateRoleDecoder(): Decoder<DelegateRole> {
-  return getScalarEnumDecoder(DelegateRole);
+  return getEnumDecoder(DelegateRole);
 }
 
 export function getDelegateRoleCodec(): Codec<DelegateRoleArgs, DelegateRole> {

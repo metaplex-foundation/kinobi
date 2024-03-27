@@ -11,8 +11,8 @@ import {
   Decoder,
   Encoder,
   combineCodec,
-  getScalarEnumDecoder,
-  getScalarEnumEncoder,
+  getEnumDecoder,
+  getEnumEncoder,
 } from '@solana/codecs';
 
 export enum PayloadKey {
@@ -25,11 +25,11 @@ export enum PayloadKey {
 export type PayloadKeyArgs = PayloadKey;
 
 export function getPayloadKeyEncoder(): Encoder<PayloadKeyArgs> {
-  return getScalarEnumEncoder(PayloadKey);
+  return getEnumEncoder(PayloadKey);
 }
 
 export function getPayloadKeyDecoder(): Decoder<PayloadKey> {
-  return getScalarEnumDecoder(PayloadKey);
+  return getEnumDecoder(PayloadKey);
 }
 
 export function getPayloadKeyCodec(): Codec<PayloadKeyArgs, PayloadKey> {

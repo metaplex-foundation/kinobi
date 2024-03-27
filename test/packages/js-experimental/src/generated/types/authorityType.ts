@@ -11,8 +11,8 @@ import {
   Decoder,
   Encoder,
   combineCodec,
-  getScalarEnumDecoder,
-  getScalarEnumEncoder,
+  getEnumDecoder,
+  getEnumEncoder,
 } from '@solana/codecs';
 
 export enum AuthorityType {
@@ -25,11 +25,11 @@ export enum AuthorityType {
 export type AuthorityTypeArgs = AuthorityType;
 
 export function getAuthorityTypeEncoder(): Encoder<AuthorityTypeArgs> {
-  return getScalarEnumEncoder(AuthorityType);
+  return getEnumEncoder(AuthorityType);
 }
 
 export function getAuthorityTypeDecoder(): Decoder<AuthorityType> {
-  return getScalarEnumDecoder(AuthorityType);
+  return getEnumDecoder(AuthorityType);
 }
 
 export function getAuthorityTypeCodec(): Codec<

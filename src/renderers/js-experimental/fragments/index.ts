@@ -23,7 +23,7 @@ export * from './programErrors';
 export * from './programInstructions';
 export * from './type';
 export * from './typeCodec';
-export * from './typeDataEnumHelpers';
 export * from './typeDecoder';
+export * from './typeDiscriminatedUnionHelpers';
 export * from './typeEncoder';
 export * from './typeWithCodec';

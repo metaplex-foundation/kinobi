@@ -11,8 +11,8 @@ import {
   Decoder,
   Encoder,
   combineCodec,
-  getScalarEnumDecoder,
-  getScalarEnumEncoder,
+  getEnumDecoder,
+  getEnumEncoder,
 } from '@solana/codecs';
 
 export enum TaKey {
@@ -23,11 +23,11 @@ export enum TaKey {
 export type TaKeyArgs = TaKey;
 
 export function getTaKeyEncoder(): Encoder<TaKeyArgs> {
-  return getScalarEnumEncoder(TaKey);
+  return getEnumEncoder(TaKey);
 }
 
 export function getTaKeyDecoder(): Decoder<TaKey> {
-  return getScalarEnumDecoder(TaKey);
+  return getEnumDecoder(TaKey);
 }
 
 export function getTaKeyCodec(): Codec<TaKeyArgs, TaKey> {

@@ -15,15 +15,15 @@ import {
   Codec,
   Decoder,
   Encoder,
-  GetDataEnumKind,
-  GetDataEnumKindContent,
+  GetDiscriminatedUnionVariant,
+  GetDiscriminatedUnionVariantContent,
   combineCodec,
   getArrayDecoder,
   getArrayEncoder,
   getBytesDecoder,
   getBytesEncoder,
-  getDataEnumDecoder,
-  getDataEnumEncoder,
+  getDiscriminatedUnionDecoder,
+  getDiscriminatedUnionEncoder,
   getStructDecoder,
   getStructEncoder,
   getTupleDecoder,
@@ -48,7 +48,7 @@ export type PayloadTypeArgs =
   | { __kind: 'Number'; fields: [number | bigint] };
 
 export function getPayloadTypeEncoder(): Encoder<PayloadTypeArgs> {
-  return getDataEnumEncoder([
+  return getDiscriminatedUnionEncoder([
     [
       'Pubkey',
       getStructEncoder([['fields', getTupleEncoder([getAddressEncoder()])]]),
@@ -74,7 +74,7 @@ export function getPayloadTypeEncoder(): Encoder<PayloadTypeArgs> {
 }
 
 export function getPayloadTypeDecoder(): Decoder<PayloadType> {
-  return getDataEnumDecoder([
+  return getDiscriminatedUnionDecoder([
     [
       'Pubkey',
       getStructDecoder([['fields', getTupleDecoder([getAddressDecoder()])]]),
@@ -106,20 +106,32 @@ export function getPayloadTypeCodec(): Codec<PayloadTypeArgs, PayloadType> {
 // Data Enum Helpers.
 export function payloadType(
   kind: 'Pubkey',
-  data: GetDataEnumKindContent<PayloadTypeArgs, 'Pubkey'>['fields']
-): GetDataEnumKind<PayloadTypeArgs, 'Pubkey'>;
+  data: GetDiscriminatedUnionVariantContent<
+    PayloadTypeArgs,
+    '__kind',
+    'Pubkey'
+  >['fields']
+): GetDiscriminatedUnionVariant<PayloadTypeArgs, '__kind', 'Pubkey'>;
 export function payloadType(
   kind: 'Seeds',
-  data: GetDataEnumKindContent<PayloadTypeArgs, 'Seeds'>
-): GetDataEnumKind<PayloadTypeArgs, 'Seeds'>;
+  data: GetDiscriminatedUnionVariantContent<PayloadTypeArgs, '__kind', 'Seeds'>
+): GetDiscriminatedUnionVariant<PayloadTypeArgs, '__kind', 'Seeds'>;
 export function payloadType(
   kind: 'MerkleProof',
-  data: GetDataEnumKindContent<PayloadTypeArgs, 'MerkleProof'>
-): GetDataEnumKind<PayloadTypeArgs, 'MerkleProof'>;
+  data: GetDiscriminatedUnionVariantContent<
+    PayloadTypeArgs,
+    '__kind',
+    'MerkleProof'
+  >
+): GetDiscriminatedUnionVariant<PayloadTypeArgs, '__kind', 'MerkleProof'>;
 export function payloadType(
   kind: 'Number',
-  data: GetDataEnumKindContent<PayloadTypeArgs, 'Number'>['fields']
-): GetDataEnumKind<PayloadTypeArgs, 'Number'>;
+  data: GetDiscriminatedUnionVariantContent<
+    PayloadTypeArgs,
+    '__kind',
+    'Number'
+  >['fields']
+): GetDiscriminatedUnionVariant<PayloadTypeArgs, '__kind', 'Number'>;
 export function payloadType<K extends PayloadTypeArgs['__kind'], Data>(
   kind: K,
   data?: Data

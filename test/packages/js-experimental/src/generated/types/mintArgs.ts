@@ -10,13 +10,13 @@ import {
   Codec,
   Decoder,
   Encoder,
-  GetDataEnumKind,
-  GetDataEnumKindContent,
+  GetDiscriminatedUnionVariant,
+  GetDiscriminatedUnionVariantContent,
   Option,
   OptionOrNullable,
   combineCodec,
-  getDataEnumDecoder,
-  getDataEnumEncoder,
+  getDiscriminatedUnionDecoder,
+  getDiscriminatedUnionEncoder,
   getOptionDecoder,
   getOptionEncoder,
   getStructDecoder,
@@ -44,7 +44,7 @@ export type MintArgsArgs = {
 };
 
 export function getMintArgsEncoder(): Encoder<MintArgsArgs> {
-  return getDataEnumEncoder([
+  return getDiscriminatedUnionEncoder([
     [
       'V1',
       getStructEncoder([
@@ -56,7 +56,7 @@ export function getMintArgsEncoder(): Encoder<MintArgsArgs> {
 }
 
 export function getMintArgsDecoder(): Decoder<MintArgs> {
-  return getDataEnumDecoder([
+  return getDiscriminatedUnionDecoder([
     [
       'V1',
       getStructDecoder([
@@ -74,8 +74,8 @@ export function getMintArgsCodec(): Codec<MintArgsArgs, MintArgs> {
 // Data Enum Helpers.
 export function mintArgs(
   kind: 'V1',
-  data: GetDataEnumKindContent<MintArgsArgs, 'V1'>
-): GetDataEnumKind<MintArgsArgs, 'V1'>;
+  data: GetDiscriminatedUnionVariantContent<MintArgsArgs, '__kind', 'V1'>
+): GetDiscriminatedUnionVariant<MintArgsArgs, '__kind', 'V1'>;
 export function mintArgs<K extends MintArgsArgs['__kind'], Data>(
   kind: K,
   data?: Data

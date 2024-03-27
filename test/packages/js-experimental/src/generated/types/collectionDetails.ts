@@ -10,11 +10,11 @@ import {
   Codec,
   Decoder,
   Encoder,
-  GetDataEnumKind,
-  GetDataEnumKindContent,
+  GetDiscriminatedUnionVariant,
+  GetDiscriminatedUnionVariantContent,
   combineCodec,
-  getDataEnumDecoder,
-  getDataEnumEncoder,
+  getDiscriminatedUnionDecoder,
+  getDiscriminatedUnionEncoder,
   getStructDecoder,
   getStructEncoder,
   getU64Decoder,
@@ -26,13 +26,13 @@ export type CollectionDetails = { __kind: 'V1'; size: bigint };
 export type CollectionDetailsArgs = { __kind: 'V1'; size: number | bigint };
 
 export function getCollectionDetailsEncoder(): Encoder<CollectionDetailsArgs> {
-  return getDataEnumEncoder([
+  return getDiscriminatedUnionEncoder([
     ['V1', getStructEncoder([['size', getU64Encoder()]])],
   ]);
 }
 
 export function getCollectionDetailsDecoder(): Decoder<CollectionDetails> {
-  return getDataEnumDecoder([
+  return getDiscriminatedUnionDecoder([
     ['V1', getStructDecoder([['size', getU64Decoder()]])],
   ]);
 }
@@ -50,8 +50,12 @@ export function getCollectionDetailsCodec(): Codec<
 // Data Enum Helpers.
 export function collectionDetails(
   kind: 'V1',
-  data: GetDataEnumKindContent<CollectionDetailsArgs, 'V1'>
-): GetDataEnumKind<CollectionDetailsArgs, 'V1'>;
+  data: GetDiscriminatedUnionVariantContent<
+    CollectionDetailsArgs,
+    '__kind',
+    'V1'
+  >
+): GetDiscriminatedUnionVariant<CollectionDetailsArgs, '__kind', 'V1'>;
 export function collectionDetails<
   K extends CollectionDetailsArgs['__kind'],
   Data,

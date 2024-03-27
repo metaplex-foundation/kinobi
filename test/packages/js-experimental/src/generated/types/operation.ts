@@ -11,8 +11,8 @@ import {
   Decoder,
   Encoder,
   combineCodec,
-  getScalarEnumDecoder,
-  getScalarEnumEncoder,
+  getEnumDecoder,
+  getEnumEncoder,
 } from '@solana/codecs';
 
 export enum Operation {
@@ -25,11 +25,11 @@ export enum Operation {
 export type OperationArgs = Operation;
 
 export function getOperationEncoder(): Encoder<OperationArgs> {
-  return getScalarEnumEncoder(Operation);
+  return getEnumEncoder(Operation);
 }
 
 export function getOperationDecoder(): Decoder<Operation> {
-  return getScalarEnumDecoder(Operation);
+  return getEnumDecoder(Operation);
 }
 
 export function getOperationCodec(): Codec<OperationArgs, Operation> {

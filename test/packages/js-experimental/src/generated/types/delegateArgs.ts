@@ -10,11 +10,11 @@ import {
   Codec,
   Decoder,
   Encoder,
-  GetDataEnumKind,
-  GetDataEnumKindContent,
+  GetDiscriminatedUnionVariant,
+  GetDiscriminatedUnionVariantContent,
   combineCodec,
-  getDataEnumDecoder,
-  getDataEnumEncoder,
+  getDiscriminatedUnionDecoder,
+  getDiscriminatedUnionEncoder,
   getStructDecoder,
   getStructEncoder,
   getU16Decoder,
@@ -36,7 +36,7 @@ export type DelegateArgsArgs =
   | { __kind: 'TransferV1'; amount: number | bigint };
 
 export function getDelegateArgsEncoder(): Encoder<DelegateArgsArgs> {
-  return getDataEnumEncoder(
+  return getDiscriminatedUnionEncoder(
     [
       ['CollectionV1', getUnitEncoder()],
       ['SaleV1', getStructEncoder([['amount', getU64Encoder()]])],
@@ -47,7 +47,7 @@ export function getDelegateArgsEncoder(): Encoder<DelegateArgsArgs> {
 }
 
 export function getDelegateArgsDecoder(): Decoder<DelegateArgs> {
-  return getDataEnumDecoder(
+  return getDiscriminatedUnionDecoder(
     [
       ['CollectionV1', getUnitDecoder()],
       ['SaleV1', getStructDecoder([['amount', getU64Decoder()]])],
@@ -64,15 +64,23 @@ export function getDelegateArgsCodec(): Codec<DelegateArgsArgs, DelegateArgs> {
 // Data Enum Helpers.
 export function delegateArgs(
   kind: 'CollectionV1'
-): GetDataEnumKind<DelegateArgsArgs, 'CollectionV1'>;
+): GetDiscriminatedUnionVariant<DelegateArgsArgs, '__kind', 'CollectionV1'>;
 export function delegateArgs(
   kind: 'SaleV1',
-  data: GetDataEnumKindContent<DelegateArgsArgs, 'SaleV1'>
-): GetDataEnumKind<DelegateArgsArgs, 'SaleV1'>;
+  data: GetDiscriminatedUnionVariantContent<
+    DelegateArgsArgs,
+    '__kind',
+    'SaleV1'
+  >
+): GetDiscriminatedUnionVariant<DelegateArgsArgs, '__kind', 'SaleV1'>;
 export function delegateArgs(
   kind: 'TransferV1',
-  data: GetDataEnumKindContent<DelegateArgsArgs, 'TransferV1'>
-): GetDataEnumKind<DelegateArgsArgs, 'TransferV1'>;
+  data: GetDiscriminatedUnionVariantContent<
+    DelegateArgsArgs,
+    '__kind',
+    'TransferV1'
+  >
+): GetDiscriminatedUnionVariant<DelegateArgsArgs, '__kind', 'TransferV1'>;
 export function delegateArgs<K extends DelegateArgsArgs['__kind'], Data>(
   kind: K,
   data?: Data

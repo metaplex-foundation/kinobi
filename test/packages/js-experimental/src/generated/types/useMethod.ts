@@ -11,8 +11,8 @@ import {
   Decoder,
   Encoder,
   combineCodec,
-  getScalarEnumDecoder,
-  getScalarEnumEncoder,
+  getEnumDecoder,
+  getEnumEncoder,
 } from '@solana/codecs';
 
 export enum UseMethod {
@@ -24,11 +24,11 @@ export enum UseMethod {
 export type UseMethodArgs = UseMethod;
 
 export function getUseMethodEncoder(): Encoder<UseMethodArgs> {
-  return getScalarEnumEncoder(UseMethod);
+  return getEnumEncoder(UseMethod);
 }
 
 export function getUseMethodDecoder(): Decoder<UseMethod> {
-  return getScalarEnumDecoder(UseMethod);
+  return getEnumDecoder(UseMethod);
 }
 
 export function getUseMethodCodec(): Codec<UseMethodArgs, UseMethod> {

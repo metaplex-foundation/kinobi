@@ -11,8 +11,8 @@ import {
   Decoder,
   Encoder,
   combineCodec,
-  getScalarEnumDecoder,
-  getScalarEnumEncoder,
+  getEnumDecoder,
+  getEnumEncoder,
 } from '@solana/codecs';
 
 export enum TokenStandard {
@@ -26,11 +26,11 @@ export enum TokenStandard {
 export type TokenStandardArgs = TokenStandard;
 
 export function getTokenStandardEncoder(): Encoder<TokenStandardArgs> {
-  return getScalarEnumEncoder(TokenStandard);
+  return getEnumEncoder(TokenStandard);
 }
 
 export function getTokenStandardDecoder(): Decoder<TokenStandard> {
-  return getScalarEnumDecoder(TokenStandard);
+  return getEnumDecoder(TokenStandard);
 }
 
 export function getTokenStandardCodec(): Codec<
