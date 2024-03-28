@@ -138,7 +138,7 @@ pub struct InitializeInstructionArgs {
 ///   8. `[writable]` collection_authority_record
 ///   9. `[optional]` token_metadata_program (default to `metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s`)
 ///   10. `[optional]` system_program (default to `11111111111111111111111111111111`)
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct InitializeBuilder {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
     authority_pda: Option<solana_program::pubkey::Pubkey>,
@@ -504,6 +504,7 @@ impl<'a, 'b> InitializeCpi<'a, 'b> {
 ///   8. `[writable]` collection_authority_record
 ///   9. `[]` token_metadata_program
 ///   10. `[]` system_program
+#[derive(Clone, Debug)]
 pub struct InitializeCpiBuilder<'a, 'b> {
     instruction: Box<InitializeCpiBuilderInstruction<'a, 'b>>,
 }
@@ -722,6 +723,7 @@ impl<'a, 'b> InitializeCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct InitializeCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     candy_machine: Option<&'b solana_program::account_info::AccountInfo<'a>>,

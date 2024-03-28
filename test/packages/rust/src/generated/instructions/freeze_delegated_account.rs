@@ -84,7 +84,7 @@ impl FreezeDelegatedAccountInstructionData {
 ///   2. `[]` edition
 ///   3. `[]` mint
 ///   4. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct FreezeDelegatedAccountBuilder {
     delegate: Option<solana_program::pubkey::Pubkey>,
     token_account: Option<solana_program::pubkey::Pubkey>,
@@ -305,6 +305,7 @@ impl<'a, 'b> FreezeDelegatedAccountCpi<'a, 'b> {
 ///   2. `[]` edition
 ///   3. `[]` mint
 ///   4. `[]` token_program
+#[derive(Clone, Debug)]
 pub struct FreezeDelegatedAccountCpiBuilder<'a, 'b> {
     instruction: Box<FreezeDelegatedAccountCpiBuilderInstruction<'a, 'b>>,
 }
@@ -431,6 +432,7 @@ impl<'a, 'b> FreezeDelegatedAccountCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct FreezeDelegatedAccountCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     delegate: Option<&'b solana_program::account_info::AccountInfo<'a>>,

@@ -117,7 +117,7 @@ impl CreateEscrowAccountInstructionData {
 ///   6. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   7. `[optional]` sysvar_instructions (default to `Sysvar1nstructions1111111111111111111111111`)
 ///   8. `[signer, optional]` authority
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct CreateEscrowAccountBuilder {
     escrow: Option<solana_program::pubkey::Pubkey>,
     metadata: Option<solana_program::pubkey::Pubkey>,
@@ -430,6 +430,7 @@ impl<'a, 'b> CreateEscrowAccountCpi<'a, 'b> {
 ///   6. `[]` system_program
 ///   7. `[]` sysvar_instructions
 ///   8. `[signer, optional]` authority
+#[derive(Clone, Debug)]
 pub struct CreateEscrowAccountCpiBuilder<'a, 'b> {
     instruction: Box<CreateEscrowAccountCpiBuilderInstruction<'a, 'b>>,
 }
@@ -605,6 +606,7 @@ impl<'a, 'b> CreateEscrowAccountCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct CreateEscrowAccountCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     escrow: Option<&'b solana_program::account_info::AccountInfo<'a>>,

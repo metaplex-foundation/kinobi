@@ -75,7 +75,7 @@ pub struct CreateAccountInstructionArgs {
 ///
 ///   0. `[writable, signer]` payer
 ///   1. `[writable, signer]` new_account
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct CreateAccountBuilder {
     payer: Option<solana_program::pubkey::Pubkey>,
     new_account: Option<solana_program::pubkey::Pubkey>,
@@ -260,6 +260,7 @@ impl<'a, 'b> CreateAccountCpi<'a, 'b> {
 ///
 ///   0. `[writable, signer]` payer
 ///   1. `[writable, signer]` new_account
+#[derive(Clone, Debug)]
 pub struct CreateAccountCpiBuilder<'a, 'b> {
     instruction: Box<CreateAccountCpiBuilderInstruction<'a, 'b>>,
 }
@@ -377,6 +378,7 @@ impl<'a, 'b> CreateAccountCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct CreateAccountCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,

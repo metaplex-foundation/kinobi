@@ -157,7 +157,7 @@ pub struct UseAssetInstructionArgs {
 ///   8. `[writable, optional]` use_authority_record
 ///   9. `[optional]` authorization_rules
 ///   10. `[optional]` authorization_rules_program
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct UseAssetBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     token_account: Option<solana_program::pubkey::Pubkey>,
@@ -556,6 +556,7 @@ impl<'a, 'b> UseAssetCpi<'a, 'b> {
 ///   8. `[writable, optional]` use_authority_record
 ///   9. `[optional]` authorization_rules
 ///   10. `[optional]` authorization_rules_program
+#[derive(Clone, Debug)]
 pub struct UseAssetCpiBuilder<'a, 'b> {
     instruction: Box<UseAssetCpiBuilderInstruction<'a, 'b>>,
 }
@@ -777,6 +778,7 @@ impl<'a, 'b> UseAssetCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct UseAssetCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,

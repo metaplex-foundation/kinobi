@@ -70,7 +70,7 @@ impl SetMintAuthorityInstructionData {
 ///   0. `[writable]` candy_machine
 ///   1. `[signer]` authority
 ///   2. `[signer]` mint_authority
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct SetMintAuthorityBuilder {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
     authority: Option<solana_program::pubkey::Pubkey>,
@@ -244,6 +244,7 @@ impl<'a, 'b> SetMintAuthorityCpi<'a, 'b> {
 ///   0. `[writable]` candy_machine
 ///   1. `[signer]` authority
 ///   2. `[signer]` mint_authority
+#[derive(Clone, Debug)]
 pub struct SetMintAuthorityCpiBuilder<'a, 'b> {
     instruction: Box<SetMintAuthorityCpiBuilderInstruction<'a, 'b>>,
 }
@@ -346,6 +347,7 @@ impl<'a, 'b> SetMintAuthorityCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct SetMintAuthorityCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     candy_machine: Option<&'b solana_program::account_info::AccountInfo<'a>>,

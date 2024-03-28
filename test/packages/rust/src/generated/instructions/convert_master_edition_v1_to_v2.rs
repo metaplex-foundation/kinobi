@@ -71,7 +71,7 @@ impl ConvertMasterEditionV1ToV2InstructionData {
 ///   0. `[writable]` master_edition
 ///   1. `[writable]` one_time_auth
 ///   2. `[writable]` printing_mint
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct ConvertMasterEditionV1ToV2Builder {
     master_edition: Option<solana_program::pubkey::Pubkey>,
     one_time_auth: Option<solana_program::pubkey::Pubkey>,
@@ -251,6 +251,7 @@ impl<'a, 'b> ConvertMasterEditionV1ToV2Cpi<'a, 'b> {
 ///   0. `[writable]` master_edition
 ///   1. `[writable]` one_time_auth
 ///   2. `[writable]` printing_mint
+#[derive(Clone, Debug)]
 pub struct ConvertMasterEditionV1ToV2CpiBuilder<'a, 'b> {
     instruction: Box<ConvertMasterEditionV1ToV2CpiBuilderInstruction<'a, 'b>>,
 }
@@ -359,6 +360,7 @@ impl<'a, 'b> ConvertMasterEditionV1ToV2CpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct ConvertMasterEditionV1ToV2CpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     master_edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,

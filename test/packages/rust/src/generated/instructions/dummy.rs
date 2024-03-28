@@ -140,7 +140,7 @@ impl DummyInstructionData {
 ///   7. `[signer, optional]` delegate
 ///   8. `[writable, optional]` delegate_record
 ///   9. `[]` token_or_ata_program
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct DummyBuilder {
     edition: Option<solana_program::pubkey::Pubkey>,
     mint: Option<solana_program::pubkey::Pubkey>,
@@ -489,6 +489,7 @@ impl<'a, 'b> DummyCpi<'a, 'b> {
 ///   7. `[signer, optional]` delegate
 ///   8. `[writable, optional]` delegate_record
 ///   9. `[]` token_or_ata_program
+#[derive(Clone, Debug)]
 pub struct DummyCpiBuilder<'a, 'b> {
     instruction: Box<DummyCpiBuilderInstruction<'a, 'b>>,
 }
@@ -669,6 +670,7 @@ impl<'a, 'b> DummyCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct DummyCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,

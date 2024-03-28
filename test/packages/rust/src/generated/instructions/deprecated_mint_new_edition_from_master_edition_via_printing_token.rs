@@ -166,7 +166,7 @@ impl DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData {
 ///   13. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   14. `[optional]` rent (default to `SysvarRent111111111111111111111111111111111`)
 ///   15. `[writable, optional]` reservation_list
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     edition: Option<solana_program::pubkey::Pubkey>,
@@ -628,6 +628,7 @@ impl<'a, 'b> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a, 'b
 ///   13. `[]` system_program
 ///   14. `[]` rent
 ///   15. `[writable, optional]` reservation_list
+#[derive(Clone, Debug)]
 pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpiBuilder<'a, 'b> {
     instruction:
         Box<DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpiBuilderInstruction<'a, 'b>>,
@@ -908,6 +909,7 @@ impl<'a, 'b> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpiBuilder
     }
 }
 
+#[derive(Clone, Debug)]
 struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,

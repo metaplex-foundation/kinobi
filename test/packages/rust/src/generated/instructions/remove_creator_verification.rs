@@ -64,7 +64,7 @@ impl RemoveCreatorVerificationInstructionData {
 ///
 ///   0. `[writable]` metadata
 ///   1. `[signer]` creator
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct RemoveCreatorVerificationBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     creator: Option<solana_program::pubkey::Pubkey>,
@@ -225,6 +225,7 @@ impl<'a, 'b> RemoveCreatorVerificationCpi<'a, 'b> {
 ///
 ///   0. `[writable]` metadata
 ///   1. `[signer]` creator
+#[derive(Clone, Debug)]
 pub struct RemoveCreatorVerificationCpiBuilder<'a, 'b> {
     instruction: Box<RemoveCreatorVerificationCpiBuilderInstruction<'a, 'b>>,
 }
@@ -312,6 +313,7 @@ impl<'a, 'b> RemoveCreatorVerificationCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct RemoveCreatorVerificationCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,

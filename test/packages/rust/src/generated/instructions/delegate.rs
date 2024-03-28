@@ -182,7 +182,7 @@ pub struct DelegateInstructionArgs {
 ///   10. `[optional]` spl_token_program
 ///   11. `[optional]` authorization_rules_program
 ///   12. `[optional]` authorization_rules
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct DelegateBuilder {
     delegate_record: Option<solana_program::pubkey::Pubkey>,
     delegate: Option<solana_program::pubkey::Pubkey>,
@@ -641,6 +641,7 @@ impl<'a, 'b> DelegateCpi<'a, 'b> {
 ///   10. `[optional]` spl_token_program
 ///   11. `[optional]` authorization_rules_program
 ///   12. `[optional]` authorization_rules
+#[derive(Clone, Debug)]
 pub struct DelegateCpiBuilder<'a, 'b> {
     instruction: Box<DelegateCpiBuilderInstruction<'a, 'b>>,
 }
@@ -882,6 +883,7 @@ impl<'a, 'b> DelegateCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct DelegateCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     delegate_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,

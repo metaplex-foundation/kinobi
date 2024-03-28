@@ -87,7 +87,7 @@ pub struct DeprecatedSetReservationListInstructionArgs {
 ///   0. `[writable]` master_edition
 ///   1. `[writable]` reservation_list
 ///   2. `[signer]` resource
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct DeprecatedSetReservationListBuilder {
     master_edition: Option<solana_program::pubkey::Pubkey>,
     reservation_list: Option<solana_program::pubkey::Pubkey>,
@@ -310,6 +310,7 @@ impl<'a, 'b> DeprecatedSetReservationListCpi<'a, 'b> {
 ///   0. `[writable]` master_edition
 ///   1. `[writable]` reservation_list
 ///   2. `[signer]` resource
+#[derive(Clone, Debug)]
 pub struct DeprecatedSetReservationListCpiBuilder<'a, 'b> {
     instruction: Box<DeprecatedSetReservationListCpiBuilderInstruction<'a, 'b>>,
 }
@@ -455,6 +456,7 @@ impl<'a, 'b> DeprecatedSetReservationListCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct DeprecatedSetReservationListCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     master_edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,

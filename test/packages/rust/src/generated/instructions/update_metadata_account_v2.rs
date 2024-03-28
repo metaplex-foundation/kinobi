@@ -81,7 +81,7 @@ pub struct UpdateMetadataAccountV2InstructionArgs {
 ///
 ///   0. `[writable]` metadata
 ///   1. `[signer]` update_authority
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct UpdateMetadataAccountV2Builder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     update_authority: Option<solana_program::pubkey::Pubkey>,
@@ -285,6 +285,7 @@ impl<'a, 'b> UpdateMetadataAccountV2Cpi<'a, 'b> {
 ///
 ///   0. `[writable]` metadata
 ///   1. `[signer]` update_authority
+#[derive(Clone, Debug)]
 pub struct UpdateMetadataAccountV2CpiBuilder<'a, 'b> {
     instruction: Box<UpdateMetadataAccountV2CpiBuilderInstruction<'a, 'b>>,
 }
@@ -410,6 +411,7 @@ impl<'a, 'b> UpdateMetadataAccountV2CpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct UpdateMetadataAccountV2CpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,

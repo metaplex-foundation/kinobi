@@ -55,7 +55,7 @@ impl PuffMetadataInstructionData {
 /// ### Accounts:
 ///
 ///   0. `[writable]` metadata
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct PuffMetadataBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
@@ -195,6 +195,7 @@ impl<'a, 'b> PuffMetadataCpi<'a, 'b> {
 /// ### Accounts:
 ///
 ///   0. `[writable]` metadata
+#[derive(Clone, Debug)]
 pub struct PuffMetadataCpiBuilder<'a, 'b> {
     instruction: Box<PuffMetadataCpiBuilderInstruction<'a, 'b>>,
 }
@@ -270,6 +271,7 @@ impl<'a, 'b> PuffMetadataCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct PuffMetadataCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,

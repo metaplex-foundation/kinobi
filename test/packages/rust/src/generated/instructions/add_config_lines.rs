@@ -79,7 +79,7 @@ pub struct AddConfigLinesInstructionArgs {
 ///
 ///   0. `[writable]` candy_machine
 ///   1. `[signer]` authority
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct AddConfigLinesBuilder {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
     authority: Option<solana_program::pubkey::Pubkey>,
@@ -264,6 +264,7 @@ impl<'a, 'b> AddConfigLinesCpi<'a, 'b> {
 ///
 ///   0. `[writable]` candy_machine
 ///   1. `[signer]` authority
+#[derive(Clone, Debug)]
 pub struct AddConfigLinesCpiBuilder<'a, 'b> {
     instruction: Box<AddConfigLinesCpiBuilderInstruction<'a, 'b>>,
 }
@@ -384,6 +385,7 @@ impl<'a, 'b> AddConfigLinesCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct AddConfigLinesCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     candy_machine: Option<&'b solana_program::account_info::AccountInfo<'a>>,

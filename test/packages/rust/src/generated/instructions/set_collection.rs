@@ -146,7 +146,7 @@ impl SetCollectionInstructionData {
 ///   11. `[writable]` new_collection_authority_record
 ///   12. `[optional]` token_metadata_program (default to `metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s`)
 ///   13. `[optional]` system_program (default to `11111111111111111111111111111111`)
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct SetCollectionBuilder {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
     authority: Option<solana_program::pubkey::Pubkey>,
@@ -566,6 +566,7 @@ impl<'a, 'b> SetCollectionCpi<'a, 'b> {
 ///   11. `[writable]` new_collection_authority_record
 ///   12. `[]` token_metadata_program
 ///   13. `[]` system_program
+#[derive(Clone, Debug)]
 pub struct SetCollectionCpiBuilder<'a, 'b> {
     instruction: Box<SetCollectionCpiBuilderInstruction<'a, 'b>>,
 }
@@ -816,6 +817,7 @@ impl<'a, 'b> SetCollectionCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct SetCollectionCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     candy_machine: Option<&'b solana_program::account_info::AccountInfo<'a>>,

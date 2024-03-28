@@ -104,7 +104,7 @@ impl CreateReservationListInstructionData {
 ///   5. `[]` metadata
 ///   6. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   7. `[optional]` rent (default to `SysvarRent111111111111111111111111111111111`)
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct CreateReservationListBuilder {
     reservation_list: Option<solana_program::pubkey::Pubkey>,
     payer: Option<solana_program::pubkey::Pubkey>,
@@ -391,6 +391,7 @@ impl<'a, 'b> CreateReservationListCpi<'a, 'b> {
 ///   5. `[]` metadata
 ///   6. `[]` system_program
 ///   7. `[]` rent
+#[derive(Clone, Debug)]
 pub struct CreateReservationListCpiBuilder<'a, 'b> {
     instruction: Box<CreateReservationListCpiBuilderInstruction<'a, 'b>>,
 }
@@ -556,6 +557,7 @@ impl<'a, 'b> CreateReservationListCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct CreateReservationListCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     reservation_list: Option<&'b solana_program::account_info::AccountInfo<'a>>,

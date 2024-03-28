@@ -192,7 +192,7 @@ pub struct TransferInstructionArgs {
 ///   12. `[optional]` sysvar_instructions (default to `Sysvar1nstructions1111111111111111111111111`)
 ///   13. `[optional]` authorization_rules_program
 ///   14. `[optional]` authorization_rules
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct TransferBuilder {
     authority: Option<solana_program::pubkey::Pubkey>,
     delegate_record: Option<solana_program::pubkey::Pubkey>,
@@ -694,6 +694,7 @@ impl<'a, 'b> TransferCpi<'a, 'b> {
 ///   12. `[]` sysvar_instructions
 ///   13. `[optional]` authorization_rules_program
 ///   14. `[optional]` authorization_rules
+#[derive(Clone, Debug)]
 pub struct TransferCpiBuilder<'a, 'b> {
     instruction: Box<TransferCpiBuilderInstruction<'a, 'b>>,
 }
@@ -970,6 +971,7 @@ impl<'a, 'b> TransferCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct TransferCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,

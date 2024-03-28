@@ -105,7 +105,7 @@ impl UnverifySizedCollectionItemInstructionData {
 ///   4. `[writable]` collection
 ///   5. `[]` collection_master_edition_account
 ///   6. `[optional]` collection_authority_record
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct UnverifySizedCollectionItemBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     collection_authority: Option<solana_program::pubkey::Pubkey>,
@@ -387,6 +387,7 @@ impl<'a, 'b> UnverifySizedCollectionItemCpi<'a, 'b> {
 ///   4. `[writable]` collection
 ///   5. `[]` collection_master_edition_account
 ///   6. `[optional]` collection_authority_record
+#[derive(Clone, Debug)]
 pub struct UnverifySizedCollectionItemCpiBuilder<'a, 'b> {
     instruction: Box<UnverifySizedCollectionItemCpiBuilderInstruction<'a, 'b>>,
 }
@@ -542,6 +543,7 @@ impl<'a, 'b> UnverifySizedCollectionItemCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct UnverifySizedCollectionItemCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,

@@ -90,7 +90,7 @@ pub struct UpdateMetadataAccountInstructionDataData {
 ///
 ///   0. `[writable]` metadata
 ///   1. `[signer]` update_authority
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct UpdateMetadataAccountBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     update_authority: Option<solana_program::pubkey::Pubkey>,
@@ -286,6 +286,7 @@ impl<'a, 'b> UpdateMetadataAccountCpi<'a, 'b> {
 ///
 ///   0. `[writable]` metadata
 ///   1. `[signer]` update_authority
+#[derive(Clone, Debug)]
 pub struct UpdateMetadataAccountCpiBuilder<'a, 'b> {
     instruction: Box<UpdateMetadataAccountCpiBuilderInstruction<'a, 'b>>,
 }
@@ -403,6 +404,7 @@ impl<'a, 'b> UpdateMetadataAccountCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct UpdateMetadataAccountCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,

@@ -136,7 +136,7 @@ pub struct CreateV1InstructionArgs {
 ///   6. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   7. `[optional]` sysvar_instructions (default to `Sysvar1nstructions1111111111111111111111111`)
 ///   8. `[optional]` spl_token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct CreateV1Builder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     master_edition: Option<solana_program::pubkey::Pubkey>,
@@ -490,6 +490,7 @@ impl<'a, 'b> CreateV1Cpi<'a, 'b> {
 ///   6. `[]` system_program
 ///   7. `[]` sysvar_instructions
 ///   8. `[]` spl_token_program
+#[derive(Clone, Debug)]
 pub struct CreateV1CpiBuilder<'a, 'b> {
     instruction: Box<CreateV1CpiBuilderInstruction<'a, 'b>>,
 }
@@ -705,6 +706,7 @@ impl<'a, 'b> CreateV1CpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct CreateV1CpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,

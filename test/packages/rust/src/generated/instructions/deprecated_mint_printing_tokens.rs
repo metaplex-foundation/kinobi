@@ -111,7 +111,7 @@ pub struct DeprecatedMintPrintingTokensInstructionArgs {
 ///   4. `[]` master_edition
 ///   5. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
 ///   6. `[optional]` rent (default to `SysvarRent111111111111111111111111111111111`)
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct DeprecatedMintPrintingTokensBuilder {
     destination: Option<solana_program::pubkey::Pubkey>,
     printing_mint: Option<solana_program::pubkey::Pubkey>,
@@ -397,6 +397,7 @@ impl<'a, 'b> DeprecatedMintPrintingTokensCpi<'a, 'b> {
 ///   4. `[]` master_edition
 ///   5. `[]` token_program
 ///   6. `[]` rent
+#[derive(Clone, Debug)]
 pub struct DeprecatedMintPrintingTokensCpiBuilder<'a, 'b> {
     instruction: Box<DeprecatedMintPrintingTokensCpiBuilderInstruction<'a, 'b>>,
 }
@@ -574,6 +575,7 @@ impl<'a, 'b> DeprecatedMintPrintingTokensCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct DeprecatedMintPrintingTokensCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     destination: Option<&'b solana_program::account_info::AccountInfo<'a>>,

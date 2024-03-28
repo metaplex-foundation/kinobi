@@ -104,7 +104,7 @@ impl CloseEscrowAccountInstructionData {
 ///   5. `[writable, signer]` payer
 ///   6. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   7. `[optional]` sysvar_instructions (default to `Sysvar1nstructions1111111111111111111111111`)
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct CloseEscrowAccountBuilder {
     escrow: Option<solana_program::pubkey::Pubkey>,
     metadata: Option<solana_program::pubkey::Pubkey>,
@@ -388,6 +388,7 @@ impl<'a, 'b> CloseEscrowAccountCpi<'a, 'b> {
 ///   5. `[writable, signer]` payer
 ///   6. `[]` system_program
 ///   7. `[]` sysvar_instructions
+#[derive(Clone, Debug)]
 pub struct CloseEscrowAccountCpiBuilder<'a, 'b> {
     instruction: Box<CloseEscrowAccountCpiBuilderInstruction<'a, 'b>>,
 }
@@ -550,6 +551,7 @@ impl<'a, 'b> CloseEscrowAccountCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct CloseEscrowAccountCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     escrow: Option<&'b solana_program::account_info::AccountInfo<'a>>,

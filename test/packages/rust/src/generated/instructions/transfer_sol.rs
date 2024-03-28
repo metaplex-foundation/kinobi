@@ -73,7 +73,7 @@ pub struct TransferSolInstructionArgs {
 ///
 ///   0. `[writable, signer]` source
 ///   1. `[writable]` destination
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct TransferSolBuilder {
     source: Option<solana_program::pubkey::Pubkey>,
     destination: Option<solana_program::pubkey::Pubkey>,
@@ -244,6 +244,7 @@ impl<'a, 'b> TransferSolCpi<'a, 'b> {
 ///
 ///   0. `[writable, signer]` source
 ///   1. `[writable]` destination
+#[derive(Clone, Debug)]
 pub struct TransferSolCpiBuilder<'a, 'b> {
     instruction: Box<TransferSolCpiBuilderInstruction<'a, 'b>>,
 }
@@ -342,6 +343,7 @@ impl<'a, 'b> TransferSolCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct TransferSolCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     source: Option<&'b solana_program::account_info::AccountInfo<'a>>,

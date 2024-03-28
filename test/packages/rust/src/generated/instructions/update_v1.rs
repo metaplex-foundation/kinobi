@@ -198,7 +198,7 @@ pub struct UpdateV1InstructionDataData {
 ///   7. `[optional]` delegate_record
 ///   8. `[optional]` authorization_rules_program
 ///   9. `[optional]` authorization_rules
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct UpdateV1Builder {
     authority: Option<solana_program::pubkey::Pubkey>,
     metadata: Option<solana_program::pubkey::Pubkey>,
@@ -685,6 +685,7 @@ impl<'a, 'b> UpdateV1Cpi<'a, 'b> {
 ///   7. `[optional]` delegate_record
 ///   8. `[optional]` authorization_rules_program
 ///   9. `[optional]` authorization_rules
+#[derive(Clone, Debug)]
 pub struct UpdateV1CpiBuilder<'a, 'b> {
     instruction: Box<UpdateV1CpiBuilderInstruction<'a, 'b>>,
 }
@@ -978,6 +979,7 @@ impl<'a, 'b> UpdateV1CpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct UpdateV1CpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,

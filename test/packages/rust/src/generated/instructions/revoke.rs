@@ -182,7 +182,7 @@ pub struct RevokeInstructionArgs {
 ///   10. `[optional]` spl_token_program
 ///   11. `[optional]` authorization_rules_program
 ///   12. `[optional]` authorization_rules
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct RevokeBuilder {
     delegate_record: Option<solana_program::pubkey::Pubkey>,
     delegate: Option<solana_program::pubkey::Pubkey>,
@@ -638,6 +638,7 @@ impl<'a, 'b> RevokeCpi<'a, 'b> {
 ///   10. `[optional]` spl_token_program
 ///   11. `[optional]` authorization_rules_program
 ///   12. `[optional]` authorization_rules
+#[derive(Clone, Debug)]
 pub struct RevokeCpiBuilder<'a, 'b> {
     instruction: Box<RevokeCpiBuilderInstruction<'a, 'b>>,
 }
@@ -879,6 +880,7 @@ impl<'a, 'b> RevokeCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct RevokeCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     delegate_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,

@@ -85,7 +85,7 @@ pub struct CreateFrequencyRuleInstructionArgs {
 ///   0. `[writable, signer]` payer
 ///   1. `[writable]` frequency_pda
 ///   2. `[optional]` system_program (default to `11111111111111111111111111111111`)
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct CreateFrequencyRuleBuilder {
     payer: Option<solana_program::pubkey::Pubkey>,
     frequency_pda: Option<solana_program::pubkey::Pubkey>,
@@ -310,6 +310,7 @@ impl<'a, 'b> CreateFrequencyRuleCpi<'a, 'b> {
 ///   0. `[writable, signer]` payer
 ///   1. `[writable]` frequency_pda
 ///   2. `[]` system_program
+#[derive(Clone, Debug)]
 pub struct CreateFrequencyRuleCpiBuilder<'a, 'b> {
     instruction: Box<CreateFrequencyRuleCpiBuilderInstruction<'a, 'b>>,
 }
@@ -455,6 +456,7 @@ impl<'a, 'b> CreateFrequencyRuleCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct CreateFrequencyRuleCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,

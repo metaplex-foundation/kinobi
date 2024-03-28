@@ -143,7 +143,7 @@ pub struct BurnInstructionArgs {
 ///   6. `[writable, optional]` collection_metadata
 ///   7. `[optional]` authorization_rules
 ///   8. `[optional]` authorization_rules_program
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct BurnBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     owner: Option<solana_program::pubkey::Pubkey>,
@@ -500,6 +500,7 @@ impl<'a, 'b> BurnCpi<'a, 'b> {
 ///   6. `[writable, optional]` collection_metadata
 ///   7. `[optional]` authorization_rules
 ///   8. `[optional]` authorization_rules_program
+#[derive(Clone, Debug)]
 pub struct BurnCpiBuilder<'a, 'b> {
     instruction: Box<BurnCpiBuilderInstruction<'a, 'b>>,
 }
@@ -691,6 +692,7 @@ impl<'a, 'b> BurnCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct BurnCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,

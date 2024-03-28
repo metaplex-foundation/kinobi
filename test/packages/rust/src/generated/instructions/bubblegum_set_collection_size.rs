@@ -105,7 +105,7 @@ pub struct BubblegumSetCollectionSizeInstructionArgs {
 ///   2. `[]` collection_mint
 ///   3. `[signer]` bubblegum_signer
 ///   4. `[optional]` collection_authority_record
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct BubblegumSetCollectionSizeBuilder {
     collection_metadata: Option<solana_program::pubkey::Pubkey>,
     collection_authority: Option<solana_program::pubkey::Pubkey>,
@@ -373,6 +373,7 @@ impl<'a, 'b> BubblegumSetCollectionSizeCpi<'a, 'b> {
 ///   2. `[]` collection_mint
 ///   3. `[signer]` bubblegum_signer
 ///   4. `[optional]` collection_authority_record
+#[derive(Clone, Debug)]
 pub struct BubblegumSetCollectionSizeCpiBuilder<'a, 'b> {
     instruction: Box<BubblegumSetCollectionSizeCpiBuilderInstruction<'a, 'b>>,
 }
@@ -526,6 +527,7 @@ impl<'a, 'b> BubblegumSetCollectionSizeCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct BubblegumSetCollectionSizeCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     collection_metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,

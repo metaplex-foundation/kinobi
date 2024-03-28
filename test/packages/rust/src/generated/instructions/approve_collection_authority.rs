@@ -110,7 +110,7 @@ impl ApproveCollectionAuthorityInstructionData {
 ///   5. `[]` mint
 ///   6. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   7. `[optional]` rent
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct ApproveCollectionAuthorityBuilder {
     collection_authority_record: Option<solana_program::pubkey::Pubkey>,
     new_collection_authority: Option<solana_program::pubkey::Pubkey>,
@@ -410,6 +410,7 @@ impl<'a, 'b> ApproveCollectionAuthorityCpi<'a, 'b> {
 ///   5. `[]` mint
 ///   6. `[]` system_program
 ///   7. `[optional]` rent
+#[derive(Clone, Debug)]
 pub struct ApproveCollectionAuthorityCpiBuilder<'a, 'b> {
     instruction: Box<ApproveCollectionAuthorityCpiBuilderInstruction<'a, 'b>>,
 }
@@ -576,6 +577,7 @@ impl<'a, 'b> ApproveCollectionAuthorityCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct ApproveCollectionAuthorityCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     collection_authority_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
