@@ -1,5 +1,17 @@
 # @metaplex-foundation/kinobi
 
+## 0.19.0
+
+### Minor Changes
+
+- [#187](https://github.com/metaplex-foundation/kinobi/pull/187) [`38943c1`](https://github.com/metaplex-foundation/kinobi/commit/38943c143f6de6a2ecd3d8fd247d5ce5f33eea3f) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Update enums codecs from latest Web3.js version on the JS experimental renderer
+
+### Patch Changes
+
+- [#189](https://github.com/metaplex-foundation/kinobi/pull/189) [`937742d`](https://github.com/metaplex-foundation/kinobi/commit/937742d33af56d78a6fbf9b3cb51641cf9851aa7) Thanks [@febo](https://github.com/febo)! - Add derive to Rust instruction builders
+
+- [#190](https://github.com/metaplex-foundation/kinobi/pull/190) [`2f79032`](https://github.com/metaplex-foundation/kinobi/commit/2f7903265deec1ad36661eaf6a5eb39596cacb0f) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Support custom discriminator properties for discriminated union types in JS experimental renderer
+
 ## 0.18.2
 
 ### Patch Changes
