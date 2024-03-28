@@ -90,3 +90,41 @@ test('it exports discriminated union with custom discriminator properties', (t) 
     "export function isEvent< K extends Event['type'] >( kind: K, value: Event ): value is Event & { type: K }",
   ]);
 });
+
+test('it use a custom discriminator property for selected unions', (t) => {
+  // Given two discriminated unions A and B.
+  const eventTypeNodeA = definedTypeNode({ ...eventTypeNode, name: 'eventA' });
+  const eventTypeNodeB = definedTypeNode({ ...eventTypeNode, name: 'eventB' });
+
+  // And given we use different discriminator properties for each union.
+  const nameTransformers = {
+    discriminatedUnionDiscriminator: (union: string) =>
+      union === 'eventA' ? 'typeA' : `typeB`,
+  };
+
+  // When we render both discriminated unions.
+  const renderMapA = visit(
+    eventTypeNodeA,
+    getRenderMapVisitor({ nameTransformers })
+  );
+  const renderMapB = visit(
+    eventTypeNodeB,
+    getRenderMapVisitor({ nameTransformers })
+  );
+
+  // Then we expect discriminated union A to use 'typeA' as its discriminator property.
+  renderMapContains(t, renderMapA, 'types/eventA.ts', [
+    "{ discriminator: 'typeA' }",
+    "| { typeA: 'Quit' }",
+    "| { typeA: 'Write'; fields: readonly [string] }",
+    "| { typeA: 'Move'; x: number; y: number }",
+  ]);
+
+  // And discriminated union B to use 'typeB' as its discriminator property.
+  renderMapContains(t, renderMapB, 'types/eventB.ts', [
+    "{ discriminator: 'typeB' }",
+    "| { typeB: 'Quit' }",
+    "| { typeB: 'Write'; fields: readonly [string] }",
+    "| { typeB: 'Move'; x: number; y: number }",
+  ]);
+});
