@@ -37,8 +37,8 @@ test('it exports discriminated union codecs', (t) => {
 
   // Then we expect the following codec helpers to be exported.
   renderMapContains(t, renderMap, 'types/event.ts', [
-    /export function getEventEncoder\(\):\s*Encoder<EventArgs>/,
-    /export function getEventDecoder\(\):\s*Decoder<Event>/,
-    /export function getEventCodec\(\):\s*Codec<EventArgs,\s*Event>/,
+    'export function getEventEncoder(): Encoder< EventArgs >',
+    'export function getEventDecoder(): Decoder< Event >',
+    'export function getEventCodec(): Codec< EventArgs, Event >',
   ]);
 });
