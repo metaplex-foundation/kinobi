@@ -69,7 +69,7 @@ impl UpdatePrimarySaleHappenedViaTokenInstructionData {
 ///   0. `[writable]` metadata
 ///   1. `[signer]` owner
 ///   2. `[]` token
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct UpdatePrimarySaleHappenedViaTokenBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     owner: Option<solana_program::pubkey::Pubkey>,
@@ -249,6 +249,7 @@ impl<'a, 'b> UpdatePrimarySaleHappenedViaTokenCpi<'a, 'b> {
 ///   0. `[writable]` metadata
 ///   1. `[signer]` owner
 ///   2. `[]` token
+#[derive(Clone, Debug)]
 pub struct UpdatePrimarySaleHappenedViaTokenCpiBuilder<'a, 'b> {
     instruction: Box<UpdatePrimarySaleHappenedViaTokenCpiBuilderInstruction<'a, 'b>>,
 }
@@ -342,6 +343,7 @@ impl<'a, 'b> UpdatePrimarySaleHappenedViaTokenCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct UpdatePrimarySaleHappenedViaTokenCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,

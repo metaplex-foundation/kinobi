@@ -174,7 +174,7 @@ pub struct ValidateInstructionArgs {
 ///   10. `[optional]` opt_rule_nonsigner3
 ///   11. `[optional]` opt_rule_nonsigner4
 ///   12. `[optional]` opt_rule_nonsigner5
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct ValidateBuilder {
     payer: Option<solana_program::pubkey::Pubkey>,
     rule_set: Option<solana_program::pubkey::Pubkey>,
@@ -661,6 +661,7 @@ impl<'a, 'b> ValidateCpi<'a, 'b> {
 ///   10. `[optional]` opt_rule_nonsigner3
 ///   11. `[optional]` opt_rule_nonsigner4
 ///   12. `[optional]` opt_rule_nonsigner5
+#[derive(Clone, Debug)]
 pub struct ValidateCpiBuilder<'a, 'b> {
     instruction: Box<ValidateCpiBuilderInstruction<'a, 'b>>,
 }
@@ -930,6 +931,7 @@ impl<'a, 'b> ValidateCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct ValidateCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,

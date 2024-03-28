@@ -15,6 +15,7 @@
   {% endif %}
   {{ '///   ' + loop.index0 + '. `[' + modifiers + ']` ' + account.name | snakeCase }}
 {% endfor %}
+#[derive(Clone, Debug)]
 pub struct {{ instruction.name | pascalCase }}CpiBuilder<'a, 'b> {
   instruction: Box<{{ instruction.name | pascalCase }}CpiBuilderInstruction<'a, 'b>>,
 }
@@ -124,6 +125,7 @@ impl<'a, 'b> {{ instruction.name | pascalCase }}CpiBuilder<'a, 'b> {
   }
 }
 
+#[derive(Clone, Debug)]
 struct {{ instruction.name | pascalCase }}CpiBuilderInstruction<'a, 'b> {
   __program: &'b solana_program::account_info::AccountInfo<'a>,
   {% for account in instruction.accounts %}

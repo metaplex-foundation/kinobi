@@ -81,7 +81,7 @@ impl SetTokenStandardInstructionData {
 ///   1. `[writable, signer]` update_authority
 ///   2. `[]` mint
 ///   3. `[optional]` edition
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct SetTokenStandardBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     update_authority: Option<solana_program::pubkey::Pubkey>,
@@ -291,6 +291,7 @@ impl<'a, 'b> SetTokenStandardCpi<'a, 'b> {
 ///   1. `[writable, signer]` update_authority
 ///   2. `[]` mint
 ///   3. `[optional]` edition
+#[derive(Clone, Debug)]
 pub struct SetTokenStandardCpiBuilder<'a, 'b> {
     instruction: Box<SetTokenStandardCpiBuilderInstruction<'a, 'b>>,
 }
@@ -403,6 +404,7 @@ impl<'a, 'b> SetTokenStandardCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct SetTokenStandardCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,

@@ -130,7 +130,7 @@ pub struct CreateMasterEditionV3InstructionArgs {
 ///   6. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
 ///   7. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   8. `[optional]` rent
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct CreateMasterEditionV3Builder {
     edition: Option<solana_program::pubkey::Pubkey>,
     mint: Option<solana_program::pubkey::Pubkey>,
@@ -463,6 +463,7 @@ impl<'a, 'b> CreateMasterEditionV3Cpi<'a, 'b> {
 ///   6. `[]` token_program
 ///   7. `[]` system_program
 ///   8. `[optional]` rent
+#[derive(Clone, Debug)]
 pub struct CreateMasterEditionV3CpiBuilder<'a, 'b> {
     instruction: Box<CreateMasterEditionV3CpiBuilderInstruction<'a, 'b>>,
 }
@@ -658,6 +659,7 @@ impl<'a, 'b> CreateMasterEditionV3CpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct CreateMasterEditionV3CpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,

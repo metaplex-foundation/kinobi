@@ -141,7 +141,7 @@ pub struct ApproveUseAuthorityInstructionArgs {
 ///   8. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
 ///   9. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   10. `[optional]` rent
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct ApproveUseAuthorityBuilder {
     use_authority_record: Option<solana_program::pubkey::Pubkey>,
     owner: Option<solana_program::pubkey::Pubkey>,
@@ -516,6 +516,7 @@ impl<'a, 'b> ApproveUseAuthorityCpi<'a, 'b> {
 ///   8. `[]` token_program
 ///   9. `[]` system_program
 ///   10. `[optional]` rent
+#[derive(Clone, Debug)]
 pub struct ApproveUseAuthorityCpiBuilder<'a, 'b> {
     instruction: Box<ApproveUseAuthorityCpiBuilderInstruction<'a, 'b>>,
 }
@@ -726,6 +727,7 @@ impl<'a, 'b> ApproveUseAuthorityCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct ApproveUseAuthorityCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     use_authority_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,

@@ -137,7 +137,7 @@ pub struct MigrateInstructionArgs {
 ///   7. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   8. `[optional]` sysvar_instructions (default to `Sysvar1nstructions1111111111111111111111111`)
 ///   9. `[optional]` authorization_rules
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct MigrateBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     master_edition: Option<solana_program::pubkey::Pubkey>,
@@ -496,6 +496,7 @@ impl<'a, 'b> MigrateCpi<'a, 'b> {
 ///   7. `[]` system_program
 ///   8. `[]` sysvar_instructions
 ///   9. `[optional]` authorization_rules
+#[derive(Clone, Debug)]
 pub struct MigrateCpiBuilder<'a, 'b> {
     instruction: Box<MigrateCpiBuilderInstruction<'a, 'b>>,
 }
@@ -712,6 +713,7 @@ impl<'a, 'b> MigrateCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct MigrateCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,

@@ -151,7 +151,7 @@ pub struct DeprecatedCreateMasterEditionInstructionArgs {
 ///   10. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   11. `[optional]` rent (default to `SysvarRent111111111111111111111111111111111`)
 ///   12. `[signer]` one_time_printing_authorization_mint_authority
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct DeprecatedCreateMasterEditionBuilder {
     edition: Option<solana_program::pubkey::Pubkey>,
     mint: Option<solana_program::pubkey::Pubkey>,
@@ -573,6 +573,7 @@ impl<'a, 'b> DeprecatedCreateMasterEditionCpi<'a, 'b> {
 ///   10. `[]` system_program
 ///   11. `[]` rent
 ///   12. `[signer]` one_time_printing_authorization_mint_authority
+#[derive(Clone, Debug)]
 pub struct DeprecatedCreateMasterEditionCpiBuilder<'a, 'b> {
     instruction: Box<DeprecatedCreateMasterEditionCpiBuilderInstruction<'a, 'b>>,
 }
@@ -827,6 +828,7 @@ impl<'a, 'b> DeprecatedCreateMasterEditionCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct DeprecatedCreateMasterEditionCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,

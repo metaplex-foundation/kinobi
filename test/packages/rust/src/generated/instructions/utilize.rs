@@ -147,7 +147,7 @@ pub struct UtilizeInstructionArgs {
 ///   8. `[optional]` rent (default to `SysvarRent111111111111111111111111111111111`)
 ///   9. `[writable, optional]` use_authority_record
 ///   10. `[optional]` burner
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct UtilizeBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     token_account: Option<solana_program::pubkey::Pubkey>,
@@ -530,6 +530,7 @@ impl<'a, 'b> UtilizeCpi<'a, 'b> {
 ///   8. `[]` rent
 ///   9. `[writable, optional]` use_authority_record
 ///   10. `[optional]` burner
+#[derive(Clone, Debug)]
 pub struct UtilizeCpiBuilder<'a, 'b> {
     instruction: Box<UtilizeCpiBuilderInstruction<'a, 'b>>,
 }
@@ -747,6 +748,7 @@ impl<'a, 'b> UtilizeCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct UtilizeCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,

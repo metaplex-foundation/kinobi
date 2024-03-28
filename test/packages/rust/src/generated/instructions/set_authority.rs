@@ -76,7 +76,7 @@ pub struct SetAuthorityInstructionArgs {
 ///
 ///   0. `[writable]` candy_machine
 ///   1. `[signer]` authority
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct SetAuthorityBuilder {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
     authority: Option<solana_program::pubkey::Pubkey>,
@@ -250,6 +250,7 @@ impl<'a, 'b> SetAuthorityCpi<'a, 'b> {
 ///
 ///   0. `[writable]` candy_machine
 ///   1. `[signer]` authority
+#[derive(Clone, Debug)]
 pub struct SetAuthorityCpiBuilder<'a, 'b> {
     instruction: Box<SetAuthorityCpiBuilderInstruction<'a, 'b>>,
 }
@@ -352,6 +353,7 @@ impl<'a, 'b> SetAuthorityCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct SetAuthorityCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     candy_machine: Option<&'b solana_program::account_info::AccountInfo<'a>>,

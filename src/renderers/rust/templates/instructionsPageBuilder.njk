@@ -16,7 +16,7 @@
   {{ '///   ' + loop.index0 + '. `[' + modifiers + ']` ' + account.name | snakeCase }}
   {{- " (default to `" + account.defaultValue.publicKey + "`)" if account.defaultValue.kind === 'publicKeyValueNode' }}
 {% endfor %}
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct {{ instruction.name | pascalCase }}Builder {
   {% for account in instruction.accounts %}
     {% if account.isSigner === 'either' %}

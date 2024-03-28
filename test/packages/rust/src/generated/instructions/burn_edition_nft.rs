@@ -117,7 +117,7 @@ impl BurnEditionNftInstructionData {
 ///   7. `[writable]` print_edition_account
 ///   8. `[writable]` edition_marker_account
 ///   9. `[optional]` spl_token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct BurnEditionNftBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     owner: Option<solana_program::pubkey::Pubkey>,
@@ -469,6 +469,7 @@ impl<'a, 'b> BurnEditionNftCpi<'a, 'b> {
 ///   7. `[writable]` print_edition_account
 ///   8. `[writable]` edition_marker_account
 ///   9. `[]` spl_token_program
+#[derive(Clone, Debug)]
 pub struct BurnEditionNftCpiBuilder<'a, 'b> {
     instruction: Box<BurnEditionNftCpiBuilderInstruction<'a, 'b>>,
 }
@@ -673,6 +674,7 @@ impl<'a, 'b> BurnEditionNftCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct BurnEditionNftCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,

@@ -57,7 +57,7 @@ pub struct AddMemoInstructionArgs {
 ///
 /// ### Accounts:
 ///
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct AddMemoBuilder {
     memo: Option<String>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
@@ -187,6 +187,7 @@ impl<'a, 'b> AddMemoCpi<'a, 'b> {
 ///
 /// ### Accounts:
 ///
+#[derive(Clone, Debug)]
 pub struct AddMemoCpiBuilder<'a, 'b> {
     instruction: Box<AddMemoCpiBuilderInstruction<'a, 'b>>,
 }
@@ -260,6 +261,7 @@ impl<'a, 'b> AddMemoCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct AddMemoCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     memo: Option<String>,

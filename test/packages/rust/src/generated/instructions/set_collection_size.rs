@@ -98,7 +98,7 @@ pub struct SetCollectionSizeInstructionArgs {
 ///   1. `[writable, signer]` collection_authority
 ///   2. `[]` collection_mint
 ///   3. `[optional]` collection_authority_record
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct SetCollectionSizeBuilder {
     collection_metadata: Option<solana_program::pubkey::Pubkey>,
     collection_authority: Option<solana_program::pubkey::Pubkey>,
@@ -344,6 +344,7 @@ impl<'a, 'b> SetCollectionSizeCpi<'a, 'b> {
 ///   1. `[writable, signer]` collection_authority
 ///   2. `[]` collection_mint
 ///   3. `[optional]` collection_authority_record
+#[derive(Clone, Debug)]
 pub struct SetCollectionSizeCpiBuilder<'a, 'b> {
     instruction: Box<SetCollectionSizeCpiBuilderInstruction<'a, 'b>>,
 }
@@ -482,6 +483,7 @@ impl<'a, 'b> SetCollectionSizeCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct SetCollectionSizeCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     collection_metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,

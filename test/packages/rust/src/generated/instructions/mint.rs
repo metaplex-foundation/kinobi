@@ -163,7 +163,7 @@ pub struct MintInstructionArgs {
 ///   9. `[optional]` spl_ata_program (default to `ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL`)
 ///   10. `[optional]` authorization_rules_program
 ///   11. `[optional]` authorization_rules
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct MintBuilder {
     token: Option<solana_program::pubkey::Pubkey>,
     metadata: Option<solana_program::pubkey::Pubkey>,
@@ -587,6 +587,7 @@ impl<'a, 'b> MintCpi<'a, 'b> {
 ///   9. `[]` spl_ata_program
 ///   10. `[optional]` authorization_rules_program
 ///   11. `[optional]` authorization_rules
+#[derive(Clone, Debug)]
 pub struct MintCpiBuilder<'a, 'b> {
     instruction: Box<MintCpiBuilderInstruction<'a, 'b>>,
 }
@@ -814,6 +815,7 @@ impl<'a, 'b> MintCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct MintCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     token: Option<&'b solana_program::account_info::AccountInfo<'a>>,

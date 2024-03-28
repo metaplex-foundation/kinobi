@@ -84,7 +84,7 @@ impl ThawDelegatedAccountInstructionData {
 ///   2. `[]` edition
 ///   3. `[]` mint
 ///   4. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct ThawDelegatedAccountBuilder {
     delegate: Option<solana_program::pubkey::Pubkey>,
     token_account: Option<solana_program::pubkey::Pubkey>,
@@ -305,6 +305,7 @@ impl<'a, 'b> ThawDelegatedAccountCpi<'a, 'b> {
 ///   2. `[]` edition
 ///   3. `[]` mint
 ///   4. `[]` token_program
+#[derive(Clone, Debug)]
 pub struct ThawDelegatedAccountCpiBuilder<'a, 'b> {
     instruction: Box<ThawDelegatedAccountCpiBuilderInstruction<'a, 'b>>,
 }
@@ -431,6 +432,7 @@ impl<'a, 'b> ThawDelegatedAccountCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct ThawDelegatedAccountCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     delegate: Option<&'b solana_program::account_info::AccountInfo<'a>>,

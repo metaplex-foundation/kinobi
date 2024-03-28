@@ -187,7 +187,7 @@ pub struct MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs {
 ///   14. `[]` token_vault_program
 ///   15. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   16. `[optional]` rent
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct MintNewEditionFromMasterEditionViaVaultProxyBuilder {
     new_metadata: Option<solana_program::pubkey::Pubkey>,
     new_edition: Option<solana_program::pubkey::Pubkey>,
@@ -702,6 +702,7 @@ impl<'a, 'b> MintNewEditionFromMasterEditionViaVaultProxyCpi<'a, 'b> {
 ///   14. `[]` token_vault_program
 ///   15. `[]` system_program
 ///   16. `[optional]` rent
+#[derive(Clone, Debug)]
 pub struct MintNewEditionFromMasterEditionViaVaultProxyCpiBuilder<'a, 'b> {
     instruction: Box<MintNewEditionFromMasterEditionViaVaultProxyCpiBuilderInstruction<'a, 'b>>,
 }
@@ -1021,6 +1022,7 @@ impl<'a, 'b> MintNewEditionFromMasterEditionViaVaultProxyCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct MintNewEditionFromMasterEditionViaVaultProxyCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     new_metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,

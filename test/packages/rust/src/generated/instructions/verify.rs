@@ -109,7 +109,7 @@ pub struct VerifyInstructionArgs {
 ///   2. `[writable, signer]` payer
 ///   3. `[optional]` authorization_rules
 ///   4. `[optional]` authorization_rules_program
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct VerifyBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     collection_authority: Option<solana_program::pubkey::Pubkey>,
@@ -371,6 +371,7 @@ impl<'a, 'b> VerifyCpi<'a, 'b> {
 ///   2. `[writable, signer]` payer
 ///   3. `[optional]` authorization_rules
 ///   4. `[optional]` authorization_rules_program
+#[derive(Clone, Debug)]
 pub struct VerifyCpiBuilder<'a, 'b> {
     instruction: Box<VerifyCpiBuilderInstruction<'a, 'b>>,
 }
@@ -510,6 +511,7 @@ impl<'a, 'b> VerifyCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct VerifyCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,

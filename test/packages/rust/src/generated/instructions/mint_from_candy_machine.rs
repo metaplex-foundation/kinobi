@@ -169,7 +169,7 @@ impl MintFromCandyMachineInstructionData {
 ///   14. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
 ///   15. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   16. `[]` recent_slothashes
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct MintFromCandyMachineBuilder {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
     authority_pda: Option<solana_program::pubkey::Pubkey>,
@@ -648,6 +648,7 @@ impl<'a, 'b> MintFromCandyMachineCpi<'a, 'b> {
 ///   14. `[]` token_program
 ///   15. `[]` system_program
 ///   16. `[]` recent_slothashes
+#[derive(Clone, Debug)]
 pub struct MintFromCandyMachineCpiBuilder<'a, 'b> {
     instruction: Box<MintFromCandyMachineCpiBuilderInstruction<'a, 'b>>,
 }
@@ -940,6 +941,7 @@ impl<'a, 'b> MintFromCandyMachineCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct MintFromCandyMachineCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     candy_machine: Option<&'b solana_program::account_info::AccountInfo<'a>>,

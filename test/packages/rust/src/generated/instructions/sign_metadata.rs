@@ -62,7 +62,7 @@ impl SignMetadataInstructionData {
 ///
 ///   0. `[writable]` metadata
 ///   1. `[signer]` creator
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct SignMetadataBuilder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     creator: Option<solana_program::pubkey::Pubkey>,
@@ -221,6 +221,7 @@ impl<'a, 'b> SignMetadataCpi<'a, 'b> {
 ///
 ///   0. `[writable]` metadata
 ///   1. `[signer]` creator
+#[derive(Clone, Debug)]
 pub struct SignMetadataCpiBuilder<'a, 'b> {
     instruction: Box<SignMetadataCpiBuilderInstruction<'a, 'b>>,
 }
@@ -308,6 +309,7 @@ impl<'a, 'b> SignMetadataCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct SignMetadataCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,

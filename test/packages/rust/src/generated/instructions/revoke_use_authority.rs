@@ -116,7 +116,7 @@ impl RevokeUseAuthorityInstructionData {
 ///   6. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
 ///   7. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   8. `[optional]` rent
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct RevokeUseAuthorityBuilder {
     use_authority_record: Option<solana_program::pubkey::Pubkey>,
     owner: Option<solana_program::pubkey::Pubkey>,
@@ -435,6 +435,7 @@ impl<'a, 'b> RevokeUseAuthorityCpi<'a, 'b> {
 ///   6. `[]` token_program
 ///   7. `[]` system_program
 ///   8. `[optional]` rent
+#[derive(Clone, Debug)]
 pub struct RevokeUseAuthorityCpiBuilder<'a, 'b> {
     instruction: Box<RevokeUseAuthorityCpiBuilderInstruction<'a, 'b>>,
 }
@@ -610,6 +611,7 @@ impl<'a, 'b> RevokeUseAuthorityCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct RevokeUseAuthorityCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     use_authority_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,

@@ -158,7 +158,7 @@ pub struct TransferOutOfEscrowInstructionArgs {
 ///   10. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
 ///   11. `[optional]` sysvar_instructions (default to `Sysvar1nstructions1111111111111111111111111`)
 ///   12. `[signer, optional]` authority
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct TransferOutOfEscrowBuilder {
     escrow: Option<solana_program::pubkey::Pubkey>,
     metadata: Option<solana_program::pubkey::Pubkey>,
@@ -568,6 +568,7 @@ impl<'a, 'b> TransferOutOfEscrowCpi<'a, 'b> {
 ///   10. `[]` token_program
 ///   11. `[]` sysvar_instructions
 ///   12. `[signer, optional]` authority
+#[derive(Clone, Debug)]
 pub struct TransferOutOfEscrowCpiBuilder<'a, 'b> {
     instruction: Box<TransferOutOfEscrowCpiBuilderInstruction<'a, 'b>>,
 }
@@ -822,6 +823,7 @@ impl<'a, 'b> TransferOutOfEscrowCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct TransferOutOfEscrowCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     escrow: Option<&'b solana_program::account_info::AccountInfo<'a>>,

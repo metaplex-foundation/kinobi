@@ -167,7 +167,7 @@ pub struct MintNewEditionFromMasterEditionViaTokenInstructionArgs {
 ///   11. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
 ///   12. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   13. `[optional]` rent
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct MintNewEditionFromMasterEditionViaTokenBuilder {
     new_metadata: Option<solana_program::pubkey::Pubkey>,
     new_edition: Option<solana_program::pubkey::Pubkey>,
@@ -612,6 +612,7 @@ impl<'a, 'b> MintNewEditionFromMasterEditionViaTokenCpi<'a, 'b> {
 ///   11. `[]` token_program
 ///   12. `[]` system_program
 ///   13. `[optional]` rent
+#[derive(Clone, Debug)]
 pub struct MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a, 'b> {
     instruction: Box<MintNewEditionFromMasterEditionViaTokenCpiBuilderInstruction<'a, 'b>>,
 }
@@ -892,6 +893,7 @@ impl<'a, 'b> MintNewEditionFromMasterEditionViaTokenCpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct MintNewEditionFromMasterEditionViaTokenCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     new_metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,

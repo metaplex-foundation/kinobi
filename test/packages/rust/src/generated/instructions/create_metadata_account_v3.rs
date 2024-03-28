@@ -119,7 +119,7 @@ pub struct CreateMetadataAccountV3InstructionArgs {
 ///   4. `[]` update_authority
 ///   5. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   6. `[optional]` rent
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub struct CreateMetadataAccountV3Builder {
     metadata: Option<solana_program::pubkey::Pubkey>,
     mint: Option<solana_program::pubkey::Pubkey>,
@@ -420,6 +420,7 @@ impl<'a, 'b> CreateMetadataAccountV3Cpi<'a, 'b> {
 ///   4. `[]` update_authority
 ///   5. `[]` system_program
 ///   6. `[optional]` rent
+#[derive(Clone, Debug)]
 pub struct CreateMetadataAccountV3CpiBuilder<'a, 'b> {
     instruction: Box<CreateMetadataAccountV3CpiBuilderInstruction<'a, 'b>>,
 }
@@ -600,6 +601,7 @@ impl<'a, 'b> CreateMetadataAccountV3CpiBuilder<'a, 'b> {
     }
 }
 
+#[derive(Clone, Debug)]
 struct CreateMetadataAccountV3CpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
     metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
