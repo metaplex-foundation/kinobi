@@ -50,7 +50,7 @@ test('it renders an enum of all available accounts for a program', (t) => {
 
   // Then we expect the following program account enum.
   renderMapContains(t, renderMap, 'programs/splToken.ts', [
-    'export enum SplTokenAccount { Mint, Token };',
+    'export enum SplTokenAccount { Mint, Token }',
   ]);
 });
 
@@ -91,11 +91,11 @@ test('it renders an function that identifies accounts in a program', (t) => {
   // Then we expect the following identifier function to be rendered.
   // Notice it does not include the `mint` account because it has no discriminators.
   renderMapContains(t, renderMap, 'programs/splToken.ts', [
-    `export function identifySplTokenAccount(account: { data: Uint8Array } | Uint8Array): SplTokenAccount {\n` +
-      `const data = account instanceof Uint8Array ? account : account.data;\n` +
-      `if (memcmp(data, getU8Encoder().encode(5), 0)) { return SplTokenAccount.Metadata; }\n` +
-      `if (data.length === 72 && memcmp(data, new Uint8Array([1, 2, 3]), 4)) { return SplTokenAccount.Token; }\n` +
-      `throw new Error('The provided account could not be identified as a splToken account.')\n` +
+    `export function identifySplTokenAccount( account: { data: Uint8Array } | Uint8Array ): SplTokenAccount { ` +
+      `const data = account instanceof Uint8Array ? account : account.data; ` +
+      `if ( memcmp(data, getU8Encoder().encode(5), 0) ) { return SplTokenAccount.Metadata; } ` +
+      `if ( data.length === 72 && memcmp(data, new Uint8Array([1, 2, 3]), 4) ) { return SplTokenAccount.Token; } ` +
+      `throw new Error ( 'The provided account could not be identified as a splToken account.' ); ` +
       `}`,
   ]);
 
@@ -122,7 +122,7 @@ test('it renders an enum of all available instructions for a program', (t) => {
 
   // Then we expect the following program instruction enum.
   renderMapContains(t, renderMap, 'programs/splToken.ts', [
-    'export enum SplTokenInstruction { MintTokens, TransferTokens, UpdateAuthority };',
+    'export enum SplTokenInstruction { MintTokens, TransferTokens, UpdateAuthority }',
   ]);
 });
 
@@ -163,11 +163,11 @@ test('it renders an function that identifies instructions in a program', (t) => 
   // Then we expect the following identifier function to be rendered.
   // Notice it does not include the `updateAuthority` instruction because it has no discriminators.
   renderMapContains(t, renderMap, 'programs/splToken.ts', [
-    `export function identifySplTokenInstruction(instruction: { data: Uint8Array } | Uint8Array): SplTokenInstruction {\n` +
-      `const data = instruction instanceof Uint8Array ? instruction : instruction.data;\n` +
-      `if (memcmp(data, getU8Encoder().encode(1), 0)) { return SplTokenInstruction.MintTokens; }\n` +
-      `if (data.length === 72 && memcmp(data, new Uint8Array([1, 2, 3]), 4)) { return SplTokenInstruction.TransferTokens; }\n` +
-      `throw new Error('The provided instruction could not be identified as a splToken instruction.')\n` +
+    `export function identifySplTokenInstruction ( instruction: { data: Uint8Array } | Uint8Array ): SplTokenInstruction { ` +
+      `const data = instruction instanceof Uint8Array ? instruction : instruction.data; ` +
+      `if ( memcmp(data, getU8Encoder().encode(1), 0) ) { return SplTokenInstruction.MintTokens; } ` +
+      `if ( data.length === 72 && memcmp(data, new Uint8Array([1, 2, 3]), 4) ) { return SplTokenInstruction.TransferTokens; } ` +
+      `throw new Error( 'The provided instruction could not be identified as a splToken instruction.' ); ` +
       `}`,
   ]);
 
@@ -232,8 +232,10 @@ test('it checks the discriminator of sub-instructions before their parents.', (t
 
   // Then we expect the sub-instruction condition to be rendered before the parent instruction condition.
   renderMapContains(t, renderMap, 'programs/splToken.ts', [
-    `if (memcmp(data, getU8Encoder().encode(1), 0) && memcmp(data, getU32Encoder().encode(1), 1)) { return SplTokenInstruction.MintTokensV1; }\n` +
-      `if (memcmp(data, getU8Encoder().encode(1), 0)) { return SplTokenInstruction.MintTokens; }`,
+    `if ( memcmp(data, getU8Encoder().encode(1), 0) && memcmp(data, getU32Encoder().encode(1), 1) ) ` +
+      `{ return SplTokenInstruction.MintTokensV1; } ` +
+      `if ( memcmp(data, getU8Encoder().encode(1), 0) ) ` +
+      `{ return SplTokenInstruction.MintTokens; }`,
   ]);
 });
 
@@ -254,9 +256,9 @@ test('it renders a parsed union type of all available instructions for a program
 
   // Then we expect the following program parsed instruction union type.
   renderMapContains(t, renderMap, 'programs/splToken.ts', [
-    "export type ParsedSplTokenInstruction<TProgram extends string='TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>=",
-    '|({instructionType: SplTokenInstruction.MintTokens;} & ParsedMintTokensInstruction<TProgram>)',
-    '|({instructionType: SplTokenInstruction.TransferTokens;} & ParsedTransferTokensInstruction<TProgram>)',
-    '|({instructionType: SplTokenInstruction.UpdateAuthority;} & ParsedUpdateAuthorityInstruction<TProgram>)',
+    "export type ParsedSplTokenInstruction < TProgram extends string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' >",
+    '| ({ instructionType: SplTokenInstruction.MintTokens; } & ParsedMintTokensInstruction<TProgram>)',
+    '| ({ instructionType: SplTokenInstruction.TransferTokens; } & ParsedTransferTokensInstruction<TProgram>)',
+    '| ({ instructionType: SplTokenInstruction.UpdateAuthority; } & ParsedUpdateAuthorityInstruction<TProgram>)',
   ]);
 });

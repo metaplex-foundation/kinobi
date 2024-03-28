@@ -1,6 +1,5 @@
 import { format } from '@prettier/sync';
 import type { ExecutionContext } from 'ava';
-import chalk from 'chalk';
 import { type Options as PrettierOptions } from 'prettier';
 import type { RenderMap } from '../../../src';
 
@@ -32,18 +31,18 @@ export function codeContains(
 ) {
   const expectedArray = Array.isArray(expected) ? expected : [expected];
   const normalizedActual = normalizeCode(actual);
-  expectedArray.forEach((e) => {
-    if (typeof e === 'string') {
-      const normalizeExpected = normalizeCode(e);
-      t.true(
-        normalizedActual.includes(normalizeExpected),
-        `The following expected code is missing from the actual content:\n\n` +
-          `${chalk.blue(normalizeExpected)}\n\n` +
-          `Actual content:\n\n` +
-          `${chalk.blue(normalizedActual)}`
-      );
+  expectedArray.forEach((expectedResult) => {
+    if (typeof expectedResult === 'string') {
+      const stringAsRegex = escapeRegex(expectedResult)
+        // Transform spaces between words into required whitespace.
+        .replace(/(\w)\s+(\w)/g, '$1\\s+$2')
+        // Do it again for single-character words — e.g. "as[ ]a[ ]token".
+        .replace(/(\w)\s+(\w)/g, '$1\\s+$2')
+        // Transform other spaces into optional whitespace.
+        .replace(/\s+/g, '\\s*');
+      t.regex(normalizedActual, new RegExp(stringAsRegex));
     } else {
-      t.regex(normalizedActual, e);
+      t.regex(normalizedActual, expectedResult);
     }
   });
 }
@@ -63,7 +62,7 @@ export function codeContainsImports(
   actual: string,
   expectedImports: Record<string, string[]>
 ) {
-  const normalizedActual = normalizeCode(actual);
+  const normalizedActual = inlineCode(actual);
   const importPairs = Object.entries(expectedImports).flatMap(
     ([key, value]) => {
       return value.map((v) => [key, v] as const);
@@ -82,9 +81,15 @@ function normalizeCode(code: string) {
   try {
     code = format(code, PRETTIER_OPTIONS);
   } catch (e) {}
+  return code.trim();
+}
 
-  return code
+function inlineCode(code: string) {
+  return normalizeCode(code)
     .replace(/\s+/g, ' ')
-    .replace(/\s*(\W)\s*/g, '$1')
-    .trim();
+    .replace(/\s*(\W)\s*/g, '$1');
+}
+
+function escapeRegex(stringAsRegex: string) {
+  return stringAsRegex.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 }

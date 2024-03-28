@@ -7,7 +7,7 @@ import {
   structTypeNode,
   structTypeNodeFromInstructionArgumentNodes,
 } from '../../nodes';
-import { camelCase, jsDocblock, pipe } from '../../shared';
+import { camelCase, jsDocblock, mainCase, pipe } from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
 import { ImportMap } from './ImportMap';
 import { TypeManifest, mergeManifests } from './TypeManifest';
@@ -138,8 +138,6 @@ export function getTypeManifestVisitor(input: {
 
         visitEnumType(enumType, { self }) {
           const currentParentName = parentName;
-          parentName = null;
-
           const encoderImports = new ImportMap();
           const decoderImports = new ImportMap();
           const encoderOptions: string[] = [];
@@ -151,6 +149,14 @@ export function getTypeManifestVisitor(input: {
             decoderImports.mergeWith(sizeManifest.decoder);
             encoderOptions.push(`size: ${sizeManifest.encoder.render}`);
             decoderOptions.push(`size: ${sizeManifest.decoder.render}`);
+          }
+
+          const discriminator = nameApi.discriminatedUnionDiscriminator(
+            mainCase(currentParentName?.strict ?? '')
+          );
+          if (!isScalarEnum(enumType) && discriminator !== '__kind') {
+            encoderOptions.push(`discriminator: '${discriminator}'`);
+            decoderOptions.push(`discriminator: '${discriminator}'`);
           }
 
           const encoderOptionsAsString =
@@ -226,7 +232,7 @@ export function getTypeManifestVisitor(input: {
 
         visitEnumEmptyVariantType(enumEmptyVariantType) {
           const discriminator = nameApi.discriminatedUnionDiscriminator(
-            enumEmptyVariantType.name
+            mainCase(parentName?.strict ?? '')
           );
           const name = nameApi.discriminatedUnionVariant(
             enumEmptyVariantType.name
@@ -248,14 +254,19 @@ export function getTypeManifestVisitor(input: {
         },
 
         visitEnumStructVariantType(enumStructVariantType, { self }) {
+          const currentParentName = parentName;
           const discriminator = nameApi.discriminatedUnionDiscriminator(
-            enumStructVariantType.name
+            mainCase(currentParentName?.strict ?? '')
           );
           const name = nameApi.discriminatedUnionVariant(
             enumStructVariantType.name
           );
           const kindAttribute = `${discriminator}: "${name}"`;
+
+          parentName = null;
           const structManifest = visit(enumStructVariantType.struct, self);
+          parentName = currentParentName;
+
           structManifest.strictType.mapRender(
             (r) => `{ ${kindAttribute},${r.slice(1, -1)}}`
           );
@@ -268,8 +279,9 @@ export function getTypeManifestVisitor(input: {
         },
 
         visitEnumTupleVariantType(enumTupleVariantType, { self }) {
+          const currentParentName = parentName;
           const discriminator = nameApi.discriminatedUnionDiscriminator(
-            enumTupleVariantType.name
+            mainCase(currentParentName?.strict ?? '')
           );
           const name = nameApi.discriminatedUnionVariant(
             enumTupleVariantType.name
@@ -281,7 +293,11 @@ export function getTypeManifestVisitor(input: {
               type: enumTupleVariantType.tuple,
             }),
           ]);
+
+          parentName = null;
           const structManifest = visit(struct, self);
+          parentName = currentParentName;
+
           structManifest.strictType.mapRender(
             (r) => `{ ${kindAttribute},${r.slice(1, -1)}}`
           );
