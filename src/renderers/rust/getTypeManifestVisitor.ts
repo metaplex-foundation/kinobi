@@ -9,6 +9,7 @@ import {
   numberTypeNode,
   prefixedSizeNode,
   remainderSizeNode,
+  resolveNestedTypeNode,
 } from '../../nodes';
 import { pascalCase, pipe, rustDocblock, snakeCase } from '../../shared';
 import { extendVisitor, mergeVisitor, visit } from '../../visitors';
@@ -327,21 +328,21 @@ export function getTypeManifestVisitor() {
 
           const fieldName = snakeCase(structFieldType.name);
           const docblock = rustDocblock(structFieldType.docs);
+          const resolvedNestedType = resolveNestedTypeNode(
+            structFieldType.type
+          );
 
           let derive = '';
           if (fieldManifest.type === 'Pubkey') {
             derive =
               '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::DisplayFromStr>"))]\n';
           } else if (
-            (isNode(structFieldType.type, 'arrayTypeNode') &&
-              isNode(structFieldType.type.size, 'fixedSizeNode') &&
-              structFieldType.type.size.size > 32) ||
-            (isNode(structFieldType.type, [
-              'bytesTypeNode',
-              'stringTypeNode',
-            ]) &&
-              typeof parentSize === 'number' &&
-              parentSize > 32)
+            (isNode(resolvedNestedType, 'arrayTypeNode') &&
+              isNode(resolvedNestedType.size, 'fixedSizeNode') &&
+              resolvedNestedType.size.size > 32) ||
+            (isNode(resolvedNestedType, ['bytesTypeNode', 'stringTypeNode']) &&
+              isNode(structFieldType.type, 'fixedSizeTypeNode') &&
+              structFieldType.type.size > 32)
           ) {
             derive =
               '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::Bytes>"))]\n';
