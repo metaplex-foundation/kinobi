@@ -1,9 +1,14 @@
 import {
+  NumberTypeNode,
   REGISTERED_TYPE_NODE_KINDS,
+  SizeNode,
   arrayTypeNode,
+  fixedSizeNode,
   isNode,
   isScalarEnum,
   numberTypeNode,
+  prefixedSizeNode,
+  remainderSizeNode,
 } from '../../nodes';
 import { pascalCase, pipe, rustDocblock, snakeCase } from '../../shared';
 import { extendVisitor, mergeVisitor, visit } from '../../visitors';
@@ -19,6 +24,7 @@ export function getTypeManifestVisitor() {
   let parentName: string | null = null;
   let nestedStruct: boolean = false;
   let inlineStruct: boolean = false;
+  let parentSize: number | NumberTypeNode | null = null;
 
   const visitor = pipe(
     mergeVisitor<RustTypeManifest>(
@@ -327,11 +333,16 @@ export function getTypeManifestVisitor() {
             derive =
               '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::DisplayFromStr>"))]\n';
           } else if (
-            (structFieldType.type.kind === 'arrayTypeNode' ||
-              structFieldType.type.kind === 'bytesTypeNode' ||
-              structFieldType.type.kind === 'stringTypeNode') &&
-            isNode(structFieldType.type.size, 'fixedSizeNode') &&
-            structFieldType.type.size.size > 32
+            (isNode(structFieldType.type, 'arrayTypeNode') &&
+              isNode(structFieldType.type.size, 'fixedSizeNode') &&
+              structFieldType.type.size.size > 32) ||
+            (isNode(structFieldType.type, [
+              'bytesTypeNode',
+              'stringTypeNode',
+            ]) &&
+              typeof parentSize === 'object' &&
+              isNode(parentSize, 'fixedSizeNode') &&
+              parentSize > 32)
           ) {
             derive =
               '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::Bytes>"))]\n';
@@ -371,8 +382,14 @@ export function getTypeManifestVisitor() {
           throw new Error('Bool size not supported by Borsh');
         },
 
-        visitBytesType(bytesType, { self }) {
-          const arrayType = arrayTypeNode(numberTypeNode('u8'), bytesType.size);
+        visitBytesType(_bytesType, { self }) {
+          let arraySize: SizeNode = remainderSizeNode();
+          if (typeof parentSize === 'number') {
+            arraySize = fixedSizeNode(parentSize);
+          } else if (parentSize && typeof parentSize === 'object') {
+            arraySize = prefixedSizeNode(parentSize);
+          }
+          const arrayType = arrayTypeNode(numberTypeNode('u8'), arraySize);
           return visit(arrayType, self);
         },
 
@@ -397,12 +414,28 @@ export function getTypeManifestVisitor() {
           };
         },
 
-        visitStringType(stringType) {
+        visitStringType() {
+          if (!parentSize) {
+            return {
+              type: `&str`,
+              imports: new RustImportMap(),
+              nestedStructs: [],
+            };
+          }
+
+          if (typeof parentSize === 'number') {
+            return {
+              type: `[u8; ${parentSize}]`,
+              imports: new RustImportMap(),
+              nestedStructs: [],
+            };
+          }
+
           if (
-            isNode(stringType.size, 'prefixedSizeNode') &&
-            stringType.size.prefix.endian === 'le'
+            isNode(parentSize, 'numberTypeNode') &&
+            parentSize.endian === 'le'
           ) {
-            switch (stringType.size.prefix.format) {
+            switch (parentSize.format) {
               case 'u32':
                 return {
                   type: 'String',
@@ -412,7 +445,7 @@ export function getTypeManifestVisitor() {
               case 'u8':
               case 'u16':
               case 'u64': {
-                const prefix = stringType.size.prefix.format.toUpperCase();
+                const prefix = parentSize.format.toUpperCase();
                 return {
                   type: `${prefix}PrefixString`,
                   imports: new RustImportMap().add(
@@ -423,29 +456,27 @@ export function getTypeManifestVisitor() {
               }
               default:
                 throw new Error(
-                  `'String size not supported: ${stringType.size.prefix.format}`
+                  `'String size not supported: ${parentSize.format}`
                 );
             }
           }
 
-          if (isNode(stringType.size, 'fixedSizeNode')) {
-            return {
-              type: `[u8; ${stringType.size.size}]`,
-              imports: new RustImportMap(),
-              nestedStructs: [],
-            };
-          }
-
-          if (isNode(stringType.size, 'remainderSizeNode')) {
-            return {
-              type: `&str`,
-              imports: new RustImportMap(),
-              nestedStructs: [],
-            };
-          }
-
           // TODO: Add to the Rust validator.
           throw new Error('String size not supported by Borsh');
+        },
+
+        visitFixedSizeType(fixedSizeType, { self }) {
+          parentSize = fixedSizeType.size;
+          const manifest = visit(fixedSizeType.type, self);
+          parentSize = null;
+          return manifest;
+        },
+
+        visitSizePrefixType(sizePrefixType, { self }) {
+          parentSize = sizePrefixType.prefix;
+          const manifest = visit(sizePrefixType.type, self);
+          parentSize = null;
+          return manifest;
         },
       })
   );

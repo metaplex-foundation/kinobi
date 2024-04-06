@@ -119,11 +119,6 @@ export function getByteSizeVisitor(
       return itemSize !== null ? itemSize + prefixSize : null;
     },
 
-    visitBytesType(node) {
-      if (!isNode(node.size, 'fixedSizeNode')) return null;
-      return node.size.size;
-    },
-
     visitNumberType(node) {
       return parseInt(node.format.slice(1), 10) / 8;
     },
@@ -132,9 +127,8 @@ export function getByteSizeVisitor(
       return 32;
     },
 
-    visitStringType(node) {
-      if (!isNode(node.size, 'fixedSizeNode')) return null;
-      return node.size.size;
+    visitFixedSizeType(node) {
+      return node.size;
     },
   };
 }
