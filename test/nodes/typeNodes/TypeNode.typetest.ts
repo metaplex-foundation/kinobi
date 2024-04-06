@@ -1,5 +1,6 @@
 import {
   fixedSizeTypeNode,
+  numberTypeNode,
   NumberTypeNode,
   ResolveNestedTypeNode,
   StringTypeNode,
@@ -8,8 +9,12 @@ import {
 
 {
   // [ResolveNestedTypeNode]: it constraints the nested type of a node.
-  const node = fixedSizeTypeNode(stringTypeNode(), 32);
-  node satisfies ResolveNestedTypeNode<StringTypeNode>;
+  const stringNestedNode = fixedSizeTypeNode(stringTypeNode(), 32);
+  const numberNestedNode = fixedSizeTypeNode(numberTypeNode('u32'), 32);
+  stringNestedNode satisfies ResolveNestedTypeNode<StringTypeNode>;
+  numberNestedNode satisfies ResolveNestedTypeNode<NumberTypeNode>;
   // @ts-expect-error The nested type is not a number.
-  node satisfies ResolveNestedTypeNode<NumberTypeNode>;
+  stringNestedNode satisfies ResolveNestedTypeNode<NumberTypeNode>;
+  // @ts-expect-error The nested type is not a string.
+  numberNestedNode satisfies ResolveNestedTypeNode<StringTypeNode>;
 }
