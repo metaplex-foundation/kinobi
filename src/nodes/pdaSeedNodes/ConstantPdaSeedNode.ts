@@ -1,4 +1,3 @@
-import { remainderSizeNode } from '../sizeNodes';
 import { TypeNode, stringTypeNode } from '../typeNodes';
 import { ValueNode, stringValueNode } from '../valueNodes';
 
@@ -22,7 +21,7 @@ export function constantPdaSeedNodeFromString(
 ): ConstantPdaSeedNode {
   return {
     kind: 'constantPdaSeedNode',
-    type: stringTypeNode({ size: remainderSizeNode() }),
+    type: stringTypeNode(),
     value: stringValueNode(value),
   };
 }

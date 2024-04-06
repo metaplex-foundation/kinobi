@@ -1,7 +1,6 @@
 import test from 'ava';
 import {
   numberTypeNode,
-  remainderSizeNode,
   sizePrefixTypeNode,
   stringTypeNode,
 } from '../../../../src';
@@ -12,12 +11,9 @@ import {
   mergeVisitorMacro,
 } from '../_setup';
 
-const node = sizePrefixTypeNode(
-  stringTypeNode({ size: remainderSizeNode() }),
-  numberTypeNode('u32')
-);
+const node = sizePrefixTypeNode(stringTypeNode(), numberTypeNode('u32'));
 
-test(mergeVisitorMacro, node, 4);
+test(mergeVisitorMacro, node, 3);
 test(identityVisitorMacro, node);
 test(deleteNodesVisitorMacro, node, '[sizePrefixTypeNode]', null);
 test(deleteNodesVisitorMacro, node, '[stringTypeNode]', null);
@@ -29,6 +25,5 @@ test(
 sizePrefixTypeNode
 |   numberTypeNode [u32]
 |   stringTypeNode [utf8]
-|   |   remainderSizeNode
 `
 );

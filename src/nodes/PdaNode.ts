@@ -6,7 +6,6 @@ import {
   programIdPdaSeedNode,
   variablePdaSeedNode,
 } from './pdaSeedNodes';
-import { remainderSizeNode } from './sizeNodes';
 import {
   bytesTypeNode,
   createTypeNodeFromIdl,
@@ -40,9 +39,8 @@ export function pdaNodeFromIdl(idl: Partial<IdlPda>): PdaNode {
   const seeds = (idl.seeds ?? []).map((seed): PdaSeedNode => {
     if (seed.kind === 'constant') {
       const type = (() => {
-        if (seed.type === 'string')
-          return stringTypeNode({ size: remainderSizeNode() });
-        if (seed.type === 'bytes') return bytesTypeNode(remainderSizeNode());
+        if (seed.type === 'string') return stringTypeNode();
+        if (seed.type === 'bytes') return bytesTypeNode();
         return createTypeNodeFromIdl(seed.type);
       })();
       const value = (() => {

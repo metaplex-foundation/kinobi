@@ -207,18 +207,6 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
     };
   }
 
-  if (castedNodeKeys.includes('stringTypeNode')) {
-    visitor.visitStringType = function visitStringType(node) {
-      return merge(node, visit(this)(node.size));
-    };
-  }
-
-  if (castedNodeKeys.includes('bytesTypeNode')) {
-    visitor.visitBytesType = function visitBytesType(node) {
-      return merge(node, visit(this)(node.size));
-    };
-  }
-
   if (castedNodeKeys.includes('prefixedSizeNode')) {
     visitor.visitPrefixedSize = function visitPrefixedSize(node) {
       return merge(node, visit(this)(node.prefix));

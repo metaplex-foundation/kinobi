@@ -1,9 +1,5 @@
 import test from 'ava';
-import {
-  numberTypeNode,
-  prefixedSizeNode,
-  stringTypeNode,
-} from '../../../../src';
+import { stringTypeNode } from '../../../../src';
 import {
   deleteNodesVisitorMacro,
   getDebugStringVisitorMacro,
@@ -11,31 +7,17 @@ import {
   mergeVisitorMacro,
 } from '../_setup';
 
-const node = stringTypeNode({
-  size: prefixedSizeNode(numberTypeNode('u32')),
-});
+const node = stringTypeNode();
 
-test(mergeVisitorMacro, node, 3);
+test(mergeVisitorMacro, node, 1);
 test(identityVisitorMacro, node);
 test(deleteNodesVisitorMacro, node, '[stringTypeNode]', null);
-test(deleteNodesVisitorMacro, node, '[prefixedSizeNode]', null);
-test(deleteNodesVisitorMacro, node, '[numberTypeNode]', null);
-test(
-  getDebugStringVisitorMacro,
-  node,
-  `
-stringTypeNode [utf8]
-|   prefixedSizeNode
-|   |   numberTypeNode [u32]`
-);
+test(getDebugStringVisitorMacro, node, `stringTypeNode [utf8]`);
 
 // Different encoding.
 test(
   'getDebugStringVisitor: different encoding',
   getDebugStringVisitorMacro,
-  stringTypeNode({ encoding: 'base58' }),
-  `
-stringTypeNode [base58]
-|   prefixedSizeNode
-|   |   numberTypeNode [u32]`
+  stringTypeNode('base58'),
+  `stringTypeNode [base58]`
 );
