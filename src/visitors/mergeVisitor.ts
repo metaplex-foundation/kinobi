@@ -332,5 +332,20 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
     };
   }
 
+  if (castedNodeKeys.includes('fixedSizeTypeNode')) {
+    visitor.visitFixedSizeType = function visitFixedSizeType(node) {
+      return merge(node, visit(this)(node.type));
+    };
+  }
+
+  if (castedNodeKeys.includes('sizePrefixTypeNode')) {
+    visitor.visitSizePrefixType = function visitSizePrefixType(node) {
+      return merge(node, [
+        ...visit(this)(node.prefix),
+        ...visit(this)(node.type),
+      ]);
+    };
+  }
+
   return visitor as Visitor<TReturn, TNodeKind>;
 }

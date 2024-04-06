@@ -26,6 +26,7 @@ import {
   enumTupleVariantTypeNode,
   enumTypeNode,
   enumValueNode,
+  fixedSizeTypeNode,
   instructionAccountNode,
   instructionArgumentNode,
   instructionByteDeltaNode,
@@ -45,6 +46,7 @@ import {
   rootNode,
   setTypeNode,
   setValueNode,
+  sizePrefixTypeNode,
   solAmountTypeNode,
   someValueNode,
   stringTypeNode,
@@ -602,6 +604,27 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
         'argumentValueNode',
       ]);
       return pdaSeedValueNode(node.name, value);
+    };
+  }
+
+  if (castedNodeKeys.includes('fixedSizeTypeNode')) {
+    visitor.visitFixedSizeType = function visitFixedSizeType(node) {
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertIsNode(type, TYPE_NODES);
+      return fixedSizeTypeNode(type, node.size);
+    };
+  }
+
+  if (castedNodeKeys.includes('sizePrefixTypeNode')) {
+    visitor.visitSizePrefixType = function visitSizePrefixType(node) {
+      const prefix = visit(this)(node.prefix);
+      if (prefix === null) return null;
+      assertIsNode(prefix, 'numberTypeNode');
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertIsNode(type, TYPE_NODES);
+      return sizePrefixTypeNode(type, prefix);
     };
   }
 
