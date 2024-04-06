@@ -549,7 +549,8 @@ export function getTypeManifestVisitor(input: {
 
         visitAmountType(amountType, { self }) {
           const numberManifest = visit(amountType.number, self);
-          if (!isUnsignedInteger(amountType.number)) {
+          const resolvedNode = resolveNestedTypeNode(amountType.number);
+          if (!isUnsignedInteger(resolvedNode)) {
             throw new Error(
               `Amount wrappers can only be applied to unsigned ` +
                 `integer types. Got type [${amountType.number.toString()}].`
