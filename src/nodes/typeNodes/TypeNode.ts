@@ -84,6 +84,22 @@ export const TYPE_NODES = [
 export type TypeNodeKind = (typeof TYPE_NODES)[number];
 export type TypeNode = StandaloneTypeNode | DefinedTypeLinkNode;
 
+export type ResolveNestedTypeNode<TType extends TypeNode> =
+  | TType
+  | ((FixedSizeTypeNode | SizePrefixTypeNode) & {
+      type: ResolveNestedTypeNode<TType>;
+    });
+
+export function resolveNestedTypeNode(typeNode: TypeNode): TypeNode {
+  switch (typeNode.kind) {
+    case 'fixedSizeTypeNode':
+    case 'sizePrefixTypeNode':
+      return resolveNestedTypeNode(typeNode.type);
+    default:
+      return typeNode;
+  }
+}
+
 function isArrayOfSize(array: any, size: number): boolean {
   return Array.isArray(array) && array.length === size;
 }

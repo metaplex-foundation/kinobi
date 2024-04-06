@@ -8,6 +8,7 @@ import {
   getAllInstructionsWithSubs,
   isNode,
   isNodeFilter,
+  resolveNestedTypeNode,
   structTypeNodeFromInstructionArgumentNodes,
 } from '../../nodes';
 import {
@@ -144,12 +145,14 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
               const valueManifest = renderValueNode(seedValue, true);
               (seedValue as any).render = valueManifest.render;
               seedsImports.mergeWith(valueManifest.imports);
-              return { ...seed, typeManifest: seedManifest };
+              const resolvedType = resolveNestedTypeNode(seed.type);
+              return { ...seed, resolvedType, typeManifest: seedManifest };
             }
             if (isNode(seed, 'variablePdaSeedNode')) {
               const seedManifest = visit(seed.type, typeManifestVisitor);
               seedsImports.mergeWith(seedManifest.imports);
-              return { ...seed, typeManifest: seedManifest };
+              const resolvedType = resolveNestedTypeNode(seed.type);
+              return { ...seed, resolvedType, typeManifest: seedManifest };
             }
             return seed;
           });

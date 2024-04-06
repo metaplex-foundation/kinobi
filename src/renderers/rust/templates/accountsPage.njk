@@ -66,9 +66,9 @@ impl {{ account.name | pascalCase }} {
               crate::{{ program.name | snakeCase | upper }}_ID.as_ref(),
             {% elif seed.kind === 'constantPdaSeedNode' %}
               {{ seed.value.render }}.as_bytes(),
-            {% elif seed.kind == 'variablePdaSeedNode' and seed.type.kind == 'publicKeyTypeNode' %}
+            {% elif seed.kind == 'variablePdaSeedNode' and seed.resolvedType.kind == 'publicKeyTypeNode' %}
               {{ seed.name | snakeCase }}.as_ref(),
-            {% elif seed.kind == 'variablePdaSeedNode' and seed.type.kind == 'bytesTypeNode' %}
+            {% elif seed.kind == 'variablePdaSeedNode' and seed.resolvedType.kind == 'bytesTypeNode' %}
               &{{ seed.name | snakeCase }},
             {% else %}
               {{ seed.name | snakeCase }}.to_string().as_ref(),
@@ -83,7 +83,7 @@ impl {{ account.name | pascalCase }} {
     pub fn find_pda(
     {% if hasVariableSeeds %}
         {% for seed in seeds %}
-          {% if seed.kind == 'variablePdaSeedNode' and seed.type.kind == 'publicKeyTypeNode' %}
+          {% if seed.kind == 'variablePdaSeedNode' and resolvedSeedType.kind == 'publicKeyTypeNode' %}
             {{ seed.name | snakeCase }}: &{{ seed.typeManifest.type }},
           {% elif seed.kind === 'variablePdaSeedNode' %}
             {{ seed.name | snakeCase }}: {{ seed.typeManifest.type }},
@@ -98,9 +98,9 @@ impl {{ account.name | pascalCase }} {
               crate::{{ program.name | snakeCase | upper }}_ID.as_ref(),
             {% elif seed.kind === 'constantPdaSeedNode' %}
               {{ seed.value.render }}.as_bytes(),
-            {% elif seed.kind == 'variablePdaSeedNode' and seed.type.kind == 'publicKeyTypeNode' %}
+            {% elif seed.kind == 'variablePdaSeedNode' and resolvedSeedType.kind == 'publicKeyTypeNode' %}
               {{ seed.name | snakeCase }}.as_ref(),
-            {% elif seed.kind == 'variablePdaSeedNode' and seed.type.kind == 'bytesTypeNode' %}
+            {% elif seed.kind == 'variablePdaSeedNode' and resolvedSeedType.kind == 'bytesTypeNode' %}
               &{{ seed.name | snakeCase }},
             {% else %}
               {{ seed.name | snakeCase }}.to_string().as_ref(),

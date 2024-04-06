@@ -20,7 +20,6 @@ test('it renders a byte array seed used on an account', (t) => {
     accounts: [
       accountNode({
         name: 'testAccount',
-        discriminators: [],
         pda: pdaLinkNode('testPda'),
       }),
     ],
