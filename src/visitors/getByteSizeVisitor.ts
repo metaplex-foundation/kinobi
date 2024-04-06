@@ -68,8 +68,8 @@ export function getByteSizeVisitor(
     },
 
     visitArrayType(node) {
-      if (!isNode(node.size, 'fixedSizeNode')) return null;
-      const fixedSize = node.size.size;
+      if (!isNode(node.count, 'fixedCountNode')) return null;
+      const fixedSize = node.count.value;
       const itemSize = visit(node.item, this);
       const arraySize = itemSize !== null ? itemSize * fixedSize : null;
       return fixedSize === 0 ? 0 : arraySize;

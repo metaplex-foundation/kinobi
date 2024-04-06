@@ -97,7 +97,7 @@ export function getTypeManifestVisitor(input: {
           const childManifest = visit(arrayType.item, self);
           childManifest.serializerImports.add('umiSerializers', 'array');
           const sizeOption = getArrayLikeSizeOption(
-            arrayType.size,
+            arrayType.count,
             childManifest,
             self
           );
@@ -282,7 +282,7 @@ export function getTypeManifestVisitor(input: {
           const mergedManifest = mergeManifests([key, value]);
           mergedManifest.serializerImports.add('umiSerializers', 'map');
           const sizeOption = getArrayLikeSizeOption(
-            mapType.size,
+            mapType.count,
             mergedManifest,
             self
           );
@@ -336,7 +336,7 @@ export function getTypeManifestVisitor(input: {
           const childManifest = visit(setType.item, self);
           childManifest.serializerImports.add('umiSerializers', 'set');
           const sizeOption = getArrayLikeSizeOption(
-            setType.size,
+            setType.count,
             childManifest,
             self
           );
@@ -710,17 +710,17 @@ function mergeManifests(
 }
 
 function getArrayLikeSizeOption(
-  size: ArrayTypeNode['size'],
+  count: ArrayTypeNode['count'],
   manifest: Pick<
     JavaScriptTypeManifest,
     'strictImports' | 'looseImports' | 'serializerImports'
   >,
   self: Visitor<JavaScriptTypeManifest, 'numberTypeNode'>
 ): string | null {
-  if (isNode(size, 'fixedSizeNode')) return `size: ${size.size}`;
-  if (isNode(size, 'remainderSizeNode')) return `size: 'remainder'`;
+  if (isNode(count, 'fixedCountNode')) return `size: ${count.value}`;
+  if (isNode(count, 'remainderCountNode')) return `size: 'remainder'`;
 
-  const prefixManifest = visit(size.prefix, self);
+  const prefixManifest = visit(count.prefix, self);
   if (prefixManifest.serializer === 'u32()') return null;
 
   manifest.strictImports.mergeWith(prefixManifest.strictImports);

@@ -1,5 +1,5 @@
 import test from 'ava';
-import { remainderSizeNode } from '../../../../src';
+import { remainderCountNode } from '../../../../src';
 import {
   deleteNodesVisitorMacro,
   getDebugStringVisitorMacro,
@@ -7,9 +7,9 @@ import {
   mergeVisitorMacro,
 } from '../_setup';
 
-const node = remainderSizeNode();
+const node = remainderCountNode();
 
 test(mergeVisitorMacro, node, 1);
 test(identityVisitorMacro, node);
-test(deleteNodesVisitorMacro, node, '[remainderSizeNode]', null);
-test(getDebugStringVisitorMacro, node, `remainderSizeNode`);
+test(deleteNodesVisitorMacro, node, '[remainderCountNode]', null);
+test(getDebugStringVisitorMacro, node, `remainderCountNode`);

@@ -89,8 +89,8 @@ function getNodeDetails(node: Node): string[] {
       return [node.encoding];
     case 'optionTypeNode':
       return node.fixed ? ['fixed'] : [];
-    case 'fixedSizeNode':
-      return [node.size.toString()];
+    case 'fixedCountNode':
+      return [node.value.toString()];
     case 'numberValueNode':
       return [node.number.toString()];
     case 'stringValueNode':

@@ -95,7 +95,7 @@ function getFieldConditionFragment(
     isNode(field.type, 'arrayTypeNode') &&
     isNode(field.type.item, 'numberTypeNode') &&
     field.type.item.format === 'u8' &&
-    isNode(field.type.size, 'fixedSizeNode') &&
+    isNode(field.type.count, 'fixedCountNode') &&
     isNode(field.defaultValue, 'arrayValueNode') &&
     field.defaultValue.items.every(isNodeFilter('numberValueNode'))
   ) {

@@ -14,7 +14,7 @@ import { REGISTERED_CONTEXTUAL_VALUE_NODES } from './contextualValueNodes/Contex
 import { REGISTERED_DISCRIMINATOR_NODES } from './discriminatorNodes/DiscriminatorNode';
 import { REGISTERED_LINK_NODES } from './linkNodes/LinkNode';
 import { REGISTERED_PDA_SEED_NODES } from './pdaSeedNodes/PdaSeedNode';
-import { REGISTERED_SIZE_NODES } from './sizeNodes/SizeNode';
+import { REGISTERED_COUNT_NODES } from './countNodes/CountNode';
 import { REGISTERED_TYPE_NODES } from './typeNodes/TypeNode';
 import { REGISTERED_VALUE_NODES } from './valueNodes/ValueNode';
 
@@ -38,7 +38,7 @@ const REGISTERED_NODES = {
   ...REGISTERED_DISCRIMINATOR_NODES,
   ...REGISTERED_LINK_NODES,
   ...REGISTERED_PDA_SEED_NODES,
-  ...REGISTERED_SIZE_NODES,
+  ...REGISTERED_COUNT_NODES,
   ...REGISTERED_TYPE_NODES,
   ...REGISTERED_VALUE_NODES,
 };

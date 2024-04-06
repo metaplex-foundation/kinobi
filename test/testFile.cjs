@@ -151,7 +151,7 @@ kinobi.update(
           defaultValue: k.identityValueNode(),
         },
         proof: {
-          type: k.arrayTypeNode(k.publicKeyTypeNode(), k.remainderSizeNode()),
+          type: k.arrayTypeNode(k.publicKeyTypeNode(), k.remainderCountNode()),
           defaultValue: k.arrayValueNode([]),
         },
       },

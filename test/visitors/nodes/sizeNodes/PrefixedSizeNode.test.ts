@@ -1,5 +1,5 @@
 import test from 'ava';
-import { numberTypeNode, prefixedSizeNode } from '../../../../src';
+import { numberTypeNode, prefixedCountNode } from '../../../../src';
 import {
   deleteNodesVisitorMacro,
   getDebugStringVisitorMacro,
@@ -7,16 +7,16 @@ import {
   mergeVisitorMacro,
 } from '../_setup';
 
-const node = prefixedSizeNode(numberTypeNode('u64'));
+const node = prefixedCountNode(numberTypeNode('u64'));
 
 test(mergeVisitorMacro, node, 2);
 test(identityVisitorMacro, node);
-test(deleteNodesVisitorMacro, node, '[prefixedSizeNode]', null);
+test(deleteNodesVisitorMacro, node, '[prefixedCountNode]', null);
 test(deleteNodesVisitorMacro, node, '[numberTypeNode]', null);
 test(
   getDebugStringVisitorMacro,
   node,
   `
-prefixedSizeNode
+prefixedCountNode
 |   numberTypeNode [u64]`
 );

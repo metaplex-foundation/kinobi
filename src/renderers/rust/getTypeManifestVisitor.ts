@@ -1,14 +1,14 @@
 import {
   NumberTypeNode,
   REGISTERED_TYPE_NODE_KINDS,
-  SizeNode,
+  CountNode,
   arrayTypeNode,
-  fixedSizeNode,
+  fixedCountNode,
   isNode,
   isScalarEnum,
   numberTypeNode,
-  prefixedSizeNode,
-  remainderSizeNode,
+  prefixedCountNode,
+  remainderCountNode,
   resolveNestedTypeNode,
 } from '../../nodes';
 import { pascalCase, pipe, rustDocblock, snakeCase } from '../../shared';
@@ -100,18 +100,18 @@ export function getTypeManifestVisitor() {
         visitArrayType(arrayType, { self }) {
           const childManifest = visit(arrayType.item, self);
 
-          if (isNode(arrayType.size, 'fixedSizeNode')) {
+          if (isNode(arrayType.count, 'fixedCountNode')) {
             return {
               ...childManifest,
-              type: `[${childManifest.type}; ${arrayType.size.size}]`,
+              type: `[${childManifest.type}; ${arrayType.count.value}]`,
             };
           }
 
           if (
-            isNode(arrayType.size, 'prefixedSizeNode') &&
-            arrayType.size.prefix.endian === 'le'
+            isNode(arrayType.count, 'prefixedCountNode') &&
+            arrayType.count.prefix.endian === 'le'
           ) {
-            switch (arrayType.size.prefix.format) {
+            switch (arrayType.count.prefix.format) {
               case 'u32':
                 return {
                   ...childManifest,
@@ -120,7 +120,7 @@ export function getTypeManifestVisitor() {
               case 'u8':
               case 'u16':
               case 'u64': {
-                const prefix = arrayType.size.prefix.format.toUpperCase();
+                const prefix = arrayType.count.prefix.format.toUpperCase();
                 childManifest.imports.add(`kaigan::types::${prefix}PrefixVec`);
                 return {
                   ...childManifest,
@@ -129,12 +129,12 @@ export function getTypeManifestVisitor() {
               }
               default:
                 throw new Error(
-                  `Array prefix not supported: ${arrayType.size.prefix.format}`
+                  `Array prefix not supported: ${arrayType.count.prefix.format}`
                 );
             }
           }
 
-          if (isNode(arrayType.size, 'remainderSizeNode')) {
+          if (isNode(arrayType.count, 'remainderCountNode')) {
             childManifest.imports.add('kaigan::types::RemainderVec');
             return {
               ...childManifest,
@@ -338,8 +338,8 @@ export function getTypeManifestVisitor() {
               '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::DisplayFromStr>"))]\n';
           } else if (
             (isNode(resolvedNestedType, 'arrayTypeNode') &&
-              isNode(resolvedNestedType.size, 'fixedSizeNode') &&
-              resolvedNestedType.size.size > 32) ||
+              isNode(resolvedNestedType.count, 'fixedCountNode') &&
+              resolvedNestedType.count.value > 32) ||
             (isNode(resolvedNestedType, ['bytesTypeNode', 'stringTypeNode']) &&
               isNode(structFieldType.type, 'fixedSizeTypeNode') &&
               structFieldType.type.size > 32)
@@ -383,11 +383,11 @@ export function getTypeManifestVisitor() {
         },
 
         visitBytesType(_bytesType, { self }) {
-          let arraySize: SizeNode = remainderSizeNode();
+          let arraySize: CountNode = remainderCountNode();
           if (typeof parentSize === 'number') {
-            arraySize = fixedSizeNode(parentSize);
+            arraySize = fixedCountNode(parentSize);
           } else if (parentSize && typeof parentSize === 'object') {
-            arraySize = prefixedSizeNode(parentSize);
+            arraySize = prefixedCountNode(parentSize);
           }
           const arrayType = arrayTypeNode(numberTypeNode('u8'), arraySize);
           return visit(arrayType, self);

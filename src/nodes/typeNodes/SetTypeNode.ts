@@ -1,10 +1,10 @@
 import type { IdlTypeSet } from '../../idl';
 import {
-  SizeNode,
-  fixedSizeNode,
-  prefixedSizeNode,
-  remainderSizeNode,
-} from '../sizeNodes';
+  CountNode,
+  fixedCountNode,
+  prefixedCountNode,
+  remainderCountNode,
+} from '../countNodes';
 import { numberTypeNode } from './NumberTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
@@ -13,7 +13,7 @@ export type SetTypeNode = {
 
   // Children.
   readonly item: TypeNode;
-  readonly size: SizeNode;
+  readonly count: CountNode;
 
   // Data.
   readonly idlSet: 'hashSet' | 'bTreeSet';
@@ -21,26 +21,26 @@ export type SetTypeNode = {
 
 export function setTypeNode(
   item: TypeNode,
-  size?: SizeNode,
+  count?: CountNode,
   idlSet?: SetTypeNode['idlSet']
 ): SetTypeNode {
   return {
     kind: 'setTypeNode',
     item,
-    size: size ?? prefixedSizeNode(numberTypeNode('u32')),
+    count: count ?? prefixedCountNode(numberTypeNode('u32')),
     idlSet: idlSet ?? 'hashSet',
   };
 }
 
 export function setTypeNodeFromIdl(idl: IdlTypeSet): SetTypeNode {
   const child = 'hashSet' in idl ? idl.hashSet : idl.bTreeSet;
-  let size: SetTypeNode['size'] | undefined;
+  let size: SetTypeNode['count'] | undefined;
   if (idl.size === 'remainder') {
-    size = remainderSizeNode();
+    size = remainderCountNode();
   } else if (typeof idl.size === 'number') {
-    size = fixedSizeNode(idl.size);
+    size = fixedCountNode(idl.size);
   } else if (idl.size) {
-    size = prefixedSizeNode(numberTypeNode(idl.size));
+    size = prefixedCountNode(numberTypeNode(idl.size));
   }
   return setTypeNode(
     createTypeNodeFromIdl(child),

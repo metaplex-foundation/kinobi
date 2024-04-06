@@ -3,7 +3,7 @@ import {
   fixedSizeTypeNode,
   mapTypeNode,
   numberTypeNode,
-  prefixedSizeNode,
+  prefixedCountNode,
   publicKeyTypeNode,
   stringTypeNode,
 } from '../../../../src';
@@ -17,7 +17,7 @@ import {
 const node = mapTypeNode(
   fixedSizeTypeNode(stringTypeNode(), 32),
   publicKeyTypeNode(),
-  prefixedSizeNode(numberTypeNode('u8'))
+  prefixedCountNode(numberTypeNode('u8'))
 );
 
 test(mergeVisitorMacro, node, 6);
@@ -25,13 +25,13 @@ test(identityVisitorMacro, node);
 test(deleteNodesVisitorMacro, node, '[mapTypeNode]', null);
 test(deleteNodesVisitorMacro, node, '[stringTypeNode]', null);
 test(deleteNodesVisitorMacro, node, '[publicKeyTypeNode]', null);
-test(deleteNodesVisitorMacro, node, '[prefixedSizeNode]', null);
+test(deleteNodesVisitorMacro, node, '[prefixedCountNode]', null);
 test(
   getDebugStringVisitorMacro,
   node,
   `
  mapTypeNode
-|   prefixedSizeNode
+|   prefixedCountNode
 |   |   numberTypeNode [u8]
 |   fixedSizeTypeNode [32]
 |   |   stringTypeNode [utf8]
