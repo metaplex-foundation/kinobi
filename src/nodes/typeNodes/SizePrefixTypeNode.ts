@@ -9,9 +9,9 @@ export type SizePrefixTypeNode = {
   readonly prefix: NumberTypeNode;
 };
 
-export function sizePrefixTypeNode(
-  type: TypeNode,
+export function sizePrefixTypeNode<TType extends TypeNode>(
+  type: TType,
   prefix: NumberTypeNode
-): SizePrefixTypeNode {
+): SizePrefixTypeNode & { type: TType } {
   return { kind: 'sizePrefixTypeNode', type, prefix };
 }

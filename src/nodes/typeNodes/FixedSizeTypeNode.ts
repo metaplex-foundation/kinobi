@@ -10,9 +10,9 @@ export type FixedSizeTypeNode = {
   readonly size: number;
 };
 
-export function fixedSizeTypeNode(
-  type: TypeNode,
+export function fixedSizeTypeNode<TType extends TypeNode>(
+  type: TType,
   size: number
-): FixedSizeTypeNode {
+): FixedSizeTypeNode & { type: TType } {
   return { kind: 'fixedSizeTypeNode', type, size };
 }
