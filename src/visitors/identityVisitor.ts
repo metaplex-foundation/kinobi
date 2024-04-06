@@ -16,7 +16,6 @@ import {
   arrayValueNode,
   assertIsNode,
   booleanTypeNode,
-  bytesTypeNode,
   conditionalValueNode,
   constantPdaSeedNode,
   dateTimeTypeNode,
@@ -49,7 +48,6 @@ import {
   sizePrefixTypeNode,
   solAmountTypeNode,
   someValueNode,
-  stringTypeNode,
   structFieldTypeNode,
   structFieldValueNode,
   structTypeNode,
@@ -367,24 +365,6 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
         .map(visit(this))
         .filter(removeNullAndAssertIsNodeFilter(TYPE_NODES));
       return tupleTypeNode(items);
-    };
-  }
-
-  if (castedNodeKeys.includes('stringTypeNode')) {
-    visitor.visitStringType = function visitStringType(node) {
-      const size = visit(this)(node.size);
-      if (size === null) return null;
-      assertIsNode(size, SIZE_NODES);
-      return stringTypeNode({ ...node, size });
-    };
-  }
-
-  if (castedNodeKeys.includes('bytesTypeNode')) {
-    visitor.visitBytesType = function visitBytesType(node) {
-      const size = visit(this)(node.size);
-      if (size === null) return null;
-      assertIsNode(size, SIZE_NODES);
-      return bytesTypeNode(size);
     };
   }
 

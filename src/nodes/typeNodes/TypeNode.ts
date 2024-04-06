@@ -4,7 +4,6 @@ import {
   DefinedTypeLinkNode,
   definedTypeLinkNode,
 } from '../linkNodes/DefinedTypeLinkNode';
-import { prefixedSizeNode } from '../sizeNodes/PrefixedSizeNode';
 import { AmountTypeNode } from './AmountTypeNode';
 import { ArrayTypeNode, arrayTypeNodeFromIdl } from './ArrayTypeNode';
 import { BooleanTypeNode, booleanTypeNode } from './BooleanTypeNode';
@@ -20,7 +19,7 @@ import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 import { OptionTypeNode, optionTypeNodeFromIdl } from './OptionTypeNode';
 import { PublicKeyTypeNode, publicKeyTypeNode } from './PublicKeyTypeNode';
 import { SetTypeNode, setTypeNodeFromIdl } from './SetTypeNode';
-import { SizePrefixTypeNode } from './SizePrefixTypeNode';
+import { SizePrefixTypeNode, sizePrefixTypeNode } from './SizePrefixTypeNode';
 import { SolAmountTypeNode } from './SolAmountTypeNode';
 import { StringTypeNode, stringTypeNode } from './StringTypeNode';
 import { StructFieldTypeNode } from './StructFieldTypeNode';
@@ -85,6 +84,22 @@ export const TYPE_NODES = [
 export type TypeNodeKind = (typeof TYPE_NODES)[number];
 export type TypeNode = StandaloneTypeNode | DefinedTypeLinkNode;
 
+export type ResolveNestedTypeNode<TType extends TypeNode> =
+  | TType
+  | ((FixedSizeTypeNode | SizePrefixTypeNode) & {
+      type: ResolveNestedTypeNode<TType>;
+    });
+
+export function resolveNestedTypeNode(typeNode: TypeNode): TypeNode {
+  switch (typeNode.kind) {
+    case 'fixedSizeTypeNode':
+    case 'sizePrefixTypeNode':
+      return resolveNestedTypeNode(typeNode.type);
+    default:
+      return typeNode;
+  }
+}
+
 function isArrayOfSize(array: any, size: number): boolean {
   return Array.isArray(array) && array.length === size;
 }
@@ -93,10 +108,11 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
   // Leaf.
   if (typeof idlType === 'string' && IDL_TYPE_LEAVES.includes(idlType)) {
     if (idlType === 'bool') return booleanTypeNode();
-    if (idlType === 'string') return stringTypeNode();
     if (idlType === 'publicKey') return publicKeyTypeNode();
+    if (idlType === 'string')
+      return sizePrefixTypeNode(stringTypeNode(), numberTypeNode('u32'));
     if (idlType === 'bytes')
-      return bytesTypeNode(prefixedSizeNode(numberTypeNode('u32')));
+      return sizePrefixTypeNode(bytesTypeNode(), numberTypeNode('u32'));
     return numberTypeNode(idlType);
   }
 

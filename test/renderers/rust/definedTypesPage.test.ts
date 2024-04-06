@@ -2,8 +2,8 @@ import test from 'ava';
 import {
   definedTypeNode,
   numberTypeNode,
-  prefixedSizeNode,
   programNode,
+  sizePrefixTypeNode,
   stringTypeNode,
   structFieldTypeNode,
   structTypeNode,
@@ -23,9 +23,7 @@ test('it renders a prefix string on a defined type', (t) => {
         type: structTypeNode([
           structFieldTypeNode({
             name: 'contentType',
-            type: stringTypeNode({
-              size: prefixedSizeNode(numberTypeNode('u8')),
-            }),
+            type: sizePrefixTypeNode(stringTypeNode(), numberTypeNode('u8')),
           }),
         ]),
       }),

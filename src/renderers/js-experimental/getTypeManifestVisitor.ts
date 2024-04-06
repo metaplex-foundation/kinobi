@@ -1,4 +1,5 @@
 import {
+  NumberTypeNode,
   REGISTERED_TYPE_NODE_KINDS,
   SizeNode,
   isNode,
@@ -32,6 +33,7 @@ export function getTypeManifestVisitor(input: {
     customInstructionData,
   } = input;
   let parentName = input.parentName ?? null;
+  let parentSize: number | NumberTypeNode | null = null;
 
   return pipe(
     staticVisitor(
@@ -554,15 +556,15 @@ export function getTypeManifestVisitor(input: {
           const decoderOptions: string[] = [];
 
           // Size option.
-          if (isNode(bytesType.size, 'prefixedSizeNode')) {
-            const prefix = visit(bytesType.size.prefix, self);
+          if (typeof parentSize === 'number') {
+            encoderOptions.push(`size: ${parentSize}`);
+            decoderOptions.push(`size: ${parentSize}`);
+          } else if (parentSize) {
+            const prefix = visit(parentSize, self);
             encoderImports.mergeWith(prefix.encoder);
             decoderImports.mergeWith(prefix.decoder);
             encoderOptions.push(`size: ${prefix.encoder.render}`);
             decoderOptions.push(`size: ${prefix.decoder.render}`);
-          } else if (isNode(bytesType.size, 'fixedSizeNode')) {
-            encoderOptions.push(`size: ${bytesType.size.size}`);
-            decoderOptions.push(`size: ${bytesType.size.size}`);
           }
 
           const encoderOptionsAsString =
@@ -676,17 +678,17 @@ export function getTypeManifestVisitor(input: {
           }
 
           // Size option.
-          if (isNode(stringType.size, 'remainderSizeNode')) {
+          if (!parentSize) {
             encoderOptions.push(`size: 'variable'`);
             decoderOptions.push(`size: 'variable'`);
-          } else if (isNode(stringType.size, 'fixedSizeNode')) {
-            encoderOptions.push(`size: ${stringType.size.size}`);
-            decoderOptions.push(`size: ${stringType.size.size}`);
+          } else if (typeof parentSize === 'number') {
+            encoderOptions.push(`size: ${parentSize}`);
+            decoderOptions.push(`size: ${parentSize}`);
           } else if (
-            stringType.size.prefix.format !== 'u32' ||
-            stringType.size.prefix.endian !== 'le'
+            parentSize.format !== 'u32' ||
+            parentSize.endian !== 'le'
           ) {
-            const prefix = visit(stringType.size.prefix, self);
+            const prefix = visit(parentSize, self);
             encoderImports.mergeWith(prefix.encoder.imports);
             decoderImports.mergeWith(prefix.decoder.imports);
             encoderOptions.push(`size: ${prefix.encoder.render}`);
@@ -711,6 +713,20 @@ export function getTypeManifestVisitor(input: {
               decoderImports
             ),
           };
+        },
+
+        visitFixedSizeType(fixedSizeType, { self }) {
+          parentSize = fixedSizeType.size;
+          const manifest = visit(fixedSizeType.type, self);
+          parentSize = null;
+          return manifest;
+        },
+
+        visitSizePrefixType(sizePrefixType, { self }) {
+          parentSize = sizePrefixType.prefix;
+          const manifest = visit(sizePrefixType.type, self);
+          parentSize = null;
+          return manifest;
         },
       })
   );

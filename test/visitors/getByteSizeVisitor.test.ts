@@ -7,7 +7,7 @@ import {
   enumStructVariantTypeNode,
   enumTupleVariantTypeNode,
   enumTypeNode,
-  fixedSizeNode,
+  fixedSizeTypeNode,
   getByteSizeVisitor,
   numberTypeNode,
   publicKeyTypeNode,
@@ -49,7 +49,7 @@ test(
     structFieldTypeNode({ name: 'age', type: numberTypeNode('u32') }),
     structFieldTypeNode({
       name: 'firstname',
-      type: stringTypeNode({ size: fixedSizeNode(42) }),
+      type: fixedSizeTypeNode(stringTypeNode(), 42),
     }),
   ]),
   4 + 42

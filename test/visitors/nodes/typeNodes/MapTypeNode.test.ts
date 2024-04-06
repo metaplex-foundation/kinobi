@@ -1,6 +1,6 @@
 import test from 'ava';
 import {
-  fixedSizeNode,
+  fixedSizeTypeNode,
   mapTypeNode,
   numberTypeNode,
   prefixedSizeNode,
@@ -15,7 +15,7 @@ import {
 } from '../_setup';
 
 const node = mapTypeNode(
-  stringTypeNode({ size: fixedSizeNode(32) }),
+  fixedSizeTypeNode(stringTypeNode(), 32),
   publicKeyTypeNode(),
   prefixedSizeNode(numberTypeNode('u8'))
 );
@@ -33,7 +33,7 @@ test(
  mapTypeNode
 |   prefixedSizeNode
 |   |   numberTypeNode [u8]
-|   stringTypeNode [utf8]
-|   |   fixedSizeNode [32]
+|   fixedSizeTypeNode [32]
+|   |   stringTypeNode [utf8]
 |   publicKeyTypeNode`
 );

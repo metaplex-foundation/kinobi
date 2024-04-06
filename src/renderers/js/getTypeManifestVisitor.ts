@@ -1,5 +1,6 @@
 import {
   ArrayTypeNode,
+  NumberTypeNode,
   REGISTERED_TYPE_NODE_KINDS,
   isInteger,
   isNode,
@@ -33,6 +34,7 @@ export function getTypeManifestVisitor(input: {
 }) {
   const { valueNodeVisitor, customAccountData, customInstructionData } = input;
   let parentName = input.parentName ?? null;
+  let parentSize: number | NumberTypeNode | null = null;
 
   return pipe(
     staticVisitor(
@@ -486,7 +488,7 @@ export function getTypeManifestVisitor(input: {
           };
         },
 
-        visitBytesType(bytesType, { self }) {
+        visitBytesType(_bytesType, { self }) {
           const strictImports = new JavaScriptImportMap();
           const looseImports = new JavaScriptImportMap();
           const serializerImports = new JavaScriptImportMap().add(
@@ -496,14 +498,14 @@ export function getTypeManifestVisitor(input: {
           const options: string[] = [];
 
           // Size option.
-          if (isNode(bytesType.size, 'prefixedSizeNode')) {
-            const prefix = visit(bytesType.size.prefix, self);
+          if (typeof parentSize === 'number') {
+            options.push(`size: ${parentSize}`);
+          } else if (parentSize) {
+            const prefix = visit(parentSize, self);
             strictImports.mergeWith(prefix.strictImports);
             looseImports.mergeWith(prefix.looseImports);
             serializerImports.mergeWith(prefix.serializerImports);
             options.push(`size: ${prefix.serializer}`);
-          } else if (isNode(bytesType.size, 'fixedSizeNode')) {
-            options.push(`size: ${bytesType.size.size}`);
           }
 
           const optionsAsString =
@@ -641,15 +643,15 @@ export function getTypeManifestVisitor(input: {
           }
 
           // Size option.
-          if (isNode(stringType.size, 'remainderSizeNode')) {
+          if (!parentSize) {
             options.push(`size: 'variable'`);
-          } else if (isNode(stringType.size, 'fixedSizeNode')) {
-            options.push(`size: ${stringType.size.size}`);
+          } else if (typeof parentSize === 'number') {
+            options.push(`size: ${parentSize}`);
           } else if (
-            stringType.size.prefix.format !== 'u32' ||
-            stringType.size.prefix.endian !== 'le'
+            parentSize.format !== 'u32' ||
+            parentSize.endian !== 'le'
           ) {
-            const prefix = visit(stringType.size.prefix, self);
+            const prefix = visit(parentSize, self);
             looseImports.mergeWith(prefix.looseImports);
             strictImports.mergeWith(prefix.strictImports);
             serializerImports.mergeWith(prefix.serializerImports);
@@ -668,6 +670,20 @@ export function getTypeManifestVisitor(input: {
             serializer: `string(${optionsAsString})`,
             serializerImports,
           };
+        },
+
+        visitFixedSizeType(fixedSizeType, { self }) {
+          parentSize = fixedSizeType.size;
+          const manifest = visit(fixedSizeType.type, self);
+          parentSize = null;
+          return manifest;
+        },
+
+        visitSizePrefixType(sizePrefixType, { self }) {
+          parentSize = sizePrefixType.prefix;
+          const manifest = visit(sizePrefixType.type, self);
+          parentSize = null;
+          return manifest;
         },
       })
   );

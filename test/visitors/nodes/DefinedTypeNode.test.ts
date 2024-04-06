@@ -1,7 +1,7 @@
 import test from 'ava';
 import {
   definedTypeNode,
-  fixedSizeNode,
+  fixedSizeTypeNode,
   numberTypeNode,
   stringTypeNode,
   structFieldTypeNode,
@@ -19,7 +19,7 @@ const node = definedTypeNode({
   type: structTypeNode([
     structFieldTypeNode({
       name: 'name',
-      type: stringTypeNode({ size: fixedSizeNode(32) }),
+      type: fixedSizeTypeNode(stringTypeNode(), 42),
     }),
     structFieldTypeNode({ name: 'age', type: numberTypeNode('u64') }),
   ]),
@@ -36,8 +36,8 @@ test(
 definedTypeNode [person]
 |   structTypeNode
 |   |   structFieldTypeNode [name]
-|   |   |   stringTypeNode [utf8]
-|   |   |   |   fixedSizeNode [32]
+|   |   |   fixedSizeTypeNode [42]
+|   |   |   |   stringTypeNode [utf8]
 |   |   structFieldTypeNode [age]
 |   |   |   numberTypeNode [u64]`
 );

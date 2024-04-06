@@ -4,7 +4,7 @@ import {
   enumStructVariantTypeNode,
   enumTupleVariantTypeNode,
   enumTypeNode,
-  fixedSizeNode,
+  fixedSizeTypeNode,
   numberTypeNode,
   stringTypeNode,
   structFieldTypeNode,
@@ -23,7 +23,7 @@ const node = enumTypeNode(
     enumEmptyVariantTypeNode('quit'),
     enumTupleVariantTypeNode(
       'write',
-      tupleTypeNode([stringTypeNode({ size: fixedSizeNode(32) })])
+      tupleTypeNode([fixedSizeTypeNode(stringTypeNode(), 32)])
     ),
     enumStructVariantTypeNode(
       'move',
@@ -71,8 +71,8 @@ enumTypeNode
 |   enumEmptyVariantTypeNode [quit]
 |   enumTupleVariantTypeNode [write]
 |   |   tupleTypeNode
-|   |   |   stringTypeNode [utf8]
-|   |   |   |   fixedSizeNode [32]
+|   |   |   fixedSizeTypeNode [32]
+|   |   |   |   stringTypeNode [utf8]
 |   enumStructVariantTypeNode [move]
 |   |   structTypeNode
 |   |   |   structFieldTypeNode [x]

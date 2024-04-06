@@ -1,9 +1,5 @@
 import test from 'ava';
-import {
-  fixedSizeTypeNode,
-  remainderSizeNode,
-  stringTypeNode,
-} from '../../../../src';
+import { fixedSizeTypeNode, stringTypeNode } from '../../../../src';
 import {
   deleteNodesVisitorMacro,
   getDebugStringVisitorMacro,
@@ -11,12 +7,9 @@ import {
   mergeVisitorMacro,
 } from '../_setup';
 
-const node = fixedSizeTypeNode(
-  stringTypeNode({ size: remainderSizeNode() }),
-  42
-);
+const node = fixedSizeTypeNode(stringTypeNode(), 42);
 
-test(mergeVisitorMacro, node, 3);
+test(mergeVisitorMacro, node, 2);
 test(identityVisitorMacro, node);
 test(deleteNodesVisitorMacro, node, '[stringTypeNode]', null);
 test(deleteNodesVisitorMacro, node, '[fixedSizeTypeNode]', null);
@@ -25,7 +18,5 @@ test(
   node,
   `
 fixedSizeTypeNode [42]
-|   stringTypeNode [utf8]
-|   |   remainderSizeNode
-`
+|   stringTypeNode [utf8]`
 );

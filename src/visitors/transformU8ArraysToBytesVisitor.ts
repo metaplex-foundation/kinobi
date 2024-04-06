@@ -4,7 +4,7 @@ import {
   arrayTypeNode,
   assertIsNode,
   bytesTypeNode,
-  fixedSizeNode,
+  fixedSizeTypeNode,
   isNode,
 } from '../nodes';
 import { pipe } from '../shared';
@@ -32,7 +32,7 @@ export function transformU8ArraysToBytesVisitor(
           isNode(node.size, 'fixedSizeNode') &&
           hasRequiredSize(node.size)
         ) {
-          return bytesTypeNode(fixedSizeNode(node.size.size));
+          return fixedSizeTypeNode(bytesTypeNode(), node.size.size);
         }
 
         return arrayTypeNode(child, node.size);
