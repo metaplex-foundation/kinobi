@@ -367,10 +367,8 @@ export function getTypeManifestVisitor() {
         },
 
         visitBooleanType(booleanType) {
-          if (
-            booleanType.size.format === 'u8' &&
-            booleanType.size.endian === 'le'
-          ) {
+          const resolvedSize = resolveNestedTypeNode(booleanType.size);
+          if (resolvedSize.format === 'u8' && resolvedSize.endian === 'le') {
             return {
               type: 'bool',
               imports: new RustImportMap(),

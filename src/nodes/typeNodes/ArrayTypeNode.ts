@@ -16,10 +16,10 @@ export type ArrayTypeNode = {
   readonly count: CountNode;
 };
 
-export function arrayTypeNode(
-  item: TypeNode,
+export function arrayTypeNode<TItem extends ArrayTypeNode['item']>(
+  item: TItem,
   count?: CountNode
-): ArrayTypeNode {
+): ArrayTypeNode & { item: TItem } {
   return {
     kind: 'arrayTypeNode',
     item,

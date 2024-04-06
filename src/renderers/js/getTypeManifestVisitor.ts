@@ -467,10 +467,8 @@ export function getTypeManifestVisitor(input: {
             'bool'
           );
           let sizeSerializer = '';
-          if (
-            booleanType.size.format !== 'u8' ||
-            booleanType.size.endian !== 'le'
-          ) {
+          const resolvedSize = resolveNestedTypeNode(booleanType.size);
+          if (resolvedSize.format !== 'u8' || resolvedSize.endian !== 'le') {
             const size = visit(booleanType.size, self);
             looseImports.mergeWith(size.looseImports);
             strictImports.mergeWith(size.strictImports);
