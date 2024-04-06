@@ -90,11 +90,15 @@ export type ResolveNestedTypeNode<TType extends TypeNode> =
       type: ResolveNestedTypeNode<TType>;
     });
 
-export function resolveNestedTypeNode(typeNode: TypeNode): TypeNode {
+export function resolveNestedTypeNode<TType extends TypeNode>(
+  typeNode: ResolveNestedTypeNode<TType>
+): TType {
   switch (typeNode.kind) {
     case 'fixedSizeTypeNode':
     case 'sizePrefixTypeNode':
-      return resolveNestedTypeNode(typeNode.type);
+      return resolveNestedTypeNode<TType>(
+        typeNode.type as ResolveNestedTypeNode<TType>
+      );
     default:
       return typeNode;
   }

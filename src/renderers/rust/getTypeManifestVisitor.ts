@@ -473,7 +473,7 @@ export function getTypeManifestVisitor() {
         },
 
         visitSizePrefixType(sizePrefixType, { self }) {
-          parentSize = sizePrefixType.prefix;
+          parentSize = resolveNestedTypeNode(sizePrefixType.prefix);
           const manifest = visit(sizePrefixType.type, self);
           parentSize = null;
           return manifest;

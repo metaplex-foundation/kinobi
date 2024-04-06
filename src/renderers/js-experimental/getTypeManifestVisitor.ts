@@ -7,6 +7,7 @@ import {
   structFieldTypeNode,
   structTypeNode,
   structTypeNodeFromInstructionArgumentNodes,
+  resolveNestedTypeNode,
 } from '../../nodes';
 import { camelCase, jsDocblock, mainCase, pipe } from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
@@ -723,7 +724,7 @@ export function getTypeManifestVisitor(input: {
         },
 
         visitSizePrefixType(sizePrefixType, { self }) {
-          parentSize = sizePrefixType.prefix;
+          parentSize = resolveNestedTypeNode(sizePrefixType.prefix);
           const manifest = visit(sizePrefixType.type, self);
           parentSize = null;
           return manifest;
