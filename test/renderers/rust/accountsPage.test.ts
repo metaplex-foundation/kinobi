@@ -2,12 +2,12 @@ import test from 'ava';
 import {
   accountNode,
   bytesTypeNode,
-  fixedSizeNode,
+  fixedSizeTypeNode,
   pdaLinkNode,
   pdaNode,
   programNode,
   variablePdaSeedNode,
-  visit
+  visit,
 } from '../../../src';
 import { getRenderMapVisitor } from '../../../src/renderers/rust/getRenderMapVisitor';
 import { codeContains } from './_setup';
@@ -27,7 +27,10 @@ test('it renders a byte array seed used on an account', (t) => {
     pdas: [
       // Byte array seeds.
       pdaNode('testPda', [
-        variablePdaSeedNode('byteArraySeed', bytesTypeNode(fixedSizeNode(32))),
+        variablePdaSeedNode(
+          'byteArraySeed',
+          fixedSizeTypeNode(bytesTypeNode(), 32)
+        ),
       ]),
     ],
   });

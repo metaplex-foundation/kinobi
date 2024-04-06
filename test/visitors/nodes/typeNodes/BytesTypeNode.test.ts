@@ -1,5 +1,5 @@
 import test from 'ava';
-import { bytesTypeNode, remainderSizeNode } from '../../../../src';
+import { bytesTypeNode } from '../../../../src';
 import {
   deleteNodesVisitorMacro,
   getDebugStringVisitorMacro,
@@ -7,7 +7,7 @@ import {
   mergeVisitorMacro,
 } from '../_setup';
 
-const node = bytesTypeNode(remainderSizeNode());
+const node = bytesTypeNode();
 
 test(mergeVisitorMacro, node, 2);
 test(identityVisitorMacro, node);

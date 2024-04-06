@@ -5,8 +5,8 @@ import {
   getDebugStringVisitor,
   numberTypeNode,
   optionTypeNode,
-  prefixedSizeNode,
   publicKeyTypeNode,
+  sizePrefixTypeNode,
   stringTypeNode,
   structFieldTypeNode,
   structTypeNode,
@@ -21,10 +21,7 @@ test('it returns a string representing the main information of a node for debugg
     structTypeNode([
       structFieldTypeNode({
         name: 'firstname',
-        type: stringTypeNode({
-          size: prefixedSizeNode(numberTypeNode('u64')),
-          encoding: 'utf8',
-        }),
+        type: sizePrefixTypeNode(stringTypeNode(), numberTypeNode('u64')),
       }),
       structFieldTypeNode({ name: 'age', type: numberTypeNode('u32') }),
       structFieldTypeNode({
@@ -61,10 +58,7 @@ test('it can create indented strings', (t) => {
     structTypeNode([
       structFieldTypeNode({
         name: 'firstname',
-        type: stringTypeNode({
-          size: prefixedSizeNode(numberTypeNode('u64')),
-          encoding: 'utf8',
-        }),
+        type: sizePrefixTypeNode(stringTypeNode(), numberTypeNode('u64')),
       }),
       structFieldTypeNode({ name: 'age', type: numberTypeNode('u32') }),
       structFieldTypeNode({
