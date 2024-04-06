@@ -14,11 +14,13 @@ import { EnumEmptyVariantTypeNode } from './EnumEmptyVariantTypeNode';
 import { EnumStructVariantTypeNode } from './EnumStructVariantTypeNode';
 import { EnumTupleVariantTypeNode } from './EnumTupleVariantTypeNode';
 import { EnumTypeNode, enumTypeNodeFromIdl } from './EnumTypeNode';
+import { FixedSizeTypeNode } from './FixedSizeTypeNode';
 import { MapTypeNode, mapTypeNodeFromIdl } from './MapTypeNode';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 import { OptionTypeNode, optionTypeNodeFromIdl } from './OptionTypeNode';
 import { PublicKeyTypeNode, publicKeyTypeNode } from './PublicKeyTypeNode';
 import { SetTypeNode, setTypeNodeFromIdl } from './SetTypeNode';
+import { SizePrefixTypeNode } from './SizePrefixTypeNode';
 import { SolAmountTypeNode } from './SolAmountTypeNode';
 import { StringTypeNode, stringTypeNode } from './StringTypeNode';
 import { StructFieldTypeNode } from './StructFieldTypeNode';
@@ -34,11 +36,13 @@ export const STANDALONE_TYPE_NODES = {
   bytesTypeNode: {} as BytesTypeNode,
   dateTimeTypeNode: {} as DateTimeTypeNode,
   enumTypeNode: {} as EnumTypeNode,
+  fixedSizeTypeNode: {} as FixedSizeTypeNode,
   mapTypeNode: {} as MapTypeNode,
   numberTypeNode: {} as NumberTypeNode,
   optionTypeNode: {} as OptionTypeNode,
   publicKeyTypeNode: {} as PublicKeyTypeNode,
   setTypeNode: {} as SetTypeNode,
+  sizePrefixTypeNode: {} as SizePrefixTypeNode,
   solAmountTypeNode: {} as SolAmountTypeNode,
   stringTypeNode: {} as StringTypeNode,
   structTypeNode: {} as StructTypeNode,

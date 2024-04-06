@@ -124,6 +124,8 @@ function getNodeDetails(node: Node): string[] {
       return [node.name, ...(node.offset > 0 ? [`offset:${node.offset}`] : [])];
     case 'sizeDiscriminatorNode':
       return [node.size.toString()];
+    case 'fixedSizeTypeNode':
+      return [node.size.toString()];
     default:
       return 'name' in node ? [node.name] : [];
   }
