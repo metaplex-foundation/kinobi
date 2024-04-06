@@ -9,14 +9,7 @@ import {
 
 const node = bytesTypeNode();
 
-test(mergeVisitorMacro, node, 2);
+test(mergeVisitorMacro, node, 1);
 test(identityVisitorMacro, node);
 test(deleteNodesVisitorMacro, node, '[bytesTypeNode]', null);
-test(deleteNodesVisitorMacro, node, '[remainderSizeNode]', null);
-test(
-  getDebugStringVisitorMacro,
-  node,
-  `
-bytesTypeNode
-|   remainderSizeNode`
-);
+test(getDebugStringVisitorMacro, node, `bytesTypeNode`);

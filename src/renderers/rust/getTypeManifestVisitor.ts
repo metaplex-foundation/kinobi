@@ -340,8 +340,7 @@ export function getTypeManifestVisitor() {
               'bytesTypeNode',
               'stringTypeNode',
             ]) &&
-              typeof parentSize === 'object' &&
-              isNode(parentSize, 'fixedSizeNode') &&
+              typeof parentSize === 'number' &&
               parentSize > 32)
           ) {
             derive =

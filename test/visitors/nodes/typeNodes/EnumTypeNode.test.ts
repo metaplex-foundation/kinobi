@@ -71,8 +71,8 @@ enumTypeNode
 |   enumEmptyVariantTypeNode [quit]
 |   enumTupleVariantTypeNode [write]
 |   |   tupleTypeNode
-|   |   |   stringTypeNode [utf8]
-|   |   |   |   fixedSizeNode [32]
+|   |   |   fixedSizeTypeNode [32]
+|   |   |   |   stringTypeNode [utf8]
 |   enumStructVariantTypeNode [move]
 |   |   structTypeNode
 |   |   |   structFieldTypeNode [x]

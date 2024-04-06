@@ -36,8 +36,8 @@ test(
 definedTypeNode [person]
 |   structTypeNode
 |   |   structFieldTypeNode [name]
-|   |   |   stringTypeNode [utf8]
-|   |   |   |   fixedSizeNode [32]
+|   |   |   fixedSizeTypeNode [42]
+|   |   |   |   stringTypeNode [utf8]
 |   |   structFieldTypeNode [age]
 |   |   |   numberTypeNode [u64]`
 );
