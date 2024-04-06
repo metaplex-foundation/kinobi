@@ -3,7 +3,7 @@ import {
   accountNode,
   arrayTypeNode,
   fieldDiscriminatorNode,
-  fixedSizeNode,
+  fixedCountNode,
   instructionArgumentNode,
   instructionNode,
   numberTypeNode,
@@ -42,7 +42,7 @@ export function setAnchorDiscriminatorsVisitor() {
 
           const discriminatorArgument = structFieldTypeNode({
             name: 'discriminator',
-            type: arrayTypeNode(numberTypeNode('u8'), fixedSizeNode(8)),
+            type: arrayTypeNode(numberTypeNode('u8'), fixedCountNode(8)),
             defaultValue: getAnchorAccountDiscriminator(node.idlName),
             defaultValueStrategy: 'omitted',
           });
@@ -63,7 +63,7 @@ export function setAnchorDiscriminatorsVisitor() {
 
           const discriminatorArgument = instructionArgumentNode({
             name: 'discriminator',
-            type: arrayTypeNode(numberTypeNode('u8'), fixedSizeNode(8)),
+            type: arrayTypeNode(numberTypeNode('u8'), fixedCountNode(8)),
             defaultValue: getAnchorInstructionDiscriminator(node.idlName),
             defaultValueStrategy: 'omitted',
           });

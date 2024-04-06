@@ -1,7 +1,7 @@
 import test from 'ava';
 import {
   publicKeyTypeNode,
-  remainderSizeNode,
+  remainderCountNode,
   setTypeNode,
 } from '../../../../src';
 import {
@@ -11,18 +11,18 @@ import {
   mergeVisitorMacro,
 } from '../_setup';
 
-const node = setTypeNode(publicKeyTypeNode(), remainderSizeNode());
+const node = setTypeNode(publicKeyTypeNode(), remainderCountNode());
 
 test(mergeVisitorMacro, node, 3);
 test(identityVisitorMacro, node);
 test(deleteNodesVisitorMacro, node, '[setTypeNode]', null);
 test(deleteNodesVisitorMacro, node, '[publicKeyTypeNode]', null);
-test(deleteNodesVisitorMacro, node, '[remainderSizeNode]', null);
+test(deleteNodesVisitorMacro, node, '[remainderCountNode]', null);
 test(
   getDebugStringVisitorMacro,
   node,
   `
 setTypeNode
-|   remainderSizeNode
+|   remainderCountNode
 |   publicKeyTypeNode`
 );

@@ -1,7 +1,7 @@
 import {
   NumberTypeNode,
   REGISTERED_TYPE_NODE_KINDS,
-  SizeNode,
+  CountNode,
   isNode,
   isScalarEnum,
   structFieldTypeNode,
@@ -98,7 +98,7 @@ export function getTypeManifestVisitor(input: {
           const childManifest = visit(arrayType.item, self);
           childManifest.looseType.mapRender((r) => `Array<${r}>`);
           childManifest.strictType.mapRender((r) => `Array<${r}>`);
-          const sizeManifest = getArrayLikeSizeOption(arrayType.size, self);
+          const sizeManifest = getArrayLikeSizeOption(arrayType.count, self);
           const encoderOptions = sizeManifest.encoder.render
             ? `, { ${sizeManifest.encoder.render} }`
             : '';
@@ -319,7 +319,7 @@ export function getTypeManifestVisitor(input: {
             ([k, v]) => `Map<${k}, ${v}>`,
             ([k, v]) => `${k}, ${v}`
           );
-          const sizeManifest = getArrayLikeSizeOption(mapType.size, self);
+          const sizeManifest = getArrayLikeSizeOption(mapType.count, self);
           const encoderOptions = sizeManifest.encoder.render
             ? `, { ${sizeManifest.encoder.render} }`
             : '';
@@ -386,7 +386,7 @@ export function getTypeManifestVisitor(input: {
           childManifest.strictType.mapRender((r) => `Set<${r}>`);
           childManifest.looseType.mapRender((r) => `Set<${r}>`);
 
-          const sizeManifest = getArrayLikeSizeOption(setType.size, self);
+          const sizeManifest = getArrayLikeSizeOption(setType.count, self);
           const encoderOptions = sizeManifest.encoder.render
             ? `, { ${sizeManifest.encoder.render} }`
             : '';
@@ -733,28 +733,28 @@ export function getTypeManifestVisitor(input: {
 }
 
 function getArrayLikeSizeOption(
-  size: SizeNode,
+  count: CountNode,
   visitor: Visitor<TypeManifest, 'numberTypeNode'>
 ): {
   encoder: Fragment;
   decoder: Fragment;
 } {
-  if (isNode(size, 'fixedSizeNode')) {
+  if (isNode(count, 'fixedCountNode')) {
     return {
-      encoder: fragment(`size: ${size.size}`),
-      decoder: fragment(`size: ${size.size}`),
+      encoder: fragment(`size: ${count.value}`),
+      decoder: fragment(`size: ${count.value}`),
     };
   }
-  if (isNode(size, 'remainderSizeNode')) {
+  if (isNode(count, 'remainderCountNode')) {
     return {
       encoder: fragment(`size: 'remainder'`),
       decoder: fragment(`size: 'remainder'`),
     };
   }
-  if (size.prefix.format === 'u32' && size.prefix.endian === 'le') {
+  if (count.prefix.format === 'u32' && count.prefix.endian === 'le') {
     return { encoder: fragment(''), decoder: fragment('') };
   }
-  const prefixManifest = visit(size.prefix, visitor);
+  const prefixManifest = visit(count.prefix, visitor);
   prefixManifest.encoder.mapRender((r) => `size: ${r}`);
   prefixManifest.decoder.mapRender((r) => `size: ${r}`);
   return prefixManifest;

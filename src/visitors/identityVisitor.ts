@@ -7,7 +7,7 @@ import {
   NodeKind,
   PDA_SEED_NODES,
   REGISTERED_NODE_KINDS,
-  SIZE_NODES,
+  COUNT_NODES,
   TYPE_NODES,
   VALUE_NODES,
   accountNode,
@@ -38,7 +38,7 @@ import {
   pdaNode,
   pdaSeedValueNode,
   pdaValueNode,
-  prefixedSizeNode,
+  prefixedCountNode,
   programNode,
   removeNullAndAssertIsNodeFilter,
   resolverValueNode,
@@ -236,9 +236,9 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
 
   if (castedNodeKeys.includes('arrayTypeNode')) {
     visitor.visitArrayType = function visitArrayType(node) {
-      const size = visit(this)(node.size);
+      const size = visit(this)(node.count);
       if (size === null) return null;
-      assertIsNode(size, SIZE_NODES);
+      assertIsNode(size, COUNT_NODES);
       const item = visit(this)(node.item);
       if (item === null) return null;
       assertIsNode(item, TYPE_NODES);
@@ -291,9 +291,9 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
 
   if (castedNodeKeys.includes('mapTypeNode')) {
     visitor.visitMapType = function visitMapType(node) {
-      const size = visit(this)(node.size);
+      const size = visit(this)(node.count);
       if (size === null) return null;
-      assertIsNode(size, SIZE_NODES);
+      assertIsNode(size, COUNT_NODES);
       const key = visit(this)(node.key);
       if (key === null) return null;
       assertIsNode(key, TYPE_NODES);
@@ -327,9 +327,9 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
 
   if (castedNodeKeys.includes('setTypeNode')) {
     visitor.visitSetType = function visitSetType(node) {
-      const size = visit(this)(node.size);
+      const size = visit(this)(node.count);
       if (size === null) return null;
-      assertIsNode(size, SIZE_NODES);
+      assertIsNode(size, COUNT_NODES);
       const item = visit(this)(node.item);
       if (item === null) return null;
       assertIsNode(item, TYPE_NODES);
@@ -395,12 +395,12 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
     };
   }
 
-  if (castedNodeKeys.includes('prefixedSizeNode')) {
-    visitor.visitPrefixedSize = function visitPrefixedSize(node) {
+  if (castedNodeKeys.includes('prefixedCountNode')) {
+    visitor.visitPrefixedCount = function visitPrefixedCount(node) {
       const prefix = visit(this)(node.prefix);
       if (prefix === null) return null;
       assertIsNode(prefix, 'numberTypeNode');
-      return prefixedSizeNode(prefix);
+      return prefixedCountNode(prefix);
     };
   }
 

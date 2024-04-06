@@ -15,9 +15,9 @@ import { visit } from './visitor';
 export function transformU8ArraysToBytesVisitor(
   sizes: number[] | '*' = [32, 64]
 ) {
-  const hasRequiredSize = (size: ArrayTypeNode['size']): boolean => {
-    if (!isNode(size, 'fixedSizeNode')) return false;
-    return sizes === '*' || sizes.includes(size.size);
+  const hasRequiredSize = (count: ArrayTypeNode['count']): boolean => {
+    if (!isNode(count, 'fixedCountNode')) return false;
+    return sizes === '*' || sizes.includes(count.value);
   };
 
   return pipe(nonNullableIdentityVisitor(), (v) =>
@@ -29,13 +29,13 @@ export function transformU8ArraysToBytesVisitor(
         if (
           isNode(child, 'numberTypeNode') &&
           child.format === 'u8' &&
-          isNode(node.size, 'fixedSizeNode') &&
-          hasRequiredSize(node.size)
+          isNode(node.count, 'fixedCountNode') &&
+          hasRequiredSize(node.count)
         ) {
-          return fixedSizeTypeNode(bytesTypeNode(), node.size.size);
+          return fixedSizeTypeNode(bytesTypeNode(), node.count.value);
         }
 
-        return arrayTypeNode(child, node.size);
+        return arrayTypeNode(child, node.count);
       },
     })
   );

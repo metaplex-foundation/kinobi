@@ -103,7 +103,7 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
   if (castedNodeKeys.includes('arrayTypeNode')) {
     visitor.visitArrayType = function visitArrayType(node) {
       return merge(node, [
-        ...visit(this)(node.size),
+        ...visit(this)(node.count),
         ...visit(this)(node.item),
       ]);
     };
@@ -137,7 +137,7 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
   if (castedNodeKeys.includes('mapTypeNode')) {
     visitor.visitMapType = function visitMapType(node) {
       return merge(node, [
-        ...visit(this)(node.size),
+        ...visit(this)(node.count),
         ...visit(this)(node.key),
         ...visit(this)(node.value),
       ]);
@@ -162,7 +162,7 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
   if (castedNodeKeys.includes('setTypeNode')) {
     visitor.visitSetType = function visitSetType(node) {
       return merge(node, [
-        ...visit(this)(node.size),
+        ...visit(this)(node.count),
         ...visit(this)(node.item),
       ]);
     };
@@ -207,8 +207,8 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
     };
   }
 
-  if (castedNodeKeys.includes('prefixedSizeNode')) {
-    visitor.visitPrefixedSize = function visitPrefixedSize(node) {
+  if (castedNodeKeys.includes('prefixedCountNode')) {
+    visitor.visitPrefixedCount = function visitPrefixedCount(node) {
       return merge(node, visit(this)(node.prefix));
     };
   }

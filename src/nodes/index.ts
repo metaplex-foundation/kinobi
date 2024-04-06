@@ -12,9 +12,9 @@ export * from './ProgramNode';
 export * from './RootNode';
 
 export * from './contextualValueNodes';
+export * from './countNodes';
 export * from './discriminatorNodes';
 export * from './linkNodes';
 export * from './pdaSeedNodes';
-export * from './sizeNodes';
 export * from './typeNodes';
 export * from './valueNodes';
