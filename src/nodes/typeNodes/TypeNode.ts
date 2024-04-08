@@ -112,6 +112,28 @@ export function resolveNestedTypeNode<TType extends TypeNode>(
   }
 }
 
+export function transformNestedTypeNode<
+  TFrom extends TypeNode,
+  TTo extends TypeNode,
+>(
+  typeNode: ResolveNestedTypeNode<TFrom>,
+  map: (type: TFrom) => TTo
+): ResolveNestedTypeNode<TTo> {
+  switch (typeNode.kind) {
+    case 'fixedSizeTypeNode':
+    case 'sizePrefixTypeNode':
+      return {
+        ...typeNode,
+        type: transformNestedTypeNode(
+          typeNode.type as ResolveNestedTypeNode<TFrom>,
+          map
+        ),
+      } as ResolveNestedTypeNode<TTo>;
+    default:
+      return map(typeNode);
+  }
+}
+
 function isArrayOfSize(array: any, size: number): boolean {
   return Array.isArray(array) && array.length === size;
 }

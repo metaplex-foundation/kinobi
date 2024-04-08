@@ -147,7 +147,8 @@ export function getTypeManifestVisitor(input: {
           const encoderOptions: string[] = [];
           const decoderOptions: string[] = [];
 
-          if (enumType.size.format !== 'u8' || enumType.size.endian !== 'le') {
+          const enumSize = resolveNestedTypeNode(enumType.size);
+          if (enumSize.format !== 'u8' || enumSize.endian !== 'le') {
             const sizeManifest = visit(enumType.size, self);
             encoderImports.mergeWith(sizeManifest.encoder);
             decoderImports.mergeWith(sizeManifest.decoder);

@@ -149,7 +149,8 @@ export function getTypeManifestVisitor(input: {
           parentName = null;
           const options: string[] = [];
 
-          if (enumType.size.format !== 'u8' || enumType.size.endian !== 'le') {
+          const enumSize = resolveNestedTypeNode(enumType.size);
+          if (enumSize.format !== 'u8' || enumSize.endian !== 'le') {
             const sizeManifest = visit(enumType.size, self);
             strictImports.mergeWith(sizeManifest.strictImports);
             looseImports.mergeWith(sizeManifest.looseImports);

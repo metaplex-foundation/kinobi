@@ -1,3 +1,4 @@
+import type { ResolveNestedTypeNode } from './TypeNode';
 import type { IdlTypeEnum } from '../../idl';
 import { enumEmptyVariantTypeNodeFromIdl } from './EnumEmptyVariantTypeNode';
 import { enumStructVariantTypeNodeFromIdl } from './EnumStructVariantTypeNode';
@@ -5,26 +6,35 @@ import { enumTupleVariantTypeNodeFromIdl } from './EnumTupleVariantTypeNode';
 import type { EnumVariantTypeNode } from './EnumVariantTypeNode';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 
-export interface EnumTypeNode {
+export interface EnumTypeNode<
+  TVariants extends EnumVariantTypeNode[] = EnumVariantTypeNode[],
+  TSize extends
+    ResolveNestedTypeNode<NumberTypeNode> = ResolveNestedTypeNode<NumberTypeNode>,
+> {
   readonly kind: 'enumTypeNode';
 
   // Children.
-  readonly variants: EnumVariantTypeNode[];
-  readonly size: NumberTypeNode;
+  readonly variants: TVariants;
+  readonly size: TSize;
 }
 
-export function enumTypeNode(
-  variants: EnumVariantTypeNode[],
-  options: { size?: NumberTypeNode } = {}
-): EnumTypeNode {
+export function enumTypeNode<
+  const TVariants extends EnumVariantTypeNode[],
+  TSize extends ResolveNestedTypeNode<NumberTypeNode> = NumberTypeNode<'u8'>,
+>(
+  variants: TVariants,
+  options: { size?: TSize } = {}
+): EnumTypeNode<TVariants, TSize> {
   return {
     kind: 'enumTypeNode',
     variants,
-    size: options.size ?? numberTypeNode('u8'),
+    size: (options.size ?? numberTypeNode('u8')) as TSize,
   };
 }
 
-export function enumTypeNodeFromIdl(idl: IdlTypeEnum): EnumTypeNode {
+export function enumTypeNodeFromIdl(
+  idl: IdlTypeEnum
+): EnumTypeNode<EnumVariantTypeNode[], NumberTypeNode> {
   const variants = idl.variants.map((variant): EnumVariantTypeNode => {
     if (!variant.fields || variant.fields.length <= 0) {
       return enumEmptyVariantTypeNodeFromIdl(variant);

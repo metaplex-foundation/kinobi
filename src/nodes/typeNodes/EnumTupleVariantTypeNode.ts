@@ -1,21 +1,24 @@
+import type { ResolveNestedTypeNode } from './TypeNode';
 import type { IdlType, IdlTypeEnumVariant } from '../../idl';
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../../shared';
 import { TupleTypeNode, tupleTypeNodeFromIdl } from './TupleTypeNode';
 
-export interface EnumTupleVariantTypeNode {
+export interface EnumTupleVariantTypeNode<
+  TTuple extends
+    ResolveNestedTypeNode<TupleTypeNode> = ResolveNestedTypeNode<TupleTypeNode>,
+> {
   readonly kind: 'enumTupleVariantTypeNode';
 
   // Children.
-  readonly tuple: TupleTypeNode;
+  readonly tuple: TTuple;
 
   // Data.
   readonly name: MainCaseString;
 }
 
-export function enumTupleVariantTypeNode(
-  name: string,
-  tuple: TupleTypeNode
-): EnumTupleVariantTypeNode {
+export function enumTupleVariantTypeNode<
+  TTuple extends ResolveNestedTypeNode<TupleTypeNode>,
+>(name: string, tuple: TTuple): EnumTupleVariantTypeNode<TTuple> {
   if (!name) {
     throw new InvalidKinobiTreeError(
       'EnumTupleVariantTypeNode must have a name.'
@@ -26,7 +29,7 @@ export function enumTupleVariantTypeNode(
 
 export function enumTupleVariantTypeNodeFromIdl(
   idl: IdlTypeEnumVariant
-): EnumTupleVariantTypeNode {
+): EnumTupleVariantTypeNode<TupleTypeNode> {
   const name = idl.name ?? '';
   return enumTupleVariantTypeNode(
     name,
