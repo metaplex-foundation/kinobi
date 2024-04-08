@@ -1,13 +1,13 @@
 import { PdaLinkNode, pdaLinkNode } from '../linkNodes';
 import { PdaSeedValueNode } from './PdaSeedValueNode';
 
-export type PdaValueNode = {
+export interface PdaValueNode {
   readonly kind: 'pdaValueNode';
 
   // Children.
   readonly pda: PdaLinkNode;
   readonly seeds: PdaSeedValueNode[];
-};
+}
 
 export function pdaValueNode(
   pda: PdaLinkNode | string,

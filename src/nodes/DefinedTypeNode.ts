@@ -2,7 +2,7 @@ import type { IdlDefinedType } from '../idl';
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
 import { TypeNode, createTypeNodeFromIdl } from './typeNodes/TypeNode';
 
-export type DefinedTypeNode = {
+export interface DefinedTypeNode {
   readonly kind: 'definedTypeNode';
 
   // Children.
@@ -12,7 +12,7 @@ export type DefinedTypeNode = {
   readonly name: MainCaseString;
   readonly idlName: string;
   readonly docs: string[];
-};
+}
 
 export type DefinedTypeNodeInput = {
   readonly name: string;

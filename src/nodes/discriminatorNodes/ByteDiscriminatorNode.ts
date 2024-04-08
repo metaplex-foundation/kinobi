@@ -1,12 +1,12 @@
 import { getBase58Encoder } from '@solana/codecs-strings';
 
-export type ByteDiscriminatorNode = {
+export interface ByteDiscriminatorNode {
   readonly kind: 'byteDiscriminatorNode';
 
   // Data.
   readonly bytes: number[];
   readonly offset: number;
-};
+}
 
 export function byteDiscriminatorNode(
   bytes: number[],

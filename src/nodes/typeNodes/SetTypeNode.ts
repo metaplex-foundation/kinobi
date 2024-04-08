@@ -8,7 +8,7 @@ import {
 import { numberTypeNode } from './NumberTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
-export type SetTypeNode = {
+export interface SetTypeNode {
   readonly kind: 'setTypeNode';
 
   // Children.
@@ -17,7 +17,7 @@ export type SetTypeNode = {
 
   // Data.
   readonly idlSet: 'hashSet' | 'bTreeSet';
-};
+}
 
 export function setTypeNode(
   item: TypeNode,

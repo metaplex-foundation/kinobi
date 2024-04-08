@@ -1,11 +1,11 @@
 import { ValueNode } from './ValueNode';
 
-export type SetValueNode = {
+export interface SetValueNode {
   readonly kind: 'setValueNode';
 
   // Children.
   readonly items: ValueNode[];
-};
+}
 
 export function setValueNode(items: ValueNode[]): SetValueNode {
   return { kind: 'setValueNode', items };

@@ -1,13 +1,13 @@
 import { TypeNode, stringTypeNode } from '../typeNodes';
 import { ValueNode, stringValueNode } from '../valueNodes';
 
-export type ConstantPdaSeedNode = {
+export interface ConstantPdaSeedNode {
   readonly kind: 'constantPdaSeedNode';
 
   // Children.
   readonly type: TypeNode;
   readonly value: ValueNode;
-};
+}
 
 export function constantPdaSeedNode<
   TType extends TypeNode,

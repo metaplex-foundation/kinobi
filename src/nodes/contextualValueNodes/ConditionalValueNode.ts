@@ -11,7 +11,7 @@ export type ConditionalValueBranch = InstructionInputValueNode;
 
 export const CONDITIONAL_VALUE_BRANCH_NODES = INSTRUCTION_INPUT_VALUE_NODE;
 
-export type ConditionalValueNode = {
+export interface ConditionalValueNode {
   readonly kind: 'conditionalValueNode';
 
   // Children.
@@ -19,7 +19,7 @@ export type ConditionalValueNode = {
   readonly value?: ValueNode;
   readonly ifTrue?: ConditionalValueBranch;
   readonly ifFalse?: ConditionalValueBranch;
-};
+}
 
 export function conditionalValueNode(input: {
   condition: ConditionalValueNode['condition'];

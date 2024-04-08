@@ -5,13 +5,13 @@ import { enumTupleVariantTypeNodeFromIdl } from './EnumTupleVariantTypeNode';
 import type { EnumVariantTypeNode } from './EnumVariantTypeNode';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 
-export type EnumTypeNode = {
+export interface EnumTypeNode {
   readonly kind: 'enumTypeNode';
 
   // Children.
   readonly variants: EnumVariantTypeNode[];
   readonly size: NumberTypeNode;
-};
+}
 
 export function enumTypeNode(
   variants: EnumVariantTypeNode[],

@@ -9,12 +9,12 @@ import { ProgramNode, programNodeFromIdl } from './ProgramNode';
 
 export type IdlInputs = string | Partial<Idl> | (string | Partial<Idl>)[];
 
-export type RootNode = {
+export interface RootNode {
   readonly kind: 'rootNode';
 
   // Children.
   readonly programs: ProgramNode[];
-};
+}
 
 export function rootNode(programs: ProgramNode[]): RootNode {
   return { kind: 'rootNode', programs };

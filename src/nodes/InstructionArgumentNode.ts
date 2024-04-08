@@ -10,7 +10,7 @@ import {
 } from './typeNodes';
 import { VALUE_NODES } from './valueNodes';
 
-export type InstructionArgumentNode = {
+export interface InstructionArgumentNode {
   readonly kind: 'instructionArgumentNode';
 
   // Children.
@@ -21,7 +21,7 @@ export type InstructionArgumentNode = {
   readonly name: MainCaseString;
   readonly docs: string[];
   readonly defaultValueStrategy?: 'optional' | 'omitted';
-};
+}
 
 export type InstructionArgumentNodeInput = {
   readonly name: string;

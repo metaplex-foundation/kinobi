@@ -1,13 +1,13 @@
 import { NumberTypeNode } from './NumberTypeNode';
 import { ResolveNestedTypeNode, TypeNode } from './TypeNode';
 
-export type SizePrefixTypeNode = {
+export interface SizePrefixTypeNode {
   readonly kind: 'sizePrefixTypeNode';
 
   // Children.
   readonly type: TypeNode;
   readonly prefix: ResolveNestedTypeNode<NumberTypeNode>;
-};
+}
 
 export function sizePrefixTypeNode<
   TType extends SizePrefixTypeNode['type'],

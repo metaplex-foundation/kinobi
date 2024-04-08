@@ -1,12 +1,12 @@
 import { ResolveNestedTypeNode } from './TypeNode';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 
-export type BooleanTypeNode = {
+export interface BooleanTypeNode {
   readonly kind: 'booleanTypeNode';
 
   // Children.
   readonly size: ResolveNestedTypeNode<NumberTypeNode>;
-};
+}
 
 export function booleanTypeNode<
   TSize extends BooleanTypeNode['size'] = NumberTypeNode,

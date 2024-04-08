@@ -1,12 +1,12 @@
 import { ValueNode } from './ValueNode';
 
-export type MapEntryValueNode = {
+export interface MapEntryValueNode {
   readonly kind: 'mapEntryValueNode';
 
   // Children.
   readonly key: ValueNode;
   readonly value: ValueNode;
-};
+}
 
 export function mapEntryValueNode(
   key: ValueNode,

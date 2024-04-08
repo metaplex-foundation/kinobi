@@ -3,7 +3,7 @@ import { ArgumentValueNode, ResolverValueNode } from './contextualValueNodes';
 import { AccountLinkNode } from './linkNodes';
 import { NumberValueNode } from './valueNodes';
 
-export type InstructionByteDeltaNode = {
+export interface InstructionByteDeltaNode {
   readonly kind: 'instructionByteDeltaNode';
 
   // Children.
@@ -16,7 +16,7 @@ export type InstructionByteDeltaNode = {
   // Data.
   readonly withHeader: boolean;
   readonly subtract?: boolean;
-};
+}
 
 export function instructionByteDeltaNode(
   value: InstructionByteDeltaNode['value'],

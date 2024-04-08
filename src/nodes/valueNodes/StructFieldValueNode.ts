@@ -1,7 +1,7 @@
 import { MainCaseString, mainCase } from '../../shared';
 import { ValueNode } from './ValueNode';
 
-export type StructFieldValueNode = {
+export interface StructFieldValueNode {
   readonly kind: 'structFieldValueNode';
 
   // Children.
@@ -9,7 +9,7 @@ export type StructFieldValueNode = {
 
   // Data.
   readonly name: MainCaseString;
-};
+}
 
 export function structFieldValueNode(
   name: string,

@@ -2,7 +2,7 @@ import { ImportFrom, MainCaseString, mainCase } from '../../shared';
 import { AccountValueNode } from './AccountValueNode';
 import { ArgumentValueNode } from './ArgumentValueNode';
 
-export type ResolverValueNode = {
+export interface ResolverValueNode {
   readonly kind: 'resolverValueNode';
 
   // Children.
@@ -11,7 +11,7 @@ export type ResolverValueNode = {
   // Data.
   readonly name: MainCaseString;
   readonly importFrom?: ImportFrom;
-};
+}
 
 export function resolverValueNode(
   name: string,

@@ -8,7 +8,7 @@ import {
 import { numberTypeNode } from './NumberTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
-export type MapTypeNode = {
+export interface MapTypeNode {
   readonly kind: 'mapTypeNode';
 
   // Children.
@@ -18,7 +18,7 @@ export type MapTypeNode = {
 
   // Data.
   readonly idlMap: 'hashMap' | 'bTreeMap';
-};
+}
 
 export function mapTypeNode(
   key: TypeNode,

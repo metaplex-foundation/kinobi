@@ -3,7 +3,7 @@ import { ValueNode } from '../valueNodes';
 import { AccountValueNode } from './AccountValueNode';
 import { ArgumentValueNode } from './ArgumentValueNode';
 
-export type PdaSeedValueNode = {
+export interface PdaSeedValueNode {
   readonly kind: 'pdaSeedValueNode';
 
   // Children.
@@ -11,7 +11,7 @@ export type PdaSeedValueNode = {
 
   // Data.
   readonly name: MainCaseString;
-};
+}
 
 export function pdaSeedValueNode(
   name: string,

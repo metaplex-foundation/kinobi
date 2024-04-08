@@ -2,7 +2,7 @@ import type { IdlTypeOption } from '../../idl';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
-export type OptionTypeNode = {
+export interface OptionTypeNode {
   readonly kind: 'optionTypeNode';
 
   // Children.
@@ -12,7 +12,7 @@ export type OptionTypeNode = {
   // Data.
   readonly fixed: boolean;
   readonly idlOption: 'option' | 'coption';
-};
+}
 
 export function optionTypeNode(
   item: TypeNode,

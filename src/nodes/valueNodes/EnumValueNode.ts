@@ -3,7 +3,7 @@ import { DefinedTypeLinkNode, definedTypeLinkNode } from '../linkNodes';
 import { StructValueNode } from './StructValueNode';
 import { TupleValueNode } from './TupleValueNode';
 
-export type EnumValueNode = {
+export interface EnumValueNode {
   readonly kind: 'enumValueNode';
 
   // Children.
@@ -12,7 +12,7 @@ export type EnumValueNode = {
 
   // Data.
   readonly variant: MainCaseString;
-};
+}
 
 export function enumValueNode(
   enumLink: DefinedTypeLinkNode | string,

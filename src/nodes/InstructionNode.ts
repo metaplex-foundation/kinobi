@@ -21,7 +21,7 @@ import {
 import { createTypeNodeFromIdl } from './typeNodes/TypeNode';
 import { numberValueNode } from './valueNodes';
 
-export type InstructionNode = {
+export interface InstructionNode {
   readonly kind: 'instructionNode';
 
   // Children.
@@ -38,7 +38,7 @@ export type InstructionNode = {
   readonly idlName: string;
   readonly docs: string[];
   readonly optionalAccountStrategy: 'omitted' | 'programId';
-};
+}
 
 export type InstructionNodeInput = Omit<
   Partial<InstructionNode>,

@@ -1,12 +1,12 @@
 import { MainCaseString, mainCase } from '../../shared';
 
-export type FieldDiscriminatorNode = {
+export interface FieldDiscriminatorNode {
   readonly kind: 'fieldDiscriminatorNode';
 
   // Data.
   readonly name: MainCaseString;
   readonly offset: number;
-};
+}
 
 export function fieldDiscriminatorNode(
   name: string,

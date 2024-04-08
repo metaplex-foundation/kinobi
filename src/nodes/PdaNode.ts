@@ -17,7 +17,7 @@ import {
   stringValueNode,
 } from './valueNodes';
 
-export type PdaNode = {
+export interface PdaNode {
   readonly kind: 'pdaNode';
 
   // Children.
@@ -25,7 +25,7 @@ export type PdaNode = {
 
   // Data.
   readonly name: MainCaseString;
-};
+}
 
 export function pdaNode(name: string, seeds: PdaSeedNode[]): PdaNode {
   if (!name) {

@@ -6,7 +6,7 @@ import { ErrorNode, errorNodeFromIdl } from './ErrorNode';
 import { InstructionNode, instructionNodeFromIdl } from './InstructionNode';
 import { PdaNode, pdaNodeFromIdl } from './PdaNode';
 
-export type ProgramNode = {
+export interface ProgramNode {
   readonly kind: 'programNode';
 
   // Children.
@@ -22,7 +22,7 @@ export type ProgramNode = {
   readonly publicKey: string;
   readonly version: string;
   readonly origin?: 'shank' | 'anchor';
-};
+}
 
 export type ProgramNodeInput = Omit<
   PartialExcept<ProgramNode, 'publicKey'>,

@@ -1,12 +1,12 @@
 import type { IdlTypeTuple } from '../../idl';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
-export type TupleTypeNode = {
+export interface TupleTypeNode {
   readonly kind: 'tupleTypeNode';
 
   // Children.
   readonly items: TypeNode[];
-};
+}
 
 export function tupleTypeNode<TItems extends TypeNode[] = TypeNode[]>(
   items: [...TItems]

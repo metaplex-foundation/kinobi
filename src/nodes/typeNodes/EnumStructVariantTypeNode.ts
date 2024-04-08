@@ -2,7 +2,7 @@ import type { IdlTypeEnumField, IdlTypeEnumVariant } from '../../idl';
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../../shared';
 import { StructTypeNode, structTypeNodeFromIdl } from './StructTypeNode';
 
-export type EnumStructVariantTypeNode = {
+export interface EnumStructVariantTypeNode {
   readonly kind: 'enumStructVariantTypeNode';
 
   // Children.
@@ -10,7 +10,7 @@ export type EnumStructVariantTypeNode = {
 
   // Data.
   readonly name: MainCaseString;
-};
+}
 
 export function enumStructVariantTypeNode(
   name: string,

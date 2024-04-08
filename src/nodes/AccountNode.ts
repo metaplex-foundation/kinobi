@@ -6,7 +6,7 @@ import { PdaLinkNode, pdaLinkNode } from './linkNodes';
 import { StructTypeNode, structTypeNode } from './typeNodes';
 import { createTypeNodeFromIdl } from './typeNodes/TypeNode';
 
-export type AccountNode = {
+export interface AccountNode {
   readonly kind: 'accountNode';
 
   // Children.

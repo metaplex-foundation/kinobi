@@ -2,7 +2,7 @@ import { IdlInstructionAccount } from '../idl';
 import { MainCaseString, PartialExcept, mainCase } from '../shared';
 import { InstructionInputValueNode } from './contextualValueNodes';
 
-export type InstructionAccountNode = {
+export interface InstructionAccountNode {
   readonly kind: 'instructionAccountNode';
 
   // Children.
@@ -14,7 +14,7 @@ export type InstructionAccountNode = {
   readonly isSigner: boolean | 'either';
   readonly isOptional: boolean;
   readonly docs: string[];
-};
+}
 
 export type InstructionAccountNodeInput = Omit<
   PartialExcept<InstructionAccountNode, 'isWritable' | 'isSigner'>,

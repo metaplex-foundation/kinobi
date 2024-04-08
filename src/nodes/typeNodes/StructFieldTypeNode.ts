@@ -3,7 +3,7 @@ import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../../shared';
 import { ValueNode } from '../valueNodes';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
-export type StructFieldTypeNode = {
+export interface StructFieldTypeNode {
   readonly kind: 'structFieldTypeNode';
 
   // Children.
@@ -14,7 +14,7 @@ export type StructFieldTypeNode = {
   readonly name: MainCaseString;
   readonly docs: string[];
   readonly defaultValueStrategy?: 'optional' | 'omitted';
-};
+}
 
 export type StructFieldTypeNodeInput = {
   readonly name: string;

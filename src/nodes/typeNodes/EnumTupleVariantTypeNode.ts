@@ -2,7 +2,7 @@ import type { IdlType, IdlTypeEnumVariant } from '../../idl';
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../../shared';
 import { TupleTypeNode, tupleTypeNodeFromIdl } from './TupleTypeNode';
 
-export type EnumTupleVariantTypeNode = {
+export interface EnumTupleVariantTypeNode {
   readonly kind: 'enumTupleVariantTypeNode';
 
   // Children.
@@ -10,7 +10,7 @@ export type EnumTupleVariantTypeNode = {
 
   // Data.
   readonly name: MainCaseString;
-};
+}
 
 export function enumTupleVariantTypeNode(
   name: string,
