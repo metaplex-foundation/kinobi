@@ -1,6 +1,7 @@
 import type { IdlTypeArray, IdlTypeVec } from '../../idl';
 import {
   CountNode,
+  PrefixedCountNode,
   fixedCountNode,
   prefixedCountNode,
   remainderCountNode,
@@ -16,14 +17,14 @@ export type ArrayTypeNode = {
   readonly count: CountNode;
 };
 
-export function arrayTypeNode<TItem extends ArrayTypeNode['item']>(
-  item: TItem,
-  count?: CountNode
-): ArrayTypeNode & { item: TItem } {
+export function arrayTypeNode<
+  TItem extends ArrayTypeNode['item'],
+  TCount extends ArrayTypeNode['count'] = PrefixedCountNode,
+>(item: TItem, count?: TCount): ArrayTypeNode & { item: TItem; count: TCount } {
   return {
     kind: 'arrayTypeNode',
     item,
-    count: count ?? prefixedCountNode(numberTypeNode('u32')),
+    count: (count ?? prefixedCountNode(numberTypeNode('u32'))) as TCount,
   };
 }
 

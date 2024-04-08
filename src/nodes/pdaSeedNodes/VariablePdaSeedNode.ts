@@ -12,11 +12,11 @@ export type VariablePdaSeedNode = {
   readonly docs: string[];
 };
 
-export function variablePdaSeedNode(
+export function variablePdaSeedNode<TType extends TypeNode>(
   name: string,
-  type: TypeNode,
+  type: TType,
   docs: string | string[] = []
-): VariablePdaSeedNode {
+): VariablePdaSeedNode & { type: TType } {
   return {
     kind: 'variablePdaSeedNode',
     name: mainCase(name),

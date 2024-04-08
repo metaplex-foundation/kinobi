@@ -9,10 +9,13 @@ export type ConstantPdaSeedNode = {
   readonly value: ValueNode;
 };
 
-export function constantPdaSeedNode(
-  type: TypeNode,
-  value: ValueNode
-): ConstantPdaSeedNode {
+export function constantPdaSeedNode<
+  TType extends TypeNode,
+  TValue extends ValueNode,
+>(
+  type: TType,
+  value: TValue
+): ConstantPdaSeedNode & { type: TType; value: TValue } {
   return { kind: 'constantPdaSeedNode', type, value };
 }
 
