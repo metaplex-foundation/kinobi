@@ -2,24 +2,31 @@ import { ImportFrom, MainCaseString, mainCase } from '../../shared';
 import { AccountValueNode } from './AccountValueNode';
 import { ArgumentValueNode } from './ArgumentValueNode';
 
-export interface ResolverValueNode {
+export interface ResolverValueNode<
+  TDependsOn extends (AccountValueNode | ArgumentValueNode)[] = (
+    | AccountValueNode
+    | ArgumentValueNode
+  )[],
+> {
   readonly kind: 'resolverValueNode';
 
   // Children.
-  readonly dependsOn?: (AccountValueNode | ArgumentValueNode)[];
+  readonly dependsOn?: TDependsOn;
 
   // Data.
   readonly name: MainCaseString;
   readonly importFrom?: ImportFrom;
 }
 
-export function resolverValueNode(
+export function resolverValueNode<
+  const TDependsOn extends (AccountValueNode | ArgumentValueNode)[] = [],
+>(
   name: string,
   options: {
     importFrom?: ResolverValueNode['importFrom'];
-    dependsOn?: ResolverValueNode['dependsOn'];
+    dependsOn?: TDependsOn;
   } = {}
-): ResolverValueNode {
+): ResolverValueNode<TDependsOn> {
   return {
     kind: 'resolverValueNode',
     name: mainCase(name),
