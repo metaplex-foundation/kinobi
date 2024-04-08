@@ -9,6 +9,7 @@ import {
   numberTypeNode,
   structFieldTypeNode,
   structTypeNode,
+  transformNestedTypeNode,
 } from '../nodes';
 import {
   getAnchorAccountDiscriminator,
@@ -53,7 +54,9 @@ export function setAnchorDiscriminatorsVisitor() {
               fieldDiscriminatorNode('discriminator'),
               ...(node.discriminators ?? []),
             ],
-            data: structTypeNode([discriminatorArgument, ...node.data.fields]),
+            data: transformNestedTypeNode(node.data, (struct) =>
+              structTypeNode([discriminatorArgument, ...struct.fields])
+            ),
           });
         },
 

@@ -8,6 +8,7 @@ import {
   pdaLinkNode,
   pdaNode,
   programNode,
+  transformNestedTypeNode,
 } from '../nodes';
 import { MainCaseString, mainCase, renameStructNode } from '../shared';
 import {
@@ -64,7 +65,9 @@ export function updateAccountsVisitor(map: Record<string, AccountUpdates>) {
             return accountNode({
               ...node,
               ...assignableUpdates,
-              data: renameStructNode(node.data, updates.data ?? {}),
+              data: transformNestedTypeNode(node.data, (struct) =>
+                renameStructNode(struct, updates.data ?? {})
+              ),
               pda: newPda,
             });
           },

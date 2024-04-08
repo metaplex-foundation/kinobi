@@ -3,8 +3,10 @@ import {
   accountNode,
   assertIsNode,
   fieldDiscriminatorNode,
+  resolveNestedTypeNode,
   structFieldTypeNode,
   structTypeNode,
+  transformNestedTypeNode,
 } from '../nodes';
 import {
   BottomUpNodeTransformerWithSelector,
@@ -24,7 +26,8 @@ export function setAccountDiscriminatorFromFieldVisitor(
         transform: (node) => {
           assertIsNode(node, 'accountNode');
 
-          const fieldIndex = node.data.fields.findIndex(
+          const accountData = resolveNestedTypeNode(node.data);
+          const fieldIndex = accountData.fields.findIndex(
             (f) => f.name === field
           );
           if (fieldIndex < 0) {
@@ -33,22 +36,24 @@ export function setAccountDiscriminatorFromFieldVisitor(
             );
           }
 
-          const fieldNode = node.data.fields[fieldIndex];
+          const fieldNode = accountData.fields[fieldIndex];
           return accountNode({
             ...node,
             discriminators: [
               fieldDiscriminatorNode(field, offset),
               ...(node.discriminators ?? []),
             ],
-            data: structTypeNode([
-              ...node.data.fields.slice(0, fieldIndex),
-              structFieldTypeNode({
-                ...fieldNode,
-                defaultValue: value,
-                defaultValueStrategy: 'omitted',
-              }),
-              ...node.data.fields.slice(fieldIndex + 1),
-            ]),
+            data: transformNestedTypeNode(node.data, () =>
+              structTypeNode([
+                ...accountData.fields.slice(0, fieldIndex),
+                structFieldTypeNode({
+                  ...fieldNode,
+                  defaultValue: value,
+                  defaultValueStrategy: 'omitted',
+                }),
+                ...accountData.fields.slice(fieldIndex + 1),
+              ])
+            ),
           });
         },
       })
