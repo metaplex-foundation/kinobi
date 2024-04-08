@@ -1,4 +1,3 @@
-import { getNodeKinds } from '../../shared/utils';
 import type { ProgramLinkNode } from '../linkNodes/ProgramLinkNode';
 import { VALUE_NODES, ValueNode } from '../valueNodes/ValueNode';
 import type { AccountBumpValueNode } from './AccountBumpValueNode';
@@ -13,46 +12,40 @@ import type { ProgramIdValueNode } from './ProgramIdValueNode';
 import type { ResolverValueNode } from './ResolverValueNode';
 
 // Standalone Contextual Value Node Registration.
-
-export const STANDALONE_CONTEXTUAL_VALUE_NODES = {
-  accountBumpValueNode: {} as AccountBumpValueNode,
-  accountValueNode: {} as AccountValueNode,
-  argumentValueNode: {} as ArgumentValueNode,
-  conditionalValueNode: {} as ConditionalValueNode,
-  identityValueNode: {} as IdentityValueNode,
-  payerValueNode: {} as PayerValueNode,
-  pdaValueNode: {} as PdaValueNode,
-  programIdValueNode: {} as ProgramIdValueNode,
-  resolverValueNode: {} as ResolverValueNode,
-};
-
-export const STANDALONE_CONTEXTUAL_VALUE_NODE_KINDS = getNodeKinds(
-  STANDALONE_CONTEXTUAL_VALUE_NODES
-);
-export type StandaloneContextualValueNodeKind =
-  (typeof STANDALONE_CONTEXTUAL_VALUE_NODE_KINDS)[number];
 export type StandaloneContextualValueNode =
-  (typeof STANDALONE_CONTEXTUAL_VALUE_NODES)[StandaloneContextualValueNodeKind];
+  | AccountBumpValueNode
+  | AccountValueNode
+  | ArgumentValueNode
+  | ConditionalValueNode
+  | IdentityValueNode
+  | PayerValueNode
+  | PdaValueNode
+  | ProgramIdValueNode
+  | ResolverValueNode;
+export const STANDALONE_CONTEXTUAL_VALUE_NODE_KINDS = [
+  'accountBumpValueNode',
+  'accountValueNode',
+  'argumentValueNode',
+  'conditionalValueNode',
+  'identityValueNode',
+  'payerValueNode',
+  'pdaValueNode',
+  'programIdValueNode',
+  'resolverValueNode',
+] satisfies readonly StandaloneContextualValueNode['kind'][];
+null as unknown as StandaloneContextualValueNode['kind'] satisfies (typeof STANDALONE_CONTEXTUAL_VALUE_NODE_KINDS)[number];
 
 // Contextual Value Node Registration.
-
-export const REGISTERED_CONTEXTUAL_VALUE_NODES = {
-  ...STANDALONE_CONTEXTUAL_VALUE_NODES,
-
-  // The following are not valid standalone nodes.
-  pdaSeedValueNode: {} as PdaSeedValueNode,
-};
-
-export const REGISTERED_CONTEXTUAL_VALUE_NODE_KINDS = getNodeKinds(
-  REGISTERED_CONTEXTUAL_VALUE_NODES
-);
-export type RegisteredContextualValueNodeKind =
-  (typeof REGISTERED_CONTEXTUAL_VALUE_NODE_KINDS)[number];
 export type RegisteredContextualValueNode =
-  (typeof REGISTERED_CONTEXTUAL_VALUE_NODES)[RegisteredContextualValueNodeKind];
+  | StandaloneContextualValueNode
+  | PdaSeedValueNode;
+export const REGISTERED_CONTEXTUAL_VALUE_NODE_KINDS = [
+  ...STANDALONE_CONTEXTUAL_VALUE_NODE_KINDS,
+  'pdaSeedValueNode',
+] satisfies readonly RegisteredContextualValueNode['kind'][];
+null as unknown as RegisteredContextualValueNode['kind'] satisfies (typeof REGISTERED_CONTEXTUAL_VALUE_NODE_KINDS)[number];
 
 // Contextual Value Node Helpers.
-
 export type ContextualValueNode = StandaloneContextualValueNode;
 export const CONTEXTUAL_VALUE_NODES = STANDALONE_CONTEXTUAL_VALUE_NODE_KINDS;
 
@@ -64,5 +57,5 @@ export type InstructionInputValueNode =
 export const INSTRUCTION_INPUT_VALUE_NODE = [
   ...VALUE_NODES,
   ...CONTEXTUAL_VALUE_NODES,
-  'programLinkNode' as const,
-];
+  'programLinkNode',
+] satisfies readonly InstructionInputValueNode['kind'][];

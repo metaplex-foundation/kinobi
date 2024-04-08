@@ -1,4 +1,3 @@
-import { getNodeKinds } from '../../shared/utils';
 import type { ArrayValueNode } from './ArrayValueNode';
 import type { BooleanValueNode } from './BooleanValueNode';
 import type { EnumValueNode } from './EnumValueNode';
@@ -15,45 +14,47 @@ import type { StructValueNode } from './StructValueNode';
 import type { TupleValueNode } from './TupleValueNode';
 
 // Standalone Value Node Registration.
-
-export const STANDALONE_VALUE_NODES = {
-  arrayValueNode: {} as ArrayValueNode,
-  booleanValueNode: {} as BooleanValueNode,
-  enumValueNode: {} as EnumValueNode,
-  mapValueNode: {} as MapValueNode,
-  noneValueNode: {} as NoneValueNode,
-  numberValueNode: {} as NumberValueNode,
-  setValueNode: {} as SetValueNode,
-  someValueNode: {} as SomeValueNode,
-  structValueNode: {} as StructValueNode,
-  tupleValueNode: {} as TupleValueNode,
-  publicKeyValueNode: {} as PublicKeyValueNode,
-  stringValueNode: {} as StringValueNode,
-};
-
-export const STANDALONE_VALUE_NODE_KINDS = getNodeKinds(STANDALONE_VALUE_NODES);
-export type StandaloneValueNodeKind =
-  (typeof STANDALONE_VALUE_NODE_KINDS)[number];
 export type StandaloneValueNode =
-  (typeof STANDALONE_VALUE_NODES)[StandaloneValueNodeKind];
+  | ArrayValueNode
+  | BooleanValueNode
+  | EnumValueNode
+  | MapValueNode
+  | NoneValueNode
+  | NumberValueNode
+  | SetValueNode
+  | SomeValueNode
+  | StructValueNode
+  | TupleValueNode
+  | PublicKeyValueNode
+  | StringValueNode;
+export const STANDALONE_VALUE_NODE_KINDS = [
+  'arrayValueNode',
+  'booleanValueNode',
+  'enumValueNode',
+  'mapValueNode',
+  'noneValueNode',
+  'numberValueNode',
+  'setValueNode',
+  'someValueNode',
+  'structValueNode',
+  'tupleValueNode',
+  'publicKeyValueNode',
+  'stringValueNode',
+] satisfies readonly StandaloneValueNode['kind'][];
+null as unknown as StandaloneValueNode['kind'] satisfies (typeof STANDALONE_VALUE_NODE_KINDS)[number];
 
 // Value Node Registration.
-
-export const REGISTERED_VALUE_NODES = {
-  ...STANDALONE_VALUE_NODES,
-
-  // The following are not valid standalone nodes.
-  mapEntryValueNode: {} as MapEntryValueNode,
-  structFieldValueNode: {} as StructFieldValueNode,
-};
-
-export const REGISTERED_VALUE_NODE_KINDS = getNodeKinds(REGISTERED_VALUE_NODES);
-export type RegisteredValueNodeKind =
-  (typeof REGISTERED_VALUE_NODE_KINDS)[number];
 export type RegisteredValueNode =
-  (typeof REGISTERED_VALUE_NODES)[RegisteredValueNodeKind];
+  | StandaloneValueNode
+  | MapEntryValueNode
+  | StructFieldValueNode;
+export const REGISTERED_VALUE_NODE_KINDS = [
+  ...STANDALONE_VALUE_NODE_KINDS,
+  'mapEntryValueNode',
+  'structFieldValueNode',
+] satisfies readonly RegisteredValueNode['kind'][];
+null as unknown as RegisteredValueNode['kind'] satisfies (typeof REGISTERED_VALUE_NODE_KINDS)[number];
 
 // Value Node Helpers.
-
 export type ValueNode = StandaloneValueNode;
 export const VALUE_NODES = STANDALONE_VALUE_NODE_KINDS;
