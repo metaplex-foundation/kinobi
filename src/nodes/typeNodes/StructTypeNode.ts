@@ -4,14 +4,18 @@ import {
   structFieldTypeNodeFromIdl,
 } from './StructFieldTypeNode';
 
-export interface StructTypeNode {
+export interface StructTypeNode<
+  TFields extends StructFieldTypeNode[] = StructFieldTypeNode[],
+> {
   readonly kind: 'structTypeNode';
 
   // Children.
-  readonly fields: StructFieldTypeNode[];
+  readonly fields: TFields;
 }
 
-export function structTypeNode(fields: StructFieldTypeNode[]): StructTypeNode {
+export function structTypeNode<
+  const TFields extends StructFieldTypeNode[] = StructFieldTypeNode[],
+>(fields: TFields): StructTypeNode<TFields> {
   return { kind: 'structTypeNode', fields };
 }
 
