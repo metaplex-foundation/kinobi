@@ -575,10 +575,11 @@ export function getTypeManifestVisitor(input: {
 
         visitDateTimeType(dateTimeType, { self }) {
           const numberManifest = visit(dateTimeType.number, self);
-          if (!isInteger(dateTimeType.number)) {
+          const dateTimeNumber = resolveNestedTypeNode(dateTimeType.number);
+          if (!isInteger(dateTimeNumber)) {
             throw new Error(
               `DateTime wrappers can only be applied to integer ` +
-                `types. Got type [${dateTimeType.number.toString()}].`
+                `types. Got type [${dateTimeNumber.toString()}].`
             );
           }
           numberManifest.strictImports.add('umi', 'DateTime');
