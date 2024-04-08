@@ -1,4 +1,4 @@
-import { ProgramNode } from '../../../nodes';
+import { ProgramNode, resolveNestedTypeNode } from '../../../nodes';
 import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragment, mergeFragments } from './common';
 import { getDiscriminatorConditionFragment } from './discriminatorCondition';
@@ -62,7 +62,7 @@ function getProgramAccountsIdentifierFunctionFragment(
       return getDiscriminatorConditionFragment({
         ...scope,
         discriminators: account.discriminators ?? [],
-        struct: account.data,
+        struct: resolveNestedTypeNode(account.data),
         dataName: 'data',
         ifTrue: `return ${programAccountsEnum}.${variant};`,
       });

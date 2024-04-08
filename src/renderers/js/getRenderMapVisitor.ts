@@ -12,6 +12,7 @@ import {
   isNode,
   isNodeFilter,
   ProgramNode,
+  resolveNestedTypeNode,
   SizeDiscriminatorNode,
   structTypeNodeFromInstructionArgumentNodes,
   VALUE_NODES,
@@ -323,9 +324,9 @@ export function getRenderMapVisitor(
             | (FieldDiscriminatorNode & { value: string })
             | null = null;
           if (isNode(discriminator, 'fieldDiscriminatorNode')) {
-            const discriminatorField = node.data.fields.find(
-              (f) => f.name === discriminator.name
-            );
+            const discriminatorField = resolveNestedTypeNode(
+              node.data
+            ).fields.find((f) => f.name === discriminator.name);
             const discriminatorValue = discriminatorField?.defaultValue
               ? visit(discriminatorField.defaultValue, valueNodeVisitor)
               : undefined;

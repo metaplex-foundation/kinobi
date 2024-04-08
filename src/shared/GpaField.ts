@@ -1,4 +1,9 @@
-import type { AccountNode, RegisteredTypeNode, TypeNode } from '../nodes';
+import {
+  resolveNestedTypeNode,
+  type AccountNode,
+  type RegisteredTypeNode,
+  type TypeNode,
+} from '../nodes';
 import { Visitor, visit } from '../visitors';
 
 export type GpaField = {
@@ -15,7 +20,8 @@ export function getGpaFieldsFromAccount(
   >
 ): GpaField[] {
   let offset: number | null = 0;
-  return node.data.fields.map((field): GpaField => {
+  const struct = resolveNestedTypeNode(node.data);
+  return struct.fields.map((field): GpaField => {
     const fieldOffset = offset;
     if (offset !== null) {
       const newOffset = visit(field.type, sizeVisitor);
