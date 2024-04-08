@@ -1,10 +1,14 @@
 import { ArgumentValueNode, ResolverValueNode } from './contextualValueNodes';
 
-export interface InstructionRemainingAccountsNode {
+export interface InstructionRemainingAccountsNode<
+  TValue extends ArgumentValueNode | ResolverValueNode =
+    | ArgumentValueNode
+    | ResolverValueNode,
+> {
   readonly kind: 'instructionRemainingAccountsNode';
 
   // Children.
-  readonly value: ArgumentValueNode | ResolverValueNode;
+  readonly value: TValue;
 
   // Data.
   readonly isOptional?: boolean;
@@ -12,19 +16,16 @@ export interface InstructionRemainingAccountsNode {
   readonly isWritable?: boolean;
 }
 
-export type InstructionRemainingAccountsNodeInput = Omit<
-  InstructionRemainingAccountsNode,
-  'kind'
->;
-
-export function instructionRemainingAccountsNode(
-  value: ArgumentValueNode | ResolverValueNode,
+export function instructionRemainingAccountsNode<
+  TValue extends ArgumentValueNode | ResolverValueNode,
+>(
+  value: TValue,
   options: {
     isOptional?: boolean;
     isSigner?: boolean | 'either';
     isWritable?: boolean;
   } = {}
-): InstructionRemainingAccountsNode {
+): InstructionRemainingAccountsNode<TValue> {
   return {
     kind: 'instructionRemainingAccountsNode',
     value,

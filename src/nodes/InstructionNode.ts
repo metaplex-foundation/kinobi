@@ -87,14 +87,16 @@ export type InstructionNodeInput<
 };
 
 export function instructionNode<
-  TAccounts extends InstructionAccountNode[] = [],
-  TArguments extends InstructionArgumentNode[] = [],
-  TExtraArguments extends InstructionArgumentNode[] | undefined = undefined,
-  TRemainingAccounts extends
+  const TAccounts extends InstructionAccountNode[] = [],
+  const TArguments extends InstructionArgumentNode[] = [],
+  const TExtraArguments extends
+    | InstructionArgumentNode[]
+    | undefined = undefined,
+  const TRemainingAccounts extends
     | InstructionRemainingAccountsNode[]
     | undefined = undefined,
-  TByteDeltas extends InstructionByteDeltaNode[] | undefined = undefined,
-  TDiscriminators extends DiscriminatorNode[] | undefined = undefined,
+  const TByteDeltas extends InstructionByteDeltaNode[] | undefined = undefined,
+  const TDiscriminators extends DiscriminatorNode[] | undefined = undefined,
 >(
   input: InstructionNodeInput<
     TAccounts,

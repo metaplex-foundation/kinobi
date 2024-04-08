@@ -17,17 +17,20 @@ import {
   stringValueNode,
 } from './valueNodes';
 
-export interface PdaNode {
+export interface PdaNode<TSeeds extends PdaSeedNode[] = PdaSeedNode[]> {
   readonly kind: 'pdaNode';
 
   // Children.
-  readonly seeds: PdaSeedNode[];
+  readonly seeds: TSeeds;
 
   // Data.
   readonly name: MainCaseString;
 }
 
-export function pdaNode(name: string, seeds: PdaSeedNode[]): PdaNode {
+export function pdaNode<const TSeeds extends PdaSeedNode[]>(
+  name: string,
+  seeds: TSeeds
+): PdaNode<TSeeds> {
   if (!name) {
     throw new InvalidKinobiTreeError('PdaNode must have a name.');
   }
