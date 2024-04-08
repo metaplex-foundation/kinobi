@@ -6,15 +6,21 @@ import { ErrorNode, errorNodeFromIdl } from './ErrorNode';
 import { InstructionNode, instructionNodeFromIdl } from './InstructionNode';
 import { PdaNode, pdaNodeFromIdl } from './PdaNode';
 
-export interface ProgramNode {
+export interface ProgramNode<
+  TPdas extends PdaNode[] = PdaNode[],
+  TAccounts extends AccountNode[] = AccountNode[],
+  TInstructions extends InstructionNode[] = InstructionNode[],
+  TDefinedTypes extends DefinedTypeNode[] = DefinedTypeNode[],
+  TErrors extends ErrorNode[] = ErrorNode[],
+> {
   readonly kind: 'programNode';
 
   // Children.
-  readonly pdas: PdaNode[];
-  readonly accounts: AccountNode[];
-  readonly instructions: InstructionNode[];
-  readonly definedTypes: DefinedTypeNode[];
-  readonly errors: ErrorNode[];
+  readonly pdas: TPdas;
+  readonly accounts: TAccounts;
+  readonly instructions: TInstructions;
+  readonly definedTypes: TDefinedTypes;
+  readonly errors: TErrors;
 
   // Data.
   readonly name: MainCaseString;
@@ -24,22 +30,45 @@ export interface ProgramNode {
   readonly origin?: 'shank' | 'anchor';
 }
 
-export type ProgramNodeInput = Omit<
-  PartialExcept<ProgramNode, 'publicKey'>,
+export type ProgramNodeInput<
+  TPdas extends PdaNode[] = PdaNode[],
+  TAccounts extends AccountNode[] = AccountNode[],
+  TInstructions extends InstructionNode[] = InstructionNode[],
+  TDefinedTypes extends DefinedTypeNode[] = DefinedTypeNode[],
+  TErrors extends ErrorNode[] = ErrorNode[],
+> = Omit<
+  PartialExcept<
+    ProgramNode<TPdas, TAccounts, TInstructions, TDefinedTypes, TErrors>,
+    'publicKey'
+  >,
   'kind' | 'name' | 'prefix'
 > & {
   readonly name: string;
   readonly prefix?: string;
 };
 
-export function programNode(input: ProgramNodeInput): ProgramNode {
+export function programNode<
+  const TPdas extends PdaNode[] = [],
+  const TAccounts extends AccountNode[] = [],
+  const TInstructions extends InstructionNode[] = [],
+  const TDefinedTypes extends DefinedTypeNode[] = [],
+  const TErrors extends ErrorNode[] = [],
+>(
+  input: ProgramNodeInput<
+    TPdas,
+    TAccounts,
+    TInstructions,
+    TDefinedTypes,
+    TErrors
+  >
+): ProgramNode<TPdas, TAccounts, TInstructions, TDefinedTypes, TErrors> {
   return {
     kind: 'programNode',
-    pdas: input.pdas ?? [],
-    accounts: input.accounts ?? [],
-    instructions: input.instructions ?? [],
-    definedTypes: input.definedTypes ?? [],
-    errors: input.errors ?? [],
+    pdas: (input.pdas ?? []) as TPdas,
+    accounts: (input.accounts ?? []) as TAccounts,
+    instructions: (input.instructions ?? []) as TInstructions,
+    definedTypes: (input.definedTypes ?? []) as TDefinedTypes,
+    errors: (input.errors ?? []) as TErrors,
     name: mainCase(input.name),
     prefix: mainCase(input.prefix ?? ''),
     publicKey: input.publicKey,
