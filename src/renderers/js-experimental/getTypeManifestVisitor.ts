@@ -8,6 +8,7 @@ import {
   structTypeNode,
   structTypeNodeFromInstructionArgumentNodes,
   resolveNestedTypeNode,
+  TypeNodeKind,
 } from '../../nodes';
 import { camelCase, jsDocblock, mainCase, pipe } from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
@@ -733,7 +734,7 @@ export function getTypeManifestVisitor(input: {
 
 function getArrayLikeSizeOption(
   count: CountNode,
-  visitor: Visitor<TypeManifest, 'numberTypeNode'>
+  visitor: Visitor<TypeManifest, TypeNodeKind>
 ): {
   encoder: Fragment;
   decoder: Fragment;
@@ -750,7 +751,8 @@ function getArrayLikeSizeOption(
       decoder: fragment(`size: 'remainder'`),
     };
   }
-  if (count.prefix.format === 'u32' && count.prefix.endian === 'le') {
+  const prefix = resolveNestedTypeNode(count.prefix);
+  if (prefix.format === 'u32' && prefix.endian === 'le') {
     return { encoder: fragment(''), decoder: fragment('') };
   }
   const prefixManifest = visit(count.prefix, visitor);

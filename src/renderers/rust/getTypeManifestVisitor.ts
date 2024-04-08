@@ -107,11 +107,17 @@ export function getTypeManifestVisitor() {
             };
           }
 
-          if (
-            isNode(arrayType.count, 'prefixedCountNode') &&
-            arrayType.count.prefix.endian === 'le'
-          ) {
-            switch (arrayType.count.prefix.format) {
+          if (isNode(arrayType.count, 'remainderCountNode')) {
+            childManifest.imports.add('kaigan::types::RemainderVec');
+            return {
+              ...childManifest,
+              type: `RemainderVec<${childManifest.type}>`,
+            };
+          }
+
+          const prefix = resolveNestedTypeNode(arrayType.count.prefix);
+          if (prefix.endian === 'le') {
+            switch (prefix.format) {
               case 'u32':
                 return {
                   ...childManifest,
@@ -120,26 +126,18 @@ export function getTypeManifestVisitor() {
               case 'u8':
               case 'u16':
               case 'u64': {
-                const prefix = arrayType.count.prefix.format.toUpperCase();
-                childManifest.imports.add(`kaigan::types::${prefix}PrefixVec`);
+                const prefixFormat = prefix.format.toUpperCase();
+                childManifest.imports.add(
+                  `kaigan::types::${prefixFormat}PrefixVec`
+                );
                 return {
                   ...childManifest,
-                  type: `${prefix}PrefixVec<${childManifest.type}>`,
+                  type: `${prefixFormat}PrefixVec<${childManifest.type}>`,
                 };
               }
               default:
-                throw new Error(
-                  `Array prefix not supported: ${arrayType.count.prefix.format}`
-                );
+                throw new Error(`Array prefix not supported: ${prefix.format}`);
             }
-          }
-
-          if (isNode(arrayType.count, 'remainderCountNode')) {
-            childManifest.imports.add('kaigan::types::RemainderVec');
-            return {
-              ...childManifest,
-              type: `RemainderVec<${childManifest.type}>`,
-            };
           }
 
           // TODO: Add to the Rust validator.
