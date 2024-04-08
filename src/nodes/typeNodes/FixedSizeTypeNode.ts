@@ -1,18 +1,18 @@
 import { TypeNode } from './TypeNode';
 
-export interface FixedSizeTypeNode {
+export interface FixedSizeTypeNode<TType extends TypeNode = TypeNode> {
   readonly kind: 'fixedSizeTypeNode';
 
   // Children.
-  readonly type: TypeNode;
+  readonly type: TType;
 
   // Data.
   readonly size: number;
 }
 
-export function fixedSizeTypeNode<TType extends FixedSizeTypeNode['type']>(
+export function fixedSizeTypeNode<TType extends TypeNode>(
   type: TType,
   size: number
-): FixedSizeTypeNode & { type: TType } {
+): FixedSizeTypeNode<TType> {
   return { kind: 'fixedSizeTypeNode', type, size };
 }

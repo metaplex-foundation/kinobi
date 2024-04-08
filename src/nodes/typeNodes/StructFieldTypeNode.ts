@@ -3,12 +3,15 @@ import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../../shared';
 import { ValueNode } from '../valueNodes';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
-export interface StructFieldTypeNode {
+export interface StructFieldTypeNode<
+  TType extends TypeNode = TypeNode,
+  TDefaultValue extends ValueNode | undefined = ValueNode | undefined,
+> {
   readonly kind: 'structFieldTypeNode';
 
   // Children.
-  readonly type: TypeNode;
-  readonly defaultValue?: ValueNode;
+  readonly type: TType;
+  readonly defaultValue?: TDefaultValue;
 
   // Data.
   readonly name: MainCaseString;
@@ -16,17 +19,23 @@ export interface StructFieldTypeNode {
   readonly defaultValueStrategy?: 'optional' | 'omitted';
 }
 
-export type StructFieldTypeNodeInput = {
+export type StructFieldTypeNodeInput<
+  TType extends TypeNode = TypeNode,
+  TDefaultValue extends ValueNode | undefined = ValueNode | undefined,
+> = {
   readonly name: string;
-  readonly type: TypeNode;
+  readonly type: TType;
   readonly docs?: string[];
-  readonly defaultValue?: ValueNode;
+  readonly defaultValue?: TDefaultValue;
   readonly defaultValueStrategy?: 'optional' | 'omitted';
 };
 
-export function structFieldTypeNode(
-  input: StructFieldTypeNodeInput
-): StructFieldTypeNode {
+export function structFieldTypeNode<
+  TType extends TypeNode,
+  TDefaultValue extends ValueNode | undefined = undefined,
+>(
+  input: StructFieldTypeNodeInput<TType, TDefaultValue>
+): StructFieldTypeNode<TType, TDefaultValue> {
   if (!input.name) {
     throw new InvalidKinobiTreeError('StructFieldTypeNode must have a name.');
   }

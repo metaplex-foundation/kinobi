@@ -244,10 +244,8 @@ export function getTypeManifestVisitor() {
         visitOptionType(optionType, { self }) {
           const childManifest = visit(optionType.item, self);
 
-          if (
-            optionType.prefix.format === 'u8' &&
-            optionType.prefix.endian === 'le'
-          ) {
+          const optionPrefix = resolveNestedTypeNode(optionType.prefix);
+          if (optionPrefix.format === 'u8' && optionPrefix.endian === 'le') {
             return {
               ...childManifest,
               type: `Option<${childManifest.type}>`,

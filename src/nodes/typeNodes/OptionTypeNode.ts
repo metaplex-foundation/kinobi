@@ -1,31 +1,42 @@
 import type { IdlTypeOption } from '../../idl';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
-import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
+import {
+  ResolveNestedTypeNode,
+  TypeNode,
+  createTypeNodeFromIdl,
+} from './TypeNode';
 
-export interface OptionTypeNode {
+export interface OptionTypeNode<
+  TItem extends TypeNode = TypeNode,
+  TPrefix extends
+    ResolveNestedTypeNode<NumberTypeNode> = ResolveNestedTypeNode<NumberTypeNode>,
+> {
   readonly kind: 'optionTypeNode';
 
   // Children.
-  readonly item: TypeNode;
-  readonly prefix: NumberTypeNode;
+  readonly item: TItem;
+  readonly prefix: TPrefix;
 
   // Data.
   readonly fixed: boolean;
   readonly idlOption: 'option' | 'coption';
 }
 
-export function optionTypeNode(
-  item: TypeNode,
+export function optionTypeNode<
+  TItem extends TypeNode,
+  TPrefix extends ResolveNestedTypeNode<NumberTypeNode> = NumberTypeNode<'u8'>,
+>(
+  item: TItem,
   options: {
-    readonly prefix?: NumberTypeNode;
+    readonly prefix?: TPrefix;
     readonly fixed?: boolean;
     readonly idlOption?: OptionTypeNode['idlOption'];
   } = {}
-): OptionTypeNode {
+): OptionTypeNode<TItem, TPrefix> {
   return {
     kind: 'optionTypeNode',
     item,
-    prefix: options.prefix ?? numberTypeNode('u8'),
+    prefix: (options.prefix ?? numberTypeNode('u8')) as TPrefix,
     fixed: options.fixed ?? false,
     idlOption: options.idlOption ?? 'option',
   };

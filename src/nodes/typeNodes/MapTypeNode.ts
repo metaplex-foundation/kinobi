@@ -1,36 +1,45 @@
 import type { IdlTypeMap } from '../../idl';
 import {
   CountNode,
+  PrefixedCountNode,
   fixedCountNode,
   prefixedCountNode,
   remainderCountNode,
 } from '../countNodes';
-import { numberTypeNode } from './NumberTypeNode';
+import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
-export interface MapTypeNode {
+export interface MapTypeNode<
+  TKey extends TypeNode = TypeNode,
+  TValue extends TypeNode = TypeNode,
+  TCount extends CountNode = CountNode,
+> {
   readonly kind: 'mapTypeNode';
 
   // Children.
-  readonly key: TypeNode;
-  readonly value: TypeNode;
-  readonly count: CountNode;
+  readonly key: TKey;
+  readonly value: TValue;
+  readonly count: TCount;
 
   // Data.
   readonly idlMap: 'hashMap' | 'bTreeMap';
 }
 
-export function mapTypeNode(
-  key: TypeNode,
-  value: TypeNode,
-  count?: CountNode,
+export function mapTypeNode<
+  TKey extends TypeNode = TypeNode,
+  TValue extends TypeNode = TypeNode,
+  TCount extends CountNode = PrefixedCountNode<NumberTypeNode<'u32'>>,
+>(
+  key: TKey,
+  value: TValue,
+  count?: TCount,
   idlMap?: MapTypeNode['idlMap']
-): MapTypeNode {
+): MapTypeNode<TKey, TValue, TCount> {
   return {
     kind: 'mapTypeNode',
     key,
     value,
-    count: count ?? prefixedCountNode(numberTypeNode('u32')),
+    count: (count ?? prefixedCountNode(numberTypeNode('u32'))) as TCount,
     idlMap: idlMap ?? 'hashMap',
   };
 }

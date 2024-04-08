@@ -350,10 +350,8 @@ export function getTypeManifestVisitor(input: {
           const decoderOptions: string[] = [];
 
           // Prefix option.
-          if (
-            optionType.prefix.format !== 'u8' ||
-            optionType.prefix.endian !== 'le'
-          ) {
+          const optionPrefix = resolveNestedTypeNode(optionType.prefix);
+          if (optionPrefix.format !== 'u8' || optionPrefix.endian !== 'le') {
             const prefixManifest = visit(optionType.prefix, self);
             childManifest.encoder.mergeImportsWith(prefixManifest.encoder);
             childManifest.decoder.mergeImportsWith(prefixManifest.decoder);

@@ -306,10 +306,8 @@ export function getTypeManifestVisitor(input: {
           const options: string[] = [];
 
           // Prefix option.
-          if (
-            optionType.prefix.format !== 'u8' ||
-            optionType.prefix.endian !== 'le'
-          ) {
+          const optionPrefix = resolveNestedTypeNode(optionType.prefix);
+          if (optionPrefix.format !== 'u8' || optionPrefix.endian !== 'le') {
             const prefixManifest = visit(optionType.prefix, self);
             childManifest.strictImports.mergeWith(prefixManifest.strictImports);
             childManifest.looseImports.mergeWith(prefixManifest.looseImports);
@@ -596,10 +594,11 @@ export function getTypeManifestVisitor(input: {
 
         visitSolAmountType(solAmountType, { self }) {
           const numberManifest = visit(solAmountType.number, self);
-          if (!isUnsignedInteger(solAmountType.number)) {
+          const nestedNumber = resolveNestedTypeNode(solAmountType.number);
+          if (!isUnsignedInteger(nestedNumber)) {
             throw new Error(
               `Amount wrappers can only be applied to unsigned ` +
-                `integer types. Got type [${solAmountType.number.toString()}].`
+                `integer types. Got type [${nestedNumber.toString()}].`
             );
           }
           const idAndDecimals = `'SOL', 9`;
