@@ -6,7 +6,7 @@ import {
   prefixedCountNode,
   remainderCountNode,
 } from '../countNodes';
-import { numberTypeNode } from './NumberTypeNode';
+import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export interface ArrayTypeNode<
@@ -22,7 +22,7 @@ export interface ArrayTypeNode<
 
 export function arrayTypeNode<
   TItem extends TypeNode,
-  TCount extends CountNode = PrefixedCountNode,
+  TCount extends CountNode = PrefixedCountNode<NumberTypeNode<'u32'>>,
 >(item: TItem, count?: TCount): ArrayTypeNode<TItem, TCount> {
   return {
     kind: 'arrayTypeNode',

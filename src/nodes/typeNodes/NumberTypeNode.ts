@@ -12,18 +12,18 @@ export type NumberFormat =
   | 'f32'
   | 'f64';
 
-export type NumberTypeNode = {
+export interface NumberTypeNode<TFormat extends NumberFormat = NumberFormat> {
   readonly kind: 'numberTypeNode';
 
   // Data.
-  readonly format: NumberFormat;
+  readonly format: TFormat;
   readonly endian: 'le' | 'be';
-};
+}
 
-export function numberTypeNode(
-  format: NumberFormat,
+export function numberTypeNode<TFormat extends NumberFormat = NumberFormat>(
+  format: TFormat,
   endian: 'le' | 'be' = 'le'
-): NumberTypeNode {
+): NumberTypeNode<TFormat> {
   return { kind: 'numberTypeNode', format, endian };
 }
 
