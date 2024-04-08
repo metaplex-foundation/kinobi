@@ -1,4 +1,3 @@
-import { getNodeKinds } from '../shared/utils';
 import type { AccountNode } from './AccountNode';
 import type { DefinedTypeNode } from './DefinedTypeNode';
 import type { ErrorNode } from './ErrorNode';
@@ -10,50 +9,91 @@ import type { InstructionRemainingAccountsNode } from './InstructionRemainingAcc
 import type { PdaNode } from './PdaNode';
 import type { ProgramNode } from './ProgramNode';
 import type { RootNode } from './RootNode';
-import { REGISTERED_CONTEXTUAL_VALUE_NODES } from './contextualValueNodes/ContextualValueNode';
-import { REGISTERED_DISCRIMINATOR_NODES } from './discriminatorNodes/DiscriminatorNode';
-import { REGISTERED_LINK_NODES } from './linkNodes/LinkNode';
-import { REGISTERED_PDA_SEED_NODES } from './pdaSeedNodes/PdaSeedNode';
-import { REGISTERED_COUNT_NODES } from './countNodes/CountNode';
-import { REGISTERED_TYPE_NODES } from './typeNodes/TypeNode';
-import { REGISTERED_VALUE_NODES } from './valueNodes/ValueNode';
+import {
+  REGISTERED_CONTEXTUAL_VALUE_NODE_KINDS,
+  RegisteredContextualValueNode,
+} from './contextualValueNodes/ContextualValueNode';
+import {
+  REGISTERED_COUNT_NODE_KINDS,
+  RegisteredCountNode,
+} from './countNodes/CountNode';
+import {
+  REGISTERED_DISCRIMINATOR_NODE_KINDS,
+  RegisteredDiscriminatorNode,
+} from './discriminatorNodes/DiscriminatorNode';
+import {
+  REGISTERED_LINK_NODE_KINDS,
+  RegisteredLinkNode,
+} from './linkNodes/LinkNode';
+import {
+  REGISTERED_PDA_SEED_NODE_KINDS,
+  RegisteredPdaSeedNode,
+} from './pdaSeedNodes/PdaSeedNode';
+import {
+  REGISTERED_TYPE_NODE_KINDS,
+  RegisteredTypeNode,
+} from './typeNodes/TypeNode';
+import {
+  REGISTERED_VALUE_NODE_KINDS,
+  RegisteredValueNode,
+} from './valueNodes/ValueNode';
 
 // Node Registration.
-
-const REGISTERED_NODES = {
-  rootNode: {} as RootNode,
-  programNode: {} as ProgramNode,
-  pdaNode: {} as PdaNode,
-  accountNode: {} as AccountNode,
-  instructionAccountNode: {} as InstructionAccountNode,
-  instructionArgumentNode: {} as InstructionArgumentNode,
-  instructionByteDeltaNode: {} as InstructionByteDeltaNode,
-  instructionNode: {} as InstructionNode,
-  instructionRemainingAccountsNode: {} as InstructionRemainingAccountsNode,
-  errorNode: {} as ErrorNode,
-  definedTypeNode: {} as DefinedTypeNode,
-
+export type Node =
   // Groups.
-  ...REGISTERED_CONTEXTUAL_VALUE_NODES,
-  ...REGISTERED_DISCRIMINATOR_NODES,
-  ...REGISTERED_LINK_NODES,
-  ...REGISTERED_PDA_SEED_NODES,
-  ...REGISTERED_COUNT_NODES,
-  ...REGISTERED_TYPE_NODES,
-  ...REGISTERED_VALUE_NODES,
-};
-
-export const REGISTERED_NODE_KINDS = getNodeKinds(REGISTERED_NODES);
-export type NodeDictionary = typeof REGISTERED_NODES;
-export type NodeKind = keyof NodeDictionary;
-export type Node = NodeDictionary[NodeKind];
+  | RegisteredContextualValueNode
+  | RegisteredCountNode
+  | RegisteredDiscriminatorNode
+  | RegisteredLinkNode
+  | RegisteredPdaSeedNode
+  | RegisteredTypeNode
+  | RegisteredValueNode
+  // Nodes.
+  | RootNode
+  | ProgramNode
+  | PdaNode
+  | AccountNode
+  | InstructionAccountNode
+  | InstructionArgumentNode
+  | InstructionByteDeltaNode
+  | InstructionNode
+  | InstructionRemainingAccountsNode
+  | ErrorNode
+  | DefinedTypeNode;
+export const REGISTERED_NODE_KINDS = [
+  ...REGISTERED_CONTEXTUAL_VALUE_NODE_KINDS,
+  ...REGISTERED_DISCRIMINATOR_NODE_KINDS,
+  ...REGISTERED_LINK_NODE_KINDS,
+  ...REGISTERED_PDA_SEED_NODE_KINDS,
+  ...REGISTERED_COUNT_NODE_KINDS,
+  ...REGISTERED_TYPE_NODE_KINDS,
+  ...REGISTERED_VALUE_NODE_KINDS,
+  'rootNode',
+  'programNode',
+  'pdaNode',
+  'accountNode',
+  'instructionAccountNode',
+  'instructionArgumentNode',
+  'instructionByteDeltaNode',
+  'instructionNode',
+  'instructionRemainingAccountsNode',
+  'errorNode',
+  'definedTypeNode',
+] satisfies readonly Node['kind'][];
+null as unknown as Node['kind'] satisfies (typeof REGISTERED_NODE_KINDS)[number];
+export type NodeKind = Node['kind'];
 
 // Node Helpers.
+
+export type GetNodeFromKind<TKind extends NodeKind> = Extract<
+  Node,
+  { kind: TKind }
+>;
 
 export function isNode<TKind extends NodeKind>(
   node: Node | null | undefined,
   kind: TKind | TKind[]
-): node is NodeDictionary[TKind] {
+): node is GetNodeFromKind<TKind> {
   const kinds = Array.isArray(kind) ? kind : [kind];
   return !!node && (kinds as NodeKind[]).includes(node.kind);
 }
@@ -61,7 +101,7 @@ export function isNode<TKind extends NodeKind>(
 export function assertIsNode<TKind extends NodeKind>(
   node: Node | null | undefined,
   kind: TKind | TKind[]
-): asserts node is NodeDictionary[TKind] {
+): asserts node is GetNodeFromKind<TKind> {
   const kinds = Array.isArray(kind) ? kind : [kind];
   if (!isNode(node, kinds)) {
     throw new Error(
@@ -72,14 +112,14 @@ export function assertIsNode<TKind extends NodeKind>(
 
 export function isNodeFilter<TKind extends NodeKind>(
   kind: TKind | TKind[]
-): (node: Node | null | undefined) => node is NodeDictionary[TKind] {
-  return (node): node is NodeDictionary[TKind] => isNode(node, kind);
+): (node: Node | null | undefined) => node is GetNodeFromKind<TKind> {
+  return (node): node is GetNodeFromKind<TKind> => isNode(node, kind);
 }
 
 export function assertIsNodeFilter<TKind extends NodeKind>(
   kind: TKind | TKind[]
-): (node: Node | null | undefined) => node is NodeDictionary[TKind] {
-  return (node): node is NodeDictionary[TKind] => {
+): (node: Node | null | undefined) => node is GetNodeFromKind<TKind> {
+  return (node): node is GetNodeFromKind<TKind> => {
     assertIsNode(node, kind);
     return true;
   };
@@ -87,8 +127,8 @@ export function assertIsNodeFilter<TKind extends NodeKind>(
 
 export function removeNullAndAssertIsNodeFilter<TKind extends NodeKind>(
   kind: TKind | TKind[]
-): (node: Node | null | undefined) => node is NodeDictionary[TKind] {
-  return (node): node is NodeDictionary[TKind] => {
+): (node: Node | null | undefined) => node is GetNodeFromKind<TKind> {
+  return (node): node is GetNodeFromKind<TKind> => {
     if (node) assertIsNode(node, kind);
     return node != null;
   };

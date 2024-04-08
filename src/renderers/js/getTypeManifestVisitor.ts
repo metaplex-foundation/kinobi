@@ -2,7 +2,7 @@ import {
   ArrayTypeNode,
   NumberTypeNode,
   REGISTERED_TYPE_NODE_KINDS,
-  TypeNodeKind,
+  TypeNode,
   isInteger,
   isNode,
   isScalarEnum,
@@ -716,7 +716,7 @@ function getArrayLikeSizeOption(
     JavaScriptTypeManifest,
     'strictImports' | 'looseImports' | 'serializerImports'
   >,
-  self: Visitor<JavaScriptTypeManifest, TypeNodeKind>
+  self: Visitor<JavaScriptTypeManifest, TypeNode['kind']>
 ): string | null {
   if (isNode(count, 'fixedCountNode')) return `size: ${count.value}`;
   if (isNode(count, 'remainderCountNode')) return `size: 'remainder'`;

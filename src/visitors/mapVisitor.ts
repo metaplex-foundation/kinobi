@@ -1,4 +1,4 @@
-import { NodeDictionary, NodeKind, REGISTERED_NODE_KINDS } from '../nodes';
+import { GetNodeFromKind, NodeKind, REGISTERED_NODE_KINDS } from '../nodes';
 import {
   GetVisitorFunctionName,
   Visitor,
@@ -20,7 +20,7 @@ export function mapVisitor<TReturnFrom, TReturnTo, TNodeKind extends NodeKind>(
       return [
         [
           key,
-          (node: NodeDictionary[TNodeKind]) =>
+          (node: GetNodeFromKind<TNodeKind>) =>
             map(
               (visitor[key as GetVisitorFunctionName<TNodeKind>] as Function)(
                 node

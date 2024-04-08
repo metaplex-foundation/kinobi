@@ -1,14 +1,14 @@
 import {
+  CountNode,
   NumberTypeNode,
   REGISTERED_TYPE_NODE_KINDS,
-  CountNode,
+  TypeNode,
   isNode,
   isScalarEnum,
+  resolveNestedTypeNode,
   structFieldTypeNode,
   structTypeNode,
   structTypeNodeFromInstructionArgumentNodes,
-  resolveNestedTypeNode,
-  TypeNodeKind,
 } from '../../nodes';
 import { camelCase, jsDocblock, mainCase, pipe } from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
@@ -734,7 +734,7 @@ export function getTypeManifestVisitor(input: {
 
 function getArrayLikeSizeOption(
   count: CountNode,
-  visitor: Visitor<TypeManifest, TypeNodeKind>
+  visitor: Visitor<TypeManifest, TypeNode['kind']>
 ): {
   encoder: Fragment;
   decoder: Fragment;

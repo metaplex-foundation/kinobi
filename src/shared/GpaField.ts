@@ -1,4 +1,4 @@
-import type { AccountNode, RegisteredTypeNodeKind, TypeNode } from '../nodes';
+import type { AccountNode, RegisteredTypeNode, TypeNode } from '../nodes';
 import { Visitor, visit } from '../visitors';
 
 export type GpaField = {
@@ -11,7 +11,7 @@ export function getGpaFieldsFromAccount(
   node: AccountNode,
   sizeVisitor: Visitor<
     number | null,
-    RegisteredTypeNodeKind | 'definedTypeLinkNode'
+    RegisteredTypeNode['kind'] | 'definedTypeLinkNode'
   >
 ): GpaField[] {
   let offset: number | null = 0;

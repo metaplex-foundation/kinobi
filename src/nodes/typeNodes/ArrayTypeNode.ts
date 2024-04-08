@@ -9,18 +9,21 @@ import {
 import { numberTypeNode } from './NumberTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
-export type ArrayTypeNode = {
+export interface ArrayTypeNode<
+  TItem extends TypeNode = TypeNode,
+  TCount extends CountNode = CountNode,
+> {
   readonly kind: 'arrayTypeNode';
 
   // Children.
-  readonly item: TypeNode;
-  readonly count: CountNode;
-};
+  readonly item: TItem;
+  readonly count: TCount;
+}
 
 export function arrayTypeNode<
-  TItem extends ArrayTypeNode['item'],
-  TCount extends ArrayTypeNode['count'] = PrefixedCountNode,
->(item: TItem, count?: TCount): ArrayTypeNode & { item: TItem; count: TCount } {
+  TItem extends TypeNode,
+  TCount extends CountNode = PrefixedCountNode,
+>(item: TItem, count?: TCount): ArrayTypeNode<TItem, TCount> {
   return {
     kind: 'arrayTypeNode',
     item,
