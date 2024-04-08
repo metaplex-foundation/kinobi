@@ -3,28 +3,34 @@ import { ArgumentValueNode, ResolverValueNode } from './contextualValueNodes';
 import { AccountLinkNode } from './linkNodes';
 import { NumberValueNode } from './valueNodes';
 
-export interface InstructionByteDeltaNode {
+type InstructionByteDeltaNodeValue =
+  | NumberValueNode
+  | AccountLinkNode
+  | ArgumentValueNode
+  | ResolverValueNode;
+
+export interface InstructionByteDeltaNode<
+  TValue extends InstructionByteDeltaNodeValue = InstructionByteDeltaNodeValue,
+> {
   readonly kind: 'instructionByteDeltaNode';
 
   // Children.
-  readonly value:
-    | NumberValueNode
-    | AccountLinkNode
-    | ArgumentValueNode
-    | ResolverValueNode;
+  readonly value: TValue;
 
   // Data.
   readonly withHeader: boolean;
   readonly subtract?: boolean;
 }
 
-export function instructionByteDeltaNode(
-  value: InstructionByteDeltaNode['value'],
+export function instructionByteDeltaNode<
+  TValue extends InstructionByteDeltaNodeValue,
+>(
+  value: TValue,
   options: {
     withHeader?: boolean;
     subtract?: boolean;
   } = {}
-): InstructionByteDeltaNode {
+): InstructionByteDeltaNode<TValue> {
   return {
     kind: 'instructionByteDeltaNode',
     value,

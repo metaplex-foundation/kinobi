@@ -2,11 +2,15 @@ import { IdlInstructionAccount } from '../idl';
 import { MainCaseString, PartialExcept, mainCase } from '../shared';
 import { InstructionInputValueNode } from './contextualValueNodes';
 
-export interface InstructionAccountNode {
+export interface InstructionAccountNode<
+  TDefaultValue extends InstructionInputValueNode | undefined =
+    | InstructionInputValueNode
+    | undefined,
+> {
   readonly kind: 'instructionAccountNode';
 
   // Children.
-  readonly defaultValue?: InstructionInputValueNode;
+  readonly defaultValue?: TDefaultValue;
 
   // Data.
   readonly name: MainCaseString;
@@ -16,16 +20,25 @@ export interface InstructionAccountNode {
   readonly docs: string[];
 }
 
-export type InstructionAccountNodeInput = Omit<
-  PartialExcept<InstructionAccountNode, 'isWritable' | 'isSigner'>,
+export type InstructionAccountNodeInput<
+  TDefaultValue extends InstructionInputValueNode | undefined =
+    | InstructionInputValueNode
+    | undefined,
+> = Omit<
+  PartialExcept<
+    InstructionAccountNode<TDefaultValue>,
+    'isWritable' | 'isSigner'
+  >,
   'kind' | 'name'
 > & {
   readonly name: string;
 };
 
-export function instructionAccountNode(
-  input: InstructionAccountNodeInput
-): InstructionAccountNode {
+export function instructionAccountNode<
+  TDefaultValue extends InstructionInputValueNode | undefined = undefined,
+>(
+  input: InstructionAccountNodeInput<TDefaultValue>
+): InstructionAccountNode<TDefaultValue> {
   return {
     kind: 'instructionAccountNode',
     name: mainCase(input.name),
