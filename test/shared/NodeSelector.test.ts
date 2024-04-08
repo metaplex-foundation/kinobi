@@ -247,15 +247,13 @@ const macro = test.macro({
 const splTokenProgram = tree.programs[0];
 const christmasProgram = tree.programs[1];
 const tokenAccount = splTokenProgram.accounts[0];
-const tokenDelegatedAmountOption = tokenAccount.data.fields[3]
-  .type as OptionTypeNode;
+const tokenDelegatedAmountOption = tokenAccount.data.fields[3].type;
 const mintTokenInstruction = splTokenProgram.instructions[0];
 const giftAccount = christmasProgram.accounts[0];
 const openGiftInstruction = christmasProgram.instructions[0];
 const wrappingPaper = christmasProgram.definedTypes[0];
-const wrappingPaperEnum = wrappingPaper.type as EnumTypeNode;
-const wrappingPaperEnumGold = wrappingPaperEnum
-  .variants[2] as EnumStructVariantTypeNode;
+const wrappingPaperEnum = wrappingPaper.type;
+const wrappingPaperEnumGold = wrappingPaperEnum.variants[2];
 
 // Select programs.
 test(macro, '[programNode]', [splTokenProgram, christmasProgram]);
@@ -325,7 +323,7 @@ test(macro, '[structFieldTypeNode].*', [
   tokenDelegatedAmountOption.item,
   giftAccount.data.fields[0].type,
   giftAccount.data.fields[1].type,
-  (giftAccount.data.fields[1].type as BooleanTypeNode).size,
+  giftAccount.data.fields[1].type.size,
   giftAccount.data.fields[2].type,
   giftAccount.data.fields[3].type,
   wrappingPaperEnumGold.struct.fields[0].type,
@@ -333,7 +331,7 @@ test(macro, '[structFieldTypeNode].*', [
 test(macro, '[structFieldTypeNode].*.*', [
   tokenDelegatedAmountOption.prefix,
   tokenDelegatedAmountOption.item,
-  (giftAccount.data.fields[1].type as BooleanTypeNode).size,
+  giftAccount.data.fields[1].type.size,
 ]);
 
 // Select multiple node kinds.
