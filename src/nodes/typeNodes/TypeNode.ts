@@ -16,6 +16,8 @@ import { FixedSizeTypeNode } from './FixedSizeTypeNode';
 import { MapTypeNode, mapTypeNodeFromIdl } from './MapTypeNode';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 import { OptionTypeNode, optionTypeNodeFromIdl } from './OptionTypeNode';
+import { PostOffsetTypeNode } from './PostOffsetTypeNode';
+import { PreOffsetTypeNode } from './PreOffsetTypeNode';
 import { PublicKeyTypeNode, publicKeyTypeNode } from './PublicKeyTypeNode';
 import { SetTypeNode, setTypeNodeFromIdl } from './SetTypeNode';
 import { SizePrefixTypeNode, sizePrefixTypeNode } from './SizePrefixTypeNode';
@@ -37,6 +39,8 @@ export type StandaloneTypeNode =
   | MapTypeNode
   | NumberTypeNode
   | OptionTypeNode
+  | PostOffsetTypeNode
+  | PreOffsetTypeNode
   | PublicKeyTypeNode
   | SetTypeNode
   | SizePrefixTypeNode
@@ -55,6 +59,8 @@ export const STANDALONE_TYPE_NODE_KINDS = [
   'mapTypeNode',
   'numberTypeNode',
   'optionTypeNode',
+  'postOffsetTypeNode',
+  'preOffsetTypeNode',
   'publicKeyTypeNode',
   'setTypeNode',
   'sizePrefixTypeNode',

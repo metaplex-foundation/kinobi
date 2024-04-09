@@ -335,5 +335,17 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
     };
   }
 
+  if (castedNodeKeys.includes('preOffsetTypeNode')) {
+    visitor.visitPreOffsetType = function visitPreOffsetType(node) {
+      return merge(node, visit(this)(node.type));
+    };
+  }
+
+  if (castedNodeKeys.includes('postOffsetTypeNode')) {
+    visitor.visitPostOffsetType = function visitPostOffsetType(node) {
+      return merge(node, visit(this)(node.type));
+    };
+  }
+
   return visitor as Visitor<TReturn, TNodeKind>;
 }

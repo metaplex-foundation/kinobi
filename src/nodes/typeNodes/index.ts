@@ -13,6 +13,8 @@ export * from './MapTypeNode';
 export * from './NestedTypeNode';
 export * from './NumberTypeNode';
 export * from './OptionTypeNode';
+export * from './PostOffsetTypeNode';
+export * from './PreOffsetTypeNode';
 export * from './PublicKeyTypeNode';
 export * from './SetTypeNode';
 export * from './SizePrefixTypeNode';

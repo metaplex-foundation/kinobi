@@ -39,6 +39,8 @@ import {
   pdaNode,
   pdaSeedValueNode,
   pdaValueNode,
+  postOffsetTypeNode,
+  preOffsetTypeNode,
   prefixedCountNode,
   programNode,
   removeNullAndAssertIsNodeFilter,
@@ -606,6 +608,24 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       if (type === null) return null;
       assertIsNode(type, TYPE_NODES);
       return sizePrefixTypeNode(type, prefix);
+    };
+  }
+
+  if (castedNodeKeys.includes('preOffsetTypeNode')) {
+    visitor.visitPreOffsetType = function visitPreOffsetType(node) {
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertIsNode(type, TYPE_NODES);
+      return preOffsetTypeNode(type, node.offset, node.strategy);
+    };
+  }
+
+  if (castedNodeKeys.includes('postOffsetTypeNode')) {
+    visitor.visitPostOffsetType = function visitPostOffsetType(node) {
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertIsNode(type, TYPE_NODES);
+      return postOffsetTypeNode(type, node.offset, node.strategy);
     };
   }
 
