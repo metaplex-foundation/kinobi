@@ -1,8 +1,8 @@
-import { NumberTypeNode, ResolveNestedTypeNode } from '../typeNodes';
+import { NumberTypeNode, NestedTypeNode } from '../typeNodes';
 
 export interface PrefixedCountNode<
   TPrefix extends
-    ResolveNestedTypeNode<NumberTypeNode> = ResolveNestedTypeNode<NumberTypeNode>,
+    NestedTypeNode<NumberTypeNode> = NestedTypeNode<NumberTypeNode>,
 > {
   readonly kind: 'prefixedCountNode';
 
@@ -11,7 +11,7 @@ export interface PrefixedCountNode<
 }
 
 export function prefixedCountNode<
-  TPrefix extends ResolveNestedTypeNode<NumberTypeNode>,
+  TPrefix extends NestedTypeNode<NumberTypeNode>,
 >(prefix: TPrefix): PrefixedCountNode<TPrefix> {
   return { kind: 'prefixedCountNode', prefix };
 }

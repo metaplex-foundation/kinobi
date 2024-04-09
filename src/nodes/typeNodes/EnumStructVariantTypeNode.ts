@@ -1,11 +1,11 @@
-import type { ResolveNestedTypeNode } from './TypeNode';
+import type { NestedTypeNode } from './NestedTypeNode';
 import type { IdlTypeEnumField, IdlTypeEnumVariant } from '../../idl';
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../../shared';
 import { StructTypeNode, structTypeNodeFromIdl } from './StructTypeNode';
 
 export interface EnumStructVariantTypeNode<
   TStruct extends
-    ResolveNestedTypeNode<StructTypeNode> = ResolveNestedTypeNode<StructTypeNode>,
+    NestedTypeNode<StructTypeNode> = NestedTypeNode<StructTypeNode>,
 > {
   readonly kind: 'enumStructVariantTypeNode';
 
@@ -17,7 +17,7 @@ export interface EnumStructVariantTypeNode<
 }
 
 export function enumStructVariantTypeNode<
-  TStruct extends ResolveNestedTypeNode<StructTypeNode>,
+  TStruct extends NestedTypeNode<StructTypeNode>,
 >(name: string, struct: TStruct): EnumStructVariantTypeNode<TStruct> {
   if (!name) {
     throw new InvalidKinobiTreeError(

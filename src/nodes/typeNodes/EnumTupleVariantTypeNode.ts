@@ -1,11 +1,10 @@
-import type { ResolveNestedTypeNode } from './TypeNode';
+import type { NestedTypeNode } from './NestedTypeNode';
 import type { IdlType, IdlTypeEnumVariant } from '../../idl';
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../../shared';
 import { TupleTypeNode, tupleTypeNodeFromIdl } from './TupleTypeNode';
 
 export interface EnumTupleVariantTypeNode<
-  TTuple extends
-    ResolveNestedTypeNode<TupleTypeNode> = ResolveNestedTypeNode<TupleTypeNode>,
+  TTuple extends NestedTypeNode<TupleTypeNode> = NestedTypeNode<TupleTypeNode>,
 > {
   readonly kind: 'enumTupleVariantTypeNode';
 
@@ -17,7 +16,7 @@ export interface EnumTupleVariantTypeNode<
 }
 
 export function enumTupleVariantTypeNode<
-  TTuple extends ResolveNestedTypeNode<TupleTypeNode>,
+  TTuple extends NestedTypeNode<TupleTypeNode>,
 >(name: string, tuple: TTuple): EnumTupleVariantTypeNode<TTuple> {
   if (!name) {
     throw new InvalidKinobiTreeError(

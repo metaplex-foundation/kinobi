@@ -10,6 +10,7 @@ export * from './EnumTypeNode';
 export * from './EnumVariantTypeNode';
 export * from './FixedSizeTypeNode';
 export * from './MapTypeNode';
+export * from './NestedTypeNode';
 export * from './NumberTypeNode';
 export * from './OptionTypeNode';
 export * from './PublicKeyTypeNode';

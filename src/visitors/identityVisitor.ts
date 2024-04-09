@@ -1,5 +1,6 @@
 import {
   CONDITIONAL_VALUE_BRANCH_NODES,
+  COUNT_NODES,
   DISCRIMINATOR_NODES,
   ENUM_VARIANT_TYPE_NODES,
   INSTRUCTION_INPUT_VALUE_NODE,
@@ -7,13 +8,13 @@ import {
   NodeKind,
   PDA_SEED_NODES,
   REGISTERED_NODE_KINDS,
-  COUNT_NODES,
   TYPE_NODES,
   VALUE_NODES,
   accountNode,
   amountTypeNode,
   arrayTypeNode,
   arrayValueNode,
+  assertIsNestedTypeNode,
   assertIsNode,
   booleanTypeNode,
   conditionalValueNode,
@@ -308,7 +309,7 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
     visitor.visitOptionType = function visitOptionType(node) {
       const prefix = visit(this)(node.prefix);
       if (prefix === null) return null;
-      assertIsNode(prefix, 'numberTypeNode');
+      assertIsNestedTypeNode(prefix, 'numberTypeNode');
       const item = visit(this)(node.item);
       if (item === null) return null;
       assertIsNode(item, TYPE_NODES);
@@ -320,7 +321,7 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
     visitor.visitBooleanType = function visitBooleanType(node) {
       const size = visit(this)(node.size);
       if (size === null) return null;
-      assertIsNode(size, 'numberTypeNode');
+      assertIsNestedTypeNode(size, 'numberTypeNode');
       return booleanTypeNode(size);
     };
   }
@@ -372,7 +373,7 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
     visitor.visitAmountType = function visitAmountType(node) {
       const number = visit(this)(node.number);
       if (number === null) return null;
-      assertIsNode(number, 'numberTypeNode');
+      assertIsNestedTypeNode(number, 'numberTypeNode');
       return amountTypeNode(number, node.decimals, node.unit);
     };
   }
@@ -381,7 +382,7 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
     visitor.visitDateTimeType = function visitDateTimeType(node) {
       const number = visit(this)(node.number);
       if (number === null) return null;
-      assertIsNode(number, 'numberTypeNode');
+      assertIsNestedTypeNode(number, 'numberTypeNode');
       return dateTimeTypeNode(number);
     };
   }
@@ -390,7 +391,7 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
     visitor.visitSolAmountType = function visitSolAmountType(node) {
       const number = visit(this)(node.number);
       if (number === null) return null;
-      assertIsNode(number, 'numberTypeNode');
+      assertIsNestedTypeNode(number, 'numberTypeNode');
       return solAmountTypeNode(number);
     };
   }
@@ -399,7 +400,7 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
     visitor.visitPrefixedCount = function visitPrefixedCount(node) {
       const prefix = visit(this)(node.prefix);
       if (prefix === null) return null;
-      assertIsNode(prefix, 'numberTypeNode');
+      assertIsNestedTypeNode(prefix, 'numberTypeNode');
       return prefixedCountNode(prefix);
     };
   }
@@ -600,7 +601,7 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
     visitor.visitSizePrefixType = function visitSizePrefixType(node) {
       const prefix = visit(this)(node.prefix);
       if (prefix === null) return null;
-      assertIsNode(prefix, 'numberTypeNode');
+      assertIsNestedTypeNode(prefix, 'numberTypeNode');
       const type = visit(this)(node.type);
       if (type === null) return null;
       assertIsNode(type, TYPE_NODES);

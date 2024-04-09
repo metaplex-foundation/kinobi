@@ -1,4 +1,4 @@
-import type { ResolveNestedTypeNode } from './TypeNode';
+import type { NestedTypeNode } from './NestedTypeNode';
 import type { IdlTypeEnum } from '../../idl';
 import { enumEmptyVariantTypeNodeFromIdl } from './EnumEmptyVariantTypeNode';
 import { enumStructVariantTypeNodeFromIdl } from './EnumStructVariantTypeNode';
@@ -8,8 +8,7 @@ import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 
 export interface EnumTypeNode<
   TVariants extends EnumVariantTypeNode[] = EnumVariantTypeNode[],
-  TSize extends
-    ResolveNestedTypeNode<NumberTypeNode> = ResolveNestedTypeNode<NumberTypeNode>,
+  TSize extends NestedTypeNode<NumberTypeNode> = NestedTypeNode<NumberTypeNode>,
 > {
   readonly kind: 'enumTypeNode';
 
@@ -20,7 +19,7 @@ export interface EnumTypeNode<
 
 export function enumTypeNode<
   const TVariants extends EnumVariantTypeNode[],
-  TSize extends ResolveNestedTypeNode<NumberTypeNode> = NumberTypeNode<'u8'>,
+  TSize extends NestedTypeNode<NumberTypeNode> = NumberTypeNode<'u8'>,
 >(
   variants: TVariants,
   options: { size?: TSize } = {}

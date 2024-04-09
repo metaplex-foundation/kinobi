@@ -1,9 +1,9 @@
-import { ResolveNestedTypeNode } from './TypeNode';
+import { NestedTypeNode } from './NestedTypeNode';
 import { NumberTypeNode } from './NumberTypeNode';
 
 export interface AmountTypeNode<
   TNumber extends
-    ResolveNestedTypeNode<NumberTypeNode> = ResolveNestedTypeNode<NumberTypeNode>,
+    NestedTypeNode<NumberTypeNode> = NestedTypeNode<NumberTypeNode>,
 > {
   readonly kind: 'amountTypeNode';
 
@@ -15,8 +15,10 @@ export interface AmountTypeNode<
   readonly unit?: string;
 }
 
-export function amountTypeNode<
-  TNumber extends ResolveNestedTypeNode<NumberTypeNode>,
->(number: TNumber, decimals: number, unit?: string): AmountTypeNode<TNumber> {
+export function amountTypeNode<TNumber extends NestedTypeNode<NumberTypeNode>>(
+  number: TNumber,
+  decimals: number,
+  unit?: string
+): AmountTypeNode<TNumber> {
   return { kind: 'amountTypeNode', number, decimals, unit };
 }
