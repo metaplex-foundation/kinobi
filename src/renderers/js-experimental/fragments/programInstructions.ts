@@ -11,10 +11,7 @@ import { getDiscriminatorConditionFragment } from './discriminatorCondition';
 export function getProgramInstructionsFragment(
   scope: Pick<
     GlobalFragmentScope,
-    | 'nameApi'
-    | 'typeManifestVisitor'
-    | 'valueNodeVisitor'
-    | 'renderParentInstructions'
+    'nameApi' | 'typeManifestVisitor' | 'renderParentInstructions'
   > & {
     programNode: ProgramNode;
   }
@@ -56,10 +53,7 @@ function getProgramInstructionsEnumFragment(
 }
 
 function getProgramInstructionsIdentifierFunctionFragment(
-  scope: Pick<
-    GlobalFragmentScope,
-    'nameApi' | 'typeManifestVisitor' | 'valueNodeVisitor'
-  > & {
+  scope: Pick<GlobalFragmentScope, 'nameApi' | 'typeManifestVisitor'> & {
     programNode: ProgramNode;
     allInstructions: InstructionNode[];
   }

@@ -30,10 +30,7 @@ import { Fragment, fragment, mergeFragments } from './common';
  * ```
  */
 export function getDiscriminatorConditionFragment(
-  scope: Pick<
-    GlobalFragmentScope,
-    'nameApi' | 'typeManifestVisitor' | 'valueNodeVisitor'
-  > & {
+  scope: Pick<GlobalFragmentScope, 'nameApi' | 'typeManifestVisitor'> & {
     programNode: ProgramNode;
     discriminators: DiscriminatorNode[];
     struct: StructTypeNode;
@@ -77,10 +74,10 @@ function getByteConditionFragment(
 
 function getFieldConditionFragment(
   discriminator: FieldDiscriminatorNode,
-  scope: Pick<
-    GlobalFragmentScope,
-    'typeManifestVisitor' | 'valueNodeVisitor'
-  > & { dataName: string; struct: StructTypeNode }
+  scope: Pick<GlobalFragmentScope, 'typeManifestVisitor'> & {
+    dataName: string;
+    struct: StructTypeNode;
+  }
 ): Fragment {
   const field = scope.struct.fields.find((f) => f.name === discriminator.name);
   if (!field || !field.defaultValue) {
@@ -111,7 +108,7 @@ function getFieldConditionFragment(
   return mergeFragments(
     [
       visit(field.type, scope.typeManifestVisitor).encoder,
-      visit(field.defaultValue, scope.valueNodeVisitor),
+      visit(field.defaultValue, scope.typeManifestVisitor).value,
     ],
     ([encoderFunction, value]) => `${encoderFunction}.encode(${value})`
   )

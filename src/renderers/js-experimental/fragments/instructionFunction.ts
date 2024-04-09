@@ -19,7 +19,10 @@ import { getInstructionRemainingAccountsFragment } from './instructionRemainingA
 export function getInstructionFunctionFragment(
   scope: Pick<
     GlobalFragmentScope,
-    'nameApi' | 'asyncResolvers' | 'valueNodeVisitor' | 'customInstructionData'
+    | 'nameApi'
+    | 'asyncResolvers'
+    | 'typeManifestVisitor'
+    | 'customInstructionData'
   > & {
     instructionNode: InstructionNode;
     programNode: ProgramNode;
