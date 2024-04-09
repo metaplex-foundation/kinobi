@@ -24,7 +24,7 @@ import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
 import { ImportMap } from './ImportMap';
 import { TypeManifest, mergeManifests, typeManifest } from './TypeManifest';
 import { ParsedCustomDataOptions } from './customDataHelpers';
-import { Fragment, fragment } from './fragments';
+import { Fragment, fragment, mergeFragments } from './fragments';
 import { NameApi } from './nameTransformers';
 
 export type TypeManifestVisitor = ReturnType<typeof getTypeManifestVisitor>;
@@ -770,8 +770,13 @@ export function getTypeManifestVisitor(input: {
           return manifest;
         },
 
-        visitConstantValue() {
-          throw new Error('Not implemented');
+        visitConstantValue(node, { self }) {
+          const manifest = typeManifest();
+          manifest.value = mergeFragments(
+            [visit(node.type, self).encoder, visit(node.value, self).value],
+            ([encoderFunction, value]) => `${encoderFunction}.encode(${value})`
+          );
+          return manifest;
         },
 
         visitEnumValue(node, { self }) {
