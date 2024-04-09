@@ -1,29 +1,33 @@
 import type { IdlTypeArray, IdlTypeVec } from '../../idl';
 import {
   CountNode,
+  PrefixedCountNode,
   fixedCountNode,
   prefixedCountNode,
   remainderCountNode,
 } from '../countNodes';
-import { numberTypeNode } from './NumberTypeNode';
+import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
-export type ArrayTypeNode = {
+export interface ArrayTypeNode<
+  TItem extends TypeNode = TypeNode,
+  TCount extends CountNode = CountNode,
+> {
   readonly kind: 'arrayTypeNode';
 
   // Children.
-  readonly item: TypeNode;
-  readonly count: CountNode;
-};
+  readonly item: TItem;
+  readonly count: TCount;
+}
 
-export function arrayTypeNode(
-  item: TypeNode,
-  count?: CountNode
-): ArrayTypeNode {
+export function arrayTypeNode<
+  TItem extends TypeNode,
+  TCount extends CountNode = PrefixedCountNode<NumberTypeNode<'u32'>>,
+>(item: TItem, count?: TCount): ArrayTypeNode<TItem, TCount> {
   return {
     kind: 'arrayTypeNode',
     item,
-    count: count ?? prefixedCountNode(numberTypeNode('u32')),
+    count: (count ?? prefixedCountNode(numberTypeNode('u32'))) as TCount,
   };
 }
 

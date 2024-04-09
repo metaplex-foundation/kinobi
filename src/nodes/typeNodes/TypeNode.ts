@@ -1,5 +1,4 @@
 import { IDL_TYPE_LEAVES, IdlType } from '../../idl';
-import { getNodeKinds } from '../../shared/utils';
 import {
   DefinedTypeLinkNode,
   definedTypeLinkNode,
@@ -27,62 +26,71 @@ import { StructTypeNode, structTypeNodeFromIdl } from './StructTypeNode';
 import { TupleTypeNode, tupleTypeNodeFromIdl } from './TupleTypeNode';
 
 // Standalone Type Node Registration.
-
-export const STANDALONE_TYPE_NODES = {
-  amountTypeNode: {} as AmountTypeNode,
-  arrayTypeNode: {} as ArrayTypeNode,
-  booleanTypeNode: {} as BooleanTypeNode,
-  bytesTypeNode: {} as BytesTypeNode,
-  dateTimeTypeNode: {} as DateTimeTypeNode,
-  enumTypeNode: {} as EnumTypeNode,
-  fixedSizeTypeNode: {} as FixedSizeTypeNode,
-  mapTypeNode: {} as MapTypeNode,
-  numberTypeNode: {} as NumberTypeNode,
-  optionTypeNode: {} as OptionTypeNode,
-  publicKeyTypeNode: {} as PublicKeyTypeNode,
-  setTypeNode: {} as SetTypeNode,
-  sizePrefixTypeNode: {} as SizePrefixTypeNode,
-  solAmountTypeNode: {} as SolAmountTypeNode,
-  stringTypeNode: {} as StringTypeNode,
-  structTypeNode: {} as StructTypeNode,
-  tupleTypeNode: {} as TupleTypeNode,
-};
-
-export const STANDALONE_TYPE_NODE_KINDS = getNodeKinds(STANDALONE_TYPE_NODES);
-export type StandaloneTypeNodeKind =
-  (typeof STANDALONE_TYPE_NODE_KINDS)[number];
 export type StandaloneTypeNode =
-  (typeof STANDALONE_TYPE_NODES)[StandaloneTypeNodeKind];
+  | AmountTypeNode
+  | ArrayTypeNode
+  | BooleanTypeNode
+  | BytesTypeNode
+  | DateTimeTypeNode
+  | EnumTypeNode
+  | FixedSizeTypeNode
+  | MapTypeNode
+  | NumberTypeNode
+  | OptionTypeNode
+  | PublicKeyTypeNode
+  | SetTypeNode
+  | SizePrefixTypeNode
+  | SolAmountTypeNode
+  | StringTypeNode
+  | StructTypeNode
+  | TupleTypeNode;
+export const STANDALONE_TYPE_NODE_KINDS = [
+  'amountTypeNode',
+  'arrayTypeNode',
+  'booleanTypeNode',
+  'bytesTypeNode',
+  'dateTimeTypeNode',
+  'enumTypeNode',
+  'fixedSizeTypeNode',
+  'mapTypeNode',
+  'numberTypeNode',
+  'optionTypeNode',
+  'publicKeyTypeNode',
+  'setTypeNode',
+  'sizePrefixTypeNode',
+  'solAmountTypeNode',
+  'stringTypeNode',
+  'structTypeNode',
+  'tupleTypeNode',
+] satisfies readonly StandaloneTypeNode['kind'][];
+null as unknown as StandaloneTypeNode['kind'] satisfies (typeof STANDALONE_TYPE_NODE_KINDS)[number];
 
 // Type Node Registration.
-
-export const REGISTERED_TYPE_NODES = {
-  ...STANDALONE_TYPE_NODES,
-
-  // The following are not valid standalone nodes.
-  structFieldTypeNode: {} as StructFieldTypeNode,
-  enumEmptyVariantTypeNode: {} as EnumEmptyVariantTypeNode,
-  enumStructVariantTypeNode: {} as EnumStructVariantTypeNode,
-  enumTupleVariantTypeNode: {} as EnumTupleVariantTypeNode,
-};
-
-export const REGISTERED_TYPE_NODE_KINDS = getNodeKinds(REGISTERED_TYPE_NODES);
-export type RegisteredTypeNodeKind =
-  (typeof REGISTERED_TYPE_NODE_KINDS)[number];
 export type RegisteredTypeNode =
-  (typeof REGISTERED_TYPE_NODES)[RegisteredTypeNodeKind];
+  | StandaloneTypeNode
+  | StructFieldTypeNode
+  | EnumEmptyVariantTypeNode
+  | EnumStructVariantTypeNode
+  | EnumTupleVariantTypeNode;
+export const REGISTERED_TYPE_NODE_KINDS = [
+  ...STANDALONE_TYPE_NODE_KINDS,
+  'structFieldTypeNode',
+  'enumEmptyVariantTypeNode',
+  'enumStructVariantTypeNode',
+  'enumTupleVariantTypeNode',
+] satisfies readonly RegisteredTypeNode['kind'][];
+null as unknown as RegisteredTypeNode['kind'] satisfies (typeof REGISTERED_TYPE_NODE_KINDS)[number];
 
 // Type Node Helpers.
 // This only includes type nodes that can be used as standalone types.
 // E.g. this excludes structFieldTypeNode, enumEmptyVariantTypeNode, etc.
 // It also includes the definedTypeLinkNode to compose types.
 
+export type TypeNode = StandaloneTypeNode | DefinedTypeLinkNode;
 export const TYPE_NODES = [
   ...STANDALONE_TYPE_NODE_KINDS,
-  'definedTypeLinkNode' as const,
-];
-export type TypeNodeKind = (typeof TYPE_NODES)[number];
-export type TypeNode = StandaloneTypeNode | DefinedTypeLinkNode;
+  'definedTypeLinkNode',
+] satisfies readonly TypeNode['kind'][];
 
 export type ResolveNestedTypeNode<TType extends TypeNode> =
   | TType
@@ -90,13 +98,39 @@ export type ResolveNestedTypeNode<TType extends TypeNode> =
       type: ResolveNestedTypeNode<TType>;
     });
 
-export function resolveNestedTypeNode(typeNode: TypeNode): TypeNode {
+export function resolveNestedTypeNode<TType extends TypeNode>(
+  typeNode: ResolveNestedTypeNode<TType>
+): TType {
   switch (typeNode.kind) {
     case 'fixedSizeTypeNode':
     case 'sizePrefixTypeNode':
-      return resolveNestedTypeNode(typeNode.type);
+      return resolveNestedTypeNode<TType>(
+        typeNode.type as ResolveNestedTypeNode<TType>
+      );
     default:
       return typeNode;
+  }
+}
+
+export function transformNestedTypeNode<
+  TFrom extends TypeNode,
+  TTo extends TypeNode,
+>(
+  typeNode: ResolveNestedTypeNode<TFrom>,
+  map: (type: TFrom) => TTo
+): ResolveNestedTypeNode<TTo> {
+  switch (typeNode.kind) {
+    case 'fixedSizeTypeNode':
+    case 'sizePrefixTypeNode':
+      return {
+        ...typeNode,
+        type: transformNestedTypeNode(
+          typeNode.type as ResolveNestedTypeNode<TFrom>,
+          map
+        ),
+      } as ResolveNestedTypeNode<TTo>;
+    default:
+      return map(typeNode);
   }
 }
 

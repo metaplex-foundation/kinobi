@@ -12,7 +12,8 @@ const ENUM_VARIANT_TYPE_NODES_INTERNAL = [
   'enumEmptyVariantTypeNode',
   'enumStructVariantTypeNode',
   'enumTupleVariantTypeNode',
-] as const;
+] as const satisfies readonly EnumVariantTypeNode['kind'][];
+null as unknown as EnumVariantTypeNode['kind'] satisfies (typeof ENUM_VARIANT_TYPE_NODES_INTERNAL)[number];
 
 export const ENUM_VARIANT_TYPE_NODES =
   ENUM_VARIANT_TYPE_NODES_INTERNAL as Mutable<

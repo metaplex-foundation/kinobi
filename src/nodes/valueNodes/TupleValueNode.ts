@@ -1,12 +1,14 @@
 import { ValueNode } from './ValueNode';
 
-export type TupleValueNode = {
+export interface TupleValueNode<TItems extends ValueNode[] = ValueNode[]> {
   readonly kind: 'tupleValueNode';
 
   // Children.
-  readonly items: ValueNode[];
-};
+  readonly items: TItems;
+}
 
-export function tupleValueNode(items: ValueNode[]): TupleValueNode {
+export function tupleValueNode<const TItems extends ValueNode[]>(
+  items: TItems
+): TupleValueNode<TItems> {
   return { kind: 'tupleValueNode', items };
 }

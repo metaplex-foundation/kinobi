@@ -1,12 +1,12 @@
 import { ImportFrom, MainCaseString, mainCase } from '../../shared';
 
-export type ProgramLinkNode = {
+export interface ProgramLinkNode {
   readonly kind: 'programLinkNode';
 
   // Data.
   readonly name: MainCaseString;
   readonly importFrom?: ImportFrom;
-};
+}
 
 export function programLinkNode(
   name: string,

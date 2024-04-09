@@ -1,33 +1,40 @@
 import type { IdlTypeSet } from '../../idl';
 import {
   CountNode,
+  PrefixedCountNode,
   fixedCountNode,
   prefixedCountNode,
   remainderCountNode,
 } from '../countNodes';
-import { numberTypeNode } from './NumberTypeNode';
+import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
-export type SetTypeNode = {
+export interface SetTypeNode<
+  TItem extends TypeNode = TypeNode,
+  TCount extends CountNode = CountNode,
+> {
   readonly kind: 'setTypeNode';
 
   // Children.
-  readonly item: TypeNode;
-  readonly count: CountNode;
+  readonly item: TItem;
+  readonly count: TCount;
 
   // Data.
   readonly idlSet: 'hashSet' | 'bTreeSet';
-};
+}
 
-export function setTypeNode(
-  item: TypeNode,
-  count?: CountNode,
+export function setTypeNode<
+  TItem extends TypeNode = TypeNode,
+  TCount extends CountNode = PrefixedCountNode<NumberTypeNode<'u32'>>,
+>(
+  item: TItem,
+  count?: TCount,
   idlSet?: SetTypeNode['idlSet']
-): SetTypeNode {
+): SetTypeNode<TItem, TCount> {
   return {
     kind: 'setTypeNode',
     item,
-    count: count ?? prefixedCountNode(numberTypeNode('u32')),
+    count: (count ?? prefixedCountNode(numberTypeNode('u32'))) as TCount,
     idlSet: idlSet ?? 'hashSet',
   };
 }

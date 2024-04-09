@@ -1,4 +1,4 @@
-import { NodeDictionary, NodeKind, RootNode } from '../nodes';
+import { GetNodeFromKind, NodeKind, RootNode } from '../nodes';
 import {
   GetVisitorFunctionName,
   Visitor,
@@ -10,7 +10,7 @@ export function singleNodeVisitor<
   TNodeKey extends NodeKind = NodeKind,
 >(
   key: TNodeKey,
-  fn: (node: NodeDictionary[TNodeKey]) => TReturn
+  fn: (node: GetNodeFromKind<TNodeKey>) => TReturn
 ): Visitor<TReturn, TNodeKey> {
   const visitor = {} as Visitor<TReturn, TNodeKey>;
   visitor[getVisitFunctionName(key)] = fn as unknown as Visitor<

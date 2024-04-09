@@ -1,6 +1,6 @@
 import {
+  GetNodeFromKind,
   Node,
-  NodeDictionary,
   NodeKind,
   REGISTERED_NODE_KINDS,
 } from '../nodes';
@@ -27,7 +27,7 @@ export type VisitorOverrides<TReturn, TNodeKind extends NodeKind> = {
   [K in TNodeKind as GetVisitorFunctionName<K>]?: VisitorOverrideFunction<
     TReturn,
     TNodeKind,
-    NodeDictionary[K]
+    GetNodeFromKind<K>
   >;
 };
 

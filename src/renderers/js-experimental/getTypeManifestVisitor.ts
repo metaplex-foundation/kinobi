@@ -1,9 +1,11 @@
 import {
+  CountNode,
   NumberTypeNode,
   REGISTERED_TYPE_NODE_KINDS,
-  CountNode,
+  TypeNode,
   isNode,
   isScalarEnum,
+  resolveNestedTypeNode,
   structFieldTypeNode,
   structTypeNode,
   structTypeNodeFromInstructionArgumentNodes,
@@ -145,7 +147,8 @@ export function getTypeManifestVisitor(input: {
           const encoderOptions: string[] = [];
           const decoderOptions: string[] = [];
 
-          if (enumType.size.format !== 'u8' || enumType.size.endian !== 'le') {
+          const enumSize = resolveNestedTypeNode(enumType.size);
+          if (enumSize.format !== 'u8' || enumSize.endian !== 'le') {
             const sizeManifest = visit(enumType.size, self);
             encoderImports.mergeWith(sizeManifest.encoder);
             decoderImports.mergeWith(sizeManifest.decoder);
@@ -347,10 +350,8 @@ export function getTypeManifestVisitor(input: {
           const decoderOptions: string[] = [];
 
           // Prefix option.
-          if (
-            optionType.prefix.format !== 'u8' ||
-            optionType.prefix.endian !== 'le'
-          ) {
+          const optionPrefix = resolveNestedTypeNode(optionType.prefix);
+          if (optionPrefix.format !== 'u8' || optionPrefix.endian !== 'le') {
             const prefixManifest = visit(optionType.prefix, self);
             childManifest.encoder.mergeImportsWith(prefixManifest.encoder);
             childManifest.decoder.mergeImportsWith(prefixManifest.decoder);
@@ -517,10 +518,8 @@ export function getTypeManifestVisitor(input: {
 
           let sizeEncoder = '';
           let sizeDecoder = '';
-          if (
-            booleanType.size.format !== 'u8' ||
-            booleanType.size.endian !== 'le'
-          ) {
+          const resolvedSize = resolveNestedTypeNode(booleanType.size);
+          if (resolvedSize.format !== 'u8' || resolvedSize.endian !== 'le') {
             const size = visit(booleanType.size, self);
             encoderImports.mergeWith(size.encoder);
             decoderImports.mergeWith(size.decoder);
@@ -723,7 +722,7 @@ export function getTypeManifestVisitor(input: {
         },
 
         visitSizePrefixType(sizePrefixType, { self }) {
-          parentSize = sizePrefixType.prefix;
+          parentSize = resolveNestedTypeNode(sizePrefixType.prefix);
           const manifest = visit(sizePrefixType.type, self);
           parentSize = null;
           return manifest;
@@ -734,7 +733,7 @@ export function getTypeManifestVisitor(input: {
 
 function getArrayLikeSizeOption(
   count: CountNode,
-  visitor: Visitor<TypeManifest, 'numberTypeNode'>
+  visitor: Visitor<TypeManifest, TypeNode['kind']>
 ): {
   encoder: Fragment;
   decoder: Fragment;
@@ -751,7 +750,8 @@ function getArrayLikeSizeOption(
       decoder: fragment(`size: 'remainder'`),
     };
   }
-  if (count.prefix.format === 'u32' && count.prefix.endian === 'le') {
+  const prefix = resolveNestedTypeNode(count.prefix);
+  if (prefix.format === 'u32' && prefix.endian === 'le') {
     return { encoder: fragment(''), decoder: fragment('') };
   }
   const prefixManifest = visit(count.prefix, visitor);

@@ -1,4 +1,4 @@
-import { Node, isDataEnum, isNode } from '../../nodes';
+import { Node, isDataEnum, isNode, resolveNestedTypeNode } from '../../nodes';
 import {
   NodeStack,
   ValidatorBag,
@@ -106,8 +106,8 @@ export function getValidatorBagVisitor(): Visitor<ValidatorBag> {
           bag.mergeWith([checkExportConflicts(node, exports)]);
 
           const reservedAccountFields = new Set(['publicKey', 'header']);
-          const invalidFields = node.data.fields
-            .map((field) => field.name)
+          const invalidFields = resolveNestedTypeNode(node.data)
+            .fields.map((field) => field.name)
             .filter((name) => reservedAccountFields.has(name));
           if (invalidFields.length > 0) {
             const x = invalidFields.join(', ');

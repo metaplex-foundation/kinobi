@@ -1,12 +1,19 @@
 import { NumberTypeNode } from './NumberTypeNode';
+import { ResolveNestedTypeNode } from './TypeNode';
 
-export type DateTimeTypeNode = {
+export interface DateTimeTypeNode<
+  TNumber extends
+    ResolveNestedTypeNode<NumberTypeNode> = ResolveNestedTypeNode<NumberTypeNode>,
+> {
   readonly kind: 'dateTimeTypeNode';
 
   // Children.
-  readonly number: NumberTypeNode;
-};
+  readonly number: TNumber;
+}
 
-export function dateTimeTypeNode(number: NumberTypeNode): DateTimeTypeNode {
+export function dateTimeTypeNode<
+  TNumber extends
+    ResolveNestedTypeNode<NumberTypeNode> = ResolveNestedTypeNode<NumberTypeNode>,
+>(number: TNumber): DateTimeTypeNode<TNumber> {
   return { kind: 'dateTimeTypeNode', number };
 }

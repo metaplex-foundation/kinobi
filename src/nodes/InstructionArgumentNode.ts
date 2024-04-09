@@ -10,30 +10,40 @@ import {
 } from './typeNodes';
 import { VALUE_NODES } from './valueNodes';
 
-export type InstructionArgumentNode = {
+export interface InstructionArgumentNode<
+  TDefaultValue extends InstructionInputValueNode | undefined =
+    | InstructionInputValueNode
+    | undefined,
+> {
   readonly kind: 'instructionArgumentNode';
 
   // Children.
   readonly type: TypeNode;
-  readonly defaultValue?: InstructionInputValueNode;
+  readonly defaultValue?: TDefaultValue;
 
   // Data.
   readonly name: MainCaseString;
   readonly docs: string[];
   readonly defaultValueStrategy?: 'optional' | 'omitted';
-};
+}
 
-export type InstructionArgumentNodeInput = {
+export type InstructionArgumentNodeInput<
+  TDefaultValue extends InstructionInputValueNode | undefined =
+    | InstructionInputValueNode
+    | undefined,
+> = {
   readonly name: string;
   readonly type: TypeNode;
   readonly docs?: string[];
-  readonly defaultValue?: InstructionInputValueNode;
+  readonly defaultValue?: TDefaultValue;
   readonly defaultValueStrategy?: 'optional' | 'omitted';
 };
 
-export function instructionArgumentNode(
-  input: InstructionArgumentNodeInput
-): InstructionArgumentNode {
+export function instructionArgumentNode<
+  TDefaultValue extends InstructionInputValueNode | undefined = undefined,
+>(
+  input: InstructionArgumentNodeInput<TDefaultValue>
+): InstructionArgumentNode<TDefaultValue> {
   if (!input.name) {
     throw new InvalidKinobiTreeError(
       'InstructionArgumentNode must have a name.'

@@ -2,10 +2,12 @@ import {
   ArrayTypeNode,
   NumberTypeNode,
   REGISTERED_TYPE_NODE_KINDS,
+  TypeNode,
   isInteger,
   isNode,
   isScalarEnum,
   isUnsignedInteger,
+  resolveNestedTypeNode,
   structFieldTypeNode,
   structTypeNode,
   structTypeNodeFromInstructionArgumentNodes,
@@ -147,7 +149,8 @@ export function getTypeManifestVisitor(input: {
           parentName = null;
           const options: string[] = [];
 
-          if (enumType.size.format !== 'u8' || enumType.size.endian !== 'le') {
+          const enumSize = resolveNestedTypeNode(enumType.size);
+          if (enumSize.format !== 'u8' || enumSize.endian !== 'le') {
             const sizeManifest = visit(enumType.size, self);
             strictImports.mergeWith(sizeManifest.strictImports);
             looseImports.mergeWith(sizeManifest.looseImports);
@@ -303,10 +306,8 @@ export function getTypeManifestVisitor(input: {
           const options: string[] = [];
 
           // Prefix option.
-          if (
-            optionType.prefix.format !== 'u8' ||
-            optionType.prefix.endian !== 'le'
-          ) {
+          const optionPrefix = resolveNestedTypeNode(optionType.prefix);
+          if (optionPrefix.format !== 'u8' || optionPrefix.endian !== 'le') {
             const prefixManifest = visit(optionType.prefix, self);
             childManifest.strictImports.mergeWith(prefixManifest.strictImports);
             childManifest.looseImports.mergeWith(prefixManifest.looseImports);
@@ -466,10 +467,8 @@ export function getTypeManifestVisitor(input: {
             'bool'
           );
           let sizeSerializer = '';
-          if (
-            booleanType.size.format !== 'u8' ||
-            booleanType.size.endian !== 'le'
-          ) {
+          const resolvedSize = resolveNestedTypeNode(booleanType.size);
+          if (resolvedSize.format !== 'u8' || resolvedSize.endian !== 'le') {
             const size = visit(booleanType.size, self);
             looseImports.mergeWith(size.looseImports);
             strictImports.mergeWith(size.strictImports);
@@ -548,7 +547,8 @@ export function getTypeManifestVisitor(input: {
 
         visitAmountType(amountType, { self }) {
           const numberManifest = visit(amountType.number, self);
-          if (!isUnsignedInteger(amountType.number)) {
+          const resolvedNode = resolveNestedTypeNode(amountType.number);
+          if (!isUnsignedInteger(resolvedNode)) {
             throw new Error(
               `Amount wrappers can only be applied to unsigned ` +
                 `integer types. Got type [${amountType.number.toString()}].`
@@ -574,10 +574,11 @@ export function getTypeManifestVisitor(input: {
 
         visitDateTimeType(dateTimeType, { self }) {
           const numberManifest = visit(dateTimeType.number, self);
-          if (!isInteger(dateTimeType.number)) {
+          const dateTimeNumber = resolveNestedTypeNode(dateTimeType.number);
+          if (!isInteger(dateTimeNumber)) {
             throw new Error(
               `DateTime wrappers can only be applied to integer ` +
-                `types. Got type [${dateTimeType.number.toString()}].`
+                `types. Got type [${dateTimeNumber.toString()}].`
             );
           }
           numberManifest.strictImports.add('umi', 'DateTime');
@@ -593,10 +594,11 @@ export function getTypeManifestVisitor(input: {
 
         visitSolAmountType(solAmountType, { self }) {
           const numberManifest = visit(solAmountType.number, self);
-          if (!isUnsignedInteger(solAmountType.number)) {
+          const nestedNumber = resolveNestedTypeNode(solAmountType.number);
+          if (!isUnsignedInteger(nestedNumber)) {
             throw new Error(
               `Amount wrappers can only be applied to unsigned ` +
-                `integer types. Got type [${solAmountType.number.toString()}].`
+                `integer types. Got type [${nestedNumber.toString()}].`
             );
           }
           const idAndDecimals = `'SOL', 9`;
@@ -680,7 +682,7 @@ export function getTypeManifestVisitor(input: {
         },
 
         visitSizePrefixType(sizePrefixType, { self }) {
-          parentSize = sizePrefixType.prefix;
+          parentSize = resolveNestedTypeNode(sizePrefixType.prefix);
           const manifest = visit(sizePrefixType.type, self);
           parentSize = null;
           return manifest;
@@ -715,7 +717,7 @@ function getArrayLikeSizeOption(
     JavaScriptTypeManifest,
     'strictImports' | 'looseImports' | 'serializerImports'
   >,
-  self: Visitor<JavaScriptTypeManifest, 'numberTypeNode'>
+  self: Visitor<JavaScriptTypeManifest, TypeNode['kind']>
 ): string | null {
   if (isNode(count, 'fixedCountNode')) return `size: ${count.value}`;
   if (isNode(count, 'remainderCountNode')) return `size: 'remainder'`;

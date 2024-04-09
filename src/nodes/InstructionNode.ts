@@ -21,33 +21,111 @@ import {
 import { createTypeNodeFromIdl } from './typeNodes/TypeNode';
 import { numberValueNode } from './valueNodes';
 
-export type InstructionNode = {
+type SubInstructionNode = InstructionNode;
+
+export interface InstructionNode<
+  TAccounts extends InstructionAccountNode[] = InstructionAccountNode[],
+  TArguments extends InstructionArgumentNode[] = InstructionArgumentNode[],
+  TExtraArguments extends InstructionArgumentNode[] | undefined =
+    | InstructionArgumentNode[]
+    | undefined,
+  TRemainingAccounts extends InstructionRemainingAccountsNode[] | undefined =
+    | InstructionRemainingAccountsNode[]
+    | undefined,
+  TByteDeltas extends InstructionByteDeltaNode[] | undefined =
+    | InstructionByteDeltaNode[]
+    | undefined,
+  TDiscriminators extends DiscriminatorNode[] | undefined =
+    | DiscriminatorNode[]
+    | undefined,
+  TSubInstructions extends SubInstructionNode[] | undefined =
+    | SubInstructionNode[]
+    | undefined,
+> {
   readonly kind: 'instructionNode';
 
   // Children.
-  readonly accounts: InstructionAccountNode[];
-  readonly arguments: InstructionArgumentNode[];
-  readonly extraArguments?: InstructionArgumentNode[];
-  readonly remainingAccounts?: InstructionRemainingAccountsNode[];
-  readonly byteDeltas?: InstructionByteDeltaNode[];
-  readonly discriminators?: DiscriminatorNode[];
-  readonly subInstructions?: InstructionNode[];
+  readonly accounts: TAccounts;
+  readonly arguments: TArguments;
+  readonly extraArguments?: TExtraArguments;
+  readonly remainingAccounts?: TRemainingAccounts;
+  readonly byteDeltas?: TByteDeltas;
+  readonly discriminators?: TDiscriminators;
+  readonly subInstructions?: TSubInstructions;
 
   // Data.
   readonly name: MainCaseString;
   readonly idlName: string;
   readonly docs: string[];
   readonly optionalAccountStrategy: 'omitted' | 'programId';
-};
+}
 
-export type InstructionNodeInput = Omit<
-  Partial<InstructionNode>,
+export type InstructionNodeInput<
+  TAccounts extends InstructionAccountNode[] = InstructionAccountNode[],
+  TArguments extends InstructionArgumentNode[] = InstructionArgumentNode[],
+  TExtraArguments extends InstructionArgumentNode[] | undefined =
+    | InstructionArgumentNode[]
+    | undefined,
+  TRemainingAccounts extends InstructionRemainingAccountsNode[] | undefined =
+    | InstructionRemainingAccountsNode[]
+    | undefined,
+  TByteDeltas extends InstructionByteDeltaNode[] | undefined =
+    | InstructionByteDeltaNode[]
+    | undefined,
+  TDiscriminators extends DiscriminatorNode[] | undefined =
+    | DiscriminatorNode[]
+    | undefined,
+  TSubInstructions extends SubInstructionNode[] | undefined =
+    | SubInstructionNode[]
+    | undefined,
+> = Omit<
+  Partial<
+    InstructionNode<
+      TAccounts,
+      TArguments,
+      TExtraArguments,
+      TRemainingAccounts,
+      TByteDeltas,
+      TDiscriminators,
+      TSubInstructions
+    >
+  >,
   'kind' | 'name'
 > & {
   readonly name: string;
 };
 
-export function instructionNode(input: InstructionNodeInput): InstructionNode {
+export function instructionNode<
+  const TAccounts extends InstructionAccountNode[] = [],
+  const TArguments extends InstructionArgumentNode[] = [],
+  const TExtraArguments extends
+    | InstructionArgumentNode[]
+    | undefined = undefined,
+  const TRemainingAccounts extends
+    | InstructionRemainingAccountsNode[]
+    | undefined = undefined,
+  const TByteDeltas extends InstructionByteDeltaNode[] | undefined = undefined,
+  const TDiscriminators extends DiscriminatorNode[] | undefined = undefined,
+  const TSubInstructions extends SubInstructionNode[] | undefined = undefined,
+>(
+  input: InstructionNodeInput<
+    TAccounts,
+    TArguments,
+    TExtraArguments,
+    TRemainingAccounts,
+    TByteDeltas,
+    TDiscriminators,
+    TSubInstructions
+  >
+): InstructionNode<
+  TAccounts,
+  TArguments,
+  TExtraArguments,
+  TRemainingAccounts,
+  TByteDeltas,
+  TDiscriminators,
+  TSubInstructions
+> {
   if (!input.name) {
     throw new InvalidKinobiTreeError('InstructionNode must have a name.');
   }
@@ -56,8 +134,8 @@ export function instructionNode(input: InstructionNodeInput): InstructionNode {
     kind: 'instructionNode',
 
     // Children.
-    accounts: input.accounts ?? [],
-    arguments: input.arguments ?? [],
+    accounts: (input.accounts ?? []) as TAccounts,
+    arguments: (input.arguments ?? []) as TArguments,
     extraArguments: input.extraArguments,
     remainingAccounts: input.remainingAccounts,
     byteDeltas: input.byteDeltas,

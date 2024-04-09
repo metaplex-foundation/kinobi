@@ -10,6 +10,7 @@ import {
   numberValueNode,
   optionTypeNode,
   publicKeyTypeNode,
+  resolveNestedTypeNode,
   setStructDefaultValuesVisitor,
   structFieldTypeNode,
   structTypeNode,
@@ -81,10 +82,11 @@ test('it adds new default values with custom strategies to struct fields', (t) =
 
   // Then we expect the following tree changes.
   assertIsNode(result, 'accountNode');
-  t.deepEqual(result.data.fields[0].defaultValue, numberValueNode(42));
-  t.is(result.data.fields[0].defaultValueStrategy, 'omitted');
-  t.deepEqual(result.data.fields[1].defaultValue, noneValueNode());
-  t.is(result.data.fields[1].defaultValueStrategy, 'optional');
+  const data = resolveNestedTypeNode(result.data);
+  t.deepEqual(data.fields[0].defaultValue, numberValueNode(42));
+  t.is(data.fields[0].defaultValueStrategy, 'omitted');
+  t.deepEqual(data.fields[1].defaultValue, noneValueNode());
+  t.is(data.fields[1].defaultValueStrategy, 'optional');
 });
 
 test('it adds new default values to instruction arguments', (t) => {

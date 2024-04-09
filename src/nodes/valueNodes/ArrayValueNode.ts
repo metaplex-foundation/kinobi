@@ -1,12 +1,14 @@
 import { ValueNode } from './ValueNode';
 
-export type ArrayValueNode = {
+export interface ArrayValueNode<TItems extends ValueNode[] = ValueNode[]> {
   readonly kind: 'arrayValueNode';
 
   // Children.
-  readonly items: ValueNode[];
-};
+  readonly items: TItems;
+}
 
-export function arrayValueNode(items: ValueNode[]): ArrayValueNode {
+export function arrayValueNode<const TItems extends ValueNode[]>(
+  items: TItems
+): ArrayValueNode<TItems> {
   return { kind: 'arrayValueNode', items };
 }

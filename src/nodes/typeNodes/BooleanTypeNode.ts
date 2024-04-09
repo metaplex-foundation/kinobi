@@ -1,12 +1,21 @@
+import { ResolveNestedTypeNode } from './TypeNode';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 
-export type BooleanTypeNode = {
+export interface BooleanTypeNode<
+  TSize extends
+    ResolveNestedTypeNode<NumberTypeNode> = ResolveNestedTypeNode<NumberTypeNode>,
+> {
   readonly kind: 'booleanTypeNode';
 
   // Children.
-  readonly size: NumberTypeNode;
-};
+  readonly size: TSize;
+}
 
-export function booleanTypeNode(size?: NumberTypeNode): BooleanTypeNode {
-  return { kind: 'booleanTypeNode', size: size ?? numberTypeNode('u8') };
+export function booleanTypeNode<
+  TSize extends ResolveNestedTypeNode<NumberTypeNode> = NumberTypeNode<'u8'>,
+>(size?: TSize): BooleanTypeNode<TSize> {
+  return {
+    kind: 'booleanTypeNode',
+    size: (size ?? numberTypeNode('u8')) as TSize,
+  };
 }

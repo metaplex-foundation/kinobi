@@ -2,26 +2,28 @@ import type { IdlDefinedType } from '../idl';
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
 import { TypeNode, createTypeNodeFromIdl } from './typeNodes/TypeNode';
 
-export type DefinedTypeNode = {
+export interface DefinedTypeNode<TType extends TypeNode = TypeNode> {
   readonly kind: 'definedTypeNode';
 
   // Children.
-  readonly type: TypeNode;
+  readonly type: TType;
 
   // Data.
   readonly name: MainCaseString;
   readonly idlName: string;
   readonly docs: string[];
-};
+}
 
-export type DefinedTypeNodeInput = {
+export type DefinedTypeNodeInput<TType extends TypeNode = TypeNode> = {
   readonly name: string;
-  readonly type: TypeNode;
+  readonly type: TType;
   readonly idlName?: string;
   readonly docs?: string[];
 };
 
-export function definedTypeNode(input: DefinedTypeNodeInput): DefinedTypeNode {
+export function definedTypeNode<TType extends TypeNode>(
+  input: DefinedTypeNodeInput<TType>
+): DefinedTypeNode<TType> {
   if (!input.name) {
     throw new InvalidKinobiTreeError('DefinedTypeNode must have a name.');
   }

@@ -8,6 +8,7 @@ import {
   pdaLinkNode,
   pdaNode,
   programNode,
+  resolveNestedTypeNode,
   rootNode,
   structFieldTypeNode,
   structTypeNode,
@@ -94,7 +95,8 @@ test("it renames the fields of an account's data", (t) => {
 
   // Then we expect the following tree changes.
   assertIsNode(result, 'accountNode');
-  t.is(result.data.fields[0].name, 'myNewData' as MainCaseString);
+  const data = resolveNestedTypeNode(result.data);
+  t.is(data.fields[0].name, 'myNewData' as MainCaseString);
 });
 
 test('it updates the name of associated PDA nodes', (t) => {

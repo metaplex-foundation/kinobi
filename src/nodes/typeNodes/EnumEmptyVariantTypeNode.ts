@@ -1,12 +1,12 @@
 import type { IdlTypeEnumVariant } from '../../idl';
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../../shared';
 
-export type EnumEmptyVariantTypeNode = {
+export interface EnumEmptyVariantTypeNode {
   readonly kind: 'enumEmptyVariantTypeNode';
 
   // Data.
   readonly name: MainCaseString;
-};
+}
 
 export function enumEmptyVariantTypeNode(
   name: string

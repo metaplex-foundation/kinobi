@@ -6,7 +6,7 @@ import {
   mainCase,
 } from '../shared';
 
-export type ErrorNode = {
+export interface ErrorNode {
   readonly kind: 'errorNode';
 
   // Data.
@@ -15,7 +15,7 @@ export type ErrorNode = {
   readonly code: number;
   readonly message: string;
   readonly docs: string[];
-};
+}
 
 export type ErrorNodeInput = Omit<
   PartialExcept<ErrorNode, 'name' | 'code' | 'message'>,

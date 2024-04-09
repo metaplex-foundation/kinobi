@@ -1,4 +1,4 @@
-import { NodeDictionary, NodeKind } from '../nodes';
+import { GetNodeFromKind, NodeKind } from '../nodes';
 import {
   GetVisitorFunctionName,
   Visitor,
@@ -12,16 +12,16 @@ export function tapVisitor<
 >(
   visitor: TVisitor,
   key: TNodeKey,
-  tap: (node: NodeDictionary[TNodeKey]) => void
+  tap: (node: GetNodeFromKind<TNodeKey>) => void
 ): TVisitor {
   const newVisitor = { ...visitor };
   newVisitor[getVisitFunctionName(key)] = function tappedVisitNode(
     this: TVisitor,
-    node: NodeDictionary[TNodeKey]
+    node: GetNodeFromKind<TNodeKey>
   ): TReturn {
     tap(node);
     const parentFunction = visitor[getVisitFunctionName(key)] as (
-      node: NodeDictionary[TNodeKey]
+      node: GetNodeFromKind<TNodeKey>
     ) => TReturn;
     return parentFunction.bind(this)(node);
   } as TVisitor[GetVisitorFunctionName<TNodeKey>];

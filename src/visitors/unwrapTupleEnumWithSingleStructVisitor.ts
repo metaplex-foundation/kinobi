@@ -1,10 +1,13 @@
 import {
   DefinedTypeNode,
   EnumTupleVariantTypeNode,
+  StructTypeNode,
   assertIsNode,
   enumStructVariantTypeNode,
   getAllDefinedTypes,
   isNode,
+  resolveNestedTypeNode,
+  transformNestedTypeNode,
 } from '../nodes';
 import {
   MainCaseString,
@@ -50,8 +53,9 @@ export function unwrapTupleEnumWithSingleStructVisitor(
           transform: (node, stack) => {
             assertIsNode(node, 'enumTupleVariantTypeNode');
             if (!shouldUnwrap(node, stack)) return node;
-            if (node.tuple.items.length !== 1) return node;
-            let item = node.tuple.items[0];
+            const tupleNode = resolveNestedTypeNode(node.tuple);
+            if (tupleNode.items.length !== 1) return node;
+            let item = tupleNode.items[0];
             if (isNode(item, 'definedTypeLinkNode')) {
               if (item.importFrom) return node;
               const definedType = definedTypes.get(item.name);
@@ -61,7 +65,11 @@ export function unwrapTupleEnumWithSingleStructVisitor(
               item = definedType.type;
             }
             if (!isNode(item, 'structTypeNode')) return node;
-            return enumStructVariantTypeNode(node.name, item);
+            const nestedStruct = transformNestedTypeNode(
+              node.tuple,
+              () => item as StructTypeNode
+            );
+            return enumStructVariantTypeNode(node.name, nestedStruct);
           },
         },
       ])

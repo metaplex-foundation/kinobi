@@ -1,27 +1,24 @@
 import { TypeNode, stringTypeNode } from '../typeNodes';
 import { ValueNode, stringValueNode } from '../valueNodes';
 
-export type ConstantPdaSeedNode = {
+export interface ConstantPdaSeedNode<
+  TType extends TypeNode = TypeNode,
+  TValue extends ValueNode = ValueNode,
+> {
   readonly kind: 'constantPdaSeedNode';
 
   // Children.
-  readonly type: TypeNode;
-  readonly value: ValueNode;
-};
+  readonly type: TType;
+  readonly value: TValue;
+}
 
-export function constantPdaSeedNode(
-  type: TypeNode,
-  value: ValueNode
-): ConstantPdaSeedNode {
+export function constantPdaSeedNode<
+  TType extends TypeNode,
+  TValue extends ValueNode,
+>(type: TType, value: TValue): ConstantPdaSeedNode<TType, TValue> {
   return { kind: 'constantPdaSeedNode', type, value };
 }
 
-export function constantPdaSeedNodeFromString(
-  value: string
-): ConstantPdaSeedNode {
-  return {
-    kind: 'constantPdaSeedNode',
-    type: stringTypeNode(),
-    value: stringValueNode(value),
-  };
+export function constantPdaSeedNodeFromString(value: string) {
+  return constantPdaSeedNode(stringTypeNode(), stringValueNode(value));
 }

@@ -1,22 +1,22 @@
 import { MainCaseString, mainCase } from '../../shared';
 import { TypeNode } from '../typeNodes';
 
-export type VariablePdaSeedNode = {
+export interface VariablePdaSeedNode<TType extends TypeNode = TypeNode> {
   readonly kind: 'variablePdaSeedNode';
 
   // Children.
-  readonly type: TypeNode;
+  readonly type: TType;
 
   // Data.
   readonly name: MainCaseString;
   readonly docs: string[];
-};
+}
 
-export function variablePdaSeedNode(
+export function variablePdaSeedNode<TType extends TypeNode>(
   name: string,
-  type: TypeNode,
+  type: TType,
   docs: string | string[] = []
-): VariablePdaSeedNode {
+): VariablePdaSeedNode<TType> {
   return {
     kind: 'variablePdaSeedNode',
     name: mainCase(name),

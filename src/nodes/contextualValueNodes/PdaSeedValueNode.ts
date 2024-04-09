@@ -3,19 +3,26 @@ import { ValueNode } from '../valueNodes';
 import { AccountValueNode } from './AccountValueNode';
 import { ArgumentValueNode } from './ArgumentValueNode';
 
-export type PdaSeedValueNode = {
+export interface PdaSeedValueNode<
+  TValue extends ValueNode | AccountValueNode | ArgumentValueNode =
+    | ValueNode
+    | AccountValueNode
+    | ArgumentValueNode,
+> {
   readonly kind: 'pdaSeedValueNode';
 
   // Children.
-  readonly value: ValueNode | AccountValueNode | ArgumentValueNode;
+  readonly value: TValue;
 
   // Data.
   readonly name: MainCaseString;
-};
+}
 
-export function pdaSeedValueNode(
-  name: string,
-  value: PdaSeedValueNode['value']
-): PdaSeedValueNode {
+export function pdaSeedValueNode<
+  TValue extends ValueNode | AccountValueNode | ArgumentValueNode =
+    | ValueNode
+    | AccountValueNode
+    | ArgumentValueNode,
+>(name: string, value: TValue): PdaSeedValueNode<TValue> {
   return { kind: 'pdaSeedValueNode', name: mainCase(name), value };
 }
