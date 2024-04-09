@@ -1,5 +1,6 @@
 import type { ArrayValueNode } from './ArrayValueNode';
 import type { BooleanValueNode } from './BooleanValueNode';
+import { BytesValueNode } from './BytesValueNode';
 import type { EnumValueNode } from './EnumValueNode';
 import type { MapEntryValueNode } from './MapEntryValueNode';
 import type { MapValueNode } from './MapValueNode';
@@ -16,6 +17,7 @@ import type { TupleValueNode } from './TupleValueNode';
 // Standalone Value Node Registration.
 export type StandaloneValueNode =
   | ArrayValueNode
+  | BytesValueNode
   | BooleanValueNode
   | EnumValueNode
   | MapValueNode
@@ -29,6 +31,7 @@ export type StandaloneValueNode =
   | StringValueNode;
 export const STANDALONE_VALUE_NODE_KINDS = [
   'arrayValueNode',
+  'bytesValueNode',
   'booleanValueNode',
   'enumValueNode',
   'mapValueNode',

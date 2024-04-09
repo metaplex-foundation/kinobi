@@ -1,4 +1,9 @@
-import { RegisteredValueNode, isNode, isScalarEnum } from '../../nodes';
+import {
+  RegisteredValueNode,
+  getBytesFromBytesValueNode,
+  isNode,
+  isScalarEnum,
+} from '../../nodes';
 import {
   LinkableDictionary,
   MainCaseString,
@@ -33,6 +38,13 @@ export function renderValueNodeVisitor(input: {
       return {
         imports: new JavaScriptImportMap(),
         render: JSON.stringify(node.boolean),
+      };
+    },
+    visitBytesValue(node) {
+      const bytes = getBytesFromBytesValueNode(node);
+      return {
+        imports: new JavaScriptImportMap(),
+        render: `new Uint8Array([${Array.from(bytes).join(', ')}])`,
       };
     },
     visitEnumValue(node) {
