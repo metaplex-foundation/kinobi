@@ -19,6 +19,7 @@ import {
   booleanTypeNode,
   conditionalValueNode,
   constantPdaSeedNode,
+  constantValueNode,
   dateTimeTypeNode,
   definedTypeNode,
   enumEmptyVariantTypeNode,
@@ -414,6 +415,18 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
           .map(visit(this))
           .filter(removeNullAndAssertIsNodeFilter(VALUE_NODES))
       );
+    };
+  }
+
+  if (castedNodeKeys.includes('constantValueNode')) {
+    visitor.visitConstantValue = function visitConstantValue(node) {
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertIsNode(type, TYPE_NODES);
+      const value = visit(this)(node.value);
+      if (value === null) return null;
+      assertIsNode(value, VALUE_NODES);
+      return constantValueNode(type, value);
     };
   }
 

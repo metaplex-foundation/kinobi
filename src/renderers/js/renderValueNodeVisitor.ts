@@ -47,6 +47,9 @@ export function renderValueNodeVisitor(input: {
         render: `new Uint8Array([${Array.from(bytes).join(', ')}])`,
       };
     },
+    visitConstantValue() {
+      throw new Error('Not implemented');
+    },
     visitEnumValue(node) {
       const imports = new JavaScriptImportMap();
       const enumName = pascalCase(node.enum.name);

@@ -45,6 +45,9 @@ export function renderValueNodeVisitor(useStr: boolean = false): Visitor<
       const numbers = Array.from(bytes).map((b) => numberValueNode(b));
       return visit(arrayValueNode(numbers), this);
     },
+    visitConstantValue() {
+      throw new Error('Not implemented');
+    },
     visitEnumValue(node) {
       const imports = new RustImportMap();
       const enumName = pascalCase(node.enum.name);

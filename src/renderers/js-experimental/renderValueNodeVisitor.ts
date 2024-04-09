@@ -31,6 +31,9 @@ export function renderValueNodeVisitor(input: {
       const bytes = getBytesFromBytesValueNode(node);
       return fragment(`new Uint8Array([${Array.from(bytes).join(', ')}])`);
     },
+    visitConstantValue() {
+      throw new Error('Not implemented');
+    },
     visitEnumValue(node) {
       const enumName = nameApi.dataType(node.enum.name);
       const enumFunction = nameApi.discriminatedUnionFunction(node.enum.name);
