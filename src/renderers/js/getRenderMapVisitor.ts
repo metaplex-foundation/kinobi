@@ -50,7 +50,6 @@ import { getTypeManifestVisitor as baseGetTypeManifestVisitor } from './getTypeM
 import { JavaScriptContextMap } from './JavaScriptContextMap';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 import { renderInstructionDefaults } from './renderInstructionDefaults';
-import { renderValueNodeVisitor } from './renderValueNodeVisitor';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -112,10 +111,6 @@ export function getRenderMapVisitor(
     'InstructionData'
   );
 
-  const valueNodeVisitor = renderValueNodeVisitor({
-    linkables,
-    nonScalarEnums,
-  });
   const getTypeManifestVisitor = (parentName?: {
     strict: string;
     loose: string;
@@ -329,13 +324,13 @@ export function getRenderMapVisitor(
               node.data
             ).fields.find((f) => f.name === discriminator.name);
             const discriminatorValue = discriminatorField?.defaultValue
-              ? visit(discriminatorField.defaultValue, valueNodeVisitor)
+              ? visit(discriminatorField.defaultValue, typeManifestVisitor)
               : undefined;
             if (discriminatorValue) {
-              imports.mergeWith(discriminatorValue.imports);
+              imports.mergeWith(discriminatorValue.valueImports);
               resolvedDiscriminator = {
                 ...discriminator,
-                value: discriminatorValue.render,
+                value: discriminatorValue.value,
               };
             }
           } else if (isNode(discriminator, 'sizeDiscriminatorNode')) {
@@ -381,9 +376,9 @@ export function getRenderMapVisitor(
               const seedManifest = visit(seed.type, typeManifestVisitor);
               imports.mergeWith(seedManifest.serializerImports);
               const seedValue = seed.value;
-              const valueManifest = visit(seedValue, valueNodeVisitor);
-              (seedValue as any).render = valueManifest.render;
-              imports.mergeWith(valueManifest.imports);
+              const valueManifest = visit(seedValue, typeManifestVisitor);
+              (seedValue as any).render = valueManifest.value;
+              imports.mergeWith(valueManifest.valueImports);
               return { ...seed, typeManifest: seedManifest };
             }
             if (isNode(seed, 'variablePdaSeedNode')) {
@@ -513,7 +508,7 @@ export function getRenderMapVisitor(
           ).map((input: ResolvedInstructionInput) => {
             const renderedInput = renderInstructionDefaults(
               input,
-              valueNodeVisitor,
+              typeManifestVisitor,
               node.optionalAccountStrategy,
               argObject
             );
