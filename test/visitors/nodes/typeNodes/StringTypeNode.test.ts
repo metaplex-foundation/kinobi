@@ -7,7 +7,7 @@ import {
   mergeVisitorMacro,
 } from '../_setup';
 
-const node = stringTypeNode();
+const node = stringTypeNode('utf8');
 
 test(mergeVisitorMacro, node, 1);
 test(identityVisitorMacro, node);

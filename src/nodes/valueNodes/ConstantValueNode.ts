@@ -23,15 +23,15 @@ export function constantValueNode<
   return { kind: 'constantValueNode', type, value };
 }
 
-export function constantValueNodeFromString(
-  encoding: StringEncoding,
+export function constantValueNodeFromString<TEncoding extends StringEncoding>(
+  encoding: TEncoding,
   string: string
 ) {
   return constantValueNode(stringTypeNode(encoding), stringValueNode(string));
 }
 
-export function constantValueNodeFromBytes(
-  encoding: BytesEncoding,
+export function constantValueNodeFromBytes<TEncoding extends BytesEncoding>(
+  encoding: TEncoding,
   data: string
 ) {
   return constantValueNode(bytesTypeNode(), bytesValueNode(encoding, data));

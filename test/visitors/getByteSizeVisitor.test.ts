@@ -49,7 +49,7 @@ test(
     structFieldTypeNode({ name: 'age', type: numberTypeNode('u32') }),
     structFieldTypeNode({
       name: 'firstname',
-      type: fixedSizeTypeNode(stringTypeNode(), 42),
+      type: fixedSizeTypeNode(stringTypeNode('utf8'), 42),
     }),
   ]),
   4 + 42
@@ -59,7 +59,7 @@ test(
   macro,
   structTypeNode([
     structFieldTypeNode({ name: 'age', type: numberTypeNode('u32') }),
-    structFieldTypeNode({ name: 'firstname', type: stringTypeNode() }),
+    structFieldTypeNode({ name: 'firstname', type: stringTypeNode('utf8') }),
   ]),
   null
 );

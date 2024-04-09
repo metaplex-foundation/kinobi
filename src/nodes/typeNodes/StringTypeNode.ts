@@ -9,11 +9,8 @@ export interface StringTypeNode<
   readonly encoding: TEncoding;
 }
 
-export function stringTypeNode<TEncoding extends StringEncoding = 'utf8'>(
-  encoding?: TEncoding
+export function stringTypeNode<TEncoding extends StringEncoding>(
+  encoding: TEncoding
 ): StringTypeNode<TEncoding> {
-  return {
-    kind: 'stringTypeNode',
-    encoding: (encoding ?? 'utf8') as TEncoding,
-  };
+  return { kind: 'stringTypeNode', encoding };
 }

@@ -19,7 +19,7 @@ const node = definedTypeNode({
   type: structTypeNode([
     structFieldTypeNode({
       name: 'name',
-      type: fixedSizeTypeNode(stringTypeNode(), 42),
+      type: fixedSizeTypeNode(stringTypeNode('utf8'), 42),
     }),
     structFieldTypeNode({ name: 'age', type: numberTypeNode('u64') }),
   ]),

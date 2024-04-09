@@ -23,7 +23,7 @@ const node = enumTypeNode(
     enumEmptyVariantTypeNode('quit'),
     enumTupleVariantTypeNode(
       'write',
-      tupleTypeNode([fixedSizeTypeNode(stringTypeNode(), 32)])
+      tupleTypeNode([fixedSizeTypeNode(stringTypeNode('utf8'), 32)])
     ),
     enumStructVariantTypeNode(
       'move',

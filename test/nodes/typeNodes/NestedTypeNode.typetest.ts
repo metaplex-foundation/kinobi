@@ -14,7 +14,7 @@ import {
 
 {
   // [NestedTypeNode]: it constraints the nested type of a node.
-  const stringNestedNode = fixedSizeTypeNode(stringTypeNode(), 32);
+  const stringNestedNode = fixedSizeTypeNode(stringTypeNode('utf8'), 32);
   const numberNestedNode = fixedSizeTypeNode(numberTypeNode('u32'), 32);
   stringNestedNode satisfies NestedTypeNode<StringTypeNode>;
   numberNestedNode satisfies NestedTypeNode<NumberTypeNode>;
@@ -26,7 +26,7 @@ import {
 
 {
   // [resolveNestedTypeNode]: it unwraps the nested type of a node.
-  const stringNestedNode = fixedSizeTypeNode(stringTypeNode(), 32);
+  const stringNestedNode = fixedSizeTypeNode(stringTypeNode('utf8'), 32);
   const numberNestedNode = fixedSizeTypeNode(numberTypeNode('u32'), 32);
   resolveNestedTypeNode(stringNestedNode) satisfies StringTypeNode;
   resolveNestedTypeNode(numberNestedNode) satisfies NumberTypeNode;
@@ -39,7 +39,7 @@ import {
 {
   // [transformNestedTypeNode]: it transforms the nested type of a nested node.
   const transformedNode = transformNestedTypeNode(
-    fixedSizeTypeNode(stringTypeNode(), 32),
+    fixedSizeTypeNode(stringTypeNode('utf8'), 32),
     () => numberTypeNode('u32')
   );
   transformedNode satisfies NestedTypeNode<NumberTypeNode>;

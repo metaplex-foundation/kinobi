@@ -19,7 +19,7 @@ test('it can transform nodes into other nodes', (t) => {
 
   // And a transformer visitor that transforms all number nodes into string nodes.
   const visitor = bottomUpTransformerVisitor([
-    (node) => (isNode(node, 'numberTypeNode') ? stringTypeNode() : node),
+    (node) => (isNode(node, 'numberTypeNode') ? stringTypeNode('utf8') : node),
   ]);
 
   // When we visit the tree using that visitor.
@@ -29,8 +29,8 @@ test('it can transform nodes into other nodes', (t) => {
   t.deepEqual(
     result,
     tupleTypeNode([
-      stringTypeNode(),
-      tupleTypeNode([stringTypeNode(), publicKeyTypeNode()]),
+      stringTypeNode('utf8'),
+      tupleTypeNode([stringTypeNode('utf8'), publicKeyTypeNode()]),
     ])
   );
 });
@@ -46,7 +46,7 @@ test('it can transform nodes using node selectors', (t) => {
   const visitor = bottomUpTransformerVisitor([
     {
       select: '[numberTypeNode]',
-      transform: () => stringTypeNode(),
+      transform: () => stringTypeNode('utf8'),
     },
   ]);
 
@@ -57,8 +57,8 @@ test('it can transform nodes using node selectors', (t) => {
   t.deepEqual(
     result,
     tupleTypeNode([
-      stringTypeNode(),
-      tupleTypeNode([stringTypeNode(), publicKeyTypeNode()]),
+      stringTypeNode('utf8'),
+      tupleTypeNode([stringTypeNode('utf8'), publicKeyTypeNode()]),
     ])
   );
 });
@@ -136,7 +136,7 @@ test('it can transform nodes using multiple node selectors', (t) => {
         '[numberTypeNode]',
         (_, nodeStack) => nodeStack.all().length > 1,
       ],
-      transform: () => stringTypeNode(),
+      transform: () => stringTypeNode('utf8'),
     },
   ]);
 
@@ -148,7 +148,7 @@ test('it can transform nodes using multiple node selectors', (t) => {
     result,
     tupleTypeNode([
       numberTypeNode('u32'),
-      tupleTypeNode([stringTypeNode(), publicKeyTypeNode()]),
+      tupleTypeNode([stringTypeNode('utf8'), publicKeyTypeNode()]),
     ])
   );
 });

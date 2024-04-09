@@ -20,5 +20,5 @@ export function constantPdaSeedNode<
 }
 
 export function constantPdaSeedNodeFromString(value: string) {
-  return constantPdaSeedNode(stringTypeNode(), stringValueNode(value));
+  return constantPdaSeedNode(stringTypeNode('utf8'), stringValueNode(value));
 }

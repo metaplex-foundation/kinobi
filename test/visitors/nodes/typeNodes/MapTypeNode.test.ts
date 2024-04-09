@@ -15,7 +15,7 @@ import {
 } from '../_setup';
 
 const node = mapTypeNode(
-  fixedSizeTypeNode(stringTypeNode(), 32),
+  fixedSizeTypeNode(stringTypeNode('utf8'), 32),
   publicKeyTypeNode(),
   prefixedCountNode(numberTypeNode('u8'))
 );

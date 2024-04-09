@@ -13,10 +13,10 @@ import {
 
 test('it resolved nested type nodes', (t) => {
   const node = sizePrefixTypeNode(
-    fixedSizeTypeNode(stringTypeNode(), 32),
+    fixedSizeTypeNode(stringTypeNode('utf8'), 32),
     numberTypeNode('u8')
   );
-  t.deepEqual(resolveNestedTypeNode(node), stringTypeNode());
+  t.deepEqual(resolveNestedTypeNode(node), stringTypeNode('utf8'));
 });
 
 test('it returns the same instance when resolving nested types nodes', (t) => {
@@ -26,7 +26,7 @@ test('it returns the same instance when resolving nested types nodes', (t) => {
 
 test('it transforms nested type nodes', (t) => {
   const node = sizePrefixTypeNode(
-    fixedSizeTypeNode(stringTypeNode(), 32),
+    fixedSizeTypeNode(stringTypeNode('utf8'), 32),
     numberTypeNode('u8')
   );
   const transformedNode = transformNestedTypeNode(node, () =>

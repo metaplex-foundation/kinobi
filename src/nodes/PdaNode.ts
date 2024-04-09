@@ -42,7 +42,7 @@ export function pdaNodeFromIdl(idl: Partial<IdlPda>): PdaNode {
   const seeds = (idl.seeds ?? []).map((seed): PdaSeedNode => {
     if (seed.kind === 'constant') {
       const type = (() => {
-        if (seed.type === 'string') return stringTypeNode();
+        if (seed.type === 'string') return stringTypeNode('utf8');
         if (seed.type === 'bytes') return bytesTypeNode();
         return createTypeNodeFromIdl(seed.type);
       })();

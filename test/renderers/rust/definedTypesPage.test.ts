@@ -23,7 +23,10 @@ test('it renders a prefix string on a defined type', (t) => {
         type: structTypeNode([
           structFieldTypeNode({
             name: 'contentType',
-            type: sizePrefixTypeNode(stringTypeNode(), numberTypeNode('u8')),
+            type: sizePrefixTypeNode(
+              stringTypeNode('utf8'),
+              numberTypeNode('u8')
+            ),
           }),
         ]),
       }),

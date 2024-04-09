@@ -108,7 +108,7 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
     if (idlType === 'bool') return booleanTypeNode();
     if (idlType === 'publicKey') return publicKeyTypeNode();
     if (idlType === 'string')
-      return sizePrefixTypeNode(stringTypeNode(), numberTypeNode('u32'));
+      return sizePrefixTypeNode(stringTypeNode('utf8'), numberTypeNode('u32'));
     if (idlType === 'bytes')
       return sizePrefixTypeNode(bytesTypeNode(), numberTypeNode('u32'));
     return numberTypeNode(idlType);

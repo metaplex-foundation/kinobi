@@ -11,7 +11,7 @@ import {
   mergeVisitorMacro,
 } from '../_setup';
 
-const node = sizePrefixTypeNode(stringTypeNode(), numberTypeNode('u32'));
+const node = sizePrefixTypeNode(stringTypeNode('utf8'), numberTypeNode('u32'));
 
 test(mergeVisitorMacro, node, 3);
 test(identityVisitorMacro, node);

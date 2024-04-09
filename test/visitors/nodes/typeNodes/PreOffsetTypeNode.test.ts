@@ -7,7 +7,7 @@ import {
   mergeVisitorMacro,
 } from '../_setup';
 
-const node = preOffsetTypeNode(stringTypeNode(), 42);
+const node = preOffsetTypeNode(stringTypeNode('utf8'), 42);
 
 test(mergeVisitorMacro, node, 2);
 test(identityVisitorMacro, node);
@@ -25,7 +25,7 @@ preOffsetTypeNode [42.relative]
 test(
   'getDebugStringVisitor: different strategy',
   getDebugStringVisitorMacro,
-  preOffsetTypeNode(stringTypeNode(), 42, 'absolute'),
+  preOffsetTypeNode(stringTypeNode('utf8'), 42, 'absolute'),
   `
 preOffsetTypeNode [42.absolute]
 |   stringTypeNode [utf8]`

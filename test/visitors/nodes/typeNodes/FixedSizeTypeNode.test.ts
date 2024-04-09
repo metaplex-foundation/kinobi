@@ -7,7 +7,7 @@ import {
   mergeVisitorMacro,
 } from '../_setup';
 
-const node = fixedSizeTypeNode(stringTypeNode(), 42);
+const node = fixedSizeTypeNode(stringTypeNode('utf8'), 42);
 
 test(mergeVisitorMacro, node, 2);
 test(identityVisitorMacro, node);

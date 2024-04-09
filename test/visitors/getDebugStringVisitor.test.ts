@@ -21,7 +21,7 @@ test('it returns a string representing the main information of a node for debugg
     structTypeNode([
       structFieldTypeNode({
         name: 'firstname',
-        type: sizePrefixTypeNode(stringTypeNode(), numberTypeNode('u64')),
+        type: sizePrefixTypeNode(stringTypeNode('utf8'), numberTypeNode('u64')),
       }),
       structFieldTypeNode({ name: 'age', type: numberTypeNode('u32') }),
       structFieldTypeNode({
@@ -58,7 +58,7 @@ test('it can create indented strings', (t) => {
     structTypeNode([
       structFieldTypeNode({
         name: 'firstname',
-        type: sizePrefixTypeNode(stringTypeNode(), numberTypeNode('u64')),
+        type: sizePrefixTypeNode(stringTypeNode('utf8'), numberTypeNode('u64')),
       }),
       structFieldTypeNode({ name: 'age', type: numberTypeNode('u32') }),
       structFieldTypeNode({

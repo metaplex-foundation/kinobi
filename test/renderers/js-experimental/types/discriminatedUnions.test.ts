@@ -20,7 +20,7 @@ const eventTypeNode = definedTypeNode({
   name: 'event',
   type: enumTypeNode([
     enumEmptyVariantTypeNode('quit'),
-    enumTupleVariantTypeNode('write', tupleTypeNode([stringTypeNode()])),
+    enumTupleVariantTypeNode('write', tupleTypeNode([stringTypeNode('utf8')])),
     enumStructVariantTypeNode(
       'move',
       structTypeNode([
