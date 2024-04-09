@@ -1,5 +1,6 @@
 import test from 'ava';
 import {
+  assertIsNestedTypeNode,
   fixedSizeTypeNode,
   isNestedTypeNode,
   numberTypeNode,
@@ -51,4 +52,17 @@ test('it checks if a node is a nested type', (t) => {
   );
   t.true(isNestedTypeNode(nestedNode, 'numberTypeNode'));
   t.false(isNestedTypeNode(nestedNode, 'stringTypeNode'));
+});
+
+test('it asserts that a node is a nested type', (t) => {
+  const flatNode = numberTypeNode('u64');
+  t.notThrows(() => assertIsNestedTypeNode(flatNode, 'numberTypeNode'));
+  t.throws(() => assertIsNestedTypeNode(flatNode, 'stringTypeNode'));
+
+  const nestedNode = sizePrefixTypeNode(
+    fixedSizeTypeNode(numberTypeNode('u64'), 32),
+    numberTypeNode('u8')
+  );
+  t.notThrows(() => assertIsNestedTypeNode(nestedNode, 'numberTypeNode'));
+  t.throws(() => assertIsNestedTypeNode(nestedNode, 'stringTypeNode'));
 });

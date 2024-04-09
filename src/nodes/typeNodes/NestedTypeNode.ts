@@ -54,3 +54,15 @@ export function isNestedTypeNode<TKind extends TypeNode['kind']>(
   const resolved = resolveNestedTypeNode(node);
   return !!node && kinds.includes(resolved.kind as TKind);
 }
+
+export function assertIsNestedTypeNode<TKind extends TypeNode['kind']>(
+  node: Node | null | undefined,
+  kind: TKind | TKind[]
+): asserts node is NestedTypeNode<Extract<TypeNode, { kind: TKind }>> {
+  const kinds = Array.isArray(kind) ? kind : [kind];
+  if (!isNestedTypeNode(node, kinds)) {
+    throw new Error(
+      `Expected nested type of ${kinds.join(' | ')}, got ${node?.kind ?? 'null'}.`
+    );
+  }
+}
