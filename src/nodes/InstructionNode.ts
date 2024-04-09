@@ -21,6 +21,8 @@ import {
 import { createTypeNodeFromIdl } from './typeNodes/TypeNode';
 import { numberValueNode } from './valueNodes';
 
+type SubInstructionNode = InstructionNode;
+
 export interface InstructionNode<
   TAccounts extends InstructionAccountNode[] = InstructionAccountNode[],
   TArguments extends InstructionArgumentNode[] = InstructionArgumentNode[],
@@ -36,6 +38,9 @@ export interface InstructionNode<
   TDiscriminators extends DiscriminatorNode[] | undefined =
     | DiscriminatorNode[]
     | undefined,
+  TSubInstructions extends SubInstructionNode[] | undefined =
+    | SubInstructionNode[]
+    | undefined,
 > {
   readonly kind: 'instructionNode';
 
@@ -46,7 +51,7 @@ export interface InstructionNode<
   readonly remainingAccounts?: TRemainingAccounts;
   readonly byteDeltas?: TByteDeltas;
   readonly discriminators?: TDiscriminators;
-  readonly subInstructions?: InstructionNode[] | undefined;
+  readonly subInstructions?: TSubInstructions;
 
   // Data.
   readonly name: MainCaseString;
@@ -70,6 +75,9 @@ export type InstructionNodeInput<
   TDiscriminators extends DiscriminatorNode[] | undefined =
     | DiscriminatorNode[]
     | undefined,
+  TSubInstructions extends SubInstructionNode[] | undefined =
+    | SubInstructionNode[]
+    | undefined,
 > = Omit<
   Partial<
     InstructionNode<
@@ -78,7 +86,8 @@ export type InstructionNodeInput<
       TExtraArguments,
       TRemainingAccounts,
       TByteDeltas,
-      TDiscriminators
+      TDiscriminators,
+      TSubInstructions
     >
   >,
   'kind' | 'name'
@@ -97,6 +106,7 @@ export function instructionNode<
     | undefined = undefined,
   const TByteDeltas extends InstructionByteDeltaNode[] | undefined = undefined,
   const TDiscriminators extends DiscriminatorNode[] | undefined = undefined,
+  const TSubInstructions extends SubInstructionNode[] | undefined = undefined,
 >(
   input: InstructionNodeInput<
     TAccounts,
@@ -104,7 +114,8 @@ export function instructionNode<
     TExtraArguments,
     TRemainingAccounts,
     TByteDeltas,
-    TDiscriminators
+    TDiscriminators,
+    TSubInstructions
   >
 ): InstructionNode<
   TAccounts,
@@ -112,7 +123,8 @@ export function instructionNode<
   TExtraArguments,
   TRemainingAccounts,
   TByteDeltas,
-  TDiscriminators
+  TDiscriminators,
+  TSubInstructions
 > {
   if (!input.name) {
     throw new InvalidKinobiTreeError('InstructionNode must have a name.');
