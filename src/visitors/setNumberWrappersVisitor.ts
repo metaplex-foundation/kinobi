@@ -1,6 +1,6 @@
 import {
   amountTypeNode,
-  assertIsNode,
+  assertIsNestedTypeNode,
   dateTimeTypeNode,
   solAmountTypeNode,
 } from '../nodes';
@@ -22,7 +22,7 @@ export function setNumberWrappersVisitor(map: NumberWrapperMap) {
       ([selectorStack, wrapper]): BottomUpNodeTransformerWithSelector => ({
         select: `${selectorStack}.[numberTypeNode]`,
         transform: (node) => {
-          assertIsNode(node, 'numberTypeNode');
+          assertIsNestedTypeNode(node, 'numberTypeNode');
           switch (wrapper.kind) {
             case 'DateTime':
               return dateTimeTypeNode(node);
