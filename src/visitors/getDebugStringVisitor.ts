@@ -97,6 +97,8 @@ function getNodeDetails(node: Node): string[] {
       return [node.string];
     case 'booleanValueNode':
       return [node.boolean ? 'true' : 'false'];
+    case 'bytesValueNode':
+      return [node.encoding, node.data];
     case 'publicKeyValueNode':
       return [
         ...(node.identifier ? [`${node.identifier}`] : []),

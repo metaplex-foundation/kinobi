@@ -1,4 +1,10 @@
-import { RegisteredValueNode, ValueNode } from '../../nodes';
+import {
+  RegisteredValueNode,
+  ValueNode,
+  arrayValueNode,
+  getBytesFromBytesValueNode,
+  numberValueNode,
+} from '../../nodes';
 import { pascalCase } from '../../shared';
 import { Visitor, visit } from '../../visitors';
 import { RustImportMap } from './RustImportMap';
@@ -33,6 +39,14 @@ export function renderValueNodeVisitor(useStr: boolean = false): Visitor<
         imports: new RustImportMap(),
         render: JSON.stringify(node.boolean),
       };
+    },
+    visitBytesValue(node) {
+      const bytes = getBytesFromBytesValueNode(node);
+      const numbers = Array.from(bytes).map((b) => numberValueNode(b));
+      return visit(arrayValueNode(numbers), this);
+    },
+    visitConstantValue() {
+      throw new Error('Not implemented');
     },
     visitEnumValue(node) {
       const imports = new RustImportMap();

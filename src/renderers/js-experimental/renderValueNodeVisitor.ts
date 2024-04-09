@@ -1,4 +1,9 @@
-import { RegisteredValueNode, isNode, isScalarEnum } from '../../nodes';
+import {
+  RegisteredValueNode,
+  getBytesFromBytesValueNode,
+  isNode,
+  isScalarEnum,
+} from '../../nodes';
 import { LinkableDictionary, MainCaseString } from '../../shared';
 import { Visitor, visit } from '../../visitors';
 import { Fragment, fragment, mergeFragments } from './fragments';
@@ -21,6 +26,13 @@ export function renderValueNodeVisitor(input: {
     },
     visitBooleanValue(node) {
       return fragment(JSON.stringify(node.boolean));
+    },
+    visitBytesValue(node) {
+      const bytes = getBytesFromBytesValueNode(node);
+      return fragment(`new Uint8Array([${Array.from(bytes).join(', ')}])`);
+    },
+    visitConstantValue() {
+      throw new Error('Not implemented');
     },
     visitEnumValue(node) {
       const enumName = nameApi.dataType(node.enum.name);
