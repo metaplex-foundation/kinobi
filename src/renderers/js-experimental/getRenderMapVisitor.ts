@@ -143,7 +143,8 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
   }) =>
     baseGetTypeManifestVisitor({
       nameApi,
-      valueNodeVisitor,
+      linkables,
+      nonScalarEnums,
       customAccountData,
       customInstructionData,
       parentName,
