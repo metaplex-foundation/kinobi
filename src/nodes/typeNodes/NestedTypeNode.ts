@@ -1,6 +1,7 @@
+import { Node, isNode } from '../Node';
 import { FixedSizeTypeNode } from './FixedSizeTypeNode';
 import { SizePrefixTypeNode } from './SizePrefixTypeNode';
-import { TypeNode } from './TypeNode';
+import { TYPE_NODES, TypeNode } from './TypeNode';
 
 export type NestedTypeNode<TType extends TypeNode> =
   | TType
@@ -44,13 +45,12 @@ export function transformNestedTypeNode<
   }
 }
 
-export function isNestedTypeNode<TType extends TypeNode>(
-  typeNode: TypeNode
-): typeNode is NestedTypeNode<TType> {
-  // const kinds = Array.isArray(kind) ? kind : [kind];
-  // return !!node && (kinds as NodeKind[]).includes(node.kind);
-  return (
-    typeNode.kind === 'fixedSizeTypeNode' ||
-    typeNode.kind === 'sizePrefixTypeNode'
-  );
+export function isNestedTypeNode<TKind extends TypeNode['kind']>(
+  node: Node | null | undefined,
+  kind: TKind | TKind[]
+): node is NestedTypeNode<Extract<TypeNode, { kind: TKind }>> {
+  if (!isNode(node, TYPE_NODES)) return false;
+  const kinds = Array.isArray(kind) ? kind : [kind];
+  const resolved = resolveNestedTypeNode(node);
+  return !!node && kinds.includes(resolved.kind as TKind);
 }

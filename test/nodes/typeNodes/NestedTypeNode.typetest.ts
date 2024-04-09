@@ -9,7 +9,7 @@ import {
 } from '../../../src';
 
 {
-  // [ResolveNestedTypeNode]: it constraints the nested type of a node.
+  // [NestedTypeNode]: it constraints the nested type of a node.
   const stringNestedNode = fixedSizeTypeNode(stringTypeNode(), 32);
   const numberNestedNode = fixedSizeTypeNode(numberTypeNode('u32'), 32);
   stringNestedNode satisfies NestedTypeNode<StringTypeNode>;
