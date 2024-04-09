@@ -1,19 +1,24 @@
 import { Node, isNode } from '../Node';
 import { FixedSizeTypeNode } from './FixedSizeTypeNode';
+import { PostOffsetTypeNode } from './PostOffsetTypeNode';
+import { PreOffsetTypeNode } from './PreOffsetTypeNode';
 import { SizePrefixTypeNode } from './SizePrefixTypeNode';
 import { TYPE_NODES, TypeNode } from './TypeNode';
 
 export type NestedTypeNode<TType extends TypeNode> =
   | TType
-  | ((FixedSizeTypeNode | SizePrefixTypeNode) & {
-      type: NestedTypeNode<TType>;
-    });
+  | FixedSizeTypeNode<NestedTypeNode<TType>>
+  | PostOffsetTypeNode<NestedTypeNode<TType>>
+  | PreOffsetTypeNode<NestedTypeNode<TType>>
+  | SizePrefixTypeNode<NestedTypeNode<TType>>;
 
 export function resolveNestedTypeNode<TType extends TypeNode>(
   typeNode: NestedTypeNode<TType>
 ): TType {
   switch (typeNode.kind) {
     case 'fixedSizeTypeNode':
+    case 'postOffsetTypeNode':
+    case 'preOffsetTypeNode':
     case 'sizePrefixTypeNode':
       return resolveNestedTypeNode<TType>(
         typeNode.type as NestedTypeNode<TType>
@@ -32,6 +37,8 @@ export function transformNestedTypeNode<
 ): NestedTypeNode<TTo> {
   switch (typeNode.kind) {
     case 'fixedSizeTypeNode':
+    case 'postOffsetTypeNode':
+    case 'preOffsetTypeNode':
     case 'sizePrefixTypeNode':
       return {
         ...typeNode,

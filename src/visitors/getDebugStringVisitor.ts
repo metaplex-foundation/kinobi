@@ -126,6 +126,10 @@ function getNodeDetails(node: Node): string[] {
       return [node.size.toString()];
     case 'fixedSizeTypeNode':
       return [node.size.toString()];
+    case 'preOffsetTypeNode':
+      return [node.offset.toString(), node.strategy ?? 'relative'];
+    case 'postOffsetTypeNode':
+      return [node.offset.toString(), node.strategy ?? 'relative'];
     default:
       return 'name' in node ? [node.name] : [];
   }
