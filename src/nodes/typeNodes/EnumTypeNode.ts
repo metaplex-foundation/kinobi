@@ -1,4 +1,4 @@
-import type { ResolveNestedTypeNode } from './TypeNode';
+import type { ResolveNestedTypeNode } from './NestedTypeNode';
 import type { IdlTypeEnum } from '../../idl';
 import { enumEmptyVariantTypeNodeFromIdl } from './EnumEmptyVariantTypeNode';
 import { enumStructVariantTypeNodeFromIdl } from './EnumStructVariantTypeNode';

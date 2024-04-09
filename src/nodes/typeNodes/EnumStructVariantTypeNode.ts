@@ -1,4 +1,4 @@
-import type { ResolveNestedTypeNode } from './TypeNode';
+import type { ResolveNestedTypeNode } from './NestedTypeNode';
 import type { IdlTypeEnumField, IdlTypeEnumVariant } from '../../idl';
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../../shared';
 import { StructTypeNode, structTypeNodeFromIdl } from './StructTypeNode';

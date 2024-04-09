@@ -1,5 +1,6 @@
+import { ResolveNestedTypeNode } from './NestedTypeNode';
 import { NumberTypeNode } from './NumberTypeNode';
-import { ResolveNestedTypeNode, TypeNode } from './TypeNode';
+import { TypeNode } from './TypeNode';
 
 export interface SizePrefixTypeNode<
   TType extends TypeNode = TypeNode,

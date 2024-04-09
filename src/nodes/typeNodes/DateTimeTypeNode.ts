@@ -1,5 +1,5 @@
 import { NumberTypeNode } from './NumberTypeNode';
-import { ResolveNestedTypeNode } from './TypeNode';
+import { ResolveNestedTypeNode } from './NestedTypeNode';
 
 export interface DateTimeTypeNode<
   TNumber extends

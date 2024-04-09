@@ -1,4 +1,4 @@
-import { ResolveNestedTypeNode } from './TypeNode';
+import { ResolveNestedTypeNode } from './NestedTypeNode';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 
 export interface BooleanTypeNode<
