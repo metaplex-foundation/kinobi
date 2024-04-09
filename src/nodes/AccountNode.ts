@@ -3,16 +3,11 @@ import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
 import { assertIsNode } from './Node';
 import { DiscriminatorNode } from './discriminatorNodes';
 import { PdaLinkNode, pdaLinkNode } from './linkNodes';
-import {
-  ResolveNestedTypeNode,
-  StructTypeNode,
-  structTypeNode,
-} from './typeNodes';
+import { NestedTypeNode, StructTypeNode, structTypeNode } from './typeNodes';
 import { createTypeNodeFromIdl } from './typeNodes/TypeNode';
 
 export interface AccountNode<
-  TData extends
-    ResolveNestedTypeNode<StructTypeNode> = ResolveNestedTypeNode<StructTypeNode>,
+  TData extends NestedTypeNode<StructTypeNode> = NestedTypeNode<StructTypeNode>,
   TPda extends PdaLinkNode | undefined = PdaLinkNode | undefined,
   TDiscriminators extends DiscriminatorNode[] | undefined =
     | DiscriminatorNode[]
@@ -33,8 +28,7 @@ export interface AccountNode<
 }
 
 export type AccountNodeInput<
-  TData extends
-    ResolveNestedTypeNode<StructTypeNode> = ResolveNestedTypeNode<StructTypeNode>,
+  TData extends NestedTypeNode<StructTypeNode> = NestedTypeNode<StructTypeNode>,
   TPda extends PdaLinkNode | undefined = PdaLinkNode | undefined,
   TDiscriminators extends DiscriminatorNode[] | undefined =
     | DiscriminatorNode[]
@@ -47,7 +41,7 @@ export type AccountNodeInput<
 };
 
 export function accountNode<
-  TData extends ResolveNestedTypeNode<StructTypeNode> = StructTypeNode<[]>,
+  TData extends NestedTypeNode<StructTypeNode> = StructTypeNode<[]>,
   TPda extends PdaLinkNode | undefined = undefined,
   const TDiscriminators extends DiscriminatorNode[] | undefined = undefined,
 >(

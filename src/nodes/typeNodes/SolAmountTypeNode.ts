@@ -1,9 +1,9 @@
-import { ResolveNestedTypeNode } from './NestedTypeNode';
+import { NestedTypeNode } from './NestedTypeNode';
 import { NumberTypeNode } from './NumberTypeNode';
 
 export interface SolAmountTypeNode<
   TNumber extends
-    ResolveNestedTypeNode<NumberTypeNode> = ResolveNestedTypeNode<NumberTypeNode>,
+    NestedTypeNode<NumberTypeNode> = NestedTypeNode<NumberTypeNode>,
 > {
   readonly kind: 'solAmountTypeNode';
 
@@ -12,7 +12,7 @@ export interface SolAmountTypeNode<
 }
 
 export function solAmountTypeNode<
-  TNumber extends ResolveNestedTypeNode<NumberTypeNode>,
+  TNumber extends NestedTypeNode<NumberTypeNode>,
 >(number: TNumber): SolAmountTypeNode<TNumber> {
   return { kind: 'solAmountTypeNode', number };
 }
