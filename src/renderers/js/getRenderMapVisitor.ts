@@ -121,7 +121,8 @@ export function getRenderMapVisitor(
     loose: string;
   }) =>
     baseGetTypeManifestVisitor({
-      valueNodeVisitor,
+      linkables,
+      nonScalarEnums,
       customAccountData,
       customInstructionData,
       parentName,
