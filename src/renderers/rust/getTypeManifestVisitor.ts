@@ -81,9 +81,7 @@ export function getTypeManifestVisitor() {
             isScalarEnum(definedType.type)
           ) {
             traits.push('PartialOrd', 'Hash', 'FromPrimitive');
-            manifest.imports.add([
-              'num_derive::FromPrimitive',
-            ]);
+            manifest.imports.add(['num_derive::FromPrimitive']);
           }
           return {
             ...manifest,
