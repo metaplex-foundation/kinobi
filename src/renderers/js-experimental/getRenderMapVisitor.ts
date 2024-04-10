@@ -63,10 +63,6 @@ import {
   NameApi,
   NameTransformers,
 } from './nameTransformers';
-import {
-  renderValueNodeVisitor,
-  ValueNodeVisitor,
-} from './renderValueNodeVisitor';
 
 const DEFAULT_PRETTIER_OPTIONS: PrettierOptions = {
   semi: true,
@@ -96,7 +92,6 @@ export type GlobalFragmentScope = {
   nameApi: NameApi;
   linkables: LinkableDictionary;
   typeManifestVisitor: TypeManifestVisitor;
-  valueNodeVisitor: ValueNodeVisitor;
   asyncResolvers: MainCaseString[];
   nonScalarEnums: MainCaseString[];
   renderParentInstructions: boolean;
@@ -132,18 +127,14 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
     'InstructionData'
   );
 
-  const valueNodeVisitor = renderValueNodeVisitor({
-    nameApi,
-    linkables,
-    nonScalarEnums,
-  });
   const getTypeManifestVisitor = (parentName?: {
     strict: string;
     loose: string;
   }) =>
     baseGetTypeManifestVisitor({
       nameApi,
-      valueNodeVisitor,
+      linkables,
+      nonScalarEnums,
       customAccountData,
       customInstructionData,
       parentName,
@@ -155,7 +146,6 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
     nameApi,
     linkables,
     typeManifestVisitor,
-    valueNodeVisitor,
     asyncResolvers,
     nonScalarEnums,
     renderParentInstructions,

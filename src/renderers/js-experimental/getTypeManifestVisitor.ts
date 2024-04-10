@@ -2,7 +2,9 @@ import {
   CountNode,
   NumberTypeNode,
   REGISTERED_TYPE_NODE_KINDS,
+  REGISTERED_VALUE_NODE_KINDS,
   TypeNode,
+  getBytesFromBytesValueNode,
   isNode,
   isScalarEnum,
   resolveNestedTypeNode,
@@ -10,27 +12,35 @@ import {
   structTypeNode,
   structTypeNodeFromInstructionArgumentNodes,
 } from '../../nodes';
-import { camelCase, jsDocblock, mainCase, pipe } from '../../shared';
+import {
+  LinkableDictionary,
+  MainCaseString,
+  camelCase,
+  jsDocblock,
+  mainCase,
+  pipe,
+} from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
 import { ImportMap } from './ImportMap';
-import { TypeManifest, mergeManifests } from './TypeManifest';
+import { TypeManifest, mergeManifests, typeManifest } from './TypeManifest';
 import { ParsedCustomDataOptions } from './customDataHelpers';
-import { Fragment, fragment } from './fragments';
+import { Fragment, fragment, mergeFragments } from './fragments';
 import { NameApi } from './nameTransformers';
-import { ValueNodeVisitor } from './renderValueNodeVisitor';
 
 export type TypeManifestVisitor = ReturnType<typeof getTypeManifestVisitor>;
 
 export function getTypeManifestVisitor(input: {
   nameApi: NameApi;
-  valueNodeVisitor: ValueNodeVisitor;
+  linkables: LinkableDictionary;
+  nonScalarEnums: MainCaseString[];
   customAccountData: ParsedCustomDataOptions;
   customInstructionData: ParsedCustomDataOptions;
   parentName?: { strict: string; loose: string };
 }) {
   const {
     nameApi,
-    valueNodeVisitor,
+    linkables,
+    nonScalarEnums,
     customAccountData,
     customInstructionData,
   } = input;
@@ -46,9 +56,11 @@ export function getTypeManifestVisitor(input: {
           looseType: fragment(''),
           encoder: fragment(''),
           decoder: fragment(''),
+          value: fragment(''),
         }) as TypeManifest,
       [
         ...REGISTERED_TYPE_NODE_KINDS,
+        ...REGISTERED_VALUE_NODE_KINDS,
         'definedTypeLinkNode',
         'definedTypeNode',
         'accountNode',
@@ -137,6 +149,7 @@ export function getTypeManifestVisitor(input: {
               importFrom,
               decoderFunction
             ),
+            value: fragment(''),
           };
         },
 
@@ -206,13 +219,16 @@ export function getTypeManifestVisitor(input: {
                   'getEnumDecoder'
                 )
               ),
+              value: fragment(''),
             };
           }
 
           const mergedManifest = mergeManifests(
             enumType.variants.map((variant) => visit(variant, self)),
-            (renders) => renders.join(' | '),
-            (renders) => renders.join(', ')
+            {
+              mergeTypes: (renders) => renders.join(' | '),
+              mergeCodecs: (renders) => renders.join(', '),
+            }
           );
           mergedManifest.encoder
             .mapRender(
@@ -255,6 +271,7 @@ export function getTypeManifestVisitor(input: {
               'solanaCodecsDataStructures',
               'getUnitDecoder'
             ),
+            value: fragment(''),
           };
         },
 
@@ -317,11 +334,10 @@ export function getTypeManifestVisitor(input: {
         visitMapType(mapType, { self }) {
           const key = visit(mapType.key, self);
           const value = visit(mapType.value, self);
-          const mergedManifest = mergeManifests(
-            [key, value],
-            ([k, v]) => `Map<${k}, ${v}>`,
-            ([k, v]) => `${k}, ${v}`
-          );
+          const mergedManifest = mergeManifests([key, value], {
+            mergeTypes: ([k, v]) => `Map<${k}, ${v}>`,
+            mergeCodecs: ([k, v]) => `${k}, ${v}`,
+          });
           const sizeManifest = getArrayLikeSizeOption(mapType.count, self);
           const encoderOptions = sizeManifest.encoder.render
             ? `, { ${sizeManifest.encoder.render} }`
@@ -407,16 +423,16 @@ export function getTypeManifestVisitor(input: {
         },
 
         visitStructType(structType, { self }) {
-          // const currentParentName = parentName;
-          parentName = null;
           const optionalFields = structType.fields.filter(
             (f) => !!f.defaultValue
           );
 
           const mergedManifest = mergeManifests(
             structType.fields.map((field) => visit(field, self)),
-            (renders) => `{ ${renders.join('')} }`,
-            (renders) => `([${renders.join(', ')}])`
+            {
+              mergeTypes: (renders) => `{ ${renders.join('')} }`,
+              mergeCodecs: (renders) => `([${renders.join(', ')}])`,
+            }
           );
 
           mergedManifest.encoder
@@ -438,8 +454,8 @@ export function getTypeManifestVisitor(input: {
               >;
               const { render: renderedValue, imports } = visit(
                 defaultValue,
-                valueNodeVisitor
-              );
+                self
+              ).value;
               mergedManifest.encoder.mergeImportsWith(imports);
               return f.defaultValueStrategy === 'omitted'
                 ? `${key}: ${renderedValue}`
@@ -492,11 +508,10 @@ export function getTypeManifestVisitor(input: {
 
         visitTupleType(tupleType, { self }) {
           const items = tupleType.items.map((item) => visit(item, self));
-          const mergedManifest = mergeManifests(
-            items,
-            (types) => `readonly [${types.join(', ')}]`,
-            (codecs) => `[${codecs.join(', ')}]`
-          );
+          const mergedManifest = mergeManifests(items, {
+            mergeTypes: (types) => `readonly [${types.join(', ')}]`,
+            mergeCodecs: (codecs) => `[${codecs.join(', ')}]`,
+          });
           mergedManifest.encoder
             .mapRender((render) => `getTupleEncoder(${render})`)
             .addImports('solanaCodecsDataStructures', 'getTupleEncoder');
@@ -539,6 +554,7 @@ export function getTypeManifestVisitor(input: {
               `getBooleanDecoder(${sizeDecoder})`,
               decoderImports
             ),
+            value: fragment(''),
           };
         },
 
@@ -583,6 +599,7 @@ export function getTypeManifestVisitor(input: {
               `getBytesDecoder(${decoderOptionsAsString})`,
               decoderImports
             ),
+            value: fragment(''),
           };
         },
 
@@ -618,6 +635,7 @@ export function getTypeManifestVisitor(input: {
               `${decoderFunction}(${endianness})`,
               decoderImports
             ),
+            value: fragment(''),
           };
         },
 
@@ -647,6 +665,7 @@ export function getTypeManifestVisitor(input: {
               'solanaAddresses',
               'getAddressDecoder'
             ),
+            value: fragment(''),
           };
         },
 
@@ -711,6 +730,7 @@ export function getTypeManifestVisitor(input: {
               `getStringDecoder(${decoderOptionsAsString})`,
               decoderImports
             ),
+            value: fragment(''),
           };
         },
 
@@ -726,6 +746,154 @@ export function getTypeManifestVisitor(input: {
           const manifest = visit(sizePrefixType.type, self);
           parentSize = null;
           return manifest;
+        },
+
+        visitArrayValue(node, { self }) {
+          return mergeManifests(
+            node.items.map((v) => visit(v, self)),
+            { mergeValues: (renders) => `[${renders.join(', ')}]` }
+          );
+        },
+
+        visitBooleanValue(node) {
+          const manifest = typeManifest();
+          manifest.value.setRender(JSON.stringify(node.boolean));
+          return manifest;
+        },
+
+        visitBytesValue(node) {
+          const manifest = typeManifest();
+          const bytes = getBytesFromBytesValueNode(node);
+          manifest.value.setRender(
+            `new Uint8Array([${Array.from(bytes).join(', ')}])`
+          );
+          return manifest;
+        },
+
+        visitConstantValue(node, { self }) {
+          const manifest = typeManifest();
+          manifest.value = mergeFragments(
+            [visit(node.type, self).encoder, visit(node.value, self).value],
+            ([encoderFunction, value]) => `${encoderFunction}.encode(${value})`
+          );
+          return manifest;
+        },
+
+        visitEnumValue(node, { self }) {
+          const manifest = typeManifest();
+          const enumName = nameApi.dataType(node.enum.name);
+          const enumFunction = nameApi.discriminatedUnionFunction(
+            node.enum.name
+          );
+          const importFrom = node.enum.importFrom ?? 'generatedTypes';
+
+          const enumNode = linkables.get(node.enum)?.type;
+          const isScalar =
+            enumNode && isNode(enumNode, 'enumTypeNode')
+              ? isScalarEnum(enumNode)
+              : !nonScalarEnums.includes(node.enum.name);
+
+          if (!node.value && isScalar) {
+            const variantName = nameApi.enumVariant(node.variant);
+            manifest.value
+              .setRender(`${enumName}.${variantName}`)
+              .addImports(importFrom, enumName);
+            return manifest;
+          }
+
+          const variantName = nameApi.discriminatedUnionVariant(node.variant);
+          if (!node.value) {
+            manifest.value
+              .setRender(`${enumFunction}('${variantName}')`)
+              .addImports(importFrom, enumFunction);
+            return manifest;
+          }
+
+          manifest.value = visit(node.value, self)
+            .value.mapRender((r) => `${enumFunction}('${variantName}', ${r})`)
+            .addImports(importFrom, enumFunction);
+          return manifest;
+        },
+
+        visitMapValue(node, { self }) {
+          const entryFragments = node.entries.map((entry) =>
+            visit(entry, self)
+          );
+          return mergeManifests(entryFragments, {
+            mergeValues: (renders) => `new Map([${renders.join(', ')}])`,
+          });
+        },
+
+        visitMapEntryValue(node, { self }) {
+          return mergeManifests(
+            [visit(node.key, self), visit(node.value, self)],
+            { mergeValues: (renders) => `[${renders.join(', ')}]` }
+          );
+        },
+
+        visitNoneValue() {
+          const manifest = typeManifest();
+          manifest.value
+            .setRender('none()')
+            .addImports('solanaOptions', 'none');
+          return manifest;
+        },
+
+        visitNumberValue(node) {
+          const manifest = typeManifest();
+          manifest.value.setRender(JSON.stringify(node.number));
+          return manifest;
+        },
+
+        visitPublicKeyValue(node) {
+          const manifest = typeManifest();
+          manifest.value
+            .setRender(`address("${node.publicKey}")`)
+            .addImports('solanaAddresses', 'address');
+          return manifest;
+        },
+
+        visitSetValue(node, { self }) {
+          return mergeManifests(
+            node.items.map((v) => visit(v, self)),
+            { mergeValues: (renders) => `new Set([${renders.join(', ')}])` }
+          );
+        },
+
+        visitSomeValue(node, { self }) {
+          const manifest = typeManifest();
+          manifest.value = visit(node.value, self)
+            .value.mapRender((r) => `some(${r})`)
+            .addImports('solanaOptions', 'some');
+          return manifest;
+        },
+
+        visitStringValue(node) {
+          const manifest = typeManifest();
+          manifest.value.setRender(JSON.stringify(node.string));
+          return manifest;
+        },
+
+        visitStructValue(node, { self }) {
+          return mergeManifests(
+            node.fields.map((field) => visit(field, self)),
+            { mergeValues: (renders) => `{ ${renders.join(', ')} }` }
+          );
+        },
+
+        visitStructFieldValue(node, { self }) {
+          const manifest = typeManifest();
+          manifest.value = visit(node.value, self).value.mapRender(
+            (r) => `${node.name}: ${r}`
+          );
+          return manifest;
+        },
+
+        visitTupleValue(node, { self }) {
+          return mergeManifests(
+            node.items.map((v) => visit(v, self)),
+            { mergeValues: (renders) => `[${renders.join(', ')}]` }
+          );
         },
       })
   );

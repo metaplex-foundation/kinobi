@@ -2,7 +2,9 @@ import {
   ArrayTypeNode,
   NumberTypeNode,
   REGISTERED_TYPE_NODE_KINDS,
+  REGISTERED_VALUE_NODE_KINDS,
   TypeNode,
+  getBytesFromBytesValueNode,
   isInteger,
   isNode,
   isScalarEnum,
@@ -12,11 +14,17 @@ import {
   structTypeNode,
   structTypeNodeFromInstructionArgumentNodes,
 } from '../../nodes';
-import { camelCase, jsDocblock, pascalCase, pipe } from '../../shared';
+import {
+  LinkableDictionary,
+  MainCaseString,
+  camelCase,
+  jsDocblock,
+  pascalCase,
+  pipe,
+} from '../../shared';
 import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 import { ParsedCustomDataOptions } from './customDataHelpers';
-import { renderValueNodeVisitor } from './renderValueNodeVisitor';
 
 export type JavaScriptTypeManifest = {
   isEnum: boolean;
@@ -26,15 +34,37 @@ export type JavaScriptTypeManifest = {
   looseImports: JavaScriptImportMap;
   serializer: string;
   serializerImports: JavaScriptImportMap;
+  value: string;
+  valueImports: JavaScriptImportMap;
 };
 
+function typeManifest(): JavaScriptTypeManifest {
+  return {
+    isEnum: false,
+    strictType: '',
+    strictImports: new JavaScriptImportMap(),
+    looseType: '',
+    looseImports: new JavaScriptImportMap(),
+    serializer: '',
+    serializerImports: new JavaScriptImportMap(),
+    value: '',
+    valueImports: new JavaScriptImportMap(),
+  };
+}
+
 export function getTypeManifestVisitor(input: {
-  valueNodeVisitor: ReturnType<typeof renderValueNodeVisitor>;
+  linkables: LinkableDictionary;
+  nonScalarEnums: MainCaseString[];
   customAccountData: ParsedCustomDataOptions;
   customInstructionData: ParsedCustomDataOptions;
   parentName?: { strict: string; loose: string };
 }) {
-  const { valueNodeVisitor, customAccountData, customInstructionData } = input;
+  const {
+    linkables,
+    nonScalarEnums,
+    customAccountData,
+    customInstructionData,
+  } = input;
   let parentName = input.parentName ?? null;
   let parentSize: number | NumberTypeNode | null = null;
 
@@ -49,9 +79,12 @@ export function getTypeManifestVisitor(input: {
           looseImports: new JavaScriptImportMap(),
           serializer: '',
           serializerImports: new JavaScriptImportMap(),
+          value: '',
+          valueImports: new JavaScriptImportMap(),
         }) as JavaScriptTypeManifest,
       [
         ...REGISTERED_TYPE_NODE_KINDS,
+        ...REGISTERED_VALUE_NODE_KINDS,
         'definedTypeLinkNode',
         'definedTypeNode',
         'accountNode',
@@ -134,6 +167,8 @@ export function getTypeManifestVisitor(input: {
               importFrom,
               serializerName
             ),
+            value: '',
+            valueImports: new JavaScriptImportMap(),
           };
         },
 
@@ -182,6 +217,8 @@ export function getTypeManifestVisitor(input: {
                 'umiSerializers',
                 'scalarEnum'
               ),
+              value: '',
+              valueImports: new JavaScriptImportMap(),
             };
           }
 
@@ -229,6 +266,8 @@ export function getTypeManifestVisitor(input: {
               'umiSerializers',
               ['GetDataEnumKindContent', 'GetDataEnumKind', 'dataEnum']
             ),
+            value: '',
+            valueImports: new JavaScriptImportMap(),
           };
         },
 
@@ -246,6 +285,8 @@ export function getTypeManifestVisitor(input: {
               'umiSerializers',
               'unit'
             ),
+            value: '',
+            valueImports: new JavaScriptImportMap(),
           };
         },
 
@@ -276,6 +317,8 @@ export function getTypeManifestVisitor(input: {
             strictType: `{ ${kindAttribute},${type.strictType.slice(1, -1)}}`,
             looseType: `{ ${kindAttribute},${type.looseType.slice(1, -1)}}`,
             serializer: `['${name}', ${type.serializer}]`,
+            value: '',
+            valueImports: new JavaScriptImportMap(),
           };
         },
 
@@ -295,6 +338,8 @@ export function getTypeManifestVisitor(input: {
             strictType: `Map<${key.strictType}, ${value.strictType}>`,
             looseType: `Map<${key.looseType}, ${value.looseType}>`,
             serializer: `map(${key.serializer}, ${value.serializer}${options})`,
+            value: '',
+            valueImports: new JavaScriptImportMap(),
           };
         },
 
@@ -347,6 +392,8 @@ export function getTypeManifestVisitor(input: {
             strictType: `Set<${childManifest.strictType}>`,
             looseType: `Set<${childManifest.looseType}>`,
             serializer: `set(${childManifest.serializer + options})`,
+            value: '',
+            valueImports: new JavaScriptImportMap(),
           };
         },
 
@@ -377,6 +424,8 @@ export function getTypeManifestVisitor(input: {
             serializer:
               `struct<${serializerTypeParams}>` +
               `([${fieldSerializers}]${structDescription})`,
+            value: '',
+            valueImports: new JavaScriptImportMap(),
           };
 
           const optionalFields = structType.fields.filter(
@@ -392,11 +441,11 @@ export function getTypeManifestVisitor(input: {
               const defaultValue = f.defaultValue as NonNullable<
                 typeof f.defaultValue
               >;
-              const { render: renderedValue, imports } = visit(
+              const { value: renderedValue, valueImports } = visit(
                 defaultValue,
-                valueNodeVisitor
+                self
               );
-              baseManifest.serializerImports.mergeWith(imports);
+              baseManifest.serializerImports.mergeWith(valueImports);
               if (f.defaultValueStrategy === 'omitted') {
                 return `${key}: ${renderedValue}`;
               }
@@ -456,6 +505,7 @@ export function getTypeManifestVisitor(input: {
             strictType: `[${items.map((item) => item.strictType).join(', ')}]`,
             looseType: `[${items.map((item) => item.looseType).join(', ')}]`,
             serializer: `tuple([${itemSerializers}])`,
+            value: '',
           };
         },
 
@@ -484,6 +534,8 @@ export function getTypeManifestVisitor(input: {
             looseImports,
             strictImports,
             serializerImports,
+            value: '',
+            valueImports: new JavaScriptImportMap(),
           };
         },
 
@@ -518,6 +570,8 @@ export function getTypeManifestVisitor(input: {
             looseImports,
             serializer: `bytes(${optionsAsString})`,
             serializerImports,
+            value: '',
+            valueImports: new JavaScriptImportMap(),
           };
         },
 
@@ -542,6 +596,8 @@ export function getTypeManifestVisitor(input: {
             looseImports: new JavaScriptImportMap(),
             serializer: `${numberType.format}(${endianness})`,
             serializerImports,
+            value: '',
+            valueImports: new JavaScriptImportMap(),
           };
         },
 
@@ -625,6 +681,8 @@ export function getTypeManifestVisitor(input: {
             serializerImports: new JavaScriptImportMap()
               .add('umiSerializers', 'publicKey')
               .addAlias('umiSerializers', 'publicKey', 'publicKeySerializer'),
+            value: '',
+            valueImports: new JavaScriptImportMap(),
           };
         },
 
@@ -671,6 +729,8 @@ export function getTypeManifestVisitor(input: {
             looseImports,
             serializer: `string(${optionsAsString})`,
             serializerImports,
+            value: '',
+            valueImports: new JavaScriptImportMap(),
           };
         },
 
@@ -687,6 +747,188 @@ export function getTypeManifestVisitor(input: {
           parentSize = null;
           return manifest;
         },
+
+        visitArrayValue(node, { self }) {
+          const list = node.items.map((value) => visit(value, self));
+          return {
+            ...typeManifest(),
+            value: `[${list.map((c) => c.value).join(', ')}]`,
+            valueImports: new JavaScriptImportMap().mergeWith(
+              ...list.map((c) => c.valueImports)
+            ),
+          };
+        },
+
+        visitBooleanValue(node) {
+          return {
+            ...typeManifest(),
+            value: JSON.stringify(node.boolean),
+          };
+        },
+
+        visitBytesValue(node) {
+          const bytes = getBytesFromBytesValueNode(node);
+          return {
+            ...typeManifest(),
+            value: `new Uint8Array([${Array.from(bytes).join(', ')}])`,
+          };
+        },
+
+        visitConstantValue(node, { self }) {
+          const imports = new JavaScriptImportMap();
+          const type = visit(node.type, self);
+          imports.mergeWith(type.serializerImports);
+          const value = visit(node.value, self);
+          imports.mergeWith(value.valueImports);
+          return {
+            ...typeManifest(),
+            value: `${type.serializer}.serialize(${value.value})`,
+            valueImports: imports,
+          };
+        },
+
+        visitEnumValue(node, { self }) {
+          const imports = new JavaScriptImportMap();
+          const enumName = pascalCase(node.enum.name);
+          const variantName = pascalCase(node.variant);
+          const importFrom = node.enum.importFrom ?? 'generatedTypes';
+
+          const enumNode = linkables.get(node.enum)?.type;
+          const isScalar =
+            enumNode && isNode(enumNode, 'enumTypeNode')
+              ? isScalarEnum(enumNode)
+              : !nonScalarEnums.includes(node.enum.name);
+
+          if (!node.value && isScalar) {
+            return {
+              ...typeManifest(),
+              value: `${enumName}.${variantName}`,
+              valueImports: imports.add(importFrom, enumName),
+            };
+          }
+
+          const enumFn = camelCase(node.enum.name);
+          imports.add(importFrom, enumFn);
+
+          if (!node.value) {
+            return {
+              ...typeManifest(),
+              value: `${enumFn}('${variantName}')`,
+              valueImports: imports,
+            };
+          }
+
+          const enumValue = visit(node.value, self);
+          const fields = enumValue.value;
+          imports.mergeWith(enumValue.valueImports);
+
+          return {
+            ...typeManifest(),
+            value: `${enumFn}('${variantName}', ${fields})`,
+            valueImports: imports,
+          };
+        },
+
+        visitMapValue(node, { self }) {
+          const map = node.entries.map((entry) => visit(entry, self));
+          return {
+            ...typeManifest(),
+            value: `new Map([${map.map((c) => c.value).join(', ')}])`,
+            valueImports: new JavaScriptImportMap().mergeWith(
+              ...map.map((c) => c.valueImports)
+            ),
+          };
+        },
+
+        visitMapEntryValue(node, { self }) {
+          const mapKey = visit(node.key, self);
+          const mapValue = visit(node.value, self);
+          return {
+            ...typeManifest(),
+            imports: mapKey.valueImports.mergeWith(mapValue.valueImports),
+            render: `[${mapKey.value}, ${mapValue.value}]`,
+          };
+        },
+
+        visitNoneValue() {
+          return {
+            ...typeManifest(),
+            value: 'none()',
+            valueImports: new JavaScriptImportMap().add('umi', 'none'),
+          };
+        },
+
+        visitNumberValue(node) {
+          return {
+            ...typeManifest(),
+            value: JSON.stringify(node.number),
+          };
+        },
+
+        visitPublicKeyValue(node) {
+          return {
+            ...typeManifest(),
+            value: `publicKey("${node.publicKey}")`,
+            valueImports: new JavaScriptImportMap().add('umi', 'publicKey'),
+          };
+        },
+
+        visitSetValue(node, { self }) {
+          const set = node.items.map((value) => visit(value, self));
+          return {
+            ...typeManifest(),
+            value: `new Set([${set.map((c) => c.value).join(', ')}])`,
+            valueImports: new JavaScriptImportMap().mergeWith(
+              ...set.map((c) => c.valueImports)
+            ),
+          };
+        },
+
+        visitSomeValue(node, { self }) {
+          const child = visit(node.value, self);
+          return {
+            ...typeManifest(),
+            value: `some(${child.value})`,
+            valueImports: child.valueImports.add('umi', 'some'),
+          };
+        },
+
+        visitStringValue(node) {
+          return {
+            ...typeManifest(),
+            value: JSON.stringify(node.string),
+          };
+        },
+
+        visitStructValue(node, { self }) {
+          const struct = node.fields.map((field) => visit(field, self));
+          return {
+            ...typeManifest(),
+            value: `{ ${struct.map((c) => c.value).join(', ')} }`,
+            valueImports: new JavaScriptImportMap().mergeWith(
+              ...struct.map((c) => c.valueImports)
+            ),
+          };
+        },
+
+        visitStructFieldValue(node, { self }) {
+          const structValue = visit(node.value, self);
+          return {
+            ...structValue,
+            value: `${node.name}: ${structValue.value}`,
+          };
+        },
+
+        visitTupleValue(node, { self }) {
+          const list = node.items.map((value) => visit(value, self));
+          return {
+            ...typeManifest(),
+            value: `[${list.map((c) => c.value).join(', ')}]`,
+            valueImports: new JavaScriptImportMap().mergeWith(
+              ...list.map((c) => c.valueImports)
+            ),
+          };
+        },
       })
   );
 }
@@ -695,7 +937,11 @@ function mergeManifests(
   manifests: JavaScriptTypeManifest[]
 ): Pick<
   JavaScriptTypeManifest,
-  'strictImports' | 'looseImports' | 'serializerImports' | 'isEnum'
+  | 'strictImports'
+  | 'looseImports'
+  | 'serializerImports'
+  | 'valueImports'
+  | 'isEnum'
 > {
   return {
     strictImports: new JavaScriptImportMap().mergeWith(
@@ -706,6 +952,9 @@ function mergeManifests(
     ),
     serializerImports: new JavaScriptImportMap().mergeWith(
       ...manifests.map((td) => td.serializerImports)
+    ),
+    valueImports: new JavaScriptImportMap().mergeWith(
+      ...manifests.map((td) => td.valueImports)
     ),
     isEnum: false,
   };

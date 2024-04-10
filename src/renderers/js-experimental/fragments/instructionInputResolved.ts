@@ -8,7 +8,7 @@ import { getInstructionInputDefaultFragment } from './instructionInputDefault';
 export function getInstructionInputResolvedFragment(
   scope: Pick<
     GlobalFragmentScope,
-    'nameApi' | 'asyncResolvers' | 'valueNodeVisitor'
+    'nameApi' | 'asyncResolvers' | 'typeManifestVisitor'
   > & {
     instructionNode: InstructionNode;
     resolvedInputs: ResolvedInstructionInput[];

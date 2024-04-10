@@ -3,11 +3,11 @@ import { camelCase, pascalCase } from '../../shared';
 import { ResolvedInstructionInput, visit } from '../../visitors';
 import { JavaScriptContextMap } from './JavaScriptContextMap';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
-import { renderValueNodeVisitor } from './renderValueNodeVisitor';
+import { getTypeManifestVisitor } from './getTypeManifestVisitor';
 
 export function renderInstructionDefaults(
   input: ResolvedInstructionInput,
-  valueNodeVisitor: ReturnType<typeof renderValueNodeVisitor>,
+  typeManifestVisitor: ReturnType<typeof getTypeManifestVisitor>,
   optionalAccountStrategy: 'programId' | 'omitted',
   argObject: string
 ): {
@@ -98,9 +98,9 @@ export function renderInstructionDefaults(
             seed.value.name
           )})`;
         }
-        const valueManifest = visit(seed.value, valueNodeVisitor);
-        imports.mergeWith(valueManifest.imports);
-        return `${seed.name}: ${valueManifest.render}`;
+        const valueManifest = visit(seed.value, typeManifestVisitor);
+        imports.mergeWith(valueManifest.valueImports);
+        return `${seed.name}: ${valueManifest.value}`;
       });
       if (pdaSeeds.length > 0) {
         pdaArgs.push(`{ ${pdaSeeds.join(', ')} }`);
@@ -164,14 +164,14 @@ export function renderInstructionDefaults(
     case 'conditionalValueNode':
       const ifTrueRenderer = renderNestedInstructionDefault(
         input,
-        valueNodeVisitor,
+        typeManifestVisitor,
         optionalAccountStrategy,
         defaultValue.ifTrue,
         argObject
       );
       const ifFalseRenderer = renderNestedInstructionDefault(
         input,
-        valueNodeVisitor,
+        typeManifestVisitor,
         optionalAccountStrategy,
         defaultValue.ifFalse,
         argObject
@@ -211,10 +211,10 @@ export function renderInstructionDefaults(
           ? `resolvedAccounts.${camelCase(defaultValue.condition.name)}.value`
           : `${argObject}.${camelCase(defaultValue.condition.name)}`;
         if (defaultValue.value) {
-          const comparedValue = visit(defaultValue.value, valueNodeVisitor);
-          imports.mergeWith(comparedValue.imports);
+          const comparedValue = visit(defaultValue.value, typeManifestVisitor);
+          imports.mergeWith(comparedValue.valueImports);
           const operator = negatedCondition ? '!==' : '===';
-          condition = `${comparedInputName} ${operator} ${comparedValue.render}`;
+          condition = `${comparedInputName} ${operator} ${comparedValue.value}`;
         } else {
           condition = negatedCondition
             ? `!${comparedInputName}`
@@ -238,15 +238,15 @@ export function renderInstructionDefaults(
         }\n}`,
       };
     default:
-      const valueManifest = visit(defaultValue, valueNodeVisitor);
-      imports.mergeWith(valueManifest.imports);
-      return render(valueManifest.render);
+      const valueManifest = visit(defaultValue, typeManifestVisitor);
+      imports.mergeWith(valueManifest.valueImports);
+      return render(valueManifest.value);
   }
 }
 
 function renderNestedInstructionDefault(
   input: ResolvedInstructionInput,
-  valueNodeVisitor: ReturnType<typeof renderValueNodeVisitor>,
+  typeManifestVisitor: ReturnType<typeof getTypeManifestVisitor>,
   optionalAccountStrategy: 'programId' | 'omitted',
   defaultValue: InstructionInputValueNode | undefined,
   argObject: string
@@ -260,7 +260,7 @@ function renderNestedInstructionDefault(
   if (!defaultValue) return undefined;
   return renderInstructionDefaults(
     { ...input, defaultValue },
-    valueNodeVisitor,
+    typeManifestVisitor,
     optionalAccountStrategy,
     argObject
   );

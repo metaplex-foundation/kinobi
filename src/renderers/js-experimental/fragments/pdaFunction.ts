@@ -5,21 +5,12 @@ import type { GlobalFragmentScope } from '../getRenderMapVisitor';
 import { Fragment, fragmentFromTemplate } from './common';
 
 export function getPdaFunctionFragment(
-  scope: Pick<
-    GlobalFragmentScope,
-    'nameApi' | 'typeManifestVisitor' | 'valueNodeVisitor'
-  > & {
+  scope: Pick<GlobalFragmentScope, 'nameApi' | 'typeManifestVisitor'> & {
     pdaNode: PdaNode;
     programNode: ProgramNode;
   }
 ): Fragment {
-  const {
-    pdaNode,
-    programNode,
-    typeManifestVisitor,
-    valueNodeVisitor,
-    nameApi,
-  } = scope;
+  const { pdaNode, programNode, typeManifestVisitor, nameApi } = scope;
 
   // Seeds.
   const imports = new ImportMap();
@@ -28,7 +19,7 @@ export function getPdaFunctionFragment(
       const seedManifest = visit(seed.type, typeManifestVisitor);
       imports.mergeWith(seedManifest.encoder);
       const seedValue = seed.value;
-      const valueManifest = visit(seedValue, valueNodeVisitor);
+      const valueManifest = visit(seedValue, typeManifestVisitor).value;
       (seedValue as any).render = valueManifest.render;
       imports.mergeWith(valueManifest.imports);
       return { ...seed, typeManifest: seedManifest };

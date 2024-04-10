@@ -4,10 +4,7 @@ import { Fragment, fragment, mergeFragments } from './common';
 import { getDiscriminatorConditionFragment } from './discriminatorCondition';
 
 export function getProgramAccountsFragment(
-  scope: Pick<
-    GlobalFragmentScope,
-    'nameApi' | 'typeManifestVisitor' | 'valueNodeVisitor'
-  > & {
+  scope: Pick<GlobalFragmentScope, 'nameApi' | 'typeManifestVisitor'> & {
     programNode: ProgramNode;
   }
 ): Fragment {
@@ -39,10 +36,7 @@ function getProgramAccountsEnumFragment(
 }
 
 function getProgramAccountsIdentifierFunctionFragment(
-  scope: Pick<
-    GlobalFragmentScope,
-    'nameApi' | 'typeManifestVisitor' | 'valueNodeVisitor'
-  > & {
+  scope: Pick<GlobalFragmentScope, 'nameApi' | 'typeManifestVisitor'> & {
     programNode: ProgramNode;
   }
 ): Fragment {

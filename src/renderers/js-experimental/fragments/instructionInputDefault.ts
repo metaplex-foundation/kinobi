@@ -8,7 +8,7 @@ import { Fragment, fragment, mergeFragments } from './common';
 export function getInstructionInputDefaultFragment(
   scope: Pick<
     GlobalFragmentScope,
-    'nameApi' | 'asyncResolvers' | 'valueNodeVisitor'
+    'nameApi' | 'asyncResolvers' | 'typeManifestVisitor'
   > & {
     input: ResolvedInstructionInput;
     optionalAccountStrategy: 'programId' | 'omitted';
@@ -21,7 +21,7 @@ export function getInstructionInputDefaultFragment(
     asyncResolvers,
     useAsync,
     nameApi,
-    valueNodeVisitor,
+    typeManifestVisitor,
   } = scope;
   if (!input.defaultValue) {
     return fragment('');
@@ -96,7 +96,7 @@ export function getInstructionInputDefaultFragment(
             `${seed.name}: expectSome(args.${camelCase(seed.value.name)})`
           ).addImports('shared', 'expectSome');
         }
-        return visit(seed.value, valueNodeVisitor).mapRender(
+        return visit(seed.value, typeManifestVisitor).value.mapRender(
           (r) => `${seed.name}: ${r}`
         );
       });
@@ -209,7 +209,10 @@ export function getInstructionInputDefaultFragment(
           ? `accounts.${camelCase(defaultValue.condition.name)}.value`
           : `args.${camelCase(defaultValue.condition.name)}`;
         if (defaultValue.value) {
-          const comparedValue = visit(defaultValue.value, valueNodeVisitor);
+          const comparedValue = visit(
+            defaultValue.value,
+            typeManifestVisitor
+          ).value;
           conditionalFragment
             .mergeImportsWith(comparedValue)
             .mergeFeaturesWith(comparedValue);
@@ -235,7 +238,7 @@ export function getInstructionInputDefaultFragment(
       );
 
     default:
-      const valueManifest = visit(defaultValue, valueNodeVisitor);
+      const valueManifest = visit(defaultValue, typeManifestVisitor).value;
       return defaultFragment(valueManifest.render).mergeImportsWith(
         valueManifest
       );
