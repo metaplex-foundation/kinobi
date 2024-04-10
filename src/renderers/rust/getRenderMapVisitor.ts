@@ -158,9 +158,9 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
           });
           const hasVariableSeeds =
             pdaSeeds.filter(isNodeFilter('variablePdaSeedNode')).length > 0;
-          const constantSeeds = pdaSeeds.filter(
-            isNodeFilter('constantPdaSeedNode')
-          );
+          const constantSeeds = pdaSeeds
+            .filter(isNodeFilter('constantPdaSeedNode'))
+            .filter((seed) => !isNode(seed.value, 'programIdValueNode'));
 
           const { imports } = typeManifest;
 
