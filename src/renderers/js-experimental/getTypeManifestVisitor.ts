@@ -771,12 +771,20 @@ export function getTypeManifestVisitor(input: {
         },
 
         visitConstantValue(node, { self }) {
-          const manifest = typeManifest();
-          manifest.value = mergeFragments(
-            [visit(node.type, self).encoder, visit(node.value, self).value],
-            ([encoderFunction, value]) => `${encoderFunction}.encode(${value})`
-          );
-          return manifest;
+          if (
+            isNode(node.type, 'bytesTypeNode') &&
+            isNode(node.value, 'bytesValueNode')
+          ) {
+            return visit(node.value, self);
+          }
+          return {
+            ...typeManifest(),
+            value: mergeFragments(
+              [visit(node.type, self).encoder, visit(node.value, self).value],
+              ([encoderFunction, value]) =>
+                `${encoderFunction}.encode(${value})`
+            ),
+          };
         },
 
         visitEnumValue(node, { self }) {
