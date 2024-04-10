@@ -1,7 +1,10 @@
 import test from 'ava';
 import {
+  constantPdaSeedNode,
+  constantPdaSeedNodeFromProgramId,
+  numberTypeNode,
+  numberValueNode,
   pdaNode,
-  programIdPdaSeedNode,
   publicKeyTypeNode,
   variablePdaSeedNode,
 } from '../../../src';
@@ -14,22 +17,22 @@ import {
 
 const node = pdaNode('associatedToken', [
   variablePdaSeedNode('owner', publicKeyTypeNode()),
-  programIdPdaSeedNode(),
+  constantPdaSeedNode(numberTypeNode('u8'), numberValueNode(123456)),
   variablePdaSeedNode('mint', publicKeyTypeNode()),
 ]);
 
-test(mergeVisitorMacro, node, 6);
+test(mergeVisitorMacro, node, 8);
 test(identityVisitorMacro, node);
 test(deleteNodesVisitorMacro, node, '[pdaNode]', null);
 test(
   deleteNodesVisitorMacro,
   node,
-  ['[variablePdaSeedNode]', '[programIdPdaSeedNode]'],
+  ['[variablePdaSeedNode]', '[constantPdaSeedNode]'],
   { ...node, seeds: [] }
 );
 test(deleteNodesVisitorMacro, node, '[publicKeyTypeNode]', {
   ...node,
-  seeds: [programIdPdaSeedNode()],
+  seeds: [constantPdaSeedNode(numberTypeNode('u8'), numberValueNode(123456))],
 });
 test(
   getDebugStringVisitorMacro,
@@ -38,7 +41,9 @@ test(
 pdaNode [associatedToken]
 |   variablePdaSeedNode [owner]
 |   |   publicKeyTypeNode
-|   programIdPdaSeedNode
+|   constantPdaSeedNode
+|   |   numberTypeNode [u8]
+|   |   numberValueNode [123456]
 |   variablePdaSeedNode [mint]
 |   |   publicKeyTypeNode`
 );

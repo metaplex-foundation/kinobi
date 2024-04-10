@@ -24,7 +24,7 @@ impl {{ account.name | pascalCase }} {
     /// Values are positional and appear in the following order:
     ///
     {% for seed in seeds %}
-      {% if seed.kind === 'programIdPdaSeedNode' %}
+      {% if seed.kind === 'constantPdaSeedNode' and seed.value.kind === 'programIdValueNode' %}
         ///   {{ loop.index0 }}. `crate::{{ program.name | snakeCase | upper }}_ID`
       {% elif seed.kind === 'constantPdaSeedNode' %}
         ///   {{ loop.index0 }}. `{{ account.name | pascalCase }}::PREFIX{{ '.' + index if constantSeeds.length > 1 }}`
@@ -62,7 +62,7 @@ impl {{ account.name | pascalCase }} {
       solana_program::pubkey::Pubkey::create_program_address(
         &[
           {% for seed in seeds %}
-            {% if seed.kind === 'programIdPdaSeedNode' %}
+            {% if seed.kind === 'constantPdaSeedNode' and seed.value.kind === 'programIdValueNode' %}
               crate::{{ program.name | snakeCase | upper }}_ID.as_ref(),
             {% elif seed.kind === 'constantPdaSeedNode' %}
               {{ seed.value.render }}.as_bytes(),
@@ -94,7 +94,7 @@ impl {{ account.name | pascalCase }} {
       solana_program::pubkey::Pubkey::find_program_address(
         &[
           {% for seed in seeds %}
-            {% if seed.kind === 'programIdPdaSeedNode' %}
+            {% if seed.kind === 'constantPdaSeedNode' and seed.value.kind === 'programIdValueNode' %}
               crate::{{ program.name | snakeCase | upper }}_ID.as_ref(),
             {% elif seed.kind === 'constantPdaSeedNode' %}
               {{ seed.value.render }}.as_bytes(),

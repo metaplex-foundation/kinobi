@@ -100,7 +100,7 @@ export function find{{ account.name | pascalCase }}Pda(
   const programId = context.programs.getPublicKey('{{ program.name | camelCase }}', '{{ program.publicKey }}');
   return context.eddsa.findPda(programId, [
     {% for seed in seeds %}
-      {% if seed.kind === 'programIdPdaSeedNode' %}
+      {% if seed.kind === 'constantPdaSeedNode' and seed.value.kind === 'programIdValueNode' %}
         publicKeySerializer().serialize(programId),
       {% elif seed.kind === 'constantPdaSeedNode' %}
         {{ seed.typeManifest.serializer }}.serialize({{ seed.value.render }}),

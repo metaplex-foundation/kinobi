@@ -1,15 +1,10 @@
 import type { ConstantPdaSeedNode } from './ConstantPdaSeedNode';
-import type { ProgramIdPdaSeedNode } from './ProgramIdPdaSeedNode';
 import type { VariablePdaSeedNode } from './VariablePdaSeedNode';
 
 // Pda Seed Node Registration.
-export type RegisteredPdaSeedNode =
-  | ConstantPdaSeedNode
-  | ProgramIdPdaSeedNode
-  | VariablePdaSeedNode;
+export type RegisteredPdaSeedNode = ConstantPdaSeedNode | VariablePdaSeedNode;
 export const REGISTERED_PDA_SEED_NODE_KINDS = [
   'constantPdaSeedNode',
-  'programIdPdaSeedNode',
   'variablePdaSeedNode',
 ] satisfies readonly RegisteredPdaSeedNode['kind'][];
 null as unknown as RegisteredPdaSeedNode['kind'] satisfies (typeof REGISTERED_PDA_SEED_NODE_KINDS)[number];

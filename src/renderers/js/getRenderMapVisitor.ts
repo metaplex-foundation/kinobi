@@ -372,15 +372,6 @@ export function getRenderMapVisitor(
           const pda = node.pda ? linkables.get(node.pda) : undefined;
           const pdaSeeds = pda?.seeds ?? [];
           const seeds = pdaSeeds.map((seed) => {
-            if (isNode(seed, 'constantPdaSeedNode')) {
-              const seedManifest = visit(seed.type, typeManifestVisitor);
-              imports.mergeWith(seedManifest.serializerImports);
-              const seedValue = seed.value;
-              const valueManifest = visit(seedValue, typeManifestVisitor);
-              (seedValue as any).render = valueManifest.value;
-              imports.mergeWith(valueManifest.valueImports);
-              return { ...seed, typeManifest: seedManifest };
-            }
             if (isNode(seed, 'variablePdaSeedNode')) {
               const seedManifest = visit(seed.type, typeManifestVisitor);
               imports.mergeWith(
@@ -389,10 +380,19 @@ export function getRenderMapVisitor(
               );
               return { ...seed, typeManifest: seedManifest };
             }
-            imports
-              .add('umiSerializers', 'publicKey')
-              .addAlias('umiSerializers', 'publicKey', 'publicKeySerializer');
-            return seed;
+            if (isNode(seed.value, 'programIdValueNode')) {
+              imports
+                .add('umiSerializers', 'publicKey')
+                .addAlias('umiSerializers', 'publicKey', 'publicKeySerializer');
+              return seed;
+            }
+            const seedManifest = visit(seed.type, typeManifestVisitor);
+            imports.mergeWith(seedManifest.serializerImports);
+            const seedValue = seed.value;
+            const valueManifest = visit(seedValue, typeManifestVisitor);
+            (seedValue as any).render = valueManifest.value;
+            imports.mergeWith(valueManifest.valueImports);
+            return { ...seed, typeManifest: seedManifest };
           });
           if (seeds.length > 0) {
             imports.add('umi', ['Pda']);

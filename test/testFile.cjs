@@ -24,8 +24,8 @@ kinobi.update(
     Metadata: { size: 679 },
     MasterEditionV1: {
       seeds: [
-        k.constantPdaSeedNodeFromString('metadata'),
-        k.programIdPdaSeedNode(),
+        k.constantPdaSeedNodeFromString('utf8', 'metadata'),
+        k.constantPdaSeedNodeFromProgramId(),
         k.variablePdaSeedNode(
           'delegateRole',
           k.definedTypeLinkNode('delegateRole'),
@@ -36,21 +36,21 @@ kinobi.update(
     MasterEditionV2: {
       size: 282,
       seeds: [
-        k.constantPdaSeedNodeFromString('metadata'),
-        k.programIdPdaSeedNode(),
+        k.constantPdaSeedNodeFromString('utf8', 'metadata'),
+        k.constantPdaSeedNodeFromProgramId(),
         k.variablePdaSeedNode(
           'mint',
           publicKeyTypeNode(),
           'The address of the mint account'
         ),
-        k.constantPdaSeedNodeFromString('edition'),
+        k.constantPdaSeedNodeFromString('utf8', 'edition'),
       ],
     },
     delegateRecord: {
       size: 282,
       seeds: [
-        k.constantPdaSeedNodeFromString('delegate_record'),
-        k.programIdPdaSeedNode(),
+        k.constantPdaSeedNodeFromString('utf8', 'delegate_record'),
+        k.constantPdaSeedNodeFromProgramId(),
         k.variablePdaSeedNode(
           'role',
           k.definedTypeLinkNode('delegateRole'),
@@ -60,8 +60,8 @@ kinobi.update(
     },
     FrequencyAccount: {
       seeds: [
-        k.constantPdaSeedNodeFromString('frequency_pda'),
-        k.programIdPdaSeedNode(),
+        k.constantPdaSeedNodeFromString('utf8', 'frequency_pda'),
+        k.constantPdaSeedNodeFromProgramId(),
       ],
     },
   })
