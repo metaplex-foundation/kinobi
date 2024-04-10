@@ -1,5 +1,5 @@
 import test from 'ava';
-import { byteDiscriminatorNode } from '../../../../src';
+import { constantDiscriminatorNode } from '../../../../src';
 import {
   deleteNodesVisitorMacro,
   getDebugStringVisitorMacro,
@@ -7,13 +7,13 @@ import {
   mergeVisitorMacro,
 } from '../_setup';
 
-const node = byteDiscriminatorNode([1, 2, 3, 4], 42);
+const node = constantDiscriminatorNode([1, 2, 3, 4], 42);
 
 test(mergeVisitorMacro, node, 1);
 test(identityVisitorMacro, node);
-test(deleteNodesVisitorMacro, node, '[byteDiscriminatorNode]', null);
+test(deleteNodesVisitorMacro, node, '[constantDiscriminatorNode]', null);
 test(
   getDebugStringVisitorMacro,
   node,
-  `byteDiscriminatorNode [0x01020304.offset:42]`
+  `constantDiscriminatorNode [0x01020304.offset:42]`
 );

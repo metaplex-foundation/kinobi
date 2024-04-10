@@ -111,7 +111,7 @@ function getNodeDetails(node: Node): string[] {
         node.name,
         ...(node.importFrom ? [`from:${node.importFrom}`] : []),
       ];
-    case 'byteDiscriminatorNode':
+    case 'constantDiscriminatorNode':
       return [
         ...(node.bytes.length > 0
           ? [

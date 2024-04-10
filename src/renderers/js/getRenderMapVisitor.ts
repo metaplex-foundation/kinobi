@@ -313,7 +313,7 @@ export function getRenderMapVisitor(
           // Discriminator.
           const discriminator =
             (node.discriminators ?? []).find(
-              (d) => !isNode(d, 'byteDiscriminatorNode')
+              (d) => !isNode(d, 'constantDiscriminatorNode')
             ) ?? null;
           let resolvedDiscriminator:
             | SizeDiscriminatorNode

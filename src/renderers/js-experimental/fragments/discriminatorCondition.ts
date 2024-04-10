@@ -1,13 +1,13 @@
 import {
   isNode,
-  type ByteDiscriminatorNode,
+  type ConstantDiscriminatorNode,
   type DiscriminatorNode,
   type FieldDiscriminatorNode,
   type ProgramNode,
   type SizeDiscriminatorNode,
   type StructTypeNode,
   isNodeFilter,
-  byteDiscriminatorNode,
+  constantDiscriminatorNode,
 } from '../../../nodes';
 import { InvalidKinobiTreeError } from '../../../shared';
 import { visit } from '../../../visitors';
@@ -43,7 +43,7 @@ export function getDiscriminatorConditionFragment(
       if (isNode(discriminator, 'sizeDiscriminatorNode')) {
         return [getSizeConditionFragment(discriminator, scope.dataName)];
       }
-      if (isNode(discriminator, 'byteDiscriminatorNode')) {
+      if (isNode(discriminator, 'constantDiscriminatorNode')) {
         return [getByteConditionFragment(discriminator, scope.dataName)];
       }
       if (isNode(discriminator, 'fieldDiscriminatorNode')) {
@@ -63,7 +63,7 @@ function getSizeConditionFragment(
 }
 
 function getByteConditionFragment(
-  discriminator: ByteDiscriminatorNode,
+  discriminator: ConstantDiscriminatorNode,
   dataName: string
 ): Fragment {
   const bytes = discriminator.bytes.join(', ');
@@ -87,7 +87,7 @@ function getFieldConditionFragment(
   }
 
   // This handles the case where a field uses an u8 array to represent its discriminator.
-  // In this case, we can simplify the generated code by delegating to a byteDiscriminatorNode.
+  // In this case, we can simplify the generated code by delegating to a constantDiscriminatorNode.
   if (
     isNode(field.type, 'arrayTypeNode') &&
     isNode(field.type.item, 'numberTypeNode') &&
@@ -97,7 +97,7 @@ function getFieldConditionFragment(
     field.defaultValue.items.every(isNodeFilter('numberValueNode'))
   ) {
     return getByteConditionFragment(
-      byteDiscriminatorNode(
+      constantDiscriminatorNode(
         field.defaultValue.items.map((node) => node.number),
         discriminator.offset
       ),

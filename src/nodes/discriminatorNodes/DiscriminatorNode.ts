@@ -1,14 +1,14 @@
-import type { ByteDiscriminatorNode } from './ByteDiscriminatorNode';
+import type { ConstantDiscriminatorNode } from './ConstantDiscriminatorNode';
 import type { FieldDiscriminatorNode } from './FieldDiscriminatorNode';
 import type { SizeDiscriminatorNode } from './SizeDiscriminatorNode';
 
 // Discriminator Node Registration.
 export type RegisteredDiscriminatorNode =
-  | ByteDiscriminatorNode
+  | ConstantDiscriminatorNode
   | FieldDiscriminatorNode
   | SizeDiscriminatorNode;
 export const REGISTERED_DISCRIMINATOR_NODE_KINDS = [
-  'byteDiscriminatorNode',
+  'constantDiscriminatorNode',
   'fieldDiscriminatorNode',
   'sizeDiscriminatorNode',
 ] satisfies readonly RegisteredDiscriminatorNode['kind'][];
