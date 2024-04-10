@@ -1,13 +1,16 @@
+import { getBase64Decoder } from '@solana/codecs-strings';
 import {
+  constantDiscriminatorNode,
+  constantValueNode,
+  constantValueNodeFromBytes,
   isNode,
+  isNodeFilter,
   type ConstantDiscriminatorNode,
   type DiscriminatorNode,
   type FieldDiscriminatorNode,
   type ProgramNode,
   type SizeDiscriminatorNode,
   type StructTypeNode,
-  isNodeFilter,
-  constantDiscriminatorNode,
 } from '../../../nodes';
 import { InvalidKinobiTreeError } from '../../../shared';
 import { visit } from '../../../visitors';
@@ -41,10 +44,10 @@ export function getDiscriminatorConditionFragment(
   return mergeFragments(
     scope.discriminators.flatMap((discriminator) => {
       if (isNode(discriminator, 'sizeDiscriminatorNode')) {
-        return [getSizeConditionFragment(discriminator, scope.dataName)];
+        return [getSizeConditionFragment(discriminator, scope)];
       }
       if (isNode(discriminator, 'constantDiscriminatorNode')) {
-        return [getByteConditionFragment(discriminator, scope.dataName)];
+        return [getByteConditionFragment(discriminator, scope)];
       }
       if (isNode(discriminator, 'fieldDiscriminatorNode')) {
         return [getFieldConditionFragment(discriminator, scope)];
@@ -57,19 +60,25 @@ export function getDiscriminatorConditionFragment(
 
 function getSizeConditionFragment(
   discriminator: SizeDiscriminatorNode,
-  dataName: string
+  scope: Pick<GlobalFragmentScope, 'typeManifestVisitor'> & {
+    dataName: string;
+  }
 ): Fragment {
+  const { dataName } = scope;
   return fragment(`${dataName}.length === ${discriminator.size}`);
 }
 
 function getByteConditionFragment(
   discriminator: ConstantDiscriminatorNode,
-  dataName: string
+  scope: Pick<GlobalFragmentScope, 'typeManifestVisitor'> & {
+    dataName: string;
+  }
 ): Fragment {
-  const bytes = discriminator.bytes.join(', ');
-  return fragment(
-    `memcmp(${dataName}, new Uint8Array([${bytes}]), ${discriminator.offset})`
-  ).addImports('shared', 'memcmp');
+  const { dataName, typeManifestVisitor } = scope;
+  const constant = visit(discriminator.constant, typeManifestVisitor).value;
+  return constant
+    .mapRender((r) => `memcmp(${dataName}, ${r}, ${discriminator.offset})`)
+    .addImports('shared', 'memcmp');
 }
 
 function getFieldConditionFragment(
@@ -96,24 +105,23 @@ function getFieldConditionFragment(
     isNode(field.defaultValue, 'arrayValueNode') &&
     field.defaultValue.items.every(isNodeFilter('numberValueNode'))
   ) {
+    const base64Bytes = getBase64Decoder().decode(
+      new Uint8Array(field.defaultValue.items.map((node) => node.number))
+    );
     return getByteConditionFragment(
       constantDiscriminatorNode(
-        field.defaultValue.items.map((node) => node.number),
+        constantValueNodeFromBytes('base64', base64Bytes),
         discriminator.offset
       ),
-      scope.dataName
+      scope
     );
   }
 
-  return mergeFragments(
-    [
-      visit(field.type, scope.typeManifestVisitor).encoder,
-      visit(field.defaultValue, scope.typeManifestVisitor).value,
-    ],
-    ([encoderFunction, value]) => `${encoderFunction}.encode(${value})`
-  )
-    .mapRender(
-      (r) => `memcmp(${scope.dataName}, ${r}, ${discriminator.offset})`
-    )
-    .addImports('shared', 'memcmp');
+  return getByteConditionFragment(
+    constantDiscriminatorNode(
+      constantValueNode(field.type, field.defaultValue),
+      discriminator.offset
+    ),
+    scope
+  );
 }

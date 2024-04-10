@@ -1,26 +1,20 @@
-import { getBase58Encoder } from '@solana/codecs-strings';
+import { ConstantValueNode } from '../valueNodes';
 
-export interface ConstantDiscriminatorNode {
+export interface ConstantDiscriminatorNode<
+  TConstant extends ConstantValueNode = ConstantValueNode,
+> {
   readonly kind: 'constantDiscriminatorNode';
 
+  // Children.
+  readonly constant: TConstant;
+
   // Data.
-  readonly bytes: number[];
   readonly offset: number;
 }
 
-export function constantDiscriminatorNode(
-  bytes: number[],
+export function constantDiscriminatorNode<TConstant extends ConstantValueNode>(
+  constant: TConstant,
   offset: number = 0
 ): ConstantDiscriminatorNode {
-  return { kind: 'constantDiscriminatorNode', bytes, offset };
-}
-
-export function constantDiscriminatorNodeFromBase58(
-  base58Bytes: string,
-  offset: number = 0
-): ConstantDiscriminatorNode {
-  return constantDiscriminatorNode(
-    [...getBase58Encoder().encode(base58Bytes)],
-    offset
-  );
+  return { kind: 'constantDiscriminatorNode', constant, offset };
 }

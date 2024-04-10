@@ -356,5 +356,13 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
     };
   }
 
+  if (castedNodeKeys.includes('constantDiscriminatorNode')) {
+    visitor.visitConstantDiscriminator = function visitConstantDiscriminator(
+      node
+    ) {
+      return merge(node, visit(this)(node.constant));
+    };
+  }
+
   return visitor as Visitor<TReturn, TNodeKind>;
 }
