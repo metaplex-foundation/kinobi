@@ -15,22 +15,22 @@ export function getPdaFunctionFragment(
   // Seeds.
   const imports = new ImportMap();
   const seeds = pdaNode.seeds.map((seed) => {
-    if (isNode(seed, 'constantPdaSeedNode')) {
-      const seedManifest = visit(seed.type, typeManifestVisitor);
-      imports.mergeWith(seedManifest.encoder);
-      const seedValue = seed.value;
-      const valueManifest = visit(seedValue, typeManifestVisitor).value;
-      (seedValue as any).render = valueManifest.render;
-      imports.mergeWith(valueManifest.imports);
-      return { ...seed, typeManifest: seedManifest };
-    }
     if (isNode(seed, 'variablePdaSeedNode')) {
       const seedManifest = visit(seed.type, typeManifestVisitor);
       imports.mergeWith(seedManifest.looseType, seedManifest.encoder);
       return { ...seed, typeManifest: seedManifest };
     }
-    imports.add('solanaAddresses', 'getAddressEncoder');
-    return seed;
+    if (isNode(seed.value, 'programIdValueNode')) {
+      imports.add('solanaAddresses', 'getAddressEncoder');
+      return seed;
+    }
+    const seedManifest = visit(seed.type, typeManifestVisitor);
+    imports.mergeWith(seedManifest.encoder);
+    const seedValue = seed.value;
+    const valueManifest = visit(seedValue, typeManifestVisitor).value;
+    (seedValue as any).render = valueManifest.render;
+    imports.mergeWith(valueManifest.imports);
+    return { ...seed, typeManifest: seedManifest };
   });
   const hasVariableSeeds =
     pdaNode.seeds.filter(isNodeFilter('variablePdaSeedNode')).length > 0;

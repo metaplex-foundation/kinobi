@@ -138,7 +138,7 @@ test('it creates a new PDA node when providing seeds to an account with no linke
   ]);
 
   // When we update the account with PDA seeds.
-  const seeds = [constantPdaSeedNodeFromString('myAccount')];
+  const seeds = [constantPdaSeedNodeFromString('utf8', 'myAccount')];
   const result = visit(
     node,
     updateAccountsVisitor({
@@ -167,7 +167,7 @@ test('it updates the PDA node when the updated account name matches an existing 
   });
 
   // When we update the account with PDA seeds.
-  const seeds = [constantPdaSeedNodeFromString('myAccount')];
+  const seeds = [constantPdaSeedNodeFromString('utf8', 'myAccount')];
   const result = visit(
     node,
     updateAccountsVisitor({
@@ -195,7 +195,7 @@ test('it updates the PDA node with the provided seeds when an account is linked 
   });
 
   // When we update the account with PDA seeds.
-  const seeds = [constantPdaSeedNodeFromString('myAccount')];
+  const seeds = [constantPdaSeedNodeFromString('utf8', 'myAccount')];
   const result = visit(
     node,
     updateAccountsVisitor({
@@ -221,7 +221,7 @@ test('it creates a new PDA node when updating an account with seeds and a new li
   });
 
   // When we update the account with PDA seeds and a new linked PDA node.
-  const seeds = [constantPdaSeedNodeFromString('myAccount')];
+  const seeds = [constantPdaSeedNodeFromString('utf8', 'myAccount')];
   const result = visit(
     node,
     updateAccountsVisitor({
@@ -251,7 +251,7 @@ test('it updates a PDA node when updating an account with seeds and a new linked
   });
 
   // When we update the account with PDA seeds and a linked PDA node that points to the existing PDA.
-  const seeds = [constantPdaSeedNodeFromString('myAccount')];
+  const seeds = [constantPdaSeedNodeFromString('utf8', 'myAccount')];
   const result = visit(
     node,
     updateAccountsVisitor({
@@ -280,7 +280,7 @@ test('it can update the seeds and name of an account at the same time', (t) => {
   });
 
   // When we update the name and seeds of the account.
-  const seeds = [constantPdaSeedNodeFromString('myAccount')];
+  const seeds = [constantPdaSeedNodeFromString('utf8', 'myAccount')];
   const result = visit(
     node,
     updateAccountsVisitor({

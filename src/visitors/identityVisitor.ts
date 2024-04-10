@@ -521,7 +521,7 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       assertIsNode(type, TYPE_NODES);
       const value = visit(this)(node.value);
       if (value === null) return null;
-      assertIsNode(value, VALUE_NODES);
+      assertIsNode(value, [...VALUE_NODES, 'programIdValueNode']);
       return constantPdaSeedNode(type, value);
     };
   }

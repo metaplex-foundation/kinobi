@@ -1,9 +1,9 @@
 import test from 'ava';
 import {
   addPdasVisitor,
+  constantPdaSeedNodeFromProgramId,
   constantPdaSeedNodeFromString,
   pdaNode,
-  programIdPdaSeedNode,
   programNode,
   publicKeyTypeNode,
   variablePdaSeedNode,
@@ -18,7 +18,7 @@ test('it adds PDA nodes to a program', (t) => {
     pdas: [
       pdaNode('associatedToken', [
         variablePdaSeedNode('owner', publicKeyTypeNode()),
-        programIdPdaSeedNode(),
+        constantPdaSeedNodeFromProgramId(),
         variablePdaSeedNode('mint', publicKeyTypeNode()),
       ]),
     ],
@@ -27,15 +27,15 @@ test('it adds PDA nodes to a program', (t) => {
   // When we add two more PDAs.
   const newPdas = [
     pdaNode('metadata', [
-      constantPdaSeedNodeFromString('metadata'),
-      programIdPdaSeedNode(),
+      constantPdaSeedNodeFromString('utf8', 'metadata'),
+      constantPdaSeedNodeFromProgramId(),
       variablePdaSeedNode('mint', publicKeyTypeNode()),
     ]),
     pdaNode('masterEdition', [
-      constantPdaSeedNodeFromString('metadata'),
-      programIdPdaSeedNode(),
+      constantPdaSeedNodeFromString('utf8', 'metadata'),
+      constantPdaSeedNodeFromProgramId(),
       variablePdaSeedNode('mint', publicKeyTypeNode()),
-      constantPdaSeedNodeFromString('edition'),
+      constantPdaSeedNodeFromString('utf8', 'edition'),
     ]),
   ];
   const result = visit(node, addPdasVisitor({ myProgram: newPdas }));
@@ -52,7 +52,7 @@ test('it fails to add a PDA if its name conflicts with an existing PDA on the pr
     pdas: [
       pdaNode('myPda', [
         variablePdaSeedNode('owner', publicKeyTypeNode()),
-        programIdPdaSeedNode(),
+        constantPdaSeedNodeFromProgramId(),
         variablePdaSeedNode('mint', publicKeyTypeNode()),
       ]),
     ],
@@ -65,8 +65,8 @@ test('it fails to add a PDA if its name conflicts with an existing PDA on the pr
       addPdasVisitor({
         myProgram: [
           pdaNode('myPda', [
-            constantPdaSeedNodeFromString('metadata'),
-            programIdPdaSeedNode(),
+            constantPdaSeedNodeFromString('utf8', 'metadata'),
+            constantPdaSeedNodeFromProgramId(),
             variablePdaSeedNode('mint', publicKeyTypeNode()),
           ]),
         ],

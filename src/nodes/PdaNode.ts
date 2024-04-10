@@ -3,7 +3,7 @@ import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
 import {
   PdaSeedNode,
   constantPdaSeedNode,
-  programIdPdaSeedNode,
+  constantPdaSeedNodeFromProgramId,
   variablePdaSeedNode,
 } from './pdaSeedNodes';
 import {
@@ -60,7 +60,7 @@ export function pdaNodeFromIdl(idl: Partial<IdlPda>): PdaNode {
         seed.description ? [seed.description] : []
       );
     }
-    return programIdPdaSeedNode();
+    return constantPdaSeedNodeFromProgramId();
   });
   return pdaNode(name, seeds);
 }

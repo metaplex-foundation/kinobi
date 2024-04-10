@@ -139,28 +139,28 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
           const pda = node.pda ? linkables.get(node.pda) : undefined;
           const pdaSeeds = pda?.seeds ?? [];
           const seeds = pdaSeeds.map((seed) => {
-            if (isNode(seed, 'constantPdaSeedNode')) {
-              const seedManifest = visit(seed.type, typeManifestVisitor);
-              const seedValue = seed.value;
-              const valueManifest = renderValueNode(seedValue, true);
-              (seedValue as any).render = valueManifest.render;
-              seedsImports.mergeWith(valueManifest.imports);
-              const resolvedType = resolveNestedTypeNode(seed.type);
-              return { ...seed, resolvedType, typeManifest: seedManifest };
-            }
             if (isNode(seed, 'variablePdaSeedNode')) {
               const seedManifest = visit(seed.type, typeManifestVisitor);
               seedsImports.mergeWith(seedManifest.imports);
               const resolvedType = resolveNestedTypeNode(seed.type);
               return { ...seed, resolvedType, typeManifest: seedManifest };
             }
-            return seed;
+            if (isNode(seed.value, 'programIdValueNode')) {
+              return seed;
+            }
+            const seedManifest = visit(seed.type, typeManifestVisitor);
+            const seedValue = seed.value;
+            const valueManifest = renderValueNode(seedValue, true);
+            (seedValue as any).render = valueManifest.render;
+            seedsImports.mergeWith(valueManifest.imports);
+            const resolvedType = resolveNestedTypeNode(seed.type);
+            return { ...seed, resolvedType, typeManifest: seedManifest };
           });
           const hasVariableSeeds =
             pdaSeeds.filter(isNodeFilter('variablePdaSeedNode')).length > 0;
-          const constantSeeds = pdaSeeds.filter(
-            isNodeFilter('constantPdaSeedNode')
-          );
+          const constantSeeds = pdaSeeds
+            .filter(isNodeFilter('constantPdaSeedNode'))
+            .filter((seed) => !isNode(seed.value, 'programIdValueNode'));
 
           const { imports } = typeManifest;
 
