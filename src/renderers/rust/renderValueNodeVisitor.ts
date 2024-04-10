@@ -2,7 +2,9 @@ import {
   RegisteredValueNode,
   ValueNode,
   arrayValueNode,
+  bytesValueNode,
   getBytesFromBytesValueNode,
+  isNode,
   numberValueNode,
 } from '../../nodes';
 import { pascalCase } from '../../shared';
@@ -42,11 +44,33 @@ export function renderValueNodeVisitor(useStr: boolean = false): Visitor<
     },
     visitBytesValue(node) {
       const bytes = getBytesFromBytesValueNode(node);
-      const numbers = Array.from(bytes).map((b) => numberValueNode(b));
+      const numbers = Array.from(bytes).map(numberValueNode);
       return visit(arrayValueNode(numbers), this);
     },
-    visitConstantValue() {
-      throw new Error('Not implemented');
+    visitConstantValue(node) {
+      if (isNode(node.value, 'bytesValueNode')) {
+        return visit(node.value, this);
+      }
+      if (
+        isNode(node.type, 'stringTypeNode') &&
+        isNode(node.value, 'stringValueNode')
+      ) {
+        return visit(
+          bytesValueNode(node.type.encoding, node.value.string),
+          this
+        );
+      }
+      if (
+        isNode(node.type, 'numberTypeNode') &&
+        isNode(node.value, 'numberValueNode')
+      ) {
+        const numberManifest = visit(node.value, this);
+        const { format, endian } = node.type;
+        const byteFunction = endian === 'le' ? 'to_le_bytes' : 'to_be_bytes';
+        numberManifest.render = `${numberManifest.render}${format}.${byteFunction}()`;
+        return numberManifest;
+      }
+      throw new Error('Unsupported constant value type.');
     },
     visitEnumValue(node) {
       const imports = new RustImportMap();
@@ -89,7 +113,7 @@ export function renderValueNodeVisitor(useStr: boolean = false): Visitor<
     visitNumberValue(node) {
       return {
         imports: new RustImportMap(),
-        render: JSON.stringify(node.number),
+        render: node.number.toString(),
       };
     },
     visitPublicKeyValue(node) {
