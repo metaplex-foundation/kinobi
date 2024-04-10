@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.18.3
+
+### Patch Changes
+
+- [#201](https://github.com/metaplex-foundation/kinobi/pull/201) [`eb4b982`](https://github.com/metaplex-foundation/kinobi/commit/eb4b98281ce4f37579deb39b295fb41c362770b0) Thanks [@blockiosaurus](https://github.com/blockiosaurus)! - Adding derive for FromPrimitive to enums.
+
 ## 0.18.2
 
 ### Patch Changes
