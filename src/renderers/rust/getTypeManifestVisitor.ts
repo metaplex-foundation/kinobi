@@ -80,7 +80,8 @@ export function getTypeManifestVisitor() {
             isNode(definedType.type, 'enumTypeNode') &&
             isScalarEnum(definedType.type)
           ) {
-            traits.push('PartialOrd', 'Hash');
+            traits.push('PartialOrd', 'Hash', 'FromPrimitive');
+            manifest.imports.add(['num_derive::FromPrimitive']);
           }
           return {
             ...manifest,
