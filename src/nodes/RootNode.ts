@@ -7,56 +7,74 @@ import type { InstructionNode } from './InstructionNode';
 import { PdaNode } from './PdaNode';
 import { ProgramNode, programNodeFromIdl } from './ProgramNode';
 
-export type IdlInputs = string | Partial<Idl> | (string | Partial<Idl>)[];
+export type IdlInput = string | Partial<Idl>;
 export type KinobiVersion = `${number}.${number}.${number}`;
 
-export interface RootNode<TPrograms extends ProgramNode[] = ProgramNode[]> {
+export interface RootNode<
+  TProgram extends ProgramNode = ProgramNode,
+  TAdditionalPrograms extends ProgramNode[] = ProgramNode[],
+> {
   readonly kind: 'rootNode';
 
   // Children.
-  readonly programs: TPrograms;
+  readonly program: TProgram;
+  readonly additionalPrograms: TAdditionalPrograms;
 
   // Data.
   readonly standard: 'kinobi';
   readonly version: KinobiVersion;
 }
 
-export function rootNode<const TPrograms extends ProgramNode[]>(
-  programs: TPrograms
-): RootNode<TPrograms> {
+export function rootNode<
+  TProgram extends ProgramNode,
+  const TAdditionalPrograms extends ProgramNode[] = [],
+>(
+  program: TProgram,
+  additionalPrograms?: TAdditionalPrograms
+): RootNode<TProgram, TAdditionalPrograms> {
   return {
     kind: 'rootNode',
-    programs,
+    program,
+    additionalPrograms: (additionalPrograms ?? []) as TAdditionalPrograms,
     standard: 'kinobi',
     // TODO: Replace with __VERSION__ variable when available.
     version: '0.19.0',
   };
 }
 
-export function rootNodeFromIdls(idls: IdlInputs): RootNode {
-  const idlArray = Array.isArray(idls) ? idls : [idls];
-  const programs = idlArray
-    .map((idl) => (typeof idl === 'string' ? readJson<Partial<Idl>>(idl) : idl))
-    .map((idl) => programNodeFromIdl(idl));
-  return rootNode(programs);
+export function rootNodeFromIdls(
+  program: IdlInput,
+  additionalPrograms: IdlInput[]
+): RootNode {
+  const resolveIdl = (idl: IdlInput) =>
+    typeof idl === 'string' ? readJson<Partial<Idl>>(idl) : idl;
+  const programNode = programNodeFromIdl(resolveIdl(program));
+  const additionalProgramNodes = additionalPrograms
+    .map(resolveIdl)
+    .map(programNodeFromIdl);
+  return rootNode(programNode, additionalProgramNodes);
+}
+
+export function getAllPrograms(node: RootNode): ProgramNode[] {
+  return [node.program, ...node.additionalPrograms];
 }
 
 export function getAllPdas(node: RootNode): PdaNode[] {
-  return node.programs.flatMap((program) => program.pdas);
+  return getAllPrograms(node).flatMap((program) => program.pdas);
 }
 
 export function getAllAccounts(node: RootNode): AccountNode[] {
-  return node.programs.flatMap((program) => program.accounts);
+  return getAllPrograms(node).flatMap((program) => program.accounts);
 }
 
 export function getAllDefinedTypes(node: RootNode): DefinedTypeNode[] {
-  return node.programs.flatMap((program) => program.definedTypes);
+  return getAllPrograms(node).flatMap((program) => program.definedTypes);
 }
 
 export function getAllInstructions(node: RootNode): InstructionNode[] {
-  return node.programs.flatMap((program) => program.instructions);
+  return getAllPrograms(node).flatMap((program) => program.instructions);
 }
 
 export function getAllErrors(node: RootNode): ErrorNode[] {
-  return node.programs.flatMap((program) => program.errors);
+  return getAllPrograms(node).flatMap((program) => program.errors);
 }

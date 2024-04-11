@@ -35,7 +35,7 @@ import {
 } from '../../src';
 
 // Given the following tree.
-const tree = rootNode([
+const tree = rootNode(
   programNode({
     name: 'splToken',
     publicKey: '1111',
@@ -107,78 +107,80 @@ const tree = rootNode([
       }),
     ],
   }),
-  programNode({
-    name: 'christmasProgram',
-    publicKey: '2222',
-    version: '1.0.0',
-    accounts: [
-      accountNode({
-        name: 'gift',
-        data: structTypeNode([
-          structFieldTypeNode({
-            name: 'owner',
-            type: publicKeyTypeNode(),
-          }),
-          structFieldTypeNode({
-            name: 'opened',
-            type: booleanTypeNode(numberTypeNode('u64')),
-          }),
-          structFieldTypeNode({
-            name: 'amount',
-            type: numberTypeNode('u64'),
-          }),
-          structFieldTypeNode({
-            name: 'wrappingPaper',
-            type: definedTypeLinkNode('wrappingPaper'),
-          }),
-        ]),
-      }),
-    ],
-    instructions: [
-      instructionNode({
-        name: 'openGift',
-        accounts: [
-          instructionAccountNode({
-            name: 'gift',
-            isSigner: false,
-            isWritable: true,
-          }),
-          instructionAccountNode({
-            name: 'owner',
-            isSigner: true,
-            isWritable: false,
-          }),
-        ],
-        arguments: [],
-      }),
-    ],
-    definedTypes: [
-      definedTypeNode({
-        name: 'wrappingPaper',
-        type: enumTypeNode([
-          enumEmptyVariantTypeNode('blue'),
-          enumEmptyVariantTypeNode('red'),
-          enumStructVariantTypeNode(
-            'gold',
-            structTypeNode([
-              structFieldTypeNode({
-                name: 'owner',
-                type: publicKeyTypeNode(),
-              }),
-            ])
-          ),
-        ]),
-      }),
-    ],
-    errors: [
-      errorNode({
-        code: 0,
-        name: 'invalidProgramId',
-        message: 'Invalid program ID',
-      }),
-    ],
-  }),
-]);
+  [
+    programNode({
+      name: 'christmasProgram',
+      publicKey: '2222',
+      version: '1.0.0',
+      accounts: [
+        accountNode({
+          name: 'gift',
+          data: structTypeNode([
+            structFieldTypeNode({
+              name: 'owner',
+              type: publicKeyTypeNode(),
+            }),
+            structFieldTypeNode({
+              name: 'opened',
+              type: booleanTypeNode(numberTypeNode('u64')),
+            }),
+            structFieldTypeNode({
+              name: 'amount',
+              type: numberTypeNode('u64'),
+            }),
+            structFieldTypeNode({
+              name: 'wrappingPaper',
+              type: definedTypeLinkNode('wrappingPaper'),
+            }),
+          ]),
+        }),
+      ],
+      instructions: [
+        instructionNode({
+          name: 'openGift',
+          accounts: [
+            instructionAccountNode({
+              name: 'gift',
+              isSigner: false,
+              isWritable: true,
+            }),
+            instructionAccountNode({
+              name: 'owner',
+              isSigner: true,
+              isWritable: false,
+            }),
+          ],
+          arguments: [],
+        }),
+      ],
+      definedTypes: [
+        definedTypeNode({
+          name: 'wrappingPaper',
+          type: enumTypeNode([
+            enumEmptyVariantTypeNode('blue'),
+            enumEmptyVariantTypeNode('red'),
+            enumStructVariantTypeNode(
+              'gold',
+              structTypeNode([
+                structFieldTypeNode({
+                  name: 'owner',
+                  type: publicKeyTypeNode(),
+                }),
+              ])
+            ),
+          ]),
+        }),
+      ],
+      errors: [
+        errorNode({
+          code: 0,
+          name: 'invalidProgramId',
+          message: 'Invalid program ID',
+        }),
+      ],
+    }),
+  ]
+);
 
 const macro = test.macro({
   title(_, selector: NodeSelector) {
@@ -244,8 +246,8 @@ const macro = test.macro({
  *     [errorNode] invalidProgramId (0)
  */
 
-const splTokenProgram = tree.programs[0];
-const christmasProgram = tree.programs[1];
+const splTokenProgram = tree.program;
+const christmasProgram = tree.additionalPrograms[0];
 const tokenAccount = splTokenProgram.accounts[0];
 const tokenDelegatedAmountOption = tokenAccount.data.fields[3].type;
 const mintTokenInstruction = splTokenProgram.instructions[0];

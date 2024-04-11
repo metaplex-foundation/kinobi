@@ -13,7 +13,7 @@ import { InstructionByteDeltaNode } from './InstructionByteDeltaNode';
 import { InstructionRemainingAccountsNode } from './InstructionRemainingAccountsNode';
 import { isNode } from './Node';
 import { ProgramNode } from './ProgramNode';
-import { RootNode } from './RootNode';
+import { RootNode, getAllInstructions } from './RootNode';
 import {
   DiscriminatorNode,
   fieldDiscriminatorNode,
@@ -207,7 +207,7 @@ export function getAllInstructionsWithSubs(
 
   const instructions = isNode(node, 'programNode')
     ? node.instructions
-    : node.programs.flatMap((program) => program.instructions);
+    : getAllInstructions(node);
 
   return instructions.flatMap((instruction) =>
     getAllInstructionsWithSubs(instruction, config)

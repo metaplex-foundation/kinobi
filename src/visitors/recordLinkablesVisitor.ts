@@ -3,6 +3,7 @@ import {
   getAllAccounts,
   getAllDefinedTypes,
   getAllPdas,
+  getAllPrograms,
 } from '../nodes';
 import { LinkableDictionary } from '../shared';
 import { VisitorOverrides, extendVisitor } from './extendVisitor';
@@ -19,7 +20,7 @@ export function recordLinkablesVisitor<TReturn, TNodeKind extends NodeKind>(
   if ('visitRoot' in visitor) {
     overriddenFunctions.visitRoot = function visitRoot(node, { next }) {
       linkables.recordAll([
-        ...node.programs,
+        ...getAllPrograms(node),
         ...getAllPdas(node),
         ...getAllAccounts(node),
         ...getAllDefinedTypes(node),

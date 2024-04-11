@@ -6,6 +6,7 @@ import {
   getAllDefinedTypes,
   getAllInstructionsWithSubs,
   getAllPdas,
+  getAllPrograms,
   InstructionNode,
   ProgramNode,
   structTypeNodeFromInstructionArgumentNodes,
@@ -184,7 +185,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
         visitRoot(node, { self }) {
           const isNotInternal = (n: { name: MainCaseString }) =>
             !internalNodes.includes(n.name);
-          const programsToExport = node.programs.filter(isNotInternal);
+          const programsToExport = getAllPrograms(node).filter(isNotInternal);
           const programsWithErrorsToExport = programsToExport.filter(
             (p) => p.errors.length > 0
           );
@@ -241,7 +242,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
           return map
             .add('index.ts', render('rootIndex.njk', ctx))
             .add('global.d.ts', render('globalTypesPage.njk', ctx))
-            .mergeWith(...node.programs.map((p) => visit(p, self)));
+            .mergeWith(...getAllPrograms(node).map((p) => visit(p, self)));
         },
 
         visitProgram(node, { self }) {

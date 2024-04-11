@@ -42,18 +42,20 @@ test('it updates the name of an account', (t) => {
 
 test('it updates the name of an account within a specific program', (t) => {
   // Given two programs each with an account of the same name.
-  const node = rootNode([
+  const node = rootNode(
     programNode({
       name: 'myProgramA',
       publicKey: '1111',
       accounts: [accountNode({ name: 'candyMachine' })],
     }),
-    programNode({
-      name: 'myProgramB',
-      publicKey: '2222',
-      accounts: [accountNode({ name: 'candyMachine' })],
-    }),
-  ]);
+    [
+      programNode({
+        name: 'myProgramB',
+        publicKey: '2222',
+        accounts: [accountNode({ name: 'candyMachine' })],
+      }),
+    ]
+  );
 
   // When we update the name of that account in the first program.
   const result = visit(
@@ -65,13 +67,13 @@ test('it updates the name of an account within a specific program', (t) => {
 
   // Then we expect the first account to have been renamed.
   assertIsNode(result, 'rootNode');
-  t.is(
-    result.programs[0].accounts[0].name,
-    'newCandyMachine' as MainCaseString
-  );
+  t.is(result.program.accounts[0].name, 'newCandyMachine' as MainCaseString);
 
   // But not the second account.
-  t.is(result.programs[1].accounts[0].name, 'candyMachine' as MainCaseString);
+  t.is(
+    result.additionalPrograms[0].accounts[0].name,
+    'candyMachine' as MainCaseString
+  );
 });
 
 test("it renames the fields of an account's data", (t) => {
@@ -127,15 +129,15 @@ test('it updates the name of associated PDA nodes', (t) => {
 
 test('it creates a new PDA node when providing seeds to an account with no linked PDA', (t) => {
   // Given the following program node with one account.
-  const node = rootNode([
+  const node = rootNode(
     programNode({
       name: 'myProgramA',
       publicKey: '1111',
       accounts: [accountNode({ name: 'myAccount' })],
       pdas: [],
     }),
-    programNode({ name: 'myProgramB', publicKey: '2222' }),
-  ]);
+    [programNode({ name: 'myProgramB', publicKey: '2222' })]
+  );
 
   // When we update the account with PDA seeds.
   const seeds = [constantPdaSeedNodeFromString('utf8', 'myAccount')];
@@ -148,12 +150,12 @@ test('it creates a new PDA node when providing seeds to an account with no linke
   assertIsNode(result, 'rootNode');
 
   // Then we expect a new PDA node to have been created on the program.
-  t.is(result.programs[0].pdas.length, 1);
-  t.is(result.programs[1].pdas.length, 0);
-  t.deepEqual(result.programs[0].pdas[0], pdaNode('myAccount', seeds));
+  t.is(result.program.pdas.length, 1);
+  t.is(result.additionalPrograms[0].pdas.length, 0);
+  t.deepEqual(result.program.pdas[0], pdaNode('myAccount', seeds));
 
   // And the account now links to the new PDA node.
-  t.deepEqual(result.programs[0].accounts[0].pda, pdaLinkNode('myAccount'));
+  t.deepEqual(result.program.accounts[0].pda, pdaLinkNode('myAccount'));
 });
 
 test('it updates the PDA node when the updated account name matches an existing PDA node', (t) => {
