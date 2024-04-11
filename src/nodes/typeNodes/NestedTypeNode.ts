@@ -1,5 +1,7 @@
 import { Node, isNode } from '../Node';
 import type { FixedSizeTypeNode } from './FixedSizeTypeNode';
+import type { HiddenPrefixTypeNode } from './HiddenPrefixTypeNode';
+import type { HiddenSuffixTypeNode } from './HiddenSuffixTypeNode';
 import type { PostOffsetTypeNode } from './PostOffsetTypeNode';
 import type { PreOffsetTypeNode } from './PreOffsetTypeNode';
 import type { SentinelTypeNode } from './SentinelTypeNode';
@@ -9,6 +11,8 @@ import { TYPE_NODES, TypeNode } from './TypeNode';
 export type NestedTypeNode<TType extends TypeNode> =
   | TType
   | FixedSizeTypeNode<NestedTypeNode<TType>>
+  | HiddenPrefixTypeNode<NestedTypeNode<TType>>
+  | HiddenSuffixTypeNode<NestedTypeNode<TType>>
   | PostOffsetTypeNode<NestedTypeNode<TType>>
   | PreOffsetTypeNode<NestedTypeNode<TType>>
   | SentinelTypeNode<NestedTypeNode<TType>>
@@ -19,6 +23,8 @@ export function resolveNestedTypeNode<TType extends TypeNode>(
 ): TType {
   switch (typeNode.kind) {
     case 'fixedSizeTypeNode':
+    case 'hiddenPrefixTypeNode':
+    case 'hiddenSuffixTypeNode':
     case 'postOffsetTypeNode':
     case 'preOffsetTypeNode':
     case 'sentinelTypeNode':
@@ -40,6 +46,8 @@ export function transformNestedTypeNode<
 ): NestedTypeNode<TTo> {
   switch (typeNode.kind) {
     case 'fixedSizeTypeNode':
+    case 'hiddenPrefixTypeNode':
+    case 'hiddenSuffixTypeNode':
     case 'postOffsetTypeNode':
     case 'preOffsetTypeNode':
     case 'sentinelTypeNode':

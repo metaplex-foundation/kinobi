@@ -365,6 +365,24 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
     };
   }
 
+  if (castedNodeKeys.includes('hiddenPrefixTypeNode')) {
+    visitor.visitHiddenPrefixType = function visitHiddenPrefixType(node) {
+      return merge(node, [
+        ...node.prefix.flatMap(visit(this)),
+        ...visit(this)(node.type),
+      ]);
+    };
+  }
+
+  if (castedNodeKeys.includes('hiddenSuffixTypeNode')) {
+    visitor.visitHiddenSuffixType = function visitHiddenSuffixType(node) {
+      return merge(node, [
+        ...visit(this)(node.type),
+        ...node.suffix.flatMap(visit(this)),
+      ]);
+    };
+  }
+
   if (castedNodeKeys.includes('constantDiscriminatorNode')) {
     visitor.visitConstantDiscriminator = function visitConstantDiscriminator(
       node

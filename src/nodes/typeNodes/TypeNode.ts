@@ -13,6 +13,8 @@ import { EnumStructVariantTypeNode } from './EnumStructVariantTypeNode';
 import { EnumTupleVariantTypeNode } from './EnumTupleVariantTypeNode';
 import { EnumTypeNode, enumTypeNodeFromIdl } from './EnumTypeNode';
 import { FixedSizeTypeNode } from './FixedSizeTypeNode';
+import { HiddenPrefixTypeNode } from './HiddenPrefixTypeNode';
+import { HiddenSuffixTypeNode } from './HiddenSuffixTypeNode';
 import { MapTypeNode, mapTypeNodeFromIdl } from './MapTypeNode';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 import { OptionTypeNode, optionTypeNodeFromIdl } from './OptionTypeNode';
@@ -37,6 +39,8 @@ export type StandaloneTypeNode =
   | DateTimeTypeNode
   | EnumTypeNode
   | FixedSizeTypeNode
+  | HiddenPrefixTypeNode
+  | HiddenSuffixTypeNode
   | MapTypeNode
   | NumberTypeNode
   | OptionTypeNode
@@ -58,6 +62,8 @@ export const STANDALONE_TYPE_NODE_KINDS = [
   'dateTimeTypeNode',
   'enumTypeNode',
   'fixedSizeTypeNode',
+  'hiddenPrefixTypeNode',
+  'hiddenSuffixTypeNode',
   'mapTypeNode',
   'numberTypeNode',
   'optionTypeNode',
