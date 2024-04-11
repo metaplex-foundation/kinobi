@@ -13,17 +13,27 @@ export interface EnumTupleVariantTypeNode<
 
   // Data.
   readonly name: MainCaseString;
+  readonly discriminator?: number;
 }
 
 export function enumTupleVariantTypeNode<
   TTuple extends NestedTypeNode<TupleTypeNode>,
->(name: string, tuple: TTuple): EnumTupleVariantTypeNode<TTuple> {
+>(
+  name: string,
+  tuple: TTuple,
+  discriminator?: number
+): EnumTupleVariantTypeNode<TTuple> {
   if (!name) {
     throw new InvalidKinobiTreeError(
       'EnumTupleVariantTypeNode must have a name.'
     );
   }
-  return { kind: 'enumTupleVariantTypeNode', name: mainCase(name), tuple };
+  return {
+    kind: 'enumTupleVariantTypeNode',
+    name: mainCase(name),
+    tuple,
+    discriminator,
+  };
 }
 
 export function enumTupleVariantTypeNodeFromIdl(
