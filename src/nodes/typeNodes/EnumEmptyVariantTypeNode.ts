@@ -6,17 +6,23 @@ export interface EnumEmptyVariantTypeNode {
 
   // Data.
   readonly name: MainCaseString;
+  readonly discriminator?: number;
 }
 
 export function enumEmptyVariantTypeNode(
-  name: string
+  name: string,
+  discriminator?: number
 ): EnumEmptyVariantTypeNode {
   if (!name) {
     throw new InvalidKinobiTreeError(
       'EnumEmptyVariantTypeNode must have a name.'
     );
   }
-  return { kind: 'enumEmptyVariantTypeNode', name: mainCase(name) };
+  return {
+    kind: 'enumEmptyVariantTypeNode',
+    name: mainCase(name),
+    discriminator,
+  };
 }
 
 export function enumEmptyVariantTypeNodeFromIdl(
