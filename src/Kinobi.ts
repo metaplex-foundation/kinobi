@@ -1,9 +1,8 @@
 import {
   assertIsNode,
-  IdlInputs,
+  IdlInput,
   KinobiVersion,
   Node,
-  rootNode,
   RootNode,
   rootNodeFromIdls,
 } from './nodes';
@@ -43,16 +42,20 @@ export function createFromRoot(
       currentRoot = newRoot;
     },
     clone(): Kinobi {
-      return createFromRoot(rootNode(currentRoot.programs));
+      return createFromRoot({ ...currentRoot }, false);
     },
   };
 }
 
-export function createFromIdls(
-  idls: IdlInputs,
+export function createFromIdl(
+  program: IdlInput,
+  additionalPrograms: IdlInput[],
   useDefaultVisitor = true
 ): Kinobi {
-  return createFromRoot(rootNodeFromIdls(idls), useDefaultVisitor);
+  return createFromRoot(
+    rootNodeFromIdls(program, additionalPrograms),
+    useDefaultVisitor
+  );
 }
 
 export function createFromJson(

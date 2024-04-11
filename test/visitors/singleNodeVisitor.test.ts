@@ -37,17 +37,17 @@ test('it visits a single node and return a custom value', (t) => {
 });
 
 test('it can create rootNode only visitors that return new rootNode instances', (t) => {
-  // Given an empty root node.
-  const node = rootNode([]);
+  // Given a root node.
+  const node = rootNode({} as ProgramNode);
 
-  // And a root node visitor that adds a program node.
+  // And a root node visitor that adds an additional program node.
   const visitor = rootNodeVisitor((node) =>
-    rootNode([...node.programs, {} as ProgramNode])
+    rootNode(node.program, [...node.additionalPrograms, {} as ProgramNode])
   );
 
   // When we visit the empty root node using that visitor.
   const result = visit(node, visitor);
 
-  // Then we expect the returned root node to have one program node.
-  t.deepEqual(result.programs.length, 1);
+  // Then we expect the returned root node to have one additional program node.
+  t.deepEqual(result.additionalPrograms.length, 1);
 });

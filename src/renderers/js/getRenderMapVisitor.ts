@@ -7,6 +7,7 @@ import {
   getAllDefinedTypes,
   getAllInstructionArguments,
   getAllInstructionsWithSubs,
+  getAllPrograms,
   InstructionNode,
   isDataEnum,
   isNode,
@@ -179,7 +180,7 @@ export function getRenderMapVisitor(
         visitRoot(node, { self }) {
           const isNotInternal = (n: { name: MainCaseString }) =>
             !internalNodes.includes(n.name);
-          const programsToExport = node.programs.filter(isNotInternal);
+          const programsToExport = getAllPrograms(node).filter(isNotInternal);
           const accountsToExport = getAllAccounts(node).filter(isNotInternal);
           const instructionsToExport = getAllInstructionsWithSubs(node, {
             leavesOnly: !renderParentInstructions,
@@ -225,7 +226,7 @@ export function getRenderMapVisitor(
 
           return map
             .add('index.ts', render('rootIndex.njk', ctx))
-            .mergeWith(...node.programs.map((p) => visit(p, self)));
+            .mergeWith(...getAllPrograms(node).map((p) => visit(p, self)));
         },
 
         visitProgram(node, { self }) {

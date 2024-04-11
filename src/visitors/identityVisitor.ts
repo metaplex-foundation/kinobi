@@ -83,8 +83,12 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
 
   if (castedNodeKeys.includes('rootNode')) {
     visitor.visitRoot = function visitRoot(node) {
+      const program = visit(this)(node.program);
+      if (program === null) return null;
+      assertIsNode(program, 'programNode');
       return rootNode(
-        node.programs
+        program,
+        node.additionalPrograms
           .map(visit(this))
           .filter(removeNullAndAssertIsNodeFilter('programNode'))
       );

@@ -39,18 +39,20 @@ test('it updates the name of an instruction', (t) => {
 
 test('it updates the name of an instruction within a specific program', (t) => {
   // Given two programs each with an instruction of the same name.
-  const node = rootNode([
+  const node = rootNode(
     programNode({
       name: 'myProgramA',
       publicKey: '1111',
       instructions: [instructionNode({ name: 'transfer' })],
     }),
-    programNode({
-      name: 'myProgramB',
-      publicKey: '2222',
-      instructions: [instructionNode({ name: 'transfer' })],
-    }),
-  ]);
+    [
+      programNode({
+        name: 'myProgramB',
+        publicKey: '2222',
+        instructions: [instructionNode({ name: 'transfer' })],
+      }),
+    ]
+  );
 
   // When we update the name of that instruction in the first program.
   const result = visit(
@@ -62,13 +64,13 @@ test('it updates the name of an instruction within a specific program', (t) => {
 
   // Then we expect the first instruction to have been renamed.
   assertIsNode(result, 'rootNode');
-  t.is(
-    result.programs[0].instructions[0].name,
-    'newTransfer' as MainCaseString
-  );
+  t.is(result.program.instructions[0].name, 'newTransfer' as MainCaseString);
 
   // But not the second instruction.
-  t.is(result.programs[1].instructions[0].name, 'transfer' as MainCaseString);
+  t.is(
+    result.additionalPrograms[0].instructions[0].name,
+    'transfer' as MainCaseString
+  );
 });
 
 test('it updates the name of an instruction account', (t) => {

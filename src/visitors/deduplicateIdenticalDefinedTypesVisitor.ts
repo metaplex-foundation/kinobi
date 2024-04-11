@@ -1,9 +1,14 @@
+import {
+  DefinedTypeNode,
+  ProgramNode,
+  assertIsNode,
+  getAllPrograms,
+} from '../nodes';
 import { NodeSelector } from '../shared';
-import { DefinedTypeNode, ProgramNode, assertIsNode } from '../nodes';
+import { deleteNodesVisitor } from './deleteNodesVisitor';
 import { getUniqueHashStringVisitor } from './getUniqueHashStringVisitor';
 import { rootNodeVisitor } from './singleNodeVisitor';
 import { visit } from './visitor';
-import { deleteNodesVisitor } from './deleteNodesVisitor';
 
 type DefinedTypeWithProgram = {
   program: ProgramNode;
@@ -15,7 +20,8 @@ export function deduplicateIdenticalDefinedTypesVisitor() {
     const typeMap = new Map<string, DefinedTypeWithProgram[]>();
 
     // Fill the type map with all defined types.
-    root.programs.forEach((program) => {
+    const allPrograms = getAllPrograms(root);
+    allPrograms.forEach((program) => {
       program.definedTypes.forEach((type) => {
         const typeWithProgram = { program, type };
         const list = typeMap.get(type.name) ?? [];
@@ -47,7 +53,7 @@ export function deduplicateIdenticalDefinedTypesVisitor() {
       .flatMap((list) => {
         const sortedList = list.sort(
           (a, b) =>
-            root.programs.indexOf(a.program) - root.programs.indexOf(b.program)
+            allPrograms.indexOf(a.program) - allPrograms.indexOf(b.program)
         );
         const [, ...sortedListTail] = sortedList;
         return sortedListTail;

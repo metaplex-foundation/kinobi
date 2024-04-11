@@ -6,6 +6,7 @@ import {
   getAllAccounts,
   getAllDefinedTypes,
   getAllInstructionsWithSubs,
+  getAllPrograms,
   isNode,
   isNodeFilter,
   resolveNestedTypeNode,
@@ -58,7 +59,7 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
     (v) =>
       extendVisitor(v, {
         visitRoot(node, { self }) {
-          const programsToExport = node.programs;
+          const programsToExport = getAllPrograms(node);
           const accountsToExport = getAllAccounts(node);
           const instructionsToExport = getAllInstructionsWithSubs(node, {
             leavesOnly: !renderParentInstructions,
@@ -97,7 +98,7 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
 
           return map
             .add('mod.rs', render('rootMod.njk', ctx))
-            .mergeWith(...node.programs.map((p) => visit(p, self)));
+            .mergeWith(...getAllPrograms(node).map((p) => visit(p, self)));
         },
 
         visitProgram(node, { self }) {

@@ -1,4 +1,9 @@
-import { Node, NodeKind, REGISTERED_NODE_KINDS } from '../nodes';
+import {
+  Node,
+  NodeKind,
+  REGISTERED_NODE_KINDS,
+  getAllPrograms,
+} from '../nodes';
 import { staticVisitor } from './staticVisitor';
 import { Visitor, visit as baseVisit } from './visitor';
 
@@ -16,7 +21,7 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
 
   if (castedNodeKeys.includes('rootNode')) {
     visitor.visitRoot = function visitRoot(node) {
-      return merge(node, node.programs.flatMap(visit(this)));
+      return merge(node, getAllPrograms(node).flatMap(visit(this)));
     };
   }
 

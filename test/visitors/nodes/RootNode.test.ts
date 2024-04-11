@@ -7,21 +7,27 @@ import {
   mergeVisitorMacro,
 } from './_setup';
 
-const node = rootNode([
+const node = rootNode(
   programNode({
     name: 'splToken',
     publicKey: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   }),
-  programNode({
-    name: 'splAddressLookupTable',
-    publicKey: 'AddressLookupTab1e1111111111111111111111111',
-  }),
-]);
+  [
+    programNode({
+      name: 'splAddressLookupTable',
+      publicKey: 'AddressLookupTab1e1111111111111111111111111',
+    }),
+  ]
+);
 
 test(mergeVisitorMacro, node, 3);
 test(identityVisitorMacro, node);
 test(deleteNodesVisitorMacro, node, '[rootNode]', null);
-test(deleteNodesVisitorMacro, node, '[programNode]', { ...node, programs: [] });
+test(deleteNodesVisitorMacro, node, '[programNode]', null);
+test(deleteNodesVisitorMacro, node, '[programNode]splAddressLookupTable', {
+  ...node,
+  additionalPrograms: [],
+});
 test(
   getDebugStringVisitorMacro,
   node,
