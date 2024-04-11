@@ -16,6 +16,7 @@ export * from './OptionTypeNode';
 export * from './PostOffsetTypeNode';
 export * from './PreOffsetTypeNode';
 export * from './PublicKeyTypeNode';
+export * from './SentinelTypeNode';
 export * from './SetTypeNode';
 export * from './SizePrefixTypeNode';
 export * from './SolAmountTypeNode';

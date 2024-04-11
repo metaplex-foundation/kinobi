@@ -48,6 +48,7 @@ import {
   removeNullAndAssertIsNodeFilter,
   resolverValueNode,
   rootNode,
+  sentinelTypeNode,
   setTypeNode,
   setValueNode,
   sizePrefixTypeNode,
@@ -640,6 +641,18 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       if (type === null) return null;
       assertIsNode(type, TYPE_NODES);
       return postOffsetTypeNode(type, node.offset, node.strategy);
+    };
+  }
+
+  if (castedNodeKeys.includes('sentinelTypeNode')) {
+    visitor.visitSentinelType = function visitSentinelType(node) {
+      const sentinel = visit(this)(node.sentinel);
+      if (sentinel === null) return null;
+      assertIsNode(sentinel, 'constantValueNode');
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertIsNode(type, TYPE_NODES);
+      return sentinelTypeNode(type, sentinel);
     };
   }
 
