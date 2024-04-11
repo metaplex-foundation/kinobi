@@ -29,6 +29,7 @@ import { StringTypeNode, stringTypeNode } from './StringTypeNode';
 import { StructFieldTypeNode } from './StructFieldTypeNode';
 import { StructTypeNode, structTypeNodeFromIdl } from './StructTypeNode';
 import { TupleTypeNode, tupleTypeNodeFromIdl } from './TupleTypeNode';
+import { ZeroableOptionTypeNode } from './ZeroableOptionTypeNode';
 
 // Standalone Type Node Registration.
 export type StandaloneTypeNode =
@@ -53,7 +54,8 @@ export type StandaloneTypeNode =
   | SolAmountTypeNode
   | StringTypeNode
   | StructTypeNode
-  | TupleTypeNode;
+  | TupleTypeNode
+  | ZeroableOptionTypeNode;
 export const STANDALONE_TYPE_NODE_KINDS = [
   'amountTypeNode',
   'arrayTypeNode',
@@ -77,6 +79,7 @@ export const STANDALONE_TYPE_NODE_KINDS = [
   'stringTypeNode',
   'structTypeNode',
   'tupleTypeNode',
+  'zeroableOptionTypeNode',
 ] satisfies readonly StandaloneTypeNode['kind'][];
 null as unknown as StandaloneTypeNode['kind'] satisfies (typeof STANDALONE_TYPE_NODE_KINDS)[number];
 

@@ -153,6 +153,15 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
     };
   }
 
+  if (castedNodeKeys.includes('zeroableOptionTypeNode')) {
+    visitor.visitZeroableOptionType = function visitZeroableOptionType(node) {
+      return merge(node, [
+        ...visit(this)(node.item),
+        ...(node.zeroValue ? visit(this)(node.zeroValue) : []),
+      ]);
+    };
+  }
+
   if (castedNodeKeys.includes('booleanTypeNode')) {
     visitor.visitBooleanType = function visitBooleanType(node) {
       return merge(node, visit(this)(node.size));

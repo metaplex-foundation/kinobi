@@ -27,3 +27,4 @@ export * from './StructFieldTypeNode';
 export * from './StructTypeNode';
 export * from './TupleTypeNode';
 export * from './TypeNode';
+export * from './ZeroableOptionTypeNode';

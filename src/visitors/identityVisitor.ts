@@ -63,6 +63,7 @@ import {
   tupleTypeNode,
   tupleValueNode,
   variablePdaSeedNode,
+  zeroableOptionTypeNode,
 } from '../nodes';
 import { staticVisitor } from './staticVisitor';
 import { Visitor, visit as baseVisit } from './visitor';
@@ -321,6 +322,19 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       if (item === null) return null;
       assertIsNode(item, TYPE_NODES);
       return optionTypeNode(item, { ...node, prefix });
+    };
+  }
+
+  if (castedNodeKeys.includes('zeroableOptionTypeNode')) {
+    visitor.visitZeroableOptionType = function visitZeroableOptionType(node) {
+      const item = visit(this)(node.item);
+      if (item === null) return null;
+      assertIsNode(item, TYPE_NODES);
+      const zeroValue = node.zeroValue
+        ? visit(this)(node.zeroValue) ?? undefined
+        : undefined;
+      if (zeroValue) assertIsNode(zeroValue, 'constantValueNode');
+      return zeroableOptionTypeNode(item, zeroValue);
     };
   }
 
