@@ -29,6 +29,8 @@ import {
   enumTypeNode,
   enumValueNode,
   fixedSizeTypeNode,
+  hiddenPrefixTypeNode,
+  hiddenSuffixTypeNode,
   instructionAccountNode,
   instructionArgumentNode,
   instructionByteDeltaNode,
@@ -653,6 +655,32 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       if (type === null) return null;
       assertIsNode(type, TYPE_NODES);
       return sentinelTypeNode(type, sentinel);
+    };
+  }
+
+  if (castedNodeKeys.includes('hiddenPrefixTypeNode')) {
+    visitor.visitHiddenPrefixType = function visitHiddenPrefixType(node) {
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertIsNode(type, TYPE_NODES);
+      const prefix = node.prefix
+        .map(visit(this))
+        .filter(removeNullAndAssertIsNodeFilter('constantValueNode'));
+      if (prefix.length === 0) return type;
+      return hiddenPrefixTypeNode(type, prefix);
+    };
+  }
+
+  if (castedNodeKeys.includes('hiddenSuffixTypeNode')) {
+    visitor.visitHiddenSuffixType = function visitHiddenSuffixType(node) {
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertIsNode(type, TYPE_NODES);
+      const suffix = node.suffix
+        .map(visit(this))
+        .filter(removeNullAndAssertIsNodeFilter('constantValueNode'));
+      if (suffix.length === 0) return type;
+      return hiddenSuffixTypeNode(type, suffix);
     };
   }
 

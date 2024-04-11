@@ -9,6 +9,8 @@ export * from './EnumTupleVariantTypeNode';
 export * from './EnumTypeNode';
 export * from './EnumVariantTypeNode';
 export * from './FixedSizeTypeNode';
+export * from './HiddenPrefixTypeNode';
+export * from './HiddenSuffixTypeNode';
 export * from './MapTypeNode';
 export * from './NestedTypeNode';
 export * from './NumberTypeNode';
