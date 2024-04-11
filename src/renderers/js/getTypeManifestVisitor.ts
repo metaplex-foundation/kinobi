@@ -775,11 +775,17 @@ export function getTypeManifestVisitor(input: {
         },
 
         visitConstantValue(node, { self }) {
+          if (
+            isNode(node.type, 'bytesTypeNode') &&
+            isNode(node.value, 'bytesValueNode')
+          ) {
+            return visit(node.value, self);
+          }
           const imports = new JavaScriptImportMap();
-          const type = visit(node.type, self);
-          imports.mergeWith(type.serializerImports);
           const value = visit(node.value, self);
           imports.mergeWith(value.valueImports);
+          const type = visit(node.type, self);
+          imports.mergeWith(type.serializerImports);
           return {
             ...typeManifest(),
             value: `${type.serializer}.serialize(${value.value})`,

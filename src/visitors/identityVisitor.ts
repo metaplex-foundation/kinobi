@@ -18,6 +18,7 @@ import {
   assertIsNode,
   booleanTypeNode,
   conditionalValueNode,
+  constantDiscriminatorNode,
   constantPdaSeedNode,
   constantValueNode,
   dateTimeTypeNode,
@@ -639,6 +640,17 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       if (type === null) return null;
       assertIsNode(type, TYPE_NODES);
       return postOffsetTypeNode(type, node.offset, node.strategy);
+    };
+  }
+
+  if (castedNodeKeys.includes('constantDiscriminatorNode')) {
+    visitor.visitConstantDiscriminator = function visitConstantDiscriminator(
+      node
+    ) {
+      const constant = visit(this)(node.constant);
+      if (constant === null) return null;
+      assertIsNode(constant, 'constantValueNode');
+      return constantDiscriminatorNode(constant, node.offset);
     };
   }
 

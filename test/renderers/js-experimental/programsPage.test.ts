@@ -1,7 +1,8 @@
 import test from 'ava';
 import {
   accountNode,
-  byteDiscriminatorNode,
+  constantDiscriminatorNode,
+  constantValueNodeFromBytes,
   fieldDiscriminatorNode,
   instructionArgumentNode,
   instructionNode,
@@ -77,7 +78,10 @@ test('it renders an function that identifies accounts in a program', (t) => {
         name: 'token',
         discriminators: [
           sizeDiscriminatorNode(72),
-          byteDiscriminatorNode([1, 2, 3], 4),
+          constantDiscriminatorNode(
+            constantValueNodeFromBytes('base16', '010203'),
+            4
+          ),
         ],
       }),
       // No discriminator.
@@ -149,7 +153,10 @@ test('it renders an function that identifies instructions in a program', (t) => 
         name: 'transferTokens',
         discriminators: [
           sizeDiscriminatorNode(72),
-          byteDiscriminatorNode([1, 2, 3], 4),
+          constantDiscriminatorNode(
+            constantValueNodeFromBytes('base16', '010203'),
+            4
+          ),
         ],
       }),
       // No discriminator.
