@@ -1,11 +1,13 @@
 import {
   assertIsNode,
   IdlInputs,
+  KinobiVersion,
   Node,
   rootNode,
   RootNode,
   rootNodeFromIdls,
 } from './nodes';
+import { KinobiError } from './shared';
 import { defaultVisitor, visit, Visitor } from './visitors';
 
 export interface Kinobi {
@@ -21,6 +23,7 @@ export function createFromRoot(
   useDefaultVisitor = true
 ): Kinobi {
   let currentRoot = root;
+  validateKinobiVersion(currentRoot.version);
   if (useDefaultVisitor) {
     currentRoot = visit(currentRoot, defaultVisitor());
   }
@@ -57,4 +60,18 @@ export function createFromJson(
   useDefaultVisitor = false
 ): Kinobi {
   return createFromRoot(JSON.parse(json) as RootNode, useDefaultVisitor);
+}
+
+function validateKinobiVersion(rootVersion: KinobiVersion): void {
+  // TODO: Replace with __VERSION__ variable when available.
+  const kinobiVersion = '0.19.0';
+  if (rootVersion === kinobiVersion) return;
+  const [rootMajor, rootMinor] = rootVersion.split('.').map(Number);
+  const [KinobiMajor, KinobiMinor] = kinobiVersion.split('.').map(Number);
+  const isZeroMajor = rootMajor === 0 && KinobiMajor === 0;
+  if (isZeroMajor && rootMinor === KinobiMinor) return;
+  if (rootMajor === KinobiMajor) return;
+  throw new KinobiError(
+    `The provided IDL version [${rootVersion}] is not compatible with the installed Kinobi version [${kinobiVersion}]`
+  );
 }

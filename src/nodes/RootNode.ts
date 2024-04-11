@@ -8,18 +8,29 @@ import { PdaNode } from './PdaNode';
 import { ProgramNode, programNodeFromIdl } from './ProgramNode';
 
 export type IdlInputs = string | Partial<Idl> | (string | Partial<Idl>)[];
+export type KinobiVersion = `${number}.${number}.${number}`;
 
 export interface RootNode<TPrograms extends ProgramNode[] = ProgramNode[]> {
   readonly kind: 'rootNode';
 
   // Children.
   readonly programs: TPrograms;
+
+  // Data.
+  readonly standard: 'kinobi';
+  readonly version: KinobiVersion;
 }
 
 export function rootNode<const TPrograms extends ProgramNode[]>(
   programs: TPrograms
 ): RootNode<TPrograms> {
-  return { kind: 'rootNode', programs };
+  return {
+    kind: 'rootNode',
+    programs,
+    standard: 'kinobi',
+    // TODO: Replace with __VERSION__ variable when available.
+    version: '0.19.0',
+  };
 }
 
 export function rootNodeFromIdls(idls: IdlInputs): RootNode {
