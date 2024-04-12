@@ -10,6 +10,7 @@ import {
   Codec,
   Decoder,
   Encoder,
+  ReadonlyUint8Array,
   addDecoderSizePrefix,
   addEncoderSizePrefix,
   combineCodec,
@@ -32,7 +33,7 @@ export type HiddenSettings = {
   /** Shared URI */
   uri: string;
   /** Hash of the hidden settings file */
-  hash: Uint8Array;
+  hash: ReadonlyUint8Array;
 };
 
 export type HiddenSettingsArgs = HiddenSettings;

@@ -17,6 +17,7 @@ import {
   Encoder,
   GetDiscriminatedUnionVariant,
   GetDiscriminatedUnionVariantContent,
+  ReadonlyUint8Array,
   addDecoderSizePrefix,
   addEncoderSizePrefix,
   combineCodec,
@@ -41,14 +42,22 @@ import {
 /** This is a union of all the possible payload types. */
 export type PayloadType =
   | { __kind: 'Pubkey'; fields: readonly [Address] }
-  | { __kind: 'Seeds'; seeds: Array<Uint8Array> }
-  | { __kind: 'MerkleProof'; leaf: Uint8Array; proof: Array<Uint8Array> }
+  | { __kind: 'Seeds'; seeds: Array<ReadonlyUint8Array> }
+  | {
+      __kind: 'MerkleProof';
+      leaf: ReadonlyUint8Array;
+      proof: Array<ReadonlyUint8Array>;
+    }
   | { __kind: 'Number'; fields: readonly [bigint] };
 
 export type PayloadTypeArgs =
   | { __kind: 'Pubkey'; fields: readonly [Address] }
-  | { __kind: 'Seeds'; seeds: Array<Uint8Array> }
-  | { __kind: 'MerkleProof'; leaf: Uint8Array; proof: Array<Uint8Array> }
+  | { __kind: 'Seeds'; seeds: Array<ReadonlyUint8Array> }
+  | {
+      __kind: 'MerkleProof';
+      leaf: ReadonlyUint8Array;
+      proof: Array<ReadonlyUint8Array>;
+    }
   | { __kind: 'Number'; fields: readonly [number | bigint] };
 
 export function getPayloadTypeEncoder(): Encoder<PayloadTypeArgs> {

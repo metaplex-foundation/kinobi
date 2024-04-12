@@ -559,8 +559,14 @@ export function getTypeManifestVisitor(input: {
         visitBytesType() {
           return {
             isEnum: false,
-            strictType: fragment('Uint8Array'),
-            looseType: fragment('Uint8Array'),
+            strictType: fragment('ReadonlyUint8Array').addImports(
+              'solanaCodecsCore',
+              'ReadonlyUint8Array'
+            ),
+            looseType: fragment('ReadonlyUint8Array').addImports(
+              'solanaCodecsCore',
+              'ReadonlyUint8Array'
+            ),
             encoder: fragment(`getBytesEncoder()`).addImports(
               'solanaCodecsDataStructures',
               'getBytesEncoder'

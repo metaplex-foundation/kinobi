@@ -10,6 +10,7 @@ import {
   Codec,
   Decoder,
   Encoder,
+  ReadonlyUint8Array,
   addDecoderSizePrefix,
   addEncoderSizePrefix,
   combineCodec,
@@ -25,7 +26,7 @@ import {
 
 export type TaCreateArgs = {
   ruleSetName: string;
-  serializedRuleSet: Uint8Array;
+  serializedRuleSet: ReadonlyUint8Array;
 };
 
 export type TaCreateArgsArgs = TaCreateArgs;
