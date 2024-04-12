@@ -719,7 +719,29 @@ export function getTypeManifestVisitor(input: {
 
         visitHiddenSuffixType(node, { self }) {
           const manifest = visit(node.type, self);
-          // TODO
+          const suffixes = node.suffix.map((c) => visit(c, self).value);
+          const suffixEncoders = fragment(
+            suffixes.map((c) => `getConstantEncoder(${c})`).join(', ')
+          )
+            .addImports('solanaCodecsCore', 'getConstantEncoder')
+            .mergeImportsWith(...suffixes);
+          const suffixDecoders = fragment(
+            suffixes.map((c) => `getConstantDecoder(${c})`).join(', ')
+          )
+            .addImports('solanaCodecsCore', 'getConstantDecoder')
+            .mergeImportsWith(...suffixes);
+          manifest.encoder
+            .mapRender(
+              (r) => `getHiddenSuffixEncoder(${r}, [${suffixEncoders}])`
+            )
+            .mergeImportsWith(suffixEncoders)
+            .addImports('solanaCodecsDataStructures', 'getHiddenSuffixEncoder');
+          manifest.decoder
+            .mapRender(
+              (r) => `getHiddenSuffixDecoder(${r}, [${suffixDecoders}])`
+            )
+            .mergeImportsWith(suffixDecoders)
+            .addImports('solanaCodecsDataStructures', 'getHiddenSuffixDecoder');
           return manifest;
         },
 
