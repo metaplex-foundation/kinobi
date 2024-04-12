@@ -16,7 +16,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -87,7 +87,7 @@ export type ApproveCollectionAuthorityInstructionData = {
 export type ApproveCollectionAuthorityInstructionDataArgs = {};
 
 export function getApproveCollectionAuthorityInstructionDataEncoder(): Encoder<ApproveCollectionAuthorityInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 23 })
   );

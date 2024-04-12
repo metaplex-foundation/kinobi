@@ -45,7 +45,7 @@ import {
   getU16Encoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import { MetadataSeeds, findMetadataPda } from '../pdas';
 import {
@@ -132,7 +132,7 @@ export type MetadataAccountDataArgs = {
 };
 
 export function getMetadataAccountDataEncoder(): Encoder<MetadataAccountDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['key', getTmKeyEncoder()],
       ['updateAuthority', getAddressEncoder()],

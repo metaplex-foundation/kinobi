@@ -22,7 +22,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -64,7 +64,7 @@ export type SetAuthorityInstructionData = {
 export type SetAuthorityInstructionDataArgs = { newAuthority: Address };
 
 export function getSetAuthorityInstructionDataEncoder(): Encoder<SetAuthorityInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
       ['newAuthority', getAddressEncoder()],

@@ -16,7 +16,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -104,7 +104,7 @@ export type CreateMasterEditionInstructionDataArgs = {
 };
 
 export function getCreateMasterEditionInstructionDataEncoder(): Encoder<CreateMasterEditionInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['createMasterEditionArgs', getCreateMasterEditionArgsEncoder()],

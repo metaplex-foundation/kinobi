@@ -7,7 +7,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 
 export type CreateReservationListInstructionData = { discriminator: number };
@@ -15,7 +15,7 @@ export type CreateReservationListInstructionData = { discriminator: number };
 export type CreateReservationListInstructionDataArgs = {};
 
 export function getCreateReservationListInstructionDataEncoder(): Encoder<CreateReservationListInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 42 })
   );

@@ -16,7 +16,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -76,7 +76,7 @@ export type UnverifyCollectionInstructionData = { discriminator: number };
 export type UnverifyCollectionInstructionDataArgs = {};
 
 export function getUnverifyCollectionInstructionDataEncoder(): Encoder<UnverifyCollectionInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 22 })
   );

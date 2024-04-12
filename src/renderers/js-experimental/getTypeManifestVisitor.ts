@@ -465,9 +465,9 @@ export function getTypeManifestVisitor(input: {
           mergedManifest.encoder
             .mapRender(
               (r) =>
-                `mapEncoder(${r}, (value) => ({ ...value, ${defaultValues} }))`
+                `transformEncoder(${r}, (value) => ({ ...value, ${defaultValues} }))`
             )
-            .addImports('solanaCodecsCore', 'mapEncoder');
+            .addImports('solanaCodecsCore', 'transformEncoder');
           return mergedManifest;
         },
 

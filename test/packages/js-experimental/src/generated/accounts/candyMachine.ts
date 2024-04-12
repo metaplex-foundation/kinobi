@@ -37,7 +37,7 @@ import {
   getU64Encoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   CandyMachineData,
@@ -88,7 +88,7 @@ export type CandyMachineAccountDataArgs = {
 };
 
 export function getCandyMachineAccountDataEncoder(): Encoder<CandyMachineAccountDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
       ['features', getU64Encoder()],

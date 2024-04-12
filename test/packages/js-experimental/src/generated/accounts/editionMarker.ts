@@ -31,7 +31,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
@@ -50,7 +50,7 @@ export type EditionMarkerAccountData = { key: TmKey; ledger: Array<number> };
 export type EditionMarkerAccountDataArgs = { ledger: Array<number> };
 
 export function getEditionMarkerAccountDataEncoder(): Encoder<EditionMarkerAccountDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['key', getTmKeyEncoder()],
       ['ledger', getArrayEncoder(getU8Encoder(), { size: 200 })],

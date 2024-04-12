@@ -18,7 +18,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -57,7 +57,7 @@ export type WithdrawInstructionData = { discriminator: Array<number> };
 export type WithdrawInstructionDataArgs = {};
 
 export function getWithdrawInstructionDataEncoder(): Encoder<WithdrawInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
     ]),

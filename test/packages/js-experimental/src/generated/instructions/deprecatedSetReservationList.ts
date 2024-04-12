@@ -24,7 +24,7 @@ import {
   getU64Encoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -84,7 +84,7 @@ export type DeprecatedSetReservationListInstructionDataArgs = {
 };
 
 export function getDeprecatedSetReservationListInstructionDataEncoder(): Encoder<DeprecatedSetReservationListInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['reservations', getArrayEncoder(getReservationEncoder())],

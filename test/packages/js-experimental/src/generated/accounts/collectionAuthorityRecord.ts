@@ -37,7 +37,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
@@ -59,7 +59,7 @@ export type CollectionAuthorityRecordAccountDataArgs = {
 };
 
 export function getCollectionAuthorityRecordAccountDataEncoder(): Encoder<CollectionAuthorityRecordAccountDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['key', getTmKeyEncoder()],
       ['bump', getU8Encoder()],

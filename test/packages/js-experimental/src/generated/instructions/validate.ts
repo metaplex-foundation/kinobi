@@ -18,7 +18,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -198,7 +198,7 @@ export type ValidateInstructionDataArgs = {
 };
 
 export function getValidateInstructionDataEncoder(): Encoder<ValidateInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['ruleSetName', getStringEncoder()],

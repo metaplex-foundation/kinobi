@@ -34,8 +34,8 @@ import {
   getStructEncoder,
   getU16Decoder,
   getU16Encoder,
-  mapEncoder,
   some,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   AuthorityType,
@@ -124,7 +124,7 @@ export function getUpdateArgsEncoder(): Encoder<UpdateArgsArgs> {
   return getDiscriminatedUnionEncoder([
     [
       'V1',
-      mapEncoder(
+      transformEncoder(
         getStructEncoder([
           [
             'authorizationData',

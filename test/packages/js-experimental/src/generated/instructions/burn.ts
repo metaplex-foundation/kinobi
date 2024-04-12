@@ -16,7 +16,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -94,7 +94,7 @@ export type BurnInstructionData = { discriminator: number; burnArgs: BurnArgs };
 export type BurnInstructionDataArgs = { burnArgs: BurnArgsArgs };
 
 export function getBurnInstructionDataEncoder(): Encoder<BurnInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['burnArgs', getBurnArgsEncoder()],

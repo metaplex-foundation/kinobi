@@ -18,7 +18,7 @@ import {
   getU32Encoder,
   getU64Decoder,
   getU64Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -60,7 +60,7 @@ export type TransferSolInstructionData = {
 export type TransferSolInstructionDataArgs = { amount: number | bigint };
 
 export function getTransferSolInstructionDataEncoder(): Encoder<TransferSolInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getU32Encoder()],
       ['amount', getU64Encoder()],

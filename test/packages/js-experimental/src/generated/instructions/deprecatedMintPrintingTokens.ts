@@ -16,7 +16,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -91,7 +91,7 @@ export type DeprecatedMintPrintingTokensInstructionDataArgs = {
 };
 
 export function getDeprecatedMintPrintingTokensInstructionDataEncoder(): Encoder<DeprecatedMintPrintingTokensInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
       [

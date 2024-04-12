@@ -32,8 +32,8 @@ import {
   getU16Encoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
   some,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -189,7 +189,7 @@ export type UpdateV1InstructionDataArgs = {
 };
 
 export function getUpdateV1InstructionDataEncoder(): Encoder<UpdateV1InstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['updateV1Discriminator', getU8Encoder()],

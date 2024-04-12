@@ -18,7 +18,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   AccountRole,
@@ -104,7 +104,7 @@ export type DummyInstructionData = { discriminator: Array<number> };
 export type DummyInstructionDataArgs = {};
 
 export function getDummyInstructionDataEncoder(): Encoder<DummyInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
     ]),

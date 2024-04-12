@@ -16,7 +16,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -64,7 +64,7 @@ export type SetTokenStandardInstructionData = { discriminator: number };
 export type SetTokenStandardInstructionDataArgs = {};
 
 export function getSetTokenStandardInstructionDataEncoder(): Encoder<SetTokenStandardInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 35 })
   );

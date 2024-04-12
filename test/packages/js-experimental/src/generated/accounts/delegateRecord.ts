@@ -29,7 +29,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import { DelegateRecordSeeds, findDelegateRecordPda } from '../pdas';
 import {
@@ -62,7 +62,7 @@ export type DelegateRecordAccountDataArgs = {
 };
 
 export function getDelegateRecordAccountDataEncoder(): Encoder<DelegateRecordAccountDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['key', getTmKeyEncoder()],
       ['role', getDelegateRoleEncoder()],

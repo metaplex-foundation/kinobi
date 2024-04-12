@@ -16,7 +16,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -114,7 +114,7 @@ export type MintInstructionData = { discriminator: number; mintArgs: MintArgs };
 export type MintInstructionDataArgs = { mintArgs: MintArgsArgs };
 
 export function getMintInstructionDataEncoder(): Encoder<MintInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['mintArgs', getMintArgsEncoder()],
