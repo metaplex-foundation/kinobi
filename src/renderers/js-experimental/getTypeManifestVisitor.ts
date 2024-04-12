@@ -817,7 +817,15 @@ export function getTypeManifestVisitor(input: {
 
         visitSentinelType(node, { self }) {
           const manifest = visit(node.type, self);
-          // TODO
+          const sentinel = visit(node.sentinel, self).value;
+          manifest.encoder
+            .mapRender((r) => `addEncoderSentinel(${r}, ${sentinel})`)
+            .mergeImportsWith(sentinel)
+            .addImports('solanaCodecsCore', 'addEncoderSentinel');
+          manifest.decoder
+            .mapRender((r) => `addDecoderSentinel(${r}, ${sentinel})`)
+            .mergeImportsWith(sentinel)
+            .addImports('solanaCodecsCore', 'addDecoderSentinel');
           return manifest;
         },
 
