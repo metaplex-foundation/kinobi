@@ -12,6 +12,8 @@ import {
   Encoder,
   Option,
   OptionOrNullable,
+  addDecoderSizePrefix,
+  addEncoderSizePrefix,
   combineCodec,
   getArrayDecoder,
   getArrayEncoder,
@@ -19,14 +21,16 @@ import {
   getBooleanEncoder,
   getOptionDecoder,
   getOptionEncoder,
-  getStringDecoder,
-  getStringEncoder,
   getStructDecoder,
   getStructEncoder,
   getU16Decoder,
   getU16Encoder,
+  getU32Decoder,
+  getU32Encoder,
   getU64Decoder,
   getU64Encoder,
+  getUtf8Decoder,
+  getUtf8Encoder,
 } from '@solana/codecs';
 import {
   CmCreator,
@@ -85,7 +89,7 @@ export type CandyMachineDataArgs = {
 export function getCandyMachineDataEncoder(): Encoder<CandyMachineDataArgs> {
   return getStructEncoder([
     ['itemsAvailable', getU64Encoder()],
-    ['symbol', getStringEncoder()],
+    ['symbol', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
     ['sellerFeeBasisPoints', getU16Encoder()],
     ['maxSupply', getU64Encoder()],
     ['isMutable', getBooleanEncoder()],
@@ -98,7 +102,7 @@ export function getCandyMachineDataEncoder(): Encoder<CandyMachineDataArgs> {
 export function getCandyMachineDataDecoder(): Decoder<CandyMachineData> {
   return getStructDecoder([
     ['itemsAvailable', getU64Decoder()],
-    ['symbol', getStringDecoder()],
+    ['symbol', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
     ['sellerFeeBasisPoints', getU16Decoder()],
     ['maxSupply', getU64Decoder()],
     ['isMutable', getBooleanDecoder()],

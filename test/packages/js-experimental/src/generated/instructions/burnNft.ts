@@ -16,7 +16,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -78,7 +78,7 @@ export type BurnNftInstructionData = { discriminator: number };
 export type BurnNftInstructionDataArgs = {};
 
 export function getBurnNftInstructionDataEncoder(): Encoder<BurnNftInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 29 })
   );

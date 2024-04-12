@@ -12,7 +12,7 @@ import {
   getAddressEncoder,
   getProgramDerivedAddress,
 } from '@solana/addresses';
-import { getStringEncoder } from '@solana/codecs';
+import { getUtf8Encoder } from '@solana/codecs';
 import { DelegateRoleArgs, getDelegateRoleEncoder } from '../types';
 
 export type MasterEditionV1Seeds = {
@@ -30,7 +30,7 @@ export async function findMasterEditionV1Pda(
   return await getProgramDerivedAddress({
     programAddress,
     seeds: [
-      getStringEncoder({ size: 'variable' }).encode('metadata'),
+      getUtf8Encoder().encode('metadata'),
       getAddressEncoder().encode(programAddress),
       getDelegateRoleEncoder().encode(seeds.delegateRole),
     ],

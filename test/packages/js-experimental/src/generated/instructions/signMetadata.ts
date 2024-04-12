@@ -16,7 +16,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -55,7 +55,7 @@ export type SignMetadataInstructionData = { discriminator: number };
 export type SignMetadataInstructionDataArgs = {};
 
 export function getSignMetadataInstructionDataEncoder(): Encoder<SignMetadataInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: 7 })
   );

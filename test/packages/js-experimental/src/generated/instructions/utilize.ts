@@ -18,7 +18,7 @@ import {
   getU64Encoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -105,7 +105,7 @@ export type UtilizeInstructionData = {
 export type UtilizeInstructionDataArgs = { numberOfUses: number | bigint };
 
 export function getUtilizeInstructionDataEncoder(): Encoder<UtilizeInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['numberOfUses', getU64Encoder()],

@@ -20,7 +20,7 @@ import {
   getBooleanEncoder,
   getStructDecoder,
   getStructEncoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 
 export type Collection = { verified: boolean; key: Address };
@@ -28,7 +28,7 @@ export type Collection = { verified: boolean; key: Address };
 export type CollectionArgs = { verified?: boolean; key: Address };
 
 export function getCollectionEncoder(): Encoder<CollectionArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['verified', getBooleanEncoder()],
       ['key', getAddressEncoder()],

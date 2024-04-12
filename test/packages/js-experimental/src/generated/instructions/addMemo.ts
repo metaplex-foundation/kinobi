@@ -11,11 +11,15 @@ import {
   Codec,
   Decoder,
   Encoder,
+  addDecoderSizePrefix,
+  addEncoderSizePrefix,
   combineCodec,
-  getStringDecoder,
-  getStringEncoder,
   getStructDecoder,
   getStructEncoder,
+  getU32Decoder,
+  getU32Encoder,
+  getUtf8Decoder,
+  getUtf8Encoder,
 } from '@solana/codecs';
 import {
   AccountRole,
@@ -39,11 +43,15 @@ export type AddMemoInstructionData = { memo: string };
 export type AddMemoInstructionDataArgs = AddMemoInstructionData;
 
 export function getAddMemoInstructionDataEncoder(): Encoder<AddMemoInstructionDataArgs> {
-  return getStructEncoder([['memo', getStringEncoder()]]);
+  return getStructEncoder([
+    ['memo', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
+  ]);
 }
 
 export function getAddMemoInstructionDataDecoder(): Decoder<AddMemoInstructionData> {
-  return getStructDecoder([['memo', getStringDecoder()]]);
+  return getStructDecoder([
+    ['memo', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
+  ]);
 }
 
 export function getAddMemoInstructionDataCodec(): Codec<

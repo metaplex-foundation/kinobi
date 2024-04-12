@@ -11,14 +11,18 @@ import {
   Codec,
   Decoder,
   Encoder,
+  addDecoderSizePrefix,
+  addEncoderSizePrefix,
   combineCodec,
-  getStringDecoder,
-  getStringEncoder,
   getStructDecoder,
   getStructEncoder,
+  getU32Decoder,
+  getU32Encoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  getUtf8Decoder,
+  getUtf8Encoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -198,10 +202,10 @@ export type ValidateInstructionDataArgs = {
 };
 
 export function getValidateInstructionDataEncoder(): Encoder<ValidateInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
-      ['ruleSetName', getStringEncoder()],
+      ['ruleSetName', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
       ['operation', getOperationEncoder()],
       ['payload', getPayloadEncoder()],
     ]),
@@ -212,7 +216,7 @@ export function getValidateInstructionDataEncoder(): Encoder<ValidateInstruction
 export function getValidateInstructionDataDecoder(): Decoder<ValidateInstructionData> {
   return getStructDecoder([
     ['discriminator', getU8Decoder()],
-    ['ruleSetName', getStringDecoder()],
+    ['ruleSetName', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
     ['operation', getOperationDecoder()],
     ['payload', getPayloadDecoder()],
   ]);

@@ -17,7 +17,12 @@ import {
   Encoder,
   GetDiscriminatedUnionVariant,
   GetDiscriminatedUnionVariantContent,
+  ReadonlyUint8Array,
+  addDecoderSizePrefix,
+  addEncoderSizePrefix,
   combineCodec,
+  fixDecoderSize,
+  fixEncoderSize,
   getArrayDecoder,
   getArrayEncoder,
   getBytesDecoder,
@@ -37,14 +42,22 @@ import {
 /** This is a union of all the possible payload types. */
 export type PayloadType =
   | { __kind: 'Pubkey'; fields: readonly [Address] }
-  | { __kind: 'Seeds'; seeds: Array<Uint8Array> }
-  | { __kind: 'MerkleProof'; leaf: Uint8Array; proof: Array<Uint8Array> }
+  | { __kind: 'Seeds'; seeds: Array<ReadonlyUint8Array> }
+  | {
+      __kind: 'MerkleProof';
+      leaf: ReadonlyUint8Array;
+      proof: Array<ReadonlyUint8Array>;
+    }
   | { __kind: 'Number'; fields: readonly [bigint] };
 
 export type PayloadTypeArgs =
   | { __kind: 'Pubkey'; fields: readonly [Address] }
-  | { __kind: 'Seeds'; seeds: Array<Uint8Array> }
-  | { __kind: 'MerkleProof'; leaf: Uint8Array; proof: Array<Uint8Array> }
+  | { __kind: 'Seeds'; seeds: Array<ReadonlyUint8Array> }
+  | {
+      __kind: 'MerkleProof';
+      leaf: ReadonlyUint8Array;
+      proof: Array<ReadonlyUint8Array>;
+    }
   | { __kind: 'Number'; fields: readonly [number | bigint] };
 
 export function getPayloadTypeEncoder(): Encoder<PayloadTypeArgs> {
@@ -56,14 +69,19 @@ export function getPayloadTypeEncoder(): Encoder<PayloadTypeArgs> {
     [
       'Seeds',
       getStructEncoder([
-        ['seeds', getArrayEncoder(getBytesEncoder({ size: getU32Encoder() }))],
+        [
+          'seeds',
+          getArrayEncoder(
+            addEncoderSizePrefix(getBytesEncoder(), getU32Encoder())
+          ),
+        ],
       ]),
     ],
     [
       'MerkleProof',
       getStructEncoder([
-        ['leaf', getBytesEncoder({ size: 32 })],
-        ['proof', getArrayEncoder(getBytesEncoder({ size: 32 }))],
+        ['leaf', fixEncoderSize(getBytesEncoder(), 32)],
+        ['proof', getArrayEncoder(fixEncoderSize(getBytesEncoder(), 32))],
       ]),
     ],
     [
@@ -82,14 +100,19 @@ export function getPayloadTypeDecoder(): Decoder<PayloadType> {
     [
       'Seeds',
       getStructDecoder([
-        ['seeds', getArrayDecoder(getBytesDecoder({ size: getU32Decoder() }))],
+        [
+          'seeds',
+          getArrayDecoder(
+            addDecoderSizePrefix(getBytesDecoder(), getU32Decoder())
+          ),
+        ],
       ]),
     ],
     [
       'MerkleProof',
       getStructDecoder([
-        ['leaf', getBytesDecoder({ size: 32 })],
-        ['proof', getArrayDecoder(getBytesDecoder({ size: 32 }))],
+        ['leaf', fixDecoderSize(getBytesDecoder(), 32)],
+        ['proof', getArrayDecoder(fixDecoderSize(getBytesDecoder(), 32))],
       ]),
     ],
     [

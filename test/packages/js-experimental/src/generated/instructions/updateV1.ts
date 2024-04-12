@@ -17,6 +17,8 @@ import {
   Encoder,
   Option,
   OptionOrNullable,
+  addDecoderSizePrefix,
+  addEncoderSizePrefix,
   combineCodec,
   getArrayDecoder,
   getArrayEncoder,
@@ -24,16 +26,18 @@ import {
   getBooleanEncoder,
   getOptionDecoder,
   getOptionEncoder,
-  getStringDecoder,
-  getStringEncoder,
   getStructDecoder,
   getStructEncoder,
   getU16Decoder,
   getU16Encoder,
+  getU32Decoder,
+  getU32Encoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  getUtf8Decoder,
+  getUtf8Encoder,
   some,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -189,7 +193,7 @@ export type UpdateV1InstructionDataArgs = {
 };
 
 export function getUpdateV1InstructionDataEncoder(): Encoder<UpdateV1InstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['updateV1Discriminator', getU8Encoder()],
@@ -199,9 +203,9 @@ export function getUpdateV1InstructionDataEncoder(): Encoder<UpdateV1Instruction
         'data',
         getOptionEncoder(
           getStructEncoder([
-            ['name', getStringEncoder()],
-            ['symbol', getStringEncoder()],
-            ['uri', getStringEncoder()],
+            ['name', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
+            ['symbol', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
+            ['uri', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
             ['sellerFeeBasisPoints', getU16Encoder()],
             [
               'creators',
@@ -239,9 +243,9 @@ export function getUpdateV1InstructionDataDecoder(): Decoder<UpdateV1Instruction
       'data',
       getOptionDecoder(
         getStructDecoder([
-          ['name', getStringDecoder()],
-          ['symbol', getStringDecoder()],
-          ['uri', getStringDecoder()],
+          ['name', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
+          ['symbol', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
+          ['uri', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
           ['sellerFeeBasisPoints', getU16Decoder()],
           ['creators', getOptionDecoder(getArrayDecoder(getCreatorDecoder()))],
         ])

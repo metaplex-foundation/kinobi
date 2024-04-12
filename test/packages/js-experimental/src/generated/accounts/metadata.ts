@@ -30,6 +30,8 @@ import {
   Encoder,
   Option,
   OptionOrNullable,
+  addDecoderSizePrefix,
+  addEncoderSizePrefix,
   combineCodec,
   getArrayDecoder,
   getArrayEncoder,
@@ -37,15 +39,17 @@ import {
   getBooleanEncoder,
   getOptionDecoder,
   getOptionEncoder,
-  getStringDecoder,
-  getStringEncoder,
   getStructDecoder,
   getStructEncoder,
   getU16Decoder,
   getU16Encoder,
+  getU32Decoder,
+  getU32Encoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  getUtf8Decoder,
+  getUtf8Encoder,
+  transformEncoder,
 } from '@solana/codecs';
 import { MetadataSeeds, findMetadataPda } from '../pdas';
 import {
@@ -132,14 +136,14 @@ export type MetadataAccountDataArgs = {
 };
 
 export function getMetadataAccountDataEncoder(): Encoder<MetadataAccountDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['key', getTmKeyEncoder()],
       ['updateAuthority', getAddressEncoder()],
       ['mint', getAddressEncoder()],
-      ['name', getStringEncoder()],
-      ['symbol', getStringEncoder()],
-      ['uri', getStringEncoder()],
+      ['name', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
+      ['symbol', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
+      ['uri', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
       ['sellerFeeBasisPoints', getU16Encoder()],
       ['creators', getOptionEncoder(getArrayEncoder(getCreatorEncoder()))],
       ['primarySaleHappened', getBooleanEncoder()],
@@ -161,9 +165,9 @@ export function getMetadataAccountDataDecoder(): Decoder<MetadataAccountData> {
     ['key', getTmKeyDecoder()],
     ['updateAuthority', getAddressDecoder()],
     ['mint', getAddressDecoder()],
-    ['name', getStringDecoder()],
-    ['symbol', getStringDecoder()],
-    ['uri', getStringDecoder()],
+    ['name', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
+    ['symbol', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
+    ['uri', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
     ['sellerFeeBasisPoints', getU16Decoder()],
     ['creators', getOptionDecoder(getArrayDecoder(getCreatorDecoder()))],
     ['primarySaleHappened', getBooleanDecoder()],

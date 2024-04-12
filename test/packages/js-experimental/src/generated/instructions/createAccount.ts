@@ -22,7 +22,7 @@ import {
   getU32Encoder,
   getU64Decoder,
   getU64Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -70,7 +70,7 @@ export type CreateAccountInstructionDataArgs = {
 };
 
 export function getCreateAccountInstructionDataEncoder(): Encoder<CreateAccountInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getU32Encoder()],
       ['lamports', getU64Encoder()],

@@ -16,7 +16,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -117,7 +117,7 @@ export type DelegateInstructionData = {
 export type DelegateInstructionDataArgs = { delegateArgs: DelegateArgsArgs };
 
 export function getDelegateInstructionDataEncoder(): Encoder<DelegateInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['delegateArgs', getDelegateArgsEncoder()],

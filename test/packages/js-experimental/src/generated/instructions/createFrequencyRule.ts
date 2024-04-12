@@ -11,16 +11,20 @@ import {
   Codec,
   Decoder,
   Encoder,
+  addDecoderSizePrefix,
+  addEncoderSizePrefix,
   combineCodec,
   getI64Decoder,
   getI64Encoder,
-  getStringDecoder,
-  getStringEncoder,
   getStructDecoder,
   getStructEncoder,
+  getU32Decoder,
+  getU32Encoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  getUtf8Decoder,
+  getUtf8Encoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -77,11 +81,11 @@ export type CreateFrequencyRuleInstructionDataArgs = {
 };
 
 export function getCreateFrequencyRuleInstructionDataEncoder(): Encoder<CreateFrequencyRuleInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
-      ['ruleSetName', getStringEncoder()],
-      ['freqRuleName', getStringEncoder()],
+      ['ruleSetName', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
+      ['freqRuleName', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
       ['lastUpdate', getI64Encoder()],
       ['period', getI64Encoder()],
     ]),
@@ -92,8 +96,8 @@ export function getCreateFrequencyRuleInstructionDataEncoder(): Encoder<CreateFr
 export function getCreateFrequencyRuleInstructionDataDecoder(): Decoder<CreateFrequencyRuleInstructionData> {
   return getStructDecoder([
     ['discriminator', getU8Decoder()],
-    ['ruleSetName', getStringDecoder()],
-    ['freqRuleName', getStringDecoder()],
+    ['ruleSetName', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
+    ['freqRuleName', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
     ['lastUpdate', getI64Decoder()],
     ['period', getI64Decoder()],
   ]);

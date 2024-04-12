@@ -12,7 +12,7 @@ import {
   getAddressEncoder,
   getProgramDerivedAddress,
 } from '@solana/addresses';
-import { getStringEncoder } from '@solana/codecs';
+import { getUtf8Encoder } from '@solana/codecs';
 
 export type MasterEditionV2Seeds = {
   /** The address of the mint account */
@@ -29,10 +29,10 @@ export async function findMasterEditionV2Pda(
   return await getProgramDerivedAddress({
     programAddress,
     seeds: [
-      getStringEncoder({ size: 'variable' }).encode('metadata'),
+      getUtf8Encoder().encode('metadata'),
       getAddressEncoder().encode(programAddress),
       getAddressEncoder().encode(seeds.mint),
-      getStringEncoder({ size: 'variable' }).encode('edition'),
+      getUtf8Encoder().encode('edition'),
     ],
   });
 }

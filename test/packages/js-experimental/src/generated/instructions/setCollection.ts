@@ -18,7 +18,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -121,7 +121,7 @@ export type SetCollectionInstructionData = { discriminator: Array<number> };
 export type SetCollectionInstructionDataArgs = {};
 
 export function getSetCollectionInstructionDataEncoder(): Encoder<SetCollectionInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
     ]),

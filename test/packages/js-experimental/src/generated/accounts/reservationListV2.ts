@@ -39,7 +39,7 @@ import {
   getStructEncoder,
   getU64Decoder,
   getU64Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   Reservation,
@@ -77,7 +77,7 @@ export type ReservationListV2AccountDataArgs = {
 };
 
 export function getReservationListV2AccountDataEncoder(): Encoder<ReservationListV2AccountDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['key', getTmKeyEncoder()],
       ['masterEdition', getAddressEncoder()],

@@ -10,13 +10,20 @@ import {
   Codec,
   Decoder,
   Encoder,
+  ReadonlyUint8Array,
+  addDecoderSizePrefix,
+  addEncoderSizePrefix,
   combineCodec,
+  fixDecoderSize,
+  fixEncoderSize,
   getBytesDecoder,
   getBytesEncoder,
-  getStringDecoder,
-  getStringEncoder,
   getStructDecoder,
   getStructEncoder,
+  getU32Decoder,
+  getU32Encoder,
+  getUtf8Decoder,
+  getUtf8Encoder,
 } from '@solana/codecs';
 
 /** Hidden settings for large mints used with off-chain data. */
@@ -26,24 +33,24 @@ export type HiddenSettings = {
   /** Shared URI */
   uri: string;
   /** Hash of the hidden settings file */
-  hash: Uint8Array;
+  hash: ReadonlyUint8Array;
 };
 
 export type HiddenSettingsArgs = HiddenSettings;
 
 export function getHiddenSettingsEncoder(): Encoder<HiddenSettingsArgs> {
   return getStructEncoder([
-    ['name', getStringEncoder()],
-    ['uri', getStringEncoder()],
-    ['hash', getBytesEncoder({ size: 64 })],
+    ['name', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
+    ['uri', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
+    ['hash', fixEncoderSize(getBytesEncoder(), 64)],
   ]);
 }
 
 export function getHiddenSettingsDecoder(): Decoder<HiddenSettings> {
   return getStructDecoder([
-    ['name', getStringDecoder()],
-    ['uri', getStringDecoder()],
-    ['hash', getBytesDecoder({ size: 64 })],
+    ['name', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
+    ['uri', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
+    ['hash', fixDecoderSize(getBytesDecoder(), 64)],
   ]);
 }
 

@@ -33,7 +33,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   EscrowAuthority,
@@ -67,7 +67,7 @@ export type TokenOwnedEscrowAccountDataArgs = {
 };
 
 export function getTokenOwnedEscrowAccountDataEncoder(): Encoder<TokenOwnedEscrowAccountDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['key', getTmKeyEncoder()],
       ['baseToken', getAddressEncoder()],

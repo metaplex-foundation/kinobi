@@ -16,7 +16,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -130,7 +130,7 @@ export type TransferInstructionData = {
 export type TransferInstructionDataArgs = { transferArgs: TransferArgsArgs };
 
 export function getTransferInstructionDataEncoder(): Encoder<TransferInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['transferArgs', getTransferArgsEncoder()],

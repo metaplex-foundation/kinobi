@@ -31,7 +31,7 @@ import {
   getStructEncoder,
   getU64Decoder,
   getU64Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import { findFrequencyAccountPda } from '../pdas';
 import { TaKey } from '../types';
@@ -65,7 +65,7 @@ export type FrequencyAccountAccountDataArgs = {
 };
 
 export function getFrequencyAccountAccountDataEncoder(): Encoder<FrequencyAccountAccountDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['key', getU64Encoder()],
       ['lastUpdate', getI64Encoder()],

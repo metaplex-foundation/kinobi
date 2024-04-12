@@ -18,7 +18,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -68,7 +68,7 @@ export type UpdateCandyMachineInstructionDataArgs = {
 };
 
 export function getUpdateCandyMachineInstructionDataEncoder(): Encoder<UpdateCandyMachineInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
       ['data', getCandyMachineDataEncoder()],

@@ -16,7 +16,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
-  mapEncoder,
+  transformEncoder,
 } from '@solana/codecs';
 import {
   IAccountMeta,
@@ -109,7 +109,7 @@ export type UseAssetInstructionData = {
 export type UseAssetInstructionDataArgs = { useAssetArgs: UseAssetArgsArgs };
 
 export function getUseAssetInstructionDataEncoder(): Encoder<UseAssetInstructionDataArgs> {
-  return mapEncoder(
+  return transformEncoder(
     getStructEncoder([
       ['discriminator', getU8Encoder()],
       ['useAssetArgs', getUseAssetArgsEncoder()],
