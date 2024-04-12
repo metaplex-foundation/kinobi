@@ -12,12 +12,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@solana/accounts": "2.0.0-preview.1.20240411175655.d05c3c8c5ab72e71ff38c89817a17904762ac0cd",
-    "@solana/addresses": "2.0.0-preview.1.20240411175655.d05c3c8c5ab72e71ff38c89817a17904762ac0cd",
-    "@solana/codecs": "2.0.0-preview.1.20240411175655.d05c3c8c5ab72e71ff38c89817a17904762ac0cd",
-    "@solana/instructions": "2.0.0-preview.1.20240411175655.d05c3c8c5ab72e71ff38c89817a17904762ac0cd",
-    "@solana/programs": "2.0.0-preview.1.20240411175655.d05c3c8c5ab72e71ff38c89817a17904762ac0cd",
-    "@solana/signers": "2.0.0-preview.1.20240411175655.d05c3c8c5ab72e71ff38c89817a17904762ac0cd"
+    "@solana/accounts": "2.0.0-preview.1.20240412114257.1882615a63943d158ad8ee86231f39d6f31763f2",
+    "@solana/addresses": "2.0.0-preview.1.20240412114257.1882615a63943d158ad8ee86231f39d6f31763f2",
+    "@solana/codecs": "2.0.0-preview.1.20240412114257.1882615a63943d158ad8ee86231f39d6f31763f2",
+    "@solana/instructions": "2.0.0-preview.1.20240412114257.1882615a63943d158ad8ee86231f39d6f31763f2",
+    "@solana/programs": "2.0.0-preview.1.20240412114257.1882615a63943d158ad8ee86231f39d6f31763f2",
+    "@solana/signers": "2.0.0-preview.1.20240412114257.1882615a63943d158ad8ee86231f39d6f31763f2"
   },
   "devDependencies": {
     "@solana/eslint-config-solana": "^3.0.3",
