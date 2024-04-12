@@ -10,15 +10,17 @@ import {
   Codec,
   Decoder,
   Encoder,
+  addDecoderSizePrefix,
+  addEncoderSizePrefix,
   combineCodec,
   getBytesDecoder,
   getBytesEncoder,
-  getStringDecoder,
-  getStringEncoder,
   getStructDecoder,
   getStructEncoder,
   getU32Decoder,
   getU32Encoder,
+  getUtf8Decoder,
+  getUtf8Encoder,
 } from '@solana/codecs';
 
 export type TaCreateArgs = {
@@ -30,15 +32,21 @@ export type TaCreateArgsArgs = TaCreateArgs;
 
 export function getTaCreateArgsEncoder(): Encoder<TaCreateArgsArgs> {
   return getStructEncoder([
-    ['ruleSetName', getStringEncoder()],
-    ['serializedRuleSet', getBytesEncoder({ size: getU32Encoder() })],
+    ['ruleSetName', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
+    [
+      'serializedRuleSet',
+      addEncoderSizePrefix(getBytesEncoder(), getU32Encoder()),
+    ],
   ]);
 }
 
 export function getTaCreateArgsDecoder(): Decoder<TaCreateArgs> {
   return getStructDecoder([
-    ['ruleSetName', getStringDecoder()],
-    ['serializedRuleSet', getBytesDecoder({ size: getU32Decoder() })],
+    ['ruleSetName', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
+    [
+      'serializedRuleSet',
+      addDecoderSizePrefix(getBytesDecoder(), getU32Decoder()),
+    ],
   ]);
 }
 

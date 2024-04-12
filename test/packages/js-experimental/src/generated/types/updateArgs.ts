@@ -19,6 +19,8 @@ import {
   GetDiscriminatedUnionVariantContent,
   Option,
   OptionOrNullable,
+  addDecoderSizePrefix,
+  addEncoderSizePrefix,
   combineCodec,
   getArrayDecoder,
   getArrayEncoder,
@@ -28,12 +30,14 @@ import {
   getDiscriminatedUnionEncoder,
   getOptionDecoder,
   getOptionEncoder,
-  getStringDecoder,
-  getStringEncoder,
   getStructDecoder,
   getStructEncoder,
   getU16Decoder,
   getU16Encoder,
+  getU32Decoder,
+  getU32Encoder,
+  getUtf8Decoder,
+  getUtf8Encoder,
   some,
   transformEncoder,
 } from '@solana/codecs';
@@ -135,9 +139,18 @@ export function getUpdateArgsEncoder(): Encoder<UpdateArgsArgs> {
             'data',
             getOptionEncoder(
               getStructEncoder([
-                ['name', getStringEncoder()],
-                ['symbol', getStringEncoder()],
-                ['uri', getStringEncoder()],
+                [
+                  'name',
+                  addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder()),
+                ],
+                [
+                  'symbol',
+                  addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder()),
+                ],
+                [
+                  'uri',
+                  addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder()),
+                ],
                 ['sellerFeeBasisPoints', getU16Encoder()],
                 [
                   'creators',
@@ -182,9 +195,12 @@ export function getUpdateArgsDecoder(): Decoder<UpdateArgs> {
           'data',
           getOptionDecoder(
             getStructDecoder([
-              ['name', getStringDecoder()],
-              ['symbol', getStringDecoder()],
-              ['uri', getStringDecoder()],
+              ['name', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
+              [
+                'symbol',
+                addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder()),
+              ],
+              ['uri', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
               ['sellerFeeBasisPoints', getU16Decoder()],
               [
                 'creators',

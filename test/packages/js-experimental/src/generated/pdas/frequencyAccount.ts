@@ -12,7 +12,7 @@ import {
   getAddressEncoder,
   getProgramDerivedAddress,
 } from '@solana/addresses';
-import { getStringEncoder } from '@solana/codecs';
+import { getUtf8Encoder } from '@solana/codecs';
 
 export async function findFrequencyAccountPda(
   config: { programAddress?: Address | undefined } = {}
@@ -23,7 +23,7 @@ export async function findFrequencyAccountPda(
   return await getProgramDerivedAddress({
     programAddress,
     seeds: [
-      getStringEncoder({ size: 'variable' }).encode('frequency_pda'),
+      getUtf8Encoder().encode('frequency_pda'),
       getAddressEncoder().encode(programAddress),
     ],
   });

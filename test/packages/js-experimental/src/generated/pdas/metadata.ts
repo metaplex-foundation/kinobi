@@ -12,7 +12,7 @@ import {
   getAddressEncoder,
   getProgramDerivedAddress,
 } from '@solana/addresses';
-import { getStringEncoder } from '@solana/codecs';
+import { getUtf8Encoder } from '@solana/codecs';
 
 export type MetadataSeeds = {
   /** The address of the mint account */
@@ -29,7 +29,7 @@ export async function findMetadataPda(
   return await getProgramDerivedAddress({
     programAddress,
     seeds: [
-      getStringEncoder({ size: 'variable' }).encode('metadata'),
+      getUtf8Encoder().encode('metadata'),
       getAddressEncoder().encode(programAddress),
       getAddressEncoder().encode(seeds.mint),
     ],

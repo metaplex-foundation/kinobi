@@ -10,11 +10,15 @@ import {
   Codec,
   Decoder,
   Encoder,
+  addDecoderSizePrefix,
+  addEncoderSizePrefix,
   combineCodec,
-  getStringDecoder,
-  getStringEncoder,
   getStructDecoder,
   getStructEncoder,
+  getU32Decoder,
+  getU32Encoder,
+  getUtf8Decoder,
+  getUtf8Encoder,
 } from '@solana/codecs';
 
 /** Config line struct for storing asset (NFT) data pre-mint. */
@@ -29,15 +33,15 @@ export type ConfigLineArgs = ConfigLine;
 
 export function getConfigLineEncoder(): Encoder<ConfigLineArgs> {
   return getStructEncoder([
-    ['name', getStringEncoder()],
-    ['uri', getStringEncoder()],
+    ['name', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
+    ['uri', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
   ]);
 }
 
 export function getConfigLineDecoder(): Decoder<ConfigLine> {
   return getStructDecoder([
-    ['name', getStringDecoder()],
-    ['uri', getStringDecoder()],
+    ['name', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
+    ['uri', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
   ]);
 }
 

@@ -10,15 +10,17 @@ import {
   Codec,
   Decoder,
   Encoder,
+  addDecoderSizePrefix,
+  addEncoderSizePrefix,
   combineCodec,
   getBooleanDecoder,
   getBooleanEncoder,
-  getStringDecoder,
-  getStringEncoder,
   getStructDecoder,
   getStructEncoder,
   getU32Decoder,
   getU32Encoder,
+  getUtf8Decoder,
+  getUtf8Encoder,
 } from '@solana/codecs';
 
 /** Config line settings to allocate space for individual name + URI. */
@@ -39,9 +41,9 @@ export type ConfigLineSettingsArgs = ConfigLineSettings;
 
 export function getConfigLineSettingsEncoder(): Encoder<ConfigLineSettingsArgs> {
   return getStructEncoder([
-    ['prefixName', getStringEncoder()],
+    ['prefixName', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
     ['nameLength', getU32Encoder()],
-    ['prefixUri', getStringEncoder()],
+    ['prefixUri', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
     ['uriLength', getU32Encoder()],
     ['isSequential', getBooleanEncoder()],
   ]);
@@ -49,9 +51,9 @@ export function getConfigLineSettingsEncoder(): Encoder<ConfigLineSettingsArgs> 
 
 export function getConfigLineSettingsDecoder(): Decoder<ConfigLineSettings> {
   return getStructDecoder([
-    ['prefixName', getStringDecoder()],
+    ['prefixName', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
     ['nameLength', getU32Decoder()],
-    ['prefixUri', getStringDecoder()],
+    ['prefixUri', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
     ['uriLength', getU32Decoder()],
     ['isSequential', getBooleanDecoder()],
   ]);

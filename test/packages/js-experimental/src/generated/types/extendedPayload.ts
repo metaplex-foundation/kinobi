@@ -10,17 +10,21 @@ import {
   Codec,
   Decoder,
   Encoder,
+  addDecoderSizePrefix,
+  addEncoderSizePrefix,
   combineCodec,
   getMapDecoder,
   getMapEncoder,
-  getStringDecoder,
-  getStringEncoder,
   getStructDecoder,
   getStructEncoder,
   getTupleDecoder,
   getTupleEncoder,
+  getU32Decoder,
+  getU32Encoder,
   getU8Decoder,
   getU8Encoder,
+  getUtf8Decoder,
+  getUtf8Encoder,
 } from '@solana/codecs';
 import {
   PayloadKey,
@@ -46,14 +50,26 @@ export type ExtendedPayloadArgs = {
 export function getExtendedPayloadEncoder(): Encoder<ExtendedPayloadArgs> {
   return getStructEncoder([
     ['map', getMapEncoder(getPayloadKeyEncoder(), getPayloadTypeEncoder())],
-    ['args', getTupleEncoder([getU8Encoder(), getStringEncoder()])],
+    [
+      'args',
+      getTupleEncoder([
+        getU8Encoder(),
+        addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder()),
+      ]),
+    ],
   ]);
 }
 
 export function getExtendedPayloadDecoder(): Decoder<ExtendedPayload> {
   return getStructDecoder([
     ['map', getMapDecoder(getPayloadKeyDecoder(), getPayloadTypeDecoder())],
-    ['args', getTupleDecoder([getU8Decoder(), getStringDecoder()])],
+    [
+      'args',
+      getTupleDecoder([
+        getU8Decoder(),
+        addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder()),
+      ]),
+    ],
   ]);
 }
 

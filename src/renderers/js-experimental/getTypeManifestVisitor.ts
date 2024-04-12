@@ -1,6 +1,5 @@
 import {
   CountNode,
-  NumberTypeNode,
   REGISTERED_TYPE_NODE_KINDS,
   REGISTERED_VALUE_NODE_KINDS,
   TypeNode,
@@ -45,7 +44,6 @@ export function getTypeManifestVisitor(input: {
     customInstructionData,
   } = input;
   let parentName = input.parentName ?? null;
-  let parentSize: number | NumberTypeNode | null = null;
 
   return pipe(
     staticVisitor(
@@ -558,46 +556,18 @@ export function getTypeManifestVisitor(input: {
           };
         },
 
-        visitBytesType(bytesType, { self }) {
-          const encoderImports = new ImportMap().add(
-            'solanaCodecsDataStructures',
-            'getBytesEncoder'
-          );
-          const decoderImports = new ImportMap().add(
-            'solanaCodecsDataStructures',
-            'getBytesDecoder'
-          );
-          const encoderOptions: string[] = [];
-          const decoderOptions: string[] = [];
-
-          // Size option.
-          if (typeof parentSize === 'number') {
-            encoderOptions.push(`size: ${parentSize}`);
-            decoderOptions.push(`size: ${parentSize}`);
-          } else if (parentSize) {
-            const prefix = visit(parentSize, self);
-            encoderImports.mergeWith(prefix.encoder);
-            decoderImports.mergeWith(prefix.decoder);
-            encoderOptions.push(`size: ${prefix.encoder.render}`);
-            decoderOptions.push(`size: ${prefix.decoder.render}`);
-          }
-
-          const encoderOptionsAsString =
-            encoderOptions.length > 0 ? `{ ${encoderOptions.join(', ')} }` : '';
-          const decoderOptionsAsString =
-            decoderOptions.length > 0 ? `{ ${decoderOptions.join(', ')} }` : '';
-
+        visitBytesType() {
           return {
             isEnum: false,
             strictType: fragment('Uint8Array'),
             looseType: fragment('Uint8Array'),
-            encoder: fragment(
-              `getBytesEncoder(${encoderOptionsAsString})`,
-              encoderImports
+            encoder: fragment(`getBytesEncoder()`).addImports(
+              'solanaCodecsDataStructures',
+              'getBytesEncoder'
             ),
-            decoder: fragment(
-              `getBytesDecoder(${decoderOptionsAsString})`,
-              decoderImports
+            decoder: fragment(`getBytesDecoder()`).addImports(
+              'solanaCodecsDataStructures',
+              'getBytesDecoder'
             ),
             value: fragment(''),
           };
@@ -669,82 +639,91 @@ export function getTypeManifestVisitor(input: {
           };
         },
 
-        visitStringType(stringType, { self }) {
-          const encoderImports = new ImportMap().add(
-            'solanaCodecsStrings',
-            'getStringEncoder'
-          );
-          const decoderImports = new ImportMap().add(
-            'solanaCodecsStrings',
-            'getStringDecoder'
-          );
-          const encoderOptions: string[] = [];
-          const decoderOptions: string[] = [];
-
-          // Encoding option.
-          if (stringType.encoding !== 'utf8') {
-            const encoderFunction = nameApi.encoderFunction(
-              stringType.encoding
-            );
-            const decoderFunction = nameApi.decoderFunction(
-              stringType.encoding
-            );
-            encoderImports.add('solanaCodecsStrings', encoderFunction);
-            decoderImports.add('solanaCodecsStrings', decoderFunction);
-            encoderOptions.push(`encoding: ${encoderFunction}`);
-            decoderOptions.push(`encoding: ${decoderFunction}`);
-          }
-
-          // Size option.
-          if (!parentSize) {
-            encoderOptions.push(`size: 'variable'`);
-            decoderOptions.push(`size: 'variable'`);
-          } else if (typeof parentSize === 'number') {
-            encoderOptions.push(`size: ${parentSize}`);
-            decoderOptions.push(`size: ${parentSize}`);
-          } else if (
-            parentSize.format !== 'u32' ||
-            parentSize.endian !== 'le'
-          ) {
-            const prefix = visit(parentSize, self);
-            encoderImports.mergeWith(prefix.encoder.imports);
-            decoderImports.mergeWith(prefix.decoder.imports);
-            encoderOptions.push(`size: ${prefix.encoder.render}`);
-            decoderOptions.push(`size: ${prefix.decoder.render}`);
-          }
-
-          const encoderOptionsAsString =
-            encoderOptions.length > 0 ? `{ ${encoderOptions.join(', ')} }` : '';
-          const decoderOptionsAsString =
-            decoderOptions.length > 0 ? `{ ${decoderOptions.join(', ')} }` : '';
-
+        visitStringType(stringType) {
+          const [encoder, decoder] = (() => {
+            switch (stringType.encoding) {
+              case 'base16':
+                return ['getBase16Encoder', 'getBase16Decoder'];
+              case 'base58':
+                return ['getBase58Encoder', 'getBase58Decoder'];
+              case 'base64':
+                return ['getBase64Encoder', 'getBase64Decoder'];
+              case 'utf8':
+                return ['getUtf8Encoder', 'getUtf8Decoder'];
+              default:
+                throw new Error(
+                  `Unsupported string encoding: ${stringType.encoding}`
+                );
+            }
+          })();
           return {
             isEnum: false,
             strictType: fragment('string'),
             looseType: fragment('string'),
-            encoder: fragment(
-              `getStringEncoder(${encoderOptionsAsString})`,
-              encoderImports
+            encoder: fragment(`${encoder}()`).addImports(
+              'solanaCodecsStrings',
+              encoder
             ),
-            decoder: fragment(
-              `getStringDecoder(${decoderOptionsAsString})`,
-              decoderImports
+            decoder: fragment(`${decoder}()`).addImports(
+              'solanaCodecsStrings',
+              decoder
             ),
             value: fragment(''),
           };
         },
 
-        visitFixedSizeType(fixedSizeType, { self }) {
-          parentSize = fixedSizeType.size;
-          const manifest = visit(fixedSizeType.type, self);
-          parentSize = null;
+        visitFixedSizeType(node, { self }) {
+          const manifest = visit(node.type, self);
+          manifest.encoder
+            .mapRender((r) => `fixEncoderSize(${r}, ${node.size})`)
+            .addImports('solanaCodecsCore', 'fixEncoderSize');
+          manifest.decoder
+            .mapRender((r) => `fixDecoderSize(${r}, ${node.size})`)
+            .addImports('solanaCodecsCore', 'fixDecoderSize');
           return manifest;
         },
 
-        visitSizePrefixType(sizePrefixType, { self }) {
-          parentSize = resolveNestedTypeNode(sizePrefixType.prefix);
-          const manifest = visit(sizePrefixType.type, self);
-          parentSize = null;
+        visitHiddenPrefixType(node, { self }) {
+          const manifest = visit(node.type, self);
+          // TODO
+          return manifest;
+        },
+
+        visitHiddenSuffixType(node, { self }) {
+          const manifest = visit(node.type, self);
+          // TODO
+          return manifest;
+        },
+
+        visitPostOffsetType(node, { self }) {
+          const manifest = visit(node.type, self);
+          // TODO
+          return manifest;
+        },
+
+        visitPreOffsetType(node, { self }) {
+          const manifest = visit(node.type, self);
+          // TODO
+          return manifest;
+        },
+
+        visitSentinelType(node, { self }) {
+          const manifest = visit(node.type, self);
+          // TODO
+          return manifest;
+        },
+
+        visitSizePrefixType(node, { self }) {
+          const manifest = visit(node.type, self);
+          const prefix = visit(node.prefix, self);
+          manifest.encoder
+            .mapRender((r) => `addEncoderSizePrefix(${r}, ${prefix.encoder})`)
+            .mergeImportsWith(prefix.encoder)
+            .addImports('solanaCodecsCore', 'addEncoderSizePrefix');
+          manifest.decoder
+            .mapRender((r) => `addDecoderSizePrefix(${r}, ${prefix.decoder})`)
+            .mergeImportsWith(prefix.decoder)
+            .addImports('solanaCodecsCore', 'addDecoderSizePrefix');
           return manifest;
         },
 

@@ -17,7 +17,11 @@ import {
   Encoder,
   GetDiscriminatedUnionVariant,
   GetDiscriminatedUnionVariantContent,
+  addDecoderSizePrefix,
+  addEncoderSizePrefix,
   combineCodec,
+  fixDecoderSize,
+  fixEncoderSize,
   getArrayDecoder,
   getArrayEncoder,
   getBytesDecoder,
@@ -56,14 +60,19 @@ export function getPayloadTypeEncoder(): Encoder<PayloadTypeArgs> {
     [
       'Seeds',
       getStructEncoder([
-        ['seeds', getArrayEncoder(getBytesEncoder({ size: getU32Encoder() }))],
+        [
+          'seeds',
+          getArrayEncoder(
+            addEncoderSizePrefix(getBytesEncoder(), getU32Encoder())
+          ),
+        ],
       ]),
     ],
     [
       'MerkleProof',
       getStructEncoder([
-        ['leaf', getBytesEncoder({ size: 32 })],
-        ['proof', getArrayEncoder(getBytesEncoder({ size: 32 }))],
+        ['leaf', fixEncoderSize(getBytesEncoder(), 32)],
+        ['proof', getArrayEncoder(fixEncoderSize(getBytesEncoder(), 32))],
       ]),
     ],
     [
@@ -82,14 +91,19 @@ export function getPayloadTypeDecoder(): Decoder<PayloadType> {
     [
       'Seeds',
       getStructDecoder([
-        ['seeds', getArrayDecoder(getBytesDecoder({ size: getU32Decoder() }))],
+        [
+          'seeds',
+          getArrayDecoder(
+            addDecoderSizePrefix(getBytesDecoder(), getU32Decoder())
+          ),
+        ],
       ]),
     ],
     [
       'MerkleProof',
       getStructDecoder([
-        ['leaf', getBytesDecoder({ size: 32 })],
-        ['proof', getArrayDecoder(getBytesDecoder({ size: 32 }))],
+        ['leaf', fixDecoderSize(getBytesDecoder(), 32)],
+        ['proof', getArrayDecoder(fixDecoderSize(getBytesDecoder(), 32))],
       ]),
     ],
     [
