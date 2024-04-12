@@ -747,7 +747,38 @@ export function getTypeManifestVisitor(input: {
 
         visitPostOffsetType(node, { self }) {
           const manifest = visit(node.type, self);
-          // TODO
+          if (node.strategy === 'padded') {
+            manifest.encoder
+              .mapRender((r) => `padRightEncoder(${r}, ${node.offset})`)
+              .addImports('solanaCodecsCore', 'padRightEncoder');
+            manifest.decoder
+              .mapRender((r) => `padRightDecoder(${r}, ${node.offset})`)
+              .addImports('solanaCodecsCore', 'padRightDecoder');
+            return manifest;
+          }
+          const fn = (() => {
+            switch (node.strategy) {
+              case 'absolute':
+                return node.offset < 0
+                  ? `({ wrapBytes }) => wrapBytes(${node.offset})`
+                  : `() => ${node.offset}`;
+              case 'preOffset':
+                return node.offset < 0
+                  ? `({ preOffset }) => preOffset ${node.offset}`
+                  : `({ preOffset }) => preOffset + ${node.offset}`;
+              case 'relative':
+              default:
+                return node.offset < 0
+                  ? `({ postOffset }) => postOffset ${node.offset}`
+                  : `({ postOffset }) => postOffset + ${node.offset}`;
+            }
+          })();
+          manifest.encoder
+            .mapRender((r) => `offsetEncoder(${r}, { postOffset: ${fn} })`)
+            .addImports('solanaCodecsCore', 'offsetEncoder');
+          manifest.decoder
+            .mapRender((r) => `offsetDecoder(${r}, { postOffset: ${fn} })`)
+            .addImports('solanaCodecsCore', 'offsetDecoder');
           return manifest;
         },
 
