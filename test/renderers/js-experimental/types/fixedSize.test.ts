@@ -6,7 +6,7 @@ import {
   visit,
 } from '../../../../src';
 import { getRenderMapVisitor } from '../../../../src/renderers/js-experimental/getRenderMapVisitor';
-import { renderMapContains } from '../_setup';
+import { renderMapContains, renderMapContainsImports } from '../_setup';
 
 test('it renders fixed size codecs', (t) => {
   // Given the following node.
@@ -24,4 +24,9 @@ test('it renders fixed size codecs', (t) => {
     'fixEncoderSize( getUtf8Encoder() , 10 )',
     'fixDecoderSize( getUtf8Decoder() , 10 )',
   ]);
+
+  // And we expect the following codec imports.
+  renderMapContainsImports(t, renderMap, 'types/myType.ts', {
+    '@solana/codecs': ['fixEncoderSize', 'fixDecoderSize'],
+  });
 });

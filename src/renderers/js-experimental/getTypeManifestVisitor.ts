@@ -691,7 +691,29 @@ export function getTypeManifestVisitor(input: {
 
         visitHiddenPrefixType(node, { self }) {
           const manifest = visit(node.type, self);
-          // TODO
+          const prefixes = node.prefix.map((c) => visit(c, self).value);
+          const prefixEncoders = fragment(
+            prefixes.map((c) => `getConstantEncoder(${c})`).join(', ')
+          )
+            .addImports('solanaCodecsCore', 'getConstantEncoder')
+            .mergeImportsWith(...prefixes);
+          const prefixDecoders = fragment(
+            prefixes.map((c) => `getConstantDecoder(${c})`).join(', ')
+          )
+            .addImports('solanaCodecsCore', 'getConstantDecoder')
+            .mergeImportsWith(...prefixes);
+          manifest.encoder
+            .mapRender(
+              (r) => `getHiddenPrefixEncoder(${r}, [${prefixEncoders}])`
+            )
+            .mergeImportsWith(prefixEncoders)
+            .addImports('solanaCodecsDataStructures', 'getHiddenPrefixEncoder');
+          manifest.decoder
+            .mapRender(
+              (r) => `getHiddenPrefixDecoder(${r}, [${prefixDecoders}])`
+            )
+            .mergeImportsWith(prefixDecoders)
+            .addImports('solanaCodecsDataStructures', 'getHiddenPrefixDecoder');
           return manifest;
         },
 

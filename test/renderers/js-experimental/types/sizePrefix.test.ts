@@ -7,7 +7,7 @@ import {
   visit,
 } from '../../../../src';
 import { getRenderMapVisitor } from '../../../../src/renderers/js-experimental/getRenderMapVisitor';
-import { renderMapContains } from '../_setup';
+import { renderMapContains, renderMapContainsImports } from '../_setup';
 
 test('it renders size prefix codecs', (t) => {
   // Given the following node.
@@ -25,4 +25,9 @@ test('it renders size prefix codecs', (t) => {
     'addEncoderSizePrefix( getUtf8Encoder() , getU32Encoder() )',
     'addDecoderSizePrefix( getUtf8Decoder() , getU32Decoder() )',
   ]);
+
+  // And we expect the following codec imports.
+  renderMapContainsImports(t, renderMap, 'types/myType.ts', {
+    '@solana/codecs': ['addEncoderSizePrefix', 'addDecoderSizePrefix'],
+  });
 });
