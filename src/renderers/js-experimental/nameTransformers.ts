@@ -62,6 +62,8 @@ export type NameTransformerKey =
   | 'programErrorConstantPrefix'
   | 'programErrorConstant'
   | 'programErrorUnion'
+  | 'programErrorMessagesMap'
+  | 'programGetErrorMessageFunction'
   | 'resolverFunction';
 
 export type NameTransformers = Record<NameTransformerKey, NameTransformer>;
@@ -132,5 +134,8 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
     `${snakeCase(name)}_ERROR__`.toUpperCase(),
   programErrorConstant: (name) => snakeCase(name).toUpperCase(),
   programErrorUnion: (name) => `${pascalCase(name)}Error`,
+  programErrorMessagesMap: (name) => `${camelCase(name)}ErrorMessages`,
+  programGetErrorMessageFunction: (name) =>
+    `get${pascalCase(name)}ErrorMessage`,
   resolverFunction: (name) => `${camelCase(name)}`,
 };

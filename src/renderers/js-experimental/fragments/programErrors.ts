@@ -11,6 +11,10 @@ export function getProgramErrorsFragment(
   return fragmentFromTemplate('programErrors.njk', {
     errors: programNode.errors,
     programErrorUnion: nameApi.programErrorUnion(programNode.name),
+    programErrorMessagesMap: nameApi.programErrorMessagesMap(programNode.name),
+    programGetErrorMessageFunction: nameApi.programGetErrorMessageFunction(
+      programNode.name
+    ),
     getProgramErrorConstant: (name: string) =>
       nameApi.programErrorConstantPrefix(programNode.name) +
       nameApi.programErrorConstant(name),
