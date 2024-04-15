@@ -1,22 +1,3 @@
 {% import "templates/macros.njk" as macros %}
 
 export const {{ programAddressConstant }} = '{{ program.publicKey }}' as Address<'{{ program.publicKey }}'>;
-
-{{ macros.docblock(program.docs) }}
-export type {{ programType }} = Program<'{{ program.publicKey }}'>
-{%- if program.errors.length > 0 %}
-  & ProgramWithErrors<{{ programErrorCode }}, {{ programErrorClass }}>
-{% endif %}
-;
-
-export function {{ programCreateFunction }}(): {{ programType }}{
-  return {
-    name: '{{ program.name | camelCase }}',
-    address: {{ programAddressConstant }},
-    {% if program.errors.length > 0 %}
-      getErrorFromCode(code: {{ programErrorCode }}, cause?: Error) {
-        return {{ programGetErrorFromCodeFunction }}(code, cause);
-      },
-    {% endif %}
-  };
-}

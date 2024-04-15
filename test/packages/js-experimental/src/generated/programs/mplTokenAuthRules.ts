@@ -8,12 +8,6 @@
 
 import { Address } from '@solana/addresses';
 import { containsBytes, getU64Encoder, getU8Encoder } from '@solana/codecs';
-import { Program, ProgramWithErrors } from '@solana/programs';
-import {
-  MplTokenAuthRulesProgramError,
-  MplTokenAuthRulesProgramErrorCode,
-  getMplTokenAuthRulesProgramErrorFromCode,
-} from '../errors';
 import {
   ParsedCreateFrequencyRuleInstruction,
   ParsedCreateRuleSetInstruction,
@@ -23,23 +17,6 @@ import { TaKey } from '../types';
 
 export const MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS =
   'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as Address<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
-
-export type MplTokenAuthRulesProgram =
-  Program<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'> &
-    ProgramWithErrors<
-      MplTokenAuthRulesProgramErrorCode,
-      MplTokenAuthRulesProgramError
-    >;
-
-export function getMplTokenAuthRulesProgram(): MplTokenAuthRulesProgram {
-  return {
-    name: 'mplTokenAuthRules',
-    address: MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS,
-    getErrorFromCode(code: MplTokenAuthRulesProgramErrorCode, cause?: Error) {
-      return getMplTokenAuthRulesProgramErrorFromCode(code, cause);
-    },
-  };
-}
 
 export enum MplTokenAuthRulesAccount {
   FrequencyAccount,

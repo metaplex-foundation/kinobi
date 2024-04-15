@@ -6,34 +6,3 @@ export const enum {{ programErrorCodeEnum }} {
     {{ error.name | snakeCase | upper }} = 0x{{ error.code.toString(16) }}, // {{ error.code }}
   {% endfor %}
 }
-
-export class {{ programErrorClass }} extends Error {
-  override readonly name = '{{ programErrorClass }}';
-
-  readonly code: {{ programErrorCodeEnum }};
-
-  readonly cause: Error | undefined;
-
-  constructor(code: {{ programErrorCodeEnum }}, name: string, message: string, cause?: Error) {
-    super(`${name} (${code}): ${message}`);
-    this.code = code;
-    this.cause = cause;
-  }
-}
-
-let {{ programErrorCodeMap }}: Record<{{ programErrorCodeEnum }}, [string, string]> | undefined;
-if (__DEV__) {
-  {{ programErrorCodeMap }} = {
-    {% for error in errors | sort(false, false, 'code') %}
-      [{{ programErrorCodeEnum }}.{{ error.name | snakeCase | upper }}]: ['{{ error.name | pascalCase }}', `{{ error.message }}`],
-    {% endfor %}
-  };
-}
-
-export function {{ programGetErrorFromCodeFunction }}(code: {{ programErrorCodeEnum }}, cause?: Error): {{ programErrorClass }} {
-  if (__DEV__) {
-    return new {{ programErrorClass }}(code, ...({{ programErrorCodeMap }} as Record<{{ programErrorCodeEnum }}, [string, string]>)[code], cause);
-  }
-
-  return new {{ programErrorClass }}(code, 'Unknown', 'Error message not available in production bundles. Compile with __DEV__ set to true to see more information.', cause);
-}

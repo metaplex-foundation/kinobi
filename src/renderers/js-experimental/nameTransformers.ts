@@ -51,9 +51,7 @@ export type NameTransformerKey =
   | 'instructionSyncFunction'
   | 'instructionParsedType'
   | 'instructionParseFunction'
-  | 'programType'
   | 'programAddressConstant'
-  | 'programCreateFunction'
   | 'programAccountsEnum'
   | 'programAccountsEnumVariant'
   | 'programAccountsIdentifierFunction'
@@ -61,10 +59,7 @@ export type NameTransformerKey =
   | 'programInstructionsEnumVariant'
   | 'programInstructionsIdentifierFunction'
   | 'programInstructionsParsedUnionType'
-  | 'programErrorClass'
   | 'programErrorCodeEnum'
-  | 'programErrorCodeMap'
-  | 'programGetErrorFromCodeFunction'
   | 'resolverFunction';
 
 export type NameTransformers = Record<NameTransformerKey, NameTransformer>;
@@ -119,10 +114,8 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
   instructionSyncFunction: (name) => `get${pascalCase(name)}Instruction`,
   instructionParsedType: (name) => `Parsed${pascalCase(name)}Instruction`,
   instructionParseFunction: (name) => `parse${pascalCase(name)}Instruction`,
-  programType: (name) => `${pascalCase(name)}Program`,
   programAddressConstant: (name) =>
     `${snakeCase(name).toUpperCase()}_PROGRAM_ADDRESS`,
-  programCreateFunction: (name) => `get${pascalCase(name)}Program`,
   programAccountsEnum: (name) => `${pascalCase(name)}Account`,
   programAccountsEnumVariant: (name) => `${pascalCase(name)}`,
   programAccountsIdentifierFunction: (name) =>
@@ -133,10 +126,6 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
     `identify${pascalCase(name)}Instruction`,
   programInstructionsParsedUnionType: (name) =>
     `Parsed${pascalCase(name)}Instruction`,
-  programErrorClass: (name) => `${pascalCase(name)}ProgramError`,
   programErrorCodeEnum: (name) => `${pascalCase(name)}ProgramErrorCode`,
-  programErrorCodeMap: (name) => `${camelCase(name)}ProgramErrorCodeMap`,
-  programGetErrorFromCodeFunction: (name) =>
-    `get${pascalCase(name)}ProgramErrorFromCode`,
   resolverFunction: (name) => `${camelCase(name)}`,
 };
