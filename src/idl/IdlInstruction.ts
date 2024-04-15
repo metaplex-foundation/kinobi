@@ -2,7 +2,7 @@ import type { IdlType } from './IdlType';
 
 export type IdlInstruction = {
   name: string;
-  accounts: IdlInstructionAccount[];
+  accounts: (IdlInstructionAccount | IdlInstructionNestedAccounts)[];
   args: IdlInstructionArg[];
   defaultOptionalAccounts?: boolean;
   legacyOptionalAccountsStrategy?: boolean;
@@ -19,6 +19,11 @@ export type IdlInstructionAccount = {
   optional?: boolean;
   docs?: string[];
   desc?: string;
+};
+
+export type IdlInstructionNestedAccounts = {
+  name: string;
+  accounts: (IdlInstructionAccount | IdlInstructionNestedAccounts)[];
 };
 
 export type IdlInstructionArg = {
