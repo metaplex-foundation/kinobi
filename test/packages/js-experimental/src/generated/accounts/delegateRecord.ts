@@ -42,26 +42,11 @@ import {
   getTmKeyEncoder,
 } from '../types';
 
-export type DelegateRecord<TAddress extends string = string> = Account<
-  DelegateRecordAccountData,
-  TAddress
->;
+export type DelegateRecord = { key: TmKey; role: DelegateRole; bump: number };
 
-export type MaybeDelegateRecord<TAddress extends string = string> =
-  MaybeAccount<DelegateRecordAccountData, TAddress>;
+export type DelegateRecordArgs = { role: DelegateRoleArgs; bump: number };
 
-export type DelegateRecordAccountData = {
-  key: TmKey;
-  role: DelegateRole;
-  bump: number;
-};
-
-export type DelegateRecordAccountDataArgs = {
-  role: DelegateRoleArgs;
-  bump: number;
-};
-
-export function getDelegateRecordAccountDataEncoder(): Encoder<DelegateRecordAccountDataArgs> {
+export function getDelegateRecordEncoder(): Encoder<DelegateRecordArgs> {
   return transformEncoder(
     getStructEncoder([
       ['key', getTmKeyEncoder()],
@@ -72,7 +57,7 @@ export function getDelegateRecordAccountDataEncoder(): Encoder<DelegateRecordAcc
   );
 }
 
-export function getDelegateRecordAccountDataDecoder(): Decoder<DelegateRecordAccountData> {
+export function getDelegateRecordDecoder(): Decoder<DelegateRecord> {
   return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['role', getDelegateRoleDecoder()],
@@ -80,28 +65,25 @@ export function getDelegateRecordAccountDataDecoder(): Decoder<DelegateRecordAcc
   ]);
 }
 
-export function getDelegateRecordAccountDataCodec(): Codec<
-  DelegateRecordAccountDataArgs,
-  DelegateRecordAccountData
+export function getDelegateRecordCodec(): Codec<
+  DelegateRecordArgs,
+  DelegateRecord
 > {
-  return combineCodec(
-    getDelegateRecordAccountDataEncoder(),
-    getDelegateRecordAccountDataDecoder()
-  );
+  return combineCodec(getDelegateRecordEncoder(), getDelegateRecordDecoder());
 }
 
 export function decodeDelegateRecord<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>
-): DelegateRecord<TAddress>;
+): Account<DelegateRecord, TAddress>;
 export function decodeDelegateRecord<TAddress extends string = string>(
   encodedAccount: MaybeEncodedAccount<TAddress>
-): MaybeDelegateRecord<TAddress>;
+): MaybeAccount<DelegateRecord, TAddress>;
 export function decodeDelegateRecord<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
-): DelegateRecord<TAddress> | MaybeDelegateRecord<TAddress> {
+): Account<DelegateRecord, TAddress> | MaybeAccount<DelegateRecord, TAddress> {
   return decodeAccount(
     encodedAccount as MaybeEncodedAccount<TAddress>,
-    getDelegateRecordAccountDataDecoder()
+    getDelegateRecordDecoder()
   );
 }
 
@@ -109,7 +91,7 @@ export async function fetchDelegateRecord<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<DelegateRecord<TAddress>> {
+): Promise<Account<DelegateRecord, TAddress>> {
   const maybeAccount = await fetchMaybeDelegateRecord(rpc, address, config);
   assertAccountExists(maybeAccount);
   return maybeAccount;
@@ -121,7 +103,7 @@ export async function fetchMaybeDelegateRecord<
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<MaybeDelegateRecord<TAddress>> {
+): Promise<MaybeAccount<DelegateRecord, TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   return decodeDelegateRecord(maybeAccount);
 }
@@ -130,7 +112,7 @@ export async function fetchAllDelegateRecord(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<DelegateRecord[]> {
+): Promise<Account<DelegateRecord>[]> {
   const maybeAccounts = await fetchAllMaybeDelegateRecord(
     rpc,
     addresses,
@@ -144,7 +126,7 @@ export async function fetchAllMaybeDelegateRecord(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<MaybeDelegateRecord[]> {
+): Promise<MaybeAccount<DelegateRecord>[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts.map((maybeAccount) =>
     decodeDelegateRecord(maybeAccount)
@@ -159,7 +141,7 @@ export async function fetchDelegateRecordFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   seeds: DelegateRecordSeeds,
   config: FetchAccountConfig & { programAddress?: Address } = {}
-): Promise<DelegateRecord> {
+): Promise<Account<DelegateRecord>> {
   const maybeAccount = await fetchMaybeDelegateRecordFromSeeds(
     rpc,
     seeds,
@@ -173,7 +155,7 @@ export async function fetchMaybeDelegateRecordFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   seeds: DelegateRecordSeeds,
   config: FetchAccountConfig & { programAddress?: Address } = {}
-): Promise<MaybeDelegateRecord> {
+): Promise<MaybeAccount<DelegateRecord>> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findDelegateRecordPda(seeds, { programAddress });
   return await fetchMaybeDelegateRecord(rpc, address, fetchConfig);

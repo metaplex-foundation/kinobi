@@ -42,15 +42,7 @@ import {
 import { MasterEditionV1Seeds, findMasterEditionV1Pda } from '../pdas';
 import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
-export type MasterEditionV1<TAddress extends string = string> = Account<
-  MasterEditionV1AccountData,
-  TAddress
->;
-
-export type MaybeMasterEditionV1<TAddress extends string = string> =
-  MaybeAccount<MasterEditionV1AccountData, TAddress>;
-
-export type MasterEditionV1AccountData = {
+export type MasterEditionV1 = {
   key: TmKey;
   supply: bigint;
   maxSupply: Option<bigint>;
@@ -58,14 +50,14 @@ export type MasterEditionV1AccountData = {
   oneTimePrintingAuthorizationMint: Address;
 };
 
-export type MasterEditionV1AccountDataArgs = {
+export type MasterEditionV1Args = {
   supply: number | bigint;
   maxSupply: OptionOrNullable<number | bigint>;
   printingMint: Address;
   oneTimePrintingAuthorizationMint: Address;
 };
 
-export function getMasterEditionV1AccountDataEncoder(): Encoder<MasterEditionV1AccountDataArgs> {
+export function getMasterEditionV1Encoder(): Encoder<MasterEditionV1Args> {
   return transformEncoder(
     getStructEncoder([
       ['key', getTmKeyEncoder()],
@@ -78,7 +70,7 @@ export function getMasterEditionV1AccountDataEncoder(): Encoder<MasterEditionV1A
   );
 }
 
-export function getMasterEditionV1AccountDataDecoder(): Decoder<MasterEditionV1AccountData> {
+export function getMasterEditionV1Decoder(): Decoder<MasterEditionV1> {
   return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['supply', getU64Decoder()],
@@ -88,28 +80,27 @@ export function getMasterEditionV1AccountDataDecoder(): Decoder<MasterEditionV1A
   ]);
 }
 
-export function getMasterEditionV1AccountDataCodec(): Codec<
-  MasterEditionV1AccountDataArgs,
-  MasterEditionV1AccountData
+export function getMasterEditionV1Codec(): Codec<
+  MasterEditionV1Args,
+  MasterEditionV1
 > {
-  return combineCodec(
-    getMasterEditionV1AccountDataEncoder(),
-    getMasterEditionV1AccountDataDecoder()
-  );
+  return combineCodec(getMasterEditionV1Encoder(), getMasterEditionV1Decoder());
 }
 
 export function decodeMasterEditionV1<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>
-): MasterEditionV1<TAddress>;
+): Account<MasterEditionV1, TAddress>;
 export function decodeMasterEditionV1<TAddress extends string = string>(
   encodedAccount: MaybeEncodedAccount<TAddress>
-): MaybeMasterEditionV1<TAddress>;
+): MaybeAccount<MasterEditionV1, TAddress>;
 export function decodeMasterEditionV1<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
-): MasterEditionV1<TAddress> | MaybeMasterEditionV1<TAddress> {
+):
+  | Account<MasterEditionV1, TAddress>
+  | MaybeAccount<MasterEditionV1, TAddress> {
   return decodeAccount(
     encodedAccount as MaybeEncodedAccount<TAddress>,
-    getMasterEditionV1AccountDataDecoder()
+    getMasterEditionV1Decoder()
   );
 }
 
@@ -117,7 +108,7 @@ export async function fetchMasterEditionV1<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<MasterEditionV1<TAddress>> {
+): Promise<Account<MasterEditionV1, TAddress>> {
   const maybeAccount = await fetchMaybeMasterEditionV1(rpc, address, config);
   assertAccountExists(maybeAccount);
   return maybeAccount;
@@ -129,7 +120,7 @@ export async function fetchMaybeMasterEditionV1<
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<MaybeMasterEditionV1<TAddress>> {
+): Promise<MaybeAccount<MasterEditionV1, TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   return decodeMasterEditionV1(maybeAccount);
 }
@@ -138,7 +129,7 @@ export async function fetchAllMasterEditionV1(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<MasterEditionV1[]> {
+): Promise<Account<MasterEditionV1>[]> {
   const maybeAccounts = await fetchAllMaybeMasterEditionV1(
     rpc,
     addresses,
@@ -152,7 +143,7 @@ export async function fetchAllMaybeMasterEditionV1(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<MaybeMasterEditionV1[]> {
+): Promise<MaybeAccount<MasterEditionV1>[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts.map((maybeAccount) =>
     decodeMasterEditionV1(maybeAccount)
@@ -163,7 +154,7 @@ export async function fetchMasterEditionV1FromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   seeds: MasterEditionV1Seeds,
   config: FetchAccountConfig & { programAddress?: Address } = {}
-): Promise<MasterEditionV1> {
+): Promise<Account<MasterEditionV1>> {
   const maybeAccount = await fetchMaybeMasterEditionV1FromSeeds(
     rpc,
     seeds,
@@ -177,7 +168,7 @@ export async function fetchMaybeMasterEditionV1FromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   seeds: MasterEditionV1Seeds,
   config: FetchAccountConfig & { programAddress?: Address } = {}
-): Promise<MaybeMasterEditionV1> {
+): Promise<MaybeAccount<MasterEditionV1>> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findMasterEditionV1Pda(seeds, { programAddress });
   return await fetchMaybeMasterEditionV1(rpc, address, fetchConfig);

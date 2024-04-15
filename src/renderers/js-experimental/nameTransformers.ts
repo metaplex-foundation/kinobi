@@ -29,9 +29,6 @@ export type NameTransformerKey =
   | 'codecFunction'
   | 'pdaSeedsType'
   | 'pdaFindFunction'
-  | 'accountType'
-  | 'accountMaybeType'
-  | 'accountDataType'
   | 'accountDecodeFunction'
   | 'accountFetchFunction'
   | 'accountFetchAllFunction'
@@ -99,9 +96,6 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
   codecFunction: (name) => `get${pascalCase(name)}Codec`,
   pdaSeedsType: (name) => `${pascalCase(name)}Seeds`,
   pdaFindFunction: (name) => `find${pascalCase(name)}Pda`,
-  accountType: (name) => `${pascalCase(name)}`,
-  accountMaybeType: (name) => `Maybe${pascalCase(name)}`,
-  accountDataType: (name) => `${pascalCase(name)}AccountData`,
   accountDecodeFunction: (name) => `decode${pascalCase(name)}`,
   accountFetchFunction: (name) => `fetch${pascalCase(name)}`,
   accountFetchAllFunction: (name) => `fetchAll${pascalCase(name)}`,

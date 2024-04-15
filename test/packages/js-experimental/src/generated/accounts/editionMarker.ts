@@ -35,21 +35,11 @@ import {
 } from '@solana/codecs';
 import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
-export type EditionMarker<TAddress extends string = string> = Account<
-  EditionMarkerAccountData,
-  TAddress
->;
+export type EditionMarker = { key: TmKey; ledger: Array<number> };
 
-export type MaybeEditionMarker<TAddress extends string = string> = MaybeAccount<
-  EditionMarkerAccountData,
-  TAddress
->;
+export type EditionMarkerArgs = { ledger: Array<number> };
 
-export type EditionMarkerAccountData = { key: TmKey; ledger: Array<number> };
-
-export type EditionMarkerAccountDataArgs = { ledger: Array<number> };
-
-export function getEditionMarkerAccountDataEncoder(): Encoder<EditionMarkerAccountDataArgs> {
+export function getEditionMarkerEncoder(): Encoder<EditionMarkerArgs> {
   return transformEncoder(
     getStructEncoder([
       ['key', getTmKeyEncoder()],
@@ -59,35 +49,32 @@ export function getEditionMarkerAccountDataEncoder(): Encoder<EditionMarkerAccou
   );
 }
 
-export function getEditionMarkerAccountDataDecoder(): Decoder<EditionMarkerAccountData> {
+export function getEditionMarkerDecoder(): Decoder<EditionMarker> {
   return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['ledger', getArrayDecoder(getU8Decoder(), { size: 200 })],
   ]);
 }
 
-export function getEditionMarkerAccountDataCodec(): Codec<
-  EditionMarkerAccountDataArgs,
-  EditionMarkerAccountData
+export function getEditionMarkerCodec(): Codec<
+  EditionMarkerArgs,
+  EditionMarker
 > {
-  return combineCodec(
-    getEditionMarkerAccountDataEncoder(),
-    getEditionMarkerAccountDataDecoder()
-  );
+  return combineCodec(getEditionMarkerEncoder(), getEditionMarkerDecoder());
 }
 
 export function decodeEditionMarker<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>
-): EditionMarker<TAddress>;
+): Account<EditionMarker, TAddress>;
 export function decodeEditionMarker<TAddress extends string = string>(
   encodedAccount: MaybeEncodedAccount<TAddress>
-): MaybeEditionMarker<TAddress>;
+): MaybeAccount<EditionMarker, TAddress>;
 export function decodeEditionMarker<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
-): EditionMarker<TAddress> | MaybeEditionMarker<TAddress> {
+): Account<EditionMarker, TAddress> | MaybeAccount<EditionMarker, TAddress> {
   return decodeAccount(
     encodedAccount as MaybeEncodedAccount<TAddress>,
-    getEditionMarkerAccountDataDecoder()
+    getEditionMarkerDecoder()
   );
 }
 
@@ -95,7 +82,7 @@ export async function fetchEditionMarker<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<EditionMarker<TAddress>> {
+): Promise<Account<EditionMarker, TAddress>> {
   const maybeAccount = await fetchMaybeEditionMarker(rpc, address, config);
   assertAccountExists(maybeAccount);
   return maybeAccount;
@@ -105,7 +92,7 @@ export async function fetchMaybeEditionMarker<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<MaybeEditionMarker<TAddress>> {
+): Promise<MaybeAccount<EditionMarker, TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   return decodeEditionMarker(maybeAccount);
 }
@@ -114,7 +101,7 @@ export async function fetchAllEditionMarker(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<EditionMarker[]> {
+): Promise<Account<EditionMarker>[]> {
   const maybeAccounts = await fetchAllMaybeEditionMarker(
     rpc,
     addresses,
@@ -128,7 +115,7 @@ export async function fetchAllMaybeEditionMarker(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<MaybeEditionMarker[]> {
+): Promise<MaybeAccount<EditionMarker>[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts.map((maybeAccount) => decodeEditionMarker(maybeAccount));
 }

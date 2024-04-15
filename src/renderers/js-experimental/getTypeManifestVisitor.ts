@@ -68,10 +68,9 @@ export function getTypeManifestVisitor(input: {
     (visitor) =>
       extendVisitor(visitor, {
         visitAccount(account, { self }) {
-          const accountDataName = nameApi.accountDataType(account.name);
           parentName = {
-            strict: nameApi.dataType(accountDataName),
-            loose: nameApi.dataArgsType(accountDataName),
+            strict: nameApi.dataType(account.name),
+            loose: nameApi.dataArgsType(account.name),
           };
           const link = customAccountData.get(account.name)?.linkNode;
           const manifest = link ? visit(link, self) : visit(account.data, self);

@@ -35,26 +35,18 @@ import {
 } from '@solana/codecs';
 import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
-export type UseAuthorityRecord<TAddress extends string = string> = Account<
-  UseAuthorityRecordAccountData,
-  TAddress
->;
-
-export type MaybeUseAuthorityRecord<TAddress extends string = string> =
-  MaybeAccount<UseAuthorityRecordAccountData, TAddress>;
-
-export type UseAuthorityRecordAccountData = {
+export type UseAuthorityRecord = {
   key: TmKey;
   allowedUses: bigint;
   bump: number;
 };
 
-export type UseAuthorityRecordAccountDataArgs = {
+export type UseAuthorityRecordArgs = {
   allowedUses: number | bigint;
   bump: number;
 };
 
-export function getUseAuthorityRecordAccountDataEncoder(): Encoder<UseAuthorityRecordAccountDataArgs> {
+export function getUseAuthorityRecordEncoder(): Encoder<UseAuthorityRecordArgs> {
   return transformEncoder(
     getStructEncoder([
       ['key', getTmKeyEncoder()],
@@ -65,7 +57,7 @@ export function getUseAuthorityRecordAccountDataEncoder(): Encoder<UseAuthorityR
   );
 }
 
-export function getUseAuthorityRecordAccountDataDecoder(): Decoder<UseAuthorityRecordAccountData> {
+export function getUseAuthorityRecordDecoder(): Decoder<UseAuthorityRecord> {
   return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['allowedUses', getU64Decoder()],
@@ -73,28 +65,30 @@ export function getUseAuthorityRecordAccountDataDecoder(): Decoder<UseAuthorityR
   ]);
 }
 
-export function getUseAuthorityRecordAccountDataCodec(): Codec<
-  UseAuthorityRecordAccountDataArgs,
-  UseAuthorityRecordAccountData
+export function getUseAuthorityRecordCodec(): Codec<
+  UseAuthorityRecordArgs,
+  UseAuthorityRecord
 > {
   return combineCodec(
-    getUseAuthorityRecordAccountDataEncoder(),
-    getUseAuthorityRecordAccountDataDecoder()
+    getUseAuthorityRecordEncoder(),
+    getUseAuthorityRecordDecoder()
   );
 }
 
 export function decodeUseAuthorityRecord<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>
-): UseAuthorityRecord<TAddress>;
+): Account<UseAuthorityRecord, TAddress>;
 export function decodeUseAuthorityRecord<TAddress extends string = string>(
   encodedAccount: MaybeEncodedAccount<TAddress>
-): MaybeUseAuthorityRecord<TAddress>;
+): MaybeAccount<UseAuthorityRecord, TAddress>;
 export function decodeUseAuthorityRecord<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
-): UseAuthorityRecord<TAddress> | MaybeUseAuthorityRecord<TAddress> {
+):
+  | Account<UseAuthorityRecord, TAddress>
+  | MaybeAccount<UseAuthorityRecord, TAddress> {
   return decodeAccount(
     encodedAccount as MaybeEncodedAccount<TAddress>,
-    getUseAuthorityRecordAccountDataDecoder()
+    getUseAuthorityRecordDecoder()
   );
 }
 
@@ -102,7 +96,7 @@ export async function fetchUseAuthorityRecord<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<UseAuthorityRecord<TAddress>> {
+): Promise<Account<UseAuthorityRecord, TAddress>> {
   const maybeAccount = await fetchMaybeUseAuthorityRecord(rpc, address, config);
   assertAccountExists(maybeAccount);
   return maybeAccount;
@@ -114,7 +108,7 @@ export async function fetchMaybeUseAuthorityRecord<
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<MaybeUseAuthorityRecord<TAddress>> {
+): Promise<MaybeAccount<UseAuthorityRecord, TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   return decodeUseAuthorityRecord(maybeAccount);
 }
@@ -123,7 +117,7 @@ export async function fetchAllUseAuthorityRecord(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<UseAuthorityRecord[]> {
+): Promise<Account<UseAuthorityRecord>[]> {
   const maybeAccounts = await fetchAllMaybeUseAuthorityRecord(
     rpc,
     addresses,
@@ -137,7 +131,7 @@ export async function fetchAllMaybeUseAuthorityRecord(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<MaybeUseAuthorityRecord[]> {
+): Promise<MaybeAccount<UseAuthorityRecord>[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts.map((maybeAccount) =>
     decodeUseAuthorityRecord(maybeAccount)

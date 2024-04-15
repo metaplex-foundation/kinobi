@@ -41,24 +41,18 @@ import {
 } from '@solana/codecs';
 import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
-export type CollectionAuthorityRecord<TAddress extends string = string> =
-  Account<CollectionAuthorityRecordAccountData, TAddress>;
-
-export type MaybeCollectionAuthorityRecord<TAddress extends string = string> =
-  MaybeAccount<CollectionAuthorityRecordAccountData, TAddress>;
-
-export type CollectionAuthorityRecordAccountData = {
+export type CollectionAuthorityRecord = {
   key: TmKey;
   bump: number;
   updateAuthority: Option<Address>;
 };
 
-export type CollectionAuthorityRecordAccountDataArgs = {
+export type CollectionAuthorityRecordArgs = {
   bump: number;
   updateAuthority: OptionOrNullable<Address>;
 };
 
-export function getCollectionAuthorityRecordAccountDataEncoder(): Encoder<CollectionAuthorityRecordAccountDataArgs> {
+export function getCollectionAuthorityRecordEncoder(): Encoder<CollectionAuthorityRecordArgs> {
   return transformEncoder(
     getStructEncoder([
       ['key', getTmKeyEncoder()],
@@ -69,7 +63,7 @@ export function getCollectionAuthorityRecordAccountDataEncoder(): Encoder<Collec
   );
 }
 
-export function getCollectionAuthorityRecordAccountDataDecoder(): Decoder<CollectionAuthorityRecordAccountData> {
+export function getCollectionAuthorityRecordDecoder(): Decoder<CollectionAuthorityRecord> {
   return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['bump', getU8Decoder()],
@@ -77,13 +71,13 @@ export function getCollectionAuthorityRecordAccountDataDecoder(): Decoder<Collec
   ]);
 }
 
-export function getCollectionAuthorityRecordAccountDataCodec(): Codec<
-  CollectionAuthorityRecordAccountDataArgs,
-  CollectionAuthorityRecordAccountData
+export function getCollectionAuthorityRecordCodec(): Codec<
+  CollectionAuthorityRecordArgs,
+  CollectionAuthorityRecord
 > {
   return combineCodec(
-    getCollectionAuthorityRecordAccountDataEncoder(),
-    getCollectionAuthorityRecordAccountDataDecoder()
+    getCollectionAuthorityRecordEncoder(),
+    getCollectionAuthorityRecordDecoder()
   );
 }
 
@@ -91,22 +85,22 @@ export function decodeCollectionAuthorityRecord<
   TAddress extends string = string,
 >(
   encodedAccount: EncodedAccount<TAddress>
-): CollectionAuthorityRecord<TAddress>;
+): Account<CollectionAuthorityRecord, TAddress>;
 export function decodeCollectionAuthorityRecord<
   TAddress extends string = string,
 >(
   encodedAccount: MaybeEncodedAccount<TAddress>
-): MaybeCollectionAuthorityRecord<TAddress>;
+): MaybeAccount<CollectionAuthorityRecord, TAddress>;
 export function decodeCollectionAuthorityRecord<
   TAddress extends string = string,
 >(
   encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
 ):
-  | CollectionAuthorityRecord<TAddress>
-  | MaybeCollectionAuthorityRecord<TAddress> {
+  | Account<CollectionAuthorityRecord, TAddress>
+  | MaybeAccount<CollectionAuthorityRecord, TAddress> {
   return decodeAccount(
     encodedAccount as MaybeEncodedAccount<TAddress>,
-    getCollectionAuthorityRecordAccountDataDecoder()
+    getCollectionAuthorityRecordDecoder()
   );
 }
 
@@ -116,7 +110,7 @@ export async function fetchCollectionAuthorityRecord<
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<CollectionAuthorityRecord<TAddress>> {
+): Promise<Account<CollectionAuthorityRecord, TAddress>> {
   const maybeAccount = await fetchMaybeCollectionAuthorityRecord(
     rpc,
     address,
@@ -132,7 +126,7 @@ export async function fetchMaybeCollectionAuthorityRecord<
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<MaybeCollectionAuthorityRecord<TAddress>> {
+): Promise<MaybeAccount<CollectionAuthorityRecord, TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   return decodeCollectionAuthorityRecord(maybeAccount);
 }
@@ -141,7 +135,7 @@ export async function fetchAllCollectionAuthorityRecord(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<CollectionAuthorityRecord[]> {
+): Promise<Account<CollectionAuthorityRecord>[]> {
   const maybeAccounts = await fetchAllMaybeCollectionAuthorityRecord(
     rpc,
     addresses,
@@ -155,7 +149,7 @@ export async function fetchAllMaybeCollectionAuthorityRecord(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<MaybeCollectionAuthorityRecord[]> {
+): Promise<MaybeAccount<CollectionAuthorityRecord>[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts.map((maybeAccount) =>
     decodeCollectionAuthorityRecord(maybeAccount)

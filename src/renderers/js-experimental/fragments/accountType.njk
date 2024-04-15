@@ -1,8 +1,0 @@
-{% import "templates/macros.njk" as macros %}
-
-{{ macros.docblock(docs) }}
-export type {{ accountType }}<TAddress extends string = string> = Account<{{ dataName }}, TAddress>;
-
-export type {{ accountMaybeType }}<TAddress extends string = string> = MaybeAccount<{{ dataName }}, TAddress>;
-
-{{ typeWithCodec }}

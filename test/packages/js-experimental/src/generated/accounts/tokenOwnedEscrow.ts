@@ -45,28 +45,20 @@ import {
   getTmKeyEncoder,
 } from '../types';
 
-export type TokenOwnedEscrow<TAddress extends string = string> = Account<
-  TokenOwnedEscrowAccountData,
-  TAddress
->;
-
-export type MaybeTokenOwnedEscrow<TAddress extends string = string> =
-  MaybeAccount<TokenOwnedEscrowAccountData, TAddress>;
-
-export type TokenOwnedEscrowAccountData = {
+export type TokenOwnedEscrow = {
   key: TmKey;
   baseToken: Address;
   authority: EscrowAuthority;
   bump: number;
 };
 
-export type TokenOwnedEscrowAccountDataArgs = {
+export type TokenOwnedEscrowArgs = {
   baseToken: Address;
   authority: EscrowAuthorityArgs;
   bump: number;
 };
 
-export function getTokenOwnedEscrowAccountDataEncoder(): Encoder<TokenOwnedEscrowAccountDataArgs> {
+export function getTokenOwnedEscrowEncoder(): Encoder<TokenOwnedEscrowArgs> {
   return transformEncoder(
     getStructEncoder([
       ['key', getTmKeyEncoder()],
@@ -78,7 +70,7 @@ export function getTokenOwnedEscrowAccountDataEncoder(): Encoder<TokenOwnedEscro
   );
 }
 
-export function getTokenOwnedEscrowAccountDataDecoder(): Decoder<TokenOwnedEscrowAccountData> {
+export function getTokenOwnedEscrowDecoder(): Decoder<TokenOwnedEscrow> {
   return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['baseToken', getAddressDecoder()],
@@ -87,28 +79,30 @@ export function getTokenOwnedEscrowAccountDataDecoder(): Decoder<TokenOwnedEscro
   ]);
 }
 
-export function getTokenOwnedEscrowAccountDataCodec(): Codec<
-  TokenOwnedEscrowAccountDataArgs,
-  TokenOwnedEscrowAccountData
+export function getTokenOwnedEscrowCodec(): Codec<
+  TokenOwnedEscrowArgs,
+  TokenOwnedEscrow
 > {
   return combineCodec(
-    getTokenOwnedEscrowAccountDataEncoder(),
-    getTokenOwnedEscrowAccountDataDecoder()
+    getTokenOwnedEscrowEncoder(),
+    getTokenOwnedEscrowDecoder()
   );
 }
 
 export function decodeTokenOwnedEscrow<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>
-): TokenOwnedEscrow<TAddress>;
+): Account<TokenOwnedEscrow, TAddress>;
 export function decodeTokenOwnedEscrow<TAddress extends string = string>(
   encodedAccount: MaybeEncodedAccount<TAddress>
-): MaybeTokenOwnedEscrow<TAddress>;
+): MaybeAccount<TokenOwnedEscrow, TAddress>;
 export function decodeTokenOwnedEscrow<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
-): TokenOwnedEscrow<TAddress> | MaybeTokenOwnedEscrow<TAddress> {
+):
+  | Account<TokenOwnedEscrow, TAddress>
+  | MaybeAccount<TokenOwnedEscrow, TAddress> {
   return decodeAccount(
     encodedAccount as MaybeEncodedAccount<TAddress>,
-    getTokenOwnedEscrowAccountDataDecoder()
+    getTokenOwnedEscrowDecoder()
   );
 }
 
@@ -116,7 +110,7 @@ export async function fetchTokenOwnedEscrow<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<TokenOwnedEscrow<TAddress>> {
+): Promise<Account<TokenOwnedEscrow, TAddress>> {
   const maybeAccount = await fetchMaybeTokenOwnedEscrow(rpc, address, config);
   assertAccountExists(maybeAccount);
   return maybeAccount;
@@ -128,7 +122,7 @@ export async function fetchMaybeTokenOwnedEscrow<
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<MaybeTokenOwnedEscrow<TAddress>> {
+): Promise<MaybeAccount<TokenOwnedEscrow, TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   return decodeTokenOwnedEscrow(maybeAccount);
 }
@@ -137,7 +131,7 @@ export async function fetchAllTokenOwnedEscrow(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<TokenOwnedEscrow[]> {
+): Promise<Account<TokenOwnedEscrow>[]> {
   const maybeAccounts = await fetchAllMaybeTokenOwnedEscrow(
     rpc,
     addresses,
@@ -151,7 +145,7 @@ export async function fetchAllMaybeTokenOwnedEscrow(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<MaybeTokenOwnedEscrow[]> {
+): Promise<MaybeAccount<TokenOwnedEscrow>[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts.map((maybeAccount) =>
     decodeTokenOwnedEscrow(maybeAccount)

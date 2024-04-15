@@ -25,23 +25,17 @@ import {
   getReservationListV1AccountDataDecoder,
 } from '../../hooked';
 
-export type ReservationListV1<TAddress extends string = string> = Account<
-  ReservationListV1AccountData,
-  TAddress
->;
-
-export type MaybeReservationListV1<TAddress extends string = string> =
-  MaybeAccount<ReservationListV1AccountData, TAddress>;
-
 export function decodeReservationListV1<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>
-): ReservationListV1<TAddress>;
+): Account<ReservationListV1AccountData, TAddress>;
 export function decodeReservationListV1<TAddress extends string = string>(
   encodedAccount: MaybeEncodedAccount<TAddress>
-): MaybeReservationListV1<TAddress>;
+): MaybeAccount<ReservationListV1AccountData, TAddress>;
 export function decodeReservationListV1<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
-): ReservationListV1<TAddress> | MaybeReservationListV1<TAddress> {
+):
+  | Account<ReservationListV1AccountData, TAddress>
+  | MaybeAccount<ReservationListV1AccountData, TAddress> {
   return decodeAccount(
     encodedAccount as MaybeEncodedAccount<TAddress>,
     getReservationListV1AccountDataDecoder()
@@ -52,7 +46,7 @@ export async function fetchReservationListV1<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<ReservationListV1<TAddress>> {
+): Promise<Account<ReservationListV1AccountData, TAddress>> {
   const maybeAccount = await fetchMaybeReservationListV1(rpc, address, config);
   assertAccountExists(maybeAccount);
   return maybeAccount;
@@ -64,7 +58,7 @@ export async function fetchMaybeReservationListV1<
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<MaybeReservationListV1<TAddress>> {
+): Promise<MaybeAccount<ReservationListV1AccountData, TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   return decodeReservationListV1(maybeAccount);
 }
@@ -73,7 +67,7 @@ export async function fetchAllReservationListV1(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<ReservationListV1[]> {
+): Promise<Account<ReservationListV1AccountData>[]> {
   const maybeAccounts = await fetchAllMaybeReservationListV1(
     rpc,
     addresses,
@@ -87,7 +81,7 @@ export async function fetchAllMaybeReservationListV1(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<MaybeReservationListV1[]> {
+): Promise<MaybeAccount<ReservationListV1AccountData>[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts.map((maybeAccount) =>
     decodeReservationListV1(maybeAccount)
