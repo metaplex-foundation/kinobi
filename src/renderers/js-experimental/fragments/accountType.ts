@@ -11,11 +11,8 @@ export function getAccountTypeFragment(
   }
 ): Fragment {
   const { accountNode, typeManifest, nameApi, customAccountData } = scope;
-  const customData = customAccountData.get(accountNode.name);
 
-  if (customData) {
-    // TODO
-    // const dataNameFragment = typeManifest.strictType.clone();
+  if (customAccountData.has(accountNode.name)) {
     return fragment('');
   }
 
