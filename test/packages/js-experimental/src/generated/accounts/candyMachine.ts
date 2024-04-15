@@ -46,17 +46,7 @@ import {
   getCandyMachineDataEncoder,
 } from '../types';
 
-export type CandyMachine<TAddress extends string = string> = Account<
-  CandyMachineAccountData,
-  TAddress
->;
-
-export type MaybeCandyMachine<TAddress extends string = string> = MaybeAccount<
-  CandyMachineAccountData,
-  TAddress
->;
-
-export type CandyMachineAccountData = {
+export type CandyMachine = {
   discriminator: Array<number>;
   /** Features versioning flags. */
   features: bigint;
@@ -72,7 +62,7 @@ export type CandyMachineAccountData = {
   data: CandyMachineData;
 };
 
-export type CandyMachineAccountDataArgs = {
+export type CandyMachineArgs = {
   /** Features versioning flags. */
   features: number | bigint;
   /** Authority address. */
@@ -87,7 +77,7 @@ export type CandyMachineAccountDataArgs = {
   data: CandyMachineDataArgs;
 };
 
-export function getCandyMachineAccountDataEncoder(): Encoder<CandyMachineAccountDataArgs> {
+export function getCandyMachineEncoder(): Encoder<CandyMachineArgs> {
   return transformEncoder(
     getStructEncoder([
       ['discriminator', getArrayEncoder(getU8Encoder(), { size: 8 })],
@@ -105,7 +95,7 @@ export function getCandyMachineAccountDataEncoder(): Encoder<CandyMachineAccount
   );
 }
 
-export function getCandyMachineAccountDataDecoder(): Decoder<CandyMachineAccountData> {
+export function getCandyMachineDecoder(): Decoder<CandyMachine> {
   return getStructDecoder([
     ['discriminator', getArrayDecoder(getU8Decoder(), { size: 8 })],
     ['features', getU64Decoder()],
@@ -117,28 +107,22 @@ export function getCandyMachineAccountDataDecoder(): Decoder<CandyMachineAccount
   ]);
 }
 
-export function getCandyMachineAccountDataCodec(): Codec<
-  CandyMachineAccountDataArgs,
-  CandyMachineAccountData
-> {
-  return combineCodec(
-    getCandyMachineAccountDataEncoder(),
-    getCandyMachineAccountDataDecoder()
-  );
+export function getCandyMachineCodec(): Codec<CandyMachineArgs, CandyMachine> {
+  return combineCodec(getCandyMachineEncoder(), getCandyMachineDecoder());
 }
 
 export function decodeCandyMachine<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>
-): CandyMachine<TAddress>;
+): Account<CandyMachine, TAddress>;
 export function decodeCandyMachine<TAddress extends string = string>(
   encodedAccount: MaybeEncodedAccount<TAddress>
-): MaybeCandyMachine<TAddress>;
+): MaybeAccount<CandyMachine, TAddress>;
 export function decodeCandyMachine<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
-): CandyMachine<TAddress> | MaybeCandyMachine<TAddress> {
+): Account<CandyMachine, TAddress> | MaybeAccount<CandyMachine, TAddress> {
   return decodeAccount(
     encodedAccount as MaybeEncodedAccount<TAddress>,
-    getCandyMachineAccountDataDecoder()
+    getCandyMachineDecoder()
   );
 }
 
@@ -146,7 +130,7 @@ export async function fetchCandyMachine<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<CandyMachine<TAddress>> {
+): Promise<Account<CandyMachine, TAddress>> {
   const maybeAccount = await fetchMaybeCandyMachine(rpc, address, config);
   assertAccountExists(maybeAccount);
   return maybeAccount;
@@ -156,7 +140,7 @@ export async function fetchMaybeCandyMachine<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<MaybeCandyMachine<TAddress>> {
+): Promise<MaybeAccount<CandyMachine, TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   return decodeCandyMachine(maybeAccount);
 }
@@ -165,7 +149,7 @@ export async function fetchAllCandyMachine(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<CandyMachine[]> {
+): Promise<Account<CandyMachine>[]> {
   const maybeAccounts = await fetchAllMaybeCandyMachine(rpc, addresses, config);
   assertAccountsExist(maybeAccounts);
   return maybeAccounts;
@@ -175,7 +159,7 @@ export async function fetchAllMaybeCandyMachine(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<MaybeCandyMachine[]> {
+): Promise<MaybeAccount<CandyMachine>[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts.map((maybeAccount) => decodeCandyMachine(maybeAccount));
 }

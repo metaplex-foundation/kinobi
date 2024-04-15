@@ -37,28 +37,11 @@ import {
 } from '@solana/codecs';
 import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
-export type Edition<TAddress extends string = string> = Account<
-  EditionAccountData,
-  TAddress
->;
+export type Edition = { key: TmKey; parent: Address; edition: bigint };
 
-export type MaybeEdition<TAddress extends string = string> = MaybeAccount<
-  EditionAccountData,
-  TAddress
->;
+export type EditionArgs = { parent: Address; edition: number | bigint };
 
-export type EditionAccountData = {
-  key: TmKey;
-  parent: Address;
-  edition: bigint;
-};
-
-export type EditionAccountDataArgs = {
-  parent: Address;
-  edition: number | bigint;
-};
-
-export function getEditionAccountDataEncoder(): Encoder<EditionAccountDataArgs> {
+export function getEditionEncoder(): Encoder<EditionArgs> {
   return transformEncoder(
     getStructEncoder([
       ['key', getTmKeyEncoder()],
@@ -69,7 +52,7 @@ export function getEditionAccountDataEncoder(): Encoder<EditionAccountDataArgs> 
   );
 }
 
-export function getEditionAccountDataDecoder(): Decoder<EditionAccountData> {
+export function getEditionDecoder(): Decoder<Edition> {
   return getStructDecoder([
     ['key', getTmKeyDecoder()],
     ['parent', getAddressDecoder()],
@@ -77,28 +60,22 @@ export function getEditionAccountDataDecoder(): Decoder<EditionAccountData> {
   ]);
 }
 
-export function getEditionAccountDataCodec(): Codec<
-  EditionAccountDataArgs,
-  EditionAccountData
-> {
-  return combineCodec(
-    getEditionAccountDataEncoder(),
-    getEditionAccountDataDecoder()
-  );
+export function getEditionCodec(): Codec<EditionArgs, Edition> {
+  return combineCodec(getEditionEncoder(), getEditionDecoder());
 }
 
 export function decodeEdition<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>
-): Edition<TAddress>;
+): Account<Edition, TAddress>;
 export function decodeEdition<TAddress extends string = string>(
   encodedAccount: MaybeEncodedAccount<TAddress>
-): MaybeEdition<TAddress>;
+): MaybeAccount<Edition, TAddress>;
 export function decodeEdition<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
-): Edition<TAddress> | MaybeEdition<TAddress> {
+): Account<Edition, TAddress> | MaybeAccount<Edition, TAddress> {
   return decodeAccount(
     encodedAccount as MaybeEncodedAccount<TAddress>,
-    getEditionAccountDataDecoder()
+    getEditionDecoder()
   );
 }
 
@@ -106,7 +83,7 @@ export async function fetchEdition<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<Edition<TAddress>> {
+): Promise<Account<Edition, TAddress>> {
   const maybeAccount = await fetchMaybeEdition(rpc, address, config);
   assertAccountExists(maybeAccount);
   return maybeAccount;
@@ -116,7 +93,7 @@ export async function fetchMaybeEdition<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<MaybeEdition<TAddress>> {
+): Promise<MaybeAccount<Edition, TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   return decodeEdition(maybeAccount);
 }
@@ -125,7 +102,7 @@ export async function fetchAllEdition(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<Edition[]> {
+): Promise<Account<Edition>[]> {
   const maybeAccounts = await fetchAllMaybeEdition(rpc, addresses, config);
   assertAccountsExist(maybeAccounts);
   return maybeAccounts;
@@ -135,7 +112,7 @@ export async function fetchAllMaybeEdition(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<MaybeEdition[]> {
+): Promise<MaybeAccount<Edition>[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts.map((maybeAccount) => decodeEdition(maybeAccount));
 }

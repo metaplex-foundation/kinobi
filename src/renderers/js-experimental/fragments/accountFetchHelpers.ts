@@ -10,15 +10,13 @@ export function getAccountFetchHelpersFragment(
   }
 ): Fragment {
   const { accountNode, typeManifest, nameApi, customAccountData } = scope;
-  const accountDataName = nameApi.accountDataType(accountNode.name);
   const decoderFunctionFragment = customAccountData.has(accountNode.name)
     ? typeManifest.decoder.clone()
-    : fragment(`${nameApi.decoderFunction(accountDataName)}()`);
+    : fragment(`${nameApi.decoderFunction(accountNode.name)}()`);
 
   return fragmentFromTemplate('accountFetchHelpers.njk', {
     decoderFunction: decoderFunctionFragment.render,
-    accountType: nameApi.accountType(accountNode.name),
-    accountMaybeType: nameApi.accountMaybeType(accountNode.name),
+    accountType: nameApi.dataType(accountNode.name),
     decodeFunction: nameApi.accountDecodeFunction(accountNode.name),
     fetchFunction: nameApi.accountFetchFunction(accountNode.name),
     fetchMaybeFunction: nameApi.accountFetchMaybeFunction(accountNode.name),
@@ -30,6 +28,7 @@ export function getAccountFetchHelpersFragment(
     .mergeImportsWith(decoderFunctionFragment)
     .addImports('solanaAddresses', ['Address'])
     .addImports('solanaAccounts', [
+      'Account',
       'assertAccountExists',
       'assertAccountsExist',
       'decodeAccount',
@@ -38,6 +37,7 @@ export function getAccountFetchHelpersFragment(
       'fetchEncodedAccounts',
       'FetchAccountConfig',
       'FetchAccountsConfig',
+      'MaybeAccount',
       'MaybeEncodedAccount',
     ]);
 }

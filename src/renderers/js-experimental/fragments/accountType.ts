@@ -1,7 +1,7 @@
 import { AccountNode } from '../../../nodes';
 import { TypeManifest } from '../TypeManifest';
 import type { GlobalFragmentScope } from '../getRenderMapVisitor';
-import { Fragment, fragment, fragmentFromTemplate } from './common';
+import { Fragment, fragment } from './common';
 import { getTypeWithCodecFragment } from './typeWithCodec';
 
 export function getAccountTypeFragment(
@@ -12,25 +12,16 @@ export function getAccountTypeFragment(
 ): Fragment {
   const { accountNode, typeManifest, nameApi, customAccountData } = scope;
   const customData = customAccountData.get(accountNode.name);
-  const accountDataName = nameApi.accountDataType(accountNode.name);
-  const typeWithCodecFragment = customData
-    ? fragment('')
-    : getTypeWithCodecFragment({
-        name: accountDataName,
-        manifest: typeManifest,
-        nameApi,
-      });
 
-  const dataNameFragment = customData
-    ? typeManifest.strictType.clone()
-    : fragment(nameApi.dataType(accountDataName));
+  if (customData) {
+    // TODO
+    // const dataNameFragment = typeManifest.strictType.clone();
+    return fragment('');
+  }
 
-  return fragmentFromTemplate('accountType.njk', {
-    accountType: nameApi.accountType(accountNode.name),
-    accountMaybeType: nameApi.accountMaybeType(accountNode.name),
-    dataName: dataNameFragment.render,
-    typeWithCodec: typeWithCodecFragment,
-  })
-    .mergeImportsWith(dataNameFragment, typeWithCodecFragment)
-    .addImports('solanaAccounts', ['Account', 'MaybeAccount']);
+  return getTypeWithCodecFragment({
+    name: accountNode.name,
+    manifest: typeManifest,
+    nameApi,
+  });
 }

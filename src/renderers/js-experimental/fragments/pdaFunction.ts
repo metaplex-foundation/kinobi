@@ -36,7 +36,6 @@ export function getPdaFunctionFragment(
     pdaNode.seeds.filter(isNodeFilter('variablePdaSeedNode')).length > 0;
 
   return fragmentFromTemplate('pdaFunction.njk', {
-    accountType: nameApi.accountType(pdaNode.name),
     pdaSeedsType: nameApi.pdaSeedsType(pdaNode.name),
     findPdaFunction: nameApi.pdaFindFunction(pdaNode.name),
     program: programNode,

@@ -36,15 +36,7 @@ import {
 import { findFrequencyAccountPda } from '../pdas';
 import { TaKey } from '../types';
 
-export type FrequencyAccount<TAddress extends string = string> = Account<
-  FrequencyAccountAccountData,
-  TAddress
->;
-
-export type MaybeFrequencyAccount<TAddress extends string = string> =
-  MaybeAccount<FrequencyAccountAccountData, TAddress>;
-
-export type FrequencyAccountAccountData = {
+export type FrequencyAccount = {
   /** Test with only one line. */
   key: bigint;
   /**
@@ -55,7 +47,7 @@ export type FrequencyAccountAccountData = {
   period: bigint;
 };
 
-export type FrequencyAccountAccountDataArgs = {
+export type FrequencyAccountArgs = {
   /**
    * Test with multiple lines
    * and this is the second line.
@@ -64,7 +56,7 @@ export type FrequencyAccountAccountDataArgs = {
   period: number | bigint;
 };
 
-export function getFrequencyAccountAccountDataEncoder(): Encoder<FrequencyAccountAccountDataArgs> {
+export function getFrequencyAccountEncoder(): Encoder<FrequencyAccountArgs> {
   return transformEncoder(
     getStructEncoder([
       ['key', getU64Encoder()],
@@ -75,7 +67,7 @@ export function getFrequencyAccountAccountDataEncoder(): Encoder<FrequencyAccoun
   );
 }
 
-export function getFrequencyAccountAccountDataDecoder(): Decoder<FrequencyAccountAccountData> {
+export function getFrequencyAccountDecoder(): Decoder<FrequencyAccount> {
   return getStructDecoder([
     ['key', getU64Decoder()],
     ['lastUpdate', getI64Decoder()],
@@ -83,28 +75,30 @@ export function getFrequencyAccountAccountDataDecoder(): Decoder<FrequencyAccoun
   ]);
 }
 
-export function getFrequencyAccountAccountDataCodec(): Codec<
-  FrequencyAccountAccountDataArgs,
-  FrequencyAccountAccountData
+export function getFrequencyAccountCodec(): Codec<
+  FrequencyAccountArgs,
+  FrequencyAccount
 > {
   return combineCodec(
-    getFrequencyAccountAccountDataEncoder(),
-    getFrequencyAccountAccountDataDecoder()
+    getFrequencyAccountEncoder(),
+    getFrequencyAccountDecoder()
   );
 }
 
 export function decodeFrequencyAccount<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>
-): FrequencyAccount<TAddress>;
+): Account<FrequencyAccount, TAddress>;
 export function decodeFrequencyAccount<TAddress extends string = string>(
   encodedAccount: MaybeEncodedAccount<TAddress>
-): MaybeFrequencyAccount<TAddress>;
+): MaybeAccount<FrequencyAccount, TAddress>;
 export function decodeFrequencyAccount<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
-): FrequencyAccount<TAddress> | MaybeFrequencyAccount<TAddress> {
+):
+  | Account<FrequencyAccount, TAddress>
+  | MaybeAccount<FrequencyAccount, TAddress> {
   return decodeAccount(
     encodedAccount as MaybeEncodedAccount<TAddress>,
-    getFrequencyAccountAccountDataDecoder()
+    getFrequencyAccountDecoder()
   );
 }
 
@@ -112,7 +106,7 @@ export async function fetchFrequencyAccount<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<FrequencyAccount<TAddress>> {
+): Promise<Account<FrequencyAccount, TAddress>> {
   const maybeAccount = await fetchMaybeFrequencyAccount(rpc, address, config);
   assertAccountExists(maybeAccount);
   return maybeAccount;
@@ -124,7 +118,7 @@ export async function fetchMaybeFrequencyAccount<
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
   config?: FetchAccountConfig
-): Promise<MaybeFrequencyAccount<TAddress>> {
+): Promise<MaybeAccount<FrequencyAccount, TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   return decodeFrequencyAccount(maybeAccount);
 }
@@ -133,7 +127,7 @@ export async function fetchAllFrequencyAccount(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<FrequencyAccount[]> {
+): Promise<Account<FrequencyAccount>[]> {
   const maybeAccounts = await fetchAllMaybeFrequencyAccount(
     rpc,
     addresses,
@@ -147,7 +141,7 @@ export async function fetchAllMaybeFrequencyAccount(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
   config?: FetchAccountsConfig
-): Promise<MaybeFrequencyAccount[]> {
+): Promise<MaybeAccount<FrequencyAccount>[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts.map((maybeAccount) =>
     decodeFrequencyAccount(maybeAccount)
@@ -161,7 +155,7 @@ export function getFrequencyAccountSize(): number {
 export async function fetchFrequencyAccountFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   config: FetchAccountConfig & { programAddress?: Address } = {}
-): Promise<FrequencyAccount> {
+): Promise<Account<FrequencyAccount>> {
   const maybeAccount = await fetchMaybeFrequencyAccountFromSeeds(rpc, config);
   assertAccountExists(maybeAccount);
   return maybeAccount;
@@ -170,7 +164,7 @@ export async function fetchFrequencyAccountFromSeeds(
 export async function fetchMaybeFrequencyAccountFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   config: FetchAccountConfig & { programAddress?: Address } = {}
-): Promise<MaybeFrequencyAccount> {
+): Promise<MaybeAccount<FrequencyAccount>> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findFrequencyAccountPda({ programAddress });
   return await fetchMaybeFrequencyAccount(rpc, address, fetchConfig);
