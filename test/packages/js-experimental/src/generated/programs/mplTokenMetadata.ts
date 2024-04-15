@@ -8,12 +8,6 @@
 
 import { Address } from '@solana/addresses';
 import { containsBytes, getU8Encoder } from '@solana/codecs';
-import { Program, ProgramWithErrors } from '@solana/programs';
-import {
-  MplTokenMetadataProgramError,
-  MplTokenMetadataProgramErrorCode,
-  getMplTokenMetadataProgramErrorFromCode,
-} from '../errors';
 import {
   ParsedApproveCollectionAuthorityInstruction,
   ParsedApproveUseAuthorityInstruction,
@@ -72,23 +66,6 @@ import { TmKey, getTmKeyEncoder } from '../types';
 
 export const MPL_TOKEN_METADATA_PROGRAM_ADDRESS =
   'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' as Address<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'>;
-
-export type MplTokenMetadataProgram =
-  Program<'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'> &
-    ProgramWithErrors<
-      MplTokenMetadataProgramErrorCode,
-      MplTokenMetadataProgramError
-    >;
-
-export function getMplTokenMetadataProgram(): MplTokenMetadataProgram {
-  return {
-    name: 'mplTokenMetadata',
-    address: MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
-    getErrorFromCode(code: MplTokenMetadataProgramErrorCode, cause?: Error) {
-      return getMplTokenMetadataProgramErrorFromCode(code, cause);
-    },
-  };
-}
 
 export enum MplTokenMetadataAccount {
   CollectionAuthorityRecord,

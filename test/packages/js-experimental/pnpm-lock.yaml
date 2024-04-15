@@ -17,9 +17,6 @@ dependencies:
   '@solana/instructions':
     specifier: 2.0.0-preview.1.20240412114257.1882615a63943d158ad8ee86231f39d6f31763f2
     version: 2.0.0-preview.1.20240412114257.1882615a63943d158ad8ee86231f39d6f31763f2
-  '@solana/programs':
-    specifier: 2.0.0-preview.1.20240412114257.1882615a63943d158ad8ee86231f39d6f31763f2
-    version: 2.0.0-preview.1.20240412114257.1882615a63943d158ad8ee86231f39d6f31763f2
   '@solana/signers':
     specifier: 2.0.0-preview.1.20240412114257.1882615a63943d158ad8ee86231f39d6f31763f2
     version: 2.0.0-preview.1.20240412114257.1882615a63943d158ad8ee86231f39d6f31763f2(fastestsmallesttextencoderdecoder@1.0.22)
@@ -254,10 +251,6 @@ packages:
       '@solana/errors': 2.0.0-preview.1.20240412114257.1882615a63943d158ad8ee86231f39d6f31763f2
     transitivePeerDependencies:
       - fastestsmallesttextencoderdecoder
-    dev: false
-
-  /@solana/programs@2.0.0-preview.1.20240412114257.1882615a63943d158ad8ee86231f39d6f31763f2:
-    resolution: {integrity: sha512-f3gF9VUjw3/V24LJUtuohH9593E9Y+J8L8gwH4rOmtEq18zG13Kj97gwyLljNQ0aq9a/6DKpGnNgQtgTqe6Dxg==}
     dev: false
 
   /@solana/rpc-spec-types@2.0.0-preview.1.20240412114257.1882615a63943d158ad8ee86231f39d6f31763f2:

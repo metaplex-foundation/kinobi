@@ -7,21 +7,10 @@
  */
 
 import { Address } from '@solana/addresses';
-import { Program } from '@solana/programs';
 import { ParsedAddMemoInstruction } from '../instructions';
 
 export const SPL_MEMO_PROGRAM_ADDRESS =
   'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr' as Address<'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'>;
-
-export type SplMemoProgram =
-  Program<'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'>;
-
-export function getSplMemoProgram(): SplMemoProgram {
-  return {
-    name: 'splMemo',
-    address: SPL_MEMO_PROGRAM_ADDRESS,
-  };
-}
 
 export enum SplMemoInstruction {
   AddMemo,

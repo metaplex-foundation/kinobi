@@ -10,11 +10,13 @@ export function getProgramErrorsFragment(
   const { programNode, nameApi } = scope;
   return fragmentFromTemplate('programErrors.njk', {
     errors: programNode.errors,
-    programErrorClass: nameApi.programErrorClass(programNode.name),
-    programErrorCodeEnum: nameApi.programErrorCodeEnum(programNode.name),
-    programErrorCodeMap: nameApi.programErrorCodeMap(programNode.name),
-    programGetErrorFromCodeFunction: nameApi.programGetErrorFromCodeFunction(
+    programErrorUnion: nameApi.programErrorUnion(programNode.name),
+    programErrorMessagesMap: nameApi.programErrorMessagesMap(programNode.name),
+    programGetErrorMessageFunction: nameApi.programGetErrorMessageFunction(
       programNode.name
     ),
+    getProgramErrorConstant: (name: string) =>
+      nameApi.programErrorConstantPrefix(programNode.name) +
+      nameApi.programErrorConstant(name),
   });
 }

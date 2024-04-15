@@ -8,7 +8,6 @@
 
 import { Address } from '@solana/addresses';
 import { containsBytes, getU32Encoder } from '@solana/codecs';
-import { Program } from '@solana/programs';
 import {
   ParsedCreateAccountInstruction,
   ParsedTransferSolInstruction,
@@ -16,15 +15,6 @@ import {
 
 export const SPL_SYSTEM_PROGRAM_ADDRESS =
   '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
-
-export type SplSystemProgram = Program<'11111111111111111111111111111111'>;
-
-export function getSplSystemProgram(): SplSystemProgram {
-  return {
-    name: 'splSystem',
-    address: SPL_SYSTEM_PROGRAM_ADDRESS,
-  };
-}
 
 export enum SplSystemInstruction {
   CreateAccount,

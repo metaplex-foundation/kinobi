@@ -8,12 +8,6 @@
 
 import { Address } from '@solana/addresses';
 import { containsBytes } from '@solana/codecs';
-import { Program, ProgramWithErrors } from '@solana/programs';
-import {
-  MplCandyMachineCoreProgramError,
-  MplCandyMachineCoreProgramErrorCode,
-  getMplCandyMachineCoreProgramErrorFromCode,
-} from '../errors';
 import {
   ParsedAddConfigLinesInstruction,
   ParsedDummyInstruction,
@@ -28,23 +22,6 @@ import {
 
 export const MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS =
   'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
-
-export type MplCandyMachineCoreProgram =
-  Program<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'> &
-    ProgramWithErrors<
-      MplCandyMachineCoreProgramErrorCode,
-      MplCandyMachineCoreProgramError
-    >;
-
-export function getMplCandyMachineCoreProgram(): MplCandyMachineCoreProgram {
-  return {
-    name: 'mplCandyMachineCore',
-    address: MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS,
-    getErrorFromCode(code: MplCandyMachineCoreProgramErrorCode, cause?: Error) {
-      return getMplCandyMachineCoreProgramErrorFromCode(code, cause);
-    },
-  };
-}
 
 export enum MplCandyMachineCoreAccount {
   CandyMachine,
