@@ -6,35 +6,50 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-export const enum MplTokenAuthRulesProgramErrorCode {
-  /** NumericalOverflow: Numerical Overflow */
-  NUMERICAL_OVERFLOW = 0x0, // 0
-  /** DataTypeMismatch: Data type mismatch */
-  DATA_TYPE_MISMATCH = 0x1, // 1
-  /** IncorrectOwner: Incorrect account owner */
-  INCORRECT_OWNER = 0x2, // 2
-  /** PayloadVecIndexError: Could not index into PayloadVec */
-  PAYLOAD_VEC_INDEX_ERROR = 0x3, // 3
-  /** DerivedKeyInvalid: Derived key invalid */
-  DERIVED_KEY_INVALID = 0x4, // 4
-  /** AdditionalSignerCheckFailed: Additional Signer check failed */
-  ADDITIONAL_SIGNER_CHECK_FAILED = 0x5, // 5
-  /** PubkeyMatchCheckFailed: Pubkey Match check failed */
-  PUBKEY_MATCH_CHECK_FAILED = 0x6, // 6
-  /** DerivedKeyMatchCheckFailed: Derived Key Match check failed */
-  DERIVED_KEY_MATCH_CHECK_FAILED = 0x7, // 7
-  /** ProgramOwnedCheckFailed: Program Owned check failed */
-  PROGRAM_OWNED_CHECK_FAILED = 0x8, // 8
-  /** AmountCheckFailed: Amount checked failed */
-  AMOUNT_CHECK_FAILED = 0x9, // 9
-  /** FrequencyCheckFailed: Frequency check failed */
-  FREQUENCY_CHECK_FAILED = 0xa, // 10
-  /** PubkeyTreeMatchCheckFailed: Pubkey Tree Match check failed */
-  PUBKEY_TREE_MATCH_CHECK_FAILED = 0xb, // 11
-  /** PayerIsNotSigner: Payer is not a signer */
-  PAYER_IS_NOT_SIGNER = 0xc, // 12
-  /** NotImplemented */
-  NOT_IMPLEMENTED = 0xd, // 13
-  /** BorshSerializationError: Borsh Serialization Error */
-  BORSH_SERIALIZATION_ERROR = 0xe, // 14
-}
+/** NumericalOverflow: Numerical Overflow */
+export const MPL_TOKEN_AUTH_RULES_ERROR__NUMERICAL_OVERFLOW = 0x0; // 0
+/** DataTypeMismatch: Data type mismatch */
+export const MPL_TOKEN_AUTH_RULES_ERROR__DATA_TYPE_MISMATCH = 0x1; // 1
+/** IncorrectOwner: Incorrect account owner */
+export const MPL_TOKEN_AUTH_RULES_ERROR__INCORRECT_OWNER = 0x2; // 2
+/** PayloadVecIndexError: Could not index into PayloadVec */
+export const MPL_TOKEN_AUTH_RULES_ERROR__PAYLOAD_VEC_INDEX_ERROR = 0x3; // 3
+/** DerivedKeyInvalid: Derived key invalid */
+export const MPL_TOKEN_AUTH_RULES_ERROR__DERIVED_KEY_INVALID = 0x4; // 4
+/** AdditionalSignerCheckFailed: Additional Signer check failed */
+export const MPL_TOKEN_AUTH_RULES_ERROR__ADDITIONAL_SIGNER_CHECK_FAILED = 0x5; // 5
+/** PubkeyMatchCheckFailed: Pubkey Match check failed */
+export const MPL_TOKEN_AUTH_RULES_ERROR__PUBKEY_MATCH_CHECK_FAILED = 0x6; // 6
+/** DerivedKeyMatchCheckFailed: Derived Key Match check failed */
+export const MPL_TOKEN_AUTH_RULES_ERROR__DERIVED_KEY_MATCH_CHECK_FAILED = 0x7; // 7
+/** ProgramOwnedCheckFailed: Program Owned check failed */
+export const MPL_TOKEN_AUTH_RULES_ERROR__PROGRAM_OWNED_CHECK_FAILED = 0x8; // 8
+/** AmountCheckFailed: Amount checked failed */
+export const MPL_TOKEN_AUTH_RULES_ERROR__AMOUNT_CHECK_FAILED = 0x9; // 9
+/** FrequencyCheckFailed: Frequency check failed */
+export const MPL_TOKEN_AUTH_RULES_ERROR__FREQUENCY_CHECK_FAILED = 0xa; // 10
+/** PubkeyTreeMatchCheckFailed: Pubkey Tree Match check failed */
+export const MPL_TOKEN_AUTH_RULES_ERROR__PUBKEY_TREE_MATCH_CHECK_FAILED = 0xb; // 11
+/** PayerIsNotSigner: Payer is not a signer */
+export const MPL_TOKEN_AUTH_RULES_ERROR__PAYER_IS_NOT_SIGNER = 0xc; // 12
+/** NotImplemented */
+export const MPL_TOKEN_AUTH_RULES_ERROR__NOT_IMPLEMENTED = 0xd; // 13
+/** BorshSerializationError: Borsh Serialization Error */
+export const MPL_TOKEN_AUTH_RULES_ERROR__BORSH_SERIALIZATION_ERROR = 0xe; // 14
+
+export type MplTokenAuthRulesError =
+  | typeof MPL_TOKEN_AUTH_RULES_ERROR__NUMERICAL_OVERFLOW
+  | typeof MPL_TOKEN_AUTH_RULES_ERROR__DATA_TYPE_MISMATCH
+  | typeof MPL_TOKEN_AUTH_RULES_ERROR__INCORRECT_OWNER
+  | typeof MPL_TOKEN_AUTH_RULES_ERROR__PAYLOAD_VEC_INDEX_ERROR
+  | typeof MPL_TOKEN_AUTH_RULES_ERROR__DERIVED_KEY_INVALID
+  | typeof MPL_TOKEN_AUTH_RULES_ERROR__ADDITIONAL_SIGNER_CHECK_FAILED
+  | typeof MPL_TOKEN_AUTH_RULES_ERROR__PUBKEY_MATCH_CHECK_FAILED
+  | typeof MPL_TOKEN_AUTH_RULES_ERROR__DERIVED_KEY_MATCH_CHECK_FAILED
+  | typeof MPL_TOKEN_AUTH_RULES_ERROR__PROGRAM_OWNED_CHECK_FAILED
+  | typeof MPL_TOKEN_AUTH_RULES_ERROR__AMOUNT_CHECK_FAILED
+  | typeof MPL_TOKEN_AUTH_RULES_ERROR__FREQUENCY_CHECK_FAILED
+  | typeof MPL_TOKEN_AUTH_RULES_ERROR__PUBKEY_TREE_MATCH_CHECK_FAILED
+  | typeof MPL_TOKEN_AUTH_RULES_ERROR__PAYER_IS_NOT_SIGNER
+  | typeof MPL_TOKEN_AUTH_RULES_ERROR__NOT_IMPLEMENTED
+  | typeof MPL_TOKEN_AUTH_RULES_ERROR__BORSH_SERIALIZATION_ERROR;

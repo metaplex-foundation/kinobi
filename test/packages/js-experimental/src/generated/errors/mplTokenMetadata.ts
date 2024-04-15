@@ -6,307 +6,458 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-export const enum MplTokenMetadataProgramErrorCode {
-  /** InstructionUnpackError: Failed to unpack instruction data */
-  INSTRUCTION_UNPACK_ERROR = 0x0, // 0
-  /** InstructionPackError: Failed to pack instruction data */
-  INSTRUCTION_PACK_ERROR = 0x1, // 1
-  /** NotRentExempt: Lamport balance below rent-exempt threshold */
-  NOT_RENT_EXEMPT = 0x2, // 2
-  /** AlreadyInitialized: Already initialized */
-  ALREADY_INITIALIZED = 0x3, // 3
-  /** Uninitialized: Uninitialized */
-  UNINITIALIZED = 0x4, // 4
-  /** InvalidMetadataKey:  Metadata's key must match seed of ['metadata', program id, mint] provided */
-  INVALID_METADATA_KEY = 0x5, // 5
-  /** InvalidEditionKey: Edition's key must match seed of ['metadata', program id, name, 'edition'] provided */
-  INVALID_EDITION_KEY = 0x6, // 6
-  /** UpdateAuthorityIncorrect: Update Authority given does not match */
-  UPDATE_AUTHORITY_INCORRECT = 0x7, // 7
-  /** UpdateAuthorityIsNotSigner: Update Authority needs to be signer to update metadata */
-  UPDATE_AUTHORITY_IS_NOT_SIGNER = 0x8, // 8
-  /** NotMintAuthority: You must be the mint authority and signer on this transaction */
-  NOT_MINT_AUTHORITY = 0x9, // 9
-  /** InvalidMintAuthority: Mint authority provided does not match the authority on the mint */
-  INVALID_MINT_AUTHORITY = 0xa, // 10
-  /** NameTooLong: Name too long */
-  NAME_TOO_LONG = 0xb, // 11
-  /** SymbolTooLong: Symbol too long */
-  SYMBOL_TOO_LONG = 0xc, // 12
-  /** UriTooLong: URI too long */
-  URI_TOO_LONG = 0xd, // 13
-  /** UpdateAuthorityMustBeEqualToMetadataAuthorityAndSigner: Update authority must be equivalent to the metadata's authority and also signer of this transaction */
-  UPDATE_AUTHORITY_MUST_BE_EQUAL_TO_METADATA_AUTHORITY_AND_SIGNER = 0xe, // 14
-  /** MintMismatch: Mint given does not match mint on Metadata */
-  MINT_MISMATCH = 0xf, // 15
-  /** EditionsMustHaveExactlyOneToken: Editions must have exactly one token */
-  EDITIONS_MUST_HAVE_EXACTLY_ONE_TOKEN = 0x10, // 16
-  /** MaxEditionsMintedAlready: Maximum editions printed already */
-  MAX_EDITIONS_MINTED_ALREADY = 0x11, // 17
-  /** TokenMintToFailed: Token mint to failed */
-  TOKEN_MINT_TO_FAILED = 0x12, // 18
-  /** MasterRecordMismatch: The master edition record passed must match the master record on the edition given */
-  MASTER_RECORD_MISMATCH = 0x13, // 19
-  /** DestinationMintMismatch: The destination account does not have the right mint */
-  DESTINATION_MINT_MISMATCH = 0x14, // 20
-  /** EditionAlreadyMinted: An edition can only mint one of its kind! */
-  EDITION_ALREADY_MINTED = 0x15, // 21
-  /** PrintingMintDecimalsShouldBeZero: Printing mint decimals should be zero */
-  PRINTING_MINT_DECIMALS_SHOULD_BE_ZERO = 0x16, // 22
-  /** OneTimePrintingAuthorizationMintDecimalsShouldBeZero: OneTimePrintingAuthorization mint decimals should be zero */
-  ONE_TIME_PRINTING_AUTHORIZATION_MINT_DECIMALS_SHOULD_BE_ZERO = 0x17, // 23
-  /** EditionMintDecimalsShouldBeZero: EditionMintDecimalsShouldBeZero */
-  EDITION_MINT_DECIMALS_SHOULD_BE_ZERO = 0x18, // 24
-  /** TokenBurnFailed: Token burn failed */
-  TOKEN_BURN_FAILED = 0x19, // 25
-  /** TokenAccountOneTimeAuthMintMismatch: The One Time authorization mint does not match that on the token account! */
-  TOKEN_ACCOUNT_ONE_TIME_AUTH_MINT_MISMATCH = 0x1a, // 26
-  /** DerivedKeyInvalid: Derived key invalid */
-  DERIVED_KEY_INVALID = 0x1b, // 27
-  /** PrintingMintMismatch: The Printing mint does not match that on the master edition! */
-  PRINTING_MINT_MISMATCH = 0x1c, // 28
-  /** OneTimePrintingAuthMintMismatch: The One Time Printing Auth mint does not match that on the master edition! */
-  ONE_TIME_PRINTING_AUTH_MINT_MISMATCH = 0x1d, // 29
-  /** TokenAccountMintMismatch: The mint of the token account does not match the Printing mint! */
-  TOKEN_ACCOUNT_MINT_MISMATCH = 0x1e, // 30
-  /** TokenAccountMintMismatchV2: The mint of the token account does not match the master metadata mint! */
-  TOKEN_ACCOUNT_MINT_MISMATCH_V2 = 0x1f, // 31
-  /** NotEnoughTokens: Not enough tokens to mint a limited edition */
-  NOT_ENOUGH_TOKENS = 0x20, // 32
-  /** PrintingMintAuthorizationAccountMismatch: The mint on your authorization token holding account does not match your Printing mint! */
-  PRINTING_MINT_AUTHORIZATION_ACCOUNT_MISMATCH = 0x21, // 33
-  /** AuthorizationTokenAccountOwnerMismatch: The authorization token account has a different owner than the update authority for the master edition! */
-  AUTHORIZATION_TOKEN_ACCOUNT_OWNER_MISMATCH = 0x22, // 34
-  /** Disabled: This feature is currently disabled. */
-  DISABLED = 0x23, // 35
-  /** CreatorsTooLong: Creators list too long */
-  CREATORS_TOO_LONG = 0x24, // 36
-  /** CreatorsMustBeAtleastOne: Creators must be at least one if set */
-  CREATORS_MUST_BE_ATLEAST_ONE = 0x25, // 37
-  /** MustBeOneOfCreators: If using a creators array, you must be one of the creators listed */
-  MUST_BE_ONE_OF_CREATORS = 0x26, // 38
-  /** NoCreatorsPresentOnMetadata: This metadata does not have creators */
-  NO_CREATORS_PRESENT_ON_METADATA = 0x27, // 39
-  /** CreatorNotFound: This creator address was not found */
-  CREATOR_NOT_FOUND = 0x28, // 40
-  /** InvalidBasisPoints: Basis points cannot be more than 10000 */
-  INVALID_BASIS_POINTS = 0x29, // 41
-  /** PrimarySaleCanOnlyBeFlippedToTrue: Primary sale can only be flipped to true and is immutable */
-  PRIMARY_SALE_CAN_ONLY_BE_FLIPPED_TO_TRUE = 0x2a, // 42
-  /** OwnerMismatch: Owner does not match that on the account given */
-  OWNER_MISMATCH = 0x2b, // 43
-  /** NoBalanceInAccountForAuthorization: This account has no tokens to be used for authorization */
-  NO_BALANCE_IN_ACCOUNT_FOR_AUTHORIZATION = 0x2c, // 44
-  /** ShareTotalMustBe100: Share total must equal 100 for creator array */
-  SHARE_TOTAL_MUST_BE100 = 0x2d, // 45
-  /** ReservationExists: This reservation list already exists! */
-  RESERVATION_EXISTS = 0x2e, // 46
-  /** ReservationDoesNotExist: This reservation list does not exist! */
-  RESERVATION_DOES_NOT_EXIST = 0x2f, // 47
-  /** ReservationNotSet: This reservation list exists but was never set with reservations */
-  RESERVATION_NOT_SET = 0x30, // 48
-  /** ReservationAlreadyMade: This reservation list has already been set! */
-  RESERVATION_ALREADY_MADE = 0x31, // 49
-  /** BeyondMaxAddressSize: Provided more addresses than max allowed in single reservation */
-  BEYOND_MAX_ADDRESS_SIZE = 0x32, // 50
-  /** NumericalOverflowError: NumericalOverflowError */
-  NUMERICAL_OVERFLOW_ERROR = 0x33, // 51
-  /** ReservationBreachesMaximumSupply: This reservation would go beyond the maximum supply of the master edition! */
-  RESERVATION_BREACHES_MAXIMUM_SUPPLY = 0x34, // 52
-  /** AddressNotInReservation: Address not in reservation! */
-  ADDRESS_NOT_IN_RESERVATION = 0x35, // 53
-  /** CannotVerifyAnotherCreator: You cannot unilaterally verify another creator, they must sign */
-  CANNOT_VERIFY_ANOTHER_CREATOR = 0x36, // 54
-  /** CannotUnverifyAnotherCreator: You cannot unilaterally unverify another creator */
-  CANNOT_UNVERIFY_ANOTHER_CREATOR = 0x37, // 55
-  /** SpotMismatch: In initial reservation setting, spots remaining should equal total spots */
-  SPOT_MISMATCH = 0x38, // 56
-  /** IncorrectOwner: Incorrect account owner */
-  INCORRECT_OWNER = 0x39, // 57
-  /** PrintingWouldBreachMaximumSupply: printing these tokens would breach the maximum supply limit of the master edition */
-  PRINTING_WOULD_BREACH_MAXIMUM_SUPPLY = 0x3a, // 58
-  /** DataIsImmutable: Data is immutable */
-  DATA_IS_IMMUTABLE = 0x3b, // 59
-  /** DuplicateCreatorAddress: No duplicate creator addresses */
-  DUPLICATE_CREATOR_ADDRESS = 0x3c, // 60
-  /** ReservationSpotsRemainingShouldMatchTotalSpotsAtStart: Reservation spots remaining should match total spots when first being created */
-  RESERVATION_SPOTS_REMAINING_SHOULD_MATCH_TOTAL_SPOTS_AT_START = 0x3d, // 61
-  /** InvalidTokenProgram: Invalid token program */
-  INVALID_TOKEN_PROGRAM = 0x3e, // 62
-  /** DataTypeMismatch: Data type mismatch */
-  DATA_TYPE_MISMATCH = 0x3f, // 63
-  /** BeyondAlottedAddressSize: Beyond alotted address size in reservation! */
-  BEYOND_ALOTTED_ADDRESS_SIZE = 0x40, // 64
-  /** ReservationNotComplete: The reservation has only been partially alotted */
-  RESERVATION_NOT_COMPLETE = 0x41, // 65
-  /** TriedToReplaceAnExistingReservation: You cannot splice over an existing reservation! */
-  TRIED_TO_REPLACE_AN_EXISTING_RESERVATION = 0x42, // 66
-  /** InvalidOperation: Invalid operation */
-  INVALID_OPERATION = 0x43, // 67
-  /** InvalidOwner: Invalid Owner */
-  INVALID_OWNER = 0x44, // 68
-  /** PrintingMintSupplyMustBeZeroForConversion: Printing mint supply must be zero for conversion */
-  PRINTING_MINT_SUPPLY_MUST_BE_ZERO_FOR_CONVERSION = 0x45, // 69
-  /** OneTimeAuthMintSupplyMustBeZeroForConversion: One Time Auth mint supply must be zero for conversion */
-  ONE_TIME_AUTH_MINT_SUPPLY_MUST_BE_ZERO_FOR_CONVERSION = 0x46, // 70
-  /** InvalidEditionIndex: You tried to insert one edition too many into an edition mark pda */
-  INVALID_EDITION_INDEX = 0x47, // 71
-  /** ReservationArrayShouldBeSizeOne: In the legacy system the reservation needs to be of size one for cpu limit reasons */
-  RESERVATION_ARRAY_SHOULD_BE_SIZE_ONE = 0x48, // 72
-  /** IsMutableCanOnlyBeFlippedToFalse: Is Mutable can only be flipped to false */
-  IS_MUTABLE_CAN_ONLY_BE_FLIPPED_TO_FALSE = 0x49, // 73
-  /** CollectionCannotBeVerifiedInThisInstruction: Collection cannot be verified in this instruction */
-  COLLECTION_CANNOT_BE_VERIFIED_IN_THIS_INSTRUCTION = 0x4a, // 74
-  /** Removed: This instruction was deprecated in a previous release and is now removed */
-  REMOVED = 0x4b, // 75
-  /** MustBeBurned: This token use method is burn and there are no remaining uses, it must be burned */
-  MUST_BE_BURNED = 0x4c, // 76
-  /** InvalidUseMethod: This use method is invalid */
-  INVALID_USE_METHOD = 0x4d, // 77
-  /** CannotChangeUseMethodAfterFirstUse: Cannot Change Use Method after the first use */
-  CANNOT_CHANGE_USE_METHOD_AFTER_FIRST_USE = 0x4e, // 78
-  /** CannotChangeUsesAfterFirstUse: Cannot Change Remaining or Available uses after the first use */
-  CANNOT_CHANGE_USES_AFTER_FIRST_USE = 0x4f, // 79
-  /** CollectionNotFound: Collection Not Found on Metadata */
-  COLLECTION_NOT_FOUND = 0x50, // 80
-  /** InvalidCollectionUpdateAuthority: Collection Update Authority is invalid */
-  INVALID_COLLECTION_UPDATE_AUTHORITY = 0x51, // 81
-  /** CollectionMustBeAUniqueMasterEdition: Collection Must Be a Unique Master Edition v2 */
-  COLLECTION_MUST_BE_A_UNIQUE_MASTER_EDITION = 0x52, // 82
-  /** UseAuthorityRecordAlreadyExists: The Use Authority Record Already Exists, to modify it Revoke, then Approve */
-  USE_AUTHORITY_RECORD_ALREADY_EXISTS = 0x53, // 83
-  /** UseAuthorityRecordAlreadyRevoked: The Use Authority Record is empty or already revoked */
-  USE_AUTHORITY_RECORD_ALREADY_REVOKED = 0x54, // 84
-  /** Unusable: This token has no uses */
-  UNUSABLE = 0x55, // 85
-  /** NotEnoughUses: There are not enough Uses left on this token. */
-  NOT_ENOUGH_USES = 0x56, // 86
-  /** CollectionAuthorityRecordAlreadyExists: This Collection Authority Record Already Exists. */
-  COLLECTION_AUTHORITY_RECORD_ALREADY_EXISTS = 0x57, // 87
-  /** CollectionAuthorityDoesNotExist: This Collection Authority Record Does Not Exist. */
-  COLLECTION_AUTHORITY_DOES_NOT_EXIST = 0x58, // 88
-  /** InvalidUseAuthorityRecord: This Use Authority Record is invalid. */
-  INVALID_USE_AUTHORITY_RECORD = 0x59, // 89
-  /** InvalidCollectionAuthorityRecord: This Collection Authority Record is invalid. */
-  INVALID_COLLECTION_AUTHORITY_RECORD = 0x5a, // 90
-  /** InvalidFreezeAuthority: Metadata does not match the freeze authority on the mint */
-  INVALID_FREEZE_AUTHORITY = 0x5b, // 91
-  /** InvalidDelegate: All tokens in this account have not been delegated to this user. */
-  INVALID_DELEGATE = 0x5c, // 92
-  /** CannotAdjustVerifiedCreator: Creator can not be adjusted once they are verified. */
-  CANNOT_ADJUST_VERIFIED_CREATOR = 0x5d, // 93
-  /** CannotRemoveVerifiedCreator: Verified creators cannot be removed. */
-  CANNOT_REMOVE_VERIFIED_CREATOR = 0x5e, // 94
-  /** CannotWipeVerifiedCreators: Can not wipe verified creators. */
-  CANNOT_WIPE_VERIFIED_CREATORS = 0x5f, // 95
-  /** NotAllowedToChangeSellerFeeBasisPoints: Not allowed to change seller fee basis points. */
-  NOT_ALLOWED_TO_CHANGE_SELLER_FEE_BASIS_POINTS = 0x60, // 96
-  /** EditionOverrideCannotBeZero: Edition override cannot be zero */
-  EDITION_OVERRIDE_CANNOT_BE_ZERO = 0x61, // 97
-  /** InvalidUser: Invalid User */
-  INVALID_USER = 0x62, // 98
-  /** RevokeCollectionAuthoritySignerIncorrect: Revoke Collection Authority signer is incorrect */
-  REVOKE_COLLECTION_AUTHORITY_SIGNER_INCORRECT = 0x63, // 99
-  /** TokenCloseFailed: Token close failed */
-  TOKEN_CLOSE_FAILED = 0x64, // 100
-  /** UnsizedCollection: Can't use this function on unsized collection */
-  UNSIZED_COLLECTION = 0x65, // 101
-  /** SizedCollection: Can't use this function on a sized collection */
-  SIZED_COLLECTION = 0x66, // 102
-  /** MissingCollectionMetadata: Can't burn a verified member of a collection w/o providing collection metadata account */
-  MISSING_COLLECTION_METADATA = 0x67, // 103
-  /** NotAMemberOfCollection: This NFT is not a member of the specified collection. */
-  NOT_A_MEMBER_OF_COLLECTION = 0x68, // 104
-  /** NotVerifiedMemberOfCollection: This NFT is not a verified member of the specified collection. */
-  NOT_VERIFIED_MEMBER_OF_COLLECTION = 0x69, // 105
-  /** NotACollectionParent: This NFT is not a collection parent NFT. */
-  NOT_A_COLLECTION_PARENT = 0x6a, // 106
-  /** CouldNotDetermineTokenStandard: Could not determine a TokenStandard type. */
-  COULD_NOT_DETERMINE_TOKEN_STANDARD = 0x6b, // 107
-  /** MissingEditionAccount: This mint account has an edition but none was provided. */
-  MISSING_EDITION_ACCOUNT = 0x6c, // 108
-  /** NotAMasterEdition: This edition is not a Master Edition */
-  NOT_A_MASTER_EDITION = 0x6d, // 109
-  /** MasterEditionHasPrints: This Master Edition has existing prints */
-  MASTER_EDITION_HAS_PRINTS = 0x6e, // 110
-  /** BorshDeserializationError: Borsh Deserialization Error */
-  BORSH_DESERIALIZATION_ERROR = 0x6f, // 111
-  /** CannotUpdateVerifiedCollection: Cannot update a verified collection in this command */
-  CANNOT_UPDATE_VERIFIED_COLLECTION = 0x70, // 112
-  /** CollectionMasterEditionAccountInvalid: Edition account doesnt match collection  */
-  COLLECTION_MASTER_EDITION_ACCOUNT_INVALID = 0x71, // 113
-  /** AlreadyVerified: Item is already verified. */
-  ALREADY_VERIFIED = 0x72, // 114
-  /** AlreadyUnverified: Item is already unverified. */
-  ALREADY_UNVERIFIED = 0x73, // 115
-  /** NotAPrintEdition: This edition is not a Print Edition */
-  NOT_A_PRINT_EDITION = 0x74, // 116
-  /** InvalidMasterEdition: Invalid Master Edition */
-  INVALID_MASTER_EDITION = 0x75, // 117
-  /** InvalidPrintEdition: Invalid Print Edition */
-  INVALID_PRINT_EDITION = 0x76, // 118
-  /** InvalidEditionMarker: Invalid Edition Marker */
-  INVALID_EDITION_MARKER = 0x77, // 119
-  /** ReservationListDeprecated: Reservation List is Deprecated */
-  RESERVATION_LIST_DEPRECATED = 0x78, // 120
-  /** PrintEditionDoesNotMatchMasterEdition: Print Edition does not match Master Edition */
-  PRINT_EDITION_DOES_NOT_MATCH_MASTER_EDITION = 0x79, // 121
-  /** EditionNumberGreaterThanMaxSupply: Edition Number greater than max supply */
-  EDITION_NUMBER_GREATER_THAN_MAX_SUPPLY = 0x7a, // 122
-  /** MustUnverify: Must unverify before migrating collections. */
-  MUST_UNVERIFY = 0x7b, // 123
-  /** InvalidEscrowBumpSeed: Invalid Escrow Account Bump Seed */
-  INVALID_ESCROW_BUMP_SEED = 0x7c, // 124
-  /** MustBeEscrowAuthority: Must Escrow Authority */
-  MUST_BE_ESCROW_AUTHORITY = 0x7d, // 125
-  /** InvalidSystemProgram: Invalid System Program */
-  INVALID_SYSTEM_PROGRAM = 0x7e, // 126
-  /** MustBeNonFungible: Must be a Non Fungible Token */
-  MUST_BE_NON_FUNGIBLE = 0x7f, // 127
-  /** InsufficientTokens: Insufficient tokens for transfer */
-  INSUFFICIENT_TOKENS = 0x80, // 128
-  /** BorshSerializationError: Borsh Serialization Error */
-  BORSH_SERIALIZATION_ERROR = 0x81, // 129
-  /** NoFreezeAuthoritySet: Cannot create NFT with no Freeze Authority. */
-  NO_FREEZE_AUTHORITY_SET = 0x82, // 130
-  /** InvalidCollectionSizeChange: Invalid collection size change */
-  INVALID_COLLECTION_SIZE_CHANGE = 0x83, // 131
-  /** InvalidBubblegumSigner: Invalid bubblegum signer */
-  INVALID_BUBBLEGUM_SIGNER = 0x84, // 132
-  /** MintIsNotSigner: Mint needs to be signer to initialize the account */
-  MINT_IS_NOT_SIGNER = 0x85, // 133
-  /** InvalidTokenStandard: Invalid token standard */
-  INVALID_TOKEN_STANDARD = 0x86, // 134
-  /** InvalidMintForTokenStandard: Invalid mint account for specified token standard */
-  INVALID_MINT_FOR_TOKEN_STANDARD = 0x87, // 135
-  /** InvalidAuthorizationRules: Invalid authorization rules account */
-  INVALID_AUTHORIZATION_RULES = 0x88, // 136
-  /** MissingAuthorizationRules: Missing authorization rules account */
-  MISSING_AUTHORIZATION_RULES = 0x89, // 137
-  /** MissingProgrammableConfig: Missing programmable configuration */
-  MISSING_PROGRAMMABLE_CONFIG = 0x8a, // 138
-  /** InvalidProgrammableConfig: Invalid programmable configuration */
-  INVALID_PROGRAMMABLE_CONFIG = 0x8b, // 139
-  /** DelegateAlreadyExists: Delegate already exists */
-  DELEGATE_ALREADY_EXISTS = 0x8c, // 140
-  /** DelegateNotFound: Delegate not found */
-  DELEGATE_NOT_FOUND = 0x8d, // 141
-  /** MissingAccountInBuilder: Required account not set in instruction builder */
-  MISSING_ACCOUNT_IN_BUILDER = 0x8e, // 142
-  /** MissingArgumentInBuilder: Required argument not set in instruction builder */
-  MISSING_ARGUMENT_IN_BUILDER = 0x8f, // 143
-  /** FeatureNotSupported: Feature not supported currently */
-  FEATURE_NOT_SUPPORTED = 0x90, // 144
-  /** InvalidSystemWallet: Invalid system wallet */
-  INVALID_SYSTEM_WALLET = 0x91, // 145
-  /** OnlySaleDelegateCanTransfer: Only the sale delegate can transfer while its set */
-  ONLY_SALE_DELEGATE_CAN_TRANSFER = 0x92, // 146
-  /** MissingTokenAccount: Missing token account */
-  MISSING_TOKEN_ACCOUNT = 0x93, // 147
-  /** MissingSplTokenProgram: Missing SPL token program */
-  MISSING_SPL_TOKEN_PROGRAM = 0x94, // 148
-  /** MissingAuthorizationRulesProgram: Missing SPL token program */
-  MISSING_AUTHORIZATION_RULES_PROGRAM = 0x95, // 149
-  /** InvalidDelegateRoleForTransfer: Invalid delegate role for transfer */
-  INVALID_DELEGATE_ROLE_FOR_TRANSFER = 0x96, // 150
-}
+/** InstructionUnpackError: Failed to unpack instruction data */
+export const MPL_TOKEN_METADATA_ERROR__INSTRUCTION_UNPACK_ERROR = 0x0; // 0
+/** InstructionPackError: Failed to pack instruction data */
+export const MPL_TOKEN_METADATA_ERROR__INSTRUCTION_PACK_ERROR = 0x1; // 1
+/** NotRentExempt: Lamport balance below rent-exempt threshold */
+export const MPL_TOKEN_METADATA_ERROR__NOT_RENT_EXEMPT = 0x2; // 2
+/** AlreadyInitialized: Already initialized */
+export const MPL_TOKEN_METADATA_ERROR__ALREADY_INITIALIZED = 0x3; // 3
+/** Uninitialized: Uninitialized */
+export const MPL_TOKEN_METADATA_ERROR__UNINITIALIZED = 0x4; // 4
+/** InvalidMetadataKey:  Metadata's key must match seed of ['metadata', program id, mint] provided */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_METADATA_KEY = 0x5; // 5
+/** InvalidEditionKey: Edition's key must match seed of ['metadata', program id, name, 'edition'] provided */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_EDITION_KEY = 0x6; // 6
+/** UpdateAuthorityIncorrect: Update Authority given does not match */
+export const MPL_TOKEN_METADATA_ERROR__UPDATE_AUTHORITY_INCORRECT = 0x7; // 7
+/** UpdateAuthorityIsNotSigner: Update Authority needs to be signer to update metadata */
+export const MPL_TOKEN_METADATA_ERROR__UPDATE_AUTHORITY_IS_NOT_SIGNER = 0x8; // 8
+/** NotMintAuthority: You must be the mint authority and signer on this transaction */
+export const MPL_TOKEN_METADATA_ERROR__NOT_MINT_AUTHORITY = 0x9; // 9
+/** InvalidMintAuthority: Mint authority provided does not match the authority on the mint */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_MINT_AUTHORITY = 0xa; // 10
+/** NameTooLong: Name too long */
+export const MPL_TOKEN_METADATA_ERROR__NAME_TOO_LONG = 0xb; // 11
+/** SymbolTooLong: Symbol too long */
+export const MPL_TOKEN_METADATA_ERROR__SYMBOL_TOO_LONG = 0xc; // 12
+/** UriTooLong: URI too long */
+export const MPL_TOKEN_METADATA_ERROR__URI_TOO_LONG = 0xd; // 13
+/** UpdateAuthorityMustBeEqualToMetadataAuthorityAndSigner: Update authority must be equivalent to the metadata's authority and also signer of this transaction */
+export const MPL_TOKEN_METADATA_ERROR__UPDATE_AUTHORITY_MUST_BE_EQUAL_TO_METADATA_AUTHORITY_AND_SIGNER = 0xe; // 14
+/** MintMismatch: Mint given does not match mint on Metadata */
+export const MPL_TOKEN_METADATA_ERROR__MINT_MISMATCH = 0xf; // 15
+/** EditionsMustHaveExactlyOneToken: Editions must have exactly one token */
+export const MPL_TOKEN_METADATA_ERROR__EDITIONS_MUST_HAVE_EXACTLY_ONE_TOKEN = 0x10; // 16
+/** MaxEditionsMintedAlready: Maximum editions printed already */
+export const MPL_TOKEN_METADATA_ERROR__MAX_EDITIONS_MINTED_ALREADY = 0x11; // 17
+/** TokenMintToFailed: Token mint to failed */
+export const MPL_TOKEN_METADATA_ERROR__TOKEN_MINT_TO_FAILED = 0x12; // 18
+/** MasterRecordMismatch: The master edition record passed must match the master record on the edition given */
+export const MPL_TOKEN_METADATA_ERROR__MASTER_RECORD_MISMATCH = 0x13; // 19
+/** DestinationMintMismatch: The destination account does not have the right mint */
+export const MPL_TOKEN_METADATA_ERROR__DESTINATION_MINT_MISMATCH = 0x14; // 20
+/** EditionAlreadyMinted: An edition can only mint one of its kind! */
+export const MPL_TOKEN_METADATA_ERROR__EDITION_ALREADY_MINTED = 0x15; // 21
+/** PrintingMintDecimalsShouldBeZero: Printing mint decimals should be zero */
+export const MPL_TOKEN_METADATA_ERROR__PRINTING_MINT_DECIMALS_SHOULD_BE_ZERO = 0x16; // 22
+/** OneTimePrintingAuthorizationMintDecimalsShouldBeZero: OneTimePrintingAuthorization mint decimals should be zero */
+export const MPL_TOKEN_METADATA_ERROR__ONE_TIME_PRINTING_AUTHORIZATION_MINT_DECIMALS_SHOULD_BE_ZERO = 0x17; // 23
+/** EditionMintDecimalsShouldBeZero: EditionMintDecimalsShouldBeZero */
+export const MPL_TOKEN_METADATA_ERROR__EDITION_MINT_DECIMALS_SHOULD_BE_ZERO = 0x18; // 24
+/** TokenBurnFailed: Token burn failed */
+export const MPL_TOKEN_METADATA_ERROR__TOKEN_BURN_FAILED = 0x19; // 25
+/** TokenAccountOneTimeAuthMintMismatch: The One Time authorization mint does not match that on the token account! */
+export const MPL_TOKEN_METADATA_ERROR__TOKEN_ACCOUNT_ONE_TIME_AUTH_MINT_MISMATCH = 0x1a; // 26
+/** DerivedKeyInvalid: Derived key invalid */
+export const MPL_TOKEN_METADATA_ERROR__DERIVED_KEY_INVALID = 0x1b; // 27
+/** PrintingMintMismatch: The Printing mint does not match that on the master edition! */
+export const MPL_TOKEN_METADATA_ERROR__PRINTING_MINT_MISMATCH = 0x1c; // 28
+/** OneTimePrintingAuthMintMismatch: The One Time Printing Auth mint does not match that on the master edition! */
+export const MPL_TOKEN_METADATA_ERROR__ONE_TIME_PRINTING_AUTH_MINT_MISMATCH = 0x1d; // 29
+/** TokenAccountMintMismatch: The mint of the token account does not match the Printing mint! */
+export const MPL_TOKEN_METADATA_ERROR__TOKEN_ACCOUNT_MINT_MISMATCH = 0x1e; // 30
+/** TokenAccountMintMismatchV2: The mint of the token account does not match the master metadata mint! */
+export const MPL_TOKEN_METADATA_ERROR__TOKEN_ACCOUNT_MINT_MISMATCH_V2 = 0x1f; // 31
+/** NotEnoughTokens: Not enough tokens to mint a limited edition */
+export const MPL_TOKEN_METADATA_ERROR__NOT_ENOUGH_TOKENS = 0x20; // 32
+/** PrintingMintAuthorizationAccountMismatch: The mint on your authorization token holding account does not match your Printing mint! */
+export const MPL_TOKEN_METADATA_ERROR__PRINTING_MINT_AUTHORIZATION_ACCOUNT_MISMATCH = 0x21; // 33
+/** AuthorizationTokenAccountOwnerMismatch: The authorization token account has a different owner than the update authority for the master edition! */
+export const MPL_TOKEN_METADATA_ERROR__AUTHORIZATION_TOKEN_ACCOUNT_OWNER_MISMATCH = 0x22; // 34
+/** Disabled: This feature is currently disabled. */
+export const MPL_TOKEN_METADATA_ERROR__DISABLED = 0x23; // 35
+/** CreatorsTooLong: Creators list too long */
+export const MPL_TOKEN_METADATA_ERROR__CREATORS_TOO_LONG = 0x24; // 36
+/** CreatorsMustBeAtleastOne: Creators must be at least one if set */
+export const MPL_TOKEN_METADATA_ERROR__CREATORS_MUST_BE_ATLEAST_ONE = 0x25; // 37
+/** MustBeOneOfCreators: If using a creators array, you must be one of the creators listed */
+export const MPL_TOKEN_METADATA_ERROR__MUST_BE_ONE_OF_CREATORS = 0x26; // 38
+/** NoCreatorsPresentOnMetadata: This metadata does not have creators */
+export const MPL_TOKEN_METADATA_ERROR__NO_CREATORS_PRESENT_ON_METADATA = 0x27; // 39
+/** CreatorNotFound: This creator address was not found */
+export const MPL_TOKEN_METADATA_ERROR__CREATOR_NOT_FOUND = 0x28; // 40
+/** InvalidBasisPoints: Basis points cannot be more than 10000 */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_BASIS_POINTS = 0x29; // 41
+/** PrimarySaleCanOnlyBeFlippedToTrue: Primary sale can only be flipped to true and is immutable */
+export const MPL_TOKEN_METADATA_ERROR__PRIMARY_SALE_CAN_ONLY_BE_FLIPPED_TO_TRUE = 0x2a; // 42
+/** OwnerMismatch: Owner does not match that on the account given */
+export const MPL_TOKEN_METADATA_ERROR__OWNER_MISMATCH = 0x2b; // 43
+/** NoBalanceInAccountForAuthorization: This account has no tokens to be used for authorization */
+export const MPL_TOKEN_METADATA_ERROR__NO_BALANCE_IN_ACCOUNT_FOR_AUTHORIZATION = 0x2c; // 44
+/** ShareTotalMustBe100: Share total must equal 100 for creator array */
+export const MPL_TOKEN_METADATA_ERROR__SHARE_TOTAL_MUST_BE100 = 0x2d; // 45
+/** ReservationExists: This reservation list already exists! */
+export const MPL_TOKEN_METADATA_ERROR__RESERVATION_EXISTS = 0x2e; // 46
+/** ReservationDoesNotExist: This reservation list does not exist! */
+export const MPL_TOKEN_METADATA_ERROR__RESERVATION_DOES_NOT_EXIST = 0x2f; // 47
+/** ReservationNotSet: This reservation list exists but was never set with reservations */
+export const MPL_TOKEN_METADATA_ERROR__RESERVATION_NOT_SET = 0x30; // 48
+/** ReservationAlreadyMade: This reservation list has already been set! */
+export const MPL_TOKEN_METADATA_ERROR__RESERVATION_ALREADY_MADE = 0x31; // 49
+/** BeyondMaxAddressSize: Provided more addresses than max allowed in single reservation */
+export const MPL_TOKEN_METADATA_ERROR__BEYOND_MAX_ADDRESS_SIZE = 0x32; // 50
+/** NumericalOverflowError: NumericalOverflowError */
+export const MPL_TOKEN_METADATA_ERROR__NUMERICAL_OVERFLOW_ERROR = 0x33; // 51
+/** ReservationBreachesMaximumSupply: This reservation would go beyond the maximum supply of the master edition! */
+export const MPL_TOKEN_METADATA_ERROR__RESERVATION_BREACHES_MAXIMUM_SUPPLY = 0x34; // 52
+/** AddressNotInReservation: Address not in reservation! */
+export const MPL_TOKEN_METADATA_ERROR__ADDRESS_NOT_IN_RESERVATION = 0x35; // 53
+/** CannotVerifyAnotherCreator: You cannot unilaterally verify another creator, they must sign */
+export const MPL_TOKEN_METADATA_ERROR__CANNOT_VERIFY_ANOTHER_CREATOR = 0x36; // 54
+/** CannotUnverifyAnotherCreator: You cannot unilaterally unverify another creator */
+export const MPL_TOKEN_METADATA_ERROR__CANNOT_UNVERIFY_ANOTHER_CREATOR = 0x37; // 55
+/** SpotMismatch: In initial reservation setting, spots remaining should equal total spots */
+export const MPL_TOKEN_METADATA_ERROR__SPOT_MISMATCH = 0x38; // 56
+/** IncorrectOwner: Incorrect account owner */
+export const MPL_TOKEN_METADATA_ERROR__INCORRECT_OWNER = 0x39; // 57
+/** PrintingWouldBreachMaximumSupply: printing these tokens would breach the maximum supply limit of the master edition */
+export const MPL_TOKEN_METADATA_ERROR__PRINTING_WOULD_BREACH_MAXIMUM_SUPPLY = 0x3a; // 58
+/** DataIsImmutable: Data is immutable */
+export const MPL_TOKEN_METADATA_ERROR__DATA_IS_IMMUTABLE = 0x3b; // 59
+/** DuplicateCreatorAddress: No duplicate creator addresses */
+export const MPL_TOKEN_METADATA_ERROR__DUPLICATE_CREATOR_ADDRESS = 0x3c; // 60
+/** ReservationSpotsRemainingShouldMatchTotalSpotsAtStart: Reservation spots remaining should match total spots when first being created */
+export const MPL_TOKEN_METADATA_ERROR__RESERVATION_SPOTS_REMAINING_SHOULD_MATCH_TOTAL_SPOTS_AT_START = 0x3d; // 61
+/** InvalidTokenProgram: Invalid token program */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_TOKEN_PROGRAM = 0x3e; // 62
+/** DataTypeMismatch: Data type mismatch */
+export const MPL_TOKEN_METADATA_ERROR__DATA_TYPE_MISMATCH = 0x3f; // 63
+/** BeyondAlottedAddressSize: Beyond alotted address size in reservation! */
+export const MPL_TOKEN_METADATA_ERROR__BEYOND_ALOTTED_ADDRESS_SIZE = 0x40; // 64
+/** ReservationNotComplete: The reservation has only been partially alotted */
+export const MPL_TOKEN_METADATA_ERROR__RESERVATION_NOT_COMPLETE = 0x41; // 65
+/** TriedToReplaceAnExistingReservation: You cannot splice over an existing reservation! */
+export const MPL_TOKEN_METADATA_ERROR__TRIED_TO_REPLACE_AN_EXISTING_RESERVATION = 0x42; // 66
+/** InvalidOperation: Invalid operation */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_OPERATION = 0x43; // 67
+/** InvalidOwner: Invalid Owner */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_OWNER = 0x44; // 68
+/** PrintingMintSupplyMustBeZeroForConversion: Printing mint supply must be zero for conversion */
+export const MPL_TOKEN_METADATA_ERROR__PRINTING_MINT_SUPPLY_MUST_BE_ZERO_FOR_CONVERSION = 0x45; // 69
+/** OneTimeAuthMintSupplyMustBeZeroForConversion: One Time Auth mint supply must be zero for conversion */
+export const MPL_TOKEN_METADATA_ERROR__ONE_TIME_AUTH_MINT_SUPPLY_MUST_BE_ZERO_FOR_CONVERSION = 0x46; // 70
+/** InvalidEditionIndex: You tried to insert one edition too many into an edition mark pda */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_EDITION_INDEX = 0x47; // 71
+/** ReservationArrayShouldBeSizeOne: In the legacy system the reservation needs to be of size one for cpu limit reasons */
+export const MPL_TOKEN_METADATA_ERROR__RESERVATION_ARRAY_SHOULD_BE_SIZE_ONE = 0x48; // 72
+/** IsMutableCanOnlyBeFlippedToFalse: Is Mutable can only be flipped to false */
+export const MPL_TOKEN_METADATA_ERROR__IS_MUTABLE_CAN_ONLY_BE_FLIPPED_TO_FALSE = 0x49; // 73
+/** CollectionCannotBeVerifiedInThisInstruction: Collection cannot be verified in this instruction */
+export const MPL_TOKEN_METADATA_ERROR__COLLECTION_CANNOT_BE_VERIFIED_IN_THIS_INSTRUCTION = 0x4a; // 74
+/** Removed: This instruction was deprecated in a previous release and is now removed */
+export const MPL_TOKEN_METADATA_ERROR__REMOVED = 0x4b; // 75
+/** MustBeBurned: This token use method is burn and there are no remaining uses, it must be burned */
+export const MPL_TOKEN_METADATA_ERROR__MUST_BE_BURNED = 0x4c; // 76
+/** InvalidUseMethod: This use method is invalid */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_USE_METHOD = 0x4d; // 77
+/** CannotChangeUseMethodAfterFirstUse: Cannot Change Use Method after the first use */
+export const MPL_TOKEN_METADATA_ERROR__CANNOT_CHANGE_USE_METHOD_AFTER_FIRST_USE = 0x4e; // 78
+/** CannotChangeUsesAfterFirstUse: Cannot Change Remaining or Available uses after the first use */
+export const MPL_TOKEN_METADATA_ERROR__CANNOT_CHANGE_USES_AFTER_FIRST_USE = 0x4f; // 79
+/** CollectionNotFound: Collection Not Found on Metadata */
+export const MPL_TOKEN_METADATA_ERROR__COLLECTION_NOT_FOUND = 0x50; // 80
+/** InvalidCollectionUpdateAuthority: Collection Update Authority is invalid */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_COLLECTION_UPDATE_AUTHORITY = 0x51; // 81
+/** CollectionMustBeAUniqueMasterEdition: Collection Must Be a Unique Master Edition v2 */
+export const MPL_TOKEN_METADATA_ERROR__COLLECTION_MUST_BE_A_UNIQUE_MASTER_EDITION = 0x52; // 82
+/** UseAuthorityRecordAlreadyExists: The Use Authority Record Already Exists, to modify it Revoke, then Approve */
+export const MPL_TOKEN_METADATA_ERROR__USE_AUTHORITY_RECORD_ALREADY_EXISTS = 0x53; // 83
+/** UseAuthorityRecordAlreadyRevoked: The Use Authority Record is empty or already revoked */
+export const MPL_TOKEN_METADATA_ERROR__USE_AUTHORITY_RECORD_ALREADY_REVOKED = 0x54; // 84
+/** Unusable: This token has no uses */
+export const MPL_TOKEN_METADATA_ERROR__UNUSABLE = 0x55; // 85
+/** NotEnoughUses: There are not enough Uses left on this token. */
+export const MPL_TOKEN_METADATA_ERROR__NOT_ENOUGH_USES = 0x56; // 86
+/** CollectionAuthorityRecordAlreadyExists: This Collection Authority Record Already Exists. */
+export const MPL_TOKEN_METADATA_ERROR__COLLECTION_AUTHORITY_RECORD_ALREADY_EXISTS = 0x57; // 87
+/** CollectionAuthorityDoesNotExist: This Collection Authority Record Does Not Exist. */
+export const MPL_TOKEN_METADATA_ERROR__COLLECTION_AUTHORITY_DOES_NOT_EXIST = 0x58; // 88
+/** InvalidUseAuthorityRecord: This Use Authority Record is invalid. */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_USE_AUTHORITY_RECORD = 0x59; // 89
+/** InvalidCollectionAuthorityRecord: This Collection Authority Record is invalid. */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_COLLECTION_AUTHORITY_RECORD = 0x5a; // 90
+/** InvalidFreezeAuthority: Metadata does not match the freeze authority on the mint */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_FREEZE_AUTHORITY = 0x5b; // 91
+/** InvalidDelegate: All tokens in this account have not been delegated to this user. */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_DELEGATE = 0x5c; // 92
+/** CannotAdjustVerifiedCreator: Creator can not be adjusted once they are verified. */
+export const MPL_TOKEN_METADATA_ERROR__CANNOT_ADJUST_VERIFIED_CREATOR = 0x5d; // 93
+/** CannotRemoveVerifiedCreator: Verified creators cannot be removed. */
+export const MPL_TOKEN_METADATA_ERROR__CANNOT_REMOVE_VERIFIED_CREATOR = 0x5e; // 94
+/** CannotWipeVerifiedCreators: Can not wipe verified creators. */
+export const MPL_TOKEN_METADATA_ERROR__CANNOT_WIPE_VERIFIED_CREATORS = 0x5f; // 95
+/** NotAllowedToChangeSellerFeeBasisPoints: Not allowed to change seller fee basis points. */
+export const MPL_TOKEN_METADATA_ERROR__NOT_ALLOWED_TO_CHANGE_SELLER_FEE_BASIS_POINTS = 0x60; // 96
+/** EditionOverrideCannotBeZero: Edition override cannot be zero */
+export const MPL_TOKEN_METADATA_ERROR__EDITION_OVERRIDE_CANNOT_BE_ZERO = 0x61; // 97
+/** InvalidUser: Invalid User */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_USER = 0x62; // 98
+/** RevokeCollectionAuthoritySignerIncorrect: Revoke Collection Authority signer is incorrect */
+export const MPL_TOKEN_METADATA_ERROR__REVOKE_COLLECTION_AUTHORITY_SIGNER_INCORRECT = 0x63; // 99
+/** TokenCloseFailed: Token close failed */
+export const MPL_TOKEN_METADATA_ERROR__TOKEN_CLOSE_FAILED = 0x64; // 100
+/** UnsizedCollection: Can't use this function on unsized collection */
+export const MPL_TOKEN_METADATA_ERROR__UNSIZED_COLLECTION = 0x65; // 101
+/** SizedCollection: Can't use this function on a sized collection */
+export const MPL_TOKEN_METADATA_ERROR__SIZED_COLLECTION = 0x66; // 102
+/** MissingCollectionMetadata: Can't burn a verified member of a collection w/o providing collection metadata account */
+export const MPL_TOKEN_METADATA_ERROR__MISSING_COLLECTION_METADATA = 0x67; // 103
+/** NotAMemberOfCollection: This NFT is not a member of the specified collection. */
+export const MPL_TOKEN_METADATA_ERROR__NOT_A_MEMBER_OF_COLLECTION = 0x68; // 104
+/** NotVerifiedMemberOfCollection: This NFT is not a verified member of the specified collection. */
+export const MPL_TOKEN_METADATA_ERROR__NOT_VERIFIED_MEMBER_OF_COLLECTION = 0x69; // 105
+/** NotACollectionParent: This NFT is not a collection parent NFT. */
+export const MPL_TOKEN_METADATA_ERROR__NOT_A_COLLECTION_PARENT = 0x6a; // 106
+/** CouldNotDetermineTokenStandard: Could not determine a TokenStandard type. */
+export const MPL_TOKEN_METADATA_ERROR__COULD_NOT_DETERMINE_TOKEN_STANDARD = 0x6b; // 107
+/** MissingEditionAccount: This mint account has an edition but none was provided. */
+export const MPL_TOKEN_METADATA_ERROR__MISSING_EDITION_ACCOUNT = 0x6c; // 108
+/** NotAMasterEdition: This edition is not a Master Edition */
+export const MPL_TOKEN_METADATA_ERROR__NOT_A_MASTER_EDITION = 0x6d; // 109
+/** MasterEditionHasPrints: This Master Edition has existing prints */
+export const MPL_TOKEN_METADATA_ERROR__MASTER_EDITION_HAS_PRINTS = 0x6e; // 110
+/** BorshDeserializationError: Borsh Deserialization Error */
+export const MPL_TOKEN_METADATA_ERROR__BORSH_DESERIALIZATION_ERROR = 0x6f; // 111
+/** CannotUpdateVerifiedCollection: Cannot update a verified collection in this command */
+export const MPL_TOKEN_METADATA_ERROR__CANNOT_UPDATE_VERIFIED_COLLECTION = 0x70; // 112
+/** CollectionMasterEditionAccountInvalid: Edition account doesnt match collection  */
+export const MPL_TOKEN_METADATA_ERROR__COLLECTION_MASTER_EDITION_ACCOUNT_INVALID = 0x71; // 113
+/** AlreadyVerified: Item is already verified. */
+export const MPL_TOKEN_METADATA_ERROR__ALREADY_VERIFIED = 0x72; // 114
+/** AlreadyUnverified: Item is already unverified. */
+export const MPL_TOKEN_METADATA_ERROR__ALREADY_UNVERIFIED = 0x73; // 115
+/** NotAPrintEdition: This edition is not a Print Edition */
+export const MPL_TOKEN_METADATA_ERROR__NOT_A_PRINT_EDITION = 0x74; // 116
+/** InvalidMasterEdition: Invalid Master Edition */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_MASTER_EDITION = 0x75; // 117
+/** InvalidPrintEdition: Invalid Print Edition */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_PRINT_EDITION = 0x76; // 118
+/** InvalidEditionMarker: Invalid Edition Marker */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_EDITION_MARKER = 0x77; // 119
+/** ReservationListDeprecated: Reservation List is Deprecated */
+export const MPL_TOKEN_METADATA_ERROR__RESERVATION_LIST_DEPRECATED = 0x78; // 120
+/** PrintEditionDoesNotMatchMasterEdition: Print Edition does not match Master Edition */
+export const MPL_TOKEN_METADATA_ERROR__PRINT_EDITION_DOES_NOT_MATCH_MASTER_EDITION = 0x79; // 121
+/** EditionNumberGreaterThanMaxSupply: Edition Number greater than max supply */
+export const MPL_TOKEN_METADATA_ERROR__EDITION_NUMBER_GREATER_THAN_MAX_SUPPLY = 0x7a; // 122
+/** MustUnverify: Must unverify before migrating collections. */
+export const MPL_TOKEN_METADATA_ERROR__MUST_UNVERIFY = 0x7b; // 123
+/** InvalidEscrowBumpSeed: Invalid Escrow Account Bump Seed */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_ESCROW_BUMP_SEED = 0x7c; // 124
+/** MustBeEscrowAuthority: Must Escrow Authority */
+export const MPL_TOKEN_METADATA_ERROR__MUST_BE_ESCROW_AUTHORITY = 0x7d; // 125
+/** InvalidSystemProgram: Invalid System Program */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_SYSTEM_PROGRAM = 0x7e; // 126
+/** MustBeNonFungible: Must be a Non Fungible Token */
+export const MPL_TOKEN_METADATA_ERROR__MUST_BE_NON_FUNGIBLE = 0x7f; // 127
+/** InsufficientTokens: Insufficient tokens for transfer */
+export const MPL_TOKEN_METADATA_ERROR__INSUFFICIENT_TOKENS = 0x80; // 128
+/** BorshSerializationError: Borsh Serialization Error */
+export const MPL_TOKEN_METADATA_ERROR__BORSH_SERIALIZATION_ERROR = 0x81; // 129
+/** NoFreezeAuthoritySet: Cannot create NFT with no Freeze Authority. */
+export const MPL_TOKEN_METADATA_ERROR__NO_FREEZE_AUTHORITY_SET = 0x82; // 130
+/** InvalidCollectionSizeChange: Invalid collection size change */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_COLLECTION_SIZE_CHANGE = 0x83; // 131
+/** InvalidBubblegumSigner: Invalid bubblegum signer */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_BUBBLEGUM_SIGNER = 0x84; // 132
+/** MintIsNotSigner: Mint needs to be signer to initialize the account */
+export const MPL_TOKEN_METADATA_ERROR__MINT_IS_NOT_SIGNER = 0x85; // 133
+/** InvalidTokenStandard: Invalid token standard */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_TOKEN_STANDARD = 0x86; // 134
+/** InvalidMintForTokenStandard: Invalid mint account for specified token standard */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_MINT_FOR_TOKEN_STANDARD = 0x87; // 135
+/** InvalidAuthorizationRules: Invalid authorization rules account */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_AUTHORIZATION_RULES = 0x88; // 136
+/** MissingAuthorizationRules: Missing authorization rules account */
+export const MPL_TOKEN_METADATA_ERROR__MISSING_AUTHORIZATION_RULES = 0x89; // 137
+/** MissingProgrammableConfig: Missing programmable configuration */
+export const MPL_TOKEN_METADATA_ERROR__MISSING_PROGRAMMABLE_CONFIG = 0x8a; // 138
+/** InvalidProgrammableConfig: Invalid programmable configuration */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_PROGRAMMABLE_CONFIG = 0x8b; // 139
+/** DelegateAlreadyExists: Delegate already exists */
+export const MPL_TOKEN_METADATA_ERROR__DELEGATE_ALREADY_EXISTS = 0x8c; // 140
+/** DelegateNotFound: Delegate not found */
+export const MPL_TOKEN_METADATA_ERROR__DELEGATE_NOT_FOUND = 0x8d; // 141
+/** MissingAccountInBuilder: Required account not set in instruction builder */
+export const MPL_TOKEN_METADATA_ERROR__MISSING_ACCOUNT_IN_BUILDER = 0x8e; // 142
+/** MissingArgumentInBuilder: Required argument not set in instruction builder */
+export const MPL_TOKEN_METADATA_ERROR__MISSING_ARGUMENT_IN_BUILDER = 0x8f; // 143
+/** FeatureNotSupported: Feature not supported currently */
+export const MPL_TOKEN_METADATA_ERROR__FEATURE_NOT_SUPPORTED = 0x90; // 144
+/** InvalidSystemWallet: Invalid system wallet */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_SYSTEM_WALLET = 0x91; // 145
+/** OnlySaleDelegateCanTransfer: Only the sale delegate can transfer while its set */
+export const MPL_TOKEN_METADATA_ERROR__ONLY_SALE_DELEGATE_CAN_TRANSFER = 0x92; // 146
+/** MissingTokenAccount: Missing token account */
+export const MPL_TOKEN_METADATA_ERROR__MISSING_TOKEN_ACCOUNT = 0x93; // 147
+/** MissingSplTokenProgram: Missing SPL token program */
+export const MPL_TOKEN_METADATA_ERROR__MISSING_SPL_TOKEN_PROGRAM = 0x94; // 148
+/** MissingAuthorizationRulesProgram: Missing SPL token program */
+export const MPL_TOKEN_METADATA_ERROR__MISSING_AUTHORIZATION_RULES_PROGRAM = 0x95; // 149
+/** InvalidDelegateRoleForTransfer: Invalid delegate role for transfer */
+export const MPL_TOKEN_METADATA_ERROR__INVALID_DELEGATE_ROLE_FOR_TRANSFER = 0x96; // 150
+
+export type MplTokenMetadataError =
+  | typeof MPL_TOKEN_METADATA_ERROR__INSTRUCTION_UNPACK_ERROR
+  | typeof MPL_TOKEN_METADATA_ERROR__INSTRUCTION_PACK_ERROR
+  | typeof MPL_TOKEN_METADATA_ERROR__NOT_RENT_EXEMPT
+  | typeof MPL_TOKEN_METADATA_ERROR__ALREADY_INITIALIZED
+  | typeof MPL_TOKEN_METADATA_ERROR__UNINITIALIZED
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_METADATA_KEY
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_EDITION_KEY
+  | typeof MPL_TOKEN_METADATA_ERROR__UPDATE_AUTHORITY_INCORRECT
+  | typeof MPL_TOKEN_METADATA_ERROR__UPDATE_AUTHORITY_IS_NOT_SIGNER
+  | typeof MPL_TOKEN_METADATA_ERROR__NOT_MINT_AUTHORITY
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_MINT_AUTHORITY
+  | typeof MPL_TOKEN_METADATA_ERROR__NAME_TOO_LONG
+  | typeof MPL_TOKEN_METADATA_ERROR__SYMBOL_TOO_LONG
+  | typeof MPL_TOKEN_METADATA_ERROR__URI_TOO_LONG
+  | typeof MPL_TOKEN_METADATA_ERROR__UPDATE_AUTHORITY_MUST_BE_EQUAL_TO_METADATA_AUTHORITY_AND_SIGNER
+  | typeof MPL_TOKEN_METADATA_ERROR__MINT_MISMATCH
+  | typeof MPL_TOKEN_METADATA_ERROR__EDITIONS_MUST_HAVE_EXACTLY_ONE_TOKEN
+  | typeof MPL_TOKEN_METADATA_ERROR__MAX_EDITIONS_MINTED_ALREADY
+  | typeof MPL_TOKEN_METADATA_ERROR__TOKEN_MINT_TO_FAILED
+  | typeof MPL_TOKEN_METADATA_ERROR__MASTER_RECORD_MISMATCH
+  | typeof MPL_TOKEN_METADATA_ERROR__DESTINATION_MINT_MISMATCH
+  | typeof MPL_TOKEN_METADATA_ERROR__EDITION_ALREADY_MINTED
+  | typeof MPL_TOKEN_METADATA_ERROR__PRINTING_MINT_DECIMALS_SHOULD_BE_ZERO
+  | typeof MPL_TOKEN_METADATA_ERROR__ONE_TIME_PRINTING_AUTHORIZATION_MINT_DECIMALS_SHOULD_BE_ZERO
+  | typeof MPL_TOKEN_METADATA_ERROR__EDITION_MINT_DECIMALS_SHOULD_BE_ZERO
+  | typeof MPL_TOKEN_METADATA_ERROR__TOKEN_BURN_FAILED
+  | typeof MPL_TOKEN_METADATA_ERROR__TOKEN_ACCOUNT_ONE_TIME_AUTH_MINT_MISMATCH
+  | typeof MPL_TOKEN_METADATA_ERROR__DERIVED_KEY_INVALID
+  | typeof MPL_TOKEN_METADATA_ERROR__PRINTING_MINT_MISMATCH
+  | typeof MPL_TOKEN_METADATA_ERROR__ONE_TIME_PRINTING_AUTH_MINT_MISMATCH
+  | typeof MPL_TOKEN_METADATA_ERROR__TOKEN_ACCOUNT_MINT_MISMATCH
+  | typeof MPL_TOKEN_METADATA_ERROR__TOKEN_ACCOUNT_MINT_MISMATCH_V2
+  | typeof MPL_TOKEN_METADATA_ERROR__NOT_ENOUGH_TOKENS
+  | typeof MPL_TOKEN_METADATA_ERROR__PRINTING_MINT_AUTHORIZATION_ACCOUNT_MISMATCH
+  | typeof MPL_TOKEN_METADATA_ERROR__AUTHORIZATION_TOKEN_ACCOUNT_OWNER_MISMATCH
+  | typeof MPL_TOKEN_METADATA_ERROR__DISABLED
+  | typeof MPL_TOKEN_METADATA_ERROR__CREATORS_TOO_LONG
+  | typeof MPL_TOKEN_METADATA_ERROR__CREATORS_MUST_BE_ATLEAST_ONE
+  | typeof MPL_TOKEN_METADATA_ERROR__MUST_BE_ONE_OF_CREATORS
+  | typeof MPL_TOKEN_METADATA_ERROR__NO_CREATORS_PRESENT_ON_METADATA
+  | typeof MPL_TOKEN_METADATA_ERROR__CREATOR_NOT_FOUND
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_BASIS_POINTS
+  | typeof MPL_TOKEN_METADATA_ERROR__PRIMARY_SALE_CAN_ONLY_BE_FLIPPED_TO_TRUE
+  | typeof MPL_TOKEN_METADATA_ERROR__OWNER_MISMATCH
+  | typeof MPL_TOKEN_METADATA_ERROR__NO_BALANCE_IN_ACCOUNT_FOR_AUTHORIZATION
+  | typeof MPL_TOKEN_METADATA_ERROR__SHARE_TOTAL_MUST_BE100
+  | typeof MPL_TOKEN_METADATA_ERROR__RESERVATION_EXISTS
+  | typeof MPL_TOKEN_METADATA_ERROR__RESERVATION_DOES_NOT_EXIST
+  | typeof MPL_TOKEN_METADATA_ERROR__RESERVATION_NOT_SET
+  | typeof MPL_TOKEN_METADATA_ERROR__RESERVATION_ALREADY_MADE
+  | typeof MPL_TOKEN_METADATA_ERROR__BEYOND_MAX_ADDRESS_SIZE
+  | typeof MPL_TOKEN_METADATA_ERROR__NUMERICAL_OVERFLOW_ERROR
+  | typeof MPL_TOKEN_METADATA_ERROR__RESERVATION_BREACHES_MAXIMUM_SUPPLY
+  | typeof MPL_TOKEN_METADATA_ERROR__ADDRESS_NOT_IN_RESERVATION
+  | typeof MPL_TOKEN_METADATA_ERROR__CANNOT_VERIFY_ANOTHER_CREATOR
+  | typeof MPL_TOKEN_METADATA_ERROR__CANNOT_UNVERIFY_ANOTHER_CREATOR
+  | typeof MPL_TOKEN_METADATA_ERROR__SPOT_MISMATCH
+  | typeof MPL_TOKEN_METADATA_ERROR__INCORRECT_OWNER
+  | typeof MPL_TOKEN_METADATA_ERROR__PRINTING_WOULD_BREACH_MAXIMUM_SUPPLY
+  | typeof MPL_TOKEN_METADATA_ERROR__DATA_IS_IMMUTABLE
+  | typeof MPL_TOKEN_METADATA_ERROR__DUPLICATE_CREATOR_ADDRESS
+  | typeof MPL_TOKEN_METADATA_ERROR__RESERVATION_SPOTS_REMAINING_SHOULD_MATCH_TOTAL_SPOTS_AT_START
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_TOKEN_PROGRAM
+  | typeof MPL_TOKEN_METADATA_ERROR__DATA_TYPE_MISMATCH
+  | typeof MPL_TOKEN_METADATA_ERROR__BEYOND_ALOTTED_ADDRESS_SIZE
+  | typeof MPL_TOKEN_METADATA_ERROR__RESERVATION_NOT_COMPLETE
+  | typeof MPL_TOKEN_METADATA_ERROR__TRIED_TO_REPLACE_AN_EXISTING_RESERVATION
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_OPERATION
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_OWNER
+  | typeof MPL_TOKEN_METADATA_ERROR__PRINTING_MINT_SUPPLY_MUST_BE_ZERO_FOR_CONVERSION
+  | typeof MPL_TOKEN_METADATA_ERROR__ONE_TIME_AUTH_MINT_SUPPLY_MUST_BE_ZERO_FOR_CONVERSION
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_EDITION_INDEX
+  | typeof MPL_TOKEN_METADATA_ERROR__RESERVATION_ARRAY_SHOULD_BE_SIZE_ONE
+  | typeof MPL_TOKEN_METADATA_ERROR__IS_MUTABLE_CAN_ONLY_BE_FLIPPED_TO_FALSE
+  | typeof MPL_TOKEN_METADATA_ERROR__COLLECTION_CANNOT_BE_VERIFIED_IN_THIS_INSTRUCTION
+  | typeof MPL_TOKEN_METADATA_ERROR__REMOVED
+  | typeof MPL_TOKEN_METADATA_ERROR__MUST_BE_BURNED
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_USE_METHOD
+  | typeof MPL_TOKEN_METADATA_ERROR__CANNOT_CHANGE_USE_METHOD_AFTER_FIRST_USE
+  | typeof MPL_TOKEN_METADATA_ERROR__CANNOT_CHANGE_USES_AFTER_FIRST_USE
+  | typeof MPL_TOKEN_METADATA_ERROR__COLLECTION_NOT_FOUND
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_COLLECTION_UPDATE_AUTHORITY
+  | typeof MPL_TOKEN_METADATA_ERROR__COLLECTION_MUST_BE_A_UNIQUE_MASTER_EDITION
+  | typeof MPL_TOKEN_METADATA_ERROR__USE_AUTHORITY_RECORD_ALREADY_EXISTS
+  | typeof MPL_TOKEN_METADATA_ERROR__USE_AUTHORITY_RECORD_ALREADY_REVOKED
+  | typeof MPL_TOKEN_METADATA_ERROR__UNUSABLE
+  | typeof MPL_TOKEN_METADATA_ERROR__NOT_ENOUGH_USES
+  | typeof MPL_TOKEN_METADATA_ERROR__COLLECTION_AUTHORITY_RECORD_ALREADY_EXISTS
+  | typeof MPL_TOKEN_METADATA_ERROR__COLLECTION_AUTHORITY_DOES_NOT_EXIST
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_USE_AUTHORITY_RECORD
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_COLLECTION_AUTHORITY_RECORD
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_FREEZE_AUTHORITY
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_DELEGATE
+  | typeof MPL_TOKEN_METADATA_ERROR__CANNOT_ADJUST_VERIFIED_CREATOR
+  | typeof MPL_TOKEN_METADATA_ERROR__CANNOT_REMOVE_VERIFIED_CREATOR
+  | typeof MPL_TOKEN_METADATA_ERROR__CANNOT_WIPE_VERIFIED_CREATORS
+  | typeof MPL_TOKEN_METADATA_ERROR__NOT_ALLOWED_TO_CHANGE_SELLER_FEE_BASIS_POINTS
+  | typeof MPL_TOKEN_METADATA_ERROR__EDITION_OVERRIDE_CANNOT_BE_ZERO
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_USER
+  | typeof MPL_TOKEN_METADATA_ERROR__REVOKE_COLLECTION_AUTHORITY_SIGNER_INCORRECT
+  | typeof MPL_TOKEN_METADATA_ERROR__TOKEN_CLOSE_FAILED
+  | typeof MPL_TOKEN_METADATA_ERROR__UNSIZED_COLLECTION
+  | typeof MPL_TOKEN_METADATA_ERROR__SIZED_COLLECTION
+  | typeof MPL_TOKEN_METADATA_ERROR__MISSING_COLLECTION_METADATA
+  | typeof MPL_TOKEN_METADATA_ERROR__NOT_A_MEMBER_OF_COLLECTION
+  | typeof MPL_TOKEN_METADATA_ERROR__NOT_VERIFIED_MEMBER_OF_COLLECTION
+  | typeof MPL_TOKEN_METADATA_ERROR__NOT_A_COLLECTION_PARENT
+  | typeof MPL_TOKEN_METADATA_ERROR__COULD_NOT_DETERMINE_TOKEN_STANDARD
+  | typeof MPL_TOKEN_METADATA_ERROR__MISSING_EDITION_ACCOUNT
+  | typeof MPL_TOKEN_METADATA_ERROR__NOT_A_MASTER_EDITION
+  | typeof MPL_TOKEN_METADATA_ERROR__MASTER_EDITION_HAS_PRINTS
+  | typeof MPL_TOKEN_METADATA_ERROR__BORSH_DESERIALIZATION_ERROR
+  | typeof MPL_TOKEN_METADATA_ERROR__CANNOT_UPDATE_VERIFIED_COLLECTION
+  | typeof MPL_TOKEN_METADATA_ERROR__COLLECTION_MASTER_EDITION_ACCOUNT_INVALID
+  | typeof MPL_TOKEN_METADATA_ERROR__ALREADY_VERIFIED
+  | typeof MPL_TOKEN_METADATA_ERROR__ALREADY_UNVERIFIED
+  | typeof MPL_TOKEN_METADATA_ERROR__NOT_A_PRINT_EDITION
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_MASTER_EDITION
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_PRINT_EDITION
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_EDITION_MARKER
+  | typeof MPL_TOKEN_METADATA_ERROR__RESERVATION_LIST_DEPRECATED
+  | typeof MPL_TOKEN_METADATA_ERROR__PRINT_EDITION_DOES_NOT_MATCH_MASTER_EDITION
+  | typeof MPL_TOKEN_METADATA_ERROR__EDITION_NUMBER_GREATER_THAN_MAX_SUPPLY
+  | typeof MPL_TOKEN_METADATA_ERROR__MUST_UNVERIFY
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_ESCROW_BUMP_SEED
+  | typeof MPL_TOKEN_METADATA_ERROR__MUST_BE_ESCROW_AUTHORITY
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_SYSTEM_PROGRAM
+  | typeof MPL_TOKEN_METADATA_ERROR__MUST_BE_NON_FUNGIBLE
+  | typeof MPL_TOKEN_METADATA_ERROR__INSUFFICIENT_TOKENS
+  | typeof MPL_TOKEN_METADATA_ERROR__BORSH_SERIALIZATION_ERROR
+  | typeof MPL_TOKEN_METADATA_ERROR__NO_FREEZE_AUTHORITY_SET
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_COLLECTION_SIZE_CHANGE
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_BUBBLEGUM_SIGNER
+  | typeof MPL_TOKEN_METADATA_ERROR__MINT_IS_NOT_SIGNER
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_TOKEN_STANDARD
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_MINT_FOR_TOKEN_STANDARD
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_AUTHORIZATION_RULES
+  | typeof MPL_TOKEN_METADATA_ERROR__MISSING_AUTHORIZATION_RULES
+  | typeof MPL_TOKEN_METADATA_ERROR__MISSING_PROGRAMMABLE_CONFIG
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_PROGRAMMABLE_CONFIG
+  | typeof MPL_TOKEN_METADATA_ERROR__DELEGATE_ALREADY_EXISTS
+  | typeof MPL_TOKEN_METADATA_ERROR__DELEGATE_NOT_FOUND
+  | typeof MPL_TOKEN_METADATA_ERROR__MISSING_ACCOUNT_IN_BUILDER
+  | typeof MPL_TOKEN_METADATA_ERROR__MISSING_ARGUMENT_IN_BUILDER
+  | typeof MPL_TOKEN_METADATA_ERROR__FEATURE_NOT_SUPPORTED
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_SYSTEM_WALLET
+  | typeof MPL_TOKEN_METADATA_ERROR__ONLY_SALE_DELEGATE_CAN_TRANSFER
+  | typeof MPL_TOKEN_METADATA_ERROR__MISSING_TOKEN_ACCOUNT
+  | typeof MPL_TOKEN_METADATA_ERROR__MISSING_SPL_TOKEN_PROGRAM
+  | typeof MPL_TOKEN_METADATA_ERROR__MISSING_AUTHORIZATION_RULES_PROGRAM
+  | typeof MPL_TOKEN_METADATA_ERROR__INVALID_DELEGATE_ROLE_FOR_TRANSFER;

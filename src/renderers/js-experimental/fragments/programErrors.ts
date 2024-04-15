@@ -10,6 +10,9 @@ export function getProgramErrorsFragment(
   const { programNode, nameApi } = scope;
   return fragmentFromTemplate('programErrors.njk', {
     errors: programNode.errors,
-    programErrorCodeEnum: nameApi.programErrorCodeEnum(programNode.name),
+    programErrorUnion: nameApi.programErrorUnion(programNode.name),
+    getProgramErrorConstant: (name: string) =>
+      nameApi.programErrorConstantPrefix(programNode.name) +
+      nameApi.programErrorConstant(name),
   });
 }

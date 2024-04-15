@@ -8,11 +8,9 @@ export function getProgramFragment(
   }
 ): Fragment {
   const { programNode, nameApi } = scope;
-  const programErrorCode = nameApi.programErrorCodeEnum(programNode.name);
 
   return fragmentFromTemplate('program.njk', {
     program: programNode,
     programAddressConstant: nameApi.programAddressConstant(programNode.name),
-    programErrorCode,
   }).addImports('solanaAddresses', ['Address']);
 }
