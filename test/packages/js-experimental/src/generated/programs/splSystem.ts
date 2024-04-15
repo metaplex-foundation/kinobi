@@ -7,13 +7,12 @@
  */
 
 import { Address } from '@solana/addresses';
-import { getU32Encoder } from '@solana/codecs';
+import { containsBytes, getU32Encoder } from '@solana/codecs';
 import { Program } from '@solana/programs';
 import {
   ParsedCreateAccountInstruction,
   ParsedTransferSolInstruction,
 } from '../instructions';
-import { memcmp } from '../shared';
 
 export const SPL_SYSTEM_PROGRAM_ADDRESS =
   '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
@@ -37,10 +36,10 @@ export function identifySplSystemInstruction(
 ): SplSystemInstruction {
   const data =
     instruction instanceof Uint8Array ? instruction : instruction.data;
-  if (memcmp(data, getU32Encoder().encode(0), 0)) {
+  if (containsBytes(data, getU32Encoder().encode(0), 0)) {
     return SplSystemInstruction.CreateAccount;
   }
-  if (memcmp(data, getU32Encoder().encode(2), 0)) {
+  if (containsBytes(data, getU32Encoder().encode(2), 0)) {
     return SplSystemInstruction.TransferSol;
   }
   throw new Error(

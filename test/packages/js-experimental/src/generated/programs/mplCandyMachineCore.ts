@@ -7,6 +7,7 @@
  */
 
 import { Address } from '@solana/addresses';
+import { containsBytes } from '@solana/codecs';
 import { Program, ProgramWithErrors } from '@solana/programs';
 import {
   MplCandyMachineCoreProgramError,
@@ -24,7 +25,6 @@ import {
   ParsedUpdateCandyMachineInstruction,
   ParsedWithdrawInstruction,
 } from '../instructions';
-import { memcmp } from '../shared';
 
 export const MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS =
   'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as Address<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
@@ -54,7 +54,13 @@ export function identifyMplCandyMachineCoreAccount(
   account: { data: Uint8Array } | Uint8Array
 ): MplCandyMachineCoreAccount {
   const data = account instanceof Uint8Array ? account : account.data;
-  if (memcmp(data, new Uint8Array([51, 173, 177, 113, 25, 241, 109, 189]), 0)) {
+  if (
+    containsBytes(
+      data,
+      new Uint8Array([51, 173, 177, 113, 25, 241, 109, 189]),
+      0
+    )
+  ) {
     return MplCandyMachineCoreAccount.CandyMachine;
   }
   throw new Error(
@@ -79,33 +85,85 @@ export function identifyMplCandyMachineCoreInstruction(
 ): MplCandyMachineCoreInstruction {
   const data =
     instruction instanceof Uint8Array ? instruction : instruction.data;
-  if (memcmp(data, new Uint8Array([167, 117, 211, 79, 251, 254, 47, 135]), 0)) {
+  if (
+    containsBytes(
+      data,
+      new Uint8Array([167, 117, 211, 79, 251, 254, 47, 135]),
+      0
+    )
+  ) {
     return MplCandyMachineCoreInstruction.Dummy;
   }
-  if (memcmp(data, new Uint8Array([223, 50, 224, 227, 151, 8, 115, 106]), 0)) {
+  if (
+    containsBytes(
+      data,
+      new Uint8Array([223, 50, 224, 227, 151, 8, 115, 106]),
+      0
+    )
+  ) {
     return MplCandyMachineCoreInstruction.AddConfigLines;
   }
-  if (memcmp(data, new Uint8Array([175, 175, 109, 31, 13, 152, 155, 237]), 0)) {
+  if (
+    containsBytes(
+      data,
+      new Uint8Array([175, 175, 109, 31, 13, 152, 155, 237]),
+      0
+    )
+  ) {
     return MplCandyMachineCoreInstruction.Initialize;
   }
-  if (memcmp(data, new Uint8Array([51, 57, 225, 47, 182, 146, 137, 166]), 0)) {
+  if (
+    containsBytes(
+      data,
+      new Uint8Array([51, 57, 225, 47, 182, 146, 137, 166]),
+      0
+    )
+  ) {
     return MplCandyMachineCoreInstruction.MintFromCandyMachine;
   }
-  if (memcmp(data, new Uint8Array([133, 250, 37, 21, 110, 163, 26, 121]), 0)) {
+  if (
+    containsBytes(
+      data,
+      new Uint8Array([133, 250, 37, 21, 110, 163, 26, 121]),
+      0
+    )
+  ) {
     return MplCandyMachineCoreInstruction.SetAuthority;
   }
-  if (memcmp(data, new Uint8Array([192, 254, 206, 76, 168, 182, 59, 223]), 0)) {
+  if (
+    containsBytes(
+      data,
+      new Uint8Array([192, 254, 206, 76, 168, 182, 59, 223]),
+      0
+    )
+  ) {
     return MplCandyMachineCoreInstruction.SetCollection;
   }
   if (
-    memcmp(data, new Uint8Array([67, 127, 155, 187, 100, 174, 103, 121]), 0)
+    containsBytes(
+      data,
+      new Uint8Array([67, 127, 155, 187, 100, 174, 103, 121]),
+      0
+    )
   ) {
     return MplCandyMachineCoreInstruction.SetMintAuthority;
   }
-  if (memcmp(data, new Uint8Array([219, 200, 88, 176, 158, 63, 253, 127]), 0)) {
+  if (
+    containsBytes(
+      data,
+      new Uint8Array([219, 200, 88, 176, 158, 63, 253, 127]),
+      0
+    )
+  ) {
     return MplCandyMachineCoreInstruction.UpdateCandyMachine;
   }
-  if (memcmp(data, new Uint8Array([183, 18, 70, 156, 148, 109, 161, 34]), 0)) {
+  if (
+    containsBytes(
+      data,
+      new Uint8Array([183, 18, 70, 156, 148, 109, 161, 34]),
+      0
+    )
+  ) {
     return MplCandyMachineCoreInstruction.Withdraw;
   }
   throw new Error(

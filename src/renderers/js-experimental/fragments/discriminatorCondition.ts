@@ -23,11 +23,11 @@ import { Fragment, fragment, mergeFragments } from './common';
  *   return splTokenAccounts.TOKEN;
  * }
  *
- * if (memcmp(data, getU32Encoder().encode(42), offset)) {
+ * if (containsBytes(data, getU32Encoder().encode(42), offset)) {
  *   return splTokenAccounts.TOKEN;
  * }
  *
- * if (memcmp(data, new Uint8Array([1, 2, 3]), offset)) {
+ * if (containsBytes(data, new Uint8Array([1, 2, 3]), offset)) {
  *   return splTokenAccounts.TOKEN;
  * }
  * ```
@@ -77,8 +77,10 @@ function getByteConditionFragment(
   const { dataName, typeManifestVisitor } = scope;
   const constant = visit(discriminator.constant, typeManifestVisitor).value;
   return constant
-    .mapRender((r) => `memcmp(${dataName}, ${r}, ${discriminator.offset})`)
-    .addImports('shared', 'memcmp');
+    .mapRender(
+      (r) => `containsBytes(${dataName}, ${r}, ${discriminator.offset})`
+    )
+    .addImports('solanaCodecsCore', 'containsBytes');
 }
 
 function getFieldConditionFragment(
