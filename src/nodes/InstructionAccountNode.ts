@@ -1,4 +1,4 @@
-import { IdlInstructionAccount } from '../idl';
+import { IdlInstructionAccount, IdlInstructionNestedAccounts } from '../idl';
 import { MainCaseString, PartialExcept, mainCase } from '../shared';
 import { InstructionInputValueNode } from './contextualValueNodes';
 
@@ -48,6 +48,16 @@ export function instructionAccountNode<
     docs: input.docs ?? [],
     defaultValue: input.defaultValue,
   };
+}
+
+export function instructionAccountNodesFromIdl(
+  idl: (IdlInstructionAccount | IdlInstructionNestedAccounts)[]
+): InstructionAccountNode[] {
+  return idl.flatMap((account) =>
+    'accounts' in account
+      ? instructionAccountNodesFromIdl(account.accounts)
+      : [instructionAccountNodeFromIdl(account)]
+  );
 }
 
 export function instructionAccountNodeFromIdl(

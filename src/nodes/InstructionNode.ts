@@ -2,7 +2,7 @@ import type { IdlInstruction } from '../idl';
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
 import {
   InstructionAccountNode,
-  instructionAccountNodeFromIdl,
+  instructionAccountNodesFromIdl,
 } from './InstructionAccountNode';
 import {
   InstructionArgumentNode,
@@ -171,9 +171,7 @@ export function instructionNodeFromIdl(
     name,
     idlName,
     docs: idl.docs ?? [],
-    accounts: (idl.accounts ?? []).map((account) =>
-      instructionAccountNodeFromIdl(account)
-    ),
+    accounts: instructionAccountNodesFromIdl(idl.accounts ?? []),
     arguments: dataArguments,
     discriminators,
     optionalAccountStrategy: idl.legacyOptionalAccountsStrategy
