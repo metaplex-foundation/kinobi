@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.18.4
+
+### Patch Changes
+
+- [`8883ff1`](https://github.com/metaplex-foundation/kinobi/commit/8883ff1dfd51a9b63a5b429f1fccae732ddfcd1c) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Support nested instruction accounts from IDL
+
 ## 0.18.3
 
 ### Patch Changes
