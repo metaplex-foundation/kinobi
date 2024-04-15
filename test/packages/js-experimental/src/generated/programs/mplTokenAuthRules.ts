@@ -7,7 +7,7 @@
  */
 
 import { Address } from '@solana/addresses';
-import { getU64Encoder, getU8Encoder } from '@solana/codecs';
+import { containsBytes, getU64Encoder, getU8Encoder } from '@solana/codecs';
 import { Program, ProgramWithErrors } from '@solana/programs';
 import {
   MplTokenAuthRulesProgramError,
@@ -19,7 +19,6 @@ import {
   ParsedCreateRuleSetInstruction,
   ParsedValidateInstruction,
 } from '../instructions';
-import { memcmp } from '../shared';
 import { TaKey } from '../types';
 
 export const MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS =
@@ -50,7 +49,7 @@ export function identifyMplTokenAuthRulesAccount(
   account: { data: Uint8Array } | Uint8Array
 ): MplTokenAuthRulesAccount {
   const data = account instanceof Uint8Array ? account : account.data;
-  if (memcmp(data, getU64Encoder().encode(TaKey.Frequency), 0)) {
+  if (containsBytes(data, getU64Encoder().encode(TaKey.Frequency), 0)) {
     return MplTokenAuthRulesAccount.FrequencyAccount;
   }
   throw new Error(
@@ -69,13 +68,13 @@ export function identifyMplTokenAuthRulesInstruction(
 ): MplTokenAuthRulesInstruction {
   const data =
     instruction instanceof Uint8Array ? instruction : instruction.data;
-  if (memcmp(data, getU8Encoder().encode(0), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(0), 0)) {
     return MplTokenAuthRulesInstruction.CreateRuleSet;
   }
-  if (memcmp(data, getU8Encoder().encode(1), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(1), 0)) {
     return MplTokenAuthRulesInstruction.Validate;
   }
-  if (memcmp(data, getU8Encoder().encode(2), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(2), 0)) {
     return MplTokenAuthRulesInstruction.CreateFrequencyRule;
   }
   throw new Error(

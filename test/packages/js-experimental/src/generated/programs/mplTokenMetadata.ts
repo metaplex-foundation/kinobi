@@ -7,7 +7,7 @@
  */
 
 import { Address } from '@solana/addresses';
-import { getU8Encoder } from '@solana/codecs';
+import { containsBytes, getU8Encoder } from '@solana/codecs';
 import { Program, ProgramWithErrors } from '@solana/programs';
 import {
   MplTokenMetadataProgramError,
@@ -68,7 +68,6 @@ import {
   ParsedVerifyInstruction,
   ParsedVerifySizedCollectionItemInstruction,
 } from '../instructions';
-import { memcmp } from '../shared';
 import { TmKey, getTmKeyEncoder } from '../types';
 
 export const MPL_TOKEN_METADATA_PROGRAM_ADDRESS =
@@ -110,38 +109,50 @@ export function identifyMplTokenMetadataAccount(
 ): MplTokenMetadataAccount {
   const data = account instanceof Uint8Array ? account : account.data;
   if (
-    memcmp(data, getTmKeyEncoder().encode(TmKey.CollectionAuthorityRecord), 0)
+    containsBytes(
+      data,
+      getTmKeyEncoder().encode(TmKey.CollectionAuthorityRecord),
+      0
+    )
   ) {
     return MplTokenMetadataAccount.CollectionAuthorityRecord;
   }
-  if (memcmp(data, getTmKeyEncoder().encode(TmKey.Delegate), 0)) {
+  if (containsBytes(data, getTmKeyEncoder().encode(TmKey.Delegate), 0)) {
     return MplTokenMetadataAccount.DelegateRecord;
   }
-  if (memcmp(data, getTmKeyEncoder().encode(TmKey.EditionV1), 0)) {
+  if (containsBytes(data, getTmKeyEncoder().encode(TmKey.EditionV1), 0)) {
     return MplTokenMetadataAccount.Edition;
   }
-  if (memcmp(data, getTmKeyEncoder().encode(TmKey.EditionMarker), 0)) {
+  if (containsBytes(data, getTmKeyEncoder().encode(TmKey.EditionMarker), 0)) {
     return MplTokenMetadataAccount.EditionMarker;
   }
-  if (memcmp(data, getTmKeyEncoder().encode(TmKey.TokenOwnedEscrow), 0)) {
+  if (
+    containsBytes(data, getTmKeyEncoder().encode(TmKey.TokenOwnedEscrow), 0)
+  ) {
     return MplTokenMetadataAccount.TokenOwnedEscrow;
   }
-  if (memcmp(data, getTmKeyEncoder().encode(TmKey.MasterEditionV2), 0)) {
+  if (containsBytes(data, getTmKeyEncoder().encode(TmKey.MasterEditionV2), 0)) {
     return MplTokenMetadataAccount.MasterEditionV2;
   }
-  if (memcmp(data, getTmKeyEncoder().encode(TmKey.MasterEditionV1), 0)) {
+  if (containsBytes(data, getTmKeyEncoder().encode(TmKey.MasterEditionV1), 0)) {
     return MplTokenMetadataAccount.MasterEditionV1;
   }
-  if (memcmp(data, getTmKeyEncoder().encode(TmKey.MetadataV1), 0)) {
+  if (containsBytes(data, getTmKeyEncoder().encode(TmKey.MetadataV1), 0)) {
     return MplTokenMetadataAccount.Metadata;
   }
-  if (memcmp(data, getTmKeyEncoder().encode(TmKey.ReservationListV2), 0)) {
+  if (
+    containsBytes(data, getTmKeyEncoder().encode(TmKey.ReservationListV2), 0)
+  ) {
     return MplTokenMetadataAccount.ReservationListV2;
   }
-  if (memcmp(data, getTmKeyEncoder().encode(TmKey.ReservationListV1), 0)) {
+  if (
+    containsBytes(data, getTmKeyEncoder().encode(TmKey.ReservationListV1), 0)
+  ) {
     return MplTokenMetadataAccount.ReservationListV1;
   }
-  if (memcmp(data, getTmKeyEncoder().encode(TmKey.UseAuthorityRecord), 0)) {
+  if (
+    containsBytes(data, getTmKeyEncoder().encode(TmKey.UseAuthorityRecord), 0)
+  ) {
     return MplTokenMetadataAccount.UseAuthorityRecord;
   }
   throw new Error(
@@ -209,160 +220,160 @@ export function identifyMplTokenMetadataInstruction(
 ): MplTokenMetadataInstruction {
   const data =
     instruction instanceof Uint8Array ? instruction : instruction.data;
-  if (memcmp(data, getU8Encoder().encode(0), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(0), 0)) {
     return MplTokenMetadataInstruction.CreateMetadataAccount;
   }
-  if (memcmp(data, getU8Encoder().encode(1), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(1), 0)) {
     return MplTokenMetadataInstruction.UpdateMetadataAccount;
   }
-  if (memcmp(data, getU8Encoder().encode(2), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(2), 0)) {
     return MplTokenMetadataInstruction.DeprecatedCreateMasterEdition;
   }
-  if (memcmp(data, getU8Encoder().encode(3), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(3), 0)) {
     return MplTokenMetadataInstruction.DeprecatedMintNewEditionFromMasterEditionViaPrintingToken;
   }
-  if (memcmp(data, getU8Encoder().encode(4), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(4), 0)) {
     return MplTokenMetadataInstruction.UpdatePrimarySaleHappenedViaToken;
   }
-  if (memcmp(data, getU8Encoder().encode(5), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(5), 0)) {
     return MplTokenMetadataInstruction.DeprecatedSetReservationList;
   }
-  if (memcmp(data, getU8Encoder().encode(6), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(6), 0)) {
     return MplTokenMetadataInstruction.CreateReservationList;
   }
-  if (memcmp(data, getU8Encoder().encode(7), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(7), 0)) {
     return MplTokenMetadataInstruction.SignMetadata;
   }
-  if (memcmp(data, getU8Encoder().encode(8), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(8), 0)) {
     return MplTokenMetadataInstruction.DeprecatedMintPrintingTokensViaToken;
   }
-  if (memcmp(data, getU8Encoder().encode(9), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(9), 0)) {
     return MplTokenMetadataInstruction.DeprecatedMintPrintingTokens;
   }
-  if (memcmp(data, getU8Encoder().encode(10), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(10), 0)) {
     return MplTokenMetadataInstruction.CreateMasterEdition;
   }
-  if (memcmp(data, getU8Encoder().encode(11), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(11), 0)) {
     return MplTokenMetadataInstruction.MintNewEditionFromMasterEditionViaToken;
   }
-  if (memcmp(data, getU8Encoder().encode(12), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(12), 0)) {
     return MplTokenMetadataInstruction.ConvertMasterEditionV1ToV2;
   }
-  if (memcmp(data, getU8Encoder().encode(13), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(13), 0)) {
     return MplTokenMetadataInstruction.MintNewEditionFromMasterEditionViaVaultProxy;
   }
-  if (memcmp(data, getU8Encoder().encode(14), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(14), 0)) {
     return MplTokenMetadataInstruction.PuffMetadata;
   }
-  if (memcmp(data, getU8Encoder().encode(15), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(15), 0)) {
     return MplTokenMetadataInstruction.UpdateMetadataAccountV2;
   }
-  if (memcmp(data, getU8Encoder().encode(16), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(16), 0)) {
     return MplTokenMetadataInstruction.CreateMetadataAccountV2;
   }
-  if (memcmp(data, getU8Encoder().encode(17), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(17), 0)) {
     return MplTokenMetadataInstruction.CreateMasterEditionV3;
   }
-  if (memcmp(data, getU8Encoder().encode(18), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(18), 0)) {
     return MplTokenMetadataInstruction.VerifyCollection;
   }
-  if (memcmp(data, getU8Encoder().encode(19), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(19), 0)) {
     return MplTokenMetadataInstruction.Utilize;
   }
-  if (memcmp(data, getU8Encoder().encode(20), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(20), 0)) {
     return MplTokenMetadataInstruction.ApproveUseAuthority;
   }
-  if (memcmp(data, getU8Encoder().encode(21), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(21), 0)) {
     return MplTokenMetadataInstruction.RevokeUseAuthority;
   }
-  if (memcmp(data, getU8Encoder().encode(22), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(22), 0)) {
     return MplTokenMetadataInstruction.UnverifyCollection;
   }
-  if (memcmp(data, getU8Encoder().encode(23), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(23), 0)) {
     return MplTokenMetadataInstruction.ApproveCollectionAuthority;
   }
-  if (memcmp(data, getU8Encoder().encode(24), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(24), 0)) {
     return MplTokenMetadataInstruction.RevokeCollectionAuthority;
   }
-  if (memcmp(data, getU8Encoder().encode(25), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(25), 0)) {
     return MplTokenMetadataInstruction.SetAndVerifyCollection;
   }
-  if (memcmp(data, getU8Encoder().encode(26), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(26), 0)) {
     return MplTokenMetadataInstruction.FreezeDelegatedAccount;
   }
-  if (memcmp(data, getU8Encoder().encode(27), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(27), 0)) {
     return MplTokenMetadataInstruction.ThawDelegatedAccount;
   }
-  if (memcmp(data, getU8Encoder().encode(28), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(28), 0)) {
     return MplTokenMetadataInstruction.RemoveCreatorVerification;
   }
-  if (memcmp(data, getU8Encoder().encode(29), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(29), 0)) {
     return MplTokenMetadataInstruction.BurnNft;
   }
-  if (memcmp(data, getU8Encoder().encode(30), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(30), 0)) {
     return MplTokenMetadataInstruction.VerifySizedCollectionItem;
   }
-  if (memcmp(data, getU8Encoder().encode(31), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(31), 0)) {
     return MplTokenMetadataInstruction.UnverifySizedCollectionItem;
   }
-  if (memcmp(data, getU8Encoder().encode(32), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(32), 0)) {
     return MplTokenMetadataInstruction.SetAndVerifySizedCollectionItem;
   }
-  if (memcmp(data, getU8Encoder().encode(33), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(33), 0)) {
     return MplTokenMetadataInstruction.CreateMetadataAccountV3;
   }
-  if (memcmp(data, getU8Encoder().encode(34), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(34), 0)) {
     return MplTokenMetadataInstruction.SetCollectionSize;
   }
-  if (memcmp(data, getU8Encoder().encode(35), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(35), 0)) {
     return MplTokenMetadataInstruction.SetTokenStandard;
   }
-  if (memcmp(data, getU8Encoder().encode(36), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(36), 0)) {
     return MplTokenMetadataInstruction.BubblegumSetCollectionSize;
   }
-  if (memcmp(data, getU8Encoder().encode(37), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(37), 0)) {
     return MplTokenMetadataInstruction.BurnEditionNft;
   }
-  if (memcmp(data, getU8Encoder().encode(38), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(38), 0)) {
     return MplTokenMetadataInstruction.CreateEscrowAccount;
   }
-  if (memcmp(data, getU8Encoder().encode(39), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(39), 0)) {
     return MplTokenMetadataInstruction.CloseEscrowAccount;
   }
-  if (memcmp(data, getU8Encoder().encode(40), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(40), 0)) {
     return MplTokenMetadataInstruction.TransferOutOfEscrow;
   }
-  if (memcmp(data, getU8Encoder().encode(41), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(41), 0)) {
     return MplTokenMetadataInstruction.CreateV1;
   }
-  if (memcmp(data, getU8Encoder().encode(41), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(41), 0)) {
     return MplTokenMetadataInstruction.CreateV2;
   }
-  if (memcmp(data, getU8Encoder().encode(42), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(42), 0)) {
     return MplTokenMetadataInstruction.Mint;
   }
-  if (memcmp(data, getU8Encoder().encode(43), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(43), 0)) {
     return MplTokenMetadataInstruction.UpdateV1;
   }
-  if (memcmp(data, getU8Encoder().encode(44), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(44), 0)) {
     return MplTokenMetadataInstruction.Burn;
   }
-  if (memcmp(data, getU8Encoder().encode(45), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(45), 0)) {
     return MplTokenMetadataInstruction.UseAsset;
   }
-  if (memcmp(data, getU8Encoder().encode(46), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(46), 0)) {
     return MplTokenMetadataInstruction.Transfer;
   }
-  if (memcmp(data, getU8Encoder().encode(47), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(47), 0)) {
     return MplTokenMetadataInstruction.Verify;
   }
-  if (memcmp(data, getU8Encoder().encode(48), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(48), 0)) {
     return MplTokenMetadataInstruction.Delegate;
   }
-  if (memcmp(data, getU8Encoder().encode(49), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(49), 0)) {
     return MplTokenMetadataInstruction.Revoke;
   }
-  if (memcmp(data, getU8Encoder().encode(50), 0)) {
+  if (containsBytes(data, getU8Encoder().encode(50), 0)) {
     return MplTokenMetadataInstruction.Migrate;
   }
   throw new Error(

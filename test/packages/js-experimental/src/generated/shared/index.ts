@@ -11,7 +11,6 @@ import {
   isProgramDerivedAddress,
   ProgramDerivedAddress,
 } from '@solana/addresses';
-import { ReadonlyUint8Array } from '@solana/codecs';
 import {
   AccountRole,
   IAccountMeta,
@@ -166,14 +165,4 @@ export function isTransactionSigner<TAddress extends string = string>(
     'address' in value &&
     web3JsIsTransactionSigner(value)
   );
-}
-
-export function memcmp(
-  data: ReadonlyUint8Array,
-  bytes: ReadonlyUint8Array,
-  offset: number
-) {
-  const slice = data.slice(offset, offset + bytes.length);
-  if (slice.length !== bytes.length) return false;
-  return bytes.every((b, i) => b === slice[i]);
 }
