@@ -42,9 +42,9 @@ export function rootNode<
   };
 }
 
-export function rootNodeFromIdls(
+export function rootNodeFromIdl(
   program: IdlInput,
-  additionalPrograms: IdlInput[]
+  additionalPrograms: IdlInput[] = []
 ): RootNode {
   const resolveIdl = (idl: IdlInput) =>
     typeof idl === 'string' ? readJson<Partial<Idl>>(idl) : idl;

@@ -4,7 +4,7 @@ import {
   KinobiVersion,
   Node,
   RootNode,
-  rootNodeFromIdls,
+  rootNodeFromIdl,
 } from './nodes';
 import { KinobiError } from './shared';
 import { defaultVisitor, visit, Visitor } from './visitors';
@@ -49,11 +49,11 @@ export function createFromRoot(
 
 export function createFromIdl(
   program: IdlInput,
-  additionalPrograms: IdlInput[],
+  additionalPrograms: IdlInput[] = [],
   useDefaultVisitor = true
 ): Kinobi {
   return createFromRoot(
-    rootNodeFromIdls(program, additionalPrograms),
+    rootNodeFromIdl(program, additionalPrograms),
     useDefaultVisitor
   );
 }
