@@ -31,22 +31,22 @@ export type InstructionAccountDefaultRule = {
 export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaultRule[] =
   [
     {
-      account: /^payer|feePayer$/,
+      account: /^(payer|feePayer)$/,
       defaultValue: payerValueNode(),
       ignoreIfOptional: true,
     },
     {
-      account: /^authority$/,
+      account: /^(authority)$/,
       defaultValue: identityValueNode(),
       ignoreIfOptional: true,
     },
     {
-      account: /^programId$/,
+      account: /^(programId)$/,
       defaultValue: programIdValueNode(),
       ignoreIfOptional: true,
     },
     {
-      account: /^systemProgram|splSystemProgram$/,
+      account: /^(systemProgram|splSystemProgram)$/,
       defaultValue: publicKeyValueNode(
         '11111111111111111111111111111111',
         'splSystem'
@@ -54,7 +54,7 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
       ignoreIfOptional: true,
     },
     {
-      account: /^tokenProgram|splTokenProgram$/,
+      account: /^(tokenProgram|splTokenProgram)$/,
       defaultValue: publicKeyValueNode(
         'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
         'splToken'
@@ -62,7 +62,7 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
       ignoreIfOptional: true,
     },
     {
-      account: /^ataProgram|splAtaProgram$/,
+      account: /^(ataProgram|splAtaProgram)$/,
       defaultValue: publicKeyValueNode(
         'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
         'splAssociatedToken'
@@ -70,7 +70,7 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
       ignoreIfOptional: true,
     },
     {
-      account: /^tokenMetadataProgram|mplTokenMetadataProgram$/,
+      account: /^(tokenMetadataProgram|mplTokenMetadataProgram)$/,
       defaultValue: publicKeyValueNode(
         'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
         'mplTokenMetadata'
@@ -87,7 +87,7 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
       ignoreIfOptional: true,
     },
     {
-      account: /^candyMachineProgram|mplCandyMachineProgram$/,
+      account: /^(candyMachineProgram|mplCandyMachineProgram)$/,
       defaultValue: publicKeyValueNode(
         'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
         'mplCandyMachine'
@@ -95,7 +95,7 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
       ignoreIfOptional: true,
     },
     {
-      account: /^candyGuardProgram|mplCandyGuardProgram$/,
+      account: /^(candyGuardProgram|mplCandyGuardProgram)$/,
       defaultValue: publicKeyValueNode(
         'Guard1JwRhJkVH6XZhzoYxeBVQe872VH6QggF4BWmS9g',
         'mplCandyGuard'
@@ -103,14 +103,14 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
       ignoreIfOptional: true,
     },
     {
-      account: /^clockSysvar|sysvarClock$/,
+      account: /^(clockSysvar|sysvarClock)$/,
       defaultValue: publicKeyValueNode(
         'SysvarC1ock11111111111111111111111111111111'
       ),
       ignoreIfOptional: true,
     },
     {
-      account: /^epochScheduleSysvar|sysvarEpochSchedule$/,
+      account: /^(epochScheduleSysvar|sysvarEpochSchedule)$/,
       defaultValue: publicKeyValueNode(
         'SysvarEpochSchedu1e111111111111111111111111'
       ),
@@ -124,49 +124,49 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
       ignoreIfOptional: true,
     },
     {
-      account: /^recentBlockhashesSysvar|sysvarRecentBlockhashes$/,
+      account: /^(recentBlockhashesSysvar|sysvarRecentBlockhashes)$/,
       defaultValue: publicKeyValueNode(
         'SysvarRecentB1ockHashes11111111111111111111'
       ),
       ignoreIfOptional: true,
     },
     {
-      account: /^rent|rentSysvar|sysvarRent$/,
+      account: /^(rent|rentSysvar|sysvarRent)$/,
       defaultValue: publicKeyValueNode(
         'SysvarRent111111111111111111111111111111111'
       ),
       ignoreIfOptional: true,
     },
     {
-      account: /^rewardsSysvar|sysvarRewards$/,
+      account: /^(rewardsSysvar|sysvarRewards)$/,
       defaultValue: publicKeyValueNode(
         'SysvarRewards111111111111111111111111111111'
       ),
       ignoreIfOptional: true,
     },
     {
-      account: /^slotHashesSysvar|sysvarSlotHashes$/,
+      account: /^(slotHashesSysvar|sysvarSlotHashes)$/,
       defaultValue: publicKeyValueNode(
         'SysvarS1otHashes111111111111111111111111111'
       ),
       ignoreIfOptional: true,
     },
     {
-      account: /^slotHistorySysvar|sysvarSlotHistory$/,
+      account: /^(slotHistorySysvar|sysvarSlotHistory)$/,
       defaultValue: publicKeyValueNode(
         'SysvarS1otHistory11111111111111111111111111'
       ),
       ignoreIfOptional: true,
     },
     {
-      account: /^stakeHistorySysvar|sysvarStakeHistory$/,
+      account: /^(stakeHistorySysvar|sysvarStakeHistory)$/,
       defaultValue: publicKeyValueNode(
         'SysvarStakeHistory1111111111111111111111111'
       ),
       ignoreIfOptional: true,
     },
     {
-      account: /^mplCoreProgram$/,
+      account: /^(mplCoreProgram)$/,
       defaultValue: publicKeyValueNode(
         'CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d',
         'mplCore'
