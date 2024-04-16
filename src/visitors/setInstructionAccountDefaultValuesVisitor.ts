@@ -131,10 +131,9 @@ export const DEFAULT_INSTRUCTION_ACCOUNT_DEFAULT_RULES: InstructionAccountDefaul
       ignoreIfOptional: true,
     },
     {
-      account: /^rent|rentSysvar|sysvarRent$/,
+      account: /^rent$|rentSysvar|sysvarRent$/,
       defaultValue: publicKeyValueNode(
-        'SysvarRent111111111111111111111111111111111'
-      ),
+        'SysvarRent111111111111111111111111111111111'),
       ignoreIfOptional: true,
     },
     {
