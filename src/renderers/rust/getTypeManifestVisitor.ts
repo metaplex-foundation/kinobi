@@ -389,6 +389,12 @@ export function getTypeManifestVisitor() {
         },
 
         visitNumberType(numberType) {
+          if (numberType.format === 'shortU16') {
+            throw new Error(
+              'shortU16 numbers are not supported by the Rust renderer'
+            );
+          }
+
           if (numberType.endian === 'le') {
             return {
               type: numberType.format,
