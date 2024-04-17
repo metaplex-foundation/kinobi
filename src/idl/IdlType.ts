@@ -77,6 +77,7 @@ export const IDL_TYPE_LEAVES = [
   'i128',
   'f32',
   'f64',
+  'shortU16',
 ] as const;
 export type IdlTypeLeaf = (typeof IDL_TYPE_LEAVES)[number];
 
