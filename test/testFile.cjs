@@ -1,7 +1,4 @@
 const k = require('../dist/cjs/index.js');
-const {
-  publicKeyTypeNode,
-} = require('../dist/cjs/nodes/typeNodes/PublicKeyTypeNode.js');
 
 const kinobi = k.createFromIdl(__dirname + '/spl_system.json', [
   __dirname + '/spl_memo.json',
@@ -39,7 +36,7 @@ kinobi.update(
         k.constantPdaSeedNodeFromProgramId(),
         k.variablePdaSeedNode(
           'mint',
-          publicKeyTypeNode(),
+          k.publicKeyTypeNode(),
           'The address of the mint account'
         ),
         k.constantPdaSeedNodeFromString('utf8', 'edition'),
