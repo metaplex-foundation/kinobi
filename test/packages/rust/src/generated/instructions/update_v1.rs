@@ -143,7 +143,7 @@ impl UpdateV1 {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct UpdateV1InstructionData {
+pub struct UpdateV1InstructionData {
     discriminator: u8,
     update_v1_discriminator: u8,
 }

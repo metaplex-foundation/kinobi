@@ -110,7 +110,7 @@ impl ApproveUseAuthority {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct ApproveUseAuthorityInstructionData {
+pub struct ApproveUseAuthorityInstructionData {
     discriminator: u8,
 }
 

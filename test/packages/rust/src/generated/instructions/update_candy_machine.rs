@@ -54,7 +54,7 @@ impl UpdateCandyMachine {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct UpdateCandyMachineInstructionData {
+pub struct UpdateCandyMachineInstructionData {
     discriminator: [u8; 8],
 }
 

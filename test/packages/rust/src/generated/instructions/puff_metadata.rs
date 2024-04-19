@@ -40,7 +40,7 @@ impl PuffMetadata {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct PuffMetadataInstructionData {
+pub struct PuffMetadataInstructionData {
     discriminator: u8,
 }
 

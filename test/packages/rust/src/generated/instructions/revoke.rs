@@ -149,7 +149,7 @@ impl Revoke {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct RevokeInstructionData {
+pub struct RevokeInstructionData {
     discriminator: u8,
 }
 

@@ -80,7 +80,7 @@ impl BubblegumSetCollectionSize {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct BubblegumSetCollectionSizeInstructionData {
+pub struct BubblegumSetCollectionSizeInstructionData {
     discriminator: u8,
 }
 

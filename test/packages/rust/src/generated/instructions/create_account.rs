@@ -51,7 +51,7 @@ impl CreateAccount {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct CreateAccountInstructionData {
+pub struct CreateAccountInstructionData {
     discriminator: u32,
 }
 

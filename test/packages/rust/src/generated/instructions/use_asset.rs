@@ -126,7 +126,7 @@ impl UseAsset {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct UseAssetInstructionData {
+pub struct UseAssetInstructionData {
     discriminator: u8,
 }
 

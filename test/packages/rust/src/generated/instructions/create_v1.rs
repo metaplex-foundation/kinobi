@@ -101,7 +101,7 @@ impl CreateV1 {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct CreateV1InstructionData {
+pub struct CreateV1InstructionData {
     discriminator: u8,
     create_v1_discriminator: u8,
 }

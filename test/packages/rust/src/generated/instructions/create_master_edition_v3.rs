@@ -101,7 +101,7 @@ impl CreateMasterEditionV3 {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct CreateMasterEditionV3InstructionData {
+pub struct CreateMasterEditionV3InstructionData {
     discriminator: u8,
 }
 

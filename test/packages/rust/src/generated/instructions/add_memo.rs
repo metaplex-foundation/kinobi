@@ -39,7 +39,7 @@ impl AddMemo {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct AddMemoInstructionData {}
+pub struct AddMemoInstructionData {}
 
 impl AddMemoInstructionData {
     fn new() -> Self {

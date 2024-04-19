@@ -125,7 +125,7 @@ impl TransferOutOfEscrow {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct TransferOutOfEscrowInstructionData {
+pub struct TransferOutOfEscrowInstructionData {
     discriminator: u8,
 }
 

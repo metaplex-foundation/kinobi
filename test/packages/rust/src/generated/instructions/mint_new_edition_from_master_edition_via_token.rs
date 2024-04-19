@@ -132,7 +132,7 @@ impl MintNewEditionFromMasterEditionViaToken {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct MintNewEditionFromMasterEditionViaTokenInstructionData {
+pub struct MintNewEditionFromMasterEditionViaTokenInstructionData {
     discriminator: u8,
 }
 

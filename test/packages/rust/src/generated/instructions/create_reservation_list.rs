@@ -82,7 +82,7 @@ impl CreateReservationList {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct CreateReservationListInstructionData {
+pub struct CreateReservationListInstructionData {
     discriminator: u8,
 }
 

@@ -114,7 +114,7 @@ impl Dummy {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct DummyInstructionData {
+pub struct DummyInstructionData {
     discriminator: [u8; 8],
 }
 

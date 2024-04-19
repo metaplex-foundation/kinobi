@@ -74,7 +74,7 @@ impl SetCollectionSize {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct SetCollectionSizeInstructionData {
+pub struct SetCollectionSizeInstructionData {
     discriminator: u8,
 }
 

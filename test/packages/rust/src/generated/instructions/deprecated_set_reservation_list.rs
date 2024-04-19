@@ -61,7 +61,7 @@ impl DeprecatedSetReservationList {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct DeprecatedSetReservationListInstructionData {
+pub struct DeprecatedSetReservationListInstructionData {
     discriminator: u8,
 }
 

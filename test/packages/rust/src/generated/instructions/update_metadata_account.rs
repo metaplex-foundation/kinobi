@@ -56,7 +56,7 @@ impl UpdateMetadataAccount {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct UpdateMetadataAccountInstructionData {
+pub struct UpdateMetadataAccountInstructionData {
     discriminator: u8,
 }
 

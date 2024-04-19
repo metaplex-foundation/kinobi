@@ -149,7 +149,7 @@ impl MintNewEditionFromMasterEditionViaVaultProxy {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct MintNewEditionFromMasterEditionViaVaultProxyInstructionData {
+pub struct MintNewEditionFromMasterEditionViaVaultProxyInstructionData {
     discriminator: u8,
 }
 

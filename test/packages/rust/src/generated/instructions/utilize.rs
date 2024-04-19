@@ -116,7 +116,7 @@ impl Utilize {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct UtilizeInstructionData {
+pub struct UtilizeInstructionData {
     discriminator: u8,
 }
 

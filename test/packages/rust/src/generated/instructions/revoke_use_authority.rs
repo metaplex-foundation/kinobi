@@ -93,7 +93,7 @@ impl RevokeUseAuthority {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct RevokeUseAuthorityInstructionData {
+pub struct RevokeUseAuthorityInstructionData {
     discriminator: u8,
 }
 

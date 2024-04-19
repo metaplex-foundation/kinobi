@@ -65,7 +65,7 @@ impl RevokeCollectionAuthority {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct RevokeCollectionAuthorityInstructionData {
+pub struct RevokeCollectionAuthorityInstructionData {
     discriminator: u8,
 }
 

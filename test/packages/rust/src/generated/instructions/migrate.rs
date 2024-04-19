@@ -107,7 +107,7 @@ impl Migrate {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct MigrateInstructionData {
+pub struct MigrateInstructionData {
     discriminator: u8,
 }
 

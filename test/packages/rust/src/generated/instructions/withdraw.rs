@@ -45,7 +45,7 @@ impl Withdraw {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct WithdrawInstructionData {
+pub struct WithdrawInstructionData {
     discriminator: [u8; 8],
 }
 

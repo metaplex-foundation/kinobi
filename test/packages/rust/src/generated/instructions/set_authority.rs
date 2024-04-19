@@ -52,7 +52,7 @@ impl SetAuthority {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct SetAuthorityInstructionData {
+pub struct SetAuthorityInstructionData {
     discriminator: [u8; 8],
 }
 

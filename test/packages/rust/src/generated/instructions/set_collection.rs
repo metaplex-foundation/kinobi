@@ -116,7 +116,7 @@ impl SetCollection {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct SetCollectionInstructionData {
+pub struct SetCollectionInstructionData {
     discriminator: [u8; 8],
 }
 

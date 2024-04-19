@@ -84,7 +84,7 @@ impl Verify {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct VerifyInstructionData {
+pub struct VerifyInstructionData {
     discriminator: u8,
 }
 

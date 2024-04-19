@@ -51,7 +51,7 @@ impl SetMintAuthority {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct SetMintAuthorityInstructionData {
+pub struct SetMintAuthorityInstructionData {
     discriminator: [u8; 8],
 }
 

@@ -136,7 +136,7 @@ impl DeprecatedMintNewEditionFromMasterEditionViaPrintingToken {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData {
+pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData {
     discriminator: u8,
 }
 

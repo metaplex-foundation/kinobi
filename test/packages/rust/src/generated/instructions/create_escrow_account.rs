@@ -94,7 +94,7 @@ impl CreateEscrowAccount {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct CreateEscrowAccountInstructionData {
+pub struct CreateEscrowAccountInstructionData {
     discriminator: u8,
 }
 

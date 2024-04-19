@@ -118,7 +118,7 @@ impl DeprecatedCreateMasterEdition {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct DeprecatedCreateMasterEditionInstructionData {
+pub struct DeprecatedCreateMasterEditionInstructionData {
     discriminator: u8,
 }
 

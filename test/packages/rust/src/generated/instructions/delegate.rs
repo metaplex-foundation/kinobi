@@ -149,7 +149,7 @@ impl Delegate {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct DelegateInstructionData {
+pub struct DelegateInstructionData {
     discriminator: u8,
 }
 

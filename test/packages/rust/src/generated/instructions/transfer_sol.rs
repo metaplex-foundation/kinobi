@@ -51,7 +51,7 @@ impl TransferSol {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct TransferSolInstructionData {
+pub struct TransferSolInstructionData {
     discriminator: u32,
 }
 

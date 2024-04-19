@@ -79,7 +79,7 @@ impl UnverifyCollection {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct UnverifyCollectionInstructionData {
+pub struct UnverifyCollectionInstructionData {
     discriminator: u8,
 }
 

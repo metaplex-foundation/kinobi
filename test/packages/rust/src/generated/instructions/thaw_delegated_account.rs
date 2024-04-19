@@ -65,7 +65,7 @@ impl ThawDelegatedAccount {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct ThawDelegatedAccountInstructionData {
+pub struct ThawDelegatedAccountInstructionData {
     discriminator: u8,
 }
 

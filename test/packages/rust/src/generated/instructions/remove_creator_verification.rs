@@ -48,7 +48,7 @@ impl RemoveCreatorVerification {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct RemoveCreatorVerificationInstructionData {
+pub struct RemoveCreatorVerificationInstructionData {
     discriminator: u8,
 }
 

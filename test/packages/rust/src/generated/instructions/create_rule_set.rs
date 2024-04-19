@@ -58,7 +58,7 @@ impl CreateRuleSet {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct CreateRuleSetInstructionData {
+pub struct CreateRuleSetInstructionData {
     discriminator: u8,
 }
 

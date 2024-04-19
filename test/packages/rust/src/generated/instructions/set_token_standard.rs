@@ -63,7 +63,7 @@ impl SetTokenStandard {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct SetTokenStandardInstructionData {
+pub struct SetTokenStandardInstructionData {
     discriminator: u8,
 }
 

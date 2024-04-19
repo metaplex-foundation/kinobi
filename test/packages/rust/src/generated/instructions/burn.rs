@@ -114,7 +114,7 @@ impl Burn {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct BurnInstructionData {
+pub struct BurnInstructionData {
     discriminator: u8,
 }
 

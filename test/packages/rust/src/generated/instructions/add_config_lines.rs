@@ -53,7 +53,7 @@ impl AddConfigLines {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct AddConfigLinesInstructionData {
+pub struct AddConfigLinesInstructionData {
     discriminator: [u8; 8],
 }
 
