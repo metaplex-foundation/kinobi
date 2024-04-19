@@ -116,12 +116,12 @@ impl Utilize {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct UtilizeInstructionData {
+pub struct UtilizeInstructionData {
     discriminator: u8,
 }
 
 impl UtilizeInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 19 }
     }
 }

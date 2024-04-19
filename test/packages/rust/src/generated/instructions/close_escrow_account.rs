@@ -82,12 +82,12 @@ impl CloseEscrowAccount {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct CloseEscrowAccountInstructionData {
+pub struct CloseEscrowAccountInstructionData {
     discriminator: u8,
 }
 
 impl CloseEscrowAccountInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 39 }
     }
 }

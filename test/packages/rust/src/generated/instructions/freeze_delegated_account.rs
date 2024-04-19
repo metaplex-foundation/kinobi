@@ -65,12 +65,12 @@ impl FreezeDelegatedAccount {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct FreezeDelegatedAccountInstructionData {
+pub struct FreezeDelegatedAccountInstructionData {
     discriminator: u8,
 }
 
 impl FreezeDelegatedAccountInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 26 }
     }
 }

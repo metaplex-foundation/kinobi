@@ -114,12 +114,12 @@ impl Burn {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct BurnInstructionData {
+pub struct BurnInstructionData {
     discriminator: u8,
 }
 
 impl BurnInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 44 }
     }
 }

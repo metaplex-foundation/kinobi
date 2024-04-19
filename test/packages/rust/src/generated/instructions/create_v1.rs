@@ -101,13 +101,13 @@ impl CreateV1 {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct CreateV1InstructionData {
+pub struct CreateV1InstructionData {
     discriminator: u8,
     create_v1_discriminator: u8,
 }
 
 impl CreateV1InstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             discriminator: 41,
             create_v1_discriminator: 0,

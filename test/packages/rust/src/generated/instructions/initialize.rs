@@ -105,12 +105,12 @@ impl Initialize {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct InitializeInstructionData {
+pub struct InitializeInstructionData {
     discriminator: [u8; 8],
 }
 
 impl InitializeInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             discriminator: [175, 175, 109, 31, 13, 152, 155, 237],
         }

@@ -149,12 +149,12 @@ impl Revoke {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct RevokeInstructionData {
+pub struct RevokeInstructionData {
     discriminator: u8,
 }
 
 impl RevokeInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 49 }
     }
 }

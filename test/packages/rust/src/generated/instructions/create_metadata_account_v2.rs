@@ -89,12 +89,12 @@ impl CreateMetadataAccountV2 {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct CreateMetadataAccountV2InstructionData {
+pub struct CreateMetadataAccountV2InstructionData {
     discriminator: u8,
 }
 
 impl CreateMetadataAccountV2InstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 16 }
     }
 }

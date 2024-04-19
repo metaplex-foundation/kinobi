@@ -63,12 +63,12 @@ impl SetTokenStandard {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct SetTokenStandardInstructionData {
+pub struct SetTokenStandardInstructionData {
     discriminator: u8,
 }
 
 impl SetTokenStandardInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 35 }
     }
 }

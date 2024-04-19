@@ -149,12 +149,12 @@ impl Delegate {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct DelegateInstructionData {
+pub struct DelegateInstructionData {
     discriminator: u8,
 }
 
 impl DelegateInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 48 }
     }
 }

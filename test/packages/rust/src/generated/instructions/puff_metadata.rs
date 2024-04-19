@@ -40,12 +40,12 @@ impl PuffMetadata {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct PuffMetadataInstructionData {
+pub struct PuffMetadataInstructionData {
     discriminator: u8,
 }
 
 impl PuffMetadataInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 14 }
     }
 }

@@ -52,12 +52,12 @@ impl UpdatePrimarySaleHappenedViaToken {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct UpdatePrimarySaleHappenedViaTokenInstructionData {
+pub struct UpdatePrimarySaleHappenedViaTokenInstructionData {
     discriminator: u8,
 }
 
 impl UpdatePrimarySaleHappenedViaTokenInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 4 }
     }
 }

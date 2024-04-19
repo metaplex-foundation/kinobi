@@ -56,12 +56,12 @@ impl UpdateMetadataAccountV2 {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct UpdateMetadataAccountV2InstructionData {
+pub struct UpdateMetadataAccountV2InstructionData {
     discriminator: u8,
 }
 
 impl UpdateMetadataAccountV2InstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 15 }
     }
 }

@@ -94,12 +94,12 @@ impl CreateEscrowAccount {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct CreateEscrowAccountInstructionData {
+pub struct CreateEscrowAccountInstructionData {
     discriminator: u8,
 }
 
 impl CreateEscrowAccountInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 38 }
     }
 }

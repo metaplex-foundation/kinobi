@@ -84,12 +84,12 @@ impl DeprecatedMintPrintingTokens {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct DeprecatedMintPrintingTokensInstructionData {
+pub struct DeprecatedMintPrintingTokensInstructionData {
     discriminator: u8,
 }
 
 impl DeprecatedMintPrintingTokensInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 9 }
     }
 }

@@ -116,12 +116,12 @@ impl SetCollection {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct SetCollectionInstructionData {
+pub struct SetCollectionInstructionData {
     discriminator: [u8; 8],
 }
 
 impl SetCollectionInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             discriminator: [192, 254, 206, 76, 168, 182, 59, 223],
         }

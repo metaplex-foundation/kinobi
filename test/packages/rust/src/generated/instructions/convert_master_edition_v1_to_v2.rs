@@ -54,12 +54,12 @@ impl ConvertMasterEditionV1ToV2 {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct ConvertMasterEditionV1ToV2InstructionData {
+pub struct ConvertMasterEditionV1ToV2InstructionData {
     discriminator: u8,
 }
 
 impl ConvertMasterEditionV1ToV2InstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 12 }
     }
 }

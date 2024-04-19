@@ -118,12 +118,12 @@ impl DeprecatedCreateMasterEdition {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct DeprecatedCreateMasterEditionInstructionData {
+pub struct DeprecatedCreateMasterEditionInstructionData {
     discriminator: u8,
 }
 
 impl DeprecatedCreateMasterEditionInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 2 }
     }
 }

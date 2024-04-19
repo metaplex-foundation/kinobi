@@ -58,12 +58,12 @@ impl CreateRuleSet {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct CreateRuleSetInstructionData {
+pub struct CreateRuleSetInstructionData {
     discriminator: u8,
 }
 
 impl CreateRuleSetInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 0 }
     }
 }

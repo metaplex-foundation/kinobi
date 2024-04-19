@@ -54,12 +54,12 @@ impl UpdateCandyMachine {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct UpdateCandyMachineInstructionData {
+pub struct UpdateCandyMachineInstructionData {
     discriminator: [u8; 8],
 }
 
 impl UpdateCandyMachineInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             discriminator: [219, 200, 88, 176, 158, 63, 253, 127],
         }
