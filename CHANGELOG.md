@@ -1,5 +1,15 @@
 # @metaplex-foundation/kinobi
 
+## 0.18.5
+
+### Patch Changes
+
+- [#220](https://github.com/metaplex-foundation/kinobi/pull/220) [`29bac6c`](https://github.com/metaplex-foundation/kinobi/commit/29bac6c94504147529bf8d5d36dd6c7cebf05997) Thanks [@febo](https://github.com/febo)! - Change instruction data struct visibility on Rust client
+
+- [#219](https://github.com/metaplex-foundation/kinobi/pull/219) [`ca60453`](https://github.com/metaplex-foundation/kinobi/commit/ca604534feac6d868f4ac85c8a5307c2b6d7d762) Thanks [@danenbm](https://github.com/danenbm)! - Add serde DisplayFromStr for Pubkey and Vec<Pubkey> in Rust rendering.
+
+- [#223](https://github.com/metaplex-foundation/kinobi/pull/223) [`53ff97d`](https://github.com/metaplex-foundation/kinobi/commit/53ff97d55f824f8b5bbb095a60b1814838c7b696) Thanks [@febo](https://github.com/febo)! - Use remainder str type in Rust client
+
 ## 0.18.4
 
 ### Patch Changes
