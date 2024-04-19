@@ -56,7 +56,7 @@ pub struct SetMintAuthorityInstructionData {
 }
 
 impl SetMintAuthorityInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             discriminator: [67, 127, 155, 187, 100, 174, 103, 121],
         }

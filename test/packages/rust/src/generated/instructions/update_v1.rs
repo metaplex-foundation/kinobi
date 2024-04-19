@@ -149,7 +149,7 @@ pub struct UpdateV1InstructionData {
 }
 
 impl UpdateV1InstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             discriminator: 43,
             update_v1_discriminator: 0,

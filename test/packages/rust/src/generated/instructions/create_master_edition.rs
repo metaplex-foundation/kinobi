@@ -99,7 +99,7 @@ pub struct CreateMasterEditionInstructionData {
 }
 
 impl CreateMasterEditionInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 10 }
     }
 }

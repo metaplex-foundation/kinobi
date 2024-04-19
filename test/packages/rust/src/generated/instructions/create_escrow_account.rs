@@ -99,7 +99,7 @@ pub struct CreateEscrowAccountInstructionData {
 }
 
 impl CreateEscrowAccountInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 38 }
     }
 }

@@ -154,7 +154,7 @@ pub struct MintNewEditionFromMasterEditionViaVaultProxyInstructionData {
 }
 
 impl MintNewEditionFromMasterEditionViaVaultProxyInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 13 }
     }
 }

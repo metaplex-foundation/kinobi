@@ -70,7 +70,7 @@ pub struct FreezeDelegatedAccountInstructionData {
 }
 
 impl FreezeDelegatedAccountInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 26 }
     }
 }

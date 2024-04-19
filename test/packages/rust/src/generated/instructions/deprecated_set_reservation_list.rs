@@ -66,7 +66,7 @@ pub struct DeprecatedSetReservationListInstructionData {
 }
 
 impl DeprecatedSetReservationListInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 5 }
     }
 }

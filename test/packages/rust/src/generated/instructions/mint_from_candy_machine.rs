@@ -141,7 +141,7 @@ pub struct MintFromCandyMachineInstructionData {
 }
 
 impl MintFromCandyMachineInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             discriminator: [51, 57, 225, 47, 182, 146, 137, 166],
         }

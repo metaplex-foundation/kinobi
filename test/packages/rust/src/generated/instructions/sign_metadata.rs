@@ -51,7 +51,7 @@ pub struct SignMetadataInstructionData {
 }
 
 impl SignMetadataInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 7 }
     }
 }

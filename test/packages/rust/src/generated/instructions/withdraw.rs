@@ -50,7 +50,7 @@ pub struct WithdrawInstructionData {
 }
 
 impl WithdrawInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             discriminator: [183, 18, 70, 156, 148, 109, 161, 34],
         }

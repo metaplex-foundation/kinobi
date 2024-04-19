@@ -61,7 +61,7 @@ pub struct UpdateMetadataAccountInstructionData {
 }
 
 impl UpdateMetadataAccountInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 1 }
     }
 }

@@ -87,7 +87,7 @@ pub struct CreateReservationListInstructionData {
 }
 
 impl CreateReservationListInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 6 }
     }
 }

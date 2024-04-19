@@ -131,7 +131,7 @@ pub struct UseAssetInstructionData {
 }
 
 impl UseAssetInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 45 }
     }
 }

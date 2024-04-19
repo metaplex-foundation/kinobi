@@ -58,7 +58,7 @@ pub struct AddConfigLinesInstructionData {
 }
 
 impl AddConfigLinesInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             discriminator: [223, 50, 224, 227, 151, 8, 115, 106],
         }

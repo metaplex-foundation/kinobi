@@ -154,7 +154,7 @@ pub struct RevokeInstructionData {
 }
 
 impl RevokeInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 49 }
     }
 }

@@ -121,7 +121,7 @@ pub struct SetCollectionInstructionData {
 }
 
 impl SetCollectionInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             discriminator: [192, 254, 206, 76, 168, 182, 59, 223],
         }

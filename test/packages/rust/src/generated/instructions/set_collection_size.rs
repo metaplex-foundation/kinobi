@@ -79,7 +79,7 @@ pub struct SetCollectionSizeInstructionData {
 }
 
 impl SetCollectionSizeInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 34 }
     }
 }

@@ -107,7 +107,7 @@ pub struct CreateV1InstructionData {
 }
 
 impl CreateV1InstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             discriminator: 41,
             create_v1_discriminator: 0,

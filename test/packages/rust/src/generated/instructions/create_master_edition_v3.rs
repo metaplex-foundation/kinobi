@@ -106,7 +106,7 @@ pub struct CreateMasterEditionV3InstructionData {
 }
 
 impl CreateMasterEditionV3InstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 17 }
     }
 }

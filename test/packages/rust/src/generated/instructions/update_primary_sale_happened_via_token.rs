@@ -57,7 +57,7 @@ pub struct UpdatePrimarySaleHappenedViaTokenInstructionData {
 }
 
 impl UpdatePrimarySaleHappenedViaTokenInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 4 }
     }
 }

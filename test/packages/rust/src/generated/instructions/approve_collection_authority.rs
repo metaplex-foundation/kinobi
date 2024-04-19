@@ -93,7 +93,7 @@ pub struct ApproveCollectionAuthorityInstructionData {
 }
 
 impl ApproveCollectionAuthorityInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 23 }
     }
 }

@@ -95,7 +95,7 @@ pub struct SetAndVerifySizedCollectionItemInstructionData {
 }
 
 impl SetAndVerifySizedCollectionItemInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 32 }
     }
 }

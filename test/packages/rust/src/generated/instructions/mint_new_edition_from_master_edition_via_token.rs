@@ -137,7 +137,7 @@ pub struct MintNewEditionFromMasterEditionViaTokenInstructionData {
 }
 
 impl MintNewEditionFromMasterEditionViaTokenInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 11 }
     }
 }

@@ -56,7 +56,7 @@ pub struct CreateAccountInstructionData {
 }
 
 impl CreateAccountInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 0 }
     }
 }

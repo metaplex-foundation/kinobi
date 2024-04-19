@@ -136,7 +136,7 @@ pub struct MintInstructionData {
 }
 
 impl MintInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 42 }
     }
 }

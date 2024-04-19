@@ -68,7 +68,7 @@ pub struct SetTokenStandardInstructionData {
 }
 
 impl SetTokenStandardInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 35 }
     }
 }

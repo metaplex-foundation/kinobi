@@ -110,7 +110,7 @@ pub struct InitializeInstructionData {
 }
 
 impl InitializeInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             discriminator: [175, 175, 109, 31, 13, 152, 155, 237],
         }

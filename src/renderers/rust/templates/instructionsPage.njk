@@ -117,7 +117,7 @@ pub struct {{ instruction.name | pascalCase }}InstructionData {
 }
 
 impl {{ instruction.name | pascalCase }}InstructionData {
-  fn new() -> Self {
+  pub fn new() -> Self {
     Self {
       {% for arg in instructionArgs %}
         {% if arg.default %}

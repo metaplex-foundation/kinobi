@@ -89,7 +89,7 @@ pub struct VerifySizedCollectionItemInstructionData {
 }
 
 impl VerifySizedCollectionItemInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 30 }
     }
 }

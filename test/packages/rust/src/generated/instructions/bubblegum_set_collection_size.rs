@@ -85,7 +85,7 @@ pub struct BubblegumSetCollectionSizeInstructionData {
 }
 
 impl BubblegumSetCollectionSizeInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 36 }
     }
 }

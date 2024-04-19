@@ -89,7 +89,7 @@ pub struct VerifyInstructionData {
 }
 
 impl VerifyInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 47 }
     }
 }

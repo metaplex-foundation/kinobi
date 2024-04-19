@@ -115,7 +115,7 @@ pub struct ApproveUseAuthorityInstructionData {
 }
 
 impl ApproveUseAuthorityInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 20 }
     }
 }

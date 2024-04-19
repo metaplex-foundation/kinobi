@@ -64,7 +64,7 @@ pub struct CreateFrequencyRuleInstructionData {
 }
 
 impl CreateFrequencyRuleInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 2 }
     }
 }

@@ -74,7 +74,7 @@ pub struct VerifyCollectionInstructionData {
 }
 
 impl VerifyCollectionInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 18 }
     }
 }

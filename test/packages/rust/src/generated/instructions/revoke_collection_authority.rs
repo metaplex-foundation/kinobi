@@ -70,7 +70,7 @@ pub struct RevokeCollectionAuthorityInstructionData {
 }
 
 impl RevokeCollectionAuthorityInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 24 }
     }
 }

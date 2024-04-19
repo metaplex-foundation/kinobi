@@ -17,5 +17,6 @@ test('it renders a public instruction data struct', (t) => {
   // Then we expect the following pub struct.
   codeContains(t, renderMap.get('instructions/mint_tokens.rs'), [
     `pub struct MintTokensInstructionData`,
+    `pub fn new(`,
   ]);
 });

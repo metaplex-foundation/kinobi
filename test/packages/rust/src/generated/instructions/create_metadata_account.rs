@@ -87,7 +87,7 @@ pub struct CreateMetadataAccountInstructionData {
 }
 
 impl CreateMetadataAccountInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 0 }
     }
 }

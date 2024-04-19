@@ -94,7 +94,7 @@ pub struct CreateMetadataAccountV2InstructionData {
 }
 
 impl CreateMetadataAccountV2InstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 16 }
     }
 }

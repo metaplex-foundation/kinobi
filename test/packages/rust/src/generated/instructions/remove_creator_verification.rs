@@ -53,7 +53,7 @@ pub struct RemoveCreatorVerificationInstructionData {
 }
 
 impl RemoveCreatorVerificationInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 28 }
     }
 }

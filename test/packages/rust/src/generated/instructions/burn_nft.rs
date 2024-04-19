@@ -86,7 +86,7 @@ pub struct BurnNftInstructionData {
 }
 
 impl BurnNftInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 29 }
     }
 }

@@ -130,7 +130,7 @@ pub struct TransferOutOfEscrowInstructionData {
 }
 
 impl TransferOutOfEscrowInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 40 }
     }
 }

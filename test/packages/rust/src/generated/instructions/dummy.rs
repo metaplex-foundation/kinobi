@@ -119,7 +119,7 @@ pub struct DummyInstructionData {
 }
 
 impl DummyInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             discriminator: [167, 117, 211, 79, 251, 254, 47, 135],
         }

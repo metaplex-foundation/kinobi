@@ -141,7 +141,7 @@ pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionD
 }
 
 impl DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 3 }
     }
 }

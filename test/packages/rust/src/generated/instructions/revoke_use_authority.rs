@@ -98,7 +98,7 @@ pub struct RevokeUseAuthorityInstructionData {
 }
 
 impl RevokeUseAuthorityInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 21 }
     }
 }

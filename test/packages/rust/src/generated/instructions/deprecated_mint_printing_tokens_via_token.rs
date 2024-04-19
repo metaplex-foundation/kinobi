@@ -100,7 +100,7 @@ pub struct DeprecatedMintPrintingTokensViaTokenInstructionData {
 }
 
 impl DeprecatedMintPrintingTokensViaTokenInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 8 }
     }
 }

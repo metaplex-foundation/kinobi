@@ -42,7 +42,7 @@ impl AddMemo {
 pub struct AddMemoInstructionData {}
 
 impl AddMemoInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {}
     }
 }

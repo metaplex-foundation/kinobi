@@ -154,7 +154,7 @@ pub struct DelegateInstructionData {
 }
 
 impl DelegateInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 48 }
     }
 }

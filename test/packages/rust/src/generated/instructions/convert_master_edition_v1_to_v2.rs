@@ -59,7 +59,7 @@ pub struct ConvertMasterEditionV1ToV2InstructionData {
 }
 
 impl ConvertMasterEditionV1ToV2InstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 12 }
     }
 }

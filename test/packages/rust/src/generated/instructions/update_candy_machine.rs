@@ -59,7 +59,7 @@ pub struct UpdateCandyMachineInstructionData {
 }
 
 impl UpdateCandyMachineInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             discriminator: [219, 200, 88, 176, 158, 63, 253, 127],
         }

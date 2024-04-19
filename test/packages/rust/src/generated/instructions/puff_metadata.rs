@@ -45,7 +45,7 @@ pub struct PuffMetadataInstructionData {
 }
 
 impl PuffMetadataInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 14 }
     }
 }
