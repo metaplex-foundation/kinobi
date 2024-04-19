@@ -22,7 +22,7 @@
 {% endif %}
 
 /// `{{ instruction.name | snakeCase }}` CPI instruction.
-pub struct {{ instruction.name | pascalCase }}Cpi<'a, 'b> {
+pub struct {{ instruction.name | pascalCase }}Cpi{{ '<\'a, \'b, ' + lifetimes + '>' if lifetimes.length > 0 else '<\'a, \'b>' }} {
   /// The program to invoke.
   pub __program: &'b solana_program::account_info::AccountInfo<'a>,
   {% for account in instruction.accounts %}
@@ -44,18 +44,18 @@ pub struct {{ instruction.name | pascalCase }}Cpi<'a, 'b> {
   {% endfor %}
   {% if hasArgs %}
     /// The arguments for the instruction.
-    pub __args: {{ instruction.name | pascalCase }}InstructionArgs,
+    pub __args: {{ instruction.name | pascalCase }}InstructionArgs{{ '<' + lifetimes + '>' if lifetimes.length > 0 }},
   {% endif %}
 }
 
-impl<'a, 'b> {{ instruction.name | pascalCase }}Cpi<'a, 'b> {
+impl{{ '<\'a, \'b, ' + lifetimes + '>' if lifetimes.length > 0 else '<\'a, \'b>' }} {{ instruction.name | pascalCase }}Cpi{{ '<\'a, \'b, ' + lifetimes + '>' if lifetimes.length > 0 else '<\'a, \'b>' }} {
   pub fn new(
     program: &'b solana_program::account_info::AccountInfo<'a>,
     {% if instruction.accounts.length > 0 %}
       accounts: {{ instruction.name | pascalCase }}CpiAccounts<'a, 'b>,
     {% endif %}
     {% if hasArgs %}
-      args: {{ instruction.name | pascalCase }}InstructionArgs,
+      args: {{ instruction.name | pascalCase }}InstructionArgs{{ '<' + lifetimes + '>' if lifetimes.length > 0 }},
     {% endif %}
   ) -> Self {
     Self {

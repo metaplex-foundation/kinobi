@@ -17,7 +17,7 @@
   {{- " (default to `" + account.defaultValue.publicKey + "`)" if account.defaultValue.kind === 'publicKeyValueNode' }}
 {% endfor %}
 #[derive(Default)]
-pub struct {{ instruction.name | pascalCase }}Builder {
+pub struct {{ instruction.name | pascalCase }}Builder{{ '<' + lifetimes + '>' if lifetimes.length > 0  }} {
   {% for account in instruction.accounts %}
     {% if account.isSigner === 'either' %}
       {{ account.name | snakeCase }}: Option<(solana_program::pubkey::Pubkey, bool)>,
@@ -33,7 +33,7 @@ pub struct {{ instruction.name | pascalCase }}Builder {
   __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
 }
 
-impl {{ instruction.name | pascalCase }}Builder {
+impl{{ '<' + lifetimes + '>' if lifetimes.length > 0  }} {{ instruction.name | pascalCase }}Builder {
   pub fn new() -> Self {
     Self::default()
   }
