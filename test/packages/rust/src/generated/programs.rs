@@ -17,9 +17,6 @@ pub const MPL_TOKEN_AUTH_RULES_ID: Pubkey = pubkey!("auth9SigNpDKz4sJJ1DfCTuZrZN
 /// `mpl_token_metadata` program ID.
 pub const MPL_TOKEN_METADATA_ID: Pubkey = pubkey!("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s");
 
-/// `pubkey_tests` program ID.
-pub const PUBKEY_TESTS_ID: Pubkey = pubkey!("PubkeyTests1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d");
-
 /// `spl_memo` program ID.
 pub const SPL_MEMO_ID: Pubkey = pubkey!("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr");
 
