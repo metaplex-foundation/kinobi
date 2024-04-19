@@ -430,8 +430,8 @@ export function getTypeManifestVisitor() {
         visitStringType() {
           if (!parentSize) {
             return {
-              type: `&str`,
-              imports: new RustImportMap(),
+              type: `RemainderStr`,
+              imports: new RustImportMap().add(`kaigan::types::RemainderStr`),
               nestedStructs: [],
             };
           }
