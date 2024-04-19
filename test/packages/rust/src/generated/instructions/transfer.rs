@@ -157,12 +157,12 @@ impl Transfer {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct TransferInstructionData {
+pub struct TransferInstructionData {
     discriminator: u8,
 }
 
 impl TransferInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 46 }
     }
 }

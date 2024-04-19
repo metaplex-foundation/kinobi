@@ -126,12 +126,12 @@ impl UseAsset {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct UseAssetInstructionData {
+pub struct UseAssetInstructionData {
     discriminator: u8,
 }
 
 impl UseAssetInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 45 }
     }
 }

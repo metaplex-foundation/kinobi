@@ -69,12 +69,12 @@ impl VerifyCollection {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct VerifyCollectionInstructionData {
+pub struct VerifyCollectionInstructionData {
     discriminator: u8,
 }
 
 impl VerifyCollectionInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 18 }
     }
 }

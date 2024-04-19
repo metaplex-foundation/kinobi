@@ -101,12 +101,12 @@ impl CreateMasterEditionV3 {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct CreateMasterEditionV3InstructionData {
+pub struct CreateMasterEditionV3InstructionData {
     discriminator: u8,
 }
 
 impl CreateMasterEditionV3InstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 17 }
     }
 }

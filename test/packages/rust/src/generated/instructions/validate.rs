@@ -139,12 +139,12 @@ impl Validate {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct ValidateInstructionData {
+pub struct ValidateInstructionData {
     discriminator: u8,
 }
 
 impl ValidateInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 1 }
     }
 }

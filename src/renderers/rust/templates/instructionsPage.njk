@@ -108,7 +108,7 @@ impl {{ instruction.name | pascalCase }} {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct {{ instruction.name | pascalCase }}InstructionData {
+pub struct {{ instruction.name | pascalCase }}InstructionData {
   {% for arg in instructionArgs %}
     {% if arg.default %}
       {{ arg.name | snakeCase }}: {{ arg.type }},
@@ -117,7 +117,7 @@ struct {{ instruction.name | pascalCase }}InstructionData {
 }
 
 impl {{ instruction.name | pascalCase }}InstructionData {
-  fn new() -> Self {
+  pub fn new() -> Self {
     Self {
       {% for arg in instructionArgs %}
         {% if arg.default %}

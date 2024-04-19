@@ -81,12 +81,12 @@ impl BurnNft {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct BurnNftInstructionData {
+pub struct BurnNftInstructionData {
     discriminator: u8,
 }
 
 impl BurnNftInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 29 }
     }
 }

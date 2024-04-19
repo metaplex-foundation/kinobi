@@ -82,12 +82,12 @@ impl CreateReservationList {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct CreateReservationListInstructionData {
+pub struct CreateReservationListInstructionData {
     discriminator: u8,
 }
 
 impl CreateReservationListInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 6 }
     }
 }

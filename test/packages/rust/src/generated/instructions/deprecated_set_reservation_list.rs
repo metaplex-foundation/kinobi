@@ -61,12 +61,12 @@ impl DeprecatedSetReservationList {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct DeprecatedSetReservationListInstructionData {
+pub struct DeprecatedSetReservationListInstructionData {
     discriminator: u8,
 }
 
 impl DeprecatedSetReservationListInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 5 }
     }
 }

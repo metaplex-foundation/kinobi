@@ -132,12 +132,12 @@ impl MintNewEditionFromMasterEditionViaToken {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct MintNewEditionFromMasterEditionViaTokenInstructionData {
+pub struct MintNewEditionFromMasterEditionViaTokenInstructionData {
     discriminator: u8,
 }
 
 impl MintNewEditionFromMasterEditionViaTokenInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 11 }
     }
 }

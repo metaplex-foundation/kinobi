@@ -131,12 +131,12 @@ impl Mint {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct MintInstructionData {
+pub struct MintInstructionData {
     discriminator: u8,
 }
 
 impl MintInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 42 }
     }
 }

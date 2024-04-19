@@ -59,12 +59,12 @@ impl CreateFrequencyRule {
 }
 
 #[derive(BorshDeserialize, BorshSerialize)]
-struct CreateFrequencyRuleInstructionData {
+pub struct CreateFrequencyRuleInstructionData {
     discriminator: u8,
 }
 
 impl CreateFrequencyRuleInstructionData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { discriminator: 2 }
     }
 }
