@@ -1,5 +1,11 @@
 import test from 'ava';
-import { instructionArgumentNode, instructionNode, programNode, remainderSizeNode, stringTypeNode, visit } from '../../../src';
+import {
+  instructionArgumentNode,
+  instructionNode,
+  programNode,
+  stringTypeNode,
+  visit,
+} from '../../../src';
 import { getRenderMapVisitor } from '../../../src/renderers/rust/getRenderMapVisitor';
 import { codeContains } from './_setup';
 
@@ -32,7 +38,7 @@ test('it renders an instruction with a remainder str', (t) => {
         arguments: [
           instructionArgumentNode({
             name: 'memo',
-            type: stringTypeNode({ size: remainderSizeNode() }),
+            type: stringTypeNode('utf8'),
           }),
         ],
       }),

@@ -15,13 +15,13 @@ import {
   Codec,
   Decoder,
   Encoder,
-  GetDataEnumKind,
-  GetDataEnumKindContent,
+  GetDiscriminatedUnionVariant,
+  GetDiscriminatedUnionVariantContent,
   combineCodec,
   getArrayDecoder,
   getArrayEncoder,
-  getDataEnumDecoder,
-  getDataEnumEncoder,
+  getDiscriminatedUnionDecoder,
+  getDiscriminatedUnionEncoder,
   getStructDecoder,
   getStructEncoder,
   getTupleDecoder,
@@ -32,14 +32,14 @@ import {
 
 export type RuleSet =
   | { __kind: 'None' }
-  | { __kind: 'Single'; fields: [Address] }
-  | { __kind: 'ProgramAllowList'; fields: [Array<Address>] }
-  | { __kind: 'ProgramDenyList'; fields: [Array<Address>] };
+  | { __kind: 'Single'; fields: readonly [Address] }
+  | { __kind: 'ProgramAllowList'; fields: readonly [Array<Address>] }
+  | { __kind: 'ProgramDenyList'; fields: readonly [Array<Address>] };
 
 export type RuleSetArgs = RuleSet;
 
 export function getRuleSetEncoder(): Encoder<RuleSetArgs> {
-  return getDataEnumEncoder([
+  return getDiscriminatedUnionEncoder([
     ['None', getUnitEncoder()],
     [
       'Single',
@@ -61,7 +61,7 @@ export function getRuleSetEncoder(): Encoder<RuleSetArgs> {
 }
 
 export function getRuleSetDecoder(): Decoder<RuleSet> {
-  return getDataEnumDecoder([
+  return getDiscriminatedUnionDecoder([
     ['None', getUnitDecoder()],
     [
       'Single',
@@ -87,19 +87,33 @@ export function getRuleSetCodec(): Codec<RuleSetArgs, RuleSet> {
 }
 
 // Data Enum Helpers.
-export function ruleSet(kind: 'None'): GetDataEnumKind<RuleSetArgs, 'None'>;
+export function ruleSet(
+  kind: 'None'
+): GetDiscriminatedUnionVariant<RuleSetArgs, '__kind', 'None'>;
 export function ruleSet(
   kind: 'Single',
-  data: GetDataEnumKindContent<RuleSetArgs, 'Single'>['fields']
-): GetDataEnumKind<RuleSetArgs, 'Single'>;
+  data: GetDiscriminatedUnionVariantContent<
+    RuleSetArgs,
+    '__kind',
+    'Single'
+  >['fields']
+): GetDiscriminatedUnionVariant<RuleSetArgs, '__kind', 'Single'>;
 export function ruleSet(
   kind: 'ProgramAllowList',
-  data: GetDataEnumKindContent<RuleSetArgs, 'ProgramAllowList'>['fields']
-): GetDataEnumKind<RuleSetArgs, 'ProgramAllowList'>;
+  data: GetDiscriminatedUnionVariantContent<
+    RuleSetArgs,
+    '__kind',
+    'ProgramAllowList'
+  >['fields']
+): GetDiscriminatedUnionVariant<RuleSetArgs, '__kind', 'ProgramAllowList'>;
 export function ruleSet(
   kind: 'ProgramDenyList',
-  data: GetDataEnumKindContent<RuleSetArgs, 'ProgramDenyList'>['fields']
-): GetDataEnumKind<RuleSetArgs, 'ProgramDenyList'>;
+  data: GetDiscriminatedUnionVariantContent<
+    RuleSetArgs,
+    '__kind',
+    'ProgramDenyList'
+  >['fields']
+): GetDiscriminatedUnionVariant<RuleSetArgs, '__kind', 'ProgramDenyList'>;
 export function ruleSet<K extends RuleSetArgs['__kind'], Data>(
   kind: K,
   data?: Data
