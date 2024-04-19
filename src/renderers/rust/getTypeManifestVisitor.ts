@@ -225,9 +225,18 @@ export function getTypeManifestVisitor() {
           const childManifest = visit(enumTupleVariantType.tuple, self);
           parentName = originalParentName;
 
+          let derive = '';
+          if (childManifest.type === '(Pubkey)') {
+            derive =
+              '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::DisplayFromStr>"))]\n';
+          } else if (childManifest.type === '(Vec<Pubkey>)') {
+            derive =
+              '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<Vec<serde_with::DisplayFromStr>>"))]\n';
+          }
+
           return {
             ...childManifest,
-            type: `${name}${childManifest.type},`,
+            type: `${derive}${name}${childManifest.type},`,
           };
         },
 
@@ -333,6 +342,9 @@ export function getTypeManifestVisitor() {
           if (fieldManifest.type === 'Pubkey') {
             derive =
               '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::DisplayFromStr>"))]\n';
+          } else if (fieldManifest.type === 'Vec<Pubkey>') {
+            derive =
+              '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<Vec<serde_with::DisplayFromStr>>"))]\n';
           } else if (
             (isNode(resolvedNestedType, 'arrayTypeNode') &&
               isNode(resolvedNestedType.count, 'fixedCountNode') &&

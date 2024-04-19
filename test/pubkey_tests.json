@@ -1,0 +1,59 @@
+{
+  "version": "0.1.0",
+  "name": "pubkey_tests",
+  "types": [
+    {
+      "name": "UpdateDelegate",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "additionalDelegates",
+            "type": {
+              "vec": "publicKey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RuleSet",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "None"
+          },
+          {
+            "name": "Single",
+            "fields": [
+              "publicKey"
+            ]
+          },
+          {
+            "name": "ProgramAllowList",
+            "fields": [
+              {
+                "vec": "publicKey"
+              }
+            ]
+          },
+          {
+            "name": "ProgramDenyList",
+            "fields": [
+              {
+                "vec": "publicKey"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "origin": "shank",
+    "address": "PubkeyTests1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d",
+    "binaryVersion": "0.4.2",
+    "libVersion": "0.4.2"
+  }
+}

@@ -5,6 +5,7 @@ const kinobi = k.createFromIdl(__dirname + '/spl_system.json', [
   __dirname + '/mpl_candy_machine_core.json',
   __dirname + '/mpl_token_auth_rules.json',
   __dirname + '/mpl_token_metadata.json',
+  __dirname + '/pubkey_tests.json',
 ]);
 
 kinobi.update(
