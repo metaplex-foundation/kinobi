@@ -282,6 +282,7 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
               hasOptional,
               program,
               typeManifest,
+              lifetimes: typeManifest.lifetimes.map((l) => `'${l}`).join(', '),
             })
           );
         },

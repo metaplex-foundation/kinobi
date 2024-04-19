@@ -13,6 +13,7 @@ export type RustTypeManifest = {
   type: string;
   imports: RustImportMap;
   nestedStructs: string[];
+  lifetimes: string[];
 };
 
 export function getTypeManifestVisitor() {
@@ -22,7 +23,12 @@ export function getTypeManifestVisitor() {
 
   const visitor = pipe(
     mergeVisitor<RustTypeManifest>(
-      () => ({ type: '', imports: new RustImportMap(), nestedStructs: [] }),
+      () => ({
+        type: '',
+        imports: new RustImportMap(),
+        nestedStructs: [],
+        lifetimes: [],
+      }),
       (_, values) => ({
         ...mergeManifests(values),
         type: values.map((v) => v.type).join('\n'),
@@ -149,6 +155,7 @@ export function getTypeManifestVisitor() {
             ),
             type: pascalCaseDefinedType,
             nestedStructs: [],
+            lifetimes: [],
           };
         },
 
@@ -181,6 +188,7 @@ export function getTypeManifestVisitor() {
             type: `${name},`,
             imports: new RustImportMap(),
             nestedStructs: [],
+            lifetimes: [],
           };
         },
 
@@ -275,6 +283,15 @@ export function getTypeManifestVisitor() {
           const fieldTypes = fields.map((field) => field.type).join('\n');
           const mergedManifest = mergeManifests(fields);
 
+          let lifetimes = '';
+
+          if (mergedManifest.lifetimes.length > 0) {
+            lifetimes =
+              '<' +
+              mergedManifest.lifetimes.map((l) => `'${l}`).join(', ') +
+              '>';
+          }
+
           if (nestedStruct) {
             return {
               ...mergedManifest,
@@ -283,7 +300,7 @@ export function getTypeManifestVisitor() {
                 ...mergedManifest.nestedStructs,
                 `pub struct ${pascalCase(
                   originalParentName
-                )} {\n${fieldTypes}\n}`,
+                )}${lifetimes} {\n${fieldTypes}\n}`,
               ],
             };
           }
@@ -296,7 +313,7 @@ export function getTypeManifestVisitor() {
             ...mergedManifest,
             type: `pub struct ${pascalCase(
               originalParentName
-            )} {\n${fieldTypes}\n}`,
+            )}${lifetimes} {\n${fieldTypes}\n}`,
           };
         },
 
@@ -365,6 +382,7 @@ export function getTypeManifestVisitor() {
               type: 'bool',
               imports: new RustImportMap(),
               nestedStructs: [],
+              lifetimes: [],
             };
           }
 
@@ -383,6 +401,7 @@ export function getTypeManifestVisitor() {
               type: numberType.format,
               imports: new RustImportMap(),
               nestedStructs: [],
+              lifetimes: [],
             };
           }
 
@@ -395,6 +414,7 @@ export function getTypeManifestVisitor() {
             type: 'Pubkey',
             imports: new RustImportMap().add('solana_program::pubkey::Pubkey'),
             nestedStructs: [],
+            lifetimes: [],
           };
         },
 
@@ -409,6 +429,7 @@ export function getTypeManifestVisitor() {
                   type: 'String',
                   imports: new RustImportMap(),
                   nestedStructs: [],
+                  lifetimes: [],
                 };
               case 'u8':
               case 'u16':
@@ -420,6 +441,7 @@ export function getTypeManifestVisitor() {
                     `kaigan::types::${prefix}PrefixString`
                   ),
                   nestedStructs: [],
+                  lifetimes: [],
                 };
               }
               default:
@@ -434,14 +456,16 @@ export function getTypeManifestVisitor() {
               type: `[u8; ${stringType.size.size}]`,
               imports: new RustImportMap(),
               nestedStructs: [],
+              lifetimes: [],
             };
           }
 
           if (isNode(stringType.size, 'remainderSizeNode')) {
             return {
-              type: `&str`,
+              type: `&'z str`,
               imports: new RustImportMap(),
               nestedStructs: [],
+              lifetimes: ['z'],
             };
           }
 
@@ -464,11 +488,12 @@ export function getTypeManifestVisitor() {
 
 function mergeManifests(
   manifests: RustTypeManifest[]
-): Pick<RustTypeManifest, 'imports' | 'nestedStructs'> {
+): Pick<RustTypeManifest, 'imports' | 'nestedStructs' | 'lifetimes'> {
   return {
     imports: new RustImportMap().mergeWith(
       ...manifests.map((td) => td.imports)
     ),
     nestedStructs: manifests.flatMap((m) => m.nestedStructs),
+    lifetimes: manifests.flatMap((m) => m.lifetimes),
   };
 }
