@@ -160,7 +160,9 @@ export function instructionNodeFromIdl(
   if (idl.discriminant) {
     const discriminatorField = instructionArgumentNode({
       name: 'discriminator',
+      // @ts-ignore
       type: createTypeNodeFromIdl(idl.discriminant.type),
+      // @ts-ignore
       defaultValue: numberValueNode(idl.discriminant.value),
       defaultValueStrategy: 'omitted',
     });

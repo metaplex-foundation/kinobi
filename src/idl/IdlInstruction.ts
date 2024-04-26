@@ -1,29 +1,45 @@
-import type { IdlType } from './IdlType';
+import type { IdlType, IdlDiscriminator } from './IdlType';
+import type { IdlInstructionPda } from './IdlPda';
+
+export type IdlInstructionAccountItem =
+  | IdlInstructionAccount
+  | IdlInstructionNestedAccounts;
+
+export type IdlInstructionAccounts = {
+  name: string;
+  accounts: IdlInstructionAccount[];
+};
 
 export type IdlInstruction = {
   name: string;
-  accounts: (IdlInstructionAccount | IdlInstructionNestedAccounts)[];
+  docs?: string[];
+  discriminant?: IdlInstructionDiscriminant;
+  accounts: IdlInstructionAccountItem[];
   args: IdlInstructionArg[];
   defaultOptionalAccounts?: boolean;
   legacyOptionalAccountsStrategy?: boolean;
-  discriminant?: IdlInstructionDiscriminant;
-  docs?: string[];
+  returns?: IdlType;
 };
 
 export type IdlInstructionAccount = {
   name: string;
-  isMut: boolean;
-  isSigner: boolean;
+  isMut?: boolean;
+  writable?: boolean;
+  isSigner?: boolean;
+  signer?: boolean;
   isOptionalSigner?: boolean;
   isOptional?: boolean;
   optional?: boolean;
   docs?: string[];
   desc?: string;
+  address?: string;
+  pda?: IdlInstructionPda;
+  relationship?: string[];
 };
 
 export type IdlInstructionNestedAccounts = {
   name: string;
-  accounts: (IdlInstructionAccount | IdlInstructionNestedAccounts)[];
+  accounts: IdlInstructionAccountItem[];
 };
 
 export type IdlInstructionArg = {
@@ -32,7 +48,9 @@ export type IdlInstructionArg = {
   docs?: string[];
 };
 
-export type IdlInstructionDiscriminant = {
-  type: IdlType;
-  value: number;
-};
+export type IdlInstructionDiscriminant =
+  | IdlDiscriminator
+  | {
+      type: IdlType;
+      value: number;
+    };

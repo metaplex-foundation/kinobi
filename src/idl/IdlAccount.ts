@@ -1,9 +1,10 @@
 import type { IdlPdaSeed } from './IdlPda';
-import type { IdlTypeStruct } from './IdlType';
+import type { IdlTypeStruct, IdlDiscriminator } from './IdlType';
 
 export type IdlAccount = {
   name: string;
-  type: IdlTypeStruct;
+  discriminator?: IdlDiscriminator;
+  type?: IdlTypeStruct;
   docs?: string[];
   seeds?: IdlPdaSeed[];
   size?: number;

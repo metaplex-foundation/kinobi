@@ -59,6 +59,12 @@ export type IdlTypeEnumVariant = { name: string; fields?: IdlTypeEnumFields };
 export type IdlTypeEnumFields = IdlTypeEnumField[] | IdlType[];
 export type IdlTypeEnumField = { name: string; type: IdlType; docs?: string[] };
 
+// Generic types
+export type IdlTypeType = {
+  kind: 'type';
+  alias: IdlType;
+};
+
 // Leaves.
 export const IDL_TYPE_LEAVES = [
   'string',
@@ -86,3 +92,4 @@ export type IdlTypeSignedInteger = 'i8' | 'i16' | 'i32' | 'i64' | 'i128';
 export type IdlTypeInteger = IdlTypeUnsignedInteger | IdlTypeSignedInteger;
 export type IdlTypeDecimals = 'f32' | 'f64';
 export type IdlTypeNumber = IdlTypeInteger | IdlTypeDecimals;
+export type IdlDiscriminator = number[];

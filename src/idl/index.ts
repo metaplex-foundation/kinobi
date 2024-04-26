@@ -3,5 +3,7 @@ export * from './IdlAccount';
 export * from './IdlDefinedType';
 export * from './IdlError';
 export * from './IdlInstruction';
-export * from './IdlPda';
 export * from './IdlType';
+export * from './IdlPda';
+export * from './IdlEvent';
+export * from './IdlConstant';
