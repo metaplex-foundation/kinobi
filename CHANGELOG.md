@@ -1,5 +1,77 @@
 # @metaplex-foundation/kinobi
 
+## 0.19.0
+
+### Minor Changes
+
+- [#225](https://github.com/metaplex-foundation/kinobi/pull/225) [`51ceb47`](https://github.com/metaplex-foundation/kinobi/commit/51ceb47a6dc3a2d91dedb83587c2eba0f73469f9) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Import the whole web3.js library by default in JS experimental
+
+- [#207](https://github.com/metaplex-foundation/kinobi/pull/207) [`5ec114f`](https://github.com/metaplex-foundation/kinobi/commit/5ec114f21509723bbf63a75b5234da6d60d8a26e) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add version and standard field to RootNode
+
+- [#200](https://github.com/metaplex-foundation/kinobi/pull/200) [`75f5f91`](https://github.com/metaplex-foundation/kinobi/commit/75f5f913cecfa2d09287a24d0c346040110667cd) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Implement ConstantValueNode type manifests
+
+- [#193](https://github.com/metaplex-foundation/kinobi/pull/193) [`7b50ebd`](https://github.com/metaplex-foundation/kinobi/commit/7b50ebdd8ae2b726def35d8d4129a2f7b188ca26) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Rename sizeNodes to countNodes
+
+- [#206](https://github.com/metaplex-foundation/kinobi/pull/206) [`0463a43`](https://github.com/metaplex-foundation/kinobi/commit/0463a43b7c1673305e85a6888dcfa96d37e72041) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add ZeroableOptionTypeNode
+
+- [#196](https://github.com/metaplex-foundation/kinobi/pull/196) [`6307b3a`](https://github.com/metaplex-foundation/kinobi/commit/6307b3a2051c5c83884965afa07c9d0f9568c45d) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add nested type node type guards
+
+- [#205](https://github.com/metaplex-foundation/kinobi/pull/205) [`748d8ea`](https://github.com/metaplex-foundation/kinobi/commit/748d8ea138a416c503486831abfd500570307b02) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add HiddenPrefixTypeNode and HiddenSuffixTypeNode
+
+- [#195](https://github.com/metaplex-foundation/kinobi/pull/195) [`8406a69`](https://github.com/metaplex-foundation/kinobi/commit/8406a69ca9cd34b3a92e742d6396bca1aa7d88ff) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Make nodes generic interfaces
+
+- [#197](https://github.com/metaplex-foundation/kinobi/pull/197) [`8eaf605`](https://github.com/metaplex-foundation/kinobi/commit/8eaf605135cc857609e4d9591dfa8632b9ad0966) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add preOffsetTypeNode and postOffsetTypeNode
+
+- [#202](https://github.com/metaplex-foundation/kinobi/pull/202) [`a56e919`](https://github.com/metaplex-foundation/kinobi/commit/a56e91948ede6c955c88b29dfadb6bb55054e367) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Remove ProgramIdPdaSeedNode
+
+- [#191](https://github.com/metaplex-foundation/kinobi/pull/191) [`6021aa9`](https://github.com/metaplex-foundation/kinobi/commit/6021aa9a366ba6fcf71235a549ee775fc9f28d15) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add FixedSizeTypeNode and SizePrefixTypeNode
+
+- [#187](https://github.com/metaplex-foundation/kinobi/pull/187) [`38943c1`](https://github.com/metaplex-foundation/kinobi/commit/38943c143f6de6a2ecd3d8fd247d5ce5f33eea3f) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Update enums codecs from latest Web3.js version on the JS experimental renderer
+
+- [#209](https://github.com/metaplex-foundation/kinobi/pull/209) [`c528819`](https://github.com/metaplex-foundation/kinobi/commit/c52881971f2f02ce1fd1d9ac1baf9b5bc48643db) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add discriminator field to enum variant nodes
+
+- [#203](https://github.com/metaplex-foundation/kinobi/pull/203) [`484da01`](https://github.com/metaplex-foundation/kinobi/commit/484da013a78b8963a0f0d83f05eb987c7f47268f) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Rename ByteDiscriminatorNode to ConstantDiscriminatorNode and use ConstantValueNode
+
+- [#211](https://github.com/metaplex-foundation/kinobi/pull/211) [`665ed3b`](https://github.com/metaplex-foundation/kinobi/commit/665ed3b47495505f0e4f7c0df68d785d68351963) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Update web3.js and support new codecs
+
+- [`3726e1f`](https://github.com/metaplex-foundation/kinobi/commit/3726e1fae50800a693237621180305ce1d9e6a0d) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Require StringTypeNode encoding explicitly
+
+- [#225](https://github.com/metaplex-foundation/kinobi/pull/225) [`51ceb47`](https://github.com/metaplex-foundation/kinobi/commit/51ceb47a6dc3a2d91dedb83587c2eba0f73469f9) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Stop exporting shared folder in JS experimental
+
+- [#204](https://github.com/metaplex-foundation/kinobi/pull/204) [`89b6be7`](https://github.com/metaplex-foundation/kinobi/commit/89b6be7f20429aa6034c8dc188a515c3fcb891a2) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add SentinelTypeNode
+
+- [#215](https://github.com/metaplex-foundation/kinobi/pull/215) [`092bc77`](https://github.com/metaplex-foundation/kinobi/commit/092bc7714de5b9fd81d02e7ce800058f1f1f561a) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Export program error codes as constants on experimental renderer
+
+- [#208](https://github.com/metaplex-foundation/kinobi/pull/208) [`cf6b54a`](https://github.com/metaplex-foundation/kinobi/commit/cf6b54a30cb3004153e02ca75bcd79455c84dfbd) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Split programs in RootNode
+
+- [#198](https://github.com/metaplex-foundation/kinobi/pull/198) [`f74707d`](https://github.com/metaplex-foundation/kinobi/commit/f74707dad051ed6861d5695147f34df8731ab045) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add BytesValueNode and ConstantValueNode
+
+- [#192](https://github.com/metaplex-foundation/kinobi/pull/192) [`3f6e953`](https://github.com/metaplex-foundation/kinobi/commit/3f6e953fb52376ebc28086c0192c88e53c60006b) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Remove size from StringTypeNode and BytesTypeNode
+
+- [#212](https://github.com/metaplex-foundation/kinobi/pull/212) [`8cb70c8`](https://github.com/metaplex-foundation/kinobi/commit/8cb70c8526751235a1abb70dd4dfa511944bed41) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Use account name directly for data types and codecs
+
+### Patch Changes
+
+- [#218](https://github.com/metaplex-foundation/kinobi/pull/218) [`69d2698`](https://github.com/metaplex-foundation/kinobi/commit/69d2698856b65df555c100bc2e2669adcdbce90c) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add shortU16 number format
+
+- [#213](https://github.com/metaplex-foundation/kinobi/pull/213) [`a0b8d90`](https://github.com/metaplex-foundation/kinobi/commit/a0b8d907487511e36d730262351ad28cfbc6fb6b) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Support nested instruction accounts from IDL
+
+- [#189](https://github.com/metaplex-foundation/kinobi/pull/189) [`937742d`](https://github.com/metaplex-foundation/kinobi/commit/937742d33af56d78a6fbf9b3cb51641cf9851aa7) Thanks [@febo](https://github.com/febo)! - Add derive to Rust instruction builders
+
+- [`92a55a7`](https://github.com/metaplex-foundation/kinobi/commit/92a55a770adea7965b6f4d852bb75e8fdf0b48cb) Thanks [@febo](https://github.com/febo)! - Change instruction data struct visibility on Rust client
+
+- [#199](https://github.com/metaplex-foundation/kinobi/pull/199) [`dc85f39`](https://github.com/metaplex-foundation/kinobi/commit/dc85f392753ccaab9360efb68ee31798dc56a2b4) Thanks [@blockiosaurus](https://github.com/blockiosaurus)! - Adding derive for FromPrimitive to enums.
+
+- [#214](https://github.com/metaplex-foundation/kinobi/pull/214) [`010f4d4`](https://github.com/metaplex-foundation/kinobi/commit/010f4d4da471c0e04c9014fa2d50d7cfc7f59f20) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Use containsBytes helper from codecs-core in experimental renderer
+
+- [#190](https://github.com/metaplex-foundation/kinobi/pull/190) [`2f79032`](https://github.com/metaplex-foundation/kinobi/commit/2f7903265deec1ad36661eaf6a5eb39596cacb0f) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Support custom discriminator properties for discriminated union types in JS experimental renderer
+
+- [`3f9e025`](https://github.com/metaplex-foundation/kinobi/commit/3f9e025b30b0088cb3016bdbda07971ca4bc25e5) Thanks [@danenbm](https://github.com/danenbm)! - Add serde DisplayFromStr for Pubkey and Vec<Pubkey> in Rust rendering.
+
+- [#217](https://github.com/metaplex-foundation/kinobi/pull/217) [`03cf73e`](https://github.com/metaplex-foundation/kinobi/commit/03cf73ebcab4f61b4618f5f10866c9e3fad4345d) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix regexes in default instruction account rules
+
+- [`7088cc4`](https://github.com/metaplex-foundation/kinobi/commit/7088cc4acd449a9c0667ffd737f380a26bb3d503) Thanks [@febo](https://github.com/febo)! - Use remainder str type in Rust client
+
 ## 0.18.2
 
 ### Patch Changes
