@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.19.1
+
+### Patch Changes
+
+- [`bea0917`](https://github.com/metaplex-foundation/kinobi/commit/bea091734c02438758305ae2130261dbf885c1f5) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add ZeroableOption to TypeManifest visitor in JS experimental
+
 ## 0.19.0
 
 ### Minor Changes
