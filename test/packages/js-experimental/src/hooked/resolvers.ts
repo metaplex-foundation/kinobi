@@ -1,10 +1,6 @@
-import { Address, ProgramDerivedAddress } from '@solana/addresses';
-import {
-  ResolvedAccount,
-  TokenStandard,
-  expectAddress,
-  findMasterEditionV2Pda,
-} from '../generated';
+import { Address, ProgramDerivedAddress } from '@solana/web3.js';
+import { TokenStandard, findMasterEditionV2Pda } from '../generated';
+import { ResolvedAccount, expectAddress } from '../generated/shared';
 
 export const resolveMasterEditionFromTokenStandard = async ({
   accounts,

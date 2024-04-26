@@ -15,7 +15,7 @@ import {
   getMapEncoder,
   getStructDecoder,
   getStructEncoder,
-} from '@solana/codecs';
+} from '@solana/web3.js';
 import {
   PayloadKey,
   PayloadKeyArgs,

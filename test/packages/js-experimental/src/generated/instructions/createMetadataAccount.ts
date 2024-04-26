@@ -6,14 +6,25 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { BASE_ACCOUNT_SIZE } from '@solana/accounts';
-import { Address, ProgramDerivedAddress } from '@solana/addresses';
 import {
+  Address,
+  BASE_ACCOUNT_SIZE,
   Codec,
   Decoder,
   Encoder,
+  IAccountMeta,
+  IAccountSignerMeta,
+  IInstruction,
+  IInstructionWithAccounts,
+  IInstructionWithData,
   Option,
   OptionOrNullable,
+  ProgramDerivedAddress,
+  ReadonlyAccount,
+  ReadonlySignerAccount,
+  TransactionSigner,
+  WritableAccount,
+  WritableSignerAccount,
   addDecoderSizePrefix,
   addEncoderSizePrefix,
   combineCodec,
@@ -34,18 +45,7 @@ import {
   getUtf8Decoder,
   getUtf8Encoder,
   transformEncoder,
-} from '@solana/codecs';
-import {
-  IAccountMeta,
-  IInstruction,
-  IInstructionWithAccounts,
-  IInstructionWithData,
-  ReadonlyAccount,
-  ReadonlySignerAccount,
-  WritableAccount,
-  WritableSignerAccount,
-} from '@solana/instructions';
-import { IAccountSignerMeta, TransactionSigner } from '@solana/signers';
+} from '@solana/web3.js';
 import { getMetadataSize } from '../accounts';
 import { findMetadataPda } from '../pdas';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';

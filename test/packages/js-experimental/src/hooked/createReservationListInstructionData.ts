@@ -8,7 +8,7 @@ import {
   getU8Decoder,
   getU8Encoder,
   transformEncoder,
-} from '@solana/codecs';
+} from '@solana/web3.js';
 
 export type CreateReservationListInstructionData = { discriminator: number };
 

@@ -8,29 +8,25 @@
 
 import {
   Account,
+  Address,
+  Codec,
+  Decoder,
   EncodedAccount,
+  Encoder,
   FetchAccountConfig,
   FetchAccountsConfig,
   MaybeAccount,
   MaybeEncodedAccount,
+  Option,
+  OptionOrNullable,
   assertAccountExists,
   assertAccountsExist,
+  combineCodec,
   decodeAccount,
   fetchEncodedAccount,
   fetchEncodedAccounts,
-} from '@solana/accounts';
-import {
-  Address,
   getAddressDecoder,
   getAddressEncoder,
-} from '@solana/addresses';
-import {
-  Codec,
-  Decoder,
-  Encoder,
-  Option,
-  OptionOrNullable,
-  combineCodec,
   getOptionDecoder,
   getOptionEncoder,
   getStructDecoder,
@@ -38,7 +34,7 @@ import {
   getU8Decoder,
   getU8Encoder,
   transformEncoder,
-} from '@solana/codecs';
+} from '@solana/web3.js';
 import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type CollectionAuthorityRecord = {

@@ -21,7 +21,7 @@ import {
   getU32Encoder,
   getUtf8Decoder,
   getUtf8Encoder,
-} from '@solana/codecs';
+} from '@solana/web3.js';
 
 /** Config line settings to allocate space for individual name + URI. */
 export type ConfigLineSettings = {

@@ -8,23 +8,21 @@
 
 import {
   Account,
+  Address,
+  Codec,
+  Decoder,
   EncodedAccount,
+  Encoder,
   FetchAccountConfig,
   FetchAccountsConfig,
   MaybeAccount,
   MaybeEncodedAccount,
   assertAccountExists,
   assertAccountsExist,
+  combineCodec,
   decodeAccount,
   fetchEncodedAccount,
   fetchEncodedAccounts,
-} from '@solana/accounts';
-import { Address } from '@solana/addresses';
-import {
-  Codec,
-  Decoder,
-  Encoder,
-  combineCodec,
   getArrayDecoder,
   getArrayEncoder,
   getStructDecoder,
@@ -32,7 +30,7 @@ import {
   getU8Decoder,
   getU8Encoder,
   transformEncoder,
-} from '@solana/codecs';
+} from '@solana/web3.js';
 import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type EditionMarker = { key: TmKey; ledger: Array<number> };

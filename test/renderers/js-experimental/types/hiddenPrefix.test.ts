@@ -32,7 +32,7 @@ test('it renders hidden prefix codecs', (t) => {
 
   // And we expect the following codec imports.
   renderMapContainsImports(t, renderMap, 'types/myType.ts', {
-    '@solana/codecs': [
+    '@solana/web3.js': [
       'getHiddenPrefixEncoder',
       'getHiddenPrefixDecoder',
       'getConstantEncoder',

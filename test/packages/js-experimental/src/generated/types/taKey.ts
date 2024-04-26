@@ -13,7 +13,7 @@ import {
   combineCodec,
   getEnumDecoder,
   getEnumEncoder,
-} from '@solana/codecs';
+} from '@solana/web3.js';
 
 export enum TaKey {
   Uninitialized,

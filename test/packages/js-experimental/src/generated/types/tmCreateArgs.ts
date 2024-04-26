@@ -25,7 +25,7 @@ import {
   getU64Encoder,
   getU8Decoder,
   getU8Encoder,
-} from '@solana/codecs';
+} from '@solana/web3.js';
 import {
   AssetData,
   AssetDataArgs,

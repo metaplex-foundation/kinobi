@@ -6,8 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Address } from '@solana/addresses';
-import { containsBytes } from '@solana/codecs';
+import { Address, containsBytes } from '@solana/web3.js';
 import {
   ParsedAddConfigLinesInstruction,
   ParsedDummyInstruction,

@@ -8,20 +8,18 @@
 
 import {
   Address,
-  getAddressDecoder,
-  getAddressEncoder,
-} from '@solana/addresses';
-import {
   Codec,
   Decoder,
   Encoder,
   combineCodec,
+  getAddressDecoder,
+  getAddressEncoder,
   getBooleanDecoder,
   getBooleanEncoder,
   getStructDecoder,
   getStructEncoder,
   transformEncoder,
-} from '@solana/codecs';
+} from '@solana/web3.js';
 
 export type Collection = { verified: boolean; key: Address };
 

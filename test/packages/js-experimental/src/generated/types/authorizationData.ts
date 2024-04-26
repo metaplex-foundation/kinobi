@@ -13,7 +13,7 @@ import {
   combineCodec,
   getStructDecoder,
   getStructEncoder,
-} from '@solana/codecs';
+} from '@solana/web3.js';
 import { Payload, PayloadArgs, getPayloadDecoder, getPayloadEncoder } from '.';
 
 export type AuthorizationData = { payload: Payload };
