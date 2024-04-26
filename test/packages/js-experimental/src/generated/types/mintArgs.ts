@@ -23,7 +23,7 @@ import {
   getStructEncoder,
   getU64Decoder,
   getU64Encoder,
-} from '@solana/codecs';
+} from '@solana/web3.js';
 import {
   AuthorizationData,
   AuthorizationDataArgs,

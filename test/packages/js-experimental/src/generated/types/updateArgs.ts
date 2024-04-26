@@ -8,10 +8,6 @@
 
 import {
   Address,
-  getAddressDecoder,
-  getAddressEncoder,
-} from '@solana/addresses';
-import {
   Codec,
   Decoder,
   Encoder,
@@ -22,6 +18,8 @@ import {
   addDecoderSizePrefix,
   addEncoderSizePrefix,
   combineCodec,
+  getAddressDecoder,
+  getAddressEncoder,
   getArrayDecoder,
   getArrayEncoder,
   getBooleanDecoder,
@@ -40,7 +38,7 @@ import {
   getUtf8Encoder,
   some,
   transformEncoder,
-} from '@solana/codecs';
+} from '@solana/web3.js';
 import {
   AuthorityType,
   AuthorityTypeArgs,

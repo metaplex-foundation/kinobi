@@ -34,7 +34,7 @@ test('it renders the program address constant', (t) => {
 
   // And we expect the following imports.
   renderMapContainsImports(t, renderMap, 'programs/splToken.ts', {
-    '@solana/addresses': ['Address'],
+    '@solana/web3.js': ['Address'],
   });
 });
 
@@ -105,7 +105,7 @@ test('it renders an function that identifies accounts in a program', (t) => {
 
   // And we expect the following imports.
   renderMapContainsImports(t, renderMap, 'programs/splToken.ts', {
-    '@solana/codecs': ['containsBytes'],
+    '@solana/web3.js': ['containsBytes'],
   });
 });
 
@@ -180,7 +180,7 @@ test('it renders an function that identifies instructions in a program', (t) => 
 
   // And we expect the following imports.
   renderMapContainsImports(t, renderMap, 'programs/splToken.ts', {
-    '@solana/codecs': ['containsBytes'],
+    '@solana/web3.js': ['containsBytes'],
   });
 });
 

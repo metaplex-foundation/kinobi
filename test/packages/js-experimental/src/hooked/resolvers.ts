@@ -1,4 +1,4 @@
-import { Address, ProgramDerivedAddress } from '@solana/addresses';
+import { Address, ProgramDerivedAddress } from '@solana/web3.js';
 import {
   ResolvedAccount,
   TokenStandard,

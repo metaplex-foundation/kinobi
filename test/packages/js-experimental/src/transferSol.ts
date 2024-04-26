@@ -1,6 +1,5 @@
-import { Address } from '@solana/addresses';
+import { Address, TransactionSigner } from '@solana/web3.js';
 import { getTransferSolInstruction } from './generated';
-import { TransactionSigner } from '@solana/signers';
 
 // Typetests.
 const instruction = getTransferSolInstruction({

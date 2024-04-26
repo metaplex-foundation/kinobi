@@ -19,7 +19,7 @@ import {
   getStructEncoder,
   getU64Decoder,
   getU64Encoder,
-} from '@solana/codecs';
+} from '@solana/web3.js';
 
 export type UseAssetArgs = { __kind: 'V1'; useCount: bigint };
 

@@ -11,15 +11,12 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@solana/accounts": "tp3",
-    "@solana/addresses": "tp3",
-    "@solana/codecs": "tp3",
-    "@solana/instructions": "tp3",
-    "@solana/signers": "tp3"
+  "peerDependencies": {
+    "@solana/web3.js": "tp3"
   },
   "devDependencies": {
     "@solana/eslint-config-solana": "^3.0.3",
+    "@solana/web3.js": "tp3",
     "typescript": "^5.3.0"
   }
 }

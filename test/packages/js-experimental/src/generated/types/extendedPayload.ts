@@ -25,7 +25,7 @@ import {
   getU8Encoder,
   getUtf8Decoder,
   getUtf8Encoder,
-} from '@solana/codecs';
+} from '@solana/web3.js';
 import {
   PayloadKey,
   PayloadKeyArgs,

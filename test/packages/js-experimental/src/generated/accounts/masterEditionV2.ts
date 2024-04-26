@@ -8,25 +8,23 @@
 
 import {
   Account,
+  Address,
+  Codec,
+  Decoder,
   EncodedAccount,
+  Encoder,
   FetchAccountConfig,
   FetchAccountsConfig,
   MaybeAccount,
   MaybeEncodedAccount,
+  Option,
+  OptionOrNullable,
   assertAccountExists,
   assertAccountsExist,
+  combineCodec,
   decodeAccount,
   fetchEncodedAccount,
   fetchEncodedAccounts,
-} from '@solana/accounts';
-import { Address } from '@solana/addresses';
-import {
-  Codec,
-  Decoder,
-  Encoder,
-  Option,
-  OptionOrNullable,
-  combineCodec,
   getOptionDecoder,
   getOptionEncoder,
   getStructDecoder,
@@ -34,7 +32,7 @@ import {
   getU64Decoder,
   getU64Encoder,
   transformEncoder,
-} from '@solana/codecs';
+} from '@solana/web3.js';
 import { MasterEditionV2Seeds, findMasterEditionV2Pda } from '../pdas';
 import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 

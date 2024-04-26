@@ -22,7 +22,7 @@ import {
   getU32Encoder,
   getUtf8Decoder,
   getUtf8Encoder,
-} from '@solana/codecs';
+} from '@solana/web3.js';
 
 export type TaCreateArgs = {
   ruleSetName: string;

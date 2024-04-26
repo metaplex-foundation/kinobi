@@ -19,7 +19,7 @@ import {
   getU32Encoder,
   getUtf8Decoder,
   getUtf8Encoder,
-} from '@solana/codecs';
+} from '@solana/web3.js';
 
 /** Config line struct for storing asset (NFT) data pre-mint. */
 export type ConfigLine = {

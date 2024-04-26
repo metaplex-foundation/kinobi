@@ -8,16 +8,14 @@
 
 import {
   Address,
-  getAddressDecoder,
-  getAddressEncoder,
-} from '@solana/addresses';
-import {
   Codec,
   Decoder,
   Encoder,
   Option,
   OptionOrNullable,
   combineCodec,
+  getAddressDecoder,
+  getAddressEncoder,
   getArrayDecoder,
   getArrayEncoder,
   getOptionDecoder,
@@ -27,7 +25,7 @@ import {
   getU64Decoder,
   getU64Encoder,
   transformEncoder,
-} from '@solana/codecs';
+} from '@solana/web3.js';
 import {
   ReservationV1,
   ReservationV1Args,

@@ -23,7 +23,7 @@ import {
   getU64Encoder,
   getUnitDecoder,
   getUnitEncoder,
-} from '@solana/codecs';
+} from '@solana/web3.js';
 
 export type DelegateArgs =
   | { __kind: 'CollectionV1' }

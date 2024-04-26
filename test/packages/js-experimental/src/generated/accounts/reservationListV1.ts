@@ -8,6 +8,7 @@
 
 import {
   Account,
+  Address,
   EncodedAccount,
   FetchAccountConfig,
   FetchAccountsConfig,
@@ -18,8 +19,7 @@ import {
   decodeAccount,
   fetchEncodedAccount,
   fetchEncodedAccounts,
-} from '@solana/accounts';
-import { Address } from '@solana/addresses';
+} from '@solana/web3.js';
 import {
   ReservationListV1AccountData,
   getReservationListV1AccountDataDecoder,

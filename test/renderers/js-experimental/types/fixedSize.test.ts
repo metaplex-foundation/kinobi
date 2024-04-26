@@ -27,6 +27,6 @@ test('it renders fixed size codecs', (t) => {
 
   // And we expect the following codec imports.
   renderMapContainsImports(t, renderMap, 'types/myType.ts', {
-    '@solana/codecs': ['fixEncoderSize', 'fixDecoderSize'],
+    '@solana/web3.js': ['fixEncoderSize', 'fixDecoderSize'],
   });
 });

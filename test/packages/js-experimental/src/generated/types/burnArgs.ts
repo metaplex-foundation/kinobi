@@ -15,7 +15,7 @@ import {
   getEnumEncoder,
   getU64Decoder,
   getU64Encoder,
-} from '@solana/codecs';
+} from '@solana/web3.js';
 
 export enum BurnArgs {
   V1,

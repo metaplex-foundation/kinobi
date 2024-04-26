@@ -11,8 +11,8 @@ import {
   ProgramDerivedAddress,
   getAddressEncoder,
   getProgramDerivedAddress,
-} from '@solana/addresses';
-import { getUtf8Encoder } from '@solana/codecs';
+  getUtf8Encoder,
+} from '@solana/web3.js';
 
 export async function findFrequencyAccountPda(
   config: { programAddress?: Address | undefined } = {}
