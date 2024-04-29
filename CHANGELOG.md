@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.19.2
+
+### Patch Changes
+
+- [#228](https://github.com/metaplex-foundation/kinobi/pull/228) [`2c1eb2e`](https://github.com/metaplex-foundation/kinobi/commit/2c1eb2e0052b7c6b9210b9e6864f9c01961b9531) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Fix missing args variable error in JS Experimental
+
 ## 0.19.1
 
 ### Patch Changes
