@@ -1,4 +1,4 @@
-import { InstructionNode, ProgramNode } from '../../../nodes';
+import { InstructionNode, ProgramNode, isNode } from '../../../nodes';
 import { camelCase, pascalCase } from '../../../shared';
 import { ResolvedInstructionInput } from '../../../visitors';
 import { TypeManifest } from '../TypeManifest';
@@ -66,7 +66,11 @@ export function getInstructionFunctionFragment(
     (instructionNode.extraArguments ?? []).filter(
       (field) => !field.defaultValue || field.defaultValueStrategy !== 'omitted'
     ).length > 0;
-  const hasAnyArgs = hasDataArgs || hasExtraArgs;
+  const hasRemainingAccountArgs =
+    (instructionNode.remainingAccounts ?? []).filter(({ value }) =>
+      isNode(value, 'argumentValueNode')
+    ).length > 0;
+  const hasAnyArgs = hasDataArgs || hasExtraArgs || hasRemainingAccountArgs;
   const instructionDataName = nameApi.instructionDataType(instructionNode.name);
   const programAddressConstant = nameApi.programAddressConstant(
     programNode.name
