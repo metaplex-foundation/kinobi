@@ -9,7 +9,6 @@ use crate::generated::types::Collection;
 use crate::generated::types::Creator;
 use crate::generated::types::Uses;
 
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(
     not(feature = "anchor"),
@@ -19,6 +18,7 @@ use crate::generated::types::Uses;
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct DataV2 {
     pub name: String,
     pub symbol: String,

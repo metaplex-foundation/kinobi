@@ -7,7 +7,6 @@
 
 use crate::generated::types::AssetData;
 
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(
     not(feature = "anchor"),
@@ -17,6 +16,7 @@ use crate::generated::types::AssetData;
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum TmCreateArgs {
     V1 {
         asset_data: AssetData,

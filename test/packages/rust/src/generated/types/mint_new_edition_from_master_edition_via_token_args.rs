@@ -5,7 +5,6 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(
     not(feature = "anchor"),
@@ -15,6 +14,7 @@
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct MintNewEditionFromMasterEditionViaTokenArgs {
     pub edition: u64,
 }

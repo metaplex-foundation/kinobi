@@ -7,7 +7,6 @@
 
 use num_derive::FromPrimitive;
 
-#[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Hash, FromPrimitive)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(
     not(feature = "anchor"),
@@ -17,6 +16,7 @@ use num_derive::FromPrimitive;
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
+#[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Hash, FromPrimitive)]
 pub enum TmKey {
     Uninitialized,
     EditionV1,

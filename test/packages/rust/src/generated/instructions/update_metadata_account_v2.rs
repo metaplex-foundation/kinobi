@@ -66,13 +66,13 @@ impl UpdateMetadataAccountV2InstructionData {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
 #[cfg_attr(
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct UpdateMetadataAccountV2InstructionArgs {
     pub data: Option<DataV2>,
     pub update_authority_arg: Option<Pubkey>,

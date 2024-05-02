@@ -92,26 +92,26 @@ impl CreateMetadataAccountInstructionData {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
 #[cfg_attr(
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct CreateMetadataAccountInstructionArgs {
     pub data: CreateMetadataAccountInstructionDataData,
     pub is_mutable: bool,
     pub metadata_bump: u8,
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
 #[cfg_attr(
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct CreateMetadataAccountInstructionDataData {
     pub name: String,
     pub symbol: String,

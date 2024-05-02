@@ -19,7 +19,6 @@ use anchor_lang::AnchorDeserialize;
 use borsh::BorshDeserialize;
 use solana_program::pubkey::Pubkey;
 
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(
     not(feature = "anchor"),
     derive(borsh::BorshSerialize, borsh::BorshDeserialize)
@@ -29,6 +28,7 @@ use solana_program::pubkey::Pubkey;
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Metadata {
     pub key: TmKey,
     #[cfg_attr(

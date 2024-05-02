@@ -128,13 +128,13 @@ impl DeprecatedCreateMasterEditionInstructionData {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
 #[cfg_attr(
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct DeprecatedCreateMasterEditionInstructionArgs {
     pub create_master_edition_args: CreateMasterEditionArgs,
 }

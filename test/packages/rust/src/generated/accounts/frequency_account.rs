@@ -10,7 +10,6 @@ use anchor_lang::AnchorDeserialize;
 #[cfg(not(feature = "anchor"))]
 use borsh::BorshDeserialize;
 
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(
     not(feature = "anchor"),
     derive(borsh::BorshSerialize, borsh::BorshDeserialize)
@@ -20,6 +19,7 @@ use borsh::BorshDeserialize;
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct FrequencyAccount {
     /// Test with only one line.
     pub key: u64,

@@ -9,7 +9,6 @@ use crate::generated::types::PayloadKey;
 use crate::generated::types::PayloadType;
 use std::collections::HashMap;
 
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(
     not(feature = "anchor"),
@@ -19,6 +18,7 @@ use std::collections::HashMap;
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ExtendedPayload {
     pub map: HashMap<PayloadKey, PayloadType>,
     pub args: (u8, String),

@@ -142,13 +142,13 @@ impl MintNewEditionFromMasterEditionViaTokenInstructionData {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
 #[cfg_attr(
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct MintNewEditionFromMasterEditionViaTokenInstructionArgs {
     pub mint_new_edition_from_master_edition_via_token_args:
         MintNewEditionFromMasterEditionViaTokenArgs,

@@ -7,7 +7,6 @@
 
 use crate::generated::types::UseMethod;
 
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(
     not(feature = "anchor"),
@@ -17,6 +16,7 @@ use crate::generated::types::UseMethod;
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Uses {
     pub use_method: UseMethod,
     pub remaining: u64,

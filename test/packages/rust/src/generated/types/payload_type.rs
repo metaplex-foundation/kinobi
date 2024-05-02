@@ -8,7 +8,6 @@
 use solana_program::pubkey::Pubkey;
 
 /// This is a union of all the possible payload types.
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(
     not(feature = "anchor"),
@@ -18,6 +17,7 @@ use solana_program::pubkey::Pubkey;
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum PayloadType {
     #[cfg_attr(
         feature = "serde",

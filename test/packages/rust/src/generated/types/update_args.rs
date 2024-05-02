@@ -16,7 +16,6 @@ use crate::generated::types::TokenStandard;
 use crate::generated::types::Uses;
 use solana_program::pubkey::Pubkey;
 
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(
     not(feature = "anchor"),
@@ -26,6 +25,7 @@ use solana_program::pubkey::Pubkey;
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum UpdateArgs {
     V1 {
         authorization_data: Option<AuthorizationData>,
@@ -43,7 +43,6 @@ pub enum UpdateArgs {
     },
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(
     not(feature = "anchor"),
@@ -53,6 +52,7 @@ pub enum UpdateArgs {
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct UpdateArgsV1Data {
     pub name: String,
     pub symbol: String,

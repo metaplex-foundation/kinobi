@@ -157,13 +157,13 @@ impl UpdateV1InstructionData {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
 #[cfg_attr(
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct UpdateV1InstructionArgs {
     pub authorization_data: Option<AuthorizationData>,
     pub new_update_authority: Option<Pubkey>,
@@ -179,13 +179,13 @@ pub struct UpdateV1InstructionArgs {
     pub authority_type: AuthorityType,
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
 #[cfg_attr(
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct UpdateV1InstructionDataData {
     pub name: String,
     pub symbol: String,

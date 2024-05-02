@@ -14,7 +14,6 @@ use solana_program::pubkey::Pubkey;
 
 /// Candy machine state and config data.
 
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(
     not(feature = "anchor"),
     derive(borsh::BorshSerialize, borsh::BorshDeserialize)
@@ -24,6 +23,7 @@ use solana_program::pubkey::Pubkey;
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct CandyMachine {
     pub discriminator: [u8; 8],
     /// Features versioning flags.

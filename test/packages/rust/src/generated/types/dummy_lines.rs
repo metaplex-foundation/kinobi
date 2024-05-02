@@ -8,7 +8,6 @@
 use kaigan::types::RemainderVec;
 
 /// Dummy lines.
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(
     not(feature = "anchor"),
@@ -18,6 +17,7 @@ use kaigan::types::RemainderVec;
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct DummyLines {
     /// The dummy lines.
     pub lines: RemainderVec<u64>,

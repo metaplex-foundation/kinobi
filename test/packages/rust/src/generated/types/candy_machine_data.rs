@@ -10,7 +10,6 @@ use crate::generated::types::ConfigLineSettings;
 use crate::generated::types::HiddenSettings;
 
 /// Candy machine configuration data.
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(
     not(feature = "anchor"),
@@ -20,6 +19,7 @@ use crate::generated::types::HiddenSettings;
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct CandyMachineData {
     /// Number of assets available
     pub items_available: u64,

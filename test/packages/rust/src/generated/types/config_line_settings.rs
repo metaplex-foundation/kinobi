@@ -6,7 +6,6 @@
 //!
 
 /// Config line settings to allocate space for individual name + URI.
-#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(
     not(feature = "anchor"),
@@ -16,6 +15,7 @@
     feature = "anchor",
     derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
 )]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ConfigLineSettings {
     /// Common name prefix
     pub prefix_name: String,
