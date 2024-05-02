@@ -6,14 +6,24 @@
 //!
 
 use crate::generated::types::CandyMachineData;
+#[cfg(feature = "anchor")]
+use anchor_lang::AnchorDeserialize;
+#[cfg(not(feature = "anchor"))]
 use borsh::BorshDeserialize;
-use borsh::BorshSerialize;
 use solana_program::pubkey::Pubkey;
 
 /// Candy machine state and config data.
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(
+    not(feature = "anchor"),
+    derive(borsh::BorshSerialize, borsh::BorshDeserialize)
+)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(
+    feature = "anchor",
+    derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
+)]
 pub struct CandyMachine {
     pub discriminator: [u8; 8],
     /// Features versioning flags.

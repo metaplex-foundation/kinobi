@@ -4,6 +4,10 @@
 {% block main %}
 
 {{ imports }}
+#[cfg(feature = "anchor")]
+use anchor_lang::AnchorDeserialize;
+#[cfg(not(feature = "anchor"))]
+use borsh::BorshDeserialize;
 
 {{ macros.docblock(account.docs) }}
 {{ typeManifest.type }}

@@ -129,7 +129,9 @@ impl {{ instruction.name | pascalCase }}InstructionData {
 }
 
 {% if hasArgs %}
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
+#[cfg_attr(feature = "anchor", derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize))]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct {{ instruction.name | pascalCase }}InstructionArgs {
   {% for arg in instructionArgs %}
@@ -141,7 +143,9 @@ pub struct {{ instruction.name | pascalCase }}InstructionArgs {
 {% endif %}
 
 {% for nestedStruct in typeManifest.nestedStructs %}
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
+#[cfg_attr(feature = "anchor", derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize))]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 {{ nestedStruct }}
 {% endfor %}

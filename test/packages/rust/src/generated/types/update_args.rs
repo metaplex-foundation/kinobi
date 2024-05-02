@@ -14,12 +14,17 @@ use crate::generated::types::DelegateState;
 use crate::generated::types::ProgrammableConfig;
 use crate::generated::types::TokenStandard;
 use crate::generated::types::Uses;
-use borsh::BorshDeserialize;
-use borsh::BorshSerialize;
 use solana_program::pubkey::Pubkey;
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(
+    not(feature = "anchor"),
+    derive(borsh::BorshSerialize, borsh::BorshDeserialize)
+)]
+#[cfg_attr(
+    feature = "anchor",
+    derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
+)]
 pub enum UpdateArgs {
     V1 {
         authorization_data: Option<AuthorizationData>,
@@ -37,8 +42,15 @@ pub enum UpdateArgs {
     },
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(
+    not(feature = "anchor"),
+    derive(borsh::BorshSerialize, borsh::BorshDeserialize)
+)]
+#[cfg_attr(
+    feature = "anchor",
+    derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
+)]
 pub struct UpdateArgsV1Data {
     pub name: String,
     pub symbol: String,

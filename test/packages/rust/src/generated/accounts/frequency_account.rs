@@ -5,11 +5,21 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+#[cfg(feature = "anchor")]
+use anchor_lang::AnchorDeserialize;
+#[cfg(not(feature = "anchor"))]
 use borsh::BorshDeserialize;
-use borsh::BorshSerialize;
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(
+    not(feature = "anchor"),
+    derive(borsh::BorshSerialize, borsh::BorshDeserialize)
+)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(
+    feature = "anchor",
+    derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
+)]
 pub struct FrequencyAccount {
     /// Test with only one line.
     pub key: u64,

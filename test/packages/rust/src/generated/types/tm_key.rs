@@ -5,14 +5,17 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use borsh::BorshDeserialize;
-use borsh::BorshSerialize;
 use num_derive::FromPrimitive;
 
-#[derive(
-    BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq, PartialOrd, Hash, FromPrimitive,
+#[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Hash, FromPrimitive)]
+#[cfg_attr(
+    not(feature = "anchor"),
+    derive(borsh::BorshSerialize, borsh::BorshDeserialize)
 )]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(
+    feature = "anchor",
+    derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize)
+)]
 pub enum TmKey {
     Uninitialized,
     EditionV1,
