@@ -8,6 +8,7 @@
 use num_derive::FromPrimitive;
 
 #[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Hash, FromPrimitive)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(
     not(feature = "anchor"),
     derive(borsh::BorshSerialize, borsh::BorshDeserialize)

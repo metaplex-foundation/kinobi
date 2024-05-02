@@ -10,6 +10,7 @@ use crate::generated::types::Creator;
 use crate::generated::types::Uses;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(
     not(feature = "anchor"),
     derive(borsh::BorshSerialize, borsh::BorshDeserialize)

@@ -72,12 +72,14 @@ export function getTypeManifestVisitor() {
             ...manifest,
             type:
               `#[derive(${traits.join(', ')})]\n` +
+              '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
               '#[cfg_attr(not(feature = "anchor"), derive(borsh::BorshSerialize, borsh::BorshDeserialize))]\n' +
               '#[cfg_attr(feature = "anchor", derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize))]\n' +
               `${manifest.type}`,
             nestedStructs: manifest.nestedStructs.map(
               (struct) =>
                 `#[derive(${traits.join(', ')})]\n` +
+                '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
                 '#[cfg_attr(not(feature = "anchor"), derive(borsh::BorshSerialize, borsh::BorshDeserialize))]\n' +
                 '#[cfg_attr(feature = "anchor", derive(anchor_lang::AnchorSerialize, anchor_lang::AnchorDeserialize))]\n' +
                 `${struct}`
