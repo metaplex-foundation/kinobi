@@ -39,16 +39,14 @@ export function getTypeManifestVisitor() {
         visitAccount(account, { self }) {
           parentName = pascalCase(account.name);
           const manifest = visit(account.data, self);
-          manifest.imports.add([
-            'borsh::BorshSerialize',
-            'borsh::BorshDeserialize',
-          ]);
           parentName = null;
           return {
             ...manifest,
             type:
-              '#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]\n' +
-              '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
+              '#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]\n' +
+              '#[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]\n' +
+              '#[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]\n' +
+              `#[derive(Clone, Debug, Eq, PartialEq)]\n` +
               `${manifest.type}`,
           };
         },
@@ -57,13 +55,7 @@ export function getTypeManifestVisitor() {
           parentName = pascalCase(definedType.name);
           const manifest = visit(definedType.type, self);
           parentName = null;
-          manifest.imports.add([
-            'borsh::BorshSerialize',
-            'borsh::BorshDeserialize',
-          ]);
           const traits = [
-            'BorshSerialize',
-            'BorshDeserialize',
             'Clone',
             'Debug',
             'Eq',
@@ -79,13 +71,17 @@ export function getTypeManifestVisitor() {
           return {
             ...manifest,
             type:
+              '#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]\n' +
+              '#[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]\n' +
+              '#[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]\n' +
               `#[derive(${traits.join(', ')})]\n` +
-              '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
               `${manifest.type}`,
             nestedStructs: manifest.nestedStructs.map(
               (struct) =>
+                '#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]\n' +
+                '#[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]\n' +
+                '#[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]\n' +
                 `#[derive(${traits.join(', ')})]\n` +
-                '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
                 `${struct}`
             ),
           };

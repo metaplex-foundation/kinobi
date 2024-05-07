@@ -10,10 +10,10 @@ import { Address } from '@solana/addresses';
 import { Program } from '@solana/programs';
 
 export const PUBKEY_TESTS_PROGRAM_ADDRESS =
-  'PubkeyTests1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d' as Address<'PubkeyTests1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d'>;
+  'PubkeyTests1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7' as Address<'PubkeyTests1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7'>;
 
 export type PubkeyTestsProgram =
-  Program<'PubkeyTests1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d'>;
+  Program<'PubkeyTests1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7'>;
 
 export function getPubkeyTestsProgram(): PubkeyTestsProgram {
   return {

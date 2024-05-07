@@ -6,8 +6,12 @@
 //!
 
 use crate::generated::types::CreateMasterEditionArgs;
-use borsh::BorshDeserialize;
-use borsh::BorshSerialize;
+#[cfg(feature = "anchor")]
+use anchor_lang::prelude::{AnchorDeserialize, AnchorSerialize};
+#[cfg(not(feature = "anchor"))]
+use borsh::{BorshDeserialize, BorshSerialize};
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
 
 /// Accounts.
 pub struct DeprecatedCreateMasterEdition {
@@ -117,7 +121,8 @@ impl DeprecatedCreateMasterEdition {
     }
 }
 
-#[derive(BorshDeserialize, BorshSerialize)]
+#[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
+#[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
 pub struct DeprecatedCreateMasterEditionInstructionData {
     discriminator: u8,
 }
@@ -128,8 +133,10 @@ impl DeprecatedCreateMasterEditionInstructionData {
     }
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
+#[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct DeprecatedCreateMasterEditionInstructionArgs {
     pub create_master_edition_args: CreateMasterEditionArgs,
 }

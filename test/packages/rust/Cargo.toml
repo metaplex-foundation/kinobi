@@ -9,6 +9,7 @@ crate-type = ["lib"]
 
 [features]
 serde = ["dep:serde", "dep:serde_with", "kaigan/serde"]
+anchor = ["dep:anchor-lang"]
 
 [dependencies]
 borsh = "0.10"
@@ -19,3 +20,4 @@ serde = { version = "^1.0", features = ["derive"], optional = true }
 serde_with = { version = "^3.0", optional = true }
 solana-program = "^1.16"
 thiserror = "^1.0"
+anchor-lang = { version = "0.30.0", optional = true }
