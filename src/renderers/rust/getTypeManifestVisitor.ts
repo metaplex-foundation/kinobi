@@ -43,7 +43,7 @@ export function getTypeManifestVisitor() {
           return {
             ...manifest,
             type:
-              '#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]\n' +
+              '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
               '#[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]\n' +
               '#[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]\n' +
               `#[derive(Clone, Debug, Eq, PartialEq)]\n` +
@@ -71,14 +71,14 @@ export function getTypeManifestVisitor() {
           return {
             ...manifest,
             type:
-              '#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]\n' +
+              '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
               '#[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]\n' +
               '#[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]\n' +
               `#[derive(${traits.join(', ')})]\n` +
               `${manifest.type}`,
             nestedStructs: manifest.nestedStructs.map(
               (struct) =>
-                '#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]\n' +
+                '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
                 '#[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]\n' +
                 '#[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]\n' +
                 `#[derive(${traits.join(', ')})]\n` +
