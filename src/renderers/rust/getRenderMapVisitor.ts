@@ -185,7 +185,6 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
         visitInstruction(node) {
           // Imports.
           const imports = new RustImportMap();
-          imports.add(['borsh::BorshDeserialize', 'borsh::BorshSerialize']);
 
           // canMergeAccountsAndArgs
           const accountsAndArgsConflicts =
@@ -193,11 +192,11 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
           if (accountsAndArgsConflicts.length > 0) {
             logWarn(
               `[Rust] Accounts and args of instruction [${node.name}] have the following ` +
-                `conflicting attributes [${accountsAndArgsConflicts.join(
-                  ', '
-                )}]. ` +
-                `Thus, the conflicting arguments will be suffixed with "_arg". ` +
-                'You may want to rename the conflicting attributes.'
+              `conflicting attributes [${accountsAndArgsConflicts.join(
+                ', '
+              )}]. ` +
+              `Thus, the conflicting arguments will be suffixed with "_arg". ` +
+              'You may want to rename the conflicting attributes.'
             );
           }
 
