@@ -10,8 +10,6 @@ use crate::generated::types::SetCollectionSizeArgs;
 use anchor_lang::prelude::{AnchorDeserialize, AnchorSerialize};
 #[cfg(not(feature = "anchor"))]
 use borsh::{BorshDeserialize, BorshSerialize};
-#[cfg(feature = "serde")]
-use serde::{Deserialize, Serialize};
 
 /// Accounts.
 pub struct SetCollectionSize {
@@ -91,7 +89,7 @@ impl SetCollectionSizeInstructionData {
 
 #[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
 #[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SetCollectionSizeInstructionArgs {
     pub set_collection_size_args: SetCollectionSizeArgs,
