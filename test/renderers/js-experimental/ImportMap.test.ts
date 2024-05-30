@@ -4,8 +4,8 @@ import { ImportMap } from '../../../src/renderers/js-experimental/ImportMap';
 test('it renders JavaScript import statements', (t) => {
   // Given an import map with 3 imports from 2 sources.
   const importMap = new ImportMap()
-    .add('@solana/addresses', ['getAddressEncoder', 'Address'])
-    .add('@solana/instructions', 'IInstructionWithData');
+    .add('@solana/addresses', ['getAddressEncoder', 'type Address'])
+    .add('@solana/instructions', 'type IInstructionWithData');
 
   // When we render it.
   const importStatements = importMap.toString();
@@ -13,16 +13,16 @@ test('it renders JavaScript import statements', (t) => {
   // Then we expect the following import statements.
   t.is(
     importStatements,
-    "import { Address, getAddressEncoder } from '@solana/addresses';\n" +
-      "import { IInstructionWithData } from '@solana/instructions';"
+    "import { getAddressEncoder, type Address } from '@solana/addresses';\n" +
+      "import { type IInstructionWithData } from '@solana/instructions';"
   );
 });
 
 test('it renders JavaScript import aliases', (t) => {
   // Given an import map with an import alias.
   const importMap = new ImportMap()
-    .add('@solana/addresses', 'Address')
-    .addAlias('@solana/addresses', 'Address', 'SolanaAddress');
+    .add('@solana/addresses', 'type Address')
+    .addAlias('@solana/addresses', 'type Address', 'SolanaAddress');
 
   // When we render it.
   const importStatements = importMap.toString();
@@ -30,18 +30,18 @@ test('it renders JavaScript import aliases', (t) => {
   // Then we expect the following import statement.
   t.is(
     importStatements,
-    "import { Address as SolanaAddress } from '@solana/addresses';"
+    "import { type Address as SolanaAddress } from '@solana/addresses';"
   );
 });
 
 test('it offers some default dependency mappings', (t) => {
   // Given an import map with some recognized dependency keys.
   const importMap = new ImportMap()
-    .add('solanaAddresses', 'Address')
-    .add('solanaCodecsCore', 'Codec')
-    .add('generatedTypes', 'MyType')
+    .add('solanaAddresses', 'type Address')
+    .add('solanaCodecsCore', 'type Codec')
+    .add('generatedTypes', 'type MyType')
     .add('shared', 'myHelper')
-    .add('hooked', 'MyCustomType');
+    .add('hooked', 'type MyCustomType');
 
   // When we render it.
   const importStatements = importMap.toString();
@@ -49,21 +49,21 @@ test('it offers some default dependency mappings', (t) => {
   // Then we expect the following import statements.
   t.is(
     importStatements,
-    "import { Address, Codec } from '@solana/web3.js';\n" +
-      "import { MyCustomType } from '../../hooked';\n" +
+    "import { type Address, type Codec } from '@solana/web3.js';\n" +
+      "import { type MyCustomType } from '../../hooked';\n" +
       "import { myHelper } from '../shared';\n" +
-      "import { MyType } from '../types';"
+      "import { type MyType } from '../types';"
   );
 });
 
 test('it offers some more granular default dependency mappings', (t) => {
   // Given an import map with some recognized dependency keys.
   const importMap = new ImportMap()
-    .add('solanaAddresses', 'Address')
-    .add('solanaCodecsCore', 'Codec')
-    .add('generatedTypes', 'MyType')
+    .add('solanaAddresses', 'type Address')
+    .add('solanaCodecsCore', 'type Codec')
+    .add('generatedTypes', 'type MyType')
     .add('shared', 'myHelper')
-    .add('hooked', 'MyCustomType');
+    .add('hooked', 'type MyCustomType');
 
   // When we render it.
   const importStatements = importMap.toString({}, true);
@@ -71,17 +71,17 @@ test('it offers some more granular default dependency mappings', (t) => {
   // Then we expect the following import statements.
   t.is(
     importStatements,
-    "import { Address } from '@solana/addresses';\n" +
-      "import { Codec } from '@solana/codecs';\n" +
-      "import { MyCustomType } from '../../hooked';\n" +
+    "import { type Address } from '@solana/addresses';\n" +
+      "import { type Codec } from '@solana/codecs';\n" +
+      "import { type MyCustomType } from '../../hooked';\n" +
       "import { myHelper } from '../shared';\n" +
-      "import { MyType } from '../types';"
+      "import { type MyType } from '../types';"
   );
 });
 
 test('it supports custom dependency mappings', (t) => {
   // Given an import map with some custom dependency keys.
-  const importMap = new ImportMap().add('myDependency', 'MyType');
+  const importMap = new ImportMap().add('myDependency', 'type MyType');
 
   // When we render it whilst providing custom dependency mappings.
   const importStatements = importMap.toString({
@@ -89,7 +89,7 @@ test('it supports custom dependency mappings', (t) => {
   });
 
   // Then we expect the following import statement.
-  t.is(importStatements, "import { MyType } from 'my/custom/path';");
+  t.is(importStatements, "import { type MyType } from 'my/custom/path';");
 });
 
 test('it does not render empty import statements', (t) => {

@@ -7,9 +7,6 @@
  */
 
 import {
-  Codec,
-  Decoder,
-  Encoder,
   addDecoderSizePrefix,
   addEncoderSizePrefix,
   combineCodec,
@@ -21,6 +18,9 @@ import {
   getU32Encoder,
   getUtf8Decoder,
   getUtf8Encoder,
+  type Codec,
+  type Decoder,
+  type Encoder,
 } from '@solana/web3.js';
 
 /** Config line settings to allocate space for individual name + URI. */

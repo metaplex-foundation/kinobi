@@ -7,10 +7,6 @@
  */
 
 import {
-  Address,
-  Codec,
-  Decoder,
-  Encoder,
   combineCodec,
   getAddressDecoder,
   getAddressEncoder,
@@ -19,6 +15,10 @@ import {
   getStructDecoder,
   getStructEncoder,
   transformEncoder,
+  type Address,
+  type Codec,
+  type Decoder,
+  type Encoder,
 } from '@solana/web3.js';
 
 export type Collection = { verified: boolean; key: Address };

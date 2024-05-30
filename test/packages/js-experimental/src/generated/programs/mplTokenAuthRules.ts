@@ -7,15 +7,15 @@
  */
 
 import {
-  Address,
   containsBytes,
   getU64Encoder,
   getU8Encoder,
+  type Address,
 } from '@solana/web3.js';
 import {
-  ParsedCreateFrequencyRuleInstruction,
-  ParsedCreateRuleSetInstruction,
-  ParsedValidateInstruction,
+  type ParsedCreateFrequencyRuleInstruction,
+  type ParsedCreateRuleSetInstruction,
+  type ParsedValidateInstruction,
 } from '../instructions';
 import { TaKey } from '../types';
 

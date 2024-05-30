@@ -7,11 +7,6 @@
  */
 
 import {
-  Codec,
-  Decoder,
-  Encoder,
-  Option,
-  OptionOrNullable,
   addDecoderSizePrefix,
   addEncoderSizePrefix,
   combineCodec,
@@ -31,20 +26,25 @@ import {
   getU64Encoder,
   getUtf8Decoder,
   getUtf8Encoder,
+  type Codec,
+  type Decoder,
+  type Encoder,
+  type Option,
+  type OptionOrNullable,
 } from '@solana/web3.js';
 import {
-  CmCreator,
-  CmCreatorArgs,
-  ConfigLineSettings,
-  ConfigLineSettingsArgs,
-  HiddenSettings,
-  HiddenSettingsArgs,
   getCmCreatorDecoder,
   getCmCreatorEncoder,
   getConfigLineSettingsDecoder,
   getConfigLineSettingsEncoder,
   getHiddenSettingsDecoder,
   getHiddenSettingsEncoder,
+  type CmCreator,
+  type CmCreatorArgs,
+  type ConfigLineSettings,
+  type ConfigLineSettingsArgs,
+  type HiddenSettings,
+  type HiddenSettingsArgs,
 } from '.';
 
 /** Candy machine configuration data. */

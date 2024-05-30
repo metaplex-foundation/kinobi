@@ -34,7 +34,7 @@ test('it renders the program address constant', (t) => {
 
   // And we expect the following imports.
   renderMapContainsImports(t, renderMap, 'programs/splToken.ts', {
-    '@solana/web3.js': ['Address'],
+    '@solana/web3.js': ['type Address'],
   });
 });
 

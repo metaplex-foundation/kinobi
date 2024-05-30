@@ -7,16 +7,6 @@
  */
 
 import {
-  Account,
-  Address,
-  Codec,
-  Decoder,
-  EncodedAccount,
-  Encoder,
-  FetchAccountConfig,
-  FetchAccountsConfig,
-  MaybeAccount,
-  MaybeEncodedAccount,
   assertAccountExists,
   assertAccountsExist,
   combineCodec,
@@ -28,16 +18,27 @@ import {
   getU8Decoder,
   getU8Encoder,
   transformEncoder,
+  type Account,
+  type Address,
+  type Codec,
+  type Decoder,
+  type EncodedAccount,
+  type Encoder,
+  type FetchAccountConfig,
+  type FetchAccountsConfig,
+  type MaybeAccount,
+  type MaybeEncodedAccount,
 } from '@solana/web3.js';
-import { DelegateRecordSeeds, findDelegateRecordPda } from '../pdas';
+import { findDelegateRecordPda, type DelegateRecordSeeds } from '../pdas';
 import {
-  DelegateRole,
-  DelegateRoleArgs,
   TmKey,
   getDelegateRoleDecoder,
   getDelegateRoleEncoder,
   getTmKeyDecoder,
   getTmKeyEncoder,
+  type DelegateRole,
+  type DelegateRoleArgs,
+  type TmKey,
 } from '../types';
 
 export type DelegateRecord = { key: TmKey; role: DelegateRole; bump: number };

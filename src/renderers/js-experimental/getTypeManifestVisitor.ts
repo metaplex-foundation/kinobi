@@ -134,10 +134,12 @@ export function getTypeManifestVisitor(input: {
           const decoderFunction = nameApi.decoderFunction(node.name);
           const importFrom = node.importFrom ?? 'generatedTypes';
 
+          console.log(strictName, looseName, node);
+
           return {
             isEnum: false,
-            strictType: fragment(strictName).addImports(importFrom, strictName),
-            looseType: fragment(looseName).addImports(importFrom, looseName),
+            strictType: fragment(strictName).addImports(importFrom, `type ${strictName}`),
+            looseType: fragment(looseName).addImports(importFrom, `type ${looseName}`),
             encoder: fragment(`${encoderFunction}()`).addImports(
               importFrom,
               encoderFunction
@@ -355,10 +357,10 @@ export function getTypeManifestVisitor(input: {
           const childManifest = visit(optionType.item, self);
           childManifest.strictType
             .mapRender((r) => `Option<${r}>`)
-            .addImports('solanaOptions', 'Option');
+            .addImports('solanaOptions', 'type Option');
           childManifest.looseType
             .mapRender((r) => `OptionOrNullable<${r}>`)
-            .addImports('solanaOptions', 'OptionOrNullable');
+            .addImports('solanaOptions', 'type OptionOrNullable');
           const encoderOptions: string[] = [];
           const decoderOptions: string[] = [];
 
@@ -560,11 +562,11 @@ export function getTypeManifestVisitor(input: {
             isEnum: false,
             strictType: fragment('ReadonlyUint8Array').addImports(
               'solanaCodecsCore',
-              'ReadonlyUint8Array'
+              'type ReadonlyUint8Array'
             ),
             looseType: fragment('ReadonlyUint8Array').addImports(
               'solanaCodecsCore',
-              'ReadonlyUint8Array'
+              'type ReadonlyUint8Array'
             ),
             encoder: fragment(`getBytesEncoder()`).addImports(
               'solanaCodecsDataStructures',
@@ -627,7 +629,7 @@ export function getTypeManifestVisitor(input: {
         },
 
         visitPublicKeyType() {
-          const imports = new ImportMap().add('solanaAddresses', 'Address');
+          const imports = new ImportMap().add('solanaAddresses', 'type Address');
           return {
             isEnum: false,
             strictType: fragment('Address', imports),
@@ -846,10 +848,10 @@ export function getTypeManifestVisitor(input: {
           const childManifest = visit(node.item, self);
           childManifest.strictType
             .mapRender((r) => `Option<${r}>`)
-            .addImports('solanaOptions', 'Option');
+            .addImports('solanaOptions', 'type Option');
           childManifest.looseType
             .mapRender((r) => `OptionOrNullable<${r}>`)
-            .addImports('solanaOptions', 'OptionOrNullable');
+            .addImports('solanaOptions', 'type OptionOrNullable');
           const encoderOptions: string[] = [];
           const decoderOptions: string[] = [];
 

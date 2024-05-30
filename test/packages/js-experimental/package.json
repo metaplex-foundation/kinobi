@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "description": "",
   "main": "src/index.ts",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --no-eslintrc -c .eslintrc.js"

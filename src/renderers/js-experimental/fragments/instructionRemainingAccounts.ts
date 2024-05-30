@@ -27,7 +27,7 @@ export function getInstructionRemainingAccountsFragment(
       `const remainingAccounts: IAccountMeta[] = ${
         r.length === 1 ? r[0] : `[...${r.join(', ...')}]`
       }`
-  ).addImports('solanaInstructions', ['IAccountMeta']);
+  ).addImports('solanaInstructions', ['type IAccountMeta']);
 }
 
 function getRemainingAccountsFragment(

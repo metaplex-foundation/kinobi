@@ -7,12 +7,6 @@
  */
 
 import {
-  Address,
-  Codec,
-  Decoder,
-  Encoder,
-  Option,
-  OptionOrNullable,
   combineCodec,
   getAddressDecoder,
   getAddressEncoder,
@@ -25,15 +19,22 @@ import {
   getU64Decoder,
   getU64Encoder,
   transformEncoder,
+  type Address,
+  type Codec,
+  type Decoder,
+  type Encoder,
+  type Option,
+  type OptionOrNullable,
 } from '@solana/web3.js';
 import {
-  ReservationV1,
-  ReservationV1Args,
   TmKey,
   getReservationV1Decoder,
   getReservationV1Encoder,
   getTmKeyDecoder,
   getTmKeyEncoder,
+  type ReservationV1,
+  type ReservationV1Args,
+  type TmKey,
 } from '.';
 
 export type ReservationListV1AccountData = {

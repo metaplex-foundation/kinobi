@@ -6,17 +6,17 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Address, containsBytes } from '@solana/web3.js';
+import { containsBytes, type Address } from '@solana/web3.js';
 import {
-  ParsedAddConfigLinesInstruction,
-  ParsedDummyInstruction,
-  ParsedInitializeInstruction,
-  ParsedMintFromCandyMachineInstruction,
-  ParsedSetAuthorityInstruction,
-  ParsedSetCollectionInstruction,
-  ParsedSetMintAuthorityInstruction,
-  ParsedUpdateCandyMachineInstruction,
-  ParsedWithdrawInstruction,
+  type ParsedAddConfigLinesInstruction,
+  type ParsedDummyInstruction,
+  type ParsedInitializeInstruction,
+  type ParsedMintFromCandyMachineInstruction,
+  type ParsedSetAuthorityInstruction,
+  type ParsedSetCollectionInstruction,
+  type ParsedSetMintAuthorityInstruction,
+  type ParsedUpdateCandyMachineInstruction,
+  type ParsedWithdrawInstruction,
 } from '../instructions';
 
 export const MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS =

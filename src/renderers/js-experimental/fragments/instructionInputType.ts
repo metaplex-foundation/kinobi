@@ -60,7 +60,7 @@ export function getInstructionInputTypeFragment(
       extraArgumentsFragment,
       remainingAccountsFragment
     )
-    .addImports('solanaAddresses', ['Address']);
+    .addImports('solanaAddresses', ['type Address']);
 }
 
 function getAccountsFragment(
@@ -107,7 +107,7 @@ function getAccountTypeFragment(
   if (account.isPda && account.isSigner === false) {
     return fragment(`ProgramDerivedAddress<${typeParam}>`).addImports(
       'solanaAddresses',
-      ['ProgramDerivedAddress']
+      ['type ProgramDerivedAddress']
     );
   }
 
@@ -115,25 +115,25 @@ function getAccountTypeFragment(
     return fragment(
       `ProgramDerivedAddress<${typeParam}> | TransactionSigner<${typeParam}>`
     )
-      .addImports('solanaAddresses', ['ProgramDerivedAddress'])
-      .addImports('solanaSigners', ['TransactionSigner']);
+      .addImports('solanaAddresses', ['type ProgramDerivedAddress'])
+      .addImports('solanaSigners', ['type TransactionSigner']);
   }
 
   if (account.isSigner === 'either') {
     return fragment(`Address<${typeParam}> | TransactionSigner<${typeParam}>`)
-      .addImports('solanaAddresses', ['Address'])
-      .addImports('solanaSigners', ['TransactionSigner']);
+      .addImports('solanaAddresses', ['type Address'])
+      .addImports('solanaSigners', ['type TransactionSigner']);
   }
 
   if (account.isSigner) {
     return fragment(`TransactionSigner<${typeParam}>`).addImports(
       'solanaSigners',
-      ['TransactionSigner']
+      ['type TransactionSigner']
     );
   }
 
   return fragment(`Address<${typeParam}>`).addImports('solanaAddresses', [
-    'Address',
+    'type Address',
   ]);
 }
 
@@ -234,11 +234,11 @@ function getRemainingAccountsFragment(
       const optionalSign = remainingAccountsNode.isOptional ?? false ? '?' : '';
       const signerFragment = fragment(`TransactionSigner`).addImports(
         'solanaSigners',
-        ['TransactionSigner']
+        ['type TransactionSigner']
       );
       const addressFragment = fragment(`Address`).addImports(
         'solanaAddresses',
-        ['Address']
+        ['type Address']
       );
       return (() => {
         if (isSigner === 'either') {

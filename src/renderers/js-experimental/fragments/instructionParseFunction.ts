@@ -67,10 +67,13 @@ export function getInstructionParseFunctionFragment(
   })
     .mergeImportsWith(dataTypeFragment)
     .addImports('generatedPrograms', [programAddressConstant])
-    .addImports('solanaInstructions', ['IInstruction'])
+    .addImports('solanaInstructions', ['type IInstruction'])
     .addImports(
       'solanaInstructions',
-      hasAccounts ? ['IInstructionWithAccounts', 'IAccountMeta'] : []
+      hasAccounts ? ['type IInstructionWithAccounts', 'type IAccountMeta'] : []
     )
-    .addImports('solanaInstructions', hasData ? ['IInstructionWithData'] : []);
+    .addImports(
+      'solanaInstructions',
+      hasData ? ['type IInstructionWithData'] : []
+    );
 }

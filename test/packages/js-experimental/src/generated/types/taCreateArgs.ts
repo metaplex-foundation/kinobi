@@ -7,10 +7,6 @@
  */
 
 import {
-  Codec,
-  Decoder,
-  Encoder,
-  ReadonlyUint8Array,
   addDecoderSizePrefix,
   addEncoderSizePrefix,
   combineCodec,
@@ -22,6 +18,10 @@ import {
   getU32Encoder,
   getUtf8Decoder,
   getUtf8Encoder,
+  type Codec,
+  type Decoder,
+  type Encoder,
+  type ReadonlyUint8Array,
 } from '@solana/web3.js';
 
 export type TaCreateArgs = {

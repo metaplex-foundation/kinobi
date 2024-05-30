@@ -1,10 +1,10 @@
 import {
-  Address,
-  Codec,
-  Decoder,
-  Encoder,
-  Option,
-  OptionOrNullable,
+  type Address,
+  type Codec,
+  type Decoder,
+  type Encoder,
+  type Option,
+  type OptionOrNullable,
   combineCodec,
   getAddressDecoder,
   getAddressEncoder,
@@ -19,8 +19,8 @@ import {
   transformEncoder,
 } from '@solana/web3.js';
 import {
-  ReservationV1,
-  ReservationV1Args,
+  type ReservationV1,
+  type ReservationV1Args,
   TmKey,
   getReservationV1Decoder,
   getReservationV1Encoder,

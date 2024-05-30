@@ -7,22 +7,22 @@
  */
 
 import {
-  Account,
-  Address,
-  EncodedAccount,
-  FetchAccountConfig,
-  FetchAccountsConfig,
-  MaybeAccount,
-  MaybeEncodedAccount,
   assertAccountExists,
   assertAccountsExist,
   decodeAccount,
   fetchEncodedAccount,
   fetchEncodedAccounts,
+  type Account,
+  type Address,
+  type EncodedAccount,
+  type FetchAccountConfig,
+  type FetchAccountsConfig,
+  type MaybeAccount,
+  type MaybeEncodedAccount,
 } from '@solana/web3.js';
 import {
-  ReservationListV1AccountData,
   getReservationListV1AccountDataDecoder,
+  type ReservationListV1AccountData,
 } from '../../hooked';
 
 export function decodeReservationListV1<TAddress extends string = string>(

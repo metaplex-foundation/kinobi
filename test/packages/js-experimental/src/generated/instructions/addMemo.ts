@@ -8,15 +8,6 @@
 
 import {
   AccountRole,
-  Address,
-  Codec,
-  Decoder,
-  Encoder,
-  IAccountMeta,
-  IInstruction,
-  IInstructionWithAccounts,
-  IInstructionWithData,
-  TransactionSigner,
   addDecoderSizePrefix,
   addEncoderSizePrefix,
   combineCodec,
@@ -26,6 +17,15 @@ import {
   getU32Encoder,
   getUtf8Decoder,
   getUtf8Encoder,
+  type Address,
+  type Codec,
+  type Decoder,
+  type Encoder,
+  type IAccountMeta,
+  type IInstruction,
+  type IInstructionWithAccounts,
+  type IInstructionWithData,
+  type TransactionSigner,
 } from '@solana/web3.js';
 import { SPL_MEMO_PROGRAM_ADDRESS } from '../programs';
 

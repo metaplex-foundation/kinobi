@@ -30,18 +30,18 @@ export function getAccountFetchHelpersFragment(
     ),
   })
     .mergeImportsWith(accountTypeFragment, decoderFunctionFragment)
-    .addImports('solanaAddresses', ['Address'])
+    .addImports('solanaAddresses', ['type Address'])
     .addImports('solanaAccounts', [
-      'Account',
+      'type Account',
       'assertAccountExists',
       'assertAccountsExist',
       'decodeAccount',
-      'EncodedAccount',
+      'type EncodedAccount',
       'fetchEncodedAccount',
       'fetchEncodedAccounts',
-      'FetchAccountConfig',
-      'FetchAccountsConfig',
-      'MaybeAccount',
-      'MaybeEncodedAccount',
+      'type FetchAccountConfig',
+      'type FetchAccountsConfig',
+      'type MaybeAccount',
+      'type MaybeEncodedAccount',
     ]);
 }
