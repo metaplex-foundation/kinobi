@@ -7,12 +7,12 @@
  */
 
 import {
-  Codec,
-  Decoder,
-  Encoder,
   combineCodec,
   getStructDecoder,
   getStructEncoder,
+  type Codec,
+  type Decoder,
+  type Encoder,
 } from '@solana/web3.js';
 import { Payload, PayloadArgs, getPayloadDecoder, getPayloadEncoder } from '.';
 

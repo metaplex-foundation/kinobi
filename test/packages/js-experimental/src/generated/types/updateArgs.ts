@@ -7,14 +7,6 @@
  */
 
 import {
-  Address,
-  Codec,
-  Decoder,
-  Encoder,
-  GetDiscriminatedUnionVariant,
-  GetDiscriminatedUnionVariantContent,
-  Option,
-  OptionOrNullable,
   addDecoderSizePrefix,
   addEncoderSizePrefix,
   combineCodec,
@@ -38,6 +30,14 @@ import {
   getUtf8Encoder,
   some,
   transformEncoder,
+  type Address,
+  type Codec,
+  type Decoder,
+  type Encoder,
+  type GetDiscriminatedUnionVariant,
+  type GetDiscriminatedUnionVariantContent,
+  type Option,
+  type OptionOrNullable,
 } from '@solana/web3.js';
 import {
   AuthorityType,

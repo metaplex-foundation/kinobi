@@ -223,19 +223,19 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
                 ...ctx,
                 imports: new ImportMap()
                   .add('solanaAddresses', [
-                    'Address',
+                    'type Address',
                     'isProgramDerivedAddress',
-                    'ProgramDerivedAddress',
+                    'type ProgramDerivedAddress',
                   ])
                   .add('solanaInstructions', [
                     'AccountRole',
-                    'IAccountMeta',
+                    'type IAccountMeta',
                     'upgradeRoleToSigner',
                   ])
                   .add('solanaSigners', [
-                    'IAccountSignerMeta',
+                    'type IAccountSignerMeta',
                     'isTransactionSigner',
-                    'TransactionSigner',
+                    'type TransactionSigner',
                   ])
                   .addAlias(
                     'solanaSigners',

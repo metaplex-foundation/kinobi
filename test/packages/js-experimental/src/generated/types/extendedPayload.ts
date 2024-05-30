@@ -7,9 +7,6 @@
  */
 
 import {
-  Codec,
-  Decoder,
-  Encoder,
   addDecoderSizePrefix,
   addEncoderSizePrefix,
   combineCodec,
@@ -25,6 +22,9 @@ import {
   getU8Encoder,
   getUtf8Decoder,
   getUtf8Encoder,
+  type Codec,
+  type Decoder,
+  type Encoder,
 } from '@solana/web3.js';
 import {
   PayloadKey,

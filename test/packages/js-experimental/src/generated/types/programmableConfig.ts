@@ -7,15 +7,15 @@
  */
 
 import {
-  Address,
-  Codec,
-  Decoder,
-  Encoder,
   combineCodec,
   getAddressDecoder,
   getAddressEncoder,
   getStructDecoder,
   getStructEncoder,
+  type Address,
+  type Codec,
+  type Decoder,
+  type Encoder,
 } from '@solana/web3.js';
 
 export type ProgrammableConfig = { ruleSet: Address };

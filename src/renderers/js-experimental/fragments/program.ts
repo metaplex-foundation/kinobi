@@ -12,5 +12,5 @@ export function getProgramFragment(
   return fragmentFromTemplate('program.njk', {
     program: programNode,
     programAddressConstant: nameApi.programAddressConstant(programNode.name),
-  }).addImports('solanaAddresses', ['Address']);
+  }).addImports('solanaAddresses', ['type Address']);
 }

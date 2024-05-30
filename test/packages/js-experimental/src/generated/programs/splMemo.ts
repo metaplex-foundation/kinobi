@@ -6,8 +6,8 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Address } from '@solana/web3.js';
-import { ParsedAddMemoInstruction } from '../instructions';
+import { type Address } from '@solana/web3.js';
+import { type ParsedAddMemoInstruction } from '../instructions';
 
 export const SPL_MEMO_PROGRAM_ADDRESS =
   'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr' as Address<'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'>;

@@ -7,11 +7,6 @@
  */
 
 import {
-  Codec,
-  Decoder,
-  Encoder,
-  Option,
-  OptionOrNullable,
   combineCodec,
   getOptionDecoder,
   getOptionEncoder,
@@ -19,6 +14,11 @@ import {
   getStructEncoder,
   getU64Decoder,
   getU64Encoder,
+  type Codec,
+  type Decoder,
+  type Encoder,
+  type Option,
+  type OptionOrNullable,
 } from '@solana/web3.js';
 
 export type CreateMasterEditionArgs = { maxSupply: Option<bigint> };

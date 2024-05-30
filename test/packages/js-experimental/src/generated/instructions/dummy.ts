@@ -8,20 +8,6 @@
 
 import {
   AccountRole,
-  Address,
-  Codec,
-  Decoder,
-  Encoder,
-  IAccountMeta,
-  IAccountSignerMeta,
-  IInstruction,
-  IInstructionWithAccounts,
-  IInstructionWithData,
-  ReadonlyAccount,
-  ReadonlySignerAccount,
-  TransactionSigner,
-  WritableAccount,
-  WritableSignerAccount,
   combineCodec,
   getArrayDecoder,
   getArrayEncoder,
@@ -30,15 +16,29 @@ import {
   getU8Decoder,
   getU8Encoder,
   transformEncoder,
+  type Address,
+  type Codec,
+  type Decoder,
+  type Encoder,
+  type IAccountMeta,
+  type IAccountSignerMeta,
+  type IInstruction,
+  type IInstructionWithAccounts,
+  type IInstructionWithData,
+  type ReadonlyAccount,
+  type ReadonlySignerAccount,
+  type TransactionSigner,
+  type WritableAccount,
+  type WritableSignerAccount,
 } from '@solana/web3.js';
 import { resolveTokenOrAta } from '../../hooked';
 import { findDelegateRecordPda } from '../pdas';
 import { MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS } from '../programs';
 import {
-  ResolvedAccount,
   expectSome,
   expectTransactionSigner,
   getAccountMetaFactory,
+  type ResolvedAccount,
 } from '../shared';
 import { DelegateRole } from '../types';
 

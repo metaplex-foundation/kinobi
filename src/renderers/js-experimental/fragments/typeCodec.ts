@@ -26,7 +26,7 @@ export function getTypeCodecFragment(
         decoderFunction: nameApi.decoderFunction(name),
         manifest,
         docs: scope.codecDocs,
-      }).addImports('solanaCodecsCore', ['Codec', 'combineCodec']),
+      }).addImports('solanaCodecsCore', ['type Codec', 'combineCodec']),
     ],
     (renders) => renders.join('\n\n')
   );
