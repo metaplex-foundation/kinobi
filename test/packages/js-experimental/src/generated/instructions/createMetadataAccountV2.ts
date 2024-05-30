@@ -33,10 +33,10 @@ import {
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 import {
-  DataV2,
-  DataV2Args,
   getDataV2Decoder,
   getDataV2Encoder,
+  type DataV2,
+  type DataV2Args,
 } from '../types';
 
 export type CreateMetadataAccountV2Instruction<

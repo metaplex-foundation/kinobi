@@ -37,10 +37,10 @@ import {
   type ResolvedAccount,
 } from '../shared';
 import {
-  CreateMasterEditionArgs,
-  CreateMasterEditionArgsArgs,
   getCreateMasterEditionArgsDecoder,
   getCreateMasterEditionArgsEncoder,
+  type CreateMasterEditionArgs,
+  type CreateMasterEditionArgsArgs,
 } from '../types';
 
 export type CreateMasterEditionV3Instruction<

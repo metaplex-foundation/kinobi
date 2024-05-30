@@ -27,13 +27,14 @@ import {
   type OptionOrNullable,
 } from '@solana/web3.js';
 import {
-  ReservationV1,
-  ReservationV1Args,
   TmKey,
   getReservationV1Decoder,
   getReservationV1Encoder,
   getTmKeyDecoder,
   getTmKeyEncoder,
+  type ReservationV1,
+  type ReservationV1Args,
+  type TmKey,
 } from '.';
 
 export type ReservationListV1AccountData = {

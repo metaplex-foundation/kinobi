@@ -25,10 +25,10 @@ import {
   type OptionOrNullable,
 } from '@solana/web3.js';
 import {
-  AuthorizationData,
-  AuthorizationDataArgs,
   getAuthorizationDataDecoder,
   getAuthorizationDataEncoder,
+  type AuthorizationData,
+  type AuthorizationDataArgs,
 } from '.';
 
 export type TransferArgs = {

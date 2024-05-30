@@ -42,14 +42,14 @@ import {
   type ResolvedAccount,
 } from '../shared';
 import {
-  CollectionDetails,
-  CollectionDetailsArgs,
-  DataV2,
-  DataV2Args,
   getCollectionDetailsDecoder,
   getCollectionDetailsEncoder,
   getDataV2Decoder,
   getDataV2Encoder,
+  type CollectionDetails,
+  type CollectionDetailsArgs,
+  type DataV2,
+  type DataV2Args,
 } from '../types';
 
 export type CreateMetadataAccountV3Instruction<

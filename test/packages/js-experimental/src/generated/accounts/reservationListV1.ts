@@ -21,8 +21,8 @@ import {
   type MaybeEncodedAccount,
 } from '@solana/web3.js';
 import {
-  ReservationListV1AccountData,
   getReservationListV1AccountDataDecoder,
+  type ReservationListV1AccountData,
 } from '../../hooked';
 
 export function decodeReservationListV1<TAddress extends string = string>(

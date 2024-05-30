@@ -32,13 +32,14 @@ import {
   type MaybeEncodedAccount,
 } from '@solana/web3.js';
 import {
-  EscrowAuthority,
-  EscrowAuthorityArgs,
   TmKey,
   getEscrowAuthorityDecoder,
   getEscrowAuthorityEncoder,
   getTmKeyDecoder,
   getTmKeyEncoder,
+  type EscrowAuthority,
+  type EscrowAuthorityArgs,
+  type TmKey,
 } from '../types';
 
 export type TokenOwnedEscrow = {

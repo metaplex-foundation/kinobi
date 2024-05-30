@@ -13,7 +13,7 @@ import {
   type Address,
   type ProgramDerivedAddress,
 } from '@solana/web3.js';
-import { DelegateRoleArgs, getDelegateRoleEncoder } from '../types';
+import { getDelegateRoleEncoder, type DelegateRoleArgs } from '../types';
 
 export type MasterEditionV1Seeds = {
   /** The role of the delegate */

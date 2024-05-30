@@ -35,10 +35,10 @@ import {
   type ResolvedAccount,
 } from '../shared';
 import {
-  TaCreateArgs,
-  TaCreateArgsArgs,
   getTaCreateArgsDecoder,
   getTaCreateArgsEncoder,
+  type TaCreateArgs,
+  type TaCreateArgsArgs,
 } from '../types';
 
 export type CreateRuleSetInstruction<

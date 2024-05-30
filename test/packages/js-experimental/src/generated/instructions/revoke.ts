@@ -31,10 +31,10 @@ import {
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 import {
-  RevokeArgs,
-  RevokeArgsArgs,
   getRevokeArgsDecoder,
   getRevokeArgsEncoder,
+  type RevokeArgs,
+  type RevokeArgsArgs,
 } from '../types';
 
 export type RevokeInstruction<

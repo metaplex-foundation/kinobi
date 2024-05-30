@@ -30,10 +30,10 @@ import {
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 import {
-  MintPrintingTokensViaTokenArgs,
-  MintPrintingTokensViaTokenArgsArgs,
   getMintPrintingTokensViaTokenArgsDecoder,
   getMintPrintingTokensViaTokenArgsEncoder,
+  type MintPrintingTokensViaTokenArgs,
+  type MintPrintingTokensViaTokenArgsArgs,
 } from '../types';
 
 export type DeprecatedMintPrintingTokensViaTokenInstruction<

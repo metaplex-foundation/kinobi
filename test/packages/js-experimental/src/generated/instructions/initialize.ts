@@ -33,10 +33,10 @@ import {
 import { MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 import {
-  CandyMachineData,
-  CandyMachineDataArgs,
   getCandyMachineDataDecoder,
   getCandyMachineDataEncoder,
+  type CandyMachineData,
+  type CandyMachineDataArgs,
 } from '../types';
 
 export type InitializeInstruction<

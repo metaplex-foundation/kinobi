@@ -37,10 +37,10 @@ import {
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 import {
-  Reservation,
-  ReservationArgs,
   getReservationDecoder,
   getReservationEncoder,
+  type Reservation,
+  type ReservationArgs,
 } from '../types';
 
 export type DeprecatedSetReservationListInstruction<

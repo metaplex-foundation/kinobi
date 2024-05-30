@@ -30,10 +30,10 @@ import {
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 import {
-  CreateMasterEditionArgs,
-  CreateMasterEditionArgsArgs,
   getCreateMasterEditionArgsDecoder,
   getCreateMasterEditionArgsEncoder,
+  type CreateMasterEditionArgs,
+  type CreateMasterEditionArgsArgs,
 } from '../types';
 
 export type DeprecatedCreateMasterEditionInstruction<

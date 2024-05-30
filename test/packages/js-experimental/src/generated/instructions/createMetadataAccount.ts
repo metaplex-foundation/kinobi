@@ -57,10 +57,10 @@ import {
   type ResolvedAccount,
 } from '../shared';
 import {
-  Creator,
-  CreatorArgs,
   getCreatorDecoder,
   getCreatorEncoder,
+  type Creator,
+  type CreatorArgs,
 } from '../types';
 
 export type CreateMetadataAccountInstruction<

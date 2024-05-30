@@ -32,11 +32,11 @@ import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 import {
   TokenStandard,
-  TokenStandardArgs,
-  TransferArgs,
-  TransferArgsArgs,
   getTransferArgsDecoder,
   getTransferArgsEncoder,
+  type TokenStandardArgs,
+  type TransferArgs,
+  type TransferArgsArgs,
 } from '../types';
 
 export type TransferInstruction<

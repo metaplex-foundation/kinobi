@@ -33,8 +33,8 @@ import {
   type Option,
   type OptionOrNullable,
 } from '@solana/web3.js';
-import { MasterEditionV2Seeds, findMasterEditionV2Pda } from '../pdas';
-import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
+import { findMasterEditionV2Pda, type MasterEditionV2Seeds } from '../pdas';
+import { TmKey, getTmKeyDecoder, getTmKeyEncoder, type TmKey } from '../types';
 
 export type MasterEditionV2 = {
   key: TmKey;

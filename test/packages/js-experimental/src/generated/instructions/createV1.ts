@@ -37,10 +37,10 @@ import {
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 import {
-  AssetData,
-  AssetDataArgs,
   getAssetDataDecoder,
   getAssetDataEncoder,
+  type AssetData,
+  type AssetDataArgs,
 } from '../types';
 
 export type CreateV1Instruction<

@@ -31,10 +31,10 @@ import {
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 import {
-  MintNewEditionFromMasterEditionViaTokenArgs,
-  MintNewEditionFromMasterEditionViaTokenArgsArgs,
   getMintNewEditionFromMasterEditionViaTokenArgsDecoder,
   getMintNewEditionFromMasterEditionViaTokenArgsEncoder,
+  type MintNewEditionFromMasterEditionViaTokenArgs,
+  type MintNewEditionFromMasterEditionViaTokenArgsArgs,
 } from '../types';
 
 export type MintNewEditionFromMasterEditionViaVaultProxyInstruction<

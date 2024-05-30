@@ -29,15 +29,16 @@ import {
   type MaybeAccount,
   type MaybeEncodedAccount,
 } from '@solana/web3.js';
-import { DelegateRecordSeeds, findDelegateRecordPda } from '../pdas';
+import { findDelegateRecordPda, type DelegateRecordSeeds } from '../pdas';
 import {
-  DelegateRole,
-  DelegateRoleArgs,
   TmKey,
   getDelegateRoleDecoder,
   getDelegateRoleEncoder,
   getTmKeyDecoder,
   getTmKeyEncoder,
+  type DelegateRole,
+  type DelegateRoleArgs,
+  type TmKey,
 } from '../types';
 
 export type DelegateRecord = { key: TmKey; role: DelegateRole; bump: number };

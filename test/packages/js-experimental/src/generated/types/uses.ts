@@ -17,10 +17,10 @@ import {
   type Encoder,
 } from '@solana/web3.js';
 import {
-  UseMethod,
-  UseMethodArgs,
   getUseMethodDecoder,
   getUseMethodEncoder,
+  type UseMethod,
+  type UseMethodArgs,
 } from '.';
 
 export type Uses = { useMethod: UseMethod; remaining: bigint; total: bigint };

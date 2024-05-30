@@ -31,7 +31,7 @@ import {
   type MaybeAccount,
   type MaybeEncodedAccount,
 } from '@solana/web3.js';
-import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
+import { TmKey, getTmKeyDecoder, getTmKeyEncoder, type TmKey } from '../types';
 
 export type Edition = { key: TmKey; parent: Address; edition: bigint };
 

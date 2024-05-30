@@ -31,10 +31,10 @@ import {
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 import {
-  SetCollectionSizeArgs,
-  SetCollectionSizeArgsArgs,
   getSetCollectionSizeArgsDecoder,
   getSetCollectionSizeArgsEncoder,
+  type SetCollectionSizeArgs,
+  type SetCollectionSizeArgsArgs,
 } from '../types';
 
 export type BubblegumSetCollectionSizeInstruction<

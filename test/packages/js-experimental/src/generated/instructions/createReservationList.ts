@@ -19,10 +19,10 @@ import {
   type WritableAccount,
 } from '@solana/web3.js';
 import {
-  CreateReservationListInstructionData,
-  CreateReservationListInstructionDataArgs,
   getCreateReservationListInstructionDataDecoder,
   getCreateReservationListInstructionDataEncoder,
+  type CreateReservationListInstructionData,
+  type CreateReservationListInstructionDataArgs,
 } from '../../hooked';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';

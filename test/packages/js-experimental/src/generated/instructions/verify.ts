@@ -30,10 +30,10 @@ import {
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 import {
-  VerifyArgs,
-  VerifyArgsArgs,
   getVerifyArgsDecoder,
   getVerifyArgsEncoder,
+  type VerifyArgs,
+  type VerifyArgsArgs,
 } from '../types';
 
 export type VerifyInstruction<

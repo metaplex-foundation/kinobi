@@ -30,10 +30,10 @@ import {
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 import {
-  BurnArgs,
-  BurnArgsArgs,
   getBurnArgsDecoder,
   getBurnArgsEncoder,
+  type BurnArgs,
+  type BurnArgsArgs,
 } from '../types';
 
 export type BurnInstruction<

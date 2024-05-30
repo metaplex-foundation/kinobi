@@ -20,10 +20,10 @@ import {
   type Encoder,
 } from '@solana/web3.js';
 import {
-  DelegateRole,
-  DelegateRoleArgs,
   getDelegateRoleDecoder,
   getDelegateRoleEncoder,
+  type DelegateRole,
+  type DelegateRoleArgs,
 } from '.';
 
 export type DelegateState = {

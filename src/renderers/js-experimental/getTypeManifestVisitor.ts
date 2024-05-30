@@ -134,10 +134,12 @@ export function getTypeManifestVisitor(input: {
           const decoderFunction = nameApi.decoderFunction(node.name);
           const importFrom = node.importFrom ?? 'generatedTypes';
 
+          console.log(strictName, looseName, node);
+
           return {
             isEnum: false,
-            strictType: fragment(strictName).addImports(importFrom, strictName),
-            looseType: fragment(looseName).addImports(importFrom, looseName),
+            strictType: fragment(strictName).addImports(importFrom, `type ${strictName}`),
+            looseType: fragment(looseName).addImports(importFrom, `type ${looseName}`),
             encoder: fragment(`${encoderFunction}()`).addImports(
               importFrom,
               encoderFunction

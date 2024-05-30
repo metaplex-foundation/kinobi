@@ -36,10 +36,10 @@ import {
   type MaybeEncodedAccount,
 } from '@solana/web3.js';
 import {
-  CandyMachineData,
-  CandyMachineDataArgs,
   getCandyMachineDataDecoder,
   getCandyMachineDataEncoder,
+  type CandyMachineData,
+  type CandyMachineDataArgs,
 } from '../types';
 
 export type CandyMachine = {

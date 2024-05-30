@@ -14,7 +14,12 @@ import {
   type Decoder,
   type Encoder,
 } from '@solana/web3.js';
-import { Payload, PayloadArgs, getPayloadDecoder, getPayloadEncoder } from '.';
+import {
+  getPayloadDecoder,
+  getPayloadEncoder,
+  type Payload,
+  type PayloadArgs,
+} from '.';
 
 export type AuthorizationData = { payload: Payload };
 

@@ -33,18 +33,18 @@ import {
   type OptionOrNullable,
 } from '@solana/web3.js';
 import {
-  CmCreator,
-  CmCreatorArgs,
-  ConfigLineSettings,
-  ConfigLineSettingsArgs,
-  HiddenSettings,
-  HiddenSettingsArgs,
   getCmCreatorDecoder,
   getCmCreatorEncoder,
   getConfigLineSettingsDecoder,
   getConfigLineSettingsEncoder,
   getHiddenSettingsDecoder,
   getHiddenSettingsEncoder,
+  type CmCreator,
+  type CmCreatorArgs,
+  type ConfigLineSettings,
+  type ConfigLineSettingsArgs,
+  type HiddenSettings,
+  type HiddenSettingsArgs,
 } from '.';
 
 /** Candy machine configuration data. */

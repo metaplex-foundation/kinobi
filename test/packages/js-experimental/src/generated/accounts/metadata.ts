@@ -47,23 +47,9 @@ import {
   type Option,
   type OptionOrNullable,
 } from '@solana/web3.js';
-import { MetadataSeeds, findMetadataPda } from '../pdas';
+import { findMetadataPda, type MetadataSeeds } from '../pdas';
 import {
-  Collection,
-  CollectionArgs,
-  CollectionDetails,
-  CollectionDetailsArgs,
-  Creator,
-  CreatorArgs,
-  DelegateState,
-  DelegateStateArgs,
-  ProgrammableConfig,
-  ProgrammableConfigArgs,
   TmKey,
-  TokenStandard,
-  TokenStandardArgs,
-  Uses,
-  UsesArgs,
   getCollectionDecoder,
   getCollectionDetailsDecoder,
   getCollectionDetailsEncoder,
@@ -80,6 +66,21 @@ import {
   getTokenStandardEncoder,
   getUsesDecoder,
   getUsesEncoder,
+  type Collection,
+  type CollectionArgs,
+  type CollectionDetails,
+  type CollectionDetailsArgs,
+  type Creator,
+  type CreatorArgs,
+  type DelegateState,
+  type DelegateStateArgs,
+  type ProgrammableConfig,
+  type ProgrammableConfigArgs,
+  type TmKey,
+  type TokenStandard,
+  type TokenStandardArgs,
+  type Uses,
+  type UsesArgs,
 } from '../types';
 
 export type Metadata = {

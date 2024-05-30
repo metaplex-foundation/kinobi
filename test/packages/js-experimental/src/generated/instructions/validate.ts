@@ -37,14 +37,14 @@ import {
 import { MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 import {
-  Operation,
-  OperationArgs,
-  Payload,
-  PayloadArgs,
   getOperationDecoder,
   getOperationEncoder,
   getPayloadDecoder,
   getPayloadEncoder,
+  type Operation,
+  type OperationArgs,
+  type Payload,
+  type PayloadArgs,
 } from '../types';
 
 export type ValidateInstruction<

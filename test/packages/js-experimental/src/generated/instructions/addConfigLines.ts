@@ -35,10 +35,10 @@ import {
 import { MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 import {
-  ConfigLine,
-  ConfigLineArgs,
   getConfigLineDecoder,
   getConfigLineEncoder,
+  type ConfigLine,
+  type ConfigLineArgs,
 } from '../types';
 
 export type AddConfigLinesInstruction<

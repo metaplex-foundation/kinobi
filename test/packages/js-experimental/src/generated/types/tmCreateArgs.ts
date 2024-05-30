@@ -27,10 +27,10 @@ import {
   type OptionOrNullable,
 } from '@solana/web3.js';
 import {
-  AssetData,
-  AssetDataArgs,
   getAssetDataDecoder,
   getAssetDataEncoder,
+  type AssetData,
+  type AssetDataArgs,
 } from '.';
 
 export type TmCreateArgs =
