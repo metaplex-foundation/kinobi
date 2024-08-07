@@ -44,8 +44,8 @@ export function getPdaFunctionFragment(
   })
     .mergeImportsWith(imports)
     .addImports('solanaAddresses', [
-      'Address',
+      'type Address',
       'getProgramDerivedAddress',
-      'ProgramDerivedAddress',
+      'type ProgramDerivedAddress',
     ]);
 }

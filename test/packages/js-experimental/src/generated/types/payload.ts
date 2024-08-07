@@ -7,24 +7,24 @@
  */
 
 import {
-  Codec,
-  Decoder,
-  Encoder,
   combineCodec,
   getMapDecoder,
   getMapEncoder,
   getStructDecoder,
   getStructEncoder,
+  type Codec,
+  type Decoder,
+  type Encoder,
 } from '@solana/web3.js';
 import {
-  PayloadKey,
-  PayloadKeyArgs,
-  PayloadType,
-  PayloadTypeArgs,
   getPayloadKeyDecoder,
   getPayloadKeyEncoder,
   getPayloadTypeDecoder,
   getPayloadTypeEncoder,
+  type PayloadKey,
+  type PayloadKeyArgs,
+  type PayloadType,
+  type PayloadTypeArgs,
 } from '.';
 
 export type Payload = { map: Map<PayloadKey, PayloadType> };

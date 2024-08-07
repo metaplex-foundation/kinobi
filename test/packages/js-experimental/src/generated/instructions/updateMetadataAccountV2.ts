@@ -7,20 +7,6 @@
  */
 
 import {
-  Address,
-  Codec,
-  Decoder,
-  Encoder,
-  IAccountMeta,
-  IAccountSignerMeta,
-  IInstruction,
-  IInstructionWithAccounts,
-  IInstructionWithData,
-  Option,
-  OptionOrNullable,
-  ReadonlySignerAccount,
-  TransactionSigner,
-  WritableAccount,
   combineCodec,
   getAddressDecoder,
   getAddressEncoder,
@@ -33,14 +19,28 @@ import {
   getU8Decoder,
   getU8Encoder,
   transformEncoder,
+  type Address,
+  type Codec,
+  type Decoder,
+  type Encoder,
+  type IAccountMeta,
+  type IAccountSignerMeta,
+  type IInstruction,
+  type IInstructionWithAccounts,
+  type IInstructionWithData,
+  type Option,
+  type OptionOrNullable,
+  type ReadonlySignerAccount,
+  type TransactionSigner,
+  type WritableAccount,
 } from '@solana/web3.js';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetaFactory } from '../shared';
+import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 import {
-  DataV2,
-  DataV2Args,
   getDataV2Decoder,
   getDataV2Encoder,
+  type DataV2,
+  type DataV2Args,
 } from '../types';
 
 export type UpdateMetadataAccountV2Instruction<

@@ -7,40 +7,40 @@
  */
 
 import {
-  Address,
   BASE_ACCOUNT_SIZE,
-  Codec,
-  Decoder,
-  Encoder,
-  IAccountMeta,
-  IAccountSignerMeta,
-  IInstruction,
-  IInstructionWithAccounts,
-  IInstructionWithData,
-  ReadonlyAccount,
-  ReadonlySignerAccount,
-  TransactionSigner,
-  WritableAccount,
-  WritableSignerAccount,
   combineCodec,
   getStructDecoder,
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
   transformEncoder,
+  type Address,
+  type Codec,
+  type Decoder,
+  type Encoder,
+  type IAccountMeta,
+  type IAccountSignerMeta,
+  type IInstruction,
+  type IInstructionWithAccounts,
+  type IInstructionWithData,
+  type ReadonlyAccount,
+  type ReadonlySignerAccount,
+  type TransactionSigner,
+  type WritableAccount,
+  type WritableSignerAccount,
 } from '@solana/web3.js';
 import { getMasterEditionV2Size } from '../accounts';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
 import {
-  IInstructionWithByteDelta,
-  ResolvedAccount,
   getAccountMetaFactory,
+  type IInstructionWithByteDelta,
+  type ResolvedAccount,
 } from '../shared';
 import {
-  CreateMasterEditionArgs,
-  CreateMasterEditionArgsArgs,
   getCreateMasterEditionArgsDecoder,
   getCreateMasterEditionArgsEncoder,
+  type CreateMasterEditionArgs,
+  type CreateMasterEditionArgsArgs,
 } from '../types';
 
 export type CreateMasterEditionV3Instruction<

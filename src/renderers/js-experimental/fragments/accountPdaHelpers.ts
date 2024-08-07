@@ -54,13 +54,13 @@ export function getAccountPdaHelpersFragment(
     .mergeImportsWith(accountTypeFragment)
     .addImports(
       importFrom,
-      hasVariableSeeds ? [pdaSeedsType, findPdaFunction] : [findPdaFunction]
+      hasVariableSeeds ? [`type ${pdaSeedsType}`, findPdaFunction] : [findPdaFunction]
     )
-    .addImports('solanaAddresses', ['Address'])
+    .addImports('solanaAddresses', ['type Address'])
     .addImports('solanaAccounts', [
-      'Account',
+      'type Account',
       'assertAccountExists',
-      'FetchAccountConfig',
-      'MaybeAccount',
+      'type FetchAccountConfig',
+      'type MaybeAccount',
     ]);
 }

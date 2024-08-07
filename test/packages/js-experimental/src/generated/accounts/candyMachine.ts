@@ -7,16 +7,6 @@
  */
 
 import {
-  Account,
-  Address,
-  Codec,
-  Decoder,
-  EncodedAccount,
-  Encoder,
-  FetchAccountConfig,
-  FetchAccountsConfig,
-  MaybeAccount,
-  MaybeEncodedAccount,
   assertAccountExists,
   assertAccountsExist,
   combineCodec,
@@ -34,12 +24,22 @@ import {
   getU8Decoder,
   getU8Encoder,
   transformEncoder,
+  type Account,
+  type Address,
+  type Codec,
+  type Decoder,
+  type EncodedAccount,
+  type Encoder,
+  type FetchAccountConfig,
+  type FetchAccountsConfig,
+  type MaybeAccount,
+  type MaybeEncodedAccount,
 } from '@solana/web3.js';
 import {
-  CandyMachineData,
-  CandyMachineDataArgs,
   getCandyMachineDataDecoder,
   getCandyMachineDataEncoder,
+  type CandyMachineData,
+  type CandyMachineDataArgs,
 } from '../types';
 
 export type CandyMachine = {

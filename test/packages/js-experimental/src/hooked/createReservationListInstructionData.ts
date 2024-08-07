@@ -1,7 +1,7 @@
 import {
-  Codec,
-  Decoder,
-  Encoder,
+  type Codec,
+  type Decoder,
+  type Encoder,
   combineCodec,
   getStructDecoder,
   getStructEncoder,

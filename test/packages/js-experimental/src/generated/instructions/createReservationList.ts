@@ -7,25 +7,25 @@
  */
 
 import {
-  Address,
-  IAccountMeta,
-  IAccountSignerMeta,
-  IInstruction,
-  IInstructionWithAccounts,
-  IInstructionWithData,
-  ReadonlyAccount,
-  ReadonlySignerAccount,
-  TransactionSigner,
-  WritableAccount,
+  type Address,
+  type IAccountMeta,
+  type IAccountSignerMeta,
+  type IInstruction,
+  type IInstructionWithAccounts,
+  type IInstructionWithData,
+  type ReadonlyAccount,
+  type ReadonlySignerAccount,
+  type TransactionSigner,
+  type WritableAccount,
 } from '@solana/web3.js';
 import {
-  CreateReservationListInstructionData,
-  CreateReservationListInstructionDataArgs,
   getCreateReservationListInstructionDataDecoder,
   getCreateReservationListInstructionDataEncoder,
+  type CreateReservationListInstructionData,
+  type CreateReservationListInstructionDataArgs,
 } from '../../hooked';
 import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
-import { ResolvedAccount, getAccountMetaFactory } from '../shared';
+import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 
 export type CreateReservationListInstruction<
   TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,

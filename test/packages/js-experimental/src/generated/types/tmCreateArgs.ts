@@ -7,13 +7,6 @@
  */
 
 import {
-  Codec,
-  Decoder,
-  Encoder,
-  GetDiscriminatedUnionVariant,
-  GetDiscriminatedUnionVariantContent,
-  Option,
-  OptionOrNullable,
   combineCodec,
   getDiscriminatedUnionDecoder,
   getDiscriminatedUnionEncoder,
@@ -25,12 +18,19 @@ import {
   getU64Encoder,
   getU8Decoder,
   getU8Encoder,
+  type Codec,
+  type Decoder,
+  type Encoder,
+  type GetDiscriminatedUnionVariant,
+  type GetDiscriminatedUnionVariantContent,
+  type Option,
+  type OptionOrNullable,
 } from '@solana/web3.js';
 import {
-  AssetData,
-  AssetDataArgs,
   getAssetDataDecoder,
   getAssetDataEncoder,
+  type AssetData,
+  type AssetDataArgs,
 } from '.';
 
 export type TmCreateArgs =

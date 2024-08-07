@@ -7,11 +7,11 @@
  */
 
 import {
-  Address,
-  ProgramDerivedAddress,
   getAddressEncoder,
   getProgramDerivedAddress,
   getUtf8Encoder,
+  type Address,
+  type ProgramDerivedAddress,
 } from '@solana/web3.js';
 
 export type MetadataSeeds = {

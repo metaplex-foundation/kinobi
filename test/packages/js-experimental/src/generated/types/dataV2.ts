@@ -7,11 +7,6 @@
  */
 
 import {
-  Codec,
-  Decoder,
-  Encoder,
-  Option,
-  OptionOrNullable,
   addDecoderSizePrefix,
   addEncoderSizePrefix,
   combineCodec,
@@ -27,20 +22,25 @@ import {
   getU32Encoder,
   getUtf8Decoder,
   getUtf8Encoder,
+  type Codec,
+  type Decoder,
+  type Encoder,
+  type Option,
+  type OptionOrNullable,
 } from '@solana/web3.js';
 import {
-  Collection,
-  CollectionArgs,
-  Creator,
-  CreatorArgs,
-  Uses,
-  UsesArgs,
   getCollectionDecoder,
   getCollectionEncoder,
   getCreatorDecoder,
   getCreatorEncoder,
   getUsesDecoder,
   getUsesEncoder,
+  type Collection,
+  type CollectionArgs,
+  type Creator,
+  type CreatorArgs,
+  type Uses,
+  type UsesArgs,
 } from '.';
 
 export type DataV2 = {

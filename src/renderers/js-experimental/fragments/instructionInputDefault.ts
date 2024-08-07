@@ -113,7 +113,7 @@ export function getInstructionInputDefaultFragment(
     case 'publicKeyValueNode':
       return defaultFragment(
         `'${defaultValue.publicKey}' as Address<'${defaultValue.publicKey}'>`
-      ).addImports('solanaAddresses', 'Address');
+      ).addImports('solanaAddresses', 'type Address');
 
     case 'programLinkNode':
       const programAddress = nameApi.programAddressConstant(defaultValue.name);

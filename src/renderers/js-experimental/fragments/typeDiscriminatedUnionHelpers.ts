@@ -26,7 +26,7 @@ export function getTypeDiscriminatedUnionHelpersFragment(
     isDiscriminatedUnionFunction: nameApi.isDiscriminatedUnionFunction(name),
     typeNode,
   }).addImports('solanaCodecsDataStructures', [
-    'GetDiscriminatedUnionVariantContent',
-    'GetDiscriminatedUnionVariant',
+    'type GetDiscriminatedUnionVariantContent',
+    'type GetDiscriminatedUnionVariant',
   ]);
 }

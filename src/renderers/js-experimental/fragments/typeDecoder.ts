@@ -18,5 +18,5 @@ export function getTypeDecoderFragment(
     docs,
   })
     .mergeImportsWith(manifest.decoder)
-    .addImports('solanaCodecsCore', 'Decoder');
+    .addImports('solanaCodecsCore', 'type Decoder');
 }

@@ -1,4 +1,4 @@
-import { Address, TransactionSigner } from '@solana/web3.js';
+import type { Address, TransactionSigner } from '@solana/web3.js';
 import { getTransferSolInstruction } from './generated';
 
 // Typetests.

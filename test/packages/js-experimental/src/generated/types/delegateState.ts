@@ -7,10 +7,6 @@
  */
 
 import {
-  Address,
-  Codec,
-  Decoder,
-  Encoder,
   combineCodec,
   getAddressDecoder,
   getAddressEncoder,
@@ -18,12 +14,16 @@ import {
   getBooleanEncoder,
   getStructDecoder,
   getStructEncoder,
+  type Address,
+  type Codec,
+  type Decoder,
+  type Encoder,
 } from '@solana/web3.js';
 import {
-  DelegateRole,
-  DelegateRoleArgs,
   getDelegateRoleDecoder,
   getDelegateRoleEncoder,
+  type DelegateRole,
+  type DelegateRoleArgs,
 } from '.';
 
 export type DelegateState = {

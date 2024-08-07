@@ -7,18 +7,6 @@
  */
 
 import {
-  Account,
-  Address,
-  Codec,
-  Decoder,
-  EncodedAccount,
-  Encoder,
-  FetchAccountConfig,
-  FetchAccountsConfig,
-  MaybeAccount,
-  MaybeEncodedAccount,
-  Option,
-  OptionOrNullable,
   assertAccountExists,
   assertAccountsExist,
   combineCodec,
@@ -36,15 +24,28 @@ import {
   getU64Decoder,
   getU64Encoder,
   transformEncoder,
+  type Account,
+  type Address,
+  type Codec,
+  type Decoder,
+  type EncodedAccount,
+  type Encoder,
+  type FetchAccountConfig,
+  type FetchAccountsConfig,
+  type MaybeAccount,
+  type MaybeEncodedAccount,
+  type Option,
+  type OptionOrNullable,
 } from '@solana/web3.js';
 import {
-  Reservation,
-  ReservationArgs,
   TmKey,
   getReservationDecoder,
   getReservationEncoder,
   getTmKeyDecoder,
   getTmKeyEncoder,
+  type Reservation,
+  type ReservationArgs,
+  type TmKey,
 } from '../types';
 
 export type ReservationListV2 = {

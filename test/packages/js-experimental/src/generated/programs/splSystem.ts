@@ -6,10 +6,10 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
-import { Address, containsBytes, getU32Encoder } from '@solana/web3.js';
+import { containsBytes, getU32Encoder, type Address } from '@solana/web3.js';
 import {
-  ParsedCreateAccountInstruction,
-  ParsedTransferSolInstruction,
+  type ParsedCreateAccountInstruction,
+  type ParsedTransferSolInstruction,
 } from '../instructions';
 
 export const SPL_SYSTEM_PROGRAM_ADDRESS =
