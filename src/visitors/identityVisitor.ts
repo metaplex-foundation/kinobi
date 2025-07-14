@@ -217,6 +217,7 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       if (value === null) return null;
       assertIsNode(value, [
         'numberValueNode',
+        'bigIntValueNode',
         'accountLinkNode',
         'argumentValueNode',
         'resolverValueNode',

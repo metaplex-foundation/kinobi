@@ -37,6 +37,9 @@ function getByteDeltaFragment(
     if (isNode(byteDelta.value, 'numberValueNode')) {
       return getNumberValueNodeFragment(byteDelta);
     }
+    if (isNode(byteDelta.value, 'bigIntValueNode')) {
+      return getBigIntValueNodeFragment(byteDelta);
+    }
     if (isNode(byteDelta.value, 'argumentValueNode')) {
       return getArgumentValueNodeFragment(byteDelta);
     }
@@ -69,6 +72,13 @@ function getNumberValueNodeFragment(
 ): Fragment {
   assertIsNode(byteDelta.value, 'numberValueNode');
   return fragment(byteDelta.value.number.toString());
+}
+
+function getBigIntValueNodeFragment(
+  byteDelta: InstructionByteDeltaNode
+): Fragment {
+  assertIsNode(byteDelta.value, 'bigIntValueNode');
+  return fragment(byteDelta.value.value.toString());
 }
 
 function getArgumentValueNodeFragment(

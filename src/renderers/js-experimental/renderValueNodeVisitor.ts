@@ -72,6 +72,9 @@ export function renderValueNodeVisitor(input: {
     visitNumberValue(node) {
       return fragment(JSON.stringify(node.number));
     },
+    visitBigIntValue(node) {
+      return fragment(JSON.stringify(node.value));
+    },
     visitPublicKeyValue(node) {
       return fragment(`address("${node.publicKey}")`).addImports(
         'solanaAddresses',

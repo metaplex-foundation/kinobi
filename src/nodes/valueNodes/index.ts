@@ -1,4 +1,5 @@
 export * from './ArrayValueNode';
+export * from './BigIntValueNode';
 export * from './BooleanValueNode';
 export * from './EnumValueNode';
 export * from './MapEntryValueNode';

@@ -93,6 +93,8 @@ function getNodeDetails(node: Node): string[] {
       return [node.size.toString()];
     case 'numberValueNode':
       return [node.number.toString()];
+    case 'bigIntValueNode':
+      return [node.value.toString()];
     case 'stringValueNode':
       return [node.string];
     case 'booleanValueNode':

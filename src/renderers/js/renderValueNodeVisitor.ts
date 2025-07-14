@@ -99,6 +99,12 @@ export function renderValueNodeVisitor(input: {
         render: JSON.stringify(node.number),
       };
     },
+    visitBigIntValue(node) {
+      return {
+        imports: new JavaScriptImportMap(),
+        render: `${node.value.toString()}n`,
+      };
+    },
     visitPublicKeyValue(node) {
       return {
         imports: new JavaScriptImportMap().add('umi', 'publicKey'),

@@ -74,6 +74,8 @@ export function {{ instruction.name | camelCase }}(
   // Bytes Created On Chain.
   {% if byteDelta.value.kind === 'numberValueNode' %}
     const bytesCreatedOnChain = {{ byteDelta.value.number }}{% if byteDelta.withHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
+  {% elif byteDelta.value.kind === 'bigIntValueNode' %}
+    const bytesCreatedOnChain = {{ byteDelta.value.value }}{% if byteDelta.withHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
   {% elif byteDelta.value.kind === 'argumentValueNode' %}
     const bytesCreatedOnChain = Number({{ argsObj }}.{{ byteDelta.value.name }}){% if byteDelta.withHeader %} + ACCOUNT_HEADER_SIZE{% endif %};
   {% elif byteDelta.value.kind === 'accountLinkNode' %}

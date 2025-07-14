@@ -78,6 +78,12 @@ export function renderValueNodeVisitor(useStr: boolean = false): Visitor<
         render: JSON.stringify(node.number),
       };
     },
+    visitBigIntValue(node) {
+      return {
+        imports: new RustImportMap(),
+        render: JSON.stringify(node.value),
+      };
+    },
     visitPublicKeyValue(node) {
       return {
         imports: new RustImportMap().add('solana_program::pubkey'),
