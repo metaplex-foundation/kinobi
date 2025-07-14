@@ -435,8 +435,8 @@ impl<'a, 'b> CreateV2Cpi<'a, 'b> {
         remaining_accounts.iter().for_each(|remaining_account| {
             accounts.push(solana_program::instruction::AccountMeta {
                 pubkey: *remaining_account.0.key,
-                is_signer: remaining_account.1,
-                is_writable: remaining_account.2,
+                is_writable: remaining_account.1,
+                is_signer: remaining_account.2,
             })
         });
         let mut data = CreateV2InstructionData::new().try_to_vec().unwrap();
