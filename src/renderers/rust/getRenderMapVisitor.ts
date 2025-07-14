@@ -192,11 +192,11 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
           if (accountsAndArgsConflicts.length > 0) {
             logWarn(
               `[Rust] Accounts and args of instruction [${node.name}] have the following ` +
-              `conflicting attributes [${accountsAndArgsConflicts.join(
-                ', '
-              )}]. ` +
-              `Thus, the conflicting arguments will be suffixed with "_arg". ` +
-              'You may want to rename the conflicting attributes.'
+                `conflicting attributes [${accountsAndArgsConflicts.join(
+                  ', '
+                )}]. ` +
+                `Thus, the conflicting arguments will be suffixed with "_arg". ` +
+                'You may want to rename the conflicting attributes.'
             );
           }
 

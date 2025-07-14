@@ -2,6 +2,7 @@ import test from 'ava';
 import {
   accountNode,
   assertIsNode,
+  bigIntValueNode,
   definedTypeNode,
   instructionArgumentNode,
   instructionNode,
@@ -29,6 +30,10 @@ test('it adds new default values to struct fields', (t) => {
         name: 'dateOfBirth',
         type: optionTypeNode(numberTypeNode('i64')),
       }),
+      structFieldTypeNode({
+        name: 'balance',
+        type: numberTypeNode('u64'),
+      }),
     ]),
   });
 
@@ -39,6 +44,7 @@ test('it adds new default values to struct fields', (t) => {
       person: {
         age: numberValueNode(42),
         dateOfBirth: noneValueNode(),
+        balance: bigIntValueNode(1_000_000_000_000n),
       },
     })
   );
@@ -50,6 +56,8 @@ test('it adds new default values to struct fields', (t) => {
   t.is(result.type.fields[0].defaultValueStrategy, undefined);
   t.deepEqual(result.type.fields[1].defaultValue, noneValueNode());
   t.is(result.type.fields[1].defaultValueStrategy, undefined);
+  t.deepEqual(result.type.fields[2].defaultValue, bigIntValueNode(1_000_000_000_000n));
+  t.is(result.type.fields[2].defaultValueStrategy, undefined);
 });
 
 test('it adds new default values with custom strategies to struct fields', (t) => {
@@ -100,6 +108,10 @@ test('it adds new default values to instruction arguments', (t) => {
         name: 'amount',
         type: numberTypeNode('u64'),
       }),
+      instructionArgumentNode({
+        name: 'balance',
+        type: numberTypeNode('u64'),
+      }),
     ],
   });
 
@@ -110,6 +122,7 @@ test('it adds new default values to instruction arguments', (t) => {
       transferTokens: {
         discriminator: { value: numberValueNode(42), strategy: 'omitted' },
         amount: numberValueNode(1),
+        balance: bigIntValueNode(1_000_000_000_000n),
       },
     })
   );
@@ -120,4 +133,6 @@ test('it adds new default values to instruction arguments', (t) => {
   t.is(result.arguments[0].defaultValueStrategy, 'omitted');
   t.deepEqual(result.arguments[1].defaultValue, numberValueNode(1));
   t.is(result.arguments[1].defaultValueStrategy, undefined);
+  t.deepEqual(result.arguments[2].defaultValue, bigIntValueNode(1_000_000_000_000n));
+  t.is(result.arguments[2].defaultValueStrategy, undefined);
 });

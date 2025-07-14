@@ -55,12 +55,7 @@ export function getTypeManifestVisitor() {
           parentName = pascalCase(definedType.name);
           const manifest = visit(definedType.type, self);
           parentName = null;
-          const traits = [
-            'Clone',
-            'Debug',
-            'Eq',
-            'PartialEq',
-          ];
+          const traits = ['Clone', 'Debug', 'Eq', 'PartialEq'];
           if (
             isNode(definedType.type, 'enumTypeNode') &&
             isScalarEnum(definedType.type)
@@ -448,9 +443,7 @@ export function getTypeManifestVisitor() {
           if (isNode(stringType.size, 'remainderSizeNode')) {
             return {
               type: `RemainderStr`,
-              imports: new RustImportMap().add(
-                `kaigan::types::RemainderStr`
-              ),
+              imports: new RustImportMap().add(`kaigan::types::RemainderStr`),
               nestedStructs: [],
             };
           }

@@ -2,6 +2,7 @@ import { isNode } from './Node';
 import { ArgumentValueNode, ResolverValueNode } from './contextualValueNodes';
 import { AccountLinkNode } from './linkNodes';
 import { NumberValueNode } from './valueNodes';
+import { BigIntValueNode } from './valueNodes/BigIntValueNode';
 
 export type InstructionByteDeltaNode = {
   readonly kind: 'instructionByteDeltaNode';
@@ -9,6 +10,7 @@ export type InstructionByteDeltaNode = {
   // Children.
   readonly value:
     | NumberValueNode
+    | BigIntValueNode
     | AccountLinkNode
     | ArgumentValueNode
     | ResolverValueNode;
