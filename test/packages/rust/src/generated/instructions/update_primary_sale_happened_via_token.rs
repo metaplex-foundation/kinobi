@@ -72,35 +72,94 @@ impl UpdatePrimarySaleHappenedViaTokenInstructionData {
 ///   0. `[writable]` metadata
 ///   1. `[signer]` owner
 ///   2. `[]` token
-#[derive(Default)]
-pub struct UpdatePrimarySaleHappenedViaTokenBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct OwnerSet;
+#[derive(Clone)]
+pub struct TokenSet;
+#[derive(Clone)]
+pub struct UpdatePrimarySaleHappenedViaTokenUnset;
+
+pub struct UpdatePrimarySaleHappenedViaTokenBuilder<
+    MetadataTypeParam = UpdatePrimarySaleHappenedViaTokenUnset,
+    OwnerTypeParam = UpdatePrimarySaleHappenedViaTokenUnset,
+    TokenTypeParam = UpdatePrimarySaleHappenedViaTokenUnset,
+> {
     metadata: Option<solana_program::pubkey::Pubkey>,
     owner: Option<solana_program::pubkey::Pubkey>,
     token: Option<solana_program::pubkey::Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(MetadataTypeParam, OwnerTypeParam, TokenTypeParam)>,
 }
 
-impl UpdatePrimarySaleHappenedViaTokenBuilder {
+impl
+    UpdatePrimarySaleHappenedViaTokenBuilder<
+        UpdatePrimarySaleHappenedViaTokenUnset,
+        UpdatePrimarySaleHappenedViaTokenUnset,
+        UpdatePrimarySaleHappenedViaTokenUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            metadata: None,
+            owner: None,
+            token: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<MetadataTypeParam, OwnerTypeParam, TokenTypeParam>
+    UpdatePrimarySaleHappenedViaTokenBuilder<MetadataTypeParam, OwnerTypeParam, TokenTypeParam>
+{
     /// Metadata key (pda of ['metadata', program id, mint id])
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> UpdatePrimarySaleHappenedViaTokenBuilder<MetadataSet, OwnerTypeParam, TokenTypeParam> {
         self.metadata = Some(metadata);
-        self
+        UpdatePrimarySaleHappenedViaTokenBuilder {
+            metadata: self.metadata,
+            owner: self.owner,
+            token: self.token,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Owner on the token account
     #[inline(always)]
-    pub fn owner(&mut self, owner: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn owner(
+        mut self,
+        owner: solana_program::pubkey::Pubkey,
+    ) -> UpdatePrimarySaleHappenedViaTokenBuilder<MetadataTypeParam, OwnerSet, TokenTypeParam> {
         self.owner = Some(owner);
-        self
+        UpdatePrimarySaleHappenedViaTokenBuilder {
+            metadata: self.metadata,
+            owner: self.owner,
+            token: self.token,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Account containing tokens from the metadata's mint
     #[inline(always)]
-    pub fn token(&mut self, token: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn token(
+        mut self,
+        token: solana_program::pubkey::Pubkey,
+    ) -> UpdatePrimarySaleHappenedViaTokenBuilder<MetadataTypeParam, OwnerTypeParam, TokenSet> {
         self.token = Some(token);
-        self
+        UpdatePrimarySaleHappenedViaTokenBuilder {
+            metadata: self.metadata,
+            owner: self.owner,
+            token: self.token,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -120,6 +179,10 @@ impl UpdatePrimarySaleHappenedViaTokenBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl UpdatePrimarySaleHappenedViaTokenBuilder<MetadataSet, OwnerSet, TokenSet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = UpdatePrimarySaleHappenedViaToken {

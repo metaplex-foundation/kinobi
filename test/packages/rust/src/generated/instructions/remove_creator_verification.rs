@@ -67,28 +67,68 @@ impl RemoveCreatorVerificationInstructionData {
 ///
 ///   0. `[writable]` metadata
 ///   1. `[signer]` creator
-#[derive(Default)]
-pub struct RemoveCreatorVerificationBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct CreatorSet;
+#[derive(Clone)]
+pub struct RemoveCreatorVerificationUnset;
+
+pub struct RemoveCreatorVerificationBuilder<
+    MetadataTypeParam = RemoveCreatorVerificationUnset,
+    CreatorTypeParam = RemoveCreatorVerificationUnset,
+> {
     metadata: Option<solana_program::pubkey::Pubkey>,
     creator: Option<solana_program::pubkey::Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(MetadataTypeParam, CreatorTypeParam)>,
 }
 
-impl RemoveCreatorVerificationBuilder {
+impl
+    RemoveCreatorVerificationBuilder<RemoveCreatorVerificationUnset, RemoveCreatorVerificationUnset>
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            metadata: None,
+            creator: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<MetadataTypeParam, CreatorTypeParam>
+    RemoveCreatorVerificationBuilder<MetadataTypeParam, CreatorTypeParam>
+{
     /// Metadata (pda of ['metadata', program id, mint id])
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> RemoveCreatorVerificationBuilder<MetadataSet, CreatorTypeParam> {
         self.metadata = Some(metadata);
-        self
+        RemoveCreatorVerificationBuilder {
+            metadata: self.metadata,
+            creator: self.creator,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Creator
     #[inline(always)]
-    pub fn creator(&mut self, creator: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn creator(
+        mut self,
+        creator: solana_program::pubkey::Pubkey,
+    ) -> RemoveCreatorVerificationBuilder<MetadataTypeParam, CreatorSet> {
         self.creator = Some(creator);
-        self
+        RemoveCreatorVerificationBuilder {
+            metadata: self.metadata,
+            creator: self.creator,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -108,6 +148,10 @@ impl RemoveCreatorVerificationBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl RemoveCreatorVerificationBuilder<MetadataSet, CreatorSet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = RemoveCreatorVerification {

@@ -16,8 +16,35 @@
   {{ '///   ' + loop.index0 + '. `[' + modifiers + ']` ' + account.name | snakeCase }}
   {{- " (default to `" + account.defaultValue.publicKey + "`)" if account.defaultValue.kind === 'publicKeyValueNode' }}
 {% endfor %}
-#[derive(Default)]
-pub struct {{ instruction.name | pascalCase }}Builder {
+
+// Type state markers
+{% for account in instruction.accounts %}
+  {% if not account.isOptional and not account.defaultValue %}
+#[derive(Clone)]
+pub struct {{ account.name | pascalCase }}Set;
+  {% endif %}
+{% endfor %}
+{% for arg in instructionArgs %}
+  {% if not arg.default and not arg.innerOptionType %}
+#[derive(Clone)]
+pub struct {{ arg.name | pascalCase }}Set;
+  {% endif %}
+{% endfor %}
+#[derive(Clone)]
+pub struct {{ instruction.name | pascalCase }}Unset;
+
+pub struct {{ instruction.name | pascalCase }}Builder<
+  {% for account in instruction.accounts %}
+    {% if not account.isOptional and not account.defaultValue %}
+    {{ account.name | pascalCase }}TypeParam = {{ instruction.name | pascalCase }}Unset,
+    {% endif %}
+  {% endfor %}
+  {% for arg in instructionArgs %}
+    {% if not arg.default and not arg.innerOptionType %}
+    {{ arg.name | pascalCase }}TypeParam = {{ instruction.name | pascalCase }}Unset,
+    {% endif %}
+  {% endfor %}
+> {
   {% for account in instruction.accounts %}
     {% if account.isSigner === 'either' %}
       {{ account.name | snakeCase }}: Option<(solana_program::pubkey::Pubkey, bool)>,
@@ -31,13 +58,69 @@ pub struct {{ instruction.name | pascalCase }}Builder {
     {% endif %}
   {% endfor %}
   __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+  _phantom: std::marker::PhantomData<(
+    {% for account in requiredAccounts %}
+      {{ account.name | pascalCase }}TypeParam,
+    {% endfor %}
+    {% for arg in requiredArgs %}
+      {{ arg.name | pascalCase }}TypeParam,
+    {% endfor %}
+  )>,
 }
 
-impl {{ instruction.name | pascalCase }}Builder {
-  pub fn new() -> Self {
-    Self::default()
-  }
+impl {{ instruction.name | pascalCase }}Builder<
   {% for account in instruction.accounts %}
+    {% if not account.isOptional and not account.defaultValue %}
+    {{ instruction.name | pascalCase }}Unset,
+    {% endif %}
+  {% endfor %}
+  {% for arg in instructionArgs %}
+    {% if not arg.default and not arg.innerOptionType %}
+    {{ instruction.name | pascalCase }}Unset,
+    {% endif %}
+  {% endfor %}
+> {
+  pub fn new() -> Self {
+    Self {
+      {% for account in instruction.accounts %}
+        {{ account.name | snakeCase }}: None,
+      {% endfor %}
+      {% for arg in instructionArgs %}
+        {% if not arg.default %}
+          {{ arg.name | snakeCase }}: None,
+        {% endif %}
+      {% endfor %}
+      __remaining_accounts: Vec::new(),
+      _phantom: std::marker::PhantomData,
+    }
+  }
+}
+
+impl<
+  {% for account in instruction.accounts %}
+    {% if not account.isOptional and not account.defaultValue %}
+    {{ account.name | pascalCase }}TypeParam,
+    {% endif %}
+  {% endfor %}
+  {% for arg in instructionArgs %}
+    {% if not arg.default and not arg.innerOptionType %}
+    {{ arg.name | pascalCase }}TypeParam,
+    {% endif %}
+  {% endfor %}
+> {{ instruction.name | pascalCase }}Builder<
+  {% for account in instruction.accounts %}
+    {% if not account.isOptional and not account.defaultValue %}
+    {{ account.name | pascalCase }}TypeParam,
+    {% endif %}
+  {% endfor %}
+  {% for arg in instructionArgs %}
+    {% if not arg.default and not arg.innerOptionType %}
+    {{ arg.name | pascalCase }}TypeParam,
+    {% endif %}
+  {% endfor %}
+> {
+  {% for account in instruction.accounts %}
+    {% set isRequired = not account.isOptional and not account.defaultValue %}
     {% if account.isOptional %}
       {{ '/// `[optional account]`\n' -}}
     {% else %}
@@ -45,37 +128,108 @@ impl {{ instruction.name | pascalCase }}Builder {
     {% endif %}
     {{- macros.docblock(account.docs) -}}
     #[inline(always)]
-    pub fn {{ account.name | snakeCase }}(&mut self, {{ account.name | snakeCase }}: {{ 'Option<solana_program::pubkey::Pubkey>' if account.isOptional else 'solana_program::pubkey::Pubkey' }}{{ ', as_signer: bool' if account.isSigner === 'either' }}) -> &mut Self {
-      {% if account.isOptional %}
-        {% if account.isSigner === 'either' %}
-          if let Some({{ account.name | snakeCase }}) = {{ account.name | snakeCase }} {
-            self.{{ account.name | snakeCase }} = Some(({{ account.name | snakeCase }}, as_signer));
-          } else {
-            self.{{ account.name | snakeCase }} = None;
-          }
-        {% else %}
-          self.{{ account.name | snakeCase }} = {{ account.name | snakeCase }};
-        {% endif %}
-      {% else %}
+    {% if isRequired %}
+      pub fn {{ account.name | snakeCase }}(mut self, {{ account.name | snakeCase }}: {{ 'solana_program::pubkey::Pubkey' }}{{ ', as_signer: bool' if account.isSigner === 'either' }}) -> {{ instruction.name | pascalCase }}Builder<
+        {% for reqAccount in instruction.accounts %}
+          {% if not reqAccount.isOptional and not reqAccount.defaultValue %}
+            {% if reqAccount.name === account.name %}
+            {{ account.name | pascalCase }}Set,
+            {% else %}
+            {{ reqAccount.name | pascalCase }}TypeParam,
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        {% for arg in instructionArgs %}
+          {% if not arg.default and not arg.innerOptionType %}
+          {{ arg.name | pascalCase }}TypeParam,
+          {% endif %}
+        {% endfor %}
+      > {
         {% if account.isSigner === 'either' %}
           self.{{ account.name | snakeCase }} = Some(({{ account.name | snakeCase }}, as_signer));
         {% else %}
           self.{{ account.name | snakeCase }} = Some({{ account.name | snakeCase }});
         {% endif %}
-      {% endif %}
-      self
-    }
+        {{ instruction.name | pascalCase }}Builder {
+          {% for acc in instruction.accounts %}
+            {{ acc.name | snakeCase }}: self.{{ acc.name | snakeCase }},
+          {% endfor %}
+          {% for arg in instructionArgs %}
+            {% if not arg.default %}
+              {{ arg.name | snakeCase }}: self.{{ arg.name | snakeCase }},
+            {% endif %}
+          {% endfor %}
+          __remaining_accounts: self.__remaining_accounts,
+          _phantom: std::marker::PhantomData,
+        }
+      }
+    {% else %}
+      pub fn {{ account.name | snakeCase }}(&mut self, {{ account.name | snakeCase }}: {{ 'Option<solana_program::pubkey::Pubkey>' if account.isOptional else 'solana_program::pubkey::Pubkey' }}{{ ', as_signer: bool' if account.isSigner === 'either' }}) -> &mut Self {
+        {% if account.isOptional %}
+          {% if account.isSigner === 'either' %}
+            if let Some({{ account.name | snakeCase }}) = {{ account.name | snakeCase }} {
+              self.{{ account.name | snakeCase }} = Some(({{ account.name | snakeCase }}, as_signer));
+            } else {
+              self.{{ account.name | snakeCase }} = None;
+            }
+          {% else %}
+            self.{{ account.name | snakeCase }} = {{ account.name | snakeCase }};
+          {% endif %}
+        {% else %}
+          {% if account.isSigner === 'either' %}
+            self.{{ account.name | snakeCase }} = Some(({{ account.name | snakeCase }}, as_signer));
+          {% else %}
+            self.{{ account.name | snakeCase }} = Some({{ account.name | snakeCase }});
+          {% endif %}
+        {% endif %}
+        self
+      }
+    {% endif %}
   {% endfor %}
   {% for arg in instructionArgs %}
     {% if not arg.default %}
+      {% set isRequired = not arg.innerOptionType %}
       {{ '/// `[optional argument]`\n' if arg.innerOptionType }}
       {{- "/// `[optional argument, defaults to '" + arg.value + "']`\n" if not arg.innerOptionType and arg.value -}}
       {{- macros.docblock(arg.docs) -}}
       #[inline(always)]
-      pub fn {{ arg.name | snakeCase }}(&mut self, {{ arg.name | snakeCase }}: {{ arg.innerOptionType or arg.type }}) -> &mut Self {
-        self.{{ arg.name | snakeCase }} = Some({{ arg.name | snakeCase }});
-        self
-      }
+      {% if isRequired %}
+        pub fn {{ arg.name | snakeCase }}(mut self, {{ arg.name | snakeCase }}: {{ arg.innerOptionType or arg.type }}) -> {{ instruction.name | pascalCase }}Builder<
+          {% for account in instruction.accounts %}
+            {% if not account.isOptional and not account.defaultValue %}
+            {{ account.name | pascalCase }}TypeParam,
+            {% endif %}
+          {% endfor %}
+          {% for reqArg in instructionArgs %}
+            {% if not reqArg.default and not reqArg.innerOptionType %}
+              {% if reqArg.name === arg.name %}
+              {{ arg.name | pascalCase }}Set,
+              {% else %}
+              {{ reqArg.name | pascalCase }}TypeParam,
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        > {
+          self.{{ arg.name | snakeCase }} = Some({{ arg.name | snakeCase }});
+          {{ instruction.name | pascalCase }}Builder {
+            {% for acc in instruction.accounts %}
+              {{ acc.name | snakeCase }}: self.{{ acc.name | snakeCase }},
+            {% endfor %}
+            {% for argument in instructionArgs %}
+              {% if not argument.default %}
+                {{ argument.name | snakeCase }}: self.{{ argument.name | snakeCase }},
+              {% endif %}
+            {% endfor %}
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+          }
+        }
+      {% else %}
+        pub fn {{ arg.name | snakeCase }}(&mut self, {{ arg.name | snakeCase }}: {{ arg.innerOptionType or arg.type }}) -> &mut Self {
+          self.{{ arg.name | snakeCase }} = Some({{ arg.name | snakeCase }});
+          self
+        }
+      {% endif %}
     {% endif %}
   {% endfor %}
   /// Add an aditional account to the instruction.
@@ -90,6 +244,21 @@ impl {{ instruction.name | pascalCase }}Builder {
     self.__remaining_accounts.extend_from_slice(accounts);
     self
   }
+}
+
+// Only allow instruction() method when all required fields are set
+impl {{ instruction.name | pascalCase }}Builder<
+  {% for account in instruction.accounts %}
+    {% if not account.isOptional and not account.defaultValue %}
+    {{ account.name | pascalCase }}Set,
+    {% endif %}
+  {% endfor %}
+  {% for arg in instructionArgs %}
+    {% if not arg.default and not arg.innerOptionType %}
+    {{ arg.name | pascalCase }}Set,
+    {% endif %}
+  {% endfor %}
+> {
   #[allow(clippy::clone_on_copy)]
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
     let accounts = {{ instruction.name | pascalCase }} {

@@ -163,8 +163,37 @@ pub struct TransferOutOfEscrowInstructionArgs {
 ///   10. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
 ///   11. `[optional]` sysvar_instructions (default to `Sysvar1nstructions1111111111111111111111111`)
 ///   12. `[signer, optional]` authority
-#[derive(Default)]
-pub struct TransferOutOfEscrowBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct EscrowSet;
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct AttributeMintSet;
+#[derive(Clone)]
+pub struct AttributeSrcSet;
+#[derive(Clone)]
+pub struct AttributeDstSet;
+#[derive(Clone)]
+pub struct EscrowMintSet;
+#[derive(Clone)]
+pub struct EscrowAccountSet;
+#[derive(Clone)]
+pub struct AmountSet;
+#[derive(Clone)]
+pub struct TransferOutOfEscrowUnset;
+
+pub struct TransferOutOfEscrowBuilder<
+    EscrowTypeParam = TransferOutOfEscrowUnset,
+    MetadataTypeParam = TransferOutOfEscrowUnset,
+    AttributeMintTypeParam = TransferOutOfEscrowUnset,
+    AttributeSrcTypeParam = TransferOutOfEscrowUnset,
+    AttributeDstTypeParam = TransferOutOfEscrowUnset,
+    EscrowMintTypeParam = TransferOutOfEscrowUnset,
+    EscrowAccountTypeParam = TransferOutOfEscrowUnset,
+    AmountTypeParam = TransferOutOfEscrowUnset,
+> {
     escrow: Option<solana_program::pubkey::Pubkey>,
     metadata: Option<solana_program::pubkey::Pubkey>,
     payer: Option<solana_program::pubkey::Pubkey>,
@@ -180,23 +209,142 @@ pub struct TransferOutOfEscrowBuilder {
     authority: Option<solana_program::pubkey::Pubkey>,
     amount: Option<u64>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        EscrowTypeParam,
+        MetadataTypeParam,
+        AttributeMintTypeParam,
+        AttributeSrcTypeParam,
+        AttributeDstTypeParam,
+        EscrowMintTypeParam,
+        EscrowAccountTypeParam,
+        AmountTypeParam,
+    )>,
 }
 
-impl TransferOutOfEscrowBuilder {
+impl
+    TransferOutOfEscrowBuilder<
+        TransferOutOfEscrowUnset,
+        TransferOutOfEscrowUnset,
+        TransferOutOfEscrowUnset,
+        TransferOutOfEscrowUnset,
+        TransferOutOfEscrowUnset,
+        TransferOutOfEscrowUnset,
+        TransferOutOfEscrowUnset,
+        TransferOutOfEscrowUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            escrow: None,
+            metadata: None,
+            payer: None,
+            attribute_mint: None,
+            attribute_src: None,
+            attribute_dst: None,
+            escrow_mint: None,
+            escrow_account: None,
+            system_program: None,
+            ata_program: None,
+            token_program: None,
+            sysvar_instructions: None,
+            authority: None,
+            amount: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        EscrowTypeParam,
+        MetadataTypeParam,
+        AttributeMintTypeParam,
+        AttributeSrcTypeParam,
+        AttributeDstTypeParam,
+        EscrowMintTypeParam,
+        EscrowAccountTypeParam,
+        AmountTypeParam,
+    >
+    TransferOutOfEscrowBuilder<
+        EscrowTypeParam,
+        MetadataTypeParam,
+        AttributeMintTypeParam,
+        AttributeSrcTypeParam,
+        AttributeDstTypeParam,
+        EscrowMintTypeParam,
+        EscrowAccountTypeParam,
+        AmountTypeParam,
+    >
+{
     /// Escrow account
     #[inline(always)]
-    pub fn escrow(&mut self, escrow: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn escrow(
+        mut self,
+        escrow: solana_program::pubkey::Pubkey,
+    ) -> TransferOutOfEscrowBuilder<
+        EscrowSet,
+        MetadataTypeParam,
+        AttributeMintTypeParam,
+        AttributeSrcTypeParam,
+        AttributeDstTypeParam,
+        EscrowMintTypeParam,
+        EscrowAccountTypeParam,
+        AmountTypeParam,
+    > {
         self.escrow = Some(escrow);
-        self
+        TransferOutOfEscrowBuilder {
+            escrow: self.escrow,
+            metadata: self.metadata,
+            payer: self.payer,
+            attribute_mint: self.attribute_mint,
+            attribute_src: self.attribute_src,
+            attribute_dst: self.attribute_dst,
+            escrow_mint: self.escrow_mint,
+            escrow_account: self.escrow_account,
+            system_program: self.system_program,
+            ata_program: self.ata_program,
+            token_program: self.token_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authority: self.authority,
+            amount: self.amount,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Metadata account
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> TransferOutOfEscrowBuilder<
+        EscrowTypeParam,
+        MetadataSet,
+        AttributeMintTypeParam,
+        AttributeSrcTypeParam,
+        AttributeDstTypeParam,
+        EscrowMintTypeParam,
+        EscrowAccountTypeParam,
+        AmountTypeParam,
+    > {
         self.metadata = Some(metadata);
-        self
+        TransferOutOfEscrowBuilder {
+            escrow: self.escrow,
+            metadata: self.metadata,
+            payer: self.payer,
+            attribute_mint: self.attribute_mint,
+            attribute_src: self.attribute_src,
+            attribute_dst: self.attribute_dst,
+            escrow_mint: self.escrow_mint,
+            escrow_account: self.escrow_account,
+            system_program: self.system_program,
+            ata_program: self.ata_program,
+            token_program: self.token_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authority: self.authority,
+            amount: self.amount,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Wallet paying for the transaction and new account
     #[inline(always)]
@@ -206,33 +354,178 @@ impl TransferOutOfEscrowBuilder {
     }
     /// Mint account for the new attribute
     #[inline(always)]
-    pub fn attribute_mint(&mut self, attribute_mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn attribute_mint(
+        mut self,
+        attribute_mint: solana_program::pubkey::Pubkey,
+    ) -> TransferOutOfEscrowBuilder<
+        EscrowTypeParam,
+        MetadataTypeParam,
+        AttributeMintSet,
+        AttributeSrcTypeParam,
+        AttributeDstTypeParam,
+        EscrowMintTypeParam,
+        EscrowAccountTypeParam,
+        AmountTypeParam,
+    > {
         self.attribute_mint = Some(attribute_mint);
-        self
+        TransferOutOfEscrowBuilder {
+            escrow: self.escrow,
+            metadata: self.metadata,
+            payer: self.payer,
+            attribute_mint: self.attribute_mint,
+            attribute_src: self.attribute_src,
+            attribute_dst: self.attribute_dst,
+            escrow_mint: self.escrow_mint,
+            escrow_account: self.escrow_account,
+            system_program: self.system_program,
+            ata_program: self.ata_program,
+            token_program: self.token_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authority: self.authority,
+            amount: self.amount,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Token account source for the new attribute
     #[inline(always)]
-    pub fn attribute_src(&mut self, attribute_src: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn attribute_src(
+        mut self,
+        attribute_src: solana_program::pubkey::Pubkey,
+    ) -> TransferOutOfEscrowBuilder<
+        EscrowTypeParam,
+        MetadataTypeParam,
+        AttributeMintTypeParam,
+        AttributeSrcSet,
+        AttributeDstTypeParam,
+        EscrowMintTypeParam,
+        EscrowAccountTypeParam,
+        AmountTypeParam,
+    > {
         self.attribute_src = Some(attribute_src);
-        self
+        TransferOutOfEscrowBuilder {
+            escrow: self.escrow,
+            metadata: self.metadata,
+            payer: self.payer,
+            attribute_mint: self.attribute_mint,
+            attribute_src: self.attribute_src,
+            attribute_dst: self.attribute_dst,
+            escrow_mint: self.escrow_mint,
+            escrow_account: self.escrow_account,
+            system_program: self.system_program,
+            ata_program: self.ata_program,
+            token_program: self.token_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authority: self.authority,
+            amount: self.amount,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Token account, owned by TM, destination for the new attribute
     #[inline(always)]
-    pub fn attribute_dst(&mut self, attribute_dst: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn attribute_dst(
+        mut self,
+        attribute_dst: solana_program::pubkey::Pubkey,
+    ) -> TransferOutOfEscrowBuilder<
+        EscrowTypeParam,
+        MetadataTypeParam,
+        AttributeMintTypeParam,
+        AttributeSrcTypeParam,
+        AttributeDstSet,
+        EscrowMintTypeParam,
+        EscrowAccountTypeParam,
+        AmountTypeParam,
+    > {
         self.attribute_dst = Some(attribute_dst);
-        self
+        TransferOutOfEscrowBuilder {
+            escrow: self.escrow,
+            metadata: self.metadata,
+            payer: self.payer,
+            attribute_mint: self.attribute_mint,
+            attribute_src: self.attribute_src,
+            attribute_dst: self.attribute_dst,
+            escrow_mint: self.escrow_mint,
+            escrow_account: self.escrow_account,
+            system_program: self.system_program,
+            ata_program: self.ata_program,
+            token_program: self.token_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authority: self.authority,
+            amount: self.amount,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint account that the escrow is attached
     #[inline(always)]
-    pub fn escrow_mint(&mut self, escrow_mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn escrow_mint(
+        mut self,
+        escrow_mint: solana_program::pubkey::Pubkey,
+    ) -> TransferOutOfEscrowBuilder<
+        EscrowTypeParam,
+        MetadataTypeParam,
+        AttributeMintTypeParam,
+        AttributeSrcTypeParam,
+        AttributeDstTypeParam,
+        EscrowMintSet,
+        EscrowAccountTypeParam,
+        AmountTypeParam,
+    > {
         self.escrow_mint = Some(escrow_mint);
-        self
+        TransferOutOfEscrowBuilder {
+            escrow: self.escrow,
+            metadata: self.metadata,
+            payer: self.payer,
+            attribute_mint: self.attribute_mint,
+            attribute_src: self.attribute_src,
+            attribute_dst: self.attribute_dst,
+            escrow_mint: self.escrow_mint,
+            escrow_account: self.escrow_account,
+            system_program: self.system_program,
+            ata_program: self.ata_program,
+            token_program: self.token_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authority: self.authority,
+            amount: self.amount,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Token account that holds the token the escrow is attached to
     #[inline(always)]
-    pub fn escrow_account(&mut self, escrow_account: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn escrow_account(
+        mut self,
+        escrow_account: solana_program::pubkey::Pubkey,
+    ) -> TransferOutOfEscrowBuilder<
+        EscrowTypeParam,
+        MetadataTypeParam,
+        AttributeMintTypeParam,
+        AttributeSrcTypeParam,
+        AttributeDstTypeParam,
+        EscrowMintTypeParam,
+        EscrowAccountSet,
+        AmountTypeParam,
+    > {
         self.escrow_account = Some(escrow_account);
-        self
+        TransferOutOfEscrowBuilder {
+            escrow: self.escrow,
+            metadata: self.metadata,
+            payer: self.payer,
+            attribute_mint: self.attribute_mint,
+            attribute_src: self.attribute_src,
+            attribute_dst: self.attribute_dst,
+            escrow_mint: self.escrow_mint,
+            escrow_account: self.escrow_account,
+            system_program: self.system_program,
+            ata_program: self.ata_program,
+            token_program: self.token_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authority: self.authority,
+            amount: self.amount,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to '11111111111111111111111111111111']`
     /// System program
@@ -273,9 +566,38 @@ impl TransferOutOfEscrowBuilder {
         self
     }
     #[inline(always)]
-    pub fn amount(&mut self, amount: u64) -> &mut Self {
+    pub fn amount(
+        mut self,
+        amount: u64,
+    ) -> TransferOutOfEscrowBuilder<
+        EscrowTypeParam,
+        MetadataTypeParam,
+        AttributeMintTypeParam,
+        AttributeSrcTypeParam,
+        AttributeDstTypeParam,
+        EscrowMintTypeParam,
+        EscrowAccountTypeParam,
+        AmountSet,
+    > {
         self.amount = Some(amount);
-        self
+        TransferOutOfEscrowBuilder {
+            escrow: self.escrow,
+            metadata: self.metadata,
+            payer: self.payer,
+            attribute_mint: self.attribute_mint,
+            attribute_src: self.attribute_src,
+            attribute_dst: self.attribute_dst,
+            escrow_mint: self.escrow_mint,
+            escrow_account: self.escrow_account,
+            system_program: self.system_program,
+            ata_program: self.ata_program,
+            token_program: self.token_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authority: self.authority,
+            amount: self.amount,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -295,6 +617,21 @@ impl TransferOutOfEscrowBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    TransferOutOfEscrowBuilder<
+        EscrowSet,
+        MetadataSet,
+        AttributeMintSet,
+        AttributeSrcSet,
+        AttributeDstSet,
+        EscrowMintSet,
+        EscrowAccountSet,
+        AmountSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = TransferOutOfEscrow {

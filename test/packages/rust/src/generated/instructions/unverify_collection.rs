@@ -102,8 +102,28 @@ impl UnverifyCollectionInstructionData {
 ///   3. `[]` collection
 ///   4. `[]` collection_master_edition_account
 ///   5. `[optional]` collection_authority_record
-#[derive(Default)]
-pub struct UnverifyCollectionBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct CollectionAuthoritySet;
+#[derive(Clone)]
+pub struct CollectionMintSet;
+#[derive(Clone)]
+pub struct CollectionSet;
+#[derive(Clone)]
+pub struct CollectionMasterEditionAccountSet;
+#[derive(Clone)]
+pub struct UnverifyCollectionUnset;
+
+pub struct UnverifyCollectionBuilder<
+    MetadataTypeParam = UnverifyCollectionUnset,
+    CollectionAuthorityTypeParam = UnverifyCollectionUnset,
+    CollectionMintTypeParam = UnverifyCollectionUnset,
+    CollectionTypeParam = UnverifyCollectionUnset,
+    CollectionMasterEditionAccountTypeParam = UnverifyCollectionUnset,
+> {
     metadata: Option<solana_program::pubkey::Pubkey>,
     collection_authority: Option<solana_program::pubkey::Pubkey>,
     collection_mint: Option<solana_program::pubkey::Pubkey>,
@@ -111,50 +131,172 @@ pub struct UnverifyCollectionBuilder {
     collection_master_edition_account: Option<solana_program::pubkey::Pubkey>,
     collection_authority_record: Option<solana_program::pubkey::Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        MetadataTypeParam,
+        CollectionAuthorityTypeParam,
+        CollectionMintTypeParam,
+        CollectionTypeParam,
+        CollectionMasterEditionAccountTypeParam,
+    )>,
 }
 
-impl UnverifyCollectionBuilder {
+impl
+    UnverifyCollectionBuilder<
+        UnverifyCollectionUnset,
+        UnverifyCollectionUnset,
+        UnverifyCollectionUnset,
+        UnverifyCollectionUnset,
+        UnverifyCollectionUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            metadata: None,
+            collection_authority: None,
+            collection_mint: None,
+            collection: None,
+            collection_master_edition_account: None,
+            collection_authority_record: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        MetadataTypeParam,
+        CollectionAuthorityTypeParam,
+        CollectionMintTypeParam,
+        CollectionTypeParam,
+        CollectionMasterEditionAccountTypeParam,
+    >
+    UnverifyCollectionBuilder<
+        MetadataTypeParam,
+        CollectionAuthorityTypeParam,
+        CollectionMintTypeParam,
+        CollectionTypeParam,
+        CollectionMasterEditionAccountTypeParam,
+    >
+{
     /// Metadata account
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> UnverifyCollectionBuilder<
+        MetadataSet,
+        CollectionAuthorityTypeParam,
+        CollectionMintTypeParam,
+        CollectionTypeParam,
+        CollectionMasterEditionAccountTypeParam,
+    > {
         self.metadata = Some(metadata);
-        self
+        UnverifyCollectionBuilder {
+            metadata: self.metadata,
+            collection_authority: self.collection_authority,
+            collection_mint: self.collection_mint,
+            collection: self.collection,
+            collection_master_edition_account: self.collection_master_edition_account,
+            collection_authority_record: self.collection_authority_record,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Collection Authority
     #[inline(always)]
     pub fn collection_authority(
-        &mut self,
+        mut self,
         collection_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> UnverifyCollectionBuilder<
+        MetadataTypeParam,
+        CollectionAuthoritySet,
+        CollectionMintTypeParam,
+        CollectionTypeParam,
+        CollectionMasterEditionAccountTypeParam,
+    > {
         self.collection_authority = Some(collection_authority);
-        self
+        UnverifyCollectionBuilder {
+            metadata: self.metadata,
+            collection_authority: self.collection_authority,
+            collection_mint: self.collection_mint,
+            collection: self.collection,
+            collection_master_edition_account: self.collection_master_edition_account,
+            collection_authority_record: self.collection_authority_record,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint of the Collection
     #[inline(always)]
     pub fn collection_mint(
-        &mut self,
+        mut self,
         collection_mint: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> UnverifyCollectionBuilder<
+        MetadataTypeParam,
+        CollectionAuthorityTypeParam,
+        CollectionMintSet,
+        CollectionTypeParam,
+        CollectionMasterEditionAccountTypeParam,
+    > {
         self.collection_mint = Some(collection_mint);
-        self
+        UnverifyCollectionBuilder {
+            metadata: self.metadata,
+            collection_authority: self.collection_authority,
+            collection_mint: self.collection_mint,
+            collection: self.collection,
+            collection_master_edition_account: self.collection_master_edition_account,
+            collection_authority_record: self.collection_authority_record,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Metadata Account of the Collection
     #[inline(always)]
-    pub fn collection(&mut self, collection: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn collection(
+        mut self,
+        collection: solana_program::pubkey::Pubkey,
+    ) -> UnverifyCollectionBuilder<
+        MetadataTypeParam,
+        CollectionAuthorityTypeParam,
+        CollectionMintTypeParam,
+        CollectionSet,
+        CollectionMasterEditionAccountTypeParam,
+    > {
         self.collection = Some(collection);
-        self
+        UnverifyCollectionBuilder {
+            metadata: self.metadata,
+            collection_authority: self.collection_authority,
+            collection_mint: self.collection_mint,
+            collection: self.collection,
+            collection_master_edition_account: self.collection_master_edition_account,
+            collection_authority_record: self.collection_authority_record,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// MasterEdition2 Account of the Collection Token
     #[inline(always)]
     pub fn collection_master_edition_account(
-        &mut self,
+        mut self,
         collection_master_edition_account: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> UnverifyCollectionBuilder<
+        MetadataTypeParam,
+        CollectionAuthorityTypeParam,
+        CollectionMintTypeParam,
+        CollectionTypeParam,
+        CollectionMasterEditionAccountSet,
+    > {
         self.collection_master_edition_account = Some(collection_master_edition_account);
-        self
+        UnverifyCollectionBuilder {
+            metadata: self.metadata,
+            collection_authority: self.collection_authority,
+            collection_mint: self.collection_mint,
+            collection: self.collection,
+            collection_master_edition_account: self.collection_master_edition_account,
+            collection_authority_record: self.collection_authority_record,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account]`
     /// Collection Authority Record PDA
@@ -184,6 +326,18 @@ impl UnverifyCollectionBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    UnverifyCollectionBuilder<
+        MetadataSet,
+        CollectionAuthoritySet,
+        CollectionMintSet,
+        CollectionSet,
+        CollectionMasterEditionAccountSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = UnverifyCollection {

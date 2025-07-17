@@ -90,8 +90,28 @@ pub struct CreateFrequencyRuleInstructionArgs {
 ///   0. `[writable, signer]` payer
 ///   1. `[writable]` frequency_pda
 ///   2. `[optional]` system_program (default to `11111111111111111111111111111111`)
-#[derive(Default)]
-pub struct CreateFrequencyRuleBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct FrequencyPdaSet;
+#[derive(Clone)]
+pub struct RuleSetNameSet;
+#[derive(Clone)]
+pub struct FreqRuleNameSet;
+#[derive(Clone)]
+pub struct LastUpdateSet;
+#[derive(Clone)]
+pub struct PeriodSet;
+#[derive(Clone)]
+pub struct CreateFrequencyRuleUnset;
+
+pub struct CreateFrequencyRuleBuilder<
+    FrequencyPdaTypeParam = CreateFrequencyRuleUnset,
+    RuleSetNameTypeParam = CreateFrequencyRuleUnset,
+    FreqRuleNameTypeParam = CreateFrequencyRuleUnset,
+    LastUpdateTypeParam = CreateFrequencyRuleUnset,
+    PeriodTypeParam = CreateFrequencyRuleUnset,
+> {
     payer: Option<solana_program::pubkey::Pubkey>,
     frequency_pda: Option<solana_program::pubkey::Pubkey>,
     system_program: Option<solana_program::pubkey::Pubkey>,
@@ -100,12 +120,54 @@ pub struct CreateFrequencyRuleBuilder {
     last_update: Option<i64>,
     period: Option<i64>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        FrequencyPdaTypeParam,
+        RuleSetNameTypeParam,
+        FreqRuleNameTypeParam,
+        LastUpdateTypeParam,
+        PeriodTypeParam,
+    )>,
 }
 
-impl CreateFrequencyRuleBuilder {
+impl
+    CreateFrequencyRuleBuilder<
+        CreateFrequencyRuleUnset,
+        CreateFrequencyRuleUnset,
+        CreateFrequencyRuleUnset,
+        CreateFrequencyRuleUnset,
+        CreateFrequencyRuleUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            payer: None,
+            frequency_pda: None,
+            system_program: None,
+            rule_set_name: None,
+            freq_rule_name: None,
+            last_update: None,
+            period: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        FrequencyPdaTypeParam,
+        RuleSetNameTypeParam,
+        FreqRuleNameTypeParam,
+        LastUpdateTypeParam,
+        PeriodTypeParam,
+    >
+    CreateFrequencyRuleBuilder<
+        FrequencyPdaTypeParam,
+        RuleSetNameTypeParam,
+        FreqRuleNameTypeParam,
+        LastUpdateTypeParam,
+        PeriodTypeParam,
+    >
+{
     /// Payer and creator of the Frequency Rule
     #[inline(always)]
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
@@ -114,9 +176,28 @@ impl CreateFrequencyRuleBuilder {
     }
     /// The PDA account where the Frequency Rule is stored
     #[inline(always)]
-    pub fn frequency_pda(&mut self, frequency_pda: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn frequency_pda(
+        mut self,
+        frequency_pda: solana_program::pubkey::Pubkey,
+    ) -> CreateFrequencyRuleBuilder<
+        FrequencyPdaSet,
+        RuleSetNameTypeParam,
+        FreqRuleNameTypeParam,
+        LastUpdateTypeParam,
+        PeriodTypeParam,
+    > {
         self.frequency_pda = Some(frequency_pda);
-        self
+        CreateFrequencyRuleBuilder {
+            payer: self.payer,
+            frequency_pda: self.frequency_pda,
+            system_program: self.system_program,
+            rule_set_name: self.rule_set_name,
+            freq_rule_name: self.freq_rule_name,
+            last_update: self.last_update,
+            period: self.period,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to '11111111111111111111111111111111']`
     /// System program
@@ -126,24 +207,100 @@ impl CreateFrequencyRuleBuilder {
         self
     }
     #[inline(always)]
-    pub fn rule_set_name(&mut self, rule_set_name: String) -> &mut Self {
+    pub fn rule_set_name(
+        mut self,
+        rule_set_name: String,
+    ) -> CreateFrequencyRuleBuilder<
+        FrequencyPdaTypeParam,
+        RuleSetNameSet,
+        FreqRuleNameTypeParam,
+        LastUpdateTypeParam,
+        PeriodTypeParam,
+    > {
         self.rule_set_name = Some(rule_set_name);
-        self
+        CreateFrequencyRuleBuilder {
+            payer: self.payer,
+            frequency_pda: self.frequency_pda,
+            system_program: self.system_program,
+            rule_set_name: self.rule_set_name,
+            freq_rule_name: self.freq_rule_name,
+            last_update: self.last_update,
+            period: self.period,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
-    pub fn freq_rule_name(&mut self, freq_rule_name: String) -> &mut Self {
+    pub fn freq_rule_name(
+        mut self,
+        freq_rule_name: String,
+    ) -> CreateFrequencyRuleBuilder<
+        FrequencyPdaTypeParam,
+        RuleSetNameTypeParam,
+        FreqRuleNameSet,
+        LastUpdateTypeParam,
+        PeriodTypeParam,
+    > {
         self.freq_rule_name = Some(freq_rule_name);
-        self
+        CreateFrequencyRuleBuilder {
+            payer: self.payer,
+            frequency_pda: self.frequency_pda,
+            system_program: self.system_program,
+            rule_set_name: self.rule_set_name,
+            freq_rule_name: self.freq_rule_name,
+            last_update: self.last_update,
+            period: self.period,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
-    pub fn last_update(&mut self, last_update: i64) -> &mut Self {
+    pub fn last_update(
+        mut self,
+        last_update: i64,
+    ) -> CreateFrequencyRuleBuilder<
+        FrequencyPdaTypeParam,
+        RuleSetNameTypeParam,
+        FreqRuleNameTypeParam,
+        LastUpdateSet,
+        PeriodTypeParam,
+    > {
         self.last_update = Some(last_update);
-        self
+        CreateFrequencyRuleBuilder {
+            payer: self.payer,
+            frequency_pda: self.frequency_pda,
+            system_program: self.system_program,
+            rule_set_name: self.rule_set_name,
+            freq_rule_name: self.freq_rule_name,
+            last_update: self.last_update,
+            period: self.period,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
-    pub fn period(&mut self, period: i64) -> &mut Self {
+    pub fn period(
+        mut self,
+        period: i64,
+    ) -> CreateFrequencyRuleBuilder<
+        FrequencyPdaTypeParam,
+        RuleSetNameTypeParam,
+        FreqRuleNameTypeParam,
+        LastUpdateTypeParam,
+        PeriodSet,
+    > {
         self.period = Some(period);
-        self
+        CreateFrequencyRuleBuilder {
+            payer: self.payer,
+            frequency_pda: self.frequency_pda,
+            system_program: self.system_program,
+            rule_set_name: self.rule_set_name,
+            freq_rule_name: self.freq_rule_name,
+            last_update: self.last_update,
+            period: self.period,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -163,6 +320,18 @@ impl CreateFrequencyRuleBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    CreateFrequencyRuleBuilder<
+        FrequencyPdaSet,
+        RuleSetNameSet,
+        FreqRuleNameSet,
+        LastUpdateSet,
+        PeriodSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateFrequencyRule {

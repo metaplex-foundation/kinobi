@@ -108,8 +108,28 @@ impl UnverifySizedCollectionItemInstructionData {
 ///   4. `[writable]` collection
 ///   5. `[]` collection_master_edition_account
 ///   6. `[optional]` collection_authority_record
-#[derive(Default)]
-pub struct UnverifySizedCollectionItemBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct CollectionAuthoritySet;
+#[derive(Clone)]
+pub struct CollectionMintSet;
+#[derive(Clone)]
+pub struct CollectionSet;
+#[derive(Clone)]
+pub struct CollectionMasterEditionAccountSet;
+#[derive(Clone)]
+pub struct UnverifySizedCollectionItemUnset;
+
+pub struct UnverifySizedCollectionItemBuilder<
+    MetadataTypeParam = UnverifySizedCollectionItemUnset,
+    CollectionAuthorityTypeParam = UnverifySizedCollectionItemUnset,
+    CollectionMintTypeParam = UnverifySizedCollectionItemUnset,
+    CollectionTypeParam = UnverifySizedCollectionItemUnset,
+    CollectionMasterEditionAccountTypeParam = UnverifySizedCollectionItemUnset,
+> {
     metadata: Option<solana_program::pubkey::Pubkey>,
     collection_authority: Option<solana_program::pubkey::Pubkey>,
     payer: Option<solana_program::pubkey::Pubkey>,
@@ -118,26 +138,103 @@ pub struct UnverifySizedCollectionItemBuilder {
     collection_master_edition_account: Option<solana_program::pubkey::Pubkey>,
     collection_authority_record: Option<solana_program::pubkey::Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        MetadataTypeParam,
+        CollectionAuthorityTypeParam,
+        CollectionMintTypeParam,
+        CollectionTypeParam,
+        CollectionMasterEditionAccountTypeParam,
+    )>,
 }
 
-impl UnverifySizedCollectionItemBuilder {
+impl
+    UnverifySizedCollectionItemBuilder<
+        UnverifySizedCollectionItemUnset,
+        UnverifySizedCollectionItemUnset,
+        UnverifySizedCollectionItemUnset,
+        UnverifySizedCollectionItemUnset,
+        UnverifySizedCollectionItemUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            metadata: None,
+            collection_authority: None,
+            payer: None,
+            collection_mint: None,
+            collection: None,
+            collection_master_edition_account: None,
+            collection_authority_record: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        MetadataTypeParam,
+        CollectionAuthorityTypeParam,
+        CollectionMintTypeParam,
+        CollectionTypeParam,
+        CollectionMasterEditionAccountTypeParam,
+    >
+    UnverifySizedCollectionItemBuilder<
+        MetadataTypeParam,
+        CollectionAuthorityTypeParam,
+        CollectionMintTypeParam,
+        CollectionTypeParam,
+        CollectionMasterEditionAccountTypeParam,
+    >
+{
     /// Metadata account
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> UnverifySizedCollectionItemBuilder<
+        MetadataSet,
+        CollectionAuthorityTypeParam,
+        CollectionMintTypeParam,
+        CollectionTypeParam,
+        CollectionMasterEditionAccountTypeParam,
+    > {
         self.metadata = Some(metadata);
-        self
+        UnverifySizedCollectionItemBuilder {
+            metadata: self.metadata,
+            collection_authority: self.collection_authority,
+            payer: self.payer,
+            collection_mint: self.collection_mint,
+            collection: self.collection,
+            collection_master_edition_account: self.collection_master_edition_account,
+            collection_authority_record: self.collection_authority_record,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Collection Authority
     #[inline(always)]
     pub fn collection_authority(
-        &mut self,
+        mut self,
         collection_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> UnverifySizedCollectionItemBuilder<
+        MetadataTypeParam,
+        CollectionAuthoritySet,
+        CollectionMintTypeParam,
+        CollectionTypeParam,
+        CollectionMasterEditionAccountTypeParam,
+    > {
         self.collection_authority = Some(collection_authority);
-        self
+        UnverifySizedCollectionItemBuilder {
+            metadata: self.metadata,
+            collection_authority: self.collection_authority,
+            payer: self.payer,
+            collection_mint: self.collection_mint,
+            collection: self.collection,
+            collection_master_edition_account: self.collection_master_edition_account,
+            collection_authority_record: self.collection_authority_record,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// payer
     #[inline(always)]
@@ -148,26 +245,77 @@ impl UnverifySizedCollectionItemBuilder {
     /// Mint of the Collection
     #[inline(always)]
     pub fn collection_mint(
-        &mut self,
+        mut self,
         collection_mint: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> UnverifySizedCollectionItemBuilder<
+        MetadataTypeParam,
+        CollectionAuthorityTypeParam,
+        CollectionMintSet,
+        CollectionTypeParam,
+        CollectionMasterEditionAccountTypeParam,
+    > {
         self.collection_mint = Some(collection_mint);
-        self
+        UnverifySizedCollectionItemBuilder {
+            metadata: self.metadata,
+            collection_authority: self.collection_authority,
+            payer: self.payer,
+            collection_mint: self.collection_mint,
+            collection: self.collection,
+            collection_master_edition_account: self.collection_master_edition_account,
+            collection_authority_record: self.collection_authority_record,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Metadata Account of the Collection
     #[inline(always)]
-    pub fn collection(&mut self, collection: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn collection(
+        mut self,
+        collection: solana_program::pubkey::Pubkey,
+    ) -> UnverifySizedCollectionItemBuilder<
+        MetadataTypeParam,
+        CollectionAuthorityTypeParam,
+        CollectionMintTypeParam,
+        CollectionSet,
+        CollectionMasterEditionAccountTypeParam,
+    > {
         self.collection = Some(collection);
-        self
+        UnverifySizedCollectionItemBuilder {
+            metadata: self.metadata,
+            collection_authority: self.collection_authority,
+            payer: self.payer,
+            collection_mint: self.collection_mint,
+            collection: self.collection,
+            collection_master_edition_account: self.collection_master_edition_account,
+            collection_authority_record: self.collection_authority_record,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// MasterEdition2 Account of the Collection Token
     #[inline(always)]
     pub fn collection_master_edition_account(
-        &mut self,
+        mut self,
         collection_master_edition_account: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> UnverifySizedCollectionItemBuilder<
+        MetadataTypeParam,
+        CollectionAuthorityTypeParam,
+        CollectionMintTypeParam,
+        CollectionTypeParam,
+        CollectionMasterEditionAccountSet,
+    > {
         self.collection_master_edition_account = Some(collection_master_edition_account);
-        self
+        UnverifySizedCollectionItemBuilder {
+            metadata: self.metadata,
+            collection_authority: self.collection_authority,
+            payer: self.payer,
+            collection_mint: self.collection_mint,
+            collection: self.collection,
+            collection_master_edition_account: self.collection_master_edition_account,
+            collection_authority_record: self.collection_authority_record,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account]`
     /// Collection Authority Record PDA
@@ -197,6 +345,18 @@ impl UnverifySizedCollectionItemBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    UnverifySizedCollectionItemBuilder<
+        MetadataSet,
+        CollectionAuthoritySet,
+        CollectionMintSet,
+        CollectionSet,
+        CollectionMasterEditionAccountSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = UnverifySizedCollectionItem {

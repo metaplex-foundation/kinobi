@@ -168,8 +168,25 @@ pub struct MintInstructionArgs {
 ///   9. `[optional]` spl_ata_program (default to `ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL`)
 ///   10. `[optional]` authorization_rules_program
 ///   11. `[optional]` authorization_rules
-#[derive(Default)]
-pub struct MintBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct TokenSet;
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct MintSet;
+#[derive(Clone)]
+pub struct MintArgsSet;
+#[derive(Clone)]
+pub struct MintUnset;
+
+pub struct MintBuilder<
+    TokenTypeParam = MintUnset,
+    MetadataTypeParam = MintUnset,
+    MintTypeParam = MintUnset,
+    MintArgsTypeParam = MintUnset,
+> {
     token: Option<solana_program::pubkey::Pubkey>,
     metadata: Option<solana_program::pubkey::Pubkey>,
     master_edition: Option<solana_program::pubkey::Pubkey>,
@@ -184,23 +201,88 @@ pub struct MintBuilder {
     authorization_rules: Option<solana_program::pubkey::Pubkey>,
     mint_args: Option<MintArgs>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        TokenTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+        MintArgsTypeParam,
+    )>,
 }
 
-impl MintBuilder {
+impl MintBuilder<MintUnset, MintUnset, MintUnset, MintUnset> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            token: None,
+            metadata: None,
+            master_edition: None,
+            mint: None,
+            payer: None,
+            authority: None,
+            system_program: None,
+            sysvar_instructions: None,
+            spl_token_program: None,
+            spl_ata_program: None,
+            authorization_rules_program: None,
+            authorization_rules: None,
+            mint_args: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<TokenTypeParam, MetadataTypeParam, MintTypeParam, MintArgsTypeParam>
+    MintBuilder<TokenTypeParam, MetadataTypeParam, MintTypeParam, MintArgsTypeParam>
+{
     /// Token account
     #[inline(always)]
-    pub fn token(&mut self, token: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn token(
+        mut self,
+        token: solana_program::pubkey::Pubkey,
+    ) -> MintBuilder<TokenSet, MetadataTypeParam, MintTypeParam, MintArgsTypeParam> {
         self.token = Some(token);
-        self
+        MintBuilder {
+            token: self.token,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            payer: self.payer,
+            authority: self.authority,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            spl_token_program: self.spl_token_program,
+            spl_ata_program: self.spl_ata_program,
+            authorization_rules_program: self.authorization_rules_program,
+            authorization_rules: self.authorization_rules,
+            mint_args: self.mint_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Metadata account key (pda of ['metadata', program id, mint id])
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> MintBuilder<TokenTypeParam, MetadataSet, MintTypeParam, MintArgsTypeParam> {
         self.metadata = Some(metadata);
-        self
+        MintBuilder {
+            token: self.token,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            payer: self.payer,
+            authority: self.authority,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            spl_token_program: self.spl_token_program,
+            spl_ata_program: self.spl_ata_program,
+            authorization_rules_program: self.authorization_rules_program,
+            authorization_rules: self.authorization_rules,
+            mint_args: self.mint_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account]`
     /// Master Edition account
@@ -214,9 +296,28 @@ impl MintBuilder {
     }
     /// Mint of token asset
     #[inline(always)]
-    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint(
+        mut self,
+        mint: solana_program::pubkey::Pubkey,
+    ) -> MintBuilder<TokenTypeParam, MetadataTypeParam, MintSet, MintArgsTypeParam> {
         self.mint = Some(mint);
-        self
+        MintBuilder {
+            token: self.token,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            payer: self.payer,
+            authority: self.authority,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            spl_token_program: self.spl_token_program,
+            spl_ata_program: self.spl_ata_program,
+            authorization_rules_program: self.authorization_rules_program,
+            authorization_rules: self.authorization_rules,
+            mint_args: self.mint_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Payer
     #[inline(always)]
@@ -288,9 +389,28 @@ impl MintBuilder {
         self
     }
     #[inline(always)]
-    pub fn mint_args(&mut self, mint_args: MintArgs) -> &mut Self {
+    pub fn mint_args(
+        mut self,
+        mint_args: MintArgs,
+    ) -> MintBuilder<TokenTypeParam, MetadataTypeParam, MintTypeParam, MintArgsSet> {
         self.mint_args = Some(mint_args);
-        self
+        MintBuilder {
+            token: self.token,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            payer: self.payer,
+            authority: self.authority,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            spl_token_program: self.spl_token_program,
+            spl_ata_program: self.spl_ata_program,
+            authorization_rules_program: self.authorization_rules_program,
+            authorization_rules: self.authorization_rules,
+            mint_args: self.mint_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -310,6 +430,10 @@ impl MintBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl MintBuilder<TokenSet, MetadataSet, MintSet, MintArgsSet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = Mint {

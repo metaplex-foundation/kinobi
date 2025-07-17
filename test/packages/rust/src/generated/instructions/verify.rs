@@ -114,8 +114,22 @@ pub struct VerifyInstructionArgs {
 ///   2. `[writable, signer]` payer
 ///   3. `[optional]` authorization_rules
 ///   4. `[optional]` authorization_rules_program
-#[derive(Default)]
-pub struct VerifyBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct CollectionAuthoritySet;
+#[derive(Clone)]
+pub struct VerifyArgsSet;
+#[derive(Clone)]
+pub struct VerifyUnset;
+
+pub struct VerifyBuilder<
+    MetadataTypeParam = VerifyUnset,
+    CollectionAuthorityTypeParam = VerifyUnset,
+    VerifyArgsTypeParam = VerifyUnset,
+> {
     metadata: Option<solana_program::pubkey::Pubkey>,
     collection_authority: Option<solana_program::pubkey::Pubkey>,
     payer: Option<solana_program::pubkey::Pubkey>,
@@ -123,26 +137,66 @@ pub struct VerifyBuilder {
     authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
     verify_args: Option<VerifyArgs>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        MetadataTypeParam,
+        CollectionAuthorityTypeParam,
+        VerifyArgsTypeParam,
+    )>,
 }
 
-impl VerifyBuilder {
+impl VerifyBuilder<VerifyUnset, VerifyUnset, VerifyUnset> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            metadata: None,
+            collection_authority: None,
+            payer: None,
+            authorization_rules: None,
+            authorization_rules_program: None,
+            verify_args: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<MetadataTypeParam, CollectionAuthorityTypeParam, VerifyArgsTypeParam>
+    VerifyBuilder<MetadataTypeParam, CollectionAuthorityTypeParam, VerifyArgsTypeParam>
+{
     /// Metadata account
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> VerifyBuilder<MetadataSet, CollectionAuthorityTypeParam, VerifyArgsTypeParam> {
         self.metadata = Some(metadata);
-        self
+        VerifyBuilder {
+            metadata: self.metadata,
+            collection_authority: self.collection_authority,
+            payer: self.payer,
+            authorization_rules: self.authorization_rules,
+            authorization_rules_program: self.authorization_rules_program,
+            verify_args: self.verify_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Collection Update authority
     #[inline(always)]
     pub fn collection_authority(
-        &mut self,
+        mut self,
         collection_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> VerifyBuilder<MetadataTypeParam, CollectionAuthoritySet, VerifyArgsTypeParam> {
         self.collection_authority = Some(collection_authority);
-        self
+        VerifyBuilder {
+            metadata: self.metadata,
+            collection_authority: self.collection_authority,
+            payer: self.payer,
+            authorization_rules: self.authorization_rules,
+            authorization_rules_program: self.authorization_rules_program,
+            verify_args: self.verify_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// payer
     #[inline(always)]
@@ -171,9 +225,21 @@ impl VerifyBuilder {
         self
     }
     #[inline(always)]
-    pub fn verify_args(&mut self, verify_args: VerifyArgs) -> &mut Self {
+    pub fn verify_args(
+        mut self,
+        verify_args: VerifyArgs,
+    ) -> VerifyBuilder<MetadataTypeParam, CollectionAuthorityTypeParam, VerifyArgsSet> {
         self.verify_args = Some(verify_args);
-        self
+        VerifyBuilder {
+            metadata: self.metadata,
+            collection_authority: self.collection_authority,
+            payer: self.payer,
+            authorization_rules: self.authorization_rules,
+            authorization_rules_program: self.authorization_rules_program,
+            verify_args: self.verify_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -193,6 +259,10 @@ impl VerifyBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl VerifyBuilder<MetadataSet, CollectionAuthoritySet, VerifyArgsSet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = Verify {

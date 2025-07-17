@@ -80,44 +80,135 @@ pub struct CreateAccountInstructionArgs {
 ///
 ///   0. `[writable, signer]` payer
 ///   1. `[writable, signer]` new_account
-#[derive(Default)]
-pub struct CreateAccountBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct NewAccountSet;
+#[derive(Clone)]
+pub struct LamportsSet;
+#[derive(Clone)]
+pub struct SpaceSet;
+#[derive(Clone)]
+pub struct ProgramIdSet;
+#[derive(Clone)]
+pub struct CreateAccountUnset;
+
+pub struct CreateAccountBuilder<
+    NewAccountTypeParam = CreateAccountUnset,
+    LamportsTypeParam = CreateAccountUnset,
+    SpaceTypeParam = CreateAccountUnset,
+    ProgramIdTypeParam = CreateAccountUnset,
+> {
     payer: Option<solana_program::pubkey::Pubkey>,
     new_account: Option<solana_program::pubkey::Pubkey>,
     lamports: Option<u64>,
     space: Option<u64>,
     program_id: Option<Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        NewAccountTypeParam,
+        LamportsTypeParam,
+        SpaceTypeParam,
+        ProgramIdTypeParam,
+    )>,
 }
 
-impl CreateAccountBuilder {
+impl
+    CreateAccountBuilder<
+        CreateAccountUnset,
+        CreateAccountUnset,
+        CreateAccountUnset,
+        CreateAccountUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            payer: None,
+            new_account: None,
+            lamports: None,
+            space: None,
+            program_id: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<NewAccountTypeParam, LamportsTypeParam, SpaceTypeParam, ProgramIdTypeParam>
+    CreateAccountBuilder<NewAccountTypeParam, LamportsTypeParam, SpaceTypeParam, ProgramIdTypeParam>
+{
     #[inline(always)]
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
         self.payer = Some(payer);
         self
     }
     #[inline(always)]
-    pub fn new_account(&mut self, new_account: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn new_account(
+        mut self,
+        new_account: solana_program::pubkey::Pubkey,
+    ) -> CreateAccountBuilder<NewAccountSet, LamportsTypeParam, SpaceTypeParam, ProgramIdTypeParam>
+    {
         self.new_account = Some(new_account);
-        self
+        CreateAccountBuilder {
+            payer: self.payer,
+            new_account: self.new_account,
+            lamports: self.lamports,
+            space: self.space,
+            program_id: self.program_id,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
-    pub fn lamports(&mut self, lamports: u64) -> &mut Self {
+    pub fn lamports(
+        mut self,
+        lamports: u64,
+    ) -> CreateAccountBuilder<NewAccountTypeParam, LamportsSet, SpaceTypeParam, ProgramIdTypeParam>
+    {
         self.lamports = Some(lamports);
-        self
+        CreateAccountBuilder {
+            payer: self.payer,
+            new_account: self.new_account,
+            lamports: self.lamports,
+            space: self.space,
+            program_id: self.program_id,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
-    pub fn space(&mut self, space: u64) -> &mut Self {
+    pub fn space(
+        mut self,
+        space: u64,
+    ) -> CreateAccountBuilder<NewAccountTypeParam, LamportsTypeParam, SpaceSet, ProgramIdTypeParam>
+    {
         self.space = Some(space);
-        self
+        CreateAccountBuilder {
+            payer: self.payer,
+            new_account: self.new_account,
+            lamports: self.lamports,
+            space: self.space,
+            program_id: self.program_id,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
-    pub fn program_id(&mut self, program_id: Pubkey) -> &mut Self {
+    pub fn program_id(
+        mut self,
+        program_id: Pubkey,
+    ) -> CreateAccountBuilder<NewAccountTypeParam, LamportsTypeParam, SpaceTypeParam, ProgramIdSet>
+    {
         self.program_id = Some(program_id);
-        self
+        CreateAccountBuilder {
+            payer: self.payer,
+            new_account: self.new_account,
+            lamports: self.lamports,
+            space: self.space,
+            program_id: self.program_id,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -137,6 +228,10 @@ impl CreateAccountBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl CreateAccountBuilder<NewAccountSet, LamportsSet, SpaceSet, ProgramIdSet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateAccount {

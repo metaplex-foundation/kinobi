@@ -84,39 +84,94 @@ impl SetTokenStandardInstructionData {
 ///   1. `[writable, signer]` update_authority
 ///   2. `[]` mint
 ///   3. `[optional]` edition
-#[derive(Default)]
-pub struct SetTokenStandardBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct UpdateAuthoritySet;
+#[derive(Clone)]
+pub struct MintSet;
+#[derive(Clone)]
+pub struct SetTokenStandardUnset;
+
+pub struct SetTokenStandardBuilder<
+    MetadataTypeParam = SetTokenStandardUnset,
+    UpdateAuthorityTypeParam = SetTokenStandardUnset,
+    MintTypeParam = SetTokenStandardUnset,
+> {
     metadata: Option<solana_program::pubkey::Pubkey>,
     update_authority: Option<solana_program::pubkey::Pubkey>,
     mint: Option<solana_program::pubkey::Pubkey>,
     edition: Option<solana_program::pubkey::Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom:
+        std::marker::PhantomData<(MetadataTypeParam, UpdateAuthorityTypeParam, MintTypeParam)>,
 }
 
-impl SetTokenStandardBuilder {
+impl SetTokenStandardBuilder<SetTokenStandardUnset, SetTokenStandardUnset, SetTokenStandardUnset> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            metadata: None,
+            update_authority: None,
+            mint: None,
+            edition: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<MetadataTypeParam, UpdateAuthorityTypeParam, MintTypeParam>
+    SetTokenStandardBuilder<MetadataTypeParam, UpdateAuthorityTypeParam, MintTypeParam>
+{
     /// Metadata account
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> SetTokenStandardBuilder<MetadataSet, UpdateAuthorityTypeParam, MintTypeParam> {
         self.metadata = Some(metadata);
-        self
+        SetTokenStandardBuilder {
+            metadata: self.metadata,
+            update_authority: self.update_authority,
+            mint: self.mint,
+            edition: self.edition,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Metadata update authority
     #[inline(always)]
     pub fn update_authority(
-        &mut self,
+        mut self,
         update_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> SetTokenStandardBuilder<MetadataTypeParam, UpdateAuthoritySet, MintTypeParam> {
         self.update_authority = Some(update_authority);
-        self
+        SetTokenStandardBuilder {
+            metadata: self.metadata,
+            update_authority: self.update_authority,
+            mint: self.mint,
+            edition: self.edition,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint account
     #[inline(always)]
-    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint(
+        mut self,
+        mint: solana_program::pubkey::Pubkey,
+    ) -> SetTokenStandardBuilder<MetadataTypeParam, UpdateAuthorityTypeParam, MintSet> {
         self.mint = Some(mint);
-        self
+        SetTokenStandardBuilder {
+            metadata: self.metadata,
+            update_authority: self.update_authority,
+            mint: self.mint,
+            edition: self.edition,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account]`
     /// Edition account
@@ -143,6 +198,10 @@ impl SetTokenStandardBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl SetTokenStandardBuilder<MetadataSet, UpdateAuthoritySet, MintSet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = SetTokenStandard {

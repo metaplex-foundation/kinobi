@@ -129,8 +129,37 @@ pub struct DeprecatedMintPrintingTokensViaTokenInstructionArgs {
 ///   6. `[]` master_edition
 ///   7. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
 ///   8. `[optional]` rent (default to `SysvarRent111111111111111111111111111111111`)
-#[derive(Default)]
-pub struct DeprecatedMintPrintingTokensViaTokenBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct DestinationSet;
+#[derive(Clone)]
+pub struct TokenSet;
+#[derive(Clone)]
+pub struct OneTimePrintingAuthorizationMintSet;
+#[derive(Clone)]
+pub struct PrintingMintSet;
+#[derive(Clone)]
+pub struct BurnAuthoritySet;
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct MasterEditionSet;
+#[derive(Clone)]
+pub struct MintPrintingTokensViaTokenArgsSet;
+#[derive(Clone)]
+pub struct DeprecatedMintPrintingTokensViaTokenUnset;
+
+pub struct DeprecatedMintPrintingTokensViaTokenBuilder<
+    DestinationTypeParam = DeprecatedMintPrintingTokensViaTokenUnset,
+    TokenTypeParam = DeprecatedMintPrintingTokensViaTokenUnset,
+    OneTimePrintingAuthorizationMintTypeParam = DeprecatedMintPrintingTokensViaTokenUnset,
+    PrintingMintTypeParam = DeprecatedMintPrintingTokensViaTokenUnset,
+    BurnAuthorityTypeParam = DeprecatedMintPrintingTokensViaTokenUnset,
+    MetadataTypeParam = DeprecatedMintPrintingTokensViaTokenUnset,
+    MasterEditionTypeParam = DeprecatedMintPrintingTokensViaTokenUnset,
+    MintPrintingTokensViaTokenArgsTypeParam = DeprecatedMintPrintingTokensViaTokenUnset,
+> {
     destination: Option<solana_program::pubkey::Pubkey>,
     token: Option<solana_program::pubkey::Pubkey>,
     one_time_printing_authorization_mint: Option<solana_program::pubkey::Pubkey>,
@@ -142,56 +171,285 @@ pub struct DeprecatedMintPrintingTokensViaTokenBuilder {
     rent: Option<solana_program::pubkey::Pubkey>,
     mint_printing_tokens_via_token_args: Option<MintPrintingTokensViaTokenArgs>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        DestinationTypeParam,
+        TokenTypeParam,
+        OneTimePrintingAuthorizationMintTypeParam,
+        PrintingMintTypeParam,
+        BurnAuthorityTypeParam,
+        MetadataTypeParam,
+        MasterEditionTypeParam,
+        MintPrintingTokensViaTokenArgsTypeParam,
+    )>,
 }
 
-impl DeprecatedMintPrintingTokensViaTokenBuilder {
+impl
+    DeprecatedMintPrintingTokensViaTokenBuilder<
+        DeprecatedMintPrintingTokensViaTokenUnset,
+        DeprecatedMintPrintingTokensViaTokenUnset,
+        DeprecatedMintPrintingTokensViaTokenUnset,
+        DeprecatedMintPrintingTokensViaTokenUnset,
+        DeprecatedMintPrintingTokensViaTokenUnset,
+        DeprecatedMintPrintingTokensViaTokenUnset,
+        DeprecatedMintPrintingTokensViaTokenUnset,
+        DeprecatedMintPrintingTokensViaTokenUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            destination: None,
+            token: None,
+            one_time_printing_authorization_mint: None,
+            printing_mint: None,
+            burn_authority: None,
+            metadata: None,
+            master_edition: None,
+            token_program: None,
+            rent: None,
+            mint_printing_tokens_via_token_args: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        DestinationTypeParam,
+        TokenTypeParam,
+        OneTimePrintingAuthorizationMintTypeParam,
+        PrintingMintTypeParam,
+        BurnAuthorityTypeParam,
+        MetadataTypeParam,
+        MasterEditionTypeParam,
+        MintPrintingTokensViaTokenArgsTypeParam,
+    >
+    DeprecatedMintPrintingTokensViaTokenBuilder<
+        DestinationTypeParam,
+        TokenTypeParam,
+        OneTimePrintingAuthorizationMintTypeParam,
+        PrintingMintTypeParam,
+        BurnAuthorityTypeParam,
+        MetadataTypeParam,
+        MasterEditionTypeParam,
+        MintPrintingTokensViaTokenArgsTypeParam,
+    >
+{
     /// Destination account
     #[inline(always)]
-    pub fn destination(&mut self, destination: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn destination(
+        mut self,
+        destination: solana_program::pubkey::Pubkey,
+    ) -> DeprecatedMintPrintingTokensViaTokenBuilder<
+        DestinationSet,
+        TokenTypeParam,
+        OneTimePrintingAuthorizationMintTypeParam,
+        PrintingMintTypeParam,
+        BurnAuthorityTypeParam,
+        MetadataTypeParam,
+        MasterEditionTypeParam,
+        MintPrintingTokensViaTokenArgsTypeParam,
+    > {
         self.destination = Some(destination);
-        self
+        DeprecatedMintPrintingTokensViaTokenBuilder {
+            destination: self.destination,
+            token: self.token,
+            one_time_printing_authorization_mint: self.one_time_printing_authorization_mint,
+            printing_mint: self.printing_mint,
+            burn_authority: self.burn_authority,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            token_program: self.token_program,
+            rent: self.rent,
+            mint_printing_tokens_via_token_args: self.mint_printing_tokens_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Token account containing one time authorization token
     #[inline(always)]
-    pub fn token(&mut self, token: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn token(
+        mut self,
+        token: solana_program::pubkey::Pubkey,
+    ) -> DeprecatedMintPrintingTokensViaTokenBuilder<
+        DestinationTypeParam,
+        TokenSet,
+        OneTimePrintingAuthorizationMintTypeParam,
+        PrintingMintTypeParam,
+        BurnAuthorityTypeParam,
+        MetadataTypeParam,
+        MasterEditionTypeParam,
+        MintPrintingTokensViaTokenArgsTypeParam,
+    > {
         self.token = Some(token);
-        self
+        DeprecatedMintPrintingTokensViaTokenBuilder {
+            destination: self.destination,
+            token: self.token,
+            one_time_printing_authorization_mint: self.one_time_printing_authorization_mint,
+            printing_mint: self.printing_mint,
+            burn_authority: self.burn_authority,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            token_program: self.token_program,
+            rent: self.rent,
+            mint_printing_tokens_via_token_args: self.mint_printing_tokens_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// One time authorization mint
     #[inline(always)]
     pub fn one_time_printing_authorization_mint(
-        &mut self,
+        mut self,
         one_time_printing_authorization_mint: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> DeprecatedMintPrintingTokensViaTokenBuilder<
+        DestinationTypeParam,
+        TokenTypeParam,
+        OneTimePrintingAuthorizationMintSet,
+        PrintingMintTypeParam,
+        BurnAuthorityTypeParam,
+        MetadataTypeParam,
+        MasterEditionTypeParam,
+        MintPrintingTokensViaTokenArgsTypeParam,
+    > {
         self.one_time_printing_authorization_mint = Some(one_time_printing_authorization_mint);
-        self
+        DeprecatedMintPrintingTokensViaTokenBuilder {
+            destination: self.destination,
+            token: self.token,
+            one_time_printing_authorization_mint: self.one_time_printing_authorization_mint,
+            printing_mint: self.printing_mint,
+            burn_authority: self.burn_authority,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            token_program: self.token_program,
+            rent: self.rent,
+            mint_printing_tokens_via_token_args: self.mint_printing_tokens_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Printing mint
     #[inline(always)]
-    pub fn printing_mint(&mut self, printing_mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn printing_mint(
+        mut self,
+        printing_mint: solana_program::pubkey::Pubkey,
+    ) -> DeprecatedMintPrintingTokensViaTokenBuilder<
+        DestinationTypeParam,
+        TokenTypeParam,
+        OneTimePrintingAuthorizationMintTypeParam,
+        PrintingMintSet,
+        BurnAuthorityTypeParam,
+        MetadataTypeParam,
+        MasterEditionTypeParam,
+        MintPrintingTokensViaTokenArgsTypeParam,
+    > {
         self.printing_mint = Some(printing_mint);
-        self
+        DeprecatedMintPrintingTokensViaTokenBuilder {
+            destination: self.destination,
+            token: self.token,
+            one_time_printing_authorization_mint: self.one_time_printing_authorization_mint,
+            printing_mint: self.printing_mint,
+            burn_authority: self.burn_authority,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            token_program: self.token_program,
+            rent: self.rent,
+            mint_printing_tokens_via_token_args: self.mint_printing_tokens_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Burn authority
     #[inline(always)]
-    pub fn burn_authority(&mut self, burn_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn burn_authority(
+        mut self,
+        burn_authority: solana_program::pubkey::Pubkey,
+    ) -> DeprecatedMintPrintingTokensViaTokenBuilder<
+        DestinationTypeParam,
+        TokenTypeParam,
+        OneTimePrintingAuthorizationMintTypeParam,
+        PrintingMintTypeParam,
+        BurnAuthoritySet,
+        MetadataTypeParam,
+        MasterEditionTypeParam,
+        MintPrintingTokensViaTokenArgsTypeParam,
+    > {
         self.burn_authority = Some(burn_authority);
-        self
+        DeprecatedMintPrintingTokensViaTokenBuilder {
+            destination: self.destination,
+            token: self.token,
+            one_time_printing_authorization_mint: self.one_time_printing_authorization_mint,
+            printing_mint: self.printing_mint,
+            burn_authority: self.burn_authority,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            token_program: self.token_program,
+            rent: self.rent,
+            mint_printing_tokens_via_token_args: self.mint_printing_tokens_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Metadata key (pda of ['metadata', program id, mint id])
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> DeprecatedMintPrintingTokensViaTokenBuilder<
+        DestinationTypeParam,
+        TokenTypeParam,
+        OneTimePrintingAuthorizationMintTypeParam,
+        PrintingMintTypeParam,
+        BurnAuthorityTypeParam,
+        MetadataSet,
+        MasterEditionTypeParam,
+        MintPrintingTokensViaTokenArgsTypeParam,
+    > {
         self.metadata = Some(metadata);
-        self
+        DeprecatedMintPrintingTokensViaTokenBuilder {
+            destination: self.destination,
+            token: self.token,
+            one_time_printing_authorization_mint: self.one_time_printing_authorization_mint,
+            printing_mint: self.printing_mint,
+            burn_authority: self.burn_authority,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            token_program: self.token_program,
+            rent: self.rent,
+            mint_printing_tokens_via_token_args: self.mint_printing_tokens_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
     #[inline(always)]
-    pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn master_edition(
+        mut self,
+        master_edition: solana_program::pubkey::Pubkey,
+    ) -> DeprecatedMintPrintingTokensViaTokenBuilder<
+        DestinationTypeParam,
+        TokenTypeParam,
+        OneTimePrintingAuthorizationMintTypeParam,
+        PrintingMintTypeParam,
+        BurnAuthorityTypeParam,
+        MetadataTypeParam,
+        MasterEditionSet,
+        MintPrintingTokensViaTokenArgsTypeParam,
+    > {
         self.master_edition = Some(master_edition);
-        self
+        DeprecatedMintPrintingTokensViaTokenBuilder {
+            destination: self.destination,
+            token: self.token,
+            one_time_printing_authorization_mint: self.one_time_printing_authorization_mint,
+            printing_mint: self.printing_mint,
+            burn_authority: self.burn_authority,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            token_program: self.token_program,
+            rent: self.rent,
+            mint_printing_tokens_via_token_args: self.mint_printing_tokens_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA']`
     /// Token program
@@ -209,11 +467,33 @@ impl DeprecatedMintPrintingTokensViaTokenBuilder {
     }
     #[inline(always)]
     pub fn mint_printing_tokens_via_token_args(
-        &mut self,
+        mut self,
         mint_printing_tokens_via_token_args: MintPrintingTokensViaTokenArgs,
-    ) -> &mut Self {
+    ) -> DeprecatedMintPrintingTokensViaTokenBuilder<
+        DestinationTypeParam,
+        TokenTypeParam,
+        OneTimePrintingAuthorizationMintTypeParam,
+        PrintingMintTypeParam,
+        BurnAuthorityTypeParam,
+        MetadataTypeParam,
+        MasterEditionTypeParam,
+        MintPrintingTokensViaTokenArgsSet,
+    > {
         self.mint_printing_tokens_via_token_args = Some(mint_printing_tokens_via_token_args);
-        self
+        DeprecatedMintPrintingTokensViaTokenBuilder {
+            destination: self.destination,
+            token: self.token,
+            one_time_printing_authorization_mint: self.one_time_printing_authorization_mint,
+            printing_mint: self.printing_mint,
+            burn_authority: self.burn_authority,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            token_program: self.token_program,
+            rent: self.rent,
+            mint_printing_tokens_via_token_args: self.mint_printing_tokens_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -233,6 +513,21 @@ impl DeprecatedMintPrintingTokensViaTokenBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    DeprecatedMintPrintingTokensViaTokenBuilder<
+        DestinationSet,
+        TokenSet,
+        OneTimePrintingAuthorizationMintSet,
+        PrintingMintSet,
+        BurnAuthoritySet,
+        MetadataSet,
+        MasterEditionSet,
+        MintPrintingTokensViaTokenArgsSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = DeprecatedMintPrintingTokensViaToken {

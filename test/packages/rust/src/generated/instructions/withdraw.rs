@@ -66,21 +66,44 @@ impl WithdrawInstructionData {
 ///
 ///   0. `[writable]` candy_machine
 ///   1. `[writable, signer]` authority
-#[derive(Default)]
-pub struct WithdrawBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct CandyMachineSet;
+#[derive(Clone)]
+pub struct WithdrawUnset;
+
+pub struct WithdrawBuilder<CandyMachineTypeParam = WithdrawUnset> {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
     authority: Option<solana_program::pubkey::Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(CandyMachineTypeParam,)>,
 }
 
-impl WithdrawBuilder {
+impl WithdrawBuilder<WithdrawUnset> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            candy_machine: None,
+            authority: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<CandyMachineTypeParam> WithdrawBuilder<CandyMachineTypeParam> {
     #[inline(always)]
-    pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn candy_machine(
+        mut self,
+        candy_machine: solana_program::pubkey::Pubkey,
+    ) -> WithdrawBuilder<CandyMachineSet> {
         self.candy_machine = Some(candy_machine);
-        self
+        WithdrawBuilder {
+            candy_machine: self.candy_machine,
+            authority: self.authority,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
@@ -105,6 +128,10 @@ impl WithdrawBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl WithdrawBuilder<CandyMachineSet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = Withdraw {

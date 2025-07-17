@@ -148,8 +148,31 @@ pub struct BurnInstructionArgs {
 ///   6. `[writable, optional]` collection_metadata
 ///   7. `[optional]` authorization_rules
 ///   8. `[optional]` authorization_rules_program
-#[derive(Default)]
-pub struct BurnBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct OwnerSet;
+#[derive(Clone)]
+pub struct MintSet;
+#[derive(Clone)]
+pub struct TokenAccountSet;
+#[derive(Clone)]
+pub struct MasterEditionAccountSet;
+#[derive(Clone)]
+pub struct BurnArgsSet;
+#[derive(Clone)]
+pub struct BurnUnset;
+
+pub struct BurnBuilder<
+    MetadataTypeParam = BurnUnset,
+    OwnerTypeParam = BurnUnset,
+    MintTypeParam = BurnUnset,
+    TokenAccountTypeParam = BurnUnset,
+    MasterEditionAccountTypeParam = BurnUnset,
+    BurnArgsTypeParam = BurnUnset,
+> {
     metadata: Option<solana_program::pubkey::Pubkey>,
     owner: Option<solana_program::pubkey::Pubkey>,
     mint: Option<solana_program::pubkey::Pubkey>,
@@ -161,44 +184,196 @@ pub struct BurnBuilder {
     authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
     burn_args: Option<BurnArgs>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        MetadataTypeParam,
+        OwnerTypeParam,
+        MintTypeParam,
+        TokenAccountTypeParam,
+        MasterEditionAccountTypeParam,
+        BurnArgsTypeParam,
+    )>,
 }
 
-impl BurnBuilder {
+impl BurnBuilder<BurnUnset, BurnUnset, BurnUnset, BurnUnset, BurnUnset, BurnUnset> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            metadata: None,
+            owner: None,
+            mint: None,
+            token_account: None,
+            master_edition_account: None,
+            spl_token_program: None,
+            collection_metadata: None,
+            authorization_rules: None,
+            authorization_rules_program: None,
+            burn_args: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        MetadataTypeParam,
+        OwnerTypeParam,
+        MintTypeParam,
+        TokenAccountTypeParam,
+        MasterEditionAccountTypeParam,
+        BurnArgsTypeParam,
+    >
+    BurnBuilder<
+        MetadataTypeParam,
+        OwnerTypeParam,
+        MintTypeParam,
+        TokenAccountTypeParam,
+        MasterEditionAccountTypeParam,
+        BurnArgsTypeParam,
+    >
+{
     /// Metadata (pda of ['metadata', program id, mint id])
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> BurnBuilder<
+        MetadataSet,
+        OwnerTypeParam,
+        MintTypeParam,
+        TokenAccountTypeParam,
+        MasterEditionAccountTypeParam,
+        BurnArgsTypeParam,
+    > {
         self.metadata = Some(metadata);
-        self
+        BurnBuilder {
+            metadata: self.metadata,
+            owner: self.owner,
+            mint: self.mint,
+            token_account: self.token_account,
+            master_edition_account: self.master_edition_account,
+            spl_token_program: self.spl_token_program,
+            collection_metadata: self.collection_metadata,
+            authorization_rules: self.authorization_rules,
+            authorization_rules_program: self.authorization_rules_program,
+            burn_args: self.burn_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Asset owner
     #[inline(always)]
-    pub fn owner(&mut self, owner: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn owner(
+        mut self,
+        owner: solana_program::pubkey::Pubkey,
+    ) -> BurnBuilder<
+        MetadataTypeParam,
+        OwnerSet,
+        MintTypeParam,
+        TokenAccountTypeParam,
+        MasterEditionAccountTypeParam,
+        BurnArgsTypeParam,
+    > {
         self.owner = Some(owner);
-        self
+        BurnBuilder {
+            metadata: self.metadata,
+            owner: self.owner,
+            mint: self.mint,
+            token_account: self.token_account,
+            master_edition_account: self.master_edition_account,
+            spl_token_program: self.spl_token_program,
+            collection_metadata: self.collection_metadata,
+            authorization_rules: self.authorization_rules,
+            authorization_rules_program: self.authorization_rules_program,
+            burn_args: self.burn_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint of token asset
     #[inline(always)]
-    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint(
+        mut self,
+        mint: solana_program::pubkey::Pubkey,
+    ) -> BurnBuilder<
+        MetadataTypeParam,
+        OwnerTypeParam,
+        MintSet,
+        TokenAccountTypeParam,
+        MasterEditionAccountTypeParam,
+        BurnArgsTypeParam,
+    > {
         self.mint = Some(mint);
-        self
+        BurnBuilder {
+            metadata: self.metadata,
+            owner: self.owner,
+            mint: self.mint,
+            token_account: self.token_account,
+            master_edition_account: self.master_edition_account,
+            spl_token_program: self.spl_token_program,
+            collection_metadata: self.collection_metadata,
+            authorization_rules: self.authorization_rules,
+            authorization_rules_program: self.authorization_rules_program,
+            burn_args: self.burn_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Token account to close
     #[inline(always)]
-    pub fn token_account(&mut self, token_account: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn token_account(
+        mut self,
+        token_account: solana_program::pubkey::Pubkey,
+    ) -> BurnBuilder<
+        MetadataTypeParam,
+        OwnerTypeParam,
+        MintTypeParam,
+        TokenAccountSet,
+        MasterEditionAccountTypeParam,
+        BurnArgsTypeParam,
+    > {
         self.token_account = Some(token_account);
-        self
+        BurnBuilder {
+            metadata: self.metadata,
+            owner: self.owner,
+            mint: self.mint,
+            token_account: self.token_account,
+            master_edition_account: self.master_edition_account,
+            spl_token_program: self.spl_token_program,
+            collection_metadata: self.collection_metadata,
+            authorization_rules: self.authorization_rules,
+            authorization_rules_program: self.authorization_rules_program,
+            burn_args: self.burn_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// MasterEdition of the asset
     #[inline(always)]
     pub fn master_edition_account(
-        &mut self,
+        mut self,
         master_edition_account: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> BurnBuilder<
+        MetadataTypeParam,
+        OwnerTypeParam,
+        MintTypeParam,
+        TokenAccountTypeParam,
+        MasterEditionAccountSet,
+        BurnArgsTypeParam,
+    > {
         self.master_edition_account = Some(master_edition_account);
-        self
+        BurnBuilder {
+            metadata: self.metadata,
+            owner: self.owner,
+            mint: self.mint,
+            token_account: self.token_account,
+            master_edition_account: self.master_edition_account,
+            spl_token_program: self.spl_token_program,
+            collection_metadata: self.collection_metadata,
+            authorization_rules: self.authorization_rules,
+            authorization_rules_program: self.authorization_rules_program,
+            burn_args: self.burn_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA']`
     /// SPL Token Program
@@ -241,9 +416,32 @@ impl BurnBuilder {
         self
     }
     #[inline(always)]
-    pub fn burn_args(&mut self, burn_args: BurnArgs) -> &mut Self {
+    pub fn burn_args(
+        mut self,
+        burn_args: BurnArgs,
+    ) -> BurnBuilder<
+        MetadataTypeParam,
+        OwnerTypeParam,
+        MintTypeParam,
+        TokenAccountTypeParam,
+        MasterEditionAccountTypeParam,
+        BurnArgsSet,
+    > {
         self.burn_args = Some(burn_args);
-        self
+        BurnBuilder {
+            metadata: self.metadata,
+            owner: self.owner,
+            mint: self.mint,
+            token_account: self.token_account,
+            master_edition_account: self.master_edition_account,
+            spl_token_program: self.spl_token_program,
+            collection_metadata: self.collection_metadata,
+            authorization_rules: self.authorization_rules,
+            authorization_rules_program: self.authorization_rules_program,
+            burn_args: self.burn_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -263,6 +461,19 @@ impl BurnBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    BurnBuilder<
+        MetadataSet,
+        OwnerSet,
+        MintSet,
+        TokenAccountSet,
+        MasterEditionAccountSet,
+        BurnArgsSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = Burn {

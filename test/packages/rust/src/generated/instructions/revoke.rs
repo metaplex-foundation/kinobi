@@ -187,8 +187,28 @@ pub struct RevokeInstructionArgs {
 ///   10. `[optional]` spl_token_program
 ///   11. `[optional]` authorization_rules_program
 ///   12. `[optional]` authorization_rules
-#[derive(Default)]
-pub struct RevokeBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct DelegateRecordSet;
+#[derive(Clone)]
+pub struct DelegateSet;
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct MintSet;
+#[derive(Clone)]
+pub struct RevokeArgsSet;
+#[derive(Clone)]
+pub struct RevokeUnset;
+
+pub struct RevokeBuilder<
+    DelegateRecordTypeParam = RevokeUnset,
+    DelegateTypeParam = RevokeUnset,
+    MetadataTypeParam = RevokeUnset,
+    MintTypeParam = RevokeUnset,
+    RevokeArgsTypeParam = RevokeUnset,
+> {
     delegate_record: Option<solana_program::pubkey::Pubkey>,
     delegate: Option<solana_program::pubkey::Pubkey>,
     metadata: Option<solana_program::pubkey::Pubkey>,
@@ -204,32 +224,148 @@ pub struct RevokeBuilder {
     authorization_rules: Option<solana_program::pubkey::Pubkey>,
     revoke_args: Option<RevokeArgs>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        DelegateRecordTypeParam,
+        DelegateTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+        RevokeArgsTypeParam,
+    )>,
 }
 
-impl RevokeBuilder {
+impl RevokeBuilder<RevokeUnset, RevokeUnset, RevokeUnset, RevokeUnset, RevokeUnset> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            delegate_record: None,
+            delegate: None,
+            metadata: None,
+            master_edition: None,
+            mint: None,
+            token: None,
+            authority: None,
+            payer: None,
+            system_program: None,
+            sysvar_instructions: None,
+            spl_token_program: None,
+            authorization_rules_program: None,
+            authorization_rules: None,
+            revoke_args: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        DelegateRecordTypeParam,
+        DelegateTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+        RevokeArgsTypeParam,
+    >
+    RevokeBuilder<
+        DelegateRecordTypeParam,
+        DelegateTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+        RevokeArgsTypeParam,
+    >
+{
     /// Delegate account key (pda of [mint id, delegate role, user id, authority id])
     #[inline(always)]
     pub fn delegate_record(
-        &mut self,
+        mut self,
         delegate_record: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> RevokeBuilder<
+        DelegateRecordSet,
+        DelegateTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+        RevokeArgsTypeParam,
+    > {
         self.delegate_record = Some(delegate_record);
-        self
+        RevokeBuilder {
+            delegate_record: self.delegate_record,
+            delegate: self.delegate,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            token: self.token,
+            authority: self.authority,
+            payer: self.payer,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            spl_token_program: self.spl_token_program,
+            authorization_rules_program: self.authorization_rules_program,
+            authorization_rules: self.authorization_rules,
+            revoke_args: self.revoke_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Owner of the delegated account
     #[inline(always)]
-    pub fn delegate(&mut self, delegate: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn delegate(
+        mut self,
+        delegate: solana_program::pubkey::Pubkey,
+    ) -> RevokeBuilder<
+        DelegateRecordTypeParam,
+        DelegateSet,
+        MetadataTypeParam,
+        MintTypeParam,
+        RevokeArgsTypeParam,
+    > {
         self.delegate = Some(delegate);
-        self
+        RevokeBuilder {
+            delegate_record: self.delegate_record,
+            delegate: self.delegate,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            token: self.token,
+            authority: self.authority,
+            payer: self.payer,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            spl_token_program: self.spl_token_program,
+            authorization_rules_program: self.authorization_rules_program,
+            authorization_rules: self.authorization_rules,
+            revoke_args: self.revoke_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Metadata account
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> RevokeBuilder<
+        DelegateRecordTypeParam,
+        DelegateTypeParam,
+        MetadataSet,
+        MintTypeParam,
+        RevokeArgsTypeParam,
+    > {
         self.metadata = Some(metadata);
-        self
+        RevokeBuilder {
+            delegate_record: self.delegate_record,
+            delegate: self.delegate,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            token: self.token,
+            authority: self.authority,
+            payer: self.payer,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            spl_token_program: self.spl_token_program,
+            authorization_rules_program: self.authorization_rules_program,
+            authorization_rules: self.authorization_rules,
+            revoke_args: self.revoke_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account]`
     /// Master Edition account
@@ -243,9 +379,35 @@ impl RevokeBuilder {
     }
     /// Mint of metadata
     #[inline(always)]
-    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint(
+        mut self,
+        mint: solana_program::pubkey::Pubkey,
+    ) -> RevokeBuilder<
+        DelegateRecordTypeParam,
+        DelegateTypeParam,
+        MetadataTypeParam,
+        MintSet,
+        RevokeArgsTypeParam,
+    > {
         self.mint = Some(mint);
-        self
+        RevokeBuilder {
+            delegate_record: self.delegate_record,
+            delegate: self.delegate,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            token: self.token,
+            authority: self.authority,
+            payer: self.payer,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            spl_token_program: self.spl_token_program,
+            authorization_rules_program: self.authorization_rules_program,
+            authorization_rules: self.authorization_rules,
+            revoke_args: self.revoke_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account]`
     /// Owned Token Account of mint
@@ -314,9 +476,35 @@ impl RevokeBuilder {
         self
     }
     #[inline(always)]
-    pub fn revoke_args(&mut self, revoke_args: RevokeArgs) -> &mut Self {
+    pub fn revoke_args(
+        mut self,
+        revoke_args: RevokeArgs,
+    ) -> RevokeBuilder<
+        DelegateRecordTypeParam,
+        DelegateTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+        RevokeArgsSet,
+    > {
         self.revoke_args = Some(revoke_args);
-        self
+        RevokeBuilder {
+            delegate_record: self.delegate_record,
+            delegate: self.delegate,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            token: self.token,
+            authority: self.authority,
+            payer: self.payer,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            spl_token_program: self.spl_token_program,
+            authorization_rules_program: self.authorization_rules_program,
+            authorization_rules: self.authorization_rules,
+            revoke_args: self.revoke_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -336,6 +524,10 @@ impl RevokeBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl RevokeBuilder<DelegateRecordSet, DelegateSet, MetadataSet, MintSet, RevokeArgsSet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = Revoke {

@@ -197,8 +197,34 @@ pub struct TransferInstructionArgs {
 ///   12. `[optional]` sysvar_instructions (default to `Sysvar1nstructions1111111111111111111111111`)
 ///   13. `[optional]` authorization_rules_program
 ///   14. `[optional]` authorization_rules
-#[derive(Default)]
-pub struct TransferBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct TokenSet;
+#[derive(Clone)]
+pub struct TokenOwnerSet;
+#[derive(Clone)]
+pub struct DestinationSet;
+#[derive(Clone)]
+pub struct DestinationOwnerSet;
+#[derive(Clone)]
+pub struct MintSet;
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct TransferArgsSet;
+#[derive(Clone)]
+pub struct TransferUnset;
+
+pub struct TransferBuilder<
+    TokenTypeParam = TransferUnset,
+    TokenOwnerTypeParam = TransferUnset,
+    DestinationTypeParam = TransferUnset,
+    DestinationOwnerTypeParam = TransferUnset,
+    MintTypeParam = TransferUnset,
+    MetadataTypeParam = TransferUnset,
+    TransferArgsTypeParam = TransferUnset,
+> {
     authority: Option<solana_program::pubkey::Pubkey>,
     delegate_record: Option<solana_program::pubkey::Pubkey>,
     token: Option<solana_program::pubkey::Pubkey>,
@@ -216,12 +242,71 @@ pub struct TransferBuilder {
     authorization_rules: Option<solana_program::pubkey::Pubkey>,
     transfer_args: Option<TransferArgs>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        TokenTypeParam,
+        TokenOwnerTypeParam,
+        DestinationTypeParam,
+        DestinationOwnerTypeParam,
+        MintTypeParam,
+        MetadataTypeParam,
+        TransferArgsTypeParam,
+    )>,
 }
 
-impl TransferBuilder {
+impl
+    TransferBuilder<
+        TransferUnset,
+        TransferUnset,
+        TransferUnset,
+        TransferUnset,
+        TransferUnset,
+        TransferUnset,
+        TransferUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            authority: None,
+            delegate_record: None,
+            token: None,
+            token_owner: None,
+            destination: None,
+            destination_owner: None,
+            mint: None,
+            metadata: None,
+            master_edition: None,
+            spl_token_program: None,
+            spl_ata_program: None,
+            system_program: None,
+            sysvar_instructions: None,
+            authorization_rules_program: None,
+            authorization_rules: None,
+            transfer_args: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        TokenTypeParam,
+        TokenOwnerTypeParam,
+        DestinationTypeParam,
+        DestinationOwnerTypeParam,
+        MintTypeParam,
+        MetadataTypeParam,
+        TransferArgsTypeParam,
+    >
+    TransferBuilder<
+        TokenTypeParam,
+        TokenOwnerTypeParam,
+        DestinationTypeParam,
+        DestinationOwnerTypeParam,
+        MintTypeParam,
+        MetadataTypeParam,
+        TransferArgsTypeParam,
+    >
+{
     /// Transfer authority (token or delegate owner)
     #[inline(always)]
     pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
@@ -240,42 +325,219 @@ impl TransferBuilder {
     }
     /// Token account
     #[inline(always)]
-    pub fn token(&mut self, token: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn token(
+        mut self,
+        token: solana_program::pubkey::Pubkey,
+    ) -> TransferBuilder<
+        TokenSet,
+        TokenOwnerTypeParam,
+        DestinationTypeParam,
+        DestinationOwnerTypeParam,
+        MintTypeParam,
+        MetadataTypeParam,
+        TransferArgsTypeParam,
+    > {
         self.token = Some(token);
-        self
+        TransferBuilder {
+            authority: self.authority,
+            delegate_record: self.delegate_record,
+            token: self.token,
+            token_owner: self.token_owner,
+            destination: self.destination,
+            destination_owner: self.destination_owner,
+            mint: self.mint,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            spl_token_program: self.spl_token_program,
+            spl_ata_program: self.spl_ata_program,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authorization_rules_program: self.authorization_rules_program,
+            authorization_rules: self.authorization_rules,
+            transfer_args: self.transfer_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Token account owner
     #[inline(always)]
-    pub fn token_owner(&mut self, token_owner: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn token_owner(
+        mut self,
+        token_owner: solana_program::pubkey::Pubkey,
+    ) -> TransferBuilder<
+        TokenTypeParam,
+        TokenOwnerSet,
+        DestinationTypeParam,
+        DestinationOwnerTypeParam,
+        MintTypeParam,
+        MetadataTypeParam,
+        TransferArgsTypeParam,
+    > {
         self.token_owner = Some(token_owner);
-        self
+        TransferBuilder {
+            authority: self.authority,
+            delegate_record: self.delegate_record,
+            token: self.token,
+            token_owner: self.token_owner,
+            destination: self.destination,
+            destination_owner: self.destination_owner,
+            mint: self.mint,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            spl_token_program: self.spl_token_program,
+            spl_ata_program: self.spl_ata_program,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authorization_rules_program: self.authorization_rules_program,
+            authorization_rules: self.authorization_rules,
+            transfer_args: self.transfer_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Destination token account
     #[inline(always)]
-    pub fn destination(&mut self, destination: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn destination(
+        mut self,
+        destination: solana_program::pubkey::Pubkey,
+    ) -> TransferBuilder<
+        TokenTypeParam,
+        TokenOwnerTypeParam,
+        DestinationSet,
+        DestinationOwnerTypeParam,
+        MintTypeParam,
+        MetadataTypeParam,
+        TransferArgsTypeParam,
+    > {
         self.destination = Some(destination);
-        self
+        TransferBuilder {
+            authority: self.authority,
+            delegate_record: self.delegate_record,
+            token: self.token,
+            token_owner: self.token_owner,
+            destination: self.destination,
+            destination_owner: self.destination_owner,
+            mint: self.mint,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            spl_token_program: self.spl_token_program,
+            spl_ata_program: self.spl_ata_program,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authorization_rules_program: self.authorization_rules_program,
+            authorization_rules: self.authorization_rules,
+            transfer_args: self.transfer_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Destination token account owner
     #[inline(always)]
     pub fn destination_owner(
-        &mut self,
+        mut self,
         destination_owner: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> TransferBuilder<
+        TokenTypeParam,
+        TokenOwnerTypeParam,
+        DestinationTypeParam,
+        DestinationOwnerSet,
+        MintTypeParam,
+        MetadataTypeParam,
+        TransferArgsTypeParam,
+    > {
         self.destination_owner = Some(destination_owner);
-        self
+        TransferBuilder {
+            authority: self.authority,
+            delegate_record: self.delegate_record,
+            token: self.token,
+            token_owner: self.token_owner,
+            destination: self.destination,
+            destination_owner: self.destination_owner,
+            mint: self.mint,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            spl_token_program: self.spl_token_program,
+            spl_ata_program: self.spl_ata_program,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authorization_rules_program: self.authorization_rules_program,
+            authorization_rules: self.authorization_rules,
+            transfer_args: self.transfer_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint of token asset
     #[inline(always)]
-    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint(
+        mut self,
+        mint: solana_program::pubkey::Pubkey,
+    ) -> TransferBuilder<
+        TokenTypeParam,
+        TokenOwnerTypeParam,
+        DestinationTypeParam,
+        DestinationOwnerTypeParam,
+        MintSet,
+        MetadataTypeParam,
+        TransferArgsTypeParam,
+    > {
         self.mint = Some(mint);
-        self
+        TransferBuilder {
+            authority: self.authority,
+            delegate_record: self.delegate_record,
+            token: self.token,
+            token_owner: self.token_owner,
+            destination: self.destination,
+            destination_owner: self.destination_owner,
+            mint: self.mint,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            spl_token_program: self.spl_token_program,
+            spl_ata_program: self.spl_ata_program,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authorization_rules_program: self.authorization_rules_program,
+            authorization_rules: self.authorization_rules,
+            transfer_args: self.transfer_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Metadata (pda of ['metadata', program id, mint id])
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> TransferBuilder<
+        TokenTypeParam,
+        TokenOwnerTypeParam,
+        DestinationTypeParam,
+        DestinationOwnerTypeParam,
+        MintTypeParam,
+        MetadataSet,
+        TransferArgsTypeParam,
+    > {
         self.metadata = Some(metadata);
-        self
+        TransferBuilder {
+            authority: self.authority,
+            delegate_record: self.delegate_record,
+            token: self.token,
+            token_owner: self.token_owner,
+            destination: self.destination,
+            destination_owner: self.destination_owner,
+            mint: self.mint,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            spl_token_program: self.spl_token_program,
+            spl_ata_program: self.spl_ata_program,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authorization_rules_program: self.authorization_rules_program,
+            authorization_rules: self.authorization_rules,
+            transfer_args: self.transfer_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account]`
     /// Master Edition of token asset
@@ -345,9 +607,39 @@ impl TransferBuilder {
         self
     }
     #[inline(always)]
-    pub fn transfer_args(&mut self, transfer_args: TransferArgs) -> &mut Self {
+    pub fn transfer_args(
+        mut self,
+        transfer_args: TransferArgs,
+    ) -> TransferBuilder<
+        TokenTypeParam,
+        TokenOwnerTypeParam,
+        DestinationTypeParam,
+        DestinationOwnerTypeParam,
+        MintTypeParam,
+        MetadataTypeParam,
+        TransferArgsSet,
+    > {
         self.transfer_args = Some(transfer_args);
-        self
+        TransferBuilder {
+            authority: self.authority,
+            delegate_record: self.delegate_record,
+            token: self.token,
+            token_owner: self.token_owner,
+            destination: self.destination,
+            destination_owner: self.destination_owner,
+            mint: self.mint,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            spl_token_program: self.spl_token_program,
+            spl_ata_program: self.spl_ata_program,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authorization_rules_program: self.authorization_rules_program,
+            authorization_rules: self.authorization_rules,
+            transfer_args: self.transfer_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -367,6 +659,20 @@ impl TransferBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    TransferBuilder<
+        TokenSet,
+        TokenOwnerSet,
+        DestinationSet,
+        DestinationOwnerSet,
+        MintSet,
+        MetadataSet,
+        TransferArgsSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = Transfer {

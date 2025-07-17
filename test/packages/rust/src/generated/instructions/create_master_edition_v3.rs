@@ -135,8 +135,31 @@ pub struct CreateMasterEditionV3InstructionArgs {
 ///   6. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
 ///   7. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   8. `[optional]` rent
-#[derive(Default)]
-pub struct CreateMasterEditionV3Builder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct EditionSet;
+#[derive(Clone)]
+pub struct MintSet;
+#[derive(Clone)]
+pub struct UpdateAuthoritySet;
+#[derive(Clone)]
+pub struct MintAuthoritySet;
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct CreateMasterEditionArgsSet;
+#[derive(Clone)]
+pub struct CreateMasterEditionV3Unset;
+
+pub struct CreateMasterEditionV3Builder<
+    EditionTypeParam = CreateMasterEditionV3Unset,
+    MintTypeParam = CreateMasterEditionV3Unset,
+    UpdateAuthorityTypeParam = CreateMasterEditionV3Unset,
+    MintAuthorityTypeParam = CreateMasterEditionV3Unset,
+    MetadataTypeParam = CreateMasterEditionV3Unset,
+    CreateMasterEditionArgsTypeParam = CreateMasterEditionV3Unset,
+> {
     edition: Option<solana_program::pubkey::Pubkey>,
     mint: Option<solana_program::pubkey::Pubkey>,
     update_authority: Option<solana_program::pubkey::Pubkey>,
@@ -148,38 +171,176 @@ pub struct CreateMasterEditionV3Builder {
     rent: Option<solana_program::pubkey::Pubkey>,
     create_master_edition_args: Option<CreateMasterEditionArgs>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        EditionTypeParam,
+        MintTypeParam,
+        UpdateAuthorityTypeParam,
+        MintAuthorityTypeParam,
+        MetadataTypeParam,
+        CreateMasterEditionArgsTypeParam,
+    )>,
 }
 
-impl CreateMasterEditionV3Builder {
+impl
+    CreateMasterEditionV3Builder<
+        CreateMasterEditionV3Unset,
+        CreateMasterEditionV3Unset,
+        CreateMasterEditionV3Unset,
+        CreateMasterEditionV3Unset,
+        CreateMasterEditionV3Unset,
+        CreateMasterEditionV3Unset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            edition: None,
+            mint: None,
+            update_authority: None,
+            mint_authority: None,
+            payer: None,
+            metadata: None,
+            token_program: None,
+            system_program: None,
+            rent: None,
+            create_master_edition_args: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        EditionTypeParam,
+        MintTypeParam,
+        UpdateAuthorityTypeParam,
+        MintAuthorityTypeParam,
+        MetadataTypeParam,
+        CreateMasterEditionArgsTypeParam,
+    >
+    CreateMasterEditionV3Builder<
+        EditionTypeParam,
+        MintTypeParam,
+        UpdateAuthorityTypeParam,
+        MintAuthorityTypeParam,
+        MetadataTypeParam,
+        CreateMasterEditionArgsTypeParam,
+    >
+{
     /// Unallocated edition V2 account with address as pda of ['metadata', program id, mint, 'edition']
     #[inline(always)]
-    pub fn edition(&mut self, edition: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn edition(
+        mut self,
+        edition: solana_program::pubkey::Pubkey,
+    ) -> CreateMasterEditionV3Builder<
+        EditionSet,
+        MintTypeParam,
+        UpdateAuthorityTypeParam,
+        MintAuthorityTypeParam,
+        MetadataTypeParam,
+        CreateMasterEditionArgsTypeParam,
+    > {
         self.edition = Some(edition);
-        self
+        CreateMasterEditionV3Builder {
+            edition: self.edition,
+            mint: self.mint,
+            update_authority: self.update_authority,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            create_master_edition_args: self.create_master_edition_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Metadata mint
     #[inline(always)]
-    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint(
+        mut self,
+        mint: solana_program::pubkey::Pubkey,
+    ) -> CreateMasterEditionV3Builder<
+        EditionTypeParam,
+        MintSet,
+        UpdateAuthorityTypeParam,
+        MintAuthorityTypeParam,
+        MetadataTypeParam,
+        CreateMasterEditionArgsTypeParam,
+    > {
         self.mint = Some(mint);
-        self
+        CreateMasterEditionV3Builder {
+            edition: self.edition,
+            mint: self.mint,
+            update_authority: self.update_authority,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            create_master_edition_args: self.create_master_edition_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Update authority
     #[inline(always)]
     pub fn update_authority(
-        &mut self,
+        mut self,
         update_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> CreateMasterEditionV3Builder<
+        EditionTypeParam,
+        MintTypeParam,
+        UpdateAuthoritySet,
+        MintAuthorityTypeParam,
+        MetadataTypeParam,
+        CreateMasterEditionArgsTypeParam,
+    > {
         self.update_authority = Some(update_authority);
-        self
+        CreateMasterEditionV3Builder {
+            edition: self.edition,
+            mint: self.mint,
+            update_authority: self.update_authority,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            create_master_edition_args: self.create_master_edition_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint authority on the metadata's mint - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY
     #[inline(always)]
-    pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint_authority(
+        mut self,
+        mint_authority: solana_program::pubkey::Pubkey,
+    ) -> CreateMasterEditionV3Builder<
+        EditionTypeParam,
+        MintTypeParam,
+        UpdateAuthorityTypeParam,
+        MintAuthoritySet,
+        MetadataTypeParam,
+        CreateMasterEditionArgsTypeParam,
+    > {
         self.mint_authority = Some(mint_authority);
-        self
+        CreateMasterEditionV3Builder {
+            edition: self.edition,
+            mint: self.mint,
+            update_authority: self.update_authority,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            create_master_edition_args: self.create_master_edition_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// payer
     #[inline(always)]
@@ -189,9 +350,32 @@ impl CreateMasterEditionV3Builder {
     }
     /// Metadata account
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> CreateMasterEditionV3Builder<
+        EditionTypeParam,
+        MintTypeParam,
+        UpdateAuthorityTypeParam,
+        MintAuthorityTypeParam,
+        MetadataSet,
+        CreateMasterEditionArgsTypeParam,
+    > {
         self.metadata = Some(metadata);
-        self
+        CreateMasterEditionV3Builder {
+            edition: self.edition,
+            mint: self.mint,
+            update_authority: self.update_authority,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            create_master_edition_args: self.create_master_edition_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA']`
     /// Token program
@@ -216,11 +400,31 @@ impl CreateMasterEditionV3Builder {
     }
     #[inline(always)]
     pub fn create_master_edition_args(
-        &mut self,
+        mut self,
         create_master_edition_args: CreateMasterEditionArgs,
-    ) -> &mut Self {
+    ) -> CreateMasterEditionV3Builder<
+        EditionTypeParam,
+        MintTypeParam,
+        UpdateAuthorityTypeParam,
+        MintAuthorityTypeParam,
+        MetadataTypeParam,
+        CreateMasterEditionArgsSet,
+    > {
         self.create_master_edition_args = Some(create_master_edition_args);
-        self
+        CreateMasterEditionV3Builder {
+            edition: self.edition,
+            mint: self.mint,
+            update_authority: self.update_authority,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            create_master_edition_args: self.create_master_edition_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -240,6 +444,19 @@ impl CreateMasterEditionV3Builder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    CreateMasterEditionV3Builder<
+        EditionSet,
+        MintSet,
+        UpdateAuthoritySet,
+        MintAuthoritySet,
+        MetadataSet,
+        CreateMasterEditionArgsSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateMasterEditionV3 {

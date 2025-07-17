@@ -119,8 +119,31 @@ impl RevokeUseAuthorityInstructionData {
 ///   6. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
 ///   7. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   8. `[optional]` rent
-#[derive(Default)]
-pub struct RevokeUseAuthorityBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct UseAuthorityRecordSet;
+#[derive(Clone)]
+pub struct OwnerSet;
+#[derive(Clone)]
+pub struct UserSet;
+#[derive(Clone)]
+pub struct OwnerTokenAccountSet;
+#[derive(Clone)]
+pub struct MintSet;
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct RevokeUseAuthorityUnset;
+
+pub struct RevokeUseAuthorityBuilder<
+    UseAuthorityRecordTypeParam = RevokeUseAuthorityUnset,
+    OwnerTypeParam = RevokeUseAuthorityUnset,
+    UserTypeParam = RevokeUseAuthorityUnset,
+    OwnerTokenAccountTypeParam = RevokeUseAuthorityUnset,
+    MintTypeParam = RevokeUseAuthorityUnset,
+    MetadataTypeParam = RevokeUseAuthorityUnset,
+> {
     use_authority_record: Option<solana_program::pubkey::Pubkey>,
     owner: Option<solana_program::pubkey::Pubkey>,
     user: Option<solana_program::pubkey::Pubkey>,
@@ -131,53 +154,227 @@ pub struct RevokeUseAuthorityBuilder {
     system_program: Option<solana_program::pubkey::Pubkey>,
     rent: Option<solana_program::pubkey::Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        UseAuthorityRecordTypeParam,
+        OwnerTypeParam,
+        UserTypeParam,
+        OwnerTokenAccountTypeParam,
+        MintTypeParam,
+        MetadataTypeParam,
+    )>,
 }
 
-impl RevokeUseAuthorityBuilder {
+impl
+    RevokeUseAuthorityBuilder<
+        RevokeUseAuthorityUnset,
+        RevokeUseAuthorityUnset,
+        RevokeUseAuthorityUnset,
+        RevokeUseAuthorityUnset,
+        RevokeUseAuthorityUnset,
+        RevokeUseAuthorityUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            use_authority_record: None,
+            owner: None,
+            user: None,
+            owner_token_account: None,
+            mint: None,
+            metadata: None,
+            token_program: None,
+            system_program: None,
+            rent: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        UseAuthorityRecordTypeParam,
+        OwnerTypeParam,
+        UserTypeParam,
+        OwnerTokenAccountTypeParam,
+        MintTypeParam,
+        MetadataTypeParam,
+    >
+    RevokeUseAuthorityBuilder<
+        UseAuthorityRecordTypeParam,
+        OwnerTypeParam,
+        UserTypeParam,
+        OwnerTokenAccountTypeParam,
+        MintTypeParam,
+        MetadataTypeParam,
+    >
+{
     /// Use Authority Record PDA
     #[inline(always)]
     pub fn use_authority_record(
-        &mut self,
+        mut self,
         use_authority_record: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> RevokeUseAuthorityBuilder<
+        UseAuthorityRecordSet,
+        OwnerTypeParam,
+        UserTypeParam,
+        OwnerTokenAccountTypeParam,
+        MintTypeParam,
+        MetadataTypeParam,
+    > {
         self.use_authority_record = Some(use_authority_record);
-        self
+        RevokeUseAuthorityBuilder {
+            use_authority_record: self.use_authority_record,
+            owner: self.owner,
+            user: self.user,
+            owner_token_account: self.owner_token_account,
+            mint: self.mint,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Owner
     #[inline(always)]
-    pub fn owner(&mut self, owner: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn owner(
+        mut self,
+        owner: solana_program::pubkey::Pubkey,
+    ) -> RevokeUseAuthorityBuilder<
+        UseAuthorityRecordTypeParam,
+        OwnerSet,
+        UserTypeParam,
+        OwnerTokenAccountTypeParam,
+        MintTypeParam,
+        MetadataTypeParam,
+    > {
         self.owner = Some(owner);
-        self
+        RevokeUseAuthorityBuilder {
+            use_authority_record: self.use_authority_record,
+            owner: self.owner,
+            user: self.user,
+            owner_token_account: self.owner_token_account,
+            mint: self.mint,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// A Use Authority
     #[inline(always)]
-    pub fn user(&mut self, user: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn user(
+        mut self,
+        user: solana_program::pubkey::Pubkey,
+    ) -> RevokeUseAuthorityBuilder<
+        UseAuthorityRecordTypeParam,
+        OwnerTypeParam,
+        UserSet,
+        OwnerTokenAccountTypeParam,
+        MintTypeParam,
+        MetadataTypeParam,
+    > {
         self.user = Some(user);
-        self
+        RevokeUseAuthorityBuilder {
+            use_authority_record: self.use_authority_record,
+            owner: self.owner,
+            user: self.user,
+            owner_token_account: self.owner_token_account,
+            mint: self.mint,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Owned Token Account Of Mint
     #[inline(always)]
     pub fn owner_token_account(
-        &mut self,
+        mut self,
         owner_token_account: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> RevokeUseAuthorityBuilder<
+        UseAuthorityRecordTypeParam,
+        OwnerTypeParam,
+        UserTypeParam,
+        OwnerTokenAccountSet,
+        MintTypeParam,
+        MetadataTypeParam,
+    > {
         self.owner_token_account = Some(owner_token_account);
-        self
+        RevokeUseAuthorityBuilder {
+            use_authority_record: self.use_authority_record,
+            owner: self.owner,
+            user: self.user,
+            owner_token_account: self.owner_token_account,
+            mint: self.mint,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint of Metadata
     #[inline(always)]
-    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint(
+        mut self,
+        mint: solana_program::pubkey::Pubkey,
+    ) -> RevokeUseAuthorityBuilder<
+        UseAuthorityRecordTypeParam,
+        OwnerTypeParam,
+        UserTypeParam,
+        OwnerTokenAccountTypeParam,
+        MintSet,
+        MetadataTypeParam,
+    > {
         self.mint = Some(mint);
-        self
+        RevokeUseAuthorityBuilder {
+            use_authority_record: self.use_authority_record,
+            owner: self.owner,
+            user: self.user,
+            owner_token_account: self.owner_token_account,
+            mint: self.mint,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Metadata account
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> RevokeUseAuthorityBuilder<
+        UseAuthorityRecordTypeParam,
+        OwnerTypeParam,
+        UserTypeParam,
+        OwnerTokenAccountTypeParam,
+        MintTypeParam,
+        MetadataSet,
+    > {
         self.metadata = Some(metadata);
-        self
+        RevokeUseAuthorityBuilder {
+            use_authority_record: self.use_authority_record,
+            owner: self.owner,
+            user: self.user,
+            owner_token_account: self.owner_token_account,
+            mint: self.mint,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA']`
     /// Token program
@@ -218,6 +415,19 @@ impl RevokeUseAuthorityBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    RevokeUseAuthorityBuilder<
+        UseAuthorityRecordSet,
+        OwnerSet,
+        UserSet,
+        OwnerTokenAccountSet,
+        MintSet,
+        MetadataSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = RevokeUseAuthority {

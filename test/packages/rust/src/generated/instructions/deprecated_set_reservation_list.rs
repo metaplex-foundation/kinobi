@@ -92,8 +92,31 @@ pub struct DeprecatedSetReservationListInstructionArgs {
 ///   0. `[writable]` master_edition
 ///   1. `[writable]` reservation_list
 ///   2. `[signer]` resource
-#[derive(Default)]
-pub struct DeprecatedSetReservationListBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct MasterEditionSet;
+#[derive(Clone)]
+pub struct ReservationListSet;
+#[derive(Clone)]
+pub struct ResourceSet;
+#[derive(Clone)]
+pub struct ReservationsSet;
+#[derive(Clone)]
+pub struct OffsetSet;
+#[derive(Clone)]
+pub struct TotalSpotOffsetSet;
+#[derive(Clone)]
+pub struct DeprecatedSetReservationListUnset;
+
+pub struct DeprecatedSetReservationListBuilder<
+    MasterEditionTypeParam = DeprecatedSetReservationListUnset,
+    ReservationListTypeParam = DeprecatedSetReservationListUnset,
+    ResourceTypeParam = DeprecatedSetReservationListUnset,
+    ReservationsTypeParam = DeprecatedSetReservationListUnset,
+    OffsetTypeParam = DeprecatedSetReservationListUnset,
+    TotalSpotOffsetTypeParam = DeprecatedSetReservationListUnset,
+> {
     master_edition: Option<solana_program::pubkey::Pubkey>,
     reservation_list: Option<solana_program::pubkey::Pubkey>,
     resource: Option<solana_program::pubkey::Pubkey>,
@@ -102,37 +125,160 @@ pub struct DeprecatedSetReservationListBuilder {
     offset: Option<u64>,
     total_spot_offset: Option<u64>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        MasterEditionTypeParam,
+        ReservationListTypeParam,
+        ResourceTypeParam,
+        ReservationsTypeParam,
+        OffsetTypeParam,
+        TotalSpotOffsetTypeParam,
+    )>,
 }
 
-impl DeprecatedSetReservationListBuilder {
+impl
+    DeprecatedSetReservationListBuilder<
+        DeprecatedSetReservationListUnset,
+        DeprecatedSetReservationListUnset,
+        DeprecatedSetReservationListUnset,
+        DeprecatedSetReservationListUnset,
+        DeprecatedSetReservationListUnset,
+        DeprecatedSetReservationListUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            master_edition: None,
+            reservation_list: None,
+            resource: None,
+            reservations: None,
+            total_reservation_spots: None,
+            offset: None,
+            total_spot_offset: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        MasterEditionTypeParam,
+        ReservationListTypeParam,
+        ResourceTypeParam,
+        ReservationsTypeParam,
+        OffsetTypeParam,
+        TotalSpotOffsetTypeParam,
+    >
+    DeprecatedSetReservationListBuilder<
+        MasterEditionTypeParam,
+        ReservationListTypeParam,
+        ResourceTypeParam,
+        ReservationsTypeParam,
+        OffsetTypeParam,
+        TotalSpotOffsetTypeParam,
+    >
+{
     /// Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
     #[inline(always)]
-    pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn master_edition(
+        mut self,
+        master_edition: solana_program::pubkey::Pubkey,
+    ) -> DeprecatedSetReservationListBuilder<
+        MasterEditionSet,
+        ReservationListTypeParam,
+        ResourceTypeParam,
+        ReservationsTypeParam,
+        OffsetTypeParam,
+        TotalSpotOffsetTypeParam,
+    > {
         self.master_edition = Some(master_edition);
-        self
+        DeprecatedSetReservationListBuilder {
+            master_edition: self.master_edition,
+            reservation_list: self.reservation_list,
+            resource: self.resource,
+            reservations: self.reservations,
+            total_reservation_spots: self.total_reservation_spots,
+            offset: self.offset,
+            total_spot_offset: self.total_spot_offset,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
     #[inline(always)]
     pub fn reservation_list(
-        &mut self,
+        mut self,
         reservation_list: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> DeprecatedSetReservationListBuilder<
+        MasterEditionTypeParam,
+        ReservationListSet,
+        ResourceTypeParam,
+        ReservationsTypeParam,
+        OffsetTypeParam,
+        TotalSpotOffsetTypeParam,
+    > {
         self.reservation_list = Some(reservation_list);
-        self
+        DeprecatedSetReservationListBuilder {
+            master_edition: self.master_edition,
+            reservation_list: self.reservation_list,
+            resource: self.resource,
+            reservations: self.reservations,
+            total_reservation_spots: self.total_reservation_spots,
+            offset: self.offset,
+            total_spot_offset: self.total_spot_offset,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// The resource you tied the reservation list too
     #[inline(always)]
-    pub fn resource(&mut self, resource: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn resource(
+        mut self,
+        resource: solana_program::pubkey::Pubkey,
+    ) -> DeprecatedSetReservationListBuilder<
+        MasterEditionTypeParam,
+        ReservationListTypeParam,
+        ResourceSet,
+        ReservationsTypeParam,
+        OffsetTypeParam,
+        TotalSpotOffsetTypeParam,
+    > {
         self.resource = Some(resource);
-        self
+        DeprecatedSetReservationListBuilder {
+            master_edition: self.master_edition,
+            reservation_list: self.reservation_list,
+            resource: self.resource,
+            reservations: self.reservations,
+            total_reservation_spots: self.total_reservation_spots,
+            offset: self.offset,
+            total_spot_offset: self.total_spot_offset,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
-    pub fn reservations(&mut self, reservations: Vec<Reservation>) -> &mut Self {
+    pub fn reservations(
+        mut self,
+        reservations: Vec<Reservation>,
+    ) -> DeprecatedSetReservationListBuilder<
+        MasterEditionTypeParam,
+        ReservationListTypeParam,
+        ResourceTypeParam,
+        ReservationsSet,
+        OffsetTypeParam,
+        TotalSpotOffsetTypeParam,
+    > {
         self.reservations = Some(reservations);
-        self
+        DeprecatedSetReservationListBuilder {
+            master_edition: self.master_edition,
+            reservation_list: self.reservation_list,
+            resource: self.resource,
+            reservations: self.reservations,
+            total_reservation_spots: self.total_reservation_spots,
+            offset: self.offset,
+            total_spot_offset: self.total_spot_offset,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional argument]`
     #[inline(always)]
@@ -141,14 +287,54 @@ impl DeprecatedSetReservationListBuilder {
         self
     }
     #[inline(always)]
-    pub fn offset(&mut self, offset: u64) -> &mut Self {
+    pub fn offset(
+        mut self,
+        offset: u64,
+    ) -> DeprecatedSetReservationListBuilder<
+        MasterEditionTypeParam,
+        ReservationListTypeParam,
+        ResourceTypeParam,
+        ReservationsTypeParam,
+        OffsetSet,
+        TotalSpotOffsetTypeParam,
+    > {
         self.offset = Some(offset);
-        self
+        DeprecatedSetReservationListBuilder {
+            master_edition: self.master_edition,
+            reservation_list: self.reservation_list,
+            resource: self.resource,
+            reservations: self.reservations,
+            total_reservation_spots: self.total_reservation_spots,
+            offset: self.offset,
+            total_spot_offset: self.total_spot_offset,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
-    pub fn total_spot_offset(&mut self, total_spot_offset: u64) -> &mut Self {
+    pub fn total_spot_offset(
+        mut self,
+        total_spot_offset: u64,
+    ) -> DeprecatedSetReservationListBuilder<
+        MasterEditionTypeParam,
+        ReservationListTypeParam,
+        ResourceTypeParam,
+        ReservationsTypeParam,
+        OffsetTypeParam,
+        TotalSpotOffsetSet,
+    > {
         self.total_spot_offset = Some(total_spot_offset);
-        self
+        DeprecatedSetReservationListBuilder {
+            master_edition: self.master_edition,
+            reservation_list: self.reservation_list,
+            resource: self.resource,
+            reservations: self.reservations,
+            total_reservation_spots: self.total_reservation_spots,
+            offset: self.offset,
+            total_spot_offset: self.total_spot_offset,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -168,6 +354,19 @@ impl DeprecatedSetReservationListBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    DeprecatedSetReservationListBuilder<
+        MasterEditionSet,
+        ReservationListSet,
+        ResourceSet,
+        ReservationsSet,
+        OffsetSet,
+        TotalSpotOffsetSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = DeprecatedSetReservationList {

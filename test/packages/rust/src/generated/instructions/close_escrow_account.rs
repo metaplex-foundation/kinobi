@@ -107,8 +107,28 @@ impl CloseEscrowAccountInstructionData {
 ///   5. `[writable, signer]` payer
 ///   6. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   7. `[optional]` sysvar_instructions (default to `Sysvar1nstructions1111111111111111111111111`)
-#[derive(Default)]
-pub struct CloseEscrowAccountBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct EscrowSet;
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct MintSet;
+#[derive(Clone)]
+pub struct TokenAccountSet;
+#[derive(Clone)]
+pub struct EditionSet;
+#[derive(Clone)]
+pub struct CloseEscrowAccountUnset;
+
+pub struct CloseEscrowAccountBuilder<
+    EscrowTypeParam = CloseEscrowAccountUnset,
+    MetadataTypeParam = CloseEscrowAccountUnset,
+    MintTypeParam = CloseEscrowAccountUnset,
+    TokenAccountTypeParam = CloseEscrowAccountUnset,
+    EditionTypeParam = CloseEscrowAccountUnset,
+> {
     escrow: Option<solana_program::pubkey::Pubkey>,
     metadata: Option<solana_program::pubkey::Pubkey>,
     mint: Option<solana_program::pubkey::Pubkey>,
@@ -118,41 +138,184 @@ pub struct CloseEscrowAccountBuilder {
     system_program: Option<solana_program::pubkey::Pubkey>,
     sysvar_instructions: Option<solana_program::pubkey::Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        EscrowTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+        TokenAccountTypeParam,
+        EditionTypeParam,
+    )>,
 }
 
-impl CloseEscrowAccountBuilder {
+impl
+    CloseEscrowAccountBuilder<
+        CloseEscrowAccountUnset,
+        CloseEscrowAccountUnset,
+        CloseEscrowAccountUnset,
+        CloseEscrowAccountUnset,
+        CloseEscrowAccountUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            escrow: None,
+            metadata: None,
+            mint: None,
+            token_account: None,
+            edition: None,
+            payer: None,
+            system_program: None,
+            sysvar_instructions: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        EscrowTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+        TokenAccountTypeParam,
+        EditionTypeParam,
+    >
+    CloseEscrowAccountBuilder<
+        EscrowTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+        TokenAccountTypeParam,
+        EditionTypeParam,
+    >
+{
     /// Escrow account
     #[inline(always)]
-    pub fn escrow(&mut self, escrow: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn escrow(
+        mut self,
+        escrow: solana_program::pubkey::Pubkey,
+    ) -> CloseEscrowAccountBuilder<
+        EscrowSet,
+        MetadataTypeParam,
+        MintTypeParam,
+        TokenAccountTypeParam,
+        EditionTypeParam,
+    > {
         self.escrow = Some(escrow);
-        self
+        CloseEscrowAccountBuilder {
+            escrow: self.escrow,
+            metadata: self.metadata,
+            mint: self.mint,
+            token_account: self.token_account,
+            edition: self.edition,
+            payer: self.payer,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Metadata account
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> CloseEscrowAccountBuilder<
+        EscrowTypeParam,
+        MetadataSet,
+        MintTypeParam,
+        TokenAccountTypeParam,
+        EditionTypeParam,
+    > {
         self.metadata = Some(metadata);
-        self
+        CloseEscrowAccountBuilder {
+            escrow: self.escrow,
+            metadata: self.metadata,
+            mint: self.mint,
+            token_account: self.token_account,
+            edition: self.edition,
+            payer: self.payer,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint account
     #[inline(always)]
-    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint(
+        mut self,
+        mint: solana_program::pubkey::Pubkey,
+    ) -> CloseEscrowAccountBuilder<
+        EscrowTypeParam,
+        MetadataTypeParam,
+        MintSet,
+        TokenAccountTypeParam,
+        EditionTypeParam,
+    > {
         self.mint = Some(mint);
-        self
+        CloseEscrowAccountBuilder {
+            escrow: self.escrow,
+            metadata: self.metadata,
+            mint: self.mint,
+            token_account: self.token_account,
+            edition: self.edition,
+            payer: self.payer,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Token account
     #[inline(always)]
-    pub fn token_account(&mut self, token_account: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn token_account(
+        mut self,
+        token_account: solana_program::pubkey::Pubkey,
+    ) -> CloseEscrowAccountBuilder<
+        EscrowTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+        TokenAccountSet,
+        EditionTypeParam,
+    > {
         self.token_account = Some(token_account);
-        self
+        CloseEscrowAccountBuilder {
+            escrow: self.escrow,
+            metadata: self.metadata,
+            mint: self.mint,
+            token_account: self.token_account,
+            edition: self.edition,
+            payer: self.payer,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Edition account
     #[inline(always)]
-    pub fn edition(&mut self, edition: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn edition(
+        mut self,
+        edition: solana_program::pubkey::Pubkey,
+    ) -> CloseEscrowAccountBuilder<
+        EscrowTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+        TokenAccountTypeParam,
+        EditionSet,
+    > {
         self.edition = Some(edition);
-        self
+        CloseEscrowAccountBuilder {
+            escrow: self.escrow,
+            metadata: self.metadata,
+            mint: self.mint,
+            token_account: self.token_account,
+            edition: self.edition,
+            payer: self.payer,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Wallet paying for the transaction and new account
     #[inline(always)]
@@ -195,6 +358,10 @@ impl CloseEscrowAccountBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl CloseEscrowAccountBuilder<EscrowSet, MetadataSet, MintSet, TokenAccountSet, EditionSet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = CloseEscrowAccount {

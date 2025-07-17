@@ -149,8 +149,43 @@ impl SetCollectionInstructionData {
 ///   11. `[writable]` new_collection_authority_record
 ///   12. `[optional]` token_metadata_program (default to `metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s`)
 ///   13. `[optional]` system_program (default to `11111111111111111111111111111111`)
-#[derive(Default)]
-pub struct SetCollectionBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct CandyMachineSet;
+#[derive(Clone)]
+pub struct AuthorityPdaSet;
+#[derive(Clone)]
+pub struct CollectionMintSet;
+#[derive(Clone)]
+pub struct CollectionMetadataSet;
+#[derive(Clone)]
+pub struct CollectionAuthorityRecordSet;
+#[derive(Clone)]
+pub struct NewCollectionUpdateAuthoritySet;
+#[derive(Clone)]
+pub struct NewCollectionMetadataSet;
+#[derive(Clone)]
+pub struct NewCollectionMintSet;
+#[derive(Clone)]
+pub struct NewCollectionMasterEditionSet;
+#[derive(Clone)]
+pub struct NewCollectionAuthorityRecordSet;
+#[derive(Clone)]
+pub struct SetCollectionUnset;
+
+pub struct SetCollectionBuilder<
+    CandyMachineTypeParam = SetCollectionUnset,
+    AuthorityPdaTypeParam = SetCollectionUnset,
+    CollectionMintTypeParam = SetCollectionUnset,
+    CollectionMetadataTypeParam = SetCollectionUnset,
+    CollectionAuthorityRecordTypeParam = SetCollectionUnset,
+    NewCollectionUpdateAuthorityTypeParam = SetCollectionUnset,
+    NewCollectionMetadataTypeParam = SetCollectionUnset,
+    NewCollectionMintTypeParam = SetCollectionUnset,
+    NewCollectionMasterEditionTypeParam = SetCollectionUnset,
+    NewCollectionAuthorityRecordTypeParam = SetCollectionUnset,
+> {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
     authority: Option<solana_program::pubkey::Pubkey>,
     authority_pda: Option<solana_program::pubkey::Pubkey>,
@@ -166,16 +201,116 @@ pub struct SetCollectionBuilder {
     token_metadata_program: Option<solana_program::pubkey::Pubkey>,
     system_program: Option<solana_program::pubkey::Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        NewCollectionUpdateAuthorityTypeParam,
+        NewCollectionMetadataTypeParam,
+        NewCollectionMintTypeParam,
+        NewCollectionMasterEditionTypeParam,
+        NewCollectionAuthorityRecordTypeParam,
+    )>,
 }
 
-impl SetCollectionBuilder {
+impl
+    SetCollectionBuilder<
+        SetCollectionUnset,
+        SetCollectionUnset,
+        SetCollectionUnset,
+        SetCollectionUnset,
+        SetCollectionUnset,
+        SetCollectionUnset,
+        SetCollectionUnset,
+        SetCollectionUnset,
+        SetCollectionUnset,
+        SetCollectionUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            candy_machine: None,
+            authority: None,
+            authority_pda: None,
+            payer: None,
+            collection_mint: None,
+            collection_metadata: None,
+            collection_authority_record: None,
+            new_collection_update_authority: None,
+            new_collection_metadata: None,
+            new_collection_mint: None,
+            new_collection_master_edition: None,
+            new_collection_authority_record: None,
+            token_metadata_program: None,
+            system_program: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        NewCollectionUpdateAuthorityTypeParam,
+        NewCollectionMetadataTypeParam,
+        NewCollectionMintTypeParam,
+        NewCollectionMasterEditionTypeParam,
+        NewCollectionAuthorityRecordTypeParam,
+    >
+    SetCollectionBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        NewCollectionUpdateAuthorityTypeParam,
+        NewCollectionMetadataTypeParam,
+        NewCollectionMintTypeParam,
+        NewCollectionMasterEditionTypeParam,
+        NewCollectionAuthorityRecordTypeParam,
+    >
+{
     #[inline(always)]
-    pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn candy_machine(
+        mut self,
+        candy_machine: solana_program::pubkey::Pubkey,
+    ) -> SetCollectionBuilder<
+        CandyMachineSet,
+        AuthorityPdaTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        NewCollectionUpdateAuthorityTypeParam,
+        NewCollectionMetadataTypeParam,
+        NewCollectionMintTypeParam,
+        NewCollectionMasterEditionTypeParam,
+        NewCollectionAuthorityRecordTypeParam,
+    > {
         self.candy_machine = Some(candy_machine);
-        self
+        SetCollectionBuilder {
+            candy_machine: self.candy_machine,
+            authority: self.authority,
+            authority_pda: self.authority_pda,
+            payer: self.payer,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_authority_record: self.collection_authority_record,
+            new_collection_update_authority: self.new_collection_update_authority,
+            new_collection_metadata: self.new_collection_metadata,
+            new_collection_mint: self.new_collection_mint,
+            new_collection_master_edition: self.new_collection_master_edition,
+            new_collection_authority_record: self.new_collection_authority_record,
+            token_metadata_program: self.token_metadata_program,
+            system_program: self.system_program,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
@@ -183,9 +318,40 @@ impl SetCollectionBuilder {
         self
     }
     #[inline(always)]
-    pub fn authority_pda(&mut self, authority_pda: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn authority_pda(
+        mut self,
+        authority_pda: solana_program::pubkey::Pubkey,
+    ) -> SetCollectionBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaSet,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        NewCollectionUpdateAuthorityTypeParam,
+        NewCollectionMetadataTypeParam,
+        NewCollectionMintTypeParam,
+        NewCollectionMasterEditionTypeParam,
+        NewCollectionAuthorityRecordTypeParam,
+    > {
         self.authority_pda = Some(authority_pda);
-        self
+        SetCollectionBuilder {
+            candy_machine: self.candy_machine,
+            authority: self.authority,
+            authority_pda: self.authority_pda,
+            payer: self.payer,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_authority_record: self.collection_authority_record,
+            new_collection_update_authority: self.new_collection_update_authority,
+            new_collection_metadata: self.new_collection_metadata,
+            new_collection_mint: self.new_collection_mint,
+            new_collection_master_edition: self.new_collection_master_edition,
+            new_collection_authority_record: self.new_collection_authority_record,
+            token_metadata_program: self.token_metadata_program,
+            system_program: self.system_program,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
@@ -194,67 +360,291 @@ impl SetCollectionBuilder {
     }
     #[inline(always)]
     pub fn collection_mint(
-        &mut self,
+        mut self,
         collection_mint: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> SetCollectionBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        CollectionMintSet,
+        CollectionMetadataTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        NewCollectionUpdateAuthorityTypeParam,
+        NewCollectionMetadataTypeParam,
+        NewCollectionMintTypeParam,
+        NewCollectionMasterEditionTypeParam,
+        NewCollectionAuthorityRecordTypeParam,
+    > {
         self.collection_mint = Some(collection_mint);
-        self
+        SetCollectionBuilder {
+            candy_machine: self.candy_machine,
+            authority: self.authority,
+            authority_pda: self.authority_pda,
+            payer: self.payer,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_authority_record: self.collection_authority_record,
+            new_collection_update_authority: self.new_collection_update_authority,
+            new_collection_metadata: self.new_collection_metadata,
+            new_collection_mint: self.new_collection_mint,
+            new_collection_master_edition: self.new_collection_master_edition,
+            new_collection_authority_record: self.new_collection_authority_record,
+            token_metadata_program: self.token_metadata_program,
+            system_program: self.system_program,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn collection_metadata(
-        &mut self,
+        mut self,
         collection_metadata: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> SetCollectionBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataSet,
+        CollectionAuthorityRecordTypeParam,
+        NewCollectionUpdateAuthorityTypeParam,
+        NewCollectionMetadataTypeParam,
+        NewCollectionMintTypeParam,
+        NewCollectionMasterEditionTypeParam,
+        NewCollectionAuthorityRecordTypeParam,
+    > {
         self.collection_metadata = Some(collection_metadata);
-        self
+        SetCollectionBuilder {
+            candy_machine: self.candy_machine,
+            authority: self.authority,
+            authority_pda: self.authority_pda,
+            payer: self.payer,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_authority_record: self.collection_authority_record,
+            new_collection_update_authority: self.new_collection_update_authority,
+            new_collection_metadata: self.new_collection_metadata,
+            new_collection_mint: self.new_collection_mint,
+            new_collection_master_edition: self.new_collection_master_edition,
+            new_collection_authority_record: self.new_collection_authority_record,
+            token_metadata_program: self.token_metadata_program,
+            system_program: self.system_program,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn collection_authority_record(
-        &mut self,
+        mut self,
         collection_authority_record: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> SetCollectionBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionAuthorityRecordSet,
+        NewCollectionUpdateAuthorityTypeParam,
+        NewCollectionMetadataTypeParam,
+        NewCollectionMintTypeParam,
+        NewCollectionMasterEditionTypeParam,
+        NewCollectionAuthorityRecordTypeParam,
+    > {
         self.collection_authority_record = Some(collection_authority_record);
-        self
+        SetCollectionBuilder {
+            candy_machine: self.candy_machine,
+            authority: self.authority,
+            authority_pda: self.authority_pda,
+            payer: self.payer,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_authority_record: self.collection_authority_record,
+            new_collection_update_authority: self.new_collection_update_authority,
+            new_collection_metadata: self.new_collection_metadata,
+            new_collection_mint: self.new_collection_mint,
+            new_collection_master_edition: self.new_collection_master_edition,
+            new_collection_authority_record: self.new_collection_authority_record,
+            token_metadata_program: self.token_metadata_program,
+            system_program: self.system_program,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn new_collection_update_authority(
-        &mut self,
+        mut self,
         new_collection_update_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> SetCollectionBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        NewCollectionUpdateAuthoritySet,
+        NewCollectionMetadataTypeParam,
+        NewCollectionMintTypeParam,
+        NewCollectionMasterEditionTypeParam,
+        NewCollectionAuthorityRecordTypeParam,
+    > {
         self.new_collection_update_authority = Some(new_collection_update_authority);
-        self
+        SetCollectionBuilder {
+            candy_machine: self.candy_machine,
+            authority: self.authority,
+            authority_pda: self.authority_pda,
+            payer: self.payer,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_authority_record: self.collection_authority_record,
+            new_collection_update_authority: self.new_collection_update_authority,
+            new_collection_metadata: self.new_collection_metadata,
+            new_collection_mint: self.new_collection_mint,
+            new_collection_master_edition: self.new_collection_master_edition,
+            new_collection_authority_record: self.new_collection_authority_record,
+            token_metadata_program: self.token_metadata_program,
+            system_program: self.system_program,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn new_collection_metadata(
-        &mut self,
+        mut self,
         new_collection_metadata: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> SetCollectionBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        NewCollectionUpdateAuthorityTypeParam,
+        NewCollectionMetadataSet,
+        NewCollectionMintTypeParam,
+        NewCollectionMasterEditionTypeParam,
+        NewCollectionAuthorityRecordTypeParam,
+    > {
         self.new_collection_metadata = Some(new_collection_metadata);
-        self
+        SetCollectionBuilder {
+            candy_machine: self.candy_machine,
+            authority: self.authority,
+            authority_pda: self.authority_pda,
+            payer: self.payer,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_authority_record: self.collection_authority_record,
+            new_collection_update_authority: self.new_collection_update_authority,
+            new_collection_metadata: self.new_collection_metadata,
+            new_collection_mint: self.new_collection_mint,
+            new_collection_master_edition: self.new_collection_master_edition,
+            new_collection_authority_record: self.new_collection_authority_record,
+            token_metadata_program: self.token_metadata_program,
+            system_program: self.system_program,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn new_collection_mint(
-        &mut self,
+        mut self,
         new_collection_mint: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> SetCollectionBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        NewCollectionUpdateAuthorityTypeParam,
+        NewCollectionMetadataTypeParam,
+        NewCollectionMintSet,
+        NewCollectionMasterEditionTypeParam,
+        NewCollectionAuthorityRecordTypeParam,
+    > {
         self.new_collection_mint = Some(new_collection_mint);
-        self
+        SetCollectionBuilder {
+            candy_machine: self.candy_machine,
+            authority: self.authority,
+            authority_pda: self.authority_pda,
+            payer: self.payer,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_authority_record: self.collection_authority_record,
+            new_collection_update_authority: self.new_collection_update_authority,
+            new_collection_metadata: self.new_collection_metadata,
+            new_collection_mint: self.new_collection_mint,
+            new_collection_master_edition: self.new_collection_master_edition,
+            new_collection_authority_record: self.new_collection_authority_record,
+            token_metadata_program: self.token_metadata_program,
+            system_program: self.system_program,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn new_collection_master_edition(
-        &mut self,
+        mut self,
         new_collection_master_edition: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> SetCollectionBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        NewCollectionUpdateAuthorityTypeParam,
+        NewCollectionMetadataTypeParam,
+        NewCollectionMintTypeParam,
+        NewCollectionMasterEditionSet,
+        NewCollectionAuthorityRecordTypeParam,
+    > {
         self.new_collection_master_edition = Some(new_collection_master_edition);
-        self
+        SetCollectionBuilder {
+            candy_machine: self.candy_machine,
+            authority: self.authority,
+            authority_pda: self.authority_pda,
+            payer: self.payer,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_authority_record: self.collection_authority_record,
+            new_collection_update_authority: self.new_collection_update_authority,
+            new_collection_metadata: self.new_collection_metadata,
+            new_collection_mint: self.new_collection_mint,
+            new_collection_master_edition: self.new_collection_master_edition,
+            new_collection_authority_record: self.new_collection_authority_record,
+            token_metadata_program: self.token_metadata_program,
+            system_program: self.system_program,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn new_collection_authority_record(
-        &mut self,
+        mut self,
         new_collection_authority_record: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> SetCollectionBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        NewCollectionUpdateAuthorityTypeParam,
+        NewCollectionMetadataTypeParam,
+        NewCollectionMintTypeParam,
+        NewCollectionMasterEditionTypeParam,
+        NewCollectionAuthorityRecordSet,
+    > {
         self.new_collection_authority_record = Some(new_collection_authority_record);
-        self
+        SetCollectionBuilder {
+            candy_machine: self.candy_machine,
+            authority: self.authority,
+            authority_pda: self.authority_pda,
+            payer: self.payer,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_authority_record: self.collection_authority_record,
+            new_collection_update_authority: self.new_collection_update_authority,
+            new_collection_metadata: self.new_collection_metadata,
+            new_collection_mint: self.new_collection_mint,
+            new_collection_master_edition: self.new_collection_master_edition,
+            new_collection_authority_record: self.new_collection_authority_record,
+            token_metadata_program: self.token_metadata_program,
+            system_program: self.system_program,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s']`
     #[inline(always)]
@@ -289,6 +679,23 @@ impl SetCollectionBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    SetCollectionBuilder<
+        CandyMachineSet,
+        AuthorityPdaSet,
+        CollectionMintSet,
+        CollectionMetadataSet,
+        CollectionAuthorityRecordSet,
+        NewCollectionUpdateAuthoritySet,
+        NewCollectionMetadataSet,
+        NewCollectionMintSet,
+        NewCollectionMasterEditionSet,
+        NewCollectionAuthorityRecordSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts =

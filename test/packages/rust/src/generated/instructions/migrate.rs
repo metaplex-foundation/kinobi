@@ -142,8 +142,34 @@ pub struct MigrateInstructionArgs {
 ///   7. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   8. `[optional]` sysvar_instructions (default to `Sysvar1nstructions1111111111111111111111111`)
 ///   9. `[optional]` authorization_rules
-#[derive(Default)]
-pub struct MigrateBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct MasterEditionSet;
+#[derive(Clone)]
+pub struct TokenAccountSet;
+#[derive(Clone)]
+pub struct MintSet;
+#[derive(Clone)]
+pub struct UpdateAuthoritySet;
+#[derive(Clone)]
+pub struct CollectionMetadataSet;
+#[derive(Clone)]
+pub struct MigrateArgsSet;
+#[derive(Clone)]
+pub struct MigrateUnset;
+
+pub struct MigrateBuilder<
+    MetadataTypeParam = MigrateUnset,
+    MasterEditionTypeParam = MigrateUnset,
+    TokenAccountTypeParam = MigrateUnset,
+    MintTypeParam = MigrateUnset,
+    UpdateAuthorityTypeParam = MigrateUnset,
+    CollectionMetadataTypeParam = MigrateUnset,
+    MigrateArgsTypeParam = MigrateUnset,
+> {
     metadata: Option<solana_program::pubkey::Pubkey>,
     master_edition: Option<solana_program::pubkey::Pubkey>,
     token_account: Option<solana_program::pubkey::Pubkey>,
@@ -156,53 +182,251 @@ pub struct MigrateBuilder {
     authorization_rules: Option<solana_program::pubkey::Pubkey>,
     migrate_args: Option<MigrateArgs>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        MetadataTypeParam,
+        MasterEditionTypeParam,
+        TokenAccountTypeParam,
+        MintTypeParam,
+        UpdateAuthorityTypeParam,
+        CollectionMetadataTypeParam,
+        MigrateArgsTypeParam,
+    )>,
 }
 
-impl MigrateBuilder {
+impl
+    MigrateBuilder<
+        MigrateUnset,
+        MigrateUnset,
+        MigrateUnset,
+        MigrateUnset,
+        MigrateUnset,
+        MigrateUnset,
+        MigrateUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            metadata: None,
+            master_edition: None,
+            token_account: None,
+            mint: None,
+            update_authority: None,
+            collection_metadata: None,
+            token_program: None,
+            system_program: None,
+            sysvar_instructions: None,
+            authorization_rules: None,
+            migrate_args: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        MetadataTypeParam,
+        MasterEditionTypeParam,
+        TokenAccountTypeParam,
+        MintTypeParam,
+        UpdateAuthorityTypeParam,
+        CollectionMetadataTypeParam,
+        MigrateArgsTypeParam,
+    >
+    MigrateBuilder<
+        MetadataTypeParam,
+        MasterEditionTypeParam,
+        TokenAccountTypeParam,
+        MintTypeParam,
+        UpdateAuthorityTypeParam,
+        CollectionMetadataTypeParam,
+        MigrateArgsTypeParam,
+    >
+{
     /// Metadata account
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> MigrateBuilder<
+        MetadataSet,
+        MasterEditionTypeParam,
+        TokenAccountTypeParam,
+        MintTypeParam,
+        UpdateAuthorityTypeParam,
+        CollectionMetadataTypeParam,
+        MigrateArgsTypeParam,
+    > {
         self.metadata = Some(metadata);
-        self
+        MigrateBuilder {
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            token_account: self.token_account,
+            mint: self.mint,
+            update_authority: self.update_authority,
+            collection_metadata: self.collection_metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authorization_rules: self.authorization_rules,
+            migrate_args: self.migrate_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Master edition account
     #[inline(always)]
-    pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn master_edition(
+        mut self,
+        master_edition: solana_program::pubkey::Pubkey,
+    ) -> MigrateBuilder<
+        MetadataTypeParam,
+        MasterEditionSet,
+        TokenAccountTypeParam,
+        MintTypeParam,
+        UpdateAuthorityTypeParam,
+        CollectionMetadataTypeParam,
+        MigrateArgsTypeParam,
+    > {
         self.master_edition = Some(master_edition);
-        self
+        MigrateBuilder {
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            token_account: self.token_account,
+            mint: self.mint,
+            update_authority: self.update_authority,
+            collection_metadata: self.collection_metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authorization_rules: self.authorization_rules,
+            migrate_args: self.migrate_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Token account
     #[inline(always)]
-    pub fn token_account(&mut self, token_account: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn token_account(
+        mut self,
+        token_account: solana_program::pubkey::Pubkey,
+    ) -> MigrateBuilder<
+        MetadataTypeParam,
+        MasterEditionTypeParam,
+        TokenAccountSet,
+        MintTypeParam,
+        UpdateAuthorityTypeParam,
+        CollectionMetadataTypeParam,
+        MigrateArgsTypeParam,
+    > {
         self.token_account = Some(token_account);
-        self
+        MigrateBuilder {
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            token_account: self.token_account,
+            mint: self.mint,
+            update_authority: self.update_authority,
+            collection_metadata: self.collection_metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authorization_rules: self.authorization_rules,
+            migrate_args: self.migrate_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint account
     #[inline(always)]
-    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint(
+        mut self,
+        mint: solana_program::pubkey::Pubkey,
+    ) -> MigrateBuilder<
+        MetadataTypeParam,
+        MasterEditionTypeParam,
+        TokenAccountTypeParam,
+        MintSet,
+        UpdateAuthorityTypeParam,
+        CollectionMetadataTypeParam,
+        MigrateArgsTypeParam,
+    > {
         self.mint = Some(mint);
-        self
+        MigrateBuilder {
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            token_account: self.token_account,
+            mint: self.mint,
+            update_authority: self.update_authority,
+            collection_metadata: self.collection_metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authorization_rules: self.authorization_rules,
+            migrate_args: self.migrate_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Update authority
     #[inline(always)]
     pub fn update_authority(
-        &mut self,
+        mut self,
         update_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> MigrateBuilder<
+        MetadataTypeParam,
+        MasterEditionTypeParam,
+        TokenAccountTypeParam,
+        MintTypeParam,
+        UpdateAuthoritySet,
+        CollectionMetadataTypeParam,
+        MigrateArgsTypeParam,
+    > {
         self.update_authority = Some(update_authority);
-        self
+        MigrateBuilder {
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            token_account: self.token_account,
+            mint: self.mint,
+            update_authority: self.update_authority,
+            collection_metadata: self.collection_metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authorization_rules: self.authorization_rules,
+            migrate_args: self.migrate_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Collection metadata account
     #[inline(always)]
     pub fn collection_metadata(
-        &mut self,
+        mut self,
         collection_metadata: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> MigrateBuilder<
+        MetadataTypeParam,
+        MasterEditionTypeParam,
+        TokenAccountTypeParam,
+        MintTypeParam,
+        UpdateAuthorityTypeParam,
+        CollectionMetadataSet,
+        MigrateArgsTypeParam,
+    > {
         self.collection_metadata = Some(collection_metadata);
-        self
+        MigrateBuilder {
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            token_account: self.token_account,
+            mint: self.mint,
+            update_authority: self.update_authority,
+            collection_metadata: self.collection_metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authorization_rules: self.authorization_rules,
+            migrate_args: self.migrate_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA']`
     /// Token Program
@@ -239,9 +463,34 @@ impl MigrateBuilder {
         self
     }
     #[inline(always)]
-    pub fn migrate_args(&mut self, migrate_args: MigrateArgs) -> &mut Self {
+    pub fn migrate_args(
+        mut self,
+        migrate_args: MigrateArgs,
+    ) -> MigrateBuilder<
+        MetadataTypeParam,
+        MasterEditionTypeParam,
+        TokenAccountTypeParam,
+        MintTypeParam,
+        UpdateAuthorityTypeParam,
+        CollectionMetadataTypeParam,
+        MigrateArgsSet,
+    > {
         self.migrate_args = Some(migrate_args);
-        self
+        MigrateBuilder {
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            token_account: self.token_account,
+            mint: self.mint,
+            update_authority: self.update_authority,
+            collection_metadata: self.collection_metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            authorization_rules: self.authorization_rules,
+            migrate_args: self.migrate_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -261,6 +510,20 @@ impl MigrateBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    MigrateBuilder<
+        MetadataSet,
+        MasterEditionSet,
+        TokenAccountSet,
+        MintSet,
+        UpdateAuthoritySet,
+        CollectionMetadataSet,
+        MigrateArgsSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = Migrate {

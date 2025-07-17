@@ -140,8 +140,28 @@ pub struct CreateV2InstructionArgs {
 ///   6. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   7. `[optional]` sysvar_instructions (default to `Sysvar1nstructions1111111111111111111111111`)
 ///   8. `[optional]` spl_token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
-#[derive(Default)]
-pub struct CreateV2Builder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct MintSet;
+#[derive(Clone)]
+pub struct MintAuthoritySet;
+#[derive(Clone)]
+pub struct UpdateAuthoritySet;
+#[derive(Clone)]
+pub struct AssetDataSet;
+#[derive(Clone)]
+pub struct CreateV2Unset;
+
+pub struct CreateV2Builder<
+    MetadataTypeParam = CreateV2Unset,
+    MintTypeParam = CreateV2Unset,
+    MintAuthorityTypeParam = CreateV2Unset,
+    UpdateAuthorityTypeParam = CreateV2Unset,
+    AssetDataTypeParam = CreateV2Unset,
+> {
     metadata: Option<solana_program::pubkey::Pubkey>,
     master_edition: Option<solana_program::pubkey::Pubkey>,
     mint: Option<(solana_program::pubkey::Pubkey, bool)>,
@@ -154,17 +174,78 @@ pub struct CreateV2Builder {
     asset_data: Option<AssetData>,
     max_supply: Option<u64>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        MetadataTypeParam,
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        UpdateAuthorityTypeParam,
+        AssetDataTypeParam,
+    )>,
 }
 
-impl CreateV2Builder {
+impl CreateV2Builder<CreateV2Unset, CreateV2Unset, CreateV2Unset, CreateV2Unset, CreateV2Unset> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            metadata: None,
+            master_edition: None,
+            mint: None,
+            mint_authority: None,
+            payer: None,
+            update_authority: None,
+            system_program: None,
+            sysvar_instructions: None,
+            spl_token_program: None,
+            asset_data: None,
+            max_supply: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        MetadataTypeParam,
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        UpdateAuthorityTypeParam,
+        AssetDataTypeParam,
+    >
+    CreateV2Builder<
+        MetadataTypeParam,
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        UpdateAuthorityTypeParam,
+        AssetDataTypeParam,
+    >
+{
     /// Metadata account key (pda of ['metadata', program id, mint id])
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> CreateV2Builder<
+        MetadataSet,
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        UpdateAuthorityTypeParam,
+        AssetDataTypeParam,
+    > {
         self.metadata = Some(metadata);
-        self
+        CreateV2Builder {
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            update_authority: self.update_authority,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            spl_token_program: self.spl_token_program,
+            asset_data: self.asset_data,
+            max_supply: self.max_supply,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account]`
     /// Unallocated edition account with address as pda of ['metadata', program id, mint, 'edition']
@@ -178,15 +259,62 @@ impl CreateV2Builder {
     }
     /// Mint of token asset
     #[inline(always)]
-    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey, as_signer: bool) -> &mut Self {
+    pub fn mint(
+        mut self,
+        mint: solana_program::pubkey::Pubkey,
+        as_signer: bool,
+    ) -> CreateV2Builder<
+        MetadataTypeParam,
+        MintSet,
+        MintAuthorityTypeParam,
+        UpdateAuthorityTypeParam,
+        AssetDataTypeParam,
+    > {
         self.mint = Some((mint, as_signer));
-        self
+        CreateV2Builder {
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            update_authority: self.update_authority,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            spl_token_program: self.spl_token_program,
+            asset_data: self.asset_data,
+            max_supply: self.max_supply,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint authority
     #[inline(always)]
-    pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint_authority(
+        mut self,
+        mint_authority: solana_program::pubkey::Pubkey,
+    ) -> CreateV2Builder<
+        MetadataTypeParam,
+        MintTypeParam,
+        MintAuthoritySet,
+        UpdateAuthorityTypeParam,
+        AssetDataTypeParam,
+    > {
         self.mint_authority = Some(mint_authority);
-        self
+        CreateV2Builder {
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            update_authority: self.update_authority,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            spl_token_program: self.spl_token_program,
+            asset_data: self.asset_data,
+            max_supply: self.max_supply,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Payer
     #[inline(always)]
@@ -197,11 +325,31 @@ impl CreateV2Builder {
     /// update authority info
     #[inline(always)]
     pub fn update_authority(
-        &mut self,
+        mut self,
         update_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> CreateV2Builder<
+        MetadataTypeParam,
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        UpdateAuthoritySet,
+        AssetDataTypeParam,
+    > {
         self.update_authority = Some(update_authority);
-        self
+        CreateV2Builder {
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            update_authority: self.update_authority,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            spl_token_program: self.spl_token_program,
+            asset_data: self.asset_data,
+            max_supply: self.max_supply,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to '11111111111111111111111111111111']`
     /// System program
@@ -231,9 +379,32 @@ impl CreateV2Builder {
         self
     }
     #[inline(always)]
-    pub fn asset_data(&mut self, asset_data: AssetData) -> &mut Self {
+    pub fn asset_data(
+        mut self,
+        asset_data: AssetData,
+    ) -> CreateV2Builder<
+        MetadataTypeParam,
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        UpdateAuthorityTypeParam,
+        AssetDataSet,
+    > {
         self.asset_data = Some(asset_data);
-        self
+        CreateV2Builder {
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            update_authority: self.update_authority,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            spl_token_program: self.spl_token_program,
+            asset_data: self.asset_data,
+            max_supply: self.max_supply,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional argument]`
     #[inline(always)]
@@ -259,6 +430,10 @@ impl CreateV2Builder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl CreateV2Builder<MetadataSet, MintSet, MintAuthoritySet, UpdateAuthoritySet, AssetDataSet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateV2 {

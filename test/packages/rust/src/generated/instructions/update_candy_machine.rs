@@ -83,22 +83,54 @@ pub struct UpdateCandyMachineInstructionArgs {
 ///
 ///   0. `[writable]` candy_machine
 ///   1. `[signer]` authority
-#[derive(Default)]
-pub struct UpdateCandyMachineBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct CandyMachineSet;
+#[derive(Clone)]
+pub struct DataSet;
+#[derive(Clone)]
+pub struct UpdateCandyMachineUnset;
+
+pub struct UpdateCandyMachineBuilder<
+    CandyMachineTypeParam = UpdateCandyMachineUnset,
+    DataTypeParam = UpdateCandyMachineUnset,
+> {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
     authority: Option<solana_program::pubkey::Pubkey>,
     data: Option<CandyMachineData>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(CandyMachineTypeParam, DataTypeParam)>,
 }
 
-impl UpdateCandyMachineBuilder {
+impl UpdateCandyMachineBuilder<UpdateCandyMachineUnset, UpdateCandyMachineUnset> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            candy_machine: None,
+            authority: None,
+            data: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<CandyMachineTypeParam, DataTypeParam>
+    UpdateCandyMachineBuilder<CandyMachineTypeParam, DataTypeParam>
+{
     #[inline(always)]
-    pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn candy_machine(
+        mut self,
+        candy_machine: solana_program::pubkey::Pubkey,
+    ) -> UpdateCandyMachineBuilder<CandyMachineSet, DataTypeParam> {
         self.candy_machine = Some(candy_machine);
-        self
+        UpdateCandyMachineBuilder {
+            candy_machine: self.candy_machine,
+            authority: self.authority,
+            data: self.data,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
@@ -106,9 +138,18 @@ impl UpdateCandyMachineBuilder {
         self
     }
     #[inline(always)]
-    pub fn data(&mut self, data: CandyMachineData) -> &mut Self {
+    pub fn data(
+        mut self,
+        data: CandyMachineData,
+    ) -> UpdateCandyMachineBuilder<CandyMachineTypeParam, DataSet> {
         self.data = Some(data);
-        self
+        UpdateCandyMachineBuilder {
+            candy_machine: self.candy_machine,
+            authority: self.authority,
+            data: self.data,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -128,6 +169,10 @@ impl UpdateCandyMachineBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl UpdateCandyMachineBuilder<CandyMachineSet, DataSet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = UpdateCandyMachine {

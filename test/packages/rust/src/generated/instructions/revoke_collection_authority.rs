@@ -87,58 +87,194 @@ impl RevokeCollectionAuthorityInstructionData {
 ///   2. `[writable, signer]` revoke_authority
 ///   3. `[]` metadata
 ///   4. `[]` mint
-#[derive(Default)]
-pub struct RevokeCollectionAuthorityBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct CollectionAuthorityRecordSet;
+#[derive(Clone)]
+pub struct DelegateAuthoritySet;
+#[derive(Clone)]
+pub struct RevokeAuthoritySet;
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct MintSet;
+#[derive(Clone)]
+pub struct RevokeCollectionAuthorityUnset;
+
+pub struct RevokeCollectionAuthorityBuilder<
+    CollectionAuthorityRecordTypeParam = RevokeCollectionAuthorityUnset,
+    DelegateAuthorityTypeParam = RevokeCollectionAuthorityUnset,
+    RevokeAuthorityTypeParam = RevokeCollectionAuthorityUnset,
+    MetadataTypeParam = RevokeCollectionAuthorityUnset,
+    MintTypeParam = RevokeCollectionAuthorityUnset,
+> {
     collection_authority_record: Option<solana_program::pubkey::Pubkey>,
     delegate_authority: Option<solana_program::pubkey::Pubkey>,
     revoke_authority: Option<solana_program::pubkey::Pubkey>,
     metadata: Option<solana_program::pubkey::Pubkey>,
     mint: Option<solana_program::pubkey::Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        CollectionAuthorityRecordTypeParam,
+        DelegateAuthorityTypeParam,
+        RevokeAuthorityTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+    )>,
 }
 
-impl RevokeCollectionAuthorityBuilder {
+impl
+    RevokeCollectionAuthorityBuilder<
+        RevokeCollectionAuthorityUnset,
+        RevokeCollectionAuthorityUnset,
+        RevokeCollectionAuthorityUnset,
+        RevokeCollectionAuthorityUnset,
+        RevokeCollectionAuthorityUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            collection_authority_record: None,
+            delegate_authority: None,
+            revoke_authority: None,
+            metadata: None,
+            mint: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        CollectionAuthorityRecordTypeParam,
+        DelegateAuthorityTypeParam,
+        RevokeAuthorityTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+    >
+    RevokeCollectionAuthorityBuilder<
+        CollectionAuthorityRecordTypeParam,
+        DelegateAuthorityTypeParam,
+        RevokeAuthorityTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+    >
+{
     /// Collection Authority Record PDA
     #[inline(always)]
     pub fn collection_authority_record(
-        &mut self,
+        mut self,
         collection_authority_record: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> RevokeCollectionAuthorityBuilder<
+        CollectionAuthorityRecordSet,
+        DelegateAuthorityTypeParam,
+        RevokeAuthorityTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+    > {
         self.collection_authority_record = Some(collection_authority_record);
-        self
+        RevokeCollectionAuthorityBuilder {
+            collection_authority_record: self.collection_authority_record,
+            delegate_authority: self.delegate_authority,
+            revoke_authority: self.revoke_authority,
+            metadata: self.metadata,
+            mint: self.mint,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Delegated Collection Authority
     #[inline(always)]
     pub fn delegate_authority(
-        &mut self,
+        mut self,
         delegate_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> RevokeCollectionAuthorityBuilder<
+        CollectionAuthorityRecordTypeParam,
+        DelegateAuthoritySet,
+        RevokeAuthorityTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+    > {
         self.delegate_authority = Some(delegate_authority);
-        self
+        RevokeCollectionAuthorityBuilder {
+            collection_authority_record: self.collection_authority_record,
+            delegate_authority: self.delegate_authority,
+            revoke_authority: self.revoke_authority,
+            metadata: self.metadata,
+            mint: self.mint,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Update Authority, or Delegated Authority, of Collection NFT
     #[inline(always)]
     pub fn revoke_authority(
-        &mut self,
+        mut self,
         revoke_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> RevokeCollectionAuthorityBuilder<
+        CollectionAuthorityRecordTypeParam,
+        DelegateAuthorityTypeParam,
+        RevokeAuthoritySet,
+        MetadataTypeParam,
+        MintTypeParam,
+    > {
         self.revoke_authority = Some(revoke_authority);
-        self
+        RevokeCollectionAuthorityBuilder {
+            collection_authority_record: self.collection_authority_record,
+            delegate_authority: self.delegate_authority,
+            revoke_authority: self.revoke_authority,
+            metadata: self.metadata,
+            mint: self.mint,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Metadata account
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> RevokeCollectionAuthorityBuilder<
+        CollectionAuthorityRecordTypeParam,
+        DelegateAuthorityTypeParam,
+        RevokeAuthorityTypeParam,
+        MetadataSet,
+        MintTypeParam,
+    > {
         self.metadata = Some(metadata);
-        self
+        RevokeCollectionAuthorityBuilder {
+            collection_authority_record: self.collection_authority_record,
+            delegate_authority: self.delegate_authority,
+            revoke_authority: self.revoke_authority,
+            metadata: self.metadata,
+            mint: self.mint,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint of Metadata
     #[inline(always)]
-    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint(
+        mut self,
+        mint: solana_program::pubkey::Pubkey,
+    ) -> RevokeCollectionAuthorityBuilder<
+        CollectionAuthorityRecordTypeParam,
+        DelegateAuthorityTypeParam,
+        RevokeAuthorityTypeParam,
+        MetadataTypeParam,
+        MintSet,
+    > {
         self.mint = Some(mint);
-        self
+        RevokeCollectionAuthorityBuilder {
+            collection_authority_record: self.collection_authority_record,
+            delegate_authority: self.delegate_authority,
+            revoke_authority: self.revoke_authority,
+            metadata: self.metadata,
+            mint: self.mint,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -158,6 +294,18 @@ impl RevokeCollectionAuthorityBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    RevokeCollectionAuthorityBuilder<
+        CollectionAuthorityRecordSet,
+        DelegateAuthoritySet,
+        RevokeAuthoritySet,
+        MetadataSet,
+        MintSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = RevokeCollectionAuthority {

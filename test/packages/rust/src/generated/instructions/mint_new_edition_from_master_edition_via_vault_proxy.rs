@@ -192,75 +192,444 @@ pub struct MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs {
 ///   14. `[]` token_vault_program
 ///   15. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   16. `[optional]` rent
-#[derive(Default)]
-pub struct MintNewEditionFromMasterEditionViaVaultProxyBuilder {
-    new_metadata: Option<solana_program::pubkey::Pubkey>,
-    new_edition: Option<solana_program::pubkey::Pubkey>,
-    master_edition: Option<solana_program::pubkey::Pubkey>,
-    new_mint: Option<solana_program::pubkey::Pubkey>,
-    edition_mark_pda: Option<solana_program::pubkey::Pubkey>,
-    new_mint_authority: Option<solana_program::pubkey::Pubkey>,
-    payer: Option<solana_program::pubkey::Pubkey>,
-    vault_authority: Option<solana_program::pubkey::Pubkey>,
-    safety_deposit_store: Option<solana_program::pubkey::Pubkey>,
-    safety_deposit_box: Option<solana_program::pubkey::Pubkey>,
-    vault: Option<solana_program::pubkey::Pubkey>,
-    new_metadata_update_authority: Option<solana_program::pubkey::Pubkey>,
-    metadata: Option<solana_program::pubkey::Pubkey>,
-    token_program: Option<solana_program::pubkey::Pubkey>,
-    token_vault_program: Option<solana_program::pubkey::Pubkey>,
-    system_program: Option<solana_program::pubkey::Pubkey>,
-    rent: Option<solana_program::pubkey::Pubkey>,
-    mint_new_edition_from_master_edition_via_token_args:
-        Option<MintNewEditionFromMasterEditionViaTokenArgs>,
-    __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+
+// Type state markers
+#[derive(Clone)]
+pub struct NewMetadataSet;
+#[derive(Clone)]
+pub struct NewEditionSet;
+#[derive(Clone)]
+pub struct MasterEditionSet;
+#[derive(Clone)]
+pub struct NewMintSet;
+#[derive(Clone)]
+pub struct EditionMarkPdaSet;
+#[derive(Clone)]
+pub struct NewMintAuthoritySet;
+#[derive(Clone)]
+pub struct VaultAuthoritySet;
+#[derive(Clone)]
+pub struct SafetyDepositStoreSet;
+#[derive(Clone)]
+pub struct SafetyDepositBoxSet;
+#[derive(Clone)]
+pub struct VaultSet;
+#[derive(Clone)]
+pub struct NewMetadataUpdateAuthoritySet;
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct TokenVaultProgramSet;
+#[derive(Clone)]
+pub struct MintNewEditionFromMasterEditionViaTokenArgsSet;
+#[derive(Clone)]
+pub struct MintNewEditionFromMasterEditionViaVaultProxyUnset;
+
+pub struct MintNewEditionFromMasterEditionViaVaultProxyBuilder<
+          NewMetadataTypeParam = MintNewEditionFromMasterEditionViaVaultProxyUnset,
+              NewEditionTypeParam = MintNewEditionFromMasterEditionViaVaultProxyUnset,
+              MasterEditionTypeParam = MintNewEditionFromMasterEditionViaVaultProxyUnset,
+              NewMintTypeParam = MintNewEditionFromMasterEditionViaVaultProxyUnset,
+              EditionMarkPdaTypeParam = MintNewEditionFromMasterEditionViaVaultProxyUnset,
+              NewMintAuthorityTypeParam = MintNewEditionFromMasterEditionViaVaultProxyUnset,
+                    VaultAuthorityTypeParam = MintNewEditionFromMasterEditionViaVaultProxyUnset,
+              SafetyDepositStoreTypeParam = MintNewEditionFromMasterEditionViaVaultProxyUnset,
+              SafetyDepositBoxTypeParam = MintNewEditionFromMasterEditionViaVaultProxyUnset,
+              VaultTypeParam = MintNewEditionFromMasterEditionViaVaultProxyUnset,
+              NewMetadataUpdateAuthorityTypeParam = MintNewEditionFromMasterEditionViaVaultProxyUnset,
+              MetadataTypeParam = MintNewEditionFromMasterEditionViaVaultProxyUnset,
+                    TokenVaultProgramTypeParam = MintNewEditionFromMasterEditionViaVaultProxyUnset,
+                                  MintNewEditionFromMasterEditionViaTokenArgsTypeParam = MintNewEditionFromMasterEditionViaVaultProxyUnset,
+      > {
+            new_metadata: Option<solana_program::pubkey::Pubkey>,
+                new_edition: Option<solana_program::pubkey::Pubkey>,
+                master_edition: Option<solana_program::pubkey::Pubkey>,
+                new_mint: Option<solana_program::pubkey::Pubkey>,
+                edition_mark_pda: Option<solana_program::pubkey::Pubkey>,
+                new_mint_authority: Option<solana_program::pubkey::Pubkey>,
+                payer: Option<solana_program::pubkey::Pubkey>,
+                vault_authority: Option<solana_program::pubkey::Pubkey>,
+                safety_deposit_store: Option<solana_program::pubkey::Pubkey>,
+                safety_deposit_box: Option<solana_program::pubkey::Pubkey>,
+                vault: Option<solana_program::pubkey::Pubkey>,
+                new_metadata_update_authority: Option<solana_program::pubkey::Pubkey>,
+                metadata: Option<solana_program::pubkey::Pubkey>,
+                token_program: Option<solana_program::pubkey::Pubkey>,
+                token_vault_program: Option<solana_program::pubkey::Pubkey>,
+                system_program: Option<solana_program::pubkey::Pubkey>,
+                rent: Option<solana_program::pubkey::Pubkey>,
+                        mint_new_edition_from_master_edition_via_token_args: Option<MintNewEditionFromMasterEditionViaTokenArgs>,
+        __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+  _phantom: std::marker::PhantomData<(
+          NewMetadataTypeParam,
+          NewEditionTypeParam,
+          MasterEditionTypeParam,
+          NewMintTypeParam,
+          EditionMarkPdaTypeParam,
+          NewMintAuthorityTypeParam,
+          VaultAuthorityTypeParam,
+          SafetyDepositStoreTypeParam,
+          SafetyDepositBoxTypeParam,
+          VaultTypeParam,
+          NewMetadataUpdateAuthorityTypeParam,
+          MetadataTypeParam,
+          TokenVaultProgramTypeParam,
+              MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+      )>,
 }
 
-impl MintNewEditionFromMasterEditionViaVaultProxyBuilder {
+impl
+    MintNewEditionFromMasterEditionViaVaultProxyBuilder<
+        MintNewEditionFromMasterEditionViaVaultProxyUnset,
+        MintNewEditionFromMasterEditionViaVaultProxyUnset,
+        MintNewEditionFromMasterEditionViaVaultProxyUnset,
+        MintNewEditionFromMasterEditionViaVaultProxyUnset,
+        MintNewEditionFromMasterEditionViaVaultProxyUnset,
+        MintNewEditionFromMasterEditionViaVaultProxyUnset,
+        MintNewEditionFromMasterEditionViaVaultProxyUnset,
+        MintNewEditionFromMasterEditionViaVaultProxyUnset,
+        MintNewEditionFromMasterEditionViaVaultProxyUnset,
+        MintNewEditionFromMasterEditionViaVaultProxyUnset,
+        MintNewEditionFromMasterEditionViaVaultProxyUnset,
+        MintNewEditionFromMasterEditionViaVaultProxyUnset,
+        MintNewEditionFromMasterEditionViaVaultProxyUnset,
+        MintNewEditionFromMasterEditionViaVaultProxyUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            new_metadata: None,
+            new_edition: None,
+            master_edition: None,
+            new_mint: None,
+            edition_mark_pda: None,
+            new_mint_authority: None,
+            payer: None,
+            vault_authority: None,
+            safety_deposit_store: None,
+            safety_deposit_box: None,
+            vault: None,
+            new_metadata_update_authority: None,
+            metadata: None,
+            token_program: None,
+            token_vault_program: None,
+            system_program: None,
+            rent: None,
+            mint_new_edition_from_master_edition_via_token_args: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        VaultAuthorityTypeParam,
+        SafetyDepositStoreTypeParam,
+        SafetyDepositBoxTypeParam,
+        VaultTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        TokenVaultProgramTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    >
+    MintNewEditionFromMasterEditionViaVaultProxyBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        VaultAuthorityTypeParam,
+        SafetyDepositStoreTypeParam,
+        SafetyDepositBoxTypeParam,
+        VaultTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        TokenVaultProgramTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    >
+{
     /// New Metadata key (pda of ['metadata', program id, mint id])
     #[inline(always)]
-    pub fn new_metadata(&mut self, new_metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn new_metadata(
+        mut self,
+        new_metadata: solana_program::pubkey::Pubkey,
+    ) -> MintNewEditionFromMasterEditionViaVaultProxyBuilder<
+        NewMetadataSet,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        VaultAuthorityTypeParam,
+        SafetyDepositStoreTypeParam,
+        SafetyDepositBoxTypeParam,
+        VaultTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        TokenVaultProgramTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.new_metadata = Some(new_metadata);
-        self
+        MintNewEditionFromMasterEditionViaVaultProxyBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            vault_authority: self.vault_authority,
+            safety_deposit_store: self.safety_deposit_store,
+            safety_deposit_box: self.safety_deposit_box,
+            vault: self.vault,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            token_vault_program: self.token_vault_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// New Edition (pda of ['metadata', program id, mint id, 'edition'])
     #[inline(always)]
-    pub fn new_edition(&mut self, new_edition: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn new_edition(
+        mut self,
+        new_edition: solana_program::pubkey::Pubkey,
+    ) -> MintNewEditionFromMasterEditionViaVaultProxyBuilder<
+        NewMetadataTypeParam,
+        NewEditionSet,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        VaultAuthorityTypeParam,
+        SafetyDepositStoreTypeParam,
+        SafetyDepositBoxTypeParam,
+        VaultTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        TokenVaultProgramTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.new_edition = Some(new_edition);
-        self
+        MintNewEditionFromMasterEditionViaVaultProxyBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            vault_authority: self.vault_authority,
+            safety_deposit_store: self.safety_deposit_store,
+            safety_deposit_box: self.safety_deposit_box,
+            vault: self.vault,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            token_vault_program: self.token_vault_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Master Record Edition V2 (pda of ['metadata', program id, master metadata mint id, 'edition']
     #[inline(always)]
-    pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn master_edition(
+        mut self,
+        master_edition: solana_program::pubkey::Pubkey,
+    ) -> MintNewEditionFromMasterEditionViaVaultProxyBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionSet,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        VaultAuthorityTypeParam,
+        SafetyDepositStoreTypeParam,
+        SafetyDepositBoxTypeParam,
+        VaultTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        TokenVaultProgramTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.master_edition = Some(master_edition);
-        self
+        MintNewEditionFromMasterEditionViaVaultProxyBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            vault_authority: self.vault_authority,
+            safety_deposit_store: self.safety_deposit_store,
+            safety_deposit_box: self.safety_deposit_box,
+            vault: self.vault,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            token_vault_program: self.token_vault_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY
     #[inline(always)]
-    pub fn new_mint(&mut self, new_mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn new_mint(
+        mut self,
+        new_mint: solana_program::pubkey::Pubkey,
+    ) -> MintNewEditionFromMasterEditionViaVaultProxyBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintSet,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        VaultAuthorityTypeParam,
+        SafetyDepositStoreTypeParam,
+        SafetyDepositBoxTypeParam,
+        VaultTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        TokenVaultProgramTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.new_mint = Some(new_mint);
-        self
+        MintNewEditionFromMasterEditionViaVaultProxyBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            vault_authority: self.vault_authority,
+            safety_deposit_store: self.safety_deposit_store,
+            safety_deposit_box: self.safety_deposit_box,
+            vault: self.vault,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            token_vault_program: self.token_vault_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE).
     #[inline(always)]
     pub fn edition_mark_pda(
-        &mut self,
+        mut self,
         edition_mark_pda: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> MintNewEditionFromMasterEditionViaVaultProxyBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaSet,
+        NewMintAuthorityTypeParam,
+        VaultAuthorityTypeParam,
+        SafetyDepositStoreTypeParam,
+        SafetyDepositBoxTypeParam,
+        VaultTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        TokenVaultProgramTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.edition_mark_pda = Some(edition_mark_pda);
-        self
+        MintNewEditionFromMasterEditionViaVaultProxyBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            vault_authority: self.vault_authority,
+            safety_deposit_store: self.safety_deposit_store,
+            safety_deposit_box: self.safety_deposit_box,
+            vault: self.vault,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            token_vault_program: self.token_vault_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint authority of new mint
     #[inline(always)]
     pub fn new_mint_authority(
-        &mut self,
+        mut self,
         new_mint_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> MintNewEditionFromMasterEditionViaVaultProxyBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthoritySet,
+        VaultAuthorityTypeParam,
+        SafetyDepositStoreTypeParam,
+        SafetyDepositBoxTypeParam,
+        VaultTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        TokenVaultProgramTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.new_mint_authority = Some(new_mint_authority);
-        self
+        MintNewEditionFromMasterEditionViaVaultProxyBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            vault_authority: self.vault_authority,
+            safety_deposit_store: self.safety_deposit_store,
+            safety_deposit_box: self.safety_deposit_box,
+            vault: self.vault,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            token_vault_program: self.token_vault_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// payer
     #[inline(always)]
@@ -271,50 +640,278 @@ impl MintNewEditionFromMasterEditionViaVaultProxyBuilder {
     /// Vault authority
     #[inline(always)]
     pub fn vault_authority(
-        &mut self,
+        mut self,
         vault_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> MintNewEditionFromMasterEditionViaVaultProxyBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        VaultAuthoritySet,
+        SafetyDepositStoreTypeParam,
+        SafetyDepositBoxTypeParam,
+        VaultTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        TokenVaultProgramTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.vault_authority = Some(vault_authority);
-        self
+        MintNewEditionFromMasterEditionViaVaultProxyBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            vault_authority: self.vault_authority,
+            safety_deposit_store: self.safety_deposit_store,
+            safety_deposit_box: self.safety_deposit_box,
+            vault: self.vault,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            token_vault_program: self.token_vault_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Safety deposit token store account
     #[inline(always)]
     pub fn safety_deposit_store(
-        &mut self,
+        mut self,
         safety_deposit_store: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> MintNewEditionFromMasterEditionViaVaultProxyBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        VaultAuthorityTypeParam,
+        SafetyDepositStoreSet,
+        SafetyDepositBoxTypeParam,
+        VaultTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        TokenVaultProgramTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.safety_deposit_store = Some(safety_deposit_store);
-        self
+        MintNewEditionFromMasterEditionViaVaultProxyBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            vault_authority: self.vault_authority,
+            safety_deposit_store: self.safety_deposit_store,
+            safety_deposit_box: self.safety_deposit_box,
+            vault: self.vault,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            token_vault_program: self.token_vault_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Safety deposit box
     #[inline(always)]
     pub fn safety_deposit_box(
-        &mut self,
+        mut self,
         safety_deposit_box: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> MintNewEditionFromMasterEditionViaVaultProxyBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        VaultAuthorityTypeParam,
+        SafetyDepositStoreTypeParam,
+        SafetyDepositBoxSet,
+        VaultTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        TokenVaultProgramTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.safety_deposit_box = Some(safety_deposit_box);
-        self
+        MintNewEditionFromMasterEditionViaVaultProxyBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            vault_authority: self.vault_authority,
+            safety_deposit_store: self.safety_deposit_store,
+            safety_deposit_box: self.safety_deposit_box,
+            vault: self.vault,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            token_vault_program: self.token_vault_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Vault
     #[inline(always)]
-    pub fn vault(&mut self, vault: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn vault(
+        mut self,
+        vault: solana_program::pubkey::Pubkey,
+    ) -> MintNewEditionFromMasterEditionViaVaultProxyBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        VaultAuthorityTypeParam,
+        SafetyDepositStoreTypeParam,
+        SafetyDepositBoxTypeParam,
+        VaultSet,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        TokenVaultProgramTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.vault = Some(vault);
-        self
+        MintNewEditionFromMasterEditionViaVaultProxyBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            vault_authority: self.vault_authority,
+            safety_deposit_store: self.safety_deposit_store,
+            safety_deposit_box: self.safety_deposit_box,
+            vault: self.vault,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            token_vault_program: self.token_vault_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Update authority info for new metadata
     #[inline(always)]
     pub fn new_metadata_update_authority(
-        &mut self,
+        mut self,
         new_metadata_update_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> MintNewEditionFromMasterEditionViaVaultProxyBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        VaultAuthorityTypeParam,
+        SafetyDepositStoreTypeParam,
+        SafetyDepositBoxTypeParam,
+        VaultTypeParam,
+        NewMetadataUpdateAuthoritySet,
+        MetadataTypeParam,
+        TokenVaultProgramTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.new_metadata_update_authority = Some(new_metadata_update_authority);
-        self
+        MintNewEditionFromMasterEditionViaVaultProxyBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            vault_authority: self.vault_authority,
+            safety_deposit_store: self.safety_deposit_store,
+            safety_deposit_box: self.safety_deposit_box,
+            vault: self.vault,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            token_vault_program: self.token_vault_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Master record metadata account
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> MintNewEditionFromMasterEditionViaVaultProxyBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        VaultAuthorityTypeParam,
+        SafetyDepositStoreTypeParam,
+        SafetyDepositBoxTypeParam,
+        VaultTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataSet,
+        TokenVaultProgramTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.metadata = Some(metadata);
-        self
+        MintNewEditionFromMasterEditionViaVaultProxyBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            vault_authority: self.vault_authority,
+            safety_deposit_store: self.safety_deposit_store,
+            safety_deposit_box: self.safety_deposit_box,
+            vault: self.vault,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            token_vault_program: self.token_vault_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA']`
     /// Token program
@@ -326,11 +923,48 @@ impl MintNewEditionFromMasterEditionViaVaultProxyBuilder {
     /// Token vault program
     #[inline(always)]
     pub fn token_vault_program(
-        &mut self,
+        mut self,
         token_vault_program: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> MintNewEditionFromMasterEditionViaVaultProxyBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        VaultAuthorityTypeParam,
+        SafetyDepositStoreTypeParam,
+        SafetyDepositBoxTypeParam,
+        VaultTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        TokenVaultProgramSet,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.token_vault_program = Some(token_vault_program);
-        self
+        MintNewEditionFromMasterEditionViaVaultProxyBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            vault_authority: self.vault_authority,
+            safety_deposit_store: self.safety_deposit_store,
+            safety_deposit_box: self.safety_deposit_box,
+            vault: self.vault,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            token_vault_program: self.token_vault_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to '11111111111111111111111111111111']`
     /// System program
@@ -348,12 +982,49 @@ impl MintNewEditionFromMasterEditionViaVaultProxyBuilder {
     }
     #[inline(always)]
     pub fn mint_new_edition_from_master_edition_via_token_args(
-        &mut self,
+        mut self,
         mint_new_edition_from_master_edition_via_token_args: MintNewEditionFromMasterEditionViaTokenArgs,
-    ) -> &mut Self {
+    ) -> MintNewEditionFromMasterEditionViaVaultProxyBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        VaultAuthorityTypeParam,
+        SafetyDepositStoreTypeParam,
+        SafetyDepositBoxTypeParam,
+        VaultTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        TokenVaultProgramTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsSet,
+    > {
         self.mint_new_edition_from_master_edition_via_token_args =
             Some(mint_new_edition_from_master_edition_via_token_args);
-        self
+        MintNewEditionFromMasterEditionViaVaultProxyBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            vault_authority: self.vault_authority,
+            safety_deposit_store: self.safety_deposit_store,
+            safety_deposit_box: self.safety_deposit_box,
+            vault: self.vault,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            token_vault_program: self.token_vault_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -373,6 +1044,27 @@ impl MintNewEditionFromMasterEditionViaVaultProxyBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    MintNewEditionFromMasterEditionViaVaultProxyBuilder<
+        NewMetadataSet,
+        NewEditionSet,
+        MasterEditionSet,
+        NewMintSet,
+        EditionMarkPdaSet,
+        NewMintAuthoritySet,
+        VaultAuthoritySet,
+        SafetyDepositStoreSet,
+        SafetyDepositBoxSet,
+        VaultSet,
+        NewMetadataUpdateAuthoritySet,
+        MetadataSet,
+        TokenVaultProgramSet,
+        MintNewEditionFromMasterEditionViaTokenArgsSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = MintNewEditionFromMasterEditionViaVaultProxy {

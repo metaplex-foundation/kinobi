@@ -107,8 +107,28 @@ impl CreateReservationListInstructionData {
 ///   5. `[]` metadata
 ///   6. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   7. `[optional]` rent (default to `SysvarRent111111111111111111111111111111111`)
-#[derive(Default)]
-pub struct CreateReservationListBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct ReservationListSet;
+#[derive(Clone)]
+pub struct UpdateAuthoritySet;
+#[derive(Clone)]
+pub struct MasterEditionSet;
+#[derive(Clone)]
+pub struct ResourceSet;
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct CreateReservationListUnset;
+
+pub struct CreateReservationListBuilder<
+    ReservationListTypeParam = CreateReservationListUnset,
+    UpdateAuthorityTypeParam = CreateReservationListUnset,
+    MasterEditionTypeParam = CreateReservationListUnset,
+    ResourceTypeParam = CreateReservationListUnset,
+    MetadataTypeParam = CreateReservationListUnset,
+> {
     reservation_list: Option<solana_program::pubkey::Pubkey>,
     payer: Option<solana_program::pubkey::Pubkey>,
     update_authority: Option<solana_program::pubkey::Pubkey>,
@@ -118,20 +138,80 @@ pub struct CreateReservationListBuilder {
     system_program: Option<solana_program::pubkey::Pubkey>,
     rent: Option<solana_program::pubkey::Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        ReservationListTypeParam,
+        UpdateAuthorityTypeParam,
+        MasterEditionTypeParam,
+        ResourceTypeParam,
+        MetadataTypeParam,
+    )>,
 }
 
-impl CreateReservationListBuilder {
+impl
+    CreateReservationListBuilder<
+        CreateReservationListUnset,
+        CreateReservationListUnset,
+        CreateReservationListUnset,
+        CreateReservationListUnset,
+        CreateReservationListUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            reservation_list: None,
+            payer: None,
+            update_authority: None,
+            master_edition: None,
+            resource: None,
+            metadata: None,
+            system_program: None,
+            rent: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        ReservationListTypeParam,
+        UpdateAuthorityTypeParam,
+        MasterEditionTypeParam,
+        ResourceTypeParam,
+        MetadataTypeParam,
+    >
+    CreateReservationListBuilder<
+        ReservationListTypeParam,
+        UpdateAuthorityTypeParam,
+        MasterEditionTypeParam,
+        ResourceTypeParam,
+        MetadataTypeParam,
+    >
+{
     /// PDA for ReservationList of ['metadata', program id, master edition key, 'reservation', resource-key]
     #[inline(always)]
     pub fn reservation_list(
-        &mut self,
+        mut self,
         reservation_list: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> CreateReservationListBuilder<
+        ReservationListSet,
+        UpdateAuthorityTypeParam,
+        MasterEditionTypeParam,
+        ResourceTypeParam,
+        MetadataTypeParam,
+    > {
         self.reservation_list = Some(reservation_list);
-        self
+        CreateReservationListBuilder {
+            reservation_list: self.reservation_list,
+            payer: self.payer,
+            update_authority: self.update_authority,
+            master_edition: self.master_edition,
+            resource: self.resource,
+            metadata: self.metadata,
+            system_program: self.system_program,
+            rent: self.rent,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Payer
     #[inline(always)]
@@ -142,29 +222,106 @@ impl CreateReservationListBuilder {
     /// Update authority
     #[inline(always)]
     pub fn update_authority(
-        &mut self,
+        mut self,
         update_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> CreateReservationListBuilder<
+        ReservationListTypeParam,
+        UpdateAuthoritySet,
+        MasterEditionTypeParam,
+        ResourceTypeParam,
+        MetadataTypeParam,
+    > {
         self.update_authority = Some(update_authority);
-        self
+        CreateReservationListBuilder {
+            reservation_list: self.reservation_list,
+            payer: self.payer,
+            update_authority: self.update_authority,
+            master_edition: self.master_edition,
+            resource: self.resource,
+            metadata: self.metadata,
+            system_program: self.system_program,
+            rent: self.rent,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     ///  Master Edition V1 key (pda of ['metadata', program id, mint id, 'edition'])
     #[inline(always)]
-    pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn master_edition(
+        mut self,
+        master_edition: solana_program::pubkey::Pubkey,
+    ) -> CreateReservationListBuilder<
+        ReservationListTypeParam,
+        UpdateAuthorityTypeParam,
+        MasterEditionSet,
+        ResourceTypeParam,
+        MetadataTypeParam,
+    > {
         self.master_edition = Some(master_edition);
-        self
+        CreateReservationListBuilder {
+            reservation_list: self.reservation_list,
+            payer: self.payer,
+            update_authority: self.update_authority,
+            master_edition: self.master_edition,
+            resource: self.resource,
+            metadata: self.metadata,
+            system_program: self.system_program,
+            rent: self.rent,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// A resource you wish to tie the reservation list to. This is so your later visitors who come to redeem can derive your reservation list PDA with something they can easily get at. You choose what this should be.
     #[inline(always)]
-    pub fn resource(&mut self, resource: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn resource(
+        mut self,
+        resource: solana_program::pubkey::Pubkey,
+    ) -> CreateReservationListBuilder<
+        ReservationListTypeParam,
+        UpdateAuthorityTypeParam,
+        MasterEditionTypeParam,
+        ResourceSet,
+        MetadataTypeParam,
+    > {
         self.resource = Some(resource);
-        self
+        CreateReservationListBuilder {
+            reservation_list: self.reservation_list,
+            payer: self.payer,
+            update_authority: self.update_authority,
+            master_edition: self.master_edition,
+            resource: self.resource,
+            metadata: self.metadata,
+            system_program: self.system_program,
+            rent: self.rent,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Metadata key (pda of ['metadata', program id, mint id])
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> CreateReservationListBuilder<
+        ReservationListTypeParam,
+        UpdateAuthorityTypeParam,
+        MasterEditionTypeParam,
+        ResourceTypeParam,
+        MetadataSet,
+    > {
         self.metadata = Some(metadata);
-        self
+        CreateReservationListBuilder {
+            reservation_list: self.reservation_list,
+            payer: self.payer,
+            update_authority: self.update_authority,
+            master_edition: self.master_edition,
+            resource: self.resource,
+            metadata: self.metadata,
+            system_program: self.system_program,
+            rent: self.rent,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to '11111111111111111111111111111111']`
     /// System program
@@ -198,6 +355,18 @@ impl CreateReservationListBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    CreateReservationListBuilder<
+        ReservationListSet,
+        UpdateAuthoritySet,
+        MasterEditionSet,
+        ResourceSet,
+        MetadataSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateReservationList {

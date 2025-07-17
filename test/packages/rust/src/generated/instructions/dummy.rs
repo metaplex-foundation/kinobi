@@ -143,8 +143,14 @@ impl DummyInstructionData {
 ///   7. `[signer, optional]` delegate
 ///   8. `[writable, optional]` delegate_record
 ///   9. `[]` token_or_ata_program
-#[derive(Default)]
-pub struct DummyBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct UpdateAuthoritySet;
+#[derive(Clone)]
+pub struct DummyUnset;
+
+pub struct DummyBuilder<UpdateAuthorityTypeParam = DummyUnset> {
     edition: Option<solana_program::pubkey::Pubkey>,
     mint: Option<solana_program::pubkey::Pubkey>,
     update_authority: Option<solana_program::pubkey::Pubkey>,
@@ -156,12 +162,29 @@ pub struct DummyBuilder {
     delegate_record: Option<solana_program::pubkey::Pubkey>,
     token_or_ata_program: Option<solana_program::pubkey::Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(UpdateAuthorityTypeParam,)>,
 }
 
-impl DummyBuilder {
+impl DummyBuilder<DummyUnset> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            edition: None,
+            mint: None,
+            update_authority: None,
+            mint_authority: None,
+            payer: None,
+            foo: None,
+            bar: None,
+            delegate: None,
+            delegate_record: None,
+            token_or_ata_program: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<UpdateAuthorityTypeParam> DummyBuilder<UpdateAuthorityTypeParam> {
     #[inline(always)]
     pub fn edition(&mut self, edition: solana_program::pubkey::Pubkey) -> &mut Self {
         self.edition = Some(edition);
@@ -175,11 +198,24 @@ impl DummyBuilder {
     }
     #[inline(always)]
     pub fn update_authority(
-        &mut self,
+        mut self,
         update_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> DummyBuilder<UpdateAuthoritySet> {
         self.update_authority = Some(update_authority);
-        self
+        DummyBuilder {
+            edition: self.edition,
+            mint: self.mint,
+            update_authority: self.update_authority,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            foo: self.foo,
+            bar: self.bar,
+            delegate: self.delegate,
+            delegate_record: self.delegate_record,
+            token_or_ata_program: self.token_or_ata_program,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
@@ -243,6 +279,10 @@ impl DummyBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl DummyBuilder<UpdateAuthoritySet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = Dummy {

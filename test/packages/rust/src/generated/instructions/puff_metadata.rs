@@ -58,21 +58,42 @@ impl PuffMetadataInstructionData {
 /// ### Accounts:
 ///
 ///   0. `[writable]` metadata
-#[derive(Default)]
-pub struct PuffMetadataBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct PuffMetadataUnset;
+
+pub struct PuffMetadataBuilder<MetadataTypeParam = PuffMetadataUnset> {
     metadata: Option<solana_program::pubkey::Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(MetadataTypeParam,)>,
 }
 
-impl PuffMetadataBuilder {
+impl PuffMetadataBuilder<PuffMetadataUnset> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            metadata: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<MetadataTypeParam> PuffMetadataBuilder<MetadataTypeParam> {
     /// Metadata account
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> PuffMetadataBuilder<MetadataSet> {
         self.metadata = Some(metadata);
-        self
+        PuffMetadataBuilder {
+            metadata: self.metadata,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -92,6 +113,10 @@ impl PuffMetadataBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl PuffMetadataBuilder<MetadataSet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = PuffMetadata {

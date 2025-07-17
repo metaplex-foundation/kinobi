@@ -179,8 +179,25 @@ pub struct ValidateInstructionArgs {
 ///   10. `[optional]` opt_rule_nonsigner3
 ///   11. `[optional]` opt_rule_nonsigner4
 ///   12. `[optional]` opt_rule_nonsigner5
-#[derive(Default)]
-pub struct ValidateBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct RuleSetSet;
+#[derive(Clone)]
+pub struct RuleSetNameSet;
+#[derive(Clone)]
+pub struct OperationSet;
+#[derive(Clone)]
+pub struct PayloadSet;
+#[derive(Clone)]
+pub struct ValidateUnset;
+
+pub struct ValidateBuilder<
+    RuleSetTypeParam = ValidateUnset,
+    RuleSetNameTypeParam = ValidateUnset,
+    OperationTypeParam = ValidateUnset,
+    PayloadTypeParam = ValidateUnset,
+> {
     payer: Option<solana_program::pubkey::Pubkey>,
     rule_set: Option<solana_program::pubkey::Pubkey>,
     system_program: Option<solana_program::pubkey::Pubkey>,
@@ -198,12 +215,42 @@ pub struct ValidateBuilder {
     operation: Option<Operation>,
     payload: Option<Payload>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        RuleSetTypeParam,
+        RuleSetNameTypeParam,
+        OperationTypeParam,
+        PayloadTypeParam,
+    )>,
 }
 
-impl ValidateBuilder {
+impl ValidateBuilder<ValidateUnset, ValidateUnset, ValidateUnset, ValidateUnset> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            payer: None,
+            rule_set: None,
+            system_program: None,
+            opt_rule_signer1: None,
+            opt_rule_signer2: None,
+            opt_rule_signer3: None,
+            opt_rule_signer4: None,
+            opt_rule_signer5: None,
+            opt_rule_nonsigner1: None,
+            opt_rule_nonsigner2: None,
+            opt_rule_nonsigner3: None,
+            opt_rule_nonsigner4: None,
+            opt_rule_nonsigner5: None,
+            rule_set_name: None,
+            operation: None,
+            payload: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<RuleSetTypeParam, RuleSetNameTypeParam, OperationTypeParam, PayloadTypeParam>
+    ValidateBuilder<RuleSetTypeParam, RuleSetNameTypeParam, OperationTypeParam, PayloadTypeParam>
+{
     /// Payer and creator of the RuleSet
     #[inline(always)]
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
@@ -212,9 +259,32 @@ impl ValidateBuilder {
     }
     /// The PDA account where the RuleSet is stored
     #[inline(always)]
-    pub fn rule_set(&mut self, rule_set: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn rule_set(
+        mut self,
+        rule_set: solana_program::pubkey::Pubkey,
+    ) -> ValidateBuilder<RuleSetSet, RuleSetNameTypeParam, OperationTypeParam, PayloadTypeParam>
+    {
         self.rule_set = Some(rule_set);
-        self
+        ValidateBuilder {
+            payer: self.payer,
+            rule_set: self.rule_set,
+            system_program: self.system_program,
+            opt_rule_signer1: self.opt_rule_signer1,
+            opt_rule_signer2: self.opt_rule_signer2,
+            opt_rule_signer3: self.opt_rule_signer3,
+            opt_rule_signer4: self.opt_rule_signer4,
+            opt_rule_signer5: self.opt_rule_signer5,
+            opt_rule_nonsigner1: self.opt_rule_nonsigner1,
+            opt_rule_nonsigner2: self.opt_rule_nonsigner2,
+            opt_rule_nonsigner3: self.opt_rule_nonsigner3,
+            opt_rule_nonsigner4: self.opt_rule_nonsigner4,
+            opt_rule_nonsigner5: self.opt_rule_nonsigner5,
+            rule_set_name: self.rule_set_name,
+            operation: self.operation,
+            payload: self.payload,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to '11111111111111111111111111111111']`
     /// System program
@@ -328,19 +398,88 @@ impl ValidateBuilder {
         self
     }
     #[inline(always)]
-    pub fn rule_set_name(&mut self, rule_set_name: String) -> &mut Self {
+    pub fn rule_set_name(
+        mut self,
+        rule_set_name: String,
+    ) -> ValidateBuilder<RuleSetTypeParam, RuleSetNameSet, OperationTypeParam, PayloadTypeParam>
+    {
         self.rule_set_name = Some(rule_set_name);
-        self
+        ValidateBuilder {
+            payer: self.payer,
+            rule_set: self.rule_set,
+            system_program: self.system_program,
+            opt_rule_signer1: self.opt_rule_signer1,
+            opt_rule_signer2: self.opt_rule_signer2,
+            opt_rule_signer3: self.opt_rule_signer3,
+            opt_rule_signer4: self.opt_rule_signer4,
+            opt_rule_signer5: self.opt_rule_signer5,
+            opt_rule_nonsigner1: self.opt_rule_nonsigner1,
+            opt_rule_nonsigner2: self.opt_rule_nonsigner2,
+            opt_rule_nonsigner3: self.opt_rule_nonsigner3,
+            opt_rule_nonsigner4: self.opt_rule_nonsigner4,
+            opt_rule_nonsigner5: self.opt_rule_nonsigner5,
+            rule_set_name: self.rule_set_name,
+            operation: self.operation,
+            payload: self.payload,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
-    pub fn operation(&mut self, operation: Operation) -> &mut Self {
+    pub fn operation(
+        mut self,
+        operation: Operation,
+    ) -> ValidateBuilder<RuleSetTypeParam, RuleSetNameTypeParam, OperationSet, PayloadTypeParam>
+    {
         self.operation = Some(operation);
-        self
+        ValidateBuilder {
+            payer: self.payer,
+            rule_set: self.rule_set,
+            system_program: self.system_program,
+            opt_rule_signer1: self.opt_rule_signer1,
+            opt_rule_signer2: self.opt_rule_signer2,
+            opt_rule_signer3: self.opt_rule_signer3,
+            opt_rule_signer4: self.opt_rule_signer4,
+            opt_rule_signer5: self.opt_rule_signer5,
+            opt_rule_nonsigner1: self.opt_rule_nonsigner1,
+            opt_rule_nonsigner2: self.opt_rule_nonsigner2,
+            opt_rule_nonsigner3: self.opt_rule_nonsigner3,
+            opt_rule_nonsigner4: self.opt_rule_nonsigner4,
+            opt_rule_nonsigner5: self.opt_rule_nonsigner5,
+            rule_set_name: self.rule_set_name,
+            operation: self.operation,
+            payload: self.payload,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
-    pub fn payload(&mut self, payload: Payload) -> &mut Self {
+    pub fn payload(
+        mut self,
+        payload: Payload,
+    ) -> ValidateBuilder<RuleSetTypeParam, RuleSetNameTypeParam, OperationTypeParam, PayloadSet>
+    {
         self.payload = Some(payload);
-        self
+        ValidateBuilder {
+            payer: self.payer,
+            rule_set: self.rule_set,
+            system_program: self.system_program,
+            opt_rule_signer1: self.opt_rule_signer1,
+            opt_rule_signer2: self.opt_rule_signer2,
+            opt_rule_signer3: self.opt_rule_signer3,
+            opt_rule_signer4: self.opt_rule_signer4,
+            opt_rule_signer5: self.opt_rule_signer5,
+            opt_rule_nonsigner1: self.opt_rule_nonsigner1,
+            opt_rule_nonsigner2: self.opt_rule_nonsigner2,
+            opt_rule_nonsigner3: self.opt_rule_nonsigner3,
+            opt_rule_nonsigner4: self.opt_rule_nonsigner4,
+            opt_rule_nonsigner5: self.opt_rule_nonsigner5,
+            rule_set_name: self.rule_set_name,
+            operation: self.operation,
+            payload: self.payload,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -360,6 +499,10 @@ impl ValidateBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl ValidateBuilder<RuleSetSet, RuleSetNameSet, OperationSet, PayloadSet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = Validate {

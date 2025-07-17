@@ -84,24 +84,88 @@ pub struct AddConfigLinesInstructionArgs {
 ///
 ///   0. `[writable]` candy_machine
 ///   1. `[signer]` authority
-#[derive(Default)]
-pub struct AddConfigLinesBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct CandyMachineSet;
+#[derive(Clone)]
+pub struct IndexSet;
+#[derive(Clone)]
+pub struct ConfigLinesSet;
+#[derive(Clone)]
+pub struct MoreLinesSet;
+#[derive(Clone)]
+pub struct AddConfigLinesUnset;
+
+pub struct AddConfigLinesBuilder<
+    CandyMachineTypeParam = AddConfigLinesUnset,
+    IndexTypeParam = AddConfigLinesUnset,
+    ConfigLinesTypeParam = AddConfigLinesUnset,
+    MoreLinesTypeParam = AddConfigLinesUnset,
+> {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
     authority: Option<solana_program::pubkey::Pubkey>,
     index: Option<u32>,
     config_lines: Option<Vec<ConfigLine>>,
     more_lines: Option<U64PrefixVec<ConfigLine>>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        CandyMachineTypeParam,
+        IndexTypeParam,
+        ConfigLinesTypeParam,
+        MoreLinesTypeParam,
+    )>,
 }
 
-impl AddConfigLinesBuilder {
+impl
+    AddConfigLinesBuilder<
+        AddConfigLinesUnset,
+        AddConfigLinesUnset,
+        AddConfigLinesUnset,
+        AddConfigLinesUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            candy_machine: None,
+            authority: None,
+            index: None,
+            config_lines: None,
+            more_lines: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<CandyMachineTypeParam, IndexTypeParam, ConfigLinesTypeParam, MoreLinesTypeParam>
+    AddConfigLinesBuilder<
+        CandyMachineTypeParam,
+        IndexTypeParam,
+        ConfigLinesTypeParam,
+        MoreLinesTypeParam,
+    >
+{
     #[inline(always)]
-    pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn candy_machine(
+        mut self,
+        candy_machine: solana_program::pubkey::Pubkey,
+    ) -> AddConfigLinesBuilder<
+        CandyMachineSet,
+        IndexTypeParam,
+        ConfigLinesTypeParam,
+        MoreLinesTypeParam,
+    > {
         self.candy_machine = Some(candy_machine);
-        self
+        AddConfigLinesBuilder {
+            candy_machine: self.candy_machine,
+            authority: self.authority,
+            index: self.index,
+            config_lines: self.config_lines,
+            more_lines: self.more_lines,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
@@ -109,19 +173,67 @@ impl AddConfigLinesBuilder {
         self
     }
     #[inline(always)]
-    pub fn index(&mut self, index: u32) -> &mut Self {
+    pub fn index(
+        mut self,
+        index: u32,
+    ) -> AddConfigLinesBuilder<
+        CandyMachineTypeParam,
+        IndexSet,
+        ConfigLinesTypeParam,
+        MoreLinesTypeParam,
+    > {
         self.index = Some(index);
-        self
+        AddConfigLinesBuilder {
+            candy_machine: self.candy_machine,
+            authority: self.authority,
+            index: self.index,
+            config_lines: self.config_lines,
+            more_lines: self.more_lines,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
-    pub fn config_lines(&mut self, config_lines: Vec<ConfigLine>) -> &mut Self {
+    pub fn config_lines(
+        mut self,
+        config_lines: Vec<ConfigLine>,
+    ) -> AddConfigLinesBuilder<
+        CandyMachineTypeParam,
+        IndexTypeParam,
+        ConfigLinesSet,
+        MoreLinesTypeParam,
+    > {
         self.config_lines = Some(config_lines);
-        self
+        AddConfigLinesBuilder {
+            candy_machine: self.candy_machine,
+            authority: self.authority,
+            index: self.index,
+            config_lines: self.config_lines,
+            more_lines: self.more_lines,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
-    pub fn more_lines(&mut self, more_lines: U64PrefixVec<ConfigLine>) -> &mut Self {
+    pub fn more_lines(
+        mut self,
+        more_lines: U64PrefixVec<ConfigLine>,
+    ) -> AddConfigLinesBuilder<
+        CandyMachineTypeParam,
+        IndexTypeParam,
+        ConfigLinesTypeParam,
+        MoreLinesSet,
+    > {
         self.more_lines = Some(more_lines);
-        self
+        AddConfigLinesBuilder {
+            candy_machine: self.candy_machine,
+            authority: self.authority,
+            index: self.index,
+            config_lines: self.config_lines,
+            more_lines: self.more_lines,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -141,6 +253,10 @@ impl AddConfigLinesBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl AddConfigLinesBuilder<CandyMachineSet, IndexSet, ConfigLinesSet, MoreLinesSet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = AddConfigLines {

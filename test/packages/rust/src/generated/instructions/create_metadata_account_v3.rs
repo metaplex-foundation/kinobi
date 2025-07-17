@@ -124,8 +124,28 @@ pub struct CreateMetadataAccountV3InstructionArgs {
 ///   4. `[]` update_authority
 ///   5. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   6. `[optional]` rent
-#[derive(Default)]
-pub struct CreateMetadataAccountV3Builder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct MintSet;
+#[derive(Clone)]
+pub struct MintAuthoritySet;
+#[derive(Clone)]
+pub struct UpdateAuthoritySet;
+#[derive(Clone)]
+pub struct DataSet;
+#[derive(Clone)]
+pub struct IsMutableSet;
+#[derive(Clone)]
+pub struct CreateMetadataAccountV3Unset;
+
+pub struct CreateMetadataAccountV3Builder<
+    MintTypeParam = CreateMetadataAccountV3Unset,
+    MintAuthorityTypeParam = CreateMetadataAccountV3Unset,
+    UpdateAuthorityTypeParam = CreateMetadataAccountV3Unset,
+    DataTypeParam = CreateMetadataAccountV3Unset,
+    IsMutableTypeParam = CreateMetadataAccountV3Unset,
+> {
     metadata: Option<solana_program::pubkey::Pubkey>,
     mint: Option<solana_program::pubkey::Pubkey>,
     mint_authority: Option<solana_program::pubkey::Pubkey>,
@@ -137,12 +157,57 @@ pub struct CreateMetadataAccountV3Builder {
     is_mutable: Option<bool>,
     collection_details: Option<CollectionDetails>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        UpdateAuthorityTypeParam,
+        DataTypeParam,
+        IsMutableTypeParam,
+    )>,
 }
 
-impl CreateMetadataAccountV3Builder {
+impl
+    CreateMetadataAccountV3Builder<
+        CreateMetadataAccountV3Unset,
+        CreateMetadataAccountV3Unset,
+        CreateMetadataAccountV3Unset,
+        CreateMetadataAccountV3Unset,
+        CreateMetadataAccountV3Unset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            metadata: None,
+            mint: None,
+            mint_authority: None,
+            payer: None,
+            update_authority: None,
+            system_program: None,
+            rent: None,
+            data: None,
+            is_mutable: None,
+            collection_details: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        UpdateAuthorityTypeParam,
+        DataTypeParam,
+        IsMutableTypeParam,
+    >
+    CreateMetadataAccountV3Builder<
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        UpdateAuthorityTypeParam,
+        DataTypeParam,
+        IsMutableTypeParam,
+    >
+{
     /// Metadata key (pda of ['metadata', program id, mint id])
     #[inline(always)]
     pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
@@ -151,15 +216,59 @@ impl CreateMetadataAccountV3Builder {
     }
     /// Mint of token asset
     #[inline(always)]
-    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint(
+        mut self,
+        mint: solana_program::pubkey::Pubkey,
+    ) -> CreateMetadataAccountV3Builder<
+        MintSet,
+        MintAuthorityTypeParam,
+        UpdateAuthorityTypeParam,
+        DataTypeParam,
+        IsMutableTypeParam,
+    > {
         self.mint = Some(mint);
-        self
+        CreateMetadataAccountV3Builder {
+            metadata: self.metadata,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            update_authority: self.update_authority,
+            system_program: self.system_program,
+            rent: self.rent,
+            data: self.data,
+            is_mutable: self.is_mutable,
+            collection_details: self.collection_details,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint authority
     #[inline(always)]
-    pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint_authority(
+        mut self,
+        mint_authority: solana_program::pubkey::Pubkey,
+    ) -> CreateMetadataAccountV3Builder<
+        MintTypeParam,
+        MintAuthoritySet,
+        UpdateAuthorityTypeParam,
+        DataTypeParam,
+        IsMutableTypeParam,
+    > {
         self.mint_authority = Some(mint_authority);
-        self
+        CreateMetadataAccountV3Builder {
+            metadata: self.metadata,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            update_authority: self.update_authority,
+            system_program: self.system_program,
+            rent: self.rent,
+            data: self.data,
+            is_mutable: self.is_mutable,
+            collection_details: self.collection_details,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// payer
     #[inline(always)]
@@ -170,11 +279,30 @@ impl CreateMetadataAccountV3Builder {
     /// update authority info
     #[inline(always)]
     pub fn update_authority(
-        &mut self,
+        mut self,
         update_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> CreateMetadataAccountV3Builder<
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        UpdateAuthoritySet,
+        DataTypeParam,
+        IsMutableTypeParam,
+    > {
         self.update_authority = Some(update_authority);
-        self
+        CreateMetadataAccountV3Builder {
+            metadata: self.metadata,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            update_authority: self.update_authority,
+            system_program: self.system_program,
+            rent: self.rent,
+            data: self.data,
+            is_mutable: self.is_mutable,
+            collection_details: self.collection_details,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to '11111111111111111111111111111111']`
     /// System program
@@ -191,14 +319,58 @@ impl CreateMetadataAccountV3Builder {
         self
     }
     #[inline(always)]
-    pub fn data(&mut self, data: DataV2) -> &mut Self {
+    pub fn data(
+        mut self,
+        data: DataV2,
+    ) -> CreateMetadataAccountV3Builder<
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        UpdateAuthorityTypeParam,
+        DataSet,
+        IsMutableTypeParam,
+    > {
         self.data = Some(data);
-        self
+        CreateMetadataAccountV3Builder {
+            metadata: self.metadata,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            update_authority: self.update_authority,
+            system_program: self.system_program,
+            rent: self.rent,
+            data: self.data,
+            is_mutable: self.is_mutable,
+            collection_details: self.collection_details,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
-    pub fn is_mutable(&mut self, is_mutable: bool) -> &mut Self {
+    pub fn is_mutable(
+        mut self,
+        is_mutable: bool,
+    ) -> CreateMetadataAccountV3Builder<
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        UpdateAuthorityTypeParam,
+        DataTypeParam,
+        IsMutableSet,
+    > {
         self.is_mutable = Some(is_mutable);
-        self
+        CreateMetadataAccountV3Builder {
+            metadata: self.metadata,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            update_authority: self.update_authority,
+            system_program: self.system_program,
+            rent: self.rent,
+            data: self.data,
+            is_mutable: self.is_mutable,
+            collection_details: self.collection_details,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional argument]`
     #[inline(always)]
@@ -224,6 +396,18 @@ impl CreateMetadataAccountV3Builder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    CreateMetadataAccountV3Builder<
+        MintSet,
+        MintAuthoritySet,
+        UpdateAuthoritySet,
+        DataSet,
+        IsMutableSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateMetadataAccountV3 {

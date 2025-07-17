@@ -172,8 +172,49 @@ impl MintFromCandyMachineInstructionData {
 ///   14. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
 ///   15. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   16. `[]` recent_slothashes
-#[derive(Default)]
-pub struct MintFromCandyMachineBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct CandyMachineSet;
+#[derive(Clone)]
+pub struct AuthorityPdaSet;
+#[derive(Clone)]
+pub struct MintAuthoritySet;
+#[derive(Clone)]
+pub struct NftMintSet;
+#[derive(Clone)]
+pub struct NftMetadataSet;
+#[derive(Clone)]
+pub struct NftMasterEditionSet;
+#[derive(Clone)]
+pub struct CollectionAuthorityRecordSet;
+#[derive(Clone)]
+pub struct CollectionMintSet;
+#[derive(Clone)]
+pub struct CollectionMetadataSet;
+#[derive(Clone)]
+pub struct CollectionMasterEditionSet;
+#[derive(Clone)]
+pub struct CollectionUpdateAuthoritySet;
+#[derive(Clone)]
+pub struct RecentSlothashesSet;
+#[derive(Clone)]
+pub struct MintFromCandyMachineUnset;
+
+pub struct MintFromCandyMachineBuilder<
+    CandyMachineTypeParam = MintFromCandyMachineUnset,
+    AuthorityPdaTypeParam = MintFromCandyMachineUnset,
+    MintAuthorityTypeParam = MintFromCandyMachineUnset,
+    NftMintTypeParam = MintFromCandyMachineUnset,
+    NftMetadataTypeParam = MintFromCandyMachineUnset,
+    NftMasterEditionTypeParam = MintFromCandyMachineUnset,
+    CollectionAuthorityRecordTypeParam = MintFromCandyMachineUnset,
+    CollectionMintTypeParam = MintFromCandyMachineUnset,
+    CollectionMetadataTypeParam = MintFromCandyMachineUnset,
+    CollectionMasterEditionTypeParam = MintFromCandyMachineUnset,
+    CollectionUpdateAuthorityTypeParam = MintFromCandyMachineUnset,
+    RecentSlothashesTypeParam = MintFromCandyMachineUnset,
+> {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
     authority_pda: Option<solana_program::pubkey::Pubkey>,
     mint_authority: Option<solana_program::pubkey::Pubkey>,
@@ -192,26 +233,214 @@ pub struct MintFromCandyMachineBuilder {
     system_program: Option<solana_program::pubkey::Pubkey>,
     recent_slothashes: Option<solana_program::pubkey::Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        MintAuthorityTypeParam,
+        NftMintTypeParam,
+        NftMetadataTypeParam,
+        NftMasterEditionTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionMasterEditionTypeParam,
+        CollectionUpdateAuthorityTypeParam,
+        RecentSlothashesTypeParam,
+    )>,
 }
 
-impl MintFromCandyMachineBuilder {
+impl
+    MintFromCandyMachineBuilder<
+        MintFromCandyMachineUnset,
+        MintFromCandyMachineUnset,
+        MintFromCandyMachineUnset,
+        MintFromCandyMachineUnset,
+        MintFromCandyMachineUnset,
+        MintFromCandyMachineUnset,
+        MintFromCandyMachineUnset,
+        MintFromCandyMachineUnset,
+        MintFromCandyMachineUnset,
+        MintFromCandyMachineUnset,
+        MintFromCandyMachineUnset,
+        MintFromCandyMachineUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            candy_machine: None,
+            authority_pda: None,
+            mint_authority: None,
+            payer: None,
+            nft_mint: None,
+            nft_mint_authority: None,
+            nft_metadata: None,
+            nft_master_edition: None,
+            collection_authority_record: None,
+            collection_mint: None,
+            collection_metadata: None,
+            collection_master_edition: None,
+            collection_update_authority: None,
+            token_metadata_program: None,
+            token_program: None,
+            system_program: None,
+            recent_slothashes: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        MintAuthorityTypeParam,
+        NftMintTypeParam,
+        NftMetadataTypeParam,
+        NftMasterEditionTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionMasterEditionTypeParam,
+        CollectionUpdateAuthorityTypeParam,
+        RecentSlothashesTypeParam,
+    >
+    MintFromCandyMachineBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        MintAuthorityTypeParam,
+        NftMintTypeParam,
+        NftMetadataTypeParam,
+        NftMasterEditionTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionMasterEditionTypeParam,
+        CollectionUpdateAuthorityTypeParam,
+        RecentSlothashesTypeParam,
+    >
+{
     #[inline(always)]
-    pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn candy_machine(
+        mut self,
+        candy_machine: solana_program::pubkey::Pubkey,
+    ) -> MintFromCandyMachineBuilder<
+        CandyMachineSet,
+        AuthorityPdaTypeParam,
+        MintAuthorityTypeParam,
+        NftMintTypeParam,
+        NftMetadataTypeParam,
+        NftMasterEditionTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionMasterEditionTypeParam,
+        CollectionUpdateAuthorityTypeParam,
+        RecentSlothashesTypeParam,
+    > {
         self.candy_machine = Some(candy_machine);
-        self
+        MintFromCandyMachineBuilder {
+            candy_machine: self.candy_machine,
+            authority_pda: self.authority_pda,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            nft_mint: self.nft_mint,
+            nft_mint_authority: self.nft_mint_authority,
+            nft_metadata: self.nft_metadata,
+            nft_master_edition: self.nft_master_edition,
+            collection_authority_record: self.collection_authority_record,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_master_edition: self.collection_master_edition,
+            collection_update_authority: self.collection_update_authority,
+            token_metadata_program: self.token_metadata_program,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            recent_slothashes: self.recent_slothashes,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
-    pub fn authority_pda(&mut self, authority_pda: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn authority_pda(
+        mut self,
+        authority_pda: solana_program::pubkey::Pubkey,
+    ) -> MintFromCandyMachineBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaSet,
+        MintAuthorityTypeParam,
+        NftMintTypeParam,
+        NftMetadataTypeParam,
+        NftMasterEditionTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionMasterEditionTypeParam,
+        CollectionUpdateAuthorityTypeParam,
+        RecentSlothashesTypeParam,
+    > {
         self.authority_pda = Some(authority_pda);
-        self
+        MintFromCandyMachineBuilder {
+            candy_machine: self.candy_machine,
+            authority_pda: self.authority_pda,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            nft_mint: self.nft_mint,
+            nft_mint_authority: self.nft_mint_authority,
+            nft_metadata: self.nft_metadata,
+            nft_master_edition: self.nft_master_edition,
+            collection_authority_record: self.collection_authority_record,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_master_edition: self.collection_master_edition,
+            collection_update_authority: self.collection_update_authority,
+            token_metadata_program: self.token_metadata_program,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            recent_slothashes: self.recent_slothashes,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
-    pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint_authority(
+        mut self,
+        mint_authority: solana_program::pubkey::Pubkey,
+    ) -> MintFromCandyMachineBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        MintAuthoritySet,
+        NftMintTypeParam,
+        NftMetadataTypeParam,
+        NftMasterEditionTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionMasterEditionTypeParam,
+        CollectionUpdateAuthorityTypeParam,
+        RecentSlothashesTypeParam,
+    > {
         self.mint_authority = Some(mint_authority);
-        self
+        MintFromCandyMachineBuilder {
+            candy_machine: self.candy_machine,
+            authority_pda: self.authority_pda,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            nft_mint: self.nft_mint,
+            nft_mint_authority: self.nft_mint_authority,
+            nft_metadata: self.nft_metadata,
+            nft_master_edition: self.nft_master_edition,
+            collection_authority_record: self.collection_authority_record,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_master_edition: self.collection_master_edition,
+            collection_update_authority: self.collection_update_authority,
+            token_metadata_program: self.token_metadata_program,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            recent_slothashes: self.recent_slothashes,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
@@ -219,9 +448,45 @@ impl MintFromCandyMachineBuilder {
         self
     }
     #[inline(always)]
-    pub fn nft_mint(&mut self, nft_mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn nft_mint(
+        mut self,
+        nft_mint: solana_program::pubkey::Pubkey,
+    ) -> MintFromCandyMachineBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        MintAuthorityTypeParam,
+        NftMintSet,
+        NftMetadataTypeParam,
+        NftMasterEditionTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionMasterEditionTypeParam,
+        CollectionUpdateAuthorityTypeParam,
+        RecentSlothashesTypeParam,
+    > {
         self.nft_mint = Some(nft_mint);
-        self
+        MintFromCandyMachineBuilder {
+            candy_machine: self.candy_machine,
+            authority_pda: self.authority_pda,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            nft_mint: self.nft_mint,
+            nft_mint_authority: self.nft_mint_authority,
+            nft_metadata: self.nft_metadata,
+            nft_master_edition: self.nft_master_edition,
+            collection_authority_record: self.collection_authority_record,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_master_edition: self.collection_master_edition,
+            collection_update_authority: self.collection_update_authority,
+            token_metadata_program: self.token_metadata_program,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            recent_slothashes: self.recent_slothashes,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn nft_mint_authority(
@@ -232,57 +497,291 @@ impl MintFromCandyMachineBuilder {
         self
     }
     #[inline(always)]
-    pub fn nft_metadata(&mut self, nft_metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn nft_metadata(
+        mut self,
+        nft_metadata: solana_program::pubkey::Pubkey,
+    ) -> MintFromCandyMachineBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        MintAuthorityTypeParam,
+        NftMintTypeParam,
+        NftMetadataSet,
+        NftMasterEditionTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionMasterEditionTypeParam,
+        CollectionUpdateAuthorityTypeParam,
+        RecentSlothashesTypeParam,
+    > {
         self.nft_metadata = Some(nft_metadata);
-        self
+        MintFromCandyMachineBuilder {
+            candy_machine: self.candy_machine,
+            authority_pda: self.authority_pda,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            nft_mint: self.nft_mint,
+            nft_mint_authority: self.nft_mint_authority,
+            nft_metadata: self.nft_metadata,
+            nft_master_edition: self.nft_master_edition,
+            collection_authority_record: self.collection_authority_record,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_master_edition: self.collection_master_edition,
+            collection_update_authority: self.collection_update_authority,
+            token_metadata_program: self.token_metadata_program,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            recent_slothashes: self.recent_slothashes,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn nft_master_edition(
-        &mut self,
+        mut self,
         nft_master_edition: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> MintFromCandyMachineBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        MintAuthorityTypeParam,
+        NftMintTypeParam,
+        NftMetadataTypeParam,
+        NftMasterEditionSet,
+        CollectionAuthorityRecordTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionMasterEditionTypeParam,
+        CollectionUpdateAuthorityTypeParam,
+        RecentSlothashesTypeParam,
+    > {
         self.nft_master_edition = Some(nft_master_edition);
-        self
+        MintFromCandyMachineBuilder {
+            candy_machine: self.candy_machine,
+            authority_pda: self.authority_pda,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            nft_mint: self.nft_mint,
+            nft_mint_authority: self.nft_mint_authority,
+            nft_metadata: self.nft_metadata,
+            nft_master_edition: self.nft_master_edition,
+            collection_authority_record: self.collection_authority_record,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_master_edition: self.collection_master_edition,
+            collection_update_authority: self.collection_update_authority,
+            token_metadata_program: self.token_metadata_program,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            recent_slothashes: self.recent_slothashes,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn collection_authority_record(
-        &mut self,
+        mut self,
         collection_authority_record: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> MintFromCandyMachineBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        MintAuthorityTypeParam,
+        NftMintTypeParam,
+        NftMetadataTypeParam,
+        NftMasterEditionTypeParam,
+        CollectionAuthorityRecordSet,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionMasterEditionTypeParam,
+        CollectionUpdateAuthorityTypeParam,
+        RecentSlothashesTypeParam,
+    > {
         self.collection_authority_record = Some(collection_authority_record);
-        self
+        MintFromCandyMachineBuilder {
+            candy_machine: self.candy_machine,
+            authority_pda: self.authority_pda,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            nft_mint: self.nft_mint,
+            nft_mint_authority: self.nft_mint_authority,
+            nft_metadata: self.nft_metadata,
+            nft_master_edition: self.nft_master_edition,
+            collection_authority_record: self.collection_authority_record,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_master_edition: self.collection_master_edition,
+            collection_update_authority: self.collection_update_authority,
+            token_metadata_program: self.token_metadata_program,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            recent_slothashes: self.recent_slothashes,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn collection_mint(
-        &mut self,
+        mut self,
         collection_mint: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> MintFromCandyMachineBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        MintAuthorityTypeParam,
+        NftMintTypeParam,
+        NftMetadataTypeParam,
+        NftMasterEditionTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        CollectionMintSet,
+        CollectionMetadataTypeParam,
+        CollectionMasterEditionTypeParam,
+        CollectionUpdateAuthorityTypeParam,
+        RecentSlothashesTypeParam,
+    > {
         self.collection_mint = Some(collection_mint);
-        self
+        MintFromCandyMachineBuilder {
+            candy_machine: self.candy_machine,
+            authority_pda: self.authority_pda,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            nft_mint: self.nft_mint,
+            nft_mint_authority: self.nft_mint_authority,
+            nft_metadata: self.nft_metadata,
+            nft_master_edition: self.nft_master_edition,
+            collection_authority_record: self.collection_authority_record,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_master_edition: self.collection_master_edition,
+            collection_update_authority: self.collection_update_authority,
+            token_metadata_program: self.token_metadata_program,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            recent_slothashes: self.recent_slothashes,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn collection_metadata(
-        &mut self,
+        mut self,
         collection_metadata: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> MintFromCandyMachineBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        MintAuthorityTypeParam,
+        NftMintTypeParam,
+        NftMetadataTypeParam,
+        NftMasterEditionTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataSet,
+        CollectionMasterEditionTypeParam,
+        CollectionUpdateAuthorityTypeParam,
+        RecentSlothashesTypeParam,
+    > {
         self.collection_metadata = Some(collection_metadata);
-        self
+        MintFromCandyMachineBuilder {
+            candy_machine: self.candy_machine,
+            authority_pda: self.authority_pda,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            nft_mint: self.nft_mint,
+            nft_mint_authority: self.nft_mint_authority,
+            nft_metadata: self.nft_metadata,
+            nft_master_edition: self.nft_master_edition,
+            collection_authority_record: self.collection_authority_record,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_master_edition: self.collection_master_edition,
+            collection_update_authority: self.collection_update_authority,
+            token_metadata_program: self.token_metadata_program,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            recent_slothashes: self.recent_slothashes,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn collection_master_edition(
-        &mut self,
+        mut self,
         collection_master_edition: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> MintFromCandyMachineBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        MintAuthorityTypeParam,
+        NftMintTypeParam,
+        NftMetadataTypeParam,
+        NftMasterEditionTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionMasterEditionSet,
+        CollectionUpdateAuthorityTypeParam,
+        RecentSlothashesTypeParam,
+    > {
         self.collection_master_edition = Some(collection_master_edition);
-        self
+        MintFromCandyMachineBuilder {
+            candy_machine: self.candy_machine,
+            authority_pda: self.authority_pda,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            nft_mint: self.nft_mint,
+            nft_mint_authority: self.nft_mint_authority,
+            nft_metadata: self.nft_metadata,
+            nft_master_edition: self.nft_master_edition,
+            collection_authority_record: self.collection_authority_record,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_master_edition: self.collection_master_edition,
+            collection_update_authority: self.collection_update_authority,
+            token_metadata_program: self.token_metadata_program,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            recent_slothashes: self.recent_slothashes,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn collection_update_authority(
-        &mut self,
+        mut self,
         collection_update_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> MintFromCandyMachineBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        MintAuthorityTypeParam,
+        NftMintTypeParam,
+        NftMetadataTypeParam,
+        NftMasterEditionTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionMasterEditionTypeParam,
+        CollectionUpdateAuthoritySet,
+        RecentSlothashesTypeParam,
+    > {
         self.collection_update_authority = Some(collection_update_authority);
-        self
+        MintFromCandyMachineBuilder {
+            candy_machine: self.candy_machine,
+            authority_pda: self.authority_pda,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            nft_mint: self.nft_mint,
+            nft_mint_authority: self.nft_mint_authority,
+            nft_metadata: self.nft_metadata,
+            nft_master_edition: self.nft_master_edition,
+            collection_authority_record: self.collection_authority_record,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_master_edition: self.collection_master_edition,
+            collection_update_authority: self.collection_update_authority,
+            token_metadata_program: self.token_metadata_program,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            recent_slothashes: self.recent_slothashes,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s']`
     #[inline(always)]
@@ -307,11 +806,44 @@ impl MintFromCandyMachineBuilder {
     }
     #[inline(always)]
     pub fn recent_slothashes(
-        &mut self,
+        mut self,
         recent_slothashes: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> MintFromCandyMachineBuilder<
+        CandyMachineTypeParam,
+        AuthorityPdaTypeParam,
+        MintAuthorityTypeParam,
+        NftMintTypeParam,
+        NftMetadataTypeParam,
+        NftMasterEditionTypeParam,
+        CollectionAuthorityRecordTypeParam,
+        CollectionMintTypeParam,
+        CollectionMetadataTypeParam,
+        CollectionMasterEditionTypeParam,
+        CollectionUpdateAuthorityTypeParam,
+        RecentSlothashesSet,
+    > {
         self.recent_slothashes = Some(recent_slothashes);
-        self
+        MintFromCandyMachineBuilder {
+            candy_machine: self.candy_machine,
+            authority_pda: self.authority_pda,
+            mint_authority: self.mint_authority,
+            payer: self.payer,
+            nft_mint: self.nft_mint,
+            nft_mint_authority: self.nft_mint_authority,
+            nft_metadata: self.nft_metadata,
+            nft_master_edition: self.nft_master_edition,
+            collection_authority_record: self.collection_authority_record,
+            collection_mint: self.collection_mint,
+            collection_metadata: self.collection_metadata,
+            collection_master_edition: self.collection_master_edition,
+            collection_update_authority: self.collection_update_authority,
+            token_metadata_program: self.token_metadata_program,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            recent_slothashes: self.recent_slothashes,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -331,6 +863,25 @@ impl MintFromCandyMachineBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    MintFromCandyMachineBuilder<
+        CandyMachineSet,
+        AuthorityPdaSet,
+        MintAuthoritySet,
+        NftMintSet,
+        NftMetadataSet,
+        NftMasterEditionSet,
+        CollectionAuthorityRecordSet,
+        CollectionMintSet,
+        CollectionMetadataSet,
+        CollectionMasterEditionSet,
+        CollectionUpdateAuthoritySet,
+        RecentSlothashesSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts =

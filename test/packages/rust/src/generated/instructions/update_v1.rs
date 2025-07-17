@@ -205,8 +205,22 @@ pub struct UpdateV1InstructionDataData {
 ///   7. `[optional]` delegate_record
 ///   8. `[optional]` authorization_rules_program
 ///   9. `[optional]` authorization_rules
-#[derive(Default)]
-pub struct UpdateV1Builder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct MintSet;
+#[derive(Clone)]
+pub struct AuthorityTypeSet;
+#[derive(Clone)]
+pub struct UpdateV1Unset;
+
+pub struct UpdateV1Builder<
+    MetadataTypeParam = UpdateV1Unset,
+    MintTypeParam = UpdateV1Unset,
+    AuthorityTypeTypeParam = UpdateV1Unset,
+> {
     authority: Option<solana_program::pubkey::Pubkey>,
     metadata: Option<solana_program::pubkey::Pubkey>,
     master_edition: Option<solana_program::pubkey::Pubkey>,
@@ -230,12 +244,43 @@ pub struct UpdateV1Builder {
     delegate_state: Option<DelegateState>,
     authority_type: Option<AuthorityType>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(MetadataTypeParam, MintTypeParam, AuthorityTypeTypeParam)>,
 }
 
-impl UpdateV1Builder {
+impl UpdateV1Builder<UpdateV1Unset, UpdateV1Unset, UpdateV1Unset> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            authority: None,
+            metadata: None,
+            master_edition: None,
+            mint: None,
+            system_program: None,
+            sysvar_instructions: None,
+            token: None,
+            delegate_record: None,
+            authorization_rules_program: None,
+            authorization_rules: None,
+            authorization_data: None,
+            new_update_authority: None,
+            data: None,
+            primary_sale_happened: None,
+            is_mutable: None,
+            token_standard: None,
+            collection: None,
+            uses: None,
+            collection_details: None,
+            programmable_config: None,
+            delegate_state: None,
+            authority_type: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<MetadataTypeParam, MintTypeParam, AuthorityTypeTypeParam>
+    UpdateV1Builder<MetadataTypeParam, MintTypeParam, AuthorityTypeTypeParam>
+{
     /// Update authority or delegate
     #[inline(always)]
     pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
@@ -244,9 +289,37 @@ impl UpdateV1Builder {
     }
     /// Metadata account
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> UpdateV1Builder<MetadataSet, MintTypeParam, AuthorityTypeTypeParam> {
         self.metadata = Some(metadata);
-        self
+        UpdateV1Builder {
+            authority: self.authority,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            token: self.token,
+            delegate_record: self.delegate_record,
+            authorization_rules_program: self.authorization_rules_program,
+            authorization_rules: self.authorization_rules,
+            authorization_data: self.authorization_data,
+            new_update_authority: self.new_update_authority,
+            data: self.data,
+            primary_sale_happened: self.primary_sale_happened,
+            is_mutable: self.is_mutable,
+            token_standard: self.token_standard,
+            collection: self.collection,
+            uses: self.uses,
+            collection_details: self.collection_details,
+            programmable_config: self.programmable_config,
+            delegate_state: self.delegate_state,
+            authority_type: self.authority_type,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account]`
     /// Master Edition account
@@ -260,9 +333,37 @@ impl UpdateV1Builder {
     }
     /// Mint account
     #[inline(always)]
-    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint(
+        mut self,
+        mint: solana_program::pubkey::Pubkey,
+    ) -> UpdateV1Builder<MetadataTypeParam, MintSet, AuthorityTypeTypeParam> {
         self.mint = Some(mint);
-        self
+        UpdateV1Builder {
+            authority: self.authority,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            token: self.token,
+            delegate_record: self.delegate_record,
+            authorization_rules_program: self.authorization_rules_program,
+            authorization_rules: self.authorization_rules,
+            authorization_data: self.authorization_data,
+            new_update_authority: self.new_update_authority,
+            data: self.data,
+            primary_sale_happened: self.primary_sale_happened,
+            is_mutable: self.is_mutable,
+            token_standard: self.token_standard,
+            collection: self.collection,
+            uses: self.uses,
+            collection_details: self.collection_details,
+            programmable_config: self.programmable_config,
+            delegate_state: self.delegate_state,
+            authority_type: self.authority_type,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to '11111111111111111111111111111111']`
     /// System program
@@ -385,9 +486,37 @@ impl UpdateV1Builder {
         self
     }
     #[inline(always)]
-    pub fn authority_type(&mut self, authority_type: AuthorityType) -> &mut Self {
+    pub fn authority_type(
+        mut self,
+        authority_type: AuthorityType,
+    ) -> UpdateV1Builder<MetadataTypeParam, MintTypeParam, AuthorityTypeSet> {
         self.authority_type = Some(authority_type);
-        self
+        UpdateV1Builder {
+            authority: self.authority,
+            metadata: self.metadata,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            system_program: self.system_program,
+            sysvar_instructions: self.sysvar_instructions,
+            token: self.token,
+            delegate_record: self.delegate_record,
+            authorization_rules_program: self.authorization_rules_program,
+            authorization_rules: self.authorization_rules,
+            authorization_data: self.authorization_data,
+            new_update_authority: self.new_update_authority,
+            data: self.data,
+            primary_sale_happened: self.primary_sale_happened,
+            is_mutable: self.is_mutable,
+            token_standard: self.token_standard,
+            collection: self.collection,
+            uses: self.uses,
+            collection_details: self.collection_details,
+            programmable_config: self.programmable_config,
+            delegate_state: self.delegate_state,
+            authority_type: self.authority_type,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -407,6 +536,10 @@ impl UpdateV1Builder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl UpdateV1Builder<MetadataSet, MintSet, AuthorityTypeSet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = UpdateV1 {

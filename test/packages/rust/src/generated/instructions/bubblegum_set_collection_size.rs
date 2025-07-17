@@ -110,8 +110,28 @@ pub struct BubblegumSetCollectionSizeInstructionArgs {
 ///   2. `[]` collection_mint
 ///   3. `[signer]` bubblegum_signer
 ///   4. `[optional]` collection_authority_record
-#[derive(Default)]
-pub struct BubblegumSetCollectionSizeBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct CollectionMetadataSet;
+#[derive(Clone)]
+pub struct CollectionAuthoritySet;
+#[derive(Clone)]
+pub struct CollectionMintSet;
+#[derive(Clone)]
+pub struct BubblegumSignerSet;
+#[derive(Clone)]
+pub struct SetCollectionSizeArgsSet;
+#[derive(Clone)]
+pub struct BubblegumSetCollectionSizeUnset;
+
+pub struct BubblegumSetCollectionSizeBuilder<
+    CollectionMetadataTypeParam = BubblegumSetCollectionSizeUnset,
+    CollectionAuthorityTypeParam = BubblegumSetCollectionSizeUnset,
+    CollectionMintTypeParam = BubblegumSetCollectionSizeUnset,
+    BubblegumSignerTypeParam = BubblegumSetCollectionSizeUnset,
+    SetCollectionSizeArgsTypeParam = BubblegumSetCollectionSizeUnset,
+> {
     collection_metadata: Option<solana_program::pubkey::Pubkey>,
     collection_authority: Option<solana_program::pubkey::Pubkey>,
     collection_mint: Option<solana_program::pubkey::Pubkey>,
@@ -119,47 +139,148 @@ pub struct BubblegumSetCollectionSizeBuilder {
     collection_authority_record: Option<solana_program::pubkey::Pubkey>,
     set_collection_size_args: Option<SetCollectionSizeArgs>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        CollectionMetadataTypeParam,
+        CollectionAuthorityTypeParam,
+        CollectionMintTypeParam,
+        BubblegumSignerTypeParam,
+        SetCollectionSizeArgsTypeParam,
+    )>,
 }
 
-impl BubblegumSetCollectionSizeBuilder {
+impl
+    BubblegumSetCollectionSizeBuilder<
+        BubblegumSetCollectionSizeUnset,
+        BubblegumSetCollectionSizeUnset,
+        BubblegumSetCollectionSizeUnset,
+        BubblegumSetCollectionSizeUnset,
+        BubblegumSetCollectionSizeUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            collection_metadata: None,
+            collection_authority: None,
+            collection_mint: None,
+            bubblegum_signer: None,
+            collection_authority_record: None,
+            set_collection_size_args: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        CollectionMetadataTypeParam,
+        CollectionAuthorityTypeParam,
+        CollectionMintTypeParam,
+        BubblegumSignerTypeParam,
+        SetCollectionSizeArgsTypeParam,
+    >
+    BubblegumSetCollectionSizeBuilder<
+        CollectionMetadataTypeParam,
+        CollectionAuthorityTypeParam,
+        CollectionMintTypeParam,
+        BubblegumSignerTypeParam,
+        SetCollectionSizeArgsTypeParam,
+    >
+{
     /// Collection Metadata account
     #[inline(always)]
     pub fn collection_metadata(
-        &mut self,
+        mut self,
         collection_metadata: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> BubblegumSetCollectionSizeBuilder<
+        CollectionMetadataSet,
+        CollectionAuthorityTypeParam,
+        CollectionMintTypeParam,
+        BubblegumSignerTypeParam,
+        SetCollectionSizeArgsTypeParam,
+    > {
         self.collection_metadata = Some(collection_metadata);
-        self
+        BubblegumSetCollectionSizeBuilder {
+            collection_metadata: self.collection_metadata,
+            collection_authority: self.collection_authority,
+            collection_mint: self.collection_mint,
+            bubblegum_signer: self.bubblegum_signer,
+            collection_authority_record: self.collection_authority_record,
+            set_collection_size_args: self.set_collection_size_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Collection Update authority
     #[inline(always)]
     pub fn collection_authority(
-        &mut self,
+        mut self,
         collection_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> BubblegumSetCollectionSizeBuilder<
+        CollectionMetadataTypeParam,
+        CollectionAuthoritySet,
+        CollectionMintTypeParam,
+        BubblegumSignerTypeParam,
+        SetCollectionSizeArgsTypeParam,
+    > {
         self.collection_authority = Some(collection_authority);
-        self
+        BubblegumSetCollectionSizeBuilder {
+            collection_metadata: self.collection_metadata,
+            collection_authority: self.collection_authority,
+            collection_mint: self.collection_mint,
+            bubblegum_signer: self.bubblegum_signer,
+            collection_authority_record: self.collection_authority_record,
+            set_collection_size_args: self.set_collection_size_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint of the Collection
     #[inline(always)]
     pub fn collection_mint(
-        &mut self,
+        mut self,
         collection_mint: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> BubblegumSetCollectionSizeBuilder<
+        CollectionMetadataTypeParam,
+        CollectionAuthorityTypeParam,
+        CollectionMintSet,
+        BubblegumSignerTypeParam,
+        SetCollectionSizeArgsTypeParam,
+    > {
         self.collection_mint = Some(collection_mint);
-        self
+        BubblegumSetCollectionSizeBuilder {
+            collection_metadata: self.collection_metadata,
+            collection_authority: self.collection_authority,
+            collection_mint: self.collection_mint,
+            bubblegum_signer: self.bubblegum_signer,
+            collection_authority_record: self.collection_authority_record,
+            set_collection_size_args: self.set_collection_size_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Signing PDA of Bubblegum program
     #[inline(always)]
     pub fn bubblegum_signer(
-        &mut self,
+        mut self,
         bubblegum_signer: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> BubblegumSetCollectionSizeBuilder<
+        CollectionMetadataTypeParam,
+        CollectionAuthorityTypeParam,
+        CollectionMintTypeParam,
+        BubblegumSignerSet,
+        SetCollectionSizeArgsTypeParam,
+    > {
         self.bubblegum_signer = Some(bubblegum_signer);
-        self
+        BubblegumSetCollectionSizeBuilder {
+            collection_metadata: self.collection_metadata,
+            collection_authority: self.collection_authority,
+            collection_mint: self.collection_mint,
+            bubblegum_signer: self.bubblegum_signer,
+            collection_authority_record: self.collection_authority_record,
+            set_collection_size_args: self.set_collection_size_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account]`
     /// Collection Authority Record PDA
@@ -173,11 +294,26 @@ impl BubblegumSetCollectionSizeBuilder {
     }
     #[inline(always)]
     pub fn set_collection_size_args(
-        &mut self,
+        mut self,
         set_collection_size_args: SetCollectionSizeArgs,
-    ) -> &mut Self {
+    ) -> BubblegumSetCollectionSizeBuilder<
+        CollectionMetadataTypeParam,
+        CollectionAuthorityTypeParam,
+        CollectionMintTypeParam,
+        BubblegumSignerTypeParam,
+        SetCollectionSizeArgsSet,
+    > {
         self.set_collection_size_args = Some(set_collection_size_args);
-        self
+        BubblegumSetCollectionSizeBuilder {
+            collection_metadata: self.collection_metadata,
+            collection_authority: self.collection_authority,
+            collection_mint: self.collection_mint,
+            bubblegum_signer: self.bubblegum_signer,
+            collection_authority_record: self.collection_authority_record,
+            set_collection_size_args: self.set_collection_size_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -197,6 +333,18 @@ impl BubblegumSetCollectionSizeBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    BubblegumSetCollectionSizeBuilder<
+        CollectionMetadataSet,
+        CollectionAuthoritySet,
+        CollectionMintSet,
+        BubblegumSignerSet,
+        SetCollectionSizeArgsSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = BubblegumSetCollectionSize {

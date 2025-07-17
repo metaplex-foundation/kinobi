@@ -113,8 +113,28 @@ impl ApproveCollectionAuthorityInstructionData {
 ///   5. `[]` mint
 ///   6. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   7. `[optional]` rent
-#[derive(Default)]
-pub struct ApproveCollectionAuthorityBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct CollectionAuthorityRecordSet;
+#[derive(Clone)]
+pub struct NewCollectionAuthoritySet;
+#[derive(Clone)]
+pub struct UpdateAuthoritySet;
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct MintSet;
+#[derive(Clone)]
+pub struct ApproveCollectionAuthorityUnset;
+
+pub struct ApproveCollectionAuthorityBuilder<
+    CollectionAuthorityRecordTypeParam = ApproveCollectionAuthorityUnset,
+    NewCollectionAuthorityTypeParam = ApproveCollectionAuthorityUnset,
+    UpdateAuthorityTypeParam = ApproveCollectionAuthorityUnset,
+    MetadataTypeParam = ApproveCollectionAuthorityUnset,
+    MintTypeParam = ApproveCollectionAuthorityUnset,
+> {
     collection_authority_record: Option<solana_program::pubkey::Pubkey>,
     new_collection_authority: Option<solana_program::pubkey::Pubkey>,
     update_authority: Option<solana_program::pubkey::Pubkey>,
@@ -124,38 +144,132 @@ pub struct ApproveCollectionAuthorityBuilder {
     system_program: Option<solana_program::pubkey::Pubkey>,
     rent: Option<solana_program::pubkey::Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        CollectionAuthorityRecordTypeParam,
+        NewCollectionAuthorityTypeParam,
+        UpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+    )>,
 }
 
-impl ApproveCollectionAuthorityBuilder {
+impl
+    ApproveCollectionAuthorityBuilder<
+        ApproveCollectionAuthorityUnset,
+        ApproveCollectionAuthorityUnset,
+        ApproveCollectionAuthorityUnset,
+        ApproveCollectionAuthorityUnset,
+        ApproveCollectionAuthorityUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            collection_authority_record: None,
+            new_collection_authority: None,
+            update_authority: None,
+            payer: None,
+            metadata: None,
+            mint: None,
+            system_program: None,
+            rent: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        CollectionAuthorityRecordTypeParam,
+        NewCollectionAuthorityTypeParam,
+        UpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+    >
+    ApproveCollectionAuthorityBuilder<
+        CollectionAuthorityRecordTypeParam,
+        NewCollectionAuthorityTypeParam,
+        UpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+    >
+{
     /// Collection Authority Record PDA
     #[inline(always)]
     pub fn collection_authority_record(
-        &mut self,
+        mut self,
         collection_authority_record: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> ApproveCollectionAuthorityBuilder<
+        CollectionAuthorityRecordSet,
+        NewCollectionAuthorityTypeParam,
+        UpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+    > {
         self.collection_authority_record = Some(collection_authority_record);
-        self
+        ApproveCollectionAuthorityBuilder {
+            collection_authority_record: self.collection_authority_record,
+            new_collection_authority: self.new_collection_authority,
+            update_authority: self.update_authority,
+            payer: self.payer,
+            metadata: self.metadata,
+            mint: self.mint,
+            system_program: self.system_program,
+            rent: self.rent,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// A Collection Authority
     #[inline(always)]
     pub fn new_collection_authority(
-        &mut self,
+        mut self,
         new_collection_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> ApproveCollectionAuthorityBuilder<
+        CollectionAuthorityRecordTypeParam,
+        NewCollectionAuthoritySet,
+        UpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+    > {
         self.new_collection_authority = Some(new_collection_authority);
-        self
+        ApproveCollectionAuthorityBuilder {
+            collection_authority_record: self.collection_authority_record,
+            new_collection_authority: self.new_collection_authority,
+            update_authority: self.update_authority,
+            payer: self.payer,
+            metadata: self.metadata,
+            mint: self.mint,
+            system_program: self.system_program,
+            rent: self.rent,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Update Authority of Collection NFT
     #[inline(always)]
     pub fn update_authority(
-        &mut self,
+        mut self,
         update_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> ApproveCollectionAuthorityBuilder<
+        CollectionAuthorityRecordTypeParam,
+        NewCollectionAuthorityTypeParam,
+        UpdateAuthoritySet,
+        MetadataTypeParam,
+        MintTypeParam,
+    > {
         self.update_authority = Some(update_authority);
-        self
+        ApproveCollectionAuthorityBuilder {
+            collection_authority_record: self.collection_authority_record,
+            new_collection_authority: self.new_collection_authority,
+            update_authority: self.update_authority,
+            payer: self.payer,
+            metadata: self.metadata,
+            mint: self.mint,
+            system_program: self.system_program,
+            rent: self.rent,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Payer
     #[inline(always)]
@@ -165,15 +279,55 @@ impl ApproveCollectionAuthorityBuilder {
     }
     /// Collection Metadata account
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> ApproveCollectionAuthorityBuilder<
+        CollectionAuthorityRecordTypeParam,
+        NewCollectionAuthorityTypeParam,
+        UpdateAuthorityTypeParam,
+        MetadataSet,
+        MintTypeParam,
+    > {
         self.metadata = Some(metadata);
-        self
+        ApproveCollectionAuthorityBuilder {
+            collection_authority_record: self.collection_authority_record,
+            new_collection_authority: self.new_collection_authority,
+            update_authority: self.update_authority,
+            payer: self.payer,
+            metadata: self.metadata,
+            mint: self.mint,
+            system_program: self.system_program,
+            rent: self.rent,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint of Collection Metadata
     #[inline(always)]
-    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint(
+        mut self,
+        mint: solana_program::pubkey::Pubkey,
+    ) -> ApproveCollectionAuthorityBuilder<
+        CollectionAuthorityRecordTypeParam,
+        NewCollectionAuthorityTypeParam,
+        UpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        MintSet,
+    > {
         self.mint = Some(mint);
-        self
+        ApproveCollectionAuthorityBuilder {
+            collection_authority_record: self.collection_authority_record,
+            new_collection_authority: self.new_collection_authority,
+            update_authority: self.update_authority,
+            payer: self.payer,
+            metadata: self.metadata,
+            mint: self.mint,
+            system_program: self.system_program,
+            rent: self.rent,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to '11111111111111111111111111111111']`
     /// System program
@@ -207,6 +361,18 @@ impl ApproveCollectionAuthorityBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    ApproveCollectionAuthorityBuilder<
+        CollectionAuthorityRecordSet,
+        NewCollectionAuthoritySet,
+        UpdateAuthoritySet,
+        MetadataSet,
+        MintSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = ApproveCollectionAuthority {

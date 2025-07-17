@@ -146,8 +146,37 @@ pub struct ApproveUseAuthorityInstructionArgs {
 ///   8. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
 ///   9. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   10. `[optional]` rent
-#[derive(Default)]
-pub struct ApproveUseAuthorityBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct UseAuthorityRecordSet;
+#[derive(Clone)]
+pub struct OwnerSet;
+#[derive(Clone)]
+pub struct UserSet;
+#[derive(Clone)]
+pub struct OwnerTokenAccountSet;
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct MintSet;
+#[derive(Clone)]
+pub struct BurnerSet;
+#[derive(Clone)]
+pub struct NumberOfUsesSet;
+#[derive(Clone)]
+pub struct ApproveUseAuthorityUnset;
+
+pub struct ApproveUseAuthorityBuilder<
+    UseAuthorityRecordTypeParam = ApproveUseAuthorityUnset,
+    OwnerTypeParam = ApproveUseAuthorityUnset,
+    UserTypeParam = ApproveUseAuthorityUnset,
+    OwnerTokenAccountTypeParam = ApproveUseAuthorityUnset,
+    MetadataTypeParam = ApproveUseAuthorityUnset,
+    MintTypeParam = ApproveUseAuthorityUnset,
+    BurnerTypeParam = ApproveUseAuthorityUnset,
+    NumberOfUsesTypeParam = ApproveUseAuthorityUnset,
+> {
     use_authority_record: Option<solana_program::pubkey::Pubkey>,
     owner: Option<solana_program::pubkey::Pubkey>,
     payer: Option<solana_program::pubkey::Pubkey>,
@@ -161,26 +190,136 @@ pub struct ApproveUseAuthorityBuilder {
     rent: Option<solana_program::pubkey::Pubkey>,
     number_of_uses: Option<u64>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        UseAuthorityRecordTypeParam,
+        OwnerTypeParam,
+        UserTypeParam,
+        OwnerTokenAccountTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+        BurnerTypeParam,
+        NumberOfUsesTypeParam,
+    )>,
 }
 
-impl ApproveUseAuthorityBuilder {
+impl
+    ApproveUseAuthorityBuilder<
+        ApproveUseAuthorityUnset,
+        ApproveUseAuthorityUnset,
+        ApproveUseAuthorityUnset,
+        ApproveUseAuthorityUnset,
+        ApproveUseAuthorityUnset,
+        ApproveUseAuthorityUnset,
+        ApproveUseAuthorityUnset,
+        ApproveUseAuthorityUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            use_authority_record: None,
+            owner: None,
+            payer: None,
+            user: None,
+            owner_token_account: None,
+            metadata: None,
+            mint: None,
+            burner: None,
+            token_program: None,
+            system_program: None,
+            rent: None,
+            number_of_uses: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        UseAuthorityRecordTypeParam,
+        OwnerTypeParam,
+        UserTypeParam,
+        OwnerTokenAccountTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+        BurnerTypeParam,
+        NumberOfUsesTypeParam,
+    >
+    ApproveUseAuthorityBuilder<
+        UseAuthorityRecordTypeParam,
+        OwnerTypeParam,
+        UserTypeParam,
+        OwnerTokenAccountTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+        BurnerTypeParam,
+        NumberOfUsesTypeParam,
+    >
+{
     /// Use Authority Record PDA
     #[inline(always)]
     pub fn use_authority_record(
-        &mut self,
+        mut self,
         use_authority_record: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> ApproveUseAuthorityBuilder<
+        UseAuthorityRecordSet,
+        OwnerTypeParam,
+        UserTypeParam,
+        OwnerTokenAccountTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+        BurnerTypeParam,
+        NumberOfUsesTypeParam,
+    > {
         self.use_authority_record = Some(use_authority_record);
-        self
+        ApproveUseAuthorityBuilder {
+            use_authority_record: self.use_authority_record,
+            owner: self.owner,
+            payer: self.payer,
+            user: self.user,
+            owner_token_account: self.owner_token_account,
+            metadata: self.metadata,
+            mint: self.mint,
+            burner: self.burner,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            number_of_uses: self.number_of_uses,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Owner
     #[inline(always)]
-    pub fn owner(&mut self, owner: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn owner(
+        mut self,
+        owner: solana_program::pubkey::Pubkey,
+    ) -> ApproveUseAuthorityBuilder<
+        UseAuthorityRecordTypeParam,
+        OwnerSet,
+        UserTypeParam,
+        OwnerTokenAccountTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+        BurnerTypeParam,
+        NumberOfUsesTypeParam,
+    > {
         self.owner = Some(owner);
-        self
+        ApproveUseAuthorityBuilder {
+            use_authority_record: self.use_authority_record,
+            owner: self.owner,
+            payer: self.payer,
+            user: self.user,
+            owner_token_account: self.owner_token_account,
+            metadata: self.metadata,
+            mint: self.mint,
+            burner: self.burner,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            number_of_uses: self.number_of_uses,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Payer
     #[inline(always)]
@@ -190,36 +329,168 @@ impl ApproveUseAuthorityBuilder {
     }
     /// A Use Authority
     #[inline(always)]
-    pub fn user(&mut self, user: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn user(
+        mut self,
+        user: solana_program::pubkey::Pubkey,
+    ) -> ApproveUseAuthorityBuilder<
+        UseAuthorityRecordTypeParam,
+        OwnerTypeParam,
+        UserSet,
+        OwnerTokenAccountTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+        BurnerTypeParam,
+        NumberOfUsesTypeParam,
+    > {
         self.user = Some(user);
-        self
+        ApproveUseAuthorityBuilder {
+            use_authority_record: self.use_authority_record,
+            owner: self.owner,
+            payer: self.payer,
+            user: self.user,
+            owner_token_account: self.owner_token_account,
+            metadata: self.metadata,
+            mint: self.mint,
+            burner: self.burner,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            number_of_uses: self.number_of_uses,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Owned Token Account Of Mint
     #[inline(always)]
     pub fn owner_token_account(
-        &mut self,
+        mut self,
         owner_token_account: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> ApproveUseAuthorityBuilder<
+        UseAuthorityRecordTypeParam,
+        OwnerTypeParam,
+        UserTypeParam,
+        OwnerTokenAccountSet,
+        MetadataTypeParam,
+        MintTypeParam,
+        BurnerTypeParam,
+        NumberOfUsesTypeParam,
+    > {
         self.owner_token_account = Some(owner_token_account);
-        self
+        ApproveUseAuthorityBuilder {
+            use_authority_record: self.use_authority_record,
+            owner: self.owner,
+            payer: self.payer,
+            user: self.user,
+            owner_token_account: self.owner_token_account,
+            metadata: self.metadata,
+            mint: self.mint,
+            burner: self.burner,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            number_of_uses: self.number_of_uses,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Metadata account
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> ApproveUseAuthorityBuilder<
+        UseAuthorityRecordTypeParam,
+        OwnerTypeParam,
+        UserTypeParam,
+        OwnerTokenAccountTypeParam,
+        MetadataSet,
+        MintTypeParam,
+        BurnerTypeParam,
+        NumberOfUsesTypeParam,
+    > {
         self.metadata = Some(metadata);
-        self
+        ApproveUseAuthorityBuilder {
+            use_authority_record: self.use_authority_record,
+            owner: self.owner,
+            payer: self.payer,
+            user: self.user,
+            owner_token_account: self.owner_token_account,
+            metadata: self.metadata,
+            mint: self.mint,
+            burner: self.burner,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            number_of_uses: self.number_of_uses,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint of Metadata
     #[inline(always)]
-    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint(
+        mut self,
+        mint: solana_program::pubkey::Pubkey,
+    ) -> ApproveUseAuthorityBuilder<
+        UseAuthorityRecordTypeParam,
+        OwnerTypeParam,
+        UserTypeParam,
+        OwnerTokenAccountTypeParam,
+        MetadataTypeParam,
+        MintSet,
+        BurnerTypeParam,
+        NumberOfUsesTypeParam,
+    > {
         self.mint = Some(mint);
-        self
+        ApproveUseAuthorityBuilder {
+            use_authority_record: self.use_authority_record,
+            owner: self.owner,
+            payer: self.payer,
+            user: self.user,
+            owner_token_account: self.owner_token_account,
+            metadata: self.metadata,
+            mint: self.mint,
+            burner: self.burner,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            number_of_uses: self.number_of_uses,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Program As Signer (Burner)
     #[inline(always)]
-    pub fn burner(&mut self, burner: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn burner(
+        mut self,
+        burner: solana_program::pubkey::Pubkey,
+    ) -> ApproveUseAuthorityBuilder<
+        UseAuthorityRecordTypeParam,
+        OwnerTypeParam,
+        UserTypeParam,
+        OwnerTokenAccountTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+        BurnerSet,
+        NumberOfUsesTypeParam,
+    > {
         self.burner = Some(burner);
-        self
+        ApproveUseAuthorityBuilder {
+            use_authority_record: self.use_authority_record,
+            owner: self.owner,
+            payer: self.payer,
+            user: self.user,
+            owner_token_account: self.owner_token_account,
+            metadata: self.metadata,
+            mint: self.mint,
+            burner: self.burner,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            number_of_uses: self.number_of_uses,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA']`
     /// Token program
@@ -243,9 +514,36 @@ impl ApproveUseAuthorityBuilder {
         self
     }
     #[inline(always)]
-    pub fn number_of_uses(&mut self, number_of_uses: u64) -> &mut Self {
+    pub fn number_of_uses(
+        mut self,
+        number_of_uses: u64,
+    ) -> ApproveUseAuthorityBuilder<
+        UseAuthorityRecordTypeParam,
+        OwnerTypeParam,
+        UserTypeParam,
+        OwnerTokenAccountTypeParam,
+        MetadataTypeParam,
+        MintTypeParam,
+        BurnerTypeParam,
+        NumberOfUsesSet,
+    > {
         self.number_of_uses = Some(number_of_uses);
-        self
+        ApproveUseAuthorityBuilder {
+            use_authority_record: self.use_authority_record,
+            owner: self.owner,
+            payer: self.payer,
+            user: self.user,
+            owner_token_account: self.owner_token_account,
+            metadata: self.metadata,
+            mint: self.mint,
+            burner: self.burner,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            number_of_uses: self.number_of_uses,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -265,6 +563,21 @@ impl ApproveUseAuthorityBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    ApproveUseAuthorityBuilder<
+        UseAuthorityRecordSet,
+        OwnerSet,
+        UserSet,
+        OwnerTokenAccountSet,
+        MetadataSet,
+        MintSet,
+        BurnerSet,
+        NumberOfUsesSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = ApproveUseAuthority {

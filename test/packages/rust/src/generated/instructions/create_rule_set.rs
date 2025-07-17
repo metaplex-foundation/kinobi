@@ -87,20 +87,52 @@ pub struct CreateRuleSetInstructionArgs {
 ///   0. `[writable, signer]` payer
 ///   1. `[writable]` rule_set_pda
 ///   2. `[optional]` system_program (default to `11111111111111111111111111111111`)
-#[derive(Default)]
-pub struct CreateRuleSetBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct RuleSetPdaSet;
+#[derive(Clone)]
+pub struct CreateArgsSet;
+#[derive(Clone)]
+pub struct RuleSetBumpSet;
+#[derive(Clone)]
+pub struct CreateRuleSetUnset;
+
+pub struct CreateRuleSetBuilder<
+    RuleSetPdaTypeParam = CreateRuleSetUnset,
+    CreateArgsTypeParam = CreateRuleSetUnset,
+    RuleSetBumpTypeParam = CreateRuleSetUnset,
+> {
     payer: Option<solana_program::pubkey::Pubkey>,
     rule_set_pda: Option<solana_program::pubkey::Pubkey>,
     system_program: Option<solana_program::pubkey::Pubkey>,
     create_args: Option<TaCreateArgs>,
     rule_set_bump: Option<u8>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        RuleSetPdaTypeParam,
+        CreateArgsTypeParam,
+        RuleSetBumpTypeParam,
+    )>,
 }
 
-impl CreateRuleSetBuilder {
+impl CreateRuleSetBuilder<CreateRuleSetUnset, CreateRuleSetUnset, CreateRuleSetUnset> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            payer: None,
+            rule_set_pda: None,
+            system_program: None,
+            create_args: None,
+            rule_set_bump: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<RuleSetPdaTypeParam, CreateArgsTypeParam, RuleSetBumpTypeParam>
+    CreateRuleSetBuilder<RuleSetPdaTypeParam, CreateArgsTypeParam, RuleSetBumpTypeParam>
+{
     /// Payer and creator of the RuleSet
     #[inline(always)]
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
@@ -109,9 +141,20 @@ impl CreateRuleSetBuilder {
     }
     /// The PDA account where the RuleSet is stored
     #[inline(always)]
-    pub fn rule_set_pda(&mut self, rule_set_pda: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn rule_set_pda(
+        mut self,
+        rule_set_pda: solana_program::pubkey::Pubkey,
+    ) -> CreateRuleSetBuilder<RuleSetPdaSet, CreateArgsTypeParam, RuleSetBumpTypeParam> {
         self.rule_set_pda = Some(rule_set_pda);
-        self
+        CreateRuleSetBuilder {
+            payer: self.payer,
+            rule_set_pda: self.rule_set_pda,
+            system_program: self.system_program,
+            create_args: self.create_args,
+            rule_set_bump: self.rule_set_bump,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to '11111111111111111111111111111111']`
     /// System program
@@ -121,14 +164,36 @@ impl CreateRuleSetBuilder {
         self
     }
     #[inline(always)]
-    pub fn create_args(&mut self, create_args: TaCreateArgs) -> &mut Self {
+    pub fn create_args(
+        mut self,
+        create_args: TaCreateArgs,
+    ) -> CreateRuleSetBuilder<RuleSetPdaTypeParam, CreateArgsSet, RuleSetBumpTypeParam> {
         self.create_args = Some(create_args);
-        self
+        CreateRuleSetBuilder {
+            payer: self.payer,
+            rule_set_pda: self.rule_set_pda,
+            system_program: self.system_program,
+            create_args: self.create_args,
+            rule_set_bump: self.rule_set_bump,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
-    pub fn rule_set_bump(&mut self, rule_set_bump: u8) -> &mut Self {
+    pub fn rule_set_bump(
+        mut self,
+        rule_set_bump: u8,
+    ) -> CreateRuleSetBuilder<RuleSetPdaTypeParam, CreateArgsTypeParam, RuleSetBumpSet> {
         self.rule_set_bump = Some(rule_set_bump);
-        self
+        CreateRuleSetBuilder {
+            payer: self.payer,
+            rule_set_pda: self.rule_set_pda,
+            system_program: self.system_program,
+            create_args: self.create_args,
+            rule_set_bump: self.rule_set_bump,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -148,6 +213,10 @@ impl CreateRuleSetBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl CreateRuleSetBuilder<RuleSetPdaSet, CreateArgsSet, RuleSetBumpSet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = CreateRuleSet {

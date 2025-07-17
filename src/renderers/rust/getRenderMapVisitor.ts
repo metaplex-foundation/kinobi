@@ -269,6 +269,14 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
           const typeManifest = visit(struct, typeManifestVisitor);
           typeManifestVisitor.setParentName(null);
 
+          // Filter for required accounts and arguments for type state system
+          const requiredAccounts = node.accounts.filter(
+            (account) => !account.isOptional && !account.defaultValue
+          );
+          const requiredArgs = instructionArgs.filter(
+            (arg) => !arg.default && !arg.innerOptionType
+          );
+
           return new RenderMap().add(
             `instructions/${snakeCase(node.name)}.rs`,
             render('instructionsPage.njk', {
@@ -281,6 +289,8 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
               hasOptional,
               program,
               typeManifest,
+              requiredAccounts,
+              requiredArgs,
             })
           );
         },

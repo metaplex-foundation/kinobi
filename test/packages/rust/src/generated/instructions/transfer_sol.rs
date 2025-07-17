@@ -78,32 +78,85 @@ pub struct TransferSolInstructionArgs {
 ///
 ///   0. `[writable, signer]` source
 ///   1. `[writable]` destination
-#[derive(Default)]
-pub struct TransferSolBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct SourceSet;
+#[derive(Clone)]
+pub struct DestinationSet;
+#[derive(Clone)]
+pub struct AmountSet;
+#[derive(Clone)]
+pub struct TransferSolUnset;
+
+pub struct TransferSolBuilder<
+    SourceTypeParam = TransferSolUnset,
+    DestinationTypeParam = TransferSolUnset,
+    AmountTypeParam = TransferSolUnset,
+> {
     source: Option<solana_program::pubkey::Pubkey>,
     destination: Option<solana_program::pubkey::Pubkey>,
     amount: Option<u64>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(SourceTypeParam, DestinationTypeParam, AmountTypeParam)>,
 }
 
-impl TransferSolBuilder {
+impl TransferSolBuilder<TransferSolUnset, TransferSolUnset, TransferSolUnset> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            source: None,
+            destination: None,
+            amount: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<SourceTypeParam, DestinationTypeParam, AmountTypeParam>
+    TransferSolBuilder<SourceTypeParam, DestinationTypeParam, AmountTypeParam>
+{
     #[inline(always)]
-    pub fn source(&mut self, source: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn source(
+        mut self,
+        source: solana_program::pubkey::Pubkey,
+    ) -> TransferSolBuilder<SourceSet, DestinationTypeParam, AmountTypeParam> {
         self.source = Some(source);
-        self
+        TransferSolBuilder {
+            source: self.source,
+            destination: self.destination,
+            amount: self.amount,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
-    pub fn destination(&mut self, destination: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn destination(
+        mut self,
+        destination: solana_program::pubkey::Pubkey,
+    ) -> TransferSolBuilder<SourceTypeParam, DestinationSet, AmountTypeParam> {
         self.destination = Some(destination);
-        self
+        TransferSolBuilder {
+            source: self.source,
+            destination: self.destination,
+            amount: self.amount,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
-    pub fn amount(&mut self, amount: u64) -> &mut Self {
+    pub fn amount(
+        mut self,
+        amount: u64,
+    ) -> TransferSolBuilder<SourceTypeParam, DestinationTypeParam, AmountSet> {
         self.amount = Some(amount);
-        self
+        TransferSolBuilder {
+            source: self.source,
+            destination: self.destination,
+            amount: self.amount,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -123,6 +176,10 @@ impl TransferSolBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl TransferSolBuilder<SourceSet, DestinationSet, AmountSet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = TransferSol {

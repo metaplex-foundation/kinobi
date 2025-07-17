@@ -74,35 +74,114 @@ impl ConvertMasterEditionV1ToV2InstructionData {
 ///   0. `[writable]` master_edition
 ///   1. `[writable]` one_time_auth
 ///   2. `[writable]` printing_mint
-#[derive(Default)]
-pub struct ConvertMasterEditionV1ToV2Builder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct MasterEditionSet;
+#[derive(Clone)]
+pub struct OneTimeAuthSet;
+#[derive(Clone)]
+pub struct PrintingMintSet;
+#[derive(Clone)]
+pub struct ConvertMasterEditionV1ToV2Unset;
+
+pub struct ConvertMasterEditionV1ToV2Builder<
+    MasterEditionTypeParam = ConvertMasterEditionV1ToV2Unset,
+    OneTimeAuthTypeParam = ConvertMasterEditionV1ToV2Unset,
+    PrintingMintTypeParam = ConvertMasterEditionV1ToV2Unset,
+> {
     master_edition: Option<solana_program::pubkey::Pubkey>,
     one_time_auth: Option<solana_program::pubkey::Pubkey>,
     printing_mint: Option<solana_program::pubkey::Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        MasterEditionTypeParam,
+        OneTimeAuthTypeParam,
+        PrintingMintTypeParam,
+    )>,
 }
 
-impl ConvertMasterEditionV1ToV2Builder {
+impl
+    ConvertMasterEditionV1ToV2Builder<
+        ConvertMasterEditionV1ToV2Unset,
+        ConvertMasterEditionV1ToV2Unset,
+        ConvertMasterEditionV1ToV2Unset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            master_edition: None,
+            one_time_auth: None,
+            printing_mint: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<MasterEditionTypeParam, OneTimeAuthTypeParam, PrintingMintTypeParam>
+    ConvertMasterEditionV1ToV2Builder<
+        MasterEditionTypeParam,
+        OneTimeAuthTypeParam,
+        PrintingMintTypeParam,
+    >
+{
     /// Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition'])
     #[inline(always)]
-    pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn master_edition(
+        mut self,
+        master_edition: solana_program::pubkey::Pubkey,
+    ) -> ConvertMasterEditionV1ToV2Builder<
+        MasterEditionSet,
+        OneTimeAuthTypeParam,
+        PrintingMintTypeParam,
+    > {
         self.master_edition = Some(master_edition);
-        self
+        ConvertMasterEditionV1ToV2Builder {
+            master_edition: self.master_edition,
+            one_time_auth: self.one_time_auth,
+            printing_mint: self.printing_mint,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// One time authorization mint
     #[inline(always)]
-    pub fn one_time_auth(&mut self, one_time_auth: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn one_time_auth(
+        mut self,
+        one_time_auth: solana_program::pubkey::Pubkey,
+    ) -> ConvertMasterEditionV1ToV2Builder<
+        MasterEditionTypeParam,
+        OneTimeAuthSet,
+        PrintingMintTypeParam,
+    > {
         self.one_time_auth = Some(one_time_auth);
-        self
+        ConvertMasterEditionV1ToV2Builder {
+            master_edition: self.master_edition,
+            one_time_auth: self.one_time_auth,
+            printing_mint: self.printing_mint,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Printing mint
     #[inline(always)]
-    pub fn printing_mint(&mut self, printing_mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn printing_mint(
+        mut self,
+        printing_mint: solana_program::pubkey::Pubkey,
+    ) -> ConvertMasterEditionV1ToV2Builder<
+        MasterEditionTypeParam,
+        OneTimeAuthTypeParam,
+        PrintingMintSet,
+    > {
         self.printing_mint = Some(printing_mint);
-        self
+        ConvertMasterEditionV1ToV2Builder {
+            master_edition: self.master_edition,
+            one_time_auth: self.one_time_auth,
+            printing_mint: self.printing_mint,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -122,6 +201,10 @@ impl ConvertMasterEditionV1ToV2Builder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl ConvertMasterEditionV1ToV2Builder<MasterEditionSet, OneTimeAuthSet, PrintingMintSet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = ConvertMasterEditionV1ToV2 {

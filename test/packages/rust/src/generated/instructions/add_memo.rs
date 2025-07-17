@@ -62,20 +62,38 @@ pub struct AddMemoInstructionArgs {
 ///
 /// ### Accounts:
 ///
-#[derive(Default)]
-pub struct AddMemoBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct MemoSet;
+#[derive(Clone)]
+pub struct AddMemoUnset;
+
+pub struct AddMemoBuilder<MemoTypeParam = AddMemoUnset> {
     memo: Option<String>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(MemoTypeParam,)>,
 }
 
-impl AddMemoBuilder {
+impl AddMemoBuilder<AddMemoUnset> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            memo: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<MemoTypeParam> AddMemoBuilder<MemoTypeParam> {
     #[inline(always)]
-    pub fn memo(&mut self, memo: String) -> &mut Self {
+    pub fn memo(mut self, memo: String) -> AddMemoBuilder<MemoSet> {
         self.memo = Some(memo);
-        self
+        AddMemoBuilder {
+            memo: self.memo,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -95,6 +113,10 @@ impl AddMemoBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl AddMemoBuilder<MemoSet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = AddMemo {};

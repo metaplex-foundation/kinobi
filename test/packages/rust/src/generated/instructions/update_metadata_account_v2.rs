@@ -86,8 +86,19 @@ pub struct UpdateMetadataAccountV2InstructionArgs {
 ///
 ///   0. `[writable]` metadata
 ///   1. `[signer]` update_authority
-#[derive(Default)]
-pub struct UpdateMetadataAccountV2Builder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct UpdateAuthoritySet;
+#[derive(Clone)]
+pub struct UpdateMetadataAccountV2Unset;
+
+pub struct UpdateMetadataAccountV2Builder<
+    MetadataTypeParam = UpdateMetadataAccountV2Unset,
+    UpdateAuthorityTypeParam = UpdateMetadataAccountV2Unset,
+> {
     metadata: Option<solana_program::pubkey::Pubkey>,
     update_authority: Option<solana_program::pubkey::Pubkey>,
     data: Option<DataV2>,
@@ -95,26 +106,62 @@ pub struct UpdateMetadataAccountV2Builder {
     primary_sale_happened: Option<bool>,
     is_mutable: Option<bool>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(MetadataTypeParam, UpdateAuthorityTypeParam)>,
 }
 
-impl UpdateMetadataAccountV2Builder {
+impl UpdateMetadataAccountV2Builder<UpdateMetadataAccountV2Unset, UpdateMetadataAccountV2Unset> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            metadata: None,
+            update_authority: None,
+            data: None,
+            update_authority_arg: None,
+            primary_sale_happened: None,
+            is_mutable: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<MetadataTypeParam, UpdateAuthorityTypeParam>
+    UpdateMetadataAccountV2Builder<MetadataTypeParam, UpdateAuthorityTypeParam>
+{
     /// Metadata account
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> UpdateMetadataAccountV2Builder<MetadataSet, UpdateAuthorityTypeParam> {
         self.metadata = Some(metadata);
-        self
+        UpdateMetadataAccountV2Builder {
+            metadata: self.metadata,
+            update_authority: self.update_authority,
+            data: self.data,
+            update_authority_arg: self.update_authority_arg,
+            primary_sale_happened: self.primary_sale_happened,
+            is_mutable: self.is_mutable,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Update authority key
     #[inline(always)]
     pub fn update_authority(
-        &mut self,
+        mut self,
         update_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> UpdateMetadataAccountV2Builder<MetadataTypeParam, UpdateAuthoritySet> {
         self.update_authority = Some(update_authority);
-        self
+        UpdateMetadataAccountV2Builder {
+            metadata: self.metadata,
+            update_authority: self.update_authority,
+            data: self.data,
+            update_authority_arg: self.update_authority_arg,
+            primary_sale_happened: self.primary_sale_happened,
+            is_mutable: self.is_mutable,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional argument]`
     #[inline(always)]
@@ -158,6 +205,10 @@ impl UpdateMetadataAccountV2Builder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl UpdateMetadataAccountV2Builder<MetadataSet, UpdateAuthoritySet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = UpdateMetadataAccountV2 {

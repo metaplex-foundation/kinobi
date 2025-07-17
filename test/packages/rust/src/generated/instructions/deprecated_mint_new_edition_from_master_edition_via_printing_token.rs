@@ -169,8 +169,46 @@ impl DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData {
 ///   13. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   14. `[optional]` rent (default to `SysvarRent111111111111111111111111111111111`)
 ///   15. `[writable, optional]` reservation_list
-#[derive(Default)]
-pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct EditionSet;
+#[derive(Clone)]
+pub struct MasterEditionSet;
+#[derive(Clone)]
+pub struct MintSet;
+#[derive(Clone)]
+pub struct MintAuthoritySet;
+#[derive(Clone)]
+pub struct PrintingMintSet;
+#[derive(Clone)]
+pub struct MasterTokenAccountSet;
+#[derive(Clone)]
+pub struct EditionMarkerSet;
+#[derive(Clone)]
+pub struct BurnAuthoritySet;
+#[derive(Clone)]
+pub struct MasterUpdateAuthoritySet;
+#[derive(Clone)]
+pub struct MasterMetadataSet;
+#[derive(Clone)]
+pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset;
+
+pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder<
+    MetadataTypeParam = DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+    EditionTypeParam = DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+    MasterEditionTypeParam = DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+    MintTypeParam = DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+    MintAuthorityTypeParam = DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+    PrintingMintTypeParam = DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+    MasterTokenAccountTypeParam = DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+    EditionMarkerTypeParam = DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+    BurnAuthorityTypeParam = DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+    MasterUpdateAuthorityTypeParam = DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+    MasterMetadataTypeParam = DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+> {
     metadata: Option<solana_program::pubkey::Pubkey>,
     edition: Option<solana_program::pubkey::Pubkey>,
     master_edition: Option<solana_program::pubkey::Pubkey>,
@@ -188,68 +226,446 @@ pub struct DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
     rent: Option<solana_program::pubkey::Pubkey>,
     reservation_list: Option<solana_program::pubkey::Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        MetadataTypeParam,
+        EditionTypeParam,
+        MasterEditionTypeParam,
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        PrintingMintTypeParam,
+        MasterTokenAccountTypeParam,
+        EditionMarkerTypeParam,
+        BurnAuthorityTypeParam,
+        MasterUpdateAuthorityTypeParam,
+        MasterMetadataTypeParam,
+    )>,
 }
 
-impl DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
+impl
+    DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder<
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            metadata: None,
+            edition: None,
+            master_edition: None,
+            mint: None,
+            mint_authority: None,
+            printing_mint: None,
+            master_token_account: None,
+            edition_marker: None,
+            burn_authority: None,
+            payer: None,
+            master_update_authority: None,
+            master_metadata: None,
+            token_program: None,
+            system_program: None,
+            rent: None,
+            reservation_list: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        MetadataTypeParam,
+        EditionTypeParam,
+        MasterEditionTypeParam,
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        PrintingMintTypeParam,
+        MasterTokenAccountTypeParam,
+        EditionMarkerTypeParam,
+        BurnAuthorityTypeParam,
+        MasterUpdateAuthorityTypeParam,
+        MasterMetadataTypeParam,
+    >
+    DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder<
+        MetadataTypeParam,
+        EditionTypeParam,
+        MasterEditionTypeParam,
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        PrintingMintTypeParam,
+        MasterTokenAccountTypeParam,
+        EditionMarkerTypeParam,
+        BurnAuthorityTypeParam,
+        MasterUpdateAuthorityTypeParam,
+        MasterMetadataTypeParam,
+    >
+{
     /// New Metadata key (pda of ['metadata', program id, mint id])
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder<
+        MetadataSet,
+        EditionTypeParam,
+        MasterEditionTypeParam,
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        PrintingMintTypeParam,
+        MasterTokenAccountTypeParam,
+        EditionMarkerTypeParam,
+        BurnAuthorityTypeParam,
+        MasterUpdateAuthorityTypeParam,
+        MasterMetadataTypeParam,
+    > {
         self.metadata = Some(metadata);
-        self
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
+            metadata: self.metadata,
+            edition: self.edition,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            printing_mint: self.printing_mint,
+            master_token_account: self.master_token_account,
+            edition_marker: self.edition_marker,
+            burn_authority: self.burn_authority,
+            payer: self.payer,
+            master_update_authority: self.master_update_authority,
+            master_metadata: self.master_metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            reservation_list: self.reservation_list,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// New Edition V1 (pda of ['metadata', program id, mint id, 'edition'])
     #[inline(always)]
-    pub fn edition(&mut self, edition: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn edition(
+        mut self,
+        edition: solana_program::pubkey::Pubkey,
+    ) -> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder<
+        MetadataTypeParam,
+        EditionSet,
+        MasterEditionTypeParam,
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        PrintingMintTypeParam,
+        MasterTokenAccountTypeParam,
+        EditionMarkerTypeParam,
+        BurnAuthorityTypeParam,
+        MasterUpdateAuthorityTypeParam,
+        MasterMetadataTypeParam,
+    > {
         self.edition = Some(edition);
-        self
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
+            metadata: self.metadata,
+            edition: self.edition,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            printing_mint: self.printing_mint,
+            master_token_account: self.master_token_account,
+            edition_marker: self.edition_marker,
+            burn_authority: self.burn_authority,
+            payer: self.payer,
+            master_update_authority: self.master_update_authority,
+            master_metadata: self.master_metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            reservation_list: self.reservation_list,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Master Record Edition V1 (pda of ['metadata', program id, master metadata mint id, 'edition'])
     #[inline(always)]
-    pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn master_edition(
+        mut self,
+        master_edition: solana_program::pubkey::Pubkey,
+    ) -> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder<
+        MetadataTypeParam,
+        EditionTypeParam,
+        MasterEditionSet,
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        PrintingMintTypeParam,
+        MasterTokenAccountTypeParam,
+        EditionMarkerTypeParam,
+        BurnAuthorityTypeParam,
+        MasterUpdateAuthorityTypeParam,
+        MasterMetadataTypeParam,
+    > {
         self.master_edition = Some(master_edition);
-        self
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
+            metadata: self.metadata,
+            edition: self.edition,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            printing_mint: self.printing_mint,
+            master_token_account: self.master_token_account,
+            edition_marker: self.edition_marker,
+            burn_authority: self.burn_authority,
+            payer: self.payer,
+            master_update_authority: self.master_update_authority,
+            master_metadata: self.master_metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            reservation_list: self.reservation_list,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY
     #[inline(always)]
-    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint(
+        mut self,
+        mint: solana_program::pubkey::Pubkey,
+    ) -> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder<
+        MetadataTypeParam,
+        EditionTypeParam,
+        MasterEditionTypeParam,
+        MintSet,
+        MintAuthorityTypeParam,
+        PrintingMintTypeParam,
+        MasterTokenAccountTypeParam,
+        EditionMarkerTypeParam,
+        BurnAuthorityTypeParam,
+        MasterUpdateAuthorityTypeParam,
+        MasterMetadataTypeParam,
+    > {
         self.mint = Some(mint);
-        self
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
+            metadata: self.metadata,
+            edition: self.edition,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            printing_mint: self.printing_mint,
+            master_token_account: self.master_token_account,
+            edition_marker: self.edition_marker,
+            burn_authority: self.burn_authority,
+            payer: self.payer,
+            master_update_authority: self.master_update_authority,
+            master_metadata: self.master_metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            reservation_list: self.reservation_list,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint authority of new mint
     #[inline(always)]
-    pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint_authority(
+        mut self,
+        mint_authority: solana_program::pubkey::Pubkey,
+    ) -> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder<
+        MetadataTypeParam,
+        EditionTypeParam,
+        MasterEditionTypeParam,
+        MintTypeParam,
+        MintAuthoritySet,
+        PrintingMintTypeParam,
+        MasterTokenAccountTypeParam,
+        EditionMarkerTypeParam,
+        BurnAuthorityTypeParam,
+        MasterUpdateAuthorityTypeParam,
+        MasterMetadataTypeParam,
+    > {
         self.mint_authority = Some(mint_authority);
-        self
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
+            metadata: self.metadata,
+            edition: self.edition,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            printing_mint: self.printing_mint,
+            master_token_account: self.master_token_account,
+            edition_marker: self.edition_marker,
+            burn_authority: self.burn_authority,
+            payer: self.payer,
+            master_update_authority: self.master_update_authority,
+            master_metadata: self.master_metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            reservation_list: self.reservation_list,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Printing Mint of master record edition
     #[inline(always)]
-    pub fn printing_mint(&mut self, printing_mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn printing_mint(
+        mut self,
+        printing_mint: solana_program::pubkey::Pubkey,
+    ) -> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder<
+        MetadataTypeParam,
+        EditionTypeParam,
+        MasterEditionTypeParam,
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        PrintingMintSet,
+        MasterTokenAccountTypeParam,
+        EditionMarkerTypeParam,
+        BurnAuthorityTypeParam,
+        MasterUpdateAuthorityTypeParam,
+        MasterMetadataTypeParam,
+    > {
         self.printing_mint = Some(printing_mint);
-        self
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
+            metadata: self.metadata,
+            edition: self.edition,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            printing_mint: self.printing_mint,
+            master_token_account: self.master_token_account,
+            edition_marker: self.edition_marker,
+            burn_authority: self.burn_authority,
+            payer: self.payer,
+            master_update_authority: self.master_update_authority,
+            master_metadata: self.master_metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            reservation_list: self.reservation_list,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Token account containing Printing mint token to be transferred
     #[inline(always)]
     pub fn master_token_account(
-        &mut self,
+        mut self,
         master_token_account: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder<
+        MetadataTypeParam,
+        EditionTypeParam,
+        MasterEditionTypeParam,
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        PrintingMintTypeParam,
+        MasterTokenAccountSet,
+        EditionMarkerTypeParam,
+        BurnAuthorityTypeParam,
+        MasterUpdateAuthorityTypeParam,
+        MasterMetadataTypeParam,
+    > {
         self.master_token_account = Some(master_token_account);
-        self
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
+            metadata: self.metadata,
+            edition: self.edition,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            printing_mint: self.printing_mint,
+            master_token_account: self.master_token_account,
+            edition_marker: self.edition_marker,
+            burn_authority: self.burn_authority,
+            payer: self.payer,
+            master_update_authority: self.master_update_authority,
+            master_metadata: self.master_metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            reservation_list: self.reservation_list,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master mint id, edition_number])
     #[inline(always)]
-    pub fn edition_marker(&mut self, edition_marker: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn edition_marker(
+        mut self,
+        edition_marker: solana_program::pubkey::Pubkey,
+    ) -> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder<
+        MetadataTypeParam,
+        EditionTypeParam,
+        MasterEditionTypeParam,
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        PrintingMintTypeParam,
+        MasterTokenAccountTypeParam,
+        EditionMarkerSet,
+        BurnAuthorityTypeParam,
+        MasterUpdateAuthorityTypeParam,
+        MasterMetadataTypeParam,
+    > {
         self.edition_marker = Some(edition_marker);
-        self
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
+            metadata: self.metadata,
+            edition: self.edition,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            printing_mint: self.printing_mint,
+            master_token_account: self.master_token_account,
+            edition_marker: self.edition_marker,
+            burn_authority: self.burn_authority,
+            payer: self.payer,
+            master_update_authority: self.master_update_authority,
+            master_metadata: self.master_metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            reservation_list: self.reservation_list,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Burn authority for this token
     #[inline(always)]
-    pub fn burn_authority(&mut self, burn_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn burn_authority(
+        mut self,
+        burn_authority: solana_program::pubkey::Pubkey,
+    ) -> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder<
+        MetadataTypeParam,
+        EditionTypeParam,
+        MasterEditionTypeParam,
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        PrintingMintTypeParam,
+        MasterTokenAccountTypeParam,
+        EditionMarkerTypeParam,
+        BurnAuthoritySet,
+        MasterUpdateAuthorityTypeParam,
+        MasterMetadataTypeParam,
+    > {
         self.burn_authority = Some(burn_authority);
-        self
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
+            metadata: self.metadata,
+            edition: self.edition,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            printing_mint: self.printing_mint,
+            master_token_account: self.master_token_account,
+            edition_marker: self.edition_marker,
+            burn_authority: self.burn_authority,
+            payer: self.payer,
+            master_update_authority: self.master_update_authority,
+            master_metadata: self.master_metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            reservation_list: self.reservation_list,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// payer
     #[inline(always)]
@@ -260,20 +676,82 @@ impl DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
     /// update authority info for new metadata account
     #[inline(always)]
     pub fn master_update_authority(
-        &mut self,
+        mut self,
         master_update_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder<
+        MetadataTypeParam,
+        EditionTypeParam,
+        MasterEditionTypeParam,
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        PrintingMintTypeParam,
+        MasterTokenAccountTypeParam,
+        EditionMarkerTypeParam,
+        BurnAuthorityTypeParam,
+        MasterUpdateAuthoritySet,
+        MasterMetadataTypeParam,
+    > {
         self.master_update_authority = Some(master_update_authority);
-        self
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
+            metadata: self.metadata,
+            edition: self.edition,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            printing_mint: self.printing_mint,
+            master_token_account: self.master_token_account,
+            edition_marker: self.edition_marker,
+            burn_authority: self.burn_authority,
+            payer: self.payer,
+            master_update_authority: self.master_update_authority,
+            master_metadata: self.master_metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            reservation_list: self.reservation_list,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Master record metadata account
     #[inline(always)]
     pub fn master_metadata(
-        &mut self,
+        mut self,
         master_metadata: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder<
+        MetadataTypeParam,
+        EditionTypeParam,
+        MasterEditionTypeParam,
+        MintTypeParam,
+        MintAuthorityTypeParam,
+        PrintingMintTypeParam,
+        MasterTokenAccountTypeParam,
+        EditionMarkerTypeParam,
+        BurnAuthorityTypeParam,
+        MasterUpdateAuthorityTypeParam,
+        MasterMetadataSet,
+    > {
         self.master_metadata = Some(master_metadata);
-        self
+        DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
+            metadata: self.metadata,
+            edition: self.edition,
+            master_edition: self.master_edition,
+            mint: self.mint,
+            mint_authority: self.mint_authority,
+            printing_mint: self.printing_mint,
+            master_token_account: self.master_token_account,
+            edition_marker: self.edition_marker,
+            burn_authority: self.burn_authority,
+            payer: self.payer,
+            master_update_authority: self.master_update_authority,
+            master_metadata: self.master_metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            reservation_list: self.reservation_list,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA']`
     /// Token program
@@ -324,6 +802,24 @@ impl DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenBuilder<
+        MetadataSet,
+        EditionSet,
+        MasterEditionSet,
+        MintSet,
+        MintAuthoritySet,
+        PrintingMintSet,
+        MasterTokenAccountSet,
+        EditionMarkerSet,
+        BurnAuthoritySet,
+        MasterUpdateAuthoritySet,
+        MasterMetadataSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = DeprecatedMintNewEditionFromMasterEditionViaPrintingToken {

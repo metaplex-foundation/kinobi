@@ -152,8 +152,31 @@ pub struct UtilizeInstructionArgs {
 ///   8. `[optional]` rent (default to `SysvarRent111111111111111111111111111111111`)
 ///   9. `[writable, optional]` use_authority_record
 ///   10. `[optional]` burner
-#[derive(Default)]
-pub struct UtilizeBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct TokenAccountSet;
+#[derive(Clone)]
+pub struct MintSet;
+#[derive(Clone)]
+pub struct UseAuthoritySet;
+#[derive(Clone)]
+pub struct OwnerSet;
+#[derive(Clone)]
+pub struct NumberOfUsesSet;
+#[derive(Clone)]
+pub struct UtilizeUnset;
+
+pub struct UtilizeBuilder<
+    MetadataTypeParam = UtilizeUnset,
+    TokenAccountTypeParam = UtilizeUnset,
+    MintTypeParam = UtilizeUnset,
+    UseAuthorityTypeParam = UtilizeUnset,
+    OwnerTypeParam = UtilizeUnset,
+    NumberOfUsesTypeParam = UtilizeUnset,
+> {
     metadata: Option<solana_program::pubkey::Pubkey>,
     token_account: Option<solana_program::pubkey::Pubkey>,
     mint: Option<solana_program::pubkey::Pubkey>,
@@ -167,41 +190,217 @@ pub struct UtilizeBuilder {
     burner: Option<solana_program::pubkey::Pubkey>,
     number_of_uses: Option<u64>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        MetadataTypeParam,
+        TokenAccountTypeParam,
+        MintTypeParam,
+        UseAuthorityTypeParam,
+        OwnerTypeParam,
+        NumberOfUsesTypeParam,
+    )>,
 }
 
-impl UtilizeBuilder {
+impl
+    UtilizeBuilder<
+        UtilizeUnset,
+        UtilizeUnset,
+        UtilizeUnset,
+        UtilizeUnset,
+        UtilizeUnset,
+        UtilizeUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            metadata: None,
+            token_account: None,
+            mint: None,
+            use_authority: None,
+            owner: None,
+            token_program: None,
+            ata_program: None,
+            system_program: None,
+            rent: None,
+            use_authority_record: None,
+            burner: None,
+            number_of_uses: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        MetadataTypeParam,
+        TokenAccountTypeParam,
+        MintTypeParam,
+        UseAuthorityTypeParam,
+        OwnerTypeParam,
+        NumberOfUsesTypeParam,
+    >
+    UtilizeBuilder<
+        MetadataTypeParam,
+        TokenAccountTypeParam,
+        MintTypeParam,
+        UseAuthorityTypeParam,
+        OwnerTypeParam,
+        NumberOfUsesTypeParam,
+    >
+{
     /// Metadata account
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> UtilizeBuilder<
+        MetadataSet,
+        TokenAccountTypeParam,
+        MintTypeParam,
+        UseAuthorityTypeParam,
+        OwnerTypeParam,
+        NumberOfUsesTypeParam,
+    > {
         self.metadata = Some(metadata);
-        self
+        UtilizeBuilder {
+            metadata: self.metadata,
+            token_account: self.token_account,
+            mint: self.mint,
+            use_authority: self.use_authority,
+            owner: self.owner,
+            token_program: self.token_program,
+            ata_program: self.ata_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            use_authority_record: self.use_authority_record,
+            burner: self.burner,
+            number_of_uses: self.number_of_uses,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Token Account Of NFT
     #[inline(always)]
-    pub fn token_account(&mut self, token_account: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn token_account(
+        mut self,
+        token_account: solana_program::pubkey::Pubkey,
+    ) -> UtilizeBuilder<
+        MetadataTypeParam,
+        TokenAccountSet,
+        MintTypeParam,
+        UseAuthorityTypeParam,
+        OwnerTypeParam,
+        NumberOfUsesTypeParam,
+    > {
         self.token_account = Some(token_account);
-        self
+        UtilizeBuilder {
+            metadata: self.metadata,
+            token_account: self.token_account,
+            mint: self.mint,
+            use_authority: self.use_authority,
+            owner: self.owner,
+            token_program: self.token_program,
+            ata_program: self.ata_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            use_authority_record: self.use_authority_record,
+            burner: self.burner,
+            number_of_uses: self.number_of_uses,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint of the Metadata
     #[inline(always)]
-    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint(
+        mut self,
+        mint: solana_program::pubkey::Pubkey,
+    ) -> UtilizeBuilder<
+        MetadataTypeParam,
+        TokenAccountTypeParam,
+        MintSet,
+        UseAuthorityTypeParam,
+        OwnerTypeParam,
+        NumberOfUsesTypeParam,
+    > {
         self.mint = Some(mint);
-        self
+        UtilizeBuilder {
+            metadata: self.metadata,
+            token_account: self.token_account,
+            mint: self.mint,
+            use_authority: self.use_authority,
+            owner: self.owner,
+            token_program: self.token_program,
+            ata_program: self.ata_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            use_authority_record: self.use_authority_record,
+            burner: self.burner,
+            number_of_uses: self.number_of_uses,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// A Use Authority / Can be the current Owner of the NFT
     #[inline(always)]
-    pub fn use_authority(&mut self, use_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn use_authority(
+        mut self,
+        use_authority: solana_program::pubkey::Pubkey,
+    ) -> UtilizeBuilder<
+        MetadataTypeParam,
+        TokenAccountTypeParam,
+        MintTypeParam,
+        UseAuthoritySet,
+        OwnerTypeParam,
+        NumberOfUsesTypeParam,
+    > {
         self.use_authority = Some(use_authority);
-        self
+        UtilizeBuilder {
+            metadata: self.metadata,
+            token_account: self.token_account,
+            mint: self.mint,
+            use_authority: self.use_authority,
+            owner: self.owner,
+            token_program: self.token_program,
+            ata_program: self.ata_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            use_authority_record: self.use_authority_record,
+            burner: self.burner,
+            number_of_uses: self.number_of_uses,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Owner
     #[inline(always)]
-    pub fn owner(&mut self, owner: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn owner(
+        mut self,
+        owner: solana_program::pubkey::Pubkey,
+    ) -> UtilizeBuilder<
+        MetadataTypeParam,
+        TokenAccountTypeParam,
+        MintTypeParam,
+        UseAuthorityTypeParam,
+        OwnerSet,
+        NumberOfUsesTypeParam,
+    > {
         self.owner = Some(owner);
-        self
+        UtilizeBuilder {
+            metadata: self.metadata,
+            token_account: self.token_account,
+            mint: self.mint,
+            use_authority: self.use_authority,
+            owner: self.owner,
+            token_program: self.token_program,
+            ata_program: self.ata_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            use_authority_record: self.use_authority_record,
+            burner: self.burner,
+            number_of_uses: self.number_of_uses,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA']`
     /// Token program
@@ -249,9 +448,34 @@ impl UtilizeBuilder {
         self
     }
     #[inline(always)]
-    pub fn number_of_uses(&mut self, number_of_uses: u64) -> &mut Self {
+    pub fn number_of_uses(
+        mut self,
+        number_of_uses: u64,
+    ) -> UtilizeBuilder<
+        MetadataTypeParam,
+        TokenAccountTypeParam,
+        MintTypeParam,
+        UseAuthorityTypeParam,
+        OwnerTypeParam,
+        NumberOfUsesSet,
+    > {
         self.number_of_uses = Some(number_of_uses);
-        self
+        UtilizeBuilder {
+            metadata: self.metadata,
+            token_account: self.token_account,
+            mint: self.mint,
+            use_authority: self.use_authority,
+            owner: self.owner,
+            token_program: self.token_program,
+            ata_program: self.ata_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            use_authority_record: self.use_authority_record,
+            burner: self.burner,
+            number_of_uses: self.number_of_uses,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -271,6 +495,19 @@ impl UtilizeBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    UtilizeBuilder<
+        MetadataSet,
+        TokenAccountSet,
+        MintSet,
+        UseAuthoritySet,
+        OwnerSet,
+        NumberOfUsesSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = Utilize {

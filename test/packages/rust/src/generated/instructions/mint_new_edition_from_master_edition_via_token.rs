@@ -172,72 +172,381 @@ pub struct MintNewEditionFromMasterEditionViaTokenInstructionArgs {
 ///   11. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
 ///   12. `[optional]` system_program (default to `11111111111111111111111111111111`)
 ///   13. `[optional]` rent
-#[derive(Default)]
-pub struct MintNewEditionFromMasterEditionViaTokenBuilder {
-    new_metadata: Option<solana_program::pubkey::Pubkey>,
-    new_edition: Option<solana_program::pubkey::Pubkey>,
-    master_edition: Option<solana_program::pubkey::Pubkey>,
-    new_mint: Option<solana_program::pubkey::Pubkey>,
-    edition_mark_pda: Option<solana_program::pubkey::Pubkey>,
-    new_mint_authority: Option<solana_program::pubkey::Pubkey>,
-    payer: Option<solana_program::pubkey::Pubkey>,
-    token_account_owner: Option<solana_program::pubkey::Pubkey>,
-    token_account: Option<solana_program::pubkey::Pubkey>,
-    new_metadata_update_authority: Option<solana_program::pubkey::Pubkey>,
-    metadata: Option<solana_program::pubkey::Pubkey>,
-    token_program: Option<solana_program::pubkey::Pubkey>,
-    system_program: Option<solana_program::pubkey::Pubkey>,
-    rent: Option<solana_program::pubkey::Pubkey>,
-    mint_new_edition_from_master_edition_via_token_args:
-        Option<MintNewEditionFromMasterEditionViaTokenArgs>,
-    __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+
+// Type state markers
+#[derive(Clone)]
+pub struct NewMetadataSet;
+#[derive(Clone)]
+pub struct NewEditionSet;
+#[derive(Clone)]
+pub struct MasterEditionSet;
+#[derive(Clone)]
+pub struct NewMintSet;
+#[derive(Clone)]
+pub struct EditionMarkPdaSet;
+#[derive(Clone)]
+pub struct NewMintAuthoritySet;
+#[derive(Clone)]
+pub struct TokenAccountOwnerSet;
+#[derive(Clone)]
+pub struct TokenAccountSet;
+#[derive(Clone)]
+pub struct NewMetadataUpdateAuthoritySet;
+#[derive(Clone)]
+pub struct MetadataSet;
+#[derive(Clone)]
+pub struct MintNewEditionFromMasterEditionViaTokenArgsSet;
+#[derive(Clone)]
+pub struct MintNewEditionFromMasterEditionViaTokenUnset;
+
+pub struct MintNewEditionFromMasterEditionViaTokenBuilder<
+          NewMetadataTypeParam = MintNewEditionFromMasterEditionViaTokenUnset,
+              NewEditionTypeParam = MintNewEditionFromMasterEditionViaTokenUnset,
+              MasterEditionTypeParam = MintNewEditionFromMasterEditionViaTokenUnset,
+              NewMintTypeParam = MintNewEditionFromMasterEditionViaTokenUnset,
+              EditionMarkPdaTypeParam = MintNewEditionFromMasterEditionViaTokenUnset,
+              NewMintAuthorityTypeParam = MintNewEditionFromMasterEditionViaTokenUnset,
+                    TokenAccountOwnerTypeParam = MintNewEditionFromMasterEditionViaTokenUnset,
+              TokenAccountTypeParam = MintNewEditionFromMasterEditionViaTokenUnset,
+              NewMetadataUpdateAuthorityTypeParam = MintNewEditionFromMasterEditionViaTokenUnset,
+              MetadataTypeParam = MintNewEditionFromMasterEditionViaTokenUnset,
+                                        MintNewEditionFromMasterEditionViaTokenArgsTypeParam = MintNewEditionFromMasterEditionViaTokenUnset,
+      > {
+            new_metadata: Option<solana_program::pubkey::Pubkey>,
+                new_edition: Option<solana_program::pubkey::Pubkey>,
+                master_edition: Option<solana_program::pubkey::Pubkey>,
+                new_mint: Option<solana_program::pubkey::Pubkey>,
+                edition_mark_pda: Option<solana_program::pubkey::Pubkey>,
+                new_mint_authority: Option<solana_program::pubkey::Pubkey>,
+                payer: Option<solana_program::pubkey::Pubkey>,
+                token_account_owner: Option<solana_program::pubkey::Pubkey>,
+                token_account: Option<solana_program::pubkey::Pubkey>,
+                new_metadata_update_authority: Option<solana_program::pubkey::Pubkey>,
+                metadata: Option<solana_program::pubkey::Pubkey>,
+                token_program: Option<solana_program::pubkey::Pubkey>,
+                system_program: Option<solana_program::pubkey::Pubkey>,
+                rent: Option<solana_program::pubkey::Pubkey>,
+                        mint_new_edition_from_master_edition_via_token_args: Option<MintNewEditionFromMasterEditionViaTokenArgs>,
+        __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+  _phantom: std::marker::PhantomData<(
+          NewMetadataTypeParam,
+          NewEditionTypeParam,
+          MasterEditionTypeParam,
+          NewMintTypeParam,
+          EditionMarkPdaTypeParam,
+          NewMintAuthorityTypeParam,
+          TokenAccountOwnerTypeParam,
+          TokenAccountTypeParam,
+          NewMetadataUpdateAuthorityTypeParam,
+          MetadataTypeParam,
+              MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+      )>,
 }
 
-impl MintNewEditionFromMasterEditionViaTokenBuilder {
+impl
+    MintNewEditionFromMasterEditionViaTokenBuilder<
+        MintNewEditionFromMasterEditionViaTokenUnset,
+        MintNewEditionFromMasterEditionViaTokenUnset,
+        MintNewEditionFromMasterEditionViaTokenUnset,
+        MintNewEditionFromMasterEditionViaTokenUnset,
+        MintNewEditionFromMasterEditionViaTokenUnset,
+        MintNewEditionFromMasterEditionViaTokenUnset,
+        MintNewEditionFromMasterEditionViaTokenUnset,
+        MintNewEditionFromMasterEditionViaTokenUnset,
+        MintNewEditionFromMasterEditionViaTokenUnset,
+        MintNewEditionFromMasterEditionViaTokenUnset,
+        MintNewEditionFromMasterEditionViaTokenUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            new_metadata: None,
+            new_edition: None,
+            master_edition: None,
+            new_mint: None,
+            edition_mark_pda: None,
+            new_mint_authority: None,
+            payer: None,
+            token_account_owner: None,
+            token_account: None,
+            new_metadata_update_authority: None,
+            metadata: None,
+            token_program: None,
+            system_program: None,
+            rent: None,
+            mint_new_edition_from_master_edition_via_token_args: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        TokenAccountOwnerTypeParam,
+        TokenAccountTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    >
+    MintNewEditionFromMasterEditionViaTokenBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        TokenAccountOwnerTypeParam,
+        TokenAccountTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    >
+{
     /// New Metadata key (pda of ['metadata', program id, mint id])
     #[inline(always)]
-    pub fn new_metadata(&mut self, new_metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn new_metadata(
+        mut self,
+        new_metadata: solana_program::pubkey::Pubkey,
+    ) -> MintNewEditionFromMasterEditionViaTokenBuilder<
+        NewMetadataSet,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        TokenAccountOwnerTypeParam,
+        TokenAccountTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.new_metadata = Some(new_metadata);
-        self
+        MintNewEditionFromMasterEditionViaTokenBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            token_account_owner: self.token_account_owner,
+            token_account: self.token_account,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// New Edition (pda of ['metadata', program id, mint id, 'edition'])
     #[inline(always)]
-    pub fn new_edition(&mut self, new_edition: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn new_edition(
+        mut self,
+        new_edition: solana_program::pubkey::Pubkey,
+    ) -> MintNewEditionFromMasterEditionViaTokenBuilder<
+        NewMetadataTypeParam,
+        NewEditionSet,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        TokenAccountOwnerTypeParam,
+        TokenAccountTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.new_edition = Some(new_edition);
-        self
+        MintNewEditionFromMasterEditionViaTokenBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            token_account_owner: self.token_account_owner,
+            token_account: self.token_account,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Master Record Edition V2 (pda of ['metadata', program id, master metadata mint id, 'edition'])
     #[inline(always)]
-    pub fn master_edition(&mut self, master_edition: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn master_edition(
+        mut self,
+        master_edition: solana_program::pubkey::Pubkey,
+    ) -> MintNewEditionFromMasterEditionViaTokenBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionSet,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        TokenAccountOwnerTypeParam,
+        TokenAccountTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.master_edition = Some(master_edition);
-        self
+        MintNewEditionFromMasterEditionViaTokenBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            token_account_owner: self.token_account_owner,
+            token_account: self.token_account,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint of new token - THIS WILL TRANSFER AUTHORITY AWAY FROM THIS KEY
     #[inline(always)]
-    pub fn new_mint(&mut self, new_mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn new_mint(
+        mut self,
+        new_mint: solana_program::pubkey::Pubkey,
+    ) -> MintNewEditionFromMasterEditionViaTokenBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintSet,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        TokenAccountOwnerTypeParam,
+        TokenAccountTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.new_mint = Some(new_mint);
-        self
+        MintNewEditionFromMasterEditionViaTokenBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            token_account_owner: self.token_account_owner,
+            token_account: self.token_account,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Edition pda to mark creation - will be checked for pre-existence. (pda of ['metadata', program id, master metadata mint id, 'edition', edition_number]) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE).
     #[inline(always)]
     pub fn edition_mark_pda(
-        &mut self,
+        mut self,
         edition_mark_pda: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> MintNewEditionFromMasterEditionViaTokenBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaSet,
+        NewMintAuthorityTypeParam,
+        TokenAccountOwnerTypeParam,
+        TokenAccountTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.edition_mark_pda = Some(edition_mark_pda);
-        self
+        MintNewEditionFromMasterEditionViaTokenBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            token_account_owner: self.token_account_owner,
+            token_account: self.token_account,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Mint authority of new mint
     #[inline(always)]
     pub fn new_mint_authority(
-        &mut self,
+        mut self,
         new_mint_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> MintNewEditionFromMasterEditionViaTokenBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthoritySet,
+        TokenAccountOwnerTypeParam,
+        TokenAccountTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.new_mint_authority = Some(new_mint_authority);
-        self
+        MintNewEditionFromMasterEditionViaTokenBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            token_account_owner: self.token_account_owner,
+            token_account: self.token_account,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// payer
     #[inline(always)]
@@ -248,32 +557,162 @@ impl MintNewEditionFromMasterEditionViaTokenBuilder {
     /// owner of token account containing master token (#8)
     #[inline(always)]
     pub fn token_account_owner(
-        &mut self,
+        mut self,
         token_account_owner: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> MintNewEditionFromMasterEditionViaTokenBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        TokenAccountOwnerSet,
+        TokenAccountTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.token_account_owner = Some(token_account_owner);
-        self
+        MintNewEditionFromMasterEditionViaTokenBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            token_account_owner: self.token_account_owner,
+            token_account: self.token_account,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// token account containing token from master metadata mint
     #[inline(always)]
-    pub fn token_account(&mut self, token_account: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn token_account(
+        mut self,
+        token_account: solana_program::pubkey::Pubkey,
+    ) -> MintNewEditionFromMasterEditionViaTokenBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        TokenAccountOwnerTypeParam,
+        TokenAccountSet,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.token_account = Some(token_account);
-        self
+        MintNewEditionFromMasterEditionViaTokenBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            token_account_owner: self.token_account_owner,
+            token_account: self.token_account,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Update authority info for new metadata
     #[inline(always)]
     pub fn new_metadata_update_authority(
-        &mut self,
+        mut self,
         new_metadata_update_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
+    ) -> MintNewEditionFromMasterEditionViaTokenBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        TokenAccountOwnerTypeParam,
+        TokenAccountTypeParam,
+        NewMetadataUpdateAuthoritySet,
+        MetadataTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.new_metadata_update_authority = Some(new_metadata_update_authority);
-        self
+        MintNewEditionFromMasterEditionViaTokenBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            token_account_owner: self.token_account_owner,
+            token_account: self.token_account,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Master record metadata account
     #[inline(always)]
-    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn metadata(
+        mut self,
+        metadata: solana_program::pubkey::Pubkey,
+    ) -> MintNewEditionFromMasterEditionViaTokenBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        TokenAccountOwnerTypeParam,
+        TokenAccountTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataSet,
+        MintNewEditionFromMasterEditionViaTokenArgsTypeParam,
+    > {
         self.metadata = Some(metadata);
-        self
+        MintNewEditionFromMasterEditionViaTokenBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            token_account_owner: self.token_account_owner,
+            token_account: self.token_account,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA']`
     /// Token program
@@ -298,12 +737,43 @@ impl MintNewEditionFromMasterEditionViaTokenBuilder {
     }
     #[inline(always)]
     pub fn mint_new_edition_from_master_edition_via_token_args(
-        &mut self,
+        mut self,
         mint_new_edition_from_master_edition_via_token_args: MintNewEditionFromMasterEditionViaTokenArgs,
-    ) -> &mut Self {
+    ) -> MintNewEditionFromMasterEditionViaTokenBuilder<
+        NewMetadataTypeParam,
+        NewEditionTypeParam,
+        MasterEditionTypeParam,
+        NewMintTypeParam,
+        EditionMarkPdaTypeParam,
+        NewMintAuthorityTypeParam,
+        TokenAccountOwnerTypeParam,
+        TokenAccountTypeParam,
+        NewMetadataUpdateAuthorityTypeParam,
+        MetadataTypeParam,
+        MintNewEditionFromMasterEditionViaTokenArgsSet,
+    > {
         self.mint_new_edition_from_master_edition_via_token_args =
             Some(mint_new_edition_from_master_edition_via_token_args);
-        self
+        MintNewEditionFromMasterEditionViaTokenBuilder {
+            new_metadata: self.new_metadata,
+            new_edition: self.new_edition,
+            master_edition: self.master_edition,
+            new_mint: self.new_mint,
+            edition_mark_pda: self.edition_mark_pda,
+            new_mint_authority: self.new_mint_authority,
+            payer: self.payer,
+            token_account_owner: self.token_account_owner,
+            token_account: self.token_account,
+            new_metadata_update_authority: self.new_metadata_update_authority,
+            metadata: self.metadata,
+            token_program: self.token_program,
+            system_program: self.system_program,
+            rent: self.rent,
+            mint_new_edition_from_master_edition_via_token_args: self
+                .mint_new_edition_from_master_edition_via_token_args,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -323,6 +793,24 @@ impl MintNewEditionFromMasterEditionViaTokenBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl
+    MintNewEditionFromMasterEditionViaTokenBuilder<
+        NewMetadataSet,
+        NewEditionSet,
+        MasterEditionSet,
+        NewMintSet,
+        EditionMarkPdaSet,
+        NewMintAuthoritySet,
+        TokenAccountOwnerSet,
+        TokenAccountSet,
+        NewMetadataUpdateAuthoritySet,
+        MetadataSet,
+        MintNewEditionFromMasterEditionViaTokenArgsSet,
+    >
+{
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = MintNewEditionFromMasterEditionViaToken {

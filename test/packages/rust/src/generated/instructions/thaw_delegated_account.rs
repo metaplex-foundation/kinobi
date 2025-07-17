@@ -87,43 +87,155 @@ impl ThawDelegatedAccountInstructionData {
 ///   2. `[]` edition
 ///   3. `[]` mint
 ///   4. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
-#[derive(Default)]
-pub struct ThawDelegatedAccountBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct DelegateSet;
+#[derive(Clone)]
+pub struct TokenAccountSet;
+#[derive(Clone)]
+pub struct EditionSet;
+#[derive(Clone)]
+pub struct MintSet;
+#[derive(Clone)]
+pub struct ThawDelegatedAccountUnset;
+
+pub struct ThawDelegatedAccountBuilder<
+    DelegateTypeParam = ThawDelegatedAccountUnset,
+    TokenAccountTypeParam = ThawDelegatedAccountUnset,
+    EditionTypeParam = ThawDelegatedAccountUnset,
+    MintTypeParam = ThawDelegatedAccountUnset,
+> {
     delegate: Option<solana_program::pubkey::Pubkey>,
     token_account: Option<solana_program::pubkey::Pubkey>,
     edition: Option<solana_program::pubkey::Pubkey>,
     mint: Option<solana_program::pubkey::Pubkey>,
     token_program: Option<solana_program::pubkey::Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(
+        DelegateTypeParam,
+        TokenAccountTypeParam,
+        EditionTypeParam,
+        MintTypeParam,
+    )>,
 }
 
-impl ThawDelegatedAccountBuilder {
+impl
+    ThawDelegatedAccountBuilder<
+        ThawDelegatedAccountUnset,
+        ThawDelegatedAccountUnset,
+        ThawDelegatedAccountUnset,
+        ThawDelegatedAccountUnset,
+    >
+{
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            delegate: None,
+            token_account: None,
+            edition: None,
+            mint: None,
+            token_program: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<DelegateTypeParam, TokenAccountTypeParam, EditionTypeParam, MintTypeParam>
+    ThawDelegatedAccountBuilder<
+        DelegateTypeParam,
+        TokenAccountTypeParam,
+        EditionTypeParam,
+        MintTypeParam,
+    >
+{
     /// Delegate
     #[inline(always)]
-    pub fn delegate(&mut self, delegate: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn delegate(
+        mut self,
+        delegate: solana_program::pubkey::Pubkey,
+    ) -> ThawDelegatedAccountBuilder<
+        DelegateSet,
+        TokenAccountTypeParam,
+        EditionTypeParam,
+        MintTypeParam,
+    > {
         self.delegate = Some(delegate);
-        self
+        ThawDelegatedAccountBuilder {
+            delegate: self.delegate,
+            token_account: self.token_account,
+            edition: self.edition,
+            mint: self.mint,
+            token_program: self.token_program,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Token account to thaw
     #[inline(always)]
-    pub fn token_account(&mut self, token_account: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn token_account(
+        mut self,
+        token_account: solana_program::pubkey::Pubkey,
+    ) -> ThawDelegatedAccountBuilder<
+        DelegateTypeParam,
+        TokenAccountSet,
+        EditionTypeParam,
+        MintTypeParam,
+    > {
         self.token_account = Some(token_account);
-        self
+        ThawDelegatedAccountBuilder {
+            delegate: self.delegate,
+            token_account: self.token_account,
+            edition: self.edition,
+            mint: self.mint,
+            token_program: self.token_program,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Edition
     #[inline(always)]
-    pub fn edition(&mut self, edition: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn edition(
+        mut self,
+        edition: solana_program::pubkey::Pubkey,
+    ) -> ThawDelegatedAccountBuilder<
+        DelegateTypeParam,
+        TokenAccountTypeParam,
+        EditionSet,
+        MintTypeParam,
+    > {
         self.edition = Some(edition);
-        self
+        ThawDelegatedAccountBuilder {
+            delegate: self.delegate,
+            token_account: self.token_account,
+            edition: self.edition,
+            mint: self.mint,
+            token_program: self.token_program,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Token mint
     #[inline(always)]
-    pub fn mint(&mut self, mint: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn mint(
+        mut self,
+        mint: solana_program::pubkey::Pubkey,
+    ) -> ThawDelegatedAccountBuilder<
+        DelegateTypeParam,
+        TokenAccountTypeParam,
+        EditionTypeParam,
+        MintSet,
+    > {
         self.mint = Some(mint);
-        self
+        ThawDelegatedAccountBuilder {
+            delegate: self.delegate,
+            token_account: self.token_account,
+            edition: self.edition,
+            mint: self.mint,
+            token_program: self.token_program,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// `[optional account, default to 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA']`
     /// Token Program
@@ -150,6 +262,10 @@ impl ThawDelegatedAccountBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl ThawDelegatedAccountBuilder<DelegateSet, TokenAccountSet, EditionSet, MintSet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = ThawDelegatedAccount {

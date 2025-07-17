@@ -81,22 +81,54 @@ pub struct SetAuthorityInstructionArgs {
 ///
 ///   0. `[writable]` candy_machine
 ///   1. `[signer]` authority
-#[derive(Default)]
-pub struct SetAuthorityBuilder {
+
+// Type state markers
+#[derive(Clone)]
+pub struct CandyMachineSet;
+#[derive(Clone)]
+pub struct NewAuthoritySet;
+#[derive(Clone)]
+pub struct SetAuthorityUnset;
+
+pub struct SetAuthorityBuilder<
+    CandyMachineTypeParam = SetAuthorityUnset,
+    NewAuthorityTypeParam = SetAuthorityUnset,
+> {
     candy_machine: Option<solana_program::pubkey::Pubkey>,
     authority: Option<solana_program::pubkey::Pubkey>,
     new_authority: Option<Pubkey>,
     __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    _phantom: std::marker::PhantomData<(CandyMachineTypeParam, NewAuthorityTypeParam)>,
 }
 
-impl SetAuthorityBuilder {
+impl SetAuthorityBuilder<SetAuthorityUnset, SetAuthorityUnset> {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            candy_machine: None,
+            authority: None,
+            new_authority: None,
+            __remaining_accounts: Vec::new(),
+            _phantom: std::marker::PhantomData,
+        }
     }
+}
+
+impl<CandyMachineTypeParam, NewAuthorityTypeParam>
+    SetAuthorityBuilder<CandyMachineTypeParam, NewAuthorityTypeParam>
+{
     #[inline(always)]
-    pub fn candy_machine(&mut self, candy_machine: solana_program::pubkey::Pubkey) -> &mut Self {
+    pub fn candy_machine(
+        mut self,
+        candy_machine: solana_program::pubkey::Pubkey,
+    ) -> SetAuthorityBuilder<CandyMachineSet, NewAuthorityTypeParam> {
         self.candy_machine = Some(candy_machine);
-        self
+        SetAuthorityBuilder {
+            candy_machine: self.candy_machine,
+            authority: self.authority,
+            new_authority: self.new_authority,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     #[inline(always)]
     pub fn authority(&mut self, authority: solana_program::pubkey::Pubkey) -> &mut Self {
@@ -104,9 +136,18 @@ impl SetAuthorityBuilder {
         self
     }
     #[inline(always)]
-    pub fn new_authority(&mut self, new_authority: Pubkey) -> &mut Self {
+    pub fn new_authority(
+        mut self,
+        new_authority: Pubkey,
+    ) -> SetAuthorityBuilder<CandyMachineTypeParam, NewAuthoritySet> {
         self.new_authority = Some(new_authority);
-        self
+        SetAuthorityBuilder {
+            candy_machine: self.candy_machine,
+            authority: self.authority,
+            new_authority: self.new_authority,
+            __remaining_accounts: self.__remaining_accounts,
+            _phantom: std::marker::PhantomData,
+        }
     }
     /// Add an aditional account to the instruction.
     #[inline(always)]
@@ -126,6 +167,10 @@ impl SetAuthorityBuilder {
         self.__remaining_accounts.extend_from_slice(accounts);
         self
     }
+}
+
+// Only allow instruction() method when all required fields are set
+impl SetAuthorityBuilder<CandyMachineSet, NewAuthoritySet> {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = SetAuthority {
