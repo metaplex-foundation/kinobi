@@ -3,6 +3,7 @@
 {% block main %}
 
 use num_derive::FromPrimitive;
+use solana_program_error::{ProgramError, ToStr};
 use thiserror::Error;
 
 #[derive(Clone, Debug, Eq, Error, FromPrimitive, PartialEq)]
@@ -14,9 +15,31 @@ pub enum {{ program.name | pascalCase }}Error {
 {% endfor %}
 }
 
-impl solana_program::program_error::PrintProgramError for {{ program.name | pascalCase }}Error {
-    fn print<E>(&self) {
-        solana_program::msg!(&self.to_string());
+impl From<{{ program.name | pascalCase }}Error> for ProgramError {
+    fn from(e: {{ program.name | pascalCase }}Error) -> Self {
+        ProgramError::Custom(e as u32)
+    }
+}
+
+impl TryFrom<u32> for {{ program.name | pascalCase }}Error {
+    type Error = ProgramError;
+    fn try_from(error: u32) -> Result<Self, Self::Error> {
+        match error {
+            {% for error in errors | sort(false, false, 'code') %}
+                {{ error.code }} => Ok({{ program.name | pascalCase }}Error::{{ error.name | pascalCase }}),
+            {% endfor %}
+            _ => Err(ProgramError::InvalidArgument),
+        }
+    }
+}
+
+impl ToStr for {{ program.name | pascalCase }}Error {
+    fn to_str(&self) -> &'static str {
+        match self {
+            {% for error in errors | sort(false, false, 'code') %}
+                {{ program.name | pascalCase }}Error::{{ error.name | pascalCase }} => "{{ error.message }}",
+            {% endfor %}
+        }
     }
 }
 
