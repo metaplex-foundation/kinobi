@@ -125,9 +125,10 @@ impl DeprecatedMintNewEditionFromMasterEditionViaPrintingToken {
             ));
         }
         accounts.extend_from_slice(remaining_accounts);
-        let data = DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData::new()
-            .try_to_vec()
-            .unwrap();
+        let data = borsh::to_vec(
+            &(DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData::new()),
+        )
+        .unwrap();
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
@@ -570,9 +571,10 @@ impl<'a, 'b> DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenCpi<'a, 'b
                 is_signer: remaining_account.2,
             })
         });
-        let data = DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData::new()
-            .try_to_vec()
-            .unwrap();
+        let data = borsh::to_vec(
+            &(DeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionData::new()),
+        )
+        .unwrap();
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,

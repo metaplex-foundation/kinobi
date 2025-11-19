@@ -6,6 +6,7 @@
 //!
 
 use num_derive::FromPrimitive;
+use solana_program_error::{ProgramError, ToStr};
 use thiserror::Error;
 
 #[derive(Clone, Debug, Eq, Error, FromPrimitive, PartialEq)]
@@ -75,8 +76,66 @@ pub enum MplCandyMachineCoreError {
     NotFullyLoaded,
 }
 
-impl solana_program::program_error::PrintProgramError for MplCandyMachineCoreError {
-    fn print<E>(&self) {
-        solana_program::msg!(&self.to_string());
+impl From<MplCandyMachineCoreError> for ProgramError {
+    fn from(e: MplCandyMachineCoreError) -> Self {
+        ProgramError::Custom(e as u32)
+    }
+}
+
+impl TryFrom<u32> for MplCandyMachineCoreError {
+    type Error = ProgramError;
+    fn try_from(error: u32) -> Result<Self, Self::Error> {
+        match error {
+            6000 => Ok(MplCandyMachineCoreError::IncorrectOwner),
+            6001 => Ok(MplCandyMachineCoreError::Uninitialized),
+            6002 => Ok(MplCandyMachineCoreError::MintMismatch),
+            6003 => Ok(MplCandyMachineCoreError::IndexGreaterThanLength),
+            6004 => Ok(MplCandyMachineCoreError::NumericalOverflowError),
+            6005 => Ok(MplCandyMachineCoreError::TooManyCreators),
+            6006 => Ok(MplCandyMachineCoreError::CandyMachineEmpty),
+            6007 => Ok(MplCandyMachineCoreError::HiddenSettingsDoNotHaveConfigLines),
+            6008 => Ok(MplCandyMachineCoreError::CannotChangeNumberOfLines),
+            6009 => Ok(MplCandyMachineCoreError::CannotSwitchToHiddenSettings),
+            6010 => Ok(MplCandyMachineCoreError::IncorrectCollectionAuthority),
+            6011 => Ok(MplCandyMachineCoreError::MetadataAccountMustBeEmpty),
+            6012 => Ok(MplCandyMachineCoreError::NoChangingCollectionDuringMint),
+            6013 => Ok(MplCandyMachineCoreError::ExceededLengthError),
+            6014 => Ok(MplCandyMachineCoreError::MissingConfigLinesSettings),
+            6015 => Ok(MplCandyMachineCoreError::CannotIncreaseLength),
+            6016 => Ok(MplCandyMachineCoreError::CannotSwitchFromHiddenSettings),
+            6017 => Ok(MplCandyMachineCoreError::CannotChangeSequentialIndexGeneration),
+            6018 => Ok(MplCandyMachineCoreError::CollectionKeyMismatch),
+            6019 => Ok(MplCandyMachineCoreError::CouldNotRetrieveConfigLineData),
+            6020 => Ok(MplCandyMachineCoreError::NotFullyLoaded),
+            _ => Err(ProgramError::InvalidArgument),
+        }
+    }
+}
+
+impl ToStr for MplCandyMachineCoreError {
+    fn to_str(&self) -> &'static str {
+        match self {
+                            MplCandyMachineCoreError::IncorrectOwner => "Account does not have correct owner",
+                            MplCandyMachineCoreError::Uninitialized => "Account is not initialized",
+                            MplCandyMachineCoreError::MintMismatch => "Mint Mismatch",
+                            MplCandyMachineCoreError::IndexGreaterThanLength => "Index greater than length",
+                            MplCandyMachineCoreError::NumericalOverflowError => "Numerical overflow error",
+                            MplCandyMachineCoreError::TooManyCreators => "Can only provide up to 4 creators to candy machine (because candy machine is one)",
+                            MplCandyMachineCoreError::CandyMachineEmpty => "Candy machine is empty",
+                            MplCandyMachineCoreError::HiddenSettingsDoNotHaveConfigLines => "Candy machines using hidden uris do not have config lines, they have a single hash representing hashed order",
+                            MplCandyMachineCoreError::CannotChangeNumberOfLines => "Cannot change number of lines unless is a hidden config",
+                            MplCandyMachineCoreError::CannotSwitchToHiddenSettings => "Cannot switch to hidden settings after items available is greater than 0",
+                            MplCandyMachineCoreError::IncorrectCollectionAuthority => "Incorrect collection NFT authority",
+                            MplCandyMachineCoreError::MetadataAccountMustBeEmpty => "The metadata account has data in it, and this must be empty to mint a new NFT",
+                            MplCandyMachineCoreError::NoChangingCollectionDuringMint => "Can't change collection settings after items have begun to be minted",
+                            MplCandyMachineCoreError::ExceededLengthError => "Value longer than expected maximum value",
+                            MplCandyMachineCoreError::MissingConfigLinesSettings => "Missing config lines settings",
+                            MplCandyMachineCoreError::CannotIncreaseLength => "Cannot increase the length in config lines settings",
+                            MplCandyMachineCoreError::CannotSwitchFromHiddenSettings => "Cannot switch from hidden settings",
+                            MplCandyMachineCoreError::CannotChangeSequentialIndexGeneration => "Cannot change sequential index generation after items have begun to be minted",
+                            MplCandyMachineCoreError::CollectionKeyMismatch => "Collection public key mismatch",
+                            MplCandyMachineCoreError::CouldNotRetrieveConfigLineData => "Could not retrive config line data",
+                            MplCandyMachineCoreError::NotFullyLoaded => "Not all config lines were added to the candy machine",
+                    }
     }
 }

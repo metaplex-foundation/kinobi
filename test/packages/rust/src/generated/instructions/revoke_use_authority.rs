@@ -82,9 +82,7 @@ impl RevokeUseAuthority {
             ));
         }
         accounts.extend_from_slice(remaining_accounts);
-        let data = RevokeUseAuthorityInstructionData::new()
-            .try_to_vec()
-            .unwrap();
+        let data = borsh::to_vec(&(RevokeUseAuthorityInstructionData::new())).unwrap();
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
@@ -391,9 +389,7 @@ impl<'a, 'b> RevokeUseAuthorityCpi<'a, 'b> {
                 is_signer: remaining_account.2,
             })
         });
-        let data = RevokeUseAuthorityInstructionData::new()
-            .try_to_vec()
-            .unwrap();
+        let data = borsh::to_vec(&(RevokeUseAuthorityInstructionData::new())).unwrap();
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,

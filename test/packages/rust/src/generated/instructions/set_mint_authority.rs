@@ -42,7 +42,7 @@ impl SetMintAuthority {
             true,
         ));
         accounts.extend_from_slice(remaining_accounts);
-        let data = SetMintAuthorityInstructionData::new().try_to_vec().unwrap();
+        let data = borsh::to_vec(&(SetMintAuthorityInstructionData::new())).unwrap();
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
@@ -216,7 +216,7 @@ impl<'a, 'b> SetMintAuthorityCpi<'a, 'b> {
                 is_signer: remaining_account.2,
             })
         });
-        let data = SetMintAuthorityInstructionData::new().try_to_vec().unwrap();
+        let data = borsh::to_vec(&(SetMintAuthorityInstructionData::new())).unwrap();
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,

@@ -43,9 +43,7 @@ impl ConvertMasterEditionV1ToV2 {
             false,
         ));
         accounts.extend_from_slice(remaining_accounts);
-        let data = ConvertMasterEditionV1ToV2InstructionData::new()
-            .try_to_vec()
-            .unwrap();
+        let data = borsh::to_vec(&(ConvertMasterEditionV1ToV2InstructionData::new())).unwrap();
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
@@ -221,9 +219,7 @@ impl<'a, 'b> ConvertMasterEditionV1ToV2Cpi<'a, 'b> {
                 is_signer: remaining_account.2,
             })
         });
-        let data = ConvertMasterEditionV1ToV2InstructionData::new()
-            .try_to_vec()
-            .unwrap();
+        let data = borsh::to_vec(&(ConvertMasterEditionV1ToV2InstructionData::new())).unwrap();
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,

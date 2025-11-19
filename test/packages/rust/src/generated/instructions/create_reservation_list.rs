@@ -71,9 +71,7 @@ impl CreateReservationList {
             self.rent, false,
         ));
         accounts.extend_from_slice(remaining_accounts);
-        let data = CreateReservationListInstructionData::new()
-            .try_to_vec()
-            .unwrap();
+        let data = borsh::to_vec(&(CreateReservationListInstructionData::new())).unwrap();
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
@@ -351,9 +349,7 @@ impl<'a, 'b> CreateReservationListCpi<'a, 'b> {
                 is_signer: remaining_account.2,
             })
         });
-        let data = CreateReservationListInstructionData::new()
-            .try_to_vec()
-            .unwrap();
+        let data = borsh::to_vec(&(CreateReservationListInstructionData::new())).unwrap();
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,

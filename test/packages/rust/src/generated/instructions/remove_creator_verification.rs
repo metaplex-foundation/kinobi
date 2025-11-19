@@ -37,9 +37,7 @@ impl RemoveCreatorVerification {
             true,
         ));
         accounts.extend_from_slice(remaining_accounts);
-        let data = RemoveCreatorVerificationInstructionData::new()
-            .try_to_vec()
-            .unwrap();
+        let data = borsh::to_vec(&(RemoveCreatorVerificationInstructionData::new())).unwrap();
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
@@ -197,9 +195,7 @@ impl<'a, 'b> RemoveCreatorVerificationCpi<'a, 'b> {
                 is_signer: remaining_account.2,
             })
         });
-        let data = RemoveCreatorVerificationInstructionData::new()
-            .try_to_vec()
-            .unwrap();
+        let data = borsh::to_vec(&(RemoveCreatorVerificationInstructionData::new())).unwrap();
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,

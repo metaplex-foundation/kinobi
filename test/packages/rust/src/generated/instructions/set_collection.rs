@@ -107,7 +107,7 @@ impl SetCollection {
             false,
         ));
         accounts.extend_from_slice(remaining_accounts);
-        let data = SetCollectionInstructionData::new().try_to_vec().unwrap();
+        let data = borsh::to_vec(&(SetCollectionInstructionData::new())).unwrap();
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
@@ -516,7 +516,7 @@ impl<'a, 'b> SetCollectionCpi<'a, 'b> {
                 is_signer: remaining_account.2,
             })
         });
-        let data = SetCollectionInstructionData::new().try_to_vec().unwrap();
+        let data = borsh::to_vec(&(SetCollectionInstructionData::new())).unwrap();
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_CANDY_MACHINE_CORE_ID,

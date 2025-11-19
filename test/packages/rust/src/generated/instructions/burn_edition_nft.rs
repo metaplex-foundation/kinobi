@@ -84,7 +84,7 @@ impl BurnEditionNft {
             false,
         ));
         accounts.extend_from_slice(remaining_accounts);
-        let data = BurnEditionNftInstructionData::new().try_to_vec().unwrap();
+        let data = borsh::to_vec(&(BurnEditionNftInstructionData::new())).unwrap();
 
         solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,
@@ -427,7 +427,7 @@ impl<'a, 'b> BurnEditionNftCpi<'a, 'b> {
                 is_signer: remaining_account.2,
             })
         });
-        let data = BurnEditionNftInstructionData::new().try_to_vec().unwrap();
+        let data = borsh::to_vec(&(BurnEditionNftInstructionData::new())).unwrap();
 
         let instruction = solana_program::instruction::Instruction {
             program_id: crate::MPL_TOKEN_METADATA_ID,

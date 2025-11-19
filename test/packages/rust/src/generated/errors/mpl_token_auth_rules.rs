@@ -6,6 +6,7 @@
 //!
 
 use num_derive::FromPrimitive;
+use solana_program_error::{ProgramError, ToStr};
 use thiserror::Error;
 
 #[derive(Clone, Debug, Eq, Error, FromPrimitive, PartialEq)]
@@ -57,8 +58,54 @@ pub enum MplTokenAuthRulesError {
     BorshSerializationError,
 }
 
-impl solana_program::program_error::PrintProgramError for MplTokenAuthRulesError {
-    fn print<E>(&self) {
-        solana_program::msg!(&self.to_string());
+impl From<MplTokenAuthRulesError> for ProgramError {
+    fn from(e: MplTokenAuthRulesError) -> Self {
+        ProgramError::Custom(e as u32)
+    }
+}
+
+impl TryFrom<u32> for MplTokenAuthRulesError {
+    type Error = ProgramError;
+    fn try_from(error: u32) -> Result<Self, Self::Error> {
+        match error {
+            0 => Ok(MplTokenAuthRulesError::NumericalOverflow),
+            1 => Ok(MplTokenAuthRulesError::DataTypeMismatch),
+            2 => Ok(MplTokenAuthRulesError::IncorrectOwner),
+            3 => Ok(MplTokenAuthRulesError::PayloadVecIndexError),
+            4 => Ok(MplTokenAuthRulesError::DerivedKeyInvalid),
+            5 => Ok(MplTokenAuthRulesError::AdditionalSignerCheckFailed),
+            6 => Ok(MplTokenAuthRulesError::PubkeyMatchCheckFailed),
+            7 => Ok(MplTokenAuthRulesError::DerivedKeyMatchCheckFailed),
+            8 => Ok(MplTokenAuthRulesError::ProgramOwnedCheckFailed),
+            9 => Ok(MplTokenAuthRulesError::AmountCheckFailed),
+            10 => Ok(MplTokenAuthRulesError::FrequencyCheckFailed),
+            11 => Ok(MplTokenAuthRulesError::PubkeyTreeMatchCheckFailed),
+            12 => Ok(MplTokenAuthRulesError::PayerIsNotSigner),
+            13 => Ok(MplTokenAuthRulesError::NotImplemented),
+            14 => Ok(MplTokenAuthRulesError::BorshSerializationError),
+            _ => Err(ProgramError::InvalidArgument),
+        }
+    }
+}
+
+impl ToStr for MplTokenAuthRulesError {
+    fn to_str(&self) -> &'static str {
+        match self {
+            MplTokenAuthRulesError::NumericalOverflow => "Numerical Overflow",
+            MplTokenAuthRulesError::DataTypeMismatch => "Data type mismatch",
+            MplTokenAuthRulesError::IncorrectOwner => "Incorrect account owner",
+            MplTokenAuthRulesError::PayloadVecIndexError => "Could not index into PayloadVec",
+            MplTokenAuthRulesError::DerivedKeyInvalid => "Derived key invalid",
+            MplTokenAuthRulesError::AdditionalSignerCheckFailed => "Additional Signer check failed",
+            MplTokenAuthRulesError::PubkeyMatchCheckFailed => "Pubkey Match check failed",
+            MplTokenAuthRulesError::DerivedKeyMatchCheckFailed => "Derived Key Match check failed",
+            MplTokenAuthRulesError::ProgramOwnedCheckFailed => "Program Owned check failed",
+            MplTokenAuthRulesError::AmountCheckFailed => "Amount checked failed",
+            MplTokenAuthRulesError::FrequencyCheckFailed => "Frequency check failed",
+            MplTokenAuthRulesError::PubkeyTreeMatchCheckFailed => "Pubkey Tree Match check failed",
+            MplTokenAuthRulesError::PayerIsNotSigner => "Payer is not a signer",
+            MplTokenAuthRulesError::NotImplemented => "",
+            MplTokenAuthRulesError::BorshSerializationError => "Borsh Serialization Error",
+        }
     }
 }
