@@ -159,6 +159,12 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
     };
   }
 
+  if (castedNodeKeys.includes('fixedSizeOptionTypeNode')) {
+    visitor.visitFixedSizeOptionType = function visitFixedSizeOptionType(node) {
+      return merge(node, [...visit(this)(node.item)]);
+    };
+  }
+
   if (castedNodeKeys.includes('setTypeNode')) {
     visitor.visitSetType = function visitSetType(node) {
       return merge(node, [

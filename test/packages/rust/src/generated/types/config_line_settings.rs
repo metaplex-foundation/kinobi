@@ -5,6 +5,7 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+
 #[cfg(feature = "anchor")]
 use anchor_lang::prelude::{AnchorDeserialize, AnchorSerialize};
 #[cfg(not(feature = "anchor"))]
@@ -16,14 +17,16 @@ use borsh::{BorshDeserialize, BorshSerialize};
 #[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ConfigLineSettings {
-    /// Common name prefix
-    pub prefix_name: String,
-    /// Length of the remaining part of the name
-    pub name_length: u32,
-    /// Common URI prefix
-    pub prefix_uri: String,
-    /// Length of the remaining part of the URI
-    pub uri_length: u32,
-    /// Indicates whether to use a senquential index generator or not
-    pub is_sequential: bool,
+/// Common name prefix
+pub prefix_name: String,
+/// Length of the remaining part of the name
+pub name_length: u32,
+/// Common URI prefix
+pub prefix_uri: String,
+/// Length of the remaining part of the URI
+pub uri_length: u32,
+/// Indicates whether to use a senquential index generator or not
+pub is_sequential: bool,
 }
+
+

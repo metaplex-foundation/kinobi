@@ -388,7 +388,7 @@ export function getValidateInstruction<
       getAccountMeta(accounts.optRuleNonsigner3),
       getAccountMeta(accounts.optRuleNonsigner4),
       getAccountMeta(accounts.optRuleNonsigner5),
-    ].filter(<T,>(x: T | undefined): x is T => x !== undefined),
+    ].filter(<T>(x: T | undefined): x is T => x !== undefined),
     programAddress,
     data: getValidateInstructionDataEncoder().encode(
       args as ValidateInstructionDataArgs

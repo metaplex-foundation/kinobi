@@ -16,5 +16,7 @@ use borsh::{BorshDeserialize, BorshSerialize};
 #[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct AuthorizationData {
-    pub payload: Payload,
+pub payload: Payload,
 }
+
+

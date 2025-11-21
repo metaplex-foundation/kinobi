@@ -330,6 +330,71 @@ export function getTypeManifestVisitor(input: {
           };
         },
 
+        visitFixedSizeOptionType(fixedSizeOptionType, { self }) {
+          const childManifest = visit(fixedSizeOptionType.item, self);
+          const baseStrictType = childManifest.strictType;
+          const baseLooseType = childManifest.looseType;
+          childManifest.strictImports.add('umi', [
+            'Option',
+            'none',
+            'some',
+            'isOption',
+          ]);
+          childManifest.looseImports.add('umi', 'OptionOrNullable');
+          childManifest.serializerImports.add('umiSerializers', 'Serializer');
+
+          const sentinelBytes = `[${fixedSizeOptionType.sentinel.join(', ')}]`;
+          const serializerType = `Serializer<OptionOrNullable<${baseLooseType}>, Option<${baseStrictType}>>`;
+          const customSerializer = `(() => {
+  const inner = ${childManifest.serializer};
+  const sentinel = new Uint8Array(${sentinelBytes});
+  if (inner.fixedSize == null) {
+    throw new Error('Fixed-size options require an inner serializer with a fixed size.');
+  }
+  if (inner.fixedSize !== sentinel.length) {
+    throw new Error('Fixed-size option sentinel length must match the inner serializer fixed size.');
+  }
+  const {fixedSize} = inner;
+  const normalize = (input: OptionOrNullable<${baseLooseType}>) => {
+    if (input == null) {
+      return null;
+    }
+    if (isOption(input)) {
+      return input.__option === 'None' ? null : input.value;
+    }
+    return input;
+  };
+  return {
+    description: 'Option<${baseStrictType}>',
+    fixedSize,
+    maxSize: fixedSize,
+    serialize: (value: OptionOrNullable<${baseLooseType}>) => {
+      const normalized = normalize(value);
+      return normalized == null ? sentinel.slice() : inner.serialize(normalized);
+    },
+    deserialize: (bytes: Uint8Array, offset = 0) => {
+      const slice = bytes.slice(offset, offset + fixedSize);
+      const isSentinel = slice.every((byte, i) => byte === sentinel[i]);
+      if (isSentinel) {
+        return [none<${baseStrictType}>(), offset + fixedSize] as [
+          Option<${baseStrictType}>,
+          number
+        ];
+      }
+      const [value, newOffset] = inner.deserialize(bytes, offset);
+      return [some(value), newOffset] as [Option<${baseStrictType}>, number];
+    },
+  } as ${serializerType};
+})()`;
+
+          return {
+            ...childManifest,
+            strictType: `Option<${baseStrictType}>`,
+            looseType: `OptionOrNullable<${baseLooseType}>`,
+            serializer: customSerializer,
+          };
+        },
+
         visitSetType(setType, { self }) {
           const childManifest = visit(setType.item, self);
           childManifest.serializerImports.add('umiSerializers', 'set');

@@ -25,6 +25,7 @@ import {
   recordLinkablesVisitor,
   staticVisitor,
   visit,
+  getByteSizeVisitor,
 } from '../../visitors';
 import { RustImportMap } from './RustImportMap';
 import { getTypeManifestVisitor } from './getTypeManifestVisitor';
@@ -41,7 +42,8 @@ export function getRenderMapVisitor(options: GetRustRenderMapOptions = {}) {
 
   const renderParentInstructions = options.renderParentInstructions ?? false;
   const dependencyMap = options.dependencyMap ?? {};
-  const typeManifestVisitor = getTypeManifestVisitor();
+  const byteSizeVisitor = getByteSizeVisitor(linkables);
+  const typeManifestVisitor = getTypeManifestVisitor({ byteSizeVisitor });
 
   return pipe(
     staticVisitor(

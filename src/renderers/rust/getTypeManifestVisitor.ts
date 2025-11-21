@@ -7,15 +7,33 @@ import {
 } from '../../nodes';
 import { pascalCase, pipe, rustDocblock, snakeCase } from '../../shared';
 import { extendVisitor, mergeVisitor, visit } from '../../visitors';
+import type { Visitor } from '../../visitors';
+import type { ByteSizeVisitorKeys } from '../../visitors/getByteSizeVisitor';
 import { RustImportMap } from './RustImportMap';
+
+type FixedSizeOptionMetadata = {
+  innerType: string;
+  byteSize: number;
+  sentinel: number[];
+};
+
+type FixedSizeOptionFieldMap = Record<string, FixedSizeOptionMetadata>;
 
 export type RustTypeManifest = {
   type: string;
   imports: RustImportMap;
   nestedStructs: string[];
+  fixedSizeOption?: FixedSizeOptionMetadata;
+  fixedSizeOptionFields?: FixedSizeOptionFieldMap;
+  hasFixedSizeOption?: boolean;
 };
 
-export function getTypeManifestVisitor() {
+type ByteSizeVisitor = Visitor<number | null, ByteSizeVisitorKeys>;
+
+export function getTypeManifestVisitor(input: {
+  byteSizeVisitor: ByteSizeVisitor;
+}) {
+  const { byteSizeVisitor } = input;
   let parentName: string | null = null;
   let nestedStruct: boolean = false;
   let inlineStruct: boolean = false;
@@ -40,14 +58,19 @@ export function getTypeManifestVisitor() {
           parentName = pascalCase(account.name);
           const manifest = visit(account.data, self);
           parentName = null;
+          const hasFixed = manifest.hasFixedSizeOption;
+          const accountAttributes = hasFixed
+            ? `#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Clone, Debug, Eq, PartialEq)]
+`
+            : `#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
+#[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
+#[derive(Clone, Debug, Eq, PartialEq)]
+`;
           return {
             ...manifest,
-            type:
-              '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
-              '#[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]\n' +
-              '#[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]\n' +
-              `#[derive(Clone, Debug, Eq, PartialEq)]\n` +
-              `${manifest.type}`,
+            type: `${accountAttributes}${manifest.type}`,
           };
         },
 
@@ -63,21 +86,31 @@ export function getTypeManifestVisitor() {
             traits.push('PartialOrd', 'Hash', 'FromPrimitive');
             manifest.imports.add(['num_derive::FromPrimitive']);
           }
+          const hasFixed = manifest.hasFixedSizeOption;
+          const derivedTraits = traits.join(', ');
+          const definedTypeAttributes = hasFixed
+            ? `#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[derive(${derivedTraits})]
+`
+            : `#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
+#[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
+#[derive(${derivedTraits})]
+`;
+          const nestedAttributes = hasFixed
+            ? `#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[derive(${derivedTraits})]
+`
+            : `#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
+#[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
+#[derive(${derivedTraits})]
+`;
           return {
             ...manifest,
-            type:
-              '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
-              '#[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]\n' +
-              '#[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]\n' +
-              `#[derive(${traits.join(', ')})]\n` +
-              `${manifest.type}`,
+            type: `${definedTypeAttributes}${manifest.type}`,
             nestedStructs: manifest.nestedStructs.map(
-              (struct) =>
-                '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
-                '#[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]\n' +
-                '#[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]\n' +
-                `#[derive(${traits.join(', ')})]\n` +
-                `${struct}`
+              (struct) => `${nestedAttributes}${struct}`
             ),
           };
         },
@@ -254,6 +287,31 @@ export function getTypeManifestVisitor() {
           throw new Error('Option size not supported by Borsh');
         },
 
+        visitFixedSizeOptionType(fixedSizeOptionType, { self }) {
+          const childManifest = visit(fixedSizeOptionType.item, self);
+          const byteSize = visit(fixedSizeOptionType.item, byteSizeVisitor);
+          if (byteSize === null) {
+            throw new Error(
+              'Fixed-size option inner type must have a fixed byte size.'
+            );
+          }
+          if (fixedSizeOptionType.sentinel.length !== byteSize) {
+            throw new Error(
+              'Fixed-size option sentinel length must match the inner type byte size.'
+            );
+          }
+
+          return {
+            ...childManifest,
+            type: `Option<${childManifest.type}>`,
+            fixedSizeOption: {
+              innerType: childManifest.type,
+              byteSize,
+              sentinel: fixedSizeOptionType.sentinel,
+            },
+          };
+        },
+
         visitSetType(setType, { self }) {
           const childManifest = visit(setType.item, self);
           childManifest.imports.add('std::collections::HashSet');
@@ -275,15 +333,25 @@ export function getTypeManifestVisitor() {
           const fieldTypes = fields.map((field) => field.type).join('\n');
           const mergedManifest = mergeManifests(fields);
 
+          const structName = pascalCase(originalParentName);
+          const structFields = structType.fields.map((field) => ({
+            originalName: field.name,
+            snakeName: snakeCase(field.name),
+          }));
+          const structDefinition = renderStructDefinition({
+            structName,
+            fieldTypes,
+            structFields,
+            fixedSizeOptionFields: mergedManifest.fixedSizeOptionFields ?? {},
+          });
+
           if (nestedStruct) {
             return {
               ...mergedManifest,
-              type: pascalCase(originalParentName),
+              type: structName,
               nestedStructs: [
                 ...mergedManifest.nestedStructs,
-                `pub struct ${pascalCase(
-                  originalParentName
-                )} {\n${fieldTypes}\n}`,
+                structDefinition,
               ],
             };
           }
@@ -294,9 +362,7 @@ export function getTypeManifestVisitor() {
 
           return {
             ...mergedManifest,
-            type: `pub struct ${pascalCase(
-              originalParentName
-            )} {\n${fieldTypes}\n}`,
+            type: structDefinition,
           };
         },
 
@@ -341,8 +407,29 @@ export function getTypeManifestVisitor() {
               '#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::Bytes>"))]\n';
           }
 
+          const fixedSizeOptionFields = {
+            ...(fieldManifest.fixedSizeOptionFields ?? {}),
+            ...(fieldManifest.fixedSizeOption
+              ? {
+                  [fieldName]: {
+                    innerType: fieldManifest.fixedSizeOption.innerType,
+                    byteSize: fieldManifest.fixedSizeOption.byteSize,
+                    sentinel: fieldManifest.fixedSizeOption.sentinel,
+                  },
+                }
+              : {}),
+          };
+          const hasFixedSizeOption =
+            Object.keys(fixedSizeOptionFields).length > 0;
+
           return {
             ...fieldManifest,
+            fixedSizeOption: undefined,
+            fixedSizeOptionFields: hasFixedSizeOption
+              ? fixedSizeOptionFields
+              : undefined,
+            hasFixedSizeOption:
+              fieldManifest.hasFixedSizeOption || hasFixedSizeOption,
             type: inlineStruct
               ? `${docblock}${derive}${fieldName}: ${fieldManifest.type},`
               : `${docblock}${derive}pub ${fieldName}: ${fieldManifest.type},`,
@@ -467,11 +554,148 @@ export function getTypeManifestVisitor() {
 
 function mergeManifests(
   manifests: RustTypeManifest[]
-): Pick<RustTypeManifest, 'imports' | 'nestedStructs'> {
+): Pick<
+  RustTypeManifest,
+  'imports' | 'nestedStructs' | 'fixedSizeOptionFields' | 'hasFixedSizeOption'
+> {
+  const fixedSizeOptionFields = manifests.reduce<FixedSizeOptionFieldMap>(
+    (acc, manifest) => {
+      if (manifest.fixedSizeOptionFields) {
+        Object.assign(acc, manifest.fixedSizeOptionFields);
+      }
+      return acc;
+    },
+    {}
+  );
+  const hasFixedSizeOption = Object.keys(fixedSizeOptionFields).length > 0;
+
   return {
     imports: new RustImportMap().mergeWith(
       ...manifests.map((td) => td.imports)
     ),
     nestedStructs: manifests.flatMap((m) => m.nestedStructs),
+    fixedSizeOptionFields: hasFixedSizeOption
+      ? fixedSizeOptionFields
+      : undefined,
+    hasFixedSizeOption,
   };
+}
+
+function renderStructDefinition(input: {
+  structName: string;
+  fieldTypes: string;
+  structFields: { originalName: string; snakeName: string }[];
+  fixedSizeOptionFields: FixedSizeOptionFieldMap;
+}): string {
+  const { structName, fieldTypes, structFields, fixedSizeOptionFields } = input;
+  const baseDefinition = `pub struct ${structName} {\n${fieldTypes}\n}`;
+  const hasFixed = Object.keys(fixedSizeOptionFields).length > 0;
+  if (!hasFixed) {
+    return baseDefinition;
+  }
+
+  const helpers = renderFixedSizeOptionImplementations({
+    structName,
+    structFields,
+    fixedSizeOptionFields,
+  });
+  return `${baseDefinition}\n\n${helpers}`;
+}
+
+function renderFixedSizeOptionImplementations(input: {
+  structName: string;
+  structFields: { originalName: string; snakeName: string }[];
+  fixedSizeOptionFields: FixedSizeOptionFieldMap;
+}): string {
+  const { structName, structFields, fixedSizeOptionFields } = input;
+  const sentinelLines = Object.entries(fixedSizeOptionFields)
+    .map(([snakeName, info]) => {
+      const constName = getFixedSizeOptionConstName(structName, snakeName);
+      const sentinelArray = info.sentinel.join(', ');
+      return `const ${constName}: [u8; ${info.byteSize}] = [${sentinelArray}];`;
+    })
+    .join('\n');
+
+  const serializeLines = structFields
+    .map(({ snakeName }) => {
+      const fixedInfo = fixedSizeOptionFields[snakeName];
+      if (!fixedInfo) {
+        return `    BorshSerialize::serialize(&self.${snakeName}, writer)?;`;
+      }
+      const constName = getFixedSizeOptionConstName(structName, snakeName);
+      return `    match &self.${snakeName} {
+      Some(value) => BorshSerialize::serialize(value, writer)?,
+      None => borsh::maybestd::io::Write::write_all(writer, &${constName})?,
+    };`;
+    })
+    .join('\n');
+
+  const deserializeLines = structFields
+    .map(({ snakeName }) => {
+      const fixedInfo = fixedSizeOptionFields[snakeName];
+      if (!fixedInfo) {
+        return `    let ${snakeName} = BorshDeserialize::deserialize_reader(reader)?;`;
+      }
+      const constName = getFixedSizeOptionConstName(structName, snakeName);
+      return `    let ${snakeName} = {
+      let mut buffer = [0u8; ${fixedInfo.byteSize}];
+      borsh::maybestd::io::Read::read_exact(reader, &mut buffer)?;
+      if buffer == ${constName} {
+        None
+      } else {
+        let mut slice: &[u8] = &buffer;
+        Some(BorshDeserialize::deserialize(&mut slice)?)
+      }
+    };`;
+    })
+    .join('\n');
+
+  const constructorLines = structFields
+    .map(({ snakeName }) => `      ${snakeName},`)
+    .join('\n');
+
+  return `${sentinelLines}
+
+impl BorshSerialize for ${structName} {
+  fn serialize<W: borsh::maybestd::io::Write>(
+    &self,
+    writer: &mut W
+  ) -> borsh::maybestd::io::Result<()> {
+${serializeLines}
+    Ok(())
+  }
+}
+
+impl BorshDeserialize for ${structName} {
+  fn deserialize_reader<R: borsh::maybestd::io::Read>(
+    reader: &mut R
+  ) -> borsh::maybestd::io::Result<Self> {
+${deserializeLines}
+    Ok(Self {
+${constructorLines}
+    })
+  }
+}
+
+#[cfg(feature = "anchor")]
+impl anchor_lang::prelude::AnchorSerialize for ${structName} {
+  fn serialize<W: std::io::Write>(&self, writer: &mut W) -> std::io::Result<()> {
+    BorshSerialize::serialize(self, writer)
+  }
+}
+
+#[cfg(feature = "anchor")]
+impl anchor_lang::prelude::AnchorDeserialize for ${structName} {
+  fn deserialize_reader<R: std::io::Read>(
+    reader: &mut R
+  ) -> std::io::Result<Self> {
+    BorshDeserialize::deserialize_reader(reader)
+  }
+}`;
+}
+
+function getFixedSizeOptionConstName(structName: string, fieldName: string) {
+  return `${snakeCase(structName).toUpperCase()}_${fieldName
+    .toUpperCase()
+    .replace(/[^A-Z0-9_]/g, '_')}_FIXED_SIZE_OPTION_SENTINEL`;
 }

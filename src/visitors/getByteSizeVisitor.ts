@@ -119,6 +119,10 @@ export function getByteSizeVisitor(
       return itemSize !== null ? itemSize + prefixSize : null;
     },
 
+    visitFixedSizeOptionType(node) {
+      return visit(node.item, this);
+    },
+
     visitBytesType(node) {
       if (!isNode(node.size, 'fixedSizeNode')) return null;
       return node.size.size;

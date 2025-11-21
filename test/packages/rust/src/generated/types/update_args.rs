@@ -5,40 +5,40 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::AuthorityType;
 use crate::generated::types::AuthorizationData;
-use crate::generated::types::Collection;
-use crate::generated::types::CollectionDetails;
+use solana_program::pubkey::Pubkey;
 use crate::generated::types::Creator;
-use crate::generated::types::DelegateState;
-use crate::generated::types::ProgrammableConfig;
 use crate::generated::types::TokenStandard;
+use crate::generated::types::Collection;
 use crate::generated::types::Uses;
+use crate::generated::types::CollectionDetails;
+use crate::generated::types::ProgrammableConfig;
+use crate::generated::types::DelegateState;
+use crate::generated::types::AuthorityType;
 #[cfg(feature = "anchor")]
 use anchor_lang::prelude::{AnchorDeserialize, AnchorSerialize};
 #[cfg(not(feature = "anchor"))]
 use borsh::{BorshDeserialize, BorshSerialize};
-use solana_program::pubkey::Pubkey;
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
 #[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum UpdateArgs {
-    V1 {
-        authorization_data: Option<AuthorizationData>,
-        new_update_authority: Option<Pubkey>,
-        data: Option<UpdateArgsV1Data>,
-        primary_sale_happened: Option<bool>,
-        is_mutable: Option<bool>,
-        token_standard: Option<TokenStandard>,
-        collection: Option<Collection>,
-        uses: Option<Uses>,
-        collection_details: Option<CollectionDetails>,
-        programmable_config: Option<ProgrammableConfig>,
-        delegate_state: Option<DelegateState>,
-        authority_type: AuthorityType,
-    },
+V1 {
+authorization_data: Option<AuthorizationData>,
+new_update_authority: Option<Pubkey>,
+data: Option<UpdateArgsV1Data>,
+primary_sale_happened: Option<bool>,
+is_mutable: Option<bool>,
+token_standard: Option<TokenStandard>,
+collection: Option<Collection>,
+uses: Option<Uses>,
+collection_details: Option<CollectionDetails>,
+programmable_config: Option<ProgrammableConfig>,
+delegate_state: Option<DelegateState>,
+authority_type: AuthorityType,
+},
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
@@ -46,9 +46,10 @@ pub enum UpdateArgs {
 #[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct UpdateArgsV1Data {
-    pub name: String,
-    pub symbol: String,
-    pub uri: String,
-    pub seller_fee_basis_points: u16,
-    pub creators: Option<Vec<Creator>>,
+pub name: String,
+pub symbol: String,
+pub uri: String,
+pub seller_fee_basis_points: u16,
+pub creators: Option<Vec<Creator>>,
 }
+

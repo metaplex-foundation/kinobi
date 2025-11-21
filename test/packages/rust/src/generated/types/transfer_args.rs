@@ -16,8 +16,10 @@ use borsh::{BorshDeserialize, BorshSerialize};
 #[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum TransferArgs {
-    V1 {
-        authorization_data: Option<AuthorizationData>,
-        amount: u64,
-    },
+V1 {
+authorization_data: Option<AuthorizationData>,
+amount: u64,
+},
 }
+
+

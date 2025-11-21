@@ -6,6 +6,7 @@
  * @see https://github.com/metaplex-foundation/kinobi
  */
 
+export * from './accountWithPoddedTypes';
 export * from './candyMachine';
 export * from './collectionAuthorityRecord';
 export * from './delegateRecord';

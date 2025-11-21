@@ -32,6 +32,7 @@ export function getTypeManifestVisitor(input: {
     customInstructionData,
   } = input;
   let parentName = input.parentName ?? null;
+  let fixedSizeOptionCounter = 0;
 
   return pipe(
     staticVisitor(
@@ -348,6 +349,111 @@ export function getTypeManifestVisitor(input: {
           childManifest.decoder
             .mapRender((r) => `getOptionDecoder(${r + decoderOptionsAsString})`)
             .addImports('solanaOptions', 'getOptionDecoder');
+          return childManifest;
+        },
+
+        visitFixedSizeOptionType(fixedSizeOptionType, { self }) {
+          const childManifest = visit(fixedSizeOptionType.item, self);
+          const baseStrictType = childManifest.strictType.render;
+          const baseLooseType = childManifest.looseType.render;
+          childManifest.strictType
+            .mapRender((r) => `Option<${r}>`)
+            .addImports('solanaOptions', 'Option');
+          childManifest.looseType
+            .mapRender((r) => `OptionOrNullable<${r}>`)
+            .addImports('solanaOptions', 'OptionOrNullable');
+
+          const sentinelArray = `[${fixedSizeOptionType.sentinel.join(', ')}]`;
+          const helperId = fixedSizeOptionCounter;
+          fixedSizeOptionCounter += 1;
+          const encoderVar = `__fixedSizeOptionEncoder${helperId}`;
+          const decoderVar = `__fixedSizeOptionDecoder${helperId}`;
+          const customEncoder = `(() => {
+  const ${encoderVar} = ${childManifest.encoder.render};
+  const sentinel = new Uint8Array(${sentinelArray});
+  if (${encoderVar}.fixedSize == null) {
+    throw new Error('Fixed-size options require an encoder with a fixed size.');
+  }
+  if (${encoderVar}.fixedSize !== sentinel.length) {
+    throw new Error('Fixed-size option sentinel length must match the encoder fixed size.');
+  }
+  const normalize = (input: OptionOrNullable<${baseLooseType}>) => {
+    if (input == null) {
+      return null;
+    }
+    if (typeof input === 'object' && '__option' in input) {
+      return input.__option === 'None' ? null : input.value;
+    }
+    return input;
+  };
+  return {
+    fixedSize: ${encoderVar}.fixedSize,
+    encode: (value: OptionOrNullable<${baseLooseType}>) => {
+      const normalized = normalize(value);
+      if (normalized == null) {
+        return sentinel.slice();
+      }
+      return ${encoderVar}.encode(normalized);
+    },
+    write: (value: OptionOrNullable<${baseLooseType}>, bytes: Uint8Array, offset: number) => {
+      const normalized = normalize(value);
+      if (normalized == null) {
+        bytes.set(sentinel, offset);
+        return offset + sentinel.length;
+      }
+      return ${encoderVar}.write(normalized, bytes, offset);
+    },
+  } satisfies Encoder<OptionOrNullable<${baseLooseType}>>;
+})()`;
+
+          const customDecoder = `(() => {
+  const ${decoderVar} = ${childManifest.decoder.render};
+  const sentinel = new Uint8Array(${sentinelArray});
+  if (${decoderVar}.fixedSize == null) {
+    throw new Error('Fixed-size options require a decoder with a fixed size.');
+  }
+  if (${decoderVar}.fixedSize !== sentinel.length) {
+    throw new Error('Fixed-size option sentinel length must match the decoder fixed size.');
+  }
+  const isSentinel = (bytes: Uint8Array, offset: number) => {
+    const slice = bytes.slice(offset, offset + ${decoderVar}.fixedSize!);
+    return slice.every((byte, i) => byte === sentinel[i]);
+  };
+  const none = (): Option<${baseStrictType}> => ({ __option: 'None' });
+  const some = (value: ${baseStrictType}): Option<${baseStrictType}> => ({
+    __option: 'Some',
+    value,
+  });
+  const readOption = (bytes: Uint8Array, offset = 0) => {
+    if (isSentinel(bytes, offset)) {
+      return [none(), offset + ${decoderVar}.fixedSize!] as [
+        Option<${baseStrictType}>,
+        number
+      ];
+    }
+    const [value, newOffset] = ${decoderVar}.read(
+      bytes,
+      offset
+    ) as [${baseStrictType}, number];
+    return [some(value), newOffset] as [Option<${baseStrictType}>, number];
+  };
+  return {
+    ...${decoderVar},
+    decode: (bytes: Uint8Array, offset = 0) => {
+      const [value] = readOption(bytes, offset);
+      return value;
+    },
+    read: readOption,
+  } satisfies Decoder<Option<${baseStrictType}>>;
+})()`;
+
+          childManifest.encoder
+            .setRender(customEncoder)
+            .addImports('solanaCodecsCore', 'Encoder');
+          childManifest.decoder
+            .setRender(customDecoder)
+            .addImports('solanaCodecsCore', 'Decoder');
+
           return childManifest;
         },
 

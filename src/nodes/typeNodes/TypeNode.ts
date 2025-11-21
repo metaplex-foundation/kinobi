@@ -14,6 +14,10 @@ import { EnumEmptyVariantTypeNode } from './EnumEmptyVariantTypeNode';
 import { EnumStructVariantTypeNode } from './EnumStructVariantTypeNode';
 import { EnumTupleVariantTypeNode } from './EnumTupleVariantTypeNode';
 import { EnumTypeNode, enumTypeNodeFromIdl } from './EnumTypeNode';
+import {
+  FixedSizeOptionTypeNode,
+  fixedSizeOptionTypeNodeFromIdl,
+} from './FixedSizeOptionTypeNode';
 import { MapTypeNode, mapTypeNodeFromIdl } from './MapTypeNode';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 import { OptionTypeNode, optionTypeNodeFromIdl } from './OptionTypeNode';
@@ -37,6 +41,7 @@ export const STANDALONE_TYPE_NODES = {
   mapTypeNode: {} as MapTypeNode,
   numberTypeNode: {} as NumberTypeNode,
   optionTypeNode: {} as OptionTypeNode,
+  fixedSizeOptionTypeNode: {} as FixedSizeOptionTypeNode,
   publicKeyTypeNode: {} as PublicKeyTypeNode,
   setTypeNode: {} as SetTypeNode,
   solAmountTypeNode: {} as SolAmountTypeNode,
@@ -127,6 +132,11 @@ export const createTypeNodeFromIdl = (idlType: IdlType): TypeNode => {
     ('bTreeMap' in idlType && isArrayOfSize(idlType.bTreeMap, 2))
   ) {
     return mapTypeNodeFromIdl(idlType);
+  }
+
+  // Fixed size option.
+  if ('fixedSizeOption' in idlType) {
+    return fixedSizeOptionTypeNodeFromIdl(idlType);
   }
 
   // Option.

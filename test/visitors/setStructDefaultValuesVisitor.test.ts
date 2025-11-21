@@ -56,7 +56,10 @@ test('it adds new default values to struct fields', (t) => {
   t.is(result.type.fields[0].defaultValueStrategy, undefined);
   t.deepEqual(result.type.fields[1].defaultValue, noneValueNode());
   t.is(result.type.fields[1].defaultValueStrategy, undefined);
-  t.deepEqual(result.type.fields[2].defaultValue, bigIntValueNode(1_000_000_000_000n));
+  t.deepEqual(
+    result.type.fields[2].defaultValue,
+    bigIntValueNode(1_000_000_000_000n)
+  );
   t.is(result.type.fields[2].defaultValueStrategy, undefined);
 });
 
@@ -133,6 +136,9 @@ test('it adds new default values to instruction arguments', (t) => {
   t.is(result.arguments[0].defaultValueStrategy, 'omitted');
   t.deepEqual(result.arguments[1].defaultValue, numberValueNode(1));
   t.is(result.arguments[1].defaultValueStrategy, undefined);
-  t.deepEqual(result.arguments[2].defaultValue, bigIntValueNode(1_000_000_000_000n));
+  t.deepEqual(
+    result.arguments[2].defaultValue,
+    bigIntValueNode(1_000_000_000_000n)
+  );
   t.is(result.arguments[2].defaultValueStrategy, undefined);
 });

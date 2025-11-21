@@ -86,28 +86,28 @@ impl TryFrom<u32> for MplCandyMachineCoreError {
     type Error = ProgramError;
     fn try_from(error: u32) -> Result<Self, Self::Error> {
         match error {
-            6000 => Ok(MplCandyMachineCoreError::IncorrectOwner),
-            6001 => Ok(MplCandyMachineCoreError::Uninitialized),
-            6002 => Ok(MplCandyMachineCoreError::MintMismatch),
-            6003 => Ok(MplCandyMachineCoreError::IndexGreaterThanLength),
-            6004 => Ok(MplCandyMachineCoreError::NumericalOverflowError),
-            6005 => Ok(MplCandyMachineCoreError::TooManyCreators),
-            6006 => Ok(MplCandyMachineCoreError::CandyMachineEmpty),
-            6007 => Ok(MplCandyMachineCoreError::HiddenSettingsDoNotHaveConfigLines),
-            6008 => Ok(MplCandyMachineCoreError::CannotChangeNumberOfLines),
-            6009 => Ok(MplCandyMachineCoreError::CannotSwitchToHiddenSettings),
-            6010 => Ok(MplCandyMachineCoreError::IncorrectCollectionAuthority),
-            6011 => Ok(MplCandyMachineCoreError::MetadataAccountMustBeEmpty),
-            6012 => Ok(MplCandyMachineCoreError::NoChangingCollectionDuringMint),
-            6013 => Ok(MplCandyMachineCoreError::ExceededLengthError),
-            6014 => Ok(MplCandyMachineCoreError::MissingConfigLinesSettings),
-            6015 => Ok(MplCandyMachineCoreError::CannotIncreaseLength),
-            6016 => Ok(MplCandyMachineCoreError::CannotSwitchFromHiddenSettings),
-            6017 => Ok(MplCandyMachineCoreError::CannotChangeSequentialIndexGeneration),
-            6018 => Ok(MplCandyMachineCoreError::CollectionKeyMismatch),
-            6019 => Ok(MplCandyMachineCoreError::CouldNotRetrieveConfigLineData),
-            6020 => Ok(MplCandyMachineCoreError::NotFullyLoaded),
-            _ => Err(ProgramError::InvalidArgument),
+                            6000 => Ok(MplCandyMachineCoreError::IncorrectOwner),
+                            6001 => Ok(MplCandyMachineCoreError::Uninitialized),
+                            6002 => Ok(MplCandyMachineCoreError::MintMismatch),
+                            6003 => Ok(MplCandyMachineCoreError::IndexGreaterThanLength),
+                            6004 => Ok(MplCandyMachineCoreError::NumericalOverflowError),
+                            6005 => Ok(MplCandyMachineCoreError::TooManyCreators),
+                            6006 => Ok(MplCandyMachineCoreError::CandyMachineEmpty),
+                            6007 => Ok(MplCandyMachineCoreError::HiddenSettingsDoNotHaveConfigLines),
+                            6008 => Ok(MplCandyMachineCoreError::CannotChangeNumberOfLines),
+                            6009 => Ok(MplCandyMachineCoreError::CannotSwitchToHiddenSettings),
+                            6010 => Ok(MplCandyMachineCoreError::IncorrectCollectionAuthority),
+                            6011 => Ok(MplCandyMachineCoreError::MetadataAccountMustBeEmpty),
+                            6012 => Ok(MplCandyMachineCoreError::NoChangingCollectionDuringMint),
+                            6013 => Ok(MplCandyMachineCoreError::ExceededLengthError),
+                            6014 => Ok(MplCandyMachineCoreError::MissingConfigLinesSettings),
+                            6015 => Ok(MplCandyMachineCoreError::CannotIncreaseLength),
+                            6016 => Ok(MplCandyMachineCoreError::CannotSwitchFromHiddenSettings),
+                            6017 => Ok(MplCandyMachineCoreError::CannotChangeSequentialIndexGeneration),
+                            6018 => Ok(MplCandyMachineCoreError::CollectionKeyMismatch),
+                            6019 => Ok(MplCandyMachineCoreError::CouldNotRetrieveConfigLineData),
+                            6020 => Ok(MplCandyMachineCoreError::NotFullyLoaded),
+                        _ => Err(ProgramError::InvalidArgument),
         }
     }
 }
@@ -139,3 +139,4 @@ impl ToStr for MplCandyMachineCoreError {
                     }
     }
 }
+

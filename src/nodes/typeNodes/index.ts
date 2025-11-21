@@ -11,6 +11,7 @@ export * from './EnumVariantTypeNode';
 export * from './MapTypeNode';
 export * from './NumberTypeNode';
 export * from './OptionTypeNode';
+export * from './FixedSizeOptionTypeNode';
 export * from './PublicKeyTypeNode';
 export * from './SetTypeNode';
 export * from './SolAmountTypeNode';
