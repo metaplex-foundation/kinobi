@@ -5,49 +5,46 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+
 #[cfg(feature = "anchor")]
 use anchor_lang::prelude::{AnchorDeserialize, AnchorSerialize};
 #[cfg(not(feature = "anchor"))]
 use borsh::{BorshDeserialize, BorshSerialize};
 
 /// Accounts.
-pub struct AddMemo {}
+pub struct AddMemo {
+  }
 
 impl AddMemo {
-    pub fn instruction(
-        &self,
-        args: AddMemoInstructionArgs,
-    ) -> solana_program::instruction::Instruction {
-        self.instruction_with_remaining_accounts(args, &[])
-    }
-    #[allow(clippy::vec_init_then_push)]
-    pub fn instruction_with_remaining_accounts(
-        &self,
-        args: AddMemoInstructionArgs,
-        remaining_accounts: &[solana_program::instruction::AccountMeta],
-    ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(0 + remaining_accounts.len());
+  pub fn instruction(&self, args: AddMemoInstructionArgs) -> solana_program::instruction::Instruction {
+    self.instruction_with_remaining_accounts(args, &[])
+  }
+  #[allow(clippy::vec_init_then_push)]
+  pub fn instruction_with_remaining_accounts(&self, args: AddMemoInstructionArgs, remaining_accounts: &[solana_program::instruction::AccountMeta]) -> solana_program::instruction::Instruction {
+    let mut accounts = Vec::with_capacity(0 + remaining_accounts.len());
         accounts.extend_from_slice(remaining_accounts);
-        let mut data = borsh::to_vec(&(AddMemoInstructionData::new())).unwrap();
-        let mut args = borsh::to_vec(&args).unwrap();
-        data.append(&mut args);
-
-        solana_program::instruction::Instruction {
-            program_id: crate::SPL_MEMO_ID,
-            accounts,
-            data,
-        }
+    let mut data = borsh::to_vec(&(AddMemoInstructionData::new())).unwrap();
+          let mut args = borsh::to_vec(&args).unwrap();
+      data.append(&mut args);
+    
+    solana_program::instruction::Instruction {
+      program_id: crate::SPL_MEMO_ID,
+      accounts,
+      data,
     }
+  }
 }
 
 #[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
 #[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
-pub struct AddMemoInstructionData {}
+pub struct AddMemoInstructionData {
+        }
 
 impl AddMemoInstructionData {
-    pub fn new() -> Self {
-        Self {}
-    }
+  pub fn new() -> Self {
+    Self {
+                        }
+  }
 }
 
 #[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
@@ -55,8 +52,9 @@ impl AddMemoInstructionData {
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct AddMemoInstructionArgs {
-    pub memo: String,
-}
+            pub memo: String,
+      }
+
 
 /// Instruction builder for `AddMemo`.
 ///
@@ -64,128 +62,108 @@ pub struct AddMemoInstructionArgs {
 ///
 #[derive(Default)]
 pub struct AddMemoBuilder {
-    memo: Option<String>,
-    __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+              memo: Option<String>,
+        __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
 }
 
 impl AddMemoBuilder {
-    pub fn new() -> Self {
-        Self::default()
-    }
-    #[inline(always)]
-    pub fn memo(&mut self, memo: String) -> &mut Self {
+  pub fn new() -> Self {
+    Self::default()
+  }
+              #[inline(always)]
+      pub fn memo(&mut self, memo: String) -> &mut Self {
         self.memo = Some(memo);
         self
-    }
-    /// Add an aditional account to the instruction.
-    #[inline(always)]
-    pub fn add_remaining_account(
-        &mut self,
-        account: solana_program::instruction::AccountMeta,
-    ) -> &mut Self {
-        self.__remaining_accounts.push(account);
-        self
-    }
-    /// Add additional accounts to the instruction.
-    #[inline(always)]
-    pub fn add_remaining_accounts(
-        &mut self,
-        accounts: &[solana_program::instruction::AccountMeta],
-    ) -> &mut Self {
-        self.__remaining_accounts.extend_from_slice(accounts);
-        self
-    }
-    #[allow(clippy::clone_on_copy)]
-    pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let accounts = AddMemo {};
-        let args = AddMemoInstructionArgs {
-            memo: self.memo.clone().expect("memo is not set"),
-        };
-
-        accounts.instruction_with_remaining_accounts(args, &self.__remaining_accounts)
-    }
+      }
+        /// Add an aditional account to the instruction.
+  #[inline(always)]
+  pub fn add_remaining_account(&mut self, account: solana_program::instruction::AccountMeta) -> &mut Self {
+    self.__remaining_accounts.push(account);
+    self
+  }
+  /// Add additional accounts to the instruction.
+  #[inline(always)]
+  pub fn add_remaining_accounts(&mut self, accounts: &[solana_program::instruction::AccountMeta]) -> &mut Self {
+    self.__remaining_accounts.extend_from_slice(accounts);
+    self
+  }
+  #[allow(clippy::clone_on_copy)]
+  pub fn instruction(&self) -> solana_program::instruction::Instruction {
+    let accounts = AddMemo {
+            };
+          let args = AddMemoInstructionArgs {
+                                            memo: self.memo.clone().expect("memo is not set"),
+                                    };
+    
+    accounts.instruction_with_remaining_accounts(args, &self.__remaining_accounts)
+  }
 }
+
 
 /// `add_memo` CPI instruction.
 pub struct AddMemoCpi<'a, 'b> {
-    /// The program to invoke.
-    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
-    /// The arguments for the instruction.
+  /// The program to invoke.
+  pub __program: &'b solana_program::account_info::AccountInfo<'a>,
+        /// The arguments for the instruction.
     pub __args: AddMemoInstructionArgs,
-}
+  }
 
 impl<'a, 'b> AddMemoCpi<'a, 'b> {
-    pub fn new(
-        program: &'b solana_program::account_info::AccountInfo<'a>,
-        args: AddMemoInstructionArgs,
-    ) -> Self {
-        Self {
-            __program: program,
-            __args: args,
-        }
-    }
-    #[inline(always)]
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed_with_remaining_accounts(&[], &[])
-    }
-    #[inline(always)]
-    pub fn invoke_with_remaining_accounts(
-        &self,
-        remaining_accounts: &[(
-            &'b solana_program::account_info::AccountInfo<'a>,
-            bool,
-            bool,
-        )],
-    ) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
-    }
-    #[inline(always)]
-    pub fn invoke_signed(
-        &self,
-        signers_seeds: &[&[&[u8]]],
-    ) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
-    }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
-    pub fn invoke_signed_with_remaining_accounts(
-        &self,
-        signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[(
-            &'b solana_program::account_info::AccountInfo<'a>,
-            bool,
-            bool,
-        )],
-    ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(0 + remaining_accounts.len());
+  pub fn new(
+    program: &'b solana_program::account_info::AccountInfo<'a>,
+              args: AddMemoInstructionArgs,
+      ) -> Self {
+    Self {
+      __program: program,
+                    __args: args,
+          }
+  }
+  #[inline(always)]
+  pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+    self.invoke_signed_with_remaining_accounts(&[], &[])
+  }
+  #[inline(always)]
+  pub fn invoke_with_remaining_accounts(&self, remaining_accounts: &[(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)]) -> solana_program::entrypoint::ProgramResult {
+    self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+  }
+  #[inline(always)]
+  pub fn invoke_signed(&self, signers_seeds: &[&[&[u8]]]) -> solana_program::entrypoint::ProgramResult {
+    self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+  }
+  #[allow(clippy::clone_on_copy)]
+  #[allow(clippy::vec_init_then_push)]
+  pub fn invoke_signed_with_remaining_accounts(
+    &self,
+    signers_seeds: &[&[&[u8]]],
+    remaining_accounts: &[(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)]
+  ) -> solana_program::entrypoint::ProgramResult {
+    let mut accounts = Vec::with_capacity(0 + remaining_accounts.len());
         remaining_accounts.iter().for_each(|remaining_account| {
-            accounts.push(solana_program::instruction::AccountMeta {
-                pubkey: *remaining_account.0.key,
-                is_writable: remaining_account.1,
-                is_signer: remaining_account.2,
-            })
-        });
-        let mut data = borsh::to_vec(&(AddMemoInstructionData::new())).unwrap();
-        let mut args = borsh::to_vec(&self.__args).unwrap();
-        data.append(&mut args);
+      accounts.push(solana_program::instruction::AccountMeta {
+          pubkey: *remaining_account.0.key,
+          is_writable: remaining_account.1,
+          is_signer: remaining_account.2,
+      })
+    });
+    let mut data = borsh::to_vec(&(AddMemoInstructionData::new())).unwrap();
+          let mut args = borsh::to_vec(&self.__args).unwrap();
+      data.append(&mut args);
+    
+    let instruction = solana_program::instruction::Instruction {
+      program_id: crate::SPL_MEMO_ID,
+      accounts,
+      data,
+    };
+    let mut account_infos = Vec::with_capacity(0 + 1 + remaining_accounts.len());
+    account_infos.push(self.__program.clone());
+        remaining_accounts.iter().for_each(|remaining_account| account_infos.push(remaining_account.0.clone()));
 
-        let instruction = solana_program::instruction::Instruction {
-            program_id: crate::SPL_MEMO_ID,
-            accounts,
-            data,
-        };
-        let mut account_infos = Vec::with_capacity(0 + 1 + remaining_accounts.len());
-        account_infos.push(self.__program.clone());
-        remaining_accounts
-            .iter()
-            .for_each(|remaining_account| account_infos.push(remaining_account.0.clone()));
-
-        if signers_seeds.is_empty() {
-            solana_program::program::invoke(&instruction, &account_infos)
-        } else {
-            solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
-        }
+    if signers_seeds.is_empty() {
+      solana_program::program::invoke(&instruction, &account_infos)
+    } else {
+      solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
     }
+  }
 }
 
 /// Instruction builder for `AddMemo` via CPI.
@@ -193,85 +171,60 @@ impl<'a, 'b> AddMemoCpi<'a, 'b> {
 /// ### Accounts:
 ///
 pub struct AddMemoCpiBuilder<'a, 'b> {
-    instruction: Box<AddMemoCpiBuilderInstruction<'a, 'b>>,
+  instruction: Box<AddMemoCpiBuilderInstruction<'a, 'b>>,
 }
 
 impl<'a, 'b> AddMemoCpiBuilder<'a, 'b> {
-    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
-        let instruction = Box::new(AddMemoCpiBuilderInstruction {
-            __program: program,
-            memo: None,
-            __remaining_accounts: Vec::new(),
-        });
-        Self { instruction }
-    }
-    #[inline(always)]
-    pub fn memo(&mut self, memo: String) -> &mut Self {
+  pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
+    let instruction = Box::new(AddMemoCpiBuilderInstruction {
+      __program: program,
+                              memo: None,
+                    __remaining_accounts: Vec::new(),
+    });
+    Self { instruction }
+  }
+              #[inline(always)]
+      pub fn memo(&mut self, memo: String) -> &mut Self {
         self.instruction.memo = Some(memo);
         self
-    }
-    /// Add an additional account to the instruction.
-    #[inline(always)]
-    pub fn add_remaining_account(
-        &mut self,
-        account: &'b solana_program::account_info::AccountInfo<'a>,
-        is_writable: bool,
-        is_signer: bool,
-    ) -> &mut Self {
-        self.instruction
-            .__remaining_accounts
-            .push((account, is_writable, is_signer));
-        self
-    }
-    /// Add additional accounts to the instruction.
-    ///
-    /// Each account is represented by a tuple of the `AccountInfo`, a `bool` indicating whether the account is writable or not,
-    /// and a `bool` indicating whether the account is a signer or not.
-    #[inline(always)]
-    pub fn add_remaining_accounts(
-        &mut self,
-        accounts: &[(
-            &'b solana_program::account_info::AccountInfo<'a>,
-            bool,
-            bool,
-        )],
-    ) -> &mut Self {
-        self.instruction
-            .__remaining_accounts
-            .extend_from_slice(accounts);
-        self
-    }
-    #[inline(always)]
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
-    }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
-    pub fn invoke_signed(
-        &self,
-        signers_seeds: &[&[&[u8]]],
-    ) -> solana_program::entrypoint::ProgramResult {
-        let args = AddMemoInstructionArgs {
-            memo: self.instruction.memo.clone().expect("memo is not set"),
-        };
+      }
+        /// Add an additional account to the instruction.
+  #[inline(always)]
+  pub fn add_remaining_account(&mut self, account: &'b solana_program::account_info::AccountInfo<'a>, is_writable: bool, is_signer: bool) -> &mut Self {
+    self.instruction.__remaining_accounts.push((account, is_writable, is_signer));
+    self
+  }
+  /// Add additional accounts to the instruction.
+  ///
+  /// Each account is represented by a tuple of the `AccountInfo`, a `bool` indicating whether the account is writable or not,
+  /// and a `bool` indicating whether the account is a signer or not.
+  #[inline(always)]
+  pub fn add_remaining_accounts(&mut self, accounts: &[(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)]) -> &mut Self {
+    self.instruction.__remaining_accounts.extend_from_slice(accounts);
+    self
+  }
+  #[inline(always)]
+  pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+    self.invoke_signed(&[])
+  }
+  #[allow(clippy::clone_on_copy)]
+  #[allow(clippy::vec_init_then_push)]
+  pub fn invoke_signed(&self, signers_seeds: &[&[&[u8]]]) -> solana_program::entrypoint::ProgramResult {
+          let args = AddMemoInstructionArgs {
+                                            memo: self.instruction.memo.clone().expect("memo is not set"),
+                                    };
         let instruction = AddMemoCpi {
-            __program: self.instruction.__program,
-            __args: args,
-        };
-        instruction.invoke_signed_with_remaining_accounts(
-            signers_seeds,
-            &self.instruction.__remaining_accounts,
-        )
-    }
+        __program: self.instruction.__program,
+                          __args: args,
+            };
+    instruction.invoke_signed_with_remaining_accounts(signers_seeds, &self.instruction.__remaining_accounts)
+  }
 }
 
 struct AddMemoCpiBuilderInstruction<'a, 'b> {
-    __program: &'b solana_program::account_info::AccountInfo<'a>,
-    memo: Option<String>,
-    /// Additional instruction accounts `(AccountInfo, is_writable, is_signer)`.
-    __remaining_accounts: Vec<(
-        &'b solana_program::account_info::AccountInfo<'a>,
-        bool,
-        bool,
-    )>,
+  __program: &'b solana_program::account_info::AccountInfo<'a>,
+              memo: Option<String>,
+        /// Additional instruction accounts `(AccountInfo, is_writable, is_signer)`.
+  __remaining_accounts: Vec<(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)>,
 }
+

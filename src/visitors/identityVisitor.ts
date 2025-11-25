@@ -35,6 +35,7 @@ import {
   mapTypeNode,
   mapValueNode,
   optionTypeNode,
+  fixedSizeOptionTypeNode,
   pdaNode,
   pdaSeedValueNode,
   pdaValueNode,
@@ -314,6 +315,15 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       if (item === null) return null;
       assertIsNode(item, TYPE_NODES);
       return optionTypeNode(item, { ...node, prefix });
+    };
+  }
+
+  if (castedNodeKeys.includes('fixedSizeOptionTypeNode')) {
+    visitor.visitFixedSizeOptionType = function visitFixedSizeOptionType(node) {
+      const item = visit(this)(node.item);
+      if (item === null) return null;
+      assertIsNode(item, TYPE_NODES);
+      return fixedSizeOptionTypeNode(item, node.sentinel);
     };
   }
 

@@ -89,6 +89,8 @@ function getNodeDetails(node: Node): string[] {
       return [node.encoding];
     case 'optionTypeNode':
       return node.fixed ? ['fixed'] : [];
+    case 'fixedSizeOptionTypeNode':
+      return [`sentinel: [${node.sentinel.join(', ')}]`];
     case 'fixedSizeNode':
       return [node.size.toString()];
     case 'numberValueNode':

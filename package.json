@@ -19,6 +19,8 @@
     "test:rust": "(cd ./test/packages/rust && pnpm install && pnpm build && pnpm lint)",
     "lint": "prettier -c ./src/ && eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "prettier --write ./src && eslint . --ext .js,.jsx,.ts,.tsx",
+    "format": "prettier --check src test --ignore-path .prettierignore",
+    "format:fix": "prettier --write src test --ignore-path .prettierignore",
     "package:change": "changeset",
     "package:version": "changeset version",
     "package:publish": "pnpm lint && pnpm build && changeset publish"

@@ -5,11 +5,11 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use kaigan::types::RemainderVec;
 #[cfg(feature = "anchor")]
 use anchor_lang::prelude::{AnchorDeserialize, AnchorSerialize};
 #[cfg(not(feature = "anchor"))]
 use borsh::{BorshDeserialize, BorshSerialize};
-use kaigan::types::RemainderVec;
 
 /// Dummy lines.
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
@@ -17,6 +17,8 @@ use kaigan::types::RemainderVec;
 #[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct DummyLines {
-    /// The dummy lines.
-    pub lines: RemainderVec<u64>,
+/// The dummy lines.
+pub lines: RemainderVec<u64>,
 }
+
+

@@ -5,12 +5,14 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use solana_program::pubkey::Pubkey;
 use crate::generated::types::CandyMachineData;
 #[cfg(feature = "anchor")]
 use anchor_lang::prelude::{AnchorDeserialize, AnchorSerialize};
+#[cfg(feature = "anchor")]
+use borsh::{BorshDeserialize, BorshSerialize};
 #[cfg(not(feature = "anchor"))]
 use borsh::{BorshDeserialize, BorshSerialize};
-use solana_program::pubkey::Pubkey;
 
 /// Candy machine state and config data.
 
@@ -19,48 +21,42 @@ use solana_program::pubkey::Pubkey;
 #[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct CandyMachine {
-    pub discriminator: [u8; 8],
-    /// Features versioning flags.
-    pub features: u64,
-    /// Authority address.
-    #[cfg_attr(
-        feature = "serde",
-        serde(with = "serde_with::As::<serde_with::DisplayFromStr>")
-    )]
-    pub authority: Pubkey,
-    /// Authority address allowed to mint from the candy machine.
-    #[cfg_attr(
-        feature = "serde",
-        serde(with = "serde_with::As::<serde_with::DisplayFromStr>")
-    )]
-    pub mint_authority: Pubkey,
-    /// The collection mint for the candy machine.
-    #[cfg_attr(
-        feature = "serde",
-        serde(with = "serde_with::As::<serde_with::DisplayFromStr>")
-    )]
-    pub collection_mint: Pubkey,
-    /// Number of assets redeemed.
-    pub items_redeemed: u64,
-    /// Candy machine configuration data.
-    pub data: CandyMachineData,
+pub discriminator: [u8; 8],
+/// Features versioning flags.
+pub features: u64,
+/// Authority address.
+#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::DisplayFromStr>"))]
+pub authority: Pubkey,
+/// Authority address allowed to mint from the candy machine.
+#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::DisplayFromStr>"))]
+pub mint_authority: Pubkey,
+/// The collection mint for the candy machine.
+#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::DisplayFromStr>"))]
+pub collection_mint: Pubkey,
+/// Number of assets redeemed.
+pub items_redeemed: u64,
+/// Candy machine configuration data.
+pub data: CandyMachineData,
 }
 
+
 impl CandyMachine {
-    #[inline(always)]
-    pub fn from_bytes(data: &[u8]) -> Result<Self, std::io::Error> {
-        let mut data = data;
-        Self::deserialize(&mut data)
-    }
+  
+  
+  
+  #[inline(always)]
+  pub fn from_bytes(data: &[u8]) -> Result<Self, std::io::Error> {
+    let mut data = data;
+    Self::deserialize(&mut data)
+  }
 }
 
 impl<'a> TryFrom<&solana_program::account_info::AccountInfo<'a>> for CandyMachine {
-    type Error = std::io::Error;
+  type Error = std::io::Error;
 
-    fn try_from(
-        account_info: &solana_program::account_info::AccountInfo<'a>,
-    ) -> Result<Self, Self::Error> {
-        let mut data: &[u8] = &(*account_info.data).borrow();
-        Self::deserialize(&mut data)
-    }
+  fn try_from(account_info: &solana_program::account_info::AccountInfo<'a>) -> Result<Self, Self::Error> {
+      let mut data: &[u8] = &(*account_info.data).borrow();
+      Self::deserialize(&mut data)
+  }
 }
+

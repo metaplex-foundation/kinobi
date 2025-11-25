@@ -1,5 +1,15 @@
 import test from 'ava';
-import { instructionArgumentNode, instructionNode, programNode, remainderSizeNode, stringTypeNode, visit, instructionRemainingAccountsNode, instructionAccountNode, argumentValueNode } from '../../../src';
+import {
+  instructionArgumentNode,
+  instructionNode,
+  programNode,
+  remainderSizeNode,
+  stringTypeNode,
+  visit,
+  instructionRemainingAccountsNode,
+  instructionAccountNode,
+  argumentValueNode,
+} from '../../../src';
 import { getRenderMapVisitor } from '../../../src/renderers/rust/getRenderMapVisitor';
 import { codeContains } from './_setup';
 
@@ -54,36 +64,28 @@ test('it renders an instruction with remaining accounts', (t) => {
   const node = programNode({
     name: 'splToken',
     publicKey: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-    instructions: [instructionNode({ name: 'addMemo', remainingAccounts: [
-      instructionRemainingAccountsNode(
-        argumentValueNode("account0"),
-        {
-          isWritable: false,
-          isSigner: false,
-        }
-      ),
-      instructionRemainingAccountsNode(
-        argumentValueNode("account1"),
-        {
-          isWritable: false,
-          isSigner: true,
-        }
-      ),
-      instructionRemainingAccountsNode(
-        argumentValueNode("account2"),
-        {
-          isWritable: true,
-          isSigner: false,
-        }
-      ),
-      instructionRemainingAccountsNode(
-        argumentValueNode("account3"),
-        {
-          isWritable: true,
-          isSigner: true,
-        }
-      ),
-    ] })
+    instructions: [
+      instructionNode({
+        name: 'addMemo',
+        remainingAccounts: [
+          instructionRemainingAccountsNode(argumentValueNode('account0'), {
+            isWritable: false,
+            isSigner: false,
+          }),
+          instructionRemainingAccountsNode(argumentValueNode('account1'), {
+            isWritable: false,
+            isSigner: true,
+          }),
+          instructionRemainingAccountsNode(argumentValueNode('account2'), {
+            isWritable: true,
+            isSigner: false,
+          }),
+          instructionRemainingAccountsNode(argumentValueNode('account3'), {
+            isWritable: true,
+            isSigner: true,
+          }),
+        ],
+      }),
     ],
   });
 

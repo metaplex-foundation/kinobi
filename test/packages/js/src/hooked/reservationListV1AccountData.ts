@@ -51,7 +51,7 @@ export function getReservationListV1AccountDataSerializer(): Serializer<
       ({
         ...value,
         key: TmKey.ReservationListV1,
-      } as ReservationListV1AccountData)
+      }) as ReservationListV1AccountData
   ) as Serializer<
     ReservationListV1AccountDataArgs,
     ReservationListV1AccountData

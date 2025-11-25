@@ -8,7 +8,8 @@ export type IdlType =
   | IdlTypeSet
   | IdlTypeStruct
   | IdlTypeEnum
-  | IdlTypeLeaf;
+  | IdlTypeLeaf
+  | IdlTypeFixedSizeOption;
 
 // Defined.
 export type IdlTypeDefinedLink = { defined: string };
@@ -17,6 +18,14 @@ export type IdlTypeDefinedLink = { defined: string };
 export type IdlTypeOption = ({ option: IdlType } | { coption: IdlType }) & {
   prefix?: IdlTypeUnsignedInteger;
   fixed?: boolean;
+};
+
+// Fixed size options.
+export type IdlTypeFixedSizeOption = {
+  fixedSizeOption: {
+    inner: IdlType;
+    sentinel: number[];
+  };
 };
 
 // Lists.

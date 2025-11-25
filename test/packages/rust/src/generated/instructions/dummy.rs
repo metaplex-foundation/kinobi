@@ -5,6 +5,7 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+
 #[cfg(feature = "anchor")]
 use anchor_lang::prelude::{AnchorDeserialize, AnchorSerialize};
 #[cfg(not(feature = "anchor"))]
@@ -12,682 +13,631 @@ use borsh::{BorshDeserialize, BorshSerialize};
 
 /// Accounts.
 pub struct Dummy {
-    pub edition: solana_program::pubkey::Pubkey,
-
-    pub mint: Option<solana_program::pubkey::Pubkey>,
-
-    pub update_authority: solana_program::pubkey::Pubkey,
-
-    pub mint_authority: solana_program::pubkey::Pubkey,
-
-    pub payer: solana_program::pubkey::Pubkey,
-
-    pub foo: solana_program::pubkey::Pubkey,
-
-    pub bar: Option<solana_program::pubkey::Pubkey>,
-
-    pub delegate: Option<solana_program::pubkey::Pubkey>,
-
-    pub delegate_record: Option<solana_program::pubkey::Pubkey>,
-
-    pub token_or_ata_program: solana_program::pubkey::Pubkey,
-}
+      
+              
+          pub edition: solana_program::pubkey::Pubkey,
+          
+              
+          pub mint: Option<solana_program::pubkey::Pubkey>,
+          
+              
+          pub update_authority: solana_program::pubkey::Pubkey,
+          
+              
+          pub mint_authority: solana_program::pubkey::Pubkey,
+          
+              
+          pub payer: solana_program::pubkey::Pubkey,
+          
+              
+          pub foo: solana_program::pubkey::Pubkey,
+          
+              
+          pub bar: Option<solana_program::pubkey::Pubkey>,
+          
+              
+          pub delegate: Option<solana_program::pubkey::Pubkey>,
+          
+              
+          pub delegate_record: Option<solana_program::pubkey::Pubkey>,
+          
+              
+          pub token_or_ata_program: solana_program::pubkey::Pubkey,
+      }
 
 impl Dummy {
-    pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        self.instruction_with_remaining_accounts(&[])
-    }
-    #[allow(clippy::vec_init_then_push)]
-    pub fn instruction_with_remaining_accounts(
-        &self,
-        remaining_accounts: &[solana_program::instruction::AccountMeta],
-    ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(10 + remaining_accounts.len());
-        accounts.push(solana_program::instruction::AccountMeta::new(
+  pub fn instruction(&self) -> solana_program::instruction::Instruction {
+    self.instruction_with_remaining_accounts(&[])
+  }
+  #[allow(clippy::vec_init_then_push)]
+  pub fn instruction_with_remaining_accounts(&self, remaining_accounts: &[solana_program::instruction::AccountMeta]) -> solana_program::instruction::Instruction {
+    let mut accounts = Vec::with_capacity(10 + remaining_accounts.len());
+                            accounts.push(solana_program::instruction::AccountMeta::new(
             self.edition,
-            true,
-        ));
-        if let Some(mint) = self.mint {
-            accounts.push(solana_program::instruction::AccountMeta::new(mint, false));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            true
+          ));
+                                                      if let Some(mint) = self.mint {
+              accounts.push(solana_program::instruction::AccountMeta::new(
+                mint,
+                false,
+              ));
+            } else {
+              accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 crate::MPL_CANDY_MACHINE_CORE_ID,
                 false,
-            ));
-        }
-        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+              ));
+            }
+                                                    accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.update_authority,
-            true,
-        ));
-        accounts.push(solana_program::instruction::AccountMeta::new(
+            true
+          ));
+                                          accounts.push(solana_program::instruction::AccountMeta::new(
             self.mint_authority,
-            true,
-        ));
-        accounts.push(solana_program::instruction::AccountMeta::new(
-            self.payer, true,
-        ));
-        accounts.push(solana_program::instruction::AccountMeta::new(
-            self.foo, false,
-        ));
-        if let Some(bar) = self.bar {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                bar, true,
-            ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            true
+          ));
+                                          accounts.push(solana_program::instruction::AccountMeta::new(
+            self.payer,
+            true
+          ));
+                                          accounts.push(solana_program::instruction::AccountMeta::new(
+            self.foo,
+            false
+          ));
+                                                      if let Some(bar) = self.bar {
+              accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                bar,
+                true,
+              ));
+            } else {
+              accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 crate::MPL_CANDY_MACHINE_CORE_ID,
                 false,
-            ));
-        }
-        if let Some(delegate) = self.delegate {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                delegate, true,
-            ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+              ));
+            }
+                                                                if let Some(delegate) = self.delegate {
+              accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                delegate,
+                true,
+              ));
+            } else {
+              accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 crate::MPL_CANDY_MACHINE_CORE_ID,
                 false,
-            ));
-        }
-        if let Some(delegate_record) = self.delegate_record {
-            accounts.push(solana_program::instruction::AccountMeta::new(
+              ));
+            }
+                                                                if let Some(delegate_record) = self.delegate_record {
+              accounts.push(solana_program::instruction::AccountMeta::new(
                 delegate_record,
                 false,
-            ));
-        } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+              ));
+            } else {
+              accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 crate::MPL_CANDY_MACHINE_CORE_ID,
                 false,
-            ));
-        }
-        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+              ));
+            }
+                                                    accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.token_or_ata_program,
-            false,
-        ));
-        accounts.extend_from_slice(remaining_accounts);
-        let data = borsh::to_vec(&(DummyInstructionData::new())).unwrap();
-
-        solana_program::instruction::Instruction {
-            program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
-            accounts,
-            data,
-        }
+            false
+          ));
+                      accounts.extend_from_slice(remaining_accounts);
+    let data = borsh::to_vec(&(DummyInstructionData::new())).unwrap();
+    
+    solana_program::instruction::Instruction {
+      program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
+      accounts,
+      data,
     }
+  }
 }
 
 #[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
 #[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
 pub struct DummyInstructionData {
-    discriminator: [u8; 8],
-}
+            discriminator: [u8; 8],
+      }
 
 impl DummyInstructionData {
-    pub fn new() -> Self {
-        Self {
-            discriminator: [167, 117, 211, 79, 251, 254, 47, 135],
-        }
-    }
+  pub fn new() -> Self {
+    Self {
+                        discriminator: [167, 117, 211, 79, 251, 254, 47, 135],
+                  }
+  }
 }
+
+
 
 /// Instruction builder for `Dummy`.
 ///
 /// ### Accounts:
 ///
-///   0. `[writable, signer]` edition
-///   1. `[writable, optional]` mint
-///   2. `[signer]` update_authority
-///   3. `[writable, signer]` mint_authority
-///   4. `[writable, signer]` payer
-///   5. `[writable]` foo
-///   6. `[signer, optional]` bar
-///   7. `[signer, optional]` delegate
-///   8. `[writable, optional]` delegate_record
-///   9. `[]` token_or_ata_program
+                      ///   0. `[writable, signer]` edition
+                      ///   1. `[writable, optional]` mint
+                ///   2. `[signer]` update_authority
+                      ///   3. `[writable, signer]` mint_authority
+                      ///   4. `[writable, signer]` payer
+                ///   5. `[writable]` foo
+                      ///   6. `[signer, optional]` bar
+                      ///   7. `[signer, optional]` delegate
+                      ///   8. `[writable, optional]` delegate_record
+          ///   9. `[]` token_or_ata_program
 #[derive(Default)]
 pub struct DummyBuilder {
-    edition: Option<solana_program::pubkey::Pubkey>,
-    mint: Option<solana_program::pubkey::Pubkey>,
-    update_authority: Option<solana_program::pubkey::Pubkey>,
-    mint_authority: Option<solana_program::pubkey::Pubkey>,
-    payer: Option<solana_program::pubkey::Pubkey>,
-    foo: Option<solana_program::pubkey::Pubkey>,
-    bar: Option<solana_program::pubkey::Pubkey>,
-    delegate: Option<solana_program::pubkey::Pubkey>,
-    delegate_record: Option<solana_program::pubkey::Pubkey>,
-    token_or_ata_program: Option<solana_program::pubkey::Pubkey>,
-    __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+            edition: Option<solana_program::pubkey::Pubkey>,
+                mint: Option<solana_program::pubkey::Pubkey>,
+                update_authority: Option<solana_program::pubkey::Pubkey>,
+                mint_authority: Option<solana_program::pubkey::Pubkey>,
+                payer: Option<solana_program::pubkey::Pubkey>,
+                foo: Option<solana_program::pubkey::Pubkey>,
+                bar: Option<solana_program::pubkey::Pubkey>,
+                delegate: Option<solana_program::pubkey::Pubkey>,
+                delegate_record: Option<solana_program::pubkey::Pubkey>,
+                token_or_ata_program: Option<solana_program::pubkey::Pubkey>,
+                __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
 }
 
 impl DummyBuilder {
-    pub fn new() -> Self {
-        Self::default()
-    }
-    #[inline(always)]
+  pub fn new() -> Self {
+    Self::default()
+  }
+            #[inline(always)]
     pub fn edition(&mut self, edition: solana_program::pubkey::Pubkey) -> &mut Self {
-        self.edition = Some(edition);
-        self
+                        self.edition = Some(edition);
+                    self
     }
-    /// `[optional account]`
-    #[inline(always)]
+            /// `[optional account]`
+#[inline(always)]
     pub fn mint(&mut self, mint: Option<solana_program::pubkey::Pubkey>) -> &mut Self {
-        self.mint = mint;
-        self
+                        self.mint = mint;
+                    self
     }
-    #[inline(always)]
-    pub fn update_authority(
-        &mut self,
-        update_authority: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
-        self.update_authority = Some(update_authority);
-        self
+            #[inline(always)]
+    pub fn update_authority(&mut self, update_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.update_authority = Some(update_authority);
+                    self
     }
-    #[inline(always)]
+            #[inline(always)]
     pub fn mint_authority(&mut self, mint_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-        self.mint_authority = Some(mint_authority);
-        self
+                        self.mint_authority = Some(mint_authority);
+                    self
     }
-    #[inline(always)]
+            #[inline(always)]
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
-        self.payer = Some(payer);
-        self
+                        self.payer = Some(payer);
+                    self
     }
-    #[inline(always)]
+            #[inline(always)]
     pub fn foo(&mut self, foo: solana_program::pubkey::Pubkey) -> &mut Self {
-        self.foo = Some(foo);
-        self
+                        self.foo = Some(foo);
+                    self
     }
-    /// `[optional account]`
-    #[inline(always)]
+            /// `[optional account]`
+#[inline(always)]
     pub fn bar(&mut self, bar: Option<solana_program::pubkey::Pubkey>) -> &mut Self {
-        self.bar = bar;
-        self
+                        self.bar = bar;
+                    self
     }
-    /// `[optional account]`
-    #[inline(always)]
+            /// `[optional account]`
+#[inline(always)]
     pub fn delegate(&mut self, delegate: Option<solana_program::pubkey::Pubkey>) -> &mut Self {
-        self.delegate = delegate;
-        self
+                        self.delegate = delegate;
+                    self
     }
-    /// `[optional account]`
-    #[inline(always)]
-    pub fn delegate_record(
-        &mut self,
-        delegate_record: Option<solana_program::pubkey::Pubkey>,
-    ) -> &mut Self {
-        self.delegate_record = delegate_record;
-        self
+            /// `[optional account]`
+#[inline(always)]
+    pub fn delegate_record(&mut self, delegate_record: Option<solana_program::pubkey::Pubkey>) -> &mut Self {
+                        self.delegate_record = delegate_record;
+                    self
     }
-    #[inline(always)]
-    pub fn token_or_ata_program(
-        &mut self,
-        token_or_ata_program: solana_program::pubkey::Pubkey,
-    ) -> &mut Self {
-        self.token_or_ata_program = Some(token_or_ata_program);
-        self
+            #[inline(always)]
+    pub fn token_or_ata_program(&mut self, token_or_ata_program: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.token_or_ata_program = Some(token_or_ata_program);
+                    self
     }
-    /// Add an aditional account to the instruction.
-    #[inline(always)]
-    pub fn add_remaining_account(
-        &mut self,
-        account: solana_program::instruction::AccountMeta,
-    ) -> &mut Self {
-        self.__remaining_accounts.push(account);
-        self
-    }
-    /// Add additional accounts to the instruction.
-    #[inline(always)]
-    pub fn add_remaining_accounts(
-        &mut self,
-        accounts: &[solana_program::instruction::AccountMeta],
-    ) -> &mut Self {
-        self.__remaining_accounts.extend_from_slice(accounts);
-        self
-    }
-    #[allow(clippy::clone_on_copy)]
-    pub fn instruction(&self) -> solana_program::instruction::Instruction {
-        let accounts = Dummy {
-            edition: self.edition.expect("edition is not set"),
-            mint: self.mint,
-            update_authority: self.update_authority.expect("update_authority is not set"),
-            mint_authority: self.mint_authority.expect("mint_authority is not set"),
-            payer: self.payer.expect("payer is not set"),
-            foo: self.foo.expect("foo is not set"),
-            bar: self.bar,
-            delegate: self.delegate,
-            delegate_record: self.delegate_record,
-            token_or_ata_program: self
-                .token_or_ata_program
-                .expect("token_or_ata_program is not set"),
-        };
-
-        accounts.instruction_with_remaining_accounts(&self.__remaining_accounts)
-    }
+            /// Add an aditional account to the instruction.
+  #[inline(always)]
+  pub fn add_remaining_account(&mut self, account: solana_program::instruction::AccountMeta) -> &mut Self {
+    self.__remaining_accounts.push(account);
+    self
+  }
+  /// Add additional accounts to the instruction.
+  #[inline(always)]
+  pub fn add_remaining_accounts(&mut self, accounts: &[solana_program::instruction::AccountMeta]) -> &mut Self {
+    self.__remaining_accounts.extend_from_slice(accounts);
+    self
+  }
+  #[allow(clippy::clone_on_copy)]
+  pub fn instruction(&self) -> solana_program::instruction::Instruction {
+    let accounts = Dummy {
+                              edition: self.edition.expect("edition is not set"),
+                                        mint: self.mint,
+                                        update_authority: self.update_authority.expect("update_authority is not set"),
+                                        mint_authority: self.mint_authority.expect("mint_authority is not set"),
+                                        payer: self.payer.expect("payer is not set"),
+                                        foo: self.foo.expect("foo is not set"),
+                                        bar: self.bar,
+                                        delegate: self.delegate,
+                                        delegate_record: self.delegate_record,
+                                        token_or_ata_program: self.token_or_ata_program.expect("token_or_ata_program is not set"),
+                      };
+    
+    accounts.instruction_with_remaining_accounts(&self.__remaining_accounts)
+  }
 }
 
-/// `dummy` CPI accounts.
-pub struct DummyCpiAccounts<'a, 'b> {
-    pub edition: &'b solana_program::account_info::AccountInfo<'a>,
-
-    pub mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-
-    pub update_authority: &'b solana_program::account_info::AccountInfo<'a>,
-
-    pub mint_authority: &'b solana_program::account_info::AccountInfo<'a>,
-
-    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
-
-    pub foo: &'b solana_program::account_info::AccountInfo<'a>,
-
-    pub bar: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-
-    pub delegate: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-
-    pub delegate_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-
-    pub token_or_ata_program: &'b solana_program::account_info::AccountInfo<'a>,
-}
+  /// `dummy` CPI accounts.
+  pub struct DummyCpiAccounts<'a, 'b> {
+          
+                    
+              pub edition: &'b solana_program::account_info::AccountInfo<'a>,
+                
+                    
+              pub mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                
+                    
+              pub update_authority: &'b solana_program::account_info::AccountInfo<'a>,
+                
+                    
+              pub mint_authority: &'b solana_program::account_info::AccountInfo<'a>,
+                
+                    
+              pub payer: &'b solana_program::account_info::AccountInfo<'a>,
+                
+                    
+              pub foo: &'b solana_program::account_info::AccountInfo<'a>,
+                
+                    
+              pub bar: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                
+                    
+              pub delegate: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                
+                    
+              pub delegate_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                
+                    
+              pub token_or_ata_program: &'b solana_program::account_info::AccountInfo<'a>,
+            }
 
 /// `dummy` CPI instruction.
 pub struct DummyCpi<'a, 'b> {
-    /// The program to invoke.
-    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
-
-    pub edition: &'b solana_program::account_info::AccountInfo<'a>,
-
-    pub mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-
-    pub update_authority: &'b solana_program::account_info::AccountInfo<'a>,
-
-    pub mint_authority: &'b solana_program::account_info::AccountInfo<'a>,
-
-    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
-
-    pub foo: &'b solana_program::account_info::AccountInfo<'a>,
-
-    pub bar: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-
-    pub delegate: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-
-    pub delegate_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-
-    pub token_or_ata_program: &'b solana_program::account_info::AccountInfo<'a>,
-}
+  /// The program to invoke.
+  pub __program: &'b solana_program::account_info::AccountInfo<'a>,
+      
+              
+          pub edition: &'b solana_program::account_info::AccountInfo<'a>,
+          
+              
+          pub mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+          
+              
+          pub update_authority: &'b solana_program::account_info::AccountInfo<'a>,
+          
+              
+          pub mint_authority: &'b solana_program::account_info::AccountInfo<'a>,
+          
+              
+          pub payer: &'b solana_program::account_info::AccountInfo<'a>,
+          
+              
+          pub foo: &'b solana_program::account_info::AccountInfo<'a>,
+          
+              
+          pub bar: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+          
+              
+          pub delegate: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+          
+              
+          pub delegate_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+          
+              
+          pub token_or_ata_program: &'b solana_program::account_info::AccountInfo<'a>,
+        }
 
 impl<'a, 'b> DummyCpi<'a, 'b> {
-    pub fn new(
-        program: &'b solana_program::account_info::AccountInfo<'a>,
-        accounts: DummyCpiAccounts<'a, 'b>,
-    ) -> Self {
-        Self {
-            __program: program,
-            edition: accounts.edition,
-            mint: accounts.mint,
-            update_authority: accounts.update_authority,
-            mint_authority: accounts.mint_authority,
-            payer: accounts.payer,
-            foo: accounts.foo,
-            bar: accounts.bar,
-            delegate: accounts.delegate,
-            delegate_record: accounts.delegate_record,
-            token_or_ata_program: accounts.token_or_ata_program,
-        }
-    }
-    #[inline(always)]
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed_with_remaining_accounts(&[], &[])
-    }
-    #[inline(always)]
-    pub fn invoke_with_remaining_accounts(
-        &self,
-        remaining_accounts: &[(
-            &'b solana_program::account_info::AccountInfo<'a>,
-            bool,
-            bool,
-        )],
-    ) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
-    }
-    #[inline(always)]
-    pub fn invoke_signed(
-        &self,
-        signers_seeds: &[&[&[u8]]],
-    ) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
-    }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
-    pub fn invoke_signed_with_remaining_accounts(
-        &self,
-        signers_seeds: &[&[&[u8]]],
-        remaining_accounts: &[(
-            &'b solana_program::account_info::AccountInfo<'a>,
-            bool,
-            bool,
-        )],
-    ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(10 + remaining_accounts.len());
-        accounts.push(solana_program::instruction::AccountMeta::new(
+  pub fn new(
+    program: &'b solana_program::account_info::AccountInfo<'a>,
+          accounts: DummyCpiAccounts<'a, 'b>,
+          ) -> Self {
+    Self {
+      __program: program,
+              edition: accounts.edition,
+              mint: accounts.mint,
+              update_authority: accounts.update_authority,
+              mint_authority: accounts.mint_authority,
+              payer: accounts.payer,
+              foo: accounts.foo,
+              bar: accounts.bar,
+              delegate: accounts.delegate,
+              delegate_record: accounts.delegate_record,
+              token_or_ata_program: accounts.token_or_ata_program,
+                }
+  }
+  #[inline(always)]
+  pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+    self.invoke_signed_with_remaining_accounts(&[], &[])
+  }
+  #[inline(always)]
+  pub fn invoke_with_remaining_accounts(&self, remaining_accounts: &[(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)]) -> solana_program::entrypoint::ProgramResult {
+    self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+  }
+  #[inline(always)]
+  pub fn invoke_signed(&self, signers_seeds: &[&[&[u8]]]) -> solana_program::entrypoint::ProgramResult {
+    self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+  }
+  #[allow(clippy::clone_on_copy)]
+  #[allow(clippy::vec_init_then_push)]
+  pub fn invoke_signed_with_remaining_accounts(
+    &self,
+    signers_seeds: &[&[&[u8]]],
+    remaining_accounts: &[(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)]
+  ) -> solana_program::entrypoint::ProgramResult {
+    let mut accounts = Vec::with_capacity(10 + remaining_accounts.len());
+                            accounts.push(solana_program::instruction::AccountMeta::new(
             *self.edition.key,
-            true,
-        ));
-        if let Some(mint) = self.mint {
+            true
+          ));
+                                          if let Some(mint) = self.mint {
             accounts.push(solana_program::instruction::AccountMeta::new(
-                *mint.key, false,
+              *mint.key,
+              false,
             ));
-        } else {
+          } else {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_CANDY_MACHINE_CORE_ID,
-                false,
+              crate::MPL_CANDY_MACHINE_CORE_ID,
+              false,
             ));
-        }
-        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+          }
+                                          accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             *self.update_authority.key,
-            true,
-        ));
-        accounts.push(solana_program::instruction::AccountMeta::new(
+            true
+          ));
+                                          accounts.push(solana_program::instruction::AccountMeta::new(
             *self.mint_authority.key,
-            true,
-        ));
-        accounts.push(solana_program::instruction::AccountMeta::new(
+            true
+          ));
+                                          accounts.push(solana_program::instruction::AccountMeta::new(
             *self.payer.key,
-            true,
-        ));
-        accounts.push(solana_program::instruction::AccountMeta::new(
+            true
+          ));
+                                          accounts.push(solana_program::instruction::AccountMeta::new(
             *self.foo.key,
-            false,
-        ));
-        if let Some(bar) = self.bar {
+            false
+          ));
+                                          if let Some(bar) = self.bar {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                *bar.key, true,
+              *bar.key,
+              true,
             ));
-        } else {
+          } else {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_CANDY_MACHINE_CORE_ID,
-                false,
+              crate::MPL_CANDY_MACHINE_CORE_ID,
+              false,
             ));
-        }
-        if let Some(delegate) = self.delegate {
+          }
+                                          if let Some(delegate) = self.delegate {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                *delegate.key,
-                true,
+              *delegate.key,
+              true,
             ));
-        } else {
+          } else {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_CANDY_MACHINE_CORE_ID,
-                false,
+              crate::MPL_CANDY_MACHINE_CORE_ID,
+              false,
             ));
-        }
-        if let Some(delegate_record) = self.delegate_record {
+          }
+                                          if let Some(delegate_record) = self.delegate_record {
             accounts.push(solana_program::instruction::AccountMeta::new(
-                *delegate_record.key,
-                false,
+              *delegate_record.key,
+              false,
             ));
-        } else {
+          } else {
             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-                crate::MPL_CANDY_MACHINE_CORE_ID,
-                false,
+              crate::MPL_CANDY_MACHINE_CORE_ID,
+              false,
             ));
-        }
-        accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+          }
+                                          accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             *self.token_or_ata_program.key,
-            false,
-        ));
-        remaining_accounts.iter().for_each(|remaining_account| {
-            accounts.push(solana_program::instruction::AccountMeta {
-                pubkey: *remaining_account.0.key,
-                is_writable: remaining_account.1,
-                is_signer: remaining_account.2,
-            })
-        });
-        let data = borsh::to_vec(&(DummyInstructionData::new())).unwrap();
+            false
+          ));
+                      remaining_accounts.iter().for_each(|remaining_account| {
+      accounts.push(solana_program::instruction::AccountMeta {
+          pubkey: *remaining_account.0.key,
+          is_writable: remaining_account.1,
+          is_signer: remaining_account.2,
+      })
+    });
+    let data = borsh::to_vec(&(DummyInstructionData::new())).unwrap();
+    
+    let instruction = solana_program::instruction::Instruction {
+      program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
+      accounts,
+      data,
+    };
+    let mut account_infos = Vec::with_capacity(10 + 1 + remaining_accounts.len());
+    account_infos.push(self.__program.clone());
+                  account_infos.push(self.edition.clone());
+                        if let Some(mint) = self.mint {
+          account_infos.push(mint.clone());
+        }
+                        account_infos.push(self.update_authority.clone());
+                        account_infos.push(self.mint_authority.clone());
+                        account_infos.push(self.payer.clone());
+                        account_infos.push(self.foo.clone());
+                        if let Some(bar) = self.bar {
+          account_infos.push(bar.clone());
+        }
+                        if let Some(delegate) = self.delegate {
+          account_infos.push(delegate.clone());
+        }
+                        if let Some(delegate_record) = self.delegate_record {
+          account_infos.push(delegate_record.clone());
+        }
+                        account_infos.push(self.token_or_ata_program.clone());
+              remaining_accounts.iter().for_each(|remaining_account| account_infos.push(remaining_account.0.clone()));
 
-        let instruction = solana_program::instruction::Instruction {
-            program_id: crate::MPL_CANDY_MACHINE_CORE_ID,
-            accounts,
-            data,
-        };
-        let mut account_infos = Vec::with_capacity(10 + 1 + remaining_accounts.len());
-        account_infos.push(self.__program.clone());
-        account_infos.push(self.edition.clone());
-        if let Some(mint) = self.mint {
-            account_infos.push(mint.clone());
-        }
-        account_infos.push(self.update_authority.clone());
-        account_infos.push(self.mint_authority.clone());
-        account_infos.push(self.payer.clone());
-        account_infos.push(self.foo.clone());
-        if let Some(bar) = self.bar {
-            account_infos.push(bar.clone());
-        }
-        if let Some(delegate) = self.delegate {
-            account_infos.push(delegate.clone());
-        }
-        if let Some(delegate_record) = self.delegate_record {
-            account_infos.push(delegate_record.clone());
-        }
-        account_infos.push(self.token_or_ata_program.clone());
-        remaining_accounts
-            .iter()
-            .for_each(|remaining_account| account_infos.push(remaining_account.0.clone()));
-
-        if signers_seeds.is_empty() {
-            solana_program::program::invoke(&instruction, &account_infos)
-        } else {
-            solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
-        }
+    if signers_seeds.is_empty() {
+      solana_program::program::invoke(&instruction, &account_infos)
+    } else {
+      solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
     }
+  }
 }
 
 /// Instruction builder for `Dummy` via CPI.
 ///
 /// ### Accounts:
 ///
-///   0. `[writable, signer]` edition
-///   1. `[writable, optional]` mint
-///   2. `[signer]` update_authority
-///   3. `[writable, signer]` mint_authority
-///   4. `[writable, signer]` payer
-///   5. `[writable]` foo
-///   6. `[signer, optional]` bar
-///   7. `[signer, optional]` delegate
-///   8. `[writable, optional]` delegate_record
-///   9. `[]` token_or_ata_program
+                      ///   0. `[writable, signer]` edition
+                      ///   1. `[writable, optional]` mint
+                ///   2. `[signer]` update_authority
+                      ///   3. `[writable, signer]` mint_authority
+                      ///   4. `[writable, signer]` payer
+                ///   5. `[writable]` foo
+                      ///   6. `[signer, optional]` bar
+                      ///   7. `[signer, optional]` delegate
+                      ///   8. `[writable, optional]` delegate_record
+          ///   9. `[]` token_or_ata_program
 pub struct DummyCpiBuilder<'a, 'b> {
-    instruction: Box<DummyCpiBuilderInstruction<'a, 'b>>,
+  instruction: Box<DummyCpiBuilderInstruction<'a, 'b>>,
 }
 
 impl<'a, 'b> DummyCpiBuilder<'a, 'b> {
-    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
-        let instruction = Box::new(DummyCpiBuilderInstruction {
-            __program: program,
-            edition: None,
-            mint: None,
-            update_authority: None,
-            mint_authority: None,
-            payer: None,
-            foo: None,
-            bar: None,
-            delegate: None,
-            delegate_record: None,
-            token_or_ata_program: None,
-            __remaining_accounts: Vec::new(),
-        });
-        Self { instruction }
+  pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
+    let instruction = Box::new(DummyCpiBuilderInstruction {
+      __program: program,
+              edition: None,
+              mint: None,
+              update_authority: None,
+              mint_authority: None,
+              payer: None,
+              foo: None,
+              bar: None,
+              delegate: None,
+              delegate_record: None,
+              token_or_ata_program: None,
+                                __remaining_accounts: Vec::new(),
+    });
+    Self { instruction }
+  }
+      #[inline(always)]
+    pub fn edition(&mut self, edition: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.edition = Some(edition);
+                    self
     }
-    #[inline(always)]
-    pub fn edition(
-        &mut self,
-        edition: &'b solana_program::account_info::AccountInfo<'a>,
-    ) -> &mut Self {
-        self.instruction.edition = Some(edition);
-        self
+      /// `[optional account]`
+#[inline(always)]
+    pub fn mint(&mut self, mint: Option<&'b solana_program::account_info::AccountInfo<'a>>) -> &mut Self {
+                        self.instruction.mint = mint;
+                    self
     }
-    /// `[optional account]`
-    #[inline(always)]
-    pub fn mint(
-        &mut self,
-        mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-    ) -> &mut Self {
-        self.instruction.mint = mint;
-        self
+      #[inline(always)]
+    pub fn update_authority(&mut self, update_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.update_authority = Some(update_authority);
+                    self
     }
-    #[inline(always)]
-    pub fn update_authority(
-        &mut self,
-        update_authority: &'b solana_program::account_info::AccountInfo<'a>,
-    ) -> &mut Self {
-        self.instruction.update_authority = Some(update_authority);
-        self
+      #[inline(always)]
+    pub fn mint_authority(&mut self, mint_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.mint_authority = Some(mint_authority);
+                    self
     }
-    #[inline(always)]
-    pub fn mint_authority(
-        &mut self,
-        mint_authority: &'b solana_program::account_info::AccountInfo<'a>,
-    ) -> &mut Self {
-        self.instruction.mint_authority = Some(mint_authority);
-        self
-    }
-    #[inline(always)]
+      #[inline(always)]
     pub fn payer(&mut self, payer: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-        self.instruction.payer = Some(payer);
-        self
+                        self.instruction.payer = Some(payer);
+                    self
     }
-    #[inline(always)]
+      #[inline(always)]
     pub fn foo(&mut self, foo: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-        self.instruction.foo = Some(foo);
-        self
+                        self.instruction.foo = Some(foo);
+                    self
     }
-    /// `[optional account]`
-    #[inline(always)]
-    pub fn bar(
-        &mut self,
-        bar: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-    ) -> &mut Self {
-        self.instruction.bar = bar;
-        self
+      /// `[optional account]`
+#[inline(always)]
+    pub fn bar(&mut self, bar: Option<&'b solana_program::account_info::AccountInfo<'a>>) -> &mut Self {
+                        self.instruction.bar = bar;
+                    self
     }
-    /// `[optional account]`
-    #[inline(always)]
-    pub fn delegate(
-        &mut self,
-        delegate: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-    ) -> &mut Self {
-        self.instruction.delegate = delegate;
-        self
+      /// `[optional account]`
+#[inline(always)]
+    pub fn delegate(&mut self, delegate: Option<&'b solana_program::account_info::AccountInfo<'a>>) -> &mut Self {
+                        self.instruction.delegate = delegate;
+                    self
     }
-    /// `[optional account]`
-    #[inline(always)]
-    pub fn delegate_record(
-        &mut self,
-        delegate_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-    ) -> &mut Self {
-        self.instruction.delegate_record = delegate_record;
-        self
+      /// `[optional account]`
+#[inline(always)]
+    pub fn delegate_record(&mut self, delegate_record: Option<&'b solana_program::account_info::AccountInfo<'a>>) -> &mut Self {
+                        self.instruction.delegate_record = delegate_record;
+                    self
     }
-    #[inline(always)]
-    pub fn token_or_ata_program(
-        &mut self,
-        token_or_ata_program: &'b solana_program::account_info::AccountInfo<'a>,
-    ) -> &mut Self {
-        self.instruction.token_or_ata_program = Some(token_or_ata_program);
-        self
+      #[inline(always)]
+    pub fn token_or_ata_program(&mut self, token_or_ata_program: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.token_or_ata_program = Some(token_or_ata_program);
+                    self
     }
-    /// Add an additional account to the instruction.
-    #[inline(always)]
-    pub fn add_remaining_account(
-        &mut self,
-        account: &'b solana_program::account_info::AccountInfo<'a>,
-        is_writable: bool,
-        is_signer: bool,
-    ) -> &mut Self {
-        self.instruction
-            .__remaining_accounts
-            .push((account, is_writable, is_signer));
-        self
-    }
-    /// Add additional accounts to the instruction.
-    ///
-    /// Each account is represented by a tuple of the `AccountInfo`, a `bool` indicating whether the account is writable or not,
-    /// and a `bool` indicating whether the account is a signer or not.
-    #[inline(always)]
-    pub fn add_remaining_accounts(
-        &mut self,
-        accounts: &[(
-            &'b solana_program::account_info::AccountInfo<'a>,
-            bool,
-            bool,
-        )],
-    ) -> &mut Self {
-        self.instruction
-            .__remaining_accounts
-            .extend_from_slice(accounts);
-        self
-    }
-    #[inline(always)]
-    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-        self.invoke_signed(&[])
-    }
-    #[allow(clippy::clone_on_copy)]
-    #[allow(clippy::vec_init_then_push)]
-    pub fn invoke_signed(
-        &self,
-        signers_seeds: &[&[&[u8]]],
-    ) -> solana_program::entrypoint::ProgramResult {
+            /// Add an additional account to the instruction.
+  #[inline(always)]
+  pub fn add_remaining_account(&mut self, account: &'b solana_program::account_info::AccountInfo<'a>, is_writable: bool, is_signer: bool) -> &mut Self {
+    self.instruction.__remaining_accounts.push((account, is_writable, is_signer));
+    self
+  }
+  /// Add additional accounts to the instruction.
+  ///
+  /// Each account is represented by a tuple of the `AccountInfo`, a `bool` indicating whether the account is writable or not,
+  /// and a `bool` indicating whether the account is a signer or not.
+  #[inline(always)]
+  pub fn add_remaining_accounts(&mut self, accounts: &[(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)]) -> &mut Self {
+    self.instruction.__remaining_accounts.extend_from_slice(accounts);
+    self
+  }
+  #[inline(always)]
+  pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+    self.invoke_signed(&[])
+  }
+  #[allow(clippy::clone_on_copy)]
+  #[allow(clippy::vec_init_then_push)]
+  pub fn invoke_signed(&self, signers_seeds: &[&[&[u8]]]) -> solana_program::entrypoint::ProgramResult {
         let instruction = DummyCpi {
-            __program: self.instruction.__program,
-
-            edition: self.instruction.edition.expect("edition is not set"),
-
-            mint: self.instruction.mint,
-
-            update_authority: self
-                .instruction
-                .update_authority
-                .expect("update_authority is not set"),
-
-            mint_authority: self
-                .instruction
-                .mint_authority
-                .expect("mint_authority is not set"),
-
-            payer: self.instruction.payer.expect("payer is not set"),
-
-            foo: self.instruction.foo.expect("foo is not set"),
-
-            bar: self.instruction.bar,
-
-            delegate: self.instruction.delegate,
-
-            delegate_record: self.instruction.delegate_record,
-
-            token_or_ata_program: self
-                .instruction
-                .token_or_ata_program
-                .expect("token_or_ata_program is not set"),
-        };
-        instruction.invoke_signed_with_remaining_accounts(
-            signers_seeds,
-            &self.instruction.__remaining_accounts,
-        )
-    }
+        __program: self.instruction.__program,
+                  
+          edition: self.instruction.edition.expect("edition is not set"),
+                  
+          mint: self.instruction.mint,
+                  
+          update_authority: self.instruction.update_authority.expect("update_authority is not set"),
+                  
+          mint_authority: self.instruction.mint_authority.expect("mint_authority is not set"),
+                  
+          payer: self.instruction.payer.expect("payer is not set"),
+                  
+          foo: self.instruction.foo.expect("foo is not set"),
+                  
+          bar: self.instruction.bar,
+                  
+          delegate: self.instruction.delegate,
+                  
+          delegate_record: self.instruction.delegate_record,
+                  
+          token_or_ata_program: self.instruction.token_or_ata_program.expect("token_or_ata_program is not set"),
+                    };
+    instruction.invoke_signed_with_remaining_accounts(signers_seeds, &self.instruction.__remaining_accounts)
+  }
 }
 
 struct DummyCpiBuilderInstruction<'a, 'b> {
-    __program: &'b solana_program::account_info::AccountInfo<'a>,
-    edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-    mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-    update_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-    mint_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-    payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-    foo: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-    bar: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-    delegate: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-    delegate_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-    token_or_ata_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-    /// Additional instruction accounts `(AccountInfo, is_writable, is_signer)`.
-    __remaining_accounts: Vec<(
-        &'b solana_program::account_info::AccountInfo<'a>,
-        bool,
-        bool,
-    )>,
+  __program: &'b solana_program::account_info::AccountInfo<'a>,
+            edition: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                update_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                mint_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                foo: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                bar: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                delegate: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                delegate_record: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                token_or_ata_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                /// Additional instruction accounts `(AccountInfo, is_writable, is_signer)`.
+  __remaining_accounts: Vec<(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)>,
 }
+

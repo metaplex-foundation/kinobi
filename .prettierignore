@@ -1,1 +1,5 @@
 *.njk
+*.rs
+test/packages/rust/
+*.json
+*.yaml

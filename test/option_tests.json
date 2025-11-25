@@ -1,0 +1,67 @@
+{
+    "version": "0.1.0",
+    "name": "option_tests",
+    "instructions": [],
+    "accounts": [
+      {
+        "name": "AccountWithPoddedTypes",
+        "type": {
+          "kind": "struct",
+          "fields": [
+            {
+              "name": "regularOption",
+              "type": {
+                "option": "u32"
+              }
+            },
+            {
+              "name": "claimStartTime",
+              "type": {
+                "fixedSizeOption": {
+                  "inner": "i64",
+                  "sentinel": [255, 255, 255, 255, 255, 255, 255, 127]
+                }
+              }
+            },
+            {
+              "name": "optionalAmount",
+              "type": {
+                "fixedSizeOption": {
+                  "inner": "u64",
+                  "sentinel": [255, 255, 255, 255, 255, 255, 255, 255]
+                }
+              }
+            },
+            {
+              "name": "optionalPubkey",
+              "type": {
+                "fixedSizeOption": {
+                  "inner": "publicKey",
+                  "sentinel": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                }
+              }
+            },
+            {
+              "name": "counter",
+              "type": "u64"
+            },
+            {
+              "name": "manualOverride",
+              "type": {
+                "option": "i64"
+              },
+              "attrs": ["idl-type"]
+            }
+          ]
+        }
+      }
+    ],
+    "types": [],
+    "metadata": {
+    "origin": "shank",
+    "address": "OptionTests1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7",
+    "binaryVersion": "0.4.2",
+    "libVersion": "0.4.2"
+  }
+  }
+  

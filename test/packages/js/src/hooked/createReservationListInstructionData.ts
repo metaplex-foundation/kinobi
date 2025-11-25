@@ -22,7 +22,7 @@ export function getCreateReservationListInstructionDataSerializer(): Serializer<
       description: 'CreateReservationListInstructionData',
     }),
     (value) =>
-      ({ ...value, discriminator: 6 } as CreateReservationListInstructionData)
+      ({ ...value, discriminator: 6 }) as CreateReservationListInstructionData
   ) as Serializer<
     CreateReservationListInstructionDataArgs,
     CreateReservationListInstructionData

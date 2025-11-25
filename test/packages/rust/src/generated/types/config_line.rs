@@ -5,6 +5,7 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+
 #[cfg(feature = "anchor")]
 use anchor_lang::prelude::{AnchorDeserialize, AnchorSerialize};
 #[cfg(not(feature = "anchor"))]
@@ -16,8 +17,10 @@ use borsh::{BorshDeserialize, BorshSerialize};
 #[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ConfigLine {
-    /// Name of the asset.
-    pub name: String,
-    /// URI to JSON metadata.
-    pub uri: String,
+/// Name of the asset.
+pub name: String,
+/// URI to JSON metadata.
+pub uri: String,
 }
+
+
