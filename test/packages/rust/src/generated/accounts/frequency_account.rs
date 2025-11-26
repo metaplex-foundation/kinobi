@@ -8,8 +8,6 @@
 
 #[cfg(feature = "anchor")]
 use anchor_lang::prelude::{AnchorDeserialize, AnchorSerialize};
-#[cfg(feature = "anchor")]
-use borsh::{BorshDeserialize, BorshSerialize};
 #[cfg(not(feature = "anchor"))]
 use borsh::{BorshDeserialize, BorshSerialize};
 
