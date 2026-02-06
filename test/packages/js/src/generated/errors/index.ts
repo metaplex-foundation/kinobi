@@ -10,6 +10,7 @@ export * from './mplCandyMachineCore';
 export * from './mplTokenAuthRules';
 export * from './mplTokenMetadata';
 export * from './optionTests';
+export * from './paddingTests';
 export * from './pubkeyTests';
 export * from './splMemo';
 export * from './splSystem';

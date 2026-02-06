@@ -36,6 +36,7 @@
   pub(crate) mod r#dummy;
   pub(crate) mod r#freeze_delegated_account;
   pub(crate) mod r#initialize;
+  pub(crate) mod r#initialize_with_padding;
   pub(crate) mod r#migrate;
   pub(crate) mod r#mint;
   pub(crate) mod r#mint_from_candy_machine;
@@ -104,6 +105,7 @@
   pub use self::r#dummy::*;
   pub use self::r#freeze_delegated_account::*;
   pub use self::r#initialize::*;
+  pub use self::r#initialize_with_padding::*;
   pub use self::r#migrate::*;
   pub use self::r#mint::*;
   pub use self::r#mint_from_candy_machine::*;

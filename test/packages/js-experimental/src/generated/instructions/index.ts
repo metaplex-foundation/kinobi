@@ -37,6 +37,7 @@ export * from './deprecatedSetReservationList';
 export * from './dummy';
 export * from './freezeDelegatedAccount';
 export * from './initialize';
+export * from './initializeWithPadding';
 export * from './migrate';
 export * from './mint';
 export * from './mintFromCandyMachine';
