@@ -66,18 +66,40 @@ export function instructionArgumentNodeFromIdl(
   });
 }
 
+const SUPPORTED_PADDING_ELEMENTS = ['u8', 'bytes'];
+
 function createPaddingDefaultValue(idlType: IdlType): ValueNode {
   if (
-    typeof idlType === 'object' &&
-    'array' in idlType &&
-    Array.isArray(idlType.array)
+    typeof idlType !== 'object' ||
+    !('array' in idlType) ||
+    !Array.isArray(idlType.array) ||
+    idlType.array.length !== 2
   ) {
-    const size = idlType.array[1] as number;
-    return arrayValueNode(
-      Array.from({ length: size }, () => numberValueNode(0))
+    throw new Error(
+      `Unsupported padding type: ${JSON.stringify(idlType)}. ` +
+        `Padding fields must be fixed-size arrays (e.g. { "array": ["u8", 3] }).`
     );
   }
-  return numberValueNode(0);
+  const elementType = idlType.array[0];
+  if (
+    typeof elementType !== 'string' ||
+    !SUPPORTED_PADDING_ELEMENTS.includes(elementType)
+  ) {
+    throw new Error(
+      `Unsupported padding array element type: ${JSON.stringify(elementType)}. ` +
+        `Expected one of: ${SUPPORTED_PADDING_ELEMENTS.join(', ')}.`
+    );
+  }
+  const size = idlType.array[1] as number;
+  if (typeof size !== 'number' || !Number.isFinite(size) || !Number.isInteger(size) || size <= 0) {
+    throw new Error(
+      `Invalid padding array size: ${JSON.stringify(size)}. ` +
+        `Expected a finite positive integer.`
+    );
+  }
+  return arrayValueNode(
+    Array.from({ length: size }, () => numberValueNode(0))
+  );
 }
 
 export function structTypeNodeFromInstructionArgumentNodes(
