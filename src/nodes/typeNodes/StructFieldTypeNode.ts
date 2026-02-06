@@ -1,6 +1,6 @@
-import type { IdlTypeStructField } from '../../idl';
+import type { IdlType, IdlTypeStructField } from '../../idl';
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../../shared';
-import { ValueNode } from '../valueNodes';
+import { ValueNode, arrayValueNode, numberValueNode } from '../valueNodes';
 import { TypeNode, createTypeNodeFromIdl } from './TypeNode';
 
 export type StructFieldTypeNode = {
@@ -43,9 +43,30 @@ export function structFieldTypeNode(
 export function structFieldTypeNodeFromIdl(
   idl: IdlTypeStructField
 ): StructFieldTypeNode {
+  const isPadding = (idl.attrs ?? []).includes('padding');
   return structFieldTypeNode({
     name: idl.name ?? '',
     type: createTypeNodeFromIdl(idl.type),
     docs: idl.docs ?? [],
+    ...(isPadding
+      ? {
+          defaultValue: createPaddingDefaultValue(idl.type),
+          defaultValueStrategy: 'omitted' as const,
+        }
+      : {}),
   });
+}
+
+function createPaddingDefaultValue(idlType: IdlType): ValueNode {
+  if (
+    typeof idlType === 'object' &&
+    'array' in idlType &&
+    Array.isArray(idlType.array)
+  ) {
+    const size = idlType.array[1] as number;
+    return arrayValueNode(
+      Array.from({ length: size }, () => numberValueNode(0))
+    );
+  }
+  return numberValueNode(0);
 }

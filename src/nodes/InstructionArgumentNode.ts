@@ -1,4 +1,4 @@
-import { IdlInstructionArg } from '../idl';
+import { IdlInstructionArg, IdlType } from '../idl';
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
 import { isNode } from './Node';
 import { InstructionInputValueNode } from './contextualValueNodes';
@@ -8,7 +8,7 @@ import {
   structFieldTypeNode,
   structTypeNode,
 } from './typeNodes';
-import { VALUE_NODES } from './valueNodes';
+import { VALUE_NODES, ValueNode, arrayValueNode, numberValueNode } from './valueNodes';
 
 export type InstructionArgumentNode = {
   readonly kind: 'instructionArgumentNode';
@@ -52,11 +52,32 @@ export function instructionArgumentNode(
 export function instructionArgumentNodeFromIdl(
   idl: IdlInstructionArg
 ): InstructionArgumentNode {
+  const isPadding = (idl.attrs ?? []).includes('padding');
   return instructionArgumentNode({
     name: idl.name ?? '',
     type: createTypeNodeFromIdl(idl.type),
     docs: idl.docs ?? [],
+    ...(isPadding
+      ? {
+          defaultValue: createPaddingDefaultValue(idl.type),
+          defaultValueStrategy: 'omitted' as const,
+        }
+      : {}),
   });
+}
+
+function createPaddingDefaultValue(idlType: IdlType): ValueNode {
+  if (
+    typeof idlType === 'object' &&
+    'array' in idlType &&
+    Array.isArray(idlType.array)
+  ) {
+    const size = idlType.array[1] as number;
+    return arrayValueNode(
+      Array.from({ length: size }, () => numberValueNode(0))
+    );
+  }
+  return numberValueNode(0);
 }
 
 export function structTypeNodeFromInstructionArgumentNodes(
