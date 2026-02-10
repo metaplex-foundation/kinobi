@@ -71,6 +71,9 @@ export function getInitializeWithPaddingInstructionDataSerializer(): Serializer<
 export type InitializeWithPaddingInstructionArgs =
   InitializeWithPaddingInstructionDataArgs;
 
+// Instruction discriminator.
+export const initializeWithPaddingInstructionDiscriminator = 0;
+
 // Instruction.
 export function initializeWithPadding(
   context: Pick<Context, 'payer' | 'programs'>,

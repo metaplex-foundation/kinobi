@@ -376,10 +376,7 @@ export function getRenderMapVisitor(
           const resolvedNestedGpaFields = nestedGpaFields.map((nested) => {
             const processedFields = nested.fields.map((field) => {
               const fieldManifest = visit(field.type, typeManifestVisitor);
-              imports.mergeWith(
-                fieldManifest.looseImports,
-                fieldManifest.serializerImports
-              );
+              imports.mergeWith(fieldManifest.serializerImports);
               return {
                 name: field.name,
                 looseType: fieldManifest.looseType,

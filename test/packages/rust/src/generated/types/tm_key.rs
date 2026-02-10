@@ -5,29 +5,27 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use num_derive::FromPrimitive;
 #[cfg(feature = "anchor")]
 use anchor_lang::prelude::{AnchorDeserialize, AnchorSerialize};
 #[cfg(not(feature = "anchor"))]
 use borsh::{BorshDeserialize, BorshSerialize};
+use num_derive::FromPrimitive;
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
 #[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
 #[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Hash, FromPrimitive)]
 pub enum TmKey {
-Uninitialized,
-EditionV1,
-MasterEditionV1,
-ReservationListV1,
-MetadataV1,
-ReservationListV2,
-MasterEditionV2,
-EditionMarker,
-UseAuthorityRecord,
-CollectionAuthorityRecord,
-TokenOwnedEscrow,
-Delegate,
+    Uninitialized,
+    EditionV1,
+    MasterEditionV1,
+    ReservationListV1,
+    MetadataV1,
+    ReservationListV2,
+    MasterEditionV2,
+    EditionMarker,
+    UseAuthorityRecord,
+    CollectionAuthorityRecord,
+    TokenOwnedEscrow,
+    Delegate,
 }
-
-

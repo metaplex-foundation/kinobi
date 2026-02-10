@@ -5,11 +5,11 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use solana_program::pubkey::Pubkey;
 #[cfg(feature = "anchor")]
 use anchor_lang::prelude::{AnchorDeserialize, AnchorSerialize};
 #[cfg(not(feature = "anchor"))]
 use borsh::{BorshDeserialize, BorshSerialize};
+use solana_program::pubkey::Pubkey;
 
 /// This is a union of all the possible payload types.
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
@@ -17,16 +17,17 @@ use borsh::{BorshDeserialize, BorshSerialize};
 #[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum PayloadType {
-#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::DisplayFromStr>"))]
-Pubkey(Pubkey),
-Seeds {
-seeds: Vec<Vec<u8>>,
-},
-MerkleProof {
-leaf: [u8; 32],
-proof: Vec<[u8; 32]>,
-},
-Number(u64),
+    #[cfg_attr(
+        feature = "serde",
+        serde(with = "serde_with::As::<serde_with::DisplayFromStr>")
+    )]
+    Pubkey(Pubkey),
+    Seeds {
+        seeds: Vec<Vec<u8>>,
+    },
+    MerkleProof {
+        leaf: [u8; 32],
+        proof: Vec<[u8; 32]>,
+    },
+    Number(u64),
 }
-
-

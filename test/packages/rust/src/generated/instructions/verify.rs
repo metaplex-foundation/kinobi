@@ -13,99 +13,88 @@ use borsh::{BorshDeserialize, BorshSerialize};
 
 /// Accounts.
 pub struct Verify {
-            /// Metadata account
-
-    
-              
-          pub metadata: solana_program::pubkey::Pubkey,
-                /// Collection Update authority
-
-    
-              
-          pub collection_authority: solana_program::pubkey::Pubkey,
-                /// payer
-
-    
-              
-          pub payer: solana_program::pubkey::Pubkey,
-                /// Token Authorization Rules account
-
-    
-              
-          pub authorization_rules: Option<solana_program::pubkey::Pubkey>,
-                /// Token Authorization Rules Program
-
-    
-              
-          pub authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
-      }
+    /// Metadata account
+    pub metadata: solana_program::pubkey::Pubkey,
+    /// Collection Update authority
+    pub collection_authority: solana_program::pubkey::Pubkey,
+    /// payer
+    pub payer: solana_program::pubkey::Pubkey,
+    /// Token Authorization Rules account
+    pub authorization_rules: Option<solana_program::pubkey::Pubkey>,
+    /// Token Authorization Rules Program
+    pub authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
+}
 
 impl Verify {
-  pub fn instruction(&self, args: VerifyInstructionArgs) -> solana_program::instruction::Instruction {
-    self.instruction_with_remaining_accounts(args, &[])
-  }
-  #[allow(clippy::vec_init_then_push)]
-  pub fn instruction_with_remaining_accounts(&self, args: VerifyInstructionArgs, remaining_accounts: &[solana_program::instruction::AccountMeta]) -> solana_program::instruction::Instruction {
-    let mut accounts = Vec::with_capacity(5 + remaining_accounts.len());
-                            accounts.push(solana_program::instruction::AccountMeta::new(
+    pub fn instruction(
+        &self,
+        args: VerifyInstructionArgs,
+    ) -> solana_program::instruction::Instruction {
+        self.instruction_with_remaining_accounts(args, &[])
+    }
+    #[allow(clippy::vec_init_then_push)]
+    pub fn instruction_with_remaining_accounts(
+        &self,
+        args: VerifyInstructionArgs,
+        remaining_accounts: &[solana_program::instruction::AccountMeta],
+    ) -> solana_program::instruction::Instruction {
+        let mut accounts = Vec::with_capacity(5 + remaining_accounts.len());
+        accounts.push(solana_program::instruction::AccountMeta::new(
             self.metadata,
-            false
-          ));
-                                          accounts.push(solana_program::instruction::AccountMeta::new(
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
             self.collection_authority,
-            true
-          ));
-                                          accounts.push(solana_program::instruction::AccountMeta::new(
-            self.payer,
-            true
-          ));
-                                                      if let Some(authorization_rules) = self.authorization_rules {
-              accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.payer, true,
+        ));
+        if let Some(authorization_rules) = self.authorization_rules {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 authorization_rules,
                 false,
-              ));
-            } else {
-              accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 crate::MPL_TOKEN_METADATA_ID,
                 false,
-              ));
-            }
-                                                                if let Some(authorization_rules_program) = self.authorization_rules_program {
-              accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            ));
+        }
+        if let Some(authorization_rules_program) = self.authorization_rules_program {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 authorization_rules_program,
                 false,
-              ));
-            } else {
-              accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
                 crate::MPL_TOKEN_METADATA_ID,
                 false,
-              ));
-            }
-                                accounts.extend_from_slice(remaining_accounts);
-    let mut data = borsh::to_vec(&(VerifyInstructionData::new())).unwrap();
-          let mut args = borsh::to_vec(&args).unwrap();
-      data.append(&mut args);
-    
-    solana_program::instruction::Instruction {
-      program_id: crate::MPL_TOKEN_METADATA_ID,
-      accounts,
-      data,
+            ));
+        }
+        accounts.extend_from_slice(remaining_accounts);
+        let mut data = borsh::to_vec(&(VerifyInstructionData::new())).unwrap();
+        let mut args = borsh::to_vec(&args).unwrap();
+        data.append(&mut args);
+
+        solana_program::instruction::Instruction {
+            program_id: crate::MPL_TOKEN_METADATA_ID,
+            accounts,
+            data,
+        }
     }
-  }
 }
 
 #[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
 #[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
 pub struct VerifyInstructionData {
-            discriminator: u8,
-            }
+    discriminator: u8,
+}
 
 impl VerifyInstructionData {
-  pub fn new() -> Self {
-    Self {
-                        discriminator: 47,
-                                }
-  }
+    pub fn new() -> Self {
+        Self { discriminator: 47 }
+    }
 }
 
 #[cfg_attr(not(feature = "anchor"), derive(BorshSerialize, BorshDeserialize))]
@@ -113,385 +102,431 @@ impl VerifyInstructionData {
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct VerifyInstructionArgs {
-                  pub verify_args: VerifyArgs,
-      }
-
+    pub verify_args: VerifyArgs,
+}
 
 /// Instruction builder for `Verify`.
 ///
 /// ### Accounts:
 ///
-                ///   0. `[writable]` metadata
-                      ///   1. `[writable, signer]` collection_authority
-                      ///   2. `[writable, signer]` payer
-                ///   3. `[optional]` authorization_rules
-                ///   4. `[optional]` authorization_rules_program
+///   0. `[writable]` metadata
+///   1. `[writable, signer]` collection_authority
+///   2. `[writable, signer]` payer
+///   3. `[optional]` authorization_rules
+///   4. `[optional]` authorization_rules_program
 #[derive(Default)]
 pub struct VerifyBuilder {
-            metadata: Option<solana_program::pubkey::Pubkey>,
-                collection_authority: Option<solana_program::pubkey::Pubkey>,
-                payer: Option<solana_program::pubkey::Pubkey>,
-                authorization_rules: Option<solana_program::pubkey::Pubkey>,
-                authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
-                        verify_args: Option<VerifyArgs>,
-        __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
+    metadata: Option<solana_program::pubkey::Pubkey>,
+    collection_authority: Option<solana_program::pubkey::Pubkey>,
+    payer: Option<solana_program::pubkey::Pubkey>,
+    authorization_rules: Option<solana_program::pubkey::Pubkey>,
+    authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
+    verify_args: Option<VerifyArgs>,
+    __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
 }
 
 impl VerifyBuilder {
-  pub fn new() -> Self {
-    Self::default()
-  }
-            /// Metadata account
-#[inline(always)]
+    pub fn new() -> Self {
+        Self::default()
+    }
+    /// Metadata account
+    #[inline(always)]
     pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.metadata = Some(metadata);
-                    self
+        self.metadata = Some(metadata);
+        self
     }
-            /// Collection Update authority
-#[inline(always)]
-    pub fn collection_authority(&mut self, collection_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.collection_authority = Some(collection_authority);
-                    self
+    /// Collection Update authority
+    #[inline(always)]
+    pub fn collection_authority(
+        &mut self,
+        collection_authority: solana_program::pubkey::Pubkey,
+    ) -> &mut Self {
+        self.collection_authority = Some(collection_authority);
+        self
     }
-            /// payer
-#[inline(always)]
+    /// payer
+    #[inline(always)]
     pub fn payer(&mut self, payer: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.payer = Some(payer);
-                    self
+        self.payer = Some(payer);
+        self
     }
-            /// `[optional account]`
-/// Token Authorization Rules account
-#[inline(always)]
-    pub fn authorization_rules(&mut self, authorization_rules: Option<solana_program::pubkey::Pubkey>) -> &mut Self {
-                        self.authorization_rules = authorization_rules;
-                    self
+    /// `[optional account]`
+    /// Token Authorization Rules account
+    #[inline(always)]
+    pub fn authorization_rules(
+        &mut self,
+        authorization_rules: Option<solana_program::pubkey::Pubkey>,
+    ) -> &mut Self {
+        self.authorization_rules = authorization_rules;
+        self
     }
-            /// `[optional account]`
-/// Token Authorization Rules Program
-#[inline(always)]
-    pub fn authorization_rules_program(&mut self, authorization_rules_program: Option<solana_program::pubkey::Pubkey>) -> &mut Self {
-                        self.authorization_rules_program = authorization_rules_program;
-                    self
+    /// `[optional account]`
+    /// Token Authorization Rules Program
+    #[inline(always)]
+    pub fn authorization_rules_program(
+        &mut self,
+        authorization_rules_program: Option<solana_program::pubkey::Pubkey>,
+    ) -> &mut Self {
+        self.authorization_rules_program = authorization_rules_program;
+        self
     }
-                    #[inline(always)]
-      pub fn verify_args(&mut self, verify_args: VerifyArgs) -> &mut Self {
+    #[inline(always)]
+    pub fn verify_args(&mut self, verify_args: VerifyArgs) -> &mut Self {
         self.verify_args = Some(verify_args);
         self
-      }
-        /// Add an aditional account to the instruction.
-  #[inline(always)]
-  pub fn add_remaining_account(&mut self, account: solana_program::instruction::AccountMeta) -> &mut Self {
-    self.__remaining_accounts.push(account);
-    self
-  }
-  /// Add additional accounts to the instruction.
-  #[inline(always)]
-  pub fn add_remaining_accounts(&mut self, accounts: &[solana_program::instruction::AccountMeta]) -> &mut Self {
-    self.__remaining_accounts.extend_from_slice(accounts);
-    self
-  }
-  #[allow(clippy::clone_on_copy)]
-  pub fn instruction(&self) -> solana_program::instruction::Instruction {
-    let accounts = Verify {
-                              metadata: self.metadata.expect("metadata is not set"),
-                                        collection_authority: self.collection_authority.expect("collection_authority is not set"),
-                                        payer: self.payer.expect("payer is not set"),
-                                        authorization_rules: self.authorization_rules,
-                                        authorization_rules_program: self.authorization_rules_program,
-                      };
-          let args = VerifyInstructionArgs {
-                                                              verify_args: self.verify_args.clone().expect("verify_args is not set"),
-                                    };
-    
-    accounts.instruction_with_remaining_accounts(args, &self.__remaining_accounts)
-  }
+    }
+    /// Add an aditional account to the instruction.
+    #[inline(always)]
+    pub fn add_remaining_account(
+        &mut self,
+        account: solana_program::instruction::AccountMeta,
+    ) -> &mut Self {
+        self.__remaining_accounts.push(account);
+        self
+    }
+    /// Add additional accounts to the instruction.
+    #[inline(always)]
+    pub fn add_remaining_accounts(
+        &mut self,
+        accounts: &[solana_program::instruction::AccountMeta],
+    ) -> &mut Self {
+        self.__remaining_accounts.extend_from_slice(accounts);
+        self
+    }
+    #[allow(clippy::clone_on_copy)]
+    pub fn instruction(&self) -> solana_program::instruction::Instruction {
+        let accounts = Verify {
+            metadata: self.metadata.expect("metadata is not set"),
+            collection_authority: self
+                .collection_authority
+                .expect("collection_authority is not set"),
+            payer: self.payer.expect("payer is not set"),
+            authorization_rules: self.authorization_rules,
+            authorization_rules_program: self.authorization_rules_program,
+        };
+        let args = VerifyInstructionArgs {
+            verify_args: self.verify_args.clone().expect("verify_args is not set"),
+        };
+
+        accounts.instruction_with_remaining_accounts(args, &self.__remaining_accounts)
+    }
 }
 
-  /// `verify` CPI accounts.
-  pub struct VerifyCpiAccounts<'a, 'b> {
-                  /// Metadata account
-
-      
-                    
-              pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
-                        /// Collection Update authority
-
-      
-                    
-              pub collection_authority: &'b solana_program::account_info::AccountInfo<'a>,
-                        /// payer
-
-      
-                    
-              pub payer: &'b solana_program::account_info::AccountInfo<'a>,
-                        /// Token Authorization Rules account
-
-      
-                    
-              pub authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                        /// Token Authorization Rules Program
-
-      
-                    
-              pub authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-            }
+/// `verify` CPI accounts.
+pub struct VerifyCpiAccounts<'a, 'b> {
+    /// Metadata account
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
+    /// Collection Update authority
+    pub collection_authority: &'b solana_program::account_info::AccountInfo<'a>,
+    /// payer
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
+    /// Token Authorization Rules account
+    pub authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    /// Token Authorization Rules Program
+    pub authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+}
 
 /// `verify` CPI instruction.
 pub struct VerifyCpi<'a, 'b> {
-  /// The program to invoke.
-  pub __program: &'b solana_program::account_info::AccountInfo<'a>,
-            /// Metadata account
-
-    
-              
-          pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
-                /// Collection Update authority
-
-    
-              
-          pub collection_authority: &'b solana_program::account_info::AccountInfo<'a>,
-                /// payer
-
-    
-              
-          pub payer: &'b solana_program::account_info::AccountInfo<'a>,
-                /// Token Authorization Rules account
-
-    
-              
-          pub authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                /// Token Authorization Rules Program
-
-    
-              
-          pub authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-            /// The arguments for the instruction.
+    /// The program to invoke.
+    pub __program: &'b solana_program::account_info::AccountInfo<'a>,
+    /// Metadata account
+    pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
+    /// Collection Update authority
+    pub collection_authority: &'b solana_program::account_info::AccountInfo<'a>,
+    /// payer
+    pub payer: &'b solana_program::account_info::AccountInfo<'a>,
+    /// Token Authorization Rules account
+    pub authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    /// Token Authorization Rules Program
+    pub authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    /// The arguments for the instruction.
     pub __args: VerifyInstructionArgs,
-  }
+}
 
 impl<'a, 'b> VerifyCpi<'a, 'b> {
-  pub fn new(
-    program: &'b solana_program::account_info::AccountInfo<'a>,
-          accounts: VerifyCpiAccounts<'a, 'b>,
-              args: VerifyInstructionArgs,
-      ) -> Self {
-    Self {
-      __program: program,
-              metadata: accounts.metadata,
-              collection_authority: accounts.collection_authority,
-              payer: accounts.payer,
-              authorization_rules: accounts.authorization_rules,
-              authorization_rules_program: accounts.authorization_rules_program,
-                    __args: args,
-          }
-  }
-  #[inline(always)]
-  pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-    self.invoke_signed_with_remaining_accounts(&[], &[])
-  }
-  #[inline(always)]
-  pub fn invoke_with_remaining_accounts(&self, remaining_accounts: &[(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)]) -> solana_program::entrypoint::ProgramResult {
-    self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
-  }
-  #[inline(always)]
-  pub fn invoke_signed(&self, signers_seeds: &[&[&[u8]]]) -> solana_program::entrypoint::ProgramResult {
-    self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
-  }
-  #[allow(clippy::clone_on_copy)]
-  #[allow(clippy::vec_init_then_push)]
-  pub fn invoke_signed_with_remaining_accounts(
-    &self,
-    signers_seeds: &[&[&[u8]]],
-    remaining_accounts: &[(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)]
-  ) -> solana_program::entrypoint::ProgramResult {
-    let mut accounts = Vec::with_capacity(5 + remaining_accounts.len());
-                            accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.metadata.key,
-            false
-          ));
-                                          accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.collection_authority.key,
-            true
-          ));
-                                          accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.payer.key,
-            true
-          ));
-                                          if let Some(authorization_rules) = self.authorization_rules {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-              *authorization_rules.key,
-              false,
-            ));
-          } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-              crate::MPL_TOKEN_METADATA_ID,
-              false,
-            ));
-          }
-                                          if let Some(authorization_rules_program) = self.authorization_rules_program {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-              *authorization_rules_program.key,
-              false,
-            ));
-          } else {
-            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-              crate::MPL_TOKEN_METADATA_ID,
-              false,
-            ));
-          }
-                      remaining_accounts.iter().for_each(|remaining_account| {
-      accounts.push(solana_program::instruction::AccountMeta {
-          pubkey: *remaining_account.0.key,
-          is_writable: remaining_account.1,
-          is_signer: remaining_account.2,
-      })
-    });
-    let mut data = borsh::to_vec(&(VerifyInstructionData::new())).unwrap();
-          let mut args = borsh::to_vec(&self.__args).unwrap();
-      data.append(&mut args);
-    
-    let instruction = solana_program::instruction::Instruction {
-      program_id: crate::MPL_TOKEN_METADATA_ID,
-      accounts,
-      data,
-    };
-    let mut account_infos = Vec::with_capacity(5 + 1 + remaining_accounts.len());
-    account_infos.push(self.__program.clone());
-                  account_infos.push(self.metadata.clone());
-                        account_infos.push(self.collection_authority.clone());
-                        account_infos.push(self.payer.clone());
-                        if let Some(authorization_rules) = self.authorization_rules {
-          account_infos.push(authorization_rules.clone());
+    pub fn new(
+        program: &'b solana_program::account_info::AccountInfo<'a>,
+        accounts: VerifyCpiAccounts<'a, 'b>,
+        args: VerifyInstructionArgs,
+    ) -> Self {
+        Self {
+            __program: program,
+            metadata: accounts.metadata,
+            collection_authority: accounts.collection_authority,
+            payer: accounts.payer,
+            authorization_rules: accounts.authorization_rules,
+            authorization_rules_program: accounts.authorization_rules_program,
+            __args: args,
         }
-                        if let Some(authorization_rules_program) = self.authorization_rules_program {
-          account_infos.push(authorization_rules_program.clone());
-        }
-              remaining_accounts.iter().for_each(|remaining_account| account_infos.push(remaining_account.0.clone()));
-
-    if signers_seeds.is_empty() {
-      solana_program::program::invoke(&instruction, &account_infos)
-    } else {
-      solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
     }
-  }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], &[])
+    }
+    #[inline(always)]
+    pub fn invoke_with_remaining_accounts(
+        &self,
+        remaining_accounts: &[(
+            &'b solana_program::account_info::AccountInfo<'a>,
+            bool,
+            bool,
+        )],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(&[], remaining_accounts)
+    }
+    #[inline(always)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed_with_remaining_accounts(signers_seeds, &[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed_with_remaining_accounts(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+        remaining_accounts: &[(
+            &'b solana_program::account_info::AccountInfo<'a>,
+            bool,
+            bool,
+        )],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let mut accounts = Vec::with_capacity(5 + remaining_accounts.len());
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.metadata.key,
+            false,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.collection_authority.key,
+            true,
+        ));
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.payer.key,
+            true,
+        ));
+        if let Some(authorization_rules) = self.authorization_rules {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                *authorization_rules.key,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+        if let Some(authorization_rules_program) = self.authorization_rules_program {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                *authorization_rules_program.key,
+                false,
+            ));
+        } else {
+            accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+                crate::MPL_TOKEN_METADATA_ID,
+                false,
+            ));
+        }
+        remaining_accounts.iter().for_each(|remaining_account| {
+            accounts.push(solana_program::instruction::AccountMeta {
+                pubkey: *remaining_account.0.key,
+                is_writable: remaining_account.1,
+                is_signer: remaining_account.2,
+            })
+        });
+        let mut data = borsh::to_vec(&(VerifyInstructionData::new())).unwrap();
+        let mut args = borsh::to_vec(&self.__args).unwrap();
+        data.append(&mut args);
+
+        let instruction = solana_program::instruction::Instruction {
+            program_id: crate::MPL_TOKEN_METADATA_ID,
+            accounts,
+            data,
+        };
+        let mut account_infos = Vec::with_capacity(5 + 1 + remaining_accounts.len());
+        account_infos.push(self.__program.clone());
+        account_infos.push(self.metadata.clone());
+        account_infos.push(self.collection_authority.clone());
+        account_infos.push(self.payer.clone());
+        if let Some(authorization_rules) = self.authorization_rules {
+            account_infos.push(authorization_rules.clone());
+        }
+        if let Some(authorization_rules_program) = self.authorization_rules_program {
+            account_infos.push(authorization_rules_program.clone());
+        }
+        remaining_accounts
+            .iter()
+            .for_each(|remaining_account| account_infos.push(remaining_account.0.clone()));
+
+        if signers_seeds.is_empty() {
+            solana_program::program::invoke(&instruction, &account_infos)
+        } else {
+            solana_program::program::invoke_signed(&instruction, &account_infos, signers_seeds)
+        }
+    }
 }
 
 /// Instruction builder for `Verify` via CPI.
 ///
 /// ### Accounts:
 ///
-                ///   0. `[writable]` metadata
-                      ///   1. `[writable, signer]` collection_authority
-                      ///   2. `[writable, signer]` payer
-                ///   3. `[optional]` authorization_rules
-                ///   4. `[optional]` authorization_rules_program
+///   0. `[writable]` metadata
+///   1. `[writable, signer]` collection_authority
+///   2. `[writable, signer]` payer
+///   3. `[optional]` authorization_rules
+///   4. `[optional]` authorization_rules_program
 pub struct VerifyCpiBuilder<'a, 'b> {
-  instruction: Box<VerifyCpiBuilderInstruction<'a, 'b>>,
+    instruction: Box<VerifyCpiBuilderInstruction<'a, 'b>>,
 }
 
 impl<'a, 'b> VerifyCpiBuilder<'a, 'b> {
-  pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
-    let instruction = Box::new(VerifyCpiBuilderInstruction {
-      __program: program,
-              metadata: None,
-              collection_authority: None,
-              payer: None,
-              authorization_rules: None,
-              authorization_rules_program: None,
-                                            verify_args: None,
-                    __remaining_accounts: Vec::new(),
-    });
-    Self { instruction }
-  }
-      /// Metadata account
-#[inline(always)]
-    pub fn metadata(&mut self, metadata: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.metadata = Some(metadata);
-                    self
+    pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
+        let instruction = Box::new(VerifyCpiBuilderInstruction {
+            __program: program,
+            metadata: None,
+            collection_authority: None,
+            payer: None,
+            authorization_rules: None,
+            authorization_rules_program: None,
+            verify_args: None,
+            __remaining_accounts: Vec::new(),
+        });
+        Self { instruction }
     }
-      /// Collection Update authority
-#[inline(always)]
-    pub fn collection_authority(&mut self, collection_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.collection_authority = Some(collection_authority);
-                    self
+    /// Metadata account
+    #[inline(always)]
+    pub fn metadata(
+        &mut self,
+        metadata: &'b solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.metadata = Some(metadata);
+        self
     }
-      /// payer
-#[inline(always)]
+    /// Collection Update authority
+    #[inline(always)]
+    pub fn collection_authority(
+        &mut self,
+        collection_authority: &'b solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.collection_authority = Some(collection_authority);
+        self
+    }
+    /// payer
+    #[inline(always)]
     pub fn payer(&mut self, payer: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.payer = Some(payer);
-                    self
+        self.instruction.payer = Some(payer);
+        self
     }
-      /// `[optional account]`
-/// Token Authorization Rules account
-#[inline(always)]
-    pub fn authorization_rules(&mut self, authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>) -> &mut Self {
-                        self.instruction.authorization_rules = authorization_rules;
-                    self
+    /// `[optional account]`
+    /// Token Authorization Rules account
+    #[inline(always)]
+    pub fn authorization_rules(
+        &mut self,
+        authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    ) -> &mut Self {
+        self.instruction.authorization_rules = authorization_rules;
+        self
     }
-      /// `[optional account]`
-/// Token Authorization Rules Program
-#[inline(always)]
-    pub fn authorization_rules_program(&mut self, authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>) -> &mut Self {
-                        self.instruction.authorization_rules_program = authorization_rules_program;
-                    self
+    /// `[optional account]`
+    /// Token Authorization Rules Program
+    #[inline(always)]
+    pub fn authorization_rules_program(
+        &mut self,
+        authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    ) -> &mut Self {
+        self.instruction.authorization_rules_program = authorization_rules_program;
+        self
     }
-                    #[inline(always)]
-      pub fn verify_args(&mut self, verify_args: VerifyArgs) -> &mut Self {
+    #[inline(always)]
+    pub fn verify_args(&mut self, verify_args: VerifyArgs) -> &mut Self {
         self.instruction.verify_args = Some(verify_args);
         self
-      }
-        /// Add an additional account to the instruction.
-  #[inline(always)]
-  pub fn add_remaining_account(&mut self, account: &'b solana_program::account_info::AccountInfo<'a>, is_writable: bool, is_signer: bool) -> &mut Self {
-    self.instruction.__remaining_accounts.push((account, is_writable, is_signer));
-    self
-  }
-  /// Add additional accounts to the instruction.
-  ///
-  /// Each account is represented by a tuple of the `AccountInfo`, a `bool` indicating whether the account is writable or not,
-  /// and a `bool` indicating whether the account is a signer or not.
-  #[inline(always)]
-  pub fn add_remaining_accounts(&mut self, accounts: &[(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)]) -> &mut Self {
-    self.instruction.__remaining_accounts.extend_from_slice(accounts);
-    self
-  }
-  #[inline(always)]
-  pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
-    self.invoke_signed(&[])
-  }
-  #[allow(clippy::clone_on_copy)]
-  #[allow(clippy::vec_init_then_push)]
-  pub fn invoke_signed(&self, signers_seeds: &[&[&[u8]]]) -> solana_program::entrypoint::ProgramResult {
-          let args = VerifyInstructionArgs {
-                                                              verify_args: self.instruction.verify_args.clone().expect("verify_args is not set"),
-                                    };
+    }
+    /// Add an additional account to the instruction.
+    #[inline(always)]
+    pub fn add_remaining_account(
+        &mut self,
+        account: &'b solana_program::account_info::AccountInfo<'a>,
+        is_writable: bool,
+        is_signer: bool,
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .push((account, is_writable, is_signer));
+        self
+    }
+    /// Add additional accounts to the instruction.
+    ///
+    /// Each account is represented by a tuple of the `AccountInfo`, a `bool` indicating whether the account is writable or not,
+    /// and a `bool` indicating whether the account is a signer or not.
+    #[inline(always)]
+    pub fn add_remaining_accounts(
+        &mut self,
+        accounts: &[(
+            &'b solana_program::account_info::AccountInfo<'a>,
+            bool,
+            bool,
+        )],
+    ) -> &mut Self {
+        self.instruction
+            .__remaining_accounts
+            .extend_from_slice(accounts);
+        self
+    }
+    #[inline(always)]
+    pub fn invoke(&self) -> solana_program::entrypoint::ProgramResult {
+        self.invoke_signed(&[])
+    }
+    #[allow(clippy::clone_on_copy)]
+    #[allow(clippy::vec_init_then_push)]
+    pub fn invoke_signed(
+        &self,
+        signers_seeds: &[&[&[u8]]],
+    ) -> solana_program::entrypoint::ProgramResult {
+        let args = VerifyInstructionArgs {
+            verify_args: self
+                .instruction
+                .verify_args
+                .clone()
+                .expect("verify_args is not set"),
+        };
         let instruction = VerifyCpi {
-        __program: self.instruction.__program,
-                  
-          metadata: self.instruction.metadata.expect("metadata is not set"),
-                  
-          collection_authority: self.instruction.collection_authority.expect("collection_authority is not set"),
-                  
-          payer: self.instruction.payer.expect("payer is not set"),
-                  
-          authorization_rules: self.instruction.authorization_rules,
-                  
-          authorization_rules_program: self.instruction.authorization_rules_program,
-                          __args: args,
-            };
-    instruction.invoke_signed_with_remaining_accounts(signers_seeds, &self.instruction.__remaining_accounts)
-  }
+            __program: self.instruction.__program,
+
+            metadata: self.instruction.metadata.expect("metadata is not set"),
+
+            collection_authority: self
+                .instruction
+                .collection_authority
+                .expect("collection_authority is not set"),
+
+            payer: self.instruction.payer.expect("payer is not set"),
+
+            authorization_rules: self.instruction.authorization_rules,
+
+            authorization_rules_program: self.instruction.authorization_rules_program,
+            __args: args,
+        };
+        instruction.invoke_signed_with_remaining_accounts(
+            signers_seeds,
+            &self.instruction.__remaining_accounts,
+        )
+    }
 }
 
 struct VerifyCpiBuilderInstruction<'a, 'b> {
-  __program: &'b solana_program::account_info::AccountInfo<'a>,
-            metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                collection_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                        verify_args: Option<VerifyArgs>,
-        /// Additional instruction accounts `(AccountInfo, is_writable, is_signer)`.
-  __remaining_accounts: Vec<(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)>,
+    __program: &'b solana_program::account_info::AccountInfo<'a>,
+    metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    collection_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authorization_rules: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    authorization_rules_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+    verify_args: Option<VerifyArgs>,
+    /// Additional instruction accounts `(AccountInfo, is_writable, is_signer)`.
+    __remaining_accounts: Vec<(
+        &'b solana_program::account_info::AccountInfo<'a>,
+        bool,
+        bool,
+    )>,
 }
-

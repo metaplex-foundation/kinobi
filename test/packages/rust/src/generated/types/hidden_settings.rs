@@ -5,7 +5,6 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-
 #[cfg(feature = "anchor")]
 use anchor_lang::prelude::{AnchorDeserialize, AnchorSerialize};
 #[cfg(not(feature = "anchor"))]
@@ -17,13 +16,11 @@ use borsh::{BorshDeserialize, BorshSerialize};
 #[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct HiddenSettings {
-/// Asset prefix name
-pub name: String,
-/// Shared URI
-pub uri: String,
-/// Hash of the hidden settings file
-#[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::Bytes>"))]
-pub hash: [u8; 64],
+    /// Asset prefix name
+    pub name: String,
+    /// Shared URI
+    pub uri: String,
+    /// Hash of the hidden settings file
+    #[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::Bytes>"))]
+    pub hash: [u8; 64],
 }
-
-

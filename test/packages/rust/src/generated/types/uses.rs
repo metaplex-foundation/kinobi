@@ -16,9 +16,7 @@ use borsh::{BorshDeserialize, BorshSerialize};
 #[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Uses {
-pub use_method: UseMethod,
-pub remaining: u64,
-pub total: u64,
+    pub use_method: UseMethod,
+    pub remaining: u64,
+    pub total: u64,
 }
-
-

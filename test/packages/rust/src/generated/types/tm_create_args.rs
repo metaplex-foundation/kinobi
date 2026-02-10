@@ -16,15 +16,13 @@ use borsh::{BorshDeserialize, BorshSerialize};
 #[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum TmCreateArgs {
-V1 {
-asset_data: AssetData,
-decimals: Option<u8>,
-max_supply: Option<u64>,
-},
-V2 {
-asset_data: AssetData,
-max_supply: Option<u64>,
-},
+    V1 {
+        asset_data: AssetData,
+        decimals: Option<u8>,
+        max_supply: Option<u64>,
+    },
+    V2 {
+        asset_data: AssetData,
+        max_supply: Option<u64>,
+    },
 }
-
-

@@ -5,8 +5,8 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
-use crate::generated::types::Creator;
 use crate::generated::types::Collection;
+use crate::generated::types::Creator;
 use crate::generated::types::Uses;
 #[cfg(feature = "anchor")]
 use anchor_lang::prelude::{AnchorDeserialize, AnchorSerialize};
@@ -18,13 +18,11 @@ use borsh::{BorshDeserialize, BorshSerialize};
 #[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct DataV2 {
-pub name: String,
-pub symbol: String,
-pub uri: String,
-pub seller_fee_basis_points: u16,
-pub creators: Option<Vec<Creator>>,
-pub collection: Option<Collection>,
-pub uses: Option<Uses>,
+    pub name: String,
+    pub symbol: String,
+    pub uri: String,
+    pub seller_fee_basis_points: u16,
+    pub creators: Option<Vec<Creator>>,
+    pub collection: Option<Collection>,
+    pub uses: Option<Uses>,
 }
-
-

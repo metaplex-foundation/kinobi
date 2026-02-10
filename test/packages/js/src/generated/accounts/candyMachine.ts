@@ -17,14 +17,19 @@ import {
   assertAccountExists,
   deserializeAccount,
   gpaBuilder,
+  mapAmountSerializer,
   publicKey as toPublicKey,
 } from '@metaplex-foundation/umi';
 import {
   Serializer,
   array,
+  bool,
   mapSerializer,
+  option,
   publicKey as publicKeySerializer,
+  string,
   struct,
+  u16,
   u64,
   u8,
 } from '@metaplex-foundation/umi/serializers';
@@ -32,6 +37,9 @@ import {
   CandyMachineData,
   CandyMachineDataArgs,
   getCandyMachineDataSerializer,
+  getCmCreatorSerializer,
+  getConfigLineSettingsSerializer,
+  getHiddenSettingsSerializer,
 } from '../types';
 
 /** Candy machine state and config data. */
@@ -179,6 +187,16 @@ export function getCandyMachineGpaBuilder(
       itemsRedeemed: [112, u64()],
       data: [120, getCandyMachineDataSerializer()],
     })
+    .registerNestedFieldsFromStruct<CandyMachineDataArgs>('data', 120, [
+      ['itemsAvailable', u64()],
+      ['symbol', string()],
+      ['sellerFeeBasisPoints', mapAmountSerializer(u16(), '%', 2)],
+      ['maxSupply', u64()],
+      ['isMutable', bool()],
+      ['creators', array(getCmCreatorSerializer())],
+      ['configLineSettings', option(getConfigLineSettingsSerializer())],
+      ['hiddenSettings', option(getHiddenSettingsSerializer())],
+    ])
     .deserializeUsing<CandyMachine>((account) =>
       deserializeCandyMachine(account)
     )

@@ -16,10 +16,8 @@ use borsh::{BorshDeserialize, BorshSerialize};
 #[cfg_attr(feature = "anchor", derive(AnchorSerialize, AnchorDeserialize))]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum MintArgs {
-V1 {
-amount: u64,
-authorization_data: Option<AuthorizationData>,
-},
+    V1 {
+        amount: u64,
+        authorization_data: Option<AuthorizationData>,
+    },
 }
-
-
