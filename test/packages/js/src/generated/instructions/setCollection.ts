@@ -73,6 +73,11 @@ export function getSetCollectionInstructionDataSerializer(): Serializer<
   >;
 }
 
+// Instruction discriminator.
+export const setCollectionInstructionDiscriminator = [
+  192, 254, 206, 76, 168, 182, 59, 223,
+];
+
 // Instruction.
 export function setCollection(
   context: Pick<Context, 'identity' | 'payer' | 'programs'>,

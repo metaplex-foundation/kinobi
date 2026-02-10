@@ -86,6 +86,9 @@ export function getCreateMetadataAccountV2InstructionDataSerializer(): Serialize
 export type CreateMetadataAccountV2InstructionArgs =
   CreateMetadataAccountV2InstructionDataArgs;
 
+// Instruction discriminator.
+export const createMetadataAccountV2InstructionDiscriminator = 16;
+
 // Instruction.
 export function createMetadataAccountV2(
   context: Pick<Context, 'payer' | 'programs'>,

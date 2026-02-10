@@ -95,6 +95,9 @@ export function getTransferOutOfEscrowInstructionDataSerializer(): Serializer<
 export type TransferOutOfEscrowInstructionArgs =
   TransferOutOfEscrowInstructionDataArgs;
 
+// Instruction discriminator.
+export const transferOutOfEscrowInstructionDiscriminator = 40;
+
 // Instruction.
 export function transferOutOfEscrow(
   context: Pick<Context, 'payer' | 'programs'>,

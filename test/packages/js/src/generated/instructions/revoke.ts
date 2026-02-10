@@ -85,6 +85,9 @@ export function getRevokeInstructionDataSerializer(): Serializer<
 // Args.
 export type RevokeInstructionArgs = RevokeInstructionDataArgs;
 
+// Instruction discriminator.
+export const revokeInstructionDiscriminator = 49;
+
 // Instruction.
 export function revoke(
   context: Pick<Context, 'identity' | 'payer' | 'programs'>,

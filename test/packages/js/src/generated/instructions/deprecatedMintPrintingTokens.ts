@@ -90,6 +90,9 @@ export function getDeprecatedMintPrintingTokensInstructionDataSerializer(): Seri
 export type DeprecatedMintPrintingTokensInstructionArgs =
   DeprecatedMintPrintingTokensInstructionDataArgs;
 
+// Instruction discriminator.
+export const deprecatedMintPrintingTokensInstructionDiscriminator = 9;
+
 // Instruction.
 export function deprecatedMintPrintingTokens(
   context: Pick<Context, 'programs'>,

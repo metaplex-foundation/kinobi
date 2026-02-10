@@ -62,6 +62,9 @@ export function getSetTokenStandardInstructionDataSerializer(): Serializer<
   >;
 }
 
+// Instruction discriminator.
+export const setTokenStandardInstructionDiscriminator = 35;
+
 // Instruction.
 export function setTokenStandard(
   context: Pick<Context, 'programs'>,

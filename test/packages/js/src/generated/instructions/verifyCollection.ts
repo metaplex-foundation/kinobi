@@ -66,6 +66,9 @@ export function getVerifyCollectionInstructionDataSerializer(): Serializer<
   >;
 }
 
+// Instruction discriminator.
+export const verifyCollectionInstructionDiscriminator = 18;
+
 // Instruction.
 export function verifyCollection(
   context: Pick<Context, 'payer' | 'programs'>,

@@ -55,6 +55,9 @@ export function getSignMetadataInstructionDataSerializer(): Serializer<
   ) as Serializer<SignMetadataInstructionDataArgs, SignMetadataInstructionData>;
 }
 
+// Instruction discriminator.
+export const signMetadataInstructionDiscriminator = 7;
+
 // Instruction.
 export function signMetadata(
   context: Pick<Context, 'programs'>,

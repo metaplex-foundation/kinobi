@@ -78,6 +78,11 @@ export function getMintFromCandyMachineInstructionDataSerializer(): Serializer<
   >;
 }
 
+// Instruction discriminator.
+export const mintFromCandyMachineInstructionDiscriminator = [
+  51, 57, 225, 47, 182, 146, 137, 166,
+];
+
 // Instruction.
 export function mintFromCandyMachine(
   context: Pick<Context, 'identity' | 'payer' | 'programs'>,

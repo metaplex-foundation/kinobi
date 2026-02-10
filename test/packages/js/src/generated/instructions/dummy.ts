@@ -80,6 +80,11 @@ export type DummyInstructionArgs = PickPartial<
   'identityArg' | 'proof'
 >;
 
+// Instruction discriminator.
+export const dummyInstructionDiscriminator = [
+  167, 117, 211, 79, 251, 254, 47, 135,
+];
+
 // Instruction.
 export function dummy(
   context: Pick<Context, 'eddsa' | 'identity' | 'payer' | 'programs'>,

@@ -64,6 +64,9 @@ export function getFreezeDelegatedAccountInstructionDataSerializer(): Serializer
   >;
 }
 
+// Instruction discriminator.
+export const freezeDelegatedAccountInstructionDiscriminator = 26;
+
 // Instruction.
 export function freezeDelegatedAccount(
   context: Pick<Context, 'programs'>,

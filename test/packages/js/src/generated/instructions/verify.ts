@@ -68,6 +68,9 @@ export function getVerifyInstructionDataSerializer(): Serializer<
 // Args.
 export type VerifyInstructionArgs = VerifyInstructionDataArgs;
 
+// Instruction discriminator.
+export const verifyInstructionDiscriminator = 47;
+
 // Instruction.
 export function verify(
   context: Pick<Context, 'payer' | 'programs'>,

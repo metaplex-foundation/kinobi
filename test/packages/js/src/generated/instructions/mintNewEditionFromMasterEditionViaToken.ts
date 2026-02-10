@@ -103,6 +103,9 @@ export function getMintNewEditionFromMasterEditionViaTokenInstructionDataSeriali
 export type MintNewEditionFromMasterEditionViaTokenInstructionArgs =
   MintNewEditionFromMasterEditionViaTokenInstructionDataArgs;
 
+// Instruction discriminator.
+export const mintNewEditionFromMasterEditionViaTokenInstructionDiscriminator = 11;
+
 // Instruction.
 export function mintNewEditionFromMasterEditionViaToken(
   context: Pick<Context, 'payer' | 'programs'>,

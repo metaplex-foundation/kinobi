@@ -66,6 +66,9 @@ export function getUnverifyCollectionInstructionDataSerializer(): Serializer<
   >;
 }
 
+// Instruction discriminator.
+export const unverifyCollectionInstructionDiscriminator = 22;
+
 // Instruction.
 export function unverifyCollection(
   context: Pick<Context, 'programs'>,

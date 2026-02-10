@@ -64,6 +64,9 @@ export function getThawDelegatedAccountInstructionDataSerializer(): Serializer<
   >;
 }
 
+// Instruction discriminator.
+export const thawDelegatedAccountInstructionDiscriminator = 27;
+
 // Instruction.
 export function thawDelegatedAccount(
   context: Pick<Context, 'programs'>,

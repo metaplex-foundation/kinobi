@@ -93,6 +93,9 @@ export function getDelegateInstructionDataSerializer(): Serializer<
 // Args.
 export type DelegateInstructionArgs = DelegateInstructionDataArgs;
 
+// Instruction discriminator.
+export const delegateInstructionDiscriminator = 48;
+
 // Instruction.
 export function delegate(
   context: Pick<Context, 'identity' | 'payer' | 'programs'>,

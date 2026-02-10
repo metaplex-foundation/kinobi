@@ -75,6 +75,9 @@ export function getCreateAccountInstructionDataSerializer(): Serializer<
 // Args.
 export type CreateAccountInstructionArgs = CreateAccountInstructionDataArgs;
 
+// Instruction discriminator.
+export const createAccountInstructionDiscriminator = 0;
+
 // Instruction.
 export function createAccount(
   context: Pick<Context, 'payer' | 'programs'>,

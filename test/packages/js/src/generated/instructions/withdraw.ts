@@ -58,6 +58,11 @@ export function getWithdrawInstructionDataSerializer(): Serializer<
   ) as Serializer<WithdrawInstructionDataArgs, WithdrawInstructionData>;
 }
 
+// Instruction discriminator.
+export const withdrawInstructionDiscriminator = [
+  183, 18, 70, 156, 148, 109, 161, 34,
+];
+
 // Instruction.
 export function withdraw(
   context: Pick<Context, 'identity' | 'programs'>,

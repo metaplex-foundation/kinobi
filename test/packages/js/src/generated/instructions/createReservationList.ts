@@ -49,6 +49,9 @@ export type CreateReservationListInstructionAccounts = {
 export type CreateReservationListInstructionArgs =
   CreateReservationListInstructionDataArgs;
 
+// Instruction discriminator.
+export const createReservationListInstructionDiscriminator = 6;
+
 // Instruction.
 export function createReservationList(
   context: Pick<Context, 'payer' | 'programs'>,

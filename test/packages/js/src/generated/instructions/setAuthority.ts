@@ -68,6 +68,11 @@ export function getSetAuthorityInstructionDataSerializer(): Serializer<
 // Args.
 export type SetAuthorityInstructionArgs = SetAuthorityInstructionDataArgs;
 
+// Instruction discriminator.
+export const setAuthorityInstructionDiscriminator = [
+  133, 250, 37, 21, 110, 163, 26, 121,
+];
+
 // Instruction.
 export function setAuthority(
   context: Pick<Context, 'identity' | 'programs'>,

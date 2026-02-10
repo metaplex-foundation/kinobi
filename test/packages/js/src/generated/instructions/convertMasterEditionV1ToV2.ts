@@ -62,6 +62,9 @@ export function getConvertMasterEditionV1ToV2InstructionDataSerializer(): Serial
   >;
 }
 
+// Instruction discriminator.
+export const convertMasterEditionV1ToV2InstructionDiscriminator = 12;
+
 // Instruction.
 export function convertMasterEditionV1ToV2(
   context: Pick<Context, 'programs'>,

@@ -80,6 +80,9 @@ export function getSetCollectionSizeInstructionDataSerializer(): Serializer<
 export type SetCollectionSizeInstructionArgs =
   SetCollectionSizeInstructionDataArgs;
 
+// Instruction discriminator.
+export const setCollectionSizeInstructionDiscriminator = 34;
+
 // Instruction.
 export function setCollectionSize(
   context: Pick<Context, 'programs'>,

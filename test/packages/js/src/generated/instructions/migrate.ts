@@ -83,6 +83,9 @@ export function getMigrateInstructionDataSerializer(): Serializer<
 // Args.
 export type MigrateInstructionArgs = MigrateInstructionDataArgs;
 
+// Instruction discriminator.
+export const migrateInstructionDiscriminator = 50;
+
 // Instruction.
 export function migrate(
   context: Pick<Context, 'programs'>,

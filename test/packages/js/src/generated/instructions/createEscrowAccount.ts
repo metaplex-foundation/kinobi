@@ -73,6 +73,9 @@ export function getCreateEscrowAccountInstructionDataSerializer(): Serializer<
   >;
 }
 
+// Instruction discriminator.
+export const createEscrowAccountInstructionDiscriminator = 38;
+
 // Instruction.
 export function createEscrowAccount(
   context: Pick<Context, 'payer' | 'programs'>,

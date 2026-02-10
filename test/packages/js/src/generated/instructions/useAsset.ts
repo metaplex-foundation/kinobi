@@ -88,6 +88,9 @@ export function getUseAssetInstructionDataSerializer(): Serializer<
 // Args.
 export type UseAssetInstructionArgs = UseAssetInstructionDataArgs;
 
+// Instruction discriminator.
+export const useAssetInstructionDiscriminator = 45;
+
 // Instruction.
 export function useAsset(
   context: Pick<Context, 'programs'>,

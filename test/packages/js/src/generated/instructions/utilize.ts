@@ -81,6 +81,9 @@ export function getUtilizeInstructionDataSerializer(): Serializer<
 // Args.
 export type UtilizeInstructionArgs = UtilizeInstructionDataArgs;
 
+// Instruction discriminator.
+export const utilizeInstructionDiscriminator = 19;
+
 // Instruction.
 export function utilize(
   context: Pick<Context, 'programs'>,

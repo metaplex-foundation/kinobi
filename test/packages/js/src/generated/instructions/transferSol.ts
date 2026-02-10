@@ -64,6 +64,9 @@ export function getTransferSolInstructionDataSerializer(): Serializer<
 // Args.
 export type TransferSolInstructionArgs = TransferSolInstructionDataArgs;
 
+// Instruction discriminator.
+export const transferSolInstructionDiscriminator = 2;
+
 // Instruction.
 export function transferSol(
   context: Pick<Context, 'programs'>,

@@ -73,6 +73,9 @@ export function getSetAndVerifySizedCollectionItemInstructionDataSerializer(): S
   >;
 }
 
+// Instruction discriminator.
+export const setAndVerifySizedCollectionItemInstructionDiscriminator = 32;
+
 // Instruction.
 export function setAndVerifySizedCollectionItem(
   context: Pick<Context, 'payer' | 'programs'>,

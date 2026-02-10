@@ -74,6 +74,9 @@ export function getBurnEditionNftInstructionDataSerializer(): Serializer<
   >;
 }
 
+// Instruction discriminator.
+export const burnEditionNftInstructionDiscriminator = 37;
+
 // Instruction.
 export function burnEditionNft(
   context: Pick<Context, 'programs'>,

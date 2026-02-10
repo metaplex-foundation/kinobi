@@ -85,6 +85,9 @@ export type CreateRuleSetInstructionArgs = PickPartial<
   'ruleSetBump'
 >;
 
+// Instruction discriminator.
+export const createRuleSetInstructionDiscriminator = 0;
+
 // Instruction.
 export function createRuleSet(
   context: Pick<Context, 'payer' | 'programs'>,
