@@ -19,6 +19,7 @@ import {
 import {
   camelCase,
   getGpaFieldsFromAccount,
+  getNestedGpaFieldsFromAccount,
   ImportFrom,
   LinkableDictionary,
   logWarn,
@@ -341,19 +342,15 @@ export function getRenderMapVisitor(
           }
 
           // GPA Fields.
-          const gpaFields = getGpaFieldsFromAccount(node, byteSizeVisitor).map(
-            (gpaField) => {
-              const gpaFieldManifest = visit(
-                gpaField.type,
-                typeManifestVisitor
-              );
-              imports.mergeWith(
-                gpaFieldManifest.looseImports,
-                gpaFieldManifest.serializerImports
-              );
-              return { ...gpaField, manifest: gpaFieldManifest };
-            }
-          );
+          const rawGpaFields = getGpaFieldsFromAccount(node, byteSizeVisitor);
+          const gpaFields = rawGpaFields.map((gpaField) => {
+            const gpaFieldManifest = visit(gpaField.type, typeManifestVisitor);
+            imports.mergeWith(
+              gpaFieldManifest.looseImports,
+              gpaFieldManifest.serializerImports
+            );
+            return { ...gpaField, manifest: gpaFieldManifest };
+          });
           let resolvedGpaFields: { type: string; argument: string } | null =
             null;
           if (gpaFields.length > 0) {
@@ -370,6 +367,36 @@ export function getRenderMapVisitor(
                 .join(', ')} }`,
             };
           }
+
+          // Nested GPA Fields for registerNestedFieldsFromStruct.
+          const nestedGpaFields = getNestedGpaFieldsFromAccount(
+            rawGpaFields,
+            linkables
+          );
+          const resolvedNestedGpaFields = nestedGpaFields.map((nested) => {
+            const processedFields = nested.fields.map((field) => {
+              const fieldManifest = visit(field.type, typeManifestVisitor);
+              imports.mergeWith(
+                fieldManifest.looseImports,
+                fieldManifest.serializerImports
+              );
+              return {
+                name: field.name,
+                looseType: fieldManifest.looseType,
+                serializer: fieldManifest.serializer,
+              };
+            });
+
+            return {
+              parentFieldName: nested.parentFieldName,
+              parentOffset:
+                nested.parentOffset === null ? 'null' : `${nested.parentOffset}`,
+              structTypeName: pascalCase(nested.structTypeName),
+              fieldsArgument: `[${processedFields
+                .map((f) => `['${f.name}', ${f.serializer}]`)
+                .join(', ')}]`,
+            };
+          });
 
           // Seeds.
           const pda = node.pda ? linkables.get(node.pda) : undefined;
@@ -412,6 +439,7 @@ export function getRenderMapVisitor(
               typeManifest,
               discriminator: resolvedDiscriminator,
               gpaFields: resolvedGpaFields,
+              nestedGpaFields: resolvedNestedGpaFields,
               seeds,
               hasVariableSeeds,
               customData,
