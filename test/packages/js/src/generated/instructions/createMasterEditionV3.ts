@@ -92,6 +92,9 @@ export function getCreateMasterEditionV3InstructionDataSerializer(): Serializer<
 export type CreateMasterEditionV3InstructionArgs =
   CreateMasterEditionV3InstructionDataArgs;
 
+// Instruction discriminator.
+export const createMasterEditionV3InstructionDiscriminator = 17;
+
 // Instruction.
 export function createMasterEditionV3(
   context: Pick<Context, 'payer' | 'programs'>,

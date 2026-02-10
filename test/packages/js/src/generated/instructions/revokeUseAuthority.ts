@@ -72,6 +72,9 @@ export function getRevokeUseAuthorityInstructionDataSerializer(): Serializer<
   >;
 }
 
+// Instruction discriminator.
+export const revokeUseAuthorityInstructionDiscriminator = 21;
+
 // Instruction.
 export function revokeUseAuthority(
   context: Pick<Context, 'programs'>,

@@ -63,6 +63,9 @@ export function getUpdatePrimarySaleHappenedViaTokenInstructionDataSerializer():
   >;
 }
 
+// Instruction discriminator.
+export const updatePrimarySaleHappenedViaTokenInstructionDiscriminator = 4;
+
 // Instruction.
 export function updatePrimarySaleHappenedViaToken(
   context: Pick<Context, 'programs'>,

@@ -109,6 +109,9 @@ export type TransferInstructionArgs = PickPartial<
   'tokenStandard'
 >;
 
+// Instruction discriminator.
+export const transferInstructionDiscriminator = 46;
+
 // Instruction.
 export function transfer(
   context: Pick<Context, 'eddsa' | 'identity' | 'payer' | 'programs'>,

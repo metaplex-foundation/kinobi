@@ -94,6 +94,9 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
   >;
 }
 
+// Instruction discriminator.
+export const deprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDiscriminator = 3;
+
 // Instruction.
 export function deprecatedMintNewEditionFromMasterEditionViaPrintingToken(
   context: Pick<Context, 'payer' | 'programs'>,

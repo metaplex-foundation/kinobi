@@ -112,6 +112,9 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataSe
 export type MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs =
   MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs;
 
+// Instruction discriminator.
+export const mintNewEditionFromMasterEditionViaVaultProxyInstructionDiscriminator = 13;
+
 // Instruction.
 export function mintNewEditionFromMasterEditionViaVaultProxy(
   context: Pick<Context, 'payer' | 'programs'>,

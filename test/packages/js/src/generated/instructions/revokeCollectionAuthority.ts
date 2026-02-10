@@ -67,6 +67,9 @@ export function getRevokeCollectionAuthorityInstructionDataSerializer(): Seriali
   >;
 }
 
+// Instruction discriminator.
+export const revokeCollectionAuthorityInstructionDiscriminator = 24;
+
 // Instruction.
 export function revokeCollectionAuthority(
   context: Pick<Context, 'programs'>,

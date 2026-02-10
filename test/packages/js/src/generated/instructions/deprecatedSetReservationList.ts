@@ -92,6 +92,9 @@ export function getDeprecatedSetReservationListInstructionDataSerializer(): Seri
 export type DeprecatedSetReservationListInstructionArgs =
   DeprecatedSetReservationListInstructionDataArgs;
 
+// Instruction discriminator.
+export const deprecatedSetReservationListInstructionDiscriminator = 5;
+
 // Instruction.
 export function deprecatedSetReservationList(
   context: Pick<Context, 'programs'>,

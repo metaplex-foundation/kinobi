@@ -52,6 +52,9 @@ export function getPuffMetadataInstructionDataSerializer(): Serializer<
   ) as Serializer<PuffMetadataInstructionDataArgs, PuffMetadataInstructionData>;
 }
 
+// Instruction discriminator.
+export const puffMetadataInstructionDiscriminator = 14;
+
 // Instruction.
 export function puffMetadata(
   context: Pick<Context, 'programs'>,

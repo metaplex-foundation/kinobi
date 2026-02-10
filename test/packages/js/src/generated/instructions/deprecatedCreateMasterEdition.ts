@@ -99,6 +99,9 @@ export function getDeprecatedCreateMasterEditionInstructionDataSerializer(): Ser
 export type DeprecatedCreateMasterEditionInstructionArgs =
   DeprecatedCreateMasterEditionInstructionDataArgs;
 
+// Instruction discriminator.
+export const deprecatedCreateMasterEditionInstructionDiscriminator = 2;
+
 // Instruction.
 export function deprecatedCreateMasterEdition(
   context: Pick<Context, 'payer' | 'programs'>,

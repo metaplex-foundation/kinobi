@@ -83,6 +83,11 @@ export function getAddConfigLinesInstructionDataSerializer(): Serializer<
 // Args.
 export type AddConfigLinesInstructionArgs = AddConfigLinesInstructionDataArgs;
 
+// Instruction discriminator.
+export const addConfigLinesInstructionDiscriminator = [
+  223, 50, 224, 227, 151, 8, 115, 106,
+];
+
 // Instruction.
 export function addConfigLines(
   context: Pick<Context, 'identity' | 'programs'>,

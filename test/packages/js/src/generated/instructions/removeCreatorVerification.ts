@@ -61,6 +61,9 @@ export function getRemoveCreatorVerificationInstructionDataSerializer(): Seriali
   >;
 }
 
+// Instruction discriminator.
+export const removeCreatorVerificationInstructionDiscriminator = 28;
+
 // Instruction.
 export function removeCreatorVerification(
   context: Pick<Context, 'programs'>,

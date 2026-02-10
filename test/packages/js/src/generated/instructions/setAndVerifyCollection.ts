@@ -70,6 +70,9 @@ export function getSetAndVerifyCollectionInstructionDataSerializer(): Serializer
   >;
 }
 
+// Instruction discriminator.
+export const setAndVerifyCollectionInstructionDiscriminator = 25;
+
 // Instruction.
 export function setAndVerifyCollection(
   context: Pick<Context, 'payer' | 'programs'>,

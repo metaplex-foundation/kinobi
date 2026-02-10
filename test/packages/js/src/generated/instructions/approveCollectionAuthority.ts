@@ -73,6 +73,9 @@ export function getApproveCollectionAuthorityInstructionDataSerializer(): Serial
   >;
 }
 
+// Instruction discriminator.
+export const approveCollectionAuthorityInstructionDiscriminator = 23;
+
 // Instruction.
 export function approveCollectionAuthority(
   context: Pick<Context, 'payer' | 'programs'>,

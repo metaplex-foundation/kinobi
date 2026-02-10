@@ -71,6 +71,9 @@ export function getUnverifySizedCollectionItemInstructionDataSerializer(): Seria
   >;
 }
 
+// Instruction discriminator.
+export const unverifySizedCollectionItemInstructionDiscriminator = 31;
+
 // Instruction.
 export function unverifySizedCollectionItem(
   context: Pick<Context, 'payer' | 'programs'>,

@@ -94,6 +94,9 @@ export function getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer
 export type DeprecatedMintPrintingTokensViaTokenInstructionArgs =
   DeprecatedMintPrintingTokensViaTokenInstructionDataArgs;
 
+// Instruction discriminator.
+export const deprecatedMintPrintingTokensViaTokenInstructionDiscriminator = 8;
+
 // Instruction.
 export function deprecatedMintPrintingTokensViaToken(
   context: Pick<Context, 'programs'>,

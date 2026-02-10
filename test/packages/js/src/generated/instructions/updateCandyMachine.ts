@@ -78,6 +78,11 @@ export function getUpdateCandyMachineInstructionDataSerializer(): Serializer<
 export type UpdateCandyMachineInstructionArgs =
   UpdateCandyMachineInstructionDataArgs;
 
+// Instruction discriminator.
+export const updateCandyMachineInstructionDiscriminator = [
+  219, 200, 88, 176, 158, 63, 253, 127,
+];
+
 // Instruction.
 export function updateCandyMachine(
   context: Pick<Context, 'identity' | 'programs'>,

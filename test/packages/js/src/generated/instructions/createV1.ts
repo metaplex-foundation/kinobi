@@ -95,6 +95,9 @@ export function getCreateV1InstructionDataSerializer(): Serializer<
 // Args.
 export type CreateV1InstructionArgs = CreateV1InstructionDataArgs;
 
+// Instruction discriminator.
+export const createV1InstructionDiscriminator = 41;
+
 // Instruction.
 export function createV1(
   context: Pick<Context, 'payer' | 'programs'>,

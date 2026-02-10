@@ -124,6 +124,9 @@ export type CreateMetadataAccountInstructionArgs = PickPartial<
   'metadataBump'
 >;
 
+// Instruction discriminator.
+export const createMetadataAccountInstructionDiscriminator = 0;
+
 // Instruction.
 export function createMetadataAccount(
   context: Pick<Context, 'eddsa' | 'payer' | 'programs'>,

@@ -86,6 +86,9 @@ export function getUpdateMetadataAccountV2InstructionDataSerializer(): Serialize
 export type UpdateMetadataAccountV2InstructionArgs =
   UpdateMetadataAccountV2InstructionDataArgs;
 
+// Instruction discriminator.
+export const updateMetadataAccountV2InstructionDiscriminator = 15;
+
 // Instruction.
 export function updateMetadataAccountV2(
   context: Pick<Context, 'programs'>,

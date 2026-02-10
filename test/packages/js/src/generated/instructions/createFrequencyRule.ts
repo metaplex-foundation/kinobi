@@ -84,6 +84,9 @@ export function getCreateFrequencyRuleInstructionDataSerializer(): Serializer<
 export type CreateFrequencyRuleInstructionArgs =
   CreateFrequencyRuleInstructionDataArgs;
 
+// Instruction discriminator.
+export const createFrequencyRuleInstructionDiscriminator = 2;
+
 // Instruction.
 export function createFrequencyRule(
   context: Pick<Context, 'payer' | 'programs'>,

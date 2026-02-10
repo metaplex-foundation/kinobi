@@ -7,6 +7,11 @@
 {% include "instructionsPageAccounts.njk" %}
 {% include "instructionsPageArgs.njk" %}
 
+{% if discriminator %}
+// Instruction discriminator.
+export const {{ instruction.name | camelCase }}InstructionDiscriminator = {{ discriminator.value }};
+{% endif %}
+
 // Instruction.
 export function {{ instruction.name | camelCase }}(
   context: {{ interfaces }},

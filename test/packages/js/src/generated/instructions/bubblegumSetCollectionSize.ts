@@ -82,6 +82,9 @@ export function getBubblegumSetCollectionSizeInstructionDataSerializer(): Serial
 export type BubblegumSetCollectionSizeInstructionArgs =
   BubblegumSetCollectionSizeInstructionDataArgs;
 
+// Instruction discriminator.
+export const bubblegumSetCollectionSizeInstructionDiscriminator = 36;
+
 // Instruction.
 export function bubblegumSetCollectionSize(
   context: Pick<Context, 'programs'>,

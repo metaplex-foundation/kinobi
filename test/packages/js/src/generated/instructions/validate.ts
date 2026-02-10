@@ -103,6 +103,9 @@ export function getValidateInstructionDataSerializer(): Serializer<
 // Args.
 export type ValidateInstructionArgs = ValidateInstructionDataArgs;
 
+// Instruction discriminator.
+export const validateInstructionDiscriminator = 1;
+
 // Instruction.
 export function validate(
   context: Pick<Context, 'payer' | 'programs'>,

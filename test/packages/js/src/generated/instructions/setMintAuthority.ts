@@ -62,6 +62,11 @@ export function getSetMintAuthorityInstructionDataSerializer(): Serializer<
   >;
 }
 
+// Instruction discriminator.
+export const setMintAuthorityInstructionDiscriminator = [
+  67, 127, 155, 187, 100, 174, 103, 121,
+];
+
 // Instruction.
 export function setMintAuthority(
   context: Pick<Context, 'identity' | 'programs'>,

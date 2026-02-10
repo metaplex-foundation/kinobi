@@ -484,6 +484,34 @@ export function getRenderMapVisitor(
             interfaces.add(['eddsa', 'identity', 'payer']);
           }
 
+          // Discriminator.
+          const discriminator =
+            (node.discriminators ?? []).find((d) =>
+              isNode(d, 'fieldDiscriminatorNode')
+            ) ?? null;
+          let resolvedDiscriminator:
+            | (FieldDiscriminatorNode & { value: string })
+            | null = null;
+          if (isNode(discriminator, 'fieldDiscriminatorNode')) {
+            const discriminatorField = node.arguments.find(
+              (f) => f.name === discriminator.name
+            );
+            if (
+              discriminatorField?.defaultValue &&
+              isNode(discriminatorField.defaultValue, VALUE_NODES)
+            ) {
+              const discriminatorValue = visit(
+                discriminatorField.defaultValue,
+                valueNodeVisitor
+              );
+              imports.mergeWith(discriminatorValue.imports);
+              resolvedDiscriminator = {
+                ...discriminator,
+                value: discriminatorValue.render,
+              };
+            }
+          }
+
           // canMergeAccountsAndArgs
           let canMergeAccountsAndArgs = false;
           if (!linkedDataArgs) {
@@ -641,6 +669,7 @@ export function getRenderMapVisitor(
               customData,
               remainingAccounts,
               byteDelta,
+              discriminator: resolvedDiscriminator,
             })
           );
         },

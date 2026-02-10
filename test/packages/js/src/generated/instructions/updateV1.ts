@@ -185,6 +185,9 @@ export function getUpdateV1InstructionDataSerializer(): Serializer<
 // Args.
 export type UpdateV1InstructionArgs = UpdateV1InstructionDataArgs;
 
+// Instruction discriminator.
+export const updateV1InstructionDiscriminator = 43;
+
 // Instruction.
 export function updateV1(
   context: Pick<Context, 'identity' | 'programs'>,

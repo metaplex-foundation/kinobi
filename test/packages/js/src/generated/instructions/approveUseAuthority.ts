@@ -90,6 +90,9 @@ export function getApproveUseAuthorityInstructionDataSerializer(): Serializer<
 export type ApproveUseAuthorityInstructionArgs =
   ApproveUseAuthorityInstructionDataArgs;
 
+// Instruction discriminator.
+export const approveUseAuthorityInstructionDiscriminator = 20;
+
 // Instruction.
 export function approveUseAuthority(
   context: Pick<Context, 'payer' | 'programs'>,

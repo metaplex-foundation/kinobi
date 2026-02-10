@@ -101,6 +101,9 @@ export function getCreateMetadataAccountV3InstructionDataSerializer(): Serialize
 export type CreateMetadataAccountV3InstructionArgs =
   CreateMetadataAccountV3InstructionDataArgs;
 
+// Instruction discriminator.
+export const createMetadataAccountV3InstructionDiscriminator = 33;
+
 // Instruction.
 export function createMetadataAccountV3(
   context: Pick<Context, 'eddsa' | 'payer' | 'programs'>,

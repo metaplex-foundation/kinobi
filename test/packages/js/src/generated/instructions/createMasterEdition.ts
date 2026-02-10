@@ -91,6 +91,9 @@ export function getCreateMasterEditionInstructionDataSerializer(): Serializer<
 export type CreateMasterEditionInstructionArgs =
   CreateMasterEditionInstructionDataArgs;
 
+// Instruction discriminator.
+export const createMasterEditionInstructionDiscriminator = 10;
+
 // Instruction.
 export function createMasterEdition(
   context: Pick<Context, 'payer' | 'programs'>,

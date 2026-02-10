@@ -61,6 +61,9 @@ export function getBurnNftInstructionDataSerializer(): Serializer<
   ) as Serializer<BurnNftInstructionDataArgs, BurnNftInstructionData>;
 }
 
+// Instruction discriminator.
+export const burnNftInstructionDiscriminator = 29;
+
 // Instruction.
 export function burnNft(
   context: Pick<Context, 'programs'>,

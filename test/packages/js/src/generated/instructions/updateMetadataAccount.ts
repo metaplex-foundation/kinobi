@@ -109,6 +109,9 @@ export function getUpdateMetadataAccountInstructionDataSerializer(): Serializer<
 export type UpdateMetadataAccountInstructionArgs =
   UpdateMetadataAccountInstructionDataArgs;
 
+// Instruction discriminator.
+export const updateMetadataAccountInstructionDiscriminator = 1;
+
 // Instruction.
 export function updateMetadataAccount(
   context: Pick<Context, 'programs'>,

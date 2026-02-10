@@ -71,6 +71,9 @@ export function getCloseEscrowAccountInstructionDataSerializer(): Serializer<
   >;
 }
 
+// Instruction discriminator.
+export const closeEscrowAccountInstructionDiscriminator = 39;
+
 // Instruction.
 export function closeEscrowAccount(
   context: Pick<Context, 'payer' | 'programs'>,

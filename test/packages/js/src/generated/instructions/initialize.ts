@@ -81,6 +81,11 @@ export function getInitializeInstructionDataSerializer(): Serializer<
 // Args.
 export type InitializeInstructionArgs = InitializeInstructionDataArgs;
 
+// Instruction discriminator.
+export const initializeInstructionDiscriminator = [
+  175, 175, 109, 31, 13, 152, 155, 237,
+];
+
 // Instruction.
 export function initialize(
   context: Pick<Context, 'identity' | 'payer' | 'programs'>,
