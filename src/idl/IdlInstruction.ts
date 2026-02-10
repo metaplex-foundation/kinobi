@@ -30,6 +30,7 @@ export type IdlInstructionArg = {
   name: string;
   type: IdlType;
   docs?: string[];
+  attrs?: string[];
 };
 
 export type IdlInstructionDiscriminant = {

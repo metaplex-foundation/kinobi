@@ -1,4 +1,4 @@
-import { IdlInstructionArg } from '../idl';
+import { IdlInstructionArg, IdlType } from '../idl';
 import { InvalidKinobiTreeError, MainCaseString, mainCase } from '../shared';
 import { isNode } from './Node';
 import { InstructionInputValueNode } from './contextualValueNodes';
@@ -8,7 +8,7 @@ import {
   structFieldTypeNode,
   structTypeNode,
 } from './typeNodes';
-import { VALUE_NODES } from './valueNodes';
+import { VALUE_NODES, ValueNode, arrayValueNode, numberValueNode } from './valueNodes';
 
 export type InstructionArgumentNode = {
   readonly kind: 'instructionArgumentNode';
@@ -52,11 +52,54 @@ export function instructionArgumentNode(
 export function instructionArgumentNodeFromIdl(
   idl: IdlInstructionArg
 ): InstructionArgumentNode {
+  const isPadding = (idl.attrs ?? []).includes('padding');
   return instructionArgumentNode({
     name: idl.name ?? '',
     type: createTypeNodeFromIdl(idl.type),
     docs: idl.docs ?? [],
+    ...(isPadding
+      ? {
+          defaultValue: createPaddingDefaultValue(idl.type),
+          defaultValueStrategy: 'omitted' as const,
+        }
+      : {}),
   });
+}
+
+const SUPPORTED_PADDING_ELEMENTS = ['u8', 'bytes'];
+
+function createPaddingDefaultValue(idlType: IdlType): ValueNode {
+  if (
+    typeof idlType !== 'object' ||
+    !('array' in idlType) ||
+    !Array.isArray(idlType.array) ||
+    idlType.array.length !== 2
+  ) {
+    throw new Error(
+      `Unsupported padding type: ${JSON.stringify(idlType)}. ` +
+        `Padding fields must be fixed-size arrays (e.g. { "array": ["u8", 3] }).`
+    );
+  }
+  const elementType = idlType.array[0];
+  if (
+    typeof elementType !== 'string' ||
+    !SUPPORTED_PADDING_ELEMENTS.includes(elementType)
+  ) {
+    throw new Error(
+      `Unsupported padding array element type: ${JSON.stringify(elementType)}. ` +
+        `Expected one of: ${SUPPORTED_PADDING_ELEMENTS.join(', ')}.`
+    );
+  }
+  const size = idlType.array[1] as number;
+  if (typeof size !== 'number' || !Number.isFinite(size) || !Number.isInteger(size) || size <= 0) {
+    throw new Error(
+      `Invalid padding array size: ${JSON.stringify(size)}. ` +
+        `Expected a finite positive integer.`
+    );
+  }
+  return arrayValueNode(
+    Array.from({ length: size }, () => numberValueNode(0))
+  );
 }
 
 export function structTypeNodeFromInstructionArgumentNodes(

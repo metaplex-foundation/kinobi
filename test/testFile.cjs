@@ -11,6 +11,7 @@ const kinobi = k.createFromIdls([
   __dirname + '/mpl_token_metadata.json',
   __dirname + '/pubkey_tests.json',
   __dirname + '/option_tests.json',
+  __dirname + '/padding_tests.json',
 ]);
 
 kinobi.update(

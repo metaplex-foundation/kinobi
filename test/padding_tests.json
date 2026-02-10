@@ -1,0 +1,74 @@
+{
+  "version": "0.1.0",
+  "name": "padding_tests",
+  "instructions": [
+    {
+      "name": "InitializeWithPadding",
+      "accounts": [
+        {
+          "name": "target",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "count",
+          "type": "u32"
+        },
+        {
+          "name": "padding",
+          "type": {
+            "array": ["u8", 4]
+          },
+          "attrs": ["padding"]
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 0
+      }
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AccountWithPadding",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "count",
+            "type": "u8"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": ["u8", 3]
+            },
+            "attrs": ["padding"]
+          },
+          {
+            "name": "value",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [],
+  "metadata": {
+    "origin": "shank",
+    "address": "PadTest11111111111111111111111111111111111",
+    "binaryVersion": "0.4.2",
+    "libVersion": "0.4.2"
+  }
+}

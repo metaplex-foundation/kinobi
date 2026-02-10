@@ -20,6 +20,9 @@ use solana_program::{pubkey, pubkey::Pubkey};
   /// `option_tests` program ID.
   pub const OPTION_TESTS_ID: Pubkey = pubkey!("OptionTests1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7");
 
+  /// `padding_tests` program ID.
+  pub const PADDING_TESTS_ID: Pubkey = pubkey!("PadTest11111111111111111111111111111111111");
+
   /// `pubkey_tests` program ID.
   pub const PUBKEY_TESTS_ID: Pubkey = pubkey!("PubkeyTests1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7");
 
