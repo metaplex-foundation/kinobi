@@ -8,7 +8,9 @@
 
 import {
   Account,
+  Amount,
   Context,
+  OptionOrNullable,
   Pda,
   PublicKey,
   RpcAccount,
@@ -36,6 +38,9 @@ import {
 import {
   CandyMachineData,
   CandyMachineDataArgs,
+  CmCreatorArgs,
+  ConfigLineSettingsArgs,
+  HiddenSettingsArgs,
   getCandyMachineDataSerializer,
   getCmCreatorSerializer,
   getConfigLineSettingsSerializer,
@@ -178,6 +183,14 @@ export function getCandyMachineGpaBuilder(
       collectionMint: PublicKey;
       itemsRedeemed: number | bigint;
       data: CandyMachineDataArgs;
+      'data.itemsAvailable': number | bigint;
+      'data.symbol': string;
+      'data.sellerFeeBasisPoints': Amount<'%', 2>;
+      'data.maxSupply': number | bigint;
+      'data.isMutable': boolean;
+      'data.creators': Array<CmCreatorArgs>;
+      'data.configLineSettings': OptionOrNullable<ConfigLineSettingsArgs>;
+      'data.hiddenSettings': OptionOrNullable<HiddenSettingsArgs>;
     }>({
       discriminator: [0, array(u8(), { size: 8 })],
       features: [8, u64()],
@@ -186,17 +199,18 @@ export function getCandyMachineGpaBuilder(
       collectionMint: [80, publicKeySerializer()],
       itemsRedeemed: [112, u64()],
       data: [120, getCandyMachineDataSerializer()],
+      'data.itemsAvailable': [120, u64()],
+      'data.symbol': [128, string()],
+      'data.sellerFeeBasisPoints': [null, mapAmountSerializer(u16(), '%', 2)],
+      'data.maxSupply': [null, u64()],
+      'data.isMutable': [null, bool()],
+      'data.creators': [null, array(getCmCreatorSerializer())],
+      'data.configLineSettings': [
+        null,
+        option(getConfigLineSettingsSerializer()),
+      ],
+      'data.hiddenSettings': [null, option(getHiddenSettingsSerializer())],
     })
-    .registerNestedFieldsFromStruct<CandyMachineDataArgs>('data', 120, [
-      ['itemsAvailable', u64()],
-      ['symbol', string()],
-      ['sellerFeeBasisPoints', mapAmountSerializer(u16(), '%', 2)],
-      ['maxSupply', u64()],
-      ['isMutable', bool()],
-      ['creators', array(getCmCreatorSerializer())],
-      ['configLineSettings', option(getConfigLineSettingsSerializer())],
-      ['hiddenSettings', option(getHiddenSettingsSerializer())],
-    ])
     .deserializeUsing<CandyMachine>((account) =>
       deserializeCandyMachine(account)
     )

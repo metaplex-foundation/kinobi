@@ -6,6 +6,7 @@
 //!
 
 pub(crate) mod r#account_with_padding;
+pub(crate) mod r#account_with_padding_and_nested_struct;
 pub(crate) mod r#account_with_podded_types;
 pub(crate) mod r#candy_machine;
 pub(crate) mod r#collection_authority_record;
@@ -22,6 +23,7 @@ pub(crate) mod r#token_owned_escrow;
 pub(crate) mod r#use_authority_record;
 
 pub use self::r#account_with_padding::*;
+pub use self::r#account_with_padding_and_nested_struct::*;
 pub use self::r#account_with_podded_types::*;
 pub use self::r#candy_machine::*;
 pub use self::r#collection_authority_record::*;

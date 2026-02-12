@@ -19,10 +19,9 @@ export type GpaField = {
 
 export type NestedGpaField = {
   parentFieldName: string;
-  parentOffset: number | null;
-  structTypeName: string;
   fields: Array<{
     name: string;
+    offset: number | null;
     type: TypeNode;
   }>;
 };
@@ -46,52 +45,59 @@ export function getGpaFieldsFromAccount(
 }
 
 /**
- * Extracts nested struct fields from GPA fields for generating
- * registerNestedFieldsFromStruct calls.
+ * Extracts nested struct fields from GPA fields, computing absolute
+ * offsets for each field and filtering out padding (omitted) fields.
  */
 export function getNestedGpaFieldsFromAccount(
   gpaFields: GpaField[],
-  linkables: LinkableDictionary
+  linkables: LinkableDictionary,
+  sizeVisitor: Visitor<
+    number | null,
+    RegisteredTypeNodeKind | 'definedTypeLinkNode'
+  >
 ): NestedGpaField[] {
-  const nestedFields: NestedGpaField[] = [];
+  return gpaFields
+    .filter((gpaField) => isNode(gpaField.type, 'definedTypeLinkNode'))
+    .filter((gpaField) => !(gpaField.type as DefinedTypeLinkNode).importFrom)
+    .reduce((acc: NestedGpaField[], gpaField) => {
+      const linkNode = gpaField.type as DefinedTypeLinkNode;
+      const definedType = linkables.get(linkNode) as
+        | DefinedTypeNode
+        | undefined;
+      if (!definedType || !isNode(definedType.type, 'structTypeNode')) {
+        return acc;
+      }
 
-  for (const gpaField of gpaFields) {
-    // Check if this field is a defined type link
-    if (!isNode(gpaField.type, 'definedTypeLinkNode')) {
-      continue;
-    }
+      const structType = definedType.type as StructTypeNode;
+      let fieldOffset = gpaField.offset;
 
-    const linkNode = gpaField.type as DefinedTypeLinkNode;
+      // Walk all fields to compute offsets, but only keep non-padding fields.
+      const fields = structType.fields.reduce(
+        (
+          fieldAcc: Array<{
+            name: string;
+            offset: number | null;
+            type: TypeNode;
+          }>,
+          field: StructFieldTypeNode
+        ) => {
+          const currentOffset = fieldOffset;
+          if (fieldOffset !== null) {
+            const size = visit(field.type, sizeVisitor);
+            fieldOffset = size !== null ? fieldOffset! + size : null;
+          }
+          if (field.defaultValueStrategy !== 'omitted') {
+            fieldAcc.push({
+              name: field.name,
+              offset: currentOffset,
+              type: field.type,
+            });
+          }
+          return fieldAcc;
+        },
+        []
+      );
 
-    // Skip if it's an imported type (external)
-    if (linkNode.importFrom) {
-      continue;
-    }
-
-    // Look up the defined type
-    const definedType = linkables.get(linkNode) as DefinedTypeNode | undefined;
-    if (!definedType) {
-      continue;
-    }
-
-    // Check if the defined type is a struct
-    if (!isNode(definedType.type, 'structTypeNode')) {
-      continue;
-    }
-
-    const structType = definedType.type as StructTypeNode;
-
-    // Extract the struct fields
-    nestedFields.push({
-      parentFieldName: gpaField.name,
-      parentOffset: gpaField.offset,
-      structTypeName: definedType.name,
-      fields: structType.fields.map((field: StructFieldTypeNode) => ({
-        name: field.name,
-        type: field.type,
-      })),
-    });
-  }
-
-  return nestedFields;
+      return [...acc, { parentFieldName: gpaField.name, fields }];
+    }, []);
 }
