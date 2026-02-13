@@ -537,6 +537,27 @@ export function getRenderMapVisitor(
             }
           }
 
+          // Args-only serializer (for InstructionDescriptor support).
+          const fieldDiscriminatorNames = new Set(
+            (node.discriminators ?? [])
+              .filter((d): d is FieldDiscriminatorNode =>
+                isNode(d, 'fieldDiscriminatorNode')
+              )
+              .map((d) => d.name)
+          );
+          const argsOnlyArguments = node.arguments.filter(
+            (arg) => !fieldDiscriminatorNames.has(arg.name)
+          );
+          const argsOnlyStruct = structTypeNodeFromInstructionArgumentNodes(
+            argsOnlyArguments
+          );
+          const argsOnlyVisitor = getTypeManifestVisitor({
+            strict: `${pascalCase(node.name)}InstructionArgsOnly`,
+            loose: `${pascalCase(node.name)}InstructionArgsOnlyArgs`,
+          });
+          const argsOnlyManifest = visit(argsOnlyStruct, argsOnlyVisitor);
+          imports.mergeWith(argsOnlyManifest.serializerImports);
+
           // canMergeAccountsAndArgs
           let canMergeAccountsAndArgs = false;
           if (!linkedDataArgs) {
@@ -695,6 +716,7 @@ export function getRenderMapVisitor(
               remainingAccounts,
               byteDelta,
               discriminator: resolvedDiscriminator,
+              argsOnlyManifest,
             })
           );
         },
