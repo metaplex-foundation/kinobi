@@ -16,11 +16,15 @@ import {
   getSplSystemErrorFromCode,
   getSplSystemErrorFromName,
 } from '../errors';
+import {
+  getCreateAccountInstructionArgsOnlySerializer,
+  getTransferSolInstructionArgsOnlySerializer,
+} from '../instructions';
 
 export const SPL_SYSTEM_PROGRAM_ID =
   '11111111111111111111111111111111' as PublicKey<'11111111111111111111111111111111'>;
 
-export function createSplSystemProgram(): Program {
+export function createSplSystemProgram() {
   return {
     name: 'splSystem',
     publicKey: SPL_SYSTEM_PROGRAM_ID,
@@ -33,6 +37,20 @@ export function createSplSystemProgram(): Program {
     isOnCluster() {
       return true;
     },
+    instructions: [
+      {
+        name: 'createAccount',
+        discriminator: { bytes: new Uint8Array([0]), size: 1 },
+        dataSerializer: getCreateAccountInstructionArgsOnlySerializer(),
+        accountNames: ['payer', 'newAccount'],
+      },
+      {
+        name: 'transferSol',
+        discriminator: { bytes: new Uint8Array([2]), size: 1 },
+        dataSerializer: getTransferSolInstructionArgsOnlySerializer(),
+        accountNames: ['source', 'destination'],
+      },
+    ],
   };
 }
 

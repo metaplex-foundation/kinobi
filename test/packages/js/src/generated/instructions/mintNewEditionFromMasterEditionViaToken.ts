@@ -103,6 +103,19 @@ export function getMintNewEditionFromMasterEditionViaTokenInstructionDataSeriali
 export type MintNewEditionFromMasterEditionViaTokenInstructionArgs =
   MintNewEditionFromMasterEditionViaTokenInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getMintNewEditionFromMasterEditionViaTokenInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    [
+      'mintNewEditionFromMasterEditionViaTokenArgs',
+      getMintNewEditionFromMasterEditionViaTokenArgsSerializer(),
+    ],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const mintNewEditionFromMasterEditionViaTokenInstructionDiscriminator = 11;
 

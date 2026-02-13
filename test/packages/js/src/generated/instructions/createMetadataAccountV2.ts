@@ -86,6 +86,17 @@ export function getCreateMetadataAccountV2InstructionDataSerializer(): Serialize
 export type CreateMetadataAccountV2InstructionArgs =
   CreateMetadataAccountV2InstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getCreateMetadataAccountV2InstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    ['data', getDataV2Serializer()],
+    ['isMutable', bool()],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const createMetadataAccountV2InstructionDiscriminator = 16;
 

@@ -101,6 +101,18 @@ export function getCreateMetadataAccountV3InstructionDataSerializer(): Serialize
 export type CreateMetadataAccountV3InstructionArgs =
   CreateMetadataAccountV3InstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getCreateMetadataAccountV3InstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    ['data', getDataV2Serializer()],
+    ['isMutable', bool()],
+    ['collectionDetails', option(getCollectionDetailsSerializer())],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const createMetadataAccountV3InstructionDiscriminator = 33;
 

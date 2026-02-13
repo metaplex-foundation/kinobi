@@ -73,6 +73,14 @@ export function getCreateEscrowAccountInstructionDataSerializer(): Serializer<
   >;
 }
 
+// Args-only serializer (excludes discriminator fields).
+export function getCreateEscrowAccountInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const createEscrowAccountInstructionDiscriminator = 38;
 

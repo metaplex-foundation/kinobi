@@ -74,6 +74,14 @@ export function getBurnEditionNftInstructionDataSerializer(): Serializer<
   >;
 }
 
+// Args-only serializer (excludes discriminator fields).
+export function getBurnEditionNftInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const burnEditionNftInstructionDiscriminator = 37;
 

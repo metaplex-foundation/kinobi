@@ -78,6 +78,17 @@ export function getUpdateCandyMachineInstructionDataSerializer(): Serializer<
 export type UpdateCandyMachineInstructionArgs =
   UpdateCandyMachineInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getUpdateCandyMachineInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([['data', getCandyMachineDataSerializer()]]) as Serializer<
+    any,
+    any
+  >;
+}
+
 // Instruction discriminator.
 export const updateCandyMachineInstructionDiscriminator = [
   219, 200, 88, 176, 158, 63, 253, 127,

@@ -78,6 +78,14 @@ export function getMintFromCandyMachineInstructionDataSerializer(): Serializer<
   >;
 }
 
+// Args-only serializer (excludes discriminator fields).
+export function getMintFromCandyMachineInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const mintFromCandyMachineInstructionDiscriminator = [
   51, 57, 225, 47, 182, 146, 137, 166,

@@ -99,6 +99,16 @@ export function getDeprecatedCreateMasterEditionInstructionDataSerializer(): Ser
 export type DeprecatedCreateMasterEditionInstructionArgs =
   DeprecatedCreateMasterEditionInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getDeprecatedCreateMasterEditionInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    ['createMasterEditionArgs', getCreateMasterEditionArgsSerializer()],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const deprecatedCreateMasterEditionInstructionDiscriminator = 2;
 

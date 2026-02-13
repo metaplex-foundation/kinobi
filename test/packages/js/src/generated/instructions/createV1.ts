@@ -95,6 +95,22 @@ export function getCreateV1InstructionDataSerializer(): Serializer<
 // Args.
 export type CreateV1InstructionArgs = CreateV1InstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getCreateV1InstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return mapSerializer<any, any, any>(
+    struct<any>([
+      ['createV1Discriminator', u8()],
+      ['assetData', getAssetDataSerializer()],
+      ['decimals', option(u8())],
+      ['maxSupply', option(u64())],
+    ]),
+    (value) => ({ ...value, createV1Discriminator: 0 })
+  ) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const createV1InstructionDiscriminator = 41;
 

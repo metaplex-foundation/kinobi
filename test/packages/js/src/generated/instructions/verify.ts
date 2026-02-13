@@ -68,6 +68,14 @@ export function getVerifyInstructionDataSerializer(): Serializer<
 // Args.
 export type VerifyInstructionArgs = VerifyInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getVerifyInstructionArgsOnlySerializer(): Serializer<any, any> {
+  return struct<any>([['verifyArgs', getVerifyArgsSerializer()]]) as Serializer<
+    any,
+    any
+  >;
+}
+
 // Instruction discriminator.
 export const verifyInstructionDiscriminator = 47;
 

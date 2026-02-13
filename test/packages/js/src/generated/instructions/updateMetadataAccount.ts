@@ -109,6 +109,29 @@ export function getUpdateMetadataAccountInstructionDataSerializer(): Serializer<
 export type UpdateMetadataAccountInstructionArgs =
   UpdateMetadataAccountInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getUpdateMetadataAccountInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    [
+      'data',
+      option(
+        struct<any>([
+          ['name', string()],
+          ['symbol', string()],
+          ['uri', string()],
+          ['sellerFeeBasisPoints', u16()],
+          ['creators', option(array(getCreatorSerializer()))],
+        ])
+      ),
+    ],
+    ['updateAuthority', option(publicKeySerializer())],
+    ['primarySaleHappened', option(bool())],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const updateMetadataAccountInstructionDiscriminator = 1;
 

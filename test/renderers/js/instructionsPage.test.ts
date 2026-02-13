@@ -188,7 +188,7 @@ test('it exports an args-only serializer with empty struct for no-args instructi
   const renderMap = visit(node, getRenderMapVisitor());
   renderMapContains(t, renderMap, 'instructions/freezeAccount.ts', [
     'export function getFreezeAccountInstructionArgsOnlySerializer(): Serializer<any, any> {',
-    'struct<FreezeAccountInstructionArgsOnly>([]',
+    'struct<any>([]',
   ]);
 });
 
@@ -364,5 +364,65 @@ test('it renders instruction descriptors for multi-discriminator Shank instructi
     'size: 2 },',
     'getTransferV1InstructionArgsOnlySerializer(),',
     "['token', 'tokenOwner', 'mint']}",
+  ]);
+});
+
+test('it handles instruction with no discriminator in program descriptors', (t) => {
+  const node = programNode({
+    name: 'splToken',
+    publicKey: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+    instructions: [
+      instructionNode({
+        name: 'mintTokens',
+        accounts: [
+          instructionAccountNode({ name: 'mint', isWritable: true, isSigner: false }),
+        ],
+        arguments: [
+          instructionArgumentNode({
+            name: 'amount',
+            type: numberTypeNode('u64'),
+          }),
+        ],
+      }),
+    ],
+  });
+
+  const renderMap = visit(node, getRenderMapVisitor());
+
+  // Program file should still render with empty discriminator bytes.
+  renderMapContains(t, renderMap, 'programs/splToken.ts', [
+    'instructions:',
+    "name: 'mintTokens',",
+    'new Uint8Array([]),',
+    'size: 0 },',
+  ]);
+});
+
+test('it handles instruction with no accounts in program descriptors', (t) => {
+  const node = programNode({
+    name: 'splToken',
+    publicKey: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+    instructions: [
+      instructionNode({
+        name: 'doSomething',
+        arguments: [
+          instructionArgumentNode({
+            name: 'discriminator',
+            type: numberTypeNode('u8'),
+            defaultValue: numberValueNode(1),
+            defaultValueStrategy: 'omitted',
+          }),
+        ],
+        discriminators: [fieldDiscriminatorNode('discriminator')],
+      }),
+    ],
+  });
+
+  const renderMap = visit(node, getRenderMapVisitor());
+
+  renderMapContains(t, renderMap, 'programs/splToken.ts', [
+    'instructions:',
+    "name: 'doSomething',",
+    'accountNames: []}',
   ]);
 });

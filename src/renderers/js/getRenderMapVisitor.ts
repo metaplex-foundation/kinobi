@@ -294,8 +294,6 @@ export function getRenderMapVisitor(
                   ]);
 
                 if (programInstructionDescriptors.length > 0) {
-                  programImports.add('umi', 'InstructionDescriptor');
-                  programImports.add('umiSerializers', 'Serializer');
                   for (const desc of programInstructionDescriptors) {
                     programImports.add('generatedInstructions', desc!.argsOnlySerializerName);
                   }
@@ -576,10 +574,7 @@ export function getRenderMapVisitor(
           const argsOnlyStruct = structTypeNodeFromInstructionArgumentNodes(
             argsOnlyArguments
           );
-          const argsOnlyVisitor = getTypeManifestVisitor({
-            strict: `${pascalCase(node.name)}InstructionArgsOnly`,
-            loose: `${pascalCase(node.name)}InstructionArgsOnlyArgs`,
-          });
+          const argsOnlyVisitor = getTypeManifestVisitor();
           const argsOnlyManifest = visit(argsOnlyStruct, argsOnlyVisitor);
           imports.mergeWith(argsOnlyManifest.serializerImports);
 
@@ -656,6 +651,8 @@ export function getRenderMapVisitor(
           if (!linkedDataArgs && hasData) {
             imports.add('umiSerializers', ['Serializer']);
           }
+          // Always import Serializer for the args-only serializer.
+          imports.add('umiSerializers', ['Serializer']);
 
           // Extra args.
           const extraArgStruct = structTypeNodeFromInstructionArgumentNodes(

@@ -66,6 +66,14 @@ export function getUnverifyCollectionInstructionDataSerializer(): Serializer<
   >;
 }
 
+// Args-only serializer (excludes discriminator fields).
+export function getUnverifyCollectionInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const unverifyCollectionInstructionDiscriminator = 22;
 

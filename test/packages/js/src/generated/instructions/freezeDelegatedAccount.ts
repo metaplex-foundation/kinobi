@@ -64,6 +64,14 @@ export function getFreezeDelegatedAccountInstructionDataSerializer(): Serializer
   >;
 }
 
+// Args-only serializer (excludes discriminator fields).
+export function getFreezeDelegatedAccountInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const freezeDelegatedAccountInstructionDiscriminator = 26;
 

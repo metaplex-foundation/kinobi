@@ -7,7 +7,7 @@
 export const {{ program.name | snakeCase | upper }}_PROGRAM_ID = '{{ program.publicKey }}' as PublicKey<'{{ program.publicKey }}'>;
 
 {{ macros.docblock(program.docs) }}
-export function create{{ program.name | pascalCase }}Program(): Program {
+export function create{{ program.name | pascalCase }}Program() {
   return {
     name: '{{ program.name | camelCase }}',
     publicKey: {{ program.name | snakeCase | upper }}_PROGRAM_ID,

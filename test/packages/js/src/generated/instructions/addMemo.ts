@@ -39,6 +39,14 @@ export function getAddMemoInstructionDataSerializer(): Serializer<
 // Args.
 export type AddMemoInstructionArgs = AddMemoInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getAddMemoInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([['memo', string()]]) as Serializer<any, any>;
+}
+
 // Instruction.
 export function addMemo(
   context: Pick<Context, 'programs'>,

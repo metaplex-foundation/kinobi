@@ -85,6 +85,17 @@ export type CreateRuleSetInstructionArgs = PickPartial<
   'ruleSetBump'
 >;
 
+// Args-only serializer (excludes discriminator fields).
+export function getCreateRuleSetInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    ['createArgs', getTaCreateArgsSerializer()],
+    ['ruleSetBump', u8()],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const createRuleSetInstructionDiscriminator = 0;
 

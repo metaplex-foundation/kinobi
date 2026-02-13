@@ -84,6 +84,19 @@ export function getCreateFrequencyRuleInstructionDataSerializer(): Serializer<
 export type CreateFrequencyRuleInstructionArgs =
   CreateFrequencyRuleInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getCreateFrequencyRuleInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    ['ruleSetName', string()],
+    ['freqRuleName', string()],
+    ['lastUpdate', i64()],
+    ['period', i64()],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const createFrequencyRuleInstructionDiscriminator = 2;
 

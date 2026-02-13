@@ -70,6 +70,14 @@ export function getSetAndVerifyCollectionInstructionDataSerializer(): Serializer
   >;
 }
 
+// Args-only serializer (excludes discriminator fields).
+export function getSetAndVerifyCollectionInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const setAndVerifyCollectionInstructionDiscriminator = 25;
 

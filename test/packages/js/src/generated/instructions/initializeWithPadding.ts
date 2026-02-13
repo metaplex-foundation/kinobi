@@ -71,6 +71,20 @@ export function getInitializeWithPaddingInstructionDataSerializer(): Serializer<
 export type InitializeWithPaddingInstructionArgs =
   InitializeWithPaddingInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getInitializeWithPaddingInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return mapSerializer<any, any, any>(
+    struct<any>([
+      ['count', u32()],
+      ['padding', array(u8(), { size: 4 })],
+    ]),
+    (value) => ({ ...value, padding: [0, 0, 0, 0] })
+  ) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const initializeWithPaddingInstructionDiscriminator = 0;
 

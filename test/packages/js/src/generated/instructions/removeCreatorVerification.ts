@@ -61,6 +61,14 @@ export function getRemoveCreatorVerificationInstructionDataSerializer(): Seriali
   >;
 }
 
+// Args-only serializer (excludes discriminator fields).
+export function getRemoveCreatorVerificationInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const removeCreatorVerificationInstructionDiscriminator = 28;
 
