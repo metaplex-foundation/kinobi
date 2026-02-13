@@ -81,6 +81,14 @@ export function getRenderMapVisitor(
   const byteSizeVisitor = getByteSizeVisitor(linkables);
   let program: ProgramNode | null = null;
 
+  const instructionDescriptors = new Map<string, {
+    name: string;
+    discriminatorBytes: number[];
+    discriminatorSize: number;
+    accountNames: string[];
+    argsOnlySerializerName: string;
+  }>();
+
   const renderParentInstructions = options.renderParentInstructions ?? false;
   const formatCode = options.formatCode ?? true;
   const prettierOptions = {
@@ -100,6 +108,7 @@ export function getRenderMapVisitor(
     generatedAccounts: '../accounts',
     generatedErrors: '../errors',
     generatedTypes: '../types',
+    generatedInstructions: '../instructions',
   };
   const nonScalarEnums = (options.nonScalarEnums ?? []).map(mainCase);
   const internalNodes = (options.internalNodes ?? []).map(mainCase);
@@ -267,8 +276,12 @@ export function getRenderMapVisitor(
             )
             .add(
               `programs/${camelCase(node.name)}.ts`,
-              render('programsPage.njk', {
-                imports: new JavaScriptImportMap()
+              (() => {
+                const programInstructionDescriptors = getAllInstructionsWithSubs(node, {
+                  leavesOnly: !renderParentInstructions,
+                }).map((ix) => instructionDescriptors.get(ix.name)).filter(Boolean);
+
+                const programImports = new JavaScriptImportMap()
                   .add('umi', [
                     'ClusterFilter',
                     'Context',
@@ -278,10 +291,22 @@ export function getRenderMapVisitor(
                   .add('errors', [
                     `get${pascalCaseName}ErrorFromCode`,
                     `get${pascalCaseName}ErrorFromName`,
-                  ])
-                  .toString(dependencyMap),
-                program: node,
-              })
+                  ]);
+
+                if (programInstructionDescriptors.length > 0) {
+                  programImports.add('umi', 'InstructionDescriptor');
+                  programImports.add('umiSerializers', 'Serializer');
+                  for (const desc of programInstructionDescriptors) {
+                    programImports.add('generatedInstructions', desc!.argsOnlySerializerName);
+                  }
+                }
+
+                return render('programsPage.njk', {
+                  imports: programImports.toString(dependencyMap),
+                  program: node,
+                  instructionDescriptors: programInstructionDescriptors,
+                });
+              })()
             );
           program = null;
           return renderMap;
@@ -685,6 +710,35 @@ export function getRenderMapVisitor(
               camelCase(remainingAccounts.value.name)
             );
           }
+
+          // Store instruction descriptor data for program template.
+          const allFieldDiscriminators = (node.discriminators ?? [])
+            .filter((d): d is FieldDiscriminatorNode =>
+              isNode(d, 'fieldDiscriminatorNode')
+            );
+          const discriminatorBytes: number[] = [];
+          for (const disc of allFieldDiscriminators) {
+            const arg = node.arguments.find((a) => a.name === disc.name);
+            if (arg?.defaultValue && isNode(arg.defaultValue, VALUE_NODES)) {
+              if (isNode(arg.defaultValue, 'numberValueNode')) {
+                discriminatorBytes.push(arg.defaultValue.number);
+              } else if (isNode(arg.defaultValue, 'arrayValueNode')) {
+                for (const item of arg.defaultValue.items) {
+                  if (isNode(item, 'numberValueNode')) {
+                    discriminatorBytes.push(item.number);
+                  }
+                }
+              }
+            }
+          }
+          const descriptorAccountNames = node.accounts.map((a) => camelCase(a.name));
+          instructionDescriptors.set(node.name, {
+            name: camelCase(node.name),
+            discriminatorBytes,
+            discriminatorSize: discriminatorBytes.length,
+            accountNames: descriptorAccountNames,
+            argsOnlySerializerName: `get${pascalCase(node.name)}InstructionArgsOnlySerializer`,
+          });
 
           return new RenderMap().add(
             `instructions/${camelCase(node.name)}.ts`,

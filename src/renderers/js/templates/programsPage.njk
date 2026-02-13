@@ -20,6 +20,18 @@ export function create{{ program.name | pascalCase }}Program(): Program {
     isOnCluster() {
       return true;
     },
+    {% if instructionDescriptors.length > 0 %}
+    instructions: [
+      {% for ix in instructionDescriptors %}
+      {
+        name: '{{ ix.name }}',
+        discriminator: { bytes: new Uint8Array([{{ ix.discriminatorBytes | join(', ') }}]), size: {{ ix.discriminatorSize }} },
+        dataSerializer: {{ ix.argsOnlySerializerName }}(),
+        accountNames: [{% for name in ix.accountNames %}'{{ name }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+      },
+      {% endfor %}
+    ],
+    {% endif %}
   };
 }
 
