@@ -279,7 +279,9 @@ export function getRenderMapVisitor(
               (() => {
                 const programInstructionDescriptors = getAllInstructionsWithSubs(node, {
                   leavesOnly: !renderParentInstructions,
-                }).map((ix) => instructionDescriptors.get(ix.name)).filter(Boolean);
+                }).map((ix) => instructionDescriptors.get(ix.name)).filter(
+                  (d): d is NonNullable<typeof d> => d != null
+                );
 
                 const programImports = new JavaScriptImportMap()
                   .add('umi', [
@@ -295,7 +297,7 @@ export function getRenderMapVisitor(
 
                 if (programInstructionDescriptors.length > 0) {
                   for (const desc of programInstructionDescriptors) {
-                    programImports.add('generatedInstructions', desc!.argsOnlySerializerName);
+                    programImports.add('generatedInstructions', desc.argsOnlySerializerName);
                   }
                 }
 
@@ -648,10 +650,7 @@ export function getRenderMapVisitor(
           if (!linkedDataArgs) {
             imports.mergeWith(dataArgManifest.strictImports);
           }
-          if (!linkedDataArgs && hasData) {
-            imports.add('umiSerializers', ['Serializer']);
-          }
-          // Always import Serializer for the args-only serializer.
+          // Serializer is always needed for the args-only serializer export.
           imports.add('umiSerializers', ['Serializer']);
 
           // Extra args.
