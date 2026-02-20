@@ -37,6 +37,7 @@ import {
 } from './customDataHelpers';
 import {
   getAccountFetchHelpersFragment,
+  getAccountGpaHelpersFragment,
   getAccountPdaHelpersFragment,
   getAccountSizeHelpersFragment,
   getAccountTypeFragment,
@@ -368,11 +369,13 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
           const accountSizeHelpersFragment =
             getAccountSizeHelpersFragment(scope);
           const accountPdaHelpersFragment = getAccountPdaHelpersFragment(scope);
+          const accountGpaHelpersFragment = getAccountGpaHelpersFragment(scope);
           const imports = new ImportMap().mergeWith(
             accountTypeFragment,
             accountFetchHelpersFragment,
             accountSizeHelpersFragment,
-            accountPdaHelpersFragment
+            accountPdaHelpersFragment,
+            accountGpaHelpersFragment
           );
 
           return new RenderMap().add(
@@ -383,6 +386,7 @@ export function getRenderMapVisitor(options: GetRenderMapOptions = {}) {
               accountFetchHelpersFragment,
               accountSizeHelpersFragment,
               accountPdaHelpersFragment,
+              accountGpaHelpersFragment,
             })
           );
         },

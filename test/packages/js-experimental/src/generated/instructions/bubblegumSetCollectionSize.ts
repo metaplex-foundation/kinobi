@@ -43,9 +43,8 @@ export type BubblegumSetCollectionSizeInstruction<
   TAccountCollectionAuthority extends string | IAccountMeta<string> = string,
   TAccountCollectionMint extends string | IAccountMeta<string> = string,
   TAccountBubblegumSigner extends string | IAccountMeta<string> = string,
-  TAccountCollectionAuthorityRecord extends
-    | string
-    | IAccountMeta<string> = string,
+  TAccountCollectionAuthorityRecord extends string | IAccountMeta<string> =
+    string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &

@@ -37,10 +37,13 @@ import {
   getU64Encoder,
   transformEncoder,
 } from '@solana/web3.js';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
+import { gpaBuilder } from '../shared';
 import {
   Reservation,
   ReservationArgs,
   TmKey,
+  TmKeyArgs,
   getReservationDecoder,
   getReservationEncoder,
   getTmKeyDecoder,
@@ -160,4 +163,24 @@ export async function fetchAllMaybeReservationListV2(
   return maybeAccounts.map((maybeAccount) =>
     decodeReservationListV2(maybeAccount)
   );
+}
+
+export function getReservationListV2GpaBuilder(
+  programAddress: Address = MPL_TOKEN_METADATA_PROGRAM_ADDRESS
+) {
+  return gpaBuilder<{
+    key: TmKeyArgs;
+    masterEdition: Address;
+    supplySnapshot: OptionOrNullable<number | bigint>;
+    reservations: Array<ReservationArgs>;
+    totalReservationSpots: number | bigint;
+    currentReservationSpots: number | bigint;
+  }>(programAddress, {
+    key: [0, getTmKeyEncoder()],
+    masterEdition: [1, getAddressEncoder()],
+    supplySnapshot: [33, getOptionEncoder(getU64Encoder())],
+    reservations: [null, getArrayEncoder(getReservationEncoder())],
+    totalReservationSpots: [null, getU64Encoder()],
+    currentReservationSpots: [null, getU64Encoder()],
+  }).whereField('key', TmKey.ReservationListV2);
 }

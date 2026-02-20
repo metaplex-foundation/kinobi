@@ -32,6 +32,8 @@ import {
   transformEncoder,
 } from '@solana/web3.js';
 import { findFrequencyAccountPda } from '../pdas';
+import { MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS } from '../programs';
+import { gpaBuilder } from '../shared';
 import { TaKey } from '../types';
 
 export type FrequencyAccount = {
@@ -166,4 +168,18 @@ export async function fetchMaybeFrequencyAccountFromSeeds(
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findFrequencyAccountPda({ programAddress });
   return await fetchMaybeFrequencyAccount(rpc, address, fetchConfig);
+}
+
+export function getFrequencyAccountGpaBuilder(
+  programAddress: Address = MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS
+) {
+  return gpaBuilder<{
+    key: number | bigint;
+    lastUpdate: number | bigint;
+    period: number | bigint;
+  }>(programAddress, {
+    key: [0, getU64Encoder()],
+    lastUpdate: [8, getI64Encoder()],
+    period: [16, getI64Encoder()],
+  }).whereField('key', TaKey.Frequency);
 }

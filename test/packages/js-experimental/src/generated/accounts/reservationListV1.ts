@@ -14,16 +14,30 @@ import {
   FetchAccountsConfig,
   MaybeAccount,
   MaybeEncodedAccount,
+  OptionOrNullable,
   assertAccountExists,
   assertAccountsExist,
   decodeAccount,
   fetchEncodedAccount,
   fetchEncodedAccounts,
+  getAddressEncoder,
+  getArrayEncoder,
+  getOptionEncoder,
+  getU64Encoder,
 } from '@solana/web3.js';
 import {
   ReservationListV1AccountData,
   getReservationListV1AccountDataDecoder,
 } from '../../hooked';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
+import { gpaBuilder } from '../shared';
+import {
+  ReservationV1Args,
+  TmKey,
+  TmKeyArgs,
+  getReservationV1Encoder,
+  getTmKeyEncoder,
+} from '../types';
 
 export function decodeReservationListV1<TAddress extends string = string>(
   encodedAccount: EncodedAccount<TAddress>
@@ -86,4 +100,20 @@ export async function fetchAllMaybeReservationListV1(
   return maybeAccounts.map((maybeAccount) =>
     decodeReservationListV1(maybeAccount)
   );
+}
+
+export function getReservationListV1GpaBuilder(
+  programAddress: Address = MPL_TOKEN_METADATA_PROGRAM_ADDRESS
+) {
+  return gpaBuilder<{
+    key: TmKeyArgs;
+    masterEdition: Address;
+    supplySnapshot: OptionOrNullable<number | bigint>;
+    reservations: Array<ReservationV1Args>;
+  }>(programAddress, {
+    key: [0, getTmKeyEncoder()],
+    masterEdition: [1, getAddressEncoder()],
+    supplySnapshot: [33, getOptionEncoder(getU64Encoder())],
+    reservations: [null, getArrayEncoder(getReservationV1Encoder())],
+  }).whereField('key', TmKey.ReservationListV1);
 }

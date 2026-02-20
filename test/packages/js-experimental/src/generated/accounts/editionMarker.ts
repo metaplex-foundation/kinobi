@@ -31,7 +31,9 @@ import {
   getU8Encoder,
   transformEncoder,
 } from '@solana/web3.js';
-import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
+import { gpaBuilder } from '../shared';
+import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type EditionMarker = { key: TmKey; ledger: Array<number> };
 
@@ -120,4 +122,13 @@ export async function fetchAllMaybeEditionMarker(
 
 export function getEditionMarkerSize(): number {
   return 201;
+}
+
+export function getEditionMarkerGpaBuilder(
+  programAddress: Address = MPL_TOKEN_METADATA_PROGRAM_ADDRESS
+) {
+  return gpaBuilder<{ key: TmKeyArgs; ledger: Array<number> }>(programAddress, {
+    key: [0, getTmKeyEncoder()],
+    ledger: [1, getArrayEncoder(getU8Encoder(), { size: 200 })],
+  }).whereField('key', TmKey.EditionMarker);
 }

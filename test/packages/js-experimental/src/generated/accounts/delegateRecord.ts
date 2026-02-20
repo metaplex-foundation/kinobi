@@ -30,10 +30,13 @@ import {
   transformEncoder,
 } from '@solana/web3.js';
 import { DelegateRecordSeeds, findDelegateRecordPda } from '../pdas';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
+import { gpaBuilder } from '../shared';
 import {
   DelegateRole,
   DelegateRoleArgs,
   TmKey,
+  TmKeyArgs,
   getDelegateRoleDecoder,
   getDelegateRoleEncoder,
   getTmKeyDecoder,
@@ -157,4 +160,17 @@ export async function fetchMaybeDelegateRecordFromSeeds(
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findDelegateRecordPda(seeds, { programAddress });
   return await fetchMaybeDelegateRecord(rpc, address, fetchConfig);
+}
+
+export function getDelegateRecordGpaBuilder(
+  programAddress: Address = MPL_TOKEN_METADATA_PROGRAM_ADDRESS
+) {
+  return gpaBuilder<{ key: TmKeyArgs; role: DelegateRoleArgs; bump: number }>(
+    programAddress,
+    {
+      key: [0, getTmKeyEncoder()],
+      role: [1, getDelegateRoleEncoder()],
+      bump: [2, getU8Encoder()],
+    }
+  ).whereField('key', TmKey.Delegate);
 }

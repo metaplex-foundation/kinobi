@@ -103,4 +103,47 @@ export function getAccountMetaFactory(
 export function isTransactionSigner<TAddress extends string = string>(value: Address<TAddress> | ProgramDerivedAddress<TAddress> | TransactionSigner<TAddress>): value is TransactionSigner<TAddress> {
   return !!value && typeof value === 'object' && 'address' in value && web3JsIsTransactionSigner(value);
 }
+
+/**
+ * Builds a list of GPA (getProgramAccounts) filters for a given account type.
+ * @internal
+ */
+export function gpaBuilder<TFields extends Record<string, any>>(
+  programAddress: Address,
+  fieldDefs: { [K in keyof TFields]: [number | null, { encode: (value: TFields[K]) => Uint8Array }] },
+) {
+  const memcmpFilters: { memcmp: { offset: number; bytes: Uint8Array } }[] = [];
+  let dataSizeFilter: number | null = null;
+
+  const builder = {
+    programAddress,
+
+    whereField<K extends keyof TFields & string>(name: K, value: TFields[K]) {
+      const field = fieldDefs[name];
+      if (field && field[0] !== null) {
+        memcmpFilters.push({ memcmp: { offset: field[0], bytes: field[1].encode(value) } });
+      }
+      return builder;
+    },
+
+    whereSize(size: number) {
+      dataSizeFilter = size;
+      return builder;
+    },
+
+    getFilters(): ({ memcmp: { offset: number; bytes: Uint8Array } } | { dataSize: number })[] {
+      const filters: ({ memcmp: { offset: number; bytes: Uint8Array } } | { dataSize: number })[] = [...memcmpFilters];
+      if (dataSizeFilter !== null) {
+        filters.push({ dataSize: dataSizeFilter });
+      }
+      return filters;
+    },
+
+    getProgramAddress(): Address {
+      return programAddress;
+    },
+  };
+
+  return builder;
+}
 {% endblock %}

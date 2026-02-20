@@ -34,7 +34,9 @@ import {
   transformEncoder,
 } from '@solana/web3.js';
 import { MasterEditionV2Seeds, findMasterEditionV2Pda } from '../pdas';
-import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
+import { gpaBuilder } from '../shared';
+import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type MasterEditionV2 = {
   key: TmKey;
@@ -162,4 +164,18 @@ export async function fetchMaybeMasterEditionV2FromSeeds(
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findMasterEditionV2Pda(seeds, { programAddress });
   return await fetchMaybeMasterEditionV2(rpc, address, fetchConfig);
+}
+
+export function getMasterEditionV2GpaBuilder(
+  programAddress: Address = MPL_TOKEN_METADATA_PROGRAM_ADDRESS
+) {
+  return gpaBuilder<{
+    key: TmKeyArgs;
+    supply: number | bigint;
+    maxSupply: OptionOrNullable<number | bigint>;
+  }>(programAddress, {
+    key: [0, getTmKeyEncoder()],
+    supply: [1, getU64Encoder()],
+    maxSupply: [9, getOptionEncoder(getU64Encoder())],
+  }).whereField('key', TmKey.MasterEditionV2);
 }

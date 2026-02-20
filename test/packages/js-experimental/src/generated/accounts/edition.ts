@@ -31,7 +31,9 @@ import {
   getU64Encoder,
   transformEncoder,
 } from '@solana/web3.js';
-import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
+import { gpaBuilder } from '../shared';
+import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type Edition = { key: TmKey; parent: Address; edition: bigint };
 
@@ -115,4 +117,18 @@ export async function fetchAllMaybeEdition(
 
 export function getEditionSize(): number {
   return 41;
+}
+
+export function getEditionGpaBuilder(
+  programAddress: Address = MPL_TOKEN_METADATA_PROGRAM_ADDRESS
+) {
+  return gpaBuilder<{
+    key: TmKeyArgs;
+    parent: Address;
+    edition: number | bigint;
+  }>(programAddress, {
+    key: [0, getTmKeyEncoder()],
+    parent: [1, getAddressEncoder()],
+    edition: [33, getU64Encoder()],
+  }).whereField('key', TmKey.EditionV1);
 }

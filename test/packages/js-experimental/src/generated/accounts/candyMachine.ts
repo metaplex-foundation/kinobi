@@ -35,6 +35,8 @@ import {
   getU8Encoder,
   transformEncoder,
 } from '@solana/web3.js';
+import { MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS } from '../programs';
+import { gpaBuilder } from '../shared';
 import {
   CandyMachineData,
   CandyMachineDataArgs,
@@ -158,4 +160,26 @@ export async function fetchAllMaybeCandyMachine(
 ): Promise<MaybeAccount<CandyMachine>[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts.map((maybeAccount) => decodeCandyMachine(maybeAccount));
+}
+
+export function getCandyMachineGpaBuilder(
+  programAddress: Address = MPL_CANDY_MACHINE_CORE_PROGRAM_ADDRESS
+) {
+  return gpaBuilder<{
+    discriminator: Array<number>;
+    features: number | bigint;
+    authority: Address;
+    mintAuthority: Address;
+    collectionMint: Address;
+    itemsRedeemed: number | bigint;
+    data: CandyMachineDataArgs;
+  }>(programAddress, {
+    discriminator: [0, getArrayEncoder(getU8Encoder(), { size: 8 })],
+    features: [8, getU64Encoder()],
+    authority: [16, getAddressEncoder()],
+    mintAuthority: [48, getAddressEncoder()],
+    collectionMint: [80, getAddressEncoder()],
+    itemsRedeemed: [112, getU64Encoder()],
+    data: [120, getCandyMachineDataEncoder()],
+  }).whereField('discriminator', [51, 173, 177, 113, 25, 241, 109, 189]);
 }

@@ -48,6 +48,8 @@ import {
   transformEncoder,
 } from '@solana/web3.js';
 import { MetadataSeeds, findMetadataPda } from '../pdas';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
+import { gpaBuilder } from '../shared';
 import {
   Collection,
   CollectionArgs,
@@ -60,6 +62,7 @@ import {
   ProgrammableConfig,
   ProgrammableConfigArgs,
   TmKey,
+  TmKeyArgs,
   TokenStandard,
   TokenStandardArgs,
   Uses,
@@ -247,4 +250,49 @@ export async function fetchMaybeMetadataFromSeeds(
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findMetadataPda(seeds, { programAddress });
   return await fetchMaybeMetadata(rpc, address, fetchConfig);
+}
+
+export function getMetadataGpaBuilder(
+  programAddress: Address = MPL_TOKEN_METADATA_PROGRAM_ADDRESS
+) {
+  return gpaBuilder<{
+    key: TmKeyArgs;
+    updateAuthority: Address;
+    mint: Address;
+    name: string;
+    symbol: string;
+    uri: string;
+    sellerFeeBasisPoints: number;
+    creators: OptionOrNullable<Array<CreatorArgs>>;
+    primarySaleHappened: boolean;
+    isMutable: boolean;
+    editionNonce: OptionOrNullable<number>;
+    tokenStandard: OptionOrNullable<TokenStandardArgs>;
+    collection: OptionOrNullable<CollectionArgs>;
+    uses: OptionOrNullable<UsesArgs>;
+    collectionDetails: OptionOrNullable<CollectionDetailsArgs>;
+    programmableConfig: OptionOrNullable<ProgrammableConfigArgs>;
+    delegateState: OptionOrNullable<DelegateStateArgs>;
+  }>(programAddress, {
+    key: [0, getTmKeyEncoder()],
+    updateAuthority: [1, getAddressEncoder()],
+    mint: [33, getAddressEncoder()],
+    name: [65, addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
+    symbol: [null, addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
+    uri: [null, addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
+    sellerFeeBasisPoints: [null, getU16Encoder()],
+    creators: [null, getOptionEncoder(getArrayEncoder(getCreatorEncoder()))],
+    primarySaleHappened: [null, getBooleanEncoder()],
+    isMutable: [null, getBooleanEncoder()],
+    editionNonce: [null, getOptionEncoder(getU8Encoder())],
+    tokenStandard: [null, getOptionEncoder(getTokenStandardEncoder())],
+    collection: [null, getOptionEncoder(getCollectionEncoder())],
+    uses: [null, getOptionEncoder(getUsesEncoder())],
+    collectionDetails: [null, getOptionEncoder(getCollectionDetailsEncoder())],
+    programmableConfig: [
+      null,
+      getOptionEncoder(getProgrammableConfigEncoder()),
+    ],
+    delegateState: [null, getOptionEncoder(getDelegateStateEncoder())],
+  }).whereField('key', TmKey.MetadataV1);
 }

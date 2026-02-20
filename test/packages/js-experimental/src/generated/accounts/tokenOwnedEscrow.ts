@@ -31,10 +31,13 @@ import {
   getU8Encoder,
   transformEncoder,
 } from '@solana/web3.js';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
+import { gpaBuilder } from '../shared';
 import {
   EscrowAuthority,
   EscrowAuthorityArgs,
   TmKey,
+  TmKeyArgs,
   getEscrowAuthorityDecoder,
   getEscrowAuthorityEncoder,
   getTmKeyDecoder,
@@ -146,4 +149,20 @@ export async function fetchAllMaybeTokenOwnedEscrow(
   return maybeAccounts.map((maybeAccount) =>
     decodeTokenOwnedEscrow(maybeAccount)
   );
+}
+
+export function getTokenOwnedEscrowGpaBuilder(
+  programAddress: Address = MPL_TOKEN_METADATA_PROGRAM_ADDRESS
+) {
+  return gpaBuilder<{
+    key: TmKeyArgs;
+    baseToken: Address;
+    authority: EscrowAuthorityArgs;
+    bump: number;
+  }>(programAddress, {
+    key: [0, getTmKeyEncoder()],
+    baseToken: [1, getAddressEncoder()],
+    authority: [33, getEscrowAuthorityEncoder()],
+    bump: [null, getU8Encoder()],
+  }).whereField('key', TmKey.TokenOwnedEscrow);
 }

@@ -50,9 +50,8 @@ export type DummyInstruction<
   TAccountMintAuthority extends string | IAccountMeta<string> = string,
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountFoo extends string | IAccountMeta<string> = string,
-  TAccountBar extends
-    | string
-    | IAccountMeta<string> = 'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
+  TAccountBar extends string | IAccountMeta<string> =
+    'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR',
   TAccountDelegate extends string | IAccountMeta<string> = string,
   TAccountDelegateRecord extends string | IAccountMeta<string> = string,
   TAccountTokenOrAtaProgram extends string | IAccountMeta<string> = string,

@@ -31,7 +31,9 @@ import {
   getU8Encoder,
   transformEncoder,
 } from '@solana/web3.js';
-import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
+import { gpaBuilder } from '../shared';
+import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type UseAuthorityRecord = {
   key: TmKey;
@@ -138,4 +140,18 @@ export async function fetchAllMaybeUseAuthorityRecord(
 
 export function getUseAuthorityRecordSize(): number {
   return 10;
+}
+
+export function getUseAuthorityRecordGpaBuilder(
+  programAddress: Address = MPL_TOKEN_METADATA_PROGRAM_ADDRESS
+) {
+  return gpaBuilder<{
+    key: TmKeyArgs;
+    allowedUses: number | bigint;
+    bump: number;
+  }>(programAddress, {
+    key: [0, getTmKeyEncoder()],
+    allowedUses: [1, getU64Encoder()],
+    bump: [9, getU8Encoder()],
+  }).whereField('key', TmKey.UseAuthorityRecord);
 }

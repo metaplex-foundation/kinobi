@@ -37,6 +37,7 @@ export type NameTransformerKey =
   | 'accountFetchFromSeedsFunction'
   | 'accountFetchMaybeFromSeedsFunction'
   | 'accountGetSizeFunction'
+  | 'accountGpaBuilderFunction'
   | 'enumVariant'
   | 'discriminatedUnionDiscriminator'
   | 'discriminatedUnionVariant'
@@ -104,6 +105,7 @@ export const DEFAULT_NAME_TRANSFORMERS: NameTransformers = {
   accountFetchMaybeFromSeedsFunction: (name) =>
     `fetchMaybe${pascalCase(name)}FromSeeds`,
   accountGetSizeFunction: (name) => `get${pascalCase(name)}Size`,
+  accountGpaBuilderFunction: (name) => `get${pascalCase(name)}GpaBuilder`,
   enumVariant: (name) => `${pascalCase(name)}`,
   discriminatedUnionDiscriminator: () => '__kind',
   discriminatedUnionVariant: (name) => `${pascalCase(name)}`,

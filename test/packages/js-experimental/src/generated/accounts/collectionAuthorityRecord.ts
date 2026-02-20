@@ -35,7 +35,9 @@ import {
   getU8Encoder,
   transformEncoder,
 } from '@solana/web3.js';
-import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
+import { MPL_TOKEN_METADATA_PROGRAM_ADDRESS } from '../programs';
+import { gpaBuilder } from '../shared';
+import { TmKey, TmKeyArgs, getTmKeyDecoder, getTmKeyEncoder } from '../types';
 
 export type CollectionAuthorityRecord = {
   key: TmKey;
@@ -150,4 +152,18 @@ export async function fetchAllMaybeCollectionAuthorityRecord(
   return maybeAccounts.map((maybeAccount) =>
     decodeCollectionAuthorityRecord(maybeAccount)
   );
+}
+
+export function getCollectionAuthorityRecordGpaBuilder(
+  programAddress: Address = MPL_TOKEN_METADATA_PROGRAM_ADDRESS
+) {
+  return gpaBuilder<{
+    key: TmKeyArgs;
+    bump: number;
+    updateAuthority: OptionOrNullable<Address>;
+  }>(programAddress, {
+    key: [0, getTmKeyEncoder()],
+    bump: [1, getU8Encoder()],
+    updateAuthority: [2, getOptionEncoder(getAddressEncoder())],
+  }).whereField('key', TmKey.CollectionAuthorityRecord);
 }

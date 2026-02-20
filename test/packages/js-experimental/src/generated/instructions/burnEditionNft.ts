@@ -36,18 +36,15 @@ export type BurnEditionNftInstruction<
   TAccountOwner extends string | IAccountMeta<string> = string,
   TAccountPrintEditionMint extends string | IAccountMeta<string> = string,
   TAccountMasterEditionMint extends string | IAccountMeta<string> = string,
-  TAccountPrintEditionTokenAccount extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountMasterEditionTokenAccount extends
-    | string
-    | IAccountMeta<string> = string,
+  TAccountPrintEditionTokenAccount extends string | IAccountMeta<string> =
+    string,
+  TAccountMasterEditionTokenAccount extends string | IAccountMeta<string> =
+    string,
   TAccountMasterEditionAccount extends string | IAccountMeta<string> = string,
   TAccountPrintEditionAccount extends string | IAccountMeta<string> = string,
   TAccountEditionMarkerAccount extends string | IAccountMeta<string> = string,
-  TAccountSplTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSplTokenProgram extends string | IAccountMeta<string> =
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
