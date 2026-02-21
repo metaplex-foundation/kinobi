@@ -215,7 +215,12 @@ export function getRenderMapVisitor(
               .add('errors/index.ts', render('errorsIndex.njk', ctx));
           }
           if (accountsToExport.length > 0) {
-            map.add('accounts/index.ts', render('accountsIndex.njk', ctx));
+            map
+              .add('accounts/index.ts', render('accountsIndex.njk', ctx))
+              .add(
+                'accounts/fetchHelpers.ts',
+                render('accountsFetchHelpers.njk')
+              );
           }
           if (instructionsToExport.length > 0) {
             map.add(
