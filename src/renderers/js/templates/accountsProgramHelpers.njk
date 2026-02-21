@@ -1,0 +1,70 @@
+{% extends "layout.njk" %}
+
+{% block main %}
+{{ imports }}
+{% for account in accounts %}
+import { {{ account.pascalName }}, deserialize{{ account.pascalName }} } from './{{ account.camelName }}';
+{% endfor %}
+
+export type {{ programPascalName }}Account =
+{% for account in accounts %}
+  | {{ account.pascalName }}
+{% endfor %};
+
+function accountDataMatches(
+  data: Uint8Array,
+  expected: Uint8Array,
+  offset: number
+): boolean {
+  if (data.length < offset + expected.length) return false;
+  for (let i = 0; i < expected.length; i++) {
+    if (data[offset + i] !== expected[i]) return false;
+  }
+  return true;
+}
+
+export function deserialize{{ programPascalName }}Account(
+  rawAccount: RpcAccount
+): {{ programPascalName }}Account {
+  const data = rawAccount.data;
+{% for account in accounts %}
+  if ({{ account.condition }}) {
+    return deserialize{{ account.pascalName }}(rawAccount);
+  }
+{% endfor %}
+  throw new Error(
+    'The provided account could not be identified as a {{ program.name }} account.'
+  );
+}
+
+export async function fetchAll{{ programPascalName }}Accounts(
+  context: Pick<Context, 'rpc'>,
+  publicKeys: Array<PublicKey | Pda>,
+  options?: RpcGetAccountsOptions,
+): Promise<{{ programPascalName }}Account[]> {
+  const maybeAccounts = await context.rpc.getAccounts(
+    publicKeys.map((key) => toPublicKey(key, false)),
+    options,
+  );
+  return maybeAccounts.map((maybeAccount) => {
+    assertAccountExists(maybeAccount);
+    return deserialize{{ programPascalName }}Account(maybeAccount);
+  });
+}
+
+export async function safeFetchAll{{ programPascalName }}Accounts(
+  context: Pick<Context, 'rpc'>,
+  publicKeys: Array<PublicKey | Pda>,
+  options?: RpcGetAccountsOptions,
+): Promise<({{ programPascalName }}Account | null)[]> {
+  const maybeAccounts = await context.rpc.getAccounts(
+    publicKeys.map((key) => toPublicKey(key, false)),
+    options,
+  );
+  return maybeAccounts.map((maybeAccount) => {
+    return maybeAccount.exists
+      ? deserialize{{ programPascalName }}Account(maybeAccount as RpcAccount)
+      : null;
+  });
+}
+{% endblock %}
