@@ -9,7 +9,7 @@ export function getUniqueHashStringVisitor(
 ): Visitor<string> {
   const removeDocs = options.removeDocs ?? false;
   if (!removeDocs) {
-    return staticVisitor((node) => stringify(node)) as Visitor<string>;
+    return staticVisitor((node) => stringify(node) ?? '');
   }
-  return mapVisitor(removeDocsVisitor(), (node) => stringify(node)) as Visitor<string>;
+  return mapVisitor(removeDocsVisitor(), (node) => stringify(node) ?? '');
 }

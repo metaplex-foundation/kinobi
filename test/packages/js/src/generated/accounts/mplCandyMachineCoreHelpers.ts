@@ -74,8 +74,7 @@ export async function safeFetchAllMplCandyMachineCoreAccounts(
     options
   );
   return maybeAccounts.map((maybeAccount) => {
-    return maybeAccount.exists
-      ? deserializeMplCandyMachineCoreAccount(maybeAccount as RpcAccount)
-      : null;
+    if (!maybeAccount.exists) return null;
+    return deserializeMplCandyMachineCoreAccount(maybeAccount);
   });
 }

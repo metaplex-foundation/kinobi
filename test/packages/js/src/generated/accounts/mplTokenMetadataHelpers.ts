@@ -193,8 +193,7 @@ export async function safeFetchAllMplTokenMetadataAccounts(
     options
   );
   return maybeAccounts.map((maybeAccount) => {
-    return maybeAccount.exists
-      ? deserializeMplTokenMetadataAccount(maybeAccount as RpcAccount)
-      : null;
+    if (!maybeAccount.exists) return null;
+    return deserializeMplTokenMetadataAccount(maybeAccount);
   });
 }

@@ -62,9 +62,8 @@ export async function safeFetchAll{{ programPascalName }}Accounts(
     options,
   );
   return maybeAccounts.map((maybeAccount) => {
-    return maybeAccount.exists
-      ? deserialize{{ programPascalName }}Account(maybeAccount as RpcAccount)
-      : null;
+    if (!maybeAccount.exists) return null;
+    return deserialize{{ programPascalName }}Account(maybeAccount);
   });
 }
 {% endblock %}
