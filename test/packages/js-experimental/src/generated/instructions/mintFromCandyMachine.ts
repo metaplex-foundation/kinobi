@@ -44,26 +44,20 @@ export type MintFromCandyMachineInstruction<
   TAccountNftMintAuthority extends string | IAccountMeta<string> = string,
   TAccountNftMetadata extends string | IAccountMeta<string> = string,
   TAccountNftMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountCollectionAuthorityRecord extends
-    | string
-    | IAccountMeta<string> = string,
+  TAccountCollectionAuthorityRecord extends string | IAccountMeta<string> =
+    string,
   TAccountCollectionMint extends string | IAccountMeta<string> = string,
   TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
-  TAccountCollectionMasterEdition extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountCollectionUpdateAuthority extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountTokenMetadataProgram extends
-    | string
-    | IAccountMeta<string> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountCollectionMasterEdition extends string | IAccountMeta<string> =
+    string,
+  TAccountCollectionUpdateAuthority extends string | IAccountMeta<string> =
+    string,
+  TAccountTokenMetadataProgram extends string | IAccountMeta<string> =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountTokenProgram extends string | IAccountMeta<string> =
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string | IAccountMeta<string> =
+    '11111111111111111111111111111111',
   TAccountRecentSlothashes extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &

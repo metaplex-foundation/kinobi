@@ -48,49 +48,28 @@ export type ValidateInstruction<
   TProgram extends string = typeof MPL_TOKEN_AUTH_RULES_PROGRAM_ADDRESS,
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountRuleSet extends string | IAccountMeta<string> = string,
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountOptRuleSigner1 extends
-    | string
-    | IAccountMeta<string>
-    | undefined = undefined,
-  TAccountOptRuleSigner2 extends
-    | string
-    | IAccountMeta<string>
-    | undefined = undefined,
-  TAccountOptRuleSigner3 extends
-    | string
-    | IAccountMeta<string>
-    | undefined = undefined,
-  TAccountOptRuleSigner4 extends
-    | string
-    | IAccountMeta<string>
-    | undefined = undefined,
-  TAccountOptRuleSigner5 extends
-    | string
-    | IAccountMeta<string>
-    | undefined = undefined,
-  TAccountOptRuleNonsigner1 extends
-    | string
-    | IAccountMeta<string>
-    | undefined = undefined,
-  TAccountOptRuleNonsigner2 extends
-    | string
-    | IAccountMeta<string>
-    | undefined = undefined,
-  TAccountOptRuleNonsigner3 extends
-    | string
-    | IAccountMeta<string>
-    | undefined = undefined,
-  TAccountOptRuleNonsigner4 extends
-    | string
-    | IAccountMeta<string>
-    | undefined = undefined,
-  TAccountOptRuleNonsigner5 extends
-    | string
-    | IAccountMeta<string>
-    | undefined = undefined,
+  TAccountSystemProgram extends string | IAccountMeta<string> =
+    '11111111111111111111111111111111',
+  TAccountOptRuleSigner1 extends string | IAccountMeta<string> | undefined =
+    undefined,
+  TAccountOptRuleSigner2 extends string | IAccountMeta<string> | undefined =
+    undefined,
+  TAccountOptRuleSigner3 extends string | IAccountMeta<string> | undefined =
+    undefined,
+  TAccountOptRuleSigner4 extends string | IAccountMeta<string> | undefined =
+    undefined,
+  TAccountOptRuleSigner5 extends string | IAccountMeta<string> | undefined =
+    undefined,
+  TAccountOptRuleNonsigner1 extends string | IAccountMeta<string> | undefined =
+    undefined,
+  TAccountOptRuleNonsigner2 extends string | IAccountMeta<string> | undefined =
+    undefined,
+  TAccountOptRuleNonsigner3 extends string | IAccountMeta<string> | undefined =
+    undefined,
+  TAccountOptRuleNonsigner4 extends string | IAccountMeta<string> | undefined =
+    undefined,
+  TAccountOptRuleNonsigner5 extends string | IAccountMeta<string> | undefined =
+    undefined,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &

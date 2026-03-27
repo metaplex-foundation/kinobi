@@ -3,8 +3,9 @@
 {% block main %}
 
 use num_derive::FromPrimitive;
-use solana_program_error::{ProgramError, ToStr};
+use solana_program::program_error::ProgramError;
 use thiserror::Error;
+use super::ToStr;
 
 #[derive(Clone, Debug, Eq, Error, FromPrimitive, PartialEq)]
 pub enum {{ program.name | pascalCase }}Error {

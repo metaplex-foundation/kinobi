@@ -49,16 +49,13 @@ export type MintNewEditionFromMasterEditionViaTokenInstruction<
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountTokenAccountOwner extends string | IAccountMeta<string> = string,
   TAccountTokenAccount extends string | IAccountMeta<string> = string,
-  TAccountNewMetadataUpdateAuthority extends
-    | string
-    | IAccountMeta<string> = string,
+  TAccountNewMetadataUpdateAuthority extends string | IAccountMeta<string> =
+    string,
   TAccountMetadata extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountTokenProgram extends string | IAccountMeta<string> =
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSystemProgram extends string | IAccountMeta<string> =
+    '11111111111111111111111111111111',
   TAccountRent extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &

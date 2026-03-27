@@ -92,17 +92,14 @@ export type UpdateV1Instruction<
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountSysvarInstructions extends
-    | string
-    | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountSystemProgram extends string | IAccountMeta<string> =
+    '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string | IAccountMeta<string> =
+    'Sysvar1nstructions1111111111111111111111111',
   TAccountToken extends string | IAccountMeta<string> = string,
   TAccountDelegateRecord extends string | IAccountMeta<string> = string,
-  TAccountAuthorizationRulesProgram extends
-    | string
-    | IAccountMeta<string> = string,
+  TAccountAuthorizationRulesProgram extends string | IAccountMeta<string> =
+    string,
   TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &

@@ -53,45 +53,29 @@ export function getNestedGpaFieldsFromAccount(
   gpaFields: GpaField[],
   linkables: LinkableDictionary
 ): NestedGpaField[] {
-  const nestedFields: NestedGpaField[] = [];
-
-  for (const gpaField of gpaFields) {
-    // Check if this field is a defined type link
-    if (!isNode(gpaField.type, 'definedTypeLinkNode')) {
-      continue;
-    }
-
-    const linkNode = gpaField.type as DefinedTypeLinkNode;
-
-    // Skip if it's an imported type (external)
-    if (linkNode.importFrom) {
-      continue;
-    }
-
-    // Look up the defined type
-    const definedType = linkables.get(linkNode) as DefinedTypeNode | undefined;
-    if (!definedType) {
-      continue;
-    }
-
-    // Check if the defined type is a struct
-    if (!isNode(definedType.type, 'structTypeNode')) {
-      continue;
-    }
-
-    const structType = definedType.type as StructTypeNode;
-
-    // Extract the struct fields
-    nestedFields.push({
-      parentFieldName: gpaField.name,
-      parentOffset: gpaField.offset,
-      structTypeName: definedType.name,
-      fields: structType.fields.map((field: StructFieldTypeNode) => ({
-        name: field.name,
-        type: field.type,
-      })),
-    });
-  }
-
-  return nestedFields;
+  return gpaFields
+    .filter(
+      (gpaField): gpaField is GpaField & { type: DefinedTypeLinkNode } =>
+        isNode(gpaField.type, 'definedTypeLinkNode') &&
+        !gpaField.type.importFrom
+    )
+    .reduce<NestedGpaField[]>((acc, gpaField) => {
+      const definedType = linkables.get(gpaField.type) as
+        | DefinedTypeNode
+        | undefined;
+      if (!definedType || !isNode(definedType.type, 'structTypeNode')) {
+        return acc;
+      }
+      const structType = definedType.type as StructTypeNode;
+      acc.push({
+        parentFieldName: gpaField.name,
+        parentOffset: gpaField.offset,
+        structTypeName: definedType.name,
+        fields: structType.fields.map((field: StructFieldTypeNode) => ({
+          name: field.name,
+          type: field.type,
+        })),
+      });
+      return acc;
+    }, []);
 }

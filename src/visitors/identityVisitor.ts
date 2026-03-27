@@ -122,7 +122,7 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       const data = visit(this)(node.data);
       if (data === null) return null;
       assertIsNode(data, 'structTypeNode');
-      const pda = node.pda ? visit(this)(node.pda) ?? undefined : undefined;
+      const pda = node.pda ? (visit(this)(node.pda) ?? undefined) : undefined;
       if (pda) assertIsNode(pda, 'pdaLinkNode');
       return accountNode({ ...node, data, pda });
     };
@@ -178,7 +178,7 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
   if (castedNodeKeys.includes('instructionAccountNode')) {
     visitor.visitInstructionAccount = function visitInstructionAccount(node) {
       const defaultValue = node.defaultValue
-        ? visit(this)(node.defaultValue) ?? undefined
+        ? (visit(this)(node.defaultValue) ?? undefined)
         : undefined;
       if (defaultValue)
         assertIsNode(defaultValue, INSTRUCTION_INPUT_VALUE_NODE);
@@ -192,7 +192,7 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       if (type === null) return null;
       assertIsNode(type, TYPE_NODES);
       const defaultValue = node.defaultValue
-        ? visit(this)(node.defaultValue) ?? undefined
+        ? (visit(this)(node.defaultValue) ?? undefined)
         : undefined;
       if (defaultValue)
         assertIsNode(defaultValue, INSTRUCTION_INPUT_VALUE_NODE);
@@ -363,7 +363,7 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       if (type === null) return null;
       assertIsNode(type, TYPE_NODES);
       const defaultValue = node.defaultValue
-        ? visit(this)(node.defaultValue) ?? undefined
+        ? (visit(this)(node.defaultValue) ?? undefined)
         : undefined;
       if (defaultValue) assertIsNode(defaultValue, VALUE_NODES);
       return structFieldTypeNode({ ...node, type, defaultValue });
@@ -450,7 +450,7 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       assertIsNode(enumLink, ['definedTypeLinkNode']);
       if (typeof node.value === 'string') return { ...node };
       const value = node.value
-        ? visit(this)(node.value) ?? undefined
+        ? (visit(this)(node.value) ?? undefined)
         : undefined;
       if (value) assertIsNode(value, ['structValueNode', 'tupleValueNode']);
       return enumValueNode(enumLink, node.variant, value);
@@ -575,15 +575,15 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
         'argumentValueNode',
       ]);
       const value = node.value
-        ? visit(this)(node.value) ?? undefined
+        ? (visit(this)(node.value) ?? undefined)
         : undefined;
       if (value) assertIsNode(value, VALUE_NODES);
       const ifTrue = node.ifTrue
-        ? visit(this)(node.ifTrue) ?? undefined
+        ? (visit(this)(node.ifTrue) ?? undefined)
         : undefined;
       if (ifTrue) assertIsNode(ifTrue, CONDITIONAL_VALUE_BRANCH_NODES);
       const ifFalse = node.ifFalse
-        ? visit(this)(node.ifFalse) ?? undefined
+        ? (visit(this)(node.ifFalse) ?? undefined)
         : undefined;
       if (ifFalse) assertIsNode(ifFalse, CONDITIONAL_VALUE_BRANCH_NODES);
       if (!ifTrue && !ifFalse) return null;

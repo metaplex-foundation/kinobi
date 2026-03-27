@@ -13,10 +13,14 @@
     "build": "rimraf dist && tsc && tsc -p test/tsconfig.json && pnpm build:njk",
     "build:njk": "copyfiles -u 1 src/**/*.njk dist/cjs/ && copyfiles -u 1 src/**/*.njk dist/test/src/",
     "build:docs": "typedoc",
-    "test": "ava && node ./test/testFile.cjs && pnpm test:js && pnpm test:js-experimental && pnpm test:rust",
+    "test": "ava && node ./test/testFile.cjs && pnpm test:js && pnpm test:js-experimental && pnpm test:rust && pnpm test:genesis",
     "test:js": "(cd ./test/packages/js && pnpm install && pnpm build)",
     "test:js-experimental": "(cd ./test/packages/js-experimental && pnpm install && pnpm build && pnpm lint)",
     "test:rust": "(cd ./test/packages/rust && pnpm install && pnpm build && pnpm lint)",
+    "test:genesis": "node ./test/testGenesisProgram.cjs && pnpm test:genesis-js && pnpm test:genesis-js-experimental && pnpm test:genesis-rust",
+    "test:genesis-js": "(cd ./test/packages/genesis-js && pnpm install && pnpm build)",
+    "test:genesis-js-experimental": "(cd ./test/packages/genesis-js-experimental && pnpm install && pnpm build && pnpm lint)",
+    "test:genesis-rust": "(cd ./test/packages/genesis-rust && cargo build && cargo clippy -- -D warnings)",
     "lint": "prettier -c ./src/ && eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "prettier --write ./src && eslint . --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --check src test --ignore-path .prettierignore",
@@ -52,7 +56,6 @@
     "@ava/typescript": "^4.1.0",
     "@changesets/changelog-github": "^0.4.8",
     "@changesets/cli": "^2.26.0",
-    "@types/json-stable-stringify": "^1.0.36",
     "@types/node": "^18.11.17",
     "@types/nunjucks": "^3.2.1",
     "@types/prettier": "^3.0.0",
@@ -83,6 +86,5 @@
         "test/": "dist/test/test/"
       }
     }
-  },
-  "packageManager": "pnpm@8.9.0"
+  }
 }

@@ -33,9 +33,8 @@ import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type RevokeCollectionAuthorityInstruction<
   TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
-  TAccountCollectionAuthorityRecord extends
-    | string
-    | IAccountMeta<string> = string,
+  TAccountCollectionAuthorityRecord extends string | IAccountMeta<string> =
+    string,
   TAccountDelegateAuthority extends string | IAccountMeta<string> = string,
   TAccountRevokeAuthority extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,

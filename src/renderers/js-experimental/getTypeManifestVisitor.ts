@@ -371,9 +371,7 @@ export function getTypeManifestVisitor(input: {
           const customEncoder = `(() => {
   const ${encoderVar} = ${childManifest.encoder.render};
   const sentinel = new Uint8Array(${sentinelArray});
-  if (${encoderVar}.fixedSize == null) {
-    throw new Error('Fixed-size options require an encoder with a fixed size.');
-  }
+  assertIsFixedSize(${encoderVar}, 'Fixed-size options require an encoder with a fixed size.');
   if (${encoderVar}.fixedSize !== sentinel.length) {
     throw new Error('Fixed-size option sentinel length must match the encoder fixed size.');
   }
@@ -409,14 +407,12 @@ export function getTypeManifestVisitor(input: {
           const customDecoder = `(() => {
   const ${decoderVar} = ${childManifest.decoder.render};
   const sentinel = new Uint8Array(${sentinelArray});
-  if (${decoderVar}.fixedSize == null) {
-    throw new Error('Fixed-size options require a decoder with a fixed size.');
-  }
+  assertIsFixedSize(${decoderVar}, 'Fixed-size options require a decoder with a fixed size.');
   if (${decoderVar}.fixedSize !== sentinel.length) {
     throw new Error('Fixed-size option sentinel length must match the decoder fixed size.');
   }
   const isSentinel = (bytes: Uint8Array, offset: number) => {
-    const slice = bytes.slice(offset, offset + ${decoderVar}.fixedSize!);
+    const slice = bytes.slice(offset, offset + ${decoderVar}.fixedSize);
     return slice.every((byte, i) => byte === sentinel[i]);
   };
   const none = (): Option<${baseStrictType}> => ({ __option: 'None' });
@@ -426,7 +422,7 @@ export function getTypeManifestVisitor(input: {
   });
   const readOption = (bytes: Uint8Array, offset = 0) => {
     if (isSentinel(bytes, offset)) {
-      return [none(), offset + ${decoderVar}.fixedSize!] as [
+      return [none(), offset + ${decoderVar}.fixedSize] as [
         Option<${baseStrictType}>,
         number
       ];
@@ -449,10 +445,10 @@ export function getTypeManifestVisitor(input: {
 
           childManifest.encoder
             .setRender(customEncoder)
-            .addImports('solanaCodecsCore', 'Encoder');
+            .addImports('solanaCodecsCore', ['Encoder', 'assertIsFixedSize']);
           childManifest.decoder
             .setRender(customDecoder)
-            .addImports('solanaCodecsCore', 'Decoder');
+            .addImports('solanaCodecsCore', ['Decoder', 'assertIsFixedSize']);
 
           return childManifest;
         },

@@ -1,2 +1,2 @@
 [workspace]
-members = ["test/packages/rust"]
+members = ["test/packages/rust", "test/packages/genesis-rust"]

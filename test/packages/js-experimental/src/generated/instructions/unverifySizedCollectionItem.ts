@@ -39,12 +39,10 @@ export type UnverifySizedCollectionItemInstruction<
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountCollectionMint extends string | IAccountMeta<string> = string,
   TAccountCollection extends string | IAccountMeta<string> = string,
-  TAccountCollectionMasterEditionAccount extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountCollectionAuthorityRecord extends
-    | string
-    | IAccountMeta<string> = string,
+  TAccountCollectionMasterEditionAccount extends string | IAccountMeta<string> =
+    string,
+  TAccountCollectionAuthorityRecord extends string | IAccountMeta<string> =
+    string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
