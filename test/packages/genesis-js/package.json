@@ -1,0 +1,19 @@
+{
+  "name": "@metaplex-foundation/kinobi-genesis-generated",
+  "private": true,
+  "version": "0.0.1",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@metaplex-foundation/umi": "^1.5.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  }
+}

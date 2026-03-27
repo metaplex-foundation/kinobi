@@ -55,7 +55,7 @@ export function instructionAccountNodeFromIdl(
   return instructionAccountNode({
     name: idl.name ?? '',
     isWritable: idl.isMut ?? false,
-    isSigner: idl.isOptionalSigner ? 'either' : idl.isSigner ?? false,
+    isSigner: idl.isOptionalSigner ? 'either' : (idl.isSigner ?? false),
     isOptional,
     docs: idl.docs ?? desc ?? [],
   });

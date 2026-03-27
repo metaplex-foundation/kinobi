@@ -231,7 +231,8 @@ function getRemainingAccountsFragment(
       if (argumentExists) return [];
 
       const isSigner = remainingAccountsNode.isSigner ?? false;
-      const optionalSign = remainingAccountsNode.isOptional ?? false ? '?' : '';
+      const optionalSign =
+        (remainingAccountsNode.isOptional ?? false) ? '?' : '';
       const signerFragment = fragment(`TransactionSigner`).addImports(
         'solanaSigners',
         ['TransactionSigner']

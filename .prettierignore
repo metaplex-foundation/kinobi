@@ -1,5 +1,6 @@
 *.njk
 *.rs
 test/packages/rust/
+test/packages/genesis-rust/
 *.json
 *.yaml

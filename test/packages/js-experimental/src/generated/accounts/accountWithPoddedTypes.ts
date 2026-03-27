@@ -30,6 +30,7 @@ import {
   Encoder,
   Option,
   OptionOrNullable,
+  assertIsFixedSize,
   combineCodec,
   getI64Decoder,
   getI64Encoder,
@@ -79,11 +80,10 @@ export function getAccountWithPoddedTypesAccountDataEncoder(): Encoder<AccountWi
         const sentinel = new Uint8Array([
           255, 255, 255, 255, 255, 255, 255, 127,
         ]);
-        if (__fixedSizeOptionEncoder0.fixedSize == null) {
-          throw new Error(
-            'Fixed-size options require an encoder with a fixed size.'
-          );
-        }
+        assertIsFixedSize(
+          __fixedSizeOptionEncoder0,
+          'Fixed-size options require an encoder with a fixed size.'
+        );
         if (__fixedSizeOptionEncoder0.fixedSize !== sentinel.length) {
           throw new Error(
             'Fixed-size option sentinel length must match the encoder fixed size.'
@@ -129,11 +129,10 @@ export function getAccountWithPoddedTypesAccountDataEncoder(): Encoder<AccountWi
         const sentinel = new Uint8Array([
           255, 255, 255, 255, 255, 255, 255, 255,
         ]);
-        if (__fixedSizeOptionEncoder1.fixedSize == null) {
-          throw new Error(
-            'Fixed-size options require an encoder with a fixed size.'
-          );
-        }
+        assertIsFixedSize(
+          __fixedSizeOptionEncoder1,
+          'Fixed-size options require an encoder with a fixed size.'
+        );
         if (__fixedSizeOptionEncoder1.fixedSize !== sentinel.length) {
           throw new Error(
             'Fixed-size option sentinel length must match the encoder fixed size.'
@@ -180,11 +179,10 @@ export function getAccountWithPoddedTypesAccountDataEncoder(): Encoder<AccountWi
           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
           0, 0, 0, 0, 0, 0, 0, 0, 0,
         ]);
-        if (__fixedSizeOptionEncoder2.fixedSize == null) {
-          throw new Error(
-            'Fixed-size options require an encoder with a fixed size.'
-          );
-        }
+        assertIsFixedSize(
+          __fixedSizeOptionEncoder2,
+          'Fixed-size options require an encoder with a fixed size.'
+        );
         if (__fixedSizeOptionEncoder2.fixedSize !== sentinel.length) {
           throw new Error(
             'Fixed-size option sentinel length must match the encoder fixed size.'
@@ -238,11 +236,10 @@ export function getAccountWithPoddedTypesAccountDataDecoder(): Decoder<AccountWi
         const sentinel = new Uint8Array([
           255, 255, 255, 255, 255, 255, 255, 127,
         ]);
-        if (__fixedSizeOptionDecoder0.fixedSize == null) {
-          throw new Error(
-            'Fixed-size options require a decoder with a fixed size.'
-          );
-        }
+        assertIsFixedSize(
+          __fixedSizeOptionDecoder0,
+          'Fixed-size options require a decoder with a fixed size.'
+        );
         if (__fixedSizeOptionDecoder0.fixedSize !== sentinel.length) {
           throw new Error(
             'Fixed-size option sentinel length must match the decoder fixed size.'
@@ -251,7 +248,7 @@ export function getAccountWithPoddedTypesAccountDataDecoder(): Decoder<AccountWi
         const isSentinel = (bytes: Uint8Array, offset: number) => {
           const slice = bytes.slice(
             offset,
-            offset + __fixedSizeOptionDecoder0.fixedSize!
+            offset + __fixedSizeOptionDecoder0.fixedSize
           );
           return slice.every((byte, i) => byte === sentinel[i]);
         };
@@ -262,7 +259,7 @@ export function getAccountWithPoddedTypesAccountDataDecoder(): Decoder<AccountWi
         });
         const readOption = (bytes: Uint8Array, offset = 0) => {
           if (isSentinel(bytes, offset)) {
-            return [none(), offset + __fixedSizeOptionDecoder0.fixedSize!] as [
+            return [none(), offset + __fixedSizeOptionDecoder0.fixedSize] as [
               Option<bigint>,
               number,
             ];
@@ -290,11 +287,10 @@ export function getAccountWithPoddedTypesAccountDataDecoder(): Decoder<AccountWi
         const sentinel = new Uint8Array([
           255, 255, 255, 255, 255, 255, 255, 255,
         ]);
-        if (__fixedSizeOptionDecoder1.fixedSize == null) {
-          throw new Error(
-            'Fixed-size options require a decoder with a fixed size.'
-          );
-        }
+        assertIsFixedSize(
+          __fixedSizeOptionDecoder1,
+          'Fixed-size options require a decoder with a fixed size.'
+        );
         if (__fixedSizeOptionDecoder1.fixedSize !== sentinel.length) {
           throw new Error(
             'Fixed-size option sentinel length must match the decoder fixed size.'
@@ -303,7 +299,7 @@ export function getAccountWithPoddedTypesAccountDataDecoder(): Decoder<AccountWi
         const isSentinel = (bytes: Uint8Array, offset: number) => {
           const slice = bytes.slice(
             offset,
-            offset + __fixedSizeOptionDecoder1.fixedSize!
+            offset + __fixedSizeOptionDecoder1.fixedSize
           );
           return slice.every((byte, i) => byte === sentinel[i]);
         };
@@ -314,7 +310,7 @@ export function getAccountWithPoddedTypesAccountDataDecoder(): Decoder<AccountWi
         });
         const readOption = (bytes: Uint8Array, offset = 0) => {
           if (isSentinel(bytes, offset)) {
-            return [none(), offset + __fixedSizeOptionDecoder1.fixedSize!] as [
+            return [none(), offset + __fixedSizeOptionDecoder1.fixedSize] as [
               Option<bigint>,
               number,
             ];
@@ -343,11 +339,10 @@ export function getAccountWithPoddedTypesAccountDataDecoder(): Decoder<AccountWi
           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
           0, 0, 0, 0, 0, 0, 0, 0, 0,
         ]);
-        if (__fixedSizeOptionDecoder2.fixedSize == null) {
-          throw new Error(
-            'Fixed-size options require a decoder with a fixed size.'
-          );
-        }
+        assertIsFixedSize(
+          __fixedSizeOptionDecoder2,
+          'Fixed-size options require a decoder with a fixed size.'
+        );
         if (__fixedSizeOptionDecoder2.fixedSize !== sentinel.length) {
           throw new Error(
             'Fixed-size option sentinel length must match the decoder fixed size.'
@@ -356,7 +351,7 @@ export function getAccountWithPoddedTypesAccountDataDecoder(): Decoder<AccountWi
         const isSentinel = (bytes: Uint8Array, offset: number) => {
           const slice = bytes.slice(
             offset,
-            offset + __fixedSizeOptionDecoder2.fixedSize!
+            offset + __fixedSizeOptionDecoder2.fixedSize
           );
           return slice.every((byte, i) => byte === sentinel[i]);
         };
@@ -367,7 +362,7 @@ export function getAccountWithPoddedTypesAccountDataDecoder(): Decoder<AccountWi
         });
         const readOption = (bytes: Uint8Array, offset = 0) => {
           if (isSentinel(bytes, offset)) {
-            return [none(), offset + __fixedSizeOptionDecoder2.fixedSize!] as [
+            return [none(), offset + __fixedSizeOptionDecoder2.fixedSize] as [
               Option<Address>,
               number,
             ];

@@ -5,6 +5,11 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+/// Trait for converting an error to a static string representation.
+pub trait ToStr {
+    fn to_str(&self) -> &'static str;
+}
+
 pub(crate) mod mpl_candy_machine_core;
 pub(crate) mod mpl_token_auth_rules;
 pub(crate) mod mpl_token_metadata;

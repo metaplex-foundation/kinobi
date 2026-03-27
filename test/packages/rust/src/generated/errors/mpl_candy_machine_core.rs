@@ -5,8 +5,9 @@
 //! [https://github.com/metaplex-foundation/kinobi]
 //!
 
+use super::ToStr;
 use num_derive::FromPrimitive;
-use solana_program_error::{ProgramError, ToStr};
+use solana_program::program_error::ProgramError;
 use thiserror::Error;
 
 #[derive(Clone, Debug, Eq, Error, FromPrimitive, PartialEq)]

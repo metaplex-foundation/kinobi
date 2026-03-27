@@ -44,18 +44,14 @@ export type TransferOutOfEscrowInstruction<
   TAccountAttributeDst extends string | IAccountMeta<string> = string,
   TAccountEscrowMint extends string | IAccountMeta<string> = string,
   TAccountEscrowAccount extends string | IAccountMeta<string> = string,
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountAtaProgram extends
-    | string
-    | IAccountMeta<string> = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSysvarInstructions extends
-    | string
-    | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
+  TAccountSystemProgram extends string | IAccountMeta<string> =
+    '11111111111111111111111111111111',
+  TAccountAtaProgram extends string | IAccountMeta<string> =
+    'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountTokenProgram extends string | IAccountMeta<string> =
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSysvarInstructions extends string | IAccountMeta<string> =
+    'Sysvar1nstructions1111111111111111111111111',
   TAccountAuthority extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &

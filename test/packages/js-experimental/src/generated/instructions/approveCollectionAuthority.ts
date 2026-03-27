@@ -33,17 +33,15 @@ import { ResolvedAccount, getAccountMetaFactory } from '../shared';
 
 export type ApproveCollectionAuthorityInstruction<
   TProgram extends string = typeof MPL_TOKEN_METADATA_PROGRAM_ADDRESS,
-  TAccountCollectionAuthorityRecord extends
-    | string
-    | IAccountMeta<string> = string,
+  TAccountCollectionAuthorityRecord extends string | IAccountMeta<string> =
+    string,
   TAccountNewCollectionAuthority extends string | IAccountMeta<string> = string,
   TAccountUpdateAuthority extends string | IAccountMeta<string> = string,
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountSystemProgram extends string | IAccountMeta<string> =
+    '11111111111111111111111111111111',
   TAccountRent extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &

@@ -342,6 +342,14 @@ export function getTypeManifestVisitor(input: {
           ]);
           childManifest.looseImports.add('umi', 'OptionOrNullable');
           childManifest.serializerImports.add('umiSerializers', 'Serializer');
+          // The inline serializer IIFE references types from strict/loose
+          // imports in its type annotations, so they must also be tracked in
+          // serializerImports for contexts that only collect serializer imports
+          // (e.g. nested GPA fields).
+          childManifest.serializerImports.mergeWith(
+            childManifest.strictImports,
+            childManifest.looseImports
+          );
 
           const sentinelBytes = `[${fixedSizeOptionType.sentinel.join(', ')}]`;
           const serializerType = `Serializer<OptionOrNullable<${baseLooseType}>, Option<${baseStrictType}>>`;

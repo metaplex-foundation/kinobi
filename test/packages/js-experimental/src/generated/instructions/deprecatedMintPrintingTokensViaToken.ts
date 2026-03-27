@@ -48,12 +48,10 @@ export type DeprecatedMintPrintingTokensViaTokenInstruction<
   TAccountBurnAuthority extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountRent extends
-    | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
+  TAccountTokenProgram extends string | IAccountMeta<string> =
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountRent extends string | IAccountMeta<string> =
+    'SysvarRent111111111111111111111111111111111',
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &

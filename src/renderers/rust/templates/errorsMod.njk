@@ -2,6 +2,11 @@
 
 {% block main %}
 
+/// Trait for converting an error to a static string representation.
+pub trait ToStr {
+    fn to_str(&self) -> &'static str;
+}
+
 {% for program in programsToExport | sort(false, false, 'name') %}
   {% if program.errors.length > 0 %}
     pub(crate) mod {{ program.name | snakeCase }};

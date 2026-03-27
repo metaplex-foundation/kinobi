@@ -42,26 +42,20 @@ export type SetCollectionInstruction<
   TAccountPayer extends string | IAccountMeta<string> = string,
   TAccountCollectionMint extends string | IAccountMeta<string> = string,
   TAccountCollectionMetadata extends string | IAccountMeta<string> = string,
-  TAccountCollectionAuthorityRecord extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountNewCollectionUpdateAuthority extends
-    | string
-    | IAccountMeta<string> = string,
+  TAccountCollectionAuthorityRecord extends string | IAccountMeta<string> =
+    string,
+  TAccountNewCollectionUpdateAuthority extends string | IAccountMeta<string> =
+    string,
   TAccountNewCollectionMetadata extends string | IAccountMeta<string> = string,
   TAccountNewCollectionMint extends string | IAccountMeta<string> = string,
-  TAccountNewCollectionMasterEdition extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountNewCollectionAuthorityRecord extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountTokenMetadataProgram extends
-    | string
-    | IAccountMeta<string> = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountNewCollectionMasterEdition extends string | IAccountMeta<string> =
+    string,
+  TAccountNewCollectionAuthorityRecord extends string | IAccountMeta<string> =
+    string,
+  TAccountTokenMetadataProgram extends string | IAccountMeta<string> =
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+  TAccountSystemProgram extends string | IAccountMeta<string> =
+    '11111111111111111111111111111111',
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &

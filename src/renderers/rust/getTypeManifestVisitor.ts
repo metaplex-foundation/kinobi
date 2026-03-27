@@ -1,4 +1,5 @@
 import {
+  EnumTypeNode,
   REGISTERED_TYPE_NODE_KINDS,
   arrayTypeNode,
   isNode,
@@ -191,11 +192,28 @@ export function getTypeManifestVisitor(input: {
             .join('\n');
           const mergedManifest = mergeManifests(variants);
 
+          const enumName = pascalCase(originalParentName);
+          const enumDefinition = `pub enum ${enumName} {\n${variantNames}\n}`;
+
+          if (!mergedManifest.hasFixedSizeOption) {
+            return {
+              ...mergedManifest,
+              type: enumDefinition,
+            };
+          }
+
+          // Generate custom Borsh impls for enums with fixed-size option
+          // fields, since the derive macro can't handle sentinel-based
+          // options.
+          const enumBorshImpl = renderEnumBorshImpl({
+            enumName,
+            enumType,
+            variants,
+          });
+
           return {
             ...mergedManifest,
-            type: `pub enum ${pascalCase(
-              originalParentName
-            )} {\n${variantNames}\n}`,
+            type: `${enumDefinition}\n\n${enumBorshImpl}`,
           };
         },
 
@@ -698,4 +716,201 @@ function getFixedSizeOptionConstName(structName: string, fieldName: string) {
   return `${snakeCase(structName).toUpperCase()}_${fieldName
     .toUpperCase()
     .replace(/[^A-Z0-9_]/g, '_')}_FIXED_SIZE_OPTION_SENTINEL`;
+}
+
+function renderEnumBorshImpl(input: {
+  enumName: string;
+  enumType: EnumTypeNode;
+  variants: RustTypeManifest[];
+}): string {
+  const { enumName, enumType, variants } = input;
+
+  // Collect sentinel constants from all variants.
+  const sentinelLines: string[] = enumType.variants.flatMap((variant, i) => {
+    const manifest = variants[i];
+    if (!manifest.fixedSizeOptionFields) return [];
+    return Object.entries(manifest.fixedSizeOptionFields).map(
+      ([fieldName, info]) => {
+        const variantName = pascalCase(variant.name);
+        const constName = getFixedSizeOptionConstName(
+          `${enumName}${variantName}`,
+          fieldName
+        );
+        const sentinelArray = info.sentinel.join(', ');
+        return `const ${constName}: [u8; ${info.byteSize}] = [${sentinelArray}];`;
+      }
+    );
+  });
+
+  // Generate serialize match arms.
+  const serializeArms = enumType.variants
+    .map((variant, i) => {
+      const variantName = pascalCase(variant.name);
+      const idx = i;
+
+      if (isNode(variant, 'enumEmptyVariantTypeNode')) {
+        return `      ${enumName}::${variantName} => {
+        BorshSerialize::serialize(&${idx}u8, writer)?;
+      }`;
+      }
+
+      if (isNode(variant, 'enumStructVariantTypeNode')) {
+        const { fields } = variant.struct;
+        const fieldNames = fields.map((f) => snakeCase(f.name));
+        const pattern = fieldNames.join(', ');
+        const fixedFields = variants[i].fixedSizeOptionFields ?? {};
+
+        const fieldLines = fieldNames
+          .map((name) => {
+            const fixedInfo = fixedFields[name];
+            if (!fixedInfo) {
+              return `        BorshSerialize::serialize(${name}, writer)?;`;
+            }
+            const constName = getFixedSizeOptionConstName(
+              `${enumName}${variantName}`,
+              name
+            );
+            return `        match ${name} {
+          Some(value) => BorshSerialize::serialize(value, writer)?,
+          None => borsh::maybestd::io::Write::write_all(writer, &${constName})?,
+        };`;
+          })
+          .join('\n');
+
+        return `      ${enumName}::${variantName} { ${pattern} } => {
+        BorshSerialize::serialize(&${idx}u8, writer)?;
+${fieldLines}
+      }`;
+      }
+
+      if (isNode(variant, 'enumTupleVariantTypeNode')) {
+        const tupleItems = variant.tuple.items;
+        const bindings = tupleItems.map((_, j) => `v${j}`).join(', ');
+        const serLines = tupleItems
+          .map((_, j) => `        BorshSerialize::serialize(v${j}, writer)?;`)
+          .join('\n');
+
+        return `      ${enumName}::${variantName}(${bindings}) => {
+        BorshSerialize::serialize(&${idx}u8, writer)?;
+${serLines}
+      }`;
+      }
+
+      return '';
+    })
+    .join('\n');
+
+  // Generate deserialize match arms.
+  const deserializeArms = enumType.variants
+    .map((variant, i) => {
+      const variantName = pascalCase(variant.name);
+
+      if (isNode(variant, 'enumEmptyVariantTypeNode')) {
+        return `      ${i} => Ok(${enumName}::${variantName}),`;
+      }
+
+      if (isNode(variant, 'enumStructVariantTypeNode')) {
+        const { fields } = variant.struct;
+        const fixedFields = variants[i].fixedSizeOptionFields ?? {};
+
+        const fieldLines = fields
+          .map((f) => {
+            const name = snakeCase(f.name);
+            const fixedInfo = fixedFields[name];
+            if (!fixedInfo) {
+              return `        let ${name} = BorshDeserialize::deserialize_reader(reader)?;`;
+            }
+            const constName = getFixedSizeOptionConstName(
+              `${enumName}${variantName}`,
+              name
+            );
+            return `        let ${name} = {
+          let mut buffer = [0u8; ${fixedInfo.byteSize}];
+          borsh::maybestd::io::Read::read_exact(reader, &mut buffer)?;
+          if buffer == ${constName} {
+            None
+          } else {
+            let mut slice: &[u8] = &buffer;
+            Some(BorshDeserialize::deserialize(&mut slice)?)
+          }
+        };`;
+          })
+          .join('\n');
+
+        const constructorFields = fields
+          .map((f) => `          ${snakeCase(f.name)},`)
+          .join('\n');
+
+        return `      ${i} => {
+${fieldLines}
+        Ok(${enumName}::${variantName} {
+${constructorFields}
+        })
+      }`;
+      }
+
+      if (isNode(variant, 'enumTupleVariantTypeNode')) {
+        const tupleItems = variant.tuple.items;
+        const fieldLines = tupleItems
+          .map(
+            (_, j) =>
+              `        let v${j} = BorshDeserialize::deserialize_reader(reader)?;`
+          )
+          .join('\n');
+        const args = tupleItems.map((_, j) => `v${j}`).join(', ');
+
+        return `      ${i} => {
+${fieldLines}
+        Ok(${enumName}::${variantName}(${args}))
+      }`;
+      }
+
+      return '';
+    })
+    .join('\n');
+
+  return `${sentinelLines.join('\n')}
+
+impl BorshSerialize for ${enumName} {
+  fn serialize<W: borsh::maybestd::io::Write>(
+    &self,
+    writer: &mut W
+  ) -> borsh::maybestd::io::Result<()> {
+    match self {
+${serializeArms}
+    }
+    Ok(())
+  }
+}
+
+impl BorshDeserialize for ${enumName} {
+  fn deserialize_reader<R: borsh::maybestd::io::Read>(
+    reader: &mut R
+  ) -> borsh::maybestd::io::Result<Self> {
+    let variant_index: u8 = BorshDeserialize::deserialize_reader(reader)?;
+    match variant_index {
+${deserializeArms}
+      _ => Err(borsh::maybestd::io::Error::new(
+        borsh::maybestd::io::ErrorKind::InvalidInput,
+        format!("Invalid variant index for ${enumName}: {}", variant_index),
+      )),
+    }
+  }
+}
+
+#[cfg(feature = "anchor")]
+impl anchor_lang::prelude::AnchorSerialize for ${enumName} {
+  fn serialize<W: std::io::Write>(&self, writer: &mut W) -> std::io::Result<()> {
+    BorshSerialize::serialize(self, writer)
+  }
+}
+
+#[cfg(feature = "anchor")]
+impl anchor_lang::prelude::AnchorDeserialize for ${enumName} {
+  fn deserialize_reader<R: std::io::Read>(
+    reader: &mut R
+  ) -> std::io::Result<Self> {
+    BorshDeserialize::deserialize_reader(reader)
+  }
+}`;
 }

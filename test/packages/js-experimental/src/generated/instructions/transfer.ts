@@ -51,21 +51,16 @@ export type TransferInstruction<
   TAccountMint extends string | IAccountMeta<string> = string,
   TAccountMetadata extends string | IAccountMeta<string> = string,
   TAccountMasterEdition extends string | IAccountMeta<string> = string,
-  TAccountSplTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-  TAccountSplAtaProgram extends
-    | string
-    | IAccountMeta<string> = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
-  TAccountSysvarInstructions extends
-    | string
-    | IAccountMeta<string> = 'Sysvar1nstructions1111111111111111111111111',
-  TAccountAuthorizationRulesProgram extends
-    | string
-    | IAccountMeta<string> = string,
+  TAccountSplTokenProgram extends string | IAccountMeta<string> =
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountSplAtaProgram extends string | IAccountMeta<string> =
+    'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  TAccountSystemProgram extends string | IAccountMeta<string> =
+    '11111111111111111111111111111111',
+  TAccountSysvarInstructions extends string | IAccountMeta<string> =
+    'Sysvar1nstructions1111111111111111111111111',
+  TAccountAuthorizationRulesProgram extends string | IAccountMeta<string> =
+    string,
   TAccountAuthorizationRules extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &

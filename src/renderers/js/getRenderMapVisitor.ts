@@ -387,7 +387,9 @@ export function getRenderMapVisitor(
             return {
               parentFieldName: nested.parentFieldName,
               parentOffset:
-                nested.parentOffset === null ? 'null' : `${nested.parentOffset}`,
+                nested.parentOffset === null
+                  ? 'null'
+                  : `${nested.parentOffset}`,
               structTypeName: pascalCase(nested.structTypeName),
               fieldsArgument: `[${processedFields
                 .map((f) => `['${f.name}', ${f.serializer}]`)

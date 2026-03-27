@@ -37,9 +37,8 @@ export type ThawDelegatedAccountInstruction<
   TAccountTokenAccount extends string | IAccountMeta<string> = string,
   TAccountEdition extends string | IAccountMeta<string> = string,
   TAccountMint extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountTokenProgram extends string | IAccountMeta<string> =
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
