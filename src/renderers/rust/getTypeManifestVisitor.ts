@@ -625,7 +625,7 @@ function renderFixedSizeOptionImplementations(input: {
       const constName = getFixedSizeOptionConstName(structName, snakeName);
       return `    match &self.${snakeName} {
       Some(value) => BorshSerialize::serialize(value, writer)?,
-      None => borsh::maybestd::io::Write::write_all(writer, &${constName})?,
+      None => borsh::io::Write::write_all(writer, &${constName})?,
     };`;
     })
     .join('\n');
@@ -639,7 +639,7 @@ function renderFixedSizeOptionImplementations(input: {
       const constName = getFixedSizeOptionConstName(structName, snakeName);
       return `    let ${snakeName} = {
       let mut buffer = [0u8; ${fixedInfo.byteSize}];
-      borsh::maybestd::io::Read::read_exact(reader, &mut buffer)?;
+      borsh::io::Read::read_exact(reader, &mut buffer)?;
       if buffer == ${constName} {
         None
       } else {
@@ -657,19 +657,19 @@ function renderFixedSizeOptionImplementations(input: {
   return `${sentinelLines}
 
 impl BorshSerialize for ${structName} {
-  fn serialize<W: borsh::maybestd::io::Write>(
+  fn serialize<W: borsh::io::Write>(
     &self,
     writer: &mut W
-  ) -> borsh::maybestd::io::Result<()> {
+  ) -> borsh::io::Result<()> {
 ${serializeLines}
     Ok(())
   }
 }
 
 impl BorshDeserialize for ${structName} {
-  fn deserialize_reader<R: borsh::maybestd::io::Read>(
+  fn deserialize_reader<R: borsh::io::Read>(
     reader: &mut R
-  ) -> borsh::maybestd::io::Result<Self> {
+  ) -> borsh::io::Result<Self> {
 ${deserializeLines}
     Ok(Self {
 ${constructorLines}

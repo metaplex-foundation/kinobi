@@ -5,7 +5,7 @@ use std::fmt::Debug;
 use std::io::Write;
 use std::ops::{Deref, DerefMut};
 
-use borsh::maybestd::io::Read;
+use borsh::io::Read;
 use borsh::{BorshDeserialize, BorshSerialize};
 
 /// A vector that deserializes from a stream of bytes.
@@ -53,7 +53,7 @@ impl<T> BorshDeserialize for RemainderVec<T>
 where
     T: BorshSerialize + BorshDeserialize,
 {
-    fn deserialize_reader<R: Read>(reader: &mut R) -> borsh::maybestd::io::Result<Self> {
+    fn deserialize_reader<R: Read>(reader: &mut R) -> borsh::io::Result<Self> {
         let length = std::mem::size_of::<T>();
         // buffer to read the data
         let mut buffer = vec![0u8; length];
@@ -65,8 +65,8 @@ where
                 0 => break,
                 n if n == length => items.push(T::deserialize(&mut buffer.as_slice())?),
                 e => {
-                    return Err(borsh::maybestd::io::Error::new(
-                        borsh::maybestd::io::ErrorKind::InvalidData,
+                    return Err(borsh::io::Error::new(
+                        borsh::io::ErrorKind::InvalidData,
                         format!("unexpected number of bytes (read {e}, expected {length})"),
                     ))
                 }
@@ -81,7 +81,7 @@ impl<T> BorshSerialize for RemainderVec<T>
 where
     T: BorshSerialize + BorshDeserialize,
 {
-    fn serialize<W: Write>(&self, writer: &mut W) -> borsh::maybestd::io::Result<()> {
+    fn serialize<W: Write>(&self, writer: &mut W) -> borsh::io::Result<()> {
         // serialize each item without adding a prefix for the length
         for item in self.0.iter() {
             item.serialize(writer)?;
