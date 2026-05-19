@@ -7,6 +7,7 @@
  */
 
 export * from './accountWithPadding';
+export * from './accountWithPaddingAndNestedStruct';
 export * from './accountWithPoddedTypes';
 export * from './candyMachine';
 export * from './collectionAuthorityRecord';

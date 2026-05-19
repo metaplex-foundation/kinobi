@@ -37,6 +37,35 @@
   ],
   "accounts": [
     {
+      "name": "AccountWithPaddingAndNestedStruct",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "count",
+            "type": "u8"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": ["u8", 7]
+            },
+            "attrs": ["padding"]
+          },
+          {
+            "name": "config",
+            "type": {
+              "defined": "PaddedConfig"
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "AccountWithPadding",
       "type": {
         "kind": "struct",
@@ -64,7 +93,31 @@
       }
     }
   ],
-  "types": [],
+  "types": [
+    {
+      "name": "PaddedConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "maxItems",
+            "type": "u32"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": ["u8", 4]
+            },
+            "attrs": ["padding"]
+          },
+          {
+            "name": "authority",
+            "type": "publicKey"
+          }
+        ]
+      }
+    }
+  ],
   "metadata": {
     "origin": "shank",
     "address": "PadTest11111111111111111111111111111111111",

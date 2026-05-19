@@ -31,6 +31,7 @@ export * from './mintArgs';
 export * from './mintNewEditionFromMasterEditionViaTokenArgs';
 export * from './mintPrintingTokensViaTokenArgs';
 export * from './operation';
+export * from './paddedConfig';
 export * from './payload';
 export * from './payloadKey';
 export * from './payloadType';

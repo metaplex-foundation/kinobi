@@ -26,6 +26,7 @@ export function getPaddingTestsProgram(): PaddingTestsProgram {
 }
 
 export enum PaddingTestsAccount {
+  AccountWithPaddingAndNestedStruct,
   AccountWithPadding,
 }
 

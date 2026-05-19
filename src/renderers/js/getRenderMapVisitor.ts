@@ -471,32 +471,43 @@ export function getRenderMapVisitor(
             };
           }
 
-          // Nested GPA Fields for registerNestedFieldsFromStruct.
+          // Nested GPA Fields — merge into parent registerFields with
+          // dot-notation keys and pre-computed absolute offsets.
           const nestedGpaFields = getNestedGpaFieldsFromAccount(
             rawGpaFields,
-            linkables
+            linkables,
+            byteSizeVisitor
           );
-          const resolvedNestedGpaFields = nestedGpaFields.map((nested) => {
-            const processedFields = nested.fields.map((field) => {
+          const nestedFieldEntries = nestedGpaFields.flatMap((nested) =>
+            nested.fields.map((field) => {
               const fieldManifest = visit(field.type, typeManifestVisitor);
-              imports.mergeWith(fieldManifest.serializerImports);
+              imports.mergeWith(
+                fieldManifest.looseImports,
+                fieldManifest.serializerImports
+              );
+              const dottedName = `${nested.parentFieldName}.${field.name}`;
+              const offset = field.offset === null ? 'null' : `${field.offset}`;
               return {
-                name: field.name,
-                looseType: fieldManifest.looseType,
-                serializer: fieldManifest.serializer,
+                typeEntry: `'${dottedName}': ${fieldManifest.looseType}`,
+                argEntry: `'${dottedName}': [${offset}, ${fieldManifest.serializer}]`,
               };
-            });
-
-            return {
-              parentFieldName: nested.parentFieldName,
-              parentOffset:
-                nested.parentOffset === null ? 'null' : `${nested.parentOffset}`,
-              structTypeName: pascalCase(nested.structTypeName),
-              fieldsArgument: `[${processedFields
-                .map((f) => `['${f.name}', ${f.serializer}]`)
-                .join(', ')}]`,
+            })
+          );
+          if (nestedFieldEntries.length > 0 && resolvedGpaFields) {
+            const nestedTypes = nestedFieldEntries
+              .map((e) => e.typeEntry)
+              .join(', ');
+            const nestedArgs = nestedFieldEntries
+              .map((e) => e.argEntry)
+              .join(', ');
+            resolvedGpaFields = {
+              type: resolvedGpaFields.type.replace(/\}$/, `, ${nestedTypes} }`),
+              argument: resolvedGpaFields.argument.replace(
+                /\}$/,
+                `, ${nestedArgs} }`
+              ),
             };
-          });
+          }
 
           // Seeds.
           const pda = node.pda ? linkables.get(node.pda) : undefined;
@@ -539,7 +550,6 @@ export function getRenderMapVisitor(
               typeManifest,
               discriminator: resolvedDiscriminator,
               gpaFields: resolvedGpaFields,
-              nestedGpaFields: resolvedNestedGpaFields,
               seeds,
               hasVariableSeeds,
               customData,
