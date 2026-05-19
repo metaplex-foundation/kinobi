@@ -223,18 +223,13 @@ export function getRenderMapVisitor(
             )
             .map((p) => camelCase(p.name));
           if (accountsToExport.length > 0) {
-            map
-              .add(
-                'accounts/index.ts',
-                render('accountsIndex.njk', {
-                  ...ctx,
-                  programsWithAccountDiscriminators,
-                })
-              )
-              .add(
-                'accounts/fetchHelpers.ts',
-                render('accountsFetchHelpers.njk')
-              );
+            map.add(
+              'accounts/index.ts',
+              render('accountsIndex.njk', {
+                ...ctx,
+                programsWithAccountDiscriminators,
+              })
+            );
           }
           if (instructionsToExport.length > 0) {
             map.add(

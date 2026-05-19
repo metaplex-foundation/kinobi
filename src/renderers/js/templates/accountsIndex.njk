@@ -1,7 +1,6 @@
 {% extends "layout.njk" %}
 
 {% block main %}
-export * from './fetchHelpers';
 {% for account in accountsToExport | sort(false, false, 'name') %}
 export * from './{{ account.name | camelCase }}';
 {% else %}
