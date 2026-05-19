@@ -2,6 +2,7 @@ import { format as formatCodeUsingPrettier } from '@prettier/sync';
 import { ConfigureOptions } from 'nunjucks';
 import { Options as PrettierOptions } from 'prettier';
 import {
+  AccountNode,
   FieldDiscriminatorNode,
   getAllAccounts,
   getAllDefinedTypes,
@@ -214,8 +215,21 @@ export function getRenderMapVisitor(
               .add('programs/index.ts', render('programsIndex.njk', ctx))
               .add('errors/index.ts', render('errorsIndex.njk', ctx));
           }
+          const programsWithAccountDiscriminators = programsToExport
+            .filter((p) =>
+              p.accounts.some(
+                (a) => (a.discriminators ?? []).length > 0
+              )
+            )
+            .map((p) => camelCase(p.name));
           if (accountsToExport.length > 0) {
-            map.add('accounts/index.ts', render('accountsIndex.njk', ctx));
+            map.add(
+              'accounts/index.ts',
+              render('accountsIndex.njk', {
+                ...ctx,
+                programsWithAccountDiscriminators,
+              })
+            );
           }
           if (instructionsToExport.length > 0) {
             map.add(
@@ -283,6 +297,95 @@ export function getRenderMapVisitor(
                 program: node,
               })
             );
+          // Generate per-program account helpers with discriminator-based identification.
+          const accountsWithDisc = node.accounts.filter(
+            (a) => (a.discriminators ?? []).length > 0
+          );
+          if (accountsWithDisc.length > 0) {
+            const helperImports = new JavaScriptImportMap()
+              .add('umi', [
+                'assertAccountExists',
+                'Context',
+                'Pda',
+                'PublicKey',
+                'RpcAccount',
+                'RpcGetAccountsOptions',
+                'publicKey',
+              ])
+              .addAlias('umi', 'publicKey', 'toPublicKey');
+            const resolvedAccounts = accountsWithDisc.map(
+              (account: AccountNode) => {
+                const conditions: string[] = [];
+                for (const disc of account.discriminators ?? []) {
+                  if (isNode(disc, 'byteDiscriminatorNode')) {
+                    conditions.push(
+                      `accountDataMatches(data, new Uint8Array([${disc.bytes.join(', ')}]), ${disc.offset})`
+                    );
+                  } else if (isNode(disc, 'fieldDiscriminatorNode')) {
+                    const field = account.data.fields.find(
+                      (f) => f.name === disc.name
+                    );
+                    if (field && field.defaultValue) {
+                      // Anchor-style u8 array discriminator — use raw bytes.
+                      if (
+                        isNode(field.type, 'arrayTypeNode') &&
+                        isNode(field.type.item, 'numberTypeNode') &&
+                        field.type.item.format === 'u8' &&
+                        isNode(field.type.size, 'fixedSizeNode') &&
+                        isNode(field.defaultValue, 'arrayValueNode') &&
+                        field.defaultValue.items.every(
+                          isNodeFilter('numberValueNode')
+                        )
+                      ) {
+                        const bytes = field.defaultValue.items.map(
+                          (n) => (n as { number: number }).number
+                        );
+                        conditions.push(
+                          `accountDataMatches(data, new Uint8Array([${bytes.join(', ')}]), ${disc.offset})`
+                        );
+                      } else {
+                        const fieldManifest = visit(
+                          field.type,
+                          typeManifestVisitor
+                        );
+                        const fieldValue = visit(
+                          field.defaultValue,
+                          valueNodeVisitor
+                        );
+                        helperImports.mergeWith(
+                          fieldManifest.serializerImports,
+                          fieldValue.imports
+                        );
+                        conditions.push(
+                          `accountDataMatches(data, ${fieldManifest.serializer}.serialize(${fieldValue.render}), ${disc.offset})`
+                        );
+                      }
+                    }
+                  } else if (isNode(disc, 'sizeDiscriminatorNode')) {
+                    conditions.push(`data.length === ${disc.size}`);
+                  }
+                }
+                return {
+                  name: account.name,
+                  pascalName: pascalCase(account.name),
+                  camelName: camelCase(account.name),
+                  condition: conditions.join(' && '),
+                };
+              }
+            );
+
+            renderMap.add(
+              `accounts/${camelCase(node.name)}Helpers.ts`,
+              render('accountsProgramHelpers.njk', {
+                imports: helperImports.toString(dependencyMap),
+                program: node,
+                programPascalName: pascalCaseName,
+                programCamelName: camelCase(node.name),
+                accounts: resolvedAccounts,
+              })
+            );
+          }
+
           program = null;
           return renderMap;
         },

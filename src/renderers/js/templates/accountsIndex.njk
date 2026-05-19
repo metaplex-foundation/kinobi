@@ -6,4 +6,7 @@ export * from './{{ account.name | camelCase }}';
 {% else %}
 export default {};
 {% endfor %}
+{% for programName in programsWithAccountDiscriminators %}
+export * from './{{ programName }}Helpers';
+{% endfor %}
 {% endblock %}

@@ -21,3 +21,6 @@ export * from './reservationListV1';
 export * from './reservationListV2';
 export * from './tokenOwnedEscrow';
 export * from './useAuthorityRecord';
+export * from './mplCandyMachineCoreHelpers';
+export * from './mplTokenAuthRulesHelpers';
+export * from './mplTokenMetadataHelpers';
