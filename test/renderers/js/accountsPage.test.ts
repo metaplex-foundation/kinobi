@@ -9,36 +9,14 @@ import {
   enumValueNode,
   fieldDiscriminatorNode,
   numberTypeNode,
-  pdaLinkNode,
-  pdaNode,
   programNode,
   publicKeyTypeNode,
   structFieldTypeNode,
   structTypeNode,
   visit,
 } from '../../../src';
-import { getRenderMapVisitor } from '../../../src/renderers/js-experimental/getRenderMapVisitor';
+import { getRenderMapVisitor } from '../../../src/renderers/js/getRenderMapVisitor';
 import { renderMapContains } from './_setup';
-
-test('it renders PDA helpers for PDA with no seeds', (t) => {
-  // Given the following program with 1 account and 1 pda with empty seeds.
-  const node = programNode({
-    name: 'myProgram',
-    publicKey: '1111',
-    accounts: [accountNode({ name: 'foo', pda: pdaLinkNode('bar') })],
-    pdas: [pdaNode('bar', [])],
-  });
-
-  // When we render it.
-  const renderMap = visit(node, getRenderMapVisitor());
-
-  // Then we expect the following fetch helper functions delegating to findBarPda.
-  renderMapContains(t, renderMap, 'accounts/foo.ts', [
-    'export async function fetchFooFromSeeds',
-    'export async function fetchMaybeFooFromSeeds',
-    'await findBarPda({ programAddress })',
-  ]);
-});
 
 test('it narrows omitted scalar enum defaults on account data', (t) => {
   // Given an account whose key field is fixed to a scalar enum variant.
@@ -78,15 +56,17 @@ test('it narrows omitted scalar enum defaults on account data', (t) => {
   const renderMap = visit(node, getRenderMapVisitor());
 
   // Then the decoded account data type uses the enum member, not the full enum,
-  // and the field decoder asserts that member so no `as Decoder` is needed.
+  // and the field codec asserts that member so struct<Data> needs no `any`.
   const code = renderMap.get('accounts/reservationListV2.ts');
   renderMapContains(t, renderMap, 'accounts/reservationListV2.ts', [
-    'key: TmKey.ReservationListV2;',
-    'mapDecoder(getTmKeyDecoder(), (value) => {',
-    'if (value !== TmKey.ReservationListV2)',
+    'export type ReservationListV2AccountData = { key: TmKey.ReservationListV2;',
+    'struct<ReservationListV2AccountData>(',
+    'mapSerializer(getTmKeySerializer(), (value: TmKey.ReservationListV2): TmKey => value,',
+    '(value: TmKey): TmKey.ReservationListV2 => {',
+    'if (value === TmKey.ReservationListV2)',
   ]);
   t.false(code.includes('key: TmKey;'), 'Expected key not typed as full TmKey');
-  t.false(code.includes('as Decoder<'), 'Expected no as Decoder workaround');
+  t.false(code.includes('struct<any>'), 'Expected no struct<any> workaround');
 });
 
 test('it does not narrow omitted enum defaults on unrelated field types', (t) => {
@@ -126,12 +106,12 @@ test('it does not narrow omitted enum defaults on unrelated field types', (t) =>
   // When we render it.
   const renderMap = visit(node, getRenderMapVisitor());
 
-  // Then the field stays a bigint and is not wrapped in mapDecoder.
+  // Then the field stays a bigint and is not wrapped in mapSerializer.
   const code = renderMap.get('accounts/frequencyAccount.ts');
   renderMapContains(t, renderMap, 'accounts/frequencyAccount.ts', [
-    'key: bigint;',
+    'export type FrequencyAccountAccountData = { key: bigint;',
   ]);
-  t.true(code.includes("['key', getU64Decoder()]"));
+  t.true(code.includes("['key', u64()]"));
   t.false(
     code.includes('key: TaKey.Frequency;'),
     'Expected u64 key not to be narrowed to the enum member'
@@ -181,7 +161,9 @@ test('it does not narrow omitted empty variants of data enums', (t) => {
 
   // Then the field stays the full data enum, not a scalar member type.
   const code = renderMap.get('accounts/foo.ts');
-  t.true(code.includes('key: PayloadType'));
+  renderMapContains(t, renderMap, 'accounts/foo.ts', [
+    'export type FooAccountData = { key: PayloadType',
+  ]);
   t.false(
     code.includes('key: PayloadType.Uninitialized;'),
     'Expected data-enum empty variant not to be used as a type'

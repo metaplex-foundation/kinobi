@@ -45,6 +45,7 @@ import {
   getU16Encoder,
   getU8Decoder,
   getU8Encoder,
+  mapDecoder,
   mapEncoder,
 } from '@solana/codecs';
 import { MetadataSeeds, findMetadataPda } from '../pdas';
@@ -93,7 +94,7 @@ export type MaybeMetadata<TAddress extends string = string> = MaybeAccount<
 >;
 
 export type MetadataAccountData = {
-  key: TmKey;
+  key: TmKey.MetadataV1;
   updateAuthority: Address;
   mint: Address;
   name: string;
@@ -158,7 +159,15 @@ export function getMetadataAccountDataEncoder(): Encoder<MetadataAccountDataArgs
 
 export function getMetadataAccountDataDecoder(): Decoder<MetadataAccountData> {
   return getStructDecoder([
-    ['key', getTmKeyDecoder()],
+    [
+      'key',
+      mapDecoder(getTmKeyDecoder(), (value) => {
+        if (value !== TmKey.MetadataV1) {
+          throw new Error(`Expected TmKey.MetadataV1, got ${value}`);
+        }
+        return value;
+      }),
+    ],
     ['updateAuthority', getAddressDecoder()],
     ['mint', getAddressDecoder()],
     ['name', getStringDecoder()],

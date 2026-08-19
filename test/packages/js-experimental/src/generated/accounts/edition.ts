@@ -33,6 +33,7 @@ import {
   getStructEncoder,
   getU64Decoder,
   getU64Encoder,
+  mapDecoder,
   mapEncoder,
 } from '@solana/codecs';
 import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
@@ -48,7 +49,7 @@ export type MaybeEdition<TAddress extends string = string> = MaybeAccount<
 >;
 
 export type EditionAccountData = {
-  key: TmKey;
+  key: TmKey.EditionV1;
   parent: Address;
   edition: bigint;
 };
@@ -71,7 +72,15 @@ export function getEditionAccountDataEncoder(): Encoder<EditionAccountDataArgs> 
 
 export function getEditionAccountDataDecoder(): Decoder<EditionAccountData> {
   return getStructDecoder([
-    ['key', getTmKeyDecoder()],
+    [
+      'key',
+      mapDecoder(getTmKeyDecoder(), (value) => {
+        if (value !== TmKey.EditionV1) {
+          throw new Error(`Expected TmKey.EditionV1, got ${value}`);
+        }
+        return value;
+      }),
+    ],
     ['parent', getAddressDecoder()],
     ['edition', getU64Decoder()],
   ]);

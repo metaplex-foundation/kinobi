@@ -25,7 +25,7 @@ import {
 } from '.';
 
 export type ReservationListV1AccountData = {
-  key: TmKey;
+  key: TmKey.ReservationListV1;
   masterEdition: PublicKey;
   supplySnapshot: Option<bigint>;
   reservations: Array<ReservationV1>;
@@ -48,7 +48,19 @@ export function getReservationListV1AccountDataSerializer(): Serializer<
   >(
     struct<ReservationListV1AccountData>(
       [
-        ['key', getTmKeySerializer()],
+        [
+          'key',
+          mapSerializer(
+            getTmKeySerializer(),
+            (value: TmKey.ReservationListV1): TmKey => value,
+            (value: TmKey): TmKey.ReservationListV1 => {
+              if (value === TmKey.ReservationListV1) {
+                return value;
+              }
+              throw new Error(`Expected TmKey.ReservationListV1, got ${value}`);
+            }
+          ),
+        ],
         ['masterEdition', publicKeySerializer()],
         ['supplySnapshot', option(u64())],
         ['reservations', array(getReservationV1Serializer())],

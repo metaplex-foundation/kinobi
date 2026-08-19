@@ -33,6 +33,7 @@ import {
   getStructEncoder,
   getU64Decoder,
   getU64Encoder,
+  mapDecoder,
   mapEncoder,
 } from '@solana/codecs';
 import { MasterEditionV2Seeds, findMasterEditionV2Pda } from '../pdas';
@@ -47,7 +48,7 @@ export type MaybeMasterEditionV2<TAddress extends string = string> =
   MaybeAccount<MasterEditionV2AccountData, TAddress>;
 
 export type MasterEditionV2AccountData = {
-  key: TmKey;
+  key: TmKey.MasterEditionV2;
   supply: bigint;
   maxSupply: Option<bigint>;
 };
@@ -70,7 +71,15 @@ export function getMasterEditionV2AccountDataEncoder(): Encoder<MasterEditionV2A
 
 export function getMasterEditionV2AccountDataDecoder(): Decoder<MasterEditionV2AccountData> {
   return getStructDecoder([
-    ['key', getTmKeyDecoder()],
+    [
+      'key',
+      mapDecoder(getTmKeyDecoder(), (value) => {
+        if (value !== TmKey.MasterEditionV2) {
+          throw new Error(`Expected TmKey.MasterEditionV2, got ${value}`);
+        }
+        return value;
+      }),
+    ],
     ['supply', getU64Decoder()],
     ['maxSupply', getOptionDecoder(getU64Decoder())],
   ]);

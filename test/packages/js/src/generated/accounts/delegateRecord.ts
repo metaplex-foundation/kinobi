@@ -39,7 +39,7 @@ import {
 export type DelegateRecord = Account<DelegateRecordAccountData>;
 
 export type DelegateRecordAccountData = {
-  key: TmKey;
+  key: TmKey.Delegate;
   role: DelegateRole;
   bump: number;
 };
@@ -60,7 +60,19 @@ export function getDelegateRecordAccountDataSerializer(): Serializer<
   >(
     struct<DelegateRecordAccountData>(
       [
-        ['key', getTmKeySerializer()],
+        [
+          'key',
+          mapSerializer(
+            getTmKeySerializer(),
+            (value: TmKey.Delegate): TmKey => value,
+            (value: TmKey): TmKey.Delegate => {
+              if (value === TmKey.Delegate) {
+                return value;
+              }
+              throw new Error(`Expected TmKey.Delegate, got ${value}`);
+            }
+          ),
+        ],
         ['role', getDelegateRoleSerializer()],
         ['bump', u8()],
       ],

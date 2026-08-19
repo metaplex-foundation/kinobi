@@ -31,7 +31,7 @@ import { TmKey, TmKeyArgs, getTmKeySerializer } from '../types';
 export type Edition = Account<EditionAccountData>;
 
 export type EditionAccountData = {
-  key: TmKey;
+  key: TmKey.EditionV1;
   parent: PublicKey;
   edition: bigint;
 };
@@ -48,7 +48,19 @@ export function getEditionAccountDataSerializer(): Serializer<
   return mapSerializer<EditionAccountDataArgs, any, EditionAccountData>(
     struct<EditionAccountData>(
       [
-        ['key', getTmKeySerializer()],
+        [
+          'key',
+          mapSerializer(
+            getTmKeySerializer(),
+            (value: TmKey.EditionV1): TmKey => value,
+            (value: TmKey): TmKey.EditionV1 => {
+              if (value === TmKey.EditionV1) {
+                return value;
+              }
+              throw new Error(`Expected TmKey.EditionV1, got ${value}`);
+            }
+          ),
+        ],
         ['parent', publicKeySerializer()],
         ['edition', u64()],
       ],
