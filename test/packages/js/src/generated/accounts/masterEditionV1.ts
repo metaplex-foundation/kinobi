@@ -41,7 +41,7 @@ import {
 export type MasterEditionV1 = Account<MasterEditionV1AccountData>;
 
 export type MasterEditionV1AccountData = {
-  key: TmKey;
+  key: TmKey.MasterEditionV1;
   supply: bigint;
   maxSupply: Option<bigint>;
   printingMint: PublicKey;
@@ -66,7 +66,19 @@ export function getMasterEditionV1AccountDataSerializer(): Serializer<
   >(
     struct<MasterEditionV1AccountData>(
       [
-        ['key', getTmKeySerializer()],
+        [
+          'key',
+          mapSerializer(
+            getTmKeySerializer(),
+            (value: TmKey.MasterEditionV1): TmKey => value,
+            (value: TmKey): TmKey.MasterEditionV1 => {
+              if (value === TmKey.MasterEditionV1) {
+                return value;
+              }
+              throw new Error(`Expected TmKey.MasterEditionV1, got ${value}`);
+            }
+          ),
+        ],
         ['supply', u64()],
         ['maxSupply', option(u64())],
         ['printingMint', publicKeySerializer()],

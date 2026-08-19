@@ -499,8 +499,47 @@ export function getTypeManifestVisitor(input: {
               looseType: `${docblock}${name}?: ${fieldChild.looseType}; `,
             };
           }
+
+          let { strictType, strictImports, serializer, serializerImports } =
+            baseField;
+          if (
+            isNode(structFieldType.defaultValue, 'enumValueNode') &&
+            !structFieldType.defaultValue.value &&
+            isNode(structFieldType.type, 'definedTypeLinkNode') &&
+            structFieldType.defaultValue.enum.name ===
+              structFieldType.type.name &&
+            structFieldType.defaultValue.enum.importFrom ===
+              structFieldType.type.importFrom
+          ) {
+            const { render: renderedValue, imports } = visit(
+              structFieldType.defaultValue,
+              valueNodeVisitor
+            );
+            if (renderedValue.startsWith(`${fieldChild.strictType}.`)) {
+              strictType = `${docblock}${name}: ${renderedValue}; `;
+              strictImports = fieldChild.strictImports.mergeWith(imports);
+              serializer =
+                `['${name}', mapSerializer(` +
+                `${fieldChild.serializer}, ` +
+                `(value: ${renderedValue}): ${fieldChild.strictType} => value, ` +
+                `(value: ${fieldChild.strictType}): ${renderedValue} => { ` +
+                `if (value === ${renderedValue}) { return value; } ` +
+                `throw new Error(\`Expected ${renderedValue}, got \${value}\`); ` +
+                `}` +
+                `)]`;
+              serializerImports = new JavaScriptImportMap()
+                .mergeWith(fieldChild.serializerImports)
+                .mergeWith(imports)
+                .add('umiSerializers', 'mapSerializer');
+            }
+          }
+
           return {
             ...baseField,
+            strictType,
+            strictImports,
+            serializer,
+            serializerImports,
             looseType: '',
             looseImports: new JavaScriptImportMap(),
           };

@@ -482,7 +482,6 @@ export function getTypeManifestVisitor(input: {
         },
 
         visitStructType(structType, { self }) {
-          // const currentParentName = parentName;
           parentName = null;
           const optionalFields = structType.fields.filter(
             (f) => !!f.defaultValue
@@ -537,7 +536,9 @@ export function getTypeManifestVisitor(input: {
             structFieldType.docs.length > 0
               ? `\n${jsDocblock(structFieldType.docs)}`
               : '';
+          const originalStrictType = childManifest.strictType.render;
           const originalLooseType = childManifest.looseType.render;
+          const originalDecoder = childManifest.decoder.render;
           childManifest.strictType.mapRender(
             (r) => `${docblock}${name}: ${r}; `
           );
@@ -547,12 +548,10 @@ export function getTypeManifestVisitor(input: {
           childManifest.encoder.mapRender((r) => `['${name}', ${r}]`);
           childManifest.decoder.mapRender((r) => `['${name}', ${r}]`);
 
-          // No default value.
           if (!structFieldType.defaultValue) {
             return childManifest;
           }
 
-          // Optional default value.
           if (structFieldType.defaultValueStrategy !== 'omitted') {
             childManifest.looseType.setRender(
               `${docblock}${name}?: ${originalLooseType}; `
@@ -560,8 +559,38 @@ export function getTypeManifestVisitor(input: {
             return childManifest;
           }
 
-          // Omitted default value.
           childManifest.looseType = fragment('');
+          if (
+            isNode(structFieldType.defaultValue, 'enumValueNode') &&
+            !structFieldType.defaultValue.value &&
+            isNode(structFieldType.type, 'definedTypeLinkNode') &&
+            structFieldType.defaultValue.enum.name ===
+              structFieldType.type.name &&
+            structFieldType.defaultValue.enum.importFrom ===
+              structFieldType.type.importFrom
+          ) {
+            const valueManifest = visit(
+              structFieldType.defaultValue,
+              valueNodeVisitor
+            );
+            if (valueManifest.render.startsWith(`${originalStrictType}.`)) {
+              const narrowed = valueManifest.render;
+              childManifest.strictType
+                .setRender(`${docblock}${name}: ${narrowed}; `)
+                .mergeImportsWith(valueManifest);
+              childManifest.decoder
+                .setRender(
+                  `['${name}', mapDecoder(${originalDecoder}, (value) => { ` +
+                    `if (value !== ${narrowed}) { ` +
+                    `throw new Error(\`Expected ${narrowed}, got \${value}\`); ` +
+                    `} ` +
+                    `return value; ` +
+                    `})]`
+                )
+                .mergeImportsWith(valueManifest)
+                .addImports('solanaCodecsCore', 'mapDecoder');
+            }
+          }
           return childManifest;
         },
 

@@ -38,7 +38,7 @@ import {
 export type TokenOwnedEscrow = Account<TokenOwnedEscrowAccountData>;
 
 export type TokenOwnedEscrowAccountData = {
-  key: TmKey;
+  key: TmKey.TokenOwnedEscrow;
   baseToken: PublicKey;
   authority: EscrowAuthority;
   bump: number;
@@ -61,7 +61,19 @@ export function getTokenOwnedEscrowAccountDataSerializer(): Serializer<
   >(
     struct<TokenOwnedEscrowAccountData>(
       [
-        ['key', getTmKeySerializer()],
+        [
+          'key',
+          mapSerializer(
+            getTmKeySerializer(),
+            (value: TmKey.TokenOwnedEscrow): TmKey => value,
+            (value: TmKey): TmKey.TokenOwnedEscrow => {
+              if (value === TmKey.TokenOwnedEscrow) {
+                return value;
+              }
+              throw new Error(`Expected TmKey.TokenOwnedEscrow, got ${value}`);
+            }
+          ),
+        ],
         ['baseToken', publicKeySerializer()],
         ['authority', getEscrowAuthoritySerializer()],
         ['bump', u8()],

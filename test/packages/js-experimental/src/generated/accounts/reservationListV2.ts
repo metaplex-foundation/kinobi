@@ -39,6 +39,7 @@ import {
   getStructEncoder,
   getU64Decoder,
   getU64Encoder,
+  mapDecoder,
   mapEncoder,
 } from '@solana/codecs';
 import {
@@ -60,7 +61,7 @@ export type MaybeReservationListV2<TAddress extends string = string> =
   MaybeAccount<ReservationListV2AccountData, TAddress>;
 
 export type ReservationListV2AccountData = {
-  key: TmKey;
+  key: TmKey.ReservationListV2;
   masterEdition: Address;
   supplySnapshot: Option<bigint>;
   reservations: Array<Reservation>;
@@ -92,7 +93,15 @@ export function getReservationListV2AccountDataEncoder(): Encoder<ReservationLis
 
 export function getReservationListV2AccountDataDecoder(): Decoder<ReservationListV2AccountData> {
   return getStructDecoder([
-    ['key', getTmKeyDecoder()],
+    [
+      'key',
+      mapDecoder(getTmKeyDecoder(), (value) => {
+        if (value !== TmKey.ReservationListV2) {
+          throw new Error(`Expected TmKey.ReservationListV2, got ${value}`);
+        }
+        return value;
+      }),
+    ],
     ['masterEdition', getAddressDecoder()],
     ['supplySnapshot', getOptionDecoder(getU64Decoder())],
     ['reservations', getArrayDecoder(getReservationDecoder())],

@@ -33,6 +33,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
+  mapDecoder,
   mapEncoder,
 } from '@solana/codecs';
 import {
@@ -54,7 +55,7 @@ export type MaybeTokenOwnedEscrow<TAddress extends string = string> =
   MaybeAccount<TokenOwnedEscrowAccountData, TAddress>;
 
 export type TokenOwnedEscrowAccountData = {
-  key: TmKey;
+  key: TmKey.TokenOwnedEscrow;
   baseToken: Address;
   authority: EscrowAuthority;
   bump: number;
@@ -80,7 +81,15 @@ export function getTokenOwnedEscrowAccountDataEncoder(): Encoder<TokenOwnedEscro
 
 export function getTokenOwnedEscrowAccountDataDecoder(): Decoder<TokenOwnedEscrowAccountData> {
   return getStructDecoder([
-    ['key', getTmKeyDecoder()],
+    [
+      'key',
+      mapDecoder(getTmKeyDecoder(), (value) => {
+        if (value !== TmKey.TokenOwnedEscrow) {
+          throw new Error(`Expected TmKey.TokenOwnedEscrow, got ${value}`);
+        }
+        return value;
+      }),
+    ],
     ['baseToken', getAddressDecoder()],
     ['authority', getEscrowAuthorityDecoder()],
     ['bump', getU8Decoder()],
