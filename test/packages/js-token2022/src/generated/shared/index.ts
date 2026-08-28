@@ -212,6 +212,31 @@ export function remainderOption<T, U extends T = T>(
 }
 
 /**
+ * Serializer for an array of variable-size items with no count prefix:
+ * items are deserialized one after another until the buffer is exhausted.
+ * @internal
+ */
+export function remainderArray<T, U extends T = T>(
+  item: Serializer<T, U>
+): Serializer<T[], U[]> {
+  return {
+    description: `remainderArray(${item.description})`,
+    fixedSize: null,
+    maxSize: null,
+    serialize: (value: T[]) => mergeBytes(value.map((v) => item.serialize(v))),
+    deserialize: (bytes: Uint8Array, offset = 0) => {
+      const values: U[] = [];
+      while (offset < bytes.length) {
+        const [value, newOffset] = item.deserialize(bytes, offset);
+        values.push(value);
+        offset = newOffset;
+      }
+      return [values, offset];
+    },
+  };
+}
+
+/**
  * Serializer that writes constant bytes before the item and
  * asserts and skips them when reading.
  * @internal

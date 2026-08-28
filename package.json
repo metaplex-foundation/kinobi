@@ -16,7 +16,7 @@
     "test": "ava && node ./test/testFile.cjs && node ./test/testFileToken2022.cjs && pnpm test:js && pnpm test:js-experimental && pnpm test:js-token2022",
     "test:js": "(cd ./test/packages/js && pnpm install && pnpm build)",
     "test:js-experimental": "(cd ./test/packages/js-experimental && pnpm install && pnpm build && pnpm lint)",
-    "test:js-token2022": "(cd ./test/packages/js-token2022 && pnpm install && pnpm build && pnpm test)",
+    "test:js-token2022": "(cd ./test/packages/js-token2022 && corepack pnpm install && corepack pnpm build && corepack pnpm test)",
     "lint": "prettier -c ./src/ && eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "prettier --write ./src && eslint . --ext .js,.jsx,.ts,.tsx",
     "package:change": "changeset",
@@ -71,8 +71,8 @@
   },
   "ava": {
     "files": [
-      "!test/packages/**",
-      "test/**/*.test.ts"
+      "test/**/*.test.ts",
+      "!test/packages/**"
     ],
     "typescript": {
       "compile": false,

@@ -22,7 +22,13 @@ import {
   pascalCase,
   pipe,
 } from '../../shared';
-import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
+import {
+  Visitor,
+  extendVisitor,
+  getByteSizeVisitor,
+  staticVisitor,
+  visit,
+} from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 import { ParsedCustomDataOptions } from './customDataHelpers';
 
@@ -131,6 +137,33 @@ export function getTypeManifestVisitor(input: {
 
         visitArrayType(arrayType, { self }) {
           const childManifest = visit(arrayType.item, self);
+
+          // umi's `array(item, { size: 'remainder' })` can only compute how
+          // many items fit in the remaining bytes when `item` is a
+          // fixed-size serializer (it divides remaining-byte-length by the
+          // item's fixed size). A remainder-counted array of a
+          // variable-size item — e.g. a TLV list of enum variants with
+          // different byte lengths, as used by Token-2022's account
+          // extensions — has to be decoded by repeatedly deserializing
+          // items until the buffer is exhausted instead. Use the
+          // `remainderArray` helper for that case.
+          if (isNode(arrayType.count, 'remainderCountNode')) {
+            const itemByteSize = visit(
+              arrayType.item,
+              getByteSizeVisitor(linkables)
+            );
+            if (itemByteSize === null) {
+              childManifest.serializerImports.add('shared', 'remainderArray');
+              input.sharedSerializers?.add('remainderArray');
+              return {
+                ...childManifest,
+                strictType: `Array<${childManifest.strictType}>`,
+                looseType: `Array<${childManifest.looseType}>`,
+                serializer: `remainderArray(${childManifest.serializer})`,
+              };
+            }
+          }
+
           childManifest.serializerImports.add('umiSerializers', 'array');
           const sizeOption = getArrayLikeSizeOption(
             arrayType.count,

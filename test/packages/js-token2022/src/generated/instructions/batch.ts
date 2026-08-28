@@ -13,7 +13,6 @@ import {
 } from '@metaplex-foundation/umi';
 import {
   Serializer,
-  array,
   bytes,
   mapSerializer,
   struct,
@@ -23,6 +22,7 @@ import {
   ResolvedAccount,
   ResolvedAccountsWithIndices,
   getAccountMetasAndSigners,
+  remainderArray,
 } from '../shared';
 
 // Data.
@@ -47,12 +47,11 @@ export function getBatchInstructionDataSerializer(): Serializer<
         ['discriminator', u8()],
         [
           'data',
-          array(
+          remainderArray(
             struct<any>([
               ['numberOfAccounts', u8()],
               ['instructionData', bytes({ size: u8() })],
-            ]),
-            { size: 'remainder' }
+            ])
           ),
         ],
       ],

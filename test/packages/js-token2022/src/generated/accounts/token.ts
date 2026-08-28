@@ -23,7 +23,6 @@ import {
 } from '@metaplex-foundation/umi';
 import {
   Serializer,
-  array,
   option,
   publicKey as publicKeySerializer,
   struct,
@@ -31,7 +30,7 @@ import {
   u64,
   u8,
 } from '@metaplex-foundation/umi/serializers';
-import { hiddenPrefix, remainderOption } from '../shared';
+import { hiddenPrefix, remainderArray, remainderOption } from '../shared';
 import {
   AccountState,
   AccountStateArgs,
@@ -124,7 +123,7 @@ export function getTokenAccountDataSerializer(): Serializer<
       [
         'extensions',
         remainderOption(
-          hiddenPrefix(array(getExtensionSerializer(), { size: 'remainder' }), [
+          hiddenPrefix(remainderArray(getExtensionSerializer()), [
             u8().serialize(2),
           ])
         ),
@@ -226,7 +225,7 @@ export function getTokenGpaBuilder(context: Pick<Context, 'rpc' | 'programs'>) {
       extensions: [
         165,
         remainderOption(
-          hiddenPrefix(array(getExtensionSerializer(), { size: 'remainder' }), [
+          hiddenPrefix(remainderArray(getExtensionSerializer()), [
             u8().serialize(2),
           ])
         ),

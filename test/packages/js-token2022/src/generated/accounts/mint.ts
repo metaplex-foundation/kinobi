@@ -23,7 +23,6 @@ import {
 } from '@metaplex-foundation/umi';
 import {
   Serializer,
-  array,
   bool,
   option,
   publicKey as publicKeySerializer,
@@ -32,7 +31,12 @@ import {
   u64,
   u8,
 } from '@metaplex-foundation/umi/serializers';
-import { hiddenPrefix, padLeftSerializer, remainderOption } from '../shared';
+import {
+  hiddenPrefix,
+  padLeftSerializer,
+  remainderArray,
+  remainderOption,
+} from '../shared';
 import { Extension, ExtensionArgs, getExtensionSerializer } from '../types';
 
 export type Mint = Account<MintAccountData>;
@@ -95,7 +99,7 @@ export function getMintAccountDataSerializer(): Serializer<
       [
         'extensions',
         remainderOption(
-          hiddenPrefix(array(getExtensionSerializer(), { size: 'remainder' }), [
+          hiddenPrefix(remainderArray(getExtensionSerializer()), [
             padLeftSerializer(u8(), 83).serialize(1),
           ])
         ),
@@ -191,7 +195,7 @@ export function getMintGpaBuilder(context: Pick<Context, 'rpc' | 'programs'>) {
       extensions: [
         82,
         remainderOption(
-          hiddenPrefix(array(getExtensionSerializer(), { size: 'remainder' }), [
+          hiddenPrefix(remainderArray(getExtensionSerializer()), [
             padLeftSerializer(u8(), 83).serialize(1),
           ])
         ),
