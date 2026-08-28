@@ -2,11 +2,11 @@
   "name": "@metaplex-foundation/kinobi-dummy-generated-token2022",
   "private": true,
   "version": "0.0.1",
-  "description": "",
+  "description": "Tests the shared serializer helpers (zeroableOption, remainderOption, remainderArray, hiddenPrefix, sizePrefix, padLeftSerializer) emitted by the JavaScript renderer for Token-2022-style IDLs, against a small synthetic program rendered at test time.",
   "main": "src/index.ts",
   "scripts": {
-    "build": "tsc",
-    "test": "tsx --test test/roundtrip.test.ts"
+    "build": "tsc --noEmit",
+    "test": "tsx --test test/sharedHelpers.test.ts"
   },
   "keywords": [],
   "author": "",
