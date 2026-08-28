@@ -3,6 +3,14 @@
 
 {% block main %}
 import { AccountMeta, isSigner, Pda, publicKey, PublicKey, Signer, isPda } from '@metaplex-foundation/umi';
+{% set needsOptionHelpers = 'zeroableOption' in sharedSerializers or 'remainderOption' in sharedSerializers %}
+{% set needsMergeBytes = 'hiddenPrefix' in sharedSerializers or 'hiddenSuffix' in sharedSerializers or 'sizePrefix' in sharedSerializers or 'padLeftSerializer' in sharedSerializers or 'padRightSerializer' in sharedSerializers %}
+{% if needsOptionHelpers %}
+import { isOption, isSome, none, Option, OptionOrNullable, some } from '@metaplex-foundation/umi';
+{% endif %}
+{% if sharedSerializers.length > 0 %}
+import { {% if needsMergeBytes %}mergeBytes, {% endif %}Serializer } from '@metaplex-foundation/umi/serializers';
+{% endif %}
 
 /**
  * Transforms the given object such that the given keys are optional.
@@ -96,4 +104,234 @@ export function getAccountMetasAndSigners(
 
   return [keys, signers];
 };
+
+{% if 'zeroableOption' in sharedSerializers %}
+/**
+ * Serializer for fixed-size optional values where `None` is represented
+ * by a predefined "zero" byte pattern — with no prefix byte.
+ * @internal
+ */
+export function zeroableOption<T, U extends T = T>(
+  item: Serializer<T, U>,
+  options: { zeroValue?: Uint8Array } = {}
+): Serializer<OptionOrNullable<T>, Option<U>> {
+  if (item.fixedSize === null) {
+    throw new Error(
+      'zeroableOption can only be used with fixed-size serializers.'
+    );
+  }
+  const size = item.fixedSize;
+  const zeroValue = options.zeroValue ?? new Uint8Array(size);
+  if (zeroValue.length !== size) {
+    throw new Error(
+      'zeroableOption expects the zeroValue to have the same size as the item serializer.'
+    );
+  }
+  return {
+    description: `zeroableOption(${item.description})`,
+    fixedSize: size,
+    maxSize: size,
+    serialize: (optionOrNullable: OptionOrNullable<T>) => {
+      const option = isOption(optionOrNullable)
+        ? optionOrNullable
+        : optionOrNullable === null
+          ? none<T>()
+          : some(optionOrNullable);
+      if (isSome(option)) {
+        const bytes = item.serialize(option.value);
+        if (bytes.length !== size) {
+          throw new Error(
+            `zeroableOption expected the item serializer to return ${size} bytes but got ${bytes.length} bytes.`
+          );
+        }
+        return bytes;
+      }
+      return new Uint8Array(zeroValue);
+    },
+    deserialize: (bytes: Uint8Array, offset = 0) => {
+      if (bytes.length - offset < size) {
+        throw new Error(
+          `zeroableOption expected ${size} bytes at offset ${offset}.`
+        );
+      }
+      const isZero = zeroValue.every(
+        (byte, index) => bytes[offset + index] === byte
+      );
+      if (isZero) return [none<U>(), offset + size];
+      const [value] = item.deserialize(bytes, offset);
+      return [some(value), offset + size];
+    },
+  };
+}
+{% endif %}
+
+{% if 'remainderOption' in sharedSerializers %}
+/**
+ * Serializer for optional values with no prefix: the value is `Some`
+ * if and only if bytes remain in the buffer.
+ * @internal
+ */
+export function remainderOption<T, U extends T = T>(
+  item: Serializer<T, U>
+): Serializer<OptionOrNullable<T>, Option<U>> {
+  return {
+    description: `remainderOption(${item.description})`,
+    fixedSize: null,
+    maxSize: null,
+    serialize: (optionOrNullable: OptionOrNullable<T>) => {
+      const option = isOption(optionOrNullable)
+        ? optionOrNullable
+        : optionOrNullable === null
+          ? none<T>()
+          : some(optionOrNullable);
+      return isSome(option) ? item.serialize(option.value) : new Uint8Array(0);
+    },
+    deserialize: (bytes: Uint8Array, offset = 0) => {
+      if (offset >= bytes.length) return [none<U>(), offset];
+      const [value, newOffset] = item.deserialize(bytes, offset);
+      return [some(value), newOffset];
+    },
+  };
+}
+{% endif %}
+
+{% if 'hiddenPrefix' in sharedSerializers %}
+/**
+ * Serializer that writes constant bytes before the item and
+ * asserts and skips them when reading.
+ * @internal
+ */
+export function hiddenPrefix<T, U extends T = T>(
+  item: Serializer<T, U>,
+  prefixes: Uint8Array[]
+): Serializer<T, U> {
+  const prefix = mergeBytes(prefixes);
+  return {
+    description: `hiddenPrefix(${item.description})`,
+    fixedSize: item.fixedSize === null ? null : item.fixedSize + prefix.length,
+    maxSize: item.maxSize === null ? null : item.maxSize + prefix.length,
+    serialize: (value: T) => mergeBytes([prefix, item.serialize(value)]),
+    deserialize: (bytes: Uint8Array, offset = 0) => {
+      const matches =
+        bytes.length - offset >= prefix.length &&
+        prefix.every((byte, index) => bytes[offset + index] === byte);
+      if (!matches) {
+        throw new Error(
+          `hiddenPrefix expected the constant [${prefix.join(', ')}] at offset ${offset}.`
+        );
+      }
+      return item.deserialize(bytes, offset + prefix.length);
+    },
+  };
+}
+{% endif %}
+
+{% if 'hiddenSuffix' in sharedSerializers %}
+/**
+ * Serializer that writes constant bytes after the item and
+ * asserts and skips them when reading.
+ * @internal
+ */
+export function hiddenSuffix<T, U extends T = T>(
+  item: Serializer<T, U>,
+  suffixes: Uint8Array[]
+): Serializer<T, U> {
+  const suffix = mergeBytes(suffixes);
+  return {
+    description: `hiddenSuffix(${item.description})`,
+    fixedSize: item.fixedSize === null ? null : item.fixedSize + suffix.length,
+    maxSize: item.maxSize === null ? null : item.maxSize + suffix.length,
+    serialize: (value: T) => mergeBytes([item.serialize(value), suffix]),
+    deserialize: (bytes: Uint8Array, offset = 0) => {
+      const [value, newOffset] = item.deserialize(bytes, offset);
+      const matches =
+        bytes.length - newOffset >= suffix.length &&
+        suffix.every((byte, index) => bytes[newOffset + index] === byte);
+      if (!matches) {
+        throw new Error(
+          `hiddenSuffix expected the constant [${suffix.join(', ')}] at offset ${newOffset}.`
+        );
+      }
+      return [value, newOffset + suffix.length];
+    },
+  };
+}
+{% endif %}
+
+{% if 'sizePrefix' in sharedSerializers %}
+/**
+ * Serializer that frames the item with a byte-length prefix,
+ * bounding reads to exactly that many bytes.
+ * @internal
+ */
+export function sizePrefix<T, U extends T = T>(
+  item: Serializer<T, U>,
+  prefix: Serializer<number> | Serializer<number | bigint, bigint>
+): Serializer<T, U> {
+  return {
+    description: `sizePrefix(${item.description})`,
+    fixedSize: null,
+    maxSize: null,
+    serialize: (value: T) => {
+      const content = item.serialize(value);
+      return mergeBytes([prefix.serialize(content.length), content]);
+    },
+    deserialize: (bytes: Uint8Array, offset = 0) => {
+      const [contentSize, contentOffset] = prefix.deserialize(bytes, offset);
+      const contentEnd = contentOffset + Number(contentSize);
+      if (bytes.length < contentEnd) {
+        throw new Error(
+          `sizePrefix expected ${Number(contentSize)} bytes at offset ${contentOffset}.`
+        );
+      }
+      const [value] = item.deserialize(bytes.slice(contentOffset, contentEnd));
+      return [value, contentEnd];
+    },
+  };
+}
+{% endif %}
+
+{% if 'padLeftSerializer' in sharedSerializers %}
+/**
+ * Serializer that adds `offset` bytes of zero padding before the item.
+ * @internal
+ */
+export function padLeftSerializer<T, U extends T = T>(
+  item: Serializer<T, U>,
+  offset: number
+): Serializer<T, U> {
+  return {
+    description: `padLeft(${item.description})`,
+    fixedSize: item.fixedSize === null ? null : item.fixedSize + offset,
+    maxSize: item.maxSize === null ? null : item.maxSize + offset,
+    serialize: (value: T) =>
+      mergeBytes([new Uint8Array(offset), item.serialize(value)]),
+    deserialize: (bytes: Uint8Array, byteOffset = 0) =>
+      item.deserialize(bytes, byteOffset + offset),
+  };
+}
+{% endif %}
+
+{% if 'padRightSerializer' in sharedSerializers %}
+/**
+ * Serializer that adds `offset` bytes of zero padding after the item.
+ * @internal
+ */
+export function padRightSerializer<T, U extends T = T>(
+  item: Serializer<T, U>,
+  offset: number
+): Serializer<T, U> {
+  return {
+    description: `padRight(${item.description})`,
+    fixedSize: item.fixedSize === null ? null : item.fixedSize + offset,
+    maxSize: item.maxSize === null ? null : item.maxSize + offset,
+    serialize: (value: T) =>
+      mergeBytes([item.serialize(value), new Uint8Array(offset)]),
+    deserialize: (bytes: Uint8Array, byteOffset = 0) => {
+      const [value, newOffset] = item.deserialize(bytes, byteOffset);
+      return [value, newOffset + offset];
+    },
+  };
+}
+{% endif %}
 {% endblock %}

@@ -78,6 +78,7 @@ export function getRenderMapVisitor(
   options: GetJavaScriptRenderMapOptions = {}
 ): Visitor<RenderMap> {
   const linkables = new LinkableDictionary();
+  const sharedSerializers = new Set<string>();
   const byteSizeVisitor = getByteSizeVisitor(linkables);
   let program: ProgramNode | null = null;
 
@@ -122,6 +123,7 @@ export function getRenderMapVisitor(
       customAccountData,
       customInstructionData,
       parentName,
+      sharedSerializers,
     });
   const typeManifestVisitor = getTypeManifestVisitor();
   const resolvedInstructionInputVisitor = getResolvedInstructionInputsVisitor();
@@ -193,6 +195,10 @@ export function getRenderMapVisitor(
             instructionsToExport.length > 0 ||
             definedTypesToExport.length > 0;
 
+          const programRenderMaps = getAllPrograms(node).map((p) =>
+            visit(p, self)
+          );
+
           const ctx = {
             root: node,
             programsToExport,
@@ -200,6 +206,7 @@ export function getRenderMapVisitor(
             instructionsToExport,
             definedTypesToExport,
             hasAnythingToExport,
+            sharedSerializers: [...sharedSerializers].sort(),
           };
 
           const map = new RenderMap();
@@ -226,7 +233,7 @@ export function getRenderMapVisitor(
 
           return map
             .add('index.ts', render('rootIndex.njk', ctx))
-            .mergeWith(...getAllPrograms(node).map((p) => visit(p, self)));
+            .mergeWith(...programRenderMaps);
         },
 
         visitProgram(node, { self }) {

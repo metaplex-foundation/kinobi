@@ -58,6 +58,7 @@ export function getTypeManifestVisitor(input: {
   customAccountData: ParsedCustomDataOptions;
   customInstructionData: ParsedCustomDataOptions;
   parentName?: { strict: string; loose: string };
+  sharedSerializers?: Set<string>;
 }) {
   const {
     linkables,
@@ -383,6 +384,7 @@ export function getTypeManifestVisitor(input: {
           childManifest.strictImports.add('umi', 'Option');
           childManifest.looseImports.add('umi', 'OptionOrNullable');
           childManifest.serializerImports.add('shared', 'zeroableOption');
+          input.sharedSerializers?.add('zeroableOption');
           let options = '';
           if (zeroableOptionType.zeroValue) {
             const zeroValueManifest = visit(zeroableOptionType.zeroValue, self);
@@ -404,6 +406,7 @@ export function getTypeManifestVisitor(input: {
           childManifest.strictImports.add('umi', 'Option');
           childManifest.looseImports.add('umi', 'OptionOrNullable');
           childManifest.serializerImports.add('shared', 'remainderOption');
+          input.sharedSerializers?.add('remainderOption');
           return {
             ...childManifest,
             strictType: `Option<${childManifest.strictType}>`,
@@ -777,7 +780,10 @@ export function getTypeManifestVisitor(input: {
             return manifest;
           }
           const childManifest = visit(fixedSizeType.type, self);
-          childManifest.serializerImports.add('umiSerializers', 'fixSerializer');
+          childManifest.serializerImports.add(
+            'umiSerializers',
+            'fixSerializer'
+          );
           return {
             ...childManifest,
             serializer: `fixSerializer(${childManifest.serializer}, ${fixedSizeType.size})`,
@@ -797,6 +803,7 @@ export function getTypeManifestVisitor(input: {
           childManifest.serializerImports
             .mergeWith(prefixManifest.serializerImports)
             .add('shared', 'sizePrefix');
+          input.sharedSerializers?.add('sizePrefix');
           return {
             ...childManifest,
             serializer: `sizePrefix(${childManifest.serializer}, ${prefixManifest.serializer})`,
@@ -806,6 +813,7 @@ export function getTypeManifestVisitor(input: {
         visitHiddenPrefixType(hiddenPrefixType, { self }) {
           const childManifest = visit(hiddenPrefixType.type, self);
           childManifest.serializerImports.add('shared', 'hiddenPrefix');
+          input.sharedSerializers?.add('hiddenPrefix');
           const prefixes = hiddenPrefixType.prefix.map((constant) => {
             const constantManifest = visit(constant, self);
             childManifest.serializerImports.mergeWith(
@@ -822,6 +830,7 @@ export function getTypeManifestVisitor(input: {
         visitHiddenSuffixType(hiddenSuffixType, { self }) {
           const childManifest = visit(hiddenSuffixType.type, self);
           childManifest.serializerImports.add('shared', 'hiddenSuffix');
+          input.sharedSerializers?.add('hiddenSuffix');
           const suffixes = hiddenSuffixType.suffix.map((constant) => {
             const constantManifest = visit(constant, self);
             childManifest.serializerImports.mergeWith(
@@ -844,6 +853,7 @@ export function getTypeManifestVisitor(input: {
           }
           const childManifest = visit(preOffsetType.type, self);
           childManifest.serializerImports.add('shared', 'padLeftSerializer');
+          input.sharedSerializers?.add('padLeftSerializer');
           return {
             ...childManifest,
             serializer: `padLeftSerializer(${childManifest.serializer}, ${preOffsetType.offset})`,
@@ -859,6 +869,7 @@ export function getTypeManifestVisitor(input: {
           }
           const childManifest = visit(postOffsetType.type, self);
           childManifest.serializerImports.add('shared', 'padRightSerializer');
+          input.sharedSerializers?.add('padRightSerializer');
           return {
             ...childManifest,
             serializer: `padRightSerializer(${childManifest.serializer}, ${postOffsetType.offset})`,
