@@ -7,11 +7,15 @@ import {
   getAllDefinedTypes,
   getAllInstructionArguments,
   getAllInstructionsWithSubs,
+  getAllPdas,
   getAllPrograms,
   InstructionNode,
   isDataEnum,
   isNode,
   isNodeFilter,
+  PdaLinkNode,
+  PdaNode,
+  PdaSeedNode,
   ProgramNode,
   resolveNestedTypeNode,
   SizeDiscriminatorNode,
@@ -175,6 +179,68 @@ export function getRenderMapVisitor(
     return formatCode ? formatCodeUsingPrettier(code, prettierOptions) : code;
   }
 
+  // Shared by `visitAccount` (a pda linked to an account, rendered inline
+  // in that account's own file) and `renderStandalonePda` below (a pda with
+  // no owning account, e.g. Token-2022's `associatedToken` pda) so both
+  // code paths derive identical seed manifests.
+  function getPdaSeedsManifest(
+    pdaSeeds: PdaSeedNode[],
+    imports: JavaScriptImportMap
+  ) {
+    const seeds = pdaSeeds.map((seed) => {
+      if (isNode(seed, 'variablePdaSeedNode')) {
+        const seedManifest = visit(seed.type, typeManifestVisitor);
+        imports.mergeWith(
+          seedManifest.looseImports,
+          seedManifest.serializerImports
+        );
+        return { ...seed, typeManifest: seedManifest };
+      }
+      if (isNode(seed.value, 'programIdValueNode')) {
+        imports
+          .add('umiSerializers', 'publicKey')
+          .addAlias('umiSerializers', 'publicKey', 'publicKeySerializer');
+        return seed;
+      }
+      const seedManifest = visit(seed.type, typeManifestVisitor);
+      imports.mergeWith(seedManifest.serializerImports);
+      const seedValue = seed.value;
+      const valueManifest = visit(seedValue, typeManifestVisitor);
+      (seedValue as any).render = valueManifest.value;
+      imports.mergeWith(valueManifest.valueImports);
+      return { ...seed, typeManifest: seedManifest };
+    });
+    if (seeds.length > 0) {
+      imports.add('umi', ['Pda']);
+    }
+    const hasVariableSeeds =
+      pdaSeeds.filter(isNodeFilter('variablePdaSeedNode')).length > 0;
+    return { seeds, hasVariableSeeds };
+  }
+
+  // Renders a `find<Name>Pda` helper for a pda that is not linked to any
+  // account of its own (e.g. Token-2022's `associatedToken` pda, whose
+  // account is a `Token` account owned by a different program). It is
+  // emitted under `accounts/`, matching the `generatedAccounts` default
+  // `pdaImportFrom` used when resolving `pdaValueNode` default values.
+  function renderStandalonePda(pda: PdaNode): RenderMap {
+    if (!program) {
+      throw new Error('Pda must be visited inside a program.');
+    }
+    const imports = new JavaScriptImportMap().add('umi', ['Context', 'Pda']);
+    const { seeds, hasVariableSeeds } = getPdaSeedsManifest(pda.seeds, imports);
+    return new RenderMap().add(
+      `accounts/${camelCase(pda.name)}.ts`,
+      render('pdaPage.njk', {
+        pda,
+        imports: imports.toString(dependencyMap),
+        program,
+        seeds,
+        hasVariableSeeds,
+      })
+    );
+  }
+
   return pipe(
     staticVisitor(() => new RenderMap()),
     (v) =>
@@ -184,6 +250,15 @@ export function getRenderMapVisitor(
             !internalNodes.includes(n.name);
           const programsToExport = getAllPrograms(node).filter(isNotInternal);
           const accountsToExport = getAllAccounts(node).filter(isNotInternal);
+          const linkedPdaNames = new Set(
+            getAllAccounts(node)
+              .map((a) => a.pda)
+              .filter((pdaLink): pdaLink is PdaLinkNode => !!pdaLink)
+              .map((pdaLink) => pdaLink.name)
+          );
+          const orphanPdasToExport = getAllPdas(node)
+            .filter((p) => !linkedPdaNames.has(p.name))
+            .filter(isNotInternal);
           const instructionsToExport = getAllInstructionsWithSubs(node, {
             leavesOnly: !renderParentInstructions,
           }).filter(isNotInternal);
@@ -192,6 +267,7 @@ export function getRenderMapVisitor(
           const hasAnythingToExport =
             programsToExport.length > 0 ||
             accountsToExport.length > 0 ||
+            orphanPdasToExport.length > 0 ||
             instructionsToExport.length > 0 ||
             definedTypesToExport.length > 0;
 
@@ -203,6 +279,7 @@ export function getRenderMapVisitor(
             root: node,
             programsToExport,
             accountsToExport,
+            orphanPdasToExport,
             instructionsToExport,
             definedTypesToExport,
             hasAnythingToExport,
@@ -218,7 +295,7 @@ export function getRenderMapVisitor(
               .add('programs/index.ts', render('programsIndex.njk', ctx))
               .add('errors/index.ts', render('errorsIndex.njk', ctx));
           }
-          if (accountsToExport.length > 0) {
+          if (accountsToExport.length > 0 || orphanPdasToExport.length > 0) {
             map.add('accounts/index.ts', render('accountsIndex.njk', ctx));
           }
           if (instructionsToExport.length > 0) {
@@ -246,8 +323,21 @@ export function getRenderMapVisitor(
               customInstructionData
             ),
           ];
+          // PDAs that aren't linked to any account in this program still
+          // need a `find<Name>Pda` helper so instructions referencing them
+          // as a default account value can resolve it.
+          const linkedPdaNames = new Set(
+            node.accounts
+              .map((a) => a.pda)
+              .filter((pdaLink): pdaLink is PdaLinkNode => !!pdaLink)
+              .map((pdaLink) => pdaLink.name)
+          );
+          const orphanPdas = node.pdas.filter(
+            (p) => !linkedPdaNames.has(p.name)
+          );
           const renderMap = new RenderMap()
             .mergeWith(...node.accounts.map((a) => visit(a, self)))
+            .mergeWith(...orphanPdas.map((p) => renderStandalonePda(p)))
             .mergeWith(...node.definedTypes.map((t) => visit(t, self)))
             .mergeWith(...customDataDefinedType.map((t) => visit(t, self)))
             .mergeWith(
@@ -379,34 +469,10 @@ export function getRenderMapVisitor(
           // Seeds.
           const pda = node.pda ? linkables.get(node.pda) : undefined;
           const pdaSeeds = pda?.seeds ?? [];
-          const seeds = pdaSeeds.map((seed) => {
-            if (isNode(seed, 'variablePdaSeedNode')) {
-              const seedManifest = visit(seed.type, typeManifestVisitor);
-              imports.mergeWith(
-                seedManifest.looseImports,
-                seedManifest.serializerImports
-              );
-              return { ...seed, typeManifest: seedManifest };
-            }
-            if (isNode(seed.value, 'programIdValueNode')) {
-              imports
-                .add('umiSerializers', 'publicKey')
-                .addAlias('umiSerializers', 'publicKey', 'publicKeySerializer');
-              return seed;
-            }
-            const seedManifest = visit(seed.type, typeManifestVisitor);
-            imports.mergeWith(seedManifest.serializerImports);
-            const seedValue = seed.value;
-            const valueManifest = visit(seedValue, typeManifestVisitor);
-            (seedValue as any).render = valueManifest.value;
-            imports.mergeWith(valueManifest.valueImports);
-            return { ...seed, typeManifest: seedManifest };
-          });
-          if (seeds.length > 0) {
-            imports.add('umi', ['Pda']);
-          }
-          const hasVariableSeeds =
-            pdaSeeds.filter(isNodeFilter('variablePdaSeedNode')).length > 0;
+          const { seeds, hasVariableSeeds } = getPdaSeedsManifest(
+            pdaSeeds,
+            imports
+          );
 
           return new RenderMap().add(
             `accounts/${camelCase(node.name)}.ts`,
