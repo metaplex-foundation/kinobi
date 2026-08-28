@@ -89,11 +89,18 @@ test('it visits remainder option type nodes', (t) => {
   // Then we get a new instance of the same tree back.
   t.deepEqual(result, node);
   t.not(result, node);
+
+  // And the item itself was recursed into (not just shallow-copied), proving
+  // the visitor traverses into `node.item` rather than falling back to the
+  // generic top-level clone.
+  assertIsNode(result, 'remainderOptionTypeNode');
+  t.not(result.item, node.item);
 });
 
 test('it keeps nested structs on enum struct variant type nodes', (t) => {
   // Given an enum struct variant whose struct is wrapped in a size prefix,
-  // as found in the Token-2022 extension TLV entries.
+  // as found in the Token-2022 extension TLV entries, and which carries a
+  // discriminator (as Token-2022's TLV extension entries do).
   const node = enumStructVariantTypeNode(
     'transferFeeConfig',
     sizePrefixTypeNode(
@@ -101,12 +108,16 @@ test('it keeps nested structs on enum struct variant type nodes', (t) => {
         structFieldTypeNode({ name: 'value', type: numberTypeNode('u64') }),
       ]),
       numberTypeNode('u16')
-    )
+    ),
+    7
   );
 
   // When we visit it using the identity visitor.
   const result = visit(node, identityVisitor());
 
-  // Then the nested struct is preserved as-is.
+  // Then the nested struct is preserved as-is, and the discriminator survives
+  // the visit instead of being silently dropped.
   t.deepEqual(result, node);
+  assertIsNode(result, 'enumStructVariantTypeNode');
+  t.is(result.discriminator, 7);
 });

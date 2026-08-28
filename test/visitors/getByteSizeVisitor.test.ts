@@ -3,6 +3,7 @@ import {
   LinkableDictionary,
   Node,
   Visitor,
+  constantValueNode,
   enumEmptyVariantTypeNode,
   enumStructVariantTypeNode,
   enumTupleVariantTypeNode,
@@ -10,6 +11,7 @@ import {
   fixedSizeTypeNode,
   getByteSizeVisitor,
   numberTypeNode,
+  numberValueNode,
   publicKeyTypeNode,
   remainderOptionTypeNode,
   stringTypeNode,
@@ -114,4 +116,26 @@ test('it returns null for remainder option types', (t) => {
 test('it returns the item size for zeroable option types', (t) => {
   const visitor = getByteSizeVisitor(new LinkableDictionary());
   t.is(visit(zeroableOptionTypeNode(publicKeyTypeNode()), visitor), 32);
+});
+
+// NOTE: this documents the intended spec (a zero value must never add to the
+// byte size), but it does not, on its own, distinguish `visitZeroableOptionType`
+// from the generic merge-sum fallback it replaces: `zeroValue` is a
+// `constantValueNode`, whose kind is outside `ByteSizeVisitorKeys` (only type
+// nodes plus a handful of container kinds are registered), so the fallback's
+// `visit(this)(node.zeroValue)` call also short-circuits to `[]` before ever
+// reaching a size. Verified empirically by temporarily removing
+// `visitZeroableOptionType`/`visitRemainderOptionType` from
+// `getByteSizeVisitor.ts`: this test stayed green (see task-2-report.md,
+// Finding 2), while the sibling "it returns null for remainder option types"
+// test went red as expected. Regression coverage for the zeroable/remainder
+// distinction therefore rests on that sibling test and on the
+// "it returns the item size for zeroable option types" test above.
+test('it returns the item size, not item size plus zero value size, for zeroable option types with a zero value', (t) => {
+  const visitor = getByteSizeVisitor(new LinkableDictionary());
+  const node = zeroableOptionTypeNode(
+    publicKeyTypeNode(),
+    constantValueNode(numberTypeNode('u32'), numberValueNode(0))
+  );
+  t.is(visit(node, visitor), 32);
 });
