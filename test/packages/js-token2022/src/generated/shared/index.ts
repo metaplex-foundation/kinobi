@@ -228,6 +228,11 @@ export function remainderArray<T, U extends T = T>(
       const values: U[] = [];
       while (offset < bytes.length) {
         const [value, newOffset] = item.deserialize(bytes, offset);
+        if (newOffset <= offset) {
+          throw new Error(
+            'remainderArray: item serializer did not advance the offset; cannot decode a zero-width item'
+          );
+        }
         values.push(value);
         offset = newOffset;
       }

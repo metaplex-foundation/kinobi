@@ -326,6 +326,16 @@ export function getRenderMapVisitor(
           // PDAs that aren't linked to any account in this program still
           // need a `find<Name>Pda` helper so instructions referencing them
           // as a default account value can resolve it.
+          //
+          // Note: this `linkedPdaNames` is scoped to `node.accounts` (this
+          // program only), which decides what gets *rendered* here. It is
+          // intentionally narrower than `visitRoot`'s `linkedPdaNames`,
+          // which is derived from `getAllAccounts(node)` (every program) and
+          // decides what gets *re-exported* from `accounts/index.ts`. The
+          // two only diverge when a PDA name collides across programs
+          // (already requires a config-level rename to resolve), so this
+          // asymmetry is intentional and unexercised by single-program or
+          // disjoint-name IDLs.
           const linkedPdaNames = new Set(
             node.accounts
               .map((a) => a.pda)
