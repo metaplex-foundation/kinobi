@@ -167,6 +167,12 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
     };
   }
 
+  if (castedNodeKeys.includes('remainderOptionTypeNode')) {
+    visitor.visitRemainderOptionType = function visitRemainderOptionType(node) {
+      return merge(node, visit(this)(node.item));
+    };
+  }
+
   if (castedNodeKeys.includes('booleanTypeNode')) {
     visitor.visitBooleanType = function visitBooleanType(node) {
       return merge(node, visit(this)(node.size));

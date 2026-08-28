@@ -1,10 +1,15 @@
 import test from 'ava';
 import {
   assertIsNode,
+  enumStructVariantTypeNode,
   identityVisitor,
   interceptVisitor,
   numberTypeNode,
   publicKeyTypeNode,
+  remainderOptionTypeNode,
+  sizePrefixTypeNode,
+  structFieldTypeNode,
+  structTypeNode,
   tupleTypeNode,
   visit,
 } from '../../src';
@@ -72,4 +77,36 @@ test('it can create partial visitors', (t) => {
   // And the unsupported node cannot be visited.
   // @ts-expect-error
   t.throws(() => visit(publicKeyTypeNode(), visitor));
+});
+
+test('it visits remainder option type nodes', (t) => {
+  // Given a remainder option node wrapping a public key.
+  const node = remainderOptionTypeNode(publicKeyTypeNode());
+
+  // When we visit it using the identity visitor.
+  const result = visit(node, identityVisitor());
+
+  // Then we get a new instance of the same tree back.
+  t.deepEqual(result, node);
+  t.not(result, node);
+});
+
+test('it keeps nested structs on enum struct variant type nodes', (t) => {
+  // Given an enum struct variant whose struct is wrapped in a size prefix,
+  // as found in the Token-2022 extension TLV entries.
+  const node = enumStructVariantTypeNode(
+    'transferFeeConfig',
+    sizePrefixTypeNode(
+      structTypeNode([
+        structFieldTypeNode({ name: 'value', type: numberTypeNode('u64') }),
+      ]),
+      numberTypeNode('u16')
+    )
+  );
+
+  // When we visit it using the identity visitor.
+  const result = visit(node, identityVisitor());
+
+  // Then the nested struct is preserved as-is.
+  t.deepEqual(result, node);
 });

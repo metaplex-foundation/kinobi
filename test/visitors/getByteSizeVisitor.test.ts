@@ -11,11 +11,13 @@ import {
   getByteSizeVisitor,
   numberTypeNode,
   publicKeyTypeNode,
+  remainderOptionTypeNode,
   stringTypeNode,
   structFieldTypeNode,
   structTypeNode,
   tupleTypeNode,
   visit,
+  zeroableOptionTypeNode,
 } from '../../src';
 
 const macro = test.macro((t, node: Node, expectedSize: number | null) => {
@@ -103,3 +105,13 @@ test(
   ]),
   null
 );
+
+test('it returns null for remainder option types', (t) => {
+  const visitor = getByteSizeVisitor(new LinkableDictionary());
+  t.is(visit(remainderOptionTypeNode(publicKeyTypeNode()), visitor), null);
+});
+
+test('it returns the item size for zeroable option types', (t) => {
+  const visitor = getByteSizeVisitor(new LinkableDictionary());
+  t.is(visit(zeroableOptionTypeNode(publicKeyTypeNode()), visitor), 32);
+});

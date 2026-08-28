@@ -4,10 +4,12 @@ import {
   DISCRIMINATOR_NODES,
   ENUM_VARIANT_TYPE_NODES,
   INSTRUCTION_INPUT_VALUE_NODE,
+  NestedTypeNode,
   Node,
   NodeKind,
   PDA_SEED_NODES,
   REGISTERED_NODE_KINDS,
+  StructTypeNode,
   TYPE_NODES,
   VALUE_NODES,
   accountNode,
@@ -47,7 +49,9 @@ import {
   preOffsetTypeNode,
   prefixedCountNode,
   programNode,
+  remainderOptionTypeNode,
   removeNullAndAssertIsNodeFilter,
+  resolveNestedTypeNode,
   resolverValueNode,
   rootNode,
   sentinelTypeNode,
@@ -278,11 +282,19 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       if (!newStruct) {
         return enumEmptyVariantTypeNode(node.name);
       }
-      assertIsNode(newStruct, 'structTypeNode');
-      if (newStruct.fields.length === 0) {
+      assertIsNode(newStruct, TYPE_NODES);
+      const resolvedStruct = resolveNestedTypeNode(
+        newStruct as NestedTypeNode<StructTypeNode>
+      );
+      assertIsNode(resolvedStruct, 'structTypeNode');
+      if (resolvedStruct.fields.length === 0) {
         return enumEmptyVariantTypeNode(node.name);
       }
-      return enumStructVariantTypeNode(node.name, newStruct);
+      return enumStructVariantTypeNode(
+        node.name,
+        newStruct as NestedTypeNode<StructTypeNode>,
+        node.discriminator
+      );
     };
   }
 
@@ -339,6 +351,15 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
         : undefined;
       if (zeroValue) assertIsNode(zeroValue, 'constantValueNode');
       return zeroableOptionTypeNode(item, zeroValue);
+    };
+  }
+
+  if (castedNodeKeys.includes('remainderOptionTypeNode')) {
+    visitor.visitRemainderOptionType = function visitRemainderOptionType(node) {
+      const item = visit(this)(node.item);
+      if (item === null) return null;
+      assertIsNode(item, TYPE_NODES);
+      return remainderOptionTypeNode(item);
     };
   }
 

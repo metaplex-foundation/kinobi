@@ -119,6 +119,14 @@ export function getByteSizeVisitor(
       return itemSize !== null ? itemSize + prefixSize : null;
     },
 
+    visitZeroableOptionType(node) {
+      return visit(node.item, this);
+    },
+
+    visitRemainderOptionType() {
+      return null;
+    },
+
     visitNumberType(node) {
       return parseInt(node.format.slice(1), 10) / 8;
     },
