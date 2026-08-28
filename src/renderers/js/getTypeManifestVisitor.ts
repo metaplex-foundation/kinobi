@@ -378,6 +378,40 @@ export function getTypeManifestVisitor(input: {
           };
         },
 
+        visitZeroableOptionType(zeroableOptionType, { self }) {
+          const childManifest = visit(zeroableOptionType.item, self);
+          childManifest.strictImports.add('umi', 'Option');
+          childManifest.looseImports.add('umi', 'OptionOrNullable');
+          childManifest.serializerImports.add('shared', 'zeroableOption');
+          let options = '';
+          if (zeroableOptionType.zeroValue) {
+            const zeroValueManifest = visit(zeroableOptionType.zeroValue, self);
+            childManifest.serializerImports.mergeWith(
+              zeroValueManifest.valueImports
+            );
+            options = `, { zeroValue: ${zeroValueManifest.value} }`;
+          }
+          return {
+            ...childManifest,
+            strictType: `Option<${childManifest.strictType}>`,
+            looseType: `OptionOrNullable<${childManifest.looseType}>`,
+            serializer: `zeroableOption(${childManifest.serializer}${options})`,
+          };
+        },
+
+        visitRemainderOptionType(remainderOptionType, { self }) {
+          const childManifest = visit(remainderOptionType.item, self);
+          childManifest.strictImports.add('umi', 'Option');
+          childManifest.looseImports.add('umi', 'OptionOrNullable');
+          childManifest.serializerImports.add('shared', 'remainderOption');
+          return {
+            ...childManifest,
+            strictType: `Option<${childManifest.strictType}>`,
+            looseType: `OptionOrNullable<${childManifest.looseType}>`,
+            serializer: `remainderOption(${childManifest.serializer})`,
+          };
+        },
+
         visitSetType(setType, { self }) {
           const childManifest = visit(setType.item, self);
           childManifest.serializerImports.add('umiSerializers', 'set');
