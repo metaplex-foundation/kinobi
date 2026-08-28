@@ -21,6 +21,7 @@ import { OptionTypeNode, optionTypeNodeFromIdl } from './OptionTypeNode';
 import { PostOffsetTypeNode } from './PostOffsetTypeNode';
 import { PreOffsetTypeNode } from './PreOffsetTypeNode';
 import { PublicKeyTypeNode, publicKeyTypeNode } from './PublicKeyTypeNode';
+import { RemainderOptionTypeNode } from './RemainderOptionTypeNode';
 import { SentinelTypeNode } from './SentinelTypeNode';
 import { SetTypeNode, setTypeNodeFromIdl } from './SetTypeNode';
 import { SizePrefixTypeNode, sizePrefixTypeNode } from './SizePrefixTypeNode';
@@ -48,6 +49,7 @@ export type StandaloneTypeNode =
   | PostOffsetTypeNode
   | PreOffsetTypeNode
   | PublicKeyTypeNode
+  | RemainderOptionTypeNode
   | SentinelTypeNode
   | SetTypeNode
   | SizePrefixTypeNode
@@ -72,6 +74,7 @@ export const STANDALONE_TYPE_NODE_KINDS = [
   'postOffsetTypeNode',
   'preOffsetTypeNode',
   'publicKeyTypeNode',
+  'remainderOptionTypeNode',
   'sentinelTypeNode',
   'setTypeNode',
   'sizePrefixTypeNode',
