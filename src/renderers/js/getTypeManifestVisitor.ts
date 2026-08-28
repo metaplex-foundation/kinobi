@@ -769,17 +769,106 @@ export function getTypeManifestVisitor(input: {
         },
 
         visitFixedSizeType(fixedSizeType, { self }) {
-          parentSize = fixedSizeType.size;
-          const manifest = visit(fixedSizeType.type, self);
-          parentSize = null;
-          return manifest;
+          const resolvedType = resolveNestedTypeNode(fixedSizeType.type);
+          if (isNode(resolvedType, ['stringTypeNode', 'bytesTypeNode'])) {
+            parentSize = fixedSizeType.size;
+            const manifest = visit(fixedSizeType.type, self);
+            parentSize = null;
+            return manifest;
+          }
+          const childManifest = visit(fixedSizeType.type, self);
+          childManifest.serializerImports.add('umiSerializers', 'fixSerializer');
+          return {
+            ...childManifest,
+            serializer: `fixSerializer(${childManifest.serializer}, ${fixedSizeType.size})`,
+          };
         },
 
         visitSizePrefixType(sizePrefixType, { self }) {
-          parentSize = resolveNestedTypeNode(sizePrefixType.prefix);
-          const manifest = visit(sizePrefixType.type, self);
-          parentSize = null;
-          return manifest;
+          const resolvedType = resolveNestedTypeNode(sizePrefixType.type);
+          if (isNode(resolvedType, ['stringTypeNode', 'bytesTypeNode'])) {
+            parentSize = resolveNestedTypeNode(sizePrefixType.prefix);
+            const manifest = visit(sizePrefixType.type, self);
+            parentSize = null;
+            return manifest;
+          }
+          const childManifest = visit(sizePrefixType.type, self);
+          const prefixManifest = visit(sizePrefixType.prefix, self);
+          childManifest.serializerImports
+            .mergeWith(prefixManifest.serializerImports)
+            .add('shared', 'sizePrefix');
+          return {
+            ...childManifest,
+            serializer: `sizePrefix(${childManifest.serializer}, ${prefixManifest.serializer})`,
+          };
+        },
+
+        visitHiddenPrefixType(hiddenPrefixType, { self }) {
+          const childManifest = visit(hiddenPrefixType.type, self);
+          childManifest.serializerImports.add('shared', 'hiddenPrefix');
+          const prefixes = hiddenPrefixType.prefix.map((constant) => {
+            const constantManifest = visit(constant, self);
+            childManifest.serializerImports.mergeWith(
+              constantManifest.valueImports
+            );
+            return constantManifest.value;
+          });
+          return {
+            ...childManifest,
+            serializer: `hiddenPrefix(${childManifest.serializer}, [${prefixes.join(', ')}])`,
+          };
+        },
+
+        visitHiddenSuffixType(hiddenSuffixType, { self }) {
+          const childManifest = visit(hiddenSuffixType.type, self);
+          childManifest.serializerImports.add('shared', 'hiddenSuffix');
+          const suffixes = hiddenSuffixType.suffix.map((constant) => {
+            const constantManifest = visit(constant, self);
+            childManifest.serializerImports.mergeWith(
+              constantManifest.valueImports
+            );
+            return constantManifest.value;
+          });
+          return {
+            ...childManifest,
+            serializer: `hiddenSuffix(${childManifest.serializer}, [${suffixes.join(', ')}])`,
+          };
+        },
+
+        visitPreOffsetType(preOffsetType, { self }) {
+          if (preOffsetType.strategy !== 'padded') {
+            throw new Error(
+              `The JavaScript renderer only supports the [padded] strategy ` +
+                `of preOffsetTypeNode. Got strategy [${preOffsetType.strategy}].`
+            );
+          }
+          const childManifest = visit(preOffsetType.type, self);
+          childManifest.serializerImports.add('shared', 'padLeftSerializer');
+          return {
+            ...childManifest,
+            serializer: `padLeftSerializer(${childManifest.serializer}, ${preOffsetType.offset})`,
+          };
+        },
+
+        visitPostOffsetType(postOffsetType, { self }) {
+          if (postOffsetType.strategy !== 'padded') {
+            throw new Error(
+              `The JavaScript renderer only supports the [padded] strategy ` +
+                `of postOffsetTypeNode. Got strategy [${postOffsetType.strategy}].`
+            );
+          }
+          const childManifest = visit(postOffsetType.type, self);
+          childManifest.serializerImports.add('shared', 'padRightSerializer');
+          return {
+            ...childManifest,
+            serializer: `padRightSerializer(${childManifest.serializer}, ${postOffsetType.offset})`,
+          };
+        },
+
+        visitSentinelType() {
+          throw new Error(
+            'The JavaScript renderer does not support sentinelTypeNode yet.'
+          );
         },
 
         visitArrayValue(node, { self }) {
