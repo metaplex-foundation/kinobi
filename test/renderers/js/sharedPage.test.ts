@@ -42,8 +42,10 @@ test('it omits shared serializer helpers when they are unused', (t) => {
     'zeroableOption',
     'remainderOption',
     'hiddenPrefix',
+    'hiddenSuffix',
     'sizePrefix(',
     'padLeftSerializer',
+    'padRightSerializer',
   ]);
   renderMapContains(t, renderMap, 'shared/index.ts', [
     'export function getAccountMetasAndSigners',
