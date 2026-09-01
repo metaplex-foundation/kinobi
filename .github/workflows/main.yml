@@ -109,8 +109,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'pnpm'
+
+      # npm OIDC trusted publishing needs npm >= 11.5.1. `changeset publish`
+      # runs `pnpm publish`, which shells out to the npm CLI to do the actual
+      # publish and OIDC token exchange -- so it is npm's version that matters
+      # here, not pnpm's. Node 22 ships npm 10.x, so upgrade explicitly.
+      - name: Upgrade npm for OIDC trusted publishing
+        run: npm install -g npm@11
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
