@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 0.20.0
+
+### Minor Changes
+
+- [#253](https://github.com/metaplex-foundation/kinobi/pull/253) [`2b89c5de`](https://github.com/metaplex-foundation/kinobi/commit/2b89c5defdc40275a604b53c2f72bcbbe3eea775) Thanks [@nhanphan](https://github.com/nhanphan)! - Add support for loading Codama-standard IDLs (such as SPL Token-2022's) via `createFromJson` and render them with the JavaScript (Umi) renderer. This adds the `remainderOptionTypeNode` node kind and teaches the JavaScript renderer to emit serializers for `zeroableOptionTypeNode`, `remainderOptionTypeNode`, `hiddenPrefixTypeNode`, `hiddenSuffixTypeNode`, `sizePrefixTypeNode` around arbitrary types, and padded `preOffsetTypeNode`/`postOffsetTypeNode` — backed by serializer helpers emitted into the generated `shared` folder only when used, including a `remainderArray` helper for remainder-counted arrays of variable-size items (Umi's built-in `array({ size: 'remainder' })` only supports fixed-size items), which is what makes Token-2022's extension TLV list and `batch` instruction work. The JavaScript renderer also now emits a `find<Name>Pda` helper for PDAs that aren't linked to an account of their own, such as Token-2022's `associatedToken` PDA. Codama roots are normalized on load (names main-cased, defaults filled, display metadata dropped) and re-stamped with the `kinobi` standard. Unsupported nodes in the JavaScript renderer (`sentinelTypeNode`, non-padded offsets) now fail loudly at codegen time instead of silently producing broken serializers. The experimental JavaScript renderer also learns `remainderOptionTypeNode`. Output for existing Anchor/Shank IDLs is byte-for-byte unchanged.
+
 ## 0.19.2
 
 ### Patch Changes
