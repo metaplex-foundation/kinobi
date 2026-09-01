@@ -1,12 +1,18 @@
 import test from 'ava';
 import {
   LinkableDictionary,
+  arrayTypeNode,
   bytesTypeNode,
+  constantValueNode,
   fixedSizeTypeNode,
   getByteSizeVisitor,
+  hiddenPrefixTypeNode,
   numberTypeNode,
+  numberValueNode,
+  preOffsetTypeNode,
   publicKeyTypeNode,
   remainderOptionTypeNode,
+  remainderSizeNode,
   sizePrefixTypeNode,
   stringTypeNode,
   structFieldTypeNode,
@@ -215,4 +221,121 @@ test('it throws when a fixedSizeTypeNode wraps a stringTypeNode', (t) => {
   const node = fixedSizeTypeNode(stringTypeNode(), 8);
 
   t.throws(() => visit(node, createTypeManifestVisitor()));
+});
+
+test('it wraps a preOffsetTypeNode (padded strategy) with the padLeftSerializer serializer', (t) => {
+  // Given a preOffsetTypeNode wrapping a u8, with the 'padded' strategy and
+  // an 83-byte offset (as in Token-2022's hidden discriminator prefix).
+  const node = preOffsetTypeNode(numberTypeNode('u8'), 83, 'padded');
+
+  // When we visit it with the type manifest visitor.
+  const manifest = visit(node, createTypeManifestVisitor());
+
+  // Then the serializer wraps the child serializer with padLeftSerializer(...).
+  codeContains(t, manifest.serializer, 'padLeftSerializer(u8(), 83)');
+});
+
+test('it registers padLeftSerializer in the sharedSerializers set when visited', (t) => {
+  // Given a sharedSerializers set that starts out empty.
+  const sharedSerializers = new Set<string>();
+  t.false(sharedSerializers.has('padLeftSerializer'));
+
+  // When we visit a preOffsetTypeNode (padded strategy) with that set threaded in.
+  const node = preOffsetTypeNode(numberTypeNode('u8'), 83, 'padded');
+  visit(node, createTypeManifestVisitor(sharedSerializers));
+
+  // Then the set now contains 'padLeftSerializer'.
+  t.true(sharedSerializers.has('padLeftSerializer'));
+});
+
+test('it does not touch sharedSerializers for preOffset when the set is not provided', (t) => {
+  // Given a preOffsetTypeNode (padded strategy) and a visitor with no
+  // sharedSerializers threaded in.
+  const node = preOffsetTypeNode(numberTypeNode('u8'), 83, 'padded');
+
+  // When / then visiting it must not throw despite `sharedSerializers` being undefined.
+  t.notThrows(() => visit(node, createTypeManifestVisitor(undefined)));
+});
+
+test('it throws when a preOffsetTypeNode uses a non-padded strategy', (t) => {
+  // Given a preOffsetTypeNode using the 'relative' strategy, which the
+  // JavaScript renderer does not support.
+  const relativeNode = preOffsetTypeNode(numberTypeNode('u8'), 4, 'relative');
+  t.throws(() => visit(relativeNode, createTypeManifestVisitor()), {
+    message: /padded/,
+  });
+
+  // Same for the 'absolute' strategy.
+  const absoluteNode = preOffsetTypeNode(numberTypeNode('u8'), 4, 'absolute');
+  t.throws(() => visit(absoluteNode, createTypeManifestVisitor()), {
+    message: /padded/,
+  });
+});
+
+test('it wraps a hiddenPrefixTypeNode with the hiddenPrefix serializer, rendering each constant inline', (t) => {
+  // Given a hiddenPrefixTypeNode wrapping a u8, with a single u8 constant prefix.
+  const node = hiddenPrefixTypeNode(numberTypeNode('u8'), [
+    constantValueNode(numberTypeNode('u8'), numberValueNode(1)),
+  ]);
+
+  // When we visit it with the type manifest visitor.
+  const manifest = visit(node, createTypeManifestVisitor());
+
+  // Then the serializer wraps the child serializer with hiddenPrefix(...),
+  // and the constant is rendered inline as `<serializer>.serialize(<value>)`.
+  codeContains(t, manifest.serializer, 'hiddenPrefix(u8(), [u8().serialize(1)])');
+});
+
+test('it registers hiddenPrefix in the sharedSerializers set when visited', (t) => {
+  // Given a sharedSerializers set that starts out empty.
+  const sharedSerializers = new Set<string>();
+  t.false(sharedSerializers.has('hiddenPrefix'));
+
+  // When we visit a hiddenPrefixTypeNode with that set threaded in.
+  const node = hiddenPrefixTypeNode(numberTypeNode('u8'), [
+    constantValueNode(numberTypeNode('u8'), numberValueNode(1)),
+  ]);
+  visit(node, createTypeManifestVisitor(sharedSerializers));
+
+  // Then the set now contains 'hiddenPrefix'.
+  t.true(sharedSerializers.has('hiddenPrefix'));
+});
+
+test('it does not touch sharedSerializers for hiddenPrefix when the set is not provided', (t) => {
+  // Given a hiddenPrefixTypeNode and a visitor with no sharedSerializers threaded in.
+  const node = hiddenPrefixTypeNode(numberTypeNode('u8'), [
+    constantValueNode(numberTypeNode('u8'), numberValueNode(1)),
+  ]);
+
+  // When / then visiting it must not throw despite `sharedSerializers` being undefined.
+  t.notThrows(() => visit(node, createTypeManifestVisitor(undefined)));
+});
+
+test('it renders the composite Token-2022 hiddenPrefix(remainder array, preOffset constant) shape', (t) => {
+  // Given the exact Token-2022 extension-list shape: a hiddenPrefixTypeNode
+  // wrapping a remainder-sized array of u8 extensions, with a single prefix
+  // constant whose *type* is itself a preOffsetTypeNode (an 83-byte padded
+  // u8 discriminator, encoding the value 1). This must serialize to 83 zero
+  // bytes followed by 0x01 (84 bytes total).
+  const node = hiddenPrefixTypeNode(
+    arrayTypeNode(numberTypeNode('u8'), remainderSizeNode()),
+    [
+      constantValueNode(
+        preOffsetTypeNode(numberTypeNode('u8'), 83, 'padded'),
+        numberValueNode(1)
+      ),
+    ]
+  );
+
+  // When we visit it with the type manifest visitor.
+  const manifest = visit(node, createTypeManifestVisitor());
+
+  // Then the constant's own type (preOffsetTypeNode) is rendered as a nested
+  // padLeftSerializer(...), whose result is then used to serialize the
+  // constant's value (1) inline, all nested inside the outer hiddenPrefix(...).
+  codeContains(
+    t,
+    manifest.serializer,
+    'hiddenPrefix(array(u8(), { size: \'remainder\' }), [padLeftSerializer(u8(), 83).serialize(1)])'
+  );
 });

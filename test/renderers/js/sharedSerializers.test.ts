@@ -1,7 +1,11 @@
 import test from 'ava';
 import {
+  constantValueNode,
   definedTypeNode,
+  hiddenPrefixTypeNode,
   numberTypeNode,
+  numberValueNode,
+  preOffsetTypeNode,
   programNode,
   publicKeyTypeNode,
   remainderOptionTypeNode,
@@ -147,4 +151,88 @@ test('it emits the sizePrefix helper in shared/index.ts when a type uses it', (t
   renderMapContains(t, renderMap, 'shared/index.ts', [
     'export function sizePrefix',
   ]);
+});
+
+test('it emits the padLeftSerializer helper in shared/index.ts when a type uses it', (t) => {
+  // Given a root whose only defined type uses a preOffsetTypeNode (padded strategy).
+  const node = rootNode([
+    programNode({
+      name: 'tokenExtensions',
+      publicKey: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+      definedTypes: [
+        definedTypeNode({
+          name: 'extra',
+          type: preOffsetTypeNode(numberTypeNode('u8'), 83, 'padded'),
+        }),
+      ],
+    }),
+  ]);
+
+  // When we render it.
+  const renderMap = visit(node, getRenderMapVisitor());
+
+  // Then the shared module contains the on-demand padLeftSerializer helper.
+  renderMapContains(t, renderMap, 'shared/index.ts', [
+    'export function padLeftSerializer',
+  ]);
+});
+
+test('it emits the hiddenPrefix helper in shared/index.ts when a type uses it', (t) => {
+  // Given a root whose only defined type uses a hiddenPrefixTypeNode.
+  const node = rootNode([
+    programNode({
+      name: 'tokenExtensions',
+      publicKey: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+      definedTypes: [
+        definedTypeNode({
+          name: 'extra',
+          type: hiddenPrefixTypeNode(numberTypeNode('u8'), [
+            constantValueNode(numberTypeNode('u8'), numberValueNode(1)),
+          ]),
+        }),
+      ],
+    }),
+  ]);
+
+  // When we render it.
+  const renderMap = visit(node, getRenderMapVisitor());
+
+  // Then the shared module contains the on-demand hiddenPrefix helper.
+  renderMapContains(t, renderMap, 'shared/index.ts', [
+    'export function hiddenPrefix',
+  ]);
+});
+
+test('it omits the padLeftSerializer/hiddenPrefix helpers from shared/index.ts when nothing uses them', (t) => {
+  // Given a root whose defined type does NOT use preOffsetTypeNode or
+  // hiddenPrefixTypeNode.
+  const node = rootNode([
+    programNode({
+      name: 'splMemo',
+      publicKey: 'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr',
+      definedTypes: [
+        definedTypeNode({
+          name: 'simple',
+          type: structTypeNode([
+            structFieldTypeNode({ name: 'value', type: numberTypeNode('u8') }),
+          ]),
+        }),
+      ],
+    }),
+  ]);
+
+  // When we render it.
+  const renderMap = visit(node, getRenderMapVisitor());
+
+  // Then the shared module exists but does NOT include either helper.
+  t.true(renderMap.has('shared/index.ts'));
+  const code = renderMap.get('shared/index.ts');
+  t.false(
+    code.includes('export function padLeftSerializer'),
+    `Expected no padLeftSerializer helper but found one:\n${code}`
+  );
+  t.false(
+    code.includes('export function hiddenPrefix'),
+    `Expected no hiddenPrefix helper but found one:\n${code}`
+  );
 });

@@ -3,7 +3,7 @@
 
 {% block main %}
 {% set needsOptionHelpers = 'zeroableOption' in sharedSerializers or 'remainderOption' in sharedSerializers %}
-{% set needsMergeBytes = 'sizePrefix' in sharedSerializers %}
+{% set needsMergeBytes = 'hiddenPrefix' in sharedSerializers or 'padLeftSerializer' in sharedSerializers or 'sizePrefix' in sharedSerializers %}
 import { AccountMeta, isSigner, Pda, publicKey, PublicKey, Signer, isPda{% if needsOptionHelpers %}, isOption, isSome, none, Option, OptionOrNullable, some{% endif %} } from '@metaplex-foundation/umi';
 {% if sharedSerializers.length > 0 %}
 import { {% if needsMergeBytes %}mergeBytes, {% endif %}Serializer } from '@metaplex-foundation/umi/serializers';
@@ -221,6 +221,58 @@ export function sizePrefix<T, U extends T = T>(
       const [value] = item.deserialize(bytes.slice(contentOffset, contentEnd));
       return [value, contentEnd];
     },
+  };
+}
+{% endif %}
+
+{% if 'hiddenPrefix' in sharedSerializers %}
+/**
+ * Serializer that writes constant bytes before the item and
+ * asserts and skips them when reading.
+ * @internal
+ */
+export function hiddenPrefix<T, U extends T = T>(
+  item: Serializer<T, U>,
+  prefixes: Uint8Array[]
+): Serializer<T, U> {
+  const prefix = mergeBytes(prefixes);
+  return {
+    description: `hiddenPrefix(${item.description})`,
+    fixedSize: item.fixedSize === null ? null : item.fixedSize + prefix.length,
+    maxSize: item.maxSize === null ? null : item.maxSize + prefix.length,
+    serialize: (value: T) => mergeBytes([prefix, item.serialize(value)]),
+    deserialize: (bytes: Uint8Array, offset = 0) => {
+      const matches =
+        bytes.length - offset >= prefix.length &&
+        prefix.every((byte, index) => bytes[offset + index] === byte);
+      if (!matches) {
+        throw new Error(
+          `hiddenPrefix expected the constant [${prefix.join(', ')}] at offset ${offset}.`
+        );
+      }
+      return item.deserialize(bytes, offset + prefix.length);
+    },
+  };
+}
+{% endif %}
+
+{% if 'padLeftSerializer' in sharedSerializers %}
+/**
+ * Serializer that adds `offset` bytes of zero padding before the item.
+ * @internal
+ */
+export function padLeftSerializer<T, U extends T = T>(
+  item: Serializer<T, U>,
+  offset: number
+): Serializer<T, U> {
+  return {
+    description: `padLeft(${item.description})`,
+    fixedSize: item.fixedSize === null ? null : item.fixedSize + offset,
+    maxSize: item.maxSize === null ? null : item.maxSize + offset,
+    serialize: (value: T) =>
+      mergeBytes([new Uint8Array(offset), item.serialize(value)]),
+    deserialize: (bytes: Uint8Array, byteOffset = 0) =>
+      item.deserialize(bytes, byteOffset + offset),
   };
 }
 {% endif %}

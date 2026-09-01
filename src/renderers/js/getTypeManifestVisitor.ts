@@ -494,6 +494,50 @@ export function getTypeManifestVisitor(input: {
           };
         },
 
+        visitHiddenPrefixType(hiddenPrefixType, { self }) {
+          const childManifest = visit(hiddenPrefixType.type, self);
+          childManifest.serializerImports.add('shared', 'hiddenPrefix');
+          input.sharedSerializers?.add('hiddenPrefix');
+
+          // Each prefix constant is rendered inline, in this type-manifest
+          // context, as `<type serializer>.serialize(<value>)` — a
+          // Uint8Array. We deliberately do NOT dispatch the constantValueNode
+          // itself to the value-node visitor: `renderValueNodeVisitor` has no
+          // access to the type-manifest visitor (`self`), so it cannot render
+          // the constant's own type serializer. Its `visitConstantValue` stub
+          // throws for that reason and is expected to stay unused here.
+          const prefixes = hiddenPrefixType.prefix.map((constant) => {
+            const constantType = visit(constant.type, self);
+            const constantValue = visit(constant.value, input.valueNodeVisitor);
+            childManifest.serializerImports.mergeWith(
+              constantType.serializerImports
+            );
+            childManifest.serializerImports.mergeWith(constantValue.imports);
+            return `${constantType.serializer}.serialize(${constantValue.render})`;
+          });
+
+          return {
+            ...childManifest,
+            serializer: `hiddenPrefix(${childManifest.serializer}, [${prefixes.join(', ')}])`,
+          };
+        },
+
+        visitPreOffsetType(preOffsetType, { self }) {
+          if (preOffsetType.strategy !== 'padded') {
+            throw new Error(
+              "The JavaScript renderer only supports the 'padded' " +
+                `strategy of preOffsetTypeNode. Got [${preOffsetType.strategy}].`
+            );
+          }
+          const childManifest = visit(preOffsetType.type, self);
+          childManifest.serializerImports.add('shared', 'padLeftSerializer');
+          input.sharedSerializers?.add('padLeftSerializer');
+          return {
+            ...childManifest,
+            serializer: `padLeftSerializer(${childManifest.serializer}, ${preOffsetType.offset})`,
+          };
+        },
+
         visitSetType(setType, { self }) {
           const childManifest = visit(setType.item, self);
           childManifest.serializerImports.add('umiSerializers', 'set');
