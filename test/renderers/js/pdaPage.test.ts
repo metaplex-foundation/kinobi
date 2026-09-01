@@ -153,3 +153,35 @@ test('it renders a single finder when two programs declare a same-named orphan p
   const index = renderMap.get('accounts/index.ts');
   t.is(index.match(/export \* from '\.\/foo'/g)?.length, 1);
 });
+
+test('it skips a standalone pda whose name is linked to an account in another program', (t) => {
+  // Given program A that links a pda `foo` through an account `bar` (its
+  // finder is emitted inline as `findBarPda` in accounts/bar.ts), and program
+  // B that declares a standalone pda also named `foo`. visitRoot already
+  // excludes `foo` from the accounts index because the name is linked
+  // globally; visitProgram must match and not emit a dead, un-exported
+  // accounts/foo.ts.
+  const node = rootNode(
+    programNode({
+      name: 'programA',
+      publicKey: '1111',
+      pdas: [pdaNode('foo', [variablePdaSeedNode('owner', publicKeyTypeNode())])],
+      accounts: [accountNode({ name: 'bar', pda: pdaLinkNode('foo') })],
+    }),
+    [
+      programNode({
+        name: 'programB',
+        publicKey: '2222',
+        pdas: [pdaNode('foo', [])],
+      }),
+    ]
+  );
+
+  // When we render it.
+  const renderMap = visit(node, getRenderMapVisitor());
+
+  // Then program A's linked finder is inline in its account page...
+  renderMapContains(t, renderMap, 'accounts/bar.ts', ['export function findBarPda']);
+  // ...and no separate accounts/foo.ts file is emitted for program B.
+  t.false(renderMap.has('accounts/foo.ts'));
+});

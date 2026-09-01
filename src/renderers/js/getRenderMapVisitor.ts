@@ -88,6 +88,10 @@ export function getRenderMapVisitor(
   // standalone PDA from overwriting an account module that shares its output
   // path (`accounts/<name>.ts`), even when they live in different programs.
   let allAccountNames = new Set<string>();
+  // Names of every account-linked PDA across all programs, populated by
+  // `visitRoot`. A linked PDA's finder is emitted inline in its account page,
+  // so `visitProgram` skips rendering a standalone file for the same name.
+  let allLinkedPdaNames = new Set<string>();
   // Names of standalone (account-less) PDAs already rendered to
   // `accounts/<name>.ts` this run, so a same-named PDA in a later program
   // cannot silently overwrite the first one.
@@ -259,7 +263,12 @@ export function getRenderMapVisitor(
             !internalNodes.includes(n.name);
           const programsToExport = getAllPrograms(node).filter(isNotInternal);
           const accountsToExport = getAllAccounts(node).filter(isNotInternal);
-          const linkedPdaNames = new Set(
+          // Names of every PDA linked to an account across all programs. A
+          // linked PDA's finder is rendered inline in its account page, so a
+          // standalone PDA of the same name is redundant and excluded from the
+          // index here — `visitProgram` reads this set to also skip rendering
+          // its file, keeping the two sides consistent.
+          allLinkedPdaNames = new Set<string>(
             getAllAccounts(node)
               .map((a) => a.pda)
               .filter((pdaLink): pdaLink is PdaLinkNode => !!pdaLink)
@@ -274,7 +283,7 @@ export function getRenderMapVisitor(
           );
           const exportedOrphanPdaNames = new Set<string>();
           const orphanPdasToExport = getAllPdas(node)
-            .filter((p) => !linkedPdaNames.has(p.name))
+            .filter((p) => !allLinkedPdaNames.has(p.name))
             .filter((p) => !allAccountNames.has(p.name))
             .filter((p) => {
               // Two standalone PDAs (in different programs) sharing a name
@@ -386,6 +395,19 @@ export function getRenderMapVisitor(
           ]);
           const orphanPdas = node.pdas.filter((p) => {
             if (linkedPdaNames.has(p.name)) return false;
+            // Linked to an account in another program: its finder is rendered
+            // inline there and `visitRoot` already excludes this name from the
+            // accounts index, so rendering a standalone file would be dead,
+            // un-exported output. Skip it (with a warning, not silently).
+            if (allLinkedPdaNames.has(p.name)) {
+              logWarn(
+                `Skipping the "${p.name}" PDA finder in program ` +
+                  `"${node.name}": a PDA of that name is linked to an account ` +
+                  `in another program and is excluded from the accounts index. ` +
+                  `Rename it to expose a standalone finder.`
+              );
+              return false;
+            }
             if (accountNames.has(p.name)) {
               logWarn(
                 `Skipping the "${p.name}" PDA finder in program ` +
