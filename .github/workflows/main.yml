@@ -13,15 +13,15 @@ jobs:
     if: github.event_name == 'pull_request'
     steps:
     - name: Git checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup pnpm
-      uses: pnpm/action-setup@v2
+      uses: pnpm/action-setup@v4
 
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: 18
+        node-version: 20
         cache: 'pnpm'
 
     - name: Install dependencies
@@ -41,15 +41,15 @@ jobs:
     if: github.event_name == 'push'
     steps:
     - name: Git checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup pnpm
-      uses: pnpm/action-setup@v2
+      uses: pnpm/action-setup@v4
 
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: 18
+        node-version: 20
         cache: 'pnpm'
 
     - name: Install dependencies
@@ -63,17 +63,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: ["16.x", "18.x"]
+        node: ["18.x", "20.x"]
 
     steps:
     - name: Git checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Install pnpm
-      uses: pnpm/action-setup@v2
+      uses: pnpm/action-setup@v4
 
     - name: Setup Node.js ${{ matrix.node }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node }}
         cache: 'pnpm'
@@ -89,20 +89,40 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     needs: [lint, tests]
+    # OIDC trusted publishing to npm. `id-token: write` lets the job mint an
+    # OIDC token that pnpm exchanges with npm for a short-lived publish token,
+    # so no long-lived NPM_TOKEN secret is needed. `contents`/`pull-requests`
+    # are what changesets/action needs to open the release PR and push tags.
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
     outputs:
       published: ${{ steps.changesets.outputs.published }}
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
           cache: 'pnpm'
+
+      # npm OIDC trusted publishing needs npm >= 11.5.1. `changeset publish`
+      # runs `pnpm publish`, which shells out to the npm CLI to do the actual
+      # publish and OIDC token exchange -- so it is npm's version that matters
+      # here, not pnpm's. Node 22 ships npm 10.x, so upgrade explicitly.
+      - name: Upgrade npm for OIDC trusted publishing
+        # Pinned to an exact, vetted npm >= 11.5.1 (not the mutable npm@11) so
+        # the privileged publish step is reproducible; echo the version to make
+        # it visible in the log before publishing.
+        run: |
+          npm install -g npm@11.19.1
+          npm --version
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
@@ -116,7 +136,8 @@ jobs:
           publish: pnpm package:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # No NPM_TOKEN on purpose: changesets/action falls back to npm OIDC
+          # trusted publishing when NPM_TOKEN is absent and id-token is granted.
 
   deploy_docs:
     name: Deploy docs
@@ -128,7 +149,7 @@ jobs:
       url: ${{ steps.deploy.outputs.url }}
     steps:
       - name: Git checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Deploy to Vercel
         id: deploy

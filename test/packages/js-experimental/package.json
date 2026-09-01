@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "peerDependencies": {
-    "@solana/web3.js": "tp3"
+    "@solana/web3.js": ">=2.0.0-preview.3"
   },
   "devDependencies": {
     "@solana/eslint-config-solana": "^3.0.3",
