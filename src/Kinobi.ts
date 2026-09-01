@@ -7,7 +7,7 @@ import {
   rootNodeFromIdl,
 } from './nodes';
 import { KinobiError } from './shared';
-import { defaultVisitor, visit, Visitor } from './visitors';
+import { defaultVisitor, identityVisitor, visit, Visitor } from './visitors';
 
 export interface Kinobi {
   getRoot(): RootNode;
@@ -22,7 +22,12 @@ export function createFromRoot(
   useDefaultVisitor = true
 ): Kinobi {
   let currentRoot = root;
-  validateKinobiVersion(currentRoot.version);
+  if (currentRoot.standard === 'codama') {
+    validateCodamaVersion(currentRoot.version);
+    currentRoot = normalizeCodamaRoot(currentRoot);
+  } else {
+    validateKinobiVersion(currentRoot.version);
+  }
   if (useDefaultVisitor) {
     currentRoot = visit(currentRoot, defaultVisitor());
   }
@@ -76,5 +81,28 @@ function validateKinobiVersion(rootVersion: KinobiVersion): void {
   if (rootMajor === KinobiMajor) return;
   throw new KinobiError(
     `The provided IDL version [${rootVersion}] is not compatible with the installed Kinobi version [${kinobiVersion}]`
+  );
+}
+
+/**
+ * Rebuilds every node of a Codama-standard root through the Kinobi node
+ * constructors. This main-cases names, fills in defaulted fields (such as
+ * `idlName` or the program `prefix`) and drops unknown metadata keys (such
+ * as `display` or `provides`). The resulting root is stamped with the
+ * `kinobi` standard by the `rootNode` constructor.
+ */
+function normalizeCodamaRoot(root: RootNode): RootNode {
+  const newRoot = visit(root, identityVisitor());
+  assertIsNode(newRoot, 'rootNode');
+  return newRoot;
+}
+
+function validateCodamaVersion(rootVersion: KinobiVersion): void {
+  const [rootMajor] = rootVersion.split('.').map(Number);
+  if (rootMajor === 1) return;
+  throw new KinobiError(
+    `The provided IDL uses version [${rootVersion}] of the Codama standard ` +
+      `which is not supported by this version of Kinobi. ` +
+      `Only Codama standard v1 IDLs are supported.`
   );
 }

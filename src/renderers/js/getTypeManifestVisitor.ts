@@ -22,7 +22,13 @@ import {
   pascalCase,
   pipe,
 } from '../../shared';
-import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
+import {
+  Visitor,
+  extendVisitor,
+  getByteSizeVisitor,
+  staticVisitor,
+  visit,
+} from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 import { ParsedCustomDataOptions } from './customDataHelpers';
 
@@ -58,6 +64,7 @@ export function getTypeManifestVisitor(input: {
   customAccountData: ParsedCustomDataOptions;
   customInstructionData: ParsedCustomDataOptions;
   parentName?: { strict: string; loose: string };
+  sharedSerializers?: Set<string>;
 }) {
   const {
     linkables,
@@ -130,6 +137,33 @@ export function getTypeManifestVisitor(input: {
 
         visitArrayType(arrayType, { self }) {
           const childManifest = visit(arrayType.item, self);
+
+          // umi's `array(item, { size: 'remainder' })` can only compute how
+          // many items fit in the remaining bytes when `item` is a
+          // fixed-size serializer (it divides remaining-byte-length by the
+          // item's fixed size). A remainder-counted array of a
+          // variable-size item — e.g. a TLV list of enum variants with
+          // different byte lengths, as used by Token-2022's account
+          // extensions — has to be decoded by repeatedly deserializing
+          // items until the buffer is exhausted instead. Use the
+          // `remainderArray` helper for that case.
+          if (isNode(arrayType.count, 'remainderCountNode')) {
+            const itemByteSize = visit(
+              arrayType.item,
+              getByteSizeVisitor(linkables)
+            );
+            if (itemByteSize === null) {
+              childManifest.serializerImports.add('shared', 'remainderArray');
+              input.sharedSerializers?.add('remainderArray');
+              return {
+                ...childManifest,
+                strictType: `Array<${childManifest.strictType}>`,
+                looseType: `Array<${childManifest.looseType}>`,
+                serializer: `remainderArray(${childManifest.serializer})`,
+              };
+            }
+          }
+
           childManifest.serializerImports.add('umiSerializers', 'array');
           const sizeOption = getArrayLikeSizeOption(
             arrayType.count,
@@ -375,6 +409,42 @@ export function getTypeManifestVisitor(input: {
             strictType: `Option<${childManifest.strictType}>`,
             looseType: `OptionOrNullable<${childManifest.looseType}>`,
             serializer: `option(${childManifest.serializer}${optionsAsString})`,
+          };
+        },
+
+        visitZeroableOptionType(zeroableOptionType, { self }) {
+          const childManifest = visit(zeroableOptionType.item, self);
+          childManifest.strictImports.add('umi', 'Option');
+          childManifest.looseImports.add('umi', 'OptionOrNullable');
+          childManifest.serializerImports.add('shared', 'zeroableOption');
+          input.sharedSerializers?.add('zeroableOption');
+          let options = '';
+          if (zeroableOptionType.zeroValue) {
+            const zeroValueManifest = visit(zeroableOptionType.zeroValue, self);
+            childManifest.serializerImports.mergeWith(
+              zeroValueManifest.valueImports
+            );
+            options = `, { zeroValue: ${zeroValueManifest.value} }`;
+          }
+          return {
+            ...childManifest,
+            strictType: `Option<${childManifest.strictType}>`,
+            looseType: `OptionOrNullable<${childManifest.looseType}>`,
+            serializer: `zeroableOption(${childManifest.serializer}${options})`,
+          };
+        },
+
+        visitRemainderOptionType(remainderOptionType, { self }) {
+          const childManifest = visit(remainderOptionType.item, self);
+          childManifest.strictImports.add('umi', 'Option');
+          childManifest.looseImports.add('umi', 'OptionOrNullable');
+          childManifest.serializerImports.add('shared', 'remainderOption');
+          input.sharedSerializers?.add('remainderOption');
+          return {
+            ...childManifest,
+            strictType: `Option<${childManifest.strictType}>`,
+            looseType: `OptionOrNullable<${childManifest.looseType}>`,
+            serializer: `remainderOption(${childManifest.serializer})`,
           };
         },
 
@@ -735,17 +805,114 @@ export function getTypeManifestVisitor(input: {
         },
 
         visitFixedSizeType(fixedSizeType, { self }) {
-          parentSize = fixedSizeType.size;
-          const manifest = visit(fixedSizeType.type, self);
-          parentSize = null;
-          return manifest;
+          const resolvedType = resolveNestedTypeNode(fixedSizeType.type);
+          if (isNode(resolvedType, ['stringTypeNode', 'bytesTypeNode'])) {
+            parentSize = fixedSizeType.size;
+            const manifest = visit(fixedSizeType.type, self);
+            parentSize = null;
+            return manifest;
+          }
+          const childManifest = visit(fixedSizeType.type, self);
+          childManifest.serializerImports.add(
+            'umiSerializers',
+            'fixSerializer'
+          );
+          return {
+            ...childManifest,
+            serializer: `fixSerializer(${childManifest.serializer}, ${fixedSizeType.size})`,
+          };
         },
 
         visitSizePrefixType(sizePrefixType, { self }) {
-          parentSize = resolveNestedTypeNode(sizePrefixType.prefix);
-          const manifest = visit(sizePrefixType.type, self);
-          parentSize = null;
-          return manifest;
+          const resolvedType = resolveNestedTypeNode(sizePrefixType.type);
+          if (isNode(resolvedType, ['stringTypeNode', 'bytesTypeNode'])) {
+            parentSize = resolveNestedTypeNode(sizePrefixType.prefix);
+            const manifest = visit(sizePrefixType.type, self);
+            parentSize = null;
+            return manifest;
+          }
+          const childManifest = visit(sizePrefixType.type, self);
+          const prefixManifest = visit(sizePrefixType.prefix, self);
+          childManifest.serializerImports
+            .mergeWith(prefixManifest.serializerImports)
+            .add('shared', 'sizePrefix');
+          input.sharedSerializers?.add('sizePrefix');
+          return {
+            ...childManifest,
+            serializer: `sizePrefix(${childManifest.serializer}, ${prefixManifest.serializer})`,
+          };
+        },
+
+        visitHiddenPrefixType(hiddenPrefixType, { self }) {
+          const childManifest = visit(hiddenPrefixType.type, self);
+          childManifest.serializerImports.add('shared', 'hiddenPrefix');
+          input.sharedSerializers?.add('hiddenPrefix');
+          const prefixes = hiddenPrefixType.prefix.map((constant) => {
+            const constantManifest = visit(constant, self);
+            childManifest.serializerImports.mergeWith(
+              constantManifest.valueImports
+            );
+            return constantManifest.value;
+          });
+          return {
+            ...childManifest,
+            serializer: `hiddenPrefix(${childManifest.serializer}, [${prefixes.join(', ')}])`,
+          };
+        },
+
+        visitHiddenSuffixType(hiddenSuffixType, { self }) {
+          const childManifest = visit(hiddenSuffixType.type, self);
+          childManifest.serializerImports.add('shared', 'hiddenSuffix');
+          input.sharedSerializers?.add('hiddenSuffix');
+          const suffixes = hiddenSuffixType.suffix.map((constant) => {
+            const constantManifest = visit(constant, self);
+            childManifest.serializerImports.mergeWith(
+              constantManifest.valueImports
+            );
+            return constantManifest.value;
+          });
+          return {
+            ...childManifest,
+            serializer: `hiddenSuffix(${childManifest.serializer}, [${suffixes.join(', ')}])`,
+          };
+        },
+
+        visitPreOffsetType(preOffsetType, { self }) {
+          if (preOffsetType.strategy !== 'padded') {
+            throw new Error(
+              `The JavaScript renderer only supports the [padded] strategy ` +
+                `of preOffsetTypeNode. Got strategy [${preOffsetType.strategy}].`
+            );
+          }
+          const childManifest = visit(preOffsetType.type, self);
+          childManifest.serializerImports.add('shared', 'padLeftSerializer');
+          input.sharedSerializers?.add('padLeftSerializer');
+          return {
+            ...childManifest,
+            serializer: `padLeftSerializer(${childManifest.serializer}, ${preOffsetType.offset})`,
+          };
+        },
+
+        visitPostOffsetType(postOffsetType, { self }) {
+          if (postOffsetType.strategy !== 'padded') {
+            throw new Error(
+              `The JavaScript renderer only supports the [padded] strategy ` +
+                `of postOffsetTypeNode. Got strategy [${postOffsetType.strategy}].`
+            );
+          }
+          const childManifest = visit(postOffsetType.type, self);
+          childManifest.serializerImports.add('shared', 'padRightSerializer');
+          input.sharedSerializers?.add('padRightSerializer');
+          return {
+            ...childManifest,
+            serializer: `padRightSerializer(${childManifest.serializer}, ${postOffsetType.offset})`,
+          };
+        },
+
+        visitSentinelType() {
+          throw new Error(
+            'The JavaScript renderer does not support sentinelTypeNode yet.'
+          );
         },
 
         visitArrayValue(node, { self }) {

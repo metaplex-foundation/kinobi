@@ -842,6 +842,23 @@ export function getTypeManifestVisitor(input: {
           return manifest;
         },
 
+        visitRemainderOptionType(node, { self }) {
+          const childManifest = visit(node.item, self);
+          childManifest.strictType
+            .mapRender((r) => `Option<${r}>`)
+            .addImports('solanaOptions', 'Option');
+          childManifest.looseType
+            .mapRender((r) => `OptionOrNullable<${r}>`)
+            .addImports('solanaOptions', 'OptionOrNullable');
+          childManifest.encoder
+            .mapRender((r) => `getOptionEncoder(${r}, { prefix: null })`)
+            .addImports('solanaOptions', 'getOptionEncoder');
+          childManifest.decoder
+            .mapRender((r) => `getOptionDecoder(${r}, { prefix: null })`)
+            .addImports('solanaOptions', 'getOptionDecoder');
+          return childManifest;
+        },
+
         visitZeroableOptionType(node, { self }) {
           const childManifest = visit(node.item, self);
           childManifest.strictType

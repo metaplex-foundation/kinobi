@@ -13,9 +13,10 @@
     "build": "rimraf dist && tsc && tsc -p test/tsconfig.json && pnpm build:njk",
     "build:njk": "copyfiles -u 1 src/**/*.njk dist/cjs/ && copyfiles -u 1 src/**/*.njk dist/test/src/",
     "build:docs": "typedoc",
-    "test": "ava && node ./test/testFile.cjs && pnpm test:js && pnpm test:js-experimental",
+    "test": "ava && node ./test/testFile.cjs && pnpm test:js && pnpm test:js-experimental && pnpm test:js-token2022",
     "test:js": "(cd ./test/packages/js && pnpm install && pnpm build)",
     "test:js-experimental": "(cd ./test/packages/js-experimental && pnpm install && pnpm build && pnpm lint)",
+    "test:js-token2022": "node ./test/testFileSharedHelpers.cjs && (cd ./test/packages/js-token2022 && corepack pnpm install && corepack pnpm exec tsc --noEmit && corepack pnpm exec tsx --test test/sharedHelpers.test.ts)",
     "lint": "prettier -c ./src/ && eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "prettier --write ./src && eslint . --ext .js,.jsx,.ts,.tsx",
     "package:change": "changeset",
@@ -70,8 +71,8 @@
   },
   "ava": {
     "files": [
-      "!test/packages/**",
-      "test/**/*.test.ts"
+      "test/**/*.test.ts",
+      "!test/packages/**"
     ],
     "typescript": {
       "compile": false,

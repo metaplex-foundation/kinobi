@@ -3,6 +3,7 @@ import {
   mergeVisitor,
   numberTypeNode,
   publicKeyTypeNode,
+  remainderOptionTypeNode,
   tupleTypeNode,
   visit,
 } from '../../src';
@@ -60,4 +61,18 @@ test('it can create partial visitors', (t) => {
   // And the unsupported node cannot be visited.
   // @ts-expect-error
   t.throws(() => visit(publicKeyTypeNode(), visitor));
+});
+
+test('it merges remainder option type nodes', (t) => {
+  // Given a remainder option node wrapping a public key.
+  const node = remainderOptionTypeNode(publicKeyTypeNode());
+
+  // When we count the nodes of that tree using a merge visitor.
+  const visitor = mergeVisitor(
+    () => 1,
+    (_, values) => values.reduce((a, b) => a + b, 1)
+  );
+
+  // Then both the node and its item were visited.
+  t.is(visit(node, visitor), 2);
 });

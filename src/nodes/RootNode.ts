@@ -9,6 +9,7 @@ import { ProgramNode, programNodeFromIdl } from './ProgramNode';
 
 export type IdlInput = string | Partial<Idl>;
 export type KinobiVersion = `${number}.${number}.${number}`;
+export type RootStandard = 'kinobi' | 'codama';
 
 export interface RootNode<
   TProgram extends ProgramNode = ProgramNode,
@@ -21,7 +22,7 @@ export interface RootNode<
   readonly additionalPrograms: TAdditionalPrograms;
 
   // Data.
-  readonly standard: 'kinobi';
+  readonly standard: RootStandard;
   readonly version: KinobiVersion;
 }
 

@@ -3,7 +3,11 @@
 {% block main %}
 {% for account in accountsToExport | sort(false, false, 'name') %}
 export * from './{{ account.name | camelCase }}';
-{% else %}
-export default {};
 {% endfor %}
+{% for pda in orphanPdasToExport | sort(false, false, 'name') %}
+export * from './{{ pda.name | camelCase }}';
+{% endfor %}
+{% if accountsToExport.length == 0 and orphanPdasToExport.length == 0 %}
+export default {};
+{% endif %}
 {% endblock %}

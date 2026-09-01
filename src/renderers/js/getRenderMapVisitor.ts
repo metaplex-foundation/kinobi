@@ -7,11 +7,15 @@ import {
   getAllDefinedTypes,
   getAllInstructionArguments,
   getAllInstructionsWithSubs,
+  getAllPdas,
   getAllPrograms,
   InstructionNode,
   isDataEnum,
   isNode,
   isNodeFilter,
+  PdaLinkNode,
+  PdaNode,
+  PdaSeedNode,
   ProgramNode,
   resolveNestedTypeNode,
   SizeDiscriminatorNode,
@@ -78,6 +82,20 @@ export function getRenderMapVisitor(
   options: GetJavaScriptRenderMapOptions = {}
 ): Visitor<RenderMap> {
   const linkables = new LinkableDictionary();
+  const sharedSerializers = new Set<string>();
+  // Names of every account across all programs, populated by `visitRoot`
+  // before any program is rendered. `visitProgram` reads it to keep a
+  // standalone PDA from overwriting an account module that shares its output
+  // path (`accounts/<name>.ts`), even when they live in different programs.
+  let allAccountNames = new Set<string>();
+  // Names of every account-linked PDA across all programs, populated by
+  // `visitRoot`. A linked PDA's finder is emitted inline in its account page,
+  // so `visitProgram` skips rendering a standalone file for the same name.
+  let allLinkedPdaNames = new Set<string>();
+  // Names of standalone (account-less) PDAs already rendered to
+  // `accounts/<name>.ts` this run, so a same-named PDA in a later program
+  // cannot silently overwrite the first one.
+  const renderedOrphanPdaNames = new Set<string>();
   const byteSizeVisitor = getByteSizeVisitor(linkables);
   let program: ProgramNode | null = null;
 
@@ -122,6 +140,7 @@ export function getRenderMapVisitor(
       customAccountData,
       customInstructionData,
       parentName,
+      sharedSerializers,
     });
   const typeManifestVisitor = getTypeManifestVisitor();
   const resolvedInstructionInputVisitor = getResolvedInstructionInputsVisitor();
@@ -173,6 +192,68 @@ export function getRenderMapVisitor(
     return formatCode ? formatCodeUsingPrettier(code, prettierOptions) : code;
   }
 
+  // Shared by `visitAccount` (a pda linked to an account, rendered inline
+  // in that account's own file) and `renderStandalonePda` below (a pda with
+  // no owning account, e.g. Token-2022's `associatedToken` pda) so both
+  // code paths derive identical seed manifests.
+  function getPdaSeedsManifest(
+    pdaSeeds: PdaSeedNode[],
+    imports: JavaScriptImportMap
+  ) {
+    const seeds = pdaSeeds.map((seed) => {
+      if (isNode(seed, 'variablePdaSeedNode')) {
+        const seedManifest = visit(seed.type, typeManifestVisitor);
+        imports.mergeWith(
+          seedManifest.looseImports,
+          seedManifest.serializerImports
+        );
+        return { ...seed, typeManifest: seedManifest };
+      }
+      if (isNode(seed.value, 'programIdValueNode')) {
+        imports
+          .add('umiSerializers', 'publicKey')
+          .addAlias('umiSerializers', 'publicKey', 'publicKeySerializer');
+        return seed;
+      }
+      const seedManifest = visit(seed.type, typeManifestVisitor);
+      imports.mergeWith(seedManifest.serializerImports);
+      const seedValue = seed.value;
+      const valueManifest = visit(seedValue, typeManifestVisitor);
+      (seedValue as any).render = valueManifest.value;
+      imports.mergeWith(valueManifest.valueImports);
+      return { ...seed, typeManifest: seedManifest };
+    });
+    if (seeds.length > 0) {
+      imports.add('umi', ['Pda']);
+    }
+    const hasVariableSeeds =
+      pdaSeeds.filter(isNodeFilter('variablePdaSeedNode')).length > 0;
+    return { seeds, hasVariableSeeds };
+  }
+
+  // Renders a `find<Name>Pda` helper for a pda that is not linked to any
+  // account of its own (e.g. Token-2022's `associatedToken` pda, whose
+  // account is a `Token` account owned by a different program). It is
+  // emitted under `accounts/`, matching the `generatedAccounts` default
+  // `pdaImportFrom` used when resolving `pdaValueNode` default values.
+  function renderStandalonePda(pda: PdaNode): RenderMap {
+    if (!program) {
+      throw new Error('Pda must be visited inside a program.');
+    }
+    const imports = new JavaScriptImportMap().add('umi', ['Context', 'Pda']);
+    const { seeds, hasVariableSeeds } = getPdaSeedsManifest(pda.seeds, imports);
+    return new RenderMap().add(
+      `accounts/${camelCase(pda.name)}.ts`,
+      render('pdaPage.njk', {
+        pda,
+        imports: imports.toString(dependencyMap),
+        program,
+        seeds,
+        hasVariableSeeds,
+      })
+    );
+  }
+
   return pipe(
     staticVisitor(() => new RenderMap()),
     (v) =>
@@ -182,6 +263,37 @@ export function getRenderMapVisitor(
             !internalNodes.includes(n.name);
           const programsToExport = getAllPrograms(node).filter(isNotInternal);
           const accountsToExport = getAllAccounts(node).filter(isNotInternal);
+          // Names of every PDA linked to an account across all programs. A
+          // linked PDA's finder is rendered inline in its account page, so a
+          // standalone PDA of the same name is redundant and excluded from the
+          // index here — `visitProgram` reads this set to also skip rendering
+          // its file, keeping the two sides consistent.
+          allLinkedPdaNames = new Set<string>(
+            getAllAccounts(node)
+              .map((a) => a.pda)
+              .filter((pdaLink): pdaLink is PdaLinkNode => !!pdaLink)
+              .map((pdaLink) => pdaLink.name)
+          );
+          // A standalone PDA renders to `accounts/<name>.ts`; exclude any
+          // whose name collides with an account in ANY program so the account
+          // module (which also owns that path) is never overwritten. This
+          // root-wide set is also read by `visitProgram` below.
+          allAccountNames = new Set<string>(
+            getAllAccounts(node).map((a) => a.name)
+          );
+          const exportedOrphanPdaNames = new Set<string>();
+          const orphanPdasToExport = getAllPdas(node)
+            .filter((p) => !allLinkedPdaNames.has(p.name))
+            .filter((p) => !allAccountNames.has(p.name))
+            .filter((p) => {
+              // Two standalone PDAs (in different programs) sharing a name
+              // would emit duplicate `export * from './<name>'` lines; keep the
+              // first, matching the single file that survives rendering.
+              if (exportedOrphanPdaNames.has(p.name)) return false;
+              exportedOrphanPdaNames.add(p.name);
+              return true;
+            })
+            .filter(isNotInternal);
           const instructionsToExport = getAllInstructionsWithSubs(node, {
             leavesOnly: !renderParentInstructions,
           }).filter(isNotInternal);
@@ -190,16 +302,28 @@ export function getRenderMapVisitor(
           const hasAnythingToExport =
             programsToExport.length > 0 ||
             accountsToExport.length > 0 ||
+            orphanPdasToExport.length > 0 ||
             instructionsToExport.length > 0 ||
             definedTypesToExport.length > 0;
+
+          // Programs must be rendered before `ctx` is built: rendering them is
+          // what populates `sharedSerializers`, which `ctx` then feeds to
+          // `sharedPage.njk` so `shared/index.ts` includes exactly the helpers
+          // the generated code uses. Moving this below `ctx` would emit the
+          // shared module without those helpers.
+          const programRenderMaps = getAllPrograms(node).map((p) =>
+            visit(p, self)
+          );
 
           const ctx = {
             root: node,
             programsToExport,
             accountsToExport,
+            orphanPdasToExport,
             instructionsToExport,
             definedTypesToExport,
             hasAnythingToExport,
+            sharedSerializers: [...sharedSerializers].sort(),
           };
 
           const map = new RenderMap();
@@ -211,7 +335,7 @@ export function getRenderMapVisitor(
               .add('programs/index.ts', render('programsIndex.njk', ctx))
               .add('errors/index.ts', render('errorsIndex.njk', ctx));
           }
-          if (accountsToExport.length > 0) {
+          if (accountsToExport.length > 0 || orphanPdasToExport.length > 0) {
             map.add('accounts/index.ts', render('accountsIndex.njk', ctx));
           }
           if (instructionsToExport.length > 0) {
@@ -226,7 +350,7 @@ export function getRenderMapVisitor(
 
           return map
             .add('index.ts', render('rootIndex.njk', ctx))
-            .mergeWith(...getAllPrograms(node).map((p) => visit(p, self)));
+            .mergeWith(...programRenderMaps);
         },
 
         visitProgram(node, { self }) {
@@ -239,8 +363,75 @@ export function getRenderMapVisitor(
               customInstructionData
             ),
           ];
+          // PDAs that aren't linked to any account in this program still
+          // need a `find<Name>Pda` helper so instructions referencing them
+          // as a default account value can resolve it.
+          //
+          // Note: this `linkedPdaNames` is scoped to `node.accounts` (this
+          // program only), which decides what gets *rendered* here. It is
+          // intentionally narrower than `visitRoot`'s `linkedPdaNames`,
+          // which is derived from `getAllAccounts(node)` (every program) and
+          // decides what gets *re-exported* from `accounts/index.ts`. The
+          // two only diverge when a PDA name collides across programs
+          // (already requires a config-level rename to resolve), so this
+          // asymmetry is intentional and unexercised by single-program or
+          // disjoint-name IDLs.
+          const linkedPdaNames = new Set(
+            node.accounts
+              .map((a) => a.pda)
+              .filter((pdaLink): pdaLink is PdaLinkNode => !!pdaLink)
+              .map((pdaLink) => pdaLink.name)
+          );
+          // A standalone PDA renders to `accounts/<name>.ts`. Skip (with a
+          // warning, never silently) any whose name is already owned by an
+          // account — in this program or any other, via the root-wide
+          // `allAccountNames` populated by `visitRoot` — or by a standalone PDA
+          // from an earlier program, so the existing module is never
+          // overwritten. The union with `node.accounts` also covers a
+          // standalone `visitProgram` call, where `allAccountNames` is empty.
+          const accountNames = new Set<string>([
+            ...node.accounts.map((a) => a.name),
+            ...allAccountNames,
+          ]);
+          const orphanPdas = node.pdas.filter((p) => {
+            if (linkedPdaNames.has(p.name)) return false;
+            // Linked to an account in another program: its finder is rendered
+            // inline there and `visitRoot` already excludes this name from the
+            // accounts index, so rendering a standalone file would be dead,
+            // un-exported output. Skip it (with a warning, not silently).
+            if (allLinkedPdaNames.has(p.name)) {
+              logWarn(
+                `Skipping the "${p.name}" PDA finder in program ` +
+                  `"${node.name}": a PDA of that name is linked to an account ` +
+                  `in another program and is excluded from the accounts index. ` +
+                  `Rename it to expose a standalone finder.`
+              );
+              return false;
+            }
+            if (accountNames.has(p.name)) {
+              logWarn(
+                `Skipping the "${p.name}" PDA finder in program ` +
+                  `"${node.name}": an account of the same name already owns ` +
+                  `accounts/${camelCase(p.name)}.ts. Rename the PDA or link ` +
+                  `it to that account.`
+              );
+              return false;
+            }
+            if (renderedOrphanPdaNames.has(p.name)) {
+              logWarn(
+                `Skipping the "${p.name}" PDA finder in program ` +
+                  `"${node.name}": another program already renders a PDA of ` +
+                  `that name to accounts/${camelCase(p.name)}.ts. Rename one ` +
+                  `of them.`
+              );
+              return false;
+            }
+            renderedOrphanPdaNames.add(p.name);
+            return true;
+          });
           const renderMap = new RenderMap()
             .mergeWith(...node.accounts.map((a) => visit(a, self)))
+            .mergeWith(...orphanPdas.map((p) => renderStandalonePda(p)))
             .mergeWith(...node.definedTypes.map((t) => visit(t, self)))
             .mergeWith(...customDataDefinedType.map((t) => visit(t, self)))
             .mergeWith(
@@ -372,34 +563,10 @@ export function getRenderMapVisitor(
           // Seeds.
           const pda = node.pda ? linkables.get(node.pda) : undefined;
           const pdaSeeds = pda?.seeds ?? [];
-          const seeds = pdaSeeds.map((seed) => {
-            if (isNode(seed, 'variablePdaSeedNode')) {
-              const seedManifest = visit(seed.type, typeManifestVisitor);
-              imports.mergeWith(
-                seedManifest.looseImports,
-                seedManifest.serializerImports
-              );
-              return { ...seed, typeManifest: seedManifest };
-            }
-            if (isNode(seed.value, 'programIdValueNode')) {
-              imports
-                .add('umiSerializers', 'publicKey')
-                .addAlias('umiSerializers', 'publicKey', 'publicKeySerializer');
-              return seed;
-            }
-            const seedManifest = visit(seed.type, typeManifestVisitor);
-            imports.mergeWith(seedManifest.serializerImports);
-            const seedValue = seed.value;
-            const valueManifest = visit(seedValue, typeManifestVisitor);
-            (seedValue as any).render = valueManifest.value;
-            imports.mergeWith(valueManifest.valueImports);
-            return { ...seed, typeManifest: seedManifest };
-          });
-          if (seeds.length > 0) {
-            imports.add('umi', ['Pda']);
-          }
-          const hasVariableSeeds =
-            pdaSeeds.filter(isNodeFilter('variablePdaSeedNode')).length > 0;
+          const { seeds, hasVariableSeeds } = getPdaSeedsManifest(
+            pdaSeeds,
+            imports
+          );
 
           return new RenderMap().add(
             `accounts/${camelCase(node.name)}.ts`,
