@@ -3,7 +3,7 @@
 
 {% block main %}
 {% set needsOptionHelpers = 'zeroableOption' in sharedSerializers or 'remainderOption' in sharedSerializers %}
-{% set needsMergeBytes = 'hiddenPrefix' in sharedSerializers or 'padLeftSerializer' in sharedSerializers or 'sizePrefix' in sharedSerializers %}
+{% set needsMergeBytes = 'hiddenPrefix' in sharedSerializers or 'padLeftSerializer' in sharedSerializers or 'sizePrefix' in sharedSerializers or 'remainderArray' in sharedSerializers %}
 import { AccountMeta, isSigner, Pda, publicKey, PublicKey, Signer, isPda{% if needsOptionHelpers %}, isOption, isSome, none, Option, OptionOrNullable, some{% endif %} } from '@metaplex-foundation/umi';
 {% if sharedSerializers.length > 0 %}
 import { {% if needsMergeBytes %}mergeBytes, {% endif %}Serializer } from '@metaplex-foundation/umi/serializers';
@@ -187,6 +187,38 @@ export function remainderOption<T, U extends T = T>(
       if (offset >= bytes.length) return [none<U>(), offset];
       const [value, newOffset] = item.deserialize(bytes, offset);
       return [some(value), newOffset];
+    },
+  };
+}
+{% endif %}
+
+{% if 'remainderArray' in sharedSerializers %}
+/**
+ * Serializer for an array of variable-size items with no count prefix:
+ * items are deserialized one after another until the buffer is exhausted.
+ * @internal
+ */
+export function remainderArray<T, U extends T = T>(
+  item: Serializer<T, U>
+): Serializer<T[], U[]> {
+  return {
+    description: `remainderArray(${item.description})`,
+    fixedSize: null,
+    maxSize: null,
+    serialize: (value: T[]) => mergeBytes(value.map((v) => item.serialize(v))),
+    deserialize: (bytes: Uint8Array, offset = 0) => {
+      const values: U[] = [];
+      while (offset < bytes.length) {
+        const [value, newOffset] = item.deserialize(bytes, offset);
+        if (newOffset <= offset) {
+          throw new Error(
+            'remainderArray: item serializer did not advance the offset; cannot decode a zero-width item'
+          );
+        }
+        values.push(value);
+        offset = newOffset;
+      }
+      return [values, offset];
     },
   };
 }

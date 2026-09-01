@@ -101,6 +101,29 @@ export function getTypeManifestVisitor(input: {
 
         visitArrayType(arrayType, { self }) {
           const childManifest = visit(arrayType.item, self);
+          // `array(item, { size: 'remainder' })` only decodes correctly when
+          // `item` is FIXED-size: umi's implementation repeatedly calls the
+          // item deserializer until the buffer is exhausted, which relies on
+          // slicing by a known item width. A variable-size item (e.g. an
+          // enum with differently-sized variants, as in Token-2022's
+          // extension TLV list) needs the dedicated remainderArray helper
+          // instead, which decodes items one after another using each
+          // item's own reported new offset. A remainder array of a
+          // FIXED-size item keeps the existing array(...) path unchanged
+          // (byte-identical to before this branch was added).
+          if (
+            isNode(arrayType.size, 'remainderSizeNode') &&
+            visit(arrayType.item, input.byteSizeVisitor) === null
+          ) {
+            childManifest.serializerImports.add('shared', 'remainderArray');
+            input.sharedSerializers?.add('remainderArray');
+            return {
+              ...childManifest,
+              strictType: `Array<${childManifest.strictType}>`,
+              looseType: `Array<${childManifest.looseType}>`,
+              serializer: `remainderArray(${childManifest.serializer})`,
+            };
+          }
           childManifest.serializerImports.add('umiSerializers', 'array');
           const sizeOption = getArrayLikeSizeOption(
             arrayType.size,

@@ -4,6 +4,9 @@ import {
   arrayTypeNode,
   bytesTypeNode,
   constantValueNode,
+  enumEmptyVariantTypeNode,
+  enumStructVariantTypeNode,
+  enumTypeNode,
   fixedSizeTypeNode,
   getByteSizeVisitor,
   hiddenPrefixTypeNode,
@@ -338,4 +341,170 @@ test('it renders the composite Token-2022 hiddenPrefix(remainder array, preOffse
     manifest.serializer,
     'hiddenPrefix(array(u8(), { size: \'remainder\' }), [padLeftSerializer(u8(), 83).serialize(1)])'
   );
+});
+
+test('it wraps a remainder array of a VARIABLE-size item with the remainderArray serializer', (t) => {
+  // Given an arrayTypeNode with a remainderSizeNode size, whose item is a
+  // stringTypeNode — a variable-size item (its default `size` is a
+  // u32-prefixed length, not a fixedSizeNode, so byteSizeVisitor reports
+  // null for it). `array(item, { size: 'remainder' })` only decodes
+  // correctly for FIXED-size items, so a variable-size item must use the
+  // dedicated remainderArray serializer instead.
+  const node = arrayTypeNode(stringTypeNode(), remainderSizeNode());
+
+  // When we visit it with the type manifest visitor.
+  const manifest = visit(node, createTypeManifestVisitor());
+
+  // Then the serializer wraps the item serializer with remainderArray(...)
+  // instead of the umi array(..., { size: 'remainder' }).
+  codeContains(t, manifest.serializer, 'remainderArray(string())');
+  t.false(manifest.serializer.includes("size: 'remainder'"));
+  codeContains(t, manifest.strictType, 'Array<string>');
+  codeContains(t, manifest.looseType, 'Array<string>');
+});
+
+test('it registers remainderArray in the sharedSerializers set when visited', (t) => {
+  // Given a sharedSerializers set that starts out empty.
+  const sharedSerializers = new Set<string>();
+  t.false(sharedSerializers.has('remainderArray'));
+
+  // When we visit a remainder array of a variable-size item with that set
+  // threaded in.
+  const node = arrayTypeNode(stringTypeNode(), remainderSizeNode());
+  visit(node, createTypeManifestVisitor(sharedSerializers));
+
+  // Then the set now contains 'remainderArray'.
+  t.true(sharedSerializers.has('remainderArray'));
+});
+
+test('it does not touch sharedSerializers for remainderArray when the set is not provided', (t) => {
+  // Given a remainder array of a variable-size item and a visitor with no
+  // sharedSerializers threaded in.
+  const node = arrayTypeNode(stringTypeNode(), remainderSizeNode());
+
+  // When / then visiting it must not throw despite `sharedSerializers` being
+  // undefined.
+  t.notThrows(() => visit(node, createTypeManifestVisitor(undefined)));
+});
+
+test('it wraps a remainder array of a VARIABLE-size enum item (differently-sized variants) with remainderArray', (t) => {
+  // Given a remainder-sized array whose item is an enum with differently
+  // sized variants (an empty variant vs. a struct variant with one u64
+  // field) — the shape of Token-2022's extension TLV list, where
+  // byteSizeVisitor's visitEnumType reports null because not every variant
+  // shares the same fixed size.
+  const variant = enumTypeNode([
+    enumEmptyVariantTypeNode('none'),
+    enumStructVariantTypeNode(
+      'some',
+      structTypeNode([
+        structFieldTypeNode({ name: 'amount', type: numberTypeNode('u64') }),
+      ])
+    ),
+  ]);
+  const node = arrayTypeNode(variant, remainderSizeNode());
+
+  // When we visit it with the type manifest visitor.
+  const manifest = visit(node, createTypeManifestVisitor());
+
+  // Then the serializer wraps the enum's dataEnum(...) serializer with
+  // remainderArray(...) rather than array(..., { size: 'remainder' }).
+  t.regex(manifest.serializer, /^remainderArray\(dataEnum</);
+  t.false(manifest.serializer.includes("size: 'remainder'"));
+});
+
+test('it keeps the umi array(..., { size: "remainder" }) serializer for a remainder array of a FIXED-size item', (t) => {
+  // Given a remainder-sized array whose item (u8) IS fixed-size. This is the
+  // byte-identical legacy path (existing IDLs never have a variable-size
+  // item in remainder position): remainderArray must NOT be used here, only
+  // the existing umi array(..., { size: 'remainder' }) path.
+  const node = arrayTypeNode(numberTypeNode('u8'), remainderSizeNode());
+
+  // When we visit it with the type manifest visitor.
+  const manifest = visit(node, createTypeManifestVisitor());
+
+  // Then the serializer is unchanged from before this task's fix.
+  codeContains(t, manifest.serializer, "array(u8(), { size: 'remainder' })");
+  t.false(manifest.serializer.includes('remainderArray'));
+});
+
+test('it does not register remainderArray in sharedSerializers for a remainder array of a FIXED-size item', (t) => {
+  // Given a sharedSerializers set that starts out empty.
+  const sharedSerializers = new Set<string>();
+
+  // When we visit a remainder array of a fixed-size item (u8) with that set
+  // threaded in.
+  const node = arrayTypeNode(numberTypeNode('u8'), remainderSizeNode());
+  visit(node, createTypeManifestVisitor(sharedSerializers));
+
+  // Then remainderArray must not be registered — only the byte-identical
+  // umi array(..., { size: 'remainder' }) path is used for fixed-size items.
+  t.false(sharedSerializers.has('remainderArray'));
+  t.is(sharedSerializers.size, 0);
+});
+
+test('it renders the full Token-2022 extension-list shape: remainderOption(hiddenPrefix(remainderArray(item), [preOffset constant]))', (t) => {
+  // Given the exact Token-2022 mint/account `extensions` field shape end to
+  // end: a remainder-counted option, wrapping a hiddenPrefix (the 83-byte
+  // padded u8 discriminator constant), wrapping a remainder-sized array of a
+  // variable-size item (a stringTypeNode, standing in for the real IDL's
+  // variable-size enum variant).
+  const node = remainderOptionTypeNode(
+    hiddenPrefixTypeNode(arrayTypeNode(stringTypeNode(), remainderSizeNode()), [
+      constantValueNode(
+        preOffsetTypeNode(numberTypeNode('u8'), 83, 'padded'),
+        numberValueNode(1)
+      ),
+    ])
+  );
+
+  // When we visit it with the type manifest visitor.
+  const manifest = visit(node, createTypeManifestVisitor());
+
+  // Then the full nesting renders with remainderArray in place of the plain
+  // array, itself wrapped by hiddenPrefix, itself wrapped by remainderOption.
+  codeContains(
+    t,
+    manifest.serializer,
+    "remainderOption(hiddenPrefix(remainderArray(string()), [padLeftSerializer(u8(), 83).serialize(1)]))"
+  );
+});
+
+test('it renders a sizePrefix-wrapped enum struct variant as [name, sizePrefix(struct, prefix)] (Token-2022 TLV body)', (t) => {
+  // Given an enum struct variant whose `.struct` is a sizePrefixTypeNode
+  // (the TLV u16 length prefix) wrapping a structTypeNode — the shape of all
+  // 28 Token-2022 extension TLV bodies after loading (see
+  // EnumStructVariantTypeNode's widened `.struct` type). This should render
+  // correctly with NO code change: visitEnumStructVariantType visits
+  // `variant.struct` through `self`, which dispatches a sizePrefixTypeNode
+  // to visitSizePrefixType (Phase 3b).
+  const node = enumStructVariantTypeNode(
+    'transferFeeConfig',
+    sizePrefixTypeNode(
+      structTypeNode([
+        structFieldTypeNode({ name: 'amount', type: numberTypeNode('u64') }),
+      ]),
+      numberTypeNode('u16')
+    )
+  );
+
+  // When we visit it with the type manifest visitor.
+  const manifest = visit(node, createTypeManifestVisitor());
+
+  // Then the u16 length prefix wraps the variant's struct serializer, nested
+  // inside the variant's ['Name', ...] tuple.
+  t.regex(manifest.serializer, /^\['TransferFeeConfig', sizePrefix\(struct</);
+  codeContains(t, manifest.serializer, 'u16())]');
+  // And the variant's inlined struct type is preserved — the brace-strip
+  // (`.slice(1, -1)` in visitEnumStructVariantType) still works because
+  // sizePrefix passes through the child struct's strictType/looseType
+  // unchanged (a size prefix only changes the wire encoding). Checked
+  // directly against the raw (unformatted) string rather than via
+  // codeContains: `{ amount: bigint; }` isn't valid standalone JS (the
+  // trailing `;` inside an object expression), so prettier throws and
+  // normalizeCode() falls back to the raw text, while the '__kind: "..."'
+  // fragment alone *is* valid (a labeled statement) and would get
+  // reformatted to single quotes by prettier, causing a spurious mismatch.
+  t.true(manifest.strictType.includes('__kind: "TransferFeeConfig"'));
+  t.true(manifest.strictType.includes('amount: bigint'));
 });

@@ -1,5 +1,6 @@
 import test from 'ava';
 import {
+  arrayTypeNode,
   constantValueNode,
   definedTypeNode,
   hiddenPrefixTypeNode,
@@ -9,8 +10,10 @@ import {
   programNode,
   publicKeyTypeNode,
   remainderOptionTypeNode,
+  remainderSizeNode,
   rootNode,
   sizePrefixTypeNode,
+  stringTypeNode,
   structFieldTypeNode,
   structTypeNode,
   visit,
@@ -201,6 +204,69 @@ test('it emits the hiddenPrefix helper in shared/index.ts when a type uses it', 
   renderMapContains(t, renderMap, 'shared/index.ts', [
     'export function hiddenPrefix',
   ]);
+});
+
+test('it emits the remainderArray helper in shared/index.ts when a type uses it', (t) => {
+  // Given a root whose only defined type uses a remainder-sized array of a
+  // variable-size item (a stringTypeNode).
+  const node = rootNode([
+    programNode({
+      name: 'tokenExtensions',
+      publicKey: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+      definedTypes: [
+        definedTypeNode({
+          name: 'extra',
+          type: structTypeNode([
+            structFieldTypeNode({
+              name: 'items',
+              type: arrayTypeNode(stringTypeNode(), remainderSizeNode()),
+            }),
+          ]),
+        }),
+      ],
+    }),
+  ]);
+
+  // When we render it.
+  const renderMap = visit(node, getRenderMapVisitor());
+
+  // Then the shared module contains the on-demand remainderArray helper.
+  renderMapContains(t, renderMap, 'shared/index.ts', [
+    'export function remainderArray',
+  ]);
+});
+
+test('it omits the remainderArray helper from shared/index.ts when a remainder array item is FIXED-size', (t) => {
+  // Given a root whose only defined type uses a remainder-sized array of a
+  // FIXED-size item (u8) — the byte-identical legacy path.
+  const node = rootNode([
+    programNode({
+      name: 'tokenExtensions',
+      publicKey: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+      definedTypes: [
+        definedTypeNode({
+          name: 'extra',
+          type: structTypeNode([
+            structFieldTypeNode({
+              name: 'items',
+              type: arrayTypeNode(numberTypeNode('u8'), remainderSizeNode()),
+            }),
+          ]),
+        }),
+      ],
+    }),
+  ]);
+
+  // When we render it.
+  const renderMap = visit(node, getRenderMapVisitor());
+
+  // Then the shared module does NOT include the remainderArray helper.
+  t.true(renderMap.has('shared/index.ts'));
+  const code = renderMap.get('shared/index.ts');
+  t.false(
+    code.includes('export function remainderArray'),
+    `Expected no remainderArray helper but found one:\n${code}`
+  );
 });
 
 test('it omits the padLeftSerializer/hiddenPrefix helpers from shared/index.ts when nothing uses them', (t) => {
