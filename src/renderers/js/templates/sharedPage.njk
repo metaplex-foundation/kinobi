@@ -2,10 +2,11 @@
 {% import "macros.njk" as macros %}
 
 {% block main %}
-{% set needsOptionHelpers = 'zeroableOption' in sharedSerializers %}
+{% set needsOptionHelpers = 'zeroableOption' in sharedSerializers or 'remainderOption' in sharedSerializers %}
+{% set needsMergeBytes = 'sizePrefix' in sharedSerializers %}
 import { AccountMeta, isSigner, Pda, publicKey, PublicKey, Signer, isPda{% if needsOptionHelpers %}, isOption, isSome, none, Option, OptionOrNullable, some{% endif %} } from '@metaplex-foundation/umi';
 {% if sharedSerializers.length > 0 %}
-import { Serializer } from '@metaplex-foundation/umi/serializers';
+import { {% if needsMergeBytes %}mergeBytes, {% endif %}Serializer } from '@metaplex-foundation/umi/serializers';
 {% endif %}
 
 /**
@@ -156,6 +157,69 @@ export function zeroableOption<T, U extends T = T>(
       if (isZero) return [none<U>(), offset + size];
       const [value] = item.deserialize(bytes, offset);
       return [some(value), offset + size];
+    },
+  };
+}
+{% endif %}
+
+{% if 'remainderOption' in sharedSerializers %}
+/**
+ * Serializer for optional values with no prefix: the value is `Some`
+ * if and only if bytes remain in the buffer.
+ * @internal
+ */
+export function remainderOption<T, U extends T = T>(
+  item: Serializer<T, U>
+): Serializer<OptionOrNullable<T>, Option<U>> {
+  return {
+    description: `remainderOption(${item.description})`,
+    fixedSize: null,
+    maxSize: null,
+    serialize: (optionOrNullable: OptionOrNullable<T>) => {
+      const option = isOption(optionOrNullable)
+        ? optionOrNullable
+        : optionOrNullable === null
+          ? none<T>()
+          : some(optionOrNullable);
+      return isSome(option) ? item.serialize(option.value) : new Uint8Array(0);
+    },
+    deserialize: (bytes: Uint8Array, offset = 0) => {
+      if (offset >= bytes.length) return [none<U>(), offset];
+      const [value, newOffset] = item.deserialize(bytes, offset);
+      return [some(value), newOffset];
+    },
+  };
+}
+{% endif %}
+
+{% if 'sizePrefix' in sharedSerializers %}
+/**
+ * Serializer that frames the item with a byte-length prefix,
+ * bounding reads to exactly that many bytes.
+ * @internal
+ */
+export function sizePrefix<T, U extends T = T>(
+  item: Serializer<T, U>,
+  prefix: Serializer<number> | Serializer<number | bigint, bigint>
+): Serializer<T, U> {
+  return {
+    description: `sizePrefix(${item.description})`,
+    fixedSize: null,
+    maxSize: null,
+    serialize: (value: T) => {
+      const content = item.serialize(value);
+      return mergeBytes([prefix.serialize(content.length), content]);
+    },
+    deserialize: (bytes: Uint8Array, offset = 0) => {
+      const [contentSize, contentOffset] = prefix.deserialize(bytes, offset);
+      const contentEnd = contentOffset + Number(contentSize);
+      if (bytes.length < contentEnd) {
+        throw new Error(
+          `sizePrefix expected ${Number(contentSize)} bytes at offset ${contentOffset}.`
+        );
+      }
+      const [value] = item.deserialize(bytes.slice(contentOffset, contentEnd));
+      return [value, contentEnd];
     },
   };
 }

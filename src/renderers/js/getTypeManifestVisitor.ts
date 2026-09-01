@@ -428,6 +428,72 @@ export function getTypeManifestVisitor(input: {
           };
         },
 
+        visitRemainderOptionType(remainderOptionType, { self }) {
+          const childManifest = visit(remainderOptionType.item, self);
+          childManifest.strictImports.add('umi', 'Option');
+          childManifest.looseImports.add('umi', 'OptionOrNullable');
+          childManifest.serializerImports.add('shared', 'remainderOption');
+          input.sharedSerializers?.add('remainderOption');
+          return {
+            ...childManifest,
+            strictType: `Option<${childManifest.strictType}>`,
+            looseType: `OptionOrNullable<${childManifest.looseType}>`,
+            serializer: `remainderOption(${childManifest.serializer})`,
+          };
+        },
+
+        visitSizePrefixType(sizePrefixType, { self }) {
+          // On v1.0, Phase 2's loader collapses sizePrefixTypeNode wrappers
+          // around string/bytes leaves into the leaf's native `size`
+          // property, so this handler should only ever see a non-leaf body
+          // (e.g. a struct, as in Token-2022's TLV extensions). If a
+          // string/bytes leaf shows up here regardless, fail loud rather
+          // than silently double-encoding the size.
+          if (
+            isNode(sizePrefixType.type, ['stringTypeNode', 'bytesTypeNode'])
+          ) {
+            throw new Error(
+              'Unexpected sizePrefixTypeNode wrapping a ' +
+                `[${sizePrefixType.type.kind}]. This should have been ` +
+                "collapsed into the leaf type's native size property by " +
+                'the loader.'
+            );
+          }
+          const childManifest = visit(sizePrefixType.type, self);
+          const prefixManifest = visit(sizePrefixType.prefix, self);
+          childManifest.serializerImports
+            .mergeWith(prefixManifest.serializerImports)
+            .add('shared', 'sizePrefix');
+          input.sharedSerializers?.add('sizePrefix');
+          return {
+            ...childManifest,
+            serializer: `sizePrefix(${childManifest.serializer}, ${prefixManifest.serializer})`,
+          };
+        },
+
+        visitFixedSizeType(fixedSizeType, { self }) {
+          // Same defensive rationale as visitSizePrefixType above: after
+          // loading, a fixedSizeTypeNode should only ever wrap a non-leaf
+          // (struct) body.
+          if (isNode(fixedSizeType.type, ['stringTypeNode', 'bytesTypeNode'])) {
+            throw new Error(
+              'Unexpected fixedSizeTypeNode wrapping a ' +
+                `[${fixedSizeType.type.kind}]. This should have been ` +
+                "collapsed into the leaf type's native size property by " +
+                'the loader.'
+            );
+          }
+          const childManifest = visit(fixedSizeType.type, self);
+          childManifest.serializerImports.add(
+            'umiSerializers',
+            'fixSerializer'
+          );
+          return {
+            ...childManifest,
+            serializer: `fixSerializer(${childManifest.serializer}, ${fixedSizeType.size})`,
+          };
+        },
+
         visitSetType(setType, { self }) {
           const childManifest = visit(setType.item, self);
           childManifest.serializerImports.add('umiSerializers', 'set');
