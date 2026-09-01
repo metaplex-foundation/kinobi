@@ -117,7 +117,12 @@ jobs:
       # publish and OIDC token exchange -- so it is npm's version that matters
       # here, not pnpm's. Node 22 ships npm 10.x, so upgrade explicitly.
       - name: Upgrade npm for OIDC trusted publishing
-        run: npm install -g npm@11
+        # Pinned to an exact, vetted npm >= 11.5.1 (not the mutable npm@11) so
+        # the privileged publish step is reproducible; echo the version to make
+        # it visible in the log before publishing.
+        run: |
+          npm install -g npm@11.19.1
+          npm --version
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
