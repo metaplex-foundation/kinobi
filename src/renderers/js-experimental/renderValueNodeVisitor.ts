@@ -22,6 +22,14 @@ export function renderValueNodeVisitor(input: {
     visitBooleanValue(node) {
       return fragment(JSON.stringify(node.boolean));
     },
+    visitBytesValue() {
+      throw new Error('bytesValueNode is not supported by this renderer yet.');
+    },
+    visitConstantValue() {
+      throw new Error(
+        'constantValueNode is not supported by this renderer yet.'
+      );
+    },
     visitEnumValue(node) {
       const enumName = nameApi.dataType(node.enum.name);
       const enumFunction = nameApi.dataEnumFunction(node.enum.name);

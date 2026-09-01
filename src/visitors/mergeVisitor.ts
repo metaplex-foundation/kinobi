@@ -291,6 +291,15 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
     };
   }
 
+  if (castedNodeKeys.includes('constantValueNode')) {
+    visitor.visitConstantValue = function visitConstantValue(node) {
+      return merge(node, [
+        ...visit(this)(node.type),
+        ...visit(this)(node.value),
+      ]);
+    };
+  }
+
   if (castedNodeKeys.includes('constantPdaSeedNode')) {
     visitor.visitConstantPdaSeed = function visitConstantPdaSeed(node) {
       return merge(node, [
