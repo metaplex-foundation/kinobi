@@ -8,7 +8,12 @@ import {
   structFieldTypeNode,
   structTypeNode,
 } from './typeNodes';
-import { VALUE_NODES, ValueNode, arrayValueNode, numberValueNode } from './valueNodes';
+import {
+  VALUE_NODES,
+  ValueNode,
+  arrayValueNode,
+  numberValueNode,
+} from './valueNodes';
 
 export type InstructionArgumentNode = {
   readonly kind: 'instructionArgumentNode';
@@ -91,15 +96,18 @@ function createPaddingDefaultValue(idlType: IdlType): ValueNode {
     );
   }
   const size = idlType.array[1] as number;
-  if (typeof size !== 'number' || !Number.isFinite(size) || !Number.isInteger(size) || size <= 0) {
+  if (
+    typeof size !== 'number' ||
+    !Number.isFinite(size) ||
+    !Number.isInteger(size) ||
+    size <= 0
+  ) {
     throw new Error(
       `Invalid padding array size: ${JSON.stringify(size)}. ` +
         `Expected a finite positive integer.`
     );
   }
-  return arrayValueNode(
-    Array.from({ length: size }, () => numberValueNode(0))
-  );
+  return arrayValueNode(Array.from({ length: size }, () => numberValueNode(0)));
 }
 
 export function structTypeNodeFromInstructionArgumentNodes(
