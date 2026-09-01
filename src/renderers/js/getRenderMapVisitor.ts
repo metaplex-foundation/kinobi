@@ -88,6 +88,10 @@ export function getRenderMapVisitor(
   // standalone PDA from overwriting an account module that shares its output
   // path (`accounts/<name>.ts`), even when they live in different programs.
   let allAccountNames = new Set<string>();
+  // Names of standalone (account-less) PDAs already rendered to
+  // `accounts/<name>.ts` this run, so a same-named PDA in a later program
+  // cannot silently overwrite the first one.
+  const renderedOrphanPdaNames = new Set<string>();
   const byteSizeVisitor = getByteSizeVisitor(linkables);
   let program: ProgramNode | null = null;
 
@@ -268,9 +272,18 @@ export function getRenderMapVisitor(
           allAccountNames = new Set<string>(
             getAllAccounts(node).map((a) => a.name)
           );
+          const exportedOrphanPdaNames = new Set<string>();
           const orphanPdasToExport = getAllPdas(node)
             .filter((p) => !linkedPdaNames.has(p.name))
             .filter((p) => !allAccountNames.has(p.name))
+            .filter((p) => {
+              // Two standalone PDAs (in different programs) sharing a name
+              // would emit duplicate `export * from './<name>'` lines; keep the
+              // first, matching the single file that survives rendering.
+              if (exportedOrphanPdaNames.has(p.name)) return false;
+              exportedOrphanPdaNames.add(p.name);
+              return true;
+            })
             .filter(isNotInternal);
           const instructionsToExport = getAllInstructionsWithSubs(node, {
             leavesOnly: !renderParentInstructions,
@@ -360,18 +373,40 @@ export function getRenderMapVisitor(
               .filter((pdaLink): pdaLink is PdaLinkNode => !!pdaLink)
               .map((pdaLink) => pdaLink.name)
           );
-          // Exclude PDAs whose name collides with an account — in this program
-          // or any other, via the root-wide `allAccountNames` populated by
-          // `visitRoot`: both render to `accounts/<name>.ts`, and the account
-          // module takes precedence. The union with `node.accounts` also covers
-          // a standalone `visitProgram` call, where `allAccountNames` is empty.
+          // A standalone PDA renders to `accounts/<name>.ts`. Skip (with a
+          // warning, never silently) any whose name is already owned by an
+          // account — in this program or any other, via the root-wide
+          // `allAccountNames` populated by `visitRoot` — or by a standalone PDA
+          // from an earlier program, so the existing module is never
+          // overwritten. The union with `node.accounts` also covers a
+          // standalone `visitProgram` call, where `allAccountNames` is empty.
           const accountNames = new Set<string>([
             ...node.accounts.map((a) => a.name),
             ...allAccountNames,
           ]);
-          const orphanPdas = node.pdas.filter(
-            (p) => !linkedPdaNames.has(p.name) && !accountNames.has(p.name)
-          );
+          const orphanPdas = node.pdas.filter((p) => {
+            if (linkedPdaNames.has(p.name)) return false;
+            if (accountNames.has(p.name)) {
+              logWarn(
+                `Skipping the "${p.name}" PDA finder in program ` +
+                  `"${node.name}": an account of the same name already owns ` +
+                  `accounts/${camelCase(p.name)}.ts. Rename the PDA or link ` +
+                  `it to that account.`
+              );
+              return false;
+            }
+            if (renderedOrphanPdaNames.has(p.name)) {
+              logWarn(
+                `Skipping the "${p.name}" PDA finder in program ` +
+                  `"${node.name}": another program already renders a PDA of ` +
+                  `that name to accounts/${camelCase(p.name)}.ts. Rename one ` +
+                  `of them.`
+              );
+              return false;
+            }
+            renderedOrphanPdaNames.add(p.name);
+            return true;
+          });
           const renderMap = new RenderMap()
             .mergeWith(...node.accounts.map((a) => visit(a, self)))
             .mergeWith(...orphanPdas.map((p) => renderStandalonePda(p)))

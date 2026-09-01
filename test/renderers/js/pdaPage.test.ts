@@ -123,3 +123,33 @@ test('it does not let an orphan pda clobber a same-named account in another prog
   ]);
   codeDoesNotContain(t, renderMap.get('accounts/foo.ts'), 'export function findFooPda');
 });
+
+test('it renders a single finder when two programs declare a same-named orphan pda', (t) => {
+  // Given two programs that each declare an unlinked pda named `foo`. Both
+  // would render to `accounts/foo.ts`; only the first should survive (the
+  // second is skipped with a warning) so the output stays valid, and the
+  // accounts barrel must not emit a duplicate re-export.
+  const node = rootNode(
+    programNode({
+      name: 'programA',
+      publicKey: '1111',
+      pdas: [pdaNode('foo', [])],
+    }),
+    [
+      programNode({
+        name: 'programB',
+        publicKey: '2222',
+        pdas: [pdaNode('foo', [])],
+      }),
+    ]
+  );
+
+  // When we render it.
+  const renderMap = visit(node, getRenderMapVisitor());
+
+  // Then a single finder file is rendered (from the first program)...
+  renderMapContains(t, renderMap, 'accounts/foo.ts', ['export function findFooPda']);
+  // ...and the barrel re-exports it exactly once (no duplicate line).
+  const index = renderMap.get('accounts/index.ts');
+  t.is(index.match(/export \* from '\.\/foo'/g)?.length, 1);
+});
