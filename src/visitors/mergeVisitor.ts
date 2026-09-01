@@ -165,6 +165,36 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
     };
   }
 
+  if (castedNodeKeys.includes('zeroableOptionTypeNode')) {
+    visitor.visitZeroableOptionType = function visitZeroableOptionType(node) {
+      return merge(node, [
+        ...visit(this)(node.item),
+        ...(node.zeroValue ? visit(this)(node.zeroValue) : []),
+      ]);
+    };
+  }
+
+  if (castedNodeKeys.includes('remainderOptionTypeNode')) {
+    visitor.visitRemainderOptionType = function visitRemainderOptionType(node) {
+      return merge(node, [...visit(this)(node.item)]);
+    };
+  }
+
+  if (castedNodeKeys.includes('sizePrefixTypeNode')) {
+    visitor.visitSizePrefixType = function visitSizePrefixType(node) {
+      return merge(node, [
+        ...visit(this)(node.type),
+        ...visit(this)(node.prefix),
+      ]);
+    };
+  }
+
+  if (castedNodeKeys.includes('fixedSizeTypeNode')) {
+    visitor.visitFixedSizeType = function visitFixedSizeType(node) {
+      return merge(node, [...visit(this)(node.type)]);
+    };
+  }
+
   if (castedNodeKeys.includes('setTypeNode')) {
     visitor.visitSetType = function visitSetType(node) {
       return merge(node, [

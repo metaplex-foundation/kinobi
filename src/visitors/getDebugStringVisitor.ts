@@ -92,6 +92,7 @@ function getNodeDetails(node: Node): string[] {
     case 'fixedSizeOptionTypeNode':
       return [`sentinel: [${node.sentinel.join(', ')}]`];
     case 'fixedSizeNode':
+    case 'fixedSizeTypeNode':
       return [node.size.toString()];
     case 'numberValueNode':
       return [node.number.toString()];

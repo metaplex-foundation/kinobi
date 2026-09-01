@@ -8,14 +8,18 @@ import {
   enumTupleVariantTypeNode,
   enumTypeNode,
   fixedSizeNode,
+  fixedSizeTypeNode,
   getByteSizeVisitor,
   numberTypeNode,
   publicKeyTypeNode,
+  remainderOptionTypeNode,
+  sizePrefixTypeNode,
   stringTypeNode,
   structFieldTypeNode,
   structTypeNode,
   tupleTypeNode,
   visit,
+  zeroableOptionTypeNode,
 } from '../../src';
 
 const macro = test.macro((t, node: Node, expectedSize: number | null) => {
@@ -102,4 +106,35 @@ test(
     enumTupleVariantTypeNode('B', tupleTypeNode([numberTypeNode('u32')])),
   ]),
   null
+);
+
+test(
+  'it gets the size of fixed size types',
+  macro,
+  fixedSizeTypeNode(stringTypeNode(), 8),
+  8
+);
+test(
+  'it gets the size of zeroable option types',
+  macro,
+  zeroableOptionTypeNode(publicKeyTypeNode()),
+  32
+);
+test(
+  'it gets the size of remainder option types',
+  macro,
+  remainderOptionTypeNode(numberTypeNode('u8')),
+  null
+);
+test(
+  'it gets the size of size-prefixed types with a variable inner type',
+  macro,
+  sizePrefixTypeNode(stringTypeNode(), numberTypeNode('u32')),
+  null
+);
+test(
+  'it gets the size of size-prefixed types with a fixed inner type',
+  macro,
+  sizePrefixTypeNode(numberTypeNode('u8'), numberTypeNode('u32')),
+  5
 );

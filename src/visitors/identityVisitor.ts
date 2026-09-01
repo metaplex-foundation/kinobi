@@ -27,6 +27,7 @@ import {
   enumTupleVariantTypeNode,
   enumTypeNode,
   enumValueNode,
+  fixedSizeTypeNode,
   instructionAccountNode,
   instructionArgumentNode,
   instructionByteDeltaNode,
@@ -42,11 +43,13 @@ import {
   pdaValueNode,
   prefixedSizeNode,
   programNode,
+  remainderOptionTypeNode,
   removeNullAndAssertIsNodeFilter,
   resolverValueNode,
   rootNode,
   setTypeNode,
   setValueNode,
+  sizePrefixTypeNode,
   solAmountTypeNode,
   someValueNode,
   stringTypeNode,
@@ -57,6 +60,7 @@ import {
   tupleTypeNode,
   tupleValueNode,
   variablePdaSeedNode,
+  zeroableOptionTypeNode,
 } from '../nodes';
 import { staticVisitor } from './staticVisitor';
 import { Visitor, visit as baseVisit } from './visitor';
@@ -325,6 +329,49 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       if (item === null) return null;
       assertIsNode(item, TYPE_NODES);
       return fixedSizeOptionTypeNode(item, node.sentinel);
+    };
+  }
+
+  if (castedNodeKeys.includes('zeroableOptionTypeNode')) {
+    visitor.visitZeroableOptionType = function visitZeroableOptionType(node) {
+      const item = visit(this)(node.item);
+      if (item === null) return null;
+      assertIsNode(item, TYPE_NODES);
+      const zeroValue = node.zeroValue
+        ? visit(this)(node.zeroValue) ?? undefined
+        : undefined;
+      if (zeroValue) assertIsNode(zeroValue, 'constantValueNode');
+      return zeroableOptionTypeNode(item, zeroValue);
+    };
+  }
+
+  if (castedNodeKeys.includes('remainderOptionTypeNode')) {
+    visitor.visitRemainderOptionType = function visitRemainderOptionType(node) {
+      const item = visit(this)(node.item);
+      if (item === null) return null;
+      assertIsNode(item, TYPE_NODES);
+      return remainderOptionTypeNode(item);
+    };
+  }
+
+  if (castedNodeKeys.includes('sizePrefixTypeNode')) {
+    visitor.visitSizePrefixType = function visitSizePrefixType(node) {
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertIsNode(type, TYPE_NODES);
+      const prefix = visit(this)(node.prefix);
+      if (prefix === null) return null;
+      assertIsNode(prefix, 'numberTypeNode');
+      return sizePrefixTypeNode(type, prefix);
+    };
+  }
+
+  if (castedNodeKeys.includes('fixedSizeTypeNode')) {
+    visitor.visitFixedSizeType = function visitFixedSizeType(node) {
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertIsNode(type, TYPE_NODES);
+      return fixedSizeTypeNode(type, node.size);
     };
   }
 
