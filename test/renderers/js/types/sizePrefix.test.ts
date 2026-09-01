@@ -32,8 +32,7 @@ test('it wraps non-string types with a size prefix serializer', (t) => {
 
   // Then the struct serializer is wrapped with a size prefix.
   renderMapContains(t, renderMap, 'types/myType.ts', [
-    'sizePrefix( struct',
-    ', u16() )',
+    /sizePrefix\(\s*struct[\s\S]*?,\s*u16\(\)\s*\)/,
   ]);
   renderMapContainsImports(t, renderMap, 'types/myType.ts', {
     '../shared': ['sizePrefix'],

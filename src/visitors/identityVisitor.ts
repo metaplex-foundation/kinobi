@@ -287,8 +287,14 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
         newStruct as NestedTypeNode<StructTypeNode>
       );
       assertIsNode(resolvedStruct, 'structTypeNode');
-      if (resolvedStruct.fields.length === 0) {
-        return enumEmptyVariantTypeNode(node.name);
+      // Only collapse to an empty variant when the struct is directly empty —
+      // not when it is wrapped (e.g. `sizePrefixTypeNode(structTypeNode([]))`),
+      // since collapsing would drop the wrapper from the normalized tree.
+      if (
+        newStruct.kind === 'structTypeNode' &&
+        resolvedStruct.fields.length === 0
+      ) {
+        return enumEmptyVariantTypeNode(node.name, node.discriminator);
       }
       return enumStructVariantTypeNode(
         node.name,

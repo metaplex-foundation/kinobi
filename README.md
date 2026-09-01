@@ -6,7 +6,7 @@ Generate powerful clients for your Solana programs.
 
 The Documentation of Kinobi can be found in the [Metaplex Developer Hub](https://developers.metaplex.com/umi/kinobi).
 
-### Loading a Codama IDL
+## Loading a Codama IDL
 
 Kinobi can also load IDLs that follow the [Codama](https://github.com/codama-idl/codama) standard (v1) — for instance the `idl.json` shipped by [`solana-program/token-2022`](https://github.com/solana-program/token-2022):
 

@@ -81,16 +81,25 @@ export function codeContainsImports(
   importPairs.forEach(([importFrom, importValue]) => {
     t.regex(
       normalizedActual,
-      new RegExp(`import{[^}]*\\b${importValue}\\b[^}]*}from'${importFrom}'`)
+      new RegExp(
+        `import{[^}]*\\b${escapeRegex(importValue)}\\b[^}]*}from'${escapeRegex(
+          importFrom
+        )}'`
+      )
     );
   });
 }
 
 function normalizeCode(code: string) {
   try {
-    code = format(code, PRETTIER_OPTIONS);
-  } catch (e) {}
-  return code.trim();
+    return format(code, PRETTIER_OPTIONS).trim();
+  } catch (error) {
+    throw new Error(
+      `Generated code could not be parsed by Prettier: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
+  }
 }
 
 function inlineCode(code: string) {

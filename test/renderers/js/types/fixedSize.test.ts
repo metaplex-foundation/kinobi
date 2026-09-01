@@ -32,8 +32,7 @@ test('it renders fixed size serializers for non-string types', (t) => {
 
   // Then the struct serializer is wrapped with fixSerializer.
   renderMapContains(t, renderMap, 'types/myType.ts', [
-    'fixSerializer( struct',
-    ', 100 )',
+    /fixSerializer\(\s*struct[\s\S]*?,\s*100\s*\)/,
   ]);
   renderMapContainsImports(t, renderMap, 'types/myType.ts', {
     '@metaplex-foundation/umi/serializers': ['fixSerializer'],

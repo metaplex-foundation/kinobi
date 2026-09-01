@@ -256,8 +256,13 @@ export function getRenderMapVisitor(
               .filter((pdaLink): pdaLink is PdaLinkNode => !!pdaLink)
               .map((pdaLink) => pdaLink.name)
           );
+          // A standalone PDA renders to `accounts/<name>.ts`; exclude any
+          // whose name collides with an account so the account module (which
+          // also owns that path) is never overwritten.
+          const accountNames = new Set(getAllAccounts(node).map((a) => a.name));
           const orphanPdasToExport = getAllPdas(node)
             .filter((p) => !linkedPdaNames.has(p.name))
+            .filter((p) => !accountNames.has(p.name))
             .filter(isNotInternal);
           const instructionsToExport = getAllInstructionsWithSubs(node, {
             leavesOnly: !renderParentInstructions,
@@ -271,6 +276,11 @@ export function getRenderMapVisitor(
             instructionsToExport.length > 0 ||
             definedTypesToExport.length > 0;
 
+          // Programs must be rendered before `ctx` is built: rendering them is
+          // what populates `sharedSerializers`, which `ctx` then feeds to
+          // `sharedPage.njk` so `shared/index.ts` includes exactly the helpers
+          // the generated code uses. Moving this below `ctx` would emit the
+          // shared module without those helpers.
           const programRenderMaps = getAllPrograms(node).map((p) =>
             visit(p, self)
           );
@@ -342,8 +352,11 @@ export function getRenderMapVisitor(
               .filter((pdaLink): pdaLink is PdaLinkNode => !!pdaLink)
               .map((pdaLink) => pdaLink.name)
           );
+          // Exclude PDAs whose name collides with an account: both render to
+          // `accounts/<name>.ts`, and the account module takes precedence.
+          const accountNames = new Set(node.accounts.map((a) => a.name));
           const orphanPdas = node.pdas.filter(
-            (p) => !linkedPdaNames.has(p.name)
+            (p) => !linkedPdaNames.has(p.name) && !accountNames.has(p.name)
           );
           const renderMap = new RenderMap()
             .mergeWith(...node.accounts.map((a) => visit(a, self)))

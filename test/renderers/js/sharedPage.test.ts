@@ -41,6 +41,7 @@ test('it omits shared serializer helpers when they are unused', (t) => {
   codeDoesNotContain(t, renderMap.get('shared/index.ts'), [
     'zeroableOption',
     'remainderOption',
+    'remainderArray',
     'hiddenPrefix',
     'hiddenSuffix',
     'sizePrefix(',

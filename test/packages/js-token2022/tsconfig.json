@@ -1,7 +1,7 @@
 {
   "include": ["src", "test"],
   "compilerOptions": {
-    "lib": ["es2018"],
+    "lib": ["es2018", "es2020.bigint"],
     "target": "es2018",
     "module": "commonjs",
 
