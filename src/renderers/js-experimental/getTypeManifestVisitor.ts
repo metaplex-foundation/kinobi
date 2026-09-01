@@ -457,6 +457,49 @@ export function getTypeManifestVisitor(input: {
           return childManifest;
         },
 
+        // The following six type nodes were introduced in Codama v1.0 (see
+        // the JS/Umi renderer's getTypeManifestVisitor for a working
+        // implementation). They are not yet supported by the experimental
+        // JavaScript renderer. Without these overrides they would silently
+        // fall through to the staticVisitor default (an empty manifest, with
+        // no recursion into children) instead of failing loudly, so throw
+        // clear errors here until real support is added.
+        visitZeroableOptionType() {
+          throw new Error(
+            'zeroableOptionTypeNode is not yet supported by the experimental JavaScript renderer.'
+          );
+        },
+
+        visitRemainderOptionType() {
+          throw new Error(
+            'remainderOptionTypeNode is not yet supported by the experimental JavaScript renderer.'
+          );
+        },
+
+        visitSizePrefixType() {
+          throw new Error(
+            'sizePrefixTypeNode is not yet supported by the experimental JavaScript renderer.'
+          );
+        },
+
+        visitFixedSizeType() {
+          throw new Error(
+            'fixedSizeTypeNode is not yet supported by the experimental JavaScript renderer.'
+          );
+        },
+
+        visitHiddenPrefixType() {
+          throw new Error(
+            'hiddenPrefixTypeNode is not yet supported by the experimental JavaScript renderer.'
+          );
+        },
+
+        visitPreOffsetType() {
+          throw new Error(
+            'preOffsetTypeNode is not yet supported by the experimental JavaScript renderer.'
+          );
+        },
+
         visitSetType(setType, { self }) {
           const childManifest = visit(setType.item, self);
           childManifest.strictType.mapRender((r) => `Set<${r}>`);

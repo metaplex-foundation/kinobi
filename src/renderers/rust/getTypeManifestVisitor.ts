@@ -312,6 +312,49 @@ export function getTypeManifestVisitor(input: {
           };
         },
 
+        // The following six type nodes were introduced in Codama v1.0 (see
+        // the JS/Umi renderer's getTypeManifestVisitor for a working
+        // implementation). They are not yet supported by the Rust renderer.
+        // Without these overrides they would silently fall through to
+        // mergeVisitor's generic recursive default (joining children's
+        // rendered types with newlines) instead of failing loudly, so throw
+        // clear errors here until real support is added.
+        visitZeroableOptionType() {
+          throw new Error(
+            'zeroableOptionTypeNode is not yet supported by the Rust renderer.'
+          );
+        },
+
+        visitRemainderOptionType() {
+          throw new Error(
+            'remainderOptionTypeNode is not yet supported by the Rust renderer.'
+          );
+        },
+
+        visitSizePrefixType() {
+          throw new Error(
+            'sizePrefixTypeNode is not yet supported by the Rust renderer.'
+          );
+        },
+
+        visitFixedSizeType() {
+          throw new Error(
+            'fixedSizeTypeNode is not yet supported by the Rust renderer.'
+          );
+        },
+
+        visitHiddenPrefixType() {
+          throw new Error(
+            'hiddenPrefixTypeNode is not yet supported by the Rust renderer.'
+          );
+        },
+
+        visitPreOffsetType() {
+          throw new Error(
+            'preOffsetTypeNode is not yet supported by the Rust renderer.'
+          );
+        },
+
         visitSetType(setType, { self }) {
           const childManifest = visit(setType.item, self);
           childManifest.imports.add('std::collections::HashSet');
