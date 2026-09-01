@@ -6,7 +6,14 @@ import {
   RootNode,
   rootNodeFromIdls,
 } from './nodes';
-import { defaultVisitor, visit, Visitor } from './visitors';
+import { validateCodamaVersion } from './shared';
+import {
+  CodamaRootInput,
+  defaultVisitor,
+  normalizeCodamaRoot,
+  visit,
+  Visitor,
+} from './visitors';
 
 export interface Kinobi {
   getRoot(): RootNode;
@@ -21,6 +28,10 @@ export function createFromRoot(
   useDefaultVisitor = true
 ): Kinobi {
   let currentRoot = root;
+  if ((root as { standard?: string }).standard === 'codama') {
+    validateCodamaVersion((root as { version?: string }).version);
+    currentRoot = normalizeCodamaRoot(root as unknown as CodamaRootInput);
+  }
   if (useDefaultVisitor) {
     currentRoot = visit(currentRoot, defaultVisitor());
   }

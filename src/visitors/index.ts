@@ -20,6 +20,7 @@ export * from './interceptVisitor';
 export * from './mapVisitor';
 export * from './mergeVisitor';
 export * from './nonNullableIdentityVisitor';
+export * from './normalizeCodamaRoot';
 export * from './recordLinkablesVisitor';
 export * from './recordNodeStackVisitor';
 export * from './removeDocsVisitor';

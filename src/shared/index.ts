@@ -11,3 +11,4 @@ export * from './logs';
 export * from './pipe';
 export * from './renameHelpers';
 export * from './utils';
+export * from './validateCodamaVersion';
