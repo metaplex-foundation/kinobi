@@ -1,6 +1,6 @@
 # @metaplex-foundation/kinobi
 
-## 0.20.0
+## 1.11.0
 
 ### Minor Changes
 
