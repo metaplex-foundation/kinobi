@@ -111,6 +111,48 @@ test(
   ]),
   null
 );
+test(
+  'it gets the size of an enum whose struct variant is wrapped in a ' +
+    'sizePrefixTypeNode (the Codama TLV-body case)',
+  macro,
+  enumTypeNode(
+    [
+      enumStructVariantTypeNode(
+        'A',
+        sizePrefixTypeNode(
+          structTypeNode([
+            structFieldTypeNode({ name: 'x', type: numberTypeNode('u16') }),
+            structFieldTypeNode({ name: 'y', type: numberTypeNode('u16') }),
+          ]),
+          numberTypeNode('u16')
+        )
+      ),
+    ],
+    { size: numberTypeNode('u8') }
+  ),
+  // prefix (u8=1) + [sizePrefixTypeNode's own u16 prefix (2) + struct (2+2)]
+  1 + (2 + 4)
+);
+test(
+  'it gets a variable size for an enum whose sizePrefixTypeNode-wrapped ' +
+    'struct variant contains a variable-size field',
+  macro,
+  enumTypeNode(
+    [
+      enumStructVariantTypeNode(
+        'A',
+        sizePrefixTypeNode(
+          structTypeNode([
+            structFieldTypeNode({ name: 'name', type: stringTypeNode() }),
+          ]),
+          numberTypeNode('u16')
+        )
+      ),
+    ],
+    { size: numberTypeNode('u8') }
+  ),
+  null
+);
 
 test(
   'it gets the size of fixed size types',

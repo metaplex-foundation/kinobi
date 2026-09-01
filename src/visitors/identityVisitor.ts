@@ -34,6 +34,7 @@ import {
   instructionByteDeltaNode,
   instructionNode,
   instructionRemainingAccountsNode,
+  isNode,
   mapEntryValueNode,
   mapTypeNode,
   mapValueNode,
@@ -274,8 +275,19 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       if (!newStruct) {
         return enumEmptyVariantTypeNode(node.name);
       }
-      assertIsNode(newStruct, 'structTypeNode');
-      if (newStruct.fields.length === 0) {
+      // The struct body is usually bare, but a Codama-standard IDL may wrap
+      // it in a `sizePrefixTypeNode`/`fixedSizeTypeNode` (e.g. a TLV-framed
+      // extension body) — that wrapper carries real byte-layout information
+      // and must be kept, not stripped.
+      assertIsNode(newStruct, [
+        'structTypeNode',
+        'sizePrefixTypeNode',
+        'fixedSizeTypeNode',
+      ]);
+      if (
+        isNode(newStruct, 'structTypeNode') &&
+        newStruct.fields.length === 0
+      ) {
         return enumEmptyVariantTypeNode(node.name);
       }
       return enumStructVariantTypeNode(node.name, newStruct);
@@ -290,8 +302,14 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       if (!newTuple) {
         return enumEmptyVariantTypeNode(node.name);
       }
-      assertIsNode(newTuple, 'tupleTypeNode');
-      if (newTuple.items.length === 0) {
+      // Symmetric with `visitEnumStructVariantType`: a wrapped tuple body
+      // (e.g. `sizePrefixTypeNode`/`fixedSizeTypeNode`) is kept as-is.
+      assertIsNode(newTuple, [
+        'tupleTypeNode',
+        'sizePrefixTypeNode',
+        'fixedSizeTypeNode',
+      ]);
+      if (isNode(newTuple, 'tupleTypeNode') && newTuple.items.length === 0) {
         return enumEmptyVariantTypeNode(node.name);
       }
       return enumTupleVariantTypeNode(node.name, newTuple);

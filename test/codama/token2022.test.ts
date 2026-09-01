@@ -33,18 +33,14 @@ function walk(node: unknown, visit: (n: Node) => void): void {
   Object.values(obj).forEach((child) => walk(child, visit));
 }
 
-// KNOWN GAP: this currently throws -- see test/visitors/normalizeCodamaRoot.test.ts's
-// "KNOWN GAP" test and task-04-report.md for the full explanation. In short:
-// the real IDL's `extension` enum has 28 struct variants whose `.struct` is
+// The real IDL's `extension` enum has 28 struct variants whose `.struct` is
 // a `sizePrefixTypeNode` (the TLV u16 length prefix) wrapping a
 // `structTypeNode`. Per this task's transform rules that wrapper is kept
-// (it isn't a string/bytes leaf), but v1.0's `EnumStructVariantTypeNode`
-// requires a bare `StructTypeNode`, so canonicalization throws. This is a
-// pre-existing v1.0 node-shape gap, not something the loader can silently
-// paper over without either losing byte-layout information or widening
-// EnumStructVariantTypeNode/EnumTupleVariantTypeNode (a judgment call left
-// for a maintainer decision). Flip this back to `test(...)` once resolved.
-test.failing('it loads the real Token-2022 Codama IDL into a valid v1.0 root', (t) => {
+// (it isn't a string/bytes leaf). `EnumStructVariantTypeNode`/
+// `EnumTupleVariantTypeNode` were widened to accept that wrapped body (see
+// task-04-report.md's "Widening EnumStructVariantTypeNode /
+// EnumTupleVariantTypeNode" section) so canonicalization now succeeds.
+test('it loads the real Token-2022 Codama IDL into a valid v1.0 root', (t) => {
   const kinobi = createFromJson(readFixture());
   const root = kinobi.getRoot();
 
@@ -98,7 +94,18 @@ test.failing('it loads the real Token-2022 Codama IDL into a valid v1.0 root', (
   );
   t.truthy(tokenMetadataVariant);
   assertIsNode(tokenMetadataVariant, 'enumStructVariantTypeNode');
-  const nameField = tokenMetadataVariant.struct.fields.find(
+
+  // The `tokenMetadata` variant's body is itself TLV-framed (a u16 length
+  // prefix), so its `.struct` is a kept `sizePrefixTypeNode` wrapper, not a
+  // bare `structTypeNode` -- this is the widened EnumStructVariantTypeNode
+  // shape (see task-04-report.md's "Widening EnumStructVariantTypeNode /
+  // EnumTupleVariantTypeNode" section).
+  assertIsNode(tokenMetadataVariant.struct, 'sizePrefixTypeNode');
+  assertIsNode(tokenMetadataVariant.struct.prefix, 'numberTypeNode');
+  t.is(tokenMetadataVariant.struct.prefix.format, 'u16');
+  assertIsNode(tokenMetadataVariant.struct.type, 'structTypeNode');
+
+  const nameField = tokenMetadataVariant.struct.type.fields.find(
     (f) => f.name === 'name'
   );
   t.truthy(nameField);

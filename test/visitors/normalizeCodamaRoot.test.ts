@@ -191,23 +191,18 @@ test('Codama-only `display` metadata is stripped, even on node kinds with no ded
   t.false('display' in resultType);
 });
 
-test.failing(
-  'KNOWN GAP: a sizePrefixTypeNode/fixedSizeTypeNode wrapping the struct/tuple ' +
-    'of an enum variant does not fit v1.0s EnumStructVariantTypeNode/EnumTupleVariantTypeNode ' +
-    '(struct/tuple must be bare) -- see task-04-report.md',
+test(
+  'a sizePrefixTypeNode wrapping the struct of an enum variant (the TLV ' +
+    'body case) keeps the wrapper through canonicalization',
   (t) => {
     // The real Token-2022 IDL's `extension` enum has 28 struct variants
     // (e.g. `tokenMetadata`) whose `.struct` is a `sizePrefixTypeNode`
     // wrapping a `structTypeNode` (the TLV u16 length prefix). Per this
     // task's transform rules, that wrapper is intentionally KEPT (it is
     // NOT a bare string/bytes leaf, so it doesn't collapse into `size`).
-    // But v1.0's `EnumStructVariantTypeNode.struct` requires a bare
-    // `StructTypeNode`, and `identityVisitor.visitEnumStructVariantType`
-    // asserts exactly that -- so canonicalization throws. This is a
-    // pre-existing v1.0 node-shape gap (not something this loader can fix
-    // without either losing the TLV length-prefix byte-layout information,
-    // or widening EnumStructVariantTypeNode/EnumTupleVariantTypeNode's
-    // types -- both are judgment calls outside this task's scope).
+    // `EnumStructVariantTypeNode.struct` was widened to accept it (see
+    // task-04-report.md's "Widening EnumStructVariantTypeNode /
+    // EnumTupleVariantTypeNode" section).
     const variant = {
       kind: 'enumStructVariantTypeNode',
       name: 'tokenMetadata',
@@ -231,9 +226,6 @@ test.failing(
       variants: [{ kind: 'enumEmptyVariantTypeNode', name: 'uninitialized' }, variant],
       size: { kind: 'numberTypeNode', format: 'u8', endian: 'le' },
     };
-    // Expected (once resolved) to succeed and keep the sizePrefixTypeNode
-    // wrapper around the variant's struct. Currently throws instead:
-    // "Expected structTypeNode, got sizePrefixTypeNode."
     const root = normalizeCodamaRoot(
       codamaRoot(codamaProgram([definedTypeWithType(type, 'extension')]))
     );
@@ -242,6 +234,10 @@ test.failing(
     const resultVariant = resultType.variants[1];
     assertIsNode(resultVariant, 'enumStructVariantTypeNode');
     assertIsNode(resultVariant.struct, 'sizePrefixTypeNode');
+    assertIsNode(resultVariant.struct.prefix, 'numberTypeNode');
+    t.is(resultVariant.struct.prefix.format, 'u16');
+    assertIsNode(resultVariant.struct.type, 'structTypeNode');
+    t.is(resultVariant.struct.type.fields.length, 1);
   }
 );
 
