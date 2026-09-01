@@ -10,7 +10,13 @@ import {
   structTypeNodeFromInstructionArgumentNodes,
 } from '../../nodes';
 import { camelCase, jsDocblock, pascalCase, pipe } from '../../shared';
-import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
+import {
+  Visitor,
+  extendVisitor,
+  getByteSizeVisitor,
+  staticVisitor,
+  visit,
+} from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 import { ParsedCustomDataOptions } from './customDataHelpers';
 import { renderValueNodeVisitor } from './renderValueNodeVisitor';
@@ -30,6 +36,8 @@ export function getTypeManifestVisitor(input: {
   customAccountData: ParsedCustomDataOptions;
   customInstructionData: ParsedCustomDataOptions;
   parentName?: { strict: string; loose: string };
+  sharedSerializers?: Set<string>;
+  byteSizeVisitor: ReturnType<typeof getByteSizeVisitor>;
 }) {
   const { valueNodeVisitor, customAccountData, customInstructionData } = input;
   let parentName = input.parentName ?? null;
@@ -392,6 +400,31 @@ export function getTypeManifestVisitor(input: {
             strictType: `Option<${baseStrictType}>`,
             looseType: `OptionOrNullable<${baseLooseType}>`,
             serializer: customSerializer,
+          };
+        },
+
+        visitZeroableOptionType(zeroableOptionType, { self }) {
+          const childManifest = visit(zeroableOptionType.item, self);
+          childManifest.strictImports.add('umi', 'Option');
+          childManifest.looseImports.add('umi', 'OptionOrNullable');
+          childManifest.serializerImports.add('shared', 'zeroableOption');
+          input.sharedSerializers?.add('zeroableOption');
+          let options = '';
+          if (zeroableOptionType.zeroValue) {
+            const zeroValueManifest = visit(
+              zeroableOptionType.zeroValue,
+              input.valueNodeVisitor
+            );
+            childManifest.serializerImports.mergeWith(
+              zeroValueManifest.imports
+            );
+            options = `, { zeroValue: ${zeroValueManifest.render} }`;
+          }
+          return {
+            ...childManifest,
+            strictType: `Option<${childManifest.strictType}>`,
+            looseType: `OptionOrNullable<${childManifest.looseType}>`,
+            serializer: `zeroableOption(${childManifest.serializer}${options})`,
           };
         },
 

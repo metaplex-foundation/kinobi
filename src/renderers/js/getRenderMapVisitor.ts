@@ -80,6 +80,7 @@ export function getRenderMapVisitor(
 ): Visitor<RenderMap> {
   const linkables = new LinkableDictionary();
   const byteSizeVisitor = getByteSizeVisitor(linkables);
+  const sharedSerializers = new Set<string>();
   let program: ProgramNode | null = null;
 
   const renderParentInstructions = options.renderParentInstructions ?? false;
@@ -126,6 +127,8 @@ export function getRenderMapVisitor(
       customAccountData,
       customInstructionData,
       parentName,
+      sharedSerializers,
+      byteSizeVisitor,
     });
   const typeManifestVisitor = getTypeManifestVisitor();
   const resolvedInstructionInputVisitor = getResolvedInstructionInputsVisitor();
@@ -197,6 +200,14 @@ export function getRenderMapVisitor(
             instructionsToExport.length > 0 ||
             definedTypesToExport.length > 0;
 
+          // Programs must be rendered before `ctx` is built: rendering them is
+          // what populates `sharedSerializers` (via the type manifest visitor
+          // visiting accounts/types/instructions), which `ctx` then feeds to
+          // `sharedPage.njk` so `shared/index.ts` includes exactly the helpers
+          // the generated code uses. Moving this below `ctx` would emit the
+          // shared module without those helpers.
+          const programRenderMaps = node.programs.map((p) => visit(p, self));
+
           const ctx = {
             root: node,
             programsToExport,
@@ -204,6 +215,7 @@ export function getRenderMapVisitor(
             instructionsToExport,
             definedTypesToExport,
             hasAnythingToExport,
+            sharedSerializers: [...sharedSerializers].sort(),
           };
 
           const map = new RenderMap();
@@ -241,7 +253,7 @@ export function getRenderMapVisitor(
 
           return map
             .add('index.ts', render('rootIndex.njk', ctx))
-            .mergeWith(...node.programs.map((p) => visit(p, self)));
+            .mergeWith(...programRenderMaps);
         },
 
         visitProgram(node, { self }) {

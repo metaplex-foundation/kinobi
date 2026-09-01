@@ -2,7 +2,11 @@
 {% import "macros.njk" as macros %}
 
 {% block main %}
-import { AccountMeta, isSigner, Pda, publicKey, PublicKey, Signer, isPda } from '@metaplex-foundation/umi';
+{% set needsOptionHelpers = 'zeroableOption' in sharedSerializers %}
+import { AccountMeta, isSigner, Pda, publicKey, PublicKey, Signer, isPda{% if needsOptionHelpers %}, isOption, isSome, none, Option, OptionOrNullable, some{% endif %} } from '@metaplex-foundation/umi';
+{% if sharedSerializers.length > 0 %}
+import { Serializer } from '@metaplex-foundation/umi/serializers';
+{% endif %}
 
 /**
  * Transforms the given object such that the given keys are optional.
@@ -96,4 +100,64 @@ export function getAccountMetasAndSigners(
 
   return [keys, signers];
 };
+
+{% if 'zeroableOption' in sharedSerializers %}
+/**
+ * Serializer for fixed-size optional values where `None` is represented
+ * by a predefined "zero" byte pattern — with no prefix byte.
+ * @internal
+ */
+export function zeroableOption<T, U extends T = T>(
+  item: Serializer<T, U>,
+  options: { zeroValue?: Uint8Array } = {}
+): Serializer<OptionOrNullable<T>, Option<U>> {
+  if (item.fixedSize === null) {
+    throw new Error(
+      'zeroableOption can only be used with fixed-size serializers.'
+    );
+  }
+  const size = item.fixedSize;
+  const zeroValue = options.zeroValue ?? new Uint8Array(size);
+  if (zeroValue.length !== size) {
+    throw new Error(
+      'zeroableOption expects the zeroValue to have the same size as the item serializer.'
+    );
+  }
+  return {
+    description: `zeroableOption(${item.description})`,
+    fixedSize: size,
+    maxSize: size,
+    serialize: (optionOrNullable: OptionOrNullable<T>) => {
+      const option = isOption(optionOrNullable)
+        ? optionOrNullable
+        : optionOrNullable === null
+          ? none<T>()
+          : some(optionOrNullable);
+      if (isSome(option)) {
+        const bytes = item.serialize(option.value);
+        if (bytes.length !== size) {
+          throw new Error(
+            `zeroableOption expected the item serializer to return ${size} bytes but got ${bytes.length} bytes.`
+          );
+        }
+        return bytes;
+      }
+      return new Uint8Array(zeroValue);
+    },
+    deserialize: (bytes: Uint8Array, offset = 0) => {
+      if (bytes.length - offset < size) {
+        throw new Error(
+          `zeroableOption expected ${size} bytes at offset ${offset}.`
+        );
+      }
+      const isZero = zeroValue.every(
+        (byte, index) => bytes[offset + index] === byte
+      );
+      if (isZero) return [none<U>(), offset + size];
+      const [value] = item.deserialize(bytes, offset);
+      return [some(value), offset + size];
+    },
+  };
+}
+{% endif %}
 {% endblock %}
