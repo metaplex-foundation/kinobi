@@ -83,6 +83,11 @@ export function getRenderMapVisitor(
 ): Visitor<RenderMap> {
   const linkables = new LinkableDictionary();
   const sharedSerializers = new Set<string>();
+  // Names of every account across all programs, populated by `visitRoot`
+  // before any program is rendered. `visitProgram` reads it to keep a
+  // standalone PDA from overwriting an account module that shares its output
+  // path (`accounts/<name>.ts`), even when they live in different programs.
+  let allAccountNames = new Set<string>();
   const byteSizeVisitor = getByteSizeVisitor(linkables);
   let program: ProgramNode | null = null;
 
@@ -257,12 +262,15 @@ export function getRenderMapVisitor(
               .map((pdaLink) => pdaLink.name)
           );
           // A standalone PDA renders to `accounts/<name>.ts`; exclude any
-          // whose name collides with an account so the account module (which
-          // also owns that path) is never overwritten.
-          const accountNames = new Set(getAllAccounts(node).map((a) => a.name));
+          // whose name collides with an account in ANY program so the account
+          // module (which also owns that path) is never overwritten. This
+          // root-wide set is also read by `visitProgram` below.
+          allAccountNames = new Set<string>(
+            getAllAccounts(node).map((a) => a.name)
+          );
           const orphanPdasToExport = getAllPdas(node)
             .filter((p) => !linkedPdaNames.has(p.name))
-            .filter((p) => !accountNames.has(p.name))
+            .filter((p) => !allAccountNames.has(p.name))
             .filter(isNotInternal);
           const instructionsToExport = getAllInstructionsWithSubs(node, {
             leavesOnly: !renderParentInstructions,
@@ -352,9 +360,15 @@ export function getRenderMapVisitor(
               .filter((pdaLink): pdaLink is PdaLinkNode => !!pdaLink)
               .map((pdaLink) => pdaLink.name)
           );
-          // Exclude PDAs whose name collides with an account: both render to
-          // `accounts/<name>.ts`, and the account module takes precedence.
-          const accountNames = new Set(node.accounts.map((a) => a.name));
+          // Exclude PDAs whose name collides with an account — in this program
+          // or any other, via the root-wide `allAccountNames` populated by
+          // `visitRoot`: both render to `accounts/<name>.ts`, and the account
+          // module takes precedence. The union with `node.accounts` also covers
+          // a standalone `visitProgram` call, where `allAccountNames` is empty.
+          const accountNames = new Set<string>([
+            ...node.accounts.map((a) => a.name),
+            ...allAccountNames,
+          ]);
           const orphanPdas = node.pdas.filter(
             (p) => !linkedPdaNames.has(p.name) && !accountNames.has(p.name)
           );

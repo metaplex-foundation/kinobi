@@ -14,7 +14,7 @@ Kinobi can also load IDLs that follow the [Codama](https://github.com/codama-idl
 import { createFromJson, renderJavaScriptVisitor } from '@metaplex-foundation/kinobi';
 import fs from 'node:fs';
 
-const kinobi = createFromJson(fs.readFileSync('token_2022.json', 'utf8'));
+const kinobi = createFromJson(fs.readFileSync('idl.json', 'utf8'));
 kinobi.accept(renderJavaScriptVisitor('clients/js/src/generated-token2022'));
 ```
 

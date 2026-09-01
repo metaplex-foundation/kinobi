@@ -10,7 +10,7 @@ import {
   visit,
 } from '../../../src';
 import { getRenderMapVisitor } from '../../../src/renderers/js/getRenderMapVisitor';
-import { renderMapContains } from './_setup';
+import { codeDoesNotContain, renderMapContains } from './_setup';
 
 // Token-2022's `associatedToken` program defines a PDA (`associatedToken`)
 // that is not linked to any account of its own — the account living at
@@ -88,4 +88,38 @@ test('it does not treat an account-linked pda as orphaned', (t) => {
     'export async function fetchFoo(',
     'export function deserializeFoo(',
   ]);
+});
+
+test('it does not let an orphan pda clobber a same-named account in another program', (t) => {
+  // Given two programs: one owns an account `foo`, the other declares an
+  // unlinked pda also named `foo`. Both would render to `accounts/foo.ts`.
+  // The orphan-detection in `visitProgram` is scoped to that program's own
+  // accounts, so without a root-wide check the second program's pda stub
+  // would clobber the first program's real account file (RenderMap.add is
+  // last-write-wins).
+  const node = rootNode(
+    programNode({
+      name: 'programA',
+      publicKey: '1111',
+      accounts: [accountNode({ name: 'foo' })],
+    }),
+    [
+      programNode({
+        name: 'programB',
+        publicKey: '2222',
+        pdas: [pdaNode('foo', [])],
+      }),
+    ]
+  );
+
+  // When we render it.
+  const renderMap = visit(node, getRenderMapVisitor());
+
+  // Then the account module wins: `accounts/foo.ts` keeps the account's
+  // fetch/deserialize helpers and is not replaced by a bare pda finder.
+  renderMapContains(t, renderMap, 'accounts/foo.ts', [
+    'export async function fetchFoo(',
+    'export function deserializeFoo(',
+  ]);
+  codeDoesNotContain(t, renderMap.get('accounts/foo.ts'), 'export function findFooPda');
 });
