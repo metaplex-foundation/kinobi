@@ -11,6 +11,7 @@ export type {{ programPascalName }}Account =
   | {{ account.pascalName }}
 {% endfor %};
 
+{% if usesAccountDataMatches %}
 function accountDataMatches(
   data: Uint8Array,
   expected: Uint8Array,
@@ -22,6 +23,7 @@ function accountDataMatches(
   }
   return true;
 }
+{% endif %}
 
 export function deserialize{{ programPascalName }}Account(
   rawAccount: RpcAccount
