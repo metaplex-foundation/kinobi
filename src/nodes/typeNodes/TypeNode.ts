@@ -19,9 +19,11 @@ import {
   FixedSizeOptionTypeNode,
   fixedSizeOptionTypeNodeFromIdl,
 } from './FixedSizeOptionTypeNode';
+import { HiddenPrefixTypeNode } from './HiddenPrefixTypeNode';
 import { MapTypeNode, mapTypeNodeFromIdl } from './MapTypeNode';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 import { OptionTypeNode, optionTypeNodeFromIdl } from './OptionTypeNode';
+import { PreOffsetTypeNode } from './PreOffsetTypeNode';
 import { PublicKeyTypeNode, publicKeyTypeNode } from './PublicKeyTypeNode';
 import { RemainderOptionTypeNode } from './RemainderOptionTypeNode';
 import { SetTypeNode, setTypeNodeFromIdl } from './SetTypeNode';
@@ -43,10 +45,12 @@ export const STANDALONE_TYPE_NODES = {
   dateTimeTypeNode: {} as DateTimeTypeNode,
   enumTypeNode: {} as EnumTypeNode,
   fixedSizeTypeNode: {} as FixedSizeTypeNode,
+  hiddenPrefixTypeNode: {} as HiddenPrefixTypeNode,
   mapTypeNode: {} as MapTypeNode,
   numberTypeNode: {} as NumberTypeNode,
   optionTypeNode: {} as OptionTypeNode,
   fixedSizeOptionTypeNode: {} as FixedSizeOptionTypeNode,
+  preOffsetTypeNode: {} as PreOffsetTypeNode,
   publicKeyTypeNode: {} as PublicKeyTypeNode,
   remainderOptionTypeNode: {} as RemainderOptionTypeNode,
   setTypeNode: {} as SetTypeNode,

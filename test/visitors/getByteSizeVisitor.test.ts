@@ -10,7 +10,11 @@ import {
   fixedSizeNode,
   fixedSizeTypeNode,
   getByteSizeVisitor,
+  hiddenPrefixTypeNode,
+  constantValueNode,
   numberTypeNode,
+  numberValueNode,
+  preOffsetTypeNode,
   publicKeyTypeNode,
   remainderOptionTypeNode,
   sizePrefixTypeNode,
@@ -137,4 +141,18 @@ test(
   macro,
   sizePrefixTypeNode(numberTypeNode('u8'), numberTypeNode('u32')),
   5
+);
+test(
+  'it gets the size of pre-offset types',
+  macro,
+  preOffsetTypeNode(numberTypeNode('u8'), 83, 'padded'),
+  null
+);
+test(
+  'it gets the size of hidden prefix types',
+  macro,
+  hiddenPrefixTypeNode(numberTypeNode('u8'), [
+    constantValueNode(numberTypeNode('u8'), numberValueNode(1)),
+  ]),
+  null
 );

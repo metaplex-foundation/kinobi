@@ -195,6 +195,21 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
     };
   }
 
+  if (castedNodeKeys.includes('preOffsetTypeNode')) {
+    visitor.visitPreOffsetType = function visitPreOffsetType(node) {
+      return merge(node, [...visit(this)(node.type)]);
+    };
+  }
+
+  if (castedNodeKeys.includes('hiddenPrefixTypeNode')) {
+    visitor.visitHiddenPrefixType = function visitHiddenPrefixType(node) {
+      return merge(node, [
+        ...node.prefix.flatMap(visit(this)),
+        ...visit(this)(node.type),
+      ]);
+    };
+  }
+
   if (castedNodeKeys.includes('setTypeNode')) {
     visitor.visitSetType = function visitSetType(node) {
       return merge(node, [

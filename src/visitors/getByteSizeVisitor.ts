@@ -139,6 +139,14 @@ export function getByteSizeVisitor(
       return sumSizes([visit(node.type, this), visit(node.prefix, this)]);
     },
 
+    visitPreOffsetType() {
+      return null;
+    },
+
+    visitHiddenPrefixType() {
+      return null;
+    },
+
     visitBytesType(node) {
       if (!isNode(node.size, 'fixedSizeNode')) return null;
       return node.size.size;
