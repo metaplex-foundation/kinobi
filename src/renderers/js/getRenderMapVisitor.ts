@@ -217,9 +217,7 @@ export function getRenderMapVisitor(
           }
           const programsWithAccountDiscriminators = programsToExport
             .filter((p) =>
-              p.accounts.some(
-                (a) => (a.discriminators ?? []).length > 0
-              )
+              p.accounts.some((a) => (a.discriminators ?? []).length > 0)
             )
             .map((p) => camelCase(p.name));
           if (accountsToExport.length > 0) {
@@ -316,7 +314,7 @@ export function getRenderMapVisitor(
             const resolvedAccounts = accountsWithDisc.map(
               (account: AccountNode) => {
                 const conditions: string[] = [];
-                for (const disc of account.discriminators ?? []) {
+                (account.discriminators ?? []).forEach((disc) => {
                   if (isNode(disc, 'byteDiscriminatorNode')) {
                     conditions.push(
                       `accountDataMatches(data, new Uint8Array([${disc.bytes.join(', ')}]), ${disc.offset})`
@@ -364,7 +362,7 @@ export function getRenderMapVisitor(
                   } else if (isNode(disc, 'sizeDiscriminatorNode')) {
                     conditions.push(`data.length === ${disc.size}`);
                   }
-                }
+                });
                 return {
                   name: account.name,
                   pascalName: pascalCase(account.name),
@@ -490,7 +488,9 @@ export function getRenderMapVisitor(
             return {
               parentFieldName: nested.parentFieldName,
               parentOffset:
-                nested.parentOffset === null ? 'null' : `${nested.parentOffset}`,
+                nested.parentOffset === null
+                  ? 'null'
+                  : `${nested.parentOffset}`,
               structTypeName: pascalCase(nested.structTypeName),
               fieldsArgument: `[${processedFields
                 .map((f) => `['${f.name}', ${f.serializer}]`)

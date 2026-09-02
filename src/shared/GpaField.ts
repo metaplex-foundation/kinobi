@@ -55,28 +55,28 @@ export function getNestedGpaFieldsFromAccount(
 ): NestedGpaField[] {
   const nestedFields: NestedGpaField[] = [];
 
-  for (const gpaField of gpaFields) {
+  gpaFields.forEach((gpaField) => {
     // Check if this field is a defined type link
     if (!isNode(gpaField.type, 'definedTypeLinkNode')) {
-      continue;
+      return;
     }
 
     const linkNode = gpaField.type as DefinedTypeLinkNode;
 
     // Skip if it's an imported type (external)
     if (linkNode.importFrom) {
-      continue;
+      return;
     }
 
     // Look up the defined type
     const definedType = linkables.get(linkNode) as DefinedTypeNode | undefined;
     if (!definedType) {
-      continue;
+      return;
     }
 
     // Check if the defined type is a struct
     if (!isNode(definedType.type, 'structTypeNode')) {
-      continue;
+      return;
     }
 
     const structType = definedType.type as StructTypeNode;
@@ -91,7 +91,7 @@ export function getNestedGpaFieldsFromAccount(
         type: field.type,
       })),
     });
-  }
+  });
 
   return nestedFields;
 }
