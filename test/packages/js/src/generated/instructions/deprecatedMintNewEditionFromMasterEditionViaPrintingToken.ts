@@ -94,6 +94,14 @@ export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInst
   >;
 }
 
+// Args-only serializer (excludes discriminator fields).
+export function getDeprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const deprecatedMintNewEditionFromMasterEditionViaPrintingTokenInstructionDiscriminator = 3;
 

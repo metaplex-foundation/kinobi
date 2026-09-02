@@ -80,6 +80,11 @@ export type DummyInstructionArgs = PickPartial<
   'identityArg' | 'proof'
 >;
 
+// Args-only serializer (excludes discriminator fields).
+export function getDummyInstructionArgsOnlySerializer(): Serializer<any, any> {
+  return struct<any>([]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const dummyInstructionDiscriminator = [
   167, 117, 211, 79, 251, 254, 47, 135,

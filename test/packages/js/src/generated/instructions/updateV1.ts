@@ -185,6 +185,46 @@ export function getUpdateV1InstructionDataSerializer(): Serializer<
 // Args.
 export type UpdateV1InstructionArgs = UpdateV1InstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getUpdateV1InstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return mapSerializer<any, any, any>(
+    struct<any>([
+      ['updateV1Discriminator', u8()],
+      ['authorizationData', option(getAuthorizationDataSerializer())],
+      ['newUpdateAuthority', option(publicKeySerializer())],
+      [
+        'data',
+        option(
+          struct<any>([
+            ['name', string()],
+            ['symbol', string()],
+            ['uri', string()],
+            ['sellerFeeBasisPoints', u16()],
+            ['creators', option(array(getCreatorSerializer()))],
+          ])
+        ),
+      ],
+      ['primarySaleHappened', option(bool())],
+      ['isMutable', option(bool())],
+      ['tokenStandard', option(getTokenStandardSerializer())],
+      ['collection', option(getCollectionSerializer())],
+      ['uses', option(getUsesSerializer())],
+      ['collectionDetails', option(getCollectionDetailsSerializer())],
+      ['programmableConfig', option(getProgrammableConfigSerializer())],
+      ['delegateState', option(getDelegateStateSerializer())],
+      ['authorityType', getAuthorityTypeSerializer()],
+    ]),
+    (value) => ({
+      ...value,
+      updateV1Discriminator: 0,
+      tokenStandard: value.tokenStandard ?? some(TokenStandard.NonFungible),
+    })
+  ) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const updateV1InstructionDiscriminator = 43;
 

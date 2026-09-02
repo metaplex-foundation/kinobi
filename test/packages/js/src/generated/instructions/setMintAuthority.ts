@@ -62,6 +62,14 @@ export function getSetMintAuthorityInstructionDataSerializer(): Serializer<
   >;
 }
 
+// Args-only serializer (excludes discriminator fields).
+export function getSetMintAuthorityInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const setMintAuthorityInstructionDiscriminator = [
   67, 127, 155, 187, 100, 174, 103, 121,

@@ -13,11 +13,12 @@ import {
   PublicKey,
 } from '@metaplex-foundation/umi';
 import { getSplMemoErrorFromCode, getSplMemoErrorFromName } from '../errors';
+import { getAddMemoInstructionArgsOnlySerializer } from '../instructions';
 
 export const SPL_MEMO_PROGRAM_ID =
   'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr' as PublicKey<'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'>;
 
-export function createSplMemoProgram(): Program {
+export function createSplMemoProgram() {
   return {
     name: 'splMemo',
     publicKey: SPL_MEMO_PROGRAM_ID,
@@ -30,6 +31,14 @@ export function createSplMemoProgram(): Program {
     isOnCluster() {
       return true;
     },
+    instructions: [
+      {
+        name: 'addMemo',
+        discriminator: { bytes: new Uint8Array([]), size: 0 },
+        dataSerializer: getAddMemoInstructionArgsOnlySerializer(),
+        accountNames: [],
+      },
+    ],
   };
 }
 

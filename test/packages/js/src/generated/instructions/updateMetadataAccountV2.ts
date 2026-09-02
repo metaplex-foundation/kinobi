@@ -86,6 +86,19 @@ export function getUpdateMetadataAccountV2InstructionDataSerializer(): Serialize
 export type UpdateMetadataAccountV2InstructionArgs =
   UpdateMetadataAccountV2InstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getUpdateMetadataAccountV2InstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    ['data', option(getDataV2Serializer())],
+    ['updateAuthority', option(publicKeySerializer())],
+    ['primarySaleHappened', option(bool())],
+    ['isMutable', option(bool())],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const updateMetadataAccountV2InstructionDiscriminator = 15;
 
