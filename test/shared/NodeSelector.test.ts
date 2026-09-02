@@ -7,6 +7,7 @@ import {
   NodeSelector,
   NodeStack,
   OptionTypeNode,
+  StructTypeNode,
   accountNode,
   booleanTypeNode,
   definedTypeLinkNode,
@@ -256,6 +257,10 @@ const wrappingPaper = christmasProgram.definedTypes[0];
 const wrappingPaperEnum = wrappingPaper.type as EnumTypeNode;
 const wrappingPaperEnumGold = wrappingPaperEnum
   .variants[2] as EnumStructVariantTypeNode;
+// `.struct` is `StructTypeNode | SizePrefixTypeNode | FixedSizeTypeNode` on
+// the node type (it may be Codama-standard TLV-wrapped); this fixture always
+// builds a bare struct, so narrow it once here for the field accesses below.
+const wrappingPaperEnumGoldStruct = wrappingPaperEnumGold.struct as StructTypeNode;
 
 // Select programs.
 test(macro, '[programNode]', [splTokenProgram, christmasProgram]);
@@ -267,12 +272,12 @@ test(macro, 'owner', [
   tokenAccount.data.fields[0],
   giftAccount.data.fields[0],
   openGiftInstruction.accounts[1],
-  wrappingPaperEnumGold.struct.fields[0],
+  wrappingPaperEnumGoldStruct.fields[0],
 ]);
 test(macro, '[structFieldTypeNode]owner', [
   tokenAccount.data.fields[0],
   giftAccount.data.fields[0],
-  wrappingPaperEnumGold.struct.fields[0],
+  wrappingPaperEnumGoldStruct.fields[0],
 ]);
 test(macro, 'splToken.owner', [tokenAccount.data.fields[0]]);
 test(macro, '[instructionNode].owner', [openGiftInstruction.accounts[1]]);
@@ -287,10 +292,10 @@ test(macro, 'christmasProgram.[accountNode].owner', [
 test(
   macro,
   '[programNode]christmasProgram.[definedTypeNode]wrappingPaper.[enumStructVariantTypeNode]gold.owner',
-  [wrappingPaperEnumGold.struct.fields[0]]
+  [wrappingPaperEnumGoldStruct.fields[0]]
 );
 test(macro, 'christmasProgram.wrappingPaper.gold.owner', [
-  wrappingPaperEnumGold.struct.fields[0],
+  wrappingPaperEnumGoldStruct.fields[0],
 ]);
 
 // Select all descendants of a node.
@@ -301,11 +306,11 @@ test(macro, 'wrappingPaper.*', [
   wrappingPaperEnum.variants[1],
   wrappingPaperEnum.variants[2],
   wrappingPaperEnumGold.struct,
-  wrappingPaperEnumGold.struct.fields[0],
-  wrappingPaperEnumGold.struct.fields[0].type,
+  wrappingPaperEnumGoldStruct.fields[0],
+  wrappingPaperEnumGoldStruct.fields[0].type,
 ]);
 test(macro, 'wrappingPaper.[structFieldTypeNode]', [
-  wrappingPaperEnumGold.struct.fields[0],
+  wrappingPaperEnumGoldStruct.fields[0],
 ]);
 test(macro, 'wrappingPaper.blue', [wrappingPaperEnum.variants[0]]);
 test(macro, 'amount.*', [
@@ -328,7 +333,7 @@ test(macro, '[structFieldTypeNode].*', [
   (giftAccount.data.fields[1].type as BooleanTypeNode).size,
   giftAccount.data.fields[2].type,
   giftAccount.data.fields[3].type,
-  wrappingPaperEnumGold.struct.fields[0].type,
+  wrappingPaperEnumGoldStruct.fields[0].type,
 ]);
 test(macro, '[structFieldTypeNode].*.*', [
   tokenDelegatedAmountOption.prefix,

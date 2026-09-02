@@ -14,20 +14,26 @@ import { EnumEmptyVariantTypeNode } from './EnumEmptyVariantTypeNode';
 import { EnumStructVariantTypeNode } from './EnumStructVariantTypeNode';
 import { EnumTupleVariantTypeNode } from './EnumTupleVariantTypeNode';
 import { EnumTypeNode, enumTypeNodeFromIdl } from './EnumTypeNode';
+import { FixedSizeTypeNode } from './FixedSizeTypeNode';
 import {
   FixedSizeOptionTypeNode,
   fixedSizeOptionTypeNodeFromIdl,
 } from './FixedSizeOptionTypeNode';
+import { HiddenPrefixTypeNode } from './HiddenPrefixTypeNode';
 import { MapTypeNode, mapTypeNodeFromIdl } from './MapTypeNode';
 import { NumberTypeNode, numberTypeNode } from './NumberTypeNode';
 import { OptionTypeNode, optionTypeNodeFromIdl } from './OptionTypeNode';
+import { PreOffsetTypeNode } from './PreOffsetTypeNode';
 import { PublicKeyTypeNode, publicKeyTypeNode } from './PublicKeyTypeNode';
+import { RemainderOptionTypeNode } from './RemainderOptionTypeNode';
 import { SetTypeNode, setTypeNodeFromIdl } from './SetTypeNode';
+import { SizePrefixTypeNode } from './SizePrefixTypeNode';
 import { SolAmountTypeNode } from './SolAmountTypeNode';
 import { StringTypeNode, stringTypeNode } from './StringTypeNode';
 import { StructFieldTypeNode } from './StructFieldTypeNode';
 import { StructTypeNode, structTypeNodeFromIdl } from './StructTypeNode';
 import { TupleTypeNode, tupleTypeNodeFromIdl } from './TupleTypeNode';
+import { ZeroableOptionTypeNode } from './ZeroableOptionTypeNode';
 
 // Standalone Type Node Registration.
 
@@ -38,16 +44,22 @@ export const STANDALONE_TYPE_NODES = {
   bytesTypeNode: {} as BytesTypeNode,
   dateTimeTypeNode: {} as DateTimeTypeNode,
   enumTypeNode: {} as EnumTypeNode,
+  fixedSizeTypeNode: {} as FixedSizeTypeNode,
+  hiddenPrefixTypeNode: {} as HiddenPrefixTypeNode,
   mapTypeNode: {} as MapTypeNode,
   numberTypeNode: {} as NumberTypeNode,
   optionTypeNode: {} as OptionTypeNode,
   fixedSizeOptionTypeNode: {} as FixedSizeOptionTypeNode,
+  preOffsetTypeNode: {} as PreOffsetTypeNode,
   publicKeyTypeNode: {} as PublicKeyTypeNode,
+  remainderOptionTypeNode: {} as RemainderOptionTypeNode,
   setTypeNode: {} as SetTypeNode,
+  sizePrefixTypeNode: {} as SizePrefixTypeNode,
   solAmountTypeNode: {} as SolAmountTypeNode,
   stringTypeNode: {} as StringTypeNode,
   structTypeNode: {} as StructTypeNode,
   tupleTypeNode: {} as TupleTypeNode,
+  zeroableOptionTypeNode: {} as ZeroableOptionTypeNode,
 };
 
 export const STANDALONE_TYPE_NODE_KINDS = getNodeKinds(STANDALONE_TYPE_NODES);

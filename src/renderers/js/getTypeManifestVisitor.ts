@@ -10,7 +10,13 @@ import {
   structTypeNodeFromInstructionArgumentNodes,
 } from '../../nodes';
 import { camelCase, jsDocblock, pascalCase, pipe } from '../../shared';
-import { Visitor, extendVisitor, staticVisitor, visit } from '../../visitors';
+import {
+  Visitor,
+  extendVisitor,
+  getByteSizeVisitor,
+  staticVisitor,
+  visit,
+} from '../../visitors';
 import { JavaScriptImportMap } from './JavaScriptImportMap';
 import { ParsedCustomDataOptions } from './customDataHelpers';
 import { renderValueNodeVisitor } from './renderValueNodeVisitor';
@@ -30,6 +36,8 @@ export function getTypeManifestVisitor(input: {
   customAccountData: ParsedCustomDataOptions;
   customInstructionData: ParsedCustomDataOptions;
   parentName?: { strict: string; loose: string };
+  sharedSerializers?: Set<string>;
+  byteSizeVisitor: ReturnType<typeof getByteSizeVisitor>;
 }) {
   const { valueNodeVisitor, customAccountData, customInstructionData } = input;
   let parentName = input.parentName ?? null;
@@ -93,6 +101,29 @@ export function getTypeManifestVisitor(input: {
 
         visitArrayType(arrayType, { self }) {
           const childManifest = visit(arrayType.item, self);
+          // `array(item, { size: 'remainder' })` only decodes correctly when
+          // `item` is FIXED-size: umi's implementation repeatedly calls the
+          // item deserializer until the buffer is exhausted, which relies on
+          // slicing by a known item width. A variable-size item (e.g. an
+          // enum with differently-sized variants, as in Token-2022's
+          // extension TLV list) needs the dedicated remainderArray helper
+          // instead, which decodes items one after another using each
+          // item's own reported new offset. A remainder array of a
+          // FIXED-size item keeps the existing array(...) path unchanged
+          // (byte-identical to before this branch was added).
+          if (
+            isNode(arrayType.size, 'remainderSizeNode') &&
+            visit(arrayType.item, input.byteSizeVisitor) === null
+          ) {
+            childManifest.serializerImports.add('shared', 'remainderArray');
+            input.sharedSerializers?.add('remainderArray');
+            return {
+              ...childManifest,
+              strictType: `Array<${childManifest.strictType}>`,
+              looseType: `Array<${childManifest.looseType}>`,
+              serializer: `remainderArray(${childManifest.serializer})`,
+            };
+          }
           childManifest.serializerImports.add('umiSerializers', 'array');
           const sizeOption = getArrayLikeSizeOption(
             arrayType.size,
@@ -392,6 +423,141 @@ export function getTypeManifestVisitor(input: {
             strictType: `Option<${baseStrictType}>`,
             looseType: `OptionOrNullable<${baseLooseType}>`,
             serializer: customSerializer,
+          };
+        },
+
+        visitZeroableOptionType(zeroableOptionType, { self }) {
+          const childManifest = visit(zeroableOptionType.item, self);
+          childManifest.strictImports.add('umi', 'Option');
+          childManifest.looseImports.add('umi', 'OptionOrNullable');
+          childManifest.serializerImports.add('shared', 'zeroableOption');
+          input.sharedSerializers?.add('zeroableOption');
+          let options = '';
+          if (zeroableOptionType.zeroValue) {
+            const zeroValueManifest = visit(
+              zeroableOptionType.zeroValue,
+              input.valueNodeVisitor
+            );
+            childManifest.serializerImports.mergeWith(
+              zeroValueManifest.imports
+            );
+            options = `, { zeroValue: ${zeroValueManifest.render} }`;
+          }
+          return {
+            ...childManifest,
+            strictType: `Option<${childManifest.strictType}>`,
+            looseType: `OptionOrNullable<${childManifest.looseType}>`,
+            serializer: `zeroableOption(${childManifest.serializer}${options})`,
+          };
+        },
+
+        visitRemainderOptionType(remainderOptionType, { self }) {
+          const childManifest = visit(remainderOptionType.item, self);
+          childManifest.strictImports.add('umi', 'Option');
+          childManifest.looseImports.add('umi', 'OptionOrNullable');
+          childManifest.serializerImports.add('shared', 'remainderOption');
+          input.sharedSerializers?.add('remainderOption');
+          return {
+            ...childManifest,
+            strictType: `Option<${childManifest.strictType}>`,
+            looseType: `OptionOrNullable<${childManifest.looseType}>`,
+            serializer: `remainderOption(${childManifest.serializer})`,
+          };
+        },
+
+        visitSizePrefixType(sizePrefixType, { self }) {
+          // On v1.0, Phase 2's loader collapses sizePrefixTypeNode wrappers
+          // around string/bytes leaves into the leaf's native `size`
+          // property, so this handler should only ever see a non-leaf body
+          // (e.g. a struct, as in Token-2022's TLV extensions). If a
+          // string/bytes leaf shows up here regardless, fail loud rather
+          // than silently double-encoding the size.
+          if (
+            isNode(sizePrefixType.type, ['stringTypeNode', 'bytesTypeNode'])
+          ) {
+            throw new Error(
+              'Unexpected sizePrefixTypeNode wrapping a ' +
+                `[${sizePrefixType.type.kind}]. This should have been ` +
+                "collapsed into the leaf type's native size property by " +
+                'the loader.'
+            );
+          }
+          const childManifest = visit(sizePrefixType.type, self);
+          const prefixManifest = visit(sizePrefixType.prefix, self);
+          childManifest.serializerImports
+            .mergeWith(prefixManifest.serializerImports)
+            .add('shared', 'sizePrefix');
+          input.sharedSerializers?.add('sizePrefix');
+          return {
+            ...childManifest,
+            serializer: `sizePrefix(${childManifest.serializer}, ${prefixManifest.serializer})`,
+          };
+        },
+
+        visitFixedSizeType(fixedSizeType, { self }) {
+          // Same defensive rationale as visitSizePrefixType above: after
+          // loading, a fixedSizeTypeNode should only ever wrap a non-leaf
+          // (struct) body.
+          if (isNode(fixedSizeType.type, ['stringTypeNode', 'bytesTypeNode'])) {
+            throw new Error(
+              'Unexpected fixedSizeTypeNode wrapping a ' +
+                `[${fixedSizeType.type.kind}]. This should have been ` +
+                "collapsed into the leaf type's native size property by " +
+                'the loader.'
+            );
+          }
+          const childManifest = visit(fixedSizeType.type, self);
+          childManifest.serializerImports.add(
+            'umiSerializers',
+            'fixSerializer'
+          );
+          return {
+            ...childManifest,
+            serializer: `fixSerializer(${childManifest.serializer}, ${fixedSizeType.size})`,
+          };
+        },
+
+        visitHiddenPrefixType(hiddenPrefixType, { self }) {
+          const childManifest = visit(hiddenPrefixType.type, self);
+          childManifest.serializerImports.add('shared', 'hiddenPrefix');
+          input.sharedSerializers?.add('hiddenPrefix');
+
+          // Each prefix constant is rendered inline, in this type-manifest
+          // context, as `<type serializer>.serialize(<value>)` — a
+          // Uint8Array. We deliberately do NOT dispatch the constantValueNode
+          // itself to the value-node visitor: `renderValueNodeVisitor` has no
+          // access to the type-manifest visitor (`self`), so it cannot render
+          // the constant's own type serializer. Its `visitConstantValue` stub
+          // throws for that reason and is expected to stay unused here.
+          const prefixes = hiddenPrefixType.prefix.map((constant) => {
+            const constantType = visit(constant.type, self);
+            const constantValue = visit(constant.value, input.valueNodeVisitor);
+            childManifest.serializerImports.mergeWith(
+              constantType.serializerImports
+            );
+            childManifest.serializerImports.mergeWith(constantValue.imports);
+            return `${constantType.serializer}.serialize(${constantValue.render})`;
+          });
+
+          return {
+            ...childManifest,
+            serializer: `hiddenPrefix(${childManifest.serializer}, [${prefixes.join(', ')}])`,
+          };
+        },
+
+        visitPreOffsetType(preOffsetType, { self }) {
+          if (preOffsetType.strategy !== 'padded') {
+            throw new Error(
+              "The JavaScript renderer only supports the 'padded' " +
+                `strategy of preOffsetTypeNode. Got [${preOffsetType.strategy}].`
+            );
+          }
+          const childManifest = visit(preOffsetType.type, self);
+          childManifest.serializerImports.add('shared', 'padLeftSerializer');
+          input.sharedSerializers?.add('padLeftSerializer');
+          return {
+            ...childManifest,
+            serializer: `padLeftSerializer(${childManifest.serializer}, ${preOffsetType.offset})`,
           };
         },
 

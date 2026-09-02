@@ -1,0 +1,31 @@
+{% extends "layout.njk" %}
+
+{% block main %}
+{{ imports }}
+
+export function find{{ pda.name | pascalCase }}Pda(
+  context: Pick<Context, 'eddsa' | 'programs'>,
+  {% if hasVariableSeeds %}
+    seeds: {
+      {% for seed in seeds %}
+        {% if seed.kind === 'variablePdaSeedNode' %}
+          {{ seed.name | camelCase }}: {{ seed.typeManifest.looseType }};
+        {% endif %}
+      {% endfor %}
+    }
+  {% endif %}
+): Pda {
+  const programId = context.programs.getPublicKey('{{ program.name | camelCase }}', '{{ program.publicKey }}');
+  return context.eddsa.findPda(programId, [
+    {% for seed in seeds %}
+      {% if seed.kind === 'programIdPdaSeedNode' %}
+        publicKeySerializer().serialize(programId),
+      {% elif seed.kind === 'constantPdaSeedNode' %}
+        {{ seed.typeManifest.serializer }}.serialize({{ seed.value.render }}),
+      {% else %}
+        {{ seed.typeManifest.serializer }}.serialize(seeds.{{ seed.name | camelCase }}),
+      {% endif %}
+    {% endfor %}
+  ]);
+}
+{% endblock %}

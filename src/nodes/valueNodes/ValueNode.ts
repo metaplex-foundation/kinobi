@@ -2,6 +2,8 @@ import { getNodeKinds } from '../../shared/utils';
 import type { ArrayValueNode } from './ArrayValueNode';
 import type { BigIntValueNode } from './BigIntValueNode';
 import type { BooleanValueNode } from './BooleanValueNode';
+import type { BytesValueNode } from './BytesValueNode';
+import type { ConstantValueNode } from './ConstantValueNode';
 import type { EnumValueNode } from './EnumValueNode';
 import type { MapEntryValueNode } from './MapEntryValueNode';
 import type { MapValueNode } from './MapValueNode';
@@ -21,6 +23,8 @@ export const STANDALONE_VALUE_NODES = {
   arrayValueNode: {} as ArrayValueNode,
   bigIntValueNode: {} as BigIntValueNode,
   booleanValueNode: {} as BooleanValueNode,
+  bytesValueNode: {} as BytesValueNode,
+  constantValueNode: {} as ConstantValueNode,
   enumValueNode: {} as EnumValueNode,
   mapValueNode: {} as MapValueNode,
   noneValueNode: {} as NoneValueNode,

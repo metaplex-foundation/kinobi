@@ -13,8 +13,9 @@
     "build": "rimraf dist && tsc && tsc -p test/tsconfig.json && pnpm build:njk",
     "build:njk": "copyfiles -u 1 src/**/*.njk dist/cjs/ && copyfiles -u 1 src/**/*.njk dist/test/src/",
     "build:docs": "typedoc",
-    "test": "ava && node ./test/testFile.cjs && pnpm test:js && pnpm test:js-experimental && pnpm test:rust",
+    "test": "ava && node ./test/testFile.cjs && pnpm test:js && pnpm test:js-token2022 && pnpm test:js-experimental && pnpm test:rust",
     "test:js": "(cd ./test/packages/js && pnpm install && pnpm build)",
+    "test:js-token2022": "(cd ./test/packages/js-token2022 && pnpm install && node generate.cjs && pnpm build && pnpm test)",
     "test:js-experimental": "(cd ./test/packages/js-experimental && pnpm install && pnpm build && pnpm lint)",
     "test:rust": "(cd ./test/packages/rust && pnpm install && pnpm build && pnpm lint)",
     "lint": "prettier -c ./src/ && eslint . --ext .js,.jsx,.ts,.tsx",
@@ -73,8 +74,8 @@
   },
   "ava": {
     "files": [
-      "!test/packages/**",
-      "test/**/*.test.ts"
+      "test/**/*.test.ts",
+      "!test/packages/**"
     ],
     "typescript": {
       "compile": false,

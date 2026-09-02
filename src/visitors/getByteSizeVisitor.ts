@@ -123,6 +123,30 @@ export function getByteSizeVisitor(
       return visit(node.item, this);
     },
 
+    visitZeroableOptionType(node) {
+      return visit(node.item, this);
+    },
+
+    visitRemainderOptionType() {
+      return null;
+    },
+
+    visitFixedSizeType(node) {
+      return node.size;
+    },
+
+    visitSizePrefixType(node) {
+      return sumSizes([visit(node.type, this), visit(node.prefix, this)]);
+    },
+
+    visitPreOffsetType() {
+      return null;
+    },
+
+    visitHiddenPrefixType() {
+      return null;
+    },
+
     visitBytesType(node) {
       if (!isNode(node.size, 'fixedSizeNode')) return null;
       return node.size.size;

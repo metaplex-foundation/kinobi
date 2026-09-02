@@ -165,6 +165,51 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
     };
   }
 
+  if (castedNodeKeys.includes('zeroableOptionTypeNode')) {
+    visitor.visitZeroableOptionType = function visitZeroableOptionType(node) {
+      return merge(node, [
+        ...visit(this)(node.item),
+        ...(node.zeroValue ? visit(this)(node.zeroValue) : []),
+      ]);
+    };
+  }
+
+  if (castedNodeKeys.includes('remainderOptionTypeNode')) {
+    visitor.visitRemainderOptionType = function visitRemainderOptionType(node) {
+      return merge(node, [...visit(this)(node.item)]);
+    };
+  }
+
+  if (castedNodeKeys.includes('sizePrefixTypeNode')) {
+    visitor.visitSizePrefixType = function visitSizePrefixType(node) {
+      return merge(node, [
+        ...visit(this)(node.type),
+        ...visit(this)(node.prefix),
+      ]);
+    };
+  }
+
+  if (castedNodeKeys.includes('fixedSizeTypeNode')) {
+    visitor.visitFixedSizeType = function visitFixedSizeType(node) {
+      return merge(node, [...visit(this)(node.type)]);
+    };
+  }
+
+  if (castedNodeKeys.includes('preOffsetTypeNode')) {
+    visitor.visitPreOffsetType = function visitPreOffsetType(node) {
+      return merge(node, [...visit(this)(node.type)]);
+    };
+  }
+
+  if (castedNodeKeys.includes('hiddenPrefixTypeNode')) {
+    visitor.visitHiddenPrefixType = function visitHiddenPrefixType(node) {
+      return merge(node, [
+        ...node.prefix.flatMap(visit(this)),
+        ...visit(this)(node.type),
+      ]);
+    };
+  }
+
   if (castedNodeKeys.includes('setTypeNode')) {
     visitor.visitSetType = function visitSetType(node) {
       return merge(node, [
@@ -288,6 +333,15 @@ export function mergeVisitor<TReturn, TNodeKind extends NodeKind = NodeKind>(
   if (castedNodeKeys.includes('tupleValueNode')) {
     visitor.visitTupleValue = function visitTupleValue(node) {
       return merge(node, node.items.flatMap(visit(this)));
+    };
+  }
+
+  if (castedNodeKeys.includes('constantValueNode')) {
+    visitor.visitConstantValue = function visitConstantValue(node) {
+      return merge(node, [
+        ...visit(this)(node.type),
+        ...visit(this)(node.value),
+      ]);
     };
   }
 

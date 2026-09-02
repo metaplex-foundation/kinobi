@@ -34,6 +34,14 @@ export function renderValueNodeVisitor(useStr: boolean = false): Visitor<
         render: JSON.stringify(node.boolean),
       };
     },
+    visitBytesValue() {
+      throw new Error('bytesValueNode is not supported by this renderer yet.');
+    },
+    visitConstantValue() {
+      throw new Error(
+        'constantValueNode is not supported by this renderer yet.'
+      );
+    },
     visitEnumValue(node) {
       const imports = new RustImportMap();
       const enumName = pascalCase(node.enum.name);

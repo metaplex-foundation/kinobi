@@ -1,4 +1,9 @@
-import { RegisteredValueNodeKind, isNode, isScalarEnum } from '../../nodes';
+import {
+  RegisteredValueNodeKind,
+  getBytesFromBytesValueNode,
+  isNode,
+  isScalarEnum,
+} from '../../nodes';
 import {
   LinkableDictionary,
   MainCaseString,
@@ -34,6 +39,18 @@ export function renderValueNodeVisitor(input: {
         imports: new JavaScriptImportMap(),
         render: JSON.stringify(node.boolean),
       };
+    },
+    visitBytesValue(node) {
+      const bytes = getBytesFromBytesValueNode(node);
+      return {
+        imports: new JavaScriptImportMap(),
+        render: `new Uint8Array([${Array.from(bytes).join(', ')}])`,
+      };
+    },
+    visitConstantValue() {
+      throw new Error(
+        'constantValueNode is not supported by this renderer yet.'
+      );
     },
     visitEnumValue(node) {
       const imports = new JavaScriptImportMap();

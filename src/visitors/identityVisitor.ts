@@ -19,6 +19,7 @@ import {
   bytesTypeNode,
   conditionalValueNode,
   constantPdaSeedNode,
+  constantValueNode,
   dateTimeTypeNode,
   definedTypeNode,
   enumEmptyVariantTypeNode,
@@ -26,11 +27,14 @@ import {
   enumTupleVariantTypeNode,
   enumTypeNode,
   enumValueNode,
+  fixedSizeTypeNode,
+  hiddenPrefixTypeNode,
   instructionAccountNode,
   instructionArgumentNode,
   instructionByteDeltaNode,
   instructionNode,
   instructionRemainingAccountsNode,
+  isNode,
   mapEntryValueNode,
   mapTypeNode,
   mapValueNode,
@@ -40,12 +44,15 @@ import {
   pdaSeedValueNode,
   pdaValueNode,
   prefixedSizeNode,
+  preOffsetTypeNode,
   programNode,
+  remainderOptionTypeNode,
   removeNullAndAssertIsNodeFilter,
   resolverValueNode,
   rootNode,
   setTypeNode,
   setValueNode,
+  sizePrefixTypeNode,
   solAmountTypeNode,
   someValueNode,
   stringTypeNode,
@@ -56,6 +63,7 @@ import {
   tupleTypeNode,
   tupleValueNode,
   variablePdaSeedNode,
+  zeroableOptionTypeNode,
 } from '../nodes';
 import { staticVisitor } from './staticVisitor';
 import { Visitor, visit as baseVisit } from './visitor';
@@ -267,8 +275,19 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       if (!newStruct) {
         return enumEmptyVariantTypeNode(node.name);
       }
-      assertIsNode(newStruct, 'structTypeNode');
-      if (newStruct.fields.length === 0) {
+      // The struct body is usually bare, but a Codama-standard IDL may wrap
+      // it in a `sizePrefixTypeNode`/`fixedSizeTypeNode` (e.g. a TLV-framed
+      // extension body) — that wrapper carries real byte-layout information
+      // and must be kept, not stripped.
+      assertIsNode(newStruct, [
+        'structTypeNode',
+        'sizePrefixTypeNode',
+        'fixedSizeTypeNode',
+      ]);
+      if (
+        isNode(newStruct, 'structTypeNode') &&
+        newStruct.fields.length === 0
+      ) {
         return enumEmptyVariantTypeNode(node.name);
       }
       return enumStructVariantTypeNode(node.name, newStruct);
@@ -283,8 +302,14 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       if (!newTuple) {
         return enumEmptyVariantTypeNode(node.name);
       }
-      assertIsNode(newTuple, 'tupleTypeNode');
-      if (newTuple.items.length === 0) {
+      // Symmetric with `visitEnumStructVariantType`: a wrapped tuple body
+      // (e.g. `sizePrefixTypeNode`/`fixedSizeTypeNode`) is kept as-is.
+      assertIsNode(newTuple, [
+        'tupleTypeNode',
+        'sizePrefixTypeNode',
+        'fixedSizeTypeNode',
+      ]);
+      if (isNode(newTuple, 'tupleTypeNode') && newTuple.items.length === 0) {
         return enumEmptyVariantTypeNode(node.name);
       }
       return enumTupleVariantTypeNode(node.name, newTuple);
@@ -324,6 +349,71 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
       if (item === null) return null;
       assertIsNode(item, TYPE_NODES);
       return fixedSizeOptionTypeNode(item, node.sentinel);
+    };
+  }
+
+  if (castedNodeKeys.includes('zeroableOptionTypeNode')) {
+    visitor.visitZeroableOptionType = function visitZeroableOptionType(node) {
+      const item = visit(this)(node.item);
+      if (item === null) return null;
+      assertIsNode(item, TYPE_NODES);
+      const zeroValue = node.zeroValue
+        ? visit(this)(node.zeroValue) ?? undefined
+        : undefined;
+      if (zeroValue) assertIsNode(zeroValue, 'constantValueNode');
+      return zeroableOptionTypeNode(item, zeroValue);
+    };
+  }
+
+  if (castedNodeKeys.includes('remainderOptionTypeNode')) {
+    visitor.visitRemainderOptionType = function visitRemainderOptionType(node) {
+      const item = visit(this)(node.item);
+      if (item === null) return null;
+      assertIsNode(item, TYPE_NODES);
+      return remainderOptionTypeNode(item);
+    };
+  }
+
+  if (castedNodeKeys.includes('sizePrefixTypeNode')) {
+    visitor.visitSizePrefixType = function visitSizePrefixType(node) {
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertIsNode(type, TYPE_NODES);
+      const prefix = visit(this)(node.prefix);
+      if (prefix === null) return null;
+      assertIsNode(prefix, 'numberTypeNode');
+      return sizePrefixTypeNode(type, prefix);
+    };
+  }
+
+  if (castedNodeKeys.includes('fixedSizeTypeNode')) {
+    visitor.visitFixedSizeType = function visitFixedSizeType(node) {
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertIsNode(type, TYPE_NODES);
+      return fixedSizeTypeNode(type, node.size);
+    };
+  }
+
+  if (castedNodeKeys.includes('preOffsetTypeNode')) {
+    visitor.visitPreOffsetType = function visitPreOffsetType(node) {
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertIsNode(type, TYPE_NODES);
+      return preOffsetTypeNode(type, node.offset, node.strategy);
+    };
+  }
+
+  if (castedNodeKeys.includes('hiddenPrefixTypeNode')) {
+    visitor.visitHiddenPrefixType = function visitHiddenPrefixType(node) {
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertIsNode(type, TYPE_NODES);
+      const prefix = node.prefix
+        .map(visit(this))
+        .filter(removeNullAndAssertIsNodeFilter('constantValueNode'));
+      if (prefix.length === 0) return type;
+      return hiddenPrefixTypeNode(type, prefix);
     };
   }
 
@@ -524,6 +614,18 @@ export function identityVisitor<TNodeKind extends NodeKind = NodeKind>(
           .map(visit(this))
           .filter(removeNullAndAssertIsNodeFilter(VALUE_NODES))
       );
+    };
+  }
+
+  if (castedNodeKeys.includes('constantValueNode')) {
+    visitor.visitConstantValue = function visitConstantValue(node) {
+      const type = visit(this)(node.type);
+      if (type === null) return null;
+      assertIsNode(type, TYPE_NODES);
+      const value = visit(this)(node.value);
+      if (value === null) return null;
+      assertIsNode(value, VALUE_NODES);
+      return constantValueNode(type, value);
     };
   }
 

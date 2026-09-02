@@ -50,6 +50,11 @@ export function unwrapTupleEnumWithSingleStructVisitor(
           transform: (node, stack) => {
             assertIsNode(node, 'enumTupleVariantTypeNode');
             if (!shouldUnwrap(node, stack)) return node;
+            // A Codama-standard tuple body may be wrapped in a
+            // `sizePrefixTypeNode`/`fixedSizeTypeNode` (byte-layout framing
+            // information). This optimization only applies to a bare tuple —
+            // unwrapping a wrapped body would silently discard that framing.
+            if (!isNode(node.tuple, 'tupleTypeNode')) return node;
             if (node.tuple.items.length !== 1) return node;
             let item = node.tuple.items[0];
             if (isNode(item, 'definedTypeLinkNode')) {
