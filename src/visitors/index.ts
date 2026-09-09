@@ -18,6 +18,7 @@ export * from './getUniqueHashStringVisitor';
 export * from './identityVisitor';
 export * from './interceptVisitor';
 export * from './mapVisitor';
+export * from './mergeRenderMapVisitors';
 export * from './mergeVisitor';
 export * from './nonNullableIdentityVisitor';
 export * from './recordLinkablesVisitor';

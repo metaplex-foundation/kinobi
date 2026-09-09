@@ -1,5 +1,8 @@
 import {
+  AccountLinkNode,
+  AccountNode,
   AccountNodeInput,
+  PdaLinkNode,
   PdaNode,
   PdaSeedNode,
   accountLinkNode,
@@ -10,7 +13,12 @@ import {
   programNode,
   transformNestedTypeNode,
 } from '../nodes';
-import { MainCaseString, mainCase, renameStructNode } from '../shared';
+import {
+  MainCaseString,
+  NodeSelector,
+  mainCase,
+  renameStructNode,
+} from '../shared';
 import {
   BottomUpNodeTransformerWithSelector,
   bottomUpTransformerVisitor,
@@ -23,21 +31,52 @@ export type AccountUpdates =
       seeds?: PdaSeedNode[];
     });
 
-export function updateAccountsVisitor(map: Record<string, AccountUpdates>) {
+type AccountRelatedNode = AccountNode | AccountLinkNode | PdaNode | PdaLinkNode;
+
+/**
+ * Either a static set of updates, or a function computing them per node.
+ * The function receives the matched `accountNode`, and — when the updates
+ * rename the account — every matched `accountLinkNode`, `pdaNode` and
+ * `pdaLinkNode` so they can follow the rename. Only `name` is honoured
+ * for those related nodes.
+ */
+export type AccountUpdater =
+  | AccountUpdates
+  | ((node: AccountRelatedNode) => AccountUpdates);
+
+export type AccountUpdateWithSelector = {
+  select: NodeSelector | NodeSelector[];
+  update: AccountUpdater;
+};
+
+export function updateAccountsVisitor(
+  map: Record<string, AccountUpdates> | AccountUpdateWithSelector[]
+) {
+  const entries: AccountUpdateWithSelector[] = Array.isArray(map)
+    ? map
+    : Object.entries(map).map(([select, update]) => ({ select, update }));
+
   return bottomUpTransformerVisitor(
-    Object.entries(map).flatMap(([selector, updates]) => {
-      const newName =
-        typeof updates === 'object' && 'name' in updates && updates.name
+    entries.flatMap(({ select, update }) => {
+      const selectors = Array.isArray(select) ? select : [select];
+      const resolve = (node: AccountRelatedNode) =>
+        typeof update === 'function' ? update(node) : update;
+      const newNameFor = (node: AccountRelatedNode) => {
+        const updates = resolve(node);
+        return 'name' in updates && updates.name
           ? mainCase(updates.name)
           : undefined;
+      };
       const pdasToUpsert = [] as { program: MainCaseString; pda: PdaNode }[];
 
       const transformers: BottomUpNodeTransformerWithSelector[] = [
         {
-          select: ['[accountNode]', selector],
+          select: ['[accountNode]', ...selectors],
           transform: (node, stack) => {
             assertIsNode(node, 'accountNode');
+            const updates = resolve(node);
             if ('delete' in updates) return null;
+            const newName = newNameFor(node);
 
             const { seeds, pda, ...assignableUpdates } = updates;
             let newPda = node.pda;
@@ -96,35 +135,33 @@ export function updateAccountsVisitor(map: Record<string, AccountUpdates>) {
             return programNode({ ...node, pdas: newPdas });
           },
         },
+        {
+          select: ['[accountLinkNode]', ...selectors],
+          transform: (node) => {
+            assertIsNode(node, 'accountLinkNode');
+            if (node.importFrom) return node;
+            const newName = newNameFor(node);
+            return newName ? accountLinkNode(newName) : node;
+          },
+        },
+        {
+          select: ['[pdaNode]', ...selectors],
+          transform: (node) => {
+            assertIsNode(node, 'pdaNode');
+            const newName = newNameFor(node);
+            return newName ? pdaNode(newName, node.seeds) : node;
+          },
+        },
+        {
+          select: ['[pdaLinkNode]', ...selectors],
+          transform: (node) => {
+            assertIsNode(node, 'pdaLinkNode');
+            if (node.importFrom) return node;
+            const newName = newNameFor(node);
+            return newName ? pdaLinkNode(newName) : node;
+          },
+        },
       ];
-
-      if (newName) {
-        transformers.push(
-          {
-            select: ['[accountLinkNode]', selector],
-            transform: (node) => {
-              assertIsNode(node, 'accountLinkNode');
-              if (node.importFrom) return node;
-              return accountLinkNode(newName);
-            },
-          },
-          {
-            select: ['[pdaNode]', selector],
-            transform: (node) => {
-              assertIsNode(node, 'pdaNode');
-              return pdaNode(newName, node.seeds);
-            },
-          },
-          {
-            select: ['[pdaLinkNode]', selector],
-            transform: (node) => {
-              assertIsNode(node, 'pdaLinkNode');
-              if (node.importFrom) return node;
-              return pdaLinkNode(newName);
-            },
-          }
-        );
-      }
 
       return transformers;
     })

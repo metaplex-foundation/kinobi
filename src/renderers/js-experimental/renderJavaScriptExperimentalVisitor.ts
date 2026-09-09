@@ -1,5 +1,11 @@
-import { deleteFolder, LogLevel } from '../../shared';
-import { rootNodeVisitor, visit, writeRenderMapVisitor } from '../../visitors';
+import { deleteFolder, LogLevel, RenderMap } from '../../shared';
+import {
+  mergeRenderMapVisitors,
+  rootNodeVisitor,
+  visit,
+  Visitor,
+  writeRenderMapVisitor,
+} from '../../visitors';
 import {
   GetRenderMapOptions,
   getRenderMapVisitor,
@@ -7,6 +13,12 @@ import {
 
 export type RenderJavaScriptExperimentalOptions = GetRenderMapOptions & {
   deleteFolderBeforeRendering?: boolean;
+  /**
+   * Additional `RenderMap` visitors whose files are written alongside the
+   * generated client, in the same pass and under the same output folder.
+   * Later maps win on conflicting paths.
+   */
+  extraRenderMaps?: Visitor<RenderMap, 'rootNode'>[];
   throwLevel?: LogLevel;
 };
 
@@ -21,6 +33,10 @@ export function renderJavaScriptExperimentalVisitor(
     }
 
     // Render the new files.
-    visit(root, writeRenderMapVisitor(getRenderMapVisitor(options), path));
+    const renderMapVisitor = mergeRenderMapVisitors([
+      getRenderMapVisitor(options),
+      ...(options.extraRenderMaps ?? []),
+    ]);
+    visit(root, writeRenderMapVisitor(renderMapVisitor, path));
   });
 }

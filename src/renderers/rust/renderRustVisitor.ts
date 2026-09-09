@@ -1,6 +1,18 @@
 import { spawnSync } from 'child_process';
-import { LogLevel, deleteFolder, logError, logWarn } from '../../shared';
-import { rootNodeVisitor, visit, writeRenderMapVisitor } from '../../visitors';
+import {
+  LogLevel,
+  RenderMap,
+  deleteFolder,
+  logError,
+  logWarn,
+} from '../../shared';
+import {
+  Visitor,
+  mergeRenderMapVisitors,
+  rootNodeVisitor,
+  visit,
+  writeRenderMapVisitor,
+} from '../../visitors';
 import {
   GetRustRenderMapOptions,
   getRenderMapVisitor,
@@ -8,6 +20,12 @@ import {
 
 export type RenderRustOptions = GetRustRenderMapOptions & {
   deleteFolderBeforeRendering?: boolean;
+  /**
+   * Additional `RenderMap` visitors whose files are written alongside the
+   * generated client, in the same pass and under the same output folder.
+   * Later maps win on conflicting paths.
+   */
+  extraRenderMaps?: Visitor<RenderMap, 'rootNode'>[];
   throwLevel?: LogLevel;
   crateFolder?: string;
   formatCode?: boolean;
@@ -24,7 +42,11 @@ export function renderRustVisitor(
     }
 
     // Render the new files.
-    visit(root, writeRenderMapVisitor(getRenderMapVisitor(options), path));
+    const renderMapVisitor = mergeRenderMapVisitors([
+      getRenderMapVisitor(options),
+      ...(options.extraRenderMaps ?? []),
+    ]);
+    visit(root, writeRenderMapVisitor(renderMapVisitor, path));
 
     // format the code
     if (options.formatCode) {

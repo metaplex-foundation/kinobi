@@ -6,6 +6,7 @@ import {
   constantPdaSeedNodeFromString,
   numberTypeNode,
   pdaLinkNode,
+  pascalCase,
   pdaNode,
   programNode,
   resolveNestedTypeNode,
@@ -303,4 +304,40 @@ test('it can update the seeds and name of an account at the same time', (t) => {
 
   // And the account to now link to the PDA node.
   t.deepEqual(result.accounts[0].pda, pdaLinkNode('myNewAccount'));
+});
+
+test('it renames accounts matched by a selector function', (t) => {
+  // Given a program with several accounts and a PDA linked to one of them.
+  const node = programNode({
+    name: 'myProgram',
+    publicKey: '1111',
+    accounts: [
+      accountNode({ name: 'assetV1', pda: pdaLinkNode('assetV1') }),
+      accountNode({ name: 'collectionV1' }),
+      accountNode({ name: 'registry' }),
+    ],
+    pdas: [pdaNode('assetV1', [])],
+  });
+
+  // When we rename every account matching a pattern via the array form.
+  const result = visit(
+    node,
+    updateAccountsVisitor([
+      {
+        select: (n) => 'name' in n && /V1$/.test(n.name),
+        update: (n) => ({ name: `base${pascalCase(n.name)}` }),
+      },
+    ])
+  );
+
+  // Then all matching accounts are renamed and the others are untouched.
+  assertIsNode(result, 'programNode');
+  t.deepEqual(
+    result.accounts.map((a) => a.name),
+    ['baseAssetV1', 'baseCollectionV1', 'registry']
+  );
+
+  // And the linked PDA node and link follow the rename.
+  t.is(result.pdas[0].name, 'baseAssetV1' as MainCaseString);
+  t.is(result.accounts[0].pda?.name, 'baseAssetV1' as MainCaseString);
 });

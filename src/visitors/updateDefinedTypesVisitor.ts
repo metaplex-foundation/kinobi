@@ -1,11 +1,18 @@
 import {
+  DefinedTypeLinkNode,
+  DefinedTypeNode,
   DefinedTypeNodeInput,
   assertIsNode,
   definedTypeLinkNode,
   definedTypeNode,
   isNode,
 } from '../nodes';
-import { mainCase, renameEnumNode, renameStructNode } from '../shared';
+import {
+  NodeSelector,
+  mainCase,
+  renameEnumNode,
+  renameStructNode,
+} from '../shared';
 import {
   BottomUpNodeTransformerWithSelector,
   bottomUpTransformerVisitor,
@@ -17,22 +24,47 @@ export type DefinedTypeUpdates =
       data?: Record<string, string>;
     });
 
+/**
+ * Either a static set of updates, or a function computing them per node.
+ * The function receives the matched `definedTypeNode`, and — when the
+ * updates rename the type — every matched `definedTypeLinkNode` so the
+ * links can follow the rename. Only `name` is honoured for link nodes.
+ */
+export type DefinedTypeUpdater =
+  | DefinedTypeUpdates
+  | ((node: DefinedTypeNode | DefinedTypeLinkNode) => DefinedTypeUpdates);
+
+export type DefinedTypeUpdateWithSelector = {
+  select: NodeSelector | NodeSelector[];
+  update: DefinedTypeUpdater;
+};
+
 export function updateDefinedTypesVisitor(
-  map: Record<string, DefinedTypeUpdates>
+  map: Record<string, DefinedTypeUpdates> | DefinedTypeUpdateWithSelector[]
 ) {
+  const entries: DefinedTypeUpdateWithSelector[] = Array.isArray(map)
+    ? map
+    : Object.entries(map).map(([select, update]) => ({ select, update }));
+
   return bottomUpTransformerVisitor(
-    Object.entries(map).flatMap(
-      ([selector, updates]): BottomUpNodeTransformerWithSelector[] => {
-        const newName =
-          typeof updates === 'object' && 'name' in updates && updates.name
+    entries.flatMap(
+      ({ select, update }): BottomUpNodeTransformerWithSelector[] => {
+        const selectors = Array.isArray(select) ? select : [select];
+        const resolve = (node: DefinedTypeNode | DefinedTypeLinkNode) =>
+          typeof update === 'function' ? update(node) : update;
+        const newNameFor = (node: DefinedTypeNode | DefinedTypeLinkNode) => {
+          const updates = resolve(node);
+          return 'name' in updates && updates.name
             ? mainCase(updates.name)
             : undefined;
+        };
 
-        const transformers: BottomUpNodeTransformerWithSelector[] = [
+        return [
           {
-            select: ['[definedTypeNode]', selector],
+            select: ['[definedTypeNode]', ...selectors],
             transform: (node) => {
               assertIsNode(node, 'definedTypeNode');
+              const updates = resolve(node);
               if ('delete' in updates) {
                 return null;
               }
@@ -46,25 +78,21 @@ export function updateDefinedTypesVisitor(
               return definedTypeNode({
                 ...node,
                 ...otherUpdates,
-                name: newName ?? node.name,
+                name: newNameFor(node) ?? node.name,
                 type: newType,
               });
             },
           },
-        ];
-
-        if (newName) {
-          transformers.push({
-            select: ['[definedTypeLinkNode]', selector],
+          {
+            select: ['[definedTypeLinkNode]', ...selectors],
             transform: (node) => {
               assertIsNode(node, 'definedTypeLinkNode');
               if (node.importFrom) return node;
-              return definedTypeLinkNode(newName);
+              const newName = newNameFor(node);
+              return newName ? definedTypeLinkNode(newName) : node;
             },
-          });
-        }
-
-        return transformers;
+          },
+        ];
       }
     )
   );
