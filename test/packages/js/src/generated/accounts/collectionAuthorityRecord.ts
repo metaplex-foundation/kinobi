@@ -35,7 +35,7 @@ export type CollectionAuthorityRecord =
   Account<CollectionAuthorityRecordAccountData>;
 
 export type CollectionAuthorityRecordAccountData = {
-  key: TmKey;
+  key: TmKey.CollectionAuthorityRecord;
   bump: number;
   updateAuthority: Option<PublicKey>;
 };
@@ -56,7 +56,21 @@ export function getCollectionAuthorityRecordAccountDataSerializer(): Serializer<
   >(
     struct<CollectionAuthorityRecordAccountData>(
       [
-        ['key', getTmKeySerializer()],
+        [
+          'key',
+          mapSerializer(
+            getTmKeySerializer(),
+            (value: TmKey.CollectionAuthorityRecord): TmKey => value,
+            (value: TmKey): TmKey.CollectionAuthorityRecord => {
+              if (value === TmKey.CollectionAuthorityRecord) {
+                return value;
+              }
+              throw new Error(
+                `Expected TmKey.CollectionAuthorityRecord, got ${value}`
+              );
+            }
+          ),
+        ],
         ['bump', u8()],
         ['updateAuthority', option(publicKeySerializer())],
       ],

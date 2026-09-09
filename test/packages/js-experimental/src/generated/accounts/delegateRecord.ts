@@ -29,6 +29,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
+  mapDecoder,
   mapEncoder,
 } from '@solana/codecs';
 import { DelegateRecordSeeds, findDelegateRecordPda } from '../pdas';
@@ -51,7 +52,7 @@ export type MaybeDelegateRecord<TAddress extends string = string> =
   MaybeAccount<DelegateRecordAccountData, TAddress>;
 
 export type DelegateRecordAccountData = {
-  key: TmKey;
+  key: TmKey.Delegate;
   role: DelegateRole;
   bump: number;
 };
@@ -74,7 +75,15 @@ export function getDelegateRecordAccountDataEncoder(): Encoder<DelegateRecordAcc
 
 export function getDelegateRecordAccountDataDecoder(): Decoder<DelegateRecordAccountData> {
   return getStructDecoder([
-    ['key', getTmKeyDecoder()],
+    [
+      'key',
+      mapDecoder(getTmKeyDecoder(), (value) => {
+        if (value !== TmKey.Delegate) {
+          throw new Error(`Expected TmKey.Delegate, got ${value}`);
+        }
+        return value;
+      }),
+    ],
     ['role', getDelegateRoleDecoder()],
     ['bump', getU8Decoder()],
   ]);

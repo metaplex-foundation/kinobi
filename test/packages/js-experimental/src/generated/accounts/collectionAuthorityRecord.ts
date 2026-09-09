@@ -37,6 +37,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
+  mapDecoder,
   mapEncoder,
 } from '@solana/codecs';
 import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
@@ -48,7 +49,7 @@ export type MaybeCollectionAuthorityRecord<TAddress extends string = string> =
   MaybeAccount<CollectionAuthorityRecordAccountData, TAddress>;
 
 export type CollectionAuthorityRecordAccountData = {
-  key: TmKey;
+  key: TmKey.CollectionAuthorityRecord;
   bump: number;
   updateAuthority: Option<Address>;
 };
@@ -71,7 +72,17 @@ export function getCollectionAuthorityRecordAccountDataEncoder(): Encoder<Collec
 
 export function getCollectionAuthorityRecordAccountDataDecoder(): Decoder<CollectionAuthorityRecordAccountData> {
   return getStructDecoder([
-    ['key', getTmKeyDecoder()],
+    [
+      'key',
+      mapDecoder(getTmKeyDecoder(), (value) => {
+        if (value !== TmKey.CollectionAuthorityRecord) {
+          throw new Error(
+            `Expected TmKey.CollectionAuthorityRecord, got ${value}`
+          );
+        }
+        return value;
+      }),
+    ],
     ['bump', getU8Decoder()],
     ['updateAuthority', getOptionDecoder(getAddressDecoder())],
   ]);

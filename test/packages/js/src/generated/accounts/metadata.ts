@@ -63,7 +63,7 @@ import {
 export type Metadata = Account<MetadataAccountData>;
 
 export type MetadataAccountData = {
-  key: TmKey;
+  key: TmKey.MetadataV1;
   updateAuthority: PublicKey;
   mint: PublicKey;
   name: string;
@@ -108,7 +108,19 @@ export function getMetadataAccountDataSerializer(): Serializer<
   return mapSerializer<MetadataAccountDataArgs, any, MetadataAccountData>(
     struct<MetadataAccountData>(
       [
-        ['key', getTmKeySerializer()],
+        [
+          'key',
+          mapSerializer(
+            getTmKeySerializer(),
+            (value: TmKey.MetadataV1): TmKey => value,
+            (value: TmKey): TmKey.MetadataV1 => {
+              if (value === TmKey.MetadataV1) {
+                return value;
+              }
+              throw new Error(`Expected TmKey.MetadataV1, got ${value}`);
+            }
+          ),
+        ],
         ['updateAuthority', publicKeySerializer()],
         ['mint', publicKeySerializer()],
         ['name', string()],
