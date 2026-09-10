@@ -82,6 +82,16 @@ export function getBubblegumSetCollectionSizeInstructionDataSerializer(): Serial
 export type BubblegumSetCollectionSizeInstructionArgs =
   BubblegumSetCollectionSizeInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getBubblegumSetCollectionSizeInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    ['setCollectionSizeArgs', getSetCollectionSizeArgsSerializer()],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const bubblegumSetCollectionSizeInstructionDiscriminator = 36;
 

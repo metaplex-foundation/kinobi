@@ -16,11 +16,16 @@ import {
   getMplTokenAuthRulesErrorFromCode,
   getMplTokenAuthRulesErrorFromName,
 } from '../errors';
+import {
+  getCreateFrequencyRuleInstructionArgsOnlySerializer,
+  getCreateRuleSetInstructionArgsOnlySerializer,
+  getValidateInstructionArgsOnlySerializer,
+} from '../instructions';
 
 export const MPL_TOKEN_AUTH_RULES_PROGRAM_ID =
   'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg' as PublicKey<'auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg'>;
 
-export function createMplTokenAuthRulesProgram(): Program {
+export function createMplTokenAuthRulesProgram() {
   return {
     name: 'mplTokenAuthRules',
     publicKey: MPL_TOKEN_AUTH_RULES_PROGRAM_ID,
@@ -33,6 +38,40 @@ export function createMplTokenAuthRulesProgram(): Program {
     isOnCluster() {
       return true;
     },
+    instructions: [
+      {
+        name: 'createRuleSet',
+        discriminator: { bytes: new Uint8Array([0]), size: 1 },
+        dataSerializer: getCreateRuleSetInstructionArgsOnlySerializer(),
+        accountNames: ['payer', 'ruleSetPda', 'systemProgram'],
+      },
+      {
+        name: 'validate',
+        discriminator: { bytes: new Uint8Array([1]), size: 1 },
+        dataSerializer: getValidateInstructionArgsOnlySerializer(),
+        accountNames: [
+          'payer',
+          'ruleSet',
+          'systemProgram',
+          'optRuleSigner1',
+          'optRuleSigner2',
+          'optRuleSigner3',
+          'optRuleSigner4',
+          'optRuleSigner5',
+          'optRuleNonsigner1',
+          'optRuleNonsigner2',
+          'optRuleNonsigner3',
+          'optRuleNonsigner4',
+          'optRuleNonsigner5',
+        ],
+      },
+      {
+        name: 'createFrequencyRule',
+        discriminator: { bytes: new Uint8Array([2]), size: 1 },
+        dataSerializer: getCreateFrequencyRuleInstructionArgsOnlySerializer(),
+        accountNames: ['payer', 'frequencyPda', 'systemProgram'],
+      },
+    ],
   };
 }
 

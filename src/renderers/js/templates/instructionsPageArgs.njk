@@ -33,3 +33,8 @@
     export type {{ instruction.name | pascalCase + 'InstructionArgs' }} = {{ argType }};
   {% endif %}
 {% endif %}
+
+// Args-only serializer (excludes discriminator fields).
+export function get{{ instruction.name | pascalCase }}InstructionArgsOnlySerializer(): Serializer<any, any> {
+  return {{ argsOnlyManifest.serializer }} as Serializer<any, any>;
+}

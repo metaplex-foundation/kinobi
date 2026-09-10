@@ -73,6 +73,14 @@ export function getSetCollectionInstructionDataSerializer(): Serializer<
   >;
 }
 
+// Args-only serializer (excludes discriminator fields).
+export function getSetCollectionInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const setCollectionInstructionDiscriminator = [
   192, 254, 206, 76, 168, 182, 59, 223,

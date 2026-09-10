@@ -71,6 +71,14 @@ export function getCloseEscrowAccountInstructionDataSerializer(): Serializer<
   >;
 }
 
+// Args-only serializer (excludes discriminator fields).
+export function getCloseEscrowAccountInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const closeEscrowAccountInstructionDiscriminator = 39;
 

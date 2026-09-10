@@ -71,6 +71,14 @@ export function getVerifySizedCollectionItemInstructionDataSerializer(): Seriali
   >;
 }
 
+// Args-only serializer (excludes discriminator fields).
+export function getVerifySizedCollectionItemInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const verifySizedCollectionItemInstructionDiscriminator = 30;
 

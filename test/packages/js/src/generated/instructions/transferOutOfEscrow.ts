@@ -95,6 +95,14 @@ export function getTransferOutOfEscrowInstructionDataSerializer(): Serializer<
 export type TransferOutOfEscrowInstructionArgs =
   TransferOutOfEscrowInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getTransferOutOfEscrowInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([['amount', u64()]]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const transferOutOfEscrowInstructionDiscriminator = 40;
 

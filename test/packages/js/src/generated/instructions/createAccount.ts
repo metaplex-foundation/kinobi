@@ -75,6 +75,18 @@ export function getCreateAccountInstructionDataSerializer(): Serializer<
 // Args.
 export type CreateAccountInstructionArgs = CreateAccountInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getCreateAccountInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    ['lamports', u64()],
+    ['space', u64()],
+    ['programId', publicKeySerializer()],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const createAccountInstructionDiscriminator = 0;
 

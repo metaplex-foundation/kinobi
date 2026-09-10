@@ -109,6 +109,16 @@ export type TransferInstructionArgs = PickPartial<
   'tokenStandard'
 >;
 
+// Args-only serializer (excludes discriminator fields).
+export function getTransferInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    ['transferArgs', getTransferArgsSerializer()],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const transferInstructionDiscriminator = 46;
 

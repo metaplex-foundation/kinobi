@@ -93,6 +93,16 @@ export function getDelegateInstructionDataSerializer(): Serializer<
 // Args.
 export type DelegateInstructionArgs = DelegateInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getDelegateInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    ['delegateArgs', getDelegateArgsSerializer()],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const delegateInstructionDiscriminator = 48;
 

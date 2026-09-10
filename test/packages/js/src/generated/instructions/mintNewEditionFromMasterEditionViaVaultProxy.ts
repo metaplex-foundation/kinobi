@@ -112,6 +112,19 @@ export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionDataSe
 export type MintNewEditionFromMasterEditionViaVaultProxyInstructionArgs =
   MintNewEditionFromMasterEditionViaVaultProxyInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getMintNewEditionFromMasterEditionViaVaultProxyInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    [
+      'mintNewEditionFromMasterEditionViaTokenArgs',
+      getMintNewEditionFromMasterEditionViaTokenArgsSerializer(),
+    ],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const mintNewEditionFromMasterEditionViaVaultProxyInstructionDiscriminator = 13;
 

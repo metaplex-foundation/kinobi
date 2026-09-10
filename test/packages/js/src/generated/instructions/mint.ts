@@ -80,6 +80,14 @@ export function getMintInstructionDataSerializer(): Serializer<
 // Args.
 export type MintInstructionArgs = MintInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getMintInstructionArgsOnlySerializer(): Serializer<any, any> {
+  return struct<any>([['mintArgs', getMintArgsSerializer()]]) as Serializer<
+    any,
+    any
+  >;
+}
+
 // Instruction discriminator.
 export const mintInstructionDiscriminator = 42;
 

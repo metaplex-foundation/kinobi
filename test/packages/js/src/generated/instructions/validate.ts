@@ -103,6 +103,18 @@ export function getValidateInstructionDataSerializer(): Serializer<
 // Args.
 export type ValidateInstructionArgs = ValidateInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getValidateInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    ['ruleSetName', string()],
+    ['operation', getOperationSerializer()],
+    ['payload', getPayloadSerializer()],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const validateInstructionDiscriminator = 1;
 

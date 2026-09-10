@@ -20,7 +20,7 @@ import {
 export const PUBKEY_TESTS_PROGRAM_ID =
   'PubkeyTests1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7' as PublicKey<'PubkeyTests1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7'>;
 
-export function createPubkeyTestsProgram(): Program {
+export function createPubkeyTestsProgram() {
   return {
     name: 'pubkeyTests',
     publicKey: PUBKEY_TESTS_PROGRAM_ID,

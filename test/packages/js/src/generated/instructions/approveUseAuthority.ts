@@ -90,6 +90,14 @@ export function getApproveUseAuthorityInstructionDataSerializer(): Serializer<
 export type ApproveUseAuthorityInstructionArgs =
   ApproveUseAuthorityInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getApproveUseAuthorityInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([['numberOfUses', u64()]]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const approveUseAuthorityInstructionDiscriminator = 20;
 

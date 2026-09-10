@@ -92,6 +92,19 @@ export function getDeprecatedSetReservationListInstructionDataSerializer(): Seri
 export type DeprecatedSetReservationListInstructionArgs =
   DeprecatedSetReservationListInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getDeprecatedSetReservationListInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    ['reservations', array(getReservationSerializer())],
+    ['totalReservationSpots', option(u64())],
+    ['offset', u64()],
+    ['totalSpotOffset', u64()],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const deprecatedSetReservationListInstructionDiscriminator = 5;
 
