@@ -9,7 +9,7 @@
 {{ typeManifest.type }}
 
 {% for nestedStruct in typeManifest.nestedStructs %}
-{{ nestedStruct }}
+{{ nestedStruct.type }}
 {% endfor %}
 
 impl {{ account.name | pascalCase }} {

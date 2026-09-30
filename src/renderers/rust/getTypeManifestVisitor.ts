@@ -15,10 +15,23 @@ import { pascalCase, pipe, rustDocblock, snakeCase } from '../../shared';
 import { extendVisitor, mergeVisitor, visit } from '../../visitors';
 import { RustImportMap } from './RustImportMap';
 
+export type RustNestedStruct = {
+  type: string;
+  /** Whether this particular nested struct contains an `f32`/`f64` field. */
+  hasFloat?: boolean;
+};
+
 export type RustTypeManifest = {
   type: string;
   imports: RustImportMap;
-  nestedStructs: string[];
+  nestedStructs: RustNestedStruct[];
+  /**
+   * Whether this type contains an `f32`/`f64` field anywhere in its direct
+   * structure (through structs, tuples, arrays, options, maps and sets).
+   * `f32`/`f64` don't implement `Eq`, so a type - or anything that embeds it
+   * inline - can't derive `Eq` without failing to compile.
+   */
+  hasFloat?: boolean;
 };
 
 export function getTypeManifestVisitor() {
@@ -51,10 +64,18 @@ export function getTypeManifestVisitor() {
             'borsh::BorshDeserialize',
           ]);
           parentName = null;
+          const accountTraits = [
+            'BorshSerialize',
+            'BorshDeserialize',
+            'Clone',
+            'Debug',
+            ...(manifest.hasFloat ? [] : ['Eq']),
+            'PartialEq',
+          ];
           return {
             ...manifest,
             type:
-              '#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]\n' +
+              `#[derive(${accountTraits.join(', ')})]\n` +
               '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
               `${manifest.type}`,
           };
@@ -68,33 +89,40 @@ export function getTypeManifestVisitor() {
             'borsh::BorshSerialize',
             'borsh::BorshDeserialize',
           ]);
-          const traits = [
+          const isScalarEnumType =
+            isNode(definedType.type, 'enumTypeNode') &&
+            isScalarEnum(definedType.type);
+          if (isScalarEnumType) {
+            manifest.imports.add(['num_derive::FromPrimitive']);
+          }
+          // f32/f64 don't implement Eq, so a type that contains one anywhere
+          // in its direct structure can't derive it either. Each nested
+          // struct is derived from its own hasFloat, not the parent's, since
+          // a float in one nested struct says nothing about the others.
+          const buildTraits = (hasFloat?: boolean) => [
             'BorshSerialize',
             'BorshDeserialize',
             'Clone',
             'Debug',
-            'Eq',
+            ...(hasFloat ? [] : ['Eq']),
             'PartialEq',
+            ...(isScalarEnumType
+              ? ['PartialOrd', 'Hash', 'FromPrimitive']
+              : []),
           ];
-          if (
-            isNode(definedType.type, 'enumTypeNode') &&
-            isScalarEnum(definedType.type)
-          ) {
-            traits.push('PartialOrd', 'Hash', 'FromPrimitive');
-            manifest.imports.add(['num_derive::FromPrimitive']);
-          }
           return {
             ...manifest,
             type:
-              `#[derive(${traits.join(', ')})]\n` +
+              `#[derive(${buildTraits(manifest.hasFloat).join(', ')})]\n` +
               '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
               `${manifest.type}`,
-            nestedStructs: manifest.nestedStructs.map(
-              (struct) =>
-                `#[derive(${traits.join(', ')})]\n` +
+            nestedStructs: manifest.nestedStructs.map((struct) => ({
+              type:
+                `#[derive(${buildTraits(struct.hasFloat).join(', ')})]\n` +
                 '#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]\n' +
-                `${struct}`
-            ),
+                `${struct.type}`,
+              hasFloat: struct.hasFloat,
+            })),
           };
         },
 
@@ -293,9 +321,12 @@ export function getTypeManifestVisitor() {
               type: pascalCase(originalParentName),
               nestedStructs: [
                 ...mergedManifest.nestedStructs,
-                `pub struct ${pascalCase(
-                  originalParentName
-                )} {\n${fieldTypes}\n}`,
+                {
+                  type: `pub struct ${pascalCase(
+                    originalParentName
+                  )} {\n${fieldTypes}\n}`,
+                  hasFloat: mergedManifest.hasFloat,
+                },
               ],
             };
           }
@@ -412,6 +443,8 @@ export function getTypeManifestVisitor() {
               type: numberType.format,
               imports: new RustImportMap(),
               nestedStructs: [],
+              hasFloat:
+                numberType.format === 'f32' || numberType.format === 'f64',
             };
           }
 
@@ -507,11 +540,12 @@ export function getTypeManifestVisitor() {
 
 function mergeManifests(
   manifests: RustTypeManifest[]
-): Pick<RustTypeManifest, 'imports' | 'nestedStructs'> {
+): Pick<RustTypeManifest, 'imports' | 'nestedStructs' | 'hasFloat'> {
   return {
     imports: new RustImportMap().mergeWith(
       ...manifests.map((td) => td.imports)
     ),
     nestedStructs: manifests.flatMap((m) => m.nestedStructs),
+    hasFloat: manifests.some((m) => m.hasFloat),
   };
 }

@@ -42,3 +42,34 @@ test('it renders a prefix string on a defined type', (t) => {
     `content_type: U8PrefixString,`,
   ]);
 });
+
+test('it does not derive Eq for a defined type containing an f64 field', (t) => {
+  // Given a defined type with an f64 field. f32/f64 don't implement Eq, so
+  // deriving it would fail to compile.
+  const node = programNode({
+    name: 'splToken',
+    publicKey: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+    definedTypes: [
+      definedTypeNode({
+        name: 'liquidationBalances',
+        type: structTypeNode([
+          structFieldTypeNode({
+            name: 'ratio',
+            type: numberTypeNode('f64'),
+          }),
+        ]),
+      }),
+    ],
+  });
+
+  // When we render it.
+  const renderMap = visit(node, getRenderMapVisitor());
+  const code = renderMap.get('types/liquidation_balances.rs');
+
+  // Then the struct still derives PartialEq (f64 has that), but not Eq.
+  codeContains(t, code, [`pub ratio: f64,`, `PartialEq`]);
+  t.false(
+    /derive\([^)]*\bEq\b/.test(code!),
+    'A struct containing an f64 field must not derive Eq'
+  );
+});

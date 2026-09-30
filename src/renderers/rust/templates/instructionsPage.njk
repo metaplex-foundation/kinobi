@@ -129,7 +129,7 @@ impl {{ instruction.name | pascalCase }}InstructionData {
 }
 
 {% if hasArgs %}
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug{{ ', Eq' if not typeManifest.hasFloat }}, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct {{ instruction.name | pascalCase }}InstructionArgs {
   {% for arg in instructionArgs %}
@@ -141,9 +141,9 @@ pub struct {{ instruction.name | pascalCase }}InstructionArgs {
 {% endif %}
 
 {% for nestedStruct in typeManifest.nestedStructs %}
-#[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug{{ ', Eq' if not nestedStruct.hasFloat }}, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-{{ nestedStruct }}
+{{ nestedStruct.type }}
 {% endfor %}
 
 {% include "instructionsPageBuilder.njk" %}
