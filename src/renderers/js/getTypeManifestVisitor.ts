@@ -372,7 +372,11 @@ export function getTypeManifestVisitor(input: {
             'isOption',
           ]);
           childManifest.looseImports.add('umi', 'OptionOrNullable');
-          childManifest.serializerImports.add('umiSerializers', 'Serializer');
+          // The inline serializer below references both strict and loose types
+          // so it must carry their imports wherever it is rendered on its own.
+          childManifest.serializerImports
+            .add('umiSerializers', 'Serializer')
+            .mergeWith(childManifest.strictImports, childManifest.looseImports);
 
           const sentinelBytes = `[${fixedSizeOptionType.sentinel.join(', ')}]`;
           const serializerType = `Serializer<OptionOrNullable<${baseLooseType}>, Option<${baseStrictType}>>`;

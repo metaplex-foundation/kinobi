@@ -7,6 +7,7 @@ import {
   enumEmptyVariantTypeNode,
   enumStructVariantTypeNode,
   enumTypeNode,
+  fixedSizeOptionTypeNode,
   fixedSizeTypeNode,
   getByteSizeVisitor,
   hiddenPrefixTypeNode,
@@ -40,6 +41,27 @@ function createTypeManifestVisitor(sharedSerializers?: Set<string>) {
     sharedSerializers,
   });
 }
+
+test('it includes every import a fixedSizeOptionTypeNode serializer references in its serializer imports', (t) => {
+  // Given a fixedSizeOptionTypeNode wrapping a publicKey.
+  const node = fixedSizeOptionTypeNode(publicKeyTypeNode(), Array(32).fill(0));
+
+  // When we visit it with the type manifest visitor.
+  const manifest = visit(node, createTypeManifestVisitor());
+
+  // Then the serializer imports alone are enough to render the inline serializer
+  // (e.g. for nested GPA fields, which only merge serializer imports).
+  codeContains(t, manifest.serializerImports.toString({}), [
+    /\bOption\b/,
+    /\bOptionOrNullable\b/,
+    /\bPublicKey\b/,
+    /\bisOption\b/,
+    /\bnone\b/,
+    /\bsome\b/,
+    /\bSerializer\b/,
+    /\bpublicKeySerializer\b/
+  ]);
+});
 
 test('it wraps a zeroableOptionTypeNode with the zeroableOption serializer', (t) => {
   // Given a zeroableOptionTypeNode wrapping a publicKey.
@@ -191,7 +213,7 @@ test('it wraps a fixedSizeTypeNode (struct body) with fixSerializer', (t) => {
   codeContains(
     t,
     manifest.serializerImports.toString({}),
-    "import { fixSerializer"
+    'import { fixSerializer'
   );
   codeContains(
     t,
@@ -286,7 +308,11 @@ test('it wraps a hiddenPrefixTypeNode with the hiddenPrefix serializer, renderin
 
   // Then the serializer wraps the child serializer with hiddenPrefix(...),
   // and the constant is rendered inline as `<serializer>.serialize(<value>)`.
-  codeContains(t, manifest.serializer, 'hiddenPrefix(u8(), [u8().serialize(1)])');
+  codeContains(
+    t,
+    manifest.serializer,
+    'hiddenPrefix(u8(), [u8().serialize(1)])'
+  );
 });
 
 test('it registers hiddenPrefix in the sharedSerializers set when visited', (t) => {
@@ -339,7 +365,7 @@ test('it renders the composite Token-2022 hiddenPrefix(remainder array, preOffse
   codeContains(
     t,
     manifest.serializer,
-    'hiddenPrefix(array(u8(), { size: \'remainder\' }), [padLeftSerializer(u8(), 83).serialize(1)])'
+    "hiddenPrefix(array(u8(), { size: 'remainder' }), [padLeftSerializer(u8(), 83).serialize(1)])"
   );
 });
 
@@ -466,7 +492,7 @@ test('it renders the full Token-2022 extension-list shape: remainderOption(hidde
   codeContains(
     t,
     manifest.serializer,
-    "remainderOption(hiddenPrefix(remainderArray(string()), [padLeftSerializer(u8(), 83).serialize(1)]))"
+    'remainderOption(hiddenPrefix(remainderArray(string()), [padLeftSerializer(u8(), 83).serialize(1)]))'
   );
 });
 
