@@ -1,5 +1,11 @@
 # @metaplex-foundation/kinobi
 
+## 1.0.0-alpha.6
+
+### Patch Changes
+
+- Fix missing imports for fixed-size option serializers in nested GPA fields (registerNestedFieldsFromStruct), which made generated clients such as Genesis fail to compile.
+
 ## 1.0.0-alpha.5
 
 ### Minor Changes

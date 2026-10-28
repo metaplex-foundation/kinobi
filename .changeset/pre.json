@@ -5,6 +5,7 @@
     "@metaplex-foundation/kinobi": "1.0.0-alpha.4"
   },
   "changesets": [
+    "funky-coins-pick",
     "orange-pans-happen",
     "rich-bats-invite",
     "token2022-codama-idls"
