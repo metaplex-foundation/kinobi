@@ -30,7 +30,10 @@ import { TmKey, TmKeyArgs, getTmKeySerializer } from '../types';
 
 export type EditionMarker = Account<EditionMarkerAccountData>;
 
-export type EditionMarkerAccountData = { key: TmKey; ledger: Array<number> };
+export type EditionMarkerAccountData = {
+  key: TmKey.EditionMarker;
+  ledger: Array<number>;
+};
 
 export type EditionMarkerAccountDataArgs = { ledger: Array<number> };
 
@@ -45,7 +48,19 @@ export function getEditionMarkerAccountDataSerializer(): Serializer<
   >(
     struct<EditionMarkerAccountData>(
       [
-        ['key', getTmKeySerializer()],
+        [
+          'key',
+          mapSerializer(
+            getTmKeySerializer(),
+            (value: TmKey.EditionMarker): TmKey => value,
+            (value: TmKey): TmKey.EditionMarker => {
+              if (value === TmKey.EditionMarker) {
+                return value;
+              }
+              throw new Error(`Expected TmKey.EditionMarker, got ${value}`);
+            }
+          ),
+        ],
         ['ledger', array(u8(), { size: 200 })],
       ],
       { description: 'EditionMarkerAccountData' }

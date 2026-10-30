@@ -31,6 +31,7 @@ import {
   getStructEncoder,
   getU8Decoder,
   getU8Encoder,
+  mapDecoder,
   mapEncoder,
 } from '@solana/codecs';
 import { TmKey, getTmKeyDecoder, getTmKeyEncoder } from '../types';
@@ -45,7 +46,10 @@ export type MaybeEditionMarker<TAddress extends string = string> = MaybeAccount<
   TAddress
 >;
 
-export type EditionMarkerAccountData = { key: TmKey; ledger: Array<number> };
+export type EditionMarkerAccountData = {
+  key: TmKey.EditionMarker;
+  ledger: Array<number>;
+};
 
 export type EditionMarkerAccountDataArgs = { ledger: Array<number> };
 
@@ -61,7 +65,15 @@ export function getEditionMarkerAccountDataEncoder(): Encoder<EditionMarkerAccou
 
 export function getEditionMarkerAccountDataDecoder(): Decoder<EditionMarkerAccountData> {
   return getStructDecoder([
-    ['key', getTmKeyDecoder()],
+    [
+      'key',
+      mapDecoder(getTmKeyDecoder(), (value) => {
+        if (value !== TmKey.EditionMarker) {
+          throw new Error(`Expected TmKey.EditionMarker, got ${value}`);
+        }
+        return value;
+      }),
+    ],
     ['ledger', getArrayDecoder(getU8Decoder(), { size: 200 })],
   ]);
 }

@@ -31,7 +31,7 @@ import { TmKey, TmKeyArgs, getTmKeySerializer } from '../types';
 export type UseAuthorityRecord = Account<UseAuthorityRecordAccountData>;
 
 export type UseAuthorityRecordAccountData = {
-  key: TmKey;
+  key: TmKey.UseAuthorityRecord;
   allowedUses: bigint;
   bump: number;
 };
@@ -52,7 +52,21 @@ export function getUseAuthorityRecordAccountDataSerializer(): Serializer<
   >(
     struct<UseAuthorityRecordAccountData>(
       [
-        ['key', getTmKeySerializer()],
+        [
+          'key',
+          mapSerializer(
+            getTmKeySerializer(),
+            (value: TmKey.UseAuthorityRecord): TmKey => value,
+            (value: TmKey): TmKey.UseAuthorityRecord => {
+              if (value === TmKey.UseAuthorityRecord) {
+                return value;
+              }
+              throw new Error(
+                `Expected TmKey.UseAuthorityRecord, got ${value}`
+              );
+            }
+          ),
+        ],
         ['allowedUses', u64()],
         ['bump', u8()],
       ],
