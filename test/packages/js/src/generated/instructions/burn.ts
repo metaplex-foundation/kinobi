@@ -73,6 +73,14 @@ export function getBurnInstructionDataSerializer(): Serializer<
 // Args.
 export type BurnInstructionArgs = BurnInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getBurnInstructionArgsOnlySerializer(): Serializer<any, any> {
+  return struct<any>([['burnArgs', getBurnArgsSerializer()]]) as Serializer<
+    any,
+    any
+  >;
+}
+
 // Instruction discriminator.
 export const burnInstructionDiscriminator = 44;
 

@@ -71,6 +71,14 @@ export function getUnverifySizedCollectionItemInstructionDataSerializer(): Seria
   >;
 }
 
+// Args-only serializer (excludes discriminator fields).
+export function getUnverifySizedCollectionItemInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const unverifySizedCollectionItemInstructionDiscriminator = 31;
 

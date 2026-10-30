@@ -81,6 +81,17 @@ export function getInitializeInstructionDataSerializer(): Serializer<
 // Args.
 export type InitializeInstructionArgs = InitializeInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getInitializeInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([['data', getCandyMachineDataSerializer()]]) as Serializer<
+    any,
+    any
+  >;
+}
+
 // Instruction discriminator.
 export const initializeInstructionDiscriminator = [
   175, 175, 109, 31, 13, 152, 155, 237,

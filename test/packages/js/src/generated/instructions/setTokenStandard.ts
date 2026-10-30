@@ -62,6 +62,14 @@ export function getSetTokenStandardInstructionDataSerializer(): Serializer<
   >;
 }
 
+// Args-only serializer (excludes discriminator fields).
+export function getSetTokenStandardInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const setTokenStandardInstructionDiscriminator = 35;
 

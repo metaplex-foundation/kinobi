@@ -83,6 +83,18 @@ export function getAddConfigLinesInstructionDataSerializer(): Serializer<
 // Args.
 export type AddConfigLinesInstructionArgs = AddConfigLinesInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getAddConfigLinesInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    ['index', u32()],
+    ['configLines', array(getConfigLineSerializer())],
+    ['moreLines', array(getConfigLineSerializer(), { size: u64() })],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const addConfigLinesInstructionDiscriminator = [
   223, 50, 224, 227, 151, 8, 115, 106,

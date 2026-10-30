@@ -58,6 +58,14 @@ export function getWithdrawInstructionDataSerializer(): Serializer<
   ) as Serializer<WithdrawInstructionDataArgs, WithdrawInstructionData>;
 }
 
+// Args-only serializer (excludes discriminator fields).
+export function getWithdrawInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const withdrawInstructionDiscriminator = [
   183, 18, 70, 156, 148, 109, 161, 34,

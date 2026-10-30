@@ -81,6 +81,14 @@ export function getUtilizeInstructionDataSerializer(): Serializer<
 // Args.
 export type UtilizeInstructionArgs = UtilizeInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getUtilizeInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([['numberOfUses', u64()]]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const utilizeInstructionDiscriminator = 19;
 

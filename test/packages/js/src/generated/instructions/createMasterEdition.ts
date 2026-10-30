@@ -91,6 +91,16 @@ export function getCreateMasterEditionInstructionDataSerializer(): Serializer<
 export type CreateMasterEditionInstructionArgs =
   CreateMasterEditionInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getCreateMasterEditionInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    ['createMasterEditionArgs', getCreateMasterEditionArgsSerializer()],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const createMasterEditionInstructionDiscriminator = 10;
 

@@ -16,11 +16,22 @@ import {
   getMplCandyMachineCoreErrorFromCode,
   getMplCandyMachineCoreErrorFromName,
 } from '../errors';
+import {
+  getAddConfigLinesInstructionArgsOnlySerializer,
+  getDummyInstructionArgsOnlySerializer,
+  getInitializeInstructionArgsOnlySerializer,
+  getMintFromCandyMachineInstructionArgsOnlySerializer,
+  getSetAuthorityInstructionArgsOnlySerializer,
+  getSetCollectionInstructionArgsOnlySerializer,
+  getSetMintAuthorityInstructionArgsOnlySerializer,
+  getUpdateCandyMachineInstructionArgsOnlySerializer,
+  getWithdrawInstructionArgsOnlySerializer,
+} from '../instructions';
 
 export const MPL_CANDY_MACHINE_CORE_PROGRAM_ID =
   'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR' as PublicKey<'CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR'>;
 
-export function createMplCandyMachineCoreProgram(): Program {
+export function createMplCandyMachineCoreProgram() {
   return {
     name: 'mplCandyMachineCore',
     publicKey: MPL_CANDY_MACHINE_CORE_PROGRAM_ID,
@@ -33,6 +44,145 @@ export function createMplCandyMachineCoreProgram(): Program {
     isOnCluster() {
       return true;
     },
+    instructions: [
+      {
+        name: 'dummy',
+        discriminator: {
+          bytes: new Uint8Array([167, 117, 211, 79, 251, 254, 47, 135]),
+          size: 8,
+        },
+        dataSerializer: getDummyInstructionArgsOnlySerializer(),
+        accountNames: [
+          'edition',
+          'mint',
+          'updateAuthority',
+          'mintAuthority',
+          'payer',
+          'foo',
+          'bar',
+          'delegate',
+          'delegateRecord',
+          'tokenOrAtaProgram',
+        ],
+      },
+      {
+        name: 'addConfigLines',
+        discriminator: {
+          bytes: new Uint8Array([223, 50, 224, 227, 151, 8, 115, 106]),
+          size: 8,
+        },
+        dataSerializer: getAddConfigLinesInstructionArgsOnlySerializer(),
+        accountNames: ['candyMachine', 'authority'],
+      },
+      {
+        name: 'initialize',
+        discriminator: {
+          bytes: new Uint8Array([175, 175, 109, 31, 13, 152, 155, 237]),
+          size: 8,
+        },
+        dataSerializer: getInitializeInstructionArgsOnlySerializer(),
+        accountNames: [
+          'candyMachine',
+          'authorityPda',
+          'authority',
+          'payer',
+          'collectionMetadata',
+          'collectionMint',
+          'collectionMasterEdition',
+          'collectionUpdateAuthority',
+          'collectionAuthorityRecord',
+          'tokenMetadataProgram',
+          'systemProgram',
+        ],
+      },
+      {
+        name: 'mintFromCandyMachine',
+        discriminator: {
+          bytes: new Uint8Array([51, 57, 225, 47, 182, 146, 137, 166]),
+          size: 8,
+        },
+        dataSerializer: getMintFromCandyMachineInstructionArgsOnlySerializer(),
+        accountNames: [
+          'candyMachine',
+          'authorityPda',
+          'mintAuthority',
+          'payer',
+          'nftMint',
+          'nftMintAuthority',
+          'nftMetadata',
+          'nftMasterEdition',
+          'collectionAuthorityRecord',
+          'collectionMint',
+          'collectionMetadata',
+          'collectionMasterEdition',
+          'collectionUpdateAuthority',
+          'tokenMetadataProgram',
+          'tokenProgram',
+          'systemProgram',
+          'recentSlothashes',
+        ],
+      },
+      {
+        name: 'setAuthority',
+        discriminator: {
+          bytes: new Uint8Array([133, 250, 37, 21, 110, 163, 26, 121]),
+          size: 8,
+        },
+        dataSerializer: getSetAuthorityInstructionArgsOnlySerializer(),
+        accountNames: ['candyMachine', 'authority'],
+      },
+      {
+        name: 'setCollection',
+        discriminator: {
+          bytes: new Uint8Array([192, 254, 206, 76, 168, 182, 59, 223]),
+          size: 8,
+        },
+        dataSerializer: getSetCollectionInstructionArgsOnlySerializer(),
+        accountNames: [
+          'candyMachine',
+          'authority',
+          'authorityPda',
+          'payer',
+          'collectionMint',
+          'collectionMetadata',
+          'collectionAuthorityRecord',
+          'newCollectionUpdateAuthority',
+          'newCollectionMetadata',
+          'newCollectionMint',
+          'newCollectionMasterEdition',
+          'newCollectionAuthorityRecord',
+          'tokenMetadataProgram',
+          'systemProgram',
+        ],
+      },
+      {
+        name: 'setMintAuthority',
+        discriminator: {
+          bytes: new Uint8Array([67, 127, 155, 187, 100, 174, 103, 121]),
+          size: 8,
+        },
+        dataSerializer: getSetMintAuthorityInstructionArgsOnlySerializer(),
+        accountNames: ['candyMachine', 'authority', 'mintAuthority'],
+      },
+      {
+        name: 'updateCandyMachine',
+        discriminator: {
+          bytes: new Uint8Array([219, 200, 88, 176, 158, 63, 253, 127]),
+          size: 8,
+        },
+        dataSerializer: getUpdateCandyMachineInstructionArgsOnlySerializer(),
+        accountNames: ['candyMachine', 'authority'],
+      },
+      {
+        name: 'withdraw',
+        discriminator: {
+          bytes: new Uint8Array([183, 18, 70, 156, 148, 109, 161, 34]),
+          size: 8,
+        },
+        dataSerializer: getWithdrawInstructionArgsOnlySerializer(),
+        accountNames: ['candyMachine', 'authority'],
+      },
+    ],
   };
 }
 

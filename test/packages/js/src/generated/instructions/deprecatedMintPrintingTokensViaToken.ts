@@ -94,6 +94,19 @@ export function getDeprecatedMintPrintingTokensViaTokenInstructionDataSerializer
 export type DeprecatedMintPrintingTokensViaTokenInstructionArgs =
   DeprecatedMintPrintingTokensViaTokenInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getDeprecatedMintPrintingTokensViaTokenInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    [
+      'mintPrintingTokensViaTokenArgs',
+      getMintPrintingTokensViaTokenArgsSerializer(),
+    ],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const deprecatedMintPrintingTokensViaTokenInstructionDiscriminator = 8;
 

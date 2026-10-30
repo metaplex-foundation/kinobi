@@ -64,6 +64,14 @@ export function getTransferSolInstructionDataSerializer(): Serializer<
 // Args.
 export type TransferSolInstructionArgs = TransferSolInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getTransferSolInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([['amount', u64()]]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const transferSolInstructionDiscriminator = 2;
 

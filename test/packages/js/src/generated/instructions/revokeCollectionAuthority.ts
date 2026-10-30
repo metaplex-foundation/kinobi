@@ -67,6 +67,14 @@ export function getRevokeCollectionAuthorityInstructionDataSerializer(): Seriali
   >;
 }
 
+// Args-only serializer (excludes discriminator fields).
+export function getRevokeCollectionAuthorityInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const revokeCollectionAuthorityInstructionDiscriminator = 24;
 

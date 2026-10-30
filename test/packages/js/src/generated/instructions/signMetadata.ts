@@ -55,6 +55,14 @@ export function getSignMetadataInstructionDataSerializer(): Serializer<
   ) as Serializer<SignMetadataInstructionDataArgs, SignMetadataInstructionData>;
 }
 
+// Args-only serializer (excludes discriminator fields).
+export function getSignMetadataInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const signMetadataInstructionDiscriminator = 7;
 

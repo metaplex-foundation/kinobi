@@ -68,6 +68,17 @@ export function getSetAuthorityInstructionDataSerializer(): Serializer<
 // Args.
 export type SetAuthorityInstructionArgs = SetAuthorityInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getSetAuthorityInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([['newAuthority', publicKeySerializer()]]) as Serializer<
+    any,
+    any
+  >;
+}
+
 // Instruction discriminator.
 export const setAuthorityInstructionDiscriminator = [
   133, 250, 37, 21, 110, 163, 26, 121,

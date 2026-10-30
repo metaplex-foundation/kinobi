@@ -80,6 +80,16 @@ export function getSetCollectionSizeInstructionDataSerializer(): Serializer<
 export type SetCollectionSizeInstructionArgs =
   SetCollectionSizeInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getSetCollectionSizeInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    ['setCollectionSizeArgs', getSetCollectionSizeArgsSerializer()],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const setCollectionSizeInstructionDiscriminator = 34;
 

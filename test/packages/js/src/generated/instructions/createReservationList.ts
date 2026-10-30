@@ -15,6 +15,7 @@ import {
   publicKey,
   transactionBuilder,
 } from '@metaplex-foundation/umi';
+import { Serializer, struct } from '@metaplex-foundation/umi/serializers';
 import {
   CreateReservationListInstructionDataArgs,
   getCreateReservationListInstructionDataSerializer,
@@ -48,6 +49,14 @@ export type CreateReservationListInstructionAccounts = {
 // Args.
 export type CreateReservationListInstructionArgs =
   CreateReservationListInstructionDataArgs;
+
+// Args-only serializer (excludes discriminator fields).
+export function getCreateReservationListInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([]) as Serializer<any, any>;
+}
 
 // Instruction discriminator.
 export const createReservationListInstructionDiscriminator = 6;

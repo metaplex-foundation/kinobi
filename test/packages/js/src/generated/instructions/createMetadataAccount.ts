@@ -124,6 +124,27 @@ export type CreateMetadataAccountInstructionArgs = PickPartial<
   'metadataBump'
 >;
 
+// Args-only serializer (excludes discriminator fields).
+export function getCreateMetadataAccountInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    [
+      'data',
+      struct<any>([
+        ['name', string()],
+        ['symbol', string()],
+        ['uri', string()],
+        ['sellerFeeBasisPoints', u16()],
+        ['creators', option(array(getCreatorSerializer()))],
+      ]),
+    ],
+    ['isMutable', bool()],
+    ['metadataBump', u8()],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const createMetadataAccountInstructionDiscriminator = 0;
 

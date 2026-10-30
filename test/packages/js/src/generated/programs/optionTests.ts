@@ -20,7 +20,7 @@ import {
 export const OPTION_TESTS_PROGRAM_ID =
   'OptionTests1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7' as PublicKey<'OptionTests1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7'>;
 
-export function createOptionTestsProgram(): Program {
+export function createOptionTestsProgram() {
   return {
     name: 'optionTests',
     publicKey: OPTION_TESTS_PROGRAM_ID,

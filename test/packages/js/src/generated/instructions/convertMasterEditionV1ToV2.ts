@@ -62,6 +62,14 @@ export function getConvertMasterEditionV1ToV2InstructionDataSerializer(): Serial
   >;
 }
 
+// Args-only serializer (excludes discriminator fields).
+export function getConvertMasterEditionV1ToV2InstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const convertMasterEditionV1ToV2InstructionDiscriminator = 12;
 

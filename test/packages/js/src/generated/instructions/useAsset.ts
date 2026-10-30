@@ -88,6 +88,16 @@ export function getUseAssetInstructionDataSerializer(): Serializer<
 // Args.
 export type UseAssetInstructionArgs = UseAssetInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getUseAssetInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    ['useAssetArgs', getUseAssetArgsSerializer()],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const useAssetInstructionDiscriminator = 45;
 

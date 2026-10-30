@@ -16,11 +16,12 @@ import {
   getPaddingTestsErrorFromCode,
   getPaddingTestsErrorFromName,
 } from '../errors';
+import { getInitializeWithPaddingInstructionArgsOnlySerializer } from '../instructions';
 
 export const PADDING_TESTS_PROGRAM_ID =
   'PadTest11111111111111111111111111111111111' as PublicKey<'PadTest11111111111111111111111111111111111'>;
 
-export function createPaddingTestsProgram(): Program {
+export function createPaddingTestsProgram() {
   return {
     name: 'paddingTests',
     publicKey: PADDING_TESTS_PROGRAM_ID,
@@ -33,6 +34,14 @@ export function createPaddingTestsProgram(): Program {
     isOnCluster() {
       return true;
     },
+    instructions: [
+      {
+        name: 'initializeWithPadding',
+        discriminator: { bytes: new Uint8Array([0]), size: 1 },
+        dataSerializer: getInitializeWithPaddingInstructionArgsOnlySerializer(),
+        accountNames: ['target', 'payer'],
+      },
+    ],
   };
 }
 

@@ -85,6 +85,14 @@ export function getRevokeInstructionDataSerializer(): Serializer<
 // Args.
 export type RevokeInstructionArgs = RevokeInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getRevokeInstructionArgsOnlySerializer(): Serializer<any, any> {
+  return struct<any>([['revokeArgs', getRevokeArgsSerializer()]]) as Serializer<
+    any,
+    any
+  >;
+}
+
 // Instruction discriminator.
 export const revokeInstructionDiscriminator = 49;
 

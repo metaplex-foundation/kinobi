@@ -83,6 +83,16 @@ export function getMigrateInstructionDataSerializer(): Serializer<
 // Args.
 export type MigrateInstructionArgs = MigrateInstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getMigrateInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([
+    ['migrateArgs', getMigrateArgsSerializer()],
+  ]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const migrateInstructionDiscriminator = 50;
 

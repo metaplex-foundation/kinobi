@@ -92,6 +92,21 @@ export function getCreateV2InstructionDataSerializer(): Serializer<
 // Args.
 export type CreateV2InstructionArgs = CreateV2InstructionDataArgs;
 
+// Args-only serializer (excludes discriminator fields).
+export function getCreateV2InstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return mapSerializer<any, any, any>(
+    struct<any>([
+      ['createV2Discriminator', u8()],
+      ['assetData', getAssetDataSerializer()],
+      ['maxSupply', option(u64())],
+    ]),
+    (value) => ({ ...value, createV2Discriminator: 1 })
+  ) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const createV2InstructionDiscriminator = 41;
 

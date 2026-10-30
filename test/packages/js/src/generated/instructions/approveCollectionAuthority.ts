@@ -73,6 +73,14 @@ export function getApproveCollectionAuthorityInstructionDataSerializer(): Serial
   >;
 }
 
+// Args-only serializer (excludes discriminator fields).
+export function getApproveCollectionAuthorityInstructionArgsOnlySerializer(): Serializer<
+  any,
+  any
+> {
+  return struct<any>([]) as Serializer<any, any>;
+}
+
 // Instruction discriminator.
 export const approveCollectionAuthorityInstructionDiscriminator = 23;
 
